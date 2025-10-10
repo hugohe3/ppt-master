@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#2C3E50">
+    宋代：文官政府的确立
+  </text>
+  <rect x="80" y="88" width="120" height="4" fill="#2980B9"/>
+  
+  <!-- 左侧朝代卡片 -->
+  <rect x="80" y="125" width="500" height="545" fill="#FFFFFF" rx="10" stroke="#E0E0E0" stroke-width="2"/>
+  
+  <!-- 朝代标识区 -->
+  <rect x="80" y="125" width="500" height="90" fill="#2980B9" opacity="0.08" rx="10"/>
+  <text x="330" y="185" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#2980B9" text-anchor="middle">
+    宋
+  </text>
+  
+  <!-- 统治时长 -->
+  <g>
+    <circle cx="115" cy="250" r="14" fill="#2980B9" opacity="0.2"/>
+    <text x="115" y="256" font-family="Arial, sans-serif" font-size="18" fill="#2980B9" text-anchor="middle">
+      ⏱
+    </text>
+    <text x="145" y="256" font-family="Arial, sans-serif" font-size="20" font-weight="500" fill="#2C3E50">
+      统治时长：
+    </text>
+    <text x="270" y="256" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2980B9">
+      319年
+    </text>
+  </g>
+  
+  <!-- 核心特征 -->
+  <text x="115" y="305" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#2C3E50">
+    核心特征
+  </text>
+  
+  <rect x="115" y="320" width="420" height="48" fill="#F8F9FA" rx="6"/>
+  <text x="135" y="350" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 相权全面弱化
+  </text>
+  
+  <rect x="115" y="378" width="420" height="48" fill="#F8F9FA" rx="6"/>
+  <text x="135" y="408" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 皇权制度化加强
+  </text>
+  
+  <rect x="115" y="436" width="420" height="48" fill="#F8F9FA" rx="6"/>
+  <text x="135" y="466" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 文官政府体系
+  </text>
+  
+  <!-- 政治架构图 -->
+  <rect x="115" y="510" width="420" height="140" fill="#2980B9" opacity="0.06" rx="6"/>
+  <text x="135" y="542" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">
+    中央集权架构
+  </text>
+  
+  <rect x="220" y="560" width="200" height="34" fill="#2980B9" opacity="0.18" rx="4"/>
+  <text x="320" y="582" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle" font-weight="500">
+    皇帝直接统治
+  </text>
+  
+  <line x1="225" y1="594" x2="260" y2="612" stroke="#7F8C8D" stroke-width="2"/>
+  <line x1="320" y1="594" x2="320" y2="612" stroke="#7F8C8D" stroke-width="2"/>
+  <line x1="415" y1="594" x2="380" y2="612" stroke="#7F8C8D" stroke-width="2"/>
+  
+  <rect x="155" y="612" width="90" height="26" fill="#E0E0E0" rx="4"/>
+  <text x="200" y="630" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" text-anchor="middle">
+    中书门下
+  </text>
+  
+  <rect x="275" y="612" width="90" height="26" fill="#E0E0E0" rx="4"/>
+  <text x="320" y="630" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" text-anchor="middle">
+    枢密院
+  </text>
+  
+  <rect x="395" y="612" width="90" height="26" fill="#E0E0E0" rx="4"/>
+  <text x="440" y="630" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" text-anchor="middle">
+    三司
+  </text>
+  
+  <!-- 右侧四维度表格 -->
+  <rect x="610" y="125" width="600" height="545" fill="#FFFFFF" rx="10" stroke="#E0E0E0" stroke-width="2"/>
+  
+  <text x="910" y="170" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    四大制度维度
+  </text>
+  
+  <rect x="630" y="195" width="160" height="55" fill="#F8F9FA" rx="4"/>
+  <rect x="790" y="195" width="200" height="55" fill="#F8F9FA" rx="4"/>
+  <rect x="990" y="195" width="200" height="55" fill="#F8F9FA" rx="4"/>
+  
+  <text x="710" y="231" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    维度
+  </text>
+  <text x="890" y="231" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    核心制度
+  </text>
+  <text x="1090" y="231" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    创新/问题
+  </text>
+  
+  <line x1="630" y1="250" x2="1190" y2="250" stroke="#E0E0E0" stroke-width="2"/>
+  
+  <!-- 行1: 政府组织 -->
+  <text x="650" y="285" font-family="Arial, sans-serif" font-size="22" fill="#2C3E50">🏛️</text>
+  <text x="685" y="287" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">政府</text>
+  <text x="685" y="315" font-family="Arial, sans-serif" font-size="17" fill="#7F8C8D">组织</text>
+  
+  <text x="800" y="283" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">同平章事</text>
+  <text x="800" y="310" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">(集体决策)</text>
+  
+  <text x="1000" y="278" font-family="Arial, sans-serif" font-size="16" fill="#27AE60">✅ 士大夫共治</text>
+  <text x="1000" y="306" font-family="Arial, sans-serif" font-size="16" fill="#DC143C">⚠️ 效率降低</text>
+  
+  <line x1="630" y1="355" x2="1190" y2="355" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 行2: 选举考试 -->
+  <rect x="630" y="355" width="560" height="105" fill="#F8F9FA"/>
+  <text x="650" y="390" font-family="Arial, sans-serif" font-size="22" fill="#2C3E50">🧑‍🎓</text>
+  <text x="685" y="392" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">选举</text>
+  <text x="685" y="420" font-family="Arial, sans-serif" font-size="17" fill="#7F8C8D">考试</text>
+  
+  <text x="800" y="388" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">殿试制</text>
+  <text x="800" y="415" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">(皇帝主持)</text>
+  
+  <text x="1000" y="383" font-family="Arial, sans-serif" font-size="16" fill="#27AE60">✅ 断绝党争</text>
+  <text x="1000" y="411" font-family="Arial, sans-serif" font-size="16" fill="#DC143C">⚠️ 科举冗员</text>
+  
+  <line x1="630" y1="460" x2="1190" y2="460" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 行3: 经济赋税 -->
+  <text x="650" y="495" font-family="Arial, sans-serif" font-size="22" fill="#2C3E50">💰</text>
+  <text x="685" y="497" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">经济</text>
+  <text x="685" y="525" font-family="Arial, sans-serif" font-size="17" fill="#7F8C8D">赋税</text>
+  
+  <text x="800" y="493" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">王安石</text>
+  <text x="800" y="520" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">变法</text>
+  
+  <text x="1000" y="488" font-family="Arial, sans-serif" font-size="16" fill="#27AE60">✅ 理财政策</text>
+  <text x="1000" y="516" font-family="Arial, sans-serif" font-size="16" fill="#DC143C">⚠️ 冗官冗兵</text>
+  
+  <line x1="630" y1="565" x2="1190" y2="565" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 行4: 兵役制度 -->
+  <rect x="630" y="565" width="560" height="105" fill="#F8F9FA"/>
+  <text x="650" y="600" font-family="Arial, sans-serif" font-size="22" fill="#2C3E50">⚔️</text>
+  <text x="685" y="602" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">兵役</text>
+  <text x="685" y="630" font-family="Arial, sans-serif" font-size="17" fill="#7F8C8D">制度</text>
+  
+  <text x="800" y="598" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">厢军→</text>
+  <text x="800" y="625" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">禁军</text>
+  
+  <text x="1000" y="590" font-family="Arial, sans-serif" font-size="16" fill="#27AE60">✅ 防止兵变</text>
+  <text x="1000" y="618" font-family="Arial, sans-serif" font-size="16" fill="#DC143C">⚠️ 兵多而弱</text>
+</svg>

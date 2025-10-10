@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#2C3E50">
+    对当下的启示
+  </text>
+  <rect x="80" y="88" width="120" height="4" fill="#B8860B"/>
+  
+  <!-- 核心引言 -->
+  <rect x="200" y="125" width="880" height="85" fill="#B8860B" opacity="0.1" rx="10"/>
+  <text x="640" y="157" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D" text-anchor="middle" font-style="italic">
+    历史智慧的现代价值
+  </text>
+  <text x="640" y="194" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#B8860B" text-anchor="middle">
+    "对自己的历史要有温情与敬意" —— 钱穆
+  </text>
+  
+  <!-- 三大启示（三角形结构） -->
+  <!-- 顶部启示 -->
+  <rect x="440" y="240" width="400" height="115" fill="#FFFFFF" rx="10" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="485" cy="277" r="22" fill="#C0392B" opacity="0.2"/>
+  <text x="485" y="286" font-family="Arial, sans-serif" font-size="26" fill="#C0392B" text-anchor="middle">
+    🔍
+  </text>
+  <text x="525" y="286" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    重新认识传统
+  </text>
+  <text x="470" y="320" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 不能用"专制黑暗"简单否定
+  </text>
+  <text x="470" y="347" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 研究历史经验与制度弊病
+  </text>
+  
+  <!-- 左下启示 -->
+  <rect x="80" y="385" width="520" height="125" fill="#FFFFFF" rx="10" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="125" cy="427" r="22" fill="#2980B9" opacity="0.2"/>
+  <text x="125" y="436" font-family="Arial, sans-serif" font-size="26" fill="#2980B9" text-anchor="middle">
+    🤝
+  </text>
+  <text x="165" y="436" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    重建共信
+  </text>
+  <text x="110" y="470" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 打破旧共信（辛亥革命后）
+  </text>
+  <text x="110" y="497" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 建立新共信（尚未完成）
+  </text>
+  
+  <!-- 右下启示 -->
+  <rect x="640" y="385" width="560" height="125" fill="#FFFFFF" rx="10" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="685" cy="427" r="22" fill="#27AE60" opacity="0.2"/>
+  <text x="685" y="436" font-family="Arial, sans-serif" font-size="26" fill="#27AE60" text-anchor="middle">
+    🚀
+  </text>
+  <text x="725" y="436" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    寻求出路
+  </text>
+  <text x="670" y="470" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 简化制度，解放人才
+  </text>
+  <text x="670" y="497" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    • 中西结合，统一与活力并重
+  </text>
+  
+  <!-- 五朝制度对比总表 -->
+  <text x="80" y="550" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">
+    五朝制度核心对比
+  </text>
+  
+  <rect x="80" y="565" width="1120" height="145" fill="#FFFFFF" rx="8" stroke="#E0E0E0" stroke-width="2"/>
+  
+  <!-- 表头 -->
+  <rect x="80" y="565" width="100" height="42" fill="#F8F9FA" rx="8"/>
+  <rect x="180" y="565" width="230" height="42" fill="#F8F9FA"/>
+  <rect x="410" y="565" width="230" height="42" fill="#F8F9FA"/>
+  <rect x="640" y="565" width="230" height="42" fill="#F8F9FA"/>
+  <rect x="870" y="565" width="330" height="42" fill="#F8F9FA" rx="8"/>
+  
+  <text x="130" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    朝代
+  </text>
+  <text x="295" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    政府组织
+  </text>
+  <text x="525" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    选举制度
+  </text>
+  <text x="755" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    经济制度
+  </text>
+  <text x="1035" y="592" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    兵役制度
+  </text>
+  
+  <!-- 汉代 -->
+  <rect x="80" y="607" width="100" height="26" fill="#C0392B" opacity="0.1"/>
+  <text x="130" y="625" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#C0392B" text-anchor="middle">
+    汉
+  </text>
+  <text x="295" y="625" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    皇权相权分立
+  </text>
+  <text x="525" y="625" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    察举制
+  </text>
+  <text x="755" y="625" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    三十税一
+  </text>
+  <text x="1035" y="625" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    全民兵役
+  </text>
+  
+  <line x1="80" y1="633" x2="1200" y2="633" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 唐代 -->
+  <rect x="80" y="633" width="100" height="26" fill="#E67E22" opacity="0.1"/>
+  <text x="130" y="651" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E67E22" text-anchor="middle">
+    唐
+  </text>
+  <text x="295" y="651" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    三省六部
+  </text>
+  <text x="525" y="651" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    科举开放
+  </text>
+  <text x="755" y="651" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    两税法
+  </text>
+  <text x="1035" y="651" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    府兵→募兵
+  </text>
+  
+  <line x1="80" y1="659" x2="1200" y2="659" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 宋代 -->
+  <rect x="80" y="659" width="100" height="26" fill="#2980B9" opacity="0.1"/>
+  <text x="130" y="677" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2980B9" text-anchor="middle">
+    宋
+  </text>
+  <text x="295" y="677" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    相权分割
+  </text>
+  <text x="525" y="677" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    殿试制
+  </text>
+  <text x="755" y="677" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    差役/免役
+  </text>
+  <text x="1035" y="677" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    禁军制
+  </text>
+  
+  <line x1="80" y1="685" x2="1200" y2="685" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 明代 -->
+  <rect x="80" y="685" width="100" height="25" fill="#8E44AD" opacity="0.1"/>
+  <text x="130" y="703" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8E44AD" text-anchor="middle">
+    明
+  </text>
+  <text x="295" y="703" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    废相集权
+  </text>
+  <text x="525" y="703" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    八股文
+  </text>
+  <text x="755" y="703" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    一条鞭法
+  </text>
+  <text x="1035" y="703" font-family="Arial, sans-serif" font-size="15" fill="#2C3E50" text-anchor="middle">
+    卫所→募兵
+  </text>
+</svg>

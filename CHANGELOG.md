@@ -45,10 +45,21 @@
 - 逐页生成机制
 - 迭代优化支持
 
+### 示例项目
+
+- 中国历代政治得失演示文稿（9 页完整示例）
+  - 完整的源文档输入示例
+  - Strategist 生成的设计规范
+  - 9 页高质量 SVG 输出
+  - 展示历史主题的专业呈现
+
 ### 文档
 
 - 完整的 README.md
-- 四个角色定义文档
+- 四个角色定义文档（roles/）
+- 角色概览文档（roles/README.md）
+- 设计指南（docs/design_guidelines.md）
+- 工作流教程（docs/workflow_tutorial.md）
 - 贡献指南（CONTRIBUTING.md）
 - 许可证文件（LICENSE）
 - 更新日志（CHANGELOG.md）

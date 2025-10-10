@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 页面标题 - 左对齐，加大对比 -->
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#2C3E50">
+    研究方法与核心观点
+  </text>
+  
+  <!-- 标题装饰线 - 与标题对齐 -->
+  <rect x="80" y="88" width="120" height="4" fill="#B8860B"/>
+  
+  <!-- 核心引言框 - 加强对比和亲密性 -->
+  <rect x="80" y="125" width="1120" height="95" fill="#FFFFFF" rx="8" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 引号图标 -->
+  <text x="110" y="172" font-family="Arial, sans-serif" font-size="52" fill="#B8860B" opacity="0.25">
+    "
+  </text>
+  
+  <!-- 引言文字 - 居中对齐 -->
+  <text x="640" y="168" font-family="Arial, sans-serif" font-size="26" font-weight="500" fill="#2C3E50" text-anchor="middle">
+    研究一个国家的政治制度，不能脱离其自身的历史与文化
+  </text>
+  
+  <text x="640" y="202" font-family="Arial, sans-serif" font-size="20" fill="#7F8C8D" font-style="italic" text-anchor="middle">
+    —— 钱穆
+  </text>
+  
+  <!-- 四象限框架标题 - 加大间距 -->
+  <text x="80" y="265" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">
+    研究框架：四个核心维度
+  </text>
+  
+  <!-- 四象限框架 - 统一间距，重复原则 -->
+  <!-- 左上：历史渊源 -->
+  <rect x="80" y="300" width="560" height="160" fill="#FFFFFF" rx="8" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="120" cy="340" r="20" fill="#C0392B" opacity="0.15"/>
+  <text x="120" y="348" font-family="Arial, sans-serif" font-size="22" fill="#C0392B" text-anchor="middle">
+    📜
+  </text>
+  <text x="155" y="348" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    历史渊源
+  </text>
+  <text x="120" y="388" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    任何制度都有其历史背景
+  </text>
+  <text x="120" y="420" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    不能孤立看待某一时期的制度
+  </text>
+  
+  <!-- 右上：现实需求 -->
+  <rect x="660" y="300" width="560" height="160" fill="#FFFFFF" rx="8" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="700" cy="340" r="20" fill="#E67E22" opacity="0.15"/>
+  <text x="700" y="348" font-family="Arial, sans-serif" font-size="22" fill="#E67E22" text-anchor="middle">
+    🎯
+  </text>
+  <text x="735" y="348" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    现实需求
+  </text>
+  <text x="700" y="388" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    制度是为解决当时问题而设
+  </text>
+  <text x="700" y="420" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    评判得失需考虑现实条件
+  </text>
+  
+  <!-- 左下：历史意见 -->
+  <rect x="80" y="480" width="560" height="160" fill="#FFFFFF" rx="8" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="120" cy="520" r="20" fill="#2980B9" opacity="0.15"/>
+  <text x="120" y="528" font-family="Arial, sans-serif" font-size="22" fill="#2980B9" text-anchor="middle">
+    👥
+  </text>
+  <text x="155" y="528" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    历史意见
+  </text>
+  <text x="120" y="568" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    当时人对制度的看法和评价
+  </text>
+  <text x="120" y="600" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    更接近制度运行的真实情况
+  </text>
+  
+  <!-- 右下：时代意见 -->
+  <rect x="660" y="480" width="560" height="160" fill="#FFFFFF" rx="8" stroke="#E0E0E0" stroke-width="2"/>
+  <circle cx="700" cy="520" r="20" fill="#8E44AD" opacity="0.15"/>
+  <text x="700" y="528" font-family="Arial, sans-serif" font-size="22" fill="#8E44AD" text-anchor="middle">
+    ⏰
+  </text>
+  <text x="735" y="528" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#2C3E50">
+    时代意见
+  </text>
+  <text x="700" y="568" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    用今天的标准衡量过去
+  </text>
+  <text x="700" y="600" font-family="Arial, sans-serif" font-size="18" fill="#7F8C8D">
+    需避免简单的"专制黑暗"论
+  </text>
+  
+  <!-- 底部分析维度 - 统一高度 -->
+  <rect x="80" y="660" width="1120" height="50" fill="#B8860B" opacity="0.12" rx="6"/>
+  <text x="100" y="692" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+    四大分析维度：
+  </text>
+  <text x="260" y="692" font-family="Arial, sans-serif" font-size="19" fill="#7F8C8D">
+    🏛️ 政府组织  |  🧑‍🎓 选举考试  |  💰 经济赋税  |  ⚔️ 兵役制度
+  </text>
+</svg>
