@@ -23,13 +23,15 @@
 
 ### ✅ 使用 Strategist
 
-- [ ] 回答初始沟通的三个问题
-  - [ ] 页数范围
-  - [ ] 关键信息（受众、场合、核心信息）
-  - [ ] 风格选择
+- [ ] 回答初始沟通的三个问题（Strategist 会为每个问题提供专业建议）
+  - [ ] 页数范围（参考 Strategist 基于内容量的建议）
+  - [ ] 关键信息（确认或调整 Strategist 对受众和场合的判断）
+  - [ ] 风格选择（考虑 Strategist 的风格推荐及理由）
 - [ ] 等待 Strategist 生成设计规范
 - [ ] 仔细检查并确认设计规范
 - [ ] 保存设计规范到项目文件夹
+
+💡 **提示**: Strategist 不仅会提问，还会主动提供专业建议供你参考
 
 ### ✅ 使用 Executor
 
@@ -101,16 +103,21 @@
 源文档内容：
 [粘贴或描述你的内容]
 
-目标受众：[描述受众]
-使用场合：[描述场合]
-期望页数：[X-Y页]
+💡 提示：Strategist 会主动分析内容并提供以下建议：
+- 合理的页数范围
+- 目标受众和使用场景的判断
+- 推荐的设计风格及理由
+
+你可以直接接受建议，也可以提出自己的想法进行讨论。
 ```
 
 ### 请求生成页面
 
 ```
 请根据设计规范生成第[X]页：[页面主题]
-请将SVG保存到：projects/[项目名]/svg_output/slide_[页码]_[主题].svg
+请将SVG保存到：projects/[项目名]_[YYYYMMDD]/svg_output/slide_[页码]_[主题].svg
+
+例如: projects/company_report_20251012/svg_output/slide_01_cover.svg
 ```
 
 ### 请求修改
@@ -273,10 +280,16 @@ BCG深蓝:     #003F6C
 ### 项目文件夹
 
 ```
-projects/项目英文名/
+projects/项目英文名_YYYYMMDD/
 或
-projects/项目拼音/
+projects/项目拼音_YYYYMMDD/
+
+例如:
+projects/market_analysis_20251012/
+projects/shichang_fenxi_20251012/
 ```
+
+**重要**: 必须添加日期后缀 `_YYYYMMDD`,例如 `_20251012` 表示 2025年10月12日
 
 ### 源文档
 
