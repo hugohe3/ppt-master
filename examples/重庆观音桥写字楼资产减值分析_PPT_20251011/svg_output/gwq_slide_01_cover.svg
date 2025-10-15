@@ -1,0 +1,52 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰线 - PwC橙色 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#D04A02"/>
+  
+  <!-- 主标题区域 -->
+  <text x="640" y="280" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="48" font-weight="bold" fill="#53565A" text-anchor="middle">
+    重庆观音桥写字楼资产减值分析
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="340" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="28" fill="#8C8C8C" text-anchor="middle">
+    市场行情与趋势研判报告
+  </text>
+  
+  <!-- 橙色装饰线 -->
+  <line x1="440" y1="380" x2="840" y2="380" stroke="#D04A02" stroke-width="2"/>
+  
+  <!-- 关键标签 -->
+  <g transform="translate(640, 450)">
+    <!-- 审计专业标识 -->
+    <rect x="-120" y="-25" width="240" height="50" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6"/>
+    <text x="0" y="8" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" fill="#D04A02" text-anchor="middle" font-weight="600">
+      减值测试分析
+    </text>
+  </g>
+  
+  <!-- 底部信息区 -->
+  <g transform="translate(0, 600)">
+    <!-- 左侧信息 -->
+    <text x="80" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#8C8C8C">
+      <tspan x="80" dy="0">汇报对象：普华永道高级经理</tspan>
+      <tspan x="80" dy="30">分析期间：2021-2025年</tspan>
+    </text>
+    
+    <!-- 右侧信息 -->
+    <text x="1200" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#8C8C8C" text-anchor="end">
+      <tspan x="1200" dy="0">汇报人：高级审计员</tspan>
+      <tspan x="1200" dy="30">2025年10月</tspan>
+    </text>
+  </g>
+  
+  <!-- PwC标识位置（右下角文字标识） -->
+  <text x="1200" y="690" font-family="Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="bold" fill="#D04A02" text-anchor="end">
+    PwC
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#E0E0E0"/>
+</svg>

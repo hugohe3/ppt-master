@@ -1,0 +1,173 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect fill="#FFFFFF" width="1280" height="720"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#0066CC"/>
+  <text x="60" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="32" font-weight="700" fill="#1A1A1A">
+    资源保障与风险管控
+  </text>
+  
+  <!-- 左侧：资源保障机制 -->
+  <rect x="60" y="80" width="560" height="570" rx="8" fill="#F5F7FA" stroke="#00C48C" stroke-width="2"/>
+  <rect x="60" y="80" width="560" height="50" rx="8" fill="#00C48C"/>
+  <text x="340" y="113" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="22" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    资源保障机制
+  </text>
+  
+  <!-- 预算保障 -->
+  <g transform="translate(90, 150)">
+    <circle cx="0" cy="-3" r="8" fill="#00C48C"/>
+    <text x="20" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="600" fill="#1A1A1A">
+      预算保障
+    </text>
+    <text x="20" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="15" font-weight="400" fill="#666666">
+      <tspan x="20" dy="0">• 初创期（第1年）：占营收5-8%</tspan>
+      <tspan x="20" dy="24">• 成长期（第2-3年）：占营收8-12%</tspan>
+      <tspan x="20" dy="24">• 成熟期（第4年）：占营收10-15%</tspan>
+    </text>
+    
+    <rect x="0" y="120" width="480" height="1" fill="#E0E0E0"/>
+    
+    <text x="20" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FF6B35">
+      政府补贴利用
+    </text>
+    <text x="20" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="20" dy="0">✓ 高新认定补贴：20-50万元</tspan>
+      <tspan x="20" dy="22">✓ 专利申请资助：50%补贴</tspan>
+      <tspan x="20" dy="22">✓ 重点企业扶持：100-300万元</tspan>
+      <tspan x="20" dy="22">✓ CMMI认证补贴：10-30万元</tspan>
+    </text>
+  </g>
+  
+  <!-- 人员保障 -->
+  <g transform="translate(90, 420)">
+    <circle cx="0" cy="-3" r="8" fill="#00C48C"/>
+    <text x="20" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="600" fill="#1A1A1A">
+      人员保障
+    </text>
+    <text x="20" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="15" font-weight="400" fill="#666666">
+      <tspan x="20" dy="0">• 第1年：1名兼职专员 + 外包代理</tspan>
+      <tspan x="20" dy="24">• 第2-3年：1名专职经理 + 外包代理</tspan>
+      <tspan x="20" dy="24">• 第4年：3-5人团队（专利工程师+法务+品牌）</tspan>
+    </text>
+  </g>
+  
+  <!-- 流程保障 -->
+  <g transform="translate(90, 550)">
+    <circle cx="0" cy="-3" r="8" fill="#00C48C"/>
+    <text x="20" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="600" fill="#1A1A1A">
+      流程保障
+    </text>
+    <text x="20" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="15" font-weight="400" fill="#666666">
+      <tspan x="20" dy="0">• 研发-知识产权联动机制</tspan>
+      <tspan x="20" dy="24">• 新产品立项时知识产权介入</tspan>
+      <tspan x="20" dy="24">• 软件发布前侵权风险排查</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：风险管控要点 -->
+  <rect x="660" y="80" width="560" height="570" rx="8" fill="#F5F7FA" stroke="#FF6B35" stroke-width="2"/>
+  <rect x="660" y="80" width="560" height="50" rx="8" fill="#FF6B35"/>
+  <text x="940" y="113" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="22" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    风险管控要点
+  </text>
+  
+  <!-- 合规风险 -->
+  <g transform="translate(690, 150)">
+    <rect x="-10" y="-15" width="500" height="40" rx="6" fill="#FFE8E0"/>
+    <text x="240" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="600" fill="#FF6B35" text-anchor="middle">
+      ⚠️ 合规风险
+    </text>
+    
+    <text x="0" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#1A1A1A">
+      风险点
+    </text>
+    <text x="0" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">• 资质过期失效（ISO年审、高新3年重认定）</tspan>
+      <tspan x="0" dy="22">• 业务变更未及时更新资质</tspan>
+      <tspan x="0" dy="22">• 资质申报材料造假被撤销</tspan>
+    </text>
+    
+    <text x="0" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#00C48C">
+      防控措施
+    </text>
+    <text x="0" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">✓ 建立资质有效期提醒机制</tspan>
+      <tspan x="0" dy="22">✓ ISO体系每年年审，高新技术企业3年重认定</tspan>
+      <tspan x="0" dy="22">✓ 业务变更时同步更新资质（如转型医疗软件）</tspan>
+    </text>
+  </g>
+  
+  <!-- 知识产权风险 -->
+  <g transform="translate(690, 390)">
+    <rect x="-10" y="-15" width="500" height="40" rx="6" fill="#FFE8E0"/>
+    <text x="240" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="600" fill="#FF6B35" text-anchor="middle">
+      ⚠️ 知识产权风险
+    </text>
+    
+    <text x="0" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#1A1A1A">
+      风险点
+    </text>
+    <text x="0" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">• 侵权他人专利被诉讼</tspan>
+      <tspan x="0" dy="22">• 核心技术因员工离职泄露</tspan>
+      <tspan x="0" dy="22">• 品牌商标被抢注</tspan>
+    </text>
+    
+    <text x="0" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#00C48C">
+      防控措施
+    </text>
+    <text x="0" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">✓ 开发前专利检索排查侵权风险</tspan>
+      <tspan x="0" dy="22">✓ 员工离职前签订职务发明确认书</tspan>
+      <tspan x="0" dy="22">✓ 保密协议+竞业限制协议</tspan>
+      <tspan x="0" dy="22">✓ 定期知识产权风险排查（季度）</tspan>
+    </text>
+  </g>
+  
+  <!-- 投入风险 -->
+  <g transform="translate(1000, 500)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#1A1A1A">
+      💡 投入优化建议
+    </text>
+    <text x="0" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">• 避免盲目申报高成本资质</tspan>
+            <tspan x="0" dy="22">（如初创期不建议CMMI五级）</tspan>
+      
+      <tspan x="0" dy="22">• 聚焦核心业务相关资质</tspan>
+            <tspan x="0" dy="22">（非医疗软件无需医疗器械认证）</tspan>
+          
+      <tspan x="0" dy="22">• 分阶段投入，控制现金流风险</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#CCCCCC" text-anchor="end">
+    09
+  </text>
+</svg>

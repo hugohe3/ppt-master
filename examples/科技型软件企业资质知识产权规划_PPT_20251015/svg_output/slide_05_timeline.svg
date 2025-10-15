@@ -1,0 +1,213 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect fill="#FFFFFF" width="1280" height="720"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#0066CC"/>
+  <text x="60" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="32" font-weight="700" fill="#1A1A1A">
+    四年时间规划总览（2025-2028）
+  </text>
+  
+  <!-- 主时间轴线 -->
+  <line x1="100" y1="150" x2="1180" y2="150" stroke="#0066CC" stroke-width="4"/>
+  
+  <!-- 2025年节点 -->
+  <circle cx="100" cy="150" r="12" fill="#4A90E2"/>
+  <rect x="50" y="100" width="100" height="35" rx="4" fill="#4A90E2"/>
+  <text x="100" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2025年
+  </text>
+  <text x="100" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="16" font-weight="600" fill="#4A90E2" text-anchor="middle">
+    初创期
+  </text>
+  
+  <!-- 2026年节点 -->
+  <circle cx="460" cy="150" r="12" fill="#0066CC"/>
+  <rect x="410" y="100" width="100" height="35" rx="4" fill="#0066CC"/>
+  <text x="460" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2026年
+  </text>
+  <text x="460" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="16" font-weight="600" fill="#0066CC" text-anchor="middle">
+    成长期前半
+  </text>
+  
+  <!-- 2027年节点 -->
+  <circle cx="820" cy="150" r="12" fill="#0066CC"/>
+  <rect x="770" y="100" width="100" height="35" rx="4" fill="#0066CC"/>
+  <text x="820" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2027年
+  </text>
+  <text x="820" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="16" font-weight="600" fill="#0066CC" text-anchor="middle">
+    成长期后半
+  </text>
+  
+  <!-- 2028年节点 -->
+  <circle cx="1180" cy="150" r="12" fill="#003D82"/>
+  <rect x="1130" y="100" width="100" height="35" rx="4" fill="#003D82"/>
+  <text x="1180" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2028年
+  </text>
+  <text x="1180" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="16" font-weight="600" fill="#003D82" text-anchor="middle">
+    成熟期
+  </text>
+  
+  <!-- 关键里程碑标题 -->
+  <text x="60" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="22" font-weight="600" fill="#0066CC">
+    关键里程碑节点
+  </text>
+  
+  <!-- 2025年里程碑 -->
+  <g transform="translate(60, 270)">
+    <rect x="0" y="0" width="260" height="190" rx="6" fill="#F5F7FA" stroke="#4A90E2" stroke-width="2"/>
+    <rect x="0" y="0" width="260" height="40" rx="6" fill="#4A90E2"/>
+    <text x="130" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2025 Q2
+    </text>
+    <text x="15" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ 完成双软认证</tspan>
+      <tspan x="15" dy="22">✓ 软著登记10项</tspan>
+    </text>
+    
+    <rect x="0" y="100" width="260" height="40" rx="6" fill="#4A90E2" opacity="0.8"/>
+    <text x="130" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2025 Q4
+    </text>
+    <text x="15" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ 等保二级+ISO9001</tspan>
+      <tspan x="15" dy="22">✓ 发明专利申请2项</tspan>
+    </text>
+  </g>
+  
+  <!-- 2026年里程碑 -->
+  <g transform="translate(340, 270)">
+    <rect x="0" y="0" width="260" height="190" rx="6" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+    <rect x="0" y="0" width="260" height="40" rx="6" fill="#0066CC"/>
+    <text x="130" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2026 Q2
+    </text>
+    <text x="15" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ CMMI三级启动</tspan>
+      <tspan x="15" dy="22">✓ 高新技术企业申报</tspan>
+    </text>
+    
+    <rect x="0" y="100" width="260" height="40" rx="6" fill="#0066CC" opacity="0.8"/>
+    <text x="130" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2026 Q4
+    </text>
+    <text x="15" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ 高新认定通过</tspan>
+      <tspan x="15" dy="22">✓ 专利授权3项</tspan>
+    </text>
+  </g>
+  
+  <!-- 2027年里程碑 -->
+  <g transform="translate(620, 270)">
+    <rect x="0" y="0" width="260" height="190" rx="6" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+    <rect x="0" y="0" width="260" height="40" rx="6" fill="#0066CC"/>
+    <text x="130" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2027 Q2
+    </text>
+    <text x="15" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ CMMI三级通过</tspan>
+      <tspan x="15" dy="22">✓ 行业资质获取</tspan>
+    </text>
+    
+    <rect x="0" y="100" width="260" height="40" rx="6" fill="#0066CC" opacity="0.8"/>
+    <text x="130" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2027 Q4
+    </text>
+    <text x="15" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ 专利池达15项</tspan>
+      <tspan x="15" dy="22">✓ 海外商标布局</tspan>
+    </text>
+  </g>
+  
+  <!-- 2028年里程碑 -->
+  <g transform="translate(900, 270)">
+    <rect x="0" y="0" width="260" height="190" rx="6" fill="#F5F7FA" stroke="#003D82" stroke-width="2"/>
+    <rect x="0" y="0" width="260" height="40" rx="6" fill="#003D82"/>
+    <text x="130" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2028 Q2
+    </text>
+    <text x="15" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ CMMI四级启动</tspan>
+      <tspan x="15" dy="22">✓ 参与标准制定</tspan>
+    </text>
+    
+    <rect x="0" y="100" width="260" height="40" rx="6" fill="#003D82" opacity="0.8"/>
+    <text x="130" y="127" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      2028 Q4
+    </text>
+    <text x="15" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="15" dy="0">✓ 重点软件企业认定</tspan>
+      <tspan x="15" dy="22">✓ 专利池30项</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部预算汇总 -->
+  <rect x="60" y="480" width="1160" height="180" rx="8" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+  <text x="640" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="20" font-weight="600" fill="#0066CC" text-anchor="middle">
+    四年预算规划与价值回报
+  </text>
+  
+  <g transform="translate(100, 545)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#1A1A1A">
+      投入预算
+    </text>
+    <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">• 第1年：15-20万元</tspan>
+      <tspan x="0" dy="22">• 第2-3年：140-180万元（两年）</tspan>
+      <tspan x="0" dy="22">• 第4年：120-160万元</tspan>
+      <tspan x="0" dy="22">• 总投入：275-360万元</tspan>
+    </text>
+  </g>
+  
+  <g transform="translate(650, 545)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#00C48C">
+      价值回报
+    </text>
+    <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#666666">
+      <tspan x="0" dy="0">✓ 税收优惠：4年累计节省1000-2000万元</tspan>
+      <tspan x="0" dy="22">✓ 政府补贴：4年累计获取500-1000万元</tspan>
+      <tspan x="0" dy="22">✓ 企业估值：从5000万提升至10亿+</tspan>
+      <tspan x="0" dy="22">✓ 投资回报率（ROI）：300%-600%</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#CCCCCC" text-anchor="end">
+    05
+  </text>
+</svg>

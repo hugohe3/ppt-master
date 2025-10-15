@@ -1,0 +1,138 @@
+<svg viewBox="0 0 750 1334" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="750" height="1334" fill="#FFF8E1"/>
+  
+  <!-- 标题区 -->
+  <rect x="0" y="0" width="750" height="140" fill="#FFC107"/>
+  <text x="375" y="70" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="#24292E">避坑指南</text>
+  <text x="375" y="110" font-family="Arial, sans-serif" font-size="28" 
+        text-anchor="middle" fill="#F57C00">Common Pitfalls and Solutions</text>
+  
+  <!-- 问题1: 放弃更改不可逆 -->
+  <g id="problem1">
+    <rect x="50" y="180" width="650" height="240" rx="12" fill="#FFFFFF" 
+          stroke="#DC3545" stroke-width="3"/>
+    
+    <!-- 问题标题 -->
+    <circle cx="120" cy="240" r="35" fill="#DC3545"/>
+    <text x="120" y="255" font-family="Arial, sans-serif" font-size="42" 
+          text-anchor="middle" fill="#FFFFFF">⚠️</text>
+    
+    <text x="180" y="235" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#24292E">放弃更改不可逆</text>
+    <text x="180" y="265" font-family="Arial, sans-serif" font-size="20" 
+          fill="#DC3545">Discard Changes = Data Loss</text>
+    
+    <!-- 解决方案 -->
+    <line x1="80" y1="290" x2="670" y2="290" stroke="#E0E0E0" stroke-width="2"/>
+    
+    <circle cx="120" cy="340" r="25" fill="#28A745"/>
+    <text x="120" y="352" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">✓</text>
+    
+    <text x="165" y="340" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+          fill="#28A745">解决方案</text>
+    <text x="165" y="370" font-family="Arial, sans-serif" font-size="20" 
+          fill="#586069">操作前三思 • 看清警告弹窗</text>
+    <text x="165" y="400" font-family="Arial, sans-serif" font-size="18" 
+          fill="#757575">确认真的不需要这些修改</text>
+  </g>
+  
+  <!-- 问题2: 无法删除当前分支 -->
+  <g id="problem2">
+    <rect x="50" y="450" width="650" height="240" rx="12" fill="#FFFFFF" 
+          stroke="#DC3545" stroke-width="3"/>
+    
+    <!-- 问题标题 -->
+    <circle cx="120" cy="510" r="35" fill="#DC3545"/>
+    <text x="120" y="525" font-family="Arial, sans-serif" font-size="42" 
+          text-anchor="middle" fill="#FFFFFF">🚫</text>
+    
+    <text x="180" y="505" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#24292E">无法删除当前分支</text>
+    <text x="180" y="535" font-family="Arial, sans-serif" font-size="20" 
+          fill="#DC3545">Cannot Delete Active Branch</text>
+    
+    <!-- 解决方案 -->
+    <line x1="80" y1="560" x2="670" y2="560" stroke="#E0E0E0" stroke-width="2"/>
+    
+    <circle cx="120" cy="610" r="25" fill="#28A745"/>
+    <text x="120" y="622" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">✓</text>
+    
+    <text x="165" y="610" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+          fill="#28A745">解决方案</text>
+    <text x="165" y="640" font-family="Arial, sans-serif" font-size="20" 
+          fill="#586069">先切换到其他分支</text>
+    <text x="165" y="670" font-family="Arial, sans-serif" font-size="18" 
+          fill="#757575">例如: Checkout to master</text>
+  </g>
+  
+  <!-- 问题3: 提交后 GitHub 无更新 -->
+  <g id="problem3">
+    <rect x="50" y="720" width="650" height="240" rx="12" fill="#FFFFFF" 
+          stroke="#DC3545" stroke-width="3"/>
+    
+    <!-- 问题标题 -->
+    <circle cx="120" cy="780" r="35" fill="#DC3545"/>
+    <text x="120" y="795" font-family="Arial, sans-serif" font-size="42" 
+          text-anchor="middle" fill="#FFFFFF">❌</text>
+    
+    <text x="180" y="775" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#24292E">提交后 GitHub 无更新</text>
+    <text x="180" y="805" font-family="Arial, sans-serif" font-size="20" 
+          fill="#DC3545">Commit ≠ Push to GitHub</text>
+    
+    <!-- 解决方案 -->
+    <line x1="80" y1="830" x2="670" y2="830" stroke="#E0E0E0" stroke-width="2"/>
+    
+    <circle cx="120" cy="880" r="25" fill="#28A745"/>
+    <text x="120" y="892" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">✓</text>
+    
+    <text x="165" y="880" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+          fill="#28A745">解决方案</text>
+    <text x="165" y="910" font-family="Arial, sans-serif" font-size="20" 
+          fill="#586069">记得执行 Push 操作</text>
+    <text x="165" y="940" font-family="Arial, sans-serif" font-size="18" 
+          fill="#757575">Commit 只在本地 • Push 才上传</text>
+  </g>
+  
+  <!-- 问题4: 合并分支冲突多 -->
+  <g id="problem4">
+    <rect x="50" y="990" width="650" height="260" rx="12" fill="#FFFFFF" 
+          stroke="#DC3545" stroke-width="3"/>
+    
+    <!-- 问题标题 -->
+    <circle cx="120" cy="1050" r="35" fill="#DC3545"/>
+    <text x="120" y="1065" font-family="Arial, sans-serif" font-size="42" 
+          text-anchor="middle" fill="#FFFFFF">💥</text>
+    
+    <text x="180" y="1045" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          fill="#24292E">合并分支冲突多</text>
+    <text x="180" y="1075" font-family="Arial, sans-serif" font-size="20" 
+          fill="#DC3545">Too Many Merge Conflicts</text>
+    
+    <!-- 解决方案 -->
+    <line x1="80" y1="1100" x2="670" y2="1100" stroke="#E0E0E0" stroke-width="2"/>
+    
+    <circle cx="120" cy="1160" r="25" fill="#28A745"/>
+    <text x="120" y="1172" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">✓</text>
+    
+    <text x="165" y="1150" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+          fill="#28A745">解决方案</text>
+    <text x="165" y="1180" font-family="Arial, sans-serif" font-size="20" 
+          fill="#586069">先 Pull 主分支到功能分支</text>
+    <text x="165" y="1210" font-family="Arial, sans-serif" font-size="18" 
+          fill="#757575">本地解决冲突后再合并到主分支</text>
+    <text x="165" y="1235" font-family="Arial, sans-serif" font-size="18" 
+          fill="#757575">提前处理 • 减少最终合并压力</text>
+  </g>
+  
+  <!-- 底部提示 -->
+  <rect x="150" y="1280" width="450" height="45" rx="8" fill="#24292E"/>
+  <text x="375" y="1310" font-family="Arial, sans-serif" font-size="22" 
+        text-anchor="middle" fill="#FFFFFF">💡 遇到问题不要慌 • 理解原理是关键</text>
+</svg>

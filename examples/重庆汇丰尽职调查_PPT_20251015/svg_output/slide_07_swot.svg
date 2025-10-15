@@ -1,0 +1,274 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="85" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="32" font-weight="600" fill="#003F6C">
+    战略综合评估：核心竞争力与潜在风险
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="60" y="115" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="16" font-weight="400" fill="#7F8C8D">
+    Strategic Assessment - Strengths and Weaknesses Analysis
+  </text>
+  
+  <!-- SWOT四象限布局 -->
+  
+  <!-- 左上：核心优势 (Strengths) -->
+  <g transform="translate(60, 155)">
+    <rect width="560" height="260" rx="6" fill="#E8F8F5" stroke="#2ECC71" stroke-width="2"/>
+    <rect x="0" y="0" width="12" height="260" rx="6" fill="#2ECC71"/>
+    
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="22" font-weight="700" fill="#2ECC71">
+      核心优势 (Strengths)
+    </text>
+    
+    <g transform="translate(30, 60)">
+      <!-- 优势1 -->
+      <g>
+        <circle cx="8" cy="0" r="6" fill="#2ECC71"/>
+        <text x="5" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ✓
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          🏆 持续市场主导地位
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          重庆市7年稳居 Top 5，竞争壁垒深厚
+        </text>
+      </g>
+      
+      <!-- 优势2 -->
+      <g transform="translate(0, 55)">
+        <circle cx="8" cy="0" r="6" fill="#2ECC71"/>
+        <text x="5" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ✓
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          📜 顶级专业资质
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          A级资信 + 证监会备案双认证
+        </text>
+      </g>
+      
+      <!-- 优势3 -->
+      <g transform="translate(0, 110)">
+        <circle cx="8" cy="0" r="6" fill="#2ECC71"/>
+        <text x="5" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ✓
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          🎯 全面服务范围
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          8大业务线，多元化抗风险能力强
+        </text>
+      </g>
+      
+      <!-- 优势4 -->
+      <g transform="translate(0, 165)">
+        <circle cx="8" cy="0" r="6" fill="#2ECC71"/>
+        <text x="5" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ✓
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          ⭐ 强大品牌声誉
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          被选中参与重大项目，市场认可度高
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 右上：潜在脆弱性 (Weaknesses) -->
+  <g transform="translate(660, 155)">
+    <rect width="560" height="260" rx="6" fill="#FFF3E0" stroke="#F39C12" stroke-width="2"/>
+    <rect x="0" y="0" width="12" height="260" rx="6" fill="#F39C12"/>
+    
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="22" font-weight="700" fill="#F39C12">
+      潜在脆弱性 (Weaknesses)
+    </text>
+    
+    <g transform="translate(30, 60)">
+      <!-- 脆弱性1 -->
+      <g>
+        <circle cx="8" cy="0" r="6" fill="#E74C3C"/>
+        <text x="7" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          !
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          ⚠ 极端关键人物风险
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          95.6%股权集中单人，依赖度过高
+        </text>
+      </g>
+      
+      <!-- 脆弱性2 -->
+      <g transform="translate(0, 55)">
+        <circle cx="8" cy="0" r="6" fill="#F39C12"/>
+        <text x="7" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          !
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          🔒 有限公开透明度
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          缺少专业人员和财务信息披露
+        </text>
+      </g>
+      
+      <!-- 脆弱性3 -->
+      <g transform="translate(0, 110)">
+        <circle cx="8" cy="0" r="6" fill="#F39C12"/>
+        <text x="7" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ?
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          ❓ 未解决数据差异
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          统一社会信用代码存在疑问
+        </text>
+      </g>
+      
+      <!-- 脆弱性4 -->
+      <g transform="translate(0, 165)">
+        <circle cx="8" cy="0" r="6" fill="#F39C12"/>
+        <text x="7" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          !
+        </text>
+        <text x="25" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="17" font-weight="600" fill="#2C3E50">
+          📋 继任计划缺失
+        </text>
+        <text x="25" y="27" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="14" font-weight="400" fill="#7F8C8D">
+          未来领导权安排不明确
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 左下：市场机会 (Opportunities) - 简化展示 -->
+  <g transform="translate(60, 445)">
+    <rect width="560" height="215" rx="6" fill="#E3F2FD" stroke="#4A90E2" stroke-width="2"/>
+    <rect x="0" y="0" width="12" height="215" rx="6" fill="#4A90E2"/>
+    
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="22" font-weight="700" fill="#4A90E2">
+      市场机会 (Opportunities)
+    </text>
+    
+    <text x="30" y="70" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+      本报告聚焦内部评估，
+    </text>
+    <text x="30" y="95" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+      外部机会分析建议在商业合作
+    </text>
+    <text x="30" y="120" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+      意向明确后深入展开。
+    </text>
+    
+    <g transform="translate(30, 145)">
+      <rect width="500" height="50" rx="4" fill="#FFFFFF" opacity="0.6"/>
+      <text x="250" y="32" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+            font-size="14" font-weight="600" fill="#4A90E2" text-anchor="middle">
+        潜在领域：西南地区资本市场扩张、ESG评估等
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右下：外部威胁 (Threats) - 简化展示 -->
+  <g transform="translate(660, 445)">
+    <rect width="560" height="215" rx="6" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2"/>
+    <rect x="0" y="0" width="12" height="215" rx="6" fill="#E74C3C"/>
+    
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="22" font-weight="700" fill="#E74C3C">
+      外部威胁 (Threats)
+    </text>
+    
+    <text x="30" y="70" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+      本报告聚焦内部评估，
+    </text>
+    <text x="30" y="95" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+      外部威胁分析建议在商业合作
+    </text>
+    <text x="30" y="120" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="15" font-weight="400" fill="#7F8C8D">
+          意向明确后深入展开。
+    </text>
+    
+    <g transform="translate(30, 145)">
+      <rect width="500" height="50" rx="4" fill="#FFFFFF" opacity="0.6"/>
+      <text x="250" y="32" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+            font-size="14" font-weight="600" fill="#E74C3C" text-anchor="middle">
+        潜在威胁：行业监管变化、市场竞争加剧等
+      </text>
+    </g>
+  </g>
+  
+  <!-- 中心连接图标 -->
+  <g transform="translate(640, 410)">
+    <circle cx="0" cy="0" r="35" fill="#003F6C"/>
+    <text x="0" y="-8" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      重庆
+    </text>
+    <text x="0" y="8" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      汇丰
+    </text>
+    <text x="0" y="24" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="11" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+      SWOT
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1160" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="18" font-weight="600" fill="#003F6C">
+    07
+  </text>
+  <text x="1185" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="18" font-weight="400" fill="#7F8C8D">
+    /08
+  </text>
+</svg>

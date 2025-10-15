@@ -1,0 +1,154 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉 -->
+  <line x1="50" y1="40" x2="1230" y2="40" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="50" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+    租户流失与行业冲击
+  </text>
+  <text x="1230" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#D04A02" text-anchor="end" font-weight="600">
+    PwC
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="50" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="36" font-weight="bold" fill="#53565A">
+    租户流失与行业冲击分析
+  </text>
+  
+  <!-- 核心洞察 -->
+  <rect x="50" y="120" width="1180" height="50" fill="#FFF5F0" stroke="#D04A02" stroke-width="1" rx="6"/>
+  <text x="640" y="152" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" fill="#D04A02" text-anchor="middle" font-weight="600">
+    需求端持续萎缩，主力租户中小企业退租频繁，租金收入稳定性降低
+  </text>
+  
+  <!-- 上段：主力租户行业分布 -->
+  <g transform="translate(50, 210)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+      主力租户行业分布
+    </text>
+    
+    <!-- 横向条形图 -->
+    <!-- 零售贸易 -->
+    <text x="0" y="50" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      零售贸易
+    </text>
+    <rect x="180" y="32" width="380" height="28" fill="#D04A02" opacity="0.2" stroke="#D04A02" stroke-width="1" rx="4"/>
+    <rect x="180" y="32" width="380" height="28" fill="#D04A02" rx="4"/>
+    <text x="570" y="52" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#53565A" font-weight="600">
+      38%
+    </text>
+    
+    <!-- 消费服务 -->
+    <text x="0" y="105" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      消费服务
+    </text>
+    <rect x="180" y="87" width="330" height="28" fill="#D04A02" opacity="0.2" stroke="#D04A02" stroke-width="1" rx="4"/>
+    <rect x="180" y="87" width="330" height="28" fill="#D04A02" rx="4"/>
+    <text x="520" y="107" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#53565A" font-weight="600">
+      33%
+    </text>
+    
+    <!-- 科技互联网 -->
+    <text x="0" y="160" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      科技互联网
+    </text>
+    <rect x="180" y="142" width="190" height="28" fill="#8C8C8C" opacity="0.2" stroke="#8C8C8C" stroke-width="1" rx="4"/>
+    <rect x="180" y="142" width="190" height="28" fill="#8C8C8C" rx="4"/>
+    <text x="380" y="162" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#53565A" font-weight="600">
+      19%
+    </text>
+    
+    <!-- 其他 -->
+    <text x="0" y="215" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      其他
+    </text>
+    <rect x="180" y="197" width="100" height="28" fill="#8C8C8C" opacity="0.2" stroke="#8C8C8C" stroke-width="1" rx="4"/>
+    <rect x="180" y="197" width="100" height="28" fill="#8C8C8C" rx="4"/>
+    <text x="290" y="217" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#53565A" font-weight="600">
+      10%
+    </text>
+  </g>
+  
+  <!-- 右上：退租风险标识 -->
+  <g transform="translate(700, 210)">
+    <rect x="0" y="0" width="480" height="225" fill="#FFF5F0" stroke="#D04A02" stroke-width="2" rx="8"/>
+    <text x="240" y="35" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" font-weight="600" fill="#D04A02" text-anchor="middle">
+      高风险行业（易退租）
+    </text>
+    
+    <text x="240" y="70" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#53565A" text-anchor="middle">
+      <tspan x="240" dy="0">✓ 零售贸易（经济下行冲击）</tspan>
+      <tspan x="240" dy="35">✓ 消费服务（中小企业经营压力）</tspan>
+      <tspan x="240" dy="35">✓ 教育培训（政策监管调整）</tspan>
+      <tspan x="240" dy="35">✓ 房地产（行业低迷）</tspan>
+      <tspan x="240" dy="35">✓ 金融服务（业务收缩）</tspan>
+    </text>
+  </g>
+  
+  <!-- 中段：退租原因分析 -->
+  <g transform="translate(50, 470)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+      退租原因分析
+    </text>
+    
+    <!-- 三个卡片 -->
+    <!-- 卡片1 -->
+    <rect x="0" y="20" width="370" height="100" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6"/>
+    <circle cx="30" cy="50" r="8" fill="#D04A02"/>
+    <text x="55" y="52" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+      中小企业经营压力
+    </text>
+    <text x="55" y="78" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      疫情后营收下滑，成本控制
+    </text>
+    <text x="55" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      需求加剧，缩减办公面积
+    </text>
+    
+    <!-- 卡片2 -->
+    <rect x="395" y="20" width="370" height="100" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6"/>
+    <circle cx="425" cy="50" r="8" fill="#D04A02"/>
+    <text x="450" y="52" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+      行业系统性调整
+    </text>
+    <text x="450" y="78" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      教育培训、地产金融等行业
+    </text>
+    <text x="450" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      受政策监管和市场调整影响
+    </text>
+    
+    <!-- 卡片3 -->
+    <rect x="790" y="20" width="370" height="100" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6"/>
+    <circle cx="820" cy="50" r="8" fill="#D04A02"/>
+    <text x="845" y="52" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+      远程办公趋势
+    </text>
+    <text x="845" y="78" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      部分企业采用混合办公模式
+    </text>
+    <text x="845" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+      减少固定办公空间需求
+    </text>
+  </g>
+  
+  <!-- 下段：净流出数据 -->
+  <g transform="translate(50, 600)">
+    <rect x="0" y="0" width="1180" height="50" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6"/>
+    <text x="20" y="32" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A">
+      <tspan font-weight="600">租户动态趋势：</tspan>
+      <tspan fill="#8C8C8C">2023年上半年全市退租面积同比大增，</tspan>
+      <tspan fill="#D04A02" font-weight="bold">观音桥消费服务业中小企业退租频繁，呈净流出状态</tspan>
+    </text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="50" y1="680" x2="1230" y2="680" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="50" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C">
+    观音桥写字楼减值分析
+  </text>
+  <text x="1230" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="end">
+    7 / 11
+  </text>
+</svg>

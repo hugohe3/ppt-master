@@ -1,0 +1,177 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    目录概览
+  </text>
+  
+  <line x1="60" y1="95" x2="280" y2="95" stroke="#D4AF37" stroke-width="3"/>
+  
+  <!-- 时间轴主线 -->
+  <line x1="200" y1="180" x2="200" y2="600" stroke="#8B4513" stroke-width="3"/>
+  
+  <!-- 第一阶段：苦难童年 -->
+  <g>
+    <!-- 时间节点 -->
+    <circle cx="200" cy="200" r="12" fill="#8B4513"/>
+    <circle cx="200" cy="200" r="8" fill="#FFFFFF"/>
+    
+    <!-- 内容卡片 -->
+    <rect x="240" y="150" width="960" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="240" y="150" width="8" height="100" fill="#8B4513" rx="2"/>
+    
+    <!-- 标题 -->
+    <text x="270" y="182" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587">
+      一、苦难童年
+    </text>
+    
+    <!-- 时间范围 -->
+    <rect x="270" y="195" width="140" height="28" fill="#8B4513" rx="4"/>
+    <text x="340" y="216" font-family="monospace" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      1328 - 1352
+    </text>
+    
+    <!-- 描述 -->
+    <text x="430" y="216" font-family="sans-serif" font-size="18" font-weight="400" fill="#333333">
+      贫农之子的绝境求生
+    </text>
+    
+    <!-- 关键词 -->
+    <text x="900" y="182" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      关键词：
+    </text>
+    <text x="900" y="206" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      朱重八 · 放牛 · 家破人亡
+    </text>
+    <text x="900" y="226" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      皇觉寺 · 三年流浪
+    </text>
+  </g>
+  
+  <!-- 第二阶段：征战天下 -->
+  <g>
+    <!-- 时间节点 -->
+    <circle cx="200" cy="320" r="12" fill="#8B4513"/>
+    <circle cx="200" cy="320" r="8" fill="#FFFFFF"/>
+    
+    <!-- 内容卡片 -->
+    <rect x="240" y="270" width="960" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="240" y="270" width="8" height="100" fill="#C8102E" rx="2"/>
+    
+    <!-- 标题 -->
+    <text x="270" y="302" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587">
+      二、征战天下
+    </text>
+    
+    <!-- 时间范围 -->
+    <rect x="270" y="315" width="140" height="28" fill="#C8102E" rx="4"/>
+    <text x="340" y="336" font-family="monospace" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      1352 - 1368
+    </text>
+    
+    <!-- 描述 -->
+    <text x="430" y="336" font-family="sans-serif" font-size="18" font-weight="400" fill="#333333">
+      从义军到开国皇帝
+    </text>
+    
+    <!-- 关键词 -->
+    <text x="900" y="302" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      关键词：
+    </text>
+    <text x="900" y="326" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      攻占应天 · 三雄争霸
+    </text>
+    <text x="900" y="346" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      鄱阳湖大战 · 建立明朝
+    </text>
+  </g>
+  
+  <!-- 第三阶段：铁腕治国 -->
+  <g>
+    <!-- 时间节点 -->
+    <circle cx="200" cy="440" r="12" fill="#8B4513"/>
+    <circle cx="200" cy="440" r="8" fill="#FFFFFF"/>
+    
+    <!-- 内容卡片 -->
+    <rect x="240" y="390" width="960" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="240" y="390" width="8" height="100" fill="#005587" rx="2"/>
+    
+    <!-- 标题 -->
+    <text x="270" y="422" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587">
+      三、铁腕治国
+    </text>
+    
+    <!-- 时间范围 -->
+    <rect x="270" y="435" width="140" height="28" fill="#005587" rx="4"/>
+    <text x="340" y="456" font-family="monospace" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      1368 - 1393
+    </text>
+    
+    <!-- 描述 -->
+    <text x="430" y="456" font-family="sans-serif" font-size="18" font-weight="400" fill="#333333">
+      制度建设与权力清洗
+    </text>
+    
+    <!-- 关键词 -->
+    <text x="900" y="422" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      关键词：
+    </text>
+    <text x="900" y="446" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      废除丞相 · 四大案件
+    </text>
+    <text x="900" y="466" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      锦衣卫 · 剥皮揎草
+    </text>
+  </g>
+  
+  <!-- 第四阶段：孤独暮年 -->
+  <g>
+    <!-- 时间节点 -->
+    <circle cx="200" cy="560" r="12" fill="#8B4513"/>
+    <circle cx="200" cy="560" r="8" fill="#FFFFFF"/>
+    
+    <!-- 内容卡片 -->
+    <rect x="240" y="510" width="960" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="240" y="510" width="8" height="100" fill="#666666" rx="2"/>
+    
+    <!-- 标题 -->
+    <text x="270" y="542" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587">
+      四、孤独暮年
+    </text>
+    
+    <!-- 时间范围 -->
+    <rect x="270" y="555" width="140" height="28" fill="#666666" rx="4"/>
+    <text x="340" y="576" font-family="monospace" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      1393 - 1398
+    </text>
+    
+    <!-- 描述 -->
+    <text x="430" y="576" font-family="sans-serif" font-size="18" font-weight="400" fill="#333333">
+      功臣凋零与历史遗产
+    </text>
+    
+    <!-- 关键词 -->
+    <text x="900" y="542" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      关键词：
+    </text>
+    <text x="900" y="566" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      蓝玉案 · 朱允炆 · 朱棣
+    </text>
+    <text x="900" y="586" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+      制度悖论 · 历史启示
+    </text>
+  </g>
+  
+  <!-- 底部装饰条 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="695" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    2 / 12
+  </text>
+</svg>

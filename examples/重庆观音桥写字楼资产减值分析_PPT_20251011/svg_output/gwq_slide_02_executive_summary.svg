@@ -1,0 +1,86 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉 -->
+  <line x1="50" y1="40" x2="1230" y2="40" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="50" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+    执行摘要
+  </text>
+  <text x="1230" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#D04A02" text-anchor="end" font-weight="600">
+    PwC
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="50" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="36" font-weight="bold" fill="#53565A">
+    执行摘要
+  </text>
+  
+  <!-- 核心结论区 -->
+  <rect x="50" y="130" width="1180" height="90" fill="#FFF5F0" stroke="#D04A02" stroke-width="2" rx="8"/>
+  <text x="640" y="165" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="22" fill="#53565A" text-anchor="middle" font-weight="600">
+    <tspan x="640" dy="0">审计结论：观音桥写字楼资产存在明显减值迹象，</tspan>
+    <tspan x="640" dy="32">建议按照IAS 36/CAS 8准则要求计提减值准备</tspan>
+  </text>
+  
+  <!-- 关键发现 - 标题 -->
+  <text x="50" y="270" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+    关键发现
+  </text>
+  
+  <!-- KPI卡片区域 - 2行2列布局 -->
+  <!-- 第一行 -->
+  <g transform="translate(50, 300)">
+    <!-- 卡片1: 租金下滑 -->
+    <rect x="0" y="0" width="560" height="140" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="8"/>
+    <text x="280" y="50" font-family="Helvetica Neue, Arial, sans-serif" font-size="52" font-weight="bold" fill="#D04A02" text-anchor="middle">
+      -9.5%
+    </text>
+    <text x="280" y="85" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" text-anchor="middle">
+      <tspan x="280" dy="0">租金收入下滑</tspan>
+      <tspan x="280" dy="26" font-size="15" fill="#8C8C8C">2021-2023年平均租金降幅</tspan>
+    </text>
+    
+    <!-- 卡片2: 空置率 -->
+    <rect x="620" y="0" width="560" height="140" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="8"/>
+    <text x="900" y="50" font-family="Helvetica Neue, Arial, sans-serif" font-size="52" font-weight="bold" fill="#D04A02" text-anchor="middle">
+      ~20%
+    </text>
+    <text x="900" y="85" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" text-anchor="middle">
+      <tspan x="900" dy="0">空置率攀升</tspan>
+      <tspan x="900" dy="26" font-size="15" fill="#8C8C8C">从13.77%升至约20%</tspan>
+    </text>
+  </g>
+  
+  <!-- 第二行 -->
+  <g transform="translate(50, 470)">
+    <!-- 卡片3: 投资回报期 -->
+    <rect x="0" y="0" width="560" height="140" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="8"/>
+    <text x="280" y="50" font-family="Helvetica Neue, Arial, sans-serif" font-size="52" font-weight="bold" fill="#D04A02" text-anchor="middle">
+      28-35年
+    </text>
+    <text x="280" y="85" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" text-anchor="middle">
+      <tspan x="280" dy="0">投资回报期延长</tspan>
+      <tspan x="280" dy="26" font-size="15" fill="#8C8C8C">收益率降至3.0-3.5%</tspan>
+    </text>
+    
+    <!-- 卡片4: 租户流失 -->
+    <rect x="620" y="0" width="560" height="140" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="8"/>
+    <text x="900" y="50" font-family="Helvetica Neue, Arial, sans-serif" font-size="52" font-weight="bold" fill="#D04A02" text-anchor="middle">
+      净流出
+    </text>
+    <text x="900" y="85" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" text-anchor="middle">
+      <tspan x="900" dy="0">企业租户动态</tspan>
+      <tspan x="900" dy="26" font-size="15" fill="#8C8C8C">中小企业退租频繁</tspan>
+    </text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="50" y1="680" x2="1230" y2="680" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="50" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C">
+    观音桥写字楼减值分析
+  </text>
+  <text x="1230" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="end">
+    2 / 11
+  </text>
+</svg>

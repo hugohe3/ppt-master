@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200">
+  <!-- 背景 -->
+  <rect width="800" height="1200" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <rect x="0" y="0" width="800" height="120" fill="#264653"/>
+  <text x="400" y="75" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+        font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    色彩运用
+  </text>
+  
+  <!-- 色轮 -->
+  <g>
+    <text x="400" y="180" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="28" font-weight="bold" fill="#264653" text-anchor="middle">
+      12色色轮
+    </text>
+    
+    <!-- 色轮：用 12 个扇形替换原有小圆点布局，中心在 (400,320) -->
+  <g transform="translate(400, 320) scale(0.8)">
+    <!-- 红色 (顶部12点) - Red -->
+    <path d="M 0,-100 L 0,-150 A 150,150 0 0,1 75,-129.9 L 50,-86.6 A 100,100 0 0,0 0,-100 Z" fill="#FE2712"/>
+    
+    <!-- 红橙 (1点) - Red-Orange -->
+    <path d="M 50,-86.6 L 75,-129.9 A 150,150 0 0,1 129.9,-75 L 86.6,-50 A 100,100 0 0,0 50,-86.6 Z" fill="#FC600A"/>
+    
+    <!-- 橙色 (2点) - Orange -->
+    <path d="M 86.6,-50 L 129.9,-75 A 150,150 0 0,1 150,0 L 100,0 A 100,100 0 0,0 86.6,-50 Z" fill="#FB9902"/>
+    
+    <!-- 黄橙 (3点) - Yellow-Orange -->
+    <path d="M 100,0 L 150,0 A 150,150 0 0,1 129.9,75 L 86.6,50 A 100,100 0 0,0 100,0 Z" fill="#FEBE29"/>
+    
+    <!-- 黄色 (4点) - Yellow -->
+    <path d="M 86.6,50 L 129.9,75 A 150,150 0 0,1 75,129.9 L 50,86.6 A 100,100 0 0,0 86.6,50 Z" fill="#FEFE33"/>
+    
+    <!-- 黄绿 (5点) - Yellow-Green -->
+    <path d="M 50,86.6 L 75,129.9 A 150,150 0 0,1 0,150 L 0,100 A 100,100 0 0,0 50,86.6 Z" fill="#B2D732"/>
+    
+    <!-- 绿色 (6点底部) - Green -->
+    <path d="M 0,100 L 0,150 A 150,150 0 0,1 -75,129.9 L -50,86.6 A 100,100 0 0,0 0,100 Z" fill="#66B032"/>
+    
+    <!-- 蓝绿 (7点) - Blue-Green -->
+    <path d="M -50,86.6 L -75,129.9 A 150,150 0 0,1 -129.9,75 L -86.6,50 A 100,100 0 0,0 -50,86.6 Z" fill="#0391CE"/>
+    
+    <!-- 蓝色 (8点) - Blue -->
+    <path d="M -86.6,50 L -129.9,75 A 150,150 0 0,1 -150,0 L -100,0 A 100,100 0 0,0 -86.6,50 Z" fill="#0247FE"/>
+    
+    <!-- 蓝紫 (9点) - Blue-Violet -->
+    <path d="M -100,0 L -150,0 A 150,150 0 0,1 -129.9,-75 L -86.6,-50 A 100,100 0 0,0 -100,0 Z" fill="#3D01A4"/>
+    
+    <!-- 紫色 (10点) - Violet -->
+    <path d="M -86.6,-50 L -129.9,-75 A 150,150 0 0,1 -75,-129.9 L -50,-86.6 A 100,100 0 0,0 -86.6,-50 Z" fill="#8601AF"/>
+    
+    <!-- 红紫 (11点) - Red-Violet -->
+    <path d="M -50,-86.6 L -75,-129.9 A 150,150 0 0,1 0,-150 L 0,-100 A 100,100 0 0,0 -50,-86.6 Z" fill="#C21460"/>
+    
+    <!-- 中心白色圆 -->
+    <circle cx="0" cy="0" r="100" fill="white"/>
+  </g>
+  </g>
+  
+  <!-- 颜色关系 -->
+  <g>
+    <text x="400" y="500" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="28" font-weight="bold" fill="#264653" text-anchor="middle">
+      颜色关系
+    </text>
+    
+    <!-- 互补色 -->
+    <g>
+      <rect x="80" y="530" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#E87C5E" stroke-width="2"/>
+      <circle cx="120" cy="570" r="15" fill="#FF0000"/>
+      <line x1="145" y1="570" x2="175" y2="570" stroke="#666666" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <circle cx="200" cy="570" r="15" fill="#66B032"/>
+      <text x="240" y="575" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="20" font-weight="bold" fill="#264653">
+        互补色
+      </text>
+      <text x="120" y="610" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="16" fill="#666666">
+        色轮上相对的颜色，对比强烈，适合用一种做主色，另一种用于强调
+      </text>
+    </g>
+    
+    <!-- 类似色 -->
+    <g>
+      <rect x="80" y="650" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2"/>
+      <circle cx="120" cy="690" r="15" fill="#FF7F00"/>
+      <circle cx="160" cy="690" r="15" fill="#FFFF00"/>
+      <circle cx="200" cy="690" r="15" fill="#BFFF00"/>
+      <text x="240" y="695" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="20" font-weight="bold" fill="#264653">
+        类似色
+      </text>
+      <text x="120" y="730" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="16" fill="#666666">
+        色轮上相邻的2-3种颜色，具有相同基础色，整体感觉协调
+      </text>
+    </g>
+    
+    <!-- 三色组 -->
+    <g>
+      <rect x="80" y="770" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#2C5F7C" stroke-width="2"/>
+      <circle cx="120" cy="810" r="15" fill="#FF0000"/>
+      <circle cx="160" cy="810" r="15" fill="#FFFF00"/>
+      <circle cx="200" cy="810" r="15" fill="#0000FF"/>
+      <text x="240" y="815" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="20" font-weight="bold" fill="#264653">
+        三色组
+      </text>
+      <text x="120" y="850" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="16" fill="#666666">
+        色轮上等距的三种颜色，能创造活力和平衡感
+      </text>
+    </g>
+  </g>
+  
+  <!-- 暖色与冷色 -->
+  <g>
+    <text x="400" y="930" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="28" font-weight="bold" fill="#264653" text-anchor="middle">
+      暖色 vs 冷色
+    </text>
+    
+    <!-- 暖色 -->
+    <g>
+      <rect x="80" y="960" width="300" height="160" rx="8" fill="#FFF5E1" stroke="#E87C5E" stroke-width="2"/>
+      <text x="230" y="995" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="22" font-weight="bold" fill="#264653" text-anchor="middle">
+        暖色
+      </text>
+      <circle cx="140" cy="1035" r="18" fill="#FF0000"/>
+      <circle cx="190" cy="1035" r="18" fill="#FF7F00"/>
+      <circle cx="240" cy="1035" r="18" fill="#FFFF00"/>
+      <circle cx="290" cy="1035" r="18" fill="#FF007F"/>
+      <text x="230" y="1080" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="16" fill="#666666" text-anchor="middle">
+        红 · 橙 · 黄
+      </text>
+      <text x="230" y="1105" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="14" fill="#999999" text-anchor="middle">
+        具有前进感
+      </text>
+    </g>
+    
+    <!-- 冷色 -->
+    <g>
+      <rect x="420" y="960" width="300" height="160" rx="8" fill="#E1F5FE" stroke="#2C5F7C" stroke-width="2"/>
+      <text x="570" y="995" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="22" font-weight="bold" fill="#264653" text-anchor="middle">
+        冷色
+      </text>
+      <circle cx="480" cy="1035" r="18" fill="#0000FF"/>
+      <circle cx="530" cy="1035" r="18" fill="#00FFFF"/>
+      <circle cx="580" cy="1035" r="18" fill="#00FF00"/>
+      <circle cx="630" cy="1035" r="18" fill="#8B00FF"/>
+      <text x="570" y="1080" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="16" fill="#666666" text-anchor="middle">
+        蓝 · 绿 · 紫
+      </text>
+      <text x="570" y="1105" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+            font-size="14" fill="#999999" text-anchor="middle">
+        具有后退感
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部要点 -->
+  <text x="400" y="1165" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+        font-size="18" fill="#264653" text-anchor="middle" font-weight="bold">
+    印刷用CMYK · 屏幕用RGB
+  </text>
+  
+  <!-- 箭头定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666666" />
+    </marker>
+  </defs>
+</svg>

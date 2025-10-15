@@ -1,0 +1,171 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    童年苦难（1328-1344）
+  </text>
+  
+  <line x1="60" y1="95" x2="480" y2="95" stroke="#D4AF37" stroke-width="3"/>
+  
+  <!-- 主体内容区域 - 左右分栏 -->
+  
+  <!-- 左侧：人物信息卡片 -->
+  <g>
+    <rect x="60" y="140" width="560" height="520" fill="#F5F5F5" rx="8"/>
+    <rect x="60" y="140" width="560" height="60" fill="#8B4513" rx="8"/>
+    <rect x="60" y="180" width="560" height="20" fill="#8B4513"/>
+    
+    <text x="340" y="180" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      朱元璋 · 身世档案
+    </text>
+    
+    <!-- 出生信息 -->
+    <g transform="translate(80, 230)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+        出生时间
+      </text>
+      <text x="0" y="30" font-family="monospace" font-size="24" font-weight="700" fill="#8B4513">
+        1328 年
+      </text>
+      <text x="0" y="55" font-family="sans-serif" font-size="16" font-weight="400" fill="#666666">
+        元朝至顺年间
+      </text>
+    </g>
+    
+    <line x1="90" y1="320" x2="590" y2="320" stroke="#D4AF37" stroke-width="1" opacity="0.3"/>
+    
+    <!-- 出生地 -->
+    <g transform="translate(80, 350)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+        出生地点
+      </text>
+      <text x="0" y="30" font-family="sans-serif" font-size="20" font-weight="600" fill="#333333">
+        濠州钟离（今安徽凤阳）
+      </text>
+      <text x="0" y="55" font-family="sans-serif" font-size="16" font-weight="400" fill="#666666">
+        极度贫困的农民家庭
+      </text>
+    </g>
+    
+    <line x1="90" y1="430" x2="590" y2="430" stroke="#D4AF37" stroke-width="1" opacity="0.3"/>
+    
+    <!-- 原名 -->
+    <g transform="translate(80, 460)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+        原名
+      </text>
+      <text x="0" y="30" font-family="sans-serif" font-size="28" font-weight="700" fill="#8B4513">
+        朱重八
+      </text>
+      <text x="0" y="58" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+        元代贫民无正式名字，以数字命名
+      </text>
+    </g>
+    
+    <line x1="90" y1="540" x2="590" y2="540" stroke="#D4AF37" stroke-width="1" opacity="0.3"/>
+    
+    <!-- 家族 -->
+    <g transform="translate(80, 570)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+        家族成员
+      </text>
+      <text x="0" y="28" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        高祖：朱百六  |  曾祖：朱四九
+      </text>
+      <text x="0" y="52" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        祖父：朱初一  |  父亲：朱五四
+      </text>
+      <text x="0" y="76" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        母亲：陈氏（世代贫农）
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右侧：童年生活与时代背景 -->
+  <g>
+    <!-- 童年生活卡片 -->
+    <rect x="660" y="140" width="560" height="240" fill="#F5F5F5" rx="8"/>
+    <rect x="660" y="140" width="8" height="240" fill="#8B4513" rx="2"/>
+    
+    <text x="690" y="178" font-family="sans-serif" font-size="24" font-weight="700" fill="#005587">
+      🐮 童年生活
+    </text>
+    
+    <text x="690" y="215" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+      <tspan x="690" dy="0">· 居住环境：一间破茅草屋</tspan>
+      <tspan x="690" dy="30">· 主要工作：为地主刘德家放牛</tspan>
+      <tspan x="690" dy="30">· 工作时长：连续放牛 </tspan>
+    </text>
+    
+    <rect x="990" y="230" width="80" height="32" fill="#C8102E" rx="4"/>
+    <text x="1030" y="253" font-family="monospace" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      12 年
+    </text>
+    
+    <text x="690" y="305" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+      <tspan x="690" dy="0">· 梦想：读书（但家里付不起学费）</tspan>
+      <tspan x="690" dy="30">· 十六岁的向往：娶媳妇、生孩子、继续放牛</tspan>
+    </text>
+    
+    <text x="690" y="360" font-family="sans-serif" font-size="14" font-weight="400" fill="#C8102E" font-style="italic">
+      "这反映了当时底层人民生活的绝望和局限"
+    </text>
+    
+    <!-- 时代背景卡片 -->
+    <rect x="660" y="410" width="560" height="250" fill="#F5F5F5" rx="8"/>
+    <rect x="660" y="410" width="8" height="250" fill="#C8102E" rx="2"/>
+    
+    <text x="690" y="448" font-family="sans-serif" font-size="24" font-weight="700" fill="#005587">
+      📉 元末社会背景
+    </text>
+    
+    <g transform="translate(690, 475)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#8B4513">
+        政治腐败
+      </text>
+      <text x="0" y="25" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+        横征暴敛，苛捐杂税名目繁多：
+      </text>
+      <text x="0" y="48" font-family="sans-serif" font-size="15" font-weight="400" fill="#666666">
+        "过节钱"、"常例钱"、"撒花钱"……
+      </text>
+    </g>
+    
+    <line x1="690" y1="550" x2="1190" y2="550" stroke="#D4AF37" stroke-width="1" opacity="0.3"/>
+    
+    <g transform="translate(690, 570)">
+      <text x="0" y="0" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E">
+        大乱前兆
+      </text>
+      <text x="0" y="25" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+        民间谶语："石人一只眼，挑动黄河天下反"
+      </text>
+      <text x="0" y="48" font-family="sans-serif" font-size="15" font-weight="400" fill="#666666">
+        预示着一场大变革的到来
+      </text>
+    </g>
+    
+    <g transform="translate(900, 605)">
+      <rect x="0" y="0" width="280" height="40" fill="#005587" rx="4"/>
+      <text x="20" y="15" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">
+        1328-1333 短短五年
+      </text>
+      <text x="20" y="32" font-family="sans-serif" font-size="14" font-weight="600" fill="#D4AF37">
+        元朝换了 5 个皇帝
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部装饰条 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="695" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    3 / 12
+  </text>
+</svg>

@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1500">
+  <!-- 背景 -->
+  <rect width="800" height="1500" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <rect x="0" y="0" width="800" height="120" fill="#264653"/>
+  <text x="400" y="75" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+        font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    字体的六大类别
+  </text>
+  
+  <!-- 说明文字 -->
+  <text x="400" y="170" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+        font-size="18" fill="#666666" text-anchor="middle">
+    了解字体类别，避免同类字体冲突
+  </text>
+  
+  <!-- 1. Oldstyle 旧式体 -->
+  <g>
+    <rect x="60" y="200" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#E87C5E" stroke-width="2"/>
+    <text x="100" y="240" font-family="Times New Roman, serif" 
+          font-size="48" fill="#264653">
+      Serif
+    </text>
+    <text x="100" y="280" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      1. Oldstyle 旧式体
+    </text>
+    <text x="100" y="315" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 基于手写体，具有倾斜的衬线
+    </text>
+    <text x="100" y="345" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 笔划粗细变化缓和，强调线是对角线
+    </text>
+    <text x="100" y="365" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：正文阅读，优雅传统的设计
+    </text>
+  </g>
+  
+  <!-- 2. Modern 现代体 -->
+  <g>
+    <rect x="60" y="400" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2"/>
+    <text x="100" y="440" font-family="Times New Roman, serif" 
+          font-size="48" font-weight="bold" fill="#264653">
+      Serif
+    </text>
+    <text x="100" y="480" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      2. Modern 现代体
+    </text>
+    <text x="100" y="515" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 衬线水平且细，笔划粗细变化剧烈
+    </text>
+    <text x="100" y="545" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 强调线是垂直的，外观冷酷高雅
+    </text>
+    <text x="100" y="565" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：标题，不适合大量正文
+    </text>
+  </g>
+  
+  <!-- 3. Slab Serif 粗衬线体 -->
+  <g>
+    <rect x="60" y="600" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#2C5F7C" stroke-width="2"/>
+    <text x="100" y="640" font-family="Courier New, monospace" 
+          font-size="48" font-weight="bold" fill="#264653">
+      Slab
+    </text>
+    <text x="100" y="680" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      3. Slab Serif 粗衬线体
+    </text>
+    <text x="100" y="715" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 衬线粗且明显，粗细对比小或没有
+    </text>
+    <text x="100" y="745" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 笔划粗壮，简洁直接
+    </text>
+    <text x="100" y="765" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：儿童读物，标题，强调内容
+    </text>
+  </g>
+  
+  <!-- 4. Sans Serif 无衬线体 -->
+  <g>
+    <rect x="60" y="800" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#E9C46A" stroke-width="2"/>
+    <text x="100" y="840" font-family="Arial, Helvetica, sans-serif" 
+          font-size="48" font-weight="bold" fill="#264653">
+      Sans
+    </text>
+    <text x="100" y="880" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      4. Sans Serif 无衬线体
+    </text>
+    <text x="100" y="915" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 笔划末端没有衬线，粗细几乎单一
+    </text>
+    <text x="100" y="945" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 简洁现代，清晰易读
+    </text>
+    <text x="100" y="965" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：现代设计，屏幕显示，正文和标题
+    </text>
+  </g>
+  
+  <!-- 5. Script 手写体 -->
+  <g>
+    <rect x="60" y="1000" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#E85D75" stroke-width="2"/>
+    <text x="100" y="1040" font-family="Brush Script MT, cursive" 
+          font-size="48" fill="#264653">
+      Script
+    </text>
+    <text x="100" y="1080" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      5. Script 手写体
+    </text>
+    <text x="100" y="1115" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 模仿手写笔迹，流畅优美
+    </text>
+    <text x="100" y="1145" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 不适合大段文本或全大写
+    </text>
+    <text x="100" y="1165" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：邀请函，装饰性标题，优雅场合
+    </text>
+  </g>
+  
+  <!-- 6. Decorative 装饰体 -->
+  <g>
+    <rect x="60" y="1200" width="680" height="180" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
+    <text x="100" y="1245" font-family="Impact, fantasy" 
+          font-size="48" font-weight="bold" fill="#264653">
+      Display
+    </text>
+    <text x="100" y="1280" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="24" font-weight="bold" fill="#264653">
+      6. Decorative 装饰体
+    </text>
+    <text x="100" y="1315" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 装饰性强，个性鲜明
+    </text>
+    <text x="100" y="1345" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="16" fill="#666666">
+      · 不适合大面积使用
+    </text>
+    <text x="100" y="1365" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+          font-size="14" fill="#999999">
+      适合：特定主题，吸引眼球，传达情绪
+    </text>
+  </g>
+  
+  <!-- 底部要点 -->
+  <rect x="60" y="1410" width="680" height="60" rx="8" fill="#264653"/>
+  <text x="400" y="1450" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" 
+        font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">
+    避免在同一页面使用同一类别的两种字体
+  </text>
+</svg>

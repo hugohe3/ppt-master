@@ -1,0 +1,211 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    统一天下（1364-1368）
+  </text>
+  
+  <line x1="60" y1="95" x2="450" y2="95" stroke="#D4AF37" stroke-width="3"/>
+  
+  <!-- 纵向时间轴 -->
+  <line x1="250" y1="140" x2="250" y2="640" stroke="#8B4513" stroke-width="4"/>
+  
+  <!-- 1364年：消灭陈友谅 -->
+  <g>
+    <circle cx="250" cy="170" r="14" fill="#8B4513"/>
+    <circle cx="250" cy="170" r="9" fill="#FFFFFF"/>
+    
+    <rect x="100" y="145" width="100" height="50" fill="#8B4513" rx="4"/>
+    <text x="150" y="165" font-family="monospace" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      1364
+    </text>
+    <text x="150" y="185" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      正月
+    </text>
+    
+    <rect x="290" y="130" width="560" height="80" fill="#F5F5F5" rx="6"/>
+    <rect x="290" y="130" width="8" height="80" fill="#C8102E" rx="2"/>
+    
+    <text x="320" y="160" font-family="sans-serif" font-size="22" font-weight="700" fill="#005587">
+      即吴王位 · 攻克武昌
+    </text>
+    
+    <text x="320" y="188" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+      陈理（陈友谅之子）投降
+    </text>
+  </g>
+  
+  <!-- 1365-1367年：消灭张士诚 -->
+  <g>
+    <circle cx="250" cy="300" r="14" fill="#8B4513"/>
+    <circle cx="250" cy="300" r="9" fill="#FFFFFF"/>
+    
+    <rect x="80" y="270" width="140" height="60" fill="#8B4513" rx="4"/>
+    <text x="150" y="295" font-family="monospace" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      1365-1367
+    </text>
+    <text x="150" y="318" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      三年征战
+    </text>
+    
+    <rect x="290" y="250" width="560" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="290" y="250" width="8" height="100" fill="#8B4513" rx="2"/>
+    
+    <text x="320" y="280" font-family="sans-serif" font-size="22" font-weight="700" fill="#005587">
+      进攻张士诚
+    </text>
+    
+    <text x="320" y="308" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+      <tspan x="320" dy="0">先剪除羽翼（杭州等地）</tspan>
+      <tspan x="320" dy="26">围困平江（苏州）8 个月</tspan>
+    </text>
+  </g>
+  
+  <!-- 1368年正月：建立明朝 -->
+  <g>
+    <circle cx="250" cy="440" r="14" fill="#8B4513"/>
+    <circle cx="250" cy="440" r="9" fill="#FFFFFF"/>
+    
+    <rect x="80" y="410" width="140" height="60" fill="#D4AF37" rx="4"/>
+    <text x="150" y="435" font-family="monospace" font-size="18" font-weight="700" fill="#003A5D" text-anchor="middle">
+      1368
+    </text>
+    <text x="150" y="458" font-family="sans-serif" font-size="14" font-weight="700" fill="#003A5D" text-anchor="middle">
+      正月初四
+    </text>
+    
+    <rect x="290" y="380" width="560" height="120" fill="#005587" rx="6"/>
+    
+    <text x="570" y="420" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      在应天即皇帝位
+    </text>
+    
+    <g transform="translate(320, 445)">
+      <rect x="0" y="0" width="220" height="40" fill="#D4AF37" rx="4"/>
+      <text x="20" y="15" font-family="sans-serif" font-size="16" font-weight="600" fill="#003A5D">
+        国号
+      </text>
+      <text x="20" y="32" font-family="sans-serif" font-size="18" font-weight="700" fill="#003A5D">
+        大明
+      </text>
+    </g>
+    
+    <g transform="translate(570, 445)">
+      <rect x="0" y="0" width="220" height="40" fill="#D4AF37" rx="4"/>
+      <text x="20" y="15" font-family="sans-serif" font-size="16" font-weight="600" fill="#003A5D">
+        年号
+      </text>
+      <text x="20" y="32" font-family="sans-serif" font-size="18" font-weight="700" fill="#003A5D">
+        洪武
+      </text>
+    </g>
+  </g>
+  
+  <!-- 1368年八月：攻克大都 -->
+  <g>
+    <circle cx="250" cy="590" r="14" fill="#8B4513"/>
+    <circle cx="250" cy="590" r="9" fill="#FFFFFF"/>
+    
+    <rect x="80" y="560" width="140" height="60" fill="#C8102E" rx="4"/>
+    <text x="150" y="585" font-family="monospace" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      1368
+    </text>
+    <text x="150" y="608" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      八月
+    </text>
+    
+    <rect x="290" y="540" width="560" height="100" fill="#F5F5F5" rx="6"/>
+    <rect x="290" y="540" width="8" height="100" fill="#C8102E" rx="2"/>
+    
+    <text x="320" y="570" font-family="sans-serif" font-size="22" font-weight="700" fill="#005587">
+      徐达、常遇春攻克大都
+    </text>
+    
+    <text x="320" y="598" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+      <tspan x="320" dy="0">元顺帝逃往上都，建立北元</tspan>
+      <tspan x="320" dy="26">元朝作为全国性政权灭亡</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：统一成果 -->
+  <g>
+    <rect x="890" y="140" width="330" height="500" fill="#F5F5F5" rx="8"/>
+    <rect x="890" y="140" width="330" height="60" fill="#005587" rx="8"/>
+    <rect x="890" y="180" width="330" height="20" fill="#005587"/>
+    
+    <text x="1055" y="178" font-family="sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      统一成果
+    </text>
+    
+    <!-- 成就列表 -->
+    <g transform="translate(920, 230)">
+      <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+        ✓ 结束元朝统治
+      </text>
+      
+      <text x="0" y="40" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        推翻蒙古统治
+      </text>
+      
+      <text x="0" y="62" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        恢复汉族政权
+      </text>
+    </g>
+    
+    <line x1="920" y1="320" x2="1190" y2="320" stroke="#D4AF37" stroke-width="2" opacity="0.4"/>
+    
+    <g transform="translate(920, 350)">
+      <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+        ✓ 收复燕云地区
+      </text>
+      
+      <text x="0" y="40" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        失陷 400 年
+      </text>
+      
+      <text x="0" y="62" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        历史性收复
+      </text>
+    </g>
+    
+    <line x1="920" y1="440" x2="1190" y2="440" stroke="#D4AF37" stroke-width="2" opacity="0.4"/>
+    
+    <g transform="translate(920, 470)">
+      <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+        ✓ 中原政权统一
+      </text>
+      
+      <text x="0" y="40" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        结束元末乱世
+      </text>
+      
+      <text x="0" y="62" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        重建秩序
+      </text>
+    </g>
+    
+    <!-- 统计数据 -->
+    <rect x="920" y="560" width="260" height="60" fill="#D4AF37" rx="6"/>
+    
+    <text x="1050" y="585" font-family="sans-serif" font-size="16" font-weight="600" fill="#003A5D" text-anchor="middle">
+      从乞丐到皇帝
+    </text>
+    
+    <text x="1050" y="610" font-family="sans-serif" font-size="18" font-weight="700" fill="#003A5D" text-anchor="middle">
+      用时：16 年
+    </text>
+  </g>
+  
+  <!-- 底部装饰条 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="705" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    9 / 12
+  </text>
+</svg>

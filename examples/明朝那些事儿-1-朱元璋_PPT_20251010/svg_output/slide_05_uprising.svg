@@ -1,0 +1,177 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    踏上征途（1351-1352）
+  </text>
+  
+  <line x1="60" y1="95" x2="460" y2="95" stroke="#C8102E" stroke-width="3"/>
+  
+  <!-- 左侧：起义背景时间轴 -->
+  <g>
+    <rect x="60" y="130" width="560" height="530" fill="#F5F5F5" rx="8"/>
+    
+    <text x="340" y="170" font-family="sans-serif" font-size="26" font-weight="700" fill="#005587" text-anchor="middle">
+      🔥 元末起义爆发
+    </text>
+    
+    <!-- 时间轴主线 -->
+    <line x1="120" y1="210" x2="120" y2="620" stroke="#C8102E" stroke-width="3"/>
+    
+    <!-- 1351年：修河引发起义 -->
+    <g>
+      <circle cx="120" cy="230" r="10" fill="#C8102E"/>
+      <circle cx="120" cy="230" r="6" fill="#FFFFFF"/>
+      
+      <rect x="150" y="210" width="430" height="90" fill="#FFFFFF" rx="6"/>
+      <rect x="150" y="210" width="6" height="90" fill="#C8102E" rx="2"/>
+      
+      <text x="170" y="235" font-family="monospace" font-size="18" font-weight="700" fill="#C8102E">
+        1351 年
+      </text>
+      
+      <text x="170" y="260" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        <tspan x="170" dy="0">宰相脱脱主张修治黄河</tspan>
+        <tspan x="170" dy="24">征发民工遭层层盘剥勒索</tspan>
+      </text>
+    </g>
+    
+    <!-- 石人谶语 -->
+    <g>
+      <circle cx="120" cy="350" r="10" fill="#C8102E"/>
+      <circle cx="120" cy="350" r="6" fill="#FFFFFF"/>
+      
+      <rect x="150" y="320" width="430" height="90" fill="#FFFFFF" rx="6"/>
+      <rect x="150" y="320" width="6" height="90" fill="#8B4513" rx="2"/>
+      
+      <text x="170" y="345" font-family="sans-serif" font-size="18" font-weight="700" fill="#8B4513">
+        石人谶语应验
+      </text>
+      
+      <text x="170" y="370" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        民工挖出独眼石人
+      </text>
+      
+      <text x="170" y="395" font-family="sans-serif" font-size="15" font-weight="600" fill="#C8102E" font-style="italic">
+        "石人一只眼，挑动黄河天下反"
+      </text>
+    </g>
+    
+    <!-- 红巾军起义 -->
+    <g>
+      <circle cx="120" cy="470" r="10" fill="#C8102E"/>
+      <circle cx="120" cy="470" r="6" fill="#FFFFFF"/>
+      
+      <rect x="150" y="430" width="430" height="90" fill="#FFFFFF" rx="6"/>
+      <rect x="150" y="430" width="6" height="90" fill="#C8102E" rx="2"/>
+      
+      <text x="170" y="455" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E">
+        红巾军起义
+      </text>
+      
+      <text x="170" y="480" font-family="sans-serif" font-size="16" font-weight="400" fill="#333333">
+        <tspan x="170" dy="0">韩山童、刘福通在颍州起义</tspan>
+        <tspan x="170" dy="24">元末农民起义正式拉开序幕</tspan>
+      </text>
+    </g>
+    
+    <!-- 民族压迫 -->
+    <g>
+      <circle cx="120" cy="590" r="10" fill="#C8102E"/>
+      <circle cx="120" cy="590" r="6" fill="#FFFFFF"/>
+      
+      <rect x="150" y="550" width="430" height="70" fill="#FFFFFF" rx="6"/>
+      <rect x="150" y="550" width="6" height="70" fill="#666666" rx="2"/>
+      
+      <text x="170" y="575" font-family="sans-serif" font-size="16" font-weight="700" fill="#666666">
+        四等人制度
+      </text>
+      
+      <text x="170" y="600" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666">
+        蒙古人 > 色目人 > 汉人 > 南人（最低）
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右侧：朱元璋的抉择 -->
+  <g>
+    <rect x="660" y="130" width="560" height="530" fill="#F5F5F5" rx="8"/>
+    
+    <text x="940" y="170" font-family="sans-serif" font-size="26" font-weight="700" fill="#005587" text-anchor="middle">
+      ⚔️ 绝境中的抉择
+    </text>
+    
+    <!-- 困境 -->
+    <rect x="690" y="200" width="500" height="110" fill="#FFFFFF" rx="6"/>
+    <rect x="690" y="200" width="8" height="110" fill="#666666" rx="2"/>
+    
+    <text x="720" y="230" font-family="sans-serif" font-size="20" font-weight="700" fill="#666666">
+      困境
+    </text>
+    
+    <text x="720" y="255" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+      <tspan x="720" dy="0">· 元朝官吏滥杀无辜充当"起义军"邀功</tspan>
+      <tspan x="720" dy="24">· 不起义也可能被杀</tspan>
+      <tspan x="720" dy="24">· 师兄发现汤和来信，准备告发</tspan>
+    </text>
+    
+    <!-- 汤和来信 -->
+    <rect x="690" y="330" width="500" height="85" fill="#FFFFFF" rx="6"/>
+    <rect x="690" y="330" width="8" height="85" fill="#005587" rx="2"/>
+    
+    <text x="720" y="360" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+      汤和来信
+    </text>
+    
+    <text x="720" y="385" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+      儿时好友邀请："共图富贵"
+    </text>
+    
+    <text x="720" y="405" font-family="sans-serif" font-size="14" font-weight="400" fill="#666666" font-style="italic">
+      朱元璋烧掉信，仍未下定决心
+    </text>
+    
+    <!-- 占卜问路 -->
+    <rect x="690" y="435" width="500" height="100" fill="#8B4513" rx="6"/>
+    
+    <text x="940" y="465" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      占卜问路
+    </text>
+    
+    <text x="940" y="495" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+      "卜逃卜守则不吉"
+    </text>
+    
+    <text x="940" y="520" font-family="sans-serif" font-size="16" font-weight="700" fill="#D4AF37" text-anchor="middle">
+      "将就凶而不妨"
+    </text>
+    
+    <!-- 最终决定 -->
+    <rect x="690" y="555" width="500" height="95" fill="#C8102E" rx="6"/>
+    
+    <text x="940" y="590" font-family="sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      "那就反了吧！反他娘的！"
+    </text>
+    
+    <text x="940" y="620" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+      1352 年，投奔郭子兴起义军
+    </text>
+    
+    <text x="940" y="640" font-family="sans-serif" font-size="14" font-weight="400" fill="#D4AF37" text-anchor="middle">
+      汤和成为他第一个重要战友
+    </text>
+  </g>
+  
+  <!-- 底部装饰条 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#005587"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="695" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    5 / 12
+  </text>
+</svg>

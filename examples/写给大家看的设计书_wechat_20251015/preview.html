@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《写给大家看的设计书》配图预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "SimHei", "STHeiti", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .card-body img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-btn {
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #764ba2;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        footer h3 {
+            margin-bottom: 15px;
+        }
+
+        footer p {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>《写给大家看的设计书》</h1>
+            <p>微信公众号配图系列</p>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">配图总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">800px</div>
+                    <div class="stat-label">标准宽度</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">CRAP</div>
+                    <div class="stat-label">设计原则</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="gallery">
+            <!-- 配图1 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">01. 封面图</div>
+                    <div class="card-subtitle">书籍介绍 · CRAP四大原则概览</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/01_cover.svg" alt="封面图">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1000 px</span>
+                    <a href="svg_output/01_cover.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图2 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">02. CRAP原则详解</div>
+                    <div class="card-subtitle">四大设计原则完整说明</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/02_crap_overview.svg" alt="CRAP原则详解">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1400 px</span>
+                    <a href="svg_output/02_crap_overview.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图3 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">03. 亲密性原则</div>
+                    <div class="card-subtitle">相关内容组织在一起</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/03_proximity.svg" alt="亲密性原则">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1200 px</span>
+                    <a href="svg_output/03_proximity.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图4 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">04. 对齐原则</div>
+                    <div class="card-subtitle">建立清晰的视觉联系</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/04_alignment.svg" alt="对齐原则">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1200 px</span>
+                    <a href="svg_output/04_alignment.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图5 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">05. 重复原则</div>
+                    <div class="card-subtitle">增强统一性与条理性</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/05_repetition.svg" alt="重复原则">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1200 px</span>
+                    <a href="svg_output/05_repetition.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图6 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">06. 对比原则</div>
+                    <div class="card-subtitle">吸引注意 · 建立层次</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/06_contrast.svg" alt="对比原则">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1300 px</span>
+                    <a href="svg_output/06_contrast.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图7 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">07. 色彩理论</div>
+                    <div class="card-subtitle">色轮 · 颜色关系 · 冷暖对比</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/07_color_theory.svg" alt="色彩理论">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1200 px</span>
+                    <a href="svg_output/07_color_theory.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图8 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">08. 字体分类</div>
+                    <div class="card-subtitle">六大字体类别详解</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/08_font_categories.svg" alt="字体分类">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1500 px</span>
+                    <a href="svg_output/08_font_categories.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+
+            <!-- 配图9 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">09. 设计要点总结</div>
+                    <div class="card-subtitle">关键原则回顾与金句</div>
+                </div>
+                <div class="card-body">
+                    <img src="svg_output/09_summary.svg" alt="设计要点总结">
+                </div>
+                <div class="card-footer">
+                    <span class="file-size">800 × 1100 px</span>
+                    <a href="svg_output/09_summary.svg" download class="download-btn">下载</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <h3>使用说明</h3>
+            <p>✓ 所有配图均为SVG格式，支持无损缩放</p>
+            <p>✓ 宽度统一为800px，适配手机屏幕阅读</p>
+            <p>✓ 采用CRAP设计原则，确保清晰易读</p>
+            <p>✓ 可直接用于微信公众号、小红书等平台</p>
+            <p style="margin-top: 20px; opacity: 0.7;">
+                项目创建时间：2025年10月15日
+            </p>
+        </footer>
+    </div>
+</body>
+
+</html>

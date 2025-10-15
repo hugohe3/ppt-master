@@ -1,0 +1,212 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="85" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="32" font-weight="600" fill="#003F6C">
+    尽职调查发现：风险点与透明度评估
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="60" y="115" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="16" font-weight="400" fill="#7F8C8D">
+    Risk Assessment and Transparency Evaluation
+  </text>
+  
+  <!-- 合规状况横幅 -->
+  <g transform="translate(60, 145)">
+    <rect width="1160" height="65" rx="6" fill="#E8F8F5" stroke="#2ECC71" stroke-width="2"/>
+    
+    <g transform="translate(30, 18)">
+      <!-- 检查图标 -->
+      <circle cx="18" cy="15" r="16" fill="#2ECC71"/>
+      <path d="M 12,15 L 16,19 L 24,11" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <text x="50" y="17" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+            font-size="18" font-weight="700" fill="#2ECC71">
+        合规状况：良好
+      </text>
+      <text x="50" y="38" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+            font-size="15" font-weight="400" fill="#2C3E50">
+        未发现行政处罚记录  |  被重庆水务等大型客户选中
+      </text>
+    </g>
+  </g>
+  
+  <!-- 已识别风险矩阵 -->
+  <g transform="translate(60, 235)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="20" font-weight="600" fill="#003F6C">
+      已识别风险矩阵
+    </text>
+    
+    <!-- 风险1：统一社会信用代码异常 -->
+    <g transform="translate(0, 25)">
+      <rect width="1160" height="90" rx="6" fill="#FFF3E0" stroke="#F39C12" stroke-width="2"/>
+      <rect x="0" y="0" width="8" height="90" rx="6" fill="#F39C12"/>
+      
+      <g transform="translate(30, 25)">
+        <circle cx="12" cy="0" r="12" fill="#F39C12"/>
+        <text x="11" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          !
+        </text>
+        
+        <text x="35" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="18" font-weight="700" fill="#F39C12">
+          风险1：统一社会信用代码异常
+        </text>
+        
+        <text x="700" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="16" font-weight="600" fill="#F39C12">
+          风险等级：⚠ 中等
+        </text>
+        
+        <text x="35" y="28" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="400" fill="#2C3E50">
+          描述：存在第二个未解释的统一社会信用代码（91500227MA60N95343）
+        </text>
+        
+        <text x="35" y="50" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="600" fill="#2C3E50">
+          建议：要求公司明确澄清关联实体性质
+        </text>
+      </g>
+    </g>
+    
+    <!-- 风险2：透明度不足 -->
+    <g transform="translate(0, 130)">
+      <rect width="1160" height="90" rx="6" fill="#FFF3E0" stroke="#F39C12" stroke-width="2"/>
+      <rect x="0" y="0" width="8" height="90" rx="6" fill="#F39C12"/>
+      
+      <g transform="translate(30, 25)">
+        <circle cx="12" cy="0" r="12" fill="#F39C12"/>
+        <text x="11" y="5" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          !
+        </text>
+        
+        <text x="35" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="18" font-weight="700" fill="#F39C12">
+          风险2：透明度不足
+        </text>
+        
+        <text x="700" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="16" font-weight="600" fill="#F39C12">
+          风险等级：⚠ 中等
+        </text>
+        
+        <text x="35" y="28" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="400" fill="#2C3E50">
+          描述：缺乏公开的专业人员名册和财务数据披露
+        </text>
+        
+        <text x="35" y="50" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="600" fill="#2C3E50">
+          建议：要求提供完整的人员资质和财务报表
+        </text>
+      </g>
+    </g>
+    
+    <!-- 风险3：关键人物依赖 -->
+    <g transform="translate(0, 235)">
+      <rect width="1160" height="90" rx="6" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2"/>
+      <rect x="0" y="0" width="8" height="90" rx="6" fill="#E74C3C"/>
+      
+      <g transform="translate(30, 25)">
+        <circle cx="12" cy="0" r="12" fill="#E74C3C"/>
+        <text x="11" y="6" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          ×
+        </text>
+        
+        <text x="35" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="18" font-weight="700" fill="#E74C3C">
+          风险3：关键人物依赖（最高风险）
+        </text>
+        
+        <text x="700" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="16" font-weight="700" fill="#E74C3C">
+          风险等级：🔴 高
+        </text>
+        
+        <text x="35" y="28" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="400" fill="#2C3E50">
+          描述：95.6%股权高度集中于单一个人（刘小娟），缺乏继任计划
+        </text>
+        
+        <text x="35" y="50" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="600" fill="#2C3E50">
+          建议：深入评估继任计划和风险缓解措施
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 进一步调查要点 -->
+  <g transform="translate(60, 575)">
+    <rect width="1160" height="95" rx="6" fill="#ECF0F1" stroke="#E0E0E0" stroke-width="1"/>
+    
+    <text x="30" y="32" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+          font-size="20" font-weight="600" fill="#003F6C">
+      进一步调查要点（核对清单）
+    </text>
+    
+    <!-- 核对清单 -->
+    <g transform="translate(30, 50)">
+      <g>
+        <rect x="0" y="-10" width="18" height="18" rx="2" fill="none" stroke="#7F8C8D" stroke-width="2"/>
+        <text x="28" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="500" fill="#2C3E50">
+          ☐ 澄清异常统一社会信用代码的实体关联
+        </text>
+      </g>
+      
+      <g transform="translate(360, 0)">
+        <rect x="0" y="-10" width="18" height="18" rx="2" fill="none" stroke="#7F8C8D" stroke-width="2"/>
+        <text x="28" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="500" fill="#2C3E50">
+          ☐ 获取专业人员资质名册
+        </text>
+      </g>
+      
+      <g transform="translate(680, 0)">
+        <rect x="0" y="-10" width="18" height="18" rx="2" fill="none" stroke="#7F8C8D" stroke-width="2"/>
+        <text x="28" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="500" fill="#2C3E50">
+          ☐ 评估治理与继任风险
+        </text>
+      </g>
+      
+      <g transform="translate(0, 30)">
+        <rect x="0" y="-10" width="18" height="18" rx="2" fill="none" stroke="#7F8C8D" stroke-width="2"/>
+        <text x="28" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="500" fill="#2C3E50">
+          ☐ 审查近三年经审计财务报表
+        </text>
+      </g>
+      
+      <g transform="translate(360, 30)">
+        <rect x="0" y="-10" width="18" height="18" rx="2" fill="none" stroke="#7F8C8D" stroke-width="2"/>
+        <text x="28" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+              font-size="15" font-weight="500" fill="#2C3E50">
+          ☐ 与刘小娟进行面对面访谈
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1160" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="18" font-weight="600" fill="#003F6C">
+    06
+  </text>
+  <text x="1185" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" 
+        font-size="18" font-weight="400" fill="#7F8C8D">
+    /08
+  </text>
+</svg>

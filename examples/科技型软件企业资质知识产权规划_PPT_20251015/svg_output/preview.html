@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技型软件企业资质及知识产权建设规划（2025-2028）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .slide-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .slide-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #f5f5f5;
+        }
+
+        .slide-title {
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1A1A1A;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #0066CC;
+            border: 2px solid #0066CC;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:hover {
+            background: #0066CC;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .navigation {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>科技型软件企业资质及知识产权建设规划</h1>
+            <p>2025-2028年四年规划 | 高端咨询风格演示文稿</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number">11页</div>
+                <div class="label">演示文稿</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">4年</div>
+                <div class="label">规划周期</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">275-360万</div>
+                <div class="label">总投入预算</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">300-600%</div>
+                <div class="label">投资回报率</div>
+            </div>
+        </div>
+
+        <div class="slides-grid">
+            <div class="slide-card">
+                <div class="slide-number">第 1 页</div>
+                <img src="slide_01_cover.svg" alt="封面页" class="slide-preview">
+                <div class="slide-title">封面页 - 项目总览</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 2 页</div>
+                <img src="slide_02_framework.svg" alt="战略框架" class="slide-preview">
+                <div class="slide-title">战略框架与核心逻辑</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 3 页</div>
+                <img src="slide_03_qualification_system.svg" alt="资质体系" class="slide-preview">
+                <div class="slide-title">资质体系全景图</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 4 页</div>
+                <img src="slide_04_ip_system.svg" alt="知识产权体系" class="slide-preview">
+                <div class="slide-title">知识产权体系全景图</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 5 页</div>
+                <img src="slide_05_timeline.svg" alt="时间规划" class="slide-preview">
+                <div class="slide-title">四年时间规划总览</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 6 页</div>
+                <img src="slide_06_year1_plan.svg" alt="第1年规划" class="slide-preview">
+                <div class="slide-title">第1年（2025）初创期规划</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 7 页</div>
+                <img src="slide_07_year2-3_plan.svg" alt="第2-3年规划" class="slide-preview">
+                <div class="slide-title">第2-3年（2026-2027）成长期规划</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 8 页</div>
+                <img src="slide_08_year4_plan.svg" alt="第4年规划" class="slide-preview">
+                <div class="slide-title">第4年（2028）成熟期规划</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 9 页</div>
+                <img src="slide_09_resource_risk.svg" alt="资源与风险" class="slide-preview">
+                <div class="slide-title">资源保障与风险管控</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 10 页</div>
+                <img src="slide_10_value_action.svg" alt="价值与行动" class="slide-preview">
+                <div class="slide-title">核心价值与行动建议</div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-number">第 11 页</div>
+                <img src="slide_11_thankyou.svg" alt="结束页" class="slide-preview">
+                <div class="slide-title">结束页 - Thank You</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <a href="../README.md" class="nav-btn">查看README</a>
+        <a href="#" class="nav-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">返回顶部</a>
+    </div>
+</body>
+
+</html>

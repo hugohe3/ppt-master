@@ -1,0 +1,103 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#003A5D"/>
+  
+  <!-- 装饰性渐变背景 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003A5D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#005587;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0.3" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰性帝王纹样 - 顶部 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#D4AF37"/>
+  <rect x="0" y="10" width="1280" height="2" fill="#D4AF37" opacity="0.5"/>
+  
+  <!-- 装饰性帝王纹样 - 底部 -->
+  <rect x="0" y="710" width="1280" height="2" fill="#D4AF37" opacity="0.5"/>
+  <rect x="0" y="716" width="1280" height="4" fill="#D4AF37"/>
+  
+  <!-- 中央装饰线 -->
+  <line x1="400" y1="280" x2="880" y2="280" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+  <line x1="350" y1="460" x2="930" y2="460" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="200" font-family="sans-serif" font-size="56" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    朱元璋
+  </text>
+  
+  <text x="640" y="250" font-family="sans-serif" font-size="48" font-weight="700" fill="#D4AF37" text-anchor="middle">
+    从乞丐到开国皇帝
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="340" font-family="sans-serif" font-size="28" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+    明朝开国传奇
+  </text>
+  
+  <text x="640" y="385" font-family="sans-serif" font-size="32" font-weight="700" fill="#D4AF37" text-anchor="middle">
+    1328 - 1398
+  </text>
+  
+  <!-- 核心标签 -->
+  <g transform="translate(640, 500)">
+    <!-- 第一个标签 -->
+    <rect x="-300" y="-25" width="180" height="50" fill="#005587" rx="4"/>
+    <text x="-210" y="8" font-family="sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      布衣天子
+    </text>
+    
+    <!-- 第二个标签 -->
+    <rect x="-90" y="-25" width="180" height="50" fill="#005587" rx="4"/>
+    <text x="0" y="8" font-family="sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      一代雄主
+    </text>
+    
+    <!-- 第三个标签 -->
+    <rect x="120" y="-25" width="180" height="50" fill="#005587" rx="4"/>
+    <text x="210" y="8" font-family="sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      铁腕治国
+    </text>
+  </g>
+  
+  <!-- 装饰性印章元素 -->
+  <g transform="translate(180, 320)" opacity="0.15">
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#D4AF37" stroke-width="3"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+    <text x="0" y="15" font-family="serif" font-size="32" font-weight="700" fill="#D4AF37" text-anchor="middle">
+      明
+    </text>
+  </g>
+  
+  <g transform="translate(1100, 320)" opacity="0.15">
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#D4AF37" stroke-width="3"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+    <text x="0" y="15" font-family="serif" font-size="32" font-weight="700" fill="#D4AF37" text-anchor="middle">
+      太祖
+    </text>
+  </g>
+  
+  <!-- 底部信息栏 -->
+  <rect x="0" y="640" width="1280" height="80" fill="#002847" opacity="0.8"/>
+  
+  <text x="60" y="680" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" opacity="0.8">
+    高端咨询风格 · 历史人物传记系列
+  </text>
+  
+  <text x="1220" y="680" font-family="sans-serif" font-size="16" font-weight="400" fill="#D4AF37" text-anchor="end">
+    1 / 12
+  </text>
+  
+  <text x="1220" y="705" font-family="sans-serif" font-size="12" font-weight="400" fill="#FFFFFF" text-anchor="end" opacity="0.6">
+    2025年10月10日
+  </text>
+</svg>

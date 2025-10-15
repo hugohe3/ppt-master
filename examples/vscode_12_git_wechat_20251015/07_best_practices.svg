@@ -1,0 +1,96 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F5E9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="800" fill="url(#greenGrad)"/>
+  
+  <!-- 标题 -->
+  <text x="400" y="70" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="#24292E">四大最佳实践</text>
+  <text x="400" y="110" font-family="Arial, sans-serif" font-size="26" 
+        text-anchor="middle" fill="#28A745">Best Practices</text>
+  
+  <!-- 实践1: 勤于提交 -->
+  <g id="practice1">
+    <rect x="100" y="160" width="600" height="130" rx="12" fill="#FFFFFF" 
+          stroke="#28A745" stroke-width="3"/>
+    
+    <circle cx="185" cy="225" r="40" fill="#28A745"/>
+    <text x="185" y="240" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">✅</text>
+    
+    <text x="260" y="210" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#24292E">勤于提交</text>
+    <text x="260" y="245" font-family="Arial, sans-serif" font-size="22" 
+          fill="#586069">Commit Frequently</text>
+    
+    <rect x="260" y="255" width="410" height="30" rx="6" fill="#E8F5E9"/>
+    <text x="465" y="277" font-family="Arial, sans-serif" font-size="18" 
+          text-anchor="middle" fill="#28A745">小步快跑 • 每个功能点独立提交</text>
+  </g>
+  
+  <!-- 实践2: 清晰信息 -->
+  <g id="practice2">
+    <rect x="100" y="320" width="600" height="130" rx="12" fill="#FFFFFF" 
+          stroke="#28A745" stroke-width="3"/>
+    
+    <circle cx="185" cy="385" r="40" fill="#28A745"/>
+    <text x="185" y="400" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">📝</text>
+    
+    <text x="260" y="370" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#24292E">清晰信息</text>
+    <text x="260" y="405" font-family="Arial, sans-serif" font-size="22" 
+          fill="#586069">Clear Messages</text>
+    
+    <rect x="260" y="415" width="410" height="30" rx="6" fill="#E8F5E9"/>
+    <text x="465" y="437" font-family="Arial, sans-serif" font-size="18" 
+          text-anchor="middle" fill="#28A745">描述准确 • 说明做了什么改动</text>
+  </g>
+  
+  <!-- 实践3: 检查分支 -->
+  <g id="practice3">
+    <rect x="100" y="480" width="600" height="130" rx="12" fill="#FFFFFF" 
+          stroke="#28A745" stroke-width="3"/>
+    
+    <circle cx="185" cy="545" r="40" fill="#28A745"/>
+    <text x="185" y="560" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">🎯</text>
+    
+    <text x="260" y="530" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#24292E">检查分支</text>
+    <text x="260" y="565" font-family="Arial, sans-serif" font-size="22" 
+          fill="#586069">Check Branch</text>
+    
+    <rect x="260" y="575" width="410" height="30" rx="6" fill="#E8F5E9"/>
+    <text x="465" y="597" font-family="Arial, sans-serif" font-size="18" 
+          text-anchor="middle" fill="#28A745">推拉前确认 • 看状态栏分支名</text>
+  </g>
+  
+  <!-- 实践4: 定期同步 -->
+  <g id="practice4">
+    <rect x="100" y="640" width="600" height="130" rx="12" fill="#FFFFFF" 
+          stroke="#28A745" stroke-width="3"/>
+    
+    <circle cx="185" cy="705" r="40" fill="#28A745"/>
+    <text x="185" y="720" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+          text-anchor="middle" fill="#FFFFFF">🔄</text>
+    
+    <text x="260" y="690" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+          fill="#24292E">定期同步</text>
+    <text x="260" y="725" font-family="Arial, sans-serif" font-size="22" 
+          fill="#586069">Regular Sync</text>
+    
+    <rect x="260" y="735" width="410" height="30" rx="6" fill="#E8F5E9"/>
+    <text x="465" y="757" font-family="Arial, sans-serif" font-size="18" 
+          text-anchor="middle" fill="#28A745">每日 Pull • 保持代码最新</text>
+  </g>
+  
+  <!-- 底部标语 -->
+  <rect x="200" y="782" width="400" height="10" rx="5" fill="#28A745"/>
+</svg>

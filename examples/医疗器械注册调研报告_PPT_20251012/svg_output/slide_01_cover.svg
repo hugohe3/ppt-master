@@ -1,0 +1,75 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 装饰元素 - 左上角医疗线条 -->
+  <path d="M 0 120 L 180 120 L 200 100 L 220 140 L 240 80 L 260 120 L 400 120" 
+        stroke="#0066CC" stroke-width="3" fill="none" opacity="0.3"/>
+  
+  <!-- 装饰元素 - 右下角医疗线条 -->
+  <path d="M 880 600 L 900 560 L 920 600 L 940 540 L 960 600 L 1060 600 L 1280 600" 
+        stroke="#0066CC" stroke-width="3" fill="none" opacity="0.3"/>
+  
+  <!-- 医疗十字图标装饰 - 左上 -->
+  <g opacity="0.1">
+    <rect x="100" y="200" width="60" height="15" fill="#0066CC" rx="3"/>
+    <rect x="122.5" y="177.5" width="15" height="60" fill="#0066CC" rx="3"/>
+  </g>
+  
+  <!-- 医疗十字图标装饰 - 右下 -->
+  <g opacity="0.1">
+    <rect x="1100" y="480" width="60" height="15" fill="#00A86B" rx="3"/>
+    <rect x="1122.5" y="457.5" width="15" height="60" fill="#00A86B" rx="3"/>
+  </g>
+  
+  <!-- 主标题 -->
+  <text x="640" y="280" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+        font-size="48" font-weight="bold" fill="#003D82" text-anchor="middle">
+    软件类第二类医疗器械
+  </text>
+  <text x="640" y="340" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+        font-size="48" font-weight="bold" fill="#003D82" text-anchor="middle">
+    注册调研报告
+  </text>
+  
+  <!-- 分割线 -->
+  <line x1="440" y1="380" x2="840" y2="380" stroke="#0066CC" stroke-width="3"/>
+  
+  <!-- 副标题 -->
+  <text x="640" y="430" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+        font-size="24" fill="#546E7A" text-anchor="middle">
+    全流程合规指南与上海市政策解析
+  </text>
+  
+  <!-- 日期和说明 -->
+  <text x="640" y="520" font-family="Segoe UI, Microsoft YaHei, sans-serif" 
+        font-size="18" fill="#5A6C7D" text-anchor="middle">
+    2025年10月
+  </text>
+  
+  <!-- 底部标签 -->
+  <g>
+    <rect x="480" y="580" width="140" height="36" fill="#F5F7FA" rx="18"/>
+    <text x="550" y="604" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="16" fill="#0066CC" text-anchor="middle">
+      医疗器械注册
+    </text>
+  </g>
+  
+  <g>
+    <rect x="640" y="580" width="140" height="36" fill="#F5F7FA" rx="18"/>
+    <text x="710" y="604" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="16" fill="#00A86B" text-anchor="middle">
+      上海市政策
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="Segoe UI, sans-serif" 
+        font-size="14" fill="#B0BEC5" text-anchor="end">
+    1
+  </text>
+</svg>
+
+
+
