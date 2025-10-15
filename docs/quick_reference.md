@@ -330,7 +330,7 @@ yh_slide_02_kpi_dashboard.svg
 - [工作流教程](../docs/workflow_tutorial.md)
 - [设计指南](../docs/design_guidelines.md)
 - [角色定义](../roles/)
-- [示例项目](../examples/sample_output/)
+- [示例项目](../examples/)
 - [贡献指南](../CONTRIBUTING.md)
 
 ## 💡 专业提示

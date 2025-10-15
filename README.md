@@ -28,8 +28,9 @@
 - 🎨 **设计指南**: [设计规范详解](./docs/design_guidelines.md)
 - 📐 **画布格式**: [支持的所有格式](./docs/canvas_formats.md)
 - ⚡ **快速查阅**: [快速参考指南](./docs/quick_reference.md)
+- ✅ **文档质检**: [文档质检清单](./docs/doc_qa_checklist.md)
 - 🔧 **角色定义**: [查看所有角色](./roles/README.md)
-- 💼 **实际案例**: [中国历代政治得失](./examples/sample_output/)
+- 💼 **示例索引**: 查看 `examples/README.md`
 
 ## 项目简介
 
@@ -223,7 +224,7 @@ Optimizer_CRAP:
 [输出优化后的yh_slide_02.svg...]
 ```
 
-💡 **提示**: 查看 `examples/sample_output/` 目录下的实际案例，了解完整的项目实施过程和最终效果。
+💡 **提示**: 查看 `examples/` 目录下的示例项目，了解完整的项目实施过程和最终效果。
 
 ## 设计风格
 
@@ -295,38 +296,27 @@ ppt-master/
 ├── CONTRIBUTING.md            # 贡献指南
 ├── CHANGELOG.md               # 更新日志
 │
-├── roles/                     # AI 角色定义
+├── roles/                     # AI 角色定义（请勿在此目录测试/写入示例）
 │   ├── README.md              # 角色概览与工作流程
 │   ├── Strategist.md          # 策略师角色定义
 │   ├── Executor_General.md    # 通用执行师角色定义
 │   ├── Executor_Consultant.md # 咨询执行师角色定义
 │   └── Optimizer_CRAP.md      # CRAP优化师角色定义
 │
-├── examples/                  # 示例文件夹
-│   ├── sample_input/          # 输入文档示例
-│   │   └── 中国历代政治得失.md  # 完整的历史分析源文档
-│   └── sample_output/         # 生成的SVG示例
-│       ├── README.md          # 案例详细说明
-│       ├── 演示文稿设计规范与内容大纲.md  # Strategist生成的完整设计规范
-│       ├── yh_slide_01_cover.svg         # 封面页
-│       ├── yh_slide_02_methodology.svg   # 研究方法论页
-│       ├── yh_slide_03_han.svg           # 汉朝分析页
-│       ├── yh_slide_04_tang.svg          # 唐朝分析页
-│       ├── yh_slide_05_song.svg          # 宋朝分析页
-│       ├── yh_slide_06_ming.svg          # 明朝分析页
-│       ├── yh_slide_07_qing.svg          # 清朝分析页
-│       ├── yh_slide_08_trends.svg        # 历史趋势总结页
-│       └── yh_slide_09_insights.svg      # 核心洞察结论页
+├── examples/                  # 示例文件夹（每个示例一个独立目录）
+│   └── <project_name>_<format>_<YYYYMMDD>/
+│       ├── README.md
+│       ├── 设计规范与内容大纲.md / design_specification.md
+│       ├── preview.html（可选）
+│       └── svg_output/
 │
 ├── docs/                      # 文档中心
 │   ├── design_guidelines.md   # 详细设计指南（颜色、排版、布局）
 │   ├── workflow_tutorial.md   # 工作流教程（实际案例演示）
 │   └── quick_reference.md     # 快速参考指南（速查手册）
 │
-└── projects/                  # 用户项目工作区
-    ├── README.md              # 项目组织指南和模板
-    ├── 新青岛顺美票据池方案_20251012/
-    └── 涪陵引调水工程_20251012/
+└── projects/                  # 用户项目工作区（进行中的项目）
+    └── <your_project_name>_<YYYYMMDD>/
 
 **重要**: 所有项目文件夹必须以日期后缀结尾,格式为 `_YYYYMMDD` (例如: `_20251012`)
 
@@ -358,32 +348,39 @@ ppt-master/
 
 ## 示例案例
 
-本仓库包含了一个完整的实际应用案例，展示从输入到输出的完整工作流程：
+本仓库包含多个实际项目示例，展示从内容分析到最终 SVG 输出的完整工作流程：
 
-### 🏛️ 中国历代政治得失演示文稿
+### 🗂️ 示例概览（来自 `examples/`）
 
-一个完整的历史主题演示文稿项目，展示了从内容分析到最终输出的完整工作流程。
-
-- **源文档**: `examples/sample_input/中国历代政治得失.md`（227 行完整历史分析）
-- **设计规范**: `examples/sample_output/演示文稿设计规范与内容大纲.md`（411 行详细规范）
-- **生成页面**: 9 页完整的 SVG 演示文稿
-- **设计风格**: 高端咨询风格（浅色主题）
-- **主导色**: 深金色 (#B8860B) - 象征历史传承
-- **特点**:
-  - **多样化布局**: 时间轴、表格、矩阵图、卡片等
-  - **朝代色系**: 每个朝代有专属标识色（汉红、唐橙、宋青、明紫、清灰蓝）
-  - **数据可视化**: 结构化展示四大维度（政府、选举、经济、兵役）
-  - **CRAP 原则**: 严格的对齐、明显的对比、统一的重复、合理的亲密性
-  - **专业配色**: 金色体系搭配专业灰度色系
+- 重庆观音桥写字楼资产减值分析_PPT_20251011（PPT 16:9，11 页）
+- 医疗器械注册调研报告_PPT_20251012（PPT 16:9，9 页）
+- 重庆汇丰尽职调查_PPT_20251015（PPT 16:9，8 页）
+- 科技型软件企业资质知识产权规划_PPT_20251015（PPT 16:9，11 页）
+- 明朝那些事儿-1-朱元璋_PPT_20251010（PPT 16:9，12 页）
+- 写给大家看的设计书_wechat_20251015（社媒图文，9 张）
+- vscode_12_git_wechat_20251015（社媒图文，8 张）
 
 ### 📂 查看示例
 
-所有示例文件都在 `examples/` 目录下：
+所有示例项目均位于 `examples/` 目录下，采用单项目目录结构：
 
-1. **输入文档**: `examples/sample_input/` - 查看如何准备源文档
-2. **输出结果**: `examples/sample_output/` - 查看生成的 SVG 文件和设计规范
+```
+examples/
+└── <project_name>_<format>_<YYYYMMDD>/
+    ├── README.md
+    ├── 设计规范与内容大纲.md（或 design_specification.md）
+    ├── preview.html（可选）
+    └── svg_output/
+```
 
-### � 开始你的项目
+预览某个示例的 SVG：
+
+```
+python3 -m http.server --directory examples/<project>/svg_output 8000
+# 然后访问 http://localhost:8000
+```
+
+### 🚀 开始你的项目
 
 参考示例结构，在 `projects/` 目录下创建你自己的演示文稿项目：
 

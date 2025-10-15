@@ -174,6 +174,22 @@
 <svg width="900" height="383" viewBox="0 0 900 383">
 ```
 
+### 快速校验命令
+
+```bash
+# viewBox 应以 0 0 起始
+grep -R 'viewBox="0 0 ' examples
+
+# 常见格式
+grep -R 'viewBox="0 0 1280 720"' examples   # PPT 16:9
+grep -R 'viewBox="0 0 1024 768"' examples    # PPT 4:3
+grep -R 'viewBox="0 0 1242 1660"' examples   # 小红书 3:4
+grep -R 'viewBox="0 0 1080 1080"' examples   # 朋友圈/Instagram 1:1
+grep -R 'viewBox="0 0 1080 1920"' examples   # Story 9:16
+grep -R 'viewBox="0 0 900 383"' examples     # 公众号头图 2.35:1
+grep -R 'viewBox="0 0 1240 1754"' examples   # A4 150dpi
+```
+
 ## 🎯 格式特定设计建议
 
 ### PPT 格式
@@ -230,4 +246,3 @@ CANVAS_FORMATS = {
 ---
 
 **提示**: 选择格式时，首先考虑内容的最终使用场景，然后根据内容类型和信息密度选择最合适的尺寸和比例。
-

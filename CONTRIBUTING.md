@@ -172,6 +172,7 @@ Closes #123
 
 - [ ] 代码遵循项目风格
 - [ ] 更新了相关文档
+- [ ] 文档变更已对照《docs/doc_qa_checklist.md》自查通过
 - [ ] 添加了示例（如果适用）
 - [ ] PR 标题清晰描述了更改
 - [ ] PR 描述详细说明了更改内容和原因
@@ -315,7 +316,7 @@ cd ../examples
 ls -R
 
 # 在浏览器中查看SVG输出
-# 打开 examples/sample_output/ 目录下的 SVG 文件
+# 打开任意示例项目的 svg_output/ 下的 SVG 文件
 ```
 
 ## 项目组织
@@ -326,23 +327,25 @@ ls -R
 
 ```
 examples/
-├── sample_input/              # 源文档
-│   └── your_topic.md         # 你的输入文档
-└── sample_output/            # 生成结果
-    ├── design_spec.md        # 设计规范文档
-    ├── slide_01.svg          # SVG内容（任意支持的格式）
-    ├── slide_02.svg
-    └── ...
+└── <project_name>_<format>_<YYYYMMDD>/
+    ├── README.md
+    ├── 设计规范与内容大纲.md / design_specification.md
+    ├── preview.html（可选）
+    └── svg_output/
+        ├── slide_01_*.svg
+        ├── slide_02_*.svg
+        └── ...
 ```
 
 ### 支持的画布格式
 
-在贡献示例项目时，请在设计规范文档中明确说明使用的画布格式：
+在贡献示例项目时，请在设计规范文档中明确说明使用的画布格式，并确保 `width/height` 与 `viewBox` 一致：
 
 - **演示文稿**: PPT 16:9 (1280×720)、PPT 4:3 (1024×768)
 - **社交媒体**: 小红书 (1242×1660)、朋友圈 (1080×1080)、Story (1080×1920)
 - **营销物料**: 公众号头图 (900×383)、横版/竖版海报
-- **更多格式**: 参考 [画布格式规范](./docs/canvas_formats.md)
+- **打印**: A4 150dpi (1240×1754) 或 300dpi (2480×3508)
+- **更多格式**: 参考 `docs/canvas_formats.md`
 
 ### 用户项目工作区
 

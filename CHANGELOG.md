@@ -16,6 +16,12 @@
   - 从"被动提问者"升级为"主动顾问"角色
   - 更新了所有相关文档以反映此变更（README.md, workflow_tutorial.md, CLAUDE.md, roles/Strategist.md, 等）
 
+- **文档结构对齐仓库现状**
+  - README: 用示例索引替换过期的 sample_output 引用；补充预览方法与示例清单
+  - AGENTS.md/CLAUDE.md/GEMINI.md/CONTRIBUTING.md: 统一为按项目目录组织的 examples 结构
+  - docs: 修复工作流教程角色定义链接、更新临时指南（微信公众号配图模版）与快速参考示例链接
+  - 新增 `examples/README.md` 与 `projects/README.md` 作为索引与指引
+
 ### 计划中
 
 - 交互式配置工具

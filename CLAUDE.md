@@ -26,16 +26,28 @@ The Strategist should not just ask questions, but actively provide professional 
 ## Development Commands
 
 ### Preview Generated SVG Slides
-```bash
-python3 -m http.server --directory examples/sample_output 8000
-```
-Access at `http://localhost:8000` to view SVG files in browser.
+Examples are organized per project under `examples/<project>_<format>_<YYYYMMDD>/svg_output`.
 
-### Validate SVG Canvas Compliance
 ```bash
-grep -R "viewBox=\"0 0 1280 720\"" examples
+python3 -m http.server --directory examples/<project>_<format>_<YYYYMMDD>/svg_output 8000
+# Open http://localhost:8000 in your browser
 ```
-Ensures all SVG files maintain the mandatory 1280×720 canvas size.
+
+### Validate SVG Canvas Compliance (multi-format)
+```bash
+# All SVGs should declare viewBox starting at 0 0
+grep -R "viewBox=\"0 0 " examples
+
+# Common formats (extend as needed)
+grep -R "viewBox=\"0 0 1280 720\"" examples   # PPT 16:9
+grep -R "viewBox=\"0 0 1024 768\"" examples    # PPT 4:3
+grep -R "viewBox=\"0 0 1242 1660\"" examples   # Xiaohongshu 3:4
+grep -R "viewBox=\"0 0 1080 1080\"" examples   # WeChat/Instagram 1:1
+grep -R "viewBox=\"0 0 1080 1920\"" examples   # Story 9:16
+grep -R "viewBox=\"0 0 900 383\""  examples   # WeChat header 2.35:1
+grep -R "viewBox=\"0 0 1240 1754\"" examples   # A4 150dpi
+```
+Note: some historical examples may use experimental sizes; prefer `docs/canvas_formats.md` for new work.
 
 ### Optional Markdown Linting
 ```bash
@@ -46,7 +58,7 @@ Run from repository root before committing to maintain consistent formatting.
 ## Key Technical Constraints
 
 ### SVG Generation Rules (Non-negotiable)
-- **Canvas**: 1280×720 pixels, `viewBox="0 0 1280 720"`
+- **Canvas**: Use sizes defined in `docs/canvas_formats.md` (PPT 16:9, PPT 4:3, 3:4, 1:1, 9:16, etc.). Ensure `width/height` match `viewBox`.
 - **No foreignObject**: Prohibited; use `<tspan>` for manual line breaks
 - **Card Height Rules** (General style only):
   - Single-row content: 530-600px height
@@ -77,10 +89,14 @@ Run from repository root before committing to maintain consistent formatting.
 ### Creating Example Projects
 ```
 examples/
-├── sample_input/          # Source documents
-└── sample_output/         # Generated SVG + design specs
-    ├── design_spec.md
-    └── yh_slide_0X_topic.svg
+└── <project_name>_<format>_<YYYYMMDD>/
+    ├── README.md
+    ├── design_specification.md / 设计规范与内容大纲.md
+    ├── preview.html (optional)
+    └── svg_output/
+        ├── slide_01_*.svg
+        ├── slide_02_*.svg
+        └── ...
 ```
 
 ### Work-in-Progress Projects
@@ -118,10 +134,10 @@ When reviewing or generating SVG slides:
 - Document changes in `CHANGELOG.md`
 
 ### Add Sample Projects
-- Place source in `examples/sample_input/`
-- Place outputs in `examples/sample_output/`
-- Include design specification markdown
-- Use naming convention: `yh_slide_0X_topic.svg`
+- Create a project folder under `examples/` using `{name}_{format}_{YYYYMMDD}`
+- Include source document and the Strategist's design specification (markdown)
+- Place all SVG outputs under `svg_output/`
+- Use naming convention: `slide_0X_topic.svg` (optimized versions prefixed with `yh_`)
 
 ## Testing Approach
 
@@ -137,7 +153,7 @@ Since this is a documentation framework:
 - Focus on maintaining consistency in role definitions
 - SVG output quality depends on strict adherence to specifications
 - The Strategist's initial communication phase is mandatory, not optional
-- **The Strategist must provide professional suggestions for all three confirmation questions** (page count, audience/scenario, and style selection) based on analysis of the source document
+- **The Strategist must provide professional suggestions for all four confirmation points** (page range, audience/scenario, style choice, and canvas format) based on analysis of the source document
 - General and Consulting styles have fundamentally different specification formats
 - CRAP optimization is optional but valuable for key slides
 
@@ -148,4 +164,4 @@ Since this is a documentation framework:
 - **Design Guidelines**: docs/design_guidelines.md
 - **Quick Reference**: docs/quick_reference.md
 - **Role Definitions**: roles/*.md
-- **Complete Example**: examples/sample_output/ (9-slide Chinese history presentation)
+- **Examples**: see `examples/` (project-based folders with svg_output)

@@ -601,7 +601,7 @@ Executor_Consultant: 我将使用Lucide图标：
 
 - 查看 [设计指南](./design_guidelines.md) 了解详细设计规范
 - 查看 [示例文件](../examples/) 获取灵感
-- 阅读 [角色定义](../) 深入理解每个角色
+- 阅读 [角色定义](../roles/README.md) 深入理解每个角色
 
 ## 需要帮助？
 

@@ -79,7 +79,7 @@
 
 **技术特点**:
 
-- 画布尺寸: 1280×720 (16:9)
+- 画布尺寸: 根据已选画布格式自动适配（详见 `docs/canvas_formats.md`）
 - 禁用 `<foreignObject>`
 - 使用 `<tspan>` 手动换行
 - 强制卡片高度规则
@@ -137,7 +137,7 @@
 ### 基本流程
 
 1. 从 **Strategist** 开始，**首先完成初始沟通与范围确认**
-   - Strategist 会主动提供页数建议、受众判断和风格推荐
+   - Strategist 会主动提供页数建议、受众判断、风格推荐与画布格式推荐
    - 用户可以接受建议或提出调整
 2. 让 Strategist 生成完整的设计规范与内容大纲
 3. 根据确认的风格选择 **Executor_General** 或 **Executor_Consultant**
