@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" text-anchor="middle" font-size="36" font-weight="700" fill="#005587">
+    核心建设维度：四大目标，两大体系
+  </text>
+  
+  <!-- 四大目标 KPI 卡片 -->
+  <rect x="80" y="140" width="260" height="80" rx="8" fill="#E8F4F8"/>
+  <text x="210" y="185" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    合规经营
+  </text>
+  
+  <rect x="370" y="140" width="260" height="80" rx="8" fill="#E8F4F8"/>
+  <text x="500" y="185" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    技术保护
+  </text>
+  
+  <rect x="660" y="140" width="260" height="80" rx="8" fill="#E8F4F8"/>
+  <text x="790" y="185" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    市场竞争
+  </text>
+  
+  <rect x="950" y="140" width="260" height="80" rx="8" fill="#E8F4F8"/>
+  <text x="1080" y="185" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    资本价值
+  </text>
+  
+  <!-- 中央分隔线 -->
+  <line x1="640" y1="260" x2="640" y2="680" stroke="#ECF0F1" stroke-width="2"/>
+  
+  <!-- 左栏：企业资质体系 -->
+  <text x="80" y="280" font-size="28" font-weight="700" fill="#005587">
+    企业资质体系
+  </text>
+  
+  <!-- 基础合规资质 -->
+  <circle cx="95" cy="335" r="6" fill="#0076A8"/>
+  <text x="115" y="340" font-size="20" font-weight="600" fill="#2C3E50">
+    基础合规资质
+  </text>
+  <text x="135" y="370" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="135" dy="0">• 营业执照（软件开发/技术服务）</tspan>
+    <tspan x="135" dy="24">• 双软认证（产品登记+企业认定）</tspan>
+    <tspan x="135" dy="24">• ICP/EDI 许可证（SaaS/在线付费）</tspan>
+    <tspan x="135" dy="24">• 等保认证（二级/三级）</tspan>
+  </text>
+  
+  <!-- 管理体系认证 -->
+  <circle cx="95" cy="490" r="6" fill="#0076A8"/>
+  <text x="115" y="495" font-size="20" font-weight="600" fill="#2C3E50">
+    管理体系认证
+  </text>
+  <text x="135" y="525" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="135" dy="0">• ISO 9001 / ISO 20000 / ISO 27001</tspan>
+    <tspan x="135" dy="24">• CMMI 三级/四级（能力成熟度）</tspan>
+  </text>
+  
+  <!-- 行业专项资质 -->
+  <circle cx="95" cy="610" r="6" fill="#0076A8"/>
+  <text x="115" y="615" font-size="20" font-weight="600" fill="#2C3E50">
+    行业专项资质
+  </text>
+  <text x="135" y="645" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="135" dy="0">• 医疗器械认证 / 工业软件认证</tspan>
+    <tspan x="135" dy="24">• 高新技术企业认定</tspan>
+  </text>
+  
+  <!-- 右栏：知识产权体系 -->
+  <text x="680" y="280" font-size="28" font-weight="700" fill="#005587">
+    知识产权体系
+  </text>
+  
+  <!-- 核心技术保护 -->
+  <circle cx="695" cy="335" r="6" fill="#E67E22"/>
+  <text x="715" y="340" font-size="20" font-weight="600" fill="#2C3E50">
+    核心技术保护（专利）
+  </text>
+  <text x="735" y="370" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="735" dy="0">• 发明专利：核心算法/创新功能</tspan>
+    <tspan x="735" dy="24">• 实用新型：硬件接口设计</tspan>
+    <tspan x="735" dy="24">• 外观设计：APP 界面/交互动效</tspan>
+  </text>
+  
+  <!-- 软件成果保护 -->
+  <circle cx="695" cy="490" r="6" fill="#E67E22"/>
+  <text x="715" y="495" font-size="20" font-weight="600" fill="#2C3E50">
+    软件成果保护（软著）
+  </text>
+  <text x="735" y="525" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="735" dy="0">• 核心产品软著（源代码+手册）</tspan>
+    <tspan x="735" dy="24">• 衍生功能软著（模块/插件）</tspan>
+    <tspan x="735" dy="24">• 迭代版本软著（V2.0/V3.0）</tspan>
+  </text>
+  
+  <!-- 品牌与数据保护 -->
+  <circle cx="695" cy="610" r="6" fill="#E67E22"/>
+  <text x="715" y="615" font-size="20" font-weight="600" fill="#2C3E50">
+    品牌与数据保护
+  </text>
+  <text x="735" y="645" font-size="16" font-weight="400" fill="#7F8C8D">
+    <tspan x="735" dy="0">• 商标：第9/42/35类（国内+海外）</tspan>
+    <tspan x="735" dy="24">• 商业秘密：算法参数/客户名单</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    05
+  </text>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" text-anchor="middle" font-size="36" font-weight="700" fill="#005587">
+    风险管控要点：三类风险预警
+  </text>
+  
+  <!-- 风险1：合规风险 -->
+  <rect x="80" y="160" width="1120" height="140" rx="8" fill="#FFF5F5" stroke="#C0392B" stroke-width="2"/>
+  
+  <circle cx="120" cy="210" r="30" fill="#C0392B"/>
+  <text x="120" y="225" text-anchor="middle" font-size="32" fill="#FFFFFF">
+    🛡️
+  </text>
+  
+  <text x="170" y="195" font-size="24" font-weight="700" fill="#C0392B">
+    合规风险
+  </text>
+  
+  <text x="170" y="230" font-size="18" font-weight="400" fill="#2C3E50">
+    <tspan x="170" dy="0">• 资质过期风险：ISO体系年审 / 高新技术企业三年重认定</tspan>
+    <tspan x="170" dy="28">• 业务变更风险：医疗转型需补充医疗器械认证</tspan>
+    <tspan x="170" dy="28">• 应对措施：建立有效期提醒机制，业务变更及时更新资质</tspan>
+  </text>
+  
+  <!-- 风险2：知识产权风险 -->
+  <rect x="80" y="320" width="1120" height="140" rx="8" fill="#FFF8E1" stroke="#E67E22" stroke-width="2"/>
+  
+  <circle cx="120" cy="370" r="30" fill="#E67E22"/>
+  <text x="120" y="385" text-anchor="middle" font-size="32" fill="#FFFFFF">
+    🔒
+  </text>
+  
+  <text x="170" y="355" font-size="24" font-weight="700" fill="#E67E22">
+    知识产权风险
+  </text>
+  
+  <text x="170" y="390" font-size="18" font-weight="400" fill="#2C3E50">
+    <tspan x="170" dy="0">• 侵权风险：软著查询系统 / 专利检索系统排查，避免侵犯他人权利</tspan>
+    <tspan x="170" dy="28">• 专利流失风险：员工离职前签订"职务发明确认书"，明确专利权属</tspan>
+    <tspan x="170" dy="28">• 应对措施：定期排查机制 + 完善保密协议 + 竞业限制条款</tspan>
+  </text>
+  
+  <!-- 风险3：投入风险 -->
+  <rect x="80" y="480" width="1120" height="140" rx="8" fill="#FFF3E0" stroke="#E67E22" stroke-width="2"/>
+  
+  <circle cx="120" cy="530" r="30" fill="#E67E22"/>
+  <text x="120" y="545" text-anchor="middle" font-size="32" fill="#FFFFFF">
+    ⚖️
+  </text>
+  
+  <text x="170" y="515" font-size="24" font-weight="700" fill="#E67E22">
+    投入风险
+  </text>
+  
+  <text x="170" y="550" font-size="18" font-weight="400" fill="#2C3E50">
+    <tspan x="170" dy="0">• 盲目申报风险：初创期不建议直接申报CMMI五级（投入高，短期无回报）</tspan>
+    <tspan x="170" dy="28">• 资源浪费风险：非医疗软件无需投入医疗器械认证</tspan>
+    <tspan x="170" dy="28">• 应对措施：聚焦核心业务需求，结合发展阶段动态调整优先级</tspan>
+  </text>
+  
+  <!-- 底部总结 -->
+  <rect x="80" y="650" width="1120" height="50" rx="8" fill="#005587"/>
+  <text x="640" y="680" text-anchor="middle" font-size="18" font-weight="600" fill="#FFFFFF">
+    风险管控原则：提前预警 + 动态调整 + 聚焦核心 + 避免盲目投入
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    18
+  </text>
+</svg>
