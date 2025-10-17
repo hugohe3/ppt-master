@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="50" y1="40" x2="1230" y2="40" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+    附录
+  </text>
+  <text x="1230" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#D04A02" text-anchor="end" font-weight="600">
+    PwC
+  </text>
+  
+  
+  <text x="50" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="36" font-weight="bold" fill="#53565A">
+    附录：数据来源与说明
+  </text>
+  
+  
+  <g transform="translate(100, 170)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+      数据来源
+    </text>
+    
+    
+    <g transform="translate(0, 50)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">3房网</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 观音桥商圈行情数据（2021-2023年）</text></g>
+    
+    
+    <g transform="translate(0, 90)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">房天下</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 写字楼挂牌价格与成交数据</text></g>
+    
+    
+    <g transform="translate(0, 130)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">仲量联行（JLL）</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 重庆写字楼市场季度报告</text></g>
+    
+    
+    <g transform="translate(0, 170)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">第一太平戴维斯</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 重庆甲级写字楼市场研究报告</text></g>
+    
+    
+    <g transform="translate(0, 210)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">联合资信</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 商业地产市场研究数据</text></g>
+    
+    
+    <g transform="translate(0, 250)">
+      <circle cx="0" cy="0" r="5" fill="#D04A02" />
+      <text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5">        </text><text fill="#53565A" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="20" y="5">公开市场信息</text><text fill="#8C8C8C" font-size="18" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="20" y="5"> - 楼盘官网、物业公司披露信息</text></g>
+  </g>
+  
+  
+  <g transform="translate(100, 470)">
+    <rect x="-10" y="-10" width="1080" height="3" fill="#E0E0E0" />
+    
+    <text x="0" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+      分析说明
+    </text>
+    
+    <text x="20" y="70" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C">
+      • 分析期间：2021年至2025年10月
+    </text>
+    <text x="20" y="105" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C">
+      • 数据截止日期：2025年10月11日
+    </text>
+    <text x="20" y="140" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C">
+      • 分析方法：综合市场数据分析、同业对比、趋势研判
+    </text>
+    <text x="20" y="175" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C">
+      • 会计准则依据：IAS 36《资产减值》/ CAS 8《资产减值》
+    </text>
+  </g>
+  
+  
+  <g transform="translate(100, 620)">
+    <rect x="-10" y="0" width="1080" height="50" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="6" />
+    <text text-anchor="middle" fill="#8C8C8C" font-size="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="530" y="32">      </text><text text-anchor="middle" fill="#8C8C8C" font-size="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-weight="600" x="530" y="32">免责声明：</text><text text-anchor="middle" fill="#8C8C8C" font-size="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" x="530" y="32">本报告仅供内部审计参考使用，不构成投资建议。具体减值比例需结合独立评估机构报告确定。</text></g>
+  
+  
+  <line x1="50" y1="680" x2="1230" y2="680" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C">
+    观音桥写字楼减值分析
+  </text>
+  <text x="640" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="middle">
+    PwC保密文件 | 仅供内部使用
+  </text>
+  <text x="1230" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="end">
+    11 / 11
+  </text>
+</svg>

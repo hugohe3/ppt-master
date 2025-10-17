@@ -49,6 +49,20 @@ grep -R "viewBox=\"0 0 1240 1754\"" examples   # A4 150dpi
 ```
 Note: some historical examples may use experimental sizes; prefer `docs/canvas_formats.md` for new work.
 
+### Flatten `<tspan>` (optional post-process)
+
+Executors should use `<tspan>` for manual line breaks at generation time (no `<foreignObject>`). If your publishing or extraction pipeline prefers plain `<text>` nodes, run the built-in flattener:
+
+```bash
+# Directory-level (writes to sibling svg_output_flattext by default)
+python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
+
+# Single-file with custom output path
+python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
+```
+
+Outputs should contain no `<tspan>`, and preserve style/position. Keep using `<tspan>` at generation time.
+
 ### Optional Markdown Linting
 ```bash
 npx markdownlint "**/*.md"

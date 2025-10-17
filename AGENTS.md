@@ -65,6 +65,25 @@ grep -R "viewBox=\"0 0 1240 1754\"" examples   # A4 打印 150dpi
 
 说明：仓库中的历史示例项目可能使用了非标准尺寸用于特定实验目的；新项目建议严格遵循 `docs/canvas_formats.md`。
 
+### 文本扁平化（去 tspan）
+
+在生成阶段，Executor 应使用 `<tspan>` 进行手动换行（禁止 `<foreignObject>`）。如发布链路或后续处理对 `<tspan>` 不友好（如部分渲染器或需要文本抽取），可使用 `tools/flatten_tspan.py` 将 `<tspan>` 扁平成多行 `<text>`：
+
+```bash
+# 扁平化整个输出目录（默认输出到同级 svg_output_flattext）
+python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
+
+# 指定输出目录
+python3 tools/flatten_tspan.py examples/<project>/svg_output examples/<project>/svg_output_flattext
+
+# 处理单个 SVG（输出文件路径可自定义）
+python3 tools/flatten_tspan.py examples/<project>/svg_output/slide_01_cover.svg examples/<project>/svg_output_flattext/slide_01_cover.svg
+```
+
+注意：
+- 生成阶段仍以 `<tspan>` 手动换行为准；`flatten_tspan` 是可选后处理工具。
+- 工具会将每个 `<tspan>` 转换为独立的 `<text>`，尽量保留样式与定位；原有 `<foreignObject>` 仍然禁止。
+
 ### 可选：Markdown 语法检查
 
 ```bash
@@ -78,7 +97,7 @@ npx markdownlint "**/*.md"
 ### SVG 生成规则（不可协商）
 
 - **画布与 viewBox**：必须与所选格式一致（参见 `docs/canvas_formats.md`）；`width/height` 与 `viewBox` 成对一致
-- **禁止 `<foreignObject>`**：使用 `<tspan>` 实现手动换行
+- **禁止 `<foreignObject>`**：生成阶段使用 `<tspan>` 手动换行；如需发布去除 `<tspan>`，请使用 `tools/flatten_tspan.py` 后处理输出到 `svg_output_flattext`
 - **背景**：根节点使用 `<rect>` 元素
 - **字体**：优先使用系统 UI 字体栈
 
@@ -153,6 +172,7 @@ examples/
 2. **对比（Contrast）**：通过尺寸、粗细或颜色建立清晰层级
 3. **重复（Repetition）**：相同元素保持一致的样式
 4. **亲密性（Proximity）**：相关内容空间聚合，不相关内容适度分离
+5. （可选）文本扁平化：如采用 `svg_output_flattext`，抽检确认无 `<tspan>` 残留，样式与坐标正确
 
 ## 常见任务
 

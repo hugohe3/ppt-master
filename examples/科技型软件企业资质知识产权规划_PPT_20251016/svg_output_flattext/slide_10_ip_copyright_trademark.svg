@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text fill="#005587" font-size="36" font-weight="700" x="80" y="100">    知识产权体系 </text><text fill="#7F8C8D" font-size="36" font-weight="700" x="80" y="100">|</text><line x1="640" y1="140" x2="640" y2="680" stroke="#ECF0F1" stroke-width="2" />
+  
+  
+  <text x="80" y="170" font-size="28" font-weight="700" fill="#005587">
+    软件著作权（软著）
+  </text>
+  
+  
+  <rect x="80" y="200" width="520" height="120" rx="8" fill="#F8F9FA" />
+  <circle cx="105" cy="240" r="8" fill="#E67E22" />
+  <text x="130" y="230" font-size="20" font-weight="600" fill="#2C3E50">
+    核心产品软著
+  </text>
+  <text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="260">    </text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="260">• 覆盖主打软件（SaaS 平台、APP）</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="286">• 包含源代码 + 用户手册</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="312">• 证明自主研发属性</text><rect x="80" y="340" width="520" height="100" rx="8" fill="#F8F9FA" />
+  <circle cx="105" cy="375" r="8" fill="#E67E22" />
+  <text x="130" y="375" font-size="20" font-weight="600" fill="#2C3E50">
+    衍生功能软著
+  </text>
+  <text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="405">    </text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="405">• 模块化登记（数据分析模块）</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="431">• 插件软著（报表生成插件）</text><rect x="80" y="460" width="520" height="100" rx="8" fill="#F8F9FA" />
+  <circle cx="105" cy="495" r="8" fill="#E67E22" />
+  <text x="130" y="495" font-size="20" font-weight="600" fill="#2C3E50">
+    迭代版本软著
+  </text>
+  <text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="525">    </text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="525">• V2.0/V3.0 重大更新需单独登记</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="130" y="551">• 新增核心功能需及时保护</text><rect x="80" y="580" width="520" height="80" rx="8" fill="#E67E22" />
+  <text fill="#FFFFFF" text-anchor="middle" font-size="18" font-weight="600" x="340" y="615">    </text><text fill="#FFFFFF" text-anchor="middle" font-size="18" font-weight="600" x="340" y="615">核心价值</text><text fill="#FFFFFF" text-anchor="middle" font-size="16" font-weight="600" x="340" y="641">双软认证必备 / 质押融资 / 政府补贴申报</text><text x="680" y="170" font-size="28" font-weight="700" fill="#005587">
+    商标 + 商业秘密
+  </text>
+  
+  
+  <rect x="680" y="200" width="520" height="180" rx="8" fill="#F8F9FA" />
+  <circle cx="705" cy="235" r="8" fill="#0076A8" />
+  <text x="730" y="235" font-size="20" font-weight="600" fill="#2C3E50">
+    商标注册
+  </text>
+  <text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="265">    </text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="265">• 注册类别</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="750" y="291">第 9 类：软件产品</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="750" y="315">第 42 类：技术服务</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="750" y="339">第 35 类：广告推广</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="369">• 国内 + 海外市场（欧盟、美国）</text><rect x="680" y="400" width="520" height="160" rx="8" fill="#F8F9FA" />
+  <circle cx="705" cy="435" r="8" fill="#0076A8" />
+  <text x="730" y="435" font-size="20" font-weight="600" fill="#2C3E50">
+    商业秘密保护
+  </text>
+  <text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="465">    </text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="465">• 核心数据：用户画像、算法参数</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="491">• 经营信息：客户名单、投标报价</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="517">• 保护措施：保密协议 + 竞业限制</text><text fill="#7F8C8D" font-size="18" font-weight="400" x="730" y="543">• 访问权限分级管理</text><rect x="680" y="580" width="520" height="80" rx="8" fill="#0076A8" />
+  <text fill="#FFFFFF" text-anchor="middle" font-size="18" font-weight="600" x="940" y="615">    </text><text fill="#FFFFFF" text-anchor="middle" font-size="18" font-weight="600" x="940" y="615">核心价值</text><text fill="#FFFFFF" text-anchor="middle" font-size="16" font-weight="600" x="940" y="641">防止品牌抢注 / 避免技术泄露 / 国际化基础</text><text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    10
+  </text>
+</svg>

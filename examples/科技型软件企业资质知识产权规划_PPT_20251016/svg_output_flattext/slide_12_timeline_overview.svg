@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text x="640" y="100" text-anchor="middle" font-size="36" font-weight="700" fill="#005587">
+    分阶段实施路径：三年规划总览
+  </text>
+  
+  
+  <line x1="200" y1="250" x2="1080" y2="250" stroke="#ECF0F1" stroke-width="4" />
+  
+  
+  <circle cx="200" cy="250" r="24" fill="#005587" />
+  <text x="200" y="260" text-anchor="middle" font-size="20" font-weight="700" fill="#FFFFFF">
+    1
+  </text>
+  <text x="200" y="310" text-anchor="middle" font-size="24" font-weight="700" fill="#005587">
+    2025 第1年
+  </text>
+  <text x="200" y="345" text-anchor="middle" font-size="20" font-weight="600" fill="#2C3E50">
+    初创期
+  </text>
+  <text x="200" y="375" text-anchor="middle" font-size="18" font-weight="400" fill="#E67E22">
+    合规+保护
+  </text>
+  
+  
+  <text fill="#2C3E50" font-size="16" font-weight="400" x="60" y="420">    </text><text fill="#2C3E50" font-size="16" font-weight="400" x="60" y="420">• 软著 10项</text><text fill="#2C3E50" font-size="16" font-weight="400" x="60" y="444">• ISO 9001/27001</text><text fill="#2C3E50" font-size="16" font-weight="400" x="60" y="468">• 等保二级</text><text fill="#2C3E50" font-size="16" font-weight="400" x="60" y="492">• 商标注册</text><rect x="60" y="550" width="280" height="40" rx="6" fill="#E8F4F8" />
+  <text x="200" y="575" text-anchor="middle" font-size="18" font-weight="600" fill="#005587">
+    预算：10-20万
+  </text>
+  
+  
+  <circle cx="640" cy="250" r="24" fill="#0076A8" />
+  <text x="640" y="260" text-anchor="middle" font-size="20" font-weight="700" fill="#FFFFFF">
+    2
+  </text>
+  <text x="640" y="310" text-anchor="middle" font-size="24" font-weight="700" fill="#0076A8">
+    2026 第2年
+  </text>
+  <text x="640" y="345" text-anchor="middle" font-size="20" font-weight="600" fill="#2C3E50">
+    成长期
+  </text>
+  <text x="640" y="375" text-anchor="middle" font-size="18" font-weight="400" fill="#E67E22">
+    升级+壁垒
+  </text>
+  
+  
+  <text fill="#2C3E50" font-size="16" font-weight="400" x="480" y="420">    </text><text fill="#2C3E50" font-size="16" font-weight="400" x="480" y="420">• CMMI 三级</text><text fill="#2C3E50" font-size="16" font-weight="400" x="480" y="444">• 高新技术企业</text><text fill="#2C3E50" font-size="16" font-weight="400" x="480" y="468">• 专利 3-5项/年</text><text fill="#2C3E50" font-size="16" font-weight="400" x="480" y="492">• 医疗器械认证</text><rect x="500" y="550" width="280" height="40" rx="6" fill="#E8F4F8" />
+  <text x="640" y="575" text-anchor="middle" font-size="18" font-weight="600" fill="#0076A8">
+    预算：70-90万
+  </text>
+  
+  
+  <circle cx="1080" cy="250" r="24" fill="#27AE60" />
+  <text x="1080" y="260" text-anchor="middle" font-size="20" font-weight="700" fill="#FFFFFF">
+    3
+  </text>
+  <text x="1080" y="310" text-anchor="middle" font-size="24" font-weight="700" fill="#27AE60">
+    2027-2028 第3年
+  </text>
+  <text x="1080" y="345" text-anchor="middle" font-size="20" font-weight="600" fill="#2C3E50">
+    成熟期
+  </text>
+  <text x="1080" y="375" text-anchor="middle" font-size="18" font-weight="400" fill="#E67E22">
+    品牌+生态
+  </text>
+  
+  
+  <text fill="#2C3E50" font-size="16" font-weight="400" x="940" y="420">    </text><text fill="#2C3E50" font-size="16" font-weight="400" x="940" y="420">• CMMI 四级/五级</text><text fill="#2C3E50" font-size="16" font-weight="400" x="940" y="444">• 行业标准制定</text><text fill="#2C3E50" font-size="16" font-weight="400" x="940" y="468">• 专利池构建</text><text fill="#2C3E50" font-size="16" font-weight="400" x="940" y="492">• 国际化拓展</text><rect x="940" y="550" width="280" height="40" rx="6" fill="#E8F4F8" />
+  <text x="1080" y="575" text-anchor="middle" font-size="18" font-weight="600" fill="#27AE60">
+    预算：80-150万
+  </text>
+  
+  
+  <rect x="80" y="630" width="1120" height="50" rx="8" fill="#E8F4F8" />
+  <text fill="#005587" text-anchor="middle" font-size="18" font-weight="600" x="640" y="660">    三年累计投入：160-260万  |  
+    </text><text fill="#2C3E50" text-anchor="middle" font-size="18" font-weight="600" x="640" y="660">从生存 → 突围 → 引领</text><text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    12
+  </text>
+</svg>

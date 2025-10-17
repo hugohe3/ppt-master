@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C" />
+  
+  
+  <g transform="translate(60, 50)">
+    <rect x="0" y="0" width="48" height="56" rx="4" fill="none" stroke="#0076A8" stroke-width="2.5" />
+    <line x1="10" y1="14" x2="38" y2="14" stroke="#0076A8" stroke-width="2" stroke-linecap="round" />
+    <line x1="10" y1="24" x2="38" y2="24" stroke="#0076A8" stroke-width="2" stroke-linecap="round" />
+    <line x1="10" y1="34" x2="28" y2="34" stroke="#0076A8" stroke-width="2" stroke-linecap="round" />
+  </g>
+  
+  
+  <text x="125" y="76" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="600" fill="#7F8C8D" letter-spacing="1.5">
+    DUE DILIGENCE REPORT
+  </text>
+  
+  
+  <g transform="translate(640, 280)">
+    
+    <text font-size="42" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#003F6C" text-anchor="middle" x="0" y="0">      </text><text font-size="42" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#003F6C" text-anchor="middle" x="0" y="0">重庆汇丰房地产土地资产评估</text><text font-size="42" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="700" fill="#003F6C" text-anchor="middle" x="0" y="55">有限责任公司</text><line x1="-120" y1="90" x2="120" y2="90" stroke="#0076A8" stroke-width="3" stroke-linecap="round" />
+    
+    
+    <text x="0" y="140" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="36" font-weight="600" fill="#4A90E2" text-anchor="middle">
+      深度尽职调查报告
+    </text>
+    
+    
+    <text x="0" y="185" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="400" fill="#7F8C8D" text-anchor="middle" letter-spacing="1">
+      Comprehensive Due Diligence Analysis
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="620" width="1280" height="100" fill="#ECF0F1" />
+  
+  
+  <g transform="translate(60, 655)">
+    
+    <g>
+      <circle cx="8" cy="-3" r="4" fill="#0076A8" />
+      <text x="25" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="400" fill="#2C3E50">
+        制作日期：2025年10月
+      </text>
+    </g>
+    
+    
+    <g transform="translate(350, 0)">
+      <circle cx="8" cy="-3" r="4" fill="#0076A8" />
+      <text x="25" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="400" fill="#2C3E50">
+        基于多源信息的综合分析评估
+      </text>
+    </g>
+  </g>
+  
+  
+  <text x="1160" y="670" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="600" fill="#003F6C">
+    01
+  </text>
+  <text x="1185" y="670" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="400" fill="#7F8C8D">
+    /08
+  </text>
+  
+  
+  <g opacity="0.1">
+    <circle cx="1150" cy="180" r="80" fill="#0076A8" />
+    <circle cx="1100" cy="280" r="50" fill="#4A90E2" />
+    <rect x="1050" y="380" width="100" height="100" rx="8" fill="#003F6C" />
+  </g>
+</svg>

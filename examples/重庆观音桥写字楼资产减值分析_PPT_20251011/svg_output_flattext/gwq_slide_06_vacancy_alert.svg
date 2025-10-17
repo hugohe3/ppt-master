@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="50" y1="40" x2="1230" y2="40" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+    空置率攀升警示
+  </text>
+  <text x="1230" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#D04A02" text-anchor="end" font-weight="600">
+    PwC
+  </text>
+  
+  
+  <text x="50" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="36" font-weight="bold" fill="#53565A">
+    空置率攀升警示
+  </text>
+  
+  
+  <rect x="50" y="120" width="1180" height="50" fill="#FFF5F0" stroke="#D04A02" stroke-width="1" rx="6" />
+  <text x="640" y="152" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" fill="#D04A02" text-anchor="middle" font-weight="600">
+    空置率接近历史高位，资产利用效率显著下降
+  </text>
+  
+  
+  <g transform="translate(640, 250)">
+    <circle cx="0" cy="0" r="72" fill="#D04A02" opacity="0.08" />
+    <circle cx="0" cy="0" r="72" fill="none" stroke="#D04A02" stroke-width="4" />
+    <text x="0" y="20" font-family="Helvetica Neue, Arial, sans-serif" font-size="50" fill="#D04A02" text-anchor="middle" font-weight="bold">
+      ~20%
+    </text>
+    <text x="0" y="50" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#53565A" text-anchor="middle">
+      2025年空置率
+    </text>
+  </g>
+  
+  
+  <g transform="translate(150, 400)">
+    <text x="380" y="-15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" font-weight="600" fill="#53565A" text-anchor="middle">
+      观音桥空置率趋势
+    </text>
+    
+    
+    <line x1="60" y1="0" x2="60" y2="200" stroke="#53565A" stroke-width="2" />
+    <line x1="60" y1="200" x2="700" y2="200" stroke="#53565A" stroke-width="2" />
+    
+    
+    <text x="35" y="8" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" fill="#8C8C8C" text-anchor="end">25%</text>
+    <text x="35" y="58" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" fill="#8C8C8C" text-anchor="end">20%</text>
+    <text x="35" y="108" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" fill="#8C8C8C" text-anchor="end">15%</text>
+    <text x="35" y="158" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" fill="#8C8C8C" text-anchor="end">10%</text>
+    <text x="35" y="205" font-family="Helvetica Neue, Arial, sans-serif" font-size="13" fill="#8C8C8C" text-anchor="end">5%</text>
+    
+    
+    <line x1="60" y1="50" x2="700" y2="50" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="3,3" />
+    <line x1="60" y1="100" x2="700" y2="100" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="3,3" />
+    <line x1="60" y1="150" x2="700" y2="150" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="3,3" />
+    
+    
+    <text x="230" y="225" font-family="Helvetica Neue, Arial, sans-serif" font-size="15" fill="#53565A" text-anchor="middle">2022 Q4</text>
+    <text x="530" y="225" font-family="Helvetica Neue, Arial, sans-serif" font-size="15" fill="#53565A" text-anchor="middle">2025</text>
+    
+    
+    <path d="M 230,110 L 530,50 L 530,200 L 230,200 Z" fill="#D04A02" opacity="0.15" />
+    
+    
+    <polyline points="230,110 530,50" fill="none" stroke="#D04A02" stroke-width="4" />
+    
+    
+    <circle cx="230" cy="110" r="7" fill="#D04A02" />
+    <circle cx="530" cy="50" r="7" fill="#D04A02" />
+    
+    
+    <text x="230" y="90" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#D04A02" text-anchor="middle" font-weight="bold">13.77%</text>
+    <text x="530" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#D04A02" text-anchor="middle" font-weight="bold">~20%</text>
+  </g>
+  
+  
+  <g transform="translate(880, 400)">
+    <text x="160" y="-15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" font-weight="600" fill="#53565A" text-anchor="middle">
+      分级空置率对比
+    </text>
+    
+    
+    <text x="0" y="25" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C" font-weight="600">
+      2022年第四季度
+    </text>
+    
+    
+    <rect x="0" y="45" width="320" height="50" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="4" />
+    <text x="15" y="75" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#53565A">
+      甲级写字楼
+    </text>
+    <text x="300" y="75" font-family="Helvetica Neue, Arial, sans-serif" font-size="20" fill="#D04A02" text-anchor="end" font-weight="bold">
+      16.2%
+    </text>
+    
+    
+    <rect x="0" y="105" width="320" height="50" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="4" />
+    <text x="15" y="135" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#53565A">
+      乙级写字楼
+    </text>
+    <text x="300" y="135" font-family="Helvetica Neue, Arial, sans-serif" font-size="20" fill="#53565A" text-anchor="end" font-weight="bold">
+      12.11%
+    </text>
+    
+    
+    <text x="0" y="190" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#8C8C8C" font-weight="600">
+      全市商圈对比（2024）
+    </text>
+    
+    
+    <rect x="0" y="210" width="100" height="60" fill="#D04A02" opacity="0.1" stroke="#D04A02" stroke-width="2" rx="4" />
+    <text x="50" y="235" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#53565A" text-anchor="middle">
+      观音桥
+    </text>
+    <text x="50" y="258" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#D04A02" text-anchor="middle" font-weight="bold">
+      ~20%
+    </text>
+    
+    
+    <rect x="110" y="210" width="100" height="60" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="4" />
+    <text x="160" y="235" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#53565A" text-anchor="middle">
+      解放碑
+    </text>
+    <text x="160" y="258" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#53565A" text-anchor="middle" font-weight="bold">
+      40%
+    </text>
+    
+    
+    <rect x="220" y="210" width="100" height="60" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1" rx="4" />
+    <text x="270" y="235" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#53565A" text-anchor="middle">
+      江北嘴
+    </text>
+    <text x="270" y="258" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#53565A" text-anchor="middle" font-weight="bold">
+      33%
+    </text>
+  </g>
+  
+  
+  <line x1="50" y1="680" x2="1230" y2="680" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C">
+    观音桥写字楼减值分析
+  </text>
+  <text x="1230" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="end">
+    6 / 11
+  </text>
+</svg>

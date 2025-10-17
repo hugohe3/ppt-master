@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="60" y1="50" x2="1220" y2="50" stroke="#E0E6ED" stroke-width="2" />
+  
+  
+  <text x="640" y="100" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="36" font-weight="bold" fill="#003D82" text-anchor="middle">
+    注册成功的关键要素与行动路线图
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="140" width="560" height="440" fill="#F5F7FA" rx="10" />
+    
+    <text x="360" y="180" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="24" font-weight="bold" fill="#0066CC" text-anchor="middle">
+      成功关键要素
+    </text>
+    
+    
+    <g>
+      <circle cx="135" cy="240" r="28" fill="#E3F2FD" stroke="#0066CC" stroke-width="2" />
+      
+      <circle cx="135" cy="240" r="14" fill="none" stroke="#0066CC" stroke-width="2" />
+      <line x1="135" y1="240" x2="135" y2="232" stroke="#0066CC" stroke-width="2" />
+      <line x1="135" y1="240" x2="141" y2="240" stroke="#0066CC" stroke-width="2" />
+      
+      <text x="185" y="235" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#003D82" font-weight="bold">
+        1. 提前规划
+      </text>
+      <text x="185" y="258" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A">
+        预留6-12个月注册周期，充分准备
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="135" cy="320" r="28" fill="#E8F5E9" stroke="#00A86B" stroke-width="2" />
+      
+      <rect x="125" y="310" width="14" height="18" fill="none" stroke="#00A86B" stroke-width="2" rx="1" />
+      <line x1="128" y1="315" x2="136" y2="315" stroke="#00A86B" stroke-width="1.5" />
+      <line x1="128" y1="319" x2="136" y2="319" stroke="#00A86B" stroke-width="1.5" />
+      <line x1="128" y1="323" x2="133" y2="323" stroke="#00A86B" stroke-width="1.5" />
+      
+      <text x="185" y="315" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#003D82" font-weight="bold">
+        2. 材料完备
+      </text>
+      <text x="185" y="338" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A">
+        严格按要求准备，确保一次性通过
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="135" cy="400" r="28" fill="#E3F2FD" stroke="#0066CC" stroke-width="2" />
+      
+      <circle cx="128" cy="398" r="5" fill="none" stroke="#0066CC" stroke-width="2" />
+      <circle cx="142" cy="398" r="5" fill="none" stroke="#0066CC" stroke-width="2" />
+      <path d="M 123 407 Q 128 404 133 407" fill="none" stroke="#0066CC" stroke-width="2" />
+      <path d="M 137 407 Q 142 404 147 407" fill="none" stroke="#0066CC" stroke-width="2" />
+      
+      <text x="185" y="395" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#003D82" font-weight="bold">
+        3. 专业支持
+      </text>
+      <text x="185" y="418" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A">
+        组建内部团队或聘请专业代理机构
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="135" cy="480" r="28" fill="#FFF3E0" stroke="#FF8C00" stroke-width="2" />
+      
+      <path d="M 135 470 L 135 480 L 128 483 L 128 476 L 132 472 Z" fill="#FF8C00" />
+      <path d="M 135 470 L 135 480 L 142 483 L 142 476 L 138 472 Z" fill="#FF8C00" />
+      <ellipse cx="135" cy="470" rx="5" ry="8" fill="#FF8C00" />
+      
+      <text x="185" y="475" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#003D82" font-weight="bold">
+        4. 争取快速通道
+      </text>
+      <text x="185" y="498" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A">
+        评估是否符合优先/创新审批条件
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="135" cy="560" r="28" fill="#E8F5E9" stroke="#00A86B" stroke-width="2" />
+      
+      <rect x="122" y="552" width="26" height="20" fill="none" stroke="#00A86B" stroke-width="2" rx="2" />
+      <path d="M 122 557 L 148 557" stroke="#00A86B" stroke-width="2" />
+      <path d="M 135 547 L 135 557" stroke="#00A86B" stroke-width="2" />
+      <circle cx="130" cy="547" r="3" fill="none" stroke="#00A86B" stroke-width="1.5" />
+      <circle cx="140" cy="547" r="3" fill="none" stroke="#00A86B" stroke-width="1.5" />
+      
+      <text x="185" y="555" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#003D82" font-weight="bold">
+        5. 利用政策红利
+      </text>
+      <text x="185" y="578" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A">
+        申报政府补贴，降低注册成本
+      </text>
+    </g>
+  </g>
+  
+  
+  <g>
+    <rect x="660" y="140" width="560" height="440" fill="#E3F2FD" rx="10" stroke="#0066CC" stroke-width="2" />
+    
+    <text x="940" y="180" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="24" font-weight="bold" fill="#0066CC" text-anchor="middle">
+      行动路线图
+    </text>
+    
+    
+    <line x1="710" y1="220" x2="710" y2="540" stroke="#0066CC" stroke-width="3" stroke-dasharray="5,5" opacity="0.3" />
+    
+    
+    <g>
+      <circle cx="710" cy="220" r="20" fill="#0066CC" />
+      <text x="710" y="228" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        1
+      </text>
+      <text x="750" y="217" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        产品定型与风险评估
+      </text>
+      <text x="750" y="235" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        完成软件开发，进行风险分析
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="710" cy="280" r="20" fill="#0066CC" />
+      <text x="710" y="288" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        2
+      </text>
+      <text x="750" y="277" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        准备技术文档与测试
+      </text>
+      <text x="750" y="295" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        编制注册资料，送检验机构测试
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="710" cy="340" r="20" fill="#0066CC" />
+      <text x="710" y="348" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        3
+      </text>
+      <text x="750" y="337" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        选择代理或自行申报
+      </text>
+      <text x="750" y="355" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        根据能力决定是否聘请代理机构
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="710" cy="400" r="20" fill="#0066CC" />
+      <text x="710" y="408" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        4
+      </text>
+      <text x="750" y="397" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        提交申请并跟进审评
+      </text>
+      <text x="750" y="415" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        通过一网通办提交，关注反馈
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="710" cy="460" r="20" fill="#0066CC" />
+      <text x="710" y="468" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        5
+      </text>
+      <text x="750" y="457" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        配合核查与补充材料
+      </text>
+      <text x="750" y="475" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        及时响应质量体系核查要求
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="710" cy="520" r="20" fill="#00A86B" />
+      <text x="710" y="528" font-family="Segoe UI, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        6
+      </text>
+      <text x="750" y="517" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#003D82" font-weight="bold">
+        获证后申请政策补贴
+      </text>
+      <text x="750" y="535" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        向所在区申报注册奖励资金
+      </text>
+    </g>
+    
+    
+    <rect x="680" y="555" width="520" height="15" fill="#FFFFFF" rx="4" />
+    <text x="940" y="566" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="13" fill="#003D82" text-anchor="middle" font-weight="bold">
+      上海市药监局 | 所在园区服务平台
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="600" width="1140" height="80" fill="#003D82" rx="10" />
+    
+    <text x="640" y="633" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">
+      注册成功 = 充分准备 + 合规材料 + 专业支持 + 政策利用
+    </text>
+    
+    <text x="640" y="662" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#E0E6ED" text-anchor="middle">
+      软件类医疗器械注册虽有挑战，但在上海完善的政策支持和服务体系下，
+      规划得当的企业完全可以顺利获得注册证，开启市场准入之路
+    </text>
+  </g>
+  
+  
+  <text x="1220" y="710" font-family="Segoe UI, sans-serif" font-size="14" fill="#B0BEC5" text-anchor="end">
+    9
+  </text>
+</svg>

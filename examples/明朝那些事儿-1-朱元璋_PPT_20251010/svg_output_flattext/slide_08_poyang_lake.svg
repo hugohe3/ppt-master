@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#C8102E">
+    决战鄱阳湖（1363）
+  </text>
+  
+  <line x1="60" y1="95" x2="440" y2="95" stroke="#C8102E" stroke-width="3" />
+  
+  
+  <g>
+    <rect x="60" y="120" width="1160" height="110" fill="#F5F5F5" rx="8" />
+    
+    <text x="640" y="155" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+      ⚔️ 敌我对比
+    </text>
+    
+    
+    <g transform="translate(150, 175)">
+      <rect x="0" y="0" width="400" height="45" fill="#C8102E" rx="4" />
+      <text x="20" y="28" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+        陈友谅
+      </text>
+      <text x="150" y="28" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+        60 万大军
+      </text>
+      <text x="300" y="28" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF">
+        巨型战舰（三层高）
+      </text>
+    </g>
+    
+    
+    <g transform="translate(730, 175)">
+      <rect x="0" y="0" width="400" height="45" fill="#005587" rx="4" />
+      <text x="20" y="28" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+        朱元璋
+      </text>
+      <text x="150" y="28" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+        20 万军队
+      </text>
+      <text x="300" y="28" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF">
+        小型船只
+      </text>
+    </g>
+  </g>
+  
+  
+  <g>
+    <rect x="60" y="250" width="1160" height="340" fill="#F5F5F5" rx="8" />
+    
+    <text x="640" y="285" font-family="sans-serif" font-size="26" font-weight="700" fill="#005587" text-anchor="middle">
+      战役经过
+    </text>
+    
+    
+    <line x1="120" y1="340" x2="1160" y2="340" stroke="#8B4513" stroke-width="3" />
+    
+    
+    <g>
+      <circle cx="180" cy="340" r="10" fill="#8B4513" />
+      <circle cx="180" cy="340" r="6" fill="#FFFFFF" />
+      
+      <rect x="130" y="360" width="160" height="200" fill="#FFFFFF" rx="6" />
+      <rect x="130" y="360" width="160" height="6" fill="#666666" rx="2" />
+      
+      <text x="210" y="388" font-family="sans-serif" font-size="16" font-weight="700" fill="#666666" text-anchor="middle">
+        前奏
+      </text>
+      
+      <text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="150" y="415">        </text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="150" y="415">洪都保卫战</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="150" y="437">朱文正以数万</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="150" y="457">兵力抵抗</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="150" y="477">60万大军</text><rect x="145" y="515" width="130" height="30" fill="#8B4513" rx="4" />
+      <text x="210" y="537" font-family="monospace" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        85 天
+      </text>
+    </g>
+    
+    
+    <g>
+      <circle cx="380" cy="340" r="10" fill="#8B4513" />
+      <circle cx="380" cy="340" r="6" fill="#FFFFFF" />
+      
+      <rect x="310" y="360" width="160" height="200" fill="#FFFFFF" rx="6" />
+      <rect x="310" y="360" width="160" height="6" fill="#005587" rx="2" />
+      
+      <text x="390" y="388" font-family="sans-serif" font-size="16" font-weight="700" fill="#005587" text-anchor="middle">
+        第一阶段
+      </text>
+      
+      <text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="415">        </text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="415">徐达先攻</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="437">"群狼战术"</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="457">小船围攻</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="477">巨舰</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="330" y="499">初期获胜</text></g>
+    
+    
+    <g>
+      <circle cx="580" cy="340" r="10" fill="#8B4513" />
+      <circle cx="580" cy="340" r="6" fill="#FFFFFF" />
+      
+      <rect x="490" y="360" width="180" height="200" fill="#FFFFFF" rx="6" />
+      <rect x="490" y="360" width="180" height="6" fill="#C8102E" rx="2" />
+      
+      <text x="580" y="388" font-family="sans-serif" font-size="16" font-weight="700" fill="#C8102E" text-anchor="middle">
+        第二阶段
+      </text>
+      
+      <text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="415">        </text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="415">张定边冲阵</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="437">三艘战舰</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="457">孤军深入</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="477">直逼朱元璋</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="510" y="499">无人可挡</text></g>
+    
+    
+    <g>
+      <circle cx="780" cy="340" r="10" fill="#8B4513" />
+      <circle cx="780" cy="340" r="6" fill="#FFFFFF" />
+      
+      <rect x="690" y="360" width="180" height="200" fill="#FFFFFF" rx="6" />
+      <rect x="690" y="360" width="180" height="6" fill="#D4AF37" rx="2" />
+      
+      <text x="780" y="388" font-family="sans-serif" font-size="16" font-weight="700" fill="#D4AF37" text-anchor="middle">
+        第三阶段
+      </text>
+      
+      <text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="415">        </text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="415">常遇春神箭</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="437">朱元璋船</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="457">搁浅危急</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="477">一箭射中</text><text font-size="14" font-family="sans-serif" fill="#333333" font-weight="400" x="710" y="499">张定边</text></g>
+    
+    
+    <g>
+      <circle cx="1000" cy="340" r="10" fill="#8B4513" />
+      <circle cx="1000" cy="340" r="6" fill="#FFFFFF" />
+      
+      <rect x="910" y="360" width="180" height="200" fill="#C8102E" rx="6" />
+      
+      <text x="1000" y="388" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        决胜
+      </text>
+      
+      <text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="415">        </text><text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="415">火烧连环船</text><text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="437">陈友谅连</text><text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="457">铁索船</text><text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="477">东北风起</text><text font-size="14" font-family="sans-serif" fill="#FFFFFF" font-weight="400" x="930" y="499">火烧连营</text></g>
+  </g>
+  
+  
+  <g>
+    <rect x="60" y="610" width="560" height="70" fill="#C8102E" rx="8" />
+    
+    <text x="340" y="640" font-family="sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      陈友谅之死
+    </text>
+    
+    <text x="340" y="665" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+      突围至湖口，被冷箭射穿头颅而死
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="660" y="610" width="560" height="70" fill="#005587" rx="8" />
+    
+    <text x="940" y="640" font-family="sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+      战略意义
+    </text>
+    
+    <text x="940" y="665" font-family="sans-serif" font-size="16" font-weight="400" fill="#D4AF37" text-anchor="middle">
+      彻底摧毁最强对手，奠定统一基础
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="1220" y="705" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    8 / 12
+  </text>
+</svg>

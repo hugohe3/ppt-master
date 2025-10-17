@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text fill="#005587" font-size="36" font-weight="700" x="80" y="100">    知识产权体系 </text><text fill="#7F8C8D" font-size="36" font-weight="700" x="80" y="100">|</text><rect x="80" y="160" width="520" height="500" rx="8" fill="#F8F9FA" />
+  
+  <text x="340" y="200" text-anchor="middle" font-size="28" font-weight="700" fill="#005587">
+    专利类型布局
+  </text>
+  
+  
+  <rect x="110" y="240" width="460" height="140" rx="6" fill="#FFFFFF" stroke="#E67E22" stroke-width="3" />
+  <text x="130" y="270" font-size="22" font-weight="700" fill="#E67E22">
+    发明专利（核心）
+  </text>
+  <text fill="#2C3E50" font-size="18" font-weight="400" x="150" y="305">    </text><text fill="#2C3E50" font-size="18" font-weight="400" x="150" y="305">• AI 推荐算法</text><text fill="#2C3E50" font-size="18" font-weight="400" x="150" y="333">• 数据加密方法</text><text fill="#2C3E50" font-size="18" font-weight="400" x="150" y="361">• 独特交互逻辑</text><rect x="110" y="400" width="460" height="100" rx="6" fill="#FFFFFF" stroke="#0076A8" stroke-width="2" />
+  <text x="130" y="430" font-size="22" font-weight="700" fill="#0076A8">
+    实用新型专利
+  </text>
+  <text x="150" y="465" font-size="18" font-weight="400" fill="#2C3E50">
+    • 硬件接口设计（智能设备配套）
+  </text>
+  
+  
+  <rect x="110" y="520" width="460" height="100" rx="6" fill="#FFFFFF" stroke="#7F8C8D" stroke-width="2" />
+  <text x="130" y="550" font-size="22" font-weight="700" fill="#7F8C8D">
+    外观设计专利
+  </text>
+  <text x="150" y="585" font-size="18" font-weight="400" fill="#2C3E50">
+    • APP 界面布局（UI/UX 独特设计）
+  </text>
+  
+  
+  <text x="940" y="200" text-anchor="middle" font-size="28" font-weight="700" fill="#005587">
+    核心价值
+  </text>
+  
+  
+  <rect x="680" y="230" width="520" height="90" rx="8" fill="#E8F4F8" />
+  <circle cx="710" cy="275" r="8" fill="#E67E22" />
+  <text x="735" y="265" font-size="20" font-weight="600" fill="#2C3E50">
+    技术壁垒构建
+  </text>
+  <text x="735" y="290" font-size="16" font-weight="400" fill="#7F8C8D">
+    防止竞争对手抄袭核心技术
+  </text>
+  
+  
+  <rect x="680" y="340" width="520" height="90" rx="8" fill="#E8F4F8" />
+  <circle cx="710" cy="385" r="8" fill="#E67E22" />
+  <text x="735" y="375" font-size="20" font-weight="600" fill="#2C3E50">
+    高新技术企业必备
+  </text>
+  <text x="735" y="400" font-size="16" font-weight="400" fill="#7F8C8D">
+    3项发明专利是认定核心条件
+  </text>
+  
+  
+  <rect x="680" y="450" width="520" height="90" rx="8" fill="#E8F4F8" />
+  <circle cx="710" cy="495" r="8" fill="#E67E22" />
+  <text x="735" y="485" font-size="20" font-weight="600" fill="#2C3E50">
+    专利许可/转让收入
+  </text>
+  <text x="735" y="510" font-size="16" font-weight="400" fill="#7F8C8D">
+    可创造额外营收来源
+  </text>
+  
+  
+  <rect x="680" y="560" width="520" height="90" rx="8" fill="#E8F4F8" />
+  <circle cx="710" cy="605" r="8" fill="#E67E22" />
+  <text x="735" y="595" font-size="20" font-weight="600" fill="#2C3E50">
+    政府项目投标加分
+  </text>
+  <text x="735" y="620" font-size="16" font-weight="400" fill="#7F8C8D">
+    大型项目常要求专利数量
+  </text>
+  
+  
+  <text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    09
+  </text>
+</svg>

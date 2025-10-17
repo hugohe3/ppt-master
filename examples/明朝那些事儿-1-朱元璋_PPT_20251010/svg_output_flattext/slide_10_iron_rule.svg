@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    铁腕治国（1368-1393）
+  </text>
+  
+  <line x1="60" y1="95" x2="460" y2="95" stroke="#C8102E" stroke-width="3" />
+  
+  
+  <g>
+    <rect x="60" y="120" width="1160" height="200" fill="#F5F5F5" rx="8" />
+    
+    <text x="640" y="155" font-family="sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+      制度建设
+    </text>
+    
+    
+    <g transform="translate(90, 175)">
+      <rect x="0" y="0" width="220" height="120" fill="#FFFFFF" rx="6" />
+      <rect x="0" y="0" width="6" height="120" fill="#C8102E" rx="2" />
+      
+      <text x="20" y="30" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E">
+        废除丞相
+      </text>
+      <text x="20" y="55" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        1380 年
+      </text>
+      <text x="20" y="75" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        撤销中书省
+      </text>
+      <text x="20" y="95" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        皇权集中
+      </text>
+    </g>
+    
+    <g transform="translate(340, 175)">
+      <rect x="0" y="0" width="220" height="120" fill="#FFFFFF" rx="6" />
+      <rect x="0" y="0" width="6" height="120" fill="#005587" rx="2" />
+      
+      <text x="20" y="30" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+        锦衣卫
+      </text>
+      <text x="20" y="55" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        特务机构
+      </text>
+      <text x="20" y="75" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        监控臣工
+      </text>
+      <text x="20" y="95" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        诏狱系统
+      </text>
+    </g>
+    
+    <g transform="translate(590, 175)">
+      <rect x="0" y="0" width="220" height="120" fill="#FFFFFF" rx="6" />
+      <rect x="0" y="0" width="6" height="120" fill="#8B4513" rx="2" />
+      
+      <text x="20" y="30" font-family="sans-serif" font-size="18" font-weight="700" fill="#8B4513">
+        科举制度
+      </text>
+      <text x="20" y="55" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        八股取士
+      </text>
+      <text x="20" y="75" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        四书五经
+      </text>
+      <text x="20" y="95" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        选拔人才
+      </text>
+    </g>
+    
+    <g transform="translate(840, 175)">
+      <rect x="0" y="0" width="220" height="120" fill="#FFFFFF" rx="6" />
+      <rect x="0" y="0" width="6" height="120" fill="#666666" rx="2" />
+      
+      <text x="20" y="30" font-family="sans-serif" font-size="18" font-weight="700" fill="#666666">
+        重农抑商
+      </text>
+      <text x="20" y="55" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        鼓励垦荒
+      </text>
+      <text x="20" y="75" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        减免赋税
+      </text>
+      <text x="20" y="95" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333">
+        歧视商人
+      </text>
+    </g>
+  </g>
+  
+  
+  <g>
+    <rect x="60" y="340" width="1160" height="340" fill="#F5F5F5" rx="8" />
+    
+    <text x="640" y="380" font-family="sans-serif" font-size="28" font-weight="700" fill="#C8102E" text-anchor="middle">
+      四大政治清洗
+    </text>
+    
+    
+    <g transform="translate(90, 400)">
+      <rect x="0" y="0" width="200" height="40" fill="#005587" />
+      <text x="100" y="26" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        案件
+      </text>
+      
+      <rect x="210" y="0" width="120" height="40" fill="#005587" />
+      <text x="270" y="26" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        年份
+      </text>
+      
+      <rect x="340" y="0" width="140" height="40" fill="#005587" />
+      <text x="410" y="26" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        主犯
+      </text>
+      
+      <rect x="490" y="0" width="180" height="40" fill="#005587" />
+      <text x="580" y="26" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        被杀人数
+      </text>
+      
+      <rect x="680" y="0" width="410" height="40" fill="#005587" />
+      <text x="885" y="26" font-family="sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        真实目的
+      </text>
+    </g>
+    
+    
+    <g transform="translate(90, 450)">
+      <rect x="0" y="0" width="200" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="600" fill="#333333" text-anchor="middle">
+        空印案
+      </text>
+      
+      <rect x="210" y="0" width="120" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="270" y="35" font-family="monospace" font-size="16" font-weight="600" fill="#8B4513" text-anchor="middle">
+        1376
+      </text>
+      
+      <rect x="340" y="0" width="140" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="410" y="35" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333" text-anchor="middle">
+        地方官员
+      </text>
+      
+      <rect x="490" y="0" width="180" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="580" y="35" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E" text-anchor="middle">
+        数千人
+      </text>
+      
+      <rect x="680" y="0" width="410" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="885" y="35" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333" text-anchor="middle">
+        杀威棒，整肃官僚系统
+      </text>
+    </g>
+    
+    
+    <g transform="translate(90, 520)">
+      <rect x="0" y="0" width="200" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="600" fill="#333333" text-anchor="middle">
+        胡惟庸案
+      </text>
+      
+      <rect x="210" y="0" width="120" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="270" y="35" font-family="monospace" font-size="16" font-weight="600" fill="#8B4513" text-anchor="middle">
+        1380
+      </text>
+      
+      <rect x="340" y="0" width="140" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="410" y="35" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333" text-anchor="middle">
+        胡惟庸
+      </text>
+      
+      <rect x="490" y="0" width="180" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="580" y="35" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E" text-anchor="middle">
+        1 万+
+      </text>
+      
+      <rect x="680" y="0" width="410" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="885" y="35" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333" text-anchor="middle">
+        废除丞相制度
+      </text>
+    </g>
+    
+    
+    <g transform="translate(90, 590)">
+      <rect x="0" y="0" width="200" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="100" y="35" font-family="sans-serif" font-size="16" font-weight="600" fill="#333333" text-anchor="middle">
+        郭桓案
+      </text>
+      
+      <rect x="210" y="0" width="120" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="270" y="35" font-family="monospace" font-size="16" font-weight="600" fill="#8B4513" text-anchor="middle">
+        1385
+      </text>
+      
+      <rect x="340" y="0" width="140" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="410" y="35" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333" text-anchor="middle">
+        郭桓
+      </text>
+      
+      <rect x="490" y="0" width="180" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="580" y="35" font-family="sans-serif" font-size="18" font-weight="700" fill="#C8102E" text-anchor="middle">
+        3 万+
+      </text>
+      
+      <rect x="680" y="0" width="410" height="60" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1" />
+      <text x="885" y="35" font-family="sans-serif" font-size="14" font-weight="400" fill="#333333" text-anchor="middle">
+        清洗财政系统
+      </text>
+    </g>
+  </g>
+  
+  
+  <rect x="950" y="630" width="270" height="60" fill="#C8102E" rx="6" />
+  <text x="1085" y="655" font-family="sans-serif" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    蓝玉案（1393）
+  </text>
+  <text x="1085" y="680" font-family="sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    1.5 万+
+  </text>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="1220" y="705" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    10 / 12
+  </text>
+</svg>

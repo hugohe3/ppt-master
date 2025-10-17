@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="60" y="80" font-family="sans-serif" font-size="42" font-weight="700" fill="#005587">
+    崛起之路（1352-1356）
+  </text>
+  
+  <line x1="60" y1="95" x2="430" y2="95" stroke="#D4AF37" stroke-width="3" />
+  
+  
+  <line x1="640" y1="140" x2="640" y2="610" stroke="#8B4513" stroke-width="4" />
+  
+  
+  <g>
+    <circle cx="640" cy="170" r="14" fill="#8B4513" />
+    <circle cx="640" cy="170" r="9" fill="#FFFFFF" />
+    
+    <rect x="100" y="140" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="100" y="140" width="8" height="100" fill="#8B4513" rx="2" />
+    
+    <text x="130" y="165" font-family="monospace" font-size="18" font-weight="700" fill="#8B4513">
+      1352
+    </text>
+    
+    <text x="130" y="192" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+      投军与改名
+    </text>
+    
+    <text x="130" y="220" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+      投奔郭子兴，改名"朱元璋"
+    </text>
+    
+    <text x="450" y="220" font-family="sans-serif" font-size="14" font-weight="600" fill="#C8102E">
+      → 诛灭元朝的利器
+    </text>
+  </g>
+  
+  <g>
+    <rect x="700" y="140" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="1172" y="140" width="8" height="100" fill="#005587" rx="2" />
+    
+    <text x="730" y="165" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+      军中崛起
+    </text>
+    
+    <text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="195">      </text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="195">亲兵 → 九人长 → 元帅女婿</text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="219">作战勇敢、有计谋、威信极高</text></g>
+  
+  
+  <g>
+    <circle cx="640" cy="290" r="14" fill="#8B4513" />
+    <circle cx="640" cy="290" r="9" fill="#FFFFFF" />
+    
+    <rect x="100" y="260" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="100" y="260" width="8" height="100" fill="#005587" rx="2" />
+    
+    <text x="130" y="285" font-family="monospace" font-size="18" font-weight="700" fill="#8B4513">
+      1353
+    </text>
+    
+    <text x="130" y="312" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+      招募核心团队
+    </text>
+    
+    <text x="130" y="340" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+      24 名豪杰来投，包括徐达、汤和
+    </text>
+  </g>
+  
+  <g>
+    <rect x="700" y="260" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="1172" y="260" width="8" height="100" fill="#D4AF37" rx="2" />
+    
+    <text x="730" y="285" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+      关键谋士
+    </text>
+    
+    <text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="315">      </text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="315">李善长："效仿汉高祖刘邦"</text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="339">冯国用、冯国胜兄弟来投</text></g>
+  
+  
+  <g>
+    <circle cx="640" cy="410" r="14" fill="#8B4513" />
+    <circle cx="640" cy="410" r="9" fill="#FFFFFF" />
+    
+    <rect x="100" y="380" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="100" y="380" width="8" height="100" fill="#C8102E" rx="2" />
+    
+    <text x="130" y="405" font-family="monospace" font-size="18" font-weight="700" fill="#8B4513">
+      1353
+    </text>
+    
+    <text x="130" y="432" font-family="sans-serif" font-size="20" font-weight="700" fill="#005587">
+      攻占滁州
+    </text>
+    
+    <text x="130" y="460" font-family="sans-serif" font-size="15" font-weight="400" fill="#333333">
+      获得稳固根据地，年仅 26 岁
+    </text>
+  </g>
+  
+  <g>
+    <rect x="700" y="380" width="480" height="100" fill="#F5F5F5" rx="6" />
+    <rect x="1172" y="380" width="8" height="100" fill="#005587" rx="2" />
+    
+    <text x="730" y="405" font-family="sans-serif" font-size="18" font-weight="700" fill="#005587">
+      亲族来投
+    </text>
+    
+    <text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="435">      </text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="435">侄子朱文正、外甥李文忠来投</text><text font-size="15" font-family="sans-serif" fill="#333333" font-weight="400" x="730" y="459">目光已不再是濠州，而是天下</text></g>
+  
+  
+  <g>
+    <circle cx="640" cy="530" r="14" fill="#8B4513" />
+    <circle cx="640" cy="530" r="9" fill="#FFFFFF" />
+    
+    <rect x="100" y="500" width="480" height="100" fill="#005587" rx="6" />
+    
+    <text x="130" y="530" font-family="monospace" font-size="20" font-weight="700" fill="#D4AF37">
+      1356
+    </text>
+    
+    <text x="130" y="560" font-family="sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">
+      渡江取应天
+    </text>
+    
+    <text x="130" y="585" font-family="sans-serif" font-size="16" font-weight="400" fill="#FFFFFF">
+      攻克集庆（南京），改名应天
+    </text>
+  </g>
+  
+  <g>
+    <rect x="700" y="500" width="480" height="100" fill="#D4AF37" rx="6" />
+    
+    <text x="730" y="530" font-family="sans-serif" font-size="20" font-weight="700" fill="#003A5D">
+      霸业真正开始
+    </text>
+    
+    <text font-size="16" font-family="sans-serif" fill="#003A5D" font-weight="400" x="730" y="560">      </text><text font-size="16" font-family="sans-serif" fill="#003A5D" font-weight="400" x="730" y="560">穷人朱元璋来到了富裕的南京</text><text font-size="16" font-family="sans-serif" fill="#003A5D" font-weight="400" x="730" y="584">但真正的事业才刚刚开始</text></g>
+  
+  
+  <rect x="60" y="630" width="1160" height="50" fill="#F5F5F5" rx="4" />
+  
+  <text x="90" y="660" font-family="sans-serif" font-size="16" font-weight="700" fill="#005587">
+    核心团队：
+  </text>
+  
+  <g transform="translate(200, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      徐达
+    </text>
+  </g>
+  
+  <g transform="translate(320, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      汤和
+    </text>
+  </g>
+  
+  <g transform="translate(440, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      李善长
+    </text>
+  </g>
+  
+  <g transform="translate(560, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      冯国用
+    </text>
+  </g>
+  
+  <g transform="translate(680, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      朱文正
+    </text>
+  </g>
+  
+  <g transform="translate(800, 645)">
+    <rect x="0" y="0" width="100" height="30" fill="#005587" rx="4" />
+    <text x="50" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      李文忠
+    </text>
+  </g>
+  
+  <g transform="translate(920, 645)">
+    <rect x="0" y="0" width="120" height="30" fill="#8B4513" rx="4" />
+    <text x="60" y="21" font-family="sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      马皇后
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#005587" />
+  
+  
+  <text x="1220" y="695" font-family="sans-serif" font-size="16" font-weight="400" fill="#005587" text-anchor="end">
+    6 / 12
+  </text>
+</svg>

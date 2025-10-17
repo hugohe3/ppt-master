@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="60" y1="50" x2="1220" y2="50" stroke="#E0E6ED" stroke-width="2" />
+  
+  
+  <text x="640" y="100" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="36" font-weight="bold" fill="#003D82" text-anchor="middle">
+    上海市第二类医疗器械注册流程
+  </text>
+  
+  
+  <g>
+    <rect x="350" y="130" width="580" height="50" fill="#E3F2FD" rx="8" stroke="#0066CC" stroke-width="2" />
+    <text fill="#2C3E50" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="640" y="162">      主管部门：
+      </text><text fill="#0066CC" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="640" y="162">上海市药品监督管理局</text></g>
+  
+  
+  
+  <line x1="160" y1="280" x2="1120" y2="280" stroke="#0066CC" stroke-width="3" />
+  
+  
+  <g>
+    <circle cx="160" cy="280" r="30" fill="#0066CC" stroke="#003D82" stroke-width="3" />
+    <text x="160" y="290" font-family="Segoe UI, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      1
+    </text>
+    
+    <text x="160" y="345" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" font-weight="bold" fill="#003D82" text-anchor="middle">
+      申请与受理
+    </text>
+    <text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="160" y="375">      </text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="160" y="375">电子申报+</text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="160" y="393">纸质材料</text><rect x="130" y="415" width="60" height="24" fill="#00A86B" rx="4" />
+    <text x="160" y="432" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      5日
+    </text>
+  </g>
+  
+  
+  <g>
+    <circle cx="340" cy="280" r="30" fill="#0066CC" stroke="#003D82" stroke-width="3" />
+    <text x="340" y="290" font-family="Segoe UI, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      2
+    </text>
+    
+    <text x="340" y="345" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" font-weight="bold" fill="#003D82" text-anchor="middle">
+      技术审评
+    </text>
+    <text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="340" y="375">      </text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="340" y="375">安全有效性</text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="340" y="393">评价</text><rect x="310" y="415" width="60" height="24" fill="#00A86B" rx="4" />
+    <text x="340" y="432" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      10日
+    </text>
+  </g>
+  
+  
+  <g>
+    <circle cx="550" cy="280" r="30" fill="#0066CC" stroke="#003D82" stroke-width="3" />
+    <text x="550" y="290" font-family="Segoe UI, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      3
+    </text>
+    
+    <text x="550" y="345" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" font-weight="bold" fill="#003D82" text-anchor="middle">
+      质量体系核查
+    </text>
+    <text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="550" y="375">      </text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="550" y="375">现场核查</text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="550" y="393">GMP要求</text><rect x="510" y="415" width="80" height="24" fill="#FF8C00" rx="4" />
+    <text x="550" y="432" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      并行进行
+    </text>
+  </g>
+  
+  
+  <g>
+    <circle cx="780" cy="280" r="30" fill="#0066CC" stroke="#003D82" stroke-width="3" />
+    <text x="780" y="290" font-family="Segoe UI, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      4
+    </text>
+    
+    <text x="780" y="345" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" font-weight="bold" fill="#003D82" text-anchor="middle">
+      行政审批
+    </text>
+    <text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="780" y="375">      </text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="780" y="375">审批</text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="780" y="393">决定</text><rect x="750" y="415" width="60" height="24" fill="#00A86B" rx="4" />
+    <text x="780" y="432" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      10日
+    </text>
+  </g>
+  
+  
+  <g>
+    <circle cx="1000" cy="280" r="30" fill="#00A86B" stroke="#00875F" stroke-width="3" />
+    <text x="1000" y="290" font-family="Segoe UI, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      5
+    </text>
+    
+    <text x="1000" y="345" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" font-weight="bold" fill="#00A86B" text-anchor="middle">
+      发证
+    </text>
+    <text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="1000" y="375">      </text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="1000" y="375">领取</text><text fill="#546E7A" text-anchor="middle" font-size="14" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="1000" y="393">注册证</text><g>
+      <circle cx="1000" cy="422" r="12" fill="none" stroke="#00A86B" stroke-width="2" />
+      <path d="M 995 422 L 998 426 L 1006 418" fill="none" stroke="#00A86B" stroke-width="2.5" />
+    </g>
+  </g>
+  
+  
+  <g>
+    <rect x="320" y="490" width="640" height="90" fill="#E8F5E9" rx="8" stroke="#00A86B" stroke-width="2" />
+    
+    <text fill="#003D82" font-weight="bold" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="640" y="522">      官方承诺时限：约
+      </text><text fill="#00A86B" font-weight="bold" text-anchor="middle" font-size="20" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="640" y="522">25个工作日</text><text x="640" y="550" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="16" fill="#546E7A" text-anchor="middle">
+      （不含企业准备资料、检验检测、补充材料的时间）
+    </text>
+    <text fill="#2C3E50" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="640" y="570">      实际注册周期：
+      </text><text fill="#FF8C00" text-anchor="middle" font-size="16" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="640" y="570">6-12个月</text></g>
+  
+  
+  <g>
+    <rect x="80" y="605" width="540" height="70" fill="#F5F7FA" rx="8" />
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="632">      </text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="100" y="632">流程特点：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="654">• 电子申报提高效率</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="676">• 技术审评与体系核查可并行</text></g>
+  
+  <g>
+    <rect x="650" y="605" width="540" height="70" fill="#F5F7FA" rx="8" />
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="670" y="632">      </text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="670" y="632">注意事项：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="670" y="654">• 材料不符要求可能被补正或不予受理</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="670" y="676">• 审评中可能多次发出补充资料通知</text></g>
+  
+  
+  <text x="1220" y="690" font-family="Segoe UI, sans-serif" font-size="14" fill="#B0BEC5" text-anchor="end">
+    4
+  </text>
+</svg>

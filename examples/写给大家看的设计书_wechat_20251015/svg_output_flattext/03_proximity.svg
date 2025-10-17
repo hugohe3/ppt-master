@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200">
+  
+  <rect width="800" height="1200" fill="#F8F9FA" />
+  
+  
+  <rect x="0" y="0" width="800" height="140" fill="#E9C46A" />
+  <text x="400" y="65" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="42" font-weight="bold" fill="#264653" text-anchor="middle">
+    亲密性原则
+  </text>
+  <text x="400" y="105" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" fill="#264653" text-anchor="middle">
+    PROXIMITY · 将相关内容组织在一起
+  </text>
+  
+  
+  <g>
+    <rect x="60" y="170" width="680" height="100" rx="8" fill="#FFFFFF" />
+    <text x="400" y="210" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" fill="#264653" text-anchor="middle" font-weight="bold">
+      核心理念
+    </text>
+    <text x="400" y="245" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#666666" text-anchor="middle">
+      相关的项应该物理位置相互靠近，形成凝聚的一体
+    </text>
+  </g>
+  
+  
+  <text x="80" y="320" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="28" font-weight="bold" fill="#E85D75">
+    ❌ 错误示例
+  </text>
+  <text x="80" y="355" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#666666">
+    元素间距均匀，看起来杂乱无章
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="380" width="640" height="320" rx="8" fill="#FFFFFF" stroke="#E85D75" stroke-width="2" />
+    
+    
+    <text x="120" y="425" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      公司简介
+    </text>
+    <text x="120" y="465" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      联系电话：123-4567-8900
+    </text>
+    <text x="120" y="505" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      电子邮箱：contact@company.com
+    </text>
+    <text x="120" y="545" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      营业时间
+    </text>
+    <text x="120" y="585" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      周一至周五：9:00-18:00
+    </text>
+    <text x="120" y="625" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      周末：10:00-17:00
+    </text>
+    <text x="120" y="665" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      地址信息
+    </text>
+    
+    
+    <path d="M 580 450 L 650 450 L 650 600 L 580 600" stroke="#E85D75" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+    <text x="665" y="530" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#E85D75">
+      间距
+    </text>
+    <text x="665" y="550" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#E85D75">
+      均匀
+    </text>
+  </g>
+  
+  
+  <text x="80" y="750" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="28" font-weight="bold" fill="#4A90E2">
+    ✓ 正确示例
+  </text>
+  <text x="80" y="785" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#666666">
+    相关内容靠近，不相关内容分离
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="810" width="640" height="320" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2" />
+    
+    
+    <rect x="100" y="830" width="280" height="110" rx="6" fill="#F0F8FF" />
+    <text x="120" y="860" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      联系方式
+    </text>
+    <text x="120" y="890" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      电话：123-4567-8900
+    </text>
+    <text x="120" y="920" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      邮箱：contact@company.com
+    </text>
+    
+    
+    <rect x="420" y="830" width="280" height="110" rx="6" fill="#F0F8FF" />
+    <text x="440" y="860" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      营业时间
+    </text>
+    <text x="440" y="890" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      周一至周五：9:00-18:00
+    </text>
+    <text x="440" y="920" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      周末：10:00-17:00
+    </text>
+    
+    
+    <rect x="100" y="970" width="600" height="140" rx="6" fill="#F0F8FF" />
+    <text x="120" y="1000" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" font-weight="bold" fill="#264653">
+      地址信息
+    </text>
+    <text x="120" y="1030" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      北京市朝阳区某某路123号
+    </text>
+    <text x="120" y="1060" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      地铁1号线某某站A出口
+    </text>
+    <text x="120" y="1090" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      提供免费停车位
+    </text>
+  </g>
+  
+  
+  <text x="400" y="1165" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#264653" text-anchor="middle" font-weight="bold">
+    留白是设计的关键 · 空白不是浪费空间
+  </text>
+</svg>

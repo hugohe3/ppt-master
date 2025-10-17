@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700;900&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#005587" />
+  
+  
+  <text x="160" y="420" font-size="180" font-weight="900" fill="rgba(255,255,255,0.2)">
+    03
+  </text>
+  
+  
+  <text x="480" y="340" font-size="48" font-weight="700" fill="#FFFFFF">
+    资源保障与风险管控
+  </text>
+  
+  
+  <text x="480" y="400" font-size="28" font-weight="400" fill="#ECF0F1">
+    确保规划落地的保障机制
+  </text>
+  
+  
+  <line x1="480" y1="450" x2="1000" y2="450" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+</svg>

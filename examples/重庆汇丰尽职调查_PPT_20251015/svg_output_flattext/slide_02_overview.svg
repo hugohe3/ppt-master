@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C" />
+  
+  
+  <text x="60" y="85" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="32" font-weight="600" fill="#003F6C">
+    企业核心信息与身份验证
+  </text>
+  
+  
+  <text x="60" y="115" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="400" fill="#7F8C8D">
+    Corporate Information and Identity Verification
+  </text>
+  
+  
+  <g transform="translate(60, 155)">
+    <rect width="560" height="220" rx="6" fill="#ECF0F1" stroke="#E0E0E0" stroke-width="1" />
+    <rect width="560" height="50" rx="6" fill="#0076A8" />
+    
+    <text x="25" y="33" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+      基本信息
+    </text>
+    
+    
+    <g transform="translate(480, 15)">
+      <rect x="0" y="0" width="24" height="24" rx="3" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <line x1="6" y1="8" x2="18" y2="8" stroke="#FFFFFF" stroke-width="1.5" />
+      <line x1="6" y1="12" x2="18" y2="12" stroke="#FFFFFF" stroke-width="1.5" />
+      <line x1="6" y1="16" x2="14" y2="16" stroke="#FFFFFF" stroke-width="1.5" />
+    </g>
+    
+    <text x="25" y="85" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#2C3E50">
+      公司全称
+    </text>
+    <text font-size="14" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="400" fill="#2C3E50" x="25" y="108">      </text><text font-size="14" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="400" fill="#2C3E50" x="25" y="108">重庆汇丰房地产土地资产评估有限责任公司</text><text x="25" y="140" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#2C3E50">
+      注册地址
+    </text>
+    <text x="25" y="163" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="400" fill="#2C3E50">
+      重庆市渝中区青年路38号30-8#
+    </text>
+    
+    <g transform="translate(0, 50)">
+      <text x="25" y="140" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#2C3E50">
+        联系方式
+      </text>
+      <text x="25" y="163" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="400" fill="#2C3E50">
+        电话：023-63106610  |  法定代表人：刘小娟
+      </text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(660, 155)">
+    <rect width="560" height="220" rx="6" fill="#ECF0F1" stroke="#E0E0E0" stroke-width="1" />
+    <rect width="560" height="50" rx="6" fill="#0076A8" />
+    
+    <text x="25" y="33" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+      统一社会信用代码验证
+    </text>
+    
+    
+    <g transform="translate(450, 15)">
+      <circle cx="12" cy="12" r="11" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <line x1="12" y1="7" x2="12" y2="13" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+      <circle cx="12" cy="17" r="1.5" fill="#FFFFFF" />
+    </g>
+    
+    
+    <g transform="translate(25, 70)">
+      <circle cx="6" cy="-2" r="7" fill="#2ECC71" />
+      <path d="M 3,-2 L 5,0 L 9,-4" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <text x="20" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#2ECC71">
+        经核实代码（有效）
+      </text>
+      <text x="20" y="28" font-family="'Courier New', monospace" font-size="18" font-weight="700" fill="#2C3E50" letter-spacing="1">
+        91500103203315483T
+      </text>
+      <text x="20" y="50" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="13" font-weight="400" fill="#7F8C8D">
+        来源：财政部备案 + 重庆市财政局公告
+      </text>
+    </g>
+    
+    
+    <g transform="translate(25, 160)">
+      <circle cx="6" cy="-2" r="7" fill="#F39C12" />
+      <text x="3" y="3" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">
+        !
+      </text>
+      
+      <text x="20" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="600" fill="#F39C12">
+        异常代码（需澄清）
+      </text>
+      <text x="20" y="28" font-family="'Courier New', monospace" font-size="18" font-weight="700" fill="#E74C3C" letter-spacing="1">
+        91500227MA60N95343
+      </text>
+      <text x="20" y="50" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="13" font-weight="400" fill="#7F8C8D">
+        来源：单一媒体报道，需明确关联实体
+      </text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 410)">
+    <rect width="560" height="220" rx="6" fill="#ECF0F1" stroke="#E0E0E0" stroke-width="1" />
+    <rect width="560" height="50" rx="6" fill="#0076A8" />
+    
+    <text x="25" y="33" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+      监管备案状态
+    </text>
+    
+    
+    <g transform="translate(430, 15)">
+      <rect x="0" y="0" width="24" height="24" rx="3" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <path d="M 6,12 L 10,16 L 18,8" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    
+    
+    <g transform="translate(25, 80)">
+      <circle cx="8" cy="-2" r="8" fill="#2ECC71" />
+      <path d="M 5,-2 L 7,0 L 11,-4" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <text x="25" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="600" fill="#2C3E50">
+        财政部资产评估机构备案
+      </text>
+      <text x="25" y="25" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="400" fill="#7F8C8D">
+        合法执业基本前提 | 2022年2月公告
+      </text>
+    </g>
+    
+    
+    <g transform="translate(25, 145)">
+      <circle cx="8" cy="-2" r="8" fill="#2ECC71" />
+      <path d="M 5,-2 L 7,0 L 11,-4" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <text x="25" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="600" fill="#2C3E50">
+        中国证监会备案（证券服务业务）
+      </text>
+      <text x="25" y="25" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="14" font-weight="400" fill="#7F8C8D">
+        行业精英层级 | 有资格服务IPO、并购重组等
+      </text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(660, 410)">
+    <rect width="560" height="220" rx="6" fill="#FFF9E6" stroke="#F39C12" stroke-width="2" />
+    <rect width="560" height="50" rx="6" fill="#F39C12" />
+    
+    <text x="25" y="33" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+      关键发现
+    </text>
+    
+    
+    <g transform="translate(455, 15)">
+      <circle cx="12" cy="10" r="6" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <path d="M 9,16 L 15,16" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+      <path d="M 10,18 L 14,18" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+      <line x1="12" y1="4" x2="12" y2="1" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" />
+    </g>
+    
+    <g transform="translate(25, 75)">
+      <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="600" fill="#2C3E50">
+        ✓ 身份核实状态
+      </text>
+      <text x="0" y="28" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="15" font-weight="400" fill="#2C3E50">
+        基本信息已通过多源交叉验证
+      </text>
+      
+      <text x="0" y="65" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="16" font-weight="600" fill="#2C3E50">
+        ⚠ 待澄清事项
+      </text>
+      <text font-size="15" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="400" fill="#2C3E50" x="0" y="93">        </text><text font-size="15" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="400" fill="#2C3E50" x="0" y="93">存在1项统一社会信用代码异常</text><text font-size="15" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-weight="400" fill="#2C3E50" x="0" y="116">需在正式合作前明确关联实体性质</text></g>
+  </g>
+  
+  
+  <text x="1160" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="600" fill="#003F6C">
+    02
+  </text>
+  <text x="1185" y="690" font-family="'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', Arial, sans-serif" font-size="18" font-weight="400" fill="#7F8C8D">
+    /08
+  </text>
+</svg>

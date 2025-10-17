@@ -33,3 +33,15 @@ This project is intended to be used with a large language model (LLM) that can u
     - The user can accept the suggestions or propose adjustments
 3.  **Engage an "Executor" AI:** Based on the desired style, use either `Executor_General.md` or `Executor_Consultant.md` as a prompt for the LLM to generate the SVG code for each slide.
 4.  **(Optional) Engage the "Optimizer" AI:** If desired, use the `Optimizer_CRAP.md` file as a prompt for the LLM to refine the visual design of the generated slides.
+
+### Optional post-process: Flatten `<tspan>`
+
+At generation time, use `<tspan>` for manual line breaks (no `<foreignObject>`). If your pipeline requires plain `<text>` nodes for rendering or text extraction, run:
+
+```bash
+python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
+# or a single file
+python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
+```
+
+This writes a `svg_output_flattext` directory by default and should preserve visual styling/positions while removing `<tspan>`.

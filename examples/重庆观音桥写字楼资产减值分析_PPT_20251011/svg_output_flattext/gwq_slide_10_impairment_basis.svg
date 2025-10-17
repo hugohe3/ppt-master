@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="50" y1="40" x2="1230" y2="40" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="30" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+    减值依据总结
+  </text>
+  <text x="1230" y="30" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" fill="#D04A02" text-anchor="end" font-weight="600">
+    PwC
+  </text>
+  
+  
+  <text x="50" y="100" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="36" font-weight="bold" fill="#53565A">
+    减值依据总结与审计建议
+  </text>
+  
+  
+  <g transform="translate(50, 150)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="24" font-weight="600" fill="#53565A">
+      六大减值依据
+    </text>
+    
+    
+    <g transform="translate(0, 40)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        租金收入持续下滑
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        2021-2023年租金年化下滑9.5%，未来现金流预期减少，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        直接影响资产可收回金额
+      </text>
+    </g>
+    
+    
+    <g transform="translate(0, 120)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        投资回报率低于市场基准
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        静态回报期从22年延长至28-35年，年化收益率降至3.0-3.5%，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        接近无风险利率，资产投资吸引力丧失
+      </text>
+    </g>
+    
+    
+    <g transform="translate(0, 200)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        空置率上升至历史高位
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        空置率从13.77%攀升至约20%，资产利用效率显著下降，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        账面价值难以支撑
+      </text>
+    </g>
+    
+    
+    <g transform="translate(0, 280)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        主力租户退租频繁
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        零售贸易和消费服务业中小企业退租频繁，呈净流出状态，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        租金收入稳定性和可预测性降低
+      </text>
+    </g>
+    
+    
+    <g transform="translate(0, 360)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        市场对比显示区域性风险扩散
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        全市写字楼市场整体承压，观音桥虽优于解放碑、江北嘴，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        但系统性风险已向次级商圈传导
+      </text>
+    </g>
+    
+    
+    <g transform="translate(0, 440)">
+      <circle cx="18" cy="18" r="18" fill="#D04A02" />
+      <text x="18" y="25" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+      <text x="50" y="15" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neve, sans-serif" font-size="18" fill="#53565A" font-weight="600">
+        供需失衡短期无法改善
+      </text>
+      <text x="50" y="38" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        新增供应持续释放而需求疲软，供需矛盾持续2-3年，
+      </text>
+      <text x="50" y="58" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="15" fill="#8C8C8C">
+        账面价值存在高估风险
+      </text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(730, 150)">
+    <rect x="0" y="0" width="500" height="480" fill="#FFF5F0" stroke="#D04A02" stroke-width="3" rx="10" />
+    
+    
+    <text x="250" y="50" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="28" font-weight="bold" fill="#D04A02" text-anchor="middle">
+      审计结论与建议
+    </text>
+    <rect x="150" y="60" width="200" height="4" fill="#D04A02" />
+    
+    
+    <text x="40" y="120" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" fill="#53565A" font-weight="600">
+      减值判断
+    </text>
+    <text x="40" y="155" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      基于上述六大依据，观音桥写字楼
+    </text>
+    <text x="40" y="182" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      资产的
+    </text>
+    <text x="110" y="182" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#D04A02" font-weight="bold">
+      可收回金额显著低于账面
+    </text>
+    <text x="40" y="209" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#D04A02" font-weight="bold">
+      价值
+    </text>
+    <text x="70" y="209" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      ，存在明显减值迹象。
+    </text>
+    
+    
+    <rect x="40" y="240" width="420" height="3" fill="#E0E0E0" />
+    
+    <text x="40" y="280" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="20" fill="#53565A" font-weight="600">
+      审计建议
+    </text>
+    <text x="40" y="315" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#53565A">
+      建议对观音桥写字楼资产
+    </text>
+    <text x="40" y="342" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="17" fill="#D04A02" font-weight="bold">
+      计提减值准备
+    </text>
+    
+    <text x="40" y="385" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+      • 减值比例：待专业评估机构确定
+    </text>
+    <text x="40" y="415" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+      • 会计准则：IAS 36 / CAS 8
+    </text>
+    <text x="40" y="445" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="16" fill="#8C8C8C">
+      • 建议进一步开展独立评估
+    </text>
+  </g>
+  
+  
+  <line x1="50" y1="680" x2="1230" y2="680" stroke="#E0E0E0" stroke-width="1" />
+  <text x="50" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C">
+    观音桥写字楼减值分析
+  </text>
+  <text x="1230" y="700" font-family="PingFang SC, Microsoft YaHei UI, Helvetica Neue, sans-serif" font-size="14" fill="#8C8C8C" text-anchor="end">
+    10 / 11
+  </text>
+</svg>

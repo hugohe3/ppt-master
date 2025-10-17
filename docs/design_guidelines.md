@@ -154,6 +154,12 @@ system-ui, -apple-system, BlinkMacSystemFont,
 列表间距: 0.5-1em
 ```
 
+### 文本换行与扁平化
+
+- 生成阶段：禁止使用 `<foreignObject>`，采用 `<tspan>` 手动换行，并通过 `x`/`dy` 控制行起点与行距，保证与版式行高规范一致。
+- 发布/后处理：如需去除 `<tspan>` 以提升某些渲染器兼容性或便于文本抽取，使用 `tools/flatten_tspan.py` 将每个 `<tspan>` 扁平为独立的 `<text>` 节点；默认输出到同级目录 `svg_output_flattext`。
+- 校验要点：对比 `svg_output` 与 `svg_output_flattext`，核对行序、样式（如 `font-size`、`font-weight`、`fill`）与定位（`x`/`y`/`transform`）一致；目标文件中不应残留 `<tspan>`。
+
 ## 布局原则
 
 ### 16:9 画布规范

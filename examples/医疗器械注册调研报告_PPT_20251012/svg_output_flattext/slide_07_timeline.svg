@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <line x1="60" y1="50" x2="1220" y2="50" stroke="#E0E6ED" stroke-width="2" />
+  
+  
+  <text x="640" y="100" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="36" font-weight="bold" fill="#003D82" text-anchor="middle">
+    注册时间规划与快速审批路径
+  </text>
+  
+  
+  <g>
+    <text x="640" y="145" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" font-weight="bold" fill="#0066CC" text-anchor="middle">
+      注册周期对比
+    </text>
+    
+    
+    <g>
+      <text x="120" y="195" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#2C3E50" font-weight="bold">
+        常规注册
+      </text>
+      <rect x="240" y="175" width="800" height="35" fill="#E3F2FD" rx="6" stroke="#0066CC" stroke-width="2" />
+      <text x="640" y="198" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#0066CC" font-weight="bold" text-anchor="middle">
+        6 - 12 个月
+      </text>
+      <text x="1070" y="198" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        典型周期
+      </text>
+    </g>
+    
+    
+    <g>
+      <text x="120" y="245" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#2C3E50" font-weight="bold">
+        优先审批
+      </text>
+      <rect x="240" y="225" width="500" height="35" fill="#E8F5E9" rx="6" stroke="#00A86B" stroke-width="2" />
+      <text x="490" y="248" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#00A86B" font-weight="bold" text-anchor="middle">
+        3 - 6 个月
+      </text>
+      <text x="770" y="248" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        提速约50%
+      </text>
+    </g>
+    
+    
+    <g>
+      <text x="120" y="295" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="17" fill="#2C3E50" font-weight="bold">
+        应急审批
+      </text>
+      <rect x="240" y="275" width="120" height="35" fill="#FFF3E0" rx="6" stroke="#FF8C00" stroke-width="2" />
+      <text x="300" y="298" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#FF8C00" font-weight="bold" text-anchor="middle">
+        1-2 周
+      </text>
+      <text x="390" y="298" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="14" fill="#546E7A">
+        公共卫生紧急情况
+      </text>
+    </g>
+  </g>
+  
+  
+  <text x="640" y="360" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="20" font-weight="bold" fill="#0066CC" text-anchor="middle">
+    快速审批通道详解
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="385" width="360" height="240" fill="#F5F7FA" rx="10" stroke="#0066CC" stroke-width="2" />
+    
+    
+    <g>
+      <path d="M 230 415 L 230 430 L 220 435 L 220 425 L 225 420 Z" fill="#0066CC" />
+      <path d="M 230 415 L 230 430 L 240 435 L 240 425 L 235 420 Z" fill="#0066CC" />
+      <ellipse cx="230" cy="415" rx="8" ry="12" fill="#0066CC" />
+      <circle cx="230" cy="413" r="3" fill="#FFFFFF" />
+    </g>
+    
+    <text x="230" y="460" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" fill="#003D82" font-weight="bold" text-anchor="middle">
+      创新医疗器械特别审查
+    </text>
+    
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="490">      </text><text fill="#0066CC" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="100" y="490">适用条件：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="512">• 技术上国内首创</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="532">• 具有显著临床价值</text><line x1="100" y1="555" x2="360" y2="555" stroke="#E0E6ED" stroke-width="1" />
+    
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="575">      </text><text fill="#00A86B" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="100" y="575">优势：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="100" y="597">早期介入 | 专人指导 | 快速审评</text></g>
+  
+  
+  <g>
+    <rect x="460" y="385" width="360" height="240" fill="#E8F5E9" rx="10" stroke="#00A86B" stroke-width="2" />
+    
+    
+    <g>
+      <path d="M 640 420 L 645 432 L 658 434 L 648 443 L 651 456 L 640 449 L 629 456 L 632 443 L 622 434 L 635 432 Z" fill="#00A86B" stroke="#00A86B" stroke-width="1" />
+    </g>
+    
+    <text x="640" y="478" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" fill="#003D82" font-weight="bold" text-anchor="middle">
+      优先审批程序
+    </text>
+    
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="508">      </text><text fill="#0066CC" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="480" y="508">适用条件（5类）：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="530">1. 科技重大专项</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="550">2. 罕见病诊疗且有明显优势</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="570">3. 老年多发病且目前无有效手段</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="590">4. 儿童专用且有明显优势</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="480" y="610">5. 国内首次或紧缺的创新产品</text></g>
+  
+  
+  <g>
+    <rect x="840" y="385" width="360" height="240" fill="#FFF3E0" rx="10" stroke="#FF8C00" stroke-width="2" />
+    
+    
+    <g>
+      <path d="M 1030 415 L 1018 435 L 1028 435 L 1020 455 L 1035 430 L 1025 430 Z" fill="#FF8C00" stroke="#FF8C00" stroke-width="1.5" />
+    </g>
+    
+    <text x="1020" y="478" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="18" fill="#003D82" font-weight="bold" text-anchor="middle">
+      应急审批程序
+    </text>
+    
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="860" y="508">      </text><text fill="#0066CC" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="860" y="508">适用情况：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="860" y="530">突发公共卫生事件</text><line x1="860" y1="555" x2="1180" y2="555" stroke="#FFE0B2" stroke-width="1" />
+    
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="860" y="575">      </text><text fill="#FF8C00" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="860" y="575">极速时限：</text><text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="860" y="597">检验24小时 | 审评5日 | 审批3日</text></g>
+  
+  
+  <g>
+    <rect x="80" y="645" width="1140" height="50" fill="#E3F2FD" rx="8" stroke="#0066CC" stroke-width="2" />
+    
+    
+    <g>
+      <rect x="105" y="660" width="20" height="20" fill="none" stroke="#0066CC" stroke-width="2" rx="3" />
+      <line x1="110" y1="667" x2="120" y2="667" stroke="#0066CC" stroke-width="1.5" />
+      <line x1="110" y1="672" x2="120" y2="672" stroke="#0066CC" stroke-width="1.5" />
+      <line x1="110" y1="677" x2="116" y2="677" stroke="#0066CC" stroke-width="1.5" />
+    </g>
+    
+    <text x="145" y="667" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-size="15" fill="#2C3E50" font-weight="bold">
+      典型案例：
+    </text>
+    <text fill="#2C3E50" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" x="145" y="685">      Apple Watch心电功能在华注册，虽审批部门仅用约
+      </text><text fill="#00A86B" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="145" y="685">3个月</text><text fill="#0066CC" font-size="15" font-family="Microsoft YaHei, 微软雅黑, sans-serif" font-weight="bold" x="145" y="685">一年以上</text></g>
+  
+  
+  <text x="1220" y="710" font-family="Segoe UI, sans-serif" font-size="14" fill="#B0BEC5" text-anchor="end">
+    7
+  </text>
+</svg>

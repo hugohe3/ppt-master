@@ -356,6 +356,18 @@ yh_slide_02_kpi_dashboard.svg
 3. **保存版本**: 重要迭代保存独立版本
 4. **团队共享**: 建立团队的设计规范库
 
+## 🔧 后处理：文本扁平化（去 tspan）
+
+```bash
+# 目录级扁平化（默认输出到同级 svg_output_flattext）
+python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
+
+# 单文件扁平化（自定义输出路径）
+python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
+```
+
+要点：生成端使用 `<tspan>` 手动换行，发布/抽取文本时可运行本工具去除 `<tspan>`；输出应无 `<tspan>` 残留且样式/坐标一致。
+
 ---
 
 📌 **收藏此页面**，随时查阅！

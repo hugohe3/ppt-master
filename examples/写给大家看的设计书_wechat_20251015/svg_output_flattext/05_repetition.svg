@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200">
+  
+  <rect width="800" height="1200" fill="#F8F9FA" />
+  
+  
+  <rect x="0" y="0" width="800" height="140" fill="#F4A261" />
+  <text x="400" y="65" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    重复原则
+  </text>
+  <text x="400" y="105" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">
+    REPETITION · 增强统一性与条理性
+  </text>
+  
+  
+  <g>
+    <rect x="60" y="170" width="680" height="100" rx="8" fill="#FFFFFF" />
+    <text x="400" y="210" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="20" fill="#264653" text-anchor="middle" font-weight="bold">
+      核心理念
+    </text>
+    <text x="400" y="245" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#666666" text-anchor="middle">
+      在整个作品中重复使用视觉要素，建立一致性和统一感
+    </text>
+  </g>
+  
+  
+  <text x="400" y="320" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="28" font-weight="bold" fill="#264653" text-anchor="middle">
+    可以重复的元素
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="360" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2" />
+    <text x="120" y="400" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" font-weight="bold" fill="#264653">
+      ● 颜色
+    </text>
+    <rect x="250" y="375" width="60" height="40" fill="#E87C5E" rx="4" />
+    <rect x="330" y="375" width="60" height="40" fill="#E87C5E" rx="4" />
+    <rect x="410" y="375" width="60" height="40" fill="#E87C5E" rx="4" />
+    <rect x="490" y="375" width="60" height="40" fill="#E87C5E" rx="4" />
+    <text x="600" y="400" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" fill="#666666">
+      使用相同色彩
+    </text>
+    <text x="120" y="435" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#999999">
+      在标题、图标、按钮等处重复使用品牌色
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="480" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2" />
+    <text x="120" y="520" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" font-weight="bold" fill="#264653">
+      ● 字体
+    </text>
+    <text x="250" y="520" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="22" font-weight="bold" fill="#264653">
+      标题
+    </text>
+    <text x="340" y="520" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="22" font-weight="bold" fill="#264653">
+      标题
+    </text>
+    <text x="430" y="520" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="22" font-weight="bold" fill="#264653">
+      标题
+    </text>
+    <text x="120" y="555" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#999999">
+      所有标题使用相同字体、大小和粗细
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="600" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2" />
+    <text x="120" y="640" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" font-weight="bold" fill="#264653">
+      ● 形状
+    </text>
+    <circle cx="280" cy="632" r="18" fill="#2C5F7C" />
+    <circle cx="350" cy="632" r="18" fill="#2C5F7C" />
+    <circle cx="420" cy="632" r="18" fill="#2C5F7C" />
+    <circle cx="490" cy="632" r="18" fill="#2C5F7C" />
+    <text x="120" y="675" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#999999">
+      重复使用相同的装饰元素、图标样式
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="720" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2" />
+    <text x="120" y="760" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" font-weight="bold" fill="#264653">
+      ● 线条
+    </text>
+    <line x1="250" y1="752" x2="350" y2="752" stroke="#E87C5E" stroke-width="3" />
+    <line x1="370" y1="752" x2="470" y2="752" stroke="#E87C5E" stroke-width="3" />
+    <line x1="490" y1="752" x2="590" y2="752" stroke="#E87C5E" stroke-width="3" />
+    <text x="120" y="795" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#999999">
+      用相同粗细、颜色的线条分隔内容
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="840" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#F4A261" stroke-width="2" />
+    <text x="120" y="880" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="24" font-weight="bold" fill="#264653">
+      ● 空间关系
+    </text>
+    <rect x="380" y="860" width="70" height="50" rx="4" fill="#E9C46A" opacity="0.3" />
+    <rect x="470" y="860" width="70" height="50" rx="4" fill="#E9C46A" opacity="0.3" />
+    <rect x="560" y="860" width="70" height="50" rx="4" fill="#E9C46A" opacity="0.3" />
+    <text x="120" y="915" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#999999">
+      保持相同的边距、间距和布局模式
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="80" y="970" width="640" height="160" rx="8" fill="#FFFFFF" stroke="#2C5F7C" stroke-width="2" />
+    <text x="400" y="1010" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="22" font-weight="bold" fill="#264653" text-anchor="middle">
+      重复创建视觉节奏
+    </text>
+    
+    
+    <g>
+      <rect x="110" y="1030" width="170" height="80" rx="6" fill="#F0F8FF" stroke="#2C5F7C" stroke-width="1" />
+      <circle cx="140" cy="1055" r="8" fill="#E87C5E" />
+      <text x="160" y="1060" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" font-weight="bold" fill="#264653">
+        第一章
+      </text>
+      <text x="130" y="1090" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#666666">
+        设计原则介绍
+      </text>
+    </g>
+    
+    <g>
+      <rect x="315" y="1030" width="170" height="80" rx="6" fill="#F0F8FF" stroke="#2C5F7C" stroke-width="1" />
+      <circle cx="345" cy="1055" r="8" fill="#E87C5E" />
+      <text x="365" y="1060" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" font-weight="bold" fill="#264653">
+        第二章
+      </text>
+      <text x="335" y="1090" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#666666">
+        亲密性原则
+      </text>
+    </g>
+    
+    <g>
+      <rect x="520" y="1030" width="170" height="80" rx="6" fill="#F0F8FF" stroke="#2C5F7C" stroke-width="1" />
+      <circle cx="550" cy="1055" r="8" fill="#E87C5E" />
+      <text x="570" y="1060" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="16" font-weight="bold" fill="#264653">
+        第三章
+      </text>
+      <text x="540" y="1090" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="14" fill="#666666">
+        对齐原则
+      </text>
+    </g>
+  </g>
+  
+  
+  <text x="400" y="1165" font-family="Microsoft YaHei, SimHei, STHeiti, sans-serif" font-size="18" fill="#264653" text-anchor="middle" font-weight="bold">
+    重复不仅仅是一致性 · 更是有意识的统一设计
+  </text>
+</svg>

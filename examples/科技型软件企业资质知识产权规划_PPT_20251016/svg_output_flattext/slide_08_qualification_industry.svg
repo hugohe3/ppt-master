@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&amp;display=swap');
+      text { font-family: 'Noto Sans SC', 'Source Han Sans CN', 'Microsoft YaHei', Arial, sans-serif; }
+    </style>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text fill="#005587" font-size="36" font-weight="700" x="80" y="100">    企业资质体系 </text><text fill="#7F8C8D" font-size="36" font-weight="700" x="80" y="100">|</text><rect x="80" y="160" width="340" height="360" rx="8" fill="#F8F9FA" />
+  
+  <circle cx="250" cy="210" r="35" fill="#E8F4F8" stroke="#0076A8" stroke-width="2" />
+  <text x="250" y="225" text-anchor="middle" font-size="36" fill="#0076A8">
+    ⚕
+  </text>
+  
+  <text x="250" y="280" text-anchor="middle" font-size="24" font-weight="700" fill="#005587">
+    医疗器械认证
+  </text>
+  
+  <text fill="#2C3E50" font-size="18" font-weight="400" x="110" y="320">    </text><text fill="#2C3E50" font-size="18" font-weight="400" x="110" y="320">• 二类/三类医疗器械</text><text fill="#2C3E50" font-size="18" font-weight="400" x="110" y="348">• 影像处理软件</text><text fill="#2C3E50" font-size="18" font-weight="400" x="110" y="376">• AI 辅助诊断软件</text><text fill="#2C3E50" font-size="18" font-weight="400" x="110" y="404">• PACS 影像存储传输</text><rect x="100" y="460" width="300" height="40" rx="6" fill="#27AE60" />
+  <text x="250" y="485" text-anchor="middle" font-size="16" font-weight="600" fill="#FFFFFF">
+    医疗领域入场券
+  </text>
+  
+  
+  <rect x="470" y="160" width="340" height="360" rx="8" fill="#F8F9FA" />
+  
+  <circle cx="640" cy="210" r="35" fill="#E8F4F8" stroke="#0076A8" stroke-width="2" />
+  <text x="640" y="225" text-anchor="middle" font-size="36" fill="#0076A8">
+    ⚙
+  </text>
+  
+  <text x="640" y="280" text-anchor="middle" font-size="24" font-weight="700" fill="#005587">
+    工业软件认证
+  </text>
+  
+  <text fill="#2C3E50" font-size="18" font-weight="400" x="500" y="320">    </text><text fill="#2C3E50" font-size="18" font-weight="400" x="500" y="320">• 工业软件产品认证</text><text fill="#2C3E50" font-size="18" font-weight="400" x="500" y="348">• 工业互联网项目</text><text fill="#2C3E50" font-size="18" font-weight="400" x="500" y="376">• 智能制造系统</text><text fill="#2C3E50" font-size="18" font-weight="400" x="500" y="404">• 政府补贴申报</text><rect x="490" y="460" width="300" height="40" rx="6" fill="#27AE60" />
+  <text x="640" y="485" text-anchor="middle" font-size="16" font-weight="600" fill="#FFFFFF">
+    工业领域专项支持
+  </text>
+  
+  
+  <rect x="860" y="160" width="340" height="360" rx="8" fill="#F8F9FA" />
+  
+  <circle cx="1030" cy="210" r="35" fill="#E8F4F8" stroke="#0076A8" stroke-width="2" />
+  <text x="1030" y="225" text-anchor="middle" font-size="36" fill="#0076A8">
+    🚀
+  </text>
+  
+  <text x="1030" y="280" text-anchor="middle" font-size="24" font-weight="700" fill="#005587">
+    高新技术企业
+  </text>
+  
+  <text fill="#2C3E50" font-size="18" font-weight="400" x="890" y="320">    </text><text fill="#2C3E50" font-size="18" font-weight="400" x="890" y="320">• 核心条件</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="910" y="348">3项发明专利或</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="910" y="372">6项软件著作权</text><text fill="#2C3E50" font-size="18" font-weight="400" x="890" y="404">• 研发投入占比要求</text><text fill="#2C3E50" font-size="18" font-weight="400" x="890" y="436">• 企业所得税 15%</text><text fill="#7F8C8D" font-size="16" font-weight="400" x="910" y="464">（普通企业 25%）</text><rect x="880" y="460" width="300" height="40" rx="6" fill="#27AE60" />
+  <text x="1030" y="485" text-anchor="middle" font-size="16" font-weight="600" fill="#FFFFFF">
+    融资估值重要背书
+  </text>
+  
+  
+  <rect x="80" y="560" width="360" height="100" rx="8" fill="#E8F4F8" />
+  <text x="260" y="595" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    估值提升
+  </text>
+  <text x="260" y="635" text-anchor="middle" font-size="42" font-weight="700" fill="#E67E22">
+    30%+
+  </text>
+  
+  <rect x="460" y="560" width="360" height="100" rx="8" fill="#E8F4F8" />
+  <text x="640" y="595" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    税收优惠
+  </text>
+  <text x="640" y="635" text-anchor="middle" font-size="32" font-weight="700" fill="#E67E22">
+    15% vs 25%
+  </text>
+  
+  <rect x="840" y="560" width="360" height="100" rx="8" fill="#E8F4F8" />
+  <text x="1020" y="595" text-anchor="middle" font-size="20" font-weight="600" fill="#005587">
+    政府补贴
+  </text>
+  <text x="1020" y="635" text-anchor="middle" font-size="32" font-weight="700" fill="#E67E22">
+    最高百万级
+  </text>
+  
+  
+  <text x="1200" y="710" text-anchor="end" font-size="14" font-weight="400" fill="#7F8C8D">
+    08
+  </text>
+</svg>

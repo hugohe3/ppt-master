@@ -612,3 +612,19 @@ Executor_Consultant: 我将使用Lucide图标：
 ---
 
 祝你创作顺利！如有任何问题，欢迎反馈。
+## 文本扁平化（去 tspan）
+
+在生成阶段，按规范使用 `<tspan>` 进行手动换行。若发布链路或后续处理需要去除 `<tspan>`，可使用仓库自带工具进行后处理：
+
+```bash
+# 扁平化整个 svg_output 目录（默认输出到同级 svg_output_flattext）
+python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
+
+# 或处理单个文件/自定义输出路径
+python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
+```
+
+检查要点：
+- 新输出目录为 `svg_output_flattext`，应不存在 `<tspan>`；
+- 文本样式（`font-size`/`font-weight`/`fill`/`text-anchor` 等）与坐标/变换应与原图一致；
+- 如发现偏差，优先在生成端修正 `<tspan>` 的 `x`/`dy` 与父 `<text>` 样式，再重跑扁平化。
