@@ -359,12 +359,22 @@ yh_slide_02_kpi_dashboard.svg
 ## 🔧 后处理：文本扁平化（去 tspan）
 
 ```bash
+# 交互模式（等效）
+python3 tools/flatten_tspan.py
+python3 tools/flatten_tspan.py -i
+
 # 目录级扁平化（默认输出到同级 svg_output_flattext）
 python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
 
 # 单文件扁平化（自定义输出路径）
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
+
+默认输出：
+- 目录输入：若路径以 `svg_output` 结尾，输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`
+- 文件输入：输出为 `<文件名>_flattext.svg`
+
+安全性：目录模式下工具会自动跳过输出子目录，避免递归处理。
 
 要点：生成端使用 `<tspan>` 手动换行，发布/抽取文本时可运行本工具去除 `<tspan>`；输出应无 `<tspan>` 残留且样式/坐标一致。
 

@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import argparse
 from xml.etree import ElementTree as ET
 
 
@@ -283,29 +284,87 @@ def process_svg_file(src_path: str, dst_path: str) -> bool:
     return changed
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python tools/flatten_tspan.py <input_dir_or_svg> [output_dir]")
-        sys.exit(1)
+def _compute_default_out_base(inp: str) -> str:
+    """Compute default output path for directory or file input."""
+    if os.path.isdir(inp):
+        # Default: if input ends with svg_output, use sibling svg_output_flattext;
+        # otherwise append _flattext to the directory name at the same level.
+        head, tail = os.path.split(os.path.normpath(inp))
+        if tail == "svg_output":
+            return os.path.join(head, "svg_output_flattext")
+        return inp.rstrip("/\\") + "_flattext"
+    else:
+        base, ext = os.path.splitext(inp)
+        return base + "_flattext" + ext
 
-    inp = sys.argv[1]
-    out_base = None
-    if len(sys.argv) >= 3:
-        out_base = sys.argv[2]
+
+def _interactive_get_paths():
+    """
+    Interactive mode: prompt the user for input path (SVG file or directory)
+    and optional output path. Returns (inp, out_base) or (None, None) if cancelled.
+    """
+    print("[交互模式] 未提供参数，将以交互方式运行。")
+    print("请输入需要处理的路径（SVG 文件或包含 SVG 的目录）。")
+    print("输入 q 回车可退出。\n")
+
+    while True:
+        raw = input("输入路径 (file/dir): ").strip()
+        if raw.lower() in {"q", "quit", "exit"} or raw == "":
+            return None, None
+        inp = os.path.expanduser(raw)
+        if os.path.exists(inp):
+            break
+        print("路径不存在，请重新输入或输入 q 退出。")
+
+    default_out = _compute_default_out_base(inp)
+    if os.path.isdir(inp):
+        prompt = f"输出目录 [默认: {default_out}]: "
+    else:
+        prompt = f"输出文件 [默认: {default_out}]: "
+
+    raw_out = input(prompt).strip()
+    out_base = os.path.expanduser(raw_out) if raw_out else default_out
+
+    return inp, out_base
+
+
+def main():
+    # CLI parsing with optional interactive mode
+    parser = argparse.ArgumentParser(
+        description="Flatten <tspan> lines into multiple <text> nodes for better compatibility.",
+        add_help=True,
+    )
+    parser.add_argument("input", nargs="?", help="Input path: SVG file or directory")
+    parser.add_argument("output", nargs="?", help="Optional output file/dir")
+    parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        help="Run in interactive prompt mode to input paths",
+    )
+
+    args = parser.parse_args()
+
+    if args.interactive or not args.input:
+        inp, out_base = _interactive_get_paths()
+        if not inp:
+            print("已取消。用法: python tools/flatten_tspan.py <input_dir_or_svg> [output_dir]")
+            sys.exit(0)
+    else:
+        inp = args.input
+        out_base = args.output
 
     if os.path.isdir(inp):
         # If output base not provided, create a sibling folder named svg_output_flattext for svg_output
         if out_base is None:
-            # default: if input ends with svg_output, use sibling svg_output_flattext; otherwise append _flattext
-            head, tail = os.path.split(os.path.normpath(inp))
-            if tail == "svg_output":
-                out_base = os.path.join(head, "svg_output_flattext")
-            else:
-                out_base = inp.rstrip("/\\") + "_flattext"
+            out_base = _compute_default_out_base(inp)
 
         total = 0
         changed_count = 0
-        for root, _dirs, files in os.walk(inp):
+        out_base_abs = os.path.abspath(out_base)
+        for root, dirs, files in os.walk(inp):
+            # Avoid recursing into the output directory when it lives under input
+            dirs[:] = [d for d in dirs if os.path.abspath(os.path.join(root, d)) != out_base_abs]
             rel_root = os.path.relpath(root, inp)
             for f in files:
                 if not f.lower().endswith(".svg"):
@@ -316,20 +375,15 @@ def main():
                 changed = process_svg_file(src, dst)
                 if changed:
                     changed_count += 1
-                else:
-                    # Even if unchanged, copy written already – we keep a consistent output set
-                    pass
         print(f"Processed {total} SVG(s). With <tspan> flattened: {changed_count}.")
         print(f"Output written to: {out_base}")
     else:
         src = inp
         if out_base is None:
-            base, ext = os.path.splitext(src)
-            out_base = base + "_flattext" + ext
+            out_base = _compute_default_out_base(src)
         changed = process_svg_file(src, out_base)
         print(f"Written: {out_base} (flattened: {changed})")
 
 
 if __name__ == "__main__":
     main()
-

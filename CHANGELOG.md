@@ -9,6 +9,12 @@
 
 ### 更改
 
+- 工具增强：flatten_tspan 支持交互模式与参数
+  - 新增 `-i/--interactive` 标志；无参数时自动进入交互模式
+  - 默认输出规则：目录输入若为 `.../svg_output`，输出为同级 `svg_output_flattext`；否则为 `<dir>_flattext`；文件输入输出为 `<name>_flattext.svg`
+  - 行走目录时自动跳过输出子目录，避免递归处理
+  - 同步更新 README.md、AGENTS.md、docs/quick_reference.md、docs/workflow_tutorial.md、docs/design_guidelines.md 的使用说明
+
 - **Strategist 角色增强** - Strategist 现在会在初始沟通时主动提供专业建议
   - 页数范围建议：基于源文档内容量和复杂度分析
   - 受众场景判断：基于文档特征预判目标受众和使用场合

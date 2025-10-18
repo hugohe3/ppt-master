@@ -70,6 +70,10 @@ grep -R "viewBox=\"0 0 1240 1754\"" examples   # A4 打印 150dpi
 在生成阶段，Executor 应使用 `<tspan>` 进行手动换行（禁止 `<foreignObject>`）。如发布链路或后续处理对 `<tspan>` 不友好（如部分渲染器或需要文本抽取），可使用 `tools/flatten_tspan.py` 将 `<tspan>` 扁平成多行 `<text>`：
 
 ```bash
+# 交互模式（等效）
+python3 tools/flatten_tspan.py
+python3 tools/flatten_tspan.py -i
+
 # 扁平化整个输出目录（默认输出到同级 svg_output_flattext）
 python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
 
@@ -83,6 +87,8 @@ python3 tools/flatten_tspan.py examples/<project>/svg_output/slide_01_cover.svg 
 注意：
 - 生成阶段仍以 `<tspan>` 手动换行为准；`flatten_tspan` 是可选后处理工具。
 - 工具会将每个 `<tspan>` 转换为独立的 `<text>`，尽量保留样式与定位；原有 `<foreignObject>` 仍然禁止。
+- 默认输出：目录输入若路径以 `svg_output` 结尾，则输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`。文件输入输出为 `<文件名>_flattext.svg`。
+- 安全性：目录模式下会自动跳过输出子目录，避免递归处理。
 
 ### 可选：Markdown 语法检查
 

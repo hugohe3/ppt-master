@@ -617,14 +617,24 @@ Executor_Consultant: 我将使用Lucide图标：
 在生成阶段，按规范使用 `<tspan>` 进行手动换行。若发布链路或后续处理需要去除 `<tspan>`，可使用仓库自带工具进行后处理：
 
 ```bash
+# 交互模式（等效）
+python3 tools/flatten_tspan.py
+python3 tools/flatten_tspan.py -i
+
 # 扁平化整个 svg_output 目录（默认输出到同级 svg_output_flattext）
 python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
 
-# 或处理单个文件/自定义输出路径
+# 处理单个文件/自定义输出路径
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 
+默认输出：
+- 目录输入：若路径以 `svg_output` 结尾，输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`
+- 文件输入：输出为 `<文件名>_flattext.svg`
+
+安全性：目录模式下工具会自动跳过输出子目录，避免递归处理。
+
 检查要点：
-- 新输出目录为 `svg_output_flattext`，应不存在 `<tspan>`；
+- 输出中不应存在 `<tspan>`；
 - 文本样式（`font-size`/`font-weight`/`fill`/`text-anchor` 等）与坐标/变换应与原图一致；
 - 如发现偏差，优先在生成端修正 `<tspan>` 的 `x`/`dy` 与父 `<text>` 样式，再重跑扁平化。
