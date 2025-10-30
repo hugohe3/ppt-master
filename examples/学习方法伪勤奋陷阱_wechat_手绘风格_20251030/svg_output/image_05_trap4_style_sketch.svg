@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <!-- 米白色背景 -->
+    <rect width="900" height="383" fill="#FFF8F0" />
+
+    <!-- 左侧文字区域 -->
+    <g transform="translate(60, 0)">
+        <!-- 手绘下划线（先绘制装饰）-->
+        <path d="M 0 90 Q 30 88 60 90 Q 90 92 120 90 Q 150 88 180 90 Q 210 92 240 90" fill="none" stroke="#4ECDC4"
+            stroke-width="3" stroke-linecap="round" opacity="0.7" />
+
+        <!-- 装饰波浪线 -->
+        <path d="M 0 185 Q 20 183 40 185 Q 60 187 80 185 Q 100 183 120 185 Q 140 187 160 185" fill="none"
+            stroke="#FFA07A" stroke-width="2.5" stroke-linecap="round" opacity="0.5" />
+
+        <!-- 关键数据卡片框（先绘制）-->
+        <g transform="translate(0, 210)">
+            <path d="M 5 0 Q 0 0 0 5 L 0 70 Q 0 75 5 75 L 270 75 Q 275 75 275 70 L 275 5 Q 275 0 270 0 Z" fill="#FF6B6B"
+                opacity="0.12" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                stroke-dasharray="8,4" />
+        </g>
+
+        <!-- 手绘波浪下划线（底部）-->
+        <path d="M 25 332 Q 50 330 75 332 Q 100 334 125 332 Q 150 330 175 332" fill="none" stroke="#7F8C8D"
+            stroke-width="2" stroke-linecap="round" opacity="0.3" />
+
+        <!-- 主标题（文字在装饰之上）-->
+        <text x="0" y="80"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="40" font-weight="700" fill="#2C3E50">
+            <tspan x="0" dy="0">陷阱4：学习风格</tspan>
+        </text>
+
+        <!-- 副标题 -->
+        <text x="0" y="135"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#FF6B6B" font-style="italic">
+            <tspan x="0" dy="0">视觉型？听觉型？</tspan>
+            <tspan x="0" dy="36">都是伪科学！</tspan>
+        </text>
+
+        <!-- 关键数据卡片文字（在框之上）-->
+        <g transform="translate(0, 210)">
+            <!-- 数据文字 -->
+            <text x="15" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="24" font-weight="600" fill="#2C3E50">
+                <tspan x="15" dy="0">缺乏足够证据支持</tspan>
+                <tspan x="15" dy="32">"学习风格"理论</tspan>
+            </text>
+
+            <!-- 手绘问号装饰 -->
+            <g transform="translate(255, 35)">
+                <path d="M 0 -10 Q 3 -13 6 -10 Q 8 -7 6 -4 Q 4 -1 0 2" fill="none" stroke="#FF6B6B" stroke-width="3"
+                    stroke-linecap="round" />
+                <circle cx="0" cy="7" r="2" fill="#FF6B6B" />
+            </g>
+        </g>
+
+        <!-- 底部提示 -->
+        <g transform="translate(0, 320)">
+            <!-- 手绘圆点 -->
+            <path d="M 10 -2 Q 12 -2 12 0 Q 12 2 10 2 Q 8 2 8 0 Q 8 -2 10 -2" fill="#FFA07A" />
+            <text x="25" y="6"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="20" font-weight="400" fill="#7F8C8D" font-style="italic">
+                <tspan x="25" dy="0">别再用它当借口了</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- 右侧视觉区域 -->
+
+    <!-- 手绘圆形背景 -->
+    <path
+        d="M 690 48 Q 760 46 812 92 Q 832 152 812 212 Q 760 258 690 260 Q 620 258 568 212 Q 548 152 568 92 Q 620 46 690 48"
+        fill="#4ECDC4" opacity="0.2" />
+
+    <!-- 三种学习风格图标 -->
+    <g transform="translate(690, 155)">
+        <!-- 视觉型 - 手绘眼睛 -->
+        <g transform="translate(0, -62)">
+            <!-- 眼睛外轮廓 -->
+            <path
+                d="M -26 0 Q -26 -12 -18 -18 Q -10 -20 0 -19 Q 10 -20 18 -18 Q 26 -12 26 0 Q 26 12 18 18 Q 10 20 0 19 Q -10 20 -18 18 Q -26 12 -26 0"
+                fill="none" stroke="#4ECDC4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 瞳孔 -->
+            <circle cx="0" cy="0" r="10" fill="#4ECDC4" />
+            <circle cx="0" cy="0" r="5" fill="#2C3E50" />
+            <!-- 高光 -->
+            <circle cx="-3" cy="-3" r="2" fill="#FFFFFF" />
+        </g>
+
+        <!-- 听觉型 - 手绘耳朵 -->
+        <g transform="translate(-58, 22)">
+            <!-- 耳朵外轮廓 -->
+            <path
+                d="M 0 -22 Q -10 -22 -15 -15 Q -17 -8 -17 0 Q -17 8 -15 15 Q -10 22 0 22 Q 3 22 5 20 L 5 -20 Q 3 -22 0 -22"
+                fill="none" stroke="#FFA07A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 耳朵内部 -->
+            <path d="M 5 -12 Q 12 -12 15 -8 Q 17 -4 17 0 Q 17 4 15 8 Q 12 12 5 12" fill="none" stroke="#FFA07A"
+                stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 耳垂装饰 -->
+            <circle cx="0" cy="18" r="3" fill="#FFA07A" opacity="0.5" />
+        </g>
+
+        <!-- 动觉型 - 手绘手 -->
+        <g transform="translate(58, 22)">
+            <!-- 手掌 -->
+            <path
+                d="M -18 7 Q -18 -5 -15 -12 Q -10 -20 0 -22 Q 10 -20 15 -12 Q 18 -5 18 7 Q 18 18 10 25 Q 0 28 -10 25 Q -18 18 -18 7"
+                fill="none" stroke="#2ECC71" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 拇指 -->
+            <path d="M -15 0 Q -20 -3 -22 -8 Q -23 -14 -21 -18 Q -18 -20 -14 -19 Q -11 -17 -10 -14" fill="none"
+                stroke="#2ECC71" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 手指（三根）-->
+            <line x1="-9" y1="-22" x2="-9" y2="-32" stroke="#2ECC71" stroke-width="4" stroke-linecap="round" />
+            <line x1="0" y1="-22" x2="0" y2="-34" stroke="#2ECC71" stroke-width="4" stroke-linecap="round" />
+            <line x1="9" y1="-22" x2="9" y2="-32" stroke="#2ECC71" stroke-width="4" stroke-linecap="round" />
+        </g>
+
+        <!-- 大叉号覆盖（手绘风格）-->
+        <line x1="-75" y1="-75" x2="75" y2="75" stroke="#FF6B6B" stroke-width="8" stroke-linecap="round" />
+        <line x1="75" y1="-75" x2="-75" y2="75" stroke="#FF6B6B" stroke-width="8" stroke-linecap="round" />
+
+        <!-- 手绘问号 -->
+        <g transform="translate(0, 98)">
+            <!-- 不规则圆形背景 -->
+            <path d="M 0 -26 Q 18 -28 26 -12 Q 28 8 18 24 Q 0 28 -18 24 Q -28 8 -26 -12 Q -18 -28 0 -26"
+                fill="#FFA07A" />
+            <!-- 问号 -->
+            <path d="M -8 -12 Q -8 -16 -5 -18 Q 0 -20 5 -18 Q 8 -16 8 -12 Q 8 -8 5 -6 Q 2 -4 0 0" fill="none"
+                stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="0" cy="7" r="3" fill="#FFFFFF" />
+        </g>
+
+        <!-- 装饰星星 -->
+        <path d="M -75 30 L -72 35 L -67 32 L -70 37 L -65 40 L -70 40 L -72 45 L -75 40 L -80 40 L -75 37 Z"
+            fill="#FFE66D" opacity="0.7" />
+        <path d="M 75 30 L 78 35 L 83 32 L 80 37 L 85 40 L 80 40 L 78 45 L 75 40 L 70 40 L 75 37 Z" fill="#4ECDC4"
+            opacity="0.7" />
+    </g>
+
+    <!-- 装饰元素 -->
+    <circle cx="580" cy="80" r="12" fill="#2C3E50" opacity="0.3" />
+    <path d="M 800 305 L 805 310 L 810 305 L 805 300 Z" fill="#FFA07A" opacity="0.6" />
+    <circle cx="620" cy="325" r="10" fill="#4ECDC4" opacity="0.4" />
+
+    <!-- 右上角手绘标签（移至右侧避免与左侧文字重叠）-->
+    <g transform="translate(800, 45)">
+        <!-- 手绘椭圆形标签 -->
+        <path d="M 0 -18 Q 25 -20 38 -10 Q 42 0 38 10 Q 25 20 0 18 Q -25 20 -38 10 Q -42 0 -38 -10 Q -25 -20 0 -18"
+            fill="#2C3E50" stroke="#2C3E50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="0" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="700" fill="#FFF8F0" text-anchor="middle">
+            陷阱 4
+        </text>
+    </g>
+
+    <!-- 手绘小装饰 - 虚线箭头 -->
+    <path d="M 380 145 Q 410 140 440 145" fill="none" stroke="#4ECDC4" stroke-width="2.5" stroke-dasharray="5,5"
+        stroke-linecap="round" opacity="0.5" />
+    <path d="M 438 142 L 440 145 L 438 148" fill="none" stroke="#4ECDC4" stroke-width="2.5" stroke-linecap="round"
+        opacity="0.5" />
+</svg>

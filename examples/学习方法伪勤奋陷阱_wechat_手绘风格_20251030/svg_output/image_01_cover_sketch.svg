@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <!-- 米白色背景 -->
+    <rect width="900" height="383" fill="#FFF8F0" />
+
+    <!-- 装饰元素 - 手绘风格的虚线圆 -->
+    <circle cx="120" cy="80" r="35" fill="none" stroke="#FFE66D" stroke-width="3" stroke-dasharray="5,5"
+        opacity="0.6" />
+    <circle cx="780" cy="300" r="40" fill="none" stroke="#4ECDC4" stroke-width="3" stroke-dasharray="5,5"
+        opacity="0.6" />
+
+    <!-- 小星星装饰 -->
+    <path d="M 150 120 L 155 125 L 160 120 L 155 115 Z" fill="#FFA07A" opacity="0.7" />
+    <path d="M 740 90 L 745 95 L 750 90 L 745 85 Z" fill="#FF6B6B" opacity="0.7" />
+    <path d="M 820 240 L 825 245 L 830 240 L 825 235 Z" fill="#4ECDC4" opacity="0.7" />
+
+    <!-- 主标题（文字层）-->
+    <text x="450" y="145"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="700" fill="#2C3E50" text-anchor="middle">
+        4个伪勤奋学习陷阱
+    </text>
+
+    <!-- 主标题区域 - 带手绘框（装饰层，在文字后绘制但透明度较低，不影响文字阅读）-->
+    <path
+        d="M 200 98 Q 195 98 195 113 L 195 158 Q 195 163 200 163 L 700 163 Q 705 163 705 158 L 705 113 Q 705 98 700 98 Z"
+        fill="none" stroke="#FF6B6B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
+
+    <!-- 手绘波浪线装饰（在文字后）-->
+    <path
+        d="M 250 170 Q 270 165 290 170 Q 310 175 330 170 Q 350 165 370 170 Q 390 175 410 170 Q 430 165 450 170 Q 470 175 490 170 Q 510 165 530 170 Q 550 175 570 170 Q 590 165 610 170 Q 630 175 650 170"
+        fill="none" stroke="#FFA07A" stroke-width="3" stroke-linecap="round" opacity="0.6" />
+
+    <!-- 副标题 -->
+    <text x="450" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="400" fill="#2C3E50" text-anchor="middle" font-style="italic">
+        你的努力，可能都是假的
+    </text>
+
+    <!-- 4个手绘涂鸦图标 -->
+
+    <!-- 图标1：手绘书本 + 循环 -->
+    <g transform="translate(200, 280)">
+        <!-- 不规则圆形背景 -->
+        <path d="M 0 -28 Q 20 -32 28 -15 Q 32 5 20 25 Q 0 32 -20 25 Q -32 5 -28 -15 Q -15 -32 0 -28" fill="#FFE66D"
+            opacity="0.3" />
+        <!-- 手绘书本 -->
+        <path
+            d="M -20 -12 L -20 12 Q -20 14 -18 14 L 18 14 Q 20 14 20 12 L 20 -12 Q 20 -14 18 -14 L -18 -14 Q -20 -14 -20 -12"
+            fill="none" stroke="#FF6B6B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        <line x1="0" y1="-14" x2="0" y2="14" stroke="#FF6B6B" stroke-width="2" opacity="0.5" />
+        <!-- 涂鸦循环箭头 -->
+        <path d="M 25 -5 Q 30 -15 20 -22" fill="none" stroke="#FFA07A" stroke-width="3" stroke-linecap="round" />
+        <path d="M 18 -24 L 20 -22 L 22 -24" fill="none" stroke="#FFA07A" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <!-- 图标2：手绘笔记本 -->
+    <g transform="translate(350, 280)">
+        <!-- 不规则圆形背景 -->
+        <path d="M 0 -30 Q 22 -30 30 -10 Q 30 10 22 28 Q 0 30 -22 28 Q -30 10 -30 -10 Q -22 -30 0 -30" fill="#4ECDC4"
+            opacity="0.25" />
+        <!-- 笔记本 -->
+        <path d="M -18 -15 Q -18 -17 -16 -17 L 16 -17 Q 18 -17 18 -15 L 18 15 Q 18 17 16 17 L -16 17 Q -18 17 -18 15 Z"
+            fill="none" stroke="#FFA07A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- 螺旋装订 -->
+        <circle cx="-10" cy="-17" r="3" fill="none" stroke="#FFA07A" stroke-width="2" />
+        <circle cx="0" cy="-17" r="3" fill="none" stroke="#FFA07A" stroke-width="2" />
+        <circle cx="10" cy="-17" r="3" fill="none" stroke="#FFA07A" stroke-width="2" />
+        <!-- 文字线 -->
+        <line x1="-12" y1="-5" x2="12" y2="-5" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="-12" y1="3" x2="12" y2="3" stroke="#4ECDC4" stroke-width="2.5" stroke-linecap="round" />
+    </g>
+
+    <!-- 图标3：手绘荧光笔 -->
+    <g transform="translate(500, 280)">
+        <!-- 不规则圆形背景 -->
+        <path d="M 0 -29 Q 21 -31 29 -12 Q 31 8 21 27 Q 0 31 -21 27 Q -31 8 -29 -12 Q -21 -31 0 -29" fill="#FFA07A"
+            opacity="0.25" />
+        <!-- 荧光笔 -->
+        <g transform="rotate(-15)">
+            <path d="M -8 -18 Q -8 -20 -6 -20 L 6 -20 Q 8 -20 8 -18 L 8 10 Q 8 12 6 12 L -6 12 Q -8 12 -8 10 Z"
+                fill="none" stroke="#FFE66D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="-6" y="-15" width="12" height="5" fill="#FFE66D" opacity="0.6" />
+            <line x1="0" y1="12" x2="0" y2="18" stroke="#FFE66D" stroke-width="4" stroke-linecap="round" />
+        </g>
+        <!-- 高亮标记 -->
+        <path d="M -15 5 L 10 8" stroke="#FFE66D" stroke-width="5" stroke-linecap="round" opacity="0.7" />
+    </g>
+
+    <!-- 图标4：手绘大脑/问号 -->
+    <g transform="translate(650, 280)">
+        <!-- 不规则圆形背景 -->
+        <path d="M 0 -28 Q 20 -30 28 -12 Q 30 8 20 26 Q 0 30 -20 26 Q -30 8 -28 -12 Q -20 -30 0 -28" fill="#FF6B6B"
+            opacity="0.25" />
+        <!-- 手绘问号 -->
+        <path d="M -8 -15 Q -8 -18 -5 -20 Q 0 -22 5 -20 Q 8 -18 8 -14 Q 8 -10 5 -8 Q 2 -6 0 -2" fill="none"
+            stroke="#FF6B6B" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="0" cy="5" r="3" fill="#FF6B6B" />
+        <!-- 手绘叉号 -->
+        <g transform="translate(15, -10)">
+            <line x1="-5" y1="-5" x2="5" y2="5" stroke="#FFA07A" stroke-width="3" stroke-linecap="round" />
+            <line x1="5" y1="-5" x2="-5" y2="5" stroke="#FFA07A" stroke-width="3" stroke-linecap="round" />
+        </g>
+    </g>
+
+    <!-- 手绘数字标签 -->
+    <g transform="translate(80, 280)">
+        <path d="M 0 -15 Q 8 -15 10 -10 L 12 5 Q 8 8 5 8 L -5 8 Q -8 8 -10 5 L -12 -10 Q -10 -15 0 -15" fill="#4ECDC4"
+            opacity="0.3" stroke="#4ECDC4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="0" y="3"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="700" fill="#2C3E50" text-anchor="middle" font-style="italic">
+            ×4
+        </text>
+    </g>
+
+    <!-- 底部作者信息 -->
+    <text x="450" y="355"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50" text-anchor="middle" opacity="0.7" font-style="italic">
+        Hugo 的个人成长笔记
+    </text>
+
+    <!-- 手绘下划线 -->
+    <path d="M 360 360 Q 385 358 410 360 Q 435 362 460 360 Q 485 358 510 360 Q 535 362 540 360" fill="none"
+        stroke="#4ECDC4" stroke-width="2" stroke-linecap="round" opacity="0.5" />
+</svg>

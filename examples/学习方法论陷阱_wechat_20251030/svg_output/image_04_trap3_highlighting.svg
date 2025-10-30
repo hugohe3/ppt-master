@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <!-- 背景 -->
+    <rect width="900" height="383" fill="#ECF0F1" />
+
+    <!-- 左侧：高亮笔和被标记的文本 -->
+    <g transform="translate(200, 191.5)">
+        <!-- 背景圆形 -->
+        <circle cx="0" cy="0" r="80" fill="#E74C3C" opacity="0.08" />
+
+        <!-- 书页 -->
+        <rect x="-50" y="-60" width="100" height="120" fill="#FFFFFF" stroke="#7F8C8D" stroke-width="2" rx="3" />
+
+        <!-- 被高亮的文本线条（五颜六色） -->
+        <rect x="-40" y="-45" width="70" height="8" fill="#F1C40F" opacity="0.6" rx="2" />
+        <line x1="-40" y1="-41" x2="30" y2="-41" stroke="#2C3E50" stroke-width="1.5" />
+
+        <rect x="-40" y="-28" width="60" height="8" fill="#FF69B4" opacity="0.5" rx="2" />
+        <line x1="-40" y1="-24" x2="20" y2="-24" stroke="#2C3E50" stroke-width="1.5" />
+
+        <rect x="-40" y="-11" width="75" height="8" fill="#2ECC71" opacity="0.5" rx="2" />
+        <line x1="-40" y1="-7" x2="35" y2="-7" stroke="#2C3E50" stroke-width="1.5" />
+
+        <rect x="-40" y="6" width="55" height="8" fill="#F1C40F" opacity="0.6" rx="2" />
+        <line x1="-40" y1="10" x2="15" y2="10" stroke="#2C3E50" stroke-width="1.5" />
+
+        <rect x="-40" y="23" width="80" height="8" fill="#3498DB" opacity="0.4" rx="2" />
+        <line x1="-40" y1="27" x2="40" y2="27" stroke="#2C3E50" stroke-width="1.5" />
+
+        <rect x="-40" y="40" width="65" height="8" fill="#FF69B4" opacity="0.5" rx="2" />
+        <line x1="-40" y1="44" x2="25" y2="44" stroke="#2C3E50" stroke-width="1.5" />
+
+        <!-- 荧光笔图标 -->
+        <g transform="translate(55, -50)">
+            <rect x="0" y="0" width="12" height="55" fill="#F1C40F" rx="2" />
+            <rect x="0" y="0" width="12" height="15" fill="#F39C12" rx="2" />
+            <rect x="2" y="55" width="8" height="8" fill="#E67E22" rx="1" />
+            <line x1="6" y1="15" x2="6" y2="55" stroke="#FFFFFF" stroke-width="1" opacity="0.3" />
+        </g>
+
+        <!-- 叉号标记 -->
+        <g transform="translate(-65, -65)">
+            <circle cx="0" cy="0" r="18" fill="#E74C3C" />
+            <line x1="-8" y1="-8" x2="8" y2="8" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+            <line x1="8" y1="-8" x2="-8" y2="8" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+        </g>
+    </g>
+
+    <!-- 右侧：文字信息 -->
+    <!-- 标题 -->
+    <text x="420" y="65"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="42" font-weight="700" fill="#2C3E50">
+        <tspan x="420" dy="0">🖍️ 误区三：高亮和画线</tspan>
+    </text>
+
+    <!-- 核心概念 -->
+    <text x="420" y="125"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="30" font-weight="700" fill="#E74C3C">
+        <tspan x="420" dy="0">"划过" ≠ "学过"</tspan>
+    </text>
+
+    <!-- 关键发现 -->
+    <text x="420" y="175"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="400" fill="#2C3E50">
+        <tspan x="420" dy="0">📊 研究发现：</tspan>
+        <tspan x="420" dy="36">高亮组 vs 不做标记组</tspan>
+        <tspan x="420" dy="36" font-weight="700">成绩无显著差异</tspan>
+    </text>
+
+    <!-- 原因说明 -->
+    <text x="420" y="285"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="400" fill="#2C3E50">
+        <tspan x="420" dy="0">⚠️ 只关注局部</tspan>
+        <tspan x="420" dy="33">阻碍整体理解</tspan>
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="40" y="360" width="820" height="2" fill="#E74C3C" opacity="0.2" rx="1" />
+</svg>

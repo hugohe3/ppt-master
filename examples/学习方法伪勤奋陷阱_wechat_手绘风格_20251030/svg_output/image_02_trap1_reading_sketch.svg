@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <!-- 米白色背景 -->
+    <rect width="900" height="383" fill="#FFF8F0" />
+
+    <!-- 左侧视觉区域 -->
+
+    <!-- 手绘圆形背景 -->
+    <path
+        d="M 210 50 Q 280 45 330 90 Q 350 150 330 210 Q 280 255 210 250 Q 140 245 90 200 Q 70 140 90 80 Q 140 45 210 50"
+        fill="#FFE66D" opacity="0.2" />
+
+    <!-- 手绘书本 -->
+    <g transform="translate(210, 150)">
+        <!-- 书本主体 -->
+        <path d="M -48 -38 Q -50 -40 -48 -42 L 48 -42 Q 50 -40 48 -38 L 48 38 Q 50 40 48 42 L -48 42 Q -50 40 -48 38 Z"
+            fill="#FF6B6B" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- 书脊 -->
+        <path d="M -48 -42 L -48 42" stroke="#FFFFFF" stroke-width="3" opacity="0.5" stroke-linecap="round" />
+        <path d="M 0 -42 L 0 42" stroke="#FFFFFF" stroke-width="2.5" opacity="0.4" stroke-linecap="round" />
+        <!-- 书页 -->
+        <rect x="-48" y="-42" width="96" height="12" fill="#C0392B" opacity="0.6" />
+
+        <!-- 手绘循环箭头（更夸张）-->
+        <g transform="translate(0, -75)">
+            <!-- 弧形箭头 -->
+            <path d="M -35 5 Q -45 -10 -35 -25 Q -20 -35 0 -32 Q 20 -35 35 -25 Q 45 -10 35 5" fill="none"
+                stroke="#FFA07A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 箭头头部 -->
+            <path d="M 30 8 L 35 5 L 38 10" fill="none" stroke="#FFA07A" stroke-width="5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            <!-- 装饰小圆点 -->
+            <circle cx="-30" cy="-20" r="3" fill="#FFA07A" />
+            <circle cx="30" cy="-20" r="3" fill="#FFA07A" />
+        </g>
+
+        <!-- 手绘叉号（表示错觉）-->
+        <g transform="translate(0, 85)">
+            <!-- 不规则圆圈 -->
+            <path d="M 0 -26 Q 18 -28 26 -12 Q 28 8 18 24 Q 0 28 -18 24 Q -28 8 -26 -12 Q -18 -28 0 -26" fill="none"
+                stroke="#FF6B6B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- 手绘叉 -->
+            <line x1="-16" y1="-16" x2="16" y2="16" stroke="#FF6B6B" stroke-width="5" stroke-linecap="round" />
+            <line x1="16" y1="-16" x2="-16" y2="16" stroke="#FF6B6B" stroke-width="5" stroke-linecap="round" />
+        </g>
+    </g>
+
+    <!-- 左上角手绘标签 -->
+    <g transform="translate(115, 45)">
+        <!-- 手绘椭圆形标签 -->
+        <path d="M 0 -18 Q 25 -20 38 -10 Q 42 0 38 10 Q 25 20 0 18 Q -25 20 -38 10 Q -42 0 -38 -10 Q -25 -20 0 -18"
+            fill="#FF6B6B" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="0" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="700" fill="#FFF8F0" text-anchor="middle">
+            陷阱 1
+        </text>
+    </g>
+
+    <!-- 装饰元素 -->
+    <path d="M 320 310 L 325 315 L 330 310 L 325 305 Z" fill="#FF6B6B" opacity="0.6" />
+    <circle cx="140" cy="320" r="8" fill="#4ECDC4" opacity="0.4" />
+
+    <!-- 右侧文字区域 -->
+    <g transform="translate(470, 0)">
+        <!-- 手绘下划线（先绘制装饰）-->
+        <path d="M 0 100 Q 30 98 60 100 Q 90 102 120 100 Q 150 98 180 100 Q 210 102 230 100" fill="none"
+            stroke="#FFA07A" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+
+        <!-- 装饰波浪线 -->
+        <path d="M 0 165 Q 15 163 30 165 Q 45 167 60 165 Q 75 163 90 165 Q 105 167 120 165 Q 135 163 150 165"
+            fill="none" stroke="#4ECDC4" stroke-width="2.5" stroke-linecap="round" opacity="0.5" />
+
+        <!-- 关键数据卡片框（先绘制）-->
+        <g transform="translate(0, 190)">
+            <path d="M 5 0 Q 0 0 0 5 L 0 60 Q 0 65 5 65 L 280 65 Q 285 65 285 60 L 285 5 Q 285 0 280 0 Z" fill="#FFE66D"
+                opacity="0.2" stroke="#FFE66D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+
+        <!-- 手绘波浪下划线（底部提示装饰）-->
+        <path d="M 25 312 Q 50 310 75 312 Q 100 314 125 312 Q 150 310 175 312 Q 200 314 220 312" fill="none"
+            stroke="#7F8C8D" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+
+        <!-- 主标题（文字在装饰之上）-->
+        <text x="0" y="90"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="40" font-weight="700" fill="#FF6B6B">
+            <tspan x="0" dy="0">陷阱1：反复阅读</tspan>
+        </text>
+
+        <!-- 副标题 -->
+        <text x="0" y="150"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#2C3E50" font-style="italic">
+            <tspan x="0" dy="0">熟练度错觉 ≠ 真正掌握</tspan>
+        </text>
+
+        <!-- 关键数据卡片文字（在框之上）-->
+        <g transform="translate(0, 190)">
+            <!-- 数据文字 -->
+            <text x="15" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="24" font-weight="600" fill="#2C3E50">
+                <tspan x="15" dy="0">84% 的学生</tspan>
+                <tspan x="15" dy="32">都在用这种低效方法</tspan>
+            </text>
+
+            <!-- 感叹号装饰 -->
+            <g transform="translate(265, 32)">
+                <line x1="0" y1="0" x2="0" y2="15" stroke="#FF6B6B" stroke-width="4" stroke-linecap="round" />
+                <circle cx="0" cy="22" r="3" fill="#FF6B6B" />
+            </g>
+        </g>
+
+        <!-- 底部提示 -->
+        <g transform="translate(0, 300)">
+            <!-- 手绘圆点 -->
+            <path d="M 10 -2 Q 12 -2 12 0 Q 12 2 10 2 Q 8 2 8 0 Q 8 -2 10 -2" fill="#FF6B6B" />
+            <text x="25" y="6"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="20" font-weight="400" fill="#7F8C8D" font-style="italic">
+                <tspan x="25" dy="0">反复阅读只带来熟悉感</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- 手绘小装饰 - 虚线箭头 -->
+    <path d="M 380 120 Q 400 115 420 120" fill="none" stroke="#FFA07A" stroke-width="2.5" stroke-dasharray="5,5"
+        stroke-linecap="round" opacity="0.5" />
+    <path d="M 418 117 L 420 120 L 418 123" fill="none" stroke="#FFA07A" stroke-width="2.5" stroke-linecap="round"
+        opacity="0.5" />
+</svg>

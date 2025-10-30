@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <!-- 背景渐变 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3498DB;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2C3E50;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="900" height="383" fill="url(#bgGradient)" />
+
+    <!-- 装饰圆圈 - 左上 -->
+    <circle cx="100" cy="70" r="45" fill="#FFFFFF" opacity="0.08" />
+    <circle cx="130" cy="50" r="28" fill="#FFFFFF" opacity="0.12" />
+
+    <!-- 装饰圆圈 - 右下 -->
+    <circle cx="800" cy="330" r="38" fill="#FFFFFF" opacity="0.08" />
+    <circle cx="770" cy="345" r="22" fill="#FFFFFF" opacity="0.12" />
+
+    <!-- 困惑图标 - 左侧 -->
+    <g transform="translate(160, 200)">
+        <!-- 书本堆叠 -->
+        <rect x="-35" y="-15" width="50" height="8" fill="#FFFFFF" opacity="0.25" rx="2" />
+        <rect x="-35" y="-6" width="50" height="8" fill="#FFFFFF" opacity="0.3" rx="2" />
+        <rect x="-35" y="3" width="50" height="8" fill="#FFFFFF" opacity="0.35" rx="2" />
+
+        <!-- 问号 -->
+        <text x="45" y="-5"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="40" font-weight="700" fill="#F39C12">?</text>
+    </g>
+
+    <!-- 主标题 - 上半部分 -->
+    <text x="450" y="120"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        为什么你很努力
+    </text>
+
+    <!-- 主标题 - 下半部分（强调） -->
+    <text x="450" y="185"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="56" font-weight="700" fill="#F39C12" text-anchor="middle">
+        却总"记不住"？
+    </text>
+
+    <!-- 装饰线 -->
+    <rect x="350" y="210" width="200" height="3" fill="#FFFFFF" rx="1.5" opacity="0.4" />
+
+    <!-- 引导文案 -->
+    <text x="450" y="260"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="400" fill="#ECF0F1" text-anchor="middle">
+        4 个常见学习误区解析
+    </text>
+
+    <!-- 学习工具图标组 - 右侧 -->
+    <g transform="translate(740, 200)">
+        <!-- 荧光笔 -->
+        <rect x="-15" y="-20" width="12" height="35" fill="#F1C40F" opacity="0.3" rx="2" />
+        <rect x="-15" y="15" width="12" height="5" fill="#F1C40F" opacity="0.5" rx="1" />
+
+        <!-- 笔记本 -->
+        <rect x="8" y="-18" width="20" height="28" fill="#FFFFFF" opacity="0.25" rx="2" />
+        <line x1="12" y1="-10" x2="24" y2="-10" stroke="#ECF0F1" stroke-width="1.5" opacity="0.4" />
+        <line x1="12" y1="-3" x2="24" y2="-3" stroke="#ECF0F1" stroke-width="1.5" opacity="0.4" />
+        <line x1="12" y1="4" x2="24" y2="4" stroke="#ECF0F1" stroke-width="1.5" opacity="0.4" />
+    </g>
+
+    <!-- 底部作者信息 -->
+    <text x="450" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.75">
+        Hugo 的个人成长笔记
+    </text>
+</svg>
