@@ -1,0 +1,161 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2D8659"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#2D8659">
+    <tspan x="80" dy="0">辉煌时刻：上市与融资</tspan>
+  </text>
+  <rect x="80" y="85" width="100" height="5" fill="#2D8659"/>
+  
+  <!-- 左上：上市信息大卡片 -->
+  <rect x="60" y="130" width="540" height="270" fill="#E8F9F0" stroke="#2D8659" stroke-width="4" rx="12"/>
+  <text x="330" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#2D8659" text-anchor="middle">
+    <tspan x="330" dy="0">🎉 港交所成功上市</tspan>
+  </text>
+  
+  <!-- 上市数据表格式 -->
+  <text x="100" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">
+    <tspan x="100" dy="0">上市时间</tspan>
+  </text>
+  <text x="450" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#5A5A5A" text-anchor="end">
+    <tspan x="450" dy="0">2022年9月</tspan>
+  </text>
+  
+  <text x="100" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">
+    <tspan x="100" dy="0">上市地位</tspan>
+  </text>
+  <text x="450" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#5A5A5A" text-anchor="end">
+    <tspan x="450" dy="0">中国"水果第一股"</tspan>
+  </text>
+  
+  <text x="100" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">
+    <tspan x="100" dy="0">发行价格</tspan>
+  </text>
+  <text x="450" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="700" fill="#2D8659" text-anchor="end">
+    <tspan x="450" dy="0">40 港元</tspan>
+  </text>
+  
+  <text x="100" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">
+    <tspan x="100" dy="0">上市市值</tspan>
+  </text>
+  <text x="450" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="700" fill="#2D8659" text-anchor="end">
+    <tspan x="450" dy="0">124.21 亿港元</tspan>
+  </text>
+  
+  <!-- 巅峰市值强调条 -->
+  <rect x="90" y="365" width="470" height="45" fill="#2D8659" rx="6"/>
+  <text x="325" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="325" dy="0">巅峰市值突破 600 亿港元 ⭐</tspan>
+  </text>
+  
+  <!-- 左下：资本助力卡片 -->
+  <rect x="60" y="425" width="540" height="225" fill="#F8F9FA" stroke="#E8E8E8" stroke-width="2" rx="10"/>
+  <text x="90" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="90" dy="0">资本助力</tspan>
+  </text>
+  
+  <rect x="90" y="490" width="130" height="50" fill="#E8F4F8" rx="6"/>
+  <text x="155" y="522" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="155" dy="0">7 轮</tspan>
+  </text>
+  <text x="240" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#5A5A5A">
+    <tspan x="240" dy="0">上市前完成融资</tspan>
+  </text>
+  
+  <text x="90" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">
+    <tspan x="90" dy="0">主要股东：</tspan>
+  </text>
+  <text x="110" y="607" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A">
+    <tspan x="110" dy="0">• 阿里巴巴（持股8%，最大外部股东）</tspan>
+    <tspan x="110" dy="28">• CMC 资本、顺丰控股等知名机构</tspan>
+  </text>
+  
+  <!-- 右侧：营收增长图表区域 -->
+  <text x="680" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="680" dy="0">营收爆发式增长</tspan>
+  </text>
+  
+  <!-- 图表背景 -->
+  <rect x="660" y="200" width="560" height="420" fill="#F8F9FA" rx="10"/>
+  
+  <!-- Y轴 -->
+  <line x1="710" y1="250" x2="710" y2="570" stroke="#E8E8E8" stroke-width="2"/>
+  <text x="700" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="700" dy="0">150亿</tspan>
+  </text>
+  <text x="700" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="700" dy="0">100亿</tspan>
+  </text>
+  <text x="700" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="700" dy="0">50亿</tspan>
+  </text>
+  <text x="700" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="700" dy="0">0</tspan>
+  </text>
+  
+  <!-- 网格线 -->
+  <line x1="710" y1="250" x2="1180" y2="250" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="710" y1="360" x2="1180" y2="360" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="710" y1="470" x2="1180" y2="470" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- 数据点和折线 - 增强视觉 -->
+  <line x1="785" y1="537" x2="900" y2="443" stroke="#005587" stroke-width="5"/>
+  <line x1="900" y1="443" x2="1015" y2="360" stroke="#005587" stroke-width="5"/>
+  <line x1="1015" y1="360" x2="1130" y2="250" stroke="#2D8659" stroke-width="5"/>
+  
+  <!-- 2019 -->
+  <circle cx="785" cy="537" r="10" fill="#005587" stroke="#FFFFFF" stroke-width="3"/>
+  <text x="785" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="785" dy="0">20</tspan>
+  </text>
+  <text x="785" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="785" dy="0">2019</tspan>
+  </text>
+  
+  <!-- 2020 -->
+  <circle cx="900" cy="443" r="10" fill="#005587" stroke="#FFFFFF" stroke-width="3"/>
+  <text x="900" y="426" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="900" dy="0">60</tspan>
+  </text>
+  <text x="900" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="900" dy="0">2020</tspan>
+  </text>
+  
+  <!-- 2021 -->
+  <circle cx="1015" cy="360" r="10" fill="#005587" stroke="#FFFFFF" stroke-width="3"/>
+  <text x="1015" y="343" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="1015" dy="0">100</tspan>
+  </text>
+  <text x="1015" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="1015" dy="0">2021</tspan>
+  </text>
+  
+  <!-- 2022 - 高光 -->
+  <circle cx="1130" cy="250" r="14" fill="#2D8659" stroke="#FFFFFF" stroke-width="4"/>
+  <text x="1130" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#2D8659" text-anchor="middle">
+    <tspan x="1130" dy="0">150</tspan>
+  </text>
+  <text x="1130" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#2D8659" text-anchor="middle">
+    <tspan x="1130" dy="0">2022</tspan>
+  </text>
+  
+  <!-- 增长标签 -->
+  <rect x="890" y="230" width="180" height="42" fill="#2D8659" rx="6"/>
+  <text x="980" y="257" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="980" dy="0">4年增长 7 倍</tspan>
+  </text>
+  
+  <!-- 单位 -->
+  <text x="700" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999">
+    <tspan x="700" dy="0">（亿元）</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">04</tspan>
+  </text>
+</svg>

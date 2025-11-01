@@ -1,0 +1,67 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#005587">
+    <tspan x="80" dy="0">深层原因分析</tspan>
+  </text>
+  
+  <!-- 标题下划线 -->
+  <rect x="80" y="95" width="80" height="4" fill="#005587"/>
+  
+  <!-- 2×2 矩阵布局 -->
+  
+  <!-- 左上：快速扩张风险 -->
+  <rect x="80" y="150" width="550" height="240" fill="#F0F7FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="110" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#005587">
+    <tspan x="110" dy="0">📈 快速扩张风险</tspan>
+  </text>
+  <text x="110" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A">
+    <tspan x="110" dy="0">• 4年营收增长7倍，远超管理能力承载</tspan>
+    <tspan x="110" dy="30">• 内部控制体系建设滞后于业务扩张</tspan>
+    <tspan x="110" dy="30">• 快速开拓的新供应商管理失控</tspan>
+    <tspan x="110" dy="30">• 风险意识薄弱，合规建设不足</tspan>
+  </text>
+  
+  <!-- 右上：资本驱动陷阱 -->
+  <rect x="650" y="150" width="550" height="240" fill="#F0F7FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="680" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#005587">
+    <tspan x="680" dy="0">💰 资本驱动陷阱</tspan>
+  </text>
+  <text x="680" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A">
+    <tspan x="680" dy="0">• 过度依赖融资推动规模扩张</tspan>
+    <tspan x="680" dy="30">• 为满足资本市场预期铤而走险</tspan>
+    <tspan x="680" dy="30">• 忽视经营本质，追求财务数字</tspan>
+    <tspan x="680" dy="30">• 上市后压力放大，短期行为加剧</tspan>
+  </text>
+  
+  <!-- 左下：行业特性挑战 -->
+  <rect x="80" y="410" width="550" height="240" fill="#F8F9FA" stroke="#E8E8E8" stroke-width="2" rx="8"/>
+  <text x="110" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C2C2C">
+    <tspan x="110" dy="0">🍎 行业特性挑战</tspan>
+  </text>
+  <text x="110" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A">
+    <tspan x="110" dy="0">• 生鲜行业损耗率天然较高</tspan>
+    <tspan x="110" dy="30">• 供应链复杂，环节众多难以监控</tspan>
+    <tspan x="110" dy="30">• 跨国采购增加管理难度</tspan>
+    <tspan x="110" dy="30">• 农产品价格波动大，利润不稳定</tspan>
+  </text>
+  
+  <!-- 右下：治理结构缺陷 -->
+  <rect x="650" y="410" width="550" height="240" fill="#F8F9FA" stroke="#E8E8E8" stroke-width="2" rx="8"/>
+  <text x="680" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C2C2C">
+    <tspan x="680" dy="0">⚖️ 治理结构缺陷</tspan>
+  </text>
+  <text x="680" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A">
+    <tspan x="680" dy="0">• 家族企业控制权过度集中</tspan>
+    <tspan x="680" dy="30">• 缺乏有效的制衡和监督机制</tspan>
+    <tspan x="680" dy="30">• 独立董事作用未能发挥</tspan>
+    <tspan x="680" dy="30">• 关键决策透明度不足</tspan>
+  </text>
+  
+  <!-- 底部页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">08</tspan>
+  </text>
+</svg>

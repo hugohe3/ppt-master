@@ -1,0 +1,87 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#005587">
+    <tspan x="80" dy="0">总结与思考</tspan>
+  </text>
+  
+  <!-- 标题下划线 -->
+  <rect x="80" y="95" width="80" height="4" fill="#005587"/>
+  
+  <!-- 核心结论区域 -->
+  <rect x="80" y="150" width="1120" height="220" fill="#F0F7FA" rx="8"/>
+  
+  <text x="640" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+    <tspan x="640" dy="0">核心结论</tspan>
+  </text>
+  
+  <text x="640" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#2C2C2C" text-anchor="middle" style="line-height: 1.6">
+    <tspan x="640" dy="0">洪九果品曾是中国水果行业的标杆企业，</tspan>
+    <tspan x="640" dy="35">创新的商业模式和强大的供应链能力令其快速崛起。</tspan>
+    <tspan x="640" dy="35">然而，忽视内控、财务造假、管理层失信导致其迅速坍塌。</tspan>
+    <tspan x="640" dy="35">从 600 亿到退市仅用时不到 3 年，</tspan>
+    <tspan x="640" dy="35">为行业敲响了警钟。</tspan>
+  </text>
+  
+  <!-- 时间对比 -->
+  <rect x="200" y="400" width="340" height="100" fill="#E8F4F8" rx="6"/>
+  <text x="370" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="370" dy="0">从创立到上市</tspan>
+  </text>
+  <text x="370" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#2D8659" text-anchor="middle">
+    <tspan x="370" dy="0">20 年</tspan>
+  </text>
+  
+  <text x="640" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="640" dy="0">VS</tspan>
+  </text>
+  
+  <rect x="740" y="400" width="340" height="100" fill="#FFF5F5" rx="6"/>
+  <text x="910" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="910" dy="0">从巅峰到退市</tspan>
+  </text>
+  <text x="910" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="910" dy="0">&lt; 3 年</tspan>
+  </text>
+  
+  <!-- 思考问题 -->
+  <text x="80" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C2C2C">
+    <tspan x="80" dy="0">值得深思的问题</tspan>
+  </text>
+  
+  <rect x="80" y="575" width="360" height="90" fill="#F8F9FA" rx="6"/>
+  <text x="110" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="110" dy="0" font-weight="600" fill="#005587">❓ 问题一</tspan>
+    <tspan x="110" dy="25">高速增长是否必然伴随</tspan>
+    <tspan x="110" dy="20">高风险？</tspan>
+  </text>
+  
+  <rect x="460" y="575" width="360" height="90" fill="#F8F9FA" rx="6"/>
+  <text x="490" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="490" dy="0" font-weight="600" fill="#005587">❓ 问题二</tspan>
+    <tspan x="490" dy="25">资本市场对于新兴行业的</tspan>
+    <tspan x="490" dy="20">估值是否过度乐观？</tspan>
+  </text>
+  
+  <rect x="840" y="575" width="360" height="90" fill="#F8F9FA" rx="6"/>
+  <text x="870" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="870" dy="0" font-weight="600" fill="#005587">❓ 问题三</tspan>
+    <tspan x="870" dy="25">监管机制如何更早发现</tspan>
+    <tspan x="870" dy="20">和防范此类风险？</tspan>
+  </text>
+  
+  <!-- 底部分割线 -->
+  <line x1="80" y1="685" x2="1200" y2="685" stroke="#E8E8E8" stroke-width="1"/>
+  
+  <!-- 底部标注 -->
+  <text x="640" y="707" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="640" dy="0">—— 案例分析完成 ——</tspan>
+  </text>
+  
+  <!-- 底部页码 -->
+  <text x="1200" y="707" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">10</tspan>
+  </text>
+</svg>

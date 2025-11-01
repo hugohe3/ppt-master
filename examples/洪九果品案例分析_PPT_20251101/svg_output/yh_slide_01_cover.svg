@@ -1,0 +1,83 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左侧装饰色块 - 增强视觉冲击 -->
+  <rect x="0" y="0" width="8" height="720" fill="#005587"/>
+  
+  <!-- 主内容区域背景 - 淡蓝色调 -->
+  <rect x="80" y="180" width="520" height="380" fill="#F0F7FA" rx="12" opacity="0.6"/>
+  
+  <!-- 主标题 -->
+  <text x="110" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="700" fill="#2C2C2C" style="line-height: 1.2">
+    <tspan x="110" dy="0">洪九果品：</tspan>
+    <tspan x="110" dy="68">从600亿到退市</tspan>
+    <tspan x="110" dy="68">的警示录</tspan>
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="110" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#5A5A5A">
+    <tspan x="110" dy="0">中国"水果第一股"兴衰案例分析</tspan>
+  </text>
+  
+  <!-- 装饰性强调线 -->
+  <rect x="110" y="520" width="60" height="5" fill="#005587"/>
+  
+  <!-- 右侧：数据可视化区域 -->
+  <!-- 上市市值卡片 -->
+  <rect x="680" y="200" width="520" height="90" fill="#E8F4F8" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="720" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="720" dy="0">2022.09 上市市值</tspan>
+  </text>
+  <text x="720" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#005587">
+    <tspan x="720" dy="0">124 亿港元</tspan>
+  </text>
+  
+  <!-- 巅峰市值卡片 -->
+  <rect x="680" y="310" width="520" height="90" fill="#E8F9F0" stroke="#2D8659" stroke-width="3" rx="8"/>
+  <text x="720" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="720" dy="0">2022 巅峰市值</tspan>
+  </text>
+  <text x="720" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#2D8659">
+    <tspan x="720" dy="0">600+ 亿港元</tspan>
+  </text>
+  
+  <!-- 向下箭头 -->
+  <path d="M 940 415 L 940 440" stroke="#C41E3A" stroke-width="4" marker-end="url(#arrow-red)"/>
+  <defs>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#C41E3A"/>
+    </marker>
+  </defs>
+  
+  <!-- 退市市值卡片 - 强烈警示 -->
+  <rect x="680" y="455" width="520" height="105" fill="#FFF5F5" stroke="#C41E3A" stroke-width="4" rx="8"/>
+  <text x="720" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="720" dy="0">2025.10 退市市值</tspan>
+  </text>
+  <text x="720" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#C41E3A">
+    <tspan x="720" dy="0">27.95 亿港元</tspan>
+  </text>
+  
+  <!-- 警示标签 - 右下角 -->
+  <rect x="1020" y="525" width="160" height="30" fill="#C41E3A" rx="4"/>
+  <text x="1100" y="548" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="1100" dy="0">蒸发 95%+</tspan>
+  </text>
+  
+  <!-- 底部分割线 -->
+  <line x1="80" y1="630" x2="1200" y2="630" stroke="#E8E8E8" stroke-width="2"/>
+  
+  <!-- 底部信息 - 对齐优化 -->
+  <text x="80" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#999999">
+    <tspan x="80" dy="0">案例分析报告</tspan>
+  </text>
+  
+  <text x="640" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="640" dy="0">高端咨询风格</tspan>
+  </text>
+  
+  <text x="1200" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">2025年11月</tspan>
+  </text>
+</svg>

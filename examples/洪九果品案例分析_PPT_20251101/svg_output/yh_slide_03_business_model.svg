@@ -1,0 +1,136 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#005587">
+    <tspan x="80" dy="0">业务模式与核心竞争力</tspan>
+  </text>
+  <rect x="80" y="85" width="100" height="5" fill="#005587"/>
+  
+  <!-- "端到端"供应链标题 -->
+  <text x="80" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="80" dy="0">"端到端"供应链模式</tspan>
+  </text>
+  
+  <!-- 供应链流程 - 4节点 - 增强对齐和对比 -->
+  <!-- 节点1 -->
+  <rect x="80" y="180" width="250" height="95" fill="#E8F4F8" stroke="#005587" stroke-width="3" rx="8"/>
+  <text x="205" y="217" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="205" dy="0">全球原产区直采</tspan>
+  </text>
+  <text x="205" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="205" dy="0">100+原产区团队</tspan>
+  </text>
+  
+  <!-- 箭头1 -->
+  <path d="M 340 227 L 375 227" stroke="#005587" stroke-width="4" marker-end="url(#arrow1)"/>
+  <defs>
+    <marker id="arrow1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#005587"/>
+    </marker>
+  </defs>
+  
+  <!-- 节点2 -->
+  <rect x="385" y="180" width="250" height="95" fill="#E8F4F8" stroke="#005587" stroke-width="3" rx="8"/>
+  <text x="510" y="217" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="510" dy="0">加工分拣</tspan>
+  </text>
+  <text x="510" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="510" dy="0">16个加工厂</tspan>
+  </text>
+  
+  <!-- 箭头2 -->
+  <path d="M 645 227 L 680 227" stroke="#005587" stroke-width="4" marker-end="url(#arrow1)"/>
+  
+  <!-- 节点3 -->
+  <rect x="690" y="180" width="250" height="95" fill="#E8F4F8" stroke="#005587" stroke-width="3" rx="8"/>
+  <text x="815" y="217" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="815" dy="0">仓储物流</tspan>
+  </text>
+  <text x="815" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="815" dy="0">60个分拣仓</tspan>
+  </text>
+  
+  <!-- 箭头3 -->
+  <path d="M 950 227 L 985 227" stroke="#005587" stroke-width="4" marker-end="url(#arrow1)"/>
+  
+  <!-- 节点4 -->
+  <rect x="995" y="180" width="205" height="95" fill="#E8F4F8" stroke="#005587" stroke-width="3" rx="8"/>
+  <text x="1097.5" y="217" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="1097.5" dy="0">终端销售</tspan>
+  </text>
+  <text x="1097.5" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="1097.5" dy="0">全渠道覆盖</tspan>
+  </text>
+  
+  <!-- 核心竞争力标题 -->
+  <text x="80" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="80" dy="0">核心竞争力</tspan>
+  </text>
+  
+  <!-- 4个优势卡片 - 统一样式，增强重复性 -->
+  <!-- 卡片1 -->
+  <rect x="80" y="370" width="275" height="210" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <circle cx="217.5" cy="425" r="35" fill="#E8F4F8" stroke="#005587" stroke-width="3"/>
+  <text x="217.5" y="434" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="217.5" dy="0">1.3%</tspan>
+  </text>
+  <text x="217.5" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="217.5" dy="0">超低损耗率</tspan>
+  </text>
+  <text x="217.5" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="217.5" dy="0">行业平均1%-5%</tspan>
+    <tspan x="217.5" dy="20">精细化管理成效显著</tspan>
+  </text>
+  
+  <!-- 卡片2 -->
+  <rect x="375" y="370" width="275" height="210" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <circle cx="512.5" cy="425" r="35" fill="#E8F4F8" stroke="#005587" stroke-width="3"/>
+  <text x="512.5" y="434" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="512.5" dy="0">73.3%</tspan>
+  </text>
+  <text x="512.5" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="512.5" dy="0">自有品牌占比</tspan>
+  </text>
+  <text x="512.5" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="512.5" dy="0">行业平均34%</tspan>
+    <tspan x="512.5" dy="20">20+自有品牌矩阵</tspan>
+  </text>
+  
+  <!-- 卡片3 -->
+  <rect x="670" y="370" width="275" height="210" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <circle cx="807.5" cy="425" r="35" fill="#E8F4F8" stroke="#005587" stroke-width="3"/>
+  <text x="807.5" y="434" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="807.5" dy="0">8.3%</tspan>
+  </text>
+  <text x="807.5" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="807.5" dy="0">榴莲市场份额</tspan>
+  </text>
+  <text x="807.5" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="807.5" dy="0">年销售额40亿元</tspan>
+    <tspan x="807.5" dy="20">中国最大榴莲分销商</tspan>
+  </text>
+  
+  <!-- 卡片4 -->
+  <rect x="965" y="370" width="235" height="210" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <circle cx="1082.5" cy="425" r="35" fill="#E8F4F8" stroke="#005587" stroke-width="3"/>
+  <text x="1082.5" y="434" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+    <tspan x="1082.5" dy="0">AI</tspan>
+  </text>
+  <text x="1082.5" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="1082.5" dy="0">数字化系统</tspan>
+  </text>
+  <text x="1082.5" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="1082.5" dy="0">"洪九星桥"系统</tspan>
+    <tspan x="1082.5" dy="20">优化库存周转</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">03</tspan>
+  </text>
+</svg>

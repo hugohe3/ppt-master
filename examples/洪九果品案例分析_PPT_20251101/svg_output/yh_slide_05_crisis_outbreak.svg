@@ -1,0 +1,108 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左侧装饰条 - 警示红色 -->
+  <rect x="0" y="0" width="8" height="720" fill="#C41E3A"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#C41E3A">
+    <tspan x="80" dy="0">危机爆发：财务疑云</tspan>
+  </text>
+  <rect x="80" y="85" width="100" height="5" fill="#C41E3A"/>
+  
+  <!-- 危机时间轴标题 -->
+  <text x="80" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="80" dy="0">危机演进时间轴</tspan>
+  </text>
+  
+  <!-- 时间轴主线 -->
+  <line x1="100" y1="215" x2="1180" y2="215" stroke="#C41E3A" stroke-width="4"/>
+  
+  <!-- 事件1: 2024.03 停牌 -->
+  <circle cx="300" cy="215" r="14" fill="#C41E3A" stroke="#FFFFFF" stroke-width="3"/>
+  <line x1="300" y1="229" x2="300" y2="265" stroke="#C41E3A" stroke-width="3"/>
+  <rect x="170" y="270" width="260" height="110" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <text x="300" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="300" dy="0">2024.03</tspan>
+  </text>
+  <text x="300" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="300" dy="0">暂停交易</tspan>
+  </text>
+  <text x="300" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="300" dy="0">无法按时发布</tspan>
+    <tspan x="300" dy="22">2023年财报</tspan>
+  </text>
+  
+  <!-- 事件2: 审计质疑 -->
+  <circle cx="640" cy="215" r="14" fill="#C41E3A" stroke="#FFFFFF" stroke-width="3"/>
+  <line x1="640" y1="229" x2="640" y2="265" stroke="#C41E3A" stroke-width="3"/>
+  <rect x="510" y="270" width="260" height="110" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <text x="640" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="640" dy="0">2024.03</tspan>
+  </text>
+  <text x="640" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="640" dy="0">毕马威质疑</tspan>
+  </text>
+  <text x="640" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="640" dy="0">对预付款项提出</tspan>
+    <tspan x="640" dy="22">严重质疑</tspan>
+  </text>
+  
+  <!-- 事件3: 2024.04 审计师辞任 -->
+  <circle cx="980" cy="215" r="14" fill="#C41E3A" stroke="#FFFFFF" stroke-width="3"/>
+  <line x1="980" y1="229" x2="980" y2="265" stroke="#C41E3A" stroke-width="3"/>
+  <rect x="850" y="270" width="260" height="110" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <text x="980" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="980" dy="0">2024.04</tspan>
+  </text>
+  <text x="980" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="980" dy="0">审计师辞任</tspan>
+  </text>
+  <text x="980" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A" text-anchor="middle">
+    <tspan x="980" dy="0">毕马威正式辞任</tspan>
+    <tspan x="980" dy="22">审计师职务</tspan>
+  </text>
+  
+  <!-- 核心疑点 -->
+  <text x="80" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+    <tspan x="80" dy="0">核心疑点</tspan>
+  </text>
+  
+  <!-- 预付款大卡片 - 视觉强化 -->
+  <rect x="60" y="465" width="560" height="185" fill="#FFF5F5" stroke="#C41E3A" stroke-width="5" rx="12"/>
+  <text x="340" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="64" font-weight="700" fill="#C41E3A" text-anchor="middle">
+    <tspan x="340" dy="0">34.2 亿元</tspan>
+  </text>
+  <text x="340" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C2C2C" text-anchor="middle">
+    <tspan x="340" dy="0">向新增供应商的可疑预付款</tspan>
+  </text>
+  <text x="340" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#999999" text-anchor="middle">
+    <tspan x="340" dy="0">审计机构无法核实资金流向</tspan>
+  </text>
+  
+  <!-- 右侧：财务异常指标 -->
+  <rect x="650" y="465" width="570" height="185" fill="#F8F9FA" stroke="#E8E8E8" stroke-width="2" rx="10"/>
+  <text x="685" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#2C2C2C">
+    <tspan x="685" dy="0">财务异常指标</tspan>
+  </text>
+  
+  <text x="710" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#C41E3A">
+    <tspan x="710" dy="0">🚨 预付款占比过高</tspan>
+  </text>
+  <text x="730" y="578" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="730" dy="0">超出行业正常范围</tspan>
+  </text>
+  
+  <text x="710" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#C41E3A">
+    <tspan x="710" dy="0">🚨 资金流向不透明</tspan>
+  </text>
+  <text x="730" y="638" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+    <tspan x="730" dy="0">无法提供充分证据</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">05</tspan>
+  </text>
+</svg>

@@ -1,0 +1,86 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#005587"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="700" fill="#005587">
+    <tspan x="80" dy="0">退市五大原因</tspan>
+  </text>
+  <rect x="80" y="85" width="100" height="5" fill="#005587"/>
+  
+  <!-- 副标题 -->
+  <text x="80" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#999999">
+    <tspan x="80" dy="0">港交所官方认定</tspan>
+  </text>
+  
+  <!-- 5个原因 - 精简紧凑布局 -->
+  <!-- 原因1 -->
+  <rect x="60" y="165" width="1160" height="100" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <circle cx="105" cy="215" r="24" fill="#C41E3A"/>
+  <text x="105" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="105" dy="0">1</tspan>
+  </text>
+  <text x="150" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#2C2C2C">
+    <tspan x="150" dy="0">未完成调查并采取补救措施</tspan>
+  </text>
+  <text x="150" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A">
+    <tspan x="150" dy="0">未能完成对财务问题的独立调查，也未采取有效的补救措施来解决审计机构提出的重大疑虑</tspan>
+  </text>
+  
+  <!-- 原因2 -->
+  <rect x="60" y="280" width="1160" height="100" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <circle cx="105" cy="330" r="24" fill="#C41E3A"/>
+  <text x="105" y="342" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="105" dy="0">2</tspan>
+  </text>
+  <text x="150" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#2C2C2C">
+    <tspan x="150" dy="0">管理层诚信受质疑</tspan>
+  </text>
+  <text x="150" y="347" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A">
+    <tspan x="150" dy="0">董事长等6名核心高管涉嫌刑事案件被采取强制措施，管理层的诚信和适当性存在严重问题</tspan>
+  </text>
+  
+  <!-- 原因3 -->
+  <rect x="60" y="395" width="1160" height="100" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <circle cx="105" cy="445" r="24" fill="#C41E3A"/>
+  <text x="105" y="457" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="105" dy="0">3</tspan>
+  </text>
+  <text x="150" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#2C2C2C">
+    <tspan x="150" dy="0">内部控制存在重大缺陷且未整改</tspan>
+  </text>
+  <text x="150" y="462" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A">
+    <tspan x="150" dy="0">公司内部控制体系存在重大缺陷，审计机构指出的问题长期未得到整改和修复</tspan>
+  </text>
+  
+  <!-- 原因4 -->
+  <rect x="60" y="510" width="1160" height="100" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <circle cx="105" cy="560" r="24" fill="#C41E3A"/>
+  <text x="105" y="572" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="105" dy="0">4</tspan>
+  </text>
+  <text x="150" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#2C2C2C">
+    <tspan x="150" dy="0">长期无法披露财务业绩</tspan>
+  </text>
+  <text x="150" y="577" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#5A5A5A">
+    <tspan x="150" dy="0">自2024年起无法按时发布财务报告，严重违反上市公司信息披露义务</tspan>
+  </text>
+  
+  <!-- 原因5 - 紧凑版 -->
+  <rect x="60" y="625" width="1160" height="65" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="8"/>
+  <circle cx="105" cy="657.5" r="24" fill="#C41E3A"/>
+  <text x="105" y="669.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="105" dy="0">5</tspan>
+  </text>
+  <text x="150" y="665" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#2C2C2C">
+    <tspan x="150" dy="0">公司治理关键岗位长期空缺</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="710" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+    <tspan x="1200" dy="0">07</tspan>
+  </text>
+</svg>
