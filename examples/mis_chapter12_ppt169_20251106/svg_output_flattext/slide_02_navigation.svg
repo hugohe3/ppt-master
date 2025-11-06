@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">本章概览</text>
+  <text x="60" y="145" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">Chapter Overview</text>
+  
+  
+  <line x1="60" y1="175" x2="360" y2="175" stroke="#005587" stroke-width="2" />
+  
+  
+  
+  <circle cx="100" cy="230" r="32" fill="#005587" />
+  <text x="100" y="243" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+  <text x="160" y="225" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">决策类型与决策过程</text>
+  <text x="160" y="250" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">What are the different types of decisions?</text>
+  
+  
+  <circle cx="100" cy="330" r="32" fill="#0076A8" />
+  <text x="100" y="343" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+  <text x="160" y="325" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">信息系统支持管理决策</text>
+  <text x="160" y="350" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">How do IS support managers?</text>
+  
+  
+  <circle cx="100" cy="430" r="32" fill="#005587" />
+  <text x="100" y="443" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+  <text x="160" y="425" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">商业智能与业务分析</text>
+  <text x="160" y="450" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">Business Intelligence &amp; Analytics</text>
+  
+  
+  <circle cx="100" cy="530" r="32" fill="#0076A8" />
+  <text x="100" y="543" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+  <text x="160" y="525" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">不同决策群体的BI使用</text>
+  <text x="160" y="550" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">How different groups use BI?</text>
+  
+  
+  <circle cx="100" cy="630" r="32" fill="#005587" />
+  <text x="100" y="643" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+  <text x="160" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">MIS助力职业发展</text>
+  <text x="160" y="650" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">How will MIS help my career?</text>
+  
+  
+  <rect x="1212" y="0" width="8" height="720" fill="#ECF0F1" />
+</svg>

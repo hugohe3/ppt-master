@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-2</text>
+  
+  
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">现实世界的决策制约</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">Real-World Decision Constraints</text>
+  
+  
+  <line x1="60" y1="150" x2="520" y2="150" stroke="#005587" stroke-width="2" />
+  
+  
+  <rect x="420" y="190" width="440" height="80" fill="#FFF5E6" rx="12" />
+  <text x="640" y="220" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#E67E22" text-anchor="middle">⚠️ 信息系统强大，但不保证更好的决策</text>
+  <text x="640" y="250" font-family="'Segoe UI', sans-serif" font-size="16" fill="#E67E22" text-anchor="middle">Decision-making is constrained by three main factors</text>
+  
+  
+  <rect x="80" y="300" width="340" height="180" fill="#005587" rx="12" />
+  <circle cx="250" cy="340" r="28" fill="#FFFFFF" />
+  <text x="250" y="353" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#005587" text-anchor="middle">1</text>
+  <text x="250" y="390" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">信息质量</text>
+  <text x="250" y="413" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">Information Quality</text>
+  <text x="100" y="443" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 准确性 Accuracy</text>
+  <text x="100" y="460" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 完整性 Completeness</text>
+  <text x="100" y="477" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 及时性 Timeliness</text>
+  <text x="250" y="443" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 一致性 Consistency</text>
+  <text x="250" y="460" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 有效性 Validity</text>
+  <text x="250" y="477" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 可访问性 Accessibility</text>
+  
+  
+  <rect x="470" y="300" width="340" height="180" fill="#0076A8" rx="12" />
+  <circle cx="640" cy="340" r="28" fill="#FFFFFF" />
+  <text x="640" y="353" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#0076A8" text-anchor="middle">2</text>
+  <text x="640" y="390" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">管理过滤器</text>
+  <text x="640" y="413" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">Management Filters</text>
+  <text x="490" y="443" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 个人偏见与认知过滤</text>
+  <text x="490" y="460" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 情感因素影响判断</text>
+  <text x="490" y="477" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 风险评估能力局限</text>
+  
+  
+  <rect x="860" y="300" width="340" height="180" fill="#7F8C8D" rx="12" />
+  <circle cx="1030" cy="340" r="28" fill="#FFFFFF" />
+  <text x="1030" y="353" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#7F8C8D" text-anchor="middle">3</text>
+  <text x="1030" y="390" font-family="'Microsoft YaHei', sans-serif" font-size="23" font-weight="bold" fill="#FFFFFF" text-anchor="middle">组织惯性与政治</text>
+  <text x="1030" y="413" font-family="'Segoe UI', sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle">Organizational Inertia</text>
+  <text x="880" y="443" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 组织抵制重大变革</text>
+  <text x="880" y="460" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 利益集团平衡博弈</text>
+  <text x="880" y="477" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">• 既有流程路径依赖</text>
+  
+  
+  <text x="60" y="530" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">高质量决策 = 高质量信息 + 理性判断 + 组织支持</text>
+  
+  <rect x="80" y="560" width="360" height="120" fill="#F8F9FA" rx="8" />
+  <text x="100" y="590" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#005587">📊 数据质量要求</text>
+  <text x="120" y="615" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">高质量决策离不开高质量的信息作为</text>
+  <text x="120" y="638" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">基础，需从数据源头确保质量六维度</text>
+  <text x="120" y="661" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#7F8C8D">（准确、完整、一致、有效、及时、可访问）</text>
+  
+  <rect x="480" y="560" width="360" height="120" fill="#F8F9FA" rx="8" />
+  <text x="500" y="590" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#005587">🧠 认知偏差挑战</text>
+  <text x="520" y="615" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">管理者容易依赖直觉和情感而非数据，</text>
+  <text x="520" y="638" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">需要培养数据驱动决策的文化和能力</text>
+  <text x="520" y="661" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#7F8C8D">建立理性分析框架，减少主观判断偏差</text>
+  
+  <rect x="880" y="560" width="340" height="120" fill="#F8F9FA" rx="8" />
+  <text x="900" y="590" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#005587">🏢 组织变革阻力</text>
+  <text x="920" y="615" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">决策往往是各方利益平衡的结果，并非</text>
+  <text x="920" y="638" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">问题的最优解，需要强有力的领导推动</text>
+  <text x="920" y="661" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#7F8C8D">克服组织惯性，建立变革管理机制</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="60" y="0" width="8" height="720" fill="#005587" />
+  
+  
+  <text x="640" y="300" font-family="'Microsoft YaHei', sans-serif" font-size="72" font-weight="bold" fill="#005587" text-anchor="middle">谢谢</text>
+  
+  
+  <text x="640" y="370" font-family="'Segoe UI', sans-serif" font-size="48" fill="#7F8C8D" text-anchor="middle">Thank You</text>
+  
+  
+  <line x1="440" y1="410" x2="840" y2="410" stroke="#ECF0F1" stroke-width="2" />
+  
+  
+  <text x="640" y="470" font-family="'Microsoft YaHei', sans-serif" font-size="24" fill="#2C3E50" text-anchor="middle">第12章 强化决策</text>
+  <text x="640" y="500" font-family="'Segoe UI', sans-serif" font-size="20" fill="#7F8C8D" text-anchor="middle">Enhancing Decision Making</text>
+  
+  
+  <text x="640" y="600" font-family="'Microsoft YaHei', sans-serif" font-size="18" fill="#7F8C8D" text-anchor="middle">管理信息系统课程</text>
+  <text x="640" y="630" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D" text-anchor="middle">Management Information Systems</text>
+  
+  
+  <circle cx="500" cy="600" r="4" fill="#005587" />
+  <circle cx="780" cy="600" r="4" fill="#005587" />
+</svg>

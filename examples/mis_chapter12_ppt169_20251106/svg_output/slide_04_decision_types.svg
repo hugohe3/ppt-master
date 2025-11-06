@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页码标识 -->
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-1</text>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">决策的三种类型</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">Three Types of Decisions</text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="150" x2="480" y2="150" stroke="#005587" stroke-width="2"/>
+  
+  <!-- 决策类型矩阵 -->
+  <!-- 第一行：非结构化决策 -->
+  <rect x="80" y="200" width="340" height="140" fill="#005587" rx="8"/>
+  <text x="250" y="235" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">非结构化决策</text>
+  <text x="250" y="260" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">Unstructured Decisions</text>
+  <text x="100" y="290" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 新颖、重要、非例行</text>
+  <text x="100" y="315" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 需要判断力与洞察力</text>
+  
+  <rect x="460" y="200" width="340" height="140" fill="#ECF0F1" rx="8"/>
+  <text x="630" y="235" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">组织层级</text>
+  <text x="630" y="280" font-family="'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">高层管理者</text>
+  <text x="630" y="308" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D" text-anchor="middle">Senior Managers</text>
+  
+  <rect x="840" y="200" width="380" height="140" fill="#F8F9FA" rx="8"/>
+  <text x="1030" y="235" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">典型示例</text>
+  <text x="860" y="270" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 是否进入新市场</text>
+  <text x="860" y="295" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 制定五年战略目标</text>
+  <text x="860" y="320" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 重大并购决策</text>
+  
+  <!-- 第二行：半结构化决策 -->
+  <rect x="80" y="370" width="340" height="140" fill="#0076A8" rx="8"/>
+  <text x="250" y="405" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">半结构化决策</text>
+  <text x="250" y="430" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">Semistructured Decisions</text>
+  <text x="100" y="460" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 部分问题有既定程序</text>
+  <text x="100" y="485" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 兼具结构化与非结构化</text>
+  
+  <rect x="460" y="370" width="340" height="140" fill="#ECF0F1" rx="8"/>
+  <text x="630" y="405" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">组织层级</text>
+  <text x="630" y="450" font-family="'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">中层管理者</text>
+  <text x="630" y="478" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D" text-anchor="middle">Middle Managers</text>
+  
+  <rect x="840" y="370" width="380" height="140" fill="#F8F9FA" rx="8"/>
+  <text x="1030" y="405" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">典型示例</text>
+  <text x="860" y="440" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 分析配送中心订单下降</text>
+  <text x="860" y="465" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 制定部门年度预算</text>
+  <text x="860" y="490" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 评估新产品线可行性</text>
+  
+  <!-- 第三行：结构化决策 -->
+  <rect x="80" y="540" width="340" height="140" fill="#7F8C8D" rx="8"/>
+  <text x="250" y="575" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">结构化决策</text>
+  <text x="250" y="600" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">Structured Decisions</text>
+  <text x="100" y="630" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 重复性、常规性</text>
+  <text x="100" y="655" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">• 有明确处理程序</text>
+  
+  <rect x="460" y="540" width="340" height="140" fill="#ECF0F1" rx="8"/>
+  <text x="630" y="575" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">组织层级</text>
+  <text x="630" y="620" font-family="'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">运营管理与员工</text>
+  <text x="630" y="648" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D" text-anchor="middle">Operational Level</text>
+  
+  <rect x="840" y="540" width="380" height="140" fill="#F8F9FA" rx="8"/>
+  <text x="1030" y="575" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#005587" text-anchor="middle">典型示例</text>
+  <text x="860" y="610" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 员工是否有加班资格</text>
+  <text x="860" y="635" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 是否向客户提供信贷</text>
+  <text x="860" y="660" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 库存补货决策</text>
+</svg>
+

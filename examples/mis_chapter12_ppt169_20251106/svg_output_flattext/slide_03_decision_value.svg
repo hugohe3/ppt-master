@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-1</text>
+  
+  
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">决策类型与过程</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">Decision Types and Process</text>
+  
+  
+  <line x1="60" y1="150" x2="480" y2="150" stroke="#005587" stroke-width="2" />
+  
+  
+  <text x="60" y="200" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">提升决策的商业价值</text>
+  
+  
+  
+  <polygon points="640,280 540,360 740,360" fill="#005587" opacity="0.95" />
+  <polygon points="640,280 540,360 740,360" fill="none" stroke="#003D66" stroke-width="2" />
+  <text x="640" y="323" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">高层管理</text>
+  <text x="640" y="345" font-family="'Segoe UI', sans-serif" font-size="14" fill="#E8F4F8" text-anchor="middle">Strategic Level</text>
+  
+  
+  <text x="180" y="315" font-family="'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#005587">战略决策</text>
+  <text x="180" y="338" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#7F8C8D">非结构化·长期·影响深远</text>
+  <line x1="280" y1="320" x2="520" y2="320" stroke="#005587" stroke-width="2" stroke-dasharray="4,3" />
+  
+  
+  <polygon points="640,360 480,480 800,480" fill="#0076A8" opacity="0.95" />
+  <polygon points="640,360 480,480 800,480" fill="none" stroke="#005077" stroke-width="2" />
+  <text x="640" y="418" font-family="'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">中层管理</text>
+  <text x="640" y="442" font-family="'Segoe UI', sans-serif" font-size="14" fill="#E8F4F8" text-anchor="middle">Management Level</text>
+  <text x="640" y="465" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#E8F4F8" text-anchor="middle">半结构化决策 · 中期规划</text>
+  
+  
+  <text x="180" y="415" font-family="'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#0076A8">执行控制</text>
+  <text x="180" y="438" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#7F8C8D">半结构化·中短期·平衡优化</text>
+  <line x1="280" y1="420" x2="460" y2="420" stroke="#0076A8" stroke-width="2" stroke-dasharray="4,3" />
+  
+  
+  <polygon points="640,480 380,600 900,600" fill="#7F8C8D" opacity="0.95" />
+  <polygon points="640,480 380,600 900,600" fill="none" stroke="#5A6A6B" stroke-width="2" />
+  <text x="640" y="535" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">运营管理与员工</text>
+  <text x="640" y="560" font-family="'Segoe UI', sans-serif" font-size="14" fill="#E8F4F8" text-anchor="middle">Operational Level</text>
+  <text x="640" y="583" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#E8F4F8" text-anchor="middle">结构化决策 · 数量最多 · 日常执行</text>
+  
+  
+  <text x="180" y="535" font-family="'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#7F8C8D">日常运营</text>
+  <text x="180" y="558" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#7F8C8D">结构化·短期·可重复执行</text>
+  <line x1="280" y1="540" x2="360" y2="540" stroke="#7F8C8D" stroke-width="2" stroke-dasharray="4,3" />
+  
+  
+  <rect x="950" y="280" width="260" height="320" fill="#005587" rx="12" />
+  
+  <text x="1080" y="315" font-family="'Microsoft YaHei', sans-serif" font-size="23" font-weight="bold" fill="#FFFFFF" text-anchor="middle">决策的累积价值</text>
+  <text x="1080" y="340" font-family="'Segoe UI', sans-serif" font-size="13" fill="#E8F4F8" text-anchor="middle">Cumulative Value</text>
+  
+  <line x1="970" y1="352" x2="1190" y2="352" stroke="#E8F4F8" stroke-width="1" opacity="0.3" />
+  
+  
+  <path d="M 1060 375 L 1080 360 L 1100 375 M 1080 360 L 1080 408" stroke="#FFA500" stroke-width="4" fill="none" stroke-linecap="round" />
+  <circle cx="1080" cy="408" r="5" fill="#FFA500" />
+  
+  <line x1="970" y1="425" x2="1190" y2="425" stroke="#E8F4F8" stroke-width="1" opacity="0.3" />
+  
+  <text x="970" y="448" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">💼 单个小决策</text>
+  <text x="985" y="467" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#E8F4F8">价值看似有限</text>
+  
+  <text x="970" y="495" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">📈 成千上万次改进</text>
+  <text x="985" y="514" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#E8F4F8">持续积累迭代</text>
+  
+  <text x="970" y="542" font-family="'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">🎯 为企业带来</text>
+  <text x="985" y="561" font-family="'Microsoft YaHei', sans-serif" font-size="13" fill="#E8F4F8">巨大的年度价值</text>
+  
+  <line x1="970" y1="575" x2="1190" y2="575" stroke="#E8F4F8" stroke-width="1" opacity="0.3" />
+  
+  <text x="1080" y="593" font-family="'Microsoft YaHei', sans-serif" font-size="15" font-weight="bold" fill="#FFA500" text-anchor="middle">💡 量变引发质变</text>
+  
+  
+  <text x="640" y="660" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#7F8C8D" text-anchor="middle">决策层级越低，数量越多；改进每个小决策，累积效应巨大</text>
+</svg>

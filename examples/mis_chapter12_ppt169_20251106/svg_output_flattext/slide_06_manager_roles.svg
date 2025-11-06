@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-2</text>
+  
+  
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">信息系统支持管理决策</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">How IS Support Management Decision Making</text>
+  
+  
+  <line x1="60" y1="150" x2="600" y2="150" stroke="#005587" stroke-width="2" />
+  
+  
+  <text x="60" y="200" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">管理者的三类角色</text>
+  <text x="60" y="228" font-family="'Segoe UI', sans-serif" font-size="18" fill="#7F8C8D">Mintzberg's Management Roles</text>
+  
+  
+  <rect x="80" y="270" width="340" height="120" fill="#ECF0F1" rx="12" />
+  <circle cx="130" cy="315" r="24" fill="#7F8C8D" />
+  <text x="130" y="325" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+  <text x="180" y="305" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">人际关系角色</text>
+  <text x="180" y="328" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D">Interpersonal Roles</text>
+  <text x="180" y="355" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">挂名首脑 · 领导者 · 联络人</text>
+  
+  
+  <rect x="470" y="270" width="340" height="120" fill="#005587" rx="12" />
+  <circle cx="520" cy="315" r="24" fill="#FFFFFF" />
+  <text x="520" y="325" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#005587" text-anchor="middle">2</text>
+  <text x="570" y="305" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">信息角色 ⭐</text>
+  <text x="570" y="328" font-family="'Segoe UI', sans-serif" font-size="16" fill="#FFFFFF">Informational Roles</text>
+  <text x="570" y="355" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF">神经中枢 · 传播者 · 发言人</text>
+  
+  
+  <rect x="860" y="270" width="340" height="120" fill="#ECF0F1" rx="12" />
+  <circle cx="910" cy="315" r="24" fill="#7F8C8D" />
+  <text x="910" y="325" font-family="'Arial', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+  <text x="960" y="305" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">决策角色</text>
+  <text x="960" y="328" font-family="'Segoe UI', sans-serif" font-size="16" fill="#7F8C8D">Decisional Roles</text>
+  <text x="960" y="355" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">企业家 · 资源分配者 · 谈判者</text>
+  
+  
+  <rect x="470" y="410" width="340" height="70" fill="#FFF5E6" rx="8" />
+  <text x="640" y="438" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#E67E22" text-anchor="middle">💡 IS 支持重点</text>
+  <text x="640" y="465" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#E67E22" text-anchor="middle">信息系统在支持信息角色方面最为有效</text>
+  
+  
+  <text x="60" y="530" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">管理行为的真实特征</text>
+  
+  <rect x="80" y="560" width="560" height="120" fill="#F8F9FA" rx="8" />
+  <text x="100" y="595" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">❌ 古典模型的理想化</text>
+  <text x="120" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 计划、组织、协调、决策、控制（系统化）</text>
+  <text x="120" y="655" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#7F8C8D">实际上管理者工作远非如此规律</text>
+  
+  <rect x="680" y="560" width="540" height="120" fill="#F8F9FA" rx="8" />
+  <text x="700" y="595" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#27AE60">✅ 行为模型的现实</text>
+  <text x="720" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 高度碎片化、节奏快、偏爱口头沟通</text>
+  <text x="720" y="655" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">• 依赖复杂的联系网络、反应迅速且非正式</text>
+</svg>

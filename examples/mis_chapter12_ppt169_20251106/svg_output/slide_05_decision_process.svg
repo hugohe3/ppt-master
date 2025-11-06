@@ -1,0 +1,91 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 定义箭头 -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#005587"/>
+    </marker>
+    <!-- 定义橙色箭头用于循环 -->
+    <marker id="arrowhead-orange" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#E67E22"/>
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页码标识 -->
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-1</text>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">决策过程</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">Decision-Making Process</text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="150" x2="360" y2="150" stroke="#005587" stroke-width="2"/>
+  
+  <!-- 流程图：4个步骤，水平排列 -->
+  <!-- 步骤1：情报 -->
+  <rect x="100" y="250" width="220" height="200" fill="#005587" rx="12"/>
+  <circle cx="210" cy="290" r="28" fill="#FFFFFF"/>
+  <text x="210" y="302" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#005587" text-anchor="middle">1</text>
+  <text x="210" y="350" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">情报</text>
+  <text x="210" y="378" font-family="'Segoe UI', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">Intelligence</text>
+  <text x="210" y="410" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">发现、识别和</text>
+  <text x="210" y="435" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">理解问题</text>
+  
+  <!-- 箭头1 -->
+  <line x1="320" y1="350" x2="360" y2="350" stroke="#005587" stroke-width="3" marker-end="url(#arrowhead)"/>
+  
+  <!-- 步骤2：设计 -->
+  <rect x="360" y="250" width="220" height="200" fill="#0076A8" rx="12"/>
+  <circle cx="470" cy="290" r="28" fill="#FFFFFF"/>
+  <text x="470" y="302" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#0076A8" text-anchor="middle">2</text>
+  <text x="470" y="350" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">设计</text>
+  <text x="470" y="378" font-family="'Segoe UI', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">Design</text>
+  <text x="470" y="410" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">识别和探索</text>
+  <text x="470" y="435" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">各种解决方案</text>
+  
+  <!-- 箭头2 -->
+  <line x1="580" y1="350" x2="620" y2="350" stroke="#005587" stroke-width="3" marker-end="url(#arrowhead)"/>
+  
+  <!-- 步骤3：选择 -->
+  <rect x="620" y="250" width="220" height="200" fill="#005587" rx="12"/>
+  <circle cx="730" cy="290" r="28" fill="#FFFFFF"/>
+  <text x="730" y="302" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#005587" text-anchor="middle">3</text>
+  <text x="730" y="350" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">选择</text>
+  <text x="730" y="378" font-family="'Segoe UI', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">Choice</text>
+  <text x="730" y="410" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">从备选方案中</text>
+  <text x="730" y="435" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">做出选择</text>
+  
+  <!-- 箭头3 -->
+  <line x1="840" y1="350" x2="880" y2="350" stroke="#005587" stroke-width="3" marker-end="url(#arrowhead)"/>
+  
+  <!-- 步骤4：实施 -->
+  <rect x="880" y="250" width="220" height="200" fill="#0076A8" rx="12"/>
+  <circle cx="990" cy="290" r="28" fill="#FFFFFF"/>
+  <text x="990" y="302" font-family="'Arial', sans-serif" font-size="32" font-weight="bold" fill="#0076A8" text-anchor="middle">4</text>
+  <text x="990" y="350" font-family="'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">实施</text>
+  <text x="990" y="378" font-family="'Segoe UI', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">Implementation</text>
+  <text x="990" y="410" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">付诸实施并</text>
+  <text x="990" y="435" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">持续监控</text>
+  
+  <!-- 循环反馈箭头 - 底层阴影 -->
+  <path d="M 1100 350 L 1140 350 L 1140 500 L 1140 565 L 640 565 L 210 565 L 210 500 L 210 460" 
+        stroke="#BDC3C7" stroke-width="5" fill="none" stroke-dasharray="10,6" opacity="0.3" stroke-linejoin="round"/>
+  
+  <!-- 循环反馈箭头 - 主线 -->
+  <path d="M 1100 350 L 1138 350 L 1138 500 L 1138 563 L 640 563 L 210 563 L 210 500 L 210 460" 
+        stroke="#E67E22" stroke-width="3" fill="none" stroke-dasharray="10,6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowhead-orange)"/>
+  
+  <!-- 循环说明 -->
+  <rect x="505" y="528" width="270" height="65" fill="#FFF5E6" rx="10" stroke="#E67E22" stroke-width="2"/>
+  <text x="640" y="553" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#E67E22" text-anchor="middle">🔄 迭代循环反馈</text>
+  <text x="640" y="575" font-family="'Microsoft YaHei', sans-serif" font-size="14" fill="#D35400" text-anchor="middle">解决方案无效时可返回前期阶段</text>
+  <text x="640" y="590" font-family="'Segoe UI', sans-serif" font-size="12" fill="#E67E22" text-anchor="middle" opacity="0.8">Iterative Feedback Loop</text>
+  
+  <!-- 底部说明 -->
+  <rect x="100" y="610" width="1000" height="70" fill="#F8F9FA" rx="8"/>
+  <text x="600" y="640" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#005587" text-anchor="middle">决策过程的关键特征</text>
+  <text x="600" y="665" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">这是一个多步骤、循环迭代的过程，每个阶段都可能根据反馈进行调整和优化</text>
+</svg>
+

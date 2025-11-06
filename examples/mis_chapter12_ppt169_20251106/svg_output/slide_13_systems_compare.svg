@@ -1,0 +1,95 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页码标识 -->
+  <text x="60" y="50" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587">12-4</text>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#005587">三大系统支持对比</text>
+  <text x="60" y="130" font-family="'Segoe UI', sans-serif" font-size="24" fill="#7F8C8D">MIS, DSS, and ESS Comparison</text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="150" x2="480" y2="150" stroke="#005587" stroke-width="2"/>
+  
+  <!-- 表格 -->
+  <!-- 表头 -->
+  <rect x="80" y="190" width="240" height="60" fill="#ECF0F1" rx="8"/>
+  <text x="200" y="228" font-family="'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#005587" text-anchor="middle">对比维度</text>
+  
+  <rect x="340" y="190" width="280" height="60" fill="#005587" rx="8"/>
+  <text x="480" y="218" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">MIS</text>
+  <text x="480" y="240" font-family="'Segoe UI', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">Management Info System</text>
+  
+  <rect x="640" y="190" width="280" height="60" fill="#0076A8" rx="8"/>
+  <text x="780" y="218" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">DSS</text>
+  <text x="780" y="240" font-family="'Segoe UI', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">Decision Support System</text>
+  
+  <rect x="940" y="190" width="280" height="60" fill="#27AE60" rx="8"/>
+  <text x="1080" y="218" font-family="'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">ESS</text>
+  <text x="1080" y="240" font-family="'Segoe UI', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">Executive Support System</text>
+  
+  <!-- 第1行：用户层级 -->
+  <rect x="80" y="270" width="240" height="80" fill="#F8F9FA" rx="4"/>
+  <text x="200" y="318" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">用户层级</text>
+  
+  <rect x="340" y="270" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="480" y="310" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">运营管理与</text>
+  <text x="480" y="333" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">中层管理者</text>
+  
+  <rect x="640" y="270" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="780" y="310" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">中层管理者与</text>
+  <text x="780" y="333" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">分析师（超级用户）</text>
+  
+  <rect x="940" y="270" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="1080" y="318" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">高层管理者</text>
+  
+  <!-- 第2行：决策类型 -->
+  <rect x="80" y="370" width="240" height="80" fill="#F8F9FA" rx="4"/>
+  <text x="200" y="418" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">决策类型</text>
+  
+  <rect x="340" y="370" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="480" y="418" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">结构化决策</text>
+  
+  <rect x="640" y="370" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="780" y="418" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">半结构化决策</text>
+  
+  <rect x="940" y="370" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="1080" y="418" font-family="'Microsoft YaHei', sans-serif" font-size="17" fill="#2C3E50" text-anchor="middle">非结构化决策</text>
+  
+  <!-- 第3行：主要功能 -->
+  <rect x="80" y="470" width="240" height="100" fill="#F8F9FA" rx="4"/>
+  <text x="200" y="528" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">主要功能</text>
+  
+  <rect x="340" y="470" width="280" height="100" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="480" y="510" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">例行报告</text>
+  <text x="480" y="533" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">例外报告</text>
+  <text x="480" y="556" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">绩效监控</text>
+  
+  <rect x="640" y="470" width="280" height="100" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="780" y="510" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">情景分析</text>
+  <text x="780" y="533" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">敏感性分析</text>
+  <text x="780" y="556" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">"如果…会怎样"</text>
+  
+  <rect x="940" y="470" width="280" height="100" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="1080" y="510" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">仪表盘</text>
+  <text x="1080" y="533" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">KPI可视化</text>
+  <text x="1080" y="556" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">战略监控</text>
+  
+  <!-- 第4行：典型工具 -->
+  <rect x="80" y="590" width="240" height="80" fill="#F8F9FA" rx="4"/>
+  <text x="200" y="638" font-family="'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">典型工具</text>
+  
+  <rect x="340" y="590" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="480" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">固定格式报表</text>
+  <text x="480" y="648" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">查询工具</text>
+  
+  <rect x="640" y="590" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="780" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">数据透视表</text>
+  <text x="780" y="648" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">模型与模拟</text>
+  
+  <rect x="940" y="590" width="280" height="80" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="1" rx="4"/>
+  <text x="1080" y="625" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">可视化仪表盘</text>
+  <text x="1080" y="648" font-family="'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">平衡计分卡</text>
+</svg>
+

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第12章《强化决策》PPT 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .info-bar {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .info-bar p {
+            display: inline-block;
+            margin-right: 30px;
+            color: #2C3E50;
+            font-size: 16px;
+        }
+        
+        .info-bar strong {
+            color: #005587;
+        }
+        
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+        }
+        
+        .slide-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 3px solid #005587;
+        }
+        
+        .slide-info {
+            padding: 15px 20px;
+        }
+        
+        .slide-number {
+            display: inline-block;
+            background: #005587;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .slide-title {
+            font-size: 18px;
+            color: #2C3E50;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .slide-desc {
+            font-size: 14px;
+            color: #7F8C8D;
+        }
+        
+        .fullscreen-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-viewer.active {
+            display: flex;
+        }
+        
+        .viewer-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .viewer-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .viewer-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            color: #2C3E50;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .viewer-close:hover {
+            background: #f0f0f0;
+        }
+        
+        .viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .viewer-nav:hover {
+            background: white;
+        }
+        
+        .viewer-nav.prev {
+            left: -70px;
+        }
+        
+        .viewer-nav.next {
+            right: -70px;
+        }
+        
+        .viewer-counter {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        
+        footer p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 32px;
+            }
+            
+            .viewer-nav {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .viewer-nav.prev {
+                left: 10px;
+            }
+            
+            .viewer-nav.next {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 第12章《强化决策》</h1>
+            <p>Enhancing Decision Making</p>
+        </header>
+        
+        <div class="info-bar">
+            <p><strong>项目名称：</strong>MIS 第12章 PPT</p>
+            <p><strong>画布格式：</strong>16:9 (1280×720)</p>
+            <p><strong>设计风格：</strong>高端咨询风格</p>
+            <p><strong>总页数：</strong>16页</p>
+            <p><strong>创建日期：</strong>2025-11-06</p>
+        </div>
+        
+        <div class="slides-grid" id="slidesGrid"></div>
+        
+        <footer>
+            <p>🎓 管理信息系统课程 | Management Information Systems</p>
+            <p>© 2025 | 点击任意幻灯片查看大图</p>
+        </footer>
+    </div>
+    
+    <div class="fullscreen-viewer" id="viewer">
+        <div class="viewer-content">
+            <button class="viewer-close" onclick="closeViewer()">×</button>
+            <button class="viewer-nav prev" onclick="prevSlide()">‹</button>
+            <button class="viewer-nav next" onclick="nextSlide()">›</button>
+            <img id="viewerImage" src="" alt="Slide">
+            <div class="viewer-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">16</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const slides = [
+            { file: 'slide_01_cover.svg', title: '封面', desc: 'Cover Page' },
+            { file: 'slide_02_navigation.svg', title: '章节导航', desc: 'Chapter Overview' },
+            { file: 'slide_03_decision_value.svg', title: '决策的商业价值', desc: 'Business Value of Decisions' },
+            { file: 'slide_04_decision_types.svg', title: '决策的三种类型', desc: 'Three Types of Decisions' },
+            { file: 'slide_05_decision_process.svg', title: '决策过程', desc: 'Decision-Making Process' },
+            { file: 'slide_06_manager_roles.svg', title: '管理者角色', desc: 'Management Roles' },
+            { file: 'slide_07_constraints.svg', title: '决策制约因素', desc: 'Decision Constraints' },
+            { file: 'slide_08_automation.svg', title: '高速自动化决策', desc: 'High-Velocity Automated Decisions' },
+            { file: 'slide_09_bi_environment.svg', title: '商业智能环境', desc: 'BI Environment' },
+            { file: 'slide_10_bi_capabilities.svg', title: 'BI分析能力', desc: 'BI Capabilities' },
+            { file: 'slide_11_analytics.svg', title: '关键分析技术', desc: 'Key Analytics Techniques' },
+            { file: 'slide_12_user_groups.svg', title: 'BI用户群体', desc: 'BI User Groups' },
+            { file: 'slide_13_systems_compare.svg', title: '系统对比', desc: 'Systems Comparison' },
+            { file: 'slide_14_balanced_scorecard.svg', title: '平衡计分卡', desc: 'Balanced Scorecard' },
+            { file: 'slide_15_career.svg', title: 'MIS与职业发展', desc: 'MIS & Career' },
+            { file: 'slide_16_thankyou.svg', title: '结束页', desc: 'Thank You' }
+        ];
+        
+        let currentIndex = 0;
+        
+        // 生成幻灯片网格
+        const grid = document.getElementById('slidesGrid');
+        slides.forEach((slide, index) => {
+            const card = document.createElement('div');
+            card.className = 'slide-card';
+            card.onclick = () => openViewer(index);
+            
+            card.innerHTML = `
+                <img src="svg_output/${slide.file}" alt="${slide.title}" class="slide-preview">
+                <div class="slide-info">
+                    <span class="slide-number">第 ${index + 1} 页</span>
+                    <div class="slide-title">${slide.title}</div>
+                    <div class="slide-desc">${slide.desc}</div>
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        });
+        
+        // 全屏查看器功能
+        function openViewer(index) {
+            currentIndex = index;
+            updateViewer();
+            document.getElementById('viewer').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeViewer() {
+            document.getElementById('viewer').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateViewer();
+        }
+        
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateViewer();
+        }
+        
+        function updateViewer() {
+            document.getElementById('viewerImage').src = `svg_output/${slides[currentIndex].file}`;
+            document.getElementById('currentSlide').textContent = currentIndex + 1;
+        }
+        
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            const viewer = document.getElementById('viewer');
+            if (viewer.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') prevSlide();
+                if (e.key === 'ArrowRight') nextSlide();
+                if (e.key === 'Escape') closeViewer();
+            }
+        });
+        
+        // 点击背景关闭
+        document.getElementById('viewer').addEventListener('click', (e) => {
+            if (e.target.id === 'viewer') closeViewer();
+        });
+    </script>
+</body>
+</html>
+
