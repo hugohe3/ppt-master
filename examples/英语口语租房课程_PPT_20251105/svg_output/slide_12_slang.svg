@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 页面标题 -->
+  <rect x="60" y="50" width="8" height="50" fill="#F57C00" rx="4"/>
+  <text x="90" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#424242">
+    俚语学习 · Street Talk
+  </text>
+  
+  <rect x="60" y="120" width="1160" height="60" fill="#FFF3E0" rx="10"/>
+  <text x="100" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#F57C00">
+    💬 非正式用语 · 日常口语中的租房表达
+  </text>
+  
+  <!-- 俚语1 -->
+  <rect x="60" y="200" width="560" height="140" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="80" y="220" width="120" height="45" fill="#F57C00" rx="8"/>
+  <text x="140" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    pad
+  </text>
+  <text x="80" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="500" fill="#424242">
+    房间，公寓
+  </text>
+  <text x="80" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    例："I love my new pad!" 我超喜欢我的新公寓！
+  </text>
+  
+  <!-- 俚语2 -->
+  <rect x="660" y="200" width="560" height="140" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="680" y="220" width="260" height="45" fill="#F57C00" rx="8"/>
+  <text x="810" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    a place to crash
+  </text>
+  <text x="680" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="500" fill="#424242">
+    生活的地方
+  </text>
+  <text x="680" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    crash = 暂住、借宿（非常口语化的表达）
+  </text>
+  
+  <!-- 俚语3 -->
+  <rect x="60" y="360" width="560" height="140" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="80" y="380" width="120" height="45" fill="#F57C00" rx="8"/>
+  <text x="140" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    crib
+  </text>
+  <text x="80" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="500" fill="#424242">
+    家，房子
+  </text>
+  <text x="80" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    尤指市中心的房子，在嘻哈文化中常用
+  </text>
+  
+  <!-- 俚语4 -->
+  <rect x="660" y="360" width="560" height="140" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="680" y="380" width="120" height="45" fill="#F57C00" rx="8"/>
+  <text x="740" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    hood
+  </text>
+  <text x="680" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="500" fill="#424242">
+    邻里，社区
+  </text>
+  <text x="680" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    neighborhood 的简略语，指市区的邻居、邻里
+  </text>
+  
+  <!-- 俚语5 - 特别提示 -->
+  <rect x="60" y="520" width="1160" height="130" fill="#FFEBEE" rx="12" filter="url(#shadow)"/>
+  <rect x="80" y="540" width="200" height="45" fill="#D32F2F" rx="8"/>
+  <text x="180" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    slumlord
+  </text>
+  <text x="300" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="600" fill="#D32F2F">
+    恶劣房东（贬义词）
+  </text>
+  <text x="80" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+    指利用贫民窟的旧公寓索取高租金的房东。
+  </text>
+  <text x="80" y="633" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    ⚠️ 注意：这是个负面词汇，描述不负责任或剥削租客的房东
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575" text-anchor="end">
+    12
+  </text>
+</svg>

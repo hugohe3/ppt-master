@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="700" fill="#2E7D32">
+    课程介绍
+  </text>
+  <text x="240" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="400" fill="#757575">
+    Course Introduction
+  </text>
+  
+  <!-- 左侧内容区 -->
+  <rect x="60" y="140" width="560" height="520" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  
+  <!-- 课程背景 -->
+  <rect x="80" y="160" width="80" height="32" fill="#1976D2" rx="6"/>
+  <text x="120" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    背景
+  </text>
+  
+  <text x="100" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+    <tspan x="100" dy="0">无论是租房子还是找室友，最简单的方</tspan>
+    <tspan x="100" dy="28">法就是看报纸上的出租广告，或是访问</tspan>
+    <tspan x="100" dy="28">专门发布出租信息的网站。每到星期天，</tspan>
+    <tspan x="100" dy="28">美国的报纸上就会登载公寓出租或是寻</tspan>
+    <tspan x="100" dy="28">找室友的分类广告。</tspan>
+  </text>
+  
+  <!-- 学习目标 -->
+  <rect x="80" y="390" width="100" height="32" fill="#F57C00" rx="6"/>
+  <text x="130" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    学习目标
+  </text>
+  
+  <!-- 目标列表 -->
+  <g transform="translate(100, 450)">
+    <circle cx="0" cy="0" r="5" fill="#2E7D32"/>
+    <text x="20" y="6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+      掌握租房相关核心词汇 40+ 个
+    </text>
+  </g>
+  
+  <g transform="translate(100, 490)">
+    <circle cx="0" cy="0" r="5" fill="#2E7D32"/>
+    <text x="20" y="6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+      熟练运用租房问答必备表达
+    </text>
+  </g>
+  
+  <g transform="translate(100, 530)">
+    <circle cx="0" cy="0" r="5" fill="#2E7D32"/>
+    <text x="20" y="6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+      理解并应用真实情景对话
+    </text>
+  </g>
+  
+  <g transform="translate(100, 570)">
+    <circle cx="0" cy="0" r="5" fill="#2E7D32"/>
+    <text x="20" y="6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+      了解美国租房相关俚语与文化
+    </text>
+  </g>
+  
+  <!-- 右侧模块导航 -->
+  <text x="660" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#424242">
+    内容模块
+  </text>
+  
+  <!-- 模块1 -->
+  <rect x="660" y="200" width="560" height="100" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="680" y="220" width="6" height="60" fill="#5E35B1" rx="3"/>
+  <text x="710" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#424242">
+    📚 词汇学习
+  </text>
+  <text x="710" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    租房术语 · 公寓条件 · 房屋构成 · 住宅类型
+  </text>
+  
+  <!-- 模块2 -->
+  <rect x="660" y="324" width="560" height="100" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="680" y="344" width="6" height="60" fill="#1976D2" rx="3"/>
+  <text x="710" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#424242">
+    💬 必备表达
+  </text>
+  <text x="710" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    问租金 · 问租期 · 问押金 · 问规定
+  </text>
+  
+  <!-- 模块3 -->
+  <rect x="660" y="448" width="270" height="100" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="680" y="468" width="6" height="60" fill="#F57C00" rx="3"/>
+  <text x="710" y="488" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#424242">
+    🎭 情景对话
+  </text>
+  <text x="710" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    租房咨询 · 找室友
+  </text>
+  
+  <!-- 模块4 -->
+  <rect x="950" y="448" width="270" height="100" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <rect x="970" y="468" width="6" height="60" fill="#2E7D32" rx="3"/>
+  <text x="1000" y="488" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#424242">
+    🗣️ 俚语文化
+  </text>
+  <text x="1000" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    Street Talk
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575" text-anchor="end">
+    02
+  </text>
+</svg>

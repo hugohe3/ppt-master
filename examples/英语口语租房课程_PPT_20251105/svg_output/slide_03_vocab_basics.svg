@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 页面标题 -->
+  <rect x="60" y="50" width="8" height="50" fill="#5E35B1" rx="4"/>
+  <text x="90" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#424242">
+    租房与找室友 · 基础术语
+  </text>
+  
+  <!-- 第一行：2个卡片 -->
+  <!-- 卡片1 -->
+  <rect x="60" y="140" width="590" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="90" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    classified ads
+  </text>
+  <text x="90" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    分类广告
+  </text>
+  <text x="90" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    报纸或网站上的租房信息发布区
+  </text>
+  
+  <!-- 卡片2 -->
+  <rect x="680" y="140" width="560" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="710" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    real estate
+  </text>
+  <text x="710" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    房地产
+  </text>
+  <text x="710" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    不动产、物业相关行业
+  </text>
+  
+  <!-- 第二行：2个卡片 -->
+  <!-- 卡片3 -->
+  <rect x="60" y="294" width="590" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="90" y="334" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    landlord
+  </text>
+  <text x="90" y="369" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    房东
+  </text>
+  <text x="90" y="402" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    出租房屋的业主
+  </text>
+  
+  <!-- 卡片4 -->
+  <rect x="680" y="294" width="560" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="710" y="334" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    tenant
+  </text>
+  <text x="710" y="369" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    租房人
+  </text>
+  <text x="710" y="402" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    承租人，租户
+  </text>
+  
+  <!-- 第三行：2个卡片 -->
+  <!-- 卡片5 -->
+  <rect x="60" y="448" width="590" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="90" y="488" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    lease
+  </text>
+  <text x="90" y="523" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    租赁合同
+  </text>
+  <text x="90" y="556" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    规定租期、租金及使用条款的法律文件
+  </text>
+  
+  <!-- 卡片6 -->
+  <rect x="680" y="448" width="560" height="130" fill="#FFFFFF" rx="12" filter="url(#shadow)"/>
+  <text x="710" y="488" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#5E35B1">
+    apartment for rent
+  </text>
+  <text x="710" y="523" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#424242">
+    公寓出租
+  </text>
+  <text x="710" y="556" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    房源招租广告的标题用语
+  </text>
+  
+  <!-- 底部提示卡 -->
+  <rect x="60" y="602" width="1160" height="68" fill="#5E35B1" rx="12" opacity="0.1"/>
+  <text x="100" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="500" fill="#5E35B1">
+    💡 Tips:
+  </text>
+  <text x="180" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#424242">
+    <tspan x="180" dy="0">roommate wanted（寻找室友）也可以称为 housemates · apartment hunting 是"找房子"的常用表达</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575" text-anchor="end">
+    03
+  </text>
+</svg>

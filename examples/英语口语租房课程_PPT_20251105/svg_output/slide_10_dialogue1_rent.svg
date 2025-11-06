@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 页面标题 -->
+  <rect x="60" y="50" width="8" height="50" fill="#F57C00" rx="4"/>
+  <text x="90" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#424242">
+    情景对话 1 · 租房咨询
+  </text>
+  <text x="450" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="400" fill="#757575">
+    Inquiring About an Apartment
+  </text>
+  
+  <!-- 对话1：A - Hello -->
+  <rect x="80" y="140" width="580" height="60" fill="#E3F2FD" rx="12" filter="url(#shadow)"/>
+  <circle cx="60" cy="170" r="18" fill="#1976D2" opacity="0.3"/>
+  <text x="120" y="173" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#1976D2">
+    A: Hello?
+  </text>
+  <text x="270" y="173" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#757575">
+    您好。
+  </text>
+  
+  <!-- 对话2：B - calling about -->
+  <rect x="720" y="220" width="500" height="95" fill="#E8F5E9" rx="12" filter="url(#shadow)"/>
+  <circle cx="1240" cy="268" r="18" fill="#2E7D32" opacity="0.3"/>
+  <text x="750" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="21" font-weight="500" fill="#2E7D32">
+    <tspan x="750" dy="0">B: Hello, I'm calling about the</tspan>
+    <tspan x="750" dy="25">apartment for rent. Is it still available?</tspan>
+  </text>
+  <text x="750" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#757575">
+    您好，我想问一下租房，现在还可以租吗？
+  </text>
+  
+  <!-- 对话3：A - Yes -->
+  <rect x="80" y="335" width="580" height="60" fill="#E3F2FD" rx="12" filter="url(#shadow)"/>
+  <circle cx="60" cy="365" r="18" fill="#1976D2" opacity="0.3"/>
+  <text x="120" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#1976D2">
+    A: Yes, it is.
+  </text>
+  <text x="290" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#757575">
+    嗯，可以租。
+  </text>
+  
+  <!-- 对话4：B - How much -->
+  <rect x="720" y="415" width="500" height="60" fill="#E8F5E9" rx="12" filter="url(#shadow)"/>
+  <circle cx="1240" cy="445" r="18" fill="#2E7D32" opacity="0.3"/>
+  <text x="750" y="448" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#2E7D32">
+    B: How much is the rent?
+  </text>
+  <text x="1020" y="448" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="400" fill="#757575">
+    租金是多少？
+  </text>
+  
+  <!-- 对话5：A - $600 -->
+  <rect x="80" y="495" width="580" height="70" fill="#E3F2FD" rx="12" filter="url(#shadow)"/>
+  <circle cx="60" cy="530" r="18" fill="#1976D2" opacity="0.3"/>
+  <text x="120" y="523" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#1976D2">
+    A: It's $600 a month, including utilities.
+  </text>
+  <text x="120" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#757575">
+    包括公共设施使用费在内，每月租金为600美元。
+  </text>
+  
+  <!-- 对话6：B - security deposit -->
+  <rect x="720" y="585" width="500" height="60" fill="#E8F5E9" rx="12" filter="url(#shadow)"/>
+  <circle cx="1240" cy="615" r="18" fill="#2E7D32" opacity="0.3"/>
+  <text x="750" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#2E7D32">
+    B: Is there a security deposit?
+  </text>
+  <text x="1040" y="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575">
+    需要交保证金吗？
+  </text>
+  
+  <!-- 对话7：A - $500 deposit -->
+  <rect x="80" y="600" width="580" height="70" fill="#E3F2FD" rx="12" filter="url(#shadow)"/>
+  <circle cx="60" cy="635" r="18" fill="#1976D2" opacity="0.3"/>
+  <text x="120" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="500" fill="#1976D2">
+    A: Yes. There's a $500 security deposit.
+  </text>
+  <text x="120" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="400" fill="#757575">
+    对，要交500美元的保证金。
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#757575" text-anchor="end">
+    10
+  </text>
+</svg>

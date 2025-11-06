@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E7D32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景渐变 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰元素：大房子轮廓 -->
+  <g opacity="0.15">
+    <path d="M 900 200 L 1050 320 L 1050 500 L 750 500 L 750 320 Z" fill="#FFFFFF" stroke="none"/>
+    <rect x="780" y="380" width="60" height="80" fill="#FFFFFF"/>
+    <rect x="880" y="380" width="60" height="80" fill="#FFFFFF"/>
+    <rect x="830" y="300" width="70" height="60" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- 装饰圆点 -->
+  <circle cx="200" cy="150" r="8" fill="#F57C00" opacity="0.6"/>
+  <circle cx="250" cy="180" r="6" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="1100" cy="600" r="10" fill="#F57C00" opacity="0.5"/>
+  <circle cx="180" cy="600" r="12" fill="#FFFFFF" opacity="0.3"/>
+  
+  <!-- 主标题区域 -->
+  <rect x="140" y="200" width="1000" height="320" fill="#FFFFFF" rx="16" opacity="0.98" filter="url(#shadow)"/>
+  
+  <!-- Unit 标签 -->
+  <rect x="180" y="240" width="180" height="48" fill="#F57C00" rx="24"/>
+  <text x="270" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    Unit 03
+  </text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#2E7D32" text-anchor="middle">
+    Renting an Apartment
+  </text>
+  
+  <!-- 中文副标题 -->
+  <text x="640" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="600" fill="#424242" text-anchor="middle">
+    租赁公寓
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="340" y1="450" x2="940" y2="450" stroke="#1976D2" stroke-width="3" opacity="0.6"/>
+  
+  <!-- 课程说明 -->
+  <text x="640" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#757575" text-anchor="middle">
+    美式英语实用口语课程
+  </text>
+  
+  <!-- 底部图标装饰 -->
+  <g transform="translate(480, 580)">
+    <!-- 房屋图标 -->
+    <rect x="0" y="20" width="50" height="35" fill="none" stroke="#FFFFFF" stroke-width="3" rx="4"/>
+    <path d="M 0 20 L 25 0 L 50 20" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="15" y="35" width="20" height="20" fill="#FFFFFF"/>
+  </g>
+  
+  <g transform="translate(580, 580)">
+    <!-- 钥匙图标 -->
+    <circle cx="15" cy="15" r="12" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="15" cy="15" r="6" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+    <rect x="24" y="12" width="30" height="6" fill="#FFFFFF"/>
+    <rect x="48" y="8" width="3" height="6" fill="#FFFFFF"/>
+    <rect x="44" y="12" width="3" height="6" fill="#FFFFFF"/>
+  </g>
+  
+  <g transform="translate(700, 580)">
+    <!-- 对话气泡 -->
+    <rect x="0" y="10" width="60" height="35" fill="none" stroke="#FFFFFF" stroke-width="3" rx="8"/>
+    <path d="M 15 45 L 20 45 L 18 52 Z" fill="#FFFFFF"/>
+    <circle cx="15" cy="27" r="3" fill="#FFFFFF"/>
+    <circle cx="30" cy="27" r="3" fill="#FFFFFF"/>
+    <circle cx="45" cy="27" r="3" fill="#FFFFFF"/>
+  </g>
+</svg>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语口语租房课程 - Unit 03 Renting an Apartment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+        
+        .info {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-item strong {
+            color: #FFD700;
+        }
+        
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .slide-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #f5f5f5;
+        }
+        
+        .slide-info {
+            padding: 15px;
+            background: linear-gradient(135deg, #2E7D32 0%, #1976D2 100%);
+            color: white;
+        }
+        
+        .slide-number {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .slide-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .fullscreen-overlay.active {
+            display: flex;
+        }
+        
+        .fullscreen-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .fullscreen-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: white;
+        }
+        
+        .nav-btn.prev {
+            left: 20px;
+        }
+        
+        .nav-btn.next {
+            right: 20px;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.9);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>英语口语租房课程</h1>
+        <div class="subtitle">Unit 03: Renting an Apartment · 租赁公寓</div>
+        
+        <div class="info">
+            <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 10px;">📋 课程信息</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span>📊</span>
+                    <div><strong>总页数：</strong>13 页</div>
+                </div>
+                <div class="info-item">
+                    <span>📐</span>
+                    <div><strong>格式：</strong>PPT 16:9 (1280×720)</div>
+                </div>
+                <div class="info-item">
+                    <span>🎨</span>
+                    <div><strong>风格：</strong>通用灵活风格</div>
+                </div>
+                <div class="info-item">
+                    <span>📅</span>
+                    <div><strong>日期：</strong>2025-11-05</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slides-grid" id="slidesGrid"></div>
+    </div>
+    
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <button class="close-btn" onclick="closeFullscreen()">×</button>
+        <button class="nav-btn prev" onclick="navigateSlide(-1)">‹</button>
+        <button class="nav-btn next" onclick="navigateSlide(1)">›</button>
+        <div class="fullscreen-content">
+            <img id="fullscreenImage" src="" alt="Slide">
+        </div>
+        <div class="slide-counter" id="slideCounter"></div>
+    </div>
+    
+    <script>
+        const slides = [
+            { file: 'slide_01_cover.svg', title: '封面 - Renting an Apartment' },
+            { file: 'slide_02_introduction.svg', title: '课程介绍' },
+            { file: 'slide_03_vocab_basics.svg', title: '租房与找室友 · 基础术语' },
+            { file: 'slide_04_vocab_conditions.svg', title: '公寓的条件和环境' },
+            { file: 'slide_05_vocab_interior.svg', title: '公寓的构成 · Interior Layout' },
+            { file: 'slide_06_vocab_exterior.svg', title: '房子外面 · Exterior Features' },
+            { file: 'slide_07_vocab_housing_types.svg', title: '美国的各种住宅类型' },
+            { file: 'slide_08_expressions_rent.svg', title: '必备表达 · 问租金与费用' },
+            { file: 'slide_09_expressions_rules.svg', title: '必备表达 · 问租期与规定' },
+            { file: 'slide_10_dialogue1_rent.svg', title: '情景对话 1 · 租房咨询' },
+            { file: 'slide_11_dialogue2_roommate.svg', title: '情景对话 2 · 找室友' },
+            { file: 'slide_12_slang.svg', title: '俚语学习 · Street Talk' },
+            { file: 'slide_13_summary.svg', title: '课程总结' }
+        ];
+        
+        let currentSlideIndex = 0;
+        
+        function renderSlides() {
+            const grid = document.getElementById('slidesGrid');
+            slides.forEach((slide, index) => {
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.onclick = () => openFullscreen(index);
+                
+                card.innerHTML = `
+                    <img class="slide-preview" src="svg_output/${slide.file}" alt="${slide.title}">
+                    <div class="slide-info">
+                        <div class="slide-number">Slide ${String(index + 1).padStart(2, '0')}</div>
+                        <div class="slide-title">${slide.title}</div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function openFullscreen(index) {
+            currentSlideIndex = index;
+            const overlay = document.getElementById('fullscreenOverlay');
+            const img = document.getElementById('fullscreenImage');
+            const counter = document.getElementById('slideCounter');
+            
+            img.src = `svg_output/${slides[index].file}`;
+            counter.textContent = `${index + 1} / ${slides.length}`;
+            overlay.classList.add('active');
+            
+            document.addEventListener('keydown', handleKeyPress);
+        }
+        
+        function closeFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.remove('active');
+            document.removeEventListener('keydown', handleKeyPress);
+        }
+        
+        function navigateSlide(direction) {
+            currentSlideIndex += direction;
+            
+            if (currentSlideIndex < 0) {
+                currentSlideIndex = slides.length - 1;
+            } else if (currentSlideIndex >= slides.length) {
+                currentSlideIndex = 0;
+            }
+            
+            const img = document.getElementById('fullscreenImage');
+            const counter = document.getElementById('slideCounter');
+            
+            img.src = `svg_output/${slides[currentSlideIndex].file}`;
+            counter.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+        }
+        
+        function handleKeyPress(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            } else if (e.key === 'ArrowLeft') {
+                navigateSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateSlide(1);
+            }
+        }
+        
+        // 初始化
+        renderSlides();
+        
+        // 点击背景关闭全屏
+        document.getElementById('fullscreenOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
