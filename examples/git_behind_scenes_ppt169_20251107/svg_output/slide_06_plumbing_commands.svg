@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+        管道命令：揭开 Git 面纱
+    </text>
+
+    <!-- 命令表格 -->
+    <text x="640" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+        底层探索命令（Plumbing Commands）
+    </text>
+
+    <!-- git hash-object -->
+    <g transform="translate(60, 180)">
+        <rect x="0" y="0" width="560" height="130" rx="12" fill="#f3f4f6" stroke="#2563eb" stroke-width="2" />
+        <text x="280" y="35" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="22"
+            font-weight="600" fill="#2563eb" text-anchor="middle">
+            git hash-object
+        </text>
+        <text x="30" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="30" dy="0">计算文件内容的 SHA-1 哈希值</tspan>
+            <tspan x="30" dy="30" font-weight="600" fill="#2563eb">-w</tspan>
+            <tspan fill="#1f2937"> 选项：写入 Git 数据库作为 Blob 对象</tspan>
+        </text>
+    </g>
+
+    <!-- git cat-file -->
+    <g transform="translate(660, 180)">
+        <rect x="0" y="0" width="560" height="130" rx="12" fill="#f3f4f6" stroke="#10b981" stroke-width="2" />
+        <text x="280" y="35" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="22"
+            font-weight="600" fill="#10b981" text-anchor="middle">
+            git cat-file
+        </text>
+        <text x="30" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="30" dy="0">查看任何 Git 对象的内部信息</tspan>
+            <tspan x="30" dy="30" font-weight="600" fill="#10b981">-p</tspan>
+            <tspan fill="#1f2937"> 人类可读格式显示</tspan>
+            <tspan font-weight="600" fill="#10b981"> -t</tspan>
+            <tspan fill="#1f2937"> 显示对象类型</tspan>
+        </text>
+    </g>
+
+    <!-- 经典探索流程 -->
+    <text x="640" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+        经典探索流程
+    </text>
+
+    <!-- 代码示例 -->
+    <rect x="60" y="380" width="1160" height="300" rx="12" fill="#1f2937" />
+
+    <text x="100" y="420" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="18"
+        fill="#e5e7eb">
+        <tspan x="100" dy="0" fill="#6b7280"># 1. 找到最新一次提交的哈希值</tspan>
+        <tspan x="100" dy="20" fill="#3b82f6">git log -n 1</tspan>
+        <tspan x="100" dy="20" fill="#6b7280"># 假设哈希值为 a1b2c3d...</tspan>
+
+        <tspan x="100" dy="30" fill="#6b7280"># 2. 查看该 Commit 对象的内部结构</tspan>
+        <tspan x="100" dy="20" fill="#f59e0b">git cat-file -p a1b2c3d</tspan>
+        <tspan x="100" dy="20" fill="#6b7280"># 输出：tree e4f5g6h... / author ... / committer ...</tspan>
+
+        <tspan x="100" dy="30" fill="#6b7280"># 3. 查看 Tree 对象的内容</tspan>
+        <tspan x="100" dy="20" fill="#10b981">git cat-file -p e4f5g6h</tspan>
+        <tspan x="100" dy="20" fill="#6b7280"># 输出：100644 blob i7j8k9l... README.md</tspan>
+
+        <tspan x="100" dy="30" fill="#6b7280"># 4. 查看 Blob 对象（文件内容）</tspan>
+        <tspan x="100" dy="20" fill="#8b5cf6">git cat-file -p i7j8k9l</tspan>
+        <tspan x="100" dy="20" fill="#6b7280"># 输出：实际的文件内容</tspan>
+    </text>
+</svg>

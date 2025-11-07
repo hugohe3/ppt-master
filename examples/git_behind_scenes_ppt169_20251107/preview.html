@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git 幕后探秘：哈希与对象 - 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .slide-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .slide-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            /* 16:9 Aspect Ratio */
+            background: #f3f4f6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .slide-wrapper svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+
+        .slide-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .slide-number {
+            font-size: 0.9rem;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Git 幕后探秘：哈希与对象</h1>
+        <p class="subtitle">深入理解 Git 的底层数据模型</p>
+
+        <div class="controls">
+            <button onclick="prevSlide()">⬅️ 上一页</button>
+            <button onclick="nextSlide()">下一页 ➡️</button>
+            <button onclick="toggleFullscreen()">🖥️ 全屏</button>
+        </div>
+
+        <div class="slide-container" id="slideContainer">
+            <div class="slide-wrapper" id="slideWrapper">
+                <svg id="currentSlide"></svg>
+            </div>
+            <div class="slide-info">
+                <div class="slide-title" id="slideTitle">封面</div>
+                <div class="slide-number" id="slideNumber">1 / 8</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>使用 ⬅️ ➡️ 方向键或按钮导航 | 按 F 键进入全屏模式</p>
+            <p style="margin-top: 10px; opacity: 0.7;">PPT Master Project © 2025</p>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            { file: 'slide_01_cover.svg', title: '封面' },
+            { file: 'slide_02_core_concepts.svg', title: 'Git 的核心：键值数据库' },
+            { file: 'slide_03_sha1_hashing.svg', title: 'SHA-1 哈希：唯一身份标识' },
+            { file: 'slide_04_three_objects.svg', title: 'Git 的三种核心对象' },
+            { file: 'slide_05_object_links.svg', title: '对象如何串联起历史' },
+            { file: 'slide_06_plumbing_commands.svg', title: '管道命令：揭开 Git 面纱' },
+            { file: 'slide_07_best_practices.svg', title: '为什么要了解 Git 底层？' },
+            { file: 'slide_08_faq.svg', title: 'FAQ：底层原理答疑' }
+        ];
+
+        let currentSlideIndex = 0;
+
+        function loadSlide(index) {
+            const slide = slides[index];
+            const slideWrapper = document.getElementById('slideWrapper');
+
+            // Use object tag for better SVG rendering
+            slideWrapper.innerHTML = `<object type="image/svg+xml" data="${slide.file}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></object>`;
+
+            document.getElementById('slideTitle').textContent = slide.title;
+            document.getElementById('slideNumber').textContent = `${index + 1} / ${slides.length}`;
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < slides.length - 1) {
+                currentSlideIndex++;
+                loadSlide(currentSlideIndex);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                loadSlide(currentSlideIndex);
+            }
+        }
+
+        function toggleFullscreen() {
+            const container = document.getElementById('slideContainer');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    alert(`全屏模式出错: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+
+        // Load first slide
+        loadSlide(0);
+    </script>
+</body>
+
+</html>

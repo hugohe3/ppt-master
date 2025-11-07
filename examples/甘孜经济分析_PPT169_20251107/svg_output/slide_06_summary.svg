@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左上角装饰 -->
+  <rect x="60" y="44" width="60" height="6" fill="#005587"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="48" font-weight="bold" fill="#003F6C">
+    综合评价
+  </text>
+  
+  <!-- 上方：核心亮点（绿色卡片） -->
+  <text x="60" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="28" font-weight="bold" fill="#10B981">
+    核心亮点
+  </text>
+  
+  <!-- 亮点1 -->
+  <rect x="60" y="170" width="370" height="130" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="2"/>
+  <circle cx="90" cy="200" r="8" fill="#10B981"/>
+  <text x="110" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    财政收入增长强劲
+  </text>
+  <text x="80" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="80" dy="0">• 收入增速10.67%（全省1.9%）</tspan>
+    <tspan x="80" dy="22">• 税收增速17.44%（全省-2.7%）</tspan>
+    <tspan x="80" dy="22">• 税收占比66.45%（高于全省）</tspan>
+  </text>
+  
+  <!-- 亮点2 -->
+  <rect x="455" y="170" width="370" height="130" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="2"/>
+  <circle cx="485" cy="200" r="8" fill="#10B981"/>
+  <text x="505" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    债务风险可控
+  </text>
+  <text x="475" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="475" dy="0">• 债务率35.35%（安全区间）</tspan>
+    <tspan x="475" dy="22">• 人均债务仅为全省49.3%</tspan>
+    <tspan x="475" dy="22">• 债务负担相对较轻</tspan>
+  </text>
+  
+  <!-- 亮点3 -->
+  <rect x="850" y="170" width="370" height="130" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="2"/>
+  <circle cx="880" cy="200" r="8" fill="#10B981"/>
+  <text x="900" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    公共服务投入高
+  </text>
+  <text x="870" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="870" dy="0">• 人均财政支出全省最高</tspan>
+    <tspan x="870" dy="22">• 是全省平均的2.54倍</tspan>
+    <tspan x="870" dy="22">• 享受特殊财政政策支持</tspan>
+  </text>
+  
+  <!-- 下方：关键挑战（红色卡片） -->
+  <text x="60" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="28" font-weight="bold" fill="#DC2626">
+    关键挑战
+  </text>
+  
+  <!-- 挑战1 -->
+  <rect x="60" y="360" width="370" height="140" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="2"/>
+  <circle cx="90" cy="390" r="8" fill="#DC2626"/>
+  <text x="110" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    经济产出效率低
+  </text>
+  <text x="80" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="80" dy="0">• 效率比值0.68（低于1.0）</tspan>
+    <tspan x="80" dy="22">• GDP占比低于人口占比0.43ppt</tspan>
+    <tspan x="80" dy="22">• 人均GDP仅为全省67.7%</tspan>
+    <tspan x="80" dy="22">• 产业结构层次偏低</tspan>
+  </text>
+  
+  <!-- 挑战2 -->
+  <rect x="455" y="360" width="370" height="140" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="2"/>
+  <circle cx="485" cy="390" r="8" fill="#DC2626"/>
+  <text x="505" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    专项债融资能力不足
+  </text>
+  <text x="475" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="475" dy="0">• 专项债限额占比仅0.28%</tspan>
+    <tspan x="475" dy="22">• 仅为GDP占比的31%</tspan>
+    <tspan x="475" dy="22">• 制约基建投资和项目开发</tspan>
+    <tspan x="475" dy="22">• 融资结构失衡（0.46:1）</tspan>
+  </text>
+  
+  <!-- 挑战3 -->
+  <rect x="850" y="360" width="370" height="140" rx="8" fill="#FEF2F2" stroke="#FECACA" stroke-width="2"/>
+  <circle cx="880" cy="390" r="8" fill="#DC2626"/>
+  <text x="900" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    债务空间几乎用尽
+  </text>
+  <text x="870" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#6B7280">
+    <tspan x="870" dy="0">• 余额占限额96.03%</tspan>
+    <tspan x="870" dy="22">• 新增空间仅6.5亿元</tspan>
+    <tspan x="870" dy="22">• 财政自给率仅13.32%</tspan>
+    <tspan x="870" dy="22">• 高度依赖转移支付</tspan>
+  </text>
+  
+  <!-- 底部：发展建议 -->
+  <rect x="60" y="520" width="1160" height="150" rx="8" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="2"/>
+  <text x="80" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="24" font-weight="bold" fill="#005587">
+    发展建议
+  </text>
+  
+  <text x="80" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    <tspan x="80" dy="0">1. 争取专项债限额：向省级和中央争取更多专项债额度，尤其是交通、生态、旅游基建项目</tspan>
+    <tspan x="80" dy="28">2. 优化产业结构：加快工业化进程，培育特色优势产业，提升第二产业占比和增加值</tspan>
+    <tspan x="80" dy="28">3. 依托政策支持：充分利用民族地区、生态功能区政策，争取专项债券和特殊转移支付</tspan>
+  </text>
+</svg>
+

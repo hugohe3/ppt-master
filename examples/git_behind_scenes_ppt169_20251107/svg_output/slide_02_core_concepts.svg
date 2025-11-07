@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+        Git 的核心：键值数据库
+    </text>
+
+    <!-- 中心说明卡片 -->
+    <rect x="340" y="130" width="600" height="140" rx="12" fill="#f3f4f6" />
+    <text x="640" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+        Git 对象数据库
+    </text>
+    <text x="640" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" fill="#6b7280" text-anchor="middle">
+        <tspan x="640" dy="0">存储在 .git/objects/ 目录</tspan>
+        <tspan x="640" dy="28">使用 SHA-1 哈希作为"键"来索引每个对象</tspan>
+    </text>
+
+    <!-- SHA-1 示例 -->
+    <rect x="340" y="290" width="600" height="70" rx="8" fill="#1f2937" />
+    <text x="640" y="325" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="18"
+        fill="#22c55e" text-anchor="middle">
+        a1b2c3d4e5f6789012345678901234567890abcd
+    </text>
+    <text x="640" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#e5e7eb" text-anchor="middle">
+        40位十六进制 SHA-1 哈希值
+    </text>
+
+    <!-- 三大对象类型 -->
+    <text x="640" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#1f2937" text-anchor="middle">
+        三种核心对象类型
+    </text>
+
+    <!-- Blob 对象 -->
+    <g transform="translate(150, 440)">
+        <rect x="0" y="0" width="300" height="220" rx="12" fill="#f3f4f6" stroke="#8b5cf6" stroke-width="3" />
+        <circle cx="150" cy="50" r="30" fill="#8b5cf6" opacity="0.2" />
+        <text x="150" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="bold" fill="#8b5cf6" text-anchor="middle">
+            B
+        </text>
+        <text x="150" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+            Blob
+        </text>
+        <text x="150" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            <tspan x="150" dy="0">文件内容</tspan>
+            <tspan x="150" dy="30">存储原始数据</tspan>
+            <tspan x="150" dy="25">无文件名信息</tspan>
+        </text>
+    </g>
+
+    <!-- Tree 对象 -->
+    <g transform="translate(490, 440)">
+        <rect x="0" y="0" width="300" height="220" rx="12" fill="#f3f4f6" stroke="#10b981" stroke-width="3" />
+        <circle cx="150" cy="50" r="30" fill="#10b981" opacity="0.2" />
+        <text x="150" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="bold" fill="#10b981" text-anchor="middle">
+            T
+        </text>
+        <text x="150" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+            Tree
+        </text>
+        <text x="150" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            <tspan x="150" dy="0">目录结构</tspan>
+            <tspan x="150" dy="30">指向 Blobs/Trees</tspan>
+            <tspan x="150" dy="25">记录文件名权限</tspan>
+        </text>
+    </g>
+
+    <!-- Commit 对象 -->
+    <g transform="translate(830, 440)">
+        <rect x="0" y="0" width="300" height="220" rx="12" fill="#f3f4f6" stroke="#f59e0b" stroke-width="3" />
+        <circle cx="150" cy="50" r="30" fill="#f59e0b" opacity="0.2" />
+        <text x="150" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="bold" fill="#f59e0b" text-anchor="middle">
+            C
+        </text>
+        <text x="150" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#1f2937" text-anchor="middle">
+            Commit
+        </text>
+        <text x="150" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            <tspan x="150" dy="0">项目快照</tspan>
+            <tspan x="150" dy="30">指向顶层 Tree</tspan>
+            <tspan x="150" dy="25">含作者/消息</tspan>
+        </text>
+    </g>
+</svg>

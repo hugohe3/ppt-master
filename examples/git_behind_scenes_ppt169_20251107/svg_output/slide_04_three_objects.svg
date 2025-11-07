@@ -1,0 +1,195 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+        Git 的三种核心对象
+    </text>
+
+    <!-- Blob 对象卡片 -->
+    <g transform="translate(60, 140)">
+        <rect x="0" y="0" width="360" height="520" rx="12" fill="#f3f4f6" stroke="#8b5cf6" stroke-width="4" />
+
+        <!-- 图标 -->
+        <circle cx="180" cy="70" r="45" fill="#8b5cf6" opacity="0.2" />
+        <rect x="155" y="50" width="50" height="40" rx="4" fill="none" stroke="#8b5cf6" stroke-width="3" />
+        <line x1="165" y1="60" x2="195" y2="60" stroke="#8b5cf6" stroke-width="2" />
+        <line x1="165" y1="70" x2="195" y2="70" stroke="#8b5cf6" stroke-width="2" />
+        <line x1="165" y1="80" x2="185" y2="80" stroke="#8b5cf6" stroke-width="2" />
+
+        <!-- 标题 -->
+        <text x="180" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#8b5cf6" text-anchor="middle">
+            Blob
+        </text>
+        <text x="180" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            Binary Large Object
+        </text>
+
+        <!-- 特性列表 -->
+        <circle cx="40" cy="230" r="6" fill="#8b5cf6" />
+        <text x="60" y="236" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">存储文件的原始内容</tspan>
+        </text>
+
+        <circle cx="40" cy="280" r="6" fill="#8b5cf6" />
+        <text x="60" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">只关心数据本身</tspan>
+        </text>
+
+        <circle cx="40" cy="330" r="6" fill="#8b5cf6" />
+        <text x="60" y="336" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">不包含文件名</tspan>
+        </text>
+
+        <circle cx="40" cy="380" r="6" fill="#8b5cf6" />
+        <text x="60" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">不包含路径信息</tspan>
+        </text>
+
+        <circle cx="40" cy="430" r="6" fill="#8b5cf6" />
+        <text x="60" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">不包含任何元数据</tspan>
+        </text>
+
+        <!-- 示例 -->
+        <rect x="20" y="470" width="320" height="60" rx="6" fill="#1f2937" />
+        <text x="180" y="495" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="14"
+            fill="#e5e7eb" text-anchor="middle">
+            <tspan x="180" dy="0">Hello, Git!</tspan>
+            <tspan x="180" dy="22">纯文本内容</tspan>
+        </text>
+    </g>
+
+    <!-- Tree 对象卡片 -->
+    <g transform="translate(460, 140)">
+        <rect x="0" y="0" width="360" height="520" rx="12" fill="#f3f4f6" stroke="#10b981" stroke-width="4" />
+
+        <!-- 图标 -->
+        <circle cx="180" cy="70" r="45" fill="#10b981" opacity="0.2" />
+        <rect x="160" y="45" width="40" height="50" rx="3" fill="none" stroke="#10b981" stroke-width="3" />
+        <line x1="170" y1="60" x2="190" y2="60" stroke="#10b981" stroke-width="2" />
+        <line x1="170" y1="70" x2="190" y2="70" stroke="#10b981" stroke-width="2" />
+        <line x1="170" y1="80" x2="190" y2="80" stroke="#10b981" stroke-width="2" />
+        <line x1="150" y1="80" x2="160" y2="70" stroke="#10b981" stroke-width="2" fill="none" />
+        <line x1="150" y1="80" x2="160" y2="90" stroke="#10b981" stroke-width="2" fill="none" />
+
+        <!-- 标题 -->
+        <text x="180" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#10b981" text-anchor="middle">
+            Tree
+        </text>
+        <text x="180" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            Directory Structure
+        </text>
+
+        <!-- 特性列表 -->
+        <circle cx="40" cy="230" r="6" fill="#10b981" />
+        <text x="60" y="236" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">表示目录结构</tspan>
+        </text>
+
+        <circle cx="40" cy="280" r="6" fill="#10b981" />
+        <text x="60" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">指向 Blobs（文件）</tspan>
+        </text>
+
+        <circle cx="40" cy="330" r="6" fill="#10b981" />
+        <text x="60" y="336" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">指向其他 Trees（子目录）</tspan>
+        </text>
+
+        <circle cx="40" cy="380" r="6" fill="#10b981" />
+        <text x="60" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">记录文件名</tspan>
+        </text>
+
+        <circle cx="40" cy="430" r="6" fill="#10b981" />
+        <text x="60" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">记录权限和哈希值</tspan>
+        </text>
+
+        <!-- 示例 -->
+        <rect x="20" y="470" width="320" height="60" rx="6" fill="#1f2937" />
+        <text x="180" y="495" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="13"
+            fill="#e5e7eb" text-anchor="middle">
+            <tspan x="180" dy="0">100644 blob a1b2...</tspan>
+            <tspan x="180" dy="22">040000 tree e5c7...</tspan>
+        </text>
+    </g>
+
+    <!-- Commit 对象卡片 -->
+    <g transform="translate(860, 140)">
+        <rect x="0" y="0" width="360" height="520" rx="12" fill="#f3f4f6" stroke="#f59e0b" stroke-width="4" />
+
+        <!-- 图标 -->
+        <circle cx="180" cy="70" r="45" fill="#f59e0b" opacity="0.2" />
+        <circle cx="180" cy="70" r="25" fill="none" stroke="#f59e0b" stroke-width="3" />
+        <path d="M 180 45 L 180 70 L 200 70" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
+        <circle cx="180" cy="70" r="4" fill="#f59e0b" />
+
+        <!-- 标题 -->
+        <text x="180" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#f59e0b" text-anchor="middle">
+            Commit
+        </text>
+        <text x="180" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6b7280" text-anchor="middle">
+            Project Snapshot
+        </text>
+
+        <!-- 特性列表 -->
+        <circle cx="40" cy="230" r="6" fill="#f59e0b" />
+        <text x="60" y="236" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">代表一次快照</tspan>
+        </text>
+
+        <circle cx="40" cy="280" r="6" fill="#f59e0b" />
+        <text x="60" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">指向顶层 Tree 对象</tspan>
+        </text>
+
+        <circle cx="40" cy="330" r="6" fill="#f59e0b" />
+        <text x="60" y="336" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">包含作者信息</tspan>
+        </text>
+
+        <circle cx="40" cy="380" r="6" fill="#f59e0b" />
+        <text x="60" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">包含提交消息</tspan>
+        </text>
+
+        <circle cx="40" cy="430" r="6" fill="#f59e0b" />
+        <text x="60" y="436" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="60" dy="0">包含父提交哈希</tspan>
+        </text>
+
+        <!-- 示例 -->
+        <rect x="20" y="470" width="320" height="60" rx="6" fill="#1f2937" />
+        <text x="180" y="495" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="13"
+            fill="#e5e7eb" text-anchor="middle">
+            <tspan x="180" dy="0">tree e5c7d4f...</tspan>
+            <tspan x="180" dy="22">author Hugo</tspan>
+        </text>
+    </g>
+</svg>

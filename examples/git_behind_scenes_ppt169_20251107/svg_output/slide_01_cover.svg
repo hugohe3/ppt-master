@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 装饰性背景图案 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:0.05" />
+            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.05" />
+        </linearGradient>
+    </defs>
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰圆点网络 -->
+    <circle cx="200" cy="150" r="8" fill="#2563eb" opacity="0.2" />
+    <circle cx="350" cy="200" r="6" fill="#10b981" opacity="0.2" />
+    <circle cx="500" cy="180" r="10" fill="#f59e0b" opacity="0.2" />
+    <circle cx="650" cy="220" r="7" fill="#8b5cf6" opacity="0.2" />
+    <circle cx="800" cy="160" r="9" fill="#2563eb" opacity="0.2" />
+    <circle cx="950" cy="190" r="6" fill="#10b981" opacity="0.2" />
+    <circle cx="1080" cy="170" r="8" fill="#f59e0b" opacity="0.2" />
+
+    <!-- 连接线 -->
+    <line x1="200" y1="150" x2="350" y2="200" stroke="#2563eb" stroke-width="2" opacity="0.15" />
+    <line x1="350" y1="200" x2="500" y2="180" stroke="#10b981" stroke-width="2" opacity="0.15" />
+    <line x1="500" y1="180" x2="650" y2="220" stroke="#f59e0b" stroke-width="2" opacity="0.15" />
+    <line x1="650" y1="220" x2="800" y2="160" stroke="#8b5cf6" stroke-width="2" opacity="0.15" />
+    <line x1="800" y1="160" x2="950" y2="190" stroke="#2563eb" stroke-width="2" opacity="0.15" />
+    <line x1="950" y1="190" x2="1080" y2="170" stroke="#10b981" stroke-width="2" opacity="0.15" />
+
+    <!-- Git 图标 -->
+    <g transform="translate(540, 280)">
+        <circle cx="100" cy="0" r="60" fill="#2563eb" opacity="0.1" />
+        <path d="M 70 -30 L 130 -30 L 130 30 L 70 30 Z" fill="none" stroke="#2563eb" stroke-width="4"
+            stroke-linejoin="round" />
+        <circle cx="85" cy="-15" r="8" fill="#2563eb" />
+        <circle cx="115" cy="-15" r="8" fill="#10b981" />
+        <circle cx="85" cy="15" r="8" fill="#f59e0b" />
+        <circle cx="115" cy="15" r="8" fill="#8b5cf6" />
+        <line x1="85" y1="-15" x2="115" y2="-15" stroke="#6b7280" stroke-width="2.5" />
+        <line x1="85" y1="-15" x2="85" y2="15" stroke="#6b7280" stroke-width="2.5" />
+        <line x1="115" y1="-15" x2="115" y2="15" stroke="#6b7280" stroke-width="2.5" />
+        <line x1="85" y1="15" x2="115" y2="15" stroke="#6b7280" stroke-width="2.5" />
+    </g>
+
+    <!-- 主标题 -->
+    <text x="640" y="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="56" font-weight="bold" fill="#1e40af" text-anchor="middle">
+        Git 幕后探秘
+    </text>
+
+    <!-- 副标题 -->
+    <text x="640" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#2563eb" text-anchor="middle">
+        哈希与对象 (Hashing &amp; Objects)
+    </text>
+
+    <!-- 装饰线 -->
+    <line x1="440" y1="490" x2="840" y2="490" stroke="#2563eb" stroke-width="3" opacity="0.3" />
+
+    <!-- 底部标签 -->
+    <g transform="translate(640, 580)">
+        <rect x="-120" y="-25" width="240" height="50" rx="25" fill="#f3f4f6" />
+        <text x="0" y="8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6b7280" text-anchor="middle">
+            深入理解 Git 数据模型
+        </text>
+    </g>
+</svg>

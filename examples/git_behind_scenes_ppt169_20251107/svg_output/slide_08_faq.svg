@@ -1,0 +1,68 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+        FAQ：底层原理答疑
+    </text>
+
+    <!-- Q1 -->
+    <g transform="translate(60, 130)">
+        <rect x="0" y="0" width="1160" height="110" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+        <text x="30" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1e40af">
+            Q1: Git 如何知道文件没有变化？
+        </text>
+        <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="30" dy="0" font-weight="600" fill="#22c55e">A:</tspan>
+            <tspan fill="#1f2937"> 如果两个不同提交中的某个文件内容完全一样，它们对应的 Tree 对象就会指向同一个 Blob 哈希。</tspan>
+            <tspan x="30" dy="25">Git 只需比较哈希值，如果相同，就无需重复存储该文件的内容。这就是 Git 的高效之处：内容去重。</tspan>
+        </text>
+    </g>
+
+    <!-- Q2 -->
+    <g transform="translate(60, 260)">
+        <rect x="0" y="0" width="1160" height="110" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
+        <text x="30" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#065f46">
+            Q2: Git 如何追溯历史？
+        </text>
+        <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="30" dy="0" font-weight="600" fill="#22c55e">A:</tspan>
+            <tspan fill="#1f2937"> 每个 Commit 对象内部都包含一个 parent 指针，指向它的父提交（首次提交除外）。</tspan>
+            <tspan x="30" dy="25">通过这个父子关系链，Git 可以从任何一个提交点出发，回溯整个项目的演进历史。这形成了一个有向无环图（DAG）结构。</tspan>
+        </text>
+    </g>
+
+    <!-- Q3 -->
+    <g transform="translate(60, 390)">
+        <rect x="0" y="0" width="1160" height="110" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="2" />
+        <text x="30" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#dc2626">
+            Q3: 为什么不建议手动修改 .git 目录？
+        </text>
+        <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="30" dy="0" font-weight="600" fill="#22c55e">A:</tspan>
+            <tspan fill="#1f2937"> .git 目录是 Git 的"大脑"，包含了所有对象、引用、配置等关键数据。</tspan>
+            <tspan x="30" dy="25">手动编辑或删除文件极易破坏对象间的引用关系，导致仓库损坏、数据丢失。应该始终通过 Git 命令来操作。</tspan>
+        </text>
+    </g>
+
+    <!-- 底部提示栏 -->
+    <rect x="60" y="530" width="1160" height="130" rx="12" fill="#fef3c7" />
+    <text x="100" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#92400e">
+        💡 给初学者的建议
+    </text>
+    <text x="100" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" fill="#78350f">
+        <tspan x="100" dy="0">理解这些原理能让你成为更好的 Git 用户，但日常工作中应重点掌握高层命令</tspan>
+        <tspan x="100" dy="28">(add、commit、push、merge 等)，再逐步深入底层机制</tspan>
+    </text>
+</svg>

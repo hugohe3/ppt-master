@@ -1,0 +1,181 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#ffffff" />
+
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+        对象如何串联起历史
+    </text>
+
+    <!-- 流程图 -->
+    <!-- Commit 对象 -->
+    <g transform="translate(150, 180)">
+        <rect x="0" y="0" width="200" height="140" rx="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" />
+        <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#f59e0b" text-anchor="middle">
+            Commit
+        </text>
+        <text x="100" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#92400e" text-anchor="middle">
+            a3f8d91c...
+        </text>
+        <line x1="20" y1="85" x2="180" y2="85" stroke="#f59e0b" stroke-width="1" opacity="0.3" />
+        <text x="100" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="14" fill="#6b7280" text-anchor="middle">
+            author: Hugo
+        </text>
+        <text x="100" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="14" fill="#6b7280" text-anchor="middle">
+            message: Init
+        </text>
+    </g>
+
+    <!-- 箭头：Commit -> Tree -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#2563eb" />
+        </marker>
+    </defs>
+    <line x1="350" y1="250" x2="430" y2="250" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowhead)" />
+    <text x="390" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#2563eb" text-anchor="middle">
+        指向
+    </text>
+
+    <!-- Tree 对象 -->
+    <g transform="translate(440, 180)">
+        <rect x="0" y="0" width="200" height="140" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="3" />
+        <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#10b981" text-anchor="middle">
+            Tree
+        </text>
+        <text x="100" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#065f46" text-anchor="middle">
+            e5c7d4f1...
+        </text>
+        <line x1="20" y1="85" x2="180" y2="85" stroke="#10b981" stroke-width="1" opacity="0.3" />
+        <text x="100" y="105" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="12"
+            fill="#6b7280" text-anchor="middle">
+            100644 README.md
+        </text>
+        <text x="100" y="125" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="12"
+            fill="#6b7280" text-anchor="middle">
+            040000 src/
+        </text>
+    </g>
+
+    <!-- 箭头：Tree -> Blob -->
+    <line x1="540" y1="320" x2="540" y2="380" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowhead)" />
+    <text x="560" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#2563eb">
+        指向
+    </text>
+
+    <!-- Blob 对象 1 -->
+    <g transform="translate(450, 390)">
+        <rect x="0" y="0" width="180" height="100" rx="12" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3" />
+        <text x="90" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#8b5cf6" text-anchor="middle">
+            Blob
+        </text>
+        <text x="90" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="14" fill="#5b21b6" text-anchor="middle">
+            b2d8f6e3...
+        </text>
+        <text x="90" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="12" fill="#6b7280" text-anchor="middle">
+            (README 内容)
+        </text>
+    </g>
+
+    <!-- 箭头：Tree -> 子Tree -->
+    <line x1="640" y1="250" x2="720" y2="250" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- 子 Tree 对象 -->
+    <g transform="translate(730, 200)">
+        <rect x="0" y="0" width="180" height="100" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="3" />
+        <text x="90" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#10b981" text-anchor="middle">
+            Tree
+        </text>
+        <text x="90" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="14" fill="#065f46" text-anchor="middle">
+            c9a1b2e4...
+        </text>
+        <text x="90" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="12" fill="#6b7280" text-anchor="middle">
+            (src 目录)
+        </text>
+    </g>
+
+    <!-- 箭头：子Tree -> Blob 2 -->
+    <line x1="820" y1="300" x2="820" y2="380" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- Blob 对象 2 -->
+    <g transform="translate(730, 390)">
+        <rect x="0" y="0" width="180" height="100" rx="12" fill="#ede9fe" stroke="#8b5cf6" stroke-width="3" />
+        <text x="90" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#8b5cf6" text-anchor="middle">
+            Blob
+        </text>
+        <text x="90" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="14" fill="#5b21b6" text-anchor="middle">
+            f7e8a9d2...
+        </text>
+        <text x="90" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="12" fill="#6b7280" text-anchor="middle">
+            (main.py 内容)
+        </text>
+    </g>
+
+    <!-- 步骤说明 -->
+    <g transform="translate(950, 160)">
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1f2937">
+            关系链条
+        </text>
+
+        <circle cx="8" cy="40" r="6" fill="#f59e0b" />
+        <text x="25" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="25" dy="0" font-weight="600">1. Commit 指向顶层 Tree</tspan>
+            <tspan x="25" dy="25">确定项目根目录状态</tspan>
+        </text>
+
+        <circle cx="8" cy="110" r="6" fill="#10b981" />
+        <text x="25" y="116" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="25" dy="0" font-weight="600">2. Tree 指向 Blobs 和子 Trees</tspan>
+            <tspan x="25" dy="25">描述目录中的文件和子目录</tspan>
+        </text>
+
+        <circle cx="8" cy="180" r="6" fill="#8b5cf6" />
+        <text x="25" y="186" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="25" dy="0" font-weight="600">3. Blob 保存文件内容</tspan>
+            <tspan x="25" dy="25">存储实际的数据</tspan>
+        </text>
+
+        <circle cx="8" cy="250" r="6" fill="#2563eb" />
+        <text x="25" y="256" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1f2937">
+            <tspan x="25" dy="0" font-weight="600">4. 单个哈希确定完整状态</tspan>
+            <tspan x="25" dy="25">通过 Commit 哈希追溯</tspan>
+            <tspan x="25" dy="25">整个项目的完整快照</tspan>
+        </text>
+    </g>
+
+    <!-- 底部提示 -->
+    <rect x="60" y="540" width="1160" height="120" rx="12" fill="#dbeafe" />
+    <text x="640" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#1e40af" text-anchor="middle">
+        💡 关键理解
+    </text>
+    <text x="640" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" fill="#1f2937" text-anchor="middle">
+        <tspan x="640" dy="0">整个链条（Commit → Tree → Blobs/Trees）使得一个单独的 Commit 哈希</tspan>
+        <tspan x="640" dy="25">就能唯一确定项目在某个时间点的所有内容和结构</tspan>
+    </text>
+</svg>

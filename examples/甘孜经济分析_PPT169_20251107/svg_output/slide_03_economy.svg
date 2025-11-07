@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左上角装饰 -->
+  <rect x="60" y="44" width="60" height="6" fill="#005587"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="48" font-weight="bold" fill="#003F6C">
+    经济总量与产业结构
+  </text>
+  
+  <!-- 左侧：经济总量指标 -->
+  <rect x="60" y="140" width="540" height="440" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <text x="90" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="28" font-weight="bold" fill="#374151">
+    经济总量指标
+  </text>
+  
+  <!-- GDP总量 -->
+  <text x="90" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    GDP总量
+  </text>
+  <text x="90" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="48" font-weight="bold" fill="#005587">
+    580.52 <tspan font-size="24">亿元</tspan>
+  </text>
+  <text x="90" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    全省排名 20/21
+  </text>
+  
+  <!-- GDP增速 -->
+  <text x="90" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    GDP增速
+  </text>
+  <text x="90" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="42" font-weight="bold" fill="#005587">
+    5.4<tspan font-size="28">%</tspan>
+  </text>
+  <text x="90" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    全省平均 5.7%
+  </text>
+  
+  <!-- 人均GDP -->
+  <text x="90" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    人均GDP
+  </text>
+  <text x="90" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="42" font-weight="bold" fill="#005587">
+    52,370 <tspan font-size="24">元</tspan>
+  </text>
+  <text x="90" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    为全省平均的 67.7%
+  </text>
+  
+  <!-- 产业结构 -->
+  <text x="90" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    产业结构
+  </text>
+  <text x="200" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="24" font-weight="bold" fill="#374151">
+    15.68 : 28.58 : 55.74
+  </text>
+  
+  <!-- 右侧：产业结构环形图 -->
+  <rect x="640" y="140" width="580" height="440" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <text x="670" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="28" font-weight="bold" fill="#374151">
+    产业结构分析
+  </text>
+  
+  <!-- 环形图（使用SVG circle绘制，圆周长 = 2πr = 502.65） -->
+  
+  <!-- 第一产业: 15.68% = 78.82px (橙色) -->
+  <circle cx="850" cy="370" r="80" fill="none" stroke="#F59E0B" stroke-width="40" 
+          stroke-dasharray="78.82 423.83" 
+          transform="rotate(-90 850 370)" 
+          opacity="0.9"/>
+  
+  <!-- 第二产业: 28.58% = 143.66px (浅蓝色) -->
+  <circle cx="850" cy="370" r="80" fill="none" stroke="#4A9FCA" stroke-width="40" 
+          stroke-dasharray="143.66 359" 
+          stroke-dashoffset="-78.82"
+          transform="rotate(-90 850 370)" 
+          opacity="0.9"/>
+  
+  <!-- 第三产业: 55.74% = 280.18px (深蓝色) -->
+  <circle cx="850" cy="370" r="80" fill="none" stroke="#005587" stroke-width="40" 
+          stroke-dasharray="280.18 222.47" 
+          stroke-dashoffset="-222.48"
+          transform="rotate(-90 850 370)" 
+          opacity="0.9"/>
+  
+  <!-- 中心白色圆（创造环形效果） -->
+  <circle cx="850" cy="370" r="60" fill="#FFFFFF"/>
+  
+  <!-- 中心文字 -->
+  <text x="850" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" 
+        font-size="18" font-weight="bold" fill="#005587" text-anchor="middle">
+    产业占比
+  </text>
+  
+  <!-- 图例 -->
+  <rect x="1000" y="270" width="20" height="20" fill="#F59E0B"/>
+  <text x="1030" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    第一产业 15.68%
+  </text>
+  <text x="1030" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    91.04亿元
+  </text>
+  
+  <rect x="1000" y="330" width="20" height="20" fill="#4A9FCA"/>
+  <text x="1030" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    第二产业 28.58%
+  </text>
+  <text x="1030" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    165.91亿元
+  </text>
+  
+  <rect x="1000" y="390" width="20" height="20" fill="#005587"/>
+  <text x="1030" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    第三产业 55.74%
+  </text>
+  <text x="1030" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    323.57亿元
+  </text>
+  
+  <!-- 底部分析文字 -->
+  <text x="670" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#374151">
+    产业特征
+  </text>
+  <text x="670" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#6B7280">
+    <tspan x="670" dy="0">• 第一产业占比偏高，反映农牧业基础地位</tspan>
+    <tspan x="670" dy="26">• 第二产业占比偏低，工业化水平严重不足</tspan>
+    <tspan x="670" dy="26">• 第三产业主导，依托旅游业和公共服务</tspan>
+  </text>
+  
+  <!-- 底部总结卡片 -->
+  <rect x="60" y="600" width="1160" height="70" rx="8" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1"/>
+  <text x="80" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    <tspan x="80" dy="0" font-weight="bold">总体评价：</tspan>
+    <tspan x="180" dy="0">典型的"一产偏高、二产不足、三产主导"结构，产业层次偏低，需加快工业化进程</tspan>
+  </text>
+</svg>
+

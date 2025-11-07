@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 定义 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#DC2626"/>
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 左上角装饰 -->
+  <rect x="60" y="44" width="60" height="6" fill="#005587"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="48" font-weight="bold" fill="#003F6C">
+    核心指标基准
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="60" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    双基准线对比分析
+  </text>
+  
+  <!-- 上方KPI卡片区 -->
+  <!-- 卡片1：GDP占比 -->
+  <rect x="60" y="180" width="360" height="120" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="80" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    GDP占比
+  </text>
+  <text x="80" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="56" font-weight="bold" fill="#005587">
+    0.90%
+  </text>
+  <text x="80" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    全省排名 20/21
+  </text>
+  
+  <!-- 卡片2：人口占比 -->
+  <rect x="460" y="180" width="360" height="120" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="480" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    人口占比
+  </text>
+  <text x="480" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="56" font-weight="bold" fill="#005587">
+    1.33%
+  </text>
+  <text x="480" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    常住人口111.1万人
+  </text>
+  
+  <!-- 卡片3：效率比值 -->
+  <rect x="860" y="180" width="360" height="120" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="880" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" fill="#6B7280">
+    效率比值
+  </text>
+  <text x="880" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="56" font-weight="bold" fill="#DC2626">
+    0.68
+  </text>
+  <text x="880" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    低于1.0 产出效率低
+  </text>
+  
+  <!-- 中部：基准线对比可视化 -->
+  <text x="60" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="28" font-weight="bold" fill="#374151">
+    基准线对比
+  </text>
+  
+  <!-- 坐标轴说明 -->
+  <text x="60" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="16" fill="#9CA3AF">
+    占全省比例
+  </text>
+  
+  <!-- 背景参考线 -->
+  <line x1="200" y1="410" x2="200" y2="530" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="195" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">
+    0.0%
+  </text>
+  
+  <line x1="400" y1="410" x2="400" y2="530" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="395" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">
+    0.5%
+  </text>
+  
+  <line x1="600" y1="410" x2="600" y2="530" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="595" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">
+    1.0%
+  </text>
+  
+  <!-- 横向柱状图：GDP占比 (0.90% = 360px，按比例 1% = 400px) -->
+  <text x="60" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151" font-weight="bold">
+    GDP占比
+  </text>
+  <rect x="200" y="420" width="360" height="35" fill="#4A9FCA" opacity="0.8"/>
+  <text x="570" y="442" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#005587" font-weight="bold">
+    0.90%
+  </text>
+  
+  <!-- 横向柱状图：人口占比 (1.33% = 532px，按比例 1% = 400px) -->
+  <text x="60" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151" font-weight="bold">
+    人口占比
+  </text>
+  <rect x="200" y="475" width="532" height="35" fill="#005587" opacity="0.8"/>
+  <text x="742" y="497" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#005587" font-weight="bold">
+    1.33%
+  </text>
+  
+  <!-- 差距标注 -->
+  <line x1="560" y1="465" x2="732" y2="465" stroke="#DC2626" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="646" y="462" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="14" fill="#DC2626" text-anchor="middle">
+    差距 0.43ppt
+  </text>
+  
+  <!-- 底部说明文字 -->
+  <rect x="60" y="560" width="1160" height="110" rx="8" fill="#FEF2F2" stroke="#FEE2E2" stroke-width="1"/>
+  <text x="80" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="20" font-weight="bold" fill="#DC2626">
+    关键洞察
+  </text>
+  <text x="80" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif" font-size="18" fill="#374151">
+    <tspan x="80" dy="0">• 甘孜州人口占比（1.33%）显著高于GDP占比（0.90%），负向偏离0.43个百分点</tspan>
+    <tspan x="80" dy="28">• 效率比值0.68说明经济产出效率低于全省平均水平32.3%，属于典型的欠发达地区</tspan>
+  </text>
+</svg>
+
