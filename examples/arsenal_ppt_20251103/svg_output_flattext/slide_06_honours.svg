@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F5F5F5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#bgGradient)" />
+  
+  
+  <rect x="0" y="0" width="1280" height="10" fill="#EF0107" />
+  
+  
+  <text x="640" y="110" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    荣誉殿堂 · HONOURS
+  </text>
+  
+  
+  
+  <g>
+    <rect x="80" y="180" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    
+    <rect x="180" y="220" width="150" height="120" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="255" y="275" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：英超/
+    </text>
+    <text x="255" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      甲级联赛
+    </text>
+    <text x="255" y="315" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      冠军奖杯]
+    </text>
+    
+    <text x="255" y="365" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      13
+    </text>
+    
+    <text x="255" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C2C2C" text-anchor="middle">
+      顶级联赛冠军
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="465" y="180" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="565" y="220" width="150" height="120" fill="#F5F5F5" stroke="#D4AF37" stroke-width="3" stroke-dasharray="8,4" rx="12" />
+    <text x="640" y="275" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：
+    </text>
+    <text x="640" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      足总杯
+    </text>
+    <text x="640" y="315" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="640" y="365" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#D4AF37" text-anchor="middle">
+      14
+    </text>
+    
+    <text x="640" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      足总杯冠军
+    </text>
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="16" x="640" y="395">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="16" x="640" y="420">（英格兰之最）</text></g>
+  
+  
+  <g>
+    <rect x="850" y="180" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="950" y="220" width="150" height="120" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="1025" y="275" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：
+    </text>
+    <text x="1025" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      联赛杯
+    </text>
+    <text x="1025" y="315" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="1025" y="365" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      2
+    </text>
+    
+    <text x="1025" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C2C2C" text-anchor="middle">
+      联赛杯冠军
+    </text>
+  </g>
+  
+  
+  
+  <g>
+    <rect x="80" y="450" width="350" height="210" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="180" y="480" width="150" height="100" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="255" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：盾牌]
+    </text>
+    
+    <text x="255" y="605" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      17
+    </text>
+    
+    <text x="255" y="640" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C2C2C" text-anchor="middle">
+      社区盾杯
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="465" y="450" width="350" height="210" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="565" y="480" width="150" height="100" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="640" y="520" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：欧洲
+    </text>
+    <text x="640" y="540" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="640" y="605" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      1
+    </text>
+    
+    <text x="640" y="640" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C2C2C" text-anchor="middle">
+      欧洲优胜者杯
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="850" y="450" width="350" height="210" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="950" y="480" width="150" height="100" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="1025" y="520" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      [图标：复古
+    </text>
+    <text x="1025" y="540" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#999999" text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="1025" y="605" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      1
+    </text>
+    
+    <text x="1025" y="640" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C2C2C" text-anchor="middle">
+      国际城市博览会杯
+    </text>
+  </g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    06
+  </text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EF0107;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C00000;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#redGradient)"/>
+  
+  <!-- 队徽占位符 - 居中顶部 -->
+  <rect x="540" y="100" width="200" height="200" 
+        fill="#F5F5F5" 
+        stroke="#CCCCCC" 
+        stroke-width="2" 
+        stroke-dasharray="8,4" 
+        rx="16"/>
+  <text x="640" y="210" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    [图片：阿森纳队徽]
+  </text>
+  
+  <!-- 主标题 - 英文 -->
+  <text x="640" y="380" 
+        font-family="'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif" 
+        font-size="72" 
+        font-weight="bold"
+        fill="#FFFFFF" 
+        text-anchor="middle">
+    ARSENAL
+  </text>
+  
+  <text x="640" y="450" 
+        font-family="'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif" 
+        font-size="72" 
+        font-weight="bold"
+        fill="#FFFFFF" 
+        text-anchor="middle">
+    FOOTBALL CLUB
+  </text>
+  
+  <!-- 副标题 - 中文 -->
+  <text x="640" y="520" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="36" 
+        fill="#D4AF37" 
+        text-anchor="middle">
+    阿森纳足球俱乐部深度报告
+  </text>
+  
+  <!-- 底部小字 -->
+  <text x="640" y="640" 
+        font-family="'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif" 
+        font-size="24" 
+        fill="#FFFFFF" 
+        opacity="0.8"
+        text-anchor="middle">
+    The Gunners · Since 1886
+  </text>
+</svg>

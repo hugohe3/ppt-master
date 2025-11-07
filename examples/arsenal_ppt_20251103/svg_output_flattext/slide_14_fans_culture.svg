@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="640" y="100" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    球迷文化 · The Arsenal Family
+  </text>
+  
+  
+  <rect x="80" y="150" width="1120" height="280" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="16" />
+  <text x="640" y="275" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图片：球迷看台红色海洋 / 酋长球场球迷助威场景]
+  </text>
+  <text x="640" y="305" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    建议：展现球迷热情的宽幅照片
+  </text>
+  
+  
+  
+  <g>
+    <rect x="80" y="470" width="265" height="180" fill="#EF0107" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="130" y="500" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="160" y="535" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="160" y="550" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      枪]
+    </text>
+    
+    <text x="212" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="middle">
+      昵称
+    </text>
+    
+    <text x="212" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      枪手
+    </text>
+    
+    <text x="212" y="615" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">
+      The Gunners
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="380" y="470" width="265" height="180" fill="#1A2B4A" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="430" y="500" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="460" y="535" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="460" y="550" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      音符]
+    </text>
+    
+    <text x="512" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="middle">
+      队歌
+    </text>
+    
+    <text font-style="italic" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="512" y="575">      </text><text font-style="italic" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="512" y="575">Good Old</text><text font-style="italic" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="512" y="605">Arsenal</text></g>
+  
+  
+  <g>
+    <rect x="680" y="470" width="265" height="180" fill="#D4AF37" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="730" y="500" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="760" y="535" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="760" y="550" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      看台]
+    </text>
+    
+    <text x="812" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">
+      著名看台
+    </text>
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="812" y="570">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="812" y="570">Clock End</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="20" x="812" y="600">North Bank</text></g>
+  
+  
+  <g>
+    <rect x="980" y="470" width="265" height="180" fill="#EF0107" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="1030" y="500" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="1060" y="535" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="1060" y="550" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      地球]
+    </text>
+    
+    <text x="1112" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="middle">
+      全球粉丝
+    </text>
+    
+    <text x="1112" y="575" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      1亿+
+    </text>
+    
+    <text x="1112" y="615" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">
+      遍布全球
+    </text>
+  </g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    14
+  </text>
+</svg>

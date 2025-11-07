@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="10" fill="#EF0107"/>
+  
+  <!-- 标题 -->
+  <text x="640" y="110" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold"
+        fill="#EF0107" 
+        text-anchor="middle">
+    传奇球星 · 群星闪耀
+  </text>
+  
+  <!-- 第1位：托尼·亚当斯 -->
+  <g>
+    <rect x="80" y="180" width="265" height="480" fill="#FFFFFF" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <!-- 头像占位 -->
+    <circle cx="212" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="212" y="265" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      [图片：
+    </text>
+    <text x="212" y="280" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="212" y="360" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#2C2C2C" 
+          text-anchor="middle">
+      托尼·亚当斯
+    </text>
+    
+    <text x="212" y="395" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#EF0107" 
+          text-anchor="middle">
+      Tony Adams
+    </text>
+    
+    <rect x="110" y="420" width="204" height="3" fill="#EF0107"/>
+    
+    <text x="212" y="460" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666" 
+          text-anchor="middle">
+      <tspan x="212" dy="0">效力：1983-2002</tspan>
+      <tspan x="212" dy="30">位置：中后卫</tspan>
+      <tspan x="212" dy="30">队长 · Mr. Arsenal</tspan>
+      <tspan x="212" dy="30">4次英格兰顶级联赛</tspan>
+      <tspan x="212" dy="25">冠军</tspan>
+    </text>
+  </g>
+  
+  <!-- 第2位：帕特里克·维埃拉 -->
+  <g>
+    <rect x="375" y="180" width="265" height="480" fill="#FFFFFF" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <circle cx="507" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="507" y="265" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      [图片：
+    </text>
+    <text x="507" y="280" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="507" y="360" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#2C2C2C" 
+          text-anchor="middle">
+      维埃拉
+    </text>
+    
+    <text x="507" y="395" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#EF0107" 
+          text-anchor="middle">
+      Patrick Vieira
+    </text>
+    
+    <rect x="405" y="420" width="204" height="3" fill="#EF0107"/>
+    
+    <text x="507" y="460" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666" 
+          text-anchor="middle">
+      <tspan x="507" dy="0">效力：1996-2005</tspan>
+      <tspan x="507" dy="30">位置：中场核心</tspan>
+      <tspan x="507" dy="30">队长 · 不败赛季</tspan>
+      <tspan x="507" dy="30">3次英超冠军</tspan>
+      <tspan x="507" dy="25">铁腰典范</tspan>
+    </text>
+  </g>
+  
+  <!-- 第3位：罗伯特·皮雷 -->
+  <g>
+    <rect x="670" y="180" width="265" height="480" fill="#FFFFFF" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <circle cx="802" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="802" y="265" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      [图片：
+    </text>
+    <text x="802" y="280" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="802" y="360" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#2C2C2C" 
+          text-anchor="middle">
+      罗伯特·皮雷
+    </text>
+    
+    <text x="802" y="395" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#EF0107" 
+          text-anchor="middle">
+      Robert Pires
+    </text>
+    
+    <rect x="700" y="420" width="204" height="3" fill="#EF0107"/>
+    
+    <text x="802" y="460" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666" 
+          text-anchor="middle">
+      <tspan x="802" dy="0">效力：2000-2006</tspan>
+      <tspan x="802" dy="30">位置：左边锋/中场</tspan>
+      <tspan x="802" dy="30">左路魔术师</tspan>
+      <tspan x="802" dy="30">2次英超冠军</tspan>
+      <tspan x="802" dy="25">84球</tspan>
+    </text>
+  </g>
+  
+  <!-- 第4位：彼得·切赫 -->
+  <g>
+    <rect x="965" y="180" width="265" height="480" fill="#FFFFFF" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <circle cx="1097" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="1097" y="265" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      [图片：
+    </text>
+    <text x="1097" y="280" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="1097" y="360" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#2C2C2C" 
+          text-anchor="middle">
+      彼得·切赫
+    </text>
+    
+    <text x="1097" y="395" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#EF0107" 
+          text-anchor="middle">
+      Petr Čech
+    </text>
+    
+    <rect x="995" y="420" width="204" height="3" fill="#EF0107"/>
+    
+    <text x="1097" y="460" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666" 
+          text-anchor="middle">
+      <tspan x="1097" dy="0">效力：2015-2019</tspan>
+      <tspan x="1097" dy="30">位置：门将</tspan>
+      <tspan x="1097" dy="30">传奇门神</tspan>
+      <tspan x="1097" dy="30">1次足总杯冠军</tspan>
+      <tspan x="1097" dy="25">英超200场零封</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" 
+        fill="#999999" 
+        text-anchor="end">
+    09
+  </text>
+</svg>

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#F5F5F5" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="640" y="100" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    战术风格 · Playing Philosophy
+  </text>
+  
+  
+  <rect x="390" y="150" width="500" height="350" fill="#00A650" stroke="#FFFFFF" stroke-width="6" rx="16" />
+  
+  
+  <line x1="640" y1="150" x2="640" y2="500" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+  <circle cx="640" cy="325" r="60" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+  
+  
+  <rect x="490" y="220" width="300" height="180" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+  <text x="640" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图表：4-3-3阵型示意图
+  </text>
+  <text x="640" y="320" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    或战术板效果图]
+  </text>
+  
+  
+  <rect x="80" y="150" width="280" height="140" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+  
+  <rect x="100" y="170" width="50" height="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="8" />
+  <text x="125" y="200" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    [图标
+  </text>
+  <text x="125" y="212" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    传球]
+  </text>
+  
+  <text x="180" y="200" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#EF0107" text-anchor="start">
+    传控足球
+  </text>
+  
+  <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="240">    </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="240">· Tiki-taka影响</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="268">· 短传渗透</text><rect x="920" y="150" width="280" height="140" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+  
+  <rect x="940" y="170" width="50" height="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="8" />
+  <text x="965" y="200" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    [图标
+  </text>
+  <text x="965" y="212" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    闪电]
+  </text>
+  
+  <text x="1020" y="200" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#EF0107" text-anchor="start">
+    快速反击
+  </text>
+  
+  <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="240">    </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="240">· 直塞球穿透</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="268">· 速度优势</text><rect x="80" y="360" width="280" height="140" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+  
+  <rect x="100" y="380" width="50" height="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="8" />
+  <text x="125" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    [图标
+  </text>
+  <text x="125" y="422" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    边路]
+  </text>
+  
+  <text x="180" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#EF0107" text-anchor="start">
+    边路突破
+  </text>
+  
+  <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="450">    </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="450">· 边锋一对一</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="100" y="478">· 下底传中</text><rect x="920" y="360" width="280" height="140" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+  
+  <rect x="940" y="380" width="50" height="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="8" />
+  <text x="965" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    [图标
+  </text>
+  <text x="965" y="422" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#999999" text-anchor="middle">
+    青训]
+  </text>
+  
+  <text x="1020" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#EF0107" text-anchor="start">
+    青训体系
+  </text>
+  
+  <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="450">    </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="450">· Hale End</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#666666" font-size="18" x="940" y="478">· 培养本土球星</text><rect x="80" y="540" width="1120" height="120" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+  
+  <text x="640" y="585" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+    阿森纳足球哲学
+  </text>
+  
+  <text x="640" y="625" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+    优雅技术派 · 进攻导向 · 注重传控 · 强调青训培养
+  </text>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    11
+  </text>
+</svg>

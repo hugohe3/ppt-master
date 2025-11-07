@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107"/>
+  
+  <!-- 标题 -->
+  <text x="80" y="100" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold"
+        fill="#EF0107" 
+        text-anchor="start">
+    现代阿森纳 · 阿尔特塔重建之路
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="145" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="24" 
+        fill="#666666" 
+        text-anchor="start">
+    Mikel Arteta · The Rebuilding Era (2019 - Present)
+  </text>
+  
+  <!-- 左侧：阿尔特塔照片 -->
+  <rect x="80" y="180" width="280" height="370" 
+        fill="#F5F5F5" 
+        stroke="#CCCCCC" 
+        stroke-width="2" 
+        stroke-dasharray="8,4" 
+        rx="16"/>
+  <text x="220" y="350" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    [图片：阿尔特塔
+  </text>
+  <text x="220" y="375" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    指挥比赛/
+  </text>
+  <text x="220" y="400" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    激情瞬间]
+  </text>
+  
+  <!-- 右侧：时间轴与成就 -->
+  <g>
+    <!-- 上任信息 -->
+    <rect x="400" y="180" width="800" height="90" fill="#1A2B4A" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    <text x="800" y="230" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      2019年12月上任主教练
+    </text>
+    
+    <!-- 成就1：2020足总杯 -->
+    <rect x="400" y="300" width="380" height="120" fill="#D4AF37" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <rect x="430" y="330" width="60" height="60" 
+          fill="#F5F5F5" 
+          stroke="#FFFFFF" 
+          stroke-width="2" 
+          stroke-dasharray="6,3" 
+          rx="10"/>
+    <text x="460" y="365" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      [图标
+    </text>
+    <text x="460" y="380" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" 
+          fill="#999999" 
+          text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="530" y="345" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="start">
+      2020年
+    </text>
+    
+    <text x="530" y="380" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          fill="#FFFFFF" 
+          text-anchor="start">
+      足总杯冠军
+    </text>
+    
+    <text x="530" y="405" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" 
+          fill="#FFFFFF" 
+          text-anchor="start">
+      首个冠军奖杯
+    </text>
+    
+    <!-- 成就2：2022-23赛季 -->
+    <rect x="820" y="300" width="380" height="120" fill="#EF0107" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <text x="1010" y="335" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      2022-23赛季
+    </text>
+    
+    <text x="1010" y="370" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      英超亚军
+    </text>
+    
+    <text x="1010" y="400" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#D4AF37" 
+          text-anchor="middle">
+      重返欧冠赛场
+    </text>
+    
+    <!-- 成就3：2023-24赛季 -->
+    <rect x="400" y="450" width="380" height="100" fill="#EF0107" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <text x="590" y="490" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      2023-24赛季
+    </text>
+    
+    <text x="590" y="525" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      英超亚军 · 连续挑战曼城
+    </text>
+    
+    <!-- 战术理念 -->
+    <rect x="820" y="450" width="380" height="100" fill="#1A2B4A" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    
+    <text x="1010" y="485" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          font-weight="bold"
+          fill="#D4AF37" 
+          text-anchor="middle">
+      战术理念
+    </text>
+    
+    <text x="1010" y="520" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      高位逼抢 · 控球建立 · 青年培养
+    </text>
+  </g>
+  
+  <!-- 底部数据卡片 -->
+  <rect x="80" y="580" width="1120" height="80" fill="#F5F5F5" rx="16" 
+        style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+  
+  <text x="640" y="615" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="24" 
+        font-weight="bold"
+        fill="#2C2C2C" 
+        text-anchor="middle">
+    重建成就
+  </text>
+  
+  <text x="640" y="645" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="20" 
+        fill="#666666" 
+        text-anchor="middle">
+    从低谷中崛起 · 打造年轻化阵容 · 重返英超争冠行列
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" 
+        fill="#999999" 
+        text-anchor="end">
+    12
+  </text>
+</svg>

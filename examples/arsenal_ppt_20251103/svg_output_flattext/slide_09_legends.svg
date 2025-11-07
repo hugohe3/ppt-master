@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#F5F5F5" />
+  
+  
+  <rect x="0" y="0" width="1280" height="10" fill="#EF0107" />
+  
+  
+  <text x="640" y="110" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    传奇球星 · 群星闪耀
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="180" width="265" height="480" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    
+    <circle cx="212" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="212" y="265" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片：
+    </text>
+    <text x="212" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="212" y="360" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      托尼·亚当斯
+    </text>
+    
+    <text x="212" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#EF0107" text-anchor="middle">
+      Tony Adams
+    </text>
+    
+    <rect x="110" y="420" width="204" height="3" fill="#EF0107" />
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="460">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="460">效力：1983-2002</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="490">位置：中后卫</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="520">队长 · Mr. Arsenal</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="550">4次英格兰顶级联赛</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="212" y="575">冠军</text></g>
+  
+  
+  <g>
+    <rect x="375" y="180" width="265" height="480" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="507" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="507" y="265" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片：
+    </text>
+    <text x="507" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="507" y="360" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      维埃拉
+    </text>
+    
+    <text x="507" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#EF0107" text-anchor="middle">
+      Patrick Vieira
+    </text>
+    
+    <rect x="405" y="420" width="204" height="3" fill="#EF0107" />
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="460">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="460">效力：1996-2005</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="490">位置：中场核心</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="520">队长 · 不败赛季</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="550">3次英超冠军</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="507" y="575">铁腰典范</text></g>
+  
+  
+  <g>
+    <rect x="670" y="180" width="265" height="480" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="802" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="802" y="265" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片：
+    </text>
+    <text x="802" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="802" y="360" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      罗伯特·皮雷
+    </text>
+    
+    <text x="802" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#EF0107" text-anchor="middle">
+      Robert Pires
+    </text>
+    
+    <rect x="700" y="420" width="204" height="3" fill="#EF0107" />
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="460">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="460">效力：2000-2006</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="490">位置：左边锋/中场</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="520">左路魔术师</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="550">2次英超冠军</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="802" y="575">84球</text></g>
+  
+  
+  <g>
+    <rect x="965" y="180" width="265" height="480" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="1097" cy="260" r="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="1097" y="265" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片：
+    </text>
+    <text x="1097" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      头像]
+    </text>
+    
+    <text x="1097" y="360" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      彼得·切赫
+    </text>
+    
+    <text x="1097" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#EF0107" text-anchor="middle">
+      Petr Čech
+    </text>
+    
+    <rect x="995" y="420" width="204" height="3" fill="#EF0107" />
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="460">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="460">效力：2015-2019</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="490">位置：门将</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="520">传奇门神</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="550">1次足总杯冠军</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="18" x="1097" y="575">英超200场零封</text></g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    09
+  </text>
+</svg>

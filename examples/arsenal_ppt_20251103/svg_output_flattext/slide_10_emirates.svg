@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="640" y="100" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    主场 · 酋长球场
+  </text>
+  
+  
+  <text x="640" y="145" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" fill="#D4AF37" text-anchor="middle">
+    Emirates Stadium · The Home of Arsenal
+  </text>
+  
+  
+  <rect x="80" y="180" width="1120" height="300" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="16" />
+  <text x="640" y="310" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图片：酋长球场外景/夜景全景]
+  </text>
+  <text x="640" y="340" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    建议：壮观的体育场外观或内部座席全景
+  </text>
+  
+  
+  <g>
+    
+    <rect x="80" y="520" width="350" height="150" fill="#EF0107" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="120" y="550" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="150" y="585" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="150" y="600" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      日历]
+    </text>
+    
+    <text x="220" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="start">
+      启用时间
+    </text>
+    
+    <text x="220" y="620" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="start">
+      2006年7月
+    </text>
+    
+    
+    <rect x="465" y="520" width="350" height="150" fill="#1A2B4A" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="505" y="550" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="535" y="585" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="535" y="600" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      体育场]
+    </text>
+    
+    <text x="605" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="start">
+      球场容量
+    </text>
+    
+    <text x="605" y="620" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="start">
+      60,704人
+    </text>
+    
+    <text x="605" y="650" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="start">
+      英格兰第4大球场
+    </text>
+    
+    
+    <rect x="850" y="520" width="350" height="150" fill="#D4AF37" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <rect x="890" y="550" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="920" y="585" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="920" y="600" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      地标]
+    </text>
+    
+    <text x="990" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="start">
+      地址
+    </text>
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-weight="bold" text-anchor="start" fill="#FFFFFF" font-size="28" x="990" y="620">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-weight="bold" text-anchor="start" fill="#FFFFFF" font-size="28" x="990" y="620">伦敦霍洛威</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-weight="bold" text-anchor="start" fill="#FFFFFF" font-size="28" x="990" y="650">Holloway, London</text></g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    10
+  </text>
+</svg>

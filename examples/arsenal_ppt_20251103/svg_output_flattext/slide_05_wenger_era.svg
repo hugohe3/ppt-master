@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#F5F5F5" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="80" y="120" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="start">
+    温格时代（1996-2018）
+  </text>
+  
+  
+  <text x="80" y="165" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" fill="#D4AF37" text-anchor="start">
+    教授的22年 · The Professor's Legacy
+  </text>
+  
+  
+  <g>
+    <rect x="80" y="220" width="540" height="420" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    
+    <rect x="120" y="260" width="240" height="320" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="12" />
+    <text x="240" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+      [图片：温格
+    </text>
+    <text x="240" y="435" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+      Arsène Wenger
+    </text>
+    <text x="240" y="460" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+      标志性照片]
+    </text>
+    
+    
+    <text x="410" y="300" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#2C2C2C" text-anchor="start">
+      执教数据
+    </text>
+    
+    <text x="410" y="350" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="start">
+      828
+    </text>
+    <text x="410" y="385" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="start">
+      场比赛
+    </text>
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#2C2C2C" font-size="22" x="410" y="440">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#2C2C2C" font-size="22" x="410" y="440">528胜</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#2C2C2C" font-size="22" x="410" y="470">197平</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="start" fill="#2C2C2C" font-size="22" x="410" y="500">103负</text><text x="410" y="570" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#666666" text-anchor="start">
+      胜率 63.8%
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="660" y="220" width="540" height="420" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <text x="930" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#EF0107" text-anchor="middle">
+      主要成就
+    </text>
+    
+    
+    <g>
+      
+      <rect x="700" y="320" width="60" height="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+      <text x="730" y="355" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+        [图标
+      </text>
+      <text x="730" y="370" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+        奖杯]
+      </text>
+      
+      <text x="800" y="360" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="start">
+        3次 英超冠军
+      </text>
+      <text x="800" y="390" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#666666" text-anchor="start">
+        1998, 2002, 2004
+      </text>
+    </g>
+    
+    <g>
+      
+      <rect x="700" y="420" width="60" height="60" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+      <text x="730" y="455" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+        [图标
+      </text>
+      <text x="730" y="470" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+        奖杯]
+      </text>
+      
+      <text x="800" y="460" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="start">
+        7次 足总杯冠军
+      </text>
+      <text x="800" y="490" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#666666" text-anchor="start">
+        英格兰历史最多
+      </text>
+    </g>
+    
+    
+    <rect x="700" y="530" width="460" height="80" fill="#D4AF37" rx="12" />
+    <text x="930" y="565" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      2003-04赛季不败夺冠
+    </text>
+    <text x="930" y="595" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">
+      英超历史唯一 · 49场不败
+    </text>
+  </g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    05
+  </text>
+</svg>

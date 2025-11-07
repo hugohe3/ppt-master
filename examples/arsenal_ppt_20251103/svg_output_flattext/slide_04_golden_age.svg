@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="80" y="120" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="start">
+    俱乐部历史 · 黄金时代
+  </text>
+  
+  
+  <text x="80" y="165" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#666666" text-anchor="start">
+    Herbert Chapman Era (1930s-1950s)
+  </text>
+  
+  
+  <rect x="80" y="220" width="300" height="400" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="16" />
+  <text x="230" y="410" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图片：赫伯特·查普曼
+  </text>
+  <text x="230" y="435" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    Herbert Chapman
+  </text>
+  <text x="230" y="460" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    肖像照]
+  </text>
+  
+  
+  <g>
+    
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#B8942E;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    
+    <rect x="450" y="220" width="750" height="200" fill="url(#goldGradient)" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.15))" />
+    
+    <text x="825" y="280" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      赫伯特·查普曼（Herbert Chapman）
+    </text>
+    
+    <text x="825" y="325" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">
+      执教时期：1925-1934
+    </text>
+    
+    <text x="825" y="370" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle">
+      足球战术革命者 · 现代足球教父
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="450" y="460" width="340" height="160" fill="#EF0107" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    
+    <rect x="490" y="490" width="60" height="60" fill="#F5F5F5" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="6,3" rx="10" />
+    <text x="520" y="525" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图标
+    </text>
+    <text x="520" y="540" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      奖杯]
+    </text>
+    
+    <text x="590" y="520" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="start">
+      5
+    </text>
+    
+    <text x="670" y="520" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" fill="#D4AF37" text-anchor="start">
+      次
+    </text>
+    
+    <text x="490" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="start">
+      英格兰顶级联赛冠军
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="860" y="460" width="340" height="160" fill="#1A2B4A" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <text x="1030" y="500" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#D4AF37" text-anchor="middle">
+      战术创新
+    </text>
+    
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="18" x="1030" y="535">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="18" x="1030" y="535">· 引入WM阵型（3-2-2-3）</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="18" x="1030" y="560">· 开创现代足球训练体系</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#FFFFFF" font-size="18" x="1030" y="585">· 重视球场照明与球员号码</text></g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    04
+  </text>
+</svg>

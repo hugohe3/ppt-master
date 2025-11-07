@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <defs>
+    <linearGradient id="endingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A2B4A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D1525;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#endingGradient)" />
+  
+  
+  <rect x="540" y="180" width="200" height="200" fill="#F5F5F5" stroke="#D4AF37" stroke-width="3" stroke-dasharray="8,4" rx="20" />
+  <text x="640" y="290" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图片：阿森纳队徽]
+  </text>
+  
+  
+  <text x="640" y="430" font-family="'Georgia', 'Times New Roman', serif" font-size="42" font-style="italic" fill="#D4AF37" text-anchor="middle">
+    Victoria Concordia Crescit
+  </text>
+  
+  <text x="640" y="480" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" fill="#FFFFFF" opacity="0.9" text-anchor="middle">
+    胜利源于和谐
+  </text>
+  
+  
+  <line x1="440" y1="520" x2="840" y2="520" stroke="#D4AF37" stroke-width="2" opacity="0.6" />
+  
+  
+  <text x="640" y="580" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    感谢观看
+  </text>
+  
+  <text x="640" y="630" font-family="'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif" font-size="32" fill="#D4AF37" text-anchor="middle">
+    THANK YOU
+  </text>
+  
+  
+  <text x="640" y="680" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF" opacity="0.6" text-anchor="middle">
+    制作日期：2025年11月
+  </text>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.6" text-anchor="end">
+    15
+  </text>
+</svg>

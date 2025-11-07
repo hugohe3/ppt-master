@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107"/>
+  
+  <!-- 标题 -->
+  <text x="80" y="110" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold"
+        fill="#EF0107" 
+        text-anchor="start">
+    传奇球星 · 丹尼斯·博格坎普
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="155" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="28" 
+        fill="#D4AF37" 
+        text-anchor="start">
+    Dennis Bergkamp · The Iceman
+  </text>
+  
+  <!-- 左侧：信息卡片区 -->
+  <g>
+    <!-- 昵称卡片 -->
+    <rect x="80" y="200" width="750" height="80" fill="#1A2B4A" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    <text x="455" y="250" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="36" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      昵称："冰人" · "非飞行的荷兰人"
+    </text>
+    
+    <!-- 效力时间与数据 -->
+    <rect x="80" y="310" width="360" height="140" fill="#EF0107" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    <text x="260" y="350" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          fill="#D4AF37" 
+          text-anchor="middle">
+      效力时间
+    </text>
+    <text x="260" y="395" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="36" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      1995-2006
+    </text>
+    <text x="260" y="430" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      11个赛季
+    </text>
+    
+    <!-- 进球与助攻 -->
+    <rect x="470" y="310" width="360" height="140" fill="#D4AF37" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    <text x="650" y="360" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="48" 
+          font-weight="bold"
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      120球
+    </text>
+    <text x="650" y="400" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      优雅技术典范
+    </text>
+    <text x="650" y="430" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#FFFFFF" 
+          text-anchor="middle">
+      助攻大师
+    </text>
+    
+    <!-- 荣誉成就 -->
+    <rect x="80" y="480" width="750" height="120" fill="#F5F5F5" rx="16" 
+          style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+    <text x="455" y="520" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#2C2C2C" 
+          text-anchor="middle">
+      主要荣誉
+    </text>
+    <text x="455" y="560" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#666666" 
+          text-anchor="middle">
+      <tspan x="455" dy="0">3次英超冠军 · 4次足总杯冠军</tspan>
+      <tspan x="455" dy="30">温格麾下核心 · 不败赛季功勋</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：博格坎普照片 -->
+  <rect x="900" y="200" width="300" height="400" 
+        fill="#F5F5F5" 
+        stroke="#CCCCCC" 
+        stroke-width="2" 
+        stroke-dasharray="8,4" 
+        rx="16"/>
+  <text x="1050" y="380" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    [图片：博格坎普
+  </text>
+  <text x="1050" y="405" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    控球瞬间/
+  </text>
+  <text x="1050" y="430" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    经典转身]
+  </text>
+  
+  <!-- 底部特色说明 -->
+  <rect x="80" y="630" width="1120" height="60" fill="#1A2B4A" rx="12"/>
+  <text x="640" y="668" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="22" 
+        fill="#FFFFFF" 
+        text-anchor="middle">
+    💎 技术特点：第一脚触球如丝般顺滑，传球视野极佳，标志性回旋转身
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" 
+        fill="#999999" 
+        text-anchor="end">
+    08
+  </text>
+</svg>

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  
+  
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107" />
+  
+  
+  <text x="80" y="110" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="start">
+    传奇球星 · 蒂埃里·亨利
+  </text>
+  
+  
+  <text x="80" y="155" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" fill="#D4AF37" text-anchor="start">
+    Thierry Henry · The King of Highbury
+  </text>
+  
+  
+  <rect x="80" y="200" width="300" height="400" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="8,4" rx="16" />
+  <text x="230" y="380" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    [图片：亨利
+  </text>
+  <text x="230" y="405" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    庆祝进球
+  </text>
+  <text x="230" y="430" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#999999" text-anchor="middle">
+    经典动作]
+  </text>
+  
+  
+  <g>
+    
+    <rect x="450" y="200" width="750" height="80" fill="#EF0107" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    <text x="825" y="250" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      "海布里之王" · The King of Highbury
+    </text>
+    
+    
+    <rect x="450" y="310" width="360" height="120" fill="#1A2B4A" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    <text x="630" y="350" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#D4AF37" text-anchor="middle">
+      效力时间
+    </text>
+    <text x="630" y="390" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      1999-2007, 2012
+    </text>
+    
+    
+    <rect x="840" y="310" width="360" height="120" fill="#D4AF37" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    <text x="1020" y="350" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">
+      俱乐部历史第一射手
+    </text>
+    <text x="1020" y="395" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      228球
+    </text>
+    
+    
+    <rect x="450" y="460" width="750" height="140" fill="#F5F5F5" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    <text x="825" y="500" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      主要荣誉
+    </text>
+    <text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="22" x="825" y="540">      </text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="22" x="825" y="540">2次英超冠军 · 2次足总杯冠军</text><text font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" text-anchor="middle" fill="#666666" font-size="22" x="825" y="575">4次英超金靴 · 2003年欧洲金靴奖</text></g>
+  
+  
+  <rect x="80" y="630" width="1120" height="60" fill="#EF0107" rx="12" />
+  <text x="640" y="668" font-family="'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif" font-size="24" font-style="italic" fill="#FFFFFF" text-anchor="middle">
+    "Arsenal is in my blood. I will always support them."
+  </text>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    07
+  </text>
+</svg>

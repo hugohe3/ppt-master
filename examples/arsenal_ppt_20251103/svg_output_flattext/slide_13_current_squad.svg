@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#F5F5F5" />
+  
+  
+  <rect x="0" y="0" width="1280" height="10" fill="#EF0107" />
+  
+  
+  <text x="640" y="100" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#EF0107" text-anchor="middle">
+    现役核心球员 · 2024-25赛季
+  </text>
+  
+  
+  
+  <g>
+    <rect x="80" y="150" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="255" cy="220" r="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="255" y="223" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="255" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      布卡约·萨卡
+    </text>
+    
+    <text x="255" y="325" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      Bukayo Saka
+    </text>
+    
+    <text x="255" y="355" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+      7号 · 右边锋
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="465" y="150" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="640" cy="220" r="50" fill="#F5F5F5" stroke="#D4AF37" stroke-width="3" stroke-dasharray="6,3" />
+    <text x="640" y="223" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="640" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      马丁·厄德高
+    </text>
+    
+    <text x="640" y="325" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      Martin Ødegaard
+    </text>
+    
+    <text x="640" y="355" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#D4AF37" font-weight="bold" text-anchor="middle">
+      队长 · 8号 · 中场
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="850" y="150" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="1025" cy="220" r="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="1025" y="223" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="1025" y="295" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      加布里埃尔·热苏斯
+    </text>
+    
+    <text x="1025" y="325" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      Gabriel Jesus
+    </text>
+    
+    <text x="1025" y="355" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+      9号 · 中锋
+    </text>
+  </g>
+  
+  
+  
+  <g>
+    <rect x="80" y="420" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="255" cy="490" r="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="255" y="493" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="255" y="565" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      威廉·萨利巴
+    </text>
+    
+    <text x="255" y="595" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      William Saliba
+    </text>
+    
+    <text x="255" y="625" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+      后防核心 · 中卫
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="465" y="420" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="640" cy="490" r="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="640" y="493" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="640" y="565" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      德克兰·赖斯
+    </text>
+    
+    <text x="640" y="595" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      Declan Rice
+    </text>
+    
+    <text x="640" y="625" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+      中场指挥官 · 防守型中场
+    </text>
+  </g>
+  
+  
+  <g>
+    <rect x="850" y="420" width="350" height="230" fill="#FFFFFF" rx="16" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1))" />
+    
+    <circle cx="1025" cy="490" r="50" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="1025" y="493" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="middle">
+      [图片]
+    </text>
+    
+    <text x="1025" y="565" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#2C2C2C" text-anchor="middle">
+      加布里埃尔·马丁内利
+    </text>
+    
+    <text x="1025" y="595" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#EF0107" text-anchor="middle">
+      Gabriel Martinelli
+    </text>
+    
+    <text x="1025" y="625" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" fill="#666666" text-anchor="middle">
+      左路快马 · 左边锋
+    </text>
+  </g>
+  
+  
+  <text x="1200" y="690" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#999999" text-anchor="end">
+    13
+  </text>
+</svg>

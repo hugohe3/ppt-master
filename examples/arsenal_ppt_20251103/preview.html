@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿森纳足球俱乐部深度报告 - 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn.active {
+            background: #EF0107;
+            color: white;
+        }
+        
+        .slide-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        
+        .slide-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .slide-title {
+            font-size: 28px;
+            color: #EF0107;
+            margin-bottom: 5px;
+        }
+        
+        .slide-number {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .slide-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .slide-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .control-btn {
+            background: #EF0107;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .control-btn:hover:not(:disabled) {
+            background: #C00000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .control-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+            }
+            
+            .slide-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚽ 阿森纳足球俱乐部深度报告</h1>
+            <p class="subtitle">Arsenal Football Club · The Gunners · Since 1886</p>
+        </header>
+        
+        <div class="navigation" id="navigation">
+            <!-- 导航按钮将由JavaScript生成 -->
+        </div>
+        
+        <div class="slide-container">
+            <div class="slide-info">
+                <div class="slide-title" id="slideTitle">封面</div>
+                <div class="slide-number" id="slideNumber">第 1 页 / 共 15 页</div>
+            </div>
+            
+            <div class="slide-wrapper">
+                <img id="slideImage" src="svg_output/slide_01_cover.svg" alt="幻灯片">
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="prevBtn" onclick="prevSlide()">← 上一页</button>
+                <button class="control-btn" id="nextBtn" onclick="nextSlide()">下一页 →</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>🎨 PPT Master · AI驱动的SVG内容生成系统</p>
+            <p>制作日期：2025年11月3日</p>
+        </footer>
+    </div>
+    
+    <script>
+        const slides = [
+            { file: 'slide_01_cover.svg', title: '封面' },
+            { file: 'slide_02_contents.svg', title: '目录' },
+            { file: 'slide_03_history_origin.svg', title: '历史起源' },
+            { file: 'slide_04_golden_age.svg', title: '黄金时代' },
+            { file: 'slide_05_wenger_era.svg', title: '温格时代' },
+            { file: 'slide_06_honours.svg', title: '荣誉殿堂' },
+            { file: 'slide_07_henry.svg', title: '传奇球星 - 亨利' },
+            { file: 'slide_08_bergkamp.svg', title: '传奇球星 - 博格坎普' },
+            { file: 'slide_09_legends.svg', title: '更多传奇球星' },
+            { file: 'slide_10_emirates.svg', title: '酋长球场' },
+            { file: 'slide_11_tactics.svg', title: '战术风格' },
+            { file: 'slide_12_arteta.svg', title: '阿尔特塔时代' },
+            { file: 'slide_13_current_squad.svg', title: '现役核心球员' },
+            { file: 'slide_14_fans_culture.svg', title: '球迷文化' },
+            { file: 'slide_15_ending.svg', title: '结尾' }
+        ];
+        
+        let currentSlide = 0;
+        
+        // 生成导航按钮
+        function generateNavigation() {
+            const nav = document.getElementById('navigation');
+            slides.forEach((slide, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.textContent = (index + 1).toString().padStart(2, '0');
+                btn.onclick = () => goToSlide(index);
+                if (index === 0) btn.classList.add('active');
+                nav.appendChild(btn);
+            });
+        }
+        
+        // 更新幻灯片显示
+        function updateSlide() {
+            const slide = slides[currentSlide];
+            document.getElementById('slideImage').src = `svg_output/${slide.file}`;
+            document.getElementById('slideTitle').textContent = slide.title;
+            document.getElementById('slideNumber').textContent = 
+                `第 ${currentSlide + 1} 页 / 共 ${slides.length} 页`;
+            
+            // 更新按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+            
+            // 更新导航按钮激活状态
+            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        // 上一页
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        // 下一页
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        // 跳转到指定页面
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+        
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+        
+        // 初始化
+        generateNavigation();
+        updateSlide();
+    </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F5F5"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="8" fill="#EF0107"/>
+  
+  <!-- 标题 -->
+  <text x="80" y="120" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold"
+        fill="#EF0107" 
+        text-anchor="start">
+    俱乐部历史 · 起源
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="165" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="24" 
+        fill="#666666" 
+        text-anchor="start">
+    The Origins (1886-1913)
+  </text>
+  
+  <!-- 历史照片占位 -->
+  <rect x="750" y="200" width="450" height="300" 
+        fill="#F5F5F5" 
+        stroke="#CCCCCC" 
+        stroke-width="2" 
+        stroke-dasharray="8,4" 
+        rx="16"/>
+  <text x="975" y="340" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    [图片：历史老照片/
+  </text>
+  <text x="975" y="365" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" 
+        fill="#999999" 
+        text-anchor="middle">
+    队徽演变图]
+  </text>
+  
+  <!-- 时间轴 -->
+  <g>
+    <!-- 时间轴线 -->
+    <line x1="100" y1="250" x2="100" y2="580" stroke="#EF0107" stroke-width="4"/>
+    
+    <!-- 1886年 -->
+    <circle cx="100" cy="250" r="12" fill="#EF0107"/>
+    <text x="140" y="240" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#EF0107" 
+          text-anchor="start">
+      1886年
+    </text>
+    <text x="140" y="275" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#2C2C2C" 
+          text-anchor="start">
+      <tspan x="140" dy="0">建队于伍尔维奇（Woolwich）</tspan>
+      <tspan x="140" dy="30">最初名为 Dial Square</tspan>
+      <tspan x="140" dy="30">由皇家兵工厂工人创建</tspan>
+    </text>
+    
+    <!-- 1891年 -->
+    <circle cx="100" cy="420" r="12" fill="#EF0107"/>
+    <text x="140" y="410" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#EF0107" 
+          text-anchor="start">
+      1891年
+    </text>
+    <text x="140" y="445" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#2C2C2C" 
+          text-anchor="start">
+      <tspan x="140" dy="0">更名为 Woolwich Arsenal</tspan>
+      <tspan x="140" dy="30">职业化，加入足球联盟</tspan>
+    </text>
+    
+    <!-- 1913年 -->
+    <circle cx="100" cy="560" r="12" fill="#D4AF37"/>
+    <text x="140" y="550" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold"
+          fill="#D4AF37" 
+          text-anchor="start">
+      1913年
+    </text>
+    <text x="140" y="585" 
+          font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#2C2C2C" 
+          text-anchor="start">
+      <tspan x="140" dy="0">迁至北伦敦海布里球场</tspan>
+      <tspan x="140" dy="30">正式更名为 Arsenal F.C.</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部信息卡片 -->
+  <rect x="80" y="630" width="1120" height="60" fill="#FFFFFF" rx="12" 
+        style="filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.1))"/>
+  <text x="120" y="668" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="20" 
+        fill="#666666" 
+        text-anchor="start">
+    💡 名字由来："Arsenal" 源自"兵工厂"，因球队由皇家兵工厂的工人创立而得名
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" 
+        font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" 
+        fill="#999999" 
+        text-anchor="end">
+    03
+  </text>
+</svg>
