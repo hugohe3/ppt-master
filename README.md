@@ -28,6 +28,7 @@
 - 📖 **详细教程**: [工作流教程](./docs/workflow_tutorial.md)
 - 🎨 **设计指南**: [设计规范详解](./docs/design_guidelines.md)
 - 📐 **画布格式**: [支持的所有格式](./docs/canvas_formats.md)
+- 📊 **图表模板**: [标准化图表模板库](./templates/charts/) - 8种常用图表 · [在线预览](./templates/charts/preview.html)
 - ⚡ **快速查阅**: [快速参考指南](./docs/quick_reference.md)
 - ✅ **文档质检**: [文档质检清单](./docs/doc_qa_checklist.md)
 - 🔧 **角色定义**: [查看所有角色](./roles/README.md)
@@ -315,6 +316,23 @@ ppt-master/
 │   ├── design_guidelines.md   # 详细设计指南（颜色、排版、布局）
 │   ├── workflow_tutorial.md   # 工作流教程（实际案例演示）
 │   └── quick_reference.md     # 快速参考指南（速查手册）
+│
+├── templates/                 # 标准化模板库
+│   └── charts/                # 图表模板（KPI、柱状图、折线图、漏斗图等）
+│       ├── README.md          # 图表模板使用说明
+│       ├── preview.html       # 在线预览所有模板
+│       ├── kpi_cards.svg      # KPI 卡片模板
+│       ├── bar_chart.svg      # 柱状图模板
+│       ├── line_chart.svg     # 折线图模板
+│       ├── donut_chart.svg    # 环形图模板
+│       ├── funnel_chart.svg   # 漏斗图模板
+│       ├── matrix_2x2.svg     # 矩阵图模板
+│       ├── timeline.svg       # 时间轴模板
+│       └── process_flow.svg   # 流程图模板
+│
+├── tools/                     # 实用工具
+│   ├── README.md              # 工具说明
+│   └── flatten_tspan.py       # tspan扁平化工具
 │
 └── projects/                  # 用户项目工作区（进行中的项目）
     └── <your_project_name>_<YYYYMMDD>/

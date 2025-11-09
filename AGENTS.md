@@ -180,6 +180,39 @@ examples/
 4. **亲密性（Proximity）**：相关内容空间聚合，不相关内容适度分离
 5. （可选）文本扁平化：如采用 `svg_output_flattext`，抽检确认无 `<tspan>` 残留，样式与坐标正确
 
+## 图表模板库
+
+为提高 SVG 图表生成的质量和一致性，项目提供了标准化的图表模板库，位于 `templates/charts/` 目录。
+
+### 可用模板
+
+- **KPI 卡片** (`kpi_cards.svg`)：关键业绩指标展示，支持 2×2 布局
+- **柱状图** (`bar_chart.svg`)：类别数据对比，支持 3-8 个柱子
+- **折线图** (`line_chart.svg`)：趋势分析，支持多条折线对比
+- **环形图** (`donut_chart.svg`)：占比分析，支持 3-6 个分块
+- **漏斗图** (`funnel_chart.svg`)：转化流程分析，支持 3-5 个阶段
+- **矩阵图** (`matrix_2x2.svg`)：四象限分析，如波士顿矩阵
+- **时间轴** (`timeline.svg`)：时序事件展示，支持 3-8 个节点
+- **流程图** (`process_flow.svg`)：业务流程展示，支持多种节点类型与决策分支
+
+### 使用原则
+
+1. **优先使用标准模板**：在生成包含图表的页面时，优先参考和使用模板库
+2. **保持一致性**：同一项目中的同类型图表应保持视觉风格一致
+3. **适度自定义**：根据实际数据调整数值、颜色和尺寸，但保持模板的基础结构
+4. **画布适配**：模板默认为 16:9 (1280×720)，其他画布格式需按比例调整
+
+### 技术规范
+
+所有模板遵循以下规范：
+
+- 禁止使用 `<foreignObject>`，文本换行使用 `<tspan>`
+- 使用系统 UI 字体栈
+- 配色符合通用灵活或高端咨询风格
+- 遵循 CRAP 设计原则（对齐、对比、重复、亲密性）
+
+详细使用说明和自定义指南请参阅 `templates/charts/README.md`。
+
 ## 常见任务
 
 ### 生成新演示/海报/社媒素材
@@ -229,6 +262,7 @@ examples/
 - **工作流详解**：docs/workflow_tutorial.md
 - **设计规范**：docs/design_guidelines.md
 - **画布格式**：docs/canvas_formats.md
+- **图表模板库**：templates/charts/（标准化图表模板，见 templates/charts/README.md）
 - **速查表**：docs/quick_reference.md
 - **质检清单**：docs/doc_qa_checklist.md
 - **角色定义**：roles/*.md
