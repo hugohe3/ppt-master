@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- Gradient and filter definitions -->
+    <defs>
+        <!-- Gradients for funnel -->
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#003A5C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#0076A8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#005587;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3B7A8F;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F5A623;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E89207;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- Shadow filter -->
+        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- Arrow marker definition -->
+        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
+            markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
+        </marker>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Header bar -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- Title -->
+    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Critical Challenges in Customer Retention</tspan>
+    </text>
+
+    <!-- Left section: Problem statement -->
+    <rect x="60" y="140" width="520" height="520" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
+
+    <text x="90" y="180" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
+        <tspan>Key Challenges</tspan>
+    </text>
+
+    <!-- Challenge 1 -->
+    <circle cx="90" cy="232" r="8" fill="#E74C3C" />
+    <text x="115" y="240" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
+        <tspan>Low Repeat Purchase Rate</tspan>
+    </text>
+    <text x="115" y="283" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
+        <tspan>15%</tspan>
+    </text>
+    <text x="115" y="308" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>Only 1 in 7 customers return</tspan>
+    </text>
+
+    <!-- Challenge 2 -->
+    <circle cx="90" cy="382" r="8" fill="#E74C3C" />
+    <text x="115" y="390" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
+        <tspan>High Customer Loss to Competitors</tspan>
+    </text>
+    <text x="115" y="433" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
+        <tspan>52%</tspan>
+    </text>
+    <text x="115" y="458" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>Bought competitor's model</tspan>
+    </text>
+
+    <!-- Challenge 3 -->
+    <circle cx="90" cy="532" r="8" fill="#E74C3C" />
+    <text x="115" y="540" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
+        <tspan>Poor After-Sales Satisfaction</tspan>
+    </text>
+    <text x="115" y="583" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
+        <tspan>67%</tspan>
+    </text>
+    <text x="115" y="608" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>Rated service as Fair or Poor</tspan>
+    </text>
+    
+    <!-- Bottom note -->
+    <text x="90" y="635" font-family="Arial, sans-serif" font-size="13" fill="#7F8C8D" font-style="italic">
+        <tspan>Critical priority: Address service quality and competitive</tspan>
+    </text>
+    <text x="90" y="650" font-family="Arial, sans-serif" font-size="13" fill="#7F8C8D" font-style="italic">
+        <tspan>positioning to stem customer loss</tspan>
+    </text>
+
+    <!-- Right section: Customer Journey Funnel -->
+    <text x="660" y="165" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
+        <tspan>Customer Retention Funnel</tspan>
+    </text>
+
+    <!-- Funnel visualization: continuous with uniform taper -->
+    <!-- Stage 1: Purchase (width 500px) -->
+    <path d="M 660,205 L 1160,205 L 1116,280 L 704,280 Z" fill="url(#grad1)" filter="url(#shadow)" />
+    <text x="910" y="250" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
+        text-anchor="middle">
+        <tspan>Initial Purchase: 100%</tspan>
+    </text>
+
+    <!-- Stage 2: Satisfied (width 412px, each side narrows 44px) -->
+    <path d="M 704,280 L 1116,280 L 1072,355 L 748,355 Z" fill="url(#grad2)" filter="url(#shadow)" />
+    <text x="910" y="325" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
+        text-anchor="middle">
+        <tspan>Satisfied: 74%</tspan>
+    </text>
+
+    <!-- Stage 3: Consider Repurchase (width 324px, each side narrows 44px) -->
+    <path d="M 748,355 L 1072,355 L 1028,430 L 792,430 Z" fill="url(#grad3)" filter="url(#shadow)" />
+    <text x="910" y="400" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
+        text-anchor="middle">
+        <tspan>Consider Return: 33%</tspan>
+    </text>
+
+    <!-- Stage 4: Actual Repurchase (width 236px, each side narrows 44px) -->
+    <path d="M 792,430 L 1028,430 L 984,505 L 836,505 Z" fill="url(#grad4)" filter="url(#shadow)" />
+    <text x="910" y="475" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50"
+        text-anchor="middle">
+        <tspan>Repurchase: 15%</tspan>
+    </text>
+
+    <!-- Loss annotation with improved positioning -->
+    <text x="1050" y="485" font-family="Arial, sans-serif" font-size="18" fill="#E74C3C" font-weight="bold">
+        <tspan>85% LOST</tspan>
+    </text>
+    <line x1="1035" y1="475" x2="1045" y2="475" stroke="#E74C3C" stroke-width="2.5" marker-end="url(#arrowred)" />
+
+    <!-- Insight box -->
+    <rect x="660" y="540" width="560" height="80" fill="#FFF3E0" stroke="#F5A623" stroke-width="2" rx="4" />
+    <text x="680" y="570" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50" font-weight="bold">
+        <tspan>💡 Key Insight:</tspan>
+    </text>
+    <text x="680" y="594" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>78% of losses are controllable through improved</tspan>
+    </text>
+    <text x="680" y="612" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>service quality and competitive differentiation</tspan>
+    </text>
+
+    <!-- Footer -->
+    <text x="60" y="695" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>2</tspan>
+    </text>
+    <text x="1160" y="695" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Source: Kimsoong Customer Survey 2024</tspan>
+    </text>
+</svg>

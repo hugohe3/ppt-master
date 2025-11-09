@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Header bar -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- Title -->
+    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Why Customers Leave: Root Cause Analysis</tspan>
+    </text>
+
+    <!-- Subtitle -->
+    <text x="60" y="115" font-family="Arial, sans-serif" font-size="18" fill="#5D6D7E">
+        <tspan>Reasons for not repurchasing Kimsoong vehicles</tspan>
+    </text>
+
+    <!-- Horizontal bar chart -->
+
+    <!-- Bar 1: Competitor's model - 52% -->
+    <text x="80" y="190" font-family="Arial, sans-serif" font-size="18" fill="#2C3E50">
+        <tspan>Bought competitor's model</tspan>
+    </text>
+    <rect x="380" y="170" width="624" height="36" fill="#E74C3C" />
+    <text x="720" y="193" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+        <tspan>52%</tspan>
+    </text>
+
+    <!-- Bar 2: Service disappointment - 26% -->
+    <text x="80" y="260" font-family="Arial, sans-serif" font-size="18" fill="#2C3E50">
+        <tspan>Disappointed with service</tspan>
+    </text>
+    <rect x="380" y="240" width="312" height="36" fill="#F5A623" />
+    <text x="536" y="263" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+        <tspan>26%</tspan>
+    </text>
+
+    <!-- Bar 3: Relocated - 8% -->
+    <text x="80" y="330" font-family="Arial, sans-serif" font-size="18" fill="#2C3E50">
+        <tspan>Relocated</tspan>
+    </text>
+    <rect x="380" y="310" width="96" height="36" fill="#4A90A4" />
+    <text x="428" y="333" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+        <tspan>8%</tspan>
+    </text>
+
+    <!-- Bar 4: No longer drive - 5% -->
+    <text x="80" y="400" font-family="Arial, sans-serif" font-size="18" fill="#2C3E50">
+        <tspan>No longer drive</tspan>
+    </text>
+    <rect x="380" y="380" width="60" height="36" fill="#7FB3C7" />
+    <text x="410" y="403" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+        <tspan>5%</tspan>
+    </text>
+
+    <!-- Bar 5: Don't know - 9% -->
+    <text x="80" y="470" font-family="Arial, sans-serif" font-size="18" fill="#2C3E50">
+        <tspan>Don't know / Other</tspan>
+    </text>
+    <rect x="380" y="450" width="108" height="36" fill="#B0B0B0" />
+    <text x="434" y="473" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+        <tspan>9%</tspan>
+    </text>
+
+    <!-- Cumulative line (optional visual) -->
+    <line x1="1040" y1="170" x2="1040" y2="486" stroke="#005587" stroke-width="2" />
+    <circle cx="1040" cy="188" r="5" fill="#005587" />
+    <text x="1060" y="193" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+        <tspan>52%</tspan>
+    </text>
+
+    <circle cx="1040" cy="258" r="5" fill="#005587" />
+    <text x="1060" y="263" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+        <tspan>78%</tspan>
+    </text>
+
+    <circle cx="1040" cy="328" r="5" fill="#005587" />
+    <text x="1060" y="333" font-family="Arial, sans-serif" font-size="14" fill="#005587">
+        <tspan>86%</tspan>
+    </text>
+
+    <circle cx="1040" cy="398" r="5" fill="#005587" />
+    <text x="1060" y="403" font-family="Arial, sans-serif" font-size="14" fill="#005587">
+        <tspan>91%</tspan>
+    </text>
+
+    <circle cx="1040" cy="468" r="5" fill="#005587" />
+    <text x="1060" y="473" font-family="Arial, sans-serif" font-size="14" fill="#005587">
+        <tspan>100%</tspan>
+    </text>
+
+    <text x="1060" y="155" font-family="Arial, sans-serif" font-size="12" fill="#5D6D7E">
+        <tspan>Cumulative</tspan>
+    </text>
+
+    <!-- Key insight box -->
+    <rect x="80" y="530" width="1120" height="130" fill="#FFF9E6" stroke="#F5A623" stroke-width="3" />
+
+    <text x="110" y="565" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#F5A623">
+        <tspan>⚠ Key Insight</tspan>
+    </text>
+
+    <text x="110" y="595" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">
+        <tspan>78% of customer losses are controllable factors</tspan>
+    </text>
+    <text x="110" y="617" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
+        <tspan>Competitive switching (52%) and service dissatisfaction (26%) represent the</tspan>
+        <tspan x="110" dy="18">primary levers for retention improvement.</tspan>
+    </text>
+
+    <!-- Annotation arrows -->
+    <path d="M 730,215 Q 780,240 780,280" stroke="#E74C3C" stroke-width="2" fill="none" marker-end="url(#arrow-red2)" />
+    <defs>
+        <marker id="arrow-red2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L7,3 z" fill="#E74C3C" />
+        </marker>
+    </defs>
+
+    <rect x="790" y="270" width="180" height="45" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2" />
+    <text x="880" y="290" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C"
+        text-anchor="middle">
+        <tspan>Controllable:</tspan>
+    </text>
+    <text x="880" y="308" font-family="Arial, sans-serif" font-size="14" fill="#E74C3C" text-anchor="middle">
+        <tspan>78% of losses</tspan>
+    </text>
+
+    <!-- Footer -->
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>5</tspan>
+    </text>
+    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Source: Post-purchase customer survey (n=1,247 non-repeat buyers)</tspan>
+    </text>
+</svg>
