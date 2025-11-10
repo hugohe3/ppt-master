@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        10X 研究工作流
+    </text>
+
+    <!-- 流程步骤 -->
+    <!-- 步骤 1 -->
+    <rect x="60" y="140" width="340" height="200" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="140" width="340" height="6" fill="#4285F4" rx="12" />
+
+    <circle cx="110" cy="185" r="25" fill="#4285F4" />
+    <text x="110" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+
+    <text x="150" y="193"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        提出精准问题
+    </text>
+
+    <text x="80" y="235"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">跳过模糊搜索</tspan>
+        <tspan x="80" dy="28">向 Deep Research</tspan>
+        <tspan x="80" dy="28">提出具体详细的问题</tspan>
+        <tspan x="80" dy="28">包含细分和指标要求</tspan>
+    </text>
+
+    <!-- 箭头 1 -->
+    <path d="M 400 240 L 450 240" stroke="#34A853" stroke-width="4" fill="none" marker-end="url(#arrowhead1)" />
+    <defs>
+        <marker id="arrowhead1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#34A853" />
+        </marker>
+    </defs>
+
+    <!-- 步骤 2 -->
+    <rect x="460" y="140" width="340" height="200" fill="#F8F9FA" rx="12" />
+    <rect x="460" y="140" width="340" height="6" fill="#34A853" rx="12" />
+
+    <circle cx="510" cy="185" r="25" fill="#34A853" />
+    <text x="510" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+
+    <text x="550" y="193"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        导入 NotebookLM
+    </text>
+
+    <text x="480" y="235"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="480" dy="0">汇总所有营销资料</tspan>
+        <tspan x="480" dy="28">Deep Research 结果</tspan>
+        <tspan x="480" dy="28">历史营销活动数据</tspan>
+        <tspan x="480" dy="28">竞品分析与客户反馈</tspan>
+    </text>
+
+    <!-- 箭头 2 -->
+    <path d="M 800 240 L 850 240" stroke="#FBBC04" stroke-width="4" fill="none" marker-end="url(#arrowhead2)" />
+    <defs>
+        <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#FBBC04" />
+        </marker>
+    </defs>
+
+    <!-- 步骤 3 -->
+    <rect x="860" y="140" width="360" height="200" fill="#F8F9FA" rx="12" />
+    <rect x="860" y="140" width="360" height="6" fill="#FBBC04" rx="12" />
+
+    <circle cx="910" cy="185" r="25" fill="#FBBC04" />
+    <text x="910" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+
+    <text x="950" y="193"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        发现隐藏洞察
+    </text>
+
+    <text x="880" y="235"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="880" dy="0">AI 发现人类易忽略的</tspan>
+        <tspan x="880" dy="28">改变策略的市场趋势</tspan>
+        <tspan x="880" dy="28">当前方法的盲点</tspan>
+        <tspan x="880" dy="28">竞争对手未见的机会</tspan>
+    </text>
+
+    <!-- 可复制提示词框 -->
+    <rect x="60" y="380" width="1160" height="280" fill="#FBBC04" opacity="0.08" rx="12" />
+    <rect x="60" y="380" width="8" height="280" fill="#FBBC04" rx="4" />
+
+    <text x="90" y="420"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        💡 可复制提示词模板
+    </text>
+
+    <text x="90" y="460" font-family="'Courier New', Consolas, monospace" font-size="18" font-weight="400"
+        fill="#202124">
+        <tspan x="90" dy="0">扮演一位拥有 20 年经验的 [行业] 专家分析师。我需要关于 [具体话题] 的全面研究。请分析：</tspan>
+        <tspan x="90" dy="35">1. 当前市场趋势及过去 12 个月的演变</tspan>
+        <tspan x="90" dy="28">2. 关键参与者及其战略定位</tspan>
+        <tspan x="90" dy="28">3. 基于可用数据的最有效策略</tspan>
+        <tspan x="90" dy="28">4. [地区1] 和 [地区2] 之间的区域差异</tspan>
+        <tspan x="90" dy="28">5. 未来 6-12 个月的预测发展</tspan>
+        <tspan x="90" dy="35">每个部分请包含具体示例和数据点。</tspan>
+    </text>
+</svg>

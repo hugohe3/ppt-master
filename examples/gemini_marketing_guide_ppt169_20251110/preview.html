@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Gemini 营销完全指南 - 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            font-size: 42px;
+            color: #202124;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4285F4, #34A853, #FBBC04);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #5F6368;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #5F6368;
+        }
+
+        .info-item strong {
+            color: #202124;
+        }
+
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .slide-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #4285F4 0%, #34A853 100%);
+            color: white;
+        }
+
+        .slide-number {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .slide-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .slide-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #f8f9fa;
+        }
+
+        .slide-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            background: linear-gradient(90deg, #4285F4, #34A853);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #5F6368;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .slides-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Google Gemini 营销完全指南</h1>
+            <p class="subtitle">营销 AI 完全转型指南 - 10 分钟掌握 AI 营销优势</p>
+            <div class="info">
+                <div class="info-item">
+                    <span>📅</span>
+                    <span><strong>创建日期:</strong> 2025-11-10</span>
+                </div>
+                <div class="info-item">
+                    <span>📐</span>
+                    <span><strong>画布:</strong> PPT 16:9 (1280×720)</span>
+                </div>
+                <div class="info-item">
+                    <span>🎨</span>
+                    <span><strong>风格:</strong> 通用灵活</span>
+                </div>
+                <div class="info-item">
+                    <span>📄</span>
+                    <span><strong>页数:</strong> 10 页</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="slides-grid">
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 1 页</div>
+                    <div class="slide-title">封面 - Gemini at Work</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_01_cover.svg" target="_blank">
+                        <img src="svg_output/slide_01_cover.svg" alt="Slide 1">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 2 页</div>
+                    <div class="slide-title">不公平的营销优势</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_02_advantage.svg" target="_blank">
+                        <img src="svg_output/slide_02_advantage.svg" alt="Slide 2">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 3 页</div>
+                    <div class="slide-title">Gemini 五大工具栈</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_03_tools.svg" target="_blank">
+                        <img src="svg_output/slide_03_tools.svg" alt="Slide 3">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 4 页</div>
+                    <div class="slide-title">10X 研究工作流</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_04_research.svg" target="_blank">
+                        <img src="svg_output/slide_04_research.svg" alt="Slide 4">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 5 页</div>
+                    <div class="slide-title">小时级策略开发</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_05_strategy.svg" target="_blank">
+                        <img src="svg_output/slide_05_strategy.svg" alt="Slide 5">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 6 页</div>
+                    <div class="slide-title">5X 内容产出系统</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_06_content.svg" target="_blank">
+                        <img src="svg_output/slide_06_content.svg" alt="Slide 6">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 7 页</div>
+                    <div class="slide-title">数据变决策的可视化</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_07_dashboard.svg" target="_blank">
+                        <img src="svg_output/slide_07_dashboard.svg" alt="Slide 7">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 8 页</div>
+                    <div class="slide-title">搜索正在改变</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_08_search.svg" target="_blank">
+                        <img src="svg_output/slide_08_search.svg" alt="Slide 8">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 9 页</div>
+                    <div class="slide-title">4 周实施路线图</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_09_implementation.svg" target="_blank">
+                        <img src="svg_output/slide_09_implementation.svg" alt="Slide 9">
+                    </a>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-header">
+                    <div class="slide-number">第 10 页</div>
+                    <div class="slide-title">行动号召 - 开始转型</div>
+                </div>
+                <div class="slide-preview">
+                    <a href="svg_output/slide_10_cta.svg" target="_blank">
+                        <img src="svg_output/slide_10_cta.svg" alt="Slide 10">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3 style="margin-bottom: 20px; color: #202124;">🎯 快速操作</h3>
+            <a href="svg_output/slide_01_cover.svg" class="btn" target="_blank">查看封面</a>
+            <a href="README.md" class="btn" target="_blank">项目说明</a>
+            <a href="设计规范与内容大纲.md" class="btn" target="_blank">设计规范</a>
+        </div>
+
+        <footer>
+            <p>✨ 基于 ppt-master 框架生成 | Google Gemini 配色 | 通用灵活风格</p>
+            <p style="margin-top: 10px;">© 2025 | 所有 SVG 文件遵循 16:9 画布标准</p>
+        </footer>
+    </div>
+</body>
+
+</html>

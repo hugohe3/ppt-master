@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 背景渐变 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:0.1" />
+            <stop offset="50%" style="stop-color:#34A853;stop-opacity:0.05" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:0.1" />
+        </linearGradient>
+        <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰圆形元素 -->
+    <circle cx="200" cy="150" r="80" fill="#4285F4" opacity="0.1" />
+    <circle cx="1100" cy="600" r="120" fill="#34A853" opacity="0.08" />
+    <circle cx="1050" cy="180" r="60" fill="#FBBC04" opacity="0.12" />
+
+    <!-- Logo 区域 -->
+    <text x="640" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="600" fill="#4285F4" text-anchor="middle">
+        Google
+    </text>
+
+    <!-- 主标题 -->
+    <text x="640" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="72" font-weight="bold" fill="url(#titleGradient)" text-anchor="middle">
+        Gemini at Work
+    </text>
+
+    <!-- 副标题 -->
+    <text x="640" y="360"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="42" font-weight="500" fill="#202124" text-anchor="middle">
+        营销 AI 完全转型指南
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="440" y1="400" x2="840" y2="400" stroke="#4285F4" stroke-width="3" opacity="0.3" />
+
+    <!-- 底部标注 -->
+    <text x="640" y="480"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="400" fill="#5F6368" text-anchor="middle">
+        10 分钟掌握 AI 营销优势
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="680" width="320" height="40" fill="#4285F4" opacity="0.8" />
+    <rect x="320" y="680" width="320" height="40" fill="#34A853" opacity="0.8" />
+    <rect x="640" y="680" width="320" height="40" fill="#FBBC04" opacity="0.8" />
+    <rect x="960" y="680" width="320" height="40" fill="#EA4335" opacity="0.8" />
+</svg>

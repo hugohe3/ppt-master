@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        数据变决策的可视化
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        交互式仪表板让数据真正可用
+    </text>
+
+    <!-- 左侧：三大应用场景 -->
+    <rect x="60" y="170" width="480" height="490" fill="#F8F9FA" rx="12" />
+
+    <text x="300" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124" text-anchor="middle">
+        三大应用场景
+    </text>
+
+    <!-- 场景 1 -->
+    <rect x="90" y="250" width="420" height="110" fill="#FFFFFF" rx="8" />
+    <rect x="90" y="250" width="6" height="110" fill="#4285F4" rx="3" />
+
+    <text x="120" y="285"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        📊 市场情报面板
+    </text>
+    <text x="120" y="315"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="120" dy="0">竞品数据可视化定位图</tspan>
+        <tspan x="120" dy="25">客户情绪地理热力图</tspan>
+    </text>
+
+    <!-- 场景 2 -->
+    <rect x="90" y="380" width="420" height="110" fill="#FFFFFF" rx="8" />
+    <rect x="90" y="380" width="6" height="110" fill="#34A853" rx="3" />
+
+    <text x="120" y="415"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        📈 营销活动中心
+    </text>
+    <text x="120" y="445"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="120" dy="0">实时绩效视图</tspan>
+        <tspan x="120" dy="25">多渠道并排对比与 ROI 计算器</tspan>
+    </text>
+
+    <!-- 场景 3 -->
+    <rect x="90" y="510" width="420" height="110" fill="#FFFFFF" rx="8" />
+    <rect x="90" y="510" width="6" height="110" fill="#FBBC04" rx="3" />
+
+    <text x="120" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        💰 预算规划工具
+    </text>
+    <text x="120" y="575"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="120" dy="0">营销投入流向可视化</tspan>
+        <tspan x="120" dy="25">假设场景模拟与预测工具</tspan>
+    </text>
+
+    <!-- 右侧：仪表板示意图 -->
+    <rect x="580" y="170" width="640" height="490" fill="#F8F9FA" rx="12" />
+
+    <!-- 仪表板顶部标题栏 -->
+    <rect x="600" y="190" width="600" height="50" fill="#4285F4" rx="8" />
+    <text x="900" y="223"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        营销绩效仪表板 2024 Q4
+    </text>
+
+    <!-- KPI 卡片区 -->
+    <rect x="620" y="260" width="170" height="100" fill="#FFFFFF" rx="8" />
+    <text x="705" y="290"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">总收入</text>
+    <text x="705" y="325"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#34A853" text-anchor="middle">$2.4M</text>
+    <text x="705" y="350"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="14" font-weight="400" fill="#34A853" text-anchor="middle">↑ 18%</text>
+
+    <rect x="810" y="260" width="170" height="100" fill="#FFFFFF" rx="8" />
+    <text x="895" y="290"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">转化率</text>
+    <text x="895" y="325"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#4285F4" text-anchor="middle">3.8%</text>
+    <text x="895" y="350"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="14" font-weight="400" fill="#4285F4" text-anchor="middle">↑ 0.5%</text>
+
+    <rect x="1000" y="260" width="170" height="100" fill="#FFFFFF" rx="8" />
+    <text x="1085" y="290"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">CAC</text>
+    <text x="1085" y="325"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#FBBC04" text-anchor="middle">$42</text>
+    <text x="1085" y="350"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="14" font-weight="400" fill="#34A853" text-anchor="middle">↓ 12%</text>
+
+    <!-- 柱状图区域 -->
+    <rect x="620" y="380" width="270" height="260" fill="#FFFFFF" rx="8" />
+    <text x="755" y="410"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="600" fill="#202124" text-anchor="middle">渠道表现</text>
+
+    <!-- 简化柱状图 -->
+    <rect x="640" y="570" width="40" height="50" fill="#4285F4" rx="4" />
+    <text x="660" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">85</text>
+
+    <rect x="695" y="540" width="40" height="80" fill="#34A853" rx="4" />
+    <text x="715" y="585"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">92</text>
+
+    <rect x="750" y="560" width="40" height="60" fill="#FBBC04" rx="4" />
+    <text x="770" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">78</text>
+
+    <rect x="805" y="585" width="40" height="35" fill="#EA4335" rx="4" />
+    <text x="825" y="607"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">65</text>
+
+    <!-- 环形图区域 -->
+    <rect x="910" y="380" width="260" height="260" fill="#FFFFFF" rx="8" />
+    <text x="1040" y="410"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="600" fill="#202124" text-anchor="middle">预算分配</text>
+
+    <!-- 简化环形图 -->
+    <circle cx="1040" cy="520" r="70" fill="none" stroke="#F8F9FA" stroke-width="30" />
+    <circle cx="1040" cy="520" r="70" fill="none" stroke="#4285F4" stroke-width="30" stroke-dasharray="175 440"
+        transform="rotate(-90 1040 520)" />
+    <circle cx="1040" cy="520" r="70" fill="none" stroke="#34A853" stroke-width="30" stroke-dasharray="110 440"
+        stroke-dashoffset="-175" transform="rotate(-90 1040 520)" />
+    <circle cx="1040" cy="520" r="70" fill="none" stroke="#FBBC04" stroke-width="30" stroke-dasharray="88 440"
+        stroke-dashoffset="-285" transform="rotate(-90 1040 520)" />
+    <circle cx="1040" cy="520" r="70" fill="none" stroke="#EA4335" stroke-width="30" stroke-dasharray="67 440"
+        stroke-dashoffset="-373" transform="rotate(-90 1040 520)" />
+</svg>

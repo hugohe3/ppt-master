@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        小时级策略开发
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        告别数周等待，几小时完成完整营销战役
+    </text>
+
+    <!-- 四象限布局 -->
+    <!-- 步骤 1: 左上 -->
+    <rect x="60" y="170" width="575" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="170" width="575" height="8" fill="#4285F4" rx="12" />
+
+    <circle cx="110" cy="220" r="28" fill="#4285F4" />
+    <text x="110" y="232"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+
+    <text x="160" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124">
+        整合上下文
+    </text>
+
+    <text x="80" y="270"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">收集一切相关素材：</tspan>
+        <tspan x="80" dy="32">• 理想客户画像</tspan>
+        <tspan x="80" dy="30">• 历史营销活动结果与指标</tspan>
+        <tspan x="80" dy="30">• 竞品资料和分析</tspan>
+        <tspan x="80" dy="30">• 市场研究发现</tspan>
+    </text>
+
+    <!-- 步骤 2: 右上 -->
+    <rect x="665" y="170" width="575" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="665" y="170" width="575" height="8" fill="#34A853" rx="12" />
+
+    <circle cx="715" cy="220" r="28" fill="#34A853" />
+    <text x="715" y="232"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+
+    <text x="765" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124">
+        生成完整框架
+    </text>
+
+    <text x="685" y="270"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="685" dy="0">一次性构建完整策略：</tspan>
+        <tspan x="685" dy="32">• 定位声明与核心信息</tspan>
+        <tspan x="685" dy="30">• 渠道策略与预算分配</tspan>
+        <tspan x="685" dy="30">• 内容主题和格式</tspan>
+        <tspan x="685" dy="30">• 执行时间表与成功指标</tspan>
+    </text>
+
+    <!-- 步骤 3: 左下 -->
+    <rect x="60" y="440" width="575" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="440" width="575" height="8" fill="#FBBC04" rx="12" />
+
+    <circle cx="110" cy="490" r="28" fill="#FBBC04" />
+    <text x="110" y="502"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+
+    <text x="160" y="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124">
+        精准调整
+    </text>
+
+    <text x="80" y="540"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">无需重新开始，快速迭代：</tspan>
+        <tspan x="80" dy="32">• 针对特定受众细分调整</tspan>
+        <tspan x="80" dy="30">• 强化某个信息点</tspan>
+        <tspan x="80" dy="30">• 修改预算配比</tspan>
+        <tspan x="80" dy="30">• 几秒获得新版本</tspan>
+    </text>
+
+    <!-- 步骤 4: 右下 -->
+    <rect x="665" y="440" width="575" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="665" y="440" width="575" height="8" fill="#EA4335" rx="12" />
+
+    <circle cx="715" cy="490" r="28" fill="#EA4335" />
+    <text x="715" y="502"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+
+    <text x="765" y="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124">
+        分解渠道计划
+    </text>
+
+    <text x="685" y="540"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="685" dy="0">为每个平台生成执行方案：</tspan>
+        <tspan x="685" dy="32">• 受众定向参数</tspan>
+        <tspan x="685" dy="30">• 详细内容日历（8周计划）</tspan>
+        <tspan x="685" dy="30">• 广告创意方向与 A/B 测试</tspan>
+        <tspan x="685" dy="30">• 准备就绪可立即执行</tspan>
+    </text>
+
+    <!-- 中心连接线 -->
+    <path d="M 635 290 L 665 290" stroke="#4285F4" stroke-width="3" opacity="0.3" />
+    <path d="M 347 410 L 347 440" stroke="#4285F4" stroke-width="3" opacity="0.3" />
+    <path d="M 952 410 L 952 440" stroke="#34A853" stroke-width="3" opacity="0.3" />
+    <path d="M 635 560 L 665 560" stroke="#FBBC04" stroke-width="3" opacity="0.3" />
+</svg>

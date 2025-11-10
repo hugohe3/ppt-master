@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        搜索正在改变
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        AI 回答问题的时代，如何保持领先
+    </text>
+
+    <!-- 对比区域 -->
+    <!-- 旧搜索 -->
+    <rect x="60" y="170" width="550" height="180" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="170" width="550" height="8" fill="#5F6368" rx="12" />
+
+    <text x="335" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#202124" text-anchor="middle">
+        ❌ 旧搜索模式
+    </text>
+
+    <text x="90" y="255"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="90" dy="0">用户输入查询</tspan>
+        <tspan x="90" dy="32">→ 获取链接列表</tspan>
+        <tspan x="90" dy="32">→ 点击浏览网站</tspan>
+        <tspan x="90" dy="32">→ 自己寻找答案</tspan>
+    </text>
+
+    <!-- 新搜索 -->
+    <rect x="650" y="170" width="570" height="180" fill="#F8F9FA" rx="12" />
+    <rect x="650" y="170" width="570" height="8" fill="#34A853" rx="12" />
+
+    <text x="935" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#34A853" text-anchor="middle">
+        ✅ AI 搜索模式
+    </text>
+
+    <text x="680" y="255"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="680" dy="0">用户提出问题</tspan>
+        <tspan x="680" dy="32">→ AI 即时生成完整答案</tspan>
+        <tspan x="680" dy="32">→ 列出来源但很少点击</tspan>
+        <tspan x="680" dy="32">→ 直接获得所需信息</tspan>
+    </text>
+
+    <!-- 中间转换箭头 -->
+    <defs>
+        <marker id="bigArrow" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto">
+            <polygon points="0 0, 20 10, 0 20" fill="#FBBC04" />
+        </marker>
+    </defs>
+    <path d="M 335 350 L 935 170" stroke="#FBBC04" stroke-width="6" fill="none" marker-end="url(#bigArrow)"
+        opacity="0.6" />
+
+    <!-- 三个获胜策略 -->
+    <text x="60" y="410"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#202124">
+        三个获胜策略
+    </text>
+
+    <!-- 策略 1 -->
+    <rect x="60" y="440" width="375" height="220" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="440" width="375" height="6" fill="#4285F4" rx="12" />
+
+    <circle cx="100" cy="485" r="22" fill="#4285F4" />
+    <text x="100" y="494"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+
+    <text x="135" y="493"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        AI 友好内容
+    </text>
+
+    <text x="80" y="530"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">围绕具体问题组织内容</tspan>
+        <tspan x="80" dy="30">使用清晰的标题和结构</tspan>
+        <tspan x="80" dy="28">明确定义概念</tspan>
+        <tspan x="80" dy="28">建立逻辑连接</tspan>
+    </text>
+
+    <!-- 策略 2 -->
+    <rect x="465" y="440" width="375" height="220" fill="#F8F9FA" rx="12" />
+    <rect x="465" y="440" width="375" height="6" fill="#34A853" rx="12" />
+
+    <circle cx="505" cy="485" r="22" fill="#34A853" />
+    <text x="505" y="494"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+
+    <text x="540" y="493"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        忘掉关键词堆砌
+    </text>
+
+    <text x="485" y="530"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="485" dy="0">深度覆盖主题</tspan>
+        <tspan x="485" dy="30">而非单一关键词</tspan>
+        <tspan x="485" dy="28">建立有意义的</tspan>
+        <tspan x="485" dy="28">概念关联网络</tspan>
+    </text>
+
+    <!-- 策略 3 -->
+    <rect x="870" y="440" width="375" height="220" fill="#F8F9FA" rx="12" />
+    <rect x="870" y="440" width="375" height="6" fill="#FBBC04" rx="12" />
+
+    <circle cx="910" cy="485" r="22" fill="#FBBC04" />
+    <text x="910" y="494"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+
+    <text x="945" y="493"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124">
+        成为主要来源
+    </text>
+
+    <text x="890" y="530"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="19" font-weight="400" fill="#5F6368">
+        <tspan x="890" dy="0">创建 AI 会引用的</tspan>
+        <tspan x="890" dy="30">原创研究</tspan>
+        <tspan x="890" dy="28">开发独特的数据可视化</tspan>
+        <tspan x="890" dy="28">提供无人能及的分析</tspan>
+    </text>
+</svg>

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        不公平的营销优势
+    </text>
+
+    <!-- 左侧核心观点区域 -->
+    <rect x="60" y="140" width="480" height="520" fill="#F8F9FA" rx="12" />
+
+    <!-- 观点 1 -->
+    <circle cx="100" cy="200" r="20" fill="#4285F4" />
+    <text x="100" y="208"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+
+    <text x="140" y="185"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="600" fill="#202124">
+        AI 从可选变为必需
+    </text>
+    <text x="140" y="220"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="140" dy="0">顶级营销者已不再实验</tspan>
+        <tspan x="140" dy="26">他们正在用 AI 碾压deadline</tspan>
+    </text>
+
+    <!-- 观点 2 -->
+    <circle cx="100" cy="330" r="20" fill="#34A853" />
+    <text x="100" y="338"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+
+    <text x="140" y="315"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="600" fill="#202124">
+        实战策略而非理论
+    </text>
+    <text x="140" y="350"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="140" dy="0">基于真实营销案例</tspan>
+        <tspan x="140" dy="26">直接上手即可使用</tspan>
+    </text>
+
+    <!-- 观点 3 -->
+    <circle cx="100" cy="460" r="20" fill="#FBBC04" />
+    <text x="100" y="468"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+
+    <text x="140" y="445"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="600" fill="#202124">
+        时间压缩的魔法
+    </text>
+    <text x="140" y="480"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="140" dy="0">周级任务变成日级</tspan>
+        <tspan x="140" dy="26">小时任务变成分钟</tspan>
+    </text>
+
+    <!-- 强调引用 -->
+    <rect x="100" y="550" width="400" height="80" fill="#FBBC04" opacity="0.15" rx="8" />
+    <text x="120" y="585"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="600" fill="#202124" font-style="italic">
+        <tspan x="120" dy="0">"Google Gemini 是目前营销者</tspan>
+        <tspan x="120" dy="28">最强大的 AI 工具包"</tspan>
+    </text>
+
+    <!-- 右侧对比卡片 -->
+    <!-- 传统方式 -->
+    <rect x="600" y="140" width="620" height="250" fill="#F8F9FA" rx="12" />
+    <rect x="600" y="140" width="620" height="60" fill="#EA4335" opacity="0.1" rx="12" />
+
+    <text x="910" y="178"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#EA4335" text-anchor="middle">
+        传统营销方式
+    </text>
+
+    <text x="630" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="400" fill="#5F6368">
+        <tspan x="630" dy="0">❌ 打开 20+ 浏览器标签页</tspan>
+        <tspan x="630" dy="35">❌ 无休止的会议和修改</tspan>
+        <tspan x="630" dy="35">❌ 手工制作每一个内容</tspan>
+        <tspan x="630" dy="35">❌ 数周等待一个策略</tspan>
+    </text>
+
+    <!-- AI 方式 -->
+    <rect x="600" y="410" width="620" height="250" fill="#F8F9FA" rx="12" />
+    <rect x="600" y="410" width="620" height="60" fill="#34A853" opacity="0.15" rx="12" />
+
+    <text x="910" y="448"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#34A853" text-anchor="middle">
+        Gemini AI 方式
+    </text>
+
+    <text x="630" y="510"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="400" fill="#5F6368">
+        <tspan x="630" dy="0">✅ 同时分析数千个来源</tspan>
+        <tspan x="630" dy="35">✅ 几小时完成完整策略</tspan>
+        <tspan x="630" dy="35">✅ 一键多渠道内容生成</tspan>
+        <tspan x="630" dy="35">✅ 实时数据可视化决策</tspan>
+    </text>
+</svg>

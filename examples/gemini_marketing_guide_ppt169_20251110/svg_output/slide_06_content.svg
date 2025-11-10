@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        5X 内容产出系统
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        一个创意，自动适配所有营销渠道
+    </text>
+
+    <!-- 中心圆 -->
+    <circle cx="640" cy="380" r="100" fill="#4285F4" opacity="0.15" />
+    <circle cx="640" cy="380" r="80" fill="#4285F4" />
+
+    <text x="640" y="370"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        一个核心
+    </text>
+    <text x="640" y="400"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        创意
+    </text>
+
+    <!-- 连接线 -->
+    <line x1="640" y1="280" x2="640" y2="210" stroke="#4285F4" stroke-width="3" opacity="0.4" />
+    <line x1="740" y1="380" x2="860" y2="380" stroke="#34A853" stroke-width="3" opacity="0.4" />
+    <line x1="540" y1="380" x2="420" y2="380" stroke="#FBBC04" stroke-width="3" opacity="0.4" />
+    <line x1="700" y1="460" x2="800" y2="550" stroke="#EA4335" stroke-width="3" opacity="0.4" />
+    <line x1="580" y1="460" x2="480" y2="550" stroke="#9334E9" stroke-width="3" opacity="0.4" />
+
+    <!-- 博客文章 -->
+    <rect x="520" y="170" width="240" height="120" fill="#F8F9FA" rx="12" />
+    <rect x="520" y="170" width="240" height="6" fill="#4285F4" rx="12" />
+
+    <text x="640" y="210"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        📝 博客文章
+    </text>
+    <text x="640" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="640" dy="0">800 字深度内容</tspan>
+        <tspan x="640" dy="26">SEO 优化 + CTA</tspan>
+    </text>
+
+    <!-- 社交媒体包 -->
+    <rect x="870" y="320" width="350" height="120" fill="#F8F9FA" rx="12" />
+    <rect x="870" y="320" width="350" height="6" fill="#34A853" rx="12" />
+
+    <text x="1045" y="360"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        📱 社交媒体包
+    </text>
+    <text x="1045" y="390"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="1045" dy="0">5 条 LinkedIn + 3 条 Twitter</tspan>
+        <tspan x="1045" dy="26">自动适配各平台格式</tspan>
+    </text>
+
+    <!-- 邮件通讯 -->
+    <rect x="60" y="320" width="350" height="120" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="320" width="350" height="6" fill="#FBBC04" rx="12" />
+
+    <text x="235" y="360"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        ✉️ 邮件通讯
+    </text>
+    <text x="235" y="390"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="235" dy="0">300 字精炼版</tspan>
+        <tspan x="235" dy="26">3 个主题行 A/B 测试</tspan>
+    </text>
+
+    <!-- 视频脚本 -->
+    <rect x="810" y="560" width="300" height="120" fill="#F8F9FA" rx="12" />
+    <rect x="810" y="560" width="300" height="6" fill="#EA4335" rx="12" />
+
+    <text x="960" y="600"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        🎬 视频脚本
+    </text>
+    <text x="960" y="630"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="960" dy="0">2 分钟完整脚本</tspan>
+        <tspan x="960" dy="26">开场白 + 要点 + CTA</tspan>
+    </text>
+
+    <!-- 图形素材 -->
+    <rect x="170" y="560" width="300" height="120" fill="#F8F9FA" rx="12" />
+    <rect x="170" y="560" width="300" height="6" fill="#9334E9" rx="12" />
+
+    <text x="320" y="600"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        🎨 视觉素材
+    </text>
+    <text x="320" y="630"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="320" dy="0">配套图形与插图</tspan>
+        <tspan x="320" dy="26">品牌色自动应用</tspan>
+    </text>
+</svg>

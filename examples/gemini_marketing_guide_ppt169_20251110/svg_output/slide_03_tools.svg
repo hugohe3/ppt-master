@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        Gemini 营销工具栈
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        五大工具协同作战，构建完整营销系统
+    </text>
+
+    <!-- 工具卡片 1: Deep Research -->
+    <rect x="60" y="170" width="375" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="170" width="375" height="8" fill="#4285F4" rx="12" />
+
+    <circle cx="120" cy="230" r="35" fill="#4285F4" opacity="0.15" />
+    <text x="120" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#4285F4" text-anchor="middle">🔍</text>
+
+    <text x="180" y="238"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        Deep Research
+    </text>
+
+    <text x="80" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">10 倍速洞察引擎</tspan>
+        <tspan x="80" dy="30">同时爬取数千网站</tspan>
+        <tspan x="80" dy="28">自动提取关键信息</tspan>
+        <tspan x="80" dy="28">告别标签页地狱</tspan>
+    </text>
+
+    <!-- 工具卡片 2: NotebookLM -->
+    <rect x="465" y="170" width="375" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="465" y="170" width="375" height="8" fill="#34A853" rx="12" />
+
+    <circle cx="525" cy="230" r="35" fill="#34A853" opacity="0.15" />
+    <text x="525" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#34A853" text-anchor="middle">📚</text>
+
+    <text x="585" y="238"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        NotebookLM
+    </text>
+
+    <text x="485" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="485" dy="0">营销大脑升级版</tspan>
+        <tspan x="485" dy="30">连接所有文档资料</tspan>
+        <tspan x="485" dy="28">发现隐藏关联</tspan>
+        <tspan x="485" dy="28">生成互动音频</tspan>
+    </text>
+
+    <!-- 工具卡片 3: Gemini 2.5 Pro -->
+    <rect x="870" y="170" width="375" height="240" fill="#F8F9FA" rx="12" />
+    <rect x="870" y="170" width="375" height="8" fill="#FBBC04" rx="12" />
+
+    <circle cx="930" cy="230" r="35" fill="#FBBC04" opacity="0.15" />
+    <text x="930" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#FBBC04" text-anchor="middle">⚡</text>
+
+    <text x="990" y="238"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        Gemini 2.5 Pro
+    </text>
+
+    <text x="890" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="890" dy="0">策略生成引擎</tspan>
+        <tspan x="890" dy="30">分钟级完整战役</tspan>
+        <tspan x="890" dy="28">框架自动构建</tspan>
+        <tspan x="890" dy="28">渠道计划即生成</tspan>
+    </text>
+
+    <!-- 工具卡片 4: 图像生成 -->
+    <rect x="60" y="440" width="585" height="220" fill="#F8F9FA" rx="12" />
+    <rect x="60" y="440" width="585" height="8" fill="#EA4335" rx="12" />
+
+    <circle cx="120" cy="510" r="35" fill="#EA4335" opacity="0.15" />
+    <text x="120" y="520"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#EA4335" text-anchor="middle">🎨</text>
+
+    <text x="180" y="518"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        图像生成/编辑
+    </text>
+
+    <text x="80" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="80" dy="0">零门槛视觉创作 · 文字命令即可实现任何视觉变化</tspan>
+        <tspan x="80" dy="30">产品样机、社交图形、定制插图一键生成</tspan>
+        <tspan x="80" dy="28">无需设计技能，描述即创建</tspan>
+    </text>
+
+    <!-- 工具卡片 5: Learn About -->
+    <rect x="675" y="440" width="570" height="220" fill="#F8F9FA" rx="12" />
+    <rect x="675" y="440" width="570" height="8" fill="#9334E9" rx="12" />
+
+    <circle cx="735" cy="510" r="35" fill="#9334E9" opacity="0.15" />
+    <text x="735" y="520"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="32" font-weight="bold" fill="#9334E9" text-anchor="middle">🚀</text>
+
+    <text x="795" y="518"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="26" font-weight="bold" fill="#202124">
+        Learn About
+    </text>
+
+    <text x="695" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        <tspan x="695" dy="0">极速技能习得工具 · 创建个性化学习路径</tspan>
+        <tspan x="695" dy="30">掌握任何营销主题的曲速引擎</tspan>
+        <tspan x="695" dy="28">数月学习压缩为数天</tspan>
+    </text>
+</svg>

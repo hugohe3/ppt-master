@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="timelineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="33%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="66%" style="stop-color:#FBBC04;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EA4335;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="48" font-weight="bold" fill="#202124">
+        4 周实施路线图
+    </text>
+
+    <text x="60" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400" fill="#5F6368">
+        从零到精通，系统化部署 AI 营销工具
+    </text>
+
+    <!-- 时间轴主线 -->
+    <line x1="100" y1="200" x2="1180" y2="200" stroke="url(#timelineGradient)" stroke-width="8" />
+
+    <!-- Week 1 -->
+    <circle cx="160" cy="200" r="35" fill="#4285F4" />
+    <text x="160" y="213"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">W1</text>
+
+    <rect x="80" y="260" width="260" height="380" fill="#F8F9FA" rx="12" />
+    <rect x="80" y="260" width="260" height="8" fill="#4285F4" rx="12" />
+
+    <text x="210" y="300"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        快速胜利
+    </text>
+
+    <text x="100" y="335"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="100" dy="0">✓ 识别 2-3 个痛点</tspan>
+        <tspan x="100" dy="30"> 工作流</tspan>
+        <tspan x="100" dy="35">✓ 创建 NotebookLM</tspan>
+        <tspan x="100" dy="30"> 工作空间</tspan>
+        <tspan x="100" dy="35">✓ 上传现有营销</tspan>
+        <tspan x="100" dy="30"> 资料与研究</tspan>
+        <tspan x="100" dy="35">✓ 运行首个 Deep</tspan>
+        <tspan x="100" dy="30"> Research 查询</tspan>
+    </text>
+
+    <!-- Week 2-3 -->
+    <circle cx="520" cy="200" r="35" fill="#34A853" />
+    <text x="520" y="205"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">W2</text>
+    <text x="520" y="222"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">-3</text>
+
+    <rect x="380" y="260" width="280" height="380" fill="#F8F9FA" rx="12" />
+    <rect x="380" y="260" width="280" height="8" fill="#34A853" rx="12" />
+
+    <text x="520" y="300"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        团队采纳
+    </text>
+
+    <text x="400" y="335"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="400" dy="0">✓ 为常见任务构建</tspan>
+        <tspan x="400" dy="30"> 可复用提示词模板</tspan>
+        <tspan x="400" dy="35">✓ 通过实例演示基础</tspan>
+        <tspan x="400" dy="30"> 操作给团队成员</tspan>
+        <tspan x="400" dy="35">✓ 用 Gemini 2.5 创建</tspan>
+        <tspan x="400" dy="30"> 首个完整策略</tspan>
+        <tspan x="400" dy="35">✓ 测试多渠道内容</tspan>
+        <tspan x="400" dy="30"> 创作流程</tspan>
+    </text>
+
+    <!-- Week 4 -->
+    <circle cx="840" cy="200" r="35" fill="#FBBC04" />
+    <text x="840" y="213"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">W4</text>
+
+    <rect x="700" y="260" width="280" height="380" fill="#F8F9FA" rx="12" />
+    <rect x="700" y="260" width="280" height="8" fill="#FBBC04" rx="12" />
+
+    <text x="840" y="300"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        系统集成
+    </text>
+
+    <text x="720" y="335"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="720" dy="0">✓ 文档化最佳流程为</tspan>
+        <tspan x="720" dy="30"> 标准操作程序</tspan>
+        <tspan x="720" dy="35">✓ 构建关键营销指标</tspan>
+        <tspan x="720" dy="30"> 交互仪表板</tspan>
+        <tspan x="720" dy="35">✓ 连接 Gemini 输出</tspan>
+        <tspan x="720" dy="30"> 到现有工具</tspan>
+        <tspan x="720" dy="35">✓ 设置度量跟踪</tspan>
+        <tspan x="720" dy="30"> 时间节省与质量</tspan>
+    </text>
+
+    <!-- Ongoing -->
+    <circle cx="1120" cy="200" r="35" fill="#EA4335" />
+    <text x="1120" y="213"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">∞</text>
+
+    <rect x="1010" y="260" width="250" height="380" fill="#F8F9FA" rx="12" />
+    <rect x="1010" y="260" width="250" height="8" fill="#EA4335" rx="12" />
+
+    <text x="1135" y="300"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="bold" fill="#202124" text-anchor="middle">
+        持续改进
+    </text>
+
+    <text x="1030" y="335"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368">
+        <tspan x="1030" dy="0">✓ 每周审查成效</tspan>
+        <tspan x="1030" dy="30"> 并优化</tspan>
+        <tspan x="1030" dy="35">✓ 基于结果改进</tspan>
+        <tspan x="1030" dy="30"> 提示词</tspan>
+        <tspan x="1030" dy="35">✓ 扩展到新的</tspan>
+        <tspan x="1030" dy="30"> 使用场景</tspan>
+        <tspan x="1030" dy="35">✓ 跨团队分享</tspan>
+        <tspan x="1030" dy="30"> 成功案例</tspan>
+    </text>
+</svg>

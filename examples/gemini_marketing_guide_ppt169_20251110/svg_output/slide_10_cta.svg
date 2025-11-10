@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="ctaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:0.1" />
+            <stop offset="50%" style="stop-color:#34A853;stop-opacity:0.08" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:0.1" />
+        </linearGradient>
+        <linearGradient id="buttonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4285F4;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="url(#ctaGradient)" />
+
+    <!-- 装饰元素 -->
+    <circle cx="150" cy="150" r="100" fill="#4285F4" opacity="0.08" />
+    <circle cx="1150" cy="600" r="120" fill="#34A853" opacity="0.06" />
+    <circle cx="1100" cy="140" r="80" fill="#FBBC04" opacity="0.1" />
+
+    <!-- 主标题 -->
+    <text x="640" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="56" font-weight="bold" fill="#202124" text-anchor="middle">
+        新营销优势从这里开始
+    </text>
+
+    <!-- 副标题 -->
+    <text x="640" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="24" font-weight="400" fill="#5F6368" text-anchor="middle">
+        AI 不是取代营销者，而是创造新的分水岭
+    </text>
+
+    <!-- 核心信息卡片 -->
+    <rect x="200" y="290" width="880" height="220" fill="#F8F9FA" rx="16" />
+    <rect x="200" y="290" width="12" height="220" fill="#4285F4" rx="6" />
+
+    <text x="640" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="600" fill="#202124" text-anchor="middle">
+        <tspan x="640" dy="0">赢家不是拥有最大预算的人</tspan>
+        <tspan x="640" dy="45">而是最先掌握这些工具</tspan>
+        <tspan x="640" dy="45">更快、更智能、更高效地执行的人</tspan>
+    </text>
+
+    <text x="640" y="470"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="22" font-weight="400" fill="#5F6368" text-anchor="middle" font-style="italic">
+        这不是渐进式改进，而是营销团队能力的完全转型
+    </text>
+
+    <!-- CTA 按钮 -->
+    <rect x="390" y="545" width="500" height="70" fill="url(#buttonGradient)" rx="35" />
+
+    <text x="640" y="588"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        订阅 Marketing Against the Grain
+    </text>
+
+    <!-- 底部信息 -->
+    <text x="640" y="650"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+        <tspan x="640" dy="0">每周获取 Kipp 和 Kieran 的实战 AI 营销策略</tspan>
+    </text>
+
+    <!-- Logo 装饰 -->
+    <circle cx="320" cy="585" r="25" fill="#FFFFFF" opacity="0.3" />
+    <text x="320" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" fill="#FFFFFF" text-anchor="middle">🚀</text>
+
+    <circle cx="960" cy="585" r="25" fill="#FFFFFF" opacity="0.3" />
+    <text x="960" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
+        font-size="28" fill="#FFFFFF" text-anchor="middle">💡</text>
+</svg>
