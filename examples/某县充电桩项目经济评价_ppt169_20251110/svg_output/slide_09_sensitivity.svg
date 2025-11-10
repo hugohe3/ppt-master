@@ -1,0 +1,167 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    敏感性分析
+  </text>
+  
+  <line x1="60" y1="85" x2="240" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    9/12
+  </text>
+  
+  <!-- 左侧：三因素敏感性图 -->
+  <g id="sensitivity-chart">
+    <text x="60" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      敏感性分析示意图
+    </text>
+    <text x="60" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8">
+      （单因素敏感性分析，详见敏感性分析表）
+    </text>
+    
+    <!-- 坐标系 -->
+    <line x1="150" y1="580" x2="700" y2="580" stroke="#E0E6ED" stroke-width="2"/>
+    <line x1="425" y1="200" x2="425" y2="580" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <!-- Y轴刻度 -->
+    <text x="130" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      IRR
+    </text>
+    <text x="130" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      较高
+    </text>
+    
+    <text x="130" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      基准
+    </text>
+    <text x="130" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      IRR
+    </text>
+    
+    <text x="130" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      IRR
+    </text>
+    <text x="130" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      较低
+    </text>
+    
+    <!-- X轴刻度 -->
+    <text x="220" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      -20%
+    </text>
+    <line x1="220" y1="575" x2="220" y2="585" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="320" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      -10%
+    </text>
+    <line x1="320" y1="575" x2="320" y2="585" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="425" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      0%
+    </text>
+    
+    <text x="530" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      +10%
+    </text>
+    <line x1="530" y1="575" x2="530" y2="585" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="630" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      +20%
+    </text>
+    <line x1="630" y1="575" x2="630" y2="585" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="425" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8" text-anchor="middle">
+      因素变动幅度
+    </text>
+    
+    <!-- 网格线 -->
+    <line x1="150" y1="300" x2="700" y2="300" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+    <line x1="150" y1="390" x2="700" y2="390" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+    <line x1="150" y1="490" x2="700" y2="490" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+    
+    <!-- 基准线 -->
+    <line x1="150" y1="390" x2="700" y2="390" stroke="#27AE60" stroke-width="2" stroke-dasharray="6,4"/>
+    
+    <!-- 三条敏感性曲线（示意） -->
+    <!-- 曲线1：产品价格（最敏感，斜率最大） -->
+    <polyline points="220,280 320,330 425,390 530,450 630,500" 
+              fill="none" stroke="#E74C3C" stroke-width="3"/>
+    <circle cx="425" cy="390" r="5" fill="#E74C3C"/>
+    
+    <!-- 曲线2：建设投资（中等敏感） -->
+    <polyline points="220,320 320,355 425,390 530,425 630,460" 
+              fill="none" stroke="#FF6B35" stroke-width="3"/>
+    <circle cx="425" cy="390" r="5" fill="#FF6B35"/>
+    
+    <!-- 曲线3：经营成本（最不敏感，斜率最小） -->
+    <polyline points="220,350 320,370 425,390 530,410 630,430" 
+              fill="none" stroke="#4A90E2" stroke-width="3"/>
+    <circle cx="425" cy="390" r="5" fill="#4A90E2"/>
+    
+    <!-- 图例 -->
+    <rect x="150" y="195" width="140" height="25" fill="#E74C3C"/>
+    <text x="220" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      产品价格（最敏感）
+    </text>
+    
+    <rect x="310" y="195" width="110" height="25" fill="#FF6B35"/>
+    <text x="365" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      建设投资
+    </text>
+    
+    <rect x="440" y="195" width="110" height="25" fill="#4A90E2"/>
+    <text x="495" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      经营成本
+    </text>
+  </g>
+  
+  <!-- 右侧：分析结论 -->
+  <g id="analysis-results">
+    <text x="770" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      分析结论
+    </text>
+    
+    <!-- 结论卡片 -->
+    <rect x="770" y="160" width="450" height="380" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <text x="800" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#003F6C">
+      1. 敏感性排序
+    </text>
+    <text x="820" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="820" dy="0">• 产品价格：对项目经济效益影响</tspan>
+      <tspan x="840" dy="25">最为敏感，需重点关注</tspan>
+      <tspan x="820" dy="30">• 建设投资：影响程度次之</tspan>
+      <tspan x="820" dy="30">• 经营成本：影响相对较小</tspan>
+    </text>
+    
+    <line x1="790" y1="345" x2="1200" y2="345" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <text x="800" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#003F6C">
+      2. 抗风险能力
+    </text>
+    <text x="820" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="820" dy="0">在±20%的变动范围内：</tspan>
+      <tspan x="820" dy="30">• 资本金IRR均保持在4.42%以上</tspan>
+      <tspan x="820" dy="30">• 未出现负值情况</tspan>
+      <tspan x="820" dy="30">• 项目具有较强抗风险能力</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部：管理建议 -->
+  <rect x="60" y="610" width="1160" height="70" fill="#FFF8F0" stroke="#FFE0B2" stroke-width="2"/>
+  <text x="90" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FF6B35">
+    管理建议
+  </text>
+  <text x="90" y="665" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+    重点关注市场价格波动，建立价格监控机制 | 严格控制建设投资，避免成本超支 | 优化运营管理，降低经营成本
+  </text>
+</svg>
+

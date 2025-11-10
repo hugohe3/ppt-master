@@ -1,0 +1,174 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    盈亏平衡分析
+  </text>
+  
+  <line x1="60" y1="85" x2="280" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    10/12
+  </text>
+  
+  <!-- 中央：盈亏平衡点大数字 -->
+  <circle cx="340" cy="270" r="130" fill="#003F6C"/>
+  <text x="340" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+    盈亏平衡点
+  </text>
+  <text x="340" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="68" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+    55.84
+    <tspan font-size="36" fill="#FFFFFF"> %</tspan>
+  </text>
+  
+  <!-- 左侧：盈亏平衡图 -->
+  <g id="breakeven-chart">
+    <text x="60" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      盈亏平衡图（以生产能力利用率表示）
+    </text>
+    
+    <!-- 坐标系 -->
+    <line x1="120" y1="660" x2="620" y2="660" stroke="#E0E6ED" stroke-width="2"/>
+    <line x1="120" y1="510" x2="120" y2="660" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <!-- Y轴标签 -->
+    <text x="50" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      金额
+    </text>
+    
+    <!-- X轴标签和刻度 -->
+    <text x="120" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      0%
+    </text>
+    <text x="340" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      50%
+    </text>
+    <text x="430" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FF6B35" text-anchor="middle" font-weight="600">
+      55.84%
+    </text>
+    <text x="560" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      80%
+    </text>
+    <text x="620" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      100%
+    </text>
+    
+    <text x="370" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      生产能力利用率
+    </text>
+    
+    <!-- 总成本线（斜率较小） -->
+    <line x1="120" y1="620" x2="620" y2="530" stroke="#FF6B35" stroke-width="3"/>
+    <text x="630" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FF6B35">
+      总成本
+    </text>
+    
+    <!-- 营业收入线（斜率较大） -->
+    <line x1="120" y1="660" x2="620" y2="510" stroke="#27AE60" stroke-width="3"/>
+    <text x="630" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#27AE60">
+      营业收入
+    </text>
+    
+    <!-- 盈亏平衡点标注 -->
+    <line x1="430" y1="587" x2="430" y2="510" stroke="#FF6B35" stroke-width="2" stroke-dasharray="4,4"/>
+    <line x1="430" y1="587" x2="430" y2="660" stroke="#FF6B35" stroke-width="2" stroke-dasharray="4,4"/>
+    <circle cx="430" cy="587" r="6" fill="#FF6B35"/>
+    <text x="430" y="502" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35" text-anchor="middle">
+      盈亏平衡点
+    </text>
+    
+    <!-- 亏损区域 -->
+    <polygon points="120,660 430,587 430,660" fill="#E74C3C" opacity="0.15"/>
+    <text x="250" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#E74C3C">
+      亏损区
+    </text>
+    
+    <!-- 盈利区域 -->
+    <polygon points="430,587 620,510 620,660 430,660" fill="#27AE60" opacity="0.15"/>
+    <text x="530" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#27AE60">
+      盈利区
+    </text>
+  </g>
+  
+  <!-- 右侧：成本结构 -->
+  <g id="cost-structure">
+    <text x="760" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      成本与收入构成
+    </text>
+    
+    <!-- 表格 -->
+    <rect x="760" y="160" width="460" height="45" fill="#003F6C"/>
+    <text x="790" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+      项目
+    </text>
+    <text x="1100" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="end">
+      说明
+    </text>
+    
+    <!-- 行1：固定成本 -->
+    <rect x="760" y="205" width="460" height="50" fill="#F8F9FB"/>
+    <text x="790" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      固定成本
+    </text>
+    <text x="1100" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#7D8FA8" text-anchor="end">
+      折旧费、摊销费、利息支出
+    </text>
+    
+    <!-- 行2：可变成本 -->
+    <rect x="760" y="255" width="460" height="50" fill="#FFFFFF"/>
+    <text x="790" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      可变成本
+    </text>
+    <text x="1100" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#7D8FA8" text-anchor="end">
+      材料、人工、修理、保险等
+    </text>
+    
+    <!-- 行3：营业收入 -->
+    <rect x="760" y="305" width="460" height="50" fill="#F8F9FB"/>
+    <text x="790" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      营业收入
+    </text>
+    <text x="1100" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#7D8FA8" text-anchor="end">
+      充电、停车、租金等收入
+    </text>
+    
+    <!-- 行4：税金及附加 -->
+    <rect x="760" y="355" width="460" height="50" fill="#FFFFFF"/>
+    <text x="790" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      税金及附加
+    </text>
+    <text x="1100" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#7D8FA8" text-anchor="end">
+      增值税、城建税、教育费附加
+    </text>
+  </g>
+  
+  <!-- 右下：结论 -->
+  <rect x="760" y="440" width="460" height="240" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+  <text x="990" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#27AE60" text-anchor="middle">
+    分析结论
+  </text>
+  
+  <text x="990" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50" text-anchor="middle">
+    盈亏平衡点：55.84%
+  </text>
+  
+  <line x1="790" y1="540" x2="1190" y2="540" stroke="#E0E6ED" stroke-width="1"/>
+  
+  <text x="800" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+    <tspan x="800" dy="0">当生产能力利用率达到55.84%时，</tspan>
+    <tspan x="800" dy="30">项目收支平衡，不盈不亏。</tspan>
+  </text>
+  
+  <text x="800" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#27AE60" font-weight="600">
+    <tspan x="800" dy="0">根据市场预测，项目运营期使用率</tspan>
+    <tspan x="800" dy="25">预计达到65%-85%，高于盈亏平衡点。</tspan>
+  </text>
+</svg>
+

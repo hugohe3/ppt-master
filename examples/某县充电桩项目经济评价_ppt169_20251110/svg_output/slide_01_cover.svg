@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="8" fill="#003F6C"/>
+  
+  <!-- 左侧装饰色块 -->
+  <rect x="0" y="8" width="12" height="712" fill="#FF6B35"/>
+  
+  <!-- 主标题区域 -->
+  <text x="80" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#003F6C">
+    XX县XX公园新能源充电站项目
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="600" fill="#005587">
+    财务评价报告
+  </text>
+  
+  <!-- 分割线 -->
+  <line x1="80" y1="350" x2="480" y2="350" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 关键数据卡片组 -->
+  <g id="key-metrics">
+    <!-- 卡片1：总投资 -->
+    <rect x="80" y="400" width="340" height="120" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="1"/>
+    <text x="100" y="438" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8">
+      总投资
+    </text>
+    <text x="100" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35">
+      5,811
+      <tspan font-size="24" fill="#7D8FA8"> 万元</tspan>
+    </text>
+    
+    <!-- 卡片2：计算期 -->
+    <rect x="460" y="400" width="340" height="120" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="1"/>
+    <text x="480" y="438" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8">
+      项目计算期
+    </text>
+    <text x="480" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35">
+      41
+      <tspan font-size="24" fill="#7D8FA8"> 年</tspan>
+    </text>
+    
+    <!-- 卡片3：IRR -->
+    <rect x="840" y="400" width="340" height="120" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="1"/>
+    <text x="860" y="438" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8">
+      项目投资IRR（税后）
+    </text>
+    <text x="860" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#27AE60">
+      5.78
+      <tspan font-size="24" fill="#7D8FA8"> %</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部信息 -->
+  <text x="80" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+    汇报单位：XX集团有限公司
+  </text>
+  
+  <text x="80" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7D8FA8">
+    2025年11月
+  </text>
+  
+  <!-- 右下角装饰 -->
+  <circle cx="1150" cy="600" r="80" fill="#F5F7FA" opacity="0.5"/>
+  <circle cx="1200" cy="650" r="60" fill="#E0E6ED" opacity="0.3"/>
+</svg>
+

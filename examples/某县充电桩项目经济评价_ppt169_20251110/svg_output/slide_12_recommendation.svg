@@ -1,0 +1,126 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    实施建议与展望
+  </text>
+  
+  <line x1="60" y1="85" x2="320" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    12/12
+  </text>
+  
+  <!-- 左侧：实施建议 -->
+  <g id="recommendations">
+    <text x="60" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#005587">
+      实施建议
+    </text>
+    
+    <!-- 建议1 -->
+    <rect x="60" y="170" width="540" height="90" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+    <circle cx="100" cy="215" r="15" fill="#27AE60"/>
+    <text x="100" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      1
+    </text>
+    <text x="135" y="195" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#27AE60">
+      建立市场价格监控机制
+    </text>
+    <text x="135" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">
+      <tspan x="135" dy="0">实时跟踪充电服务费、停车费及租金</tspan>
+      <tspan x="135" dy="22">价格动态，灵活调整定价策略</tspan>
+    </text>
+    
+    <!-- 建议2 -->
+    <rect x="60" y="280" width="540" height="90" fill="#FFF3E0" stroke="#FF6B35" stroke-width="2"/>
+    <circle cx="100" cy="325" r="15" fill="#FF6B35"/>
+    <text x="100" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      2
+    </text>
+    <text x="135" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FF6B35">
+      严格控制建设投资成本
+    </text>
+    <text x="135" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">
+      <tspan x="135" dy="0">加强工程管理，优化采购流程，</tspan>
+      <tspan x="135" dy="22">防止建设成本超支影响项目收益</tspan>
+    </text>
+    
+    <!-- 建议3 -->
+    <rect x="60" y="390" width="540" height="90" fill="#E3F2FD" stroke="#005587" stroke-width="2"/>
+    <circle cx="100" cy="435" r="15" fill="#005587"/>
+    <text x="100" y="442" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      3
+    </text>
+    <text x="135" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#005587">
+      提升运营效率
+    </text>
+    <text x="135" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">
+      <tspan x="135" dy="0">充电桩使用率目标80%，停车位85%，</tspan>
+      <tspan x="135" dy="22">商业/办公出租率95%/90%</tspan>
+    </text>
+    
+    <!-- 建议4 -->
+    <rect x="60" y="500" width="540" height="90" fill="#F5F7FA" stroke="#7D8FA8" stroke-width="2"/>
+    <circle cx="100" cy="545" r="15" fill="#7D8FA8"/>
+    <text x="100" y="552" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      4
+    </text>
+    <text x="135" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#7D8FA8">
+      优化经营成本管理
+    </text>
+    <text x="135" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">
+      <tspan x="135" dy="0">加强日常维护，降低运营费用，</tspan>
+      <tspan x="135" dy="22">提升设备寿命和运行效率</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：风险提示 -->
+  <g id="risks">
+    <text x="680" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#E74C3C">
+      风险提示
+    </text>
+    
+    <rect x="680" y="170" width="540" height="220" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2"/>
+    
+    <text x="710" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="710" dy="0">⚠ 新能源汽车市场波动</tspan>
+      <tspan x="730" dy="26">市场需求变化影响充电桩使用率</tspan>
+      
+      <tspan x="710" dy="35">⚠ 竞争对手进入风险</tspan>
+      <tspan x="730" dy="26">区域新建充电站可能分流客户</tspan>
+      
+      <tspan x="710" dy="35">⚠ 政策变化风险</tspan>
+      <tspan x="730" dy="26">电价、服务费政策调整影响收入</tspan>
+    </text>
+  </g>
+  
+  <!-- 右下：项目展望 -->
+  <g id="outlook">
+    <text x="680" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#005587">
+      项目展望
+    </text>
+    
+    <rect x="680" y="450" width="540" height="140" fill="#003F6C"/>
+    
+    <text x="950" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="17" fill="#FFFFFF" text-anchor="middle">
+      <tspan x="950" dy="0">✓ 符合国家新能源战略发展方向</tspan>
+      <tspan x="950" dy="30">✓ XX县区域市场潜力较大</tspan>
+      <tspan x="950" dy="30">✓ 多元化收入结构分散风险</tspan>
+      <tspan x="950" dy="30">✓ 具备长期投资价值</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部结语 -->
+  <rect x="60" y="615" width="1160" height="65" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+  <text x="640" y="653" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#27AE60" text-anchor="middle">
+    综合评价：项目财务可行，建议推进实施
+  </text>
+</svg>
+

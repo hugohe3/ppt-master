@@ -1,0 +1,162 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    清偿能力分析
+  </text>
+  
+  <line x1="60" y1="85" x2="280" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    6/12
+  </text>
+  
+  <!-- 左侧：还贷资金来源 -->
+  <g id="repayment-source">
+    <text x="60" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      还贷资金来源
+    </text>
+    
+    <!-- 环形图 -->
+    <circle cx="200" cy="280" r="90" fill="none" stroke="#E0E6ED" stroke-width="35"/>
+    <!-- 未分配利润（约60%） -->
+    <circle cx="200" cy="280" r="90" fill="none" stroke="#FF6B35" stroke-width="35" 
+            stroke-dasharray="340 565" transform="rotate(-90 200 280)"/>
+    <!-- 折旧费（约40%） -->
+    <circle cx="200" cy="280" r="90" fill="none" stroke="#005587" stroke-width="35" 
+            stroke-dasharray="225 565" stroke-dashoffset="-340" transform="rotate(-90 200 280)"/>
+    
+    <!-- 中心图标 -->
+    <circle cx="200" cy="280" r="60" fill="#F5F7FA"/>
+    <text x="200" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#003F6C" text-anchor="middle">
+      还贷
+    </text>
+    <text x="200" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#003F6C" text-anchor="middle">
+      资金
+    </text>
+    
+    <!-- 图例 -->
+    <rect x="90" y="400" width="20" height="20" fill="#FF6B35"/>
+    <text x="120" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      未分配利润（主要）
+    </text>
+    
+    <rect x="90" y="435" width="20" height="20" fill="#005587"/>
+    <text x="120" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      折旧费（100%用于还贷）
+    </text>
+  </g>
+  
+  <!-- 右上：偿债指标 -->
+  <g id="debt-indicators">
+    <text x="450" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      偿债指标
+    </text>
+    
+    <!-- 卡片1：利息备付率 -->
+    <rect x="450" y="160" width="360" height="140" fill="#FFFFFF" stroke="#005587" stroke-width="2"/>
+    <text x="630" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7D8FA8" text-anchor="middle">
+      利息备付率
+    </text>
+    <text x="630" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      详见借款还本付息
+    </text>
+    <text x="630" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      计划表
+    </text>
+    
+    <!-- 卡片2：偿债备付率 -->
+    <rect x="860" y="160" width="360" height="140" fill="#FFFFFF" stroke="#005587" stroke-width="2"/>
+    <text x="1040" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7D8FA8" text-anchor="middle">
+      偿债备付率
+    </text>
+    <text x="1040" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      详见借款还本付息
+    </text>
+    <text x="1040" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      计划表
+    </text>
+  </g>
+  
+  <!-- 底部：资产负债率趋势 -->
+  <g id="debt-ratio-trend">
+    <text x="450" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      资产负债率趋势
+    </text>
+    
+    <!-- 坐标系 -->
+    <line x1="490" y1="600" x2="1200" y2="600" stroke="#E0E6ED" stroke-width="2"/>
+    <line x1="490" y1="380" x2="490" y2="600" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <!-- Y轴刻度 -->
+    <text x="470" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      80%
+    </text>
+    <line x1="485" y1="380" x2="495" y2="380" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="470" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      40%
+    </text>
+    <line x1="485" y1="490" x2="495" y2="490" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <text x="470" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+      0%
+    </text>
+    
+    <!-- X轴刻度 -->
+    <text x="490" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      建设期
+    </text>
+    <text x="700" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      第5年
+    </text>
+    <text x="900" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      第10年
+    </text>
+    <text x="1100" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      第15年+
+    </text>
+    
+    <!-- 趋势线 -->
+    <polyline points="490,380 550,385 650,420 750,465 850,510 950,555 1050,585 1150,600 1200,600" 
+              fill="none" stroke="#FF6B35" stroke-width="3"/>
+    
+    <!-- 数据点 -->
+    <circle cx="490" cy="380" r="5" fill="#FF6B35"/>
+    <circle cx="750" cy="465" r="5" fill="#FF6B35"/>
+    <circle cx="1050" cy="585" r="5" fill="#FF6B35"/>
+    <circle cx="1200" cy="600" r="5" fill="#27AE60"/>
+    
+    <!-- 关键标注 -->
+    <text x="510" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#E74C3C">
+      最高80%
+    </text>
+    <text x="1120" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#27AE60" text-anchor="end">
+      归零
+    </text>
+    
+    <!-- 网格线（虚线） -->
+    <line x1="490" y1="380" x2="1200" y2="380" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+    <line x1="490" y1="490" x2="1200" y2="490" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+  </g>
+  
+  <!-- 结论框 -->
+  <rect x="60" y="500" width="350" height="100" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+  <text x="235" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#27AE60" text-anchor="middle">
+    偿债能力评价
+  </text>
+  <text x="235" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">
+    项目具有偿债能力
+  </text>
+  <text x="235" y="588" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="middle">
+    15年偿还期，资产负债率逐年下降
+  </text>
+</svg>
+

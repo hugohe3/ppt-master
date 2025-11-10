@@ -1,0 +1,129 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    项目概况
+  </text>
+  
+  <line x1="60" y1="85" x2="200" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    2/12
+  </text>
+  
+  <!-- 左侧：项目位置与规模 -->
+  <g id="project-info">
+    <rect x="60" y="130" width="540" height="240" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <text x="90" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#003F6C">
+      项目位置与规模
+    </text>
+    
+    <text x="90" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50">
+      <tspan x="90" dy="0">项目地点：XX县XX公园</tspan>
+      <tspan x="90" dy="35">总用地面积：17,272.3 ㎡</tspan>
+      <tspan x="90" dy="35">总建筑面积：10,537.43 ㎡</tspan>
+      <tspan x="90" dy="35">  · 地上建筑：5,672.43 ㎡</tspan>
+      <tspan x="90" dy="35">  · 地下建筑：4,865 ㎡</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：建设周期 -->
+  <g id="construction-period">
+    <rect x="640" y="130" width="580" height="240" fill="#003F6C"/>
+    
+    <text x="680" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#FFFFFF" opacity="0.8">
+      建设周期
+    </text>
+    
+    <text x="680" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" font-weight="bold" fill="#FF6B35">
+      1
+      <tspan font-size="36" fill="#FFFFFF"> 年</tspan>
+    </text>
+    
+    <text x="680" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" opacity="0.7">
+      建设期：2025-2026年
+    </text>
+    <text x="680" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" opacity="0.7">
+      运营期：2027-2066年（40年）
+    </text>
+  </g>
+  
+  <!-- 底部：建设内容 -->
+  <text x="60" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#003F6C">
+    建设内容
+  </text>
+  
+  <line x1="60" y1="430" x2="180" y2="430" stroke="#E0E6ED" stroke-width="2"/>
+  
+  <!-- 4个数据卡片 -->
+  <g id="content-cards">
+    <!-- 卡片1：商业用房 -->
+    <rect x="60" y="460" width="280" height="200" fill="#FFFFFF" stroke="#005587" stroke-width="2"/>
+    <text x="200" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8" text-anchor="middle">
+      商业用房
+    </text>
+    <text x="200" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+      3,421.5
+    </text>
+    <text x="200" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7D8FA8" text-anchor="middle">
+      平方米
+    </text>
+    <text x="200" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      租金：40元/㎡/月
+    </text>
+    
+    <!-- 卡片2：办公用房 -->
+    <rect x="370" y="460" width="280" height="200" fill="#FFFFFF" stroke="#005587" stroke-width="2"/>
+    <text x="510" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8" text-anchor="middle">
+      办公用房
+    </text>
+    <text x="510" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+      2,423.6
+    </text>
+    <text x="510" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7D8FA8" text-anchor="middle">
+      平方米
+    </text>
+    <text x="510" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      租金：25元/㎡/月
+    </text>
+    
+    <!-- 卡片3：停车位 -->
+    <rect x="680" y="460" width="280" height="200" fill="#FFFFFF" stroke="#005587" stroke-width="2"/>
+    <text x="820" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8" text-anchor="middle">
+      停车位
+    </text>
+    <text x="820" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+      301
+    </text>
+    <text x="820" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7D8FA8" text-anchor="middle">
+      个
+    </text>
+    <text x="820" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+      机动271 | 非机动40 | 三轮30
+    </text>
+    
+    <!-- 卡片4：充电枪 -->
+    <rect x="990" y="460" width="230" height="200" fill="#003F6C"/>
+    <text x="1105" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+      充电枪
+    </text>
+    <text x="1105" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+      59
+    </text>
+    <text x="1105" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">
+      个
+    </text>
+    <text x="1105" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" opacity="0.7">
+      直流快充充电桩
+    </text>
+  </g>
+</svg>
+

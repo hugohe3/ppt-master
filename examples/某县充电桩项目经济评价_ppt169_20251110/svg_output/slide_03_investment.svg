@@ -1,0 +1,184 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    投资估算与资金来源
+  </text>
+  
+  <line x1="60" y1="85" x2="360" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    3/12
+  </text>
+  
+  <!-- 左侧：总投资构成 -->
+  <g id="total-investment">
+    <text x="60" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      总投资构成
+    </text>
+    
+    <!-- 环形图 -->
+    <circle cx="220" cy="280" r="100" fill="none" stroke="#E0E6ED" stroke-width="40"/>
+    <circle cx="220" cy="280" r="100" fill="none" stroke="#005587" stroke-width="40" 
+            stroke-dasharray="570 628" transform="rotate(-90 220 280)"/>
+    <circle cx="220" cy="280" r="100" fill="none" stroke="#FF6B35" stroke-width="40" 
+            stroke-dasharray="58 628" stroke-dashoffset="-570" transform="rotate(-90 220 280)"/>
+    
+    <!-- 中心数字 -->
+    <text x="220" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#003F6C" text-anchor="middle">
+      5,811
+    </text>
+    <text x="220" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#7D8FA8" text-anchor="middle">
+      万元
+    </text>
+    
+    <!-- 图例 -->
+    <rect x="60" y="410" width="20" height="20" fill="#005587"/>
+    <text x="90" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      固定资产静态投资：5,731万元（98.6%）
+    </text>
+    
+    <rect x="60" y="445" width="20" height="20" fill="#FF6B35"/>
+    <text x="90" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      建设期利息：80万元（1.4%）
+    </text>
+  </g>
+  
+  <!-- 中间：投资明细表格 -->
+  <g id="investment-detail">
+    <text x="480" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+      投资明细
+    </text>
+    
+    <!-- 表格 -->
+    <rect x="480" y="160" width="350" height="45" fill="#003F6C"/>
+    <text x="500" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+      项目
+    </text>
+    <text x="720" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="end">
+      金额（万元）
+    </text>
+    
+    <!-- 行1 -->
+    <rect x="480" y="205" width="350" height="40" fill="#F8F9FB"/>
+    <text x="500" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      建安工程
+    </text>
+    <text x="720" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="end">
+      5,147.97
+    </text>
+    
+    <!-- 行2 -->
+    <rect x="480" y="245" width="350" height="40" fill="#FFFFFF"/>
+    <text x="500" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      充电桩设备及安装
+    </text>
+    <text x="720" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="end">
+      583.48
+    </text>
+    
+    <!-- 行3 -->
+    <rect x="480" y="285" width="350" height="40" fill="#F8F9FB"/>
+    <text x="500" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      停车场建设
+    </text>
+    <text x="720" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="end">
+      903.00
+    </text>
+    
+    <!-- 行4 -->
+    <rect x="480" y="325" width="350" height="40" fill="#FFFFFF"/>
+    <text x="500" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      绿化与铺装
+    </text>
+    <text x="720" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="end">
+      273.00
+    </text>
+    
+    <!-- 行5：小计 -->
+    <rect x="480" y="365" width="350" height="45" fill="#005587"/>
+    <text x="500" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+      静态投资小计
+    </text>
+    <text x="720" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="end">
+      5,731.00
+    </text>
+    
+    <!-- 建设期利息 -->
+    <rect x="480" y="410" width="350" height="40" fill="#F8F9FB"/>
+    <text x="500" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      建设期利息
+    </text>
+    <text x="720" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50" text-anchor="end">
+      80.00
+    </text>
+    
+    <!-- 总投资 -->
+    <rect x="480" y="450" width="350" height="50" fill="#FF6B35"/>
+    <text x="500" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">
+      总投资
+    </text>
+    <text x="720" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="end">
+      5,811.00
+    </text>
+  </g>
+  
+  <!-- 右侧：融资方案 -->
+  <g id="financing">
+    <rect x="870" y="120" width="350" height="380" fill="#F5F7FA" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <text x="1045" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#003F6C" text-anchor="middle">
+      融资方案
+    </text>
+    
+    <line x1="900" y1="175" x2="1190" y2="175" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <!-- 资本金 -->
+    <text x="910" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7D8FA8">
+      资本金
+    </text>
+    <text x="1180" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#27AE60" text-anchor="end">
+      20
+      <tspan font-size="24" fill="#7D8FA8"> %</tspan>
+    </text>
+    
+    <line x1="900" y1="285" x2="1190" y2="285" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <!-- 银行贷款 -->
+    <text x="910" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7D8FA8">
+      银行贷款
+    </text>
+    <text x="1180" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35" text-anchor="end">
+      80
+      <tspan font-size="24" fill="#7D8FA8"> %</tspan>
+    </text>
+    
+    <line x1="900" y1="385" x2="1190" y2="385" stroke="#E0E6ED" stroke-width="1"/>
+    
+    <!-- 贷款条件 -->
+    <text x="910" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="910" dy="0">贷款利率：3.50%</tspan>
+      <tspan x="910" dy="28">偿还期：15年</tspan>
+      <tspan x="910" dy="28">宽限期：1年</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部说明 -->
+  <rect x="60" y="530" width="1160" height="120" fill="#FFF8F0" stroke="#FFE0B2" stroke-width="1"/>
+  <text x="90" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FF6B35">
+    关键说明
+  </text>
+  <text x="90" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#2C3E50">
+    <tspan x="90" dy="0">• 建安成本：地上4,000元/㎡，地下3,500元/㎡</tspan>
+    <tspan x="90" dy="25">• 充电桩设备：包含储充一体单桩、充电堆、慢充桩及配套变压器，总计583.48万元</tspan>
+    <tspan x="90" dy="25">• 还款方式：宽限期后等额还本利息照付</tspan>
+  </text>
+</svg>
+

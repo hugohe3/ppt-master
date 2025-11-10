@@ -1,0 +1,88 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    项目收益来源
+  </text>
+  
+  <line x1="60" y1="85" x2="260" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    4/12
+  </text>
+  
+  <!-- 总收入展示 -->
+  <rect x="900" y="120" width="320" height="100" fill="#003F6C"/>
+  <text x="1060" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+    41年收入总额（不含增值税）
+  </text>
+  <text x="1060" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35" text-anchor="middle">
+    30,382
+    <tspan font-size="24" fill="#FFFFFF"> 万元</tspan>
+  </text>
+  
+  <!-- 四大收益板块 -->
+  <g id="revenue-sources">
+    <!-- 卡片1：充电桩服务收入 -->
+    <rect x="60" y="250" width="560" height="180" fill="#FFFFFF" stroke="#005587" stroke-width="3"/>
+    <rect x="60" y="250" width="560" height="50" fill="#005587"/>
+    <text x="340" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      充电桩服务收入
+    </text>
+    
+    <text x="90" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="90" dy="0">充电枪数量：59个（直流快充）</tspan>
+      <tspan x="90" dy="28">服务费单价：0.4元/kWh（每3年增长3%）</tspan>
+      <tspan x="90" dy="28">使用率：55% → 80%（每年增长5%）</tspan>
+      <tspan x="90" dy="28">工作时长：前3年5小时/天，第4年起6小时/天</tspan>
+    </text>
+    
+    <!-- 卡片2：停车场收入 -->
+    <rect x="660" y="250" width="560" height="180" fill="#FFFFFF" stroke="#0076A8" stroke-width="3"/>
+    <rect x="660" y="250" width="560" height="50" fill="#0076A8"/>
+    <text x="940" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      停车场收入
+    </text>
+    
+    <text x="690" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="690" dy="0">停车位数量：301个（可对外收费）</tspan>
+      <tspan x="690" dy="28">收费标准：3元/小时，24元/天封顶</tspan>
+      <tspan x="690" dy="28">日周转次数：2次/天</tspan>
+      <tspan x="690" dy="28">使用率：65% → 85%（每年增长5%）</tspan>
+    </text>
+    
+    <!-- 卡片3：商业用房租金 -->
+    <rect x="60" y="460" width="560" height="180" fill="#FFFFFF" stroke="#4A90E2" stroke-width="3"/>
+    <rect x="60" y="460" width="560" height="50" fill="#4A90E2"/>
+    <text x="340" y="492" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      商业用房租金收入
+    </text>
+    
+    <text x="90" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="90" dy="0">出租面积：3,421.5 ㎡</tspan>
+      <tspan x="90" dy="28">租金单价：40元/㎡/月（每2年上浮5%）</tspan>
+      <tspan x="90" dy="28">出租率：70% → 95%（逐年递增）</tspan>
+    </text>
+    
+    <!-- 卡片4：办公用房租金 -->
+    <rect x="660" y="460" width="560" height="180" fill="#FFFFFF" stroke="#78B9EB" stroke-width="3"/>
+    <rect x="660" y="460" width="560" height="50" fill="#78B9EB"/>
+    <text x="940" y="492" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      办公用房租金收入
+    </text>
+    
+    <text x="690" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#2C3E50">
+      <tspan x="690" dy="0">出租面积：2,423.6 ㎡</tspan>
+      <tspan x="690" dy="28">租金单价：25元/㎡/月（每2年上浮5%）</tspan>
+      <tspan x="690" dy="28">出租率：70% → 90%（逐年递增）</tspan>
+    </text>
+  </g>
+</svg>
+

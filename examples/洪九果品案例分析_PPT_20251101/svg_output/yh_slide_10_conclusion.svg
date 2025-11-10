@@ -12,82 +12,82 @@
   <rect x="80" y="85" width="100" height="5" fill="#005587"/>
   
   <!-- 核心结论大卡片 -->
-  <rect x="60" y="130" width="1160" height="230" fill="#F0F7FA" stroke="#005587" stroke-width="3" rx="12"/>
-  <text x="640" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+  <rect x="60" y="130" width="1160" height="215" fill="#F0F7FA" stroke="#005587" stroke-width="3" rx="12"/>
+  <text x="640" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
     <tspan x="640" dy="0">核心结论</tspan>
   </text>
   
-  <text x="640" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="21" font-weight="400" fill="#2C2C2C" text-anchor="middle" style="line-height: 1.7">
+  <text x="640" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="21" font-weight="400" fill="#2C2C2C" text-anchor="middle" style="line-height: 1.7">
     <tspan x="640" dy="0">洪九果品曾是中国水果行业的标杆企业，</tspan>
-    <tspan x="640" dy="38">创新的商业模式和强大的供应链能力令其快速崛起。</tspan>
-    <tspan x="640" dy="38">然而，忽视内控、财务造假、管理层失信导致其迅速坍塌。</tspan>
-    <tspan x="640" dy="38" font-weight="700" fill="#C41E3A">从 600 亿到退市仅用时不到 3 年，为行业敲响了警钟。</tspan>
+    <tspan x="640" dy="36">创新的商业模式和强大的供应链能力令其快速崛起。</tspan>
+    <tspan x="640" dy="36">然而，忽视内控、财务造假、管理层失信导致其迅速坍塌。</tspan>
+    <tspan x="640" dy="36" font-weight="700" fill="#C41E3A">从 600 亿到退市仅用时不到 3 年，为行业敲响了警钟。</tspan>
   </text>
   
   <!-- 时间对比 -->
-  <rect x="180" y="385" width="360" height="125" fill="#E8F9F0" stroke="#2D8659" stroke-width="3" rx="10"/>
-  <text x="360" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#5A5A5A" text-anchor="middle">
+  <rect x="180" y="370" width="360" height="125" fill="#E8F9F0" stroke="#2D8659" stroke-width="3" rx="10"/>
+  <text x="360" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#5A5A5A" text-anchor="middle">
     <tspan x="360" dy="0">从创立到上市</tspan>
   </text>
-  <text x="360" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#2D8659" text-anchor="middle">
+  <text x="360" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#2D8659" text-anchor="middle">
     <tspan x="360" dy="0">20 年</tspan>
   </text>
   
   <!-- VS -->
-  <text x="640" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="700" fill="#C41E3A" text-anchor="middle">
+  <text x="640" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="56" font-weight="700" fill="#C41E3A" text-anchor="middle">
     <tspan x="640" dy="0">VS</tspan>
   </text>
   
-  <rect x="740" y="385" width="360" height="125" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="10"/>
-  <text x="920" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#5A5A5A" text-anchor="middle">
+  <rect x="740" y="370" width="360" height="125" fill="#FFF5F5" stroke="#C41E3A" stroke-width="3" rx="10"/>
+  <text x="920" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#5A5A5A" text-anchor="middle">
     <tspan x="920" dy="0">从巅峰到退市</tspan>
   </text>
-  <text x="920" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#C41E3A" text-anchor="middle">
+  <text x="920" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#C41E3A" text-anchor="middle">
     <tspan x="920" dy="0">&lt; 3 年</tspan>
   </text>
   
   <!-- 思考问题 -->
-  <text x="80" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
+  <text x="80" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#2C2C2C">
     <tspan x="80" dy="0">值得深思的问题</tspan>
   </text>
   
   <!-- 3个问题卡片 - 并列 -->
-  <rect x="60" y="590" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
-  <text x="90" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
+  <rect x="60" y="565" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="90" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
     <tspan x="90" dy="0">❓ 问题一</tspan>
   </text>
-  <text x="90" y="657" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+  <text x="90" y="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
     <tspan x="90" dy="0">高速增长是否必然伴随高风险？</tspan>
   </text>
   
-  <rect x="455" y="590" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
-  <text x="485" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
+  <rect x="455" y="565" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="485" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
     <tspan x="485" dy="0">❓ 问题二</tspan>
   </text>
-  <text x="485" y="650" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+  <text x="485" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
     <tspan x="485" dy="0">资本市场对于新兴行业的</tspan>
     <tspan x="485" dy="22">估值是否过度乐观？</tspan>
   </text>
   
-  <rect x="850" y="590" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
-  <text x="880" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
+  <rect x="850" y="565" width="370" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8"/>
+  <text x="880" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#005587">
     <tspan x="880" dy="0">❓ 问题三</tspan>
   </text>
-  <text x="880" y="650" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
+  <text x="880" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#5A5A5A">
     <tspan x="880" dy="0">监管机制如何更早发现</tspan>
     <tspan x="880" dy="22">和防范此类风险？</tspan>
   </text>
   
   <!-- 底部分割线 -->
-  <line x1="80" y1="705" x2="1200" y2="705" stroke="#005587" stroke-width="2"/>
+  <line x1="80" y1="680" x2="1200" y2="680" stroke="#005587" stroke-width="2"/>
   
   <!-- 底部标注 -->
-  <text x="640" y="720" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#005587" text-anchor="middle">
+  <text x="640" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#005587" text-anchor="middle">
     <tspan x="640" dy="0">—— 案例分析完成 ——</tspan>
   </text>
   
   <!-- 页码 -->
-  <text x="1200" y="720" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
+  <text x="1200" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#999999" text-anchor="end">
     <tspan x="1200" dy="0">10</tspan>
   </text>
 </svg>

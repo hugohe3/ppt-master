@@ -1,0 +1,124 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#003F6C"/>
+  <rect x="0" y="4" width="8" height="716" fill="#FF6B35"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C">
+    生存能力分析
+  </text>
+  
+  <line x1="60" y1="85" x2="280" y2="85" stroke="#FF6B35" stroke-width="3"/>
+  
+  <!-- 页码 -->
+  <text x="1200" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    8/12
+  </text>
+  
+  <!-- 关键发现 -->
+  <rect x="60" y="120" width="1160" height="120" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+  <text x="640" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#27AE60" text-anchor="middle">
+    生存能力评价
+  </text>
+  <text x="640" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50" text-anchor="middle">
+    ✓ 项目第2年投入运行后，每年盈余资金均大于0
+  </text>
+  <text x="640" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50" text-anchor="middle">
+    ✓ 具备足够的净现金流量维持正常运营
+  </text>
+  
+  <!-- 累计现金流趋势图 -->
+  <text x="60" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#005587">
+    累计现金流趋势示意图
+  </text>
+  <text x="60" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8">
+    （具体数值详见财务计划现金流量表）
+  </text>
+  
+  <!-- 坐标系 -->
+  <line x1="120" y1="620" x2="1200" y2="620" stroke="#E0E6ED" stroke-width="2"/>
+  <line x1="120" y1="330" x2="120" y2="620" stroke="#E0E6ED" stroke-width="2"/>
+  
+  <!-- Y轴刻度 -->
+  <text x="95" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    正值
+  </text>
+  <line x1="115" y1="335" x2="125" y2="335" stroke="#E0E6ED" stroke-width="1"/>
+  
+  <text x="95" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="end">
+    0
+  </text>
+  <line x1="115" y1="545" x2="125" y2="545" stroke="#E0E6ED" stroke-width="1"/>
+  
+  <text x="95" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#E74C3C" text-anchor="end">
+    负值
+  </text>
+  
+  <!-- 零线 -->
+  <line x1="120" y1="545" x2="1200" y2="545" stroke="#E74C3C" stroke-width="2" stroke-dasharray="6,4"/>
+  
+  <!-- 网格线 -->
+  <line x1="120" y1="335" x2="1200" y2="335" stroke="#E0E6ED" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+  
+  <!-- X轴刻度 -->
+  <text x="120" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    建设期
+  </text>
+  <text x="290" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第2年
+  </text>
+  <text x="460" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第5年
+  </text>
+  <text x="660" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第10年
+  </text>
+  <text x="860" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第20年
+  </text>
+  <text x="1080" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第30年
+  </text>
+  <text x="1200" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" fill="#7D8FA8" text-anchor="middle">
+    第41年
+  </text>
+  
+  <!-- 累计现金流曲线 -->
+  <!-- 建设期为负值 -->
+  <polyline points="120,620 180,620 240,590 290,558 360,525 460,480 560,440 660,395 760,360 860,350 960,345 1080,338 1200,335" 
+            fill="none" stroke="#FF6B35" stroke-width="4"/>
+  
+  <!-- 亏损区域填充（建设期） -->
+  <polygon points="120,545 180,620 240,590 290,558 290,545 120,545" fill="#E74C3C" opacity="0.1"/>
+  
+  <!-- 盈利区域填充 -->
+  <polygon points="290,558 360,525 460,480 560,440 660,395 760,360 860,350 960,345 1080,338 1200,335 1200,545 290,545" 
+           fill="#27AE60" opacity="0.1"/>
+  
+  <!-- 关键数据点 -->
+  <circle cx="180" cy="620" r="6" fill="#E74C3C"/>
+  <circle cx="290" cy="558" r="6" fill="#FF6B35"/>
+  <circle cx="660" cy="395" r="6" fill="#FF6B35"/>
+  <circle cx="1200" cy="335" r="6" fill="#27AE60"/>
+  
+  <!-- 转正点标注 -->
+  <line x1="290" y1="558" x2="290" y2="360" stroke="#27AE60" stroke-width="2" stroke-dasharray="4,4"/>
+  <rect x="220" y="340" width="140" height="30" fill="#27AE60"/>
+  <text x="290" y="362" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    第2年转正
+  </text>
+  
+  <!-- 建设期投资标注 -->
+  <text x="180" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" fill="#E74C3C" text-anchor="middle">
+    初始投资
+  </text>
+  
+  <!-- 最终累计标注 -->
+  <text x="1180" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#27AE60" text-anchor="end">
+    持续盈余
+  </text>
+</svg>
+

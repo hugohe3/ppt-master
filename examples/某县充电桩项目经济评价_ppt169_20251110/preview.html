@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XX县XX公园新能源充电站项目财务评价报告 - 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #003F6C;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .meta {
+            color: #7D8FA8;
+            font-size: 16px;
+        }
+        
+        .meta span {
+            margin-right: 20px;
+        }
+        
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .slide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .slide-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 3px solid #003F6C;
+        }
+        
+        .slide-info {
+            padding: 20px;
+        }
+        
+        .slide-number {
+            color: #FF6B35;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .slide-title {
+            color: #003F6C;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            padding: 40px;
+        }
+        
+        .fullscreen-overlay.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-svg {
+            max-width: 90%;
+            max-height: 80vh;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #FF6B35;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: #E74C3C;
+        }
+        
+        .nav-btns {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .nav-btn {
+            background: #005587;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #003F6C;
+        }
+        
+        .nav-btn:disabled {
+            background: #7D8FA8;
+            cursor: not-allowed;
+        }
+        
+        footer {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: #7D8FA8;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>XX县XX公园新能源充电站项目财务评价报告</h1>
+            <div class="meta">
+                <span>📊 XX集团有限公司</span>
+                <span>📅 2025年11月10日</span>
+                <span>📄 共12页</span>
+                <span>🎨 高端咨询风格</span>
+            </div>
+        </header>
+        
+        <div class="slides-grid">
+            <div class="slide-card" onclick="openFullscreen(0)">
+                <img src="svg_output/slide_01_cover.svg" alt="Slide 1" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 1 页</div>
+                    <div class="slide-title">封面</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(1)">
+                <img src="svg_output/slide_02_overview.svg" alt="Slide 2" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 2 页</div>
+                    <div class="slide-title">项目概况</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(2)">
+                <img src="svg_output/slide_03_investment.svg" alt="Slide 3" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 3 页</div>
+                    <div class="slide-title">投资估算与资金来源</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(3)">
+                <img src="svg_output/slide_04_revenue.svg" alt="Slide 4" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 4 页</div>
+                    <div class="slide-title">项目收益来源</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(4)">
+                <img src="svg_output/slide_05_kpi.svg" alt="Slide 5" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 5 页</div>
+                    <div class="slide-title">核心财务指标</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(5)">
+                <img src="svg_output/slide_06_solvency.svg" alt="Slide 6" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 6 页</div>
+                    <div class="slide-title">清偿能力分析</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(6)">
+                <img src="svg_output/slide_07_profitability.svg" alt="Slide 7" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 7 页</div>
+                    <div class="slide-title">盈利能力分析</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(7)">
+                <img src="svg_output/slide_08_viability.svg" alt="Slide 8" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 8 页</div>
+                    <div class="slide-title">生存能力分析</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(8)">
+                <img src="svg_output/slide_09_sensitivity.svg" alt="Slide 9" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 9 页</div>
+                    <div class="slide-title">敏感性分析</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(9)">
+                <img src="svg_output/slide_10_breakeven.svg" alt="Slide 10" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 10 页</div>
+                    <div class="slide-title">盈亏平衡分析</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(10)">
+                <img src="svg_output/slide_11_conclusion.svg" alt="Slide 11" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 11 页</div>
+                    <div class="slide-title">财务评价结论</div>
+                </div>
+            </div>
+            
+            <div class="slide-card" onclick="openFullscreen(11)">
+                <img src="svg_output/slide_12_recommendation.svg" alt="Slide 12" class="slide-preview">
+                <div class="slide-info">
+                    <div class="slide-number">第 12 页</div>
+                    <div class="slide-title">实施建议与展望</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            © 2025 XX集团有限公司 | 本演示文稿仅供内部使用
+        </footer>
+    </div>
+    
+    <div class="fullscreen-overlay" id="fullscreen">
+        <button class="close-btn" onclick="closeFullscreen()">×</button>
+        <img id="fullscreen-img" class="fullscreen-svg" src="" alt="Full Screen Slide">
+        <div class="nav-btns">
+            <button class="nav-btn" id="prev-btn" onclick="prevSlide()">← 上一页</button>
+            <button class="nav-btn" id="next-btn" onclick="nextSlide()">下一页 →</button>
+        </div>
+    </div>
+    
+    <script>
+        const slides = [
+            'svg_output/slide_01_cover.svg',
+            'svg_output/slide_02_overview.svg',
+            'svg_output/slide_03_investment.svg',
+            'svg_output/slide_04_revenue.svg',
+            'svg_output/slide_05_kpi.svg',
+            'svg_output/slide_06_solvency.svg',
+            'svg_output/slide_07_profitability.svg',
+            'svg_output/slide_08_viability.svg',
+            'svg_output/slide_09_sensitivity.svg',
+            'svg_output/slide_10_breakeven.svg',
+            'svg_output/slide_11_conclusion.svg',
+            'svg_output/slide_12_recommendation.svg'
+        ];
+        
+        let currentSlide = 0;
+        
+        function openFullscreen(index) {
+            currentSlide = index;
+            updateFullscreen();
+            document.getElementById('fullscreen').classList.add('active');
+        }
+        
+        function closeFullscreen() {
+            document.getElementById('fullscreen').classList.remove('active');
+        }
+        
+        function updateFullscreen() {
+            document.getElementById('fullscreen-img').src = slides[currentSlide];
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === slides.length - 1;
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateFullscreen();
+            }
+        }
+        
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateFullscreen();
+            }
+        }
+        
+        // 键盘导航
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('fullscreen').classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeFullscreen();
+                } else if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
