@@ -1,0 +1,106 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EEF2FF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="spectrumGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DBEAFE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EFF6FF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EDE9FE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F5F3FF;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="6" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1080" height="1080" fill="url(#bgGradient)"/>
+  
+  <!-- 标题 -->
+  <text x="540" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="64" font-weight="800" fill="#1E293B" text-anchor="middle">
+    自主性光谱
+  </text>
+  <text x="540" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="500" fill="#64748B" text-anchor="middle">
+    Agentic AI 的核心概念
+  </text>
+  
+  <!-- 左侧卡片 - 低自主性 -->
+  <rect x="80" y="300" width="400" height="320" fill="url(#cardGradient1)" stroke="#3B82F6" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 左侧图标 - 清单符号 -->
+  <rect x="230" y="340" width="100" height="120" fill="none" stroke="#3B82F6" stroke-width="5" rx="12"/>
+  <line x1="250" y1="375" x2="310" y2="375" stroke="#3B82F6" stroke-width="5" stroke-linecap="round"/>
+  <line x1="250" y1="410" x2="310" y2="410" stroke="#3B82F6" stroke-width="5" stroke-linecap="round"/>
+  <line x1="250" y1="445" x2="290" y2="445" stroke="#3B82F6" stroke-width="5" stroke-linecap="round"/>
+  
+  <text x="280" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="44" font-weight="700" fill="#1E40AF" text-anchor="middle">
+    低自主性
+  </text>
+  <text x="280" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="500" fill="#475569" text-anchor="middle">
+    <tspan x="280" dy="0">明确定义步骤</tspan>
+    <tspan x="280" dy="40">更可控、稳定</tspan>
+  </text>
+  
+  <!-- 右侧卡片 - 高自主性 -->
+  <rect x="600" y="300" width="400" height="320" fill="url(#cardGradient2)" stroke="#8B5CF6" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 右侧图标 - 星星/火花 -->
+  <circle cx="800" cy="400" r="50" fill="none" stroke="#8B5CF6" stroke-width="5"/>
+  <path d="M 800 345 L 810 380 L 845 390 L 810 400 L 800 435 L 790 400 L 755 390 L 790 380 Z" fill="#8B5CF6" filter="url(#glow)"/>
+  <circle cx="770" cy="370" r="4" fill="#A855F7"/>
+  <circle cx="830" cy="370" r="4" fill="#A855F7"/>
+  <circle cx="770" cy="420" r="4" fill="#A855F7"/>
+  <circle cx="830" cy="420" r="4" fill="#A855F7"/>
+  
+  <text x="800" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="44" font-weight="700" fill="#6B21A8" text-anchor="middle">
+    高自主性
+  </text>
+  <text x="800" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="500" fill="#475569" text-anchor="middle">
+    <tspan x="800" dy="0">AI 自主决策</tspan>
+    <tspan x="800" dy="40">更创新、灵活</tspan>
+  </text>
+  
+  <!-- 渐变光谱条 -->
+  <rect x="180" y="700" width="720" height="90" fill="url(#spectrumGradient)" rx="45" filter="url(#shadow)"/>
+  <rect x="180" y="700" width="720" height="90" fill="#FFFFFF" rx="45" opacity="0.1"/>
+  
+  <!-- 光谱两端标签 -->
+  <text x="220" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#3B82F6" text-anchor="start">
+    低
+  </text>
+  <text x="860" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#8B5CF6" text-anchor="end">
+    高
+  </text>
+  
+  <!-- 底部说明 -->
+  <rect x="180" y="920" width="720" height="90" fill="#FFFFFF" rx="20" filter="url(#shadow)"/>
+  <rect x="180" y="920" width="720" height="90" fill="url(#spectrumGradient)" rx="20" opacity="0.05"/>
+  <text x="540" y="975" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="30" font-weight="600" fill="#1E293B" text-anchor="middle">
+    💡 Agentic AI 是一个自主性的光谱
+  </text>
+</svg>

@@ -1,0 +1,110 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EEF2FF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cyanCard" x1="0%" y1="0%" x2="120%" y2="120%">
+      <stop offset="0%" style="stop-color:#CFFAFE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A5F3FC;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenCard" x1="0%" y1="0%" x2="120%" y2="120%">
+      <stop offset="0%" style="stop-color:#D1FAE5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A7F3D0;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="6" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#1E293B"/>
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1080" height="1080" fill="url(#bgGradient)"/>
+  
+  <!-- 标题 -->
+  <text x="540" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="62" font-weight="800" fill="#1E293B" text-anchor="middle">
+    反思模式
+  </text>
+  <text x="540" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="500" fill="#64748B" text-anchor="middle">
+    Reflection Pattern
+  </text>
+  
+  <!-- 步骤1：生成草稿 -->
+  <rect x="100" y="260" width="380" height="300" fill="url(#cyanCard)" stroke="#06B6D4" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 文档图标 -->
+  <rect x="250" y="315" width="100" height="130" fill="none" stroke="#0E7490" stroke-width="6" rx="12"/>
+  <line x1="270" y1="350" x2="330" y2="350" stroke="#0E7490" stroke-width="4" stroke-linecap="round"/>
+  <line x1="270" y1="380" x2="330" y2="380" stroke="#0E7490" stroke-width="4" stroke-linecap="round"/>
+  <line x1="270" y1="410" x2="310" y2="410" stroke="#0E7490" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 270 325 L 270 315 L 280 315" stroke="#0E7490" stroke-width="6" stroke-linecap="round" fill="none"/>
+  
+  <text x="290" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="700" fill="#0E7490" text-anchor="middle">
+    步骤 1
+  </text>
+  <text x="290" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="600" fill="#1E293B" text-anchor="middle">
+    生成草稿
+  </text>
+  
+  <!-- 箭头 -->
+  <line x1="490" y1="410" x2="590" y2="410" stroke="#1E293B" stroke-width="5" marker-end="url(#arrowhead)"/>
+  <text x="540" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#475569" text-anchor="middle">
+    然后
+  </text>
+  
+  <!-- 步骤2:反思 & 改进 -->
+  <rect x="600" y="260" width="380" height="300" fill="url(#greenCard)" stroke="#10B981" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 循环箭头图标 -->
+  <path d="M 750 340 Q 750 315 775 315 Q 800 315 800 340 L 800 395 Q 800 420 775 420 Q 750 420 750 395" fill="none" stroke="#047857" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="808,340 818,333 818,347" fill="#047857"/>
+  <circle cx="830" cy="367" r="6" fill="#10B981"/>
+  <circle cx="845" cy="347" r="5" fill="#10B981"/>
+  <circle cx="845" cy="387" r="5" fill="#10B981"/>
+  <path d="M 720 367 L 735 367" stroke="#047857" stroke-width="4" stroke-linecap="round"/>
+  
+  <text x="790" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="700" fill="#047857" text-anchor="middle">
+    步骤 2
+  </text>
+  <text x="790" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="600" fill="#1E293B" text-anchor="middle">
+    反思 &amp; 改进
+  </text>
+  
+  <!-- 对比结果区域 -->
+  <rect x="100" y="630" width="880" height="370" fill="#FFFFFF" rx="24" filter="url(#shadow)"/>
+  <rect x="100" y="630" width="880" height="370" fill="url(#bgGradient)" rx="24" opacity="0.3"/>
+  
+  <text x="540" y="705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="40" font-weight="700" fill="#1E293B" text-anchor="middle">
+    效果对比
+  </text>
+  
+  <!-- 左侧：一次性输出 -->
+  <rect x="140" y="750" width="380" height="200" fill="#FEF2F2" stroke="#EF4444" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="330" y="810" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="600" fill="#DC2626" text-anchor="middle">
+    ❌ 一次性输出
+  </text>
+  <text x="330" y="865" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="500" fill="#64748B" text-anchor="middle">
+    <tspan x="330" dy="0">缺少反思</tspan>
+    <tspan x="330" dy="38">质量不稳定</tspan>
+  </text>
+  
+  <!-- 右侧：草稿+反思 -->
+  <rect x="560" y="750" width="380" height="200" fill="#F0FDF4" stroke="#10B981" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="750" y="810" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="34" font-weight="600" fill="#059669" text-anchor="middle">
+    ✅ 草稿 + 反思
+  </text>
+  <text x="750" y="865" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="500" fill="#64748B" text-anchor="middle">
+    <tspan x="750" dy="0">持续优化</tspan>
+    <tspan x="750" dy="38">质量更高</tspan>
+  </text>
+</svg>

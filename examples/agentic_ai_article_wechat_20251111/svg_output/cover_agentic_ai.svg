@@ -1,0 +1,75 @@
+<svg viewBox="0 0 900 383" width="900" height="383" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A0E27;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#581C87;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A78BFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowOrb" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#60A5FA;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="900" height="383" fill="url(#bgGradient)"/>
+  
+  <!-- 光晕装饰 -->
+  <circle cx="150" cy="80" r="120" fill="url(#glowOrb)" opacity="0.3"/>
+  <circle cx="750" cy="300" r="150" fill="url(#glowOrb)" opacity="0.25"/>
+  
+  <!-- 网格装饰 -->
+  <g opacity="0.1" stroke="#60A5FA" stroke-width="1">
+    <line x1="0" y1="100" x2="900" y2="100"/>
+    <line x1="0" y1="200" x2="900" y2="200"/>
+    <line x1="0" y1="300" x2="900" y2="300"/>
+  </g>
+  
+  <!-- 装饰节点网络 -->
+  <g opacity="0.6">
+    <circle cx="120" cy="80" r="5" fill="#60A5FA" filter="url(#glow)"/>
+    <circle cx="200" cy="120" r="4" fill="#A78BFA" filter="url(#glow)"/>
+    <circle cx="280" cy="90" r="6" fill="#06B6D4" filter="url(#glow)"/>
+    <circle cx="720" cy="100" r="5" fill="#60A5FA" filter="url(#glow)"/>
+    <circle cx="800" cy="140" r="4" fill="#A78BFA" filter="url(#glow)"/>
+    <circle cx="750" cy="70" r="5" fill="#06B6D4" filter="url(#glow)"/>
+    
+    <!-- 连接线 -->
+    <line x1="120" y1="80" x2="200" y2="120" stroke="#60A5FA" stroke-width="2" opacity="0.4"/>
+    <line x1="200" y1="120" x2="280" y2="90" stroke="#A78BFA" stroke-width="2" opacity="0.4"/>
+    <line x1="720" y1="100" x2="800" y2="140" stroke="#60A5FA" stroke-width="2" opacity="0.4"/>
+    <line x1="800" y1="140" x2="750" y2="70" stroke="#06B6D4" stroke-width="2" opacity="0.4"/>
+  </g>
+  
+  <!-- 装饰几何 -->
+  <rect x="660" y="270" width="180" height="70" fill="none" stroke="url(#textGlow)" stroke-width="2" rx="12" opacity="0.3"/>
+  <rect x="60" y="250" width="140" height="90" fill="none" stroke="url(#textGlow)" stroke-width="2" rx="12" opacity="0.25"/>
+  
+  <!-- 主标题（带发光效果） -->
+  <text x="450" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="64" font-weight="800" fill="url(#textGlow)" text-anchor="middle" filter="url(#glow)">
+    Agentic AI
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="450" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="500" fill="#E0E7FF" text-anchor="middle" opacity="0.95">
+    智能体工作流：让 AI 成为你的智能员工
+  </text>
+  
+  <!-- 底部标签 -->
+  <rect x="315" y="270" width="270" height="44" fill="#1E3A8A" rx="22" opacity="0.4" stroke="#60A5FA" stroke-width="1.5"/>
+  <text x="450" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    🧠 不再是"一问一答"
+  </text>
+</svg>

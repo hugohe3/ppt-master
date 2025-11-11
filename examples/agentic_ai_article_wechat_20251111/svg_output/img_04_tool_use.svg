@@ -1,0 +1,142 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EEF2FF;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="aiGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="toolCard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FDE68A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1080" height="1080" fill="url(#bgGradient)"/>
+  
+  <!-- 标题 -->
+  <text x="540" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="62" font-weight="800" fill="#1E293B" text-anchor="middle">
+    工具使用
+  </text>
+  <text x="540" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="500" fill="#64748B" text-anchor="middle">
+    Tool Use - 让 AI 能"动手"做事
+  </text>
+  
+  <!-- 连接线（从中心到各工具）环形布局 -->
+  <g opacity="0.25">
+    <!-- 上方 -->
+    <line x1="540" y1="440" x2="540" y2="320" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <!-- 右上 -->
+    <line x1="598" y1="463" x2="715" y2="380" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <!-- 右下 -->
+    <line x1="598" y1="577" x2="715" y2="660" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <!-- 下方 -->
+    <line x1="540" y1="600" x2="540" y2="720" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <!-- 左下 -->
+    <line x1="482" y1="577" x2="365" y2="660" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <!-- 左上 -->
+    <line x1="482" y1="463" x2="365" y2="380" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="8,4"/>
+  </g>
+  
+  <!-- 中央 AI 助手（缩小） -->
+  <circle cx="540" cy="520" r="90" fill="url(#aiGradient)" filter="url(#glow)"/>
+  <circle cx="540" cy="520" r="76" fill="#FFFFFF" opacity="0.15"/>
+  <circle cx="540" cy="520" r="62" fill="url(#aiGradient)" opacity="0.3"/>
+  
+  <!-- AI 笑脸 -->
+  <circle cx="520" cy="505" r="8" fill="#FFFFFF"/>
+  <circle cx="560" cy="505" r="8" fill="#FFFFFF"/>
+  <path d="M 500 530 Q 540 555 580 530" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+  
+  <text x="540" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#6366F1" text-anchor="middle">
+    AI 助手
+  </text>
+  
+  <!-- 工具1：创建预约（上方） -->
+  <rect x="450" y="220" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="540" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    ➕
+  </text>
+  <text x="540" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="540" dy="0">make_appointment</tspan>
+    <tspan x="540" dy="26" font-size="17" fill="#64748B">创建预约</tspan>
+  </text>
+  
+  <!-- 工具2：检查日历（右上） -->
+  <rect x="730" y="310" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="820" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    📅
+  </text>
+  <text x="820" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="820" dy="0">check_calendar</tspan>
+    <tspan x="820" dy="26" font-size="17" fill="#64748B">检查日历</tspan>
+  </text>
+  
+  <!-- 工具3：网页搜索（右下） -->
+  <rect x="730" y="590" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="820" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    🔍
+  </text>
+  <text x="820" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="820" dy="0">web_search</tspan>
+    <tspan x="820" dy="26" font-size="17" fill="#64748B">网页搜索</tspan>
+  </text>
+  
+  <!-- 工具4：删除预约（下方） -->
+  <rect x="450" y="750" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="540" y="795" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    🗑️
+  </text>
+  <text x="540" y="845" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="540" dy="0">delete_appointment</tspan>
+    <tspan x="540" dy="26" font-size="17" fill="#64748B">删除预约</tspan>
+  </text>
+  
+  <!-- 工具5：发送邮件（左下） -->
+  <rect x="170" y="590" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="260" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    ✉️
+  </text>
+  <text x="260" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="260" dy="0">send_email</tspan>
+    <tspan x="260" dy="26" font-size="17" fill="#64748B">发送邮件</tspan>
+  </text>
+  
+  <!-- 工具6：执行代码（左上） -->
+  <rect x="170" y="310" width="180" height="130" fill="url(#toolCard)" stroke="#D97706" stroke-width="3" rx="16" filter="url(#shadow)"/>
+  <text x="260" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="38" font-weight="500" fill="#B45309" text-anchor="middle">
+    💻
+  </text>
+  <text x="260" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E293B" text-anchor="middle">
+    <tspan x="260" dy="0">execute_code</tspan>
+    <tspan x="260" dy="26" font-size="17" fill="#64748B">执行代码</tspan>
+  </text>
+  
+  <!-- 底部说明 -->
+  <rect x="200" y="950" width="680" height="80" fill="#FFFFFF" rx="18" filter="url(#shadow)"/>
+  <rect x="200" y="950" width="680" height="80" fill="#FEF3C7" rx="18" opacity="0.3"/>
+  <text x="540" y="1000" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+    💡 必须在提示中明确告诉 AI 有哪些工具
+  </text>
+</svg>

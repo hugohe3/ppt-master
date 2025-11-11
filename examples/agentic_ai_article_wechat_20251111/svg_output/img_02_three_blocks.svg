@@ -1,0 +1,117 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EEF2FF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blueCard" x1="0%" y1="0%" x2="120%" y2="120%">
+      <stop offset="0%" style="stop-color:#DBEAFE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BFDBFE;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleCard" x1="0%" y1="0%" x2="120%" y2="120%">
+      <stop offset="0%" style="stop-color:#EDE9FE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DDD6FE;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cyanCard" x1="0%" y1="0%" x2="120%" y2="120%">
+      <stop offset="0%" style="stop-color:#CFFAFE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A5F3FC;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+      <feOffset dx="0" dy="8" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.2"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1080" height="1080" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰圆点 -->
+  <circle cx="100" cy="150" r="6" fill="#3B82F6" opacity="0.2"/>
+  <circle cx="980" cy="200" r="8" fill="#8B5CF6" opacity="0.2"/>
+  <circle cx="150" cy="950" r="5" fill="#06B6D4" opacity="0.2"/>
+  
+  <!-- 标题 -->
+  <text x="540" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="58" font-weight="800" fill="#1E293B" text-anchor="middle">
+    构建 Agentic AI 的三个积木
+  </text>
+  
+  <!-- 卡片1：模型 Models -->
+  <rect x="140" y="200" width="800" height="240" fill="url(#blueCard)" stroke="#3B82F6" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 大脑图标 -->
+  <circle cx="260" cy="320" r="60" fill="none" stroke="#1E40AF" stroke-width="6"/>
+  <path d="M 235 305 Q 248 290 260 305 Q 272 290 285 305" fill="none" stroke="#1E40AF" stroke-width="5" stroke-linecap="round"/>
+  <path d="M 235 335 Q 248 350 260 335 Q 272 350 285 335" fill="none" stroke="#1E40AF" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="245" cy="315" r="5" fill="#1E40AF"/>
+  <circle cx="275" cy="315" r="5" fill="#1E40AF"/>
+  <line x1="230" y1="320" x2="220" y2="310" stroke="#1E40AF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="290" y1="320" x2="300" y2="310" stroke="#1E40AF" stroke-width="4" stroke-linecap="round"/>
+  
+  <text x="400" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="50" font-weight="700" fill="#1E40AF" text-anchor="start">
+    模型 Models
+  </text>
+  <text x="400" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="500" fill="#475569" text-anchor="start">
+    <tspan x="400" dy="0">核心大脑 🧠</tspan>
+    <tspan x="400" dy="45" font-size="28" fill="#64748B">Claude、GPT、Kimi 等大模型</tspan>
+  </text>
+  
+  <!-- 卡片2：工具 Tools -->
+  <rect x="140" y="480" width="800" height="240" fill="url(#purpleCard)" stroke="#8B5CF6" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 工具图标 -->
+  <rect x="220" y="585" width="80" height="15" fill="#6B21A8" rx="7"/>
+  <circle cx="260" cy="620" r="35" fill="none" stroke="#6B21A8" stroke-width="6"/>
+  <rect x="235" y="635" width="50" height="40" fill="none" stroke="#6B21A8" stroke-width="6" rx="8"/>
+  <line x1="250" y1="600" x2="250" y2="585" stroke="#6B21A8" stroke-width="5" stroke-linecap="round"/>
+  <line x1="270" y1="600" x2="270" y2="585" stroke="#6B21A8" stroke-width="5" stroke-linecap="round"/>
+  
+  <text x="400" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="50" font-weight="700" fill="#6B21A8" text-anchor="start">
+    工具 Tools
+  </text>
+  <text x="400" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="500" fill="#475569" text-anchor="start">
+    <tspan x="400" dy="0">执行抓手 🛠️</tspan>
+    <tspan x="400" dy="45" font-size="28" fill="#64748B">搜索、数据库、代码执行...</tspan>
+  </text>
+  
+  <!-- 卡片3：评估 Evals -->
+  <rect x="140" y="760" width="800" height="240" fill="url(#cyanCard)" stroke="#06B6D4" stroke-width="3" rx="24" filter="url(#shadow)"/>
+  
+  <!-- 图表图标 -->
+  <rect x="215" y="870" width="90" height="80" fill="none" stroke="#0E7490" stroke-width="6" rx="8"/>
+  <rect x="230" y="915" width="16" height="30" fill="#0E7490" rx="3"/>
+  <rect x="256" y="900" width="16" height="45" fill="#0E7490" rx="3"/>
+  <rect x="275" y="885" width="16" height="60" fill="#0E7490" rx="3"/>
+  <path d="M 225 905 L 240 895 L 255 885 L 270 875" stroke="#0E7490" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <text x="400" y="855" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="50" font-weight="700" fill="#0E7490" text-anchor="start">
+    评估 Evals
+  </text>
+  <text x="400" y="910" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="500" fill="#475569" text-anchor="start">
+    <tspan x="400" dy="0">质检考核 📊</tspan>
+    <tspan x="400" dy="45" font-size="28" fill="#64748B">构建 AI 智能体的另一半</tspan>
+  </text>
+  
+  <!-- 连接符号 -->
+  <g opacity="0.4">
+    <line x1="540" y1="440" x2="540" y2="480" stroke="#8B5CF6" stroke-width="4" stroke-dasharray="8,4"/>
+    <line x1="540" y1="720" x2="540" y2="760" stroke="#06B6D4" stroke-width="4" stroke-dasharray="8,4"/>
+  </g>
+  
+  <text x="540" y="1040" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="40" font-weight="700" fill="#1E293B" text-anchor="middle">
+    ➕ ➕ = 🚀
+  </text>
+</svg>
