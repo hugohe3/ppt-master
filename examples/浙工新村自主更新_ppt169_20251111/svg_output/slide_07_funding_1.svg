@@ -1,0 +1,153 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="180" height="36" rx="4" fill="#005587" />
+    <text x="150" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        03 资金来源
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        多元筹资模式：居民自筹+政府补贴
+    </text>
+
+    <!-- 总投资数据 -->
+    <g transform="translate(100, 170)">
+        <rect x="0" y="0" width="480" height="115" rx="8" fill="#E8F4F8" />
+        <text x="240" y="38"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#7F8C8D" text-anchor="middle">
+            项目总投资
+        </text>
+        <text x="240" y="93"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="60" fill="#005587" text-anchor="middle" font-weight="bold">
+            5.3 亿元
+        </text>
+    </g>
+
+    <!-- 环形图（饼图）- 资金占比 -->
+    <g transform="translate(830, 280)">
+        <!-- 小块 - 政府补贴 11% -->
+        <path d="M 0,-130 A 130,130 0 0,1 82.81,-100.23 L 0,0 Z" fill="#FF6B35" />
+
+        <!-- 大块 - 业主自筹 89% -->
+        <path d="M 82.81,-100.23 A 130,130 0 1,1 0,-130 L 0,0 Z" fill="#005587" />
+
+        <!-- 内圈白色 -->
+        <circle cx="0" cy="0" r="75" fill="#F8F9FA" />
+
+        <!-- 中心文字 -->
+        <text x="0" y="-10"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#7F8C8D" text-anchor="middle">
+            资金结构
+        </text>
+        <text x="0" y="25"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="32" fill="#005587" text-anchor="middle" font-weight="bold">
+            100%
+        </text>
+
+        <!-- 图例 -->
+        <g transform="translate(-110, 165)">
+            <rect x="0" y="0" width="20" height="20" fill="#005587" />
+            <text x="30" y="16"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="18" fill="#2C3E50">
+                业主自筹：4.7亿（89%）
+            </text>
+
+            <rect x="0" y="35" width="20" height="20" fill="#FF6B35" />
+            <text x="30" y="51"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="18" fill="#2C3E50">
+                政府补贴：0.6亿（11%）
+            </text>
+        </g>
+    </g>
+
+    <!-- 左侧详细说明 -->
+    <g transform="translate(100, 320)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#003F6C" font-weight="bold">
+            资金构成详情
+        </text>
+
+        <!-- 业主自筹部分 -->
+        <rect x="0" y="30" width="520" height="120" rx="8" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <rect x="0" y="30" width="8" height="120" rx="4" fill="#005587" />
+        <text x="25" y="58"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="#005587" font-weight="bold">
+            业主自筹资金 4.7亿元
+        </text>
+        <text x="25" y="83"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            • 原面积部分：1,350元/㎡（优惠价）
+        </text>
+        <text x="25" y="106"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            • 增购面积：34,520元/㎡（市场价，最多20㎡）
+        </text>
+        <text x="25" y="127"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            • 占总投资比例：80%以上
+        </text>
+
+        <!-- 政府支持部分 -->
+        <rect x="0" y="160" width="520" height="105" rx="8" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <rect x="0" y="160" width="8" height="105" rx="4" fill="#FF6B35" />
+        <text x="25" y="188"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="#FF6B35" font-weight="bold">
+            政府补贴资金 约0.6亿元
+        </text>
+        <text x="25" y="213"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            • 老旧小区改造专项补助
+        </text>
+        <text x="25" y="236"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            • 加装电梯补助、未来社区试点资金 | 困难家庭救助托底
+        </text>
+    </g>
+
+    <!-- 底部特色说明 -->
+    <g transform="translate(100, 590)">
+        <rect x="0" y="0" width="1100" height="70" rx="6" fill="#E8F8F5" />
+        <text x="25" y="30"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2ECC71" font-weight="bold">
+            ✓ 创新点
+        </text>
+        <text x="25" y="55"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            "居民投入+政府补贴"共建模式，减轻财政压力，激发居民内生动力，实现政府与居民双赢。
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        7
+    </text>
+</svg>

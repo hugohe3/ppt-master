@@ -1,0 +1,165 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="180" height="36" rx="4" fill="#005587" />
+    <text x="150" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        01 政策背景
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        主管部门与审批创新
+    </text>
+
+    <!-- 组织架构图 -->
+    <g transform="translate(100, 200)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#003F6C" font-weight="bold">
+            主管部门架构
+        </text>
+
+        <!-- 顶层 -->
+        <rect x="80" y="40" width="340" height="75" rx="6" fill="#005587" />
+        <text x="250" y="85"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="white" text-anchor="middle" font-weight="bold">
+            杭州市拱墅区政府
+        </text>
+
+        <!-- 连接线 -->
+        <line x1="250" y1="115" x2="130" y2="165" stroke="#4A90E2" stroke-width="3" />
+        <line x1="250" y1="115" x2="370" y2="165" stroke="#4A90E2" stroke-width="3" />
+
+        <!-- 左侧执行部门 -->
+        <rect x="0" y="165" width="260" height="75" rx="6" fill="#4A90E2" />
+        <text x="130" y="210"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="white" text-anchor="middle" font-weight="600">
+            拱墅区住建局
+        </text>
+
+        <!-- 右侧执行部门 -->
+        <rect x="280" y="165" width="260" height="75" rx="6" fill="#4A90E2" />
+        <text x="410" y="210"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="white" text-anchor="middle" font-weight="600">
+            朝晖街道办事处
+        </text>
+
+        <!-- 职责说明 -->
+        <text x="10" y="270"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            负责：方案报批、资金监管
+        </text>
+        <text x="290" y="270"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            负责：组织协调、施工管理
+        </text>
+    </g>
+
+    <!-- 右侧政策突破点 -->
+    <g transform="translate(680, 200)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#003F6C" font-weight="bold">
+            审批创新与政策突破
+        </text>
+
+        <!-- 突破点1 -->
+        <rect x="0" y="40" width="520" height="86" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <circle cx="25" cy="83" r="10" fill="#FF6B35" />
+        <text x="50" y="68"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50" font-weight="600">
+            同意率要求突破
+        </text>
+        <text x="50" y="94"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            原要求100%同意，实际99.82%获批
+        </text>
+        <text x="50" y="116"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            参考单栋危房重建政策特批
+        </text>
+
+        <!-- 突破点2 -->
+        <rect x="0" y="146" width="520" height="86" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <circle cx="25" cy="189" r="10" fill="#FF6B35" />
+        <text x="50" y="174"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50" font-weight="600">
+            规划指标调整
+        </text>
+        <text x="50" y="200"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            整片小区重建允许调整容积率
+        </text>
+        <text x="50" y="222"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            突破既有审批通道限制
+        </text>
+
+        <!-- 突破点3 -->
+        <rect x="0" y="252" width="520" height="86" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <circle cx="25" cy="295" r="10" fill="#FF6B35" />
+        <text x="50" y="280"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50" font-weight="600">
+            容积率奖励政策
+        </text>
+        <text x="50" y="306"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            绿色建筑容积率奖励
+        </text>
+        <text x="50" y="328"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            免缴土地增容费用
+        </text>
+    </g>
+
+    <!-- 底部注释 -->
+    <g transform="translate(100, 545)">
+        <rect x="0" y="0" width="1100" height="100" rx="6" fill="#FFF4E6" />
+        <text x="25" y="35"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#FF6B35" font-weight="bold">
+            ⚠ 政策意义
+        </text>
+        <text x="25" y="63"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            浙工新村作为全国首例，在缺乏明确法律依据情况下，政府承担政策风险推动创新，
+        </text>
+        <text x="25" y="85"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#2C3E50">
+            为省级《自主更新试点指导意见》（2024.4）的出台提供了实践基础。
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        4
+    </text>
+</svg>

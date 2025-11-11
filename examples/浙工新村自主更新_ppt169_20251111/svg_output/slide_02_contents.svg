@@ -1,0 +1,127 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 标题 -->
+    <text x="60" y="100"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="42" font-weight="bold" fill="#005587">
+        目录
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="60" y1="130" x2="280" y2="130" stroke="#4A90E2" stroke-width="3" />
+
+    <!-- 目录项容器 -->
+    <g transform="translate(120, 210)">
+        <!-- 第1项 -->
+        <g>
+            <circle cx="0" cy="0" r="12" fill="#005587" />
+            <text x="40" y="7"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="28" fill="#2C3E50" font-weight="600">
+                01 政策背景
+            </text>
+            <text x="40" y="42"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="18" fill="#7F8C8D">
+                国家、省市政策演进与审批创新
+            </text>
+        </g>
+
+        <!-- 第2项 -->
+        <g transform="translate(0, 100)">
+            <circle cx="0" cy="0" r="12" fill="#005587" />
+            <text x="40" y="7"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="28" fill="#2C3E50" font-weight="600">
+                02 居民参与情况
+            </text>
+            <text x="40" y="42"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="18" fill="#7F8C8D">
+                自主更新委员会与协商机制
+            </text>
+        </g>
+
+        <!-- 第3项 -->
+        <g transform="translate(0, 200)">
+            <circle cx="0" cy="0" r="12" fill="#005587" />
+            <text x="40" y="7"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="28" fill="#2C3E50" font-weight="600">
+                03 资金来源
+            </text>
+            <text x="40" y="42"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="18" fill="#7F8C8D">
+                多元筹资与差别定价机制
+            </text>
+        </g>
+
+        <!-- 右侧栏目 -->
+        <g transform="translate(580, 0)">
+            <!-- 第4项 -->
+            <g>
+                <circle cx="0" cy="0" r="12" fill="#005587" />
+                <text x="40" y="7"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="28" fill="#2C3E50" font-weight="600">
+                    04 实施进度
+                </text>
+                <text x="40" y="42"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="18" fill="#7F8C8D">
+                    十年历程与关键节点
+                </text>
+            </g>
+
+            <!-- 第5项 -->
+            <g transform="translate(0, 100)">
+                <circle cx="0" cy="0" r="12" fill="#005587" />
+                <text x="40" y="7"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="28" fill="#2C3E50" font-weight="600">
+                    05 建筑规划
+                </text>
+                <text x="40" y="42"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="18" fill="#7F8C8D">
+                    改造前后对比与配套提升
+                </text>
+            </g>
+
+            <!-- 第6项 -->
+            <g transform="translate(0, 200)">
+                <circle cx="0" cy="0" r="12" fill="#005587" />
+                <text x="40" y="7"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="28" fill="#2C3E50" font-weight="600">
+                    06 经验与挑战
+                </text>
+                <text x="40" y="42"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="18" fill="#7F8C8D">
+                    成功亮点与待解难题
+                </text>
+            </g>
+        </g>
+    </g>
+
+    <!-- 底部装饰图案 -->
+    <g opacity="0.15">
+        <rect x="950" y="450" width="280" height="220" rx="8" fill="#4A90E2" />
+        <circle cx="1150" cy="350" r="60" fill="#005587" />
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        2
+    </text>
+</svg>

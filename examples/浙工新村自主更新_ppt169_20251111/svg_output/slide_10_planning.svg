@@ -1,0 +1,178 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="180" height="36" rx="4" fill="#005587" />
+    <text x="150" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        05 建筑规划
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        从老旧危房到现代社区
+    </text>
+
+    <!-- 改造前后对比 -->
+    <g transform="translate(100, 190)">
+        <!-- 改造前 -->
+        <g>
+            <rect x="0" y="0" width="220" height="50" rx="6" fill="#7F8C8D" />
+            <text x="110" y="34"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+                改造前
+            </text>
+
+            <!-- 照片占位框 -->
+            <rect x="0" y="60" width="500" height="260" rx="8" fill="#E8F4F8" stroke="#4A90E2" stroke-width="2" stroke-dasharray="8,4" />
+            <text x="250" y="175"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="20" fill="#7F8C8D" text-anchor="middle">
+                [照片占位：改造前旧貌]
+            </text>
+            <text x="250" y="205"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D" text-anchor="middle">
+                建议尺寸：500×260px
+            </text>
+
+            <!-- 说明文字 -->
+            <g transform="translate(0, 345)">
+                <text x="0" y="0"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="17" fill="#2C3E50" font-weight="600">
+                    • 14幢6层砖混结构，4幢C级危房
+                </text>
+                <text x="0" y="24"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="17" fill="#2C3E50" font-weight="600">
+                    • 无电梯、停车困难、环境差
+                </text>
+                <text x="0" y="48"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="16" fill="#7F8C8D">
+                    容积率：约 1.8
+                </text>
+            </g>
+        </g>
+
+        <!-- 箭头 -->
+        <g transform="translate(525, 185)">
+            <line x1="0" y1="0" x2="50" y2="0" stroke="#4A90E2" stroke-width="4" />
+            <polygon points="50,0 38,7 38,-7" fill="#4A90E2" />
+        </g>
+
+        <!-- 改造后 -->
+        <g transform="translate(600, 0)">
+            <rect x="0" y="0" width="220" height="50" rx="6" fill="#2ECC71" />
+            <text x="110" y="34"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="24" fill="white" text-anchor="middle" font-weight="bold">
+                改造后
+            </text>
+
+            <!-- 照片占位框 -->
+            <rect x="0" y="60" width="500" height="260" rx="8" fill="#E8F8F5" stroke="#2ECC71" stroke-width="2" stroke-dasharray="8,4" />
+            <text x="250" y="175"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="20" fill="#7F8C8D" text-anchor="middle">
+                [照片占位：改造后新貌]
+            </text>
+            <text x="250" y="205"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D" text-anchor="middle">
+                建议尺寸：500×260px
+            </text>
+
+            <!-- 说明文字 -->
+            <g transform="translate(0, 345)">
+                <text x="0" y="0"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="17" fill="#2C3E50" font-weight="600">
+                    • 7幢11层现代电梯房，8.1万㎡
+                </text>
+                <text x="0" y="24"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="17" fill="#2C3E50" font-weight="600">
+                    • 地下车库450个、人车分流
+                </text>
+                <text x="0" y="48"
+                    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                    font-size="16" fill="#7F8C8D">
+                    容积率：约 2.1（↑15.7%）
+                </text>
+            </g>
+        </g>
+    </g>
+
+    <!-- 配套设施数据 -->
+    <g transform="translate(170, 605)">
+        <!-- 卡片1：住宅户数 -->
+        <rect x="0" y="0" width="240" height="70" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <text x="120" y="28"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#7F8C8D" text-anchor="middle">
+            住宅户数
+        </text>
+        <text x="120" y="58"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="34" fill="#005587" text-anchor="middle" font-weight="bold">
+            548户
+        </text>
+
+        <!-- 卡片2：地下车位 -->
+        <rect x="260" y="0" width="240" height="70" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <text x="380" y="28"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#7F8C8D" text-anchor="middle">
+            地下车位
+        </text>
+        <text x="380" y="58"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="34" fill="#FF6B35" text-anchor="middle" font-weight="bold">
+            450个
+        </text>
+
+        <!-- 卡片3：电梯配置 -->
+        <rect x="520" y="0" width="240" height="70" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <text x="640" y="28"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#7F8C8D" text-anchor="middle">
+            电梯配置
+        </text>
+        <text x="640" y="58"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="34" fill="#2ECC71" text-anchor="middle" font-weight="bold">
+            全覆盖
+        </text>
+
+        <!-- 卡片4：公共空间 -->
+        <rect x="780" y="0" width="240" height="70" rx="6" fill="white" stroke="#E0E6ED" stroke-width="2" />
+        <text x="900" y="28"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#7F8C8D" text-anchor="middle">
+            公共空间
+        </text>
+        <text x="900" y="58"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="30" fill="#4A90E2" text-anchor="middle" font-weight="bold">
+            大幅提升
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        10
+    </text>
+</svg>

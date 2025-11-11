@@ -1,0 +1,179 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="180" height="36" rx="4" fill="#005587" />
+    <text x="150" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        01 政策背景
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        政策演进：从搁浅到突破
+    </text>
+
+    <!-- 时间轴主线 -->
+    <line x1="140" y1="240" x2="140" y2="600" stroke="#4A90E2" stroke-width="4" />
+
+    <!-- 2015年节点 -->
+    <g transform="translate(140, 240)">
+        <circle cx="0" cy="0" r="14" fill="#7F8C8D" />
+        <text x="40" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#7F8C8D" font-weight="bold">
+            2015年
+        </text>
+        <text x="40" y="22"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50">
+            原下城区政府提出重建方案
+        </text>
+        <text x="40" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            因故搁浅，未能推进
+        </text>
+    </g>
+
+    <!-- 2018年节点 -->
+    <g transform="translate(140, 350)">
+        <circle cx="0" cy="0" r="14" fill="#7F8C8D" />
+        <text x="40" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#7F8C8D" font-weight="bold">
+            2018年
+        </text>
+        <text x="40" y="22"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50">
+            开展入户民意调查
+        </text>
+        <text x="40" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            同意率未达90%，再次搁置
+        </text>
+    </g>
+
+    <!-- 2020年节点（国家政策） -->
+    <g transform="translate(140, 460)">
+        <circle cx="0" cy="0" r="14" fill="#FF6B35" />
+        <text x="40" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#FF6B35" font-weight="bold">
+            2020年
+        </text>
+        <text x="40" y="22"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50" font-weight="600">
+            国务院办公厅指导意见
+        </text>
+        <text x="40" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            全面推进城镇老旧小区改造
+        </text>
+    </g>
+
+    <!-- 2023年节点（项目启动） -->
+    <g transform="translate(140, 570)">
+        <circle cx="0" cy="0" r="16" fill="#2ECC71" />
+        <text x="40" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#2ECC71" font-weight="bold">
+            2023年5月
+        </text>
+        <text x="40" y="22"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2C3E50" font-weight="600">
+            浙工新村正式立项
+        </text>
+        <text x="40" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            杭州市发布城市更新实施意见
+        </text>
+    </g>
+
+    <!-- 右侧政策框架 -->
+    <g transform="translate(720, 220)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="28" fill="#003F6C" font-weight="bold">
+            关键政策文件
+        </text>
+
+        <!-- 国家层面 -->
+        <rect x="0" y="30" width="480" height="100" rx="6" fill="white" stroke="#ECF0F1" stroke-width="2" />
+        <rect x="0" y="30" width="8" height="100" rx="4" fill="#FF6B35" />
+        <text x="25" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#FF6B35" font-weight="bold">
+            国家层面
+        </text>
+        <text x="25" y="88"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            《关于全面推进城镇老旧小区改造
+        </text>
+        <text x="25" y="113"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            工作的指导意见》（2020）
+        </text>
+
+        <!-- 省级层面 -->
+        <rect x="0" y="160" width="480" height="100" rx="6" fill="white" stroke="#ECF0F1" stroke-width="2" />
+        <rect x="0" y="160" width="8" height="100" rx="4" fill="#4A90E2" />
+        <text x="25" y="190"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#4A90E2" font-weight="bold">
+            浙江省级
+        </text>
+        <text x="25" y="218"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            《关于稳步推进城镇老旧小区自主
+        </text>
+        <text x="25" y="243"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            更新试点工作的指导意见》（2024.4）
+        </text>
+
+        <!-- 市级层面 -->
+        <rect x="0" y="290" width="480" height="100" rx="6" fill="white" stroke="#ECF0F1" stroke-width="2" />
+        <rect x="0" y="290" width="8" height="100" rx="4" fill="#2ECC71" />
+        <text x="25" y="320"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2ECC71" font-weight="bold">
+            杭州市级
+        </text>
+        <text x="25" y="348"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            《全面推进城市更新的实施意见》
+        </text>
+        <text x="25" y="373"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            （2023.5）
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        3
+    </text>
+</svg>

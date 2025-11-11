@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杭州市浙工新村自主更新项目深度研究报告 - 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "微软雅黑", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .slide-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 3px solid #005587;
+        }
+
+        .slide-info {
+            padding: 15px;
+        }
+
+        .slide-number {
+            display: inline-block;
+            background: #005587;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .slide-title {
+            font-size: 1.1rem;
+            color: #2C3E50;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+        }
+
+        .modal-content {
+            margin: 2% auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+        }
+
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #FF6B35;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 40px;
+            padding: 20px 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 杭州市浙工新村自主更新项目深度研究报告</h1>
+            <p class="subtitle">全国首例居民自筹资金老旧小区重建案例分析 | 2025年11月</p>
+        </header>
+
+        <div class="slides-grid">
+            <div class="slide-card" onclick="openModal(0)">
+                <img src="svg_output/slide_01_cover.svg" alt="Slide 1">
+                <div class="slide-info">
+                    <span class="slide-number">01</span>
+                    <div class="slide-title">封面页</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(1)">
+                <img src="svg_output/slide_02_contents.svg" alt="Slide 2">
+                <div class="slide-info">
+                    <span class="slide-number">02</span>
+                    <div class="slide-title">目录</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(2)">
+                <img src="svg_output/slide_03_policy_bg_1.svg" alt="Slide 3">
+                <div class="slide-info">
+                    <span class="slide-number">03</span>
+                    <div class="slide-title">政策背景（上）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(3)">
+                <img src="svg_output/slide_04_policy_bg_2.svg" alt="Slide 4">
+                <div class="slide-info">
+                    <span class="slide-number">04</span>
+                    <div class="slide-title">政策背景（下）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(4)">
+                <img src="svg_output/slide_05_residents_1.svg" alt="Slide 5">
+                <div class="slide-info">
+                    <span class="slide-number">05</span>
+                    <div class="slide-title">居民参与情况（上）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(5)">
+                <img src="svg_output/slide_06_residents_2.svg" alt="Slide 6">
+                <div class="slide-info">
+                    <span class="slide-number">06</span>
+                    <div class="slide-title">居民参与情况（下）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(6)">
+                <img src="svg_output/slide_07_funding_1.svg" alt="Slide 7">
+                <div class="slide-info">
+                    <span class="slide-number">07</span>
+                    <div class="slide-title">资金来源（上）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(7)">
+                <img src="svg_output/slide_08_funding_2.svg" alt="Slide 8">
+                <div class="slide-info">
+                    <span class="slide-number">08</span>
+                    <div class="slide-title">资金来源（下）</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(8)">
+                <img src="svg_output/slide_09_timeline.svg" alt="Slide 9">
+                <div class="slide-info">
+                    <span class="slide-number">09</span>
+                    <div class="slide-title">实施进度</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(9)">
+                <img src="svg_output/slide_10_planning.svg" alt="Slide 10">
+                <div class="slide-info">
+                    <span class="slide-number">10</span>
+                    <div class="slide-title">建筑规划</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(10)">
+                <img src="svg_output/slide_11_success.svg" alt="Slide 11">
+                <div class="slide-info">
+                    <span class="slide-number">11</span>
+                    <div class="slide-title">成功经验</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(11)">
+                <img src="svg_output/slide_12_challenges.svg" alt="Slide 12">
+                <div class="slide-info">
+                    <span class="slide-number">12</span>
+                    <div class="slide-title">问题与挑战</div>
+                </div>
+            </div>
+
+            <div class="slide-card" onclick="openModal(12)">
+                <img src="svg_output/slide_13_conclusion.svg" alt="Slide 13">
+                <div class="slide-info">
+                    <span class="slide-number">13</span>
+                    <div class="slide-title">总结与展望</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>💡 点击任意幻灯片预览完整内容 | 使用方向键或导航按钮切换</p>
+            <p style="margin-top: 10px; opacity: 0.8;">PPT Master - AI驱动的多格式SVG内容生成系统 | 高端咨询风格</p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div id="slideModal" class="modal" onclick="closeModal(event)">
+        <span class="close" onclick="closeModal(event)">&times;</span>
+        <button class="nav-btn prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+        <img class="modal-content" id="modalImg">
+        <button class="nav-btn next-btn" onclick="changeSlide(1)">&#10095;</button>
+    </div>
+
+    <script>
+        const slides = [
+            'svg_output/slide_01_cover.svg',
+            'svg_output/slide_02_contents.svg',
+            'svg_output/slide_03_policy_bg_1.svg',
+            'svg_output/slide_04_policy_bg_2.svg',
+            'svg_output/slide_05_residents_1.svg',
+            'svg_output/slide_06_residents_2.svg',
+            'svg_output/slide_07_funding_1.svg',
+            'svg_output/slide_08_funding_2.svg',
+            'svg_output/slide_09_timeline.svg',
+            'svg_output/slide_10_planning.svg',
+            'svg_output/slide_11_success.svg',
+            'svg_output/slide_12_challenges.svg',
+            'svg_output/slide_13_conclusion.svg'
+        ];
+
+        let currentSlide = 0;
+
+        function openModal(index) {
+            currentSlide = index;
+            document.getElementById('slideModal').style.display = 'block';
+            document.getElementById('modalImg').src = slides[currentSlide];
+        }
+
+        function closeModal(event) {
+            if (event.target.className === 'modal' || event.target.className === 'close') {
+                document.getElementById('slideModal').style.display = 'none';
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide >= slides.length) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+            document.getElementById('modalImg').src = slides[currentSlide];
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            const modal = document.getElementById('slideModal');
+            if (modal.style.display === 'block') {
+                if (e.key === 'ArrowLeft') changeSlide(-1);
+                if (e.key === 'ArrowRight') changeSlide(1);
+                if (e.key === 'Escape') modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>

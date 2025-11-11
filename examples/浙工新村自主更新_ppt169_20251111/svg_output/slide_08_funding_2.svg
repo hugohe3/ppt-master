@@ -1,0 +1,202 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="180" height="36" rx="4" fill="#005587" />
+    <text x="150" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        03 资金来源
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        差别定价机制：资金自平衡
+    </text>
+
+    <!-- 定价结构图 -->
+    <g transform="translate(140, 210)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#003F6C" font-weight="bold">
+            居民出资结构
+        </text>
+
+        <!-- 原面积部分 -->
+        <rect x="0" y="30" width="480" height="140" rx="8" fill="white" stroke="#2ECC71" stroke-width="3" />
+        <circle cx="35" cy="70" r="20" fill="#2ECC71" />
+        <text x="35" y="78"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="white" text-anchor="middle" font-weight="bold">
+            A
+        </text>
+
+        <text x="75" y="62"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#2ECC71" font-weight="bold">
+            原面积部分
+        </text>
+        <text x="75" y="90"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            （按原房套内面积计算）
+        </text>
+
+        <text x="30" y="130"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="48" fill="#2ECC71" font-weight="bold">
+            1,350
+        </text>
+        <text x="180" y="125"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="26" fill="#7F8C8D">
+            元/㎡
+        </text>
+
+        <text x="30" y="155"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            优惠价 | 参照房屋重置成本标准
+        </text>
+
+        <!-- 增购部分 -->
+        <rect x="510" y="30" width="480" height="140" rx="8" fill="white" stroke="#FF6B35" stroke-width="3" />
+        <circle cx="545" cy="70" r="20" fill="#FF6B35" />
+        <text x="545" y="78"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="white" text-anchor="middle" font-weight="bold">
+            B
+        </text>
+
+        <text x="585" y="62"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#FF6B35" font-weight="bold">
+            增购面积部分
+        </text>
+        <text x="585" y="90"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            （自愿选择，最多20㎡）
+        </text>
+
+        <text x="540" y="130"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="48" fill="#FF6B35" font-weight="bold">
+            34,520
+        </text>
+        <text x="730" y="125"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="26" fill="#7F8C8D">
+            元/㎡
+        </text>
+
+        <text x="540" y="155"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="17" fill="#7F8C8D">
+            市场价 | 用于补贴项目整体成本
+        </text>
+    </g>
+
+    <!-- 计算示例 -->
+    <g transform="translate(140, 400)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="#003F6C" font-weight="bold">
+            出资计算示例
+        </text>
+
+        <!-- 示例1：不扩面 -->
+        <rect x="0" y="25" width="480" height="150" rx="8" fill="#E8F8F5" />
+        <text x="25" y="55"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="#2ECC71" font-weight="bold">
+            案例 1：基础方案（不扩面）
+        </text>
+
+        <text x="25" y="85"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            原房套内面积：80㎡
+        </text>
+        <text x="25" y="110"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            计算：80㎡ × 1,350元/㎡ = 10.8万元
+        </text>
+
+        <text x="25" y="145"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2ECC71" font-weight="bold">
+            总出资：10.8万元
+        </text>
+        <text x="200" y="145"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            （换得80㎡新房）
+        </text>
+
+        <!-- 示例2：最大扩面 -->
+        <rect x="510" y="25" width="480" height="150" rx="8" fill="#FFF4E6" />
+        <text x="535" y="55"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="22" fill="#FF6B35" font-weight="bold">
+            案例 2：最大扩面方案
+        </text>
+
+        <text x="535" y="85"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            原房套内面积：80㎡ + 增购20㎡
+        </text>
+        <text x="535" y="110"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="19" fill="#2C3E50">
+            计算：10.8万 + 20㎡×34,520元/㎡ = 79.84万元
+        </text>
+
+        <text x="535" y="145"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#FF6B35" font-weight="bold">
+            总出资：79.84万元
+        </text>
+        <text x="730" y="145"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#7F8C8D">
+            （换得100㎡新房）
+        </text>
+    </g>
+
+    <!-- 底部机制说明 -->
+    <g transform="translate(140, 590)">
+        <rect x="0" y="0" width="1000" height="80" rx="6" fill="#E8F4F8" />
+        <text x="25" y="30"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#005587" font-weight="bold">
+            💡 资金平衡机制
+        </text>
+        <text x="25" y="55"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            通过差别定价，基础部分低价让人人可负担，扩面部分高价补贴整体成本，实现不同需求居民间的
+        </text>
+        <text x="25" y="77"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            资金自平衡。另有车位可选购（约22万/个），困难户由政府补助托底。
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        8
+    </text>
+</svg>

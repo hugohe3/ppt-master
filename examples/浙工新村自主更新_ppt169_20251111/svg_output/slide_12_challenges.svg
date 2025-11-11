@@ -1,0 +1,173 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="220" height="36" rx="4" fill="#005587" />
+    <text x="170" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        06 经验与挑战
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        五大待解难题
+    </text>
+
+    <!-- 挑战列表 -->
+    <g transform="translate(140, 190)">
+        <!-- 挑战1 -->
+        <g>
+            <rect x="0" y="0" width="1000" height="76" rx="8" fill="white" stroke="#ECF0F1" stroke-width="2" />
+            <rect x="0" y="0" width="10" height="76" rx="4" fill="#FF6B35" />
+
+            <circle cx="56" cy="38" r="18" fill="#FF6B35" />
+            <text x="56" y="45"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="19" fill="white" text-anchor="middle" font-weight="bold">
+                1
+            </text>
+
+            <text x="100" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="22" fill="#2C3E50" font-weight="bold">
+                居民协调与搬迁难题
+            </text>
+            <text x="100" y="56"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D">
+                部分居民观望抵触，需逐户做工作；高龄住户搬迁顾虑，需就近安置和志愿服务支持。
+            </text>
+        </g>
+
+        <!-- 挑战2 -->
+        <g transform="translate(0, 85)">
+            <rect x="0" y="0" width="1000" height="76" rx="8" fill="white" stroke="#ECF0F1" stroke-width="2" />
+            <rect x="0" y="0" width="10" height="76" rx="4" fill="#FF6B35" />
+
+            <circle cx="56" cy="38" r="18" fill="#FF6B35" />
+            <text x="56" y="45"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="19" fill="white" text-anchor="middle" font-weight="bold">
+                2
+            </text>
+
+            <text x="100" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="22" fill="#2C3E50" font-weight="bold">
+                资金筹措压力
+            </text>
+            <text x="100" y="56"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D">
+                居民自掏数十万元心存疑虑，观念转变需时间；低收入户支付困难，需制度化融资渠道或补贴。
+            </text>
+        </g>
+
+        <!-- 挑战3 -->
+        <g transform="translate(0, 170)">
+            <rect x="0" y="0" width="1000" height="76" rx="8" fill="white" stroke="#ECF0F1" stroke-width="2" />
+            <rect x="0" y="0" width="10" height="76" rx="4" fill="#FF6B35" />
+
+            <circle cx="56" cy="38" r="18" fill="#FF6B35" />
+            <text x="56" y="45"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="19" fill="white" text-anchor="middle" font-weight="bold">
+                3
+            </text>
+
+            <text x="100" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="22" fill="#2C3E50" font-weight="bold">
+                政策和法律障碍
+            </text>
+            <text x="100" y="56"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D">
+                涉及规划调整、产权登记等缺乏法律依据；需在上位法层面提供规划许可、土地手续等保障。
+            </text>
+        </g>
+
+        <!-- 挑战4 -->
+        <g transform="translate(0, 255)">
+            <rect x="0" y="0" width="1000" height="76" rx="8" fill="white" stroke="#ECF0F1" stroke-width="2" />
+            <rect x="0" y="0" width="10" height="76" rx="4" fill="#FF6B35" />
+
+            <circle cx="56" cy="38" r="18" fill="#FF6B35" />
+            <text x="56" y="45"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="19" fill="white" text-anchor="middle" font-weight="bold">
+                4
+            </text>
+
+            <text x="100" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="22" fill="#2C3E50" font-weight="bold">
+                建造与品质争议
+            </text>
+            <text x="100" y="56"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D">
+                设计变更未充分征求意见；部分业主对房屋质量、增购定价存疑；交付后产生收房僵持问题。
+            </text>
+        </g>
+
+        <!-- 挑战5 -->
+        <g transform="translate(0, 340)">
+            <rect x="0" y="0" width="1000" height="76" rx="8" fill="white" stroke="#ECF0F1" stroke-width="2" />
+            <rect x="0" y="0" width="10" height="76" rx="4" fill="#FF6B35" />
+
+            <circle cx="56" cy="38" r="18" fill="#FF6B35" />
+            <text x="56" y="45"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="19" fill="white" text-anchor="middle" font-weight="bold">
+                5
+            </text>
+
+            <text x="100" y="30"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="22" fill="#2C3E50" font-weight="bold">
+                模式推广难度
+            </text>
+            <text x="100" y="56"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+                font-size="16" fill="#7F8C8D">
+                适用条件苛刻：需危房刚需+熟人社会+政府扶持三要素；缺社会资本参与积极性，可持续性待验证。
+            </text>
+        </g>
+    </g>
+
+    <!-- 底部反思 -->
+    <g transform="translate(140, 615)">
+        <rect x="0" y="0" width="1000" height="65" rx="6" fill="#FFF4E6" />
+        <text x="25" y="26"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#FF6B35" font-weight="bold">
+            ⚠ 实践启示
+        </text>
+        <text x="25" y="47"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#2C3E50">
+            城市更新绝非一朝一夕可成，需在制度设计、群众工作和实施保障上不断完善。浙工新村的经验值得
+        </text>
+        <text x="25" y="64"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="16" fill="#2C3E50">
+            肯定，其暴露的问题亦需正视，只有汲取经验教训、因地制宜探索，才能稳妥推广此模式。
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        12
+    </text>
+</svg>

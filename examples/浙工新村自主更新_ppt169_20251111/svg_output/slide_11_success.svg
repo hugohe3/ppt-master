@@ -1,0 +1,205 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- 顶部装饰 -->
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+    <rect x="0" y="8" width="6" height="712" fill="#4A90E2" />
+
+    <!-- 章节标签 -->
+    <rect x="60" y="50" width="220" height="36" rx="4" fill="#005587" />
+    <text x="170" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="20" fill="white" text-anchor="middle" font-weight="bold">
+        06 经验与挑战
+    </text>
+
+    <!-- 标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="38" font-weight="bold" fill="#003F6C">
+        四大创新亮点
+    </text>
+
+    <!-- 成功经验卡片 -->
+    <g transform="translate(140, 190)">
+        <!-- 亮点1 -->
+        <rect x="0" y="0" width="480" height="180" rx="10" fill="white" stroke="#2ECC71" stroke-width="3" />
+        <rect x="0" y="0" width="480" height="55" rx="10" fill="#2ECC71" />
+
+        <circle cx="35" cy="27" r="18" fill="white" />
+        <text x="35" y="35"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2ECC71" text-anchor="middle" font-weight="bold">
+            1
+        </text>
+
+        <text x="68" y="37"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="white" font-weight="bold">
+            居民主体模式
+        </text>
+
+        <text x="22" y="87"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            居民自筹资金、民主决策，政府提供
+        </text>
+        <text x="22" y="111"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            政策支持和组织服务，形成"居民投
+        </text>
+        <text x="22" y="135"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            入、政府补贴"的共建共享格局，减
+        </text>
+        <text x="22" y="159"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            轻财政负担，激发内生动力。
+        </text>
+
+        <!-- 亮点2 -->
+        <rect x="520" y="0" width="480" height="180" rx="10" fill="white" stroke="#4A90E2" stroke-width="3" />
+        <rect x="520" y="0" width="480" height="55" rx="10" fill="#4A90E2" />
+
+        <circle cx="555" cy="27" r="18" fill="white" />
+        <text x="555" y="35"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#4A90E2" text-anchor="middle" font-weight="bold">
+            2
+        </text>
+
+        <text x="588" y="37"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="white" font-weight="bold">
+            高效协商机制
+        </text>
+
+        <text x="542" y="87"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            借助党建引领和社区动员，组织20+
+        </text>
+        <text x="542" y="111"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            次座谈调研，逐户解决诉求，548户
+        </text>
+        <text x="542" y="135"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            几乎全员同意。熟人社会的强信任和
+        </text>
+        <text x="542" y="159"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            集体意识使共识更易凝聚。
+        </text>
+
+        <!-- 亮点3 -->
+        <rect x="0" y="205" width="480" height="180" rx="10" fill="white" stroke="#FF6B35" stroke-width="3" />
+        <rect x="0" y="205" width="480" height="55" rx="10" fill="#FF6B35" />
+
+        <circle cx="35" cy="232" r="18" fill="white" />
+        <text x="35" y="240"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#FF6B35" text-anchor="middle" font-weight="bold">
+            3
+        </text>
+
+        <text x="68" y="242"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="white" font-weight="bold">
+            资金平衡创新
+        </text>
+
+        <text x="22" y="292"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            差别定价让不同需求居民各得其所：
+        </text>
+        <text x="22" y="316"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            不扩面的以极低成本获新房，扩面的
+        </text>
+        <text x="22" y="340"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            多出资弥补差额，整体实现资金自求
+        </text>
+        <text x="22" y="364"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            平衡，探索可持续筹资路径。
+        </text>
+
+        <!-- 亮点4 -->
+        <rect x="520" y="205" width="480" height="180" rx="10" fill="white" stroke="#005587" stroke-width="3" />
+        <rect x="520" y="205" width="480" height="55" rx="10" fill="#005587" />
+
+        <circle cx="555" cy="232" r="18" fill="white" />
+        <text x="555" y="240"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#005587" text-anchor="middle" font-weight="bold">
+            4
+        </text>
+
+        <text x="588" y="242"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="24" fill="white" font-weight="bold">
+            政策试验田
+        </text>
+
+        <text x="542" y="292"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            突破既有审批和土地出让政策壁垒，
+        </text>
+        <text x="542" y="316"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            推动浙江省迅速出台《自主更新试点
+        </text>
+        <text x="542" y="340"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            指导意见》，对规划调整、产权登记
+        </text>
+        <text x="542" y="364"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            等作出制度回应，提供可复制样本。
+        </text>
+    </g>
+
+    <!-- 底部总结 -->
+    <g transform="translate(140, 600)">
+        <rect x="0" y="0" width="1000" height="90" rx="6" fill="#E8F8F5" />
+        <text x="25" y="30"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="20" fill="#2ECC71" font-weight="bold">
+            ✓ 核心价值
+        </text>
+        <text x="25" y="55"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            浙工新村探索的"居民主体、拆改结合、资金平衡"路径，在合适条件下具有可借鉴、可复制意义，
+        </text>
+        <text x="25" y="78"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+            font-size="18" fill="#2C3E50">
+            为全国类似老旧社区的更新改造提供了示范样本。
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', '微软雅黑', sans-serif"
+        font-size="16" fill="#7F8C8D" text-anchor="end">
+        11
+    </text>
+</svg>
