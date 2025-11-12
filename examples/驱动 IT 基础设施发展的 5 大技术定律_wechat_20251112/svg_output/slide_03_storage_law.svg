@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+    <defs>
+        <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FAF5FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F3E8FF;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="barGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#6D28D9;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#A78BFA;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="900" fill="url(#purpleGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="80" y="100"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="400" fill="#1F2937">
+        💾
+    </text>
+
+    <text x="80" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="44" font-weight="700" fill="#1F2937">
+        海量数字存储定律
+    </text>
+
+    <text x="80" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="400" fill="#6B7280">
+        Law of Mass Digital Storage
+    </text>
+
+    <text x="80" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#7C3AED">
+        数据"白菜价"的推手
+    </text>
+
+    <!-- 云存储图标 -->
+    <g transform="translate(650, 80)">
+        <path
+            d="M 40 50 Q 40 30, 60 25 Q 70 15, 90 25 Q 110 30, 110 50 Q 125 50, 125 70 Q 125 90, 110 90 L 40 90 Q 25 90, 25 70 Q 25 50, 40 50 Z"
+            fill="#FFFFFF" stroke="#7C3AED" stroke-width="3" />
+        <circle cx="75" cy="65" r="8" fill="#A78BFA" />
+        <line x1="75" y1="73" x2="75" y2="85" stroke="#7C3AED" stroke-width="2" />
+        <path d="M 70 80 L 75 85 L 80 80" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+    </g>
+
+    <!-- 核心数据卡片 -->
+    <g transform="translate(80, 330)">
+        <rect x="0" y="0" width="740" height="160" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 左侧 -->
+        <text x="40" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#7C3AED">
+            15
+        </text>
+        <text x="120" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#1F2937">
+            个月
+        </text>
+        <text x="40" y="95"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            存储容量翻倍周期
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="250" y1="25" x2="250" y2="135" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 中间 -->
+        <text x="290" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#A78BFA">
+            2×
+        </text>
+        <text x="290" y="95"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            信息量增长
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="490" y1="25" x2="490" y2="135" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 右侧 -->
+        <text x="530" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#6D28D9">
+            -50%
+        </text>
+        <text x="530" y="95"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            存储成本下降/年
+        </text>
+    </g>
+
+    <!-- 容量演变对比 -->
+    <g transform="translate(80, 530)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1F2937">
+            存储容量演变
+        </text>
+
+        <!-- 坐标轴 -->
+        <line x1="0" y1="280" x2="740" y2="280" stroke="#9CA3AF" stroke-width="2" />
+        <line x1="0" y1="50" x2="0" y2="280" stroke="#9CA3AF" stroke-width="2" />
+
+        <!-- Y轴标签 -->
+        <text x="-10" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            1TB
+        </text>
+        <text x="-10" y="150"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            1GB
+        </text>
+        <text x="-10" y="240"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            1MB
+        </text>
+
+        <!-- 柱状图 -->
+        <!-- 过去 128MB -->
+        <rect x="80" y="268" width="120" height="12" rx="2" fill="url(#barGradient)" />
+        <text x="140" y="260"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="600" fill="#6D28D9" text-anchor="middle">
+            128MB
+        </text>
+        <text x="140" y="310"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="middle">
+            过去
+        </text>
+
+        <!-- 现在 1TB -->
+        <rect x="310" y="60" width="120" height="220" rx="2" fill="url(#barGradient)" />
+        <text x="370" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="600" fill="#6D28D9" text-anchor="middle">
+            1TB
+        </text>
+        <text x="370" y="310"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="middle">
+            现在
+        </text>
+
+        <!-- 未来 云存储 -->
+        <rect x="540" y="50" width="120" height="230" rx="2" fill="#F3E8FF" stroke="#7C3AED" stroke-width="2"
+            stroke-dasharray="5,5" />
+        <text x="600" y="160"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="700" fill="#7C3AED" text-anchor="middle">
+            ∞
+        </text>
+        <text x="600" y="190"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="600" fill="#6D28D9" text-anchor="middle">
+            云存储
+        </text>
+        <text x="600" y="310"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="middle">
+            未来
+        </text>
+    </g>
+
+    <!-- 底部说明 -->
+    <text x="450" y="870"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#6B7280" text-anchor="middle">
+        <tspan x="450" dy="0">存储不再是瓶颈，大数据时代由此开启</tspan>
+    </text>
+</svg>

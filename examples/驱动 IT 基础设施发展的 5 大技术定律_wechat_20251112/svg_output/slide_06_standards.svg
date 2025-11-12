@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+    <defs>
+        <linearGradient id="cyanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#ECFEFF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#CFFAFE;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="900" fill="url(#cyanGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="80" y="100"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="400" fill="#1F2937">
+        🤝
+    </text>
+
+    <text x="80" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="700" fill="#1F2937">
+        技术标准
+    </text>
+
+    <text x="80" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="400" fill="#6B7280">
+        Technical Standards
+    </text>
+
+    <text x="80" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#06B6D4">
+        全球协作的"普通话"
+    </text>
+
+    <!-- 核心标准卡片 -->
+    <g transform="translate(80, 320)">
+        <rect x="0" y="0" width="740" height="100" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+
+        <text x="40" y="40"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            关键标准
+        </text>
+
+        <g transform="translate(40, 55)">
+            <rect x="0" y="0" width="180" height="35" rx="6" fill="#E0F2FE" />
+            <text x="90" y="23"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#0891B2" text-anchor="middle">
+                TCP/IP
+            </text>
+
+            <rect x="200" y="0" width="180" height="35" rx="6" fill="#E0F2FE" />
+            <text x="290" y="23"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#0891B2" text-anchor="middle">
+                Ethernet
+            </text>
+
+            <rect x="400" y="0" width="180" height="35" rx="6" fill="#E0F2FE" />
+            <text x="490" y="23"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#0891B2" text-anchor="middle">
+                Unix/Linux
+            </text>
+        </g>
+    </g>
+
+    <!-- 对比场景 -->
+    <g transform="translate(80, 460)">
+        <text x="370" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1F2937" text-anchor="middle">
+            有标准 vs 无标准
+        </text>
+
+        <!-- 无标准：信息孤岛 -->
+        <g transform="translate(30, 40)">
+            <rect x="0" y="0" width="320" height="280" rx="12" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"
+                opacity="0.5" />
+
+            <text x="160" y="35"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="20" font-weight="600" fill="#DC2626" text-anchor="middle">
+                ❌ 无标准
+            </text>
+
+            <!-- 孤立设备 -->
+            <circle cx="80" cy="100" r="30" fill="#FFFFFF" stroke="#EF4444" stroke-width="2" />
+            <text x="80" y="108"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#DC2626" text-anchor="middle">
+                🍎
+            </text>
+
+            <circle cx="240" cy="100" r="30" fill="#FFFFFF" stroke="#EF4444" stroke-width="2" />
+            <text x="240" y="108"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#DC2626" text-anchor="middle">
+                💻
+            </text>
+
+            <circle cx="160" cy="200" r="30" fill="#FFFFFF" stroke="#EF4444" stroke-width="2" />
+            <text x="160" y="208"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#DC2626" text-anchor="middle">
+                📱
+            </text>
+
+            <!-- X 标记表示不互通 -->
+            <text x="160" y="155"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="32" font-weight="700" fill="#DC2626" text-anchor="middle">
+                ✕
+            </text>
+
+            <text x="160" y="255"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#DC2626" text-anchor="middle">
+                信息孤岛
+            </text>
+        </g>
+
+        <!-- 有标准：全球互通 -->
+        <g transform="translate(390, 40)">
+            <rect x="0" y="0" width="320" height="280" rx="12" fill="#D1FAE5" stroke="#10B981" stroke-width="2"
+                opacity="0.5" />
+
+            <text x="160" y="35"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="20" font-weight="600" fill="#059669" text-anchor="middle">
+                ✅ 有标准
+            </text>
+
+            <!-- 连接线（先画） -->
+            <line x1="95" y1="110" x2="145" y2="190" stroke="#10B981" stroke-width="3" />
+            <line x1="225" y1="110" x2="175" y2="190" stroke="#10B981" stroke-width="3" />
+            <line x1="110" y1="100" x2="210" y2="100" stroke="#10B981" stroke-width="3" />
+
+            <!-- 互联设备（后画，覆盖线条） -->
+            <circle cx="80" cy="100" r="30" fill="#FFFFFF" stroke="#10B981" stroke-width="2" />
+            <text x="80" y="108"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#059669" text-anchor="middle">
+                🍎
+            </text>
+
+            <circle cx="240" cy="100" r="30" fill="#FFFFFF" stroke="#10B981" stroke-width="2" />
+            <text x="240" y="108"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#059669" text-anchor="middle">
+                💻
+            </text>
+
+            <circle cx="160" cy="200" r="30" fill="#FFFFFF" stroke="#10B981" stroke-width="2" />
+            <text x="160" y="208"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#059669" text-anchor="middle">
+                📱
+            </text>
+
+            <text x="160" y="255"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#059669" text-anchor="middle">
+                全球互通
+            </text>
+        </g>
+    </g>
+
+    <!-- 价值说明 -->
+    <g transform="translate(80, 790)">
+        <rect x="0" y="0" width="740" height="60" rx="8" fill="#FFFFFF" stroke="#06B6D4" stroke-width="2" />
+        <text x="370" y="38"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#0891B2" text-anchor="middle">
+            统一规则 → 规模经济 → 成本下降
+        </text>
+    </g>
+
+    <!-- 底部说明 -->
+    <text x="450" y="880"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#6B7280" text-anchor="middle">
+        <tspan x="450" dy="0">标准化让世界"讲同一种语言"</tspan>
+    </text>
+</svg>

@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+    <defs>
+        <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#EFF6FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="curveGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1E40AF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="900" fill="url(#blueGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="80" y="100"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="400" fill="#1F2937">
+        🚀
+    </text>
+
+    <text x="80" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="700" fill="#1F2937">
+        摩尔定律
+    </text>
+
+    <text x="80" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="400" fill="#6B7280">
+        Moore's Law
+    </text>
+
+    <text x="80" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#2563EB">
+        一切算力的"发动机"
+    </text>
+
+    <!-- 芯片图标 -->
+    <g transform="translate(380, 100)">
+        <rect x="0" y="0" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#2563EB" stroke-width="3" />
+        <rect x="15" y="15" width="90" height="90" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+        <!-- 网格线 -->
+        <line x1="30" y1="30" x2="90" y2="30" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="30" y1="45" x2="90" y2="45" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="30" y1="60" x2="90" y2="60" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="30" y1="75" x2="90" y2="75" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="30" y1="90" x2="90" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="30" y1="30" x2="30" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="45" y1="30" x2="45" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="60" y1="30" x2="60" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="75" y1="30" x2="75" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <line x1="90" y1="30" x2="90" y2="90" stroke="#3B82F6" stroke-width="1.5" />
+        <!-- 中心点 -->
+        <circle cx="60" cy="60" r="8" fill="#2563EB" />
+    </g>
+
+    <!-- 核心数据卡片 -->
+    <g transform="translate(80, 340)">
+        <rect x="0" y="0" width="740" height="180" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 左侧数据 -->
+        <text x="40" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#2563EB">
+            18
+        </text>
+        <text x="130" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#1F2937">
+            个月
+        </text>
+        <text x="40" y="100"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            性能翻一番周期
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="250" y1="30" x2="250" y2="150" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 中间数据 -->
+        <text x="290" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#3B82F6">
+            2×
+        </text>
+        <text x="290" y="100"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            性能提升
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="490" y1="30" x2="490" y2="150" stroke="#E5E7EB" stroke-width="2" />
+
+        <!-- 右侧数据 -->
+        <text x="530" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="52" font-weight="700" fill="#1E40AF">
+            50%
+        </text>
+        <text x="530" y="100"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            价格下降
+        </text>
+    </g>
+
+    <!-- 指数增长曲线图 -->
+    <g transform="translate(80, 560)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1F2937">
+            性能增长趋势
+        </text>
+
+        <!-- 坐标轴 -->
+        <line x1="0" y1="220" x2="740" y2="220" stroke="#9CA3AF" stroke-width="2" />
+        <line x1="0" y1="40" x2="0" y2="220" stroke="#9CA3AF" stroke-width="2" />
+
+        <!-- Y轴标签 -->
+        <text x="-10" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            高
+        </text>
+        <text x="-10" y="220"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            低
+        </text>
+
+        <!-- X轴标签 -->
+        <text x="0" y="245"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280">
+            1965
+        </text>
+        <text x="680" y="245"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280">
+            2025
+        </text>
+
+        <!-- 指数曲线 -->
+        <path d="M 0 210 Q 185 180, 370 120 T 740 40" fill="none" stroke="url(#curveGradient)" stroke-width="4"
+            stroke-linecap="round" />
+
+        <!-- 曲线下方填充 -->
+        <path d="M 0 220 L 0 210 Q 185 180, 370 120 T 740 40 L 740 220 Z" fill="url(#curveGradient)" opacity="0.2" />
+
+        <!-- 关键点 -->
+        <circle cx="0" cy="210" r="6" fill="#1E40AF" />
+        <circle cx="370" cy="120" r="6" fill="#2563EB" />
+        <circle cx="740" cy="40" r="6" fill="#3B82F6" />
+    </g>
+
+    <!-- 底部说明 -->
+    <text x="450" y="870"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#6B7280" text-anchor="middle">
+        <tspan x="450" dy="0">物理极限将近，纳米技术接力</tspan>
+    </text>
+</svg>

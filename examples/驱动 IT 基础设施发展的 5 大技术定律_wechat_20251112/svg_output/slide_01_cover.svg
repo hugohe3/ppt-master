@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 383" width="900" height="383">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1E40AF;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#7C3AED;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="383" fill="url(#bgGradient)" />
+
+    <!-- 装饰网格 -->
+    <g opacity="0.1">
+        <line x1="0" y1="100" x2="900" y2="100" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="0" y1="200" x2="900" y2="200" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="0" y1="300" x2="900" y2="300" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="200" y1="0" x2="200" y2="383" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="400" y1="0" x2="400" y2="383" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="600" y1="0" x2="600" y2="383" stroke="#FFFFFF" stroke-width="1" />
+        <line x1="800" y1="0" x2="800" y2="383" stroke="#FFFFFF" stroke-width="1" />
+    </g>
+
+    <!-- 主标题 -->
+    <text x="60" y="120"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="42" font-weight="700" fill="#FFFFFF">
+        <tspan x="60" dy="0">驱动IT基础设施发展的</tspan>
+        <tspan x="60" dy="50">5大技术定律</tspan>
+    </text>
+
+    <!-- 副标题 -->
+    <text x="60" y="250"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="400" fill="#FFFFFF" opacity="0.9">
+        <tspan x="60" dy="0">从摩尔定律到网络效应</tspan>
+        <tspan x="60" dy="28">解密数字世界的进化密码</tspan>
+    </text>
+
+    <!-- 作者信息 -->
+    <text x="60" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#FFFFFF" opacity="0.8">
+        by Hugo
+    </text>
+
+    <!-- 右侧装饰图标组 -->
+    <g opacity="0.3">
+        <!-- 芯片图标 -->
+        <rect x="700" y="80" width="40" height="40" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="710" y1="100" x2="730" y2="100" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="720" y1="90" x2="720" y2="110" stroke="#FFFFFF" stroke-width="2" />
+
+        <!-- 存储图标 -->
+        <circle cx="770" cy="130" r="20" fill="none" stroke="#FFFFFF" stroke-width="2" />
+        <circle cx="770" cy="130" r="10" fill="none" stroke="#FFFFFF" stroke-width="2" />
+
+        <!-- 网络图标 -->
+        <circle cx="820" cy="100" r="6" fill="#FFFFFF" />
+        <circle cx="850" cy="120" r="6" fill="#FFFFFF" />
+        <circle cx="830" cy="150" r="6" fill="#FFFFFF" />
+        <line x1="820" y1="100" x2="850" y2="120" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="850" y1="120" x2="830" y2="150" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="830" y1="150" x2="820" y2="100" stroke="#FFFFFF" stroke-width="2" />
+
+        <!-- 信号图标 -->
+        <rect x="710" y="200" width="8" height="30" rx="2" fill="#FFFFFF" />
+        <rect x="725" y="190" width="8" height="40" rx="2" fill="#FFFFFF" />
+        <rect x="740" y="180" width="8" height="50" rx="2" fill="#FFFFFF" />
+
+        <!-- 标准图标 -->
+        <circle cx="800" cy="205" r="25" fill="none" stroke="#FFFFFF" stroke-width="2" />
+        <path d="M 785 205 L 795 215 L 815 195" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+    </g>
+</svg>

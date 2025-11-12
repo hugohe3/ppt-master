@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+    <defs>
+        <linearGradient id="summaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#EFF6FF;stop-opacity:1" />
+            <stop offset="20%" style="stop-color:#F5F3FF;stop-opacity:1" />
+            <stop offset="40%" style="stop-color:#F0FDF4;stop-opacity:1" />
+            <stop offset="60%" style="stop-color:#FFFBEB;stop-opacity:1" />
+            <stop offset="80%" style="stop-color:#ECFEFF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EFF6FF;stop-opacity:1" />
+        </linearGradient>
+        <radialGradient id="centerGlow">
+            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F9FAFB;stop-opacity:1" />
+        </radialGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="900" fill="url(#summaryGradient)" />
+
+    <!-- 标题 -->
+    <text x="450" y="60"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="38" font-weight="700" fill="#1F2937" text-anchor="middle">
+        五力协同，塑造数字世界
+    </text>
+
+    <!-- 1. 摩尔定律（上方） -->
+    <g transform="translate(450, 130)">
+        <circle cx="0" cy="0" r="55" fill="#2563EB" opacity="0.95" />
+        <text x="0" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            🚀
+        </text>
+        <text x="0" y="18"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            摩尔定律
+        </text>
+
+        <!-- 标签 -->
+        <rect x="20" y="70" width="110" height="30" rx="6" fill="#DBEAFE" />
+        <text x="75" y="90"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#1E40AF" text-anchor="middle">
+            算力 ↑
+        </text>
+    </g>
+
+    <!-- 2. 存储定律（右上） -->
+    <g transform="translate(670, 215)">
+        <circle cx="0" cy="0" r="55" fill="#7C3AED" opacity="0.95" />
+        <text x="0" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            💾
+        </text>
+        <text x="0" y="18"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            存储定律
+        </text>
+
+        <!-- 标签 -->
+        <rect x="70" y="-15" width="130" height="30" rx="6" fill="#F3E8FF" />
+        <text x="135" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#6D28D9" text-anchor="middle">
+            容量↑ 成本↓
+        </text>
+    </g>
+
+    <!-- 3. 梅特卡夫定律（右下） -->
+    <g transform="translate(670, 535)">
+        <circle cx="0" cy="0" r="55" fill="#10B981" opacity="0.95" />
+        <text x="0" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            🌐
+        </text>
+        <text x="0" y="18"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            梅特卡夫定律
+        </text>
+
+        <!-- 标签 -->
+        <rect x="70" y="-15" width="100" height="30" rx="6" fill="#D1FAE5" />
+        <text x="120" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#059669" text-anchor="middle">
+            价值 ∝ n²
+        </text>
+    </g>
+
+    <!-- 4. 通信成本（左下） -->
+    <g transform="translate(230, 535)">
+        <circle cx="0" cy="0" r="55" fill="#F59E0B" opacity="0.95" />
+        <text x="0" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            📞
+        </text>
+        <text x="0" y="18"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            通信成本
+        </text>
+
+        <!-- 标签 -->
+        <rect x="-170" y="-15" width="110" height="30" rx="6" fill="#FEF3C7" />
+        <text x="-115" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#D97706" text-anchor="middle">
+            成本 → 0
+        </text>
+    </g>
+
+    <!-- 5. 技术标准（左上） -->
+    <g transform="translate(230, 215)">
+        <circle cx="0" cy="0" r="55" fill="#06B6D4" opacity="0.95" />
+        <text x="0" y="-8"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            🤝
+        </text>
+        <text x="0" y="18"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            技术标准
+        </text>
+
+        <!-- 标签 -->
+        <rect x="-170" y="-15" width="110" height="30" rx="6" fill="#CFFAFE" />
+        <text x="-115" y="6"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="15" font-weight="600" fill="#0891B2" text-anchor="middle">
+            全球互通
+        </text>
+    </g>
+
+    <!-- 连接线（后画，在圆圈下方） -->
+    <!-- 1. 摩尔定律到中心（垂直线） -->
+    <line x1="450" y1="185" x2="450" y2="280" stroke="#2563EB" stroke-width="2.5" opacity="0.7" />
+
+    <!-- 2. 存储定律到中心（右上到中心）圆心(670,215) r=55，中心(450,375) r=95 -->
+    <line x1="620" y1="250" x2="510" y2="325" stroke="#7C3AED" stroke-width="2.5" opacity="0.7" />
+
+    <!-- 3. 梅特卡夫定律到中心（右下到中心）圆心(670,535) r=55，中心(450,375) r=95 -->
+    <line x1="620" y1="500" x2="510" y2="425" stroke="#10B981" stroke-width="2.5" opacity="0.7" />
+
+    <!-- 4. 通信成本到中心（左下到中心）圆心(230,535) r=55，中心(450,375) r=95 -->
+    <line x1="280" y1="500" x2="390" y2="425" stroke="#F59E0B" stroke-width="2.5" opacity="0.7" />
+
+    <!-- 5. 技术标准到中心（左上到中心）圆心(230,215) r=55，中心(450,375) r=95 -->
+    <line x1="280" y1="250" x2="390" y2="325" stroke="#06B6D4" stroke-width="2.5" opacity="0.7" />
+
+    <!-- 中心结论圆（最后画，在最上层） -->
+    <circle cx="450" cy="375" r="95" fill="url(#centerGlow)" stroke="#9CA3AF" stroke-width="3" />
+    <text x="450" y="360"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#1F2937" text-anchor="middle">
+        数字世界
+    </text>
+    <text x="450" y="390"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#6B7280" text-anchor="middle">
+        高效 · 便捷
+    </text>
+    <text x="450" y="415"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#6B7280" text-anchor="middle">
+        永远在线
+    </text>
+
+    <!-- 底部列表 -->
+    <g transform="translate(80, 640)">
+        <rect x="0" y="0" width="740" height="210" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"
+            opacity="0.95" />
+
+        <text x="370" y="35"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#1F2937" text-anchor="middle">
+            五大技术定律
+        </text>
+
+        <text x="30" y="75"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="400" fill="#374151">
+            <tspan x="30" dy="0">1. 摩尔定律（算力）：性能指数级变强，价格指数级下降</tspan>
+            <tspan x="30" dy="32">2. 存储定律（硬盘）：存储成本指数级下降，趋近于零</tspan>
+            <tspan x="30" dy="32">3. 梅特卡夫定律（网络）：网络价值随用户数平方级增长</tspan>
+            <tspan x="30" dy="32">4. 通信成本（网费）：通信成本指数级下降，引爆连接需求</tspan>
+            <tspan x="30" dy="32">5. 技术标准（规则）：统一"语言"，实现全球兼容</tspan>
+        </text>
+    </g>
+</svg>

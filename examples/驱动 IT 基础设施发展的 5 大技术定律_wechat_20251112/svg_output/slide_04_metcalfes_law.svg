@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" width="900" height="900">
+    <defs>
+        <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F0FDF4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#DCFCE7;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="900" fill="url(#greenGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="80" y="100"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="400" fill="#1F2937">
+        🌐
+    </text>
+
+    <text x="80" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="700" fill="#1F2937">
+        梅特卡夫定律
+    </text>
+
+    <text x="80" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="400" fill="#6B7280">
+        Metcalfe's Law
+    </text>
+
+    <text x="80" y="280"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#10B981">
+        网络的"价值倍增器"
+    </text>
+
+    <!-- 核心公式卡片 -->
+    <g transform="translate(80, 320)">
+        <rect x="0" y="0" width="740" height="100" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+
+        <text x="370" y="45"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#6B7280" text-anchor="middle">
+            核心公式
+        </text>
+
+        <text x="370" y="80"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="40" font-weight="700" fill="#10B981" text-anchor="middle">
+            V = n²
+        </text>
+    </g>
+
+    <!-- 网络效应对比 -->
+    <g transform="translate(80, 460)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1F2937">
+            网络价值增长
+        </text>
+
+        <!-- 2个用户 -->
+        <g transform="translate(80, 50)">
+            <circle cx="30" cy="30" r="20" fill="#34D399" stroke="#10B981" stroke-width="2" />
+            <circle cx="90" cy="30" r="20" fill="#34D399" stroke="#10B981" stroke-width="2" />
+            <line x1="50" y1="30" x2="70" y2="30" stroke="#10B981" stroke-width="3" />
+
+            <text x="60" y="90"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#1F2937" text-anchor="middle">
+                2个用户
+            </text>
+            <text x="60" y="115"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="32" font-weight="700" fill="#10B981" text-anchor="middle">
+                V = 4
+            </text>
+        </g>
+
+        <!-- 箭头 -->
+        <g transform="translate(220, 80)">
+            <line x1="0" y1="0" x2="60" y2="0" stroke="#6B7280" stroke-width="2" />
+            <path d="M 60 0 L 50 -6 L 50 6 Z" fill="#6B7280" />
+        </g>
+
+        <!-- 100个用户（网络） -->
+        <g transform="translate(330, 50)">
+            <!-- 简化网络图：中心+周围节点 -->
+            <circle cx="80" cy="60" r="15" fill="#10B981" />
+
+            <!-- 周围8个节点 -->
+            <circle cx="80" cy="10" r="10" fill="#34D399" />
+            <circle cx="130" cy="30" r="10" fill="#34D399" />
+            <circle cx="130" cy="90" r="10" fill="#34D399" />
+            <circle cx="80" cy="110" r="10" fill="#34D399" />
+            <circle cx="30" cy="90" r="10" fill="#34D399" />
+            <circle cx="30" cy="30" r="10" fill="#34D399" />
+            <circle cx="55" cy="15" r="8" fill="#6EE7B7" />
+            <circle cx="105" cy="15" r="8" fill="#6EE7B7" />
+
+            <!-- 连接线 -->
+            <line x1="80" y1="60" x2="80" y2="10" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="60" x2="130" y2="30" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="60" x2="130" y2="90" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="60" x2="80" y2="110" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="60" x2="30" y2="90" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="60" x2="30" y2="30" stroke="#10B981" stroke-width="2" />
+            <line x1="80" y1="10" x2="55" y2="15" stroke="#059669" stroke-width="1.5" />
+            <line x1="80" y1="10" x2="105" y2="15" stroke="#059669" stroke-width="1.5" />
+            <line x1="130" y1="30" x2="130" y2="90" stroke="#059669" stroke-width="1.5" />
+            <line x1="30" y1="30" x2="30" y2="90" stroke="#059669" stroke-width="1.5" />
+
+            <text x="80" y="160"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#1F2937" text-anchor="middle">
+                100个用户
+            </text>
+            <text x="80" y="185"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="32" font-weight="700" fill="#10B981" text-anchor="middle">
+                V = 10,000
+            </text>
+        </g>
+
+        <!-- 箭头 -->
+        <g transform="translate(540, 80)">
+            <line x1="0" y1="0" x2="60" y2="0" stroke="#6B7280" stroke-width="2" />
+            <path d="M 60 0 L 50 -6 L 50 6 Z" fill="#6B7280" />
+        </g>
+
+        <!-- 微信（无限价值） -->
+        <g transform="translate(630, 50)">
+            <circle cx="55" cy="60" r="40" fill="#10B981" opacity="0.2" />
+            <circle cx="55" cy="60" r="30" fill="#10B981" opacity="0.4" />
+            <circle cx="55" cy="60" r="20" fill="#10B981" />
+
+            <text x="55" y="64"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                微信
+            </text>
+
+            <text x="55" y="135"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" font-weight="600" fill="#1F2937" text-anchor="middle">
+                全员使用
+            </text>
+            <text x="55" y="160"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="32" font-weight="700" fill="#10B981" text-anchor="middle">
+                V = ∞
+            </text>
+        </g>
+    </g>
+
+    <!-- 价值增长曲线 -->
+    <g transform="translate(80, 690)">
+        <text x="0" y="0"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#1F2937">
+            平方级增长 vs 线性增长
+        </text>
+
+        <!-- 坐标轴 -->
+        <line x1="0" y1="140" x2="740" y2="140" stroke="#9CA3AF" stroke-width="2" />
+        <line x1="0" y1="40" x2="0" y2="140" stroke="#9CA3AF" stroke-width="2" />
+
+        <!-- 平方曲线（真正的 y = ax² 形状） -->
+        <path d="M 0 135 
+                 C 30 133, 60 129, 92.5 123
+                 C 125 117, 157.5 109, 185 99
+                 C 212.5 89, 240 77, 277.5 61
+                 C 315 45, 370 42, 463 40
+                 C 556 38, 648 37, 740 37" fill="none" stroke="#10B981" stroke-width="4" stroke-linecap="round" />
+        <text x="690" y="32"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#10B981">
+            n²
+        </text>
+
+        <!-- 线性 -->
+        <line x1="0" y1="135" x2="740" y2="50" stroke="#9CA3AF" stroke-width="3" stroke-dasharray="5,5" />
+        <text x="690" y="60"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#6B7280">
+            n
+        </text>
+
+        <!-- X轴标签 -->
+        <text x="0" y="165"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280">
+            用户数
+        </text>
+        <text x="720" y="165"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            →
+        </text>
+
+        <!-- Y轴标签 -->
+        <text x="-10" y="45"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#6B7280" text-anchor="end">
+            价值
+        </text>
+    </g>
+
+    <!-- 底部说明 -->
+    <text x="450" y="870"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#6B7280" text-anchor="middle">
+        <tspan x="450" dy="0">网络效应：用户越多，价值指数级增长</tspan>
+    </text>
+</svg>
