@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="8" fill="#005587" />
+
+    
+    <rect x="60" y="120" width="6" height="200" fill="#005587" />
+    <rect x="80" y="140" width="6" height="160" fill="#4A90E2" />
+    <rect x="100" y="160" width="6" height="120" fill="#005587" />
+
+    
+    <text x="140" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="60" font-weight="700" fill="#005587">
+        政府投资项目申报
+    </text>
+    <text x="140" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="60" font-weight="700" fill="#005587">
+        与管理流程
+    </text>
+
+    
+    <text x="140" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="28" font-weight="400" fill="#666666">
+        四川省/成都市实操指南
+    </text>
+
+    
+    <line x1="140" y1="390" x2="480" y2="390" stroke="#4A90E2" stroke-width="3" />
+
+    
+    <text x="140" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="400" fill="#333333">
+        ✓ 双轨并行策略：技术审批 + 财务预算
+    </text>
+    <text x="140" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="400" fill="#333333">
+        ✓ 三阶段审批流程全解析
+    </text>
+    <text x="140" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="400" fill="#333333">
+        ✓ 四种融资模式实操路径
+    </text>
+
+    
+    <circle cx="1000" cy="280" r="120" fill="none" stroke="#E8E8E8" stroke-width="2" />
+    <circle cx="1000" cy="280" r="90" fill="none" stroke="#4A90E2" stroke-width="2" />
+    <circle cx="1000" cy="280" r="60" fill="none" stroke="#005587" stroke-width="3" />
+
+    
+    <g transform="translate(960, 240)">
+        <rect x="0" y="0" width="80" height="100" fill="none" stroke="#005587" stroke-width="2" rx="4" />
+        <line x1="15" y1="20" x2="65" y2="20" stroke="#005587" stroke-width="2" />
+        <line x1="15" y1="35" x2="65" y2="35" stroke="#005587" stroke-width="2" />
+        <line x1="15" y1="50" x2="65" y2="50" stroke="#005587" stroke-width="2" />
+        <line x1="15" y1="65" x2="50" y2="65" stroke="#005587" stroke-width="2" />
+    </g>
+
+    
+    <text x="140" y="650" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#999999">
+        内部培训资料
+    </text>
+    <text x="140" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#999999">
+        2025年11月13日
+    </text>
+
+    
+    <rect x="0" y="712" width="1280" height="8" fill="#005587" />
+</svg>

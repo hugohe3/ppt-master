@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        三、阶段三 - 初步设计及概算审批
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <rect x="60" y="150" width="1160" height="70" fill="#005587" rx="8" />
+    <text x="640" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        核心目标：控制概算，确定施工图方案
+    </text>
+
+    
+    <text x="60" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        双重审批机制
+    </text>
+
+    <defs>
+        <marker id="arrowhead8" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#005587" />
+        </marker>
+    </defs>
+
+    
+    <rect x="60" y="300" width="200" height="90" fill="#4A90E2" stroke="#005587" stroke-width="2" rx="8" />
+    <text x="160" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        项目单位编制
+    </text>
+    <text x="160" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+        初步设计
+    </text>
+    <text x="160" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+        投资概算
+    </text>
+
+    <line x1="260" y1="345" x2="340" y2="330" stroke="#005587" stroke-width="2" marker-end="url(#arrowhead8)" />
+    <line x1="260" y1="345" x2="340" y2="470" stroke="#005587" stroke-width="2" marker-end="url(#arrowhead8)" />
+
+    
+    <g>
+        <rect x="350" y="280" width="280" height="100" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8" />
+        <text x="490" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587" text-anchor="middle">
+            行业主管部门审查
+        </text>
+        <text x="490" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            审查初步设计技术方案
+        </text>
+        <text x="490" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="400" fill="#999999" text-anchor="middle">
+            符合可研批复及行业规范
+        </text>
+    </g>
+
+    <line x1="630" y1="330" x2="690" y2="345" stroke="#005587" stroke-width="2" marker-end="url(#arrowhead8)" />
+
+    
+    <rect x="700" y="300" width="230" height="90" fill="#5CB85C" stroke="#4CAF50" stroke-width="2" rx="8" />
+    <text x="815" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        初步设计批复
+    </text>
+    <text x="815" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+        技术方案确认
+    </text>
+
+    
+    <g>
+        <rect x="350" y="420" width="280" height="100" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8" />
+        <text x="490" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587" text-anchor="middle">
+            投资主管部门审核
+        </text>
+        <text x="490" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            审核投资概算
+        </text>
+        <text x="490" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="400" fill="#999999" text-anchor="middle">
+            控制在可研估算110%以内
+        </text>
+    </g>
+
+    <line x1="630" y1="470" x2="690" y2="455" stroke="#005587" stroke-width="2" marker-end="url(#arrowhead8)" />
+
+    
+    <rect x="700" y="420" width="230" height="100" fill="#5CB85C" stroke="#4CAF50" stroke-width="2" rx="8" />
+    <text x="815" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        投资概算批复
+    </text>
+    <text x="815" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+        ⭐ 投资最高限额
+    </text>
+    <text x="815" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="400" fill="#E8F5E9" text-anchor="middle">
+        财政拨付依据
+    </text>
+
+    
+    <rect x="970" y="280" width="250" height="240" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+    <text x="1000" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#F0AD4E">
+        关键要点
+    </text>
+
+    <circle cx="1010" cy="350" r="6" fill="#F0AD4E" />
+    <text x="1025" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        概算是财务控制核心
+    </text>
+
+    <circle cx="1010" cy="385" r="6" fill="#F0AD4E" />
+    <text x="1025" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        超概算需重新报批
+    </text>
+
+    <circle cx="1010" cy="420" r="6" fill="#F0AD4E" />
+    <text x="1025" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        投资主管部门会同
+    </text>
+    <text x="1025" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        财政局核定
+    </text>
+
+    <circle cx="1010" cy="475" r="6" fill="#F0AD4E" />
+    <text x="1025" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        概算批复后即可
+    </text>
+    <text x="1025" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+        申请资金拨付
+    </text>
+
+    
+    <rect x="60" y="550" width="1160" height="80" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8" />
+    <text x="90" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+        三阶段完成标志
+    </text>
+    <text x="90" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+        获得《投资概算批复》后，项目的"技术审批轨"（A轨）已完成，但仍需确保项目进入"年度计划"（B轨）
+    </text>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        14
+    </text>
+</svg>

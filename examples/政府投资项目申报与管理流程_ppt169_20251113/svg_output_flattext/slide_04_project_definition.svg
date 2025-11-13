@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        一、政府投资项目的界定
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <rect x="60" y="150" width="1160" height="90" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8" />
+    <text x="90" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="600" fill="#005587">
+        定义（《成都市政府投资管理办法》2025年3月12日起施行）
+    </text>
+    <text x="90" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="400" fill="#333333">
+        使用预算安排的资金进行固定资产投资建设活动，资金应投向
+    </text>
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-weight="700" font-size="22" fill="#005587" x="90" y="218">        </text><text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-weight="700" font-size="22" fill="#005587" x="820" y="218">市场不能有效配置资源的领域</text><text x="60" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        六大重点投资领域
+    </text>
+
+    
+    <g>
+        <rect x="60" y="310" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="100" cy="350" r="20" fill="#005587" />
+        <text x="100" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="140" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            社会公益服务
+        </text>
+        <text x="100" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            教育、医疗、文化、体育等
+        </text>
+    </g>
+
+    <g>
+        <rect x="460" y="310" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="500" cy="350" r="20" fill="#005587" />
+        <text x="500" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="540" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            公共基础设施
+        </text>
+        <text x="500" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            能源、交通、水利、市政等
+        </text>
+    </g>
+
+    <g>
+        <rect x="860" y="310" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="900" cy="350" r="20" fill="#005587" />
+        <text x="900" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="940" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            农业农村
+        </text>
+        <text x="900" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            乡村振兴、农田水利等
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="450" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="100" cy="490" r="20" fill="#005587" />
+        <text x="100" y="497" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            4
+        </text>
+        <text x="140" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            生态环境保护
+        </text>
+        <text x="100" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            污染治理、生态修复等
+        </text>
+    </g>
+
+    <g>
+        <rect x="460" y="450" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="500" cy="490" r="20" fill="#005587" />
+        <text x="500" y="497" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            5
+        </text>
+        <text x="540" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            重大科技创新
+        </text>
+        <text x="500" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            重大科研设施、创新平台等
+        </text>
+    </g>
+
+    <g>
+        <rect x="860" y="450" width="360" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="900" cy="490" r="20" fill="#005587" />
+        <text x="900" y="497" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            6
+        </text>
+        <text x="940" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            社会管理与国家安全
+        </text>
+        <text x="900" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            政法设施、应急保障等
+        </text>
+    </g>
+
+    
+    <rect x="60" y="590" width="1160" height="70" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="6" />
+    <text x="90" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+        项目属性：以非经营性项目为主
+    </text>
+    <text x="90" y="650" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+        如项目包含商业运营成分，将被划分为"经营性项目"，投资方式转变为"资本金注入"，引入国资监管
+    </text>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        04
+    </text>
+</svg>

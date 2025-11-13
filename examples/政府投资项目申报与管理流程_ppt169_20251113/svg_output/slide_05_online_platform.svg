@@ -1,0 +1,186 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="85"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="42" font-weight="700" fill="#005587">
+        一、唯一入口 - 在线审批监管平台
+    </text>
+
+    <!-- 标题下分隔线 -->
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    <!-- 平台定位 -->
+    <rect x="60" y="150" width="1160" height="70" fill="#005587" rx="8" />
+    <text x="640" y="192"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        所有政府投资项目申报、审批和监管的法律意义上的唯一入口
+    </text>
+
+    <!-- 三大环节流程图 -->
+    <text x="60" y="270"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="26" font-weight="600" fill="#333333">
+        平台核心功能：三大环节
+    </text>
+
+    <!-- 环节1 -->
+    <g>
+        <rect x="60" y="300" width="340" height="140" fill="#F8F9FA" stroke="#005587" stroke-width="3" rx="8" />
+        <circle cx="230" cy="330" r="18" fill="#005587" />
+        <text x="230" y="337"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="230" y="375"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+            项目登记
+        </text>
+        <text x="230" y="410"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            项目基本信息录入
+        </text>
+        <text x="230" y="430"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            生成项目代码
+        </text>
+    </g>
+
+    <!-- 箭头1 -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#005587" />
+        </marker>
+    </defs>
+    <line x1="400" y1="370" x2="460" y2="370" stroke="#005587" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- 环节2 -->
+    <g>
+        <rect x="470" y="300" width="340" height="140" fill="#F8F9FA" stroke="#005587" stroke-width="3" rx="8" />
+        <circle cx="640" cy="330" r="18" fill="#005587" />
+        <text x="640" y="337"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="640" y="375"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+            项目报批
+        </text>
+        <text x="640" y="410"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            三阶段审批流程
+        </text>
+        <text x="640" y="430"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            跨部门并联审批
+        </text>
+    </g>
+
+    <!-- 箭头2 -->
+    <line x1="810" y1="370" x2="870" y2="370" stroke="#005587" stroke-width="3" marker-end="url(#arrowhead)" />
+
+    <!-- 环节3 -->
+    <g>
+        <rect x="880" y="300" width="340" height="140" fill="#F8F9FA" stroke="#005587" stroke-width="3" rx="8" />
+        <circle cx="1050" cy="330" r="18" fill="#005587" />
+        <text x="1050" y="337"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="1050" y="375"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="28" font-weight="700" fill="#005587" text-anchor="middle">
+            信息报备
+        </text>
+        <text x="1050" y="410"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            项目实施监管
+        </text>
+        <text x="1050" y="430"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            动态信息更新
+        </text>
+    </g>
+
+    <!-- 平台特色 -->
+    <text x="60" y="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="26" font-weight="600" fill="#333333">
+        平台服务特色
+    </text>
+
+    <!-- 特色卡片 -->
+    <g>
+        <rect x="60" y="530" width="360" height="90" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <text x="240" y="565"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+            "一张网"服务
+        </text>
+        <text x="240" y="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            整合跨部门审批事项
+        </text>
+    </g>
+
+    <g>
+        <rect x="460" y="530" width="360" height="90" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <text x="640" y="565"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+            "最多跑一次"
+        </text>
+        <text x="640" y="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            线上提交，高效便捷
+        </text>
+    </g>
+
+    <g>
+        <rect x="860" y="530" width="360" height="90" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <text x="1040" y="565"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+            全生命周期管理
+        </text>
+        <text x="1040" y="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            立项到竣工全流程跟踪
+        </text>
+    </g>
+
+    <!-- 底部强调 -->
+    <rect x="60" y="640" width="1160" height="50" fill="#FFF5F5" stroke="#D9534F" stroke-width="2" rx="6" />
+    <text x="640" y="672"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="20" font-weight="600" fill="#D9534F" text-anchor="middle">
+        所有文件、沟通和批复均须通过平台留痕，确保申报程序合规
+    </text>
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        05
+    </text>
+</svg>

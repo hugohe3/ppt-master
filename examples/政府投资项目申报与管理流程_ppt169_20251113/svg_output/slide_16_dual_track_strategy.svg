@@ -1,0 +1,196 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="85"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="42" font-weight="700" fill="#005587">
+        四、双轨并行的实操策略
+    </text>
+
+    <!-- 标题下分隔线 -->
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    <!-- B轨操作步骤 -->
+    <rect x="60" y="150" width="1160" height="70" fill="#005587" rx="8" />
+    <text x="640" y="192"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        B轨（财务预算轨）四步操作法
+    </text>
+
+    <!-- 步骤卡片 -->
+    <g>
+        <rect x="60" y="250" width="270" height="180" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="195" cy="285" r="22" fill="#4A90E2" />
+        <text x="195" y="293"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="195" y="330"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#4A90E2" text-anchor="middle">
+            项目入库
+        </text>
+        <text x="90" y="365"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            在国家重大建设项目库
+        </text>
+        <text x="90" y="390"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            注册，录入项目信息，
+        </text>
+        <text x="90" y="415"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            提交主管单位审核
+        </text>
+    </g>
+
+    <g>
+        <rect x="370" y="250" width="270" height="180" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="505" cy="285" r="22" fill="#4A90E2" />
+        <text x="505" y="293"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="505" y="330"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#4A90E2" text-anchor="middle">
+            动态更新
+        </text>
+        <text x="400" y="365"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            ⭐ A轨每获一个批复，
+        </text>
+        <text x="400" y="390"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            立即在B轨更新状态
+        </text>
+        <text x="400" y="415"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            （前期工作模块）
+        </text>
+    </g>
+
+    <g>
+        <rect x="680" y="250" width="270" height="180" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="815" cy="285" r="22" fill="#4A90E2" />
+        <text x="815" y="293"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="815" y="330"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#4A90E2" text-anchor="middle">
+            争取"入滚"
+        </text>
+        <text x="710" y="365"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            与发改/财政沟通，
+        </text>
+        <text x="710" y="390"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            在审核中被选中，进入
+        </text>
+        <text x="710" y="415"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            三年滚动投资计划
+        </text>
+    </g>
+
+    <g>
+        <rect x="990" y="250" width="230" height="180" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="1105" cy="285" r="22" fill="#5CB85C" />
+        <text x="1105" y="293"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            4
+        </text>
+        <text x="1105" y="330"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#5CB85C" text-anchor="middle">
+            冲刺"首年"
+        </text>
+        <text x="1020" y="365"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            在Q3/Q4窗口期
+        </text>
+        <text x="1020" y="390"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            确保项目在滚动
+        </text>
+        <text x="1020" y="415"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            计划第一年
+        </text>
+    </g>
+
+    <!-- 关键时间节点 -->
+    <text x="60" y="470"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="26" font-weight="600" fill="#333333">
+        关键时间节点
+    </text>
+
+    <g>
+        <rect x="60" y="500" width="560" height="90" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <text x="90" y="535"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#F0AD4E">
+            ⏰ 各级发改部门审核周期
+        </text>
+        <text x="90" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="20" font-weight="400" fill="#333333">
+            每季度末月10日前集中审核项目库
+        </text>
+    </g>
+
+    <g>
+        <rect x="660" y="500" width="560" height="90" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <text x="690" y="535"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#F0AD4E">
+            ⏰ 年度计划编制窗口期
+        </text>
+        <text x="690" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="20" font-weight="400" fill="#333333">
+            Q3/Q4（通常9月后）编制次年年度计划
+        </text>
+    </g>
+
+    <!-- 底部强调 -->
+    <rect x="60" y="610" width="1160" height="70" fill="#FFF5F5" stroke="#D9534F" stroke-width="2" rx="8" />
+    <text x="90" y="650"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="22" font-weight="600" fill="#D9534F">
+        ⚠ 核心要义：项目申报的成功 = A轨（技术审批）进度 × B轨（财务计划）状态的"双轨并行、动态同步"
+    </text>
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        16
+    </text>
+</svg>

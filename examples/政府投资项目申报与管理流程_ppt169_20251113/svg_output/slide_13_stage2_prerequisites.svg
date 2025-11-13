@@ -1,0 +1,173 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="85"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="42" font-weight="700" fill="#005587">
+        三、阶段二的核心前置条件
+    </text>
+
+    <!-- 标题下分隔线 -->
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    <!-- 说明 -->
+    <rect x="60" y="150" width="1160" height="70" fill="#F8F9FA" stroke="#D9534F" stroke-width="2" rx="8" />
+    <text x="640" y="192"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="24" font-weight="600" fill="#D9534F" text-anchor="middle">
+        以下前置手续必须在可研报告受理前取得，否则无法进入审批流程
+    </text>
+
+    <!-- 前置条件清单 -->
+    <text x="60" y="260"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="26" font-weight="600" fill="#333333">
+        必备前置手续（Checklist）
+    </text>
+
+    <!-- 条件1 -->
+    <g>
+        <rect x="60" y="290" width="560" height="90" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="100" cy="320" r="20" fill="#5CB85C" />
+        <text x="100" y="328"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ✓
+        </text>
+        <text x="140" y="325"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#005587">
+            建设项目用地预审、选址意见书
+        </text>
+        <text x="140" y="355"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：自然资源行政主管部门
+        </text>
+    </g>
+
+    <!-- 条件2 -->
+    <g>
+        <rect x="660" y="290" width="560" height="90" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="700" cy="320" r="20" fill="#5CB85C" />
+        <text x="700" y="328"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ✓
+        </text>
+        <text x="740" y="325"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#005587">
+            资金筹措审查意见
+        </text>
+        <text x="740" y="355"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：财政部门
+        </text>
+    </g>
+
+    <!-- 条件3 -->
+    <g>
+        <rect x="60" y="400" width="560" height="90" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="100" cy="430" r="20" fill="#5CB85C" />
+        <text x="100" y="438"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ✓
+        </text>
+        <text x="140" y="435"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#005587">
+            节能审查意见/能源登记表
+        </text>
+        <text x="140" y="465"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：发改部门节能审查机构
+        </text>
+    </g>
+
+    <!-- 条件4 -->
+    <g>
+        <rect x="660" y="400" width="560" height="90" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="700" cy="430" r="20" fill="#5CB85C" />
+        <text x="700" y="438"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ✓
+        </text>
+        <text x="740" y="435"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#005587">
+            安全风险审查意见
+        </text>
+        <text x="740" y="465"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：应急管理部门
+        </text>
+    </g>
+
+    <!-- 条件5 -->
+    <g>
+        <rect x="60" y="510" width="560" height="90" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="100" cy="540" r="20" fill="#5CB85C" />
+        <text x="100" y="548"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ✓
+        </text>
+        <text x="140" y="545"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#005587">
+            社会稳定风险审查意见
+        </text>
+        <text x="140" y="575"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：发改或行业主管部门
+        </text>
+    </g>
+
+    <!-- 条件6 -->
+    <g>
+        <rect x="660" y="510" width="560" height="90" fill="#F8F9FA" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <circle cx="700" cy="540" r="20" fill="#F0AD4E" />
+        <text x="700" y="548"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ?
+        </text>
+        <text x="740" y="545"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="22" font-weight="600" fill="#F0AD4E">
+            航道通航条件影响评价（如适用）
+        </text>
+        <text x="740" y="575"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+            font-size="18" font-weight="400" fill="#666666">
+            出具部门：交通运输主管部门
+        </text>
+    </g>
+
+    <!-- 底部战略建议 -->
+    <rect x="60" y="620" width="1160" height="60" fill="#FFF9F5" stroke="#D9534F" stroke-width="2" rx="6" />
+    <text x="90" y="657"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="22" font-weight="600" fill="#D9534F">
+        ⚠ 战略建议：不要等可研编制完成后才申请前置手续，应在项目初期立即并行启动，这是最大的堵点
+    </text>
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif"
+        font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        13
+    </text>
+</svg>

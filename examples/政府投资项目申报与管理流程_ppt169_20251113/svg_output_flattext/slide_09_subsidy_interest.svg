@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        二、路径三/四 - 投资补助与贷款贴息
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <rect x="60" y="150" width="1160" height="80" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+    <text x="640" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#4A90E2" text-anchor="middle">
+        二级申请模式：先完成项目批准，再申请补贴
+    </text>
+    <text x="640" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#666666" text-anchor="middle">
+        与主流程审批截然不同，是两个严格先后顺序的程序
+    </text>
+
+    
+    <text x="60" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        申报流程
+    </text>
+
+    <defs>
+        <marker id="arrowhead5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#4A90E2" />
+        </marker>
+    </defs>
+
+    
+    <g>
+        <rect x="60" y="300" width="260" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="3" rx="8" />
+        <circle cx="190" cy="330" r="18" fill="#4A90E2" />
+        <text x="190" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="190" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#4A90E2" text-anchor="middle">
+            主流程审批
+        </text>
+        <text x="190" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            完成审批/核准/备案
+        </text>
+    </g>
+
+    <line x1="320" y1="355" x2="370" y2="355" stroke="#4A90E2" stroke-width="3" marker-end="url(#arrowhead5)" />
+
+    
+    <g>
+        <rect x="380" y="300" width="260" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="3" rx="8" />
+        <circle cx="510" cy="330" r="18" fill="#4A90E2" />
+        <text x="510" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="510" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#4A90E2" text-anchor="middle">
+            满足前置条件
+        </text>
+        <text x="510" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            列入三年滚动计划
+        </text>
+    </g>
+
+    <line x1="640" y1="355" x2="690" y2="355" stroke="#4A90E2" stroke-width="3" marker-end="url(#arrowhead5)" />
+
+    
+    <g>
+        <rect x="700" y="300" width="260" height="110" fill="#F8F9FA" stroke="#4A90E2" stroke-width="3" rx="8" />
+        <circle cx="830" cy="330" r="18" fill="#4A90E2" />
+        <text x="830" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="830" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#4A90E2" text-anchor="middle">
+            专项资金申报
+        </text>
+        <text x="830" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666" text-anchor="middle">
+            窗口期提交申请
+        </text>
+    </g>
+
+    
+    <text x="60" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        两个必备前置条件
+    </text>
+
+    <g>
+        <rect x="60" y="490" width="560" height="100" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <text x="90" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#F0AD4E">
+            ✓ 条件一
+        </text>
+        <text x="90" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            项目已被列入"三年滚动投资计划"
+        </text>
+        <text x="90" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            这是财务预算体系的入口
+        </text>
+    </g>
+
+    <g>
+        <rect x="660" y="490" width="560" height="100" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <text x="690" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#F0AD4E">
+            ✓ 条件二
+        </text>
+        <text x="690" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            项目已通过在线平台完成审批/核准/备案
+        </text>
+        <text x="690" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            至少应完成可研或初步设计审批
+        </text>
+    </g>
+
+    
+    <rect x="60" y="610" width="1160" height="80" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+    <text x="90" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+        申报要点
+    </text>
+    <text x="90" y="670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+        需单独编制《资金申请报告》| 注意窗口期（如天府蓉易享平台）| 贷款贴息需贷款合同、还本付息证明
+    </text>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        09
+    </text>
+</svg>

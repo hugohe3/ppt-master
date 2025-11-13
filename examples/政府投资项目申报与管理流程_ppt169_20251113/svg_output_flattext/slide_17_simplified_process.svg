@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        五、简化与合并审批程序
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <rect x="60" y="150" width="1160" height="60" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+    <text x="640" y="187" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+        特定类型项目可简化或合并审批，最常见的是"建议书+可研"合并
+    </text>
+
+    
+    <text x="60" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        适用情形
+    </text>
+
+    
+    <g>
+        <rect x="60" y="280" width="560" height="140" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="100" cy="315" r="20" fill="#4A90E2" />
+        <text x="100" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="140" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587">
+            建议书+可研合并
+        </text>
+        <text x="100" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            适用条件：
+        </text>
+        <text x="100" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 建设内容单一、总投资≤1000万元
+        </text>
+        <text x="100" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 房屋建筑类改扩建项目
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="660" y="280" width="560" height="140" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="700" cy="315" r="20" fill="#4A90E2" />
+        <text x="700" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="740" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587">
+            抢险救灾工程
+        </text>
+        <text x="700" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            适用条件：
+        </text>
+        <text x="700" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 应对突发事件的快速通道
+        </text>
+        <text x="700" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 按《抢险救灾工程项目管理办法》
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="450" width="560" height="140" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="100" cy="485" r="20" fill="#4A90E2" />
+        <text x="100" y="493" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="140" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587">
+            PPP新机制项目
+        </text>
+        <text x="100" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            适用条件：
+        </text>
+        <text x="100" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 资本金注入方式投资
+        </text>
+        <text x="100" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 特许经营方案经市政府常务会议审定
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="660" y="450" width="560" height="140" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="700" cy="485" r="20" fill="#4A90E2" />
+        <text x="700" y="493" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            4
+        </text>
+        <text x="740" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587">
+            重大项目绿色通道
+        </text>
+        <text x="700" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            适用条件：
+        </text>
+        <text x="700" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 提前开展区域评估、项目预审
+        </text>
+        <text x="700" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 极速审批、快速开工
+        </text>
+    </g>
+
+    
+    <rect x="60" y="610" width="1160" height="70" fill="#FFF9F5" stroke="#F0AD4E" stroke-width="2" rx="8" />
+    <text x="90" y="650" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+        实操提示：简化程序仍需符合投资决策要求，并非降低标准，而是优化流程。国家和省另有规定的，从其规定
+    </text>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        17
+    </text>
+</svg>

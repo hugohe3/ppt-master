@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        七、关键策略总结
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <rect x="60" y="140" width="1160" height="50" fill="#F0F5F9" rx="6" />
+    <text x="640" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="600" fill="#005587" text-anchor="middle">
+        有效避坑的五大核心策略
+    </text>
+
+    
+    <g>
+        <rect x="60" y="220" width="1160" height="75" fill="#F8F9FA" stroke="#005587" stroke-width="2" rx="8" />
+        <circle cx="110" cy="257" r="25" fill="#005587" />
+        <text x="110" y="267" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+        <text x="160" y="247" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#005587">
+            树立"双轨并行"意识
+        </text>
+        <text x="160" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+            完成四川在线审批平台备案（A轨）后，必须同步推进国家重大建设项目库录入→三年滚动计划→年度计划首年的B轨全流程
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="310" width="1160" height="75" fill="#F8F9FA" stroke="#4A90E2" stroke-width="2" rx="8" />
+        <circle cx="110" cy="347" r="25" fill="#4A90E2" />
+        <text x="110" y="357" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+        <text x="160" y="337" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#4A90E2">
+            熟练使用在线审批平台
+        </text>
+        <text x="160" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+            在线平台是项目登记入口和流程推进枢纽，未在线备案的项目无法获得任何后续审批，这是强制性前置条件
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="400" width="1160" height="75" fill="#F8F9FA" stroke="#5CB85C" stroke-width="2" rx="8" />
+        <circle cx="110" cy="437" r="25" fill="#5CB85C" />
+        <text x="110" y="447" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+        <text x="160" y="427" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#5CB85C">
+            前置要件"并行办理"
+        </text>
+        <text x="160" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+            可研阶段的6项前置要件（用地预审、资金审查、能评、安评、稳评、通航影响）应在设计单位工作同期同步办理，避免串联延误
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="490" width="1160" height="75" fill="#F8F9FA" stroke="#F0AD4E" stroke-width="2" rx="8" />
+        <circle cx="110" cy="527" r="25" fill="#F0AD4E" />
+        <text x="110" y="537" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            4
+        </text>
+        <text x="160" y="517" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#F0AD4E">
+            适应成都决策后移政策
+        </text>
+        <text x="160" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+            成都2025年后投资决策由可研阶段作出，项目建议书仅做技术备案。重心应从建议书转移到可研+前置要件+经济评价的整体打包
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="60" y="580" width="1160" height="75" fill="#F8F9FA" stroke="#D9534F" stroke-width="2" rx="8" />
+        <circle cx="110" cy="617" r="25" fill="#D9534F" />
+        <text x="110" y="627" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            5
+        </text>
+        <text x="160" y="607" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="24" font-weight="700" fill="#D9534F">
+            尽早明确融资模式
+        </text>
+        <text x="160" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#333333">
+            不同融资模式（直接投资/资本金注入/专项债/PPP）对应不同审批路径，在建议书阶段即应明确，避免后期路径调整造成返工
+        </text>
+    </g>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        19
+    </text>
+</svg>

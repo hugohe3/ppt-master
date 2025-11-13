@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="42" font-weight="700" fill="#005587">
+        六、资金来源：中央预算与专项债券
+    </text>
+
+    
+    <line x1="60" y1="110" x2="1220" y2="110" stroke="#E8E8E8" stroke-width="2" />
+
+    
+    <text x="60" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="26" font-weight="600" fill="#333333">
+        两大外部资金来源
+    </text>
+
+    
+    <g>
+        <rect x="60" y="190" width="560" height="420" fill="#F8F9FA" stroke="#005587" stroke-width="3" rx="8" />
+        <rect x="60" y="190" width="560" height="60" fill="#005587" rx="8" />
+        <text x="340" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            中央预算内投资
+        </text>
+
+        <text x="90" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            前置条件
+        </text>
+        <text x="90" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            ✓ 纳入国家重大建设项目库
+        </text>
+        <text x="90" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            ✓ 纳入三年滚动投资计划
+        </text>
+
+        <text x="90" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#005587">
+            申报依据
+        </text>
+        <text x="90" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            具体专项管理办法
+        </text>
+        <text x="90" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            例如：
+        </text>
+        <text x="90" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 农业农村专项
+        </text>
+        <text x="90" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 生态环保专项
+        </text>
+        <text x="90" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            • 社会事业专项等
+        </text>
+
+        <text x="90" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999">
+            需关注国家发改委年度专项
+        </text>
+        <text x="90" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999">
+            申报通知
+        </text>
+    </g>
+
+    
+    <g>
+        <rect x="660" y="190" width="560" height="420" fill="#F8F9FA" stroke="#D9534F" stroke-width="3" rx="8" />
+        <rect x="660" y="190" width="560" height="60" fill="#D9534F" rx="8" />
+        <text x="940" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            地方政府专项债券
+        </text>
+
+        <text x="690" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#D9534F">
+            核心强制文件："一案两书"
+        </text>
+        <text x="690" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            ✓ 项目实施方案
+        </text>
+        <text x="690" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            ✓ 财务评估报告
+        </text>
+        <text x="690" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            ✓ 项目法律意见书
+        </text>
+
+        <text x="690" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#D9534F">
+            双系统申报
+        </text>
+        <text x="690" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            系统1：国家重大建设项目库
+        </text>
+        <text x="720" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            （发改委审核合规性）
+        </text>
+
+        <text x="690" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="400" fill="#333333">
+            系统2：专项债券穿透式监测系统
+        </text>
+        <text x="720" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#666666">
+            （财政部审核资金和风险）
+        </text>
+
+        <text x="690" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999">
+            优先支持成熟度高的在建项目
+        </text>
+        <text x="690" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999">
+            概算批复是重要加分项
+        </text>
+    </g>
+
+    
+    <rect x="60" y="630" width="1160" height="60" fill="#FFF5F5" stroke="#D9534F" stroke-width="2" rx="6" />
+    <text x="90" y="667" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="600" fill="#D9534F">
+        ⚠ 数据一致性：两库信息（项目名称、总投资、建设内容）必须衔接一致，否则会被系统标记为高风险
+    </text>
+
+    
+    <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="400" fill="#999999" text-anchor="end">
+        18
+    </text>
+</svg>
