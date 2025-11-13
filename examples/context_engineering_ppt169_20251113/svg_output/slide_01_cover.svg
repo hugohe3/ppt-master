@@ -1,0 +1,95 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0077B5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A9FD8;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.2" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- Decorative Geometric Elements -->
+    <circle cx="1100" cy="120" r="150" fill="#E3F2FD" opacity="0.5" />
+    <circle cx="1150" cy="80" r="100" fill="#4A9FD8" opacity="0.15" />
+    <circle cx="150" cy="600" r="120" fill="#ECF0F1" opacity="0.4" />
+    <rect x="50" y="650" width="200" height="8" fill="#0077B5" opacity="0.2" rx="4" />
+
+    <!-- Top accent line -->
+    <rect x="0" y="0" width="1280" height="6" fill="url(#accentGradient)" />
+
+    <!-- Main Title Container -->
+    <rect x="180" y="200" width="920" height="250" fill="#FFFFFF" filter="url(#shadow)" rx="12" />
+    <rect x="180" y="200" width="920" height="6" fill="url(#accentGradient)" rx="12" />
+
+    <!-- Main Title -->
+    <text x="640" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="54" font-weight="bold" fill="#005587" text-anchor="middle">
+        Context Engineering 2.0
+    </text>
+
+    <!-- English Subtitle -->
+    <text x="640" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="30" font-weight="600" fill="#0077B5" text-anchor="middle">
+        The Context of Context Engineering
+    </text>
+
+    <!-- Decorative divider -->
+    <line x1="320" y1="370" x2="960" y2="370" stroke="#BDC3C7" stroke-width="1.5" opacity="0.5" />
+
+    <!-- Chinese Subtitle -->
+    <text x="640" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" fill="#5D6D7E" text-anchor="middle">
+        从人机交互到智能协作的演进
+    </text>
+
+    <!-- Authors Section -->
+    <text x="640" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50" text-anchor="middle">
+        Qishuo Hua · Lyumanshan Ye · Dayuan Fu · Yang Xiao · Xiaojie Cai
+    </text>
+
+    <text x="640" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50" text-anchor="middle">
+        Yunze Wu · Jifan Lin · Junfei Wang · Pengfei Liu
+    </text>
+
+    <!-- Institutions with enhanced styling -->
+    <rect x="490" y="545" width="300" height="45" fill="#F8F9FA" rx="22" />
+
+    <circle cx="520" cy="567" r="4" fill="#0077B5" />
+    <text x="535" y="573" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#0077B5">
+        SJTU
+    </text>
+
+    <circle cx="630" cy="567" r="4" fill="#0077B5" />
+    <text x="645" y="573" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#0077B5">
+        SII
+    </text>
+
+    <circle cx="720" cy="567" r="4" fill="#0077B5" />
+    <text x="735" y="573" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#0077B5">
+        GAIR
+    </text>
+
+    <!-- Footer with enhanced styling -->
+    <rect x="520" y="625" width="240" height="40" fill="#F8F9FA" rx="20" />
+    <text x="640" y="651" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#5D6D7E" text-anchor="middle">
+        arXiv:2510.26493 | 2025
+    </text>
+
+    <!-- Bottom decorative element -->
+    <rect x="1000" y="685" width="200" height="4" fill="#4A9FD8" opacity="0.3" rx="2" />
+</svg>

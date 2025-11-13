@@ -1,0 +1,141 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BB8FCE;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="30" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        分层记忆组织架构
+    </text>
+
+    <!-- Left: Memory Hierarchy Diagram -->
+    <rect x="80" y="120" width="550" height="540" fill="#FFFFFF" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+
+    <!-- Layer 1: Core Context -->
+    <rect x="200" y="145" width="310" height="90" fill="#C0392B" rx="8" filter="url(#shadow)" />
+    <text x="355" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="19" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Core Context
+    </text>
+    <text x="355" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#FFFFFF" text-anchor="middle">
+        核心上下文（系统提示词）
+    </text>
+    <text x="355" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#FFE0E0" text-anchor="middle">
+        永久驻留 · 定义角色与目标
+    </text>
+
+    <!-- Arrow 1 -->
+    <path d="M 355 235 L 355 255" stroke="#9B59B6" stroke-width="3" fill="none" />
+    <polygon points="355,255 350,250 360,250" fill="#9B59B6" />
+
+    <!-- Layer 2: Working Memory -->
+    <rect x="180" y="265" width="350" height="90" fill="#E67E22" rx="8" filter="url(#shadow)" />
+    <text x="355" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="19" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Working Memory
+    </text>
+    <text x="355" y="322" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#FFFFFF" text-anchor="middle">
+        工作记忆（当前会话）
+    </text>
+    <text x="355" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#FFE8D5" text-anchor="middle">
+        8K-32K tokens · 动态更新
+    </text>
+
+    <!-- Arrow 2 -->
+    <path d="M 355 355 L 355 375" stroke="#9B59B6" stroke-width="3" fill="none" />
+    <polygon points="355,375 350,370 360,370" fill="#9B59B6" />
+
+    <!-- Layer 3: Episodic Memory -->
+    <rect x="160" y="385" width="390" height="90" fill="#0077B5" rx="8" filter="url(#shadow)" />
+    <text x="355" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="19" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Episodic Memory
+    </text>
+    <text x="355" y="442" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#FFFFFF" text-anchor="middle">
+        情景记忆（历史会话）
+    </text>
+    <text x="355" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#D6EAF8" text-anchor="middle">
+        向量检索 · 时间衰减 · 相关性排序
+    </text>
+
+    <!-- Arrow 3 -->
+    <path d="M 355 475 L 355 495" stroke="#9B59B6" stroke-width="3" fill="none" />
+    <polygon points="355,495 350,490 360,490" fill="#9B59B6" />
+
+    <!-- Layer 4: Semantic Memory -->
+    <rect x="140" y="505" width="430" height="90" fill="#27AE60" rx="8" filter="url(#shadow)" />
+    <text x="355" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="19" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Semantic Memory
+    </text>
+    <text x="355" y="562" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#FFFFFF" text-anchor="middle">
+        语义记忆（知识库）
+    </text>
+    <text x="355" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#D5F4E6" text-anchor="middle">
+        RAG 检索 · 文档库 · 结构化知识
+    </text>
+
+    <!-- Right: Detailed Explanation -->
+    <rect x="650" y="120" width="550" height="260" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="120" width="550" height="8" fill="#0077B5" rx="10" />
+    <text x="925" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        各层特性对比
+    </text>
+
+    <text x="670" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="670" dy="0" font-weight="600" fill="#C0392B">Core Context：</tspan>
+        <tspan x="690" dy="24">• 容量：1-2K tokens</tspan>
+        <tspan x="690" dy="22">• 更新频率：静态或手动更新</tspan>
+        <tspan x="690" dy="22">• 用途：定义 AI 角色、行为准则</tspan>
+
+        <tspan x="670" dy="34" font-weight="600" fill="#E67E22">Working Memory：</tspan>
+        <tspan x="690" dy="24">• 容量：8K-128K tokens（模型依赖）</tspan>
+        <tspan x="690" dy="22">• 更新频率：实时，每轮对话更新</tspan>
+        <tspan x="690" dy="22">• 用途：维持当前会话上下文连贯性</tspan>
+    </text>
+
+    <rect x="650" y="400" width="550" height="240" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="400" width="550" height="8" fill="#27AE60" rx="10" />
+    <text x="925" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#27AE60" text-anchor="middle">
+        长期记忆策略
+    </text>
+
+    <text x="670" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="670" dy="0" font-weight="600" fill="#0077B5">Episodic Memory：</tspan>
+        <tspan x="690" dy="22">• 容量：无限（向量数据库）</tspan>
+        <tspan x="690" dy="20">• 检索方式：相似度 + 时间权重</tspan>
+        <tspan x="690" dy="20">• 用途：回溯历史对话，维持长期记忆</tspan>
+
+        <tspan x="670" dy="30" font-weight="600" fill="#27AE60">Semantic Memory：</tspan>
+        <tspan x="690" dy="22">• 容量：TB 级（文档库 + 知识图谱）</tspan>
+        <tspan x="690" dy="20">• 检索方式：RAG（Hybrid Search）</tspan>
+        <tspan x="690" dy="20">• 用途：事实查询、知识增强推理</tspan>
+    </text>
+</svg>

@@ -1,0 +1,96 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#C0392B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="futureGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#27AE60;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#52BE80;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        挑战与未来方向
+    </text>
+
+    <!-- Left Column: Current Challenges -->
+    <rect x="80" y="130" width="560" height="520" fill="#FFEBEE" stroke="#C0392B" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="560" height="8" fill="#C0392B" rx="10" />
+    <text x="360" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#C0392B" text-anchor="middle">
+        ⚠️ 当前挑战
+    </text>
+
+    <text x="100" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600" fill="#C0392B">1. 上下文窗口限制</tspan>
+        <tspan x="100" dy="26">• 即使 GPT-4 Turbo 128K 仍不够用</tspan>
+        <tspan x="100" dy="22">• 长文档处理成本高（$0.01/1K tokens）</tspan>
+        <tspan x="100" dy="22">• 注意力机制 O(n²) 复杂度</tspan>
+
+        <tspan x="100" dy="32" font-weight="600" fill="#C0392B">2. 计算成本爆炸</tspan>
+        <tspan x="100" dy="26">• RAG 系统每次查询需 3-5 次嵌入计算</tspan>
+        <tspan x="100" dy="22">• 向量数据库维护成本（Pinecone: $70/月）</tspan>
+        <tspan x="100" dy="22">• 多模态融合算力需求 10x 增长</tspan>
+
+        <tspan x="100" dy="32" font-weight="600" fill="#C0392B">3. 隐私与安全</tspan>
+        <tspan x="100" dy="26">• 敏感信息泄露风险（API 传输）</tspan>
+        <tspan x="100" dy="22">• 上下文污染攻击（Prompt Injection）</tspan>
+        <tspan x="100" dy="22">• 用户数据归属权争议</tspan>
+
+        <tspan x="100" dy="32" font-weight="600" fill="#C0392B">4. 幻觉与可靠性</tspan>
+        <tspan x="100" dy="26">• 检索增强后仍有 15-20% 错误率</tspan>
+        <tspan x="100" dy="22">• 上下文冲突导致的逻辑矛盾</tspan>
+        <tspan x="100" dy="22">• 缺乏不确定性量化机制</tspan>
+    </text>
+
+    <!-- Right Column: Future Directions -->
+    <rect x="660" y="130" width="540" height="520" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="130" width="540" height="8" fill="#27AE60" rx="10" />
+    <text x="930" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#27AE60" text-anchor="middle">
+        🚀 未来方向
+    </text>
+
+    <text x="680" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600" fill="#27AE60">1. 无限上下文架构</tspan>
+        <tspan x="680" dy="26">• 分层注意力机制（Hierarchical Attn）</tspan>
+        <tspan x="680" dy="22">• 外部记忆系统（Letta: 无限 Memory）</tspan>
+        <tspan x="680" dy="22">• 动态上下文压缩（LLMLingua 50% 压缩）</tspan>
+
+        <tspan x="680" dy="32" font-weight="600" fill="#27AE60">2. 多模态深度融合</tspan>
+        <tspan x="680" dy="26">• 统一表示学习（ImageBind: 6 模态）</tspan>
+        <tspan x="680" dy="22">• 跨模态检索（CLIP-based Search）</tspan>
+        <tspan x="680" dy="22">• 动态模态权重调整</tspan>
+
+        <tspan x="680" dy="32" font-weight="600" fill="#27AE60">3. 个性化与联邦学习</tspan>
+        <tspan x="680" dy="26">• On-Device 推理（苹果 Apple Intelligence）</tspan>
+        <tspan x="680" dy="22">• 联邦微调保护隐私（FedLLM）</tspan>
+        <tspan x="680" dy="22">• 用户级上下文沙盒隔离</tspan>
+
+        <tspan x="680" dy="32" font-weight="600" fill="#27AE60">4. 通用人工智能（AGI）路径</tspan>
+        <tspan x="680" dy="26">• 终身学习系统（Continual Learning）</tspan>
+        <tspan x="680" dy="22">• 元学习能力（Learning to Learn）</tspan>
+        <tspan x="680" dy="22">• 自主上下文构建（Self-CE）</tspan>
+    </text>
+
+    <!-- Bottom Quote -->
+    <text x="640" y="688" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-style="italic" fill="#5D6D7E" text-anchor="middle">
+        "The future of AI is not about bigger models, but better context." — Anthropic, 2024
+    </text>
+</svg>

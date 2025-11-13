@@ -1,0 +1,122 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E67E22;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F39C12;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Header -->
+    <rect x="80" y="40" width="1120" height="70" fill="url(#headerGrad)" rx="10" filter="url(#shadow)" />
+    <text x="140" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="32" font-weight="bold" fill="#FFFFFF">
+        Era 2.0：智能代理时代
+    </text>
+    <text x="1100" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" fill="#FFFFFF" text-anchor="end">
+        2020-Present
+    </text>
+
+    <!-- Left Column -->
+    <!-- Card 1: Breakthrough -->
+    <rect x="80" y="140" width="550" height="180" fill="url(#cardGrad1)" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="140" width="550" height="8" fill="#E67E22" rx="10" />
+    <text x="355" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#E67E22" text-anchor="middle">
+        关键突破
+    </text>
+    <text x="100" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">Large Language Models：</tspan>
+        <tspan x="100" dy="26"> GPT-4、Claude 等超大规模模型</tspan>
+        <tspan x="100" dy="26" font-weight="600">自然语言理解：</tspan>
+        <tspan x="100" dy="26"> 从 Token 序列到语义推理</tspan>
+    </text>
+
+    <!-- Card 2: Core Capabilities -->
+    <rect x="80" y="350" width="550" height="200" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="350" width="550" height="8" fill="#9B59B6" rx="10" />
+    <text x="355" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        核心能力
+    </text>
+    <text x="100" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0">✓ 自然语言交互（NLP）</tspan>
+        <tspan x="100" dy="26">✓ 工具调用与 API 集成</tspan>
+        <tspan x="100" dy="26">✓ RAG（检索增强生成）</tspan>
+        <tspan x="100" dy="26">✓ 长短期记忆管理</tspan>
+    </text>
+
+    <!-- Card 3: Agentic Systems -->
+    <rect x="80" y="580" width="550" height="100" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="355" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#27AE60" text-anchor="middle">
+        代理系统架构
+    </text>
+    <text x="355" y="648" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50" text-anchor="middle">
+        Perception → Reasoning → Action
+    </text>
+
+    <!-- Right Column -->
+    <!-- Card 4: Representative Systems -->
+    <rect x="650" y="140" width="550" height="280" fill="url(#cardGrad2)" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="140" width="550" height="8" fill="#0077B5" rx="10" />
+    <text x="925" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        代表性系统
+    </text>
+    <text x="670" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="670" dy="0" font-weight="600">ChatGPT / GPT-4：</tspan>
+        <tspan x="670" dy="26"> 对话式 AI，上下文窗口 128K</tspan>
+        <tspan x="670" dy="26" font-weight="600">Claude (Anthropic)：</tspan>
+        <tspan x="670" dy="26"> 200K 上下文窗口，Constitutional AI</tspan>
+        <tspan x="670" dy="26" font-weight="600">LangChain / LlamaIndex：</tspan>
+        <tspan x="670" dy="26"> LLM 应用开发框架</tspan>
+        <tspan x="670" dy="26" font-weight="600">Letta (MemGPT)：</tspan>
+        <tspan x="670" dy="26"> 分层内存管理系统</tspan>
+    </text>
+
+    <!-- Card 5: Context Forms -->
+    <rect x="650" y="450" width="550" height="130" fill="#FFEBEE" stroke="#C0392B" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="450" width="550" height="8" fill="#C0392B" rx="10" />
+    <text x="925" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#C0392B" text-anchor="middle">
+        上下文形式
+    </text>
+    <text x="670" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="670" dy="0">Token 序列 · RAG 检索 · Tool API</tspan>
+        <tspan x="670" dy="26">Memory System · Multimodal Input</tspan>
+    </text>
+
+    <!-- Card 6: Human Role -->
+    <rect x="650" y="610" width="550" height="70" fill="#FFF9C4" stroke="#F9A825" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="925" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#F57F17" text-anchor="middle">
+        人类角色：协作者（Collaborator）
+    </text>
+</svg>

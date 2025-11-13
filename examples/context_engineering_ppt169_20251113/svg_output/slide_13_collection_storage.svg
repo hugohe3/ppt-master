@@ -1,0 +1,116 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BB8FCE;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="card1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="card2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        上下文采集与存储策略
+    </text>
+
+    <!-- Left Column: Collection Strategies -->
+    <rect x="80" y="130" width="560" height="260" fill="url(#card1Grad)" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="560" height="8" fill="#0077B5" rx="10" />
+    <text x="360" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#0077B5" text-anchor="middle">
+        采集策略
+    </text>
+
+    <text x="100" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">1. 文本处理流程</tspan>
+        <tspan x="120" dy="28">• 分块策略：固定长度 vs 语义边界</tspan>
+        <tspan x="120" dy="24">• 重叠窗口：防止上下文断裂</tspan>
+        <tspan x="120" dy="24">• Markdown 保留：保持结构信息</tspan>
+
+        <tspan x="100" dy="38" font-weight="600">2. 多模态数据</tspan>
+        <tspan x="120" dy="28">• 图像：OCR + 视觉特征提取</tspan>
+        <tspan x="120" dy="24">• 音频：转录 + 语音情感分析</tspan>
+    </text>
+
+    <!-- Storage Strategies -->
+    <rect x="80" y="410" width="560" height="250" fill="url(#card2Grad)" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="410" width="560" height="8" fill="#E67E22" rx="10" />
+    <text x="360" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#E67E22" text-anchor="middle">
+        存储策略
+    </text>
+
+    <text x="100" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">向量数据库</tspan>
+        <tspan x="120" dy="26">• 高维嵌入存储（ChromaDB, Pinecone）</tspan>
+        <tspan x="120" dy="22">• 快速相似度检索（ANN 算法）</tspan>
+
+        <tspan x="100" dy="34" font-weight="600">混合存储架构</tspan>
+        <tspan x="120" dy="26">• 元数据：关系型数据库</tspan>
+        <tspan x="120" dy="22">• 原始内容：对象存储（S3）</tspan>
+        <tspan x="120" dy="22">• 向量索引：专用向量库</tspan>
+    </text>
+
+    <!-- Right Column: Technical Details -->
+    <rect x="660" y="130" width="540" height="340" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="130" width="540" height="8" fill="#9B59B6" rx="10" />
+    <text x="930" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        技术实现细节
+    </text>
+
+    <text x="680" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600">Embedding 模型选择：</tspan>
+        <tspan x="700" dy="26">• text-embedding-3-large (OpenAI)</tspan>
+        <tspan x="700" dy="22">• voyage-02 (Voyage AI)</tspan>
+        <tspan x="700" dy="22">• 维度通常 1024-3072</tspan>
+
+        <tspan x="680" dy="36" font-weight="600">分块参数建议：</tspan>
+        <tspan x="700" dy="26">• Chunk size: 512-1024 tokens</tspan>
+        <tspan x="700" dy="22">• Overlap: 50-100 tokens</tspan>
+        <tspan x="700" dy="22">• 语义分块：基于段落/章节</tspan>
+
+        <tspan x="680" dy="36" font-weight="600">索引优化：</tspan>
+        <tspan x="700" dy="26">• HNSW (Hierarchical NSW)</tspan>
+        <tspan x="700" dy="22">• 精度 vs 速度权衡</tspan>
+    </text>
+
+    <!-- Best Practices -->
+    <rect x="660" y="480" width="540" height="180" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="480" width="540" height="8" fill="#27AE60" rx="10" />
+    <text x="930" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#27AE60" text-anchor="middle">
+        最佳实践
+    </text>
+
+    <text x="680" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="680" dy="0">✓ 保留源文档元数据（时间戳、作者、类型）</tspan>
+        <tspan x="680" dy="24">✓ 版本控制：支持内容更新与回溯</tspan>
+        <tspan x="680" dy="24">✓ 增量索引：避免全量重建</tspan>
+        <tspan x="680" dy="24">✓ 定期清理：删除过时或冗余内容</tspan>
+        <tspan x="680" dy="24">✓ 隐私保护：敏感信息脱敏处理</tspan>
+    </text>
+</svg>

@@ -1,0 +1,120 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E3F2FD;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0077B5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A9FD8;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="url(#bgGrad)" />
+
+    <!-- Title -->
+    <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="32" font-weight="bold" fill="#005587" text-anchor="middle">
+        Context Engineering 演进的底层逻辑
+    </text>
+
+    <!-- Central Circle - Core Driver -->
+    <circle cx="640" cy="360" r="130" fill="#005587" filter="url(#shadow)" />
+    <text x="640" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        核心驱动力
+    </text>
+    <text x="640" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#FFFFFF" text-anchor="middle">
+        <tspan x="640" dy="0">智能系统能力的</tspan>
+        <tspan x="640" dy="25">持续提升</tspan>
+    </text>
+    <text x="640" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#E3F2FD" text-anchor="middle">
+        (Machine Capabilities ↑)
+    </text>
+
+    <!-- Top Card - Context Understanding -->
+    <rect x="460" y="90" width="360" height="110" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="640" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#005587" text-anchor="middle">
+        上下文理解能力演进
+    </text>
+    <text x="640" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50" text-anchor="middle">
+        <tspan x="640" dy="0">从结构化 → 半结构化 → 非结构化</tspan>
+        <tspan x="640" dy="22">从单模态 → 多模态融合</tspan>
+    </text>
+
+    <!-- Arrow Up -->
+    <path d="M 640 200 L 640 220 M 625 210 L 640 200 L 655 210" stroke="url(#arrowGrad)" stroke-width="4" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Left Card - Human Role -->
+    <rect x="120" y="280" width="340" height="160" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="290" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#E67E22" text-anchor="middle">
+        人类角色转变
+    </text>
+    <text x="140" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="140" dy="0">Era 1.0: 意图翻译者</tspan>
+        <tspan x="140" dy="24">Era 2.0: 协作者</tspan>
+        <tspan x="140" dy="24">Era 3.0: 平等伙伴</tspan>
+        <tspan x="140" dy="24">Era 4.0: 被引导者</tspan>
+    </text>
+
+    <!-- Arrow Left -->
+    <path d="M 500 360 L 480 360 M 490 345 L 480 360 L 490 375" stroke="url(#arrowGrad)" stroke-width="4" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Right Card - Context Forms -->
+    <rect x="820" y="280" width="340" height="160" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="990" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#27AE60" text-anchor="middle">
+        上下文形式演化
+    </text>
+    <text x="840" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="840" dy="0">GUI → Token 序列</tspan>
+        <tspan x="840" dy="24">传感器数据 → 多模态融合</tspan>
+        <tspan x="840" dy="24">显式输入 → 隐式意图推断</tspan>
+        <tspan x="840" dy="24">被动接收 → 主动构建</tspan>
+    </text>
+
+    <!-- Arrow Right -->
+    <path d="M 780 360 L 800 360 M 790 345 L 800 360 L 790 375" stroke="url(#arrowGrad)" stroke-width="4" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Bottom Card - Intelligence Level -->
+    <rect x="460" y="530" width="360" height="110" fill="#FFEBEE" stroke="#C0392B" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="640" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#C0392B" text-anchor="middle">
+        智能水平跃迁
+    </text>
+    <text x="640" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50" text-anchor="middle">
+        <tspan x="640" dy="0">有限结构化 → NLP+推理 →</tspan>
+        <tspan x="640" dy="22">情感理解 → 超越人类认知</tspan>
+    </text>
+
+    <!-- Arrow Down -->
+    <path d="M 640 500 L 640 520 M 625 510 L 640 520 L 655 510" stroke="url(#arrowGrad)" stroke-width="4" fill="none"
+        stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Key Insight Box -->
+    <rect x="200" y="660" width="880" height="45" fill="#005587" rx="8" />
+    <text x="640" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        演进本质：机器能力提升 → 人机交互模式重构 → 上下文工程范式转变
+    </text>
+</svg>

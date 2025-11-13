@@ -1,0 +1,115 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0077B5;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.1" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Decorative circles -->
+    <circle cx="1150" cy="150" r="80" fill="#E3F2FD" opacity="0.5" />
+    <circle cx="1200" cy="100" r="50" fill="#4A9FD8" opacity="0.2" />
+
+    <!-- Title -->
+    <rect x="80" y="60" width="300" height="60" fill="url(#headerGrad)" rx="8" />
+    <text x="230" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="32" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        内容概览
+    </text>
+
+    <!-- Outline Items with elegant cards -->
+
+    <!-- Item 1 -->
+    <rect x="80" y="150" width="1120" height="70" fill="#E3F2FD" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="150" width="8" height="70" fill="#0077B5" rx="4" />
+    <text x="120" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        01 理论框架
+    </text>
+    <text x="120" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        形式化定义与四阶段演进模型（Era 1.0 → 2.0 → 3.0 → 4.0）
+    </text>
+
+    <!-- Item 2 -->
+    <rect x="80" y="235" width="1120" height="70" fill="#F8F9FA" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="235" width="8" height="70" fill="#0077B5" rx="4" />
+    <text x="120" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        02 历史演进
+    </text>
+    <text x="120" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        从 Context-Aware（被动感知）到 Context-Cooperative（主动协作）
+    </text>
+
+    <!-- Item 3 -->
+    <rect x="80" y="320" width="1120" height="70" fill="#E3F2FD" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="320" width="8" height="70" fill="#0077B5" rx="4" />
+    <text x="120" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        03 设计考量 I：收集与存储
+    </text>
+    <text x="120" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        传感器生态、分层存储架构、最小充分与语义连续性原则
+    </text>
+
+    <!-- Item 4 -->
+    <rect x="80" y="405" width="1120" height="70" fill="#F8F9FA" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="405" width="8" height="70" fill="#0077B5" rx="4" />
+    <text x="120" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        04 设计考量 II：管理
+    </text>
+    <text x="120" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        文本处理策略、多模态融合、分层内存架构、功能隔离（Subagent）
+    </text>
+
+    <!-- Item 5 -->
+    <rect x="80" y="490" width="1120" height="70" fill="#E3F2FD" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="490" width="8" height="70" fill="#0077B5" rx="4" />
+    <text x="120" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        05 设计考量 III：使用
+    </text>
+    <text x="120" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        上下文共享、相关性选择、主动推断、终身保存挑战
+    </text>
+
+    <!-- Item 6 -->
+    <rect x="80" y="575" width="545" height="70" fill="#F8F9FA" filter="url(#shadow)" rx="8" />
+    <rect x="80" y="575" width="8" height="70" fill="#27AE60" rx="4" />
+    <text x="120" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        06 应用案例
+    </text>
+    <text x="120" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        Gemini CLI、DeepResearch、BCI
+    </text>
+
+    <!-- Item 7 -->
+    <rect x="655" y="575" width="545" height="70" fill="#F8F9FA" filter="url(#shadow)" rx="8" />
+    <rect x="655" y="575" width="8" height="70" fill="#E67E22" rx="4" />
+    <text x="695" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        07 挑战与展望
+    </text>
+    <text x="695" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#5D6D7E">
+        迈向 Era 3.0/4.0 与语义操作系统
+    </text>
+
+    <!-- Bottom decorative line -->
+    <rect x="80" y="680" width="1120" height="4" fill="#E3F2FD" rx="2" />
+</svg>

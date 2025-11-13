@@ -1,0 +1,161 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0077B5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A9FD8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#27AE60;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#52BE80;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        文本处理策略详解
+    </text>
+
+    <!-- Processing Flow -->
+    <text x="640" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587" text-anchor="middle">
+        处理流程
+    </text>
+
+    <!-- Step 1 -->
+    <rect x="120" y="170" width="200" height="90" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="8"
+        filter="url(#shadow)" />
+    <text x="220" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#0077B5" text-anchor="middle">
+        1. 清洗
+    </text>
+    <text x="220" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        <tspan x="220" dy="0">去除噪声</tspan>
+        <tspan x="220" dy="18">统一格式</tspan>
+    </text>
+
+    <!-- Arrow 1 -->
+    <path d="M 330 215 L 370 215" stroke="url(#flowGrad)" stroke-width="3" fill="none" marker-end="url(#arrowhead)" />
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#27AE60" />
+        </marker>
+    </defs>
+
+    <!-- Step 2 -->
+    <rect x="380" y="170" width="200" height="90" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="8"
+        filter="url(#shadow)" />
+    <text x="480" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#27AE60" text-anchor="middle">
+        2. 分块
+    </text>
+    <text x="480" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        <tspan x="480" dy="0">语义切分</tspan>
+        <tspan x="480" dy="18">重叠窗口</tspan>
+    </text>
+
+    <!-- Arrow 2 -->
+    <path d="M 590 215 L 630 215" stroke="url(#flowGrad)" stroke-width="3" fill="none" marker-end="url(#arrowhead)" />
+
+    <!-- Step 3 -->
+    <rect x="640" y="170" width="200" height="90" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" rx="8"
+        filter="url(#shadow)" />
+    <text x="740" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#E67E22" text-anchor="middle">
+        3. 嵌入
+    </text>
+    <text x="740" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        <tspan x="740" dy="0">向量化</tspan>
+        <tspan x="740" dy="18">语义表示</tspan>
+    </text>
+
+    <!-- Arrow 3 -->
+    <path d="M 850 215 L 890 215" stroke="url(#flowGrad)" stroke-width="3" fill="none" marker-end="url(#arrowhead)" />
+
+    <!-- Step 4 -->
+    <rect x="900" y="170" width="200" height="90" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="8"
+        filter="url(#shadow)" />
+    <text x="1000" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        4. 索引
+    </text>
+    <text x="1000" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        <tspan x="1000" dy="0">构建索引</tspan>
+        <tspan x="1000" dy="18">优化检索</tspan>
+    </text>
+
+    <!-- Chunking Strategies -->
+    <rect x="80" y="300" width="560" height="350" fill="#FFFFFF" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="300" width="560" height="8" fill="#0077B5" rx="10" />
+    <text x="360" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        分块策略对比
+    </text>
+
+    <text x="100" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600" fill="#E67E22">1. 固定长度分块</tspan>
+        <tspan x="120" dy="24">优点：简单高效，易于实现</tspan>
+        <tspan x="120" dy="22">缺点：可能破坏语义完整性</tspan>
+        <tspan x="120" dy="22">适用：技术文档、日志数据</tspan>
+
+        <tspan x="100" dy="32" font-weight="600" fill="#27AE60">2. 语义边界分块</tspan>
+        <tspan x="120" dy="24">优点：保持语义完整性</tspan>
+        <tspan x="120" dy="22">缺点：块大小不均，计算复杂</tspan>
+        <tspan x="120" dy="22">适用：文学作品、新闻文章</tspan>
+
+        <tspan x="100" dy="32" font-weight="600" fill="#9B59B6">3. 递归分块</tspan>
+        <tspan x="120" dy="24">优点：多层次结构，灵活性高</tspan>
+        <tspan x="120" dy="22">缺点：实现复杂，性能开销大</tspan>
+        <tspan x="120" dy="22">适用：代码库、结构化文档</tspan>
+    </text>
+
+    <!-- Key Parameters -->
+    <rect x="660" y="300" width="540" height="200" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="300" width="540" height="8" fill="#0077B5" rx="10" />
+    <text x="930" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        关键参数
+    </text>
+
+    <text x="680" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600">Chunk Size（块大小）：</tspan>
+        <tspan x="700" dy="24">• 小块 (256 tokens)：精确但上下文少</tspan>
+        <tspan x="700" dy="22">• 大块 (1024 tokens)：上下文丰富但检索粗</tspan>
+
+        <tspan x="680" dy="32" font-weight="600">Overlap（重叠）：</tspan>
+        <tspan x="700" dy="24">• 50-100 tokens：防止关键信息断裂</tspan>
+        <tspan x="700" dy="22">• 过大重叠：冗余增加，存储成本高</tspan>
+    </text>
+
+    <!-- Advanced Techniques -->
+    <rect x="660" y="520" width="540" height="130" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="520" width="540" height="8" fill="#E67E22" rx="10" />
+    <text x="930" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#E67E22" text-anchor="middle">
+        高级技术
+    </text>
+
+    <text x="680" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="680" dy="0">• Parent-Child Chunking：大块存储，小块检索</tspan>
+        <tspan x="680" dy="22">• Hypothetical Questions：为每块生成假设问题</tspan>
+        <tspan x="680" dy="22">• Metadata Enrichment：添加章节、主题等元数据</tspan>
+    </text>
+</svg>

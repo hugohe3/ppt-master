@@ -1,0 +1,87 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#F3E5F5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E1BEE7;stop-opacity:0.3" />
+        </radialGradient>
+        <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BB8FCE;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.2" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="url(#bgGrad)" />
+
+    <!-- Decorative Circles -->
+    <circle cx="200" cy="360" r="320" fill="none" stroke="#9B59B6" stroke-width="2" opacity="0.1" />
+    <circle cx="200" cy="360" r="260" fill="none" stroke="#9B59B6" stroke-width="2" opacity="0.15" />
+    <circle cx="200" cy="360" r="200" fill="none" stroke="#9B59B6" stroke-width="2" opacity="0.2" />
+
+    <!-- Large Section Number -->
+    <text x="180" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="180" font-weight="bold" fill="#9B59B6" opacity="0.15">
+        03
+    </text>
+
+    <!-- Section Title -->
+    <text x="640" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="56" font-weight="bold" fill="#9B59B6" text-anchor="middle">
+        设计考量
+    </text>
+
+    <!-- English Subtitle -->
+    <text x="640" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" fill="#5D6D7E" text-anchor="middle">
+        Design Considerations
+    </text>
+
+    <!-- Accent Line -->
+    <rect x="440" y="360" width="400" height="4" fill="url(#accentGrad)" rx="2" />
+
+    <!-- Content Container -->
+    <rect x="480" y="400" width="700" height="260" fill="#FFFFFF" rx="12" filter="url(#shadow)" />
+
+    <!-- Key Topics -->
+    <text x="640" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        本章内容
+    </text>
+
+    <!-- Topic List -->
+    <g>
+        <circle cx="530" cy="495" r="5" fill="#9B59B6" />
+        <text x="550" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+            font-size="18" fill="#2C3E50">
+            采集与存储策略
+        </text>
+    </g>
+
+    <g>
+        <circle cx="530" cy="535" r="5" fill="#9B59B6" />
+        <text x="550" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+            font-size="18" fill="#2C3E50">
+            多模态融合方法
+        </text>
+    </g>
+
+    <g>
+        <circle cx="530" cy="575" r="5" fill="#9B59B6" />
+        <text x="550" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+            font-size="18" fill="#2C3E50">
+            记忆组织架构
+        </text>
+    </g>
+
+    <g>
+        <circle cx="530" cy="615" r="5" fill="#9B59B6" />
+        <text x="550" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+            font-size="18" fill="#2C3E50">
+            上下文选择机制
+        </text>
+    </g>
+</svg>

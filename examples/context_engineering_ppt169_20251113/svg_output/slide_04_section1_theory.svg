@@ -1,0 +1,61 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <radialGradient id="bgRadial" cx="50%" cy="50%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+        </radialGradient>
+        <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0077B5;stop-opacity:0.3" />
+            <stop offset="50%" style="stop-color:#0077B5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A9FD8;stop-opacity:0.3" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="url(#bgRadial)" />
+
+    <!-- Decorative Circles -->
+    <circle cx="640" cy="360" r="320" fill="none" stroke="#E3F2FD" stroke-width="2" opacity="0.3" />
+    <circle cx="640" cy="360" r="260" fill="none" stroke="#E3F2FD" stroke-width="2" opacity="0.4" />
+    <circle cx="640" cy="360" r="200" fill="none" stroke="#E3F2FD" stroke-width="2" opacity="0.5" />
+
+    <!-- Large decorative circle -->
+    <circle cx="640" cy="360" r="300" fill="#E3F2FD" opacity="0.15" />
+
+    <!-- Section Number - Large and elegant -->
+    <text x="640" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="120" font-weight="bold" fill="#0077B5" opacity="0.15" text-anchor="middle">
+        01
+    </text>
+
+    <!-- Main Title -->
+    <text x="640" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="56" font-weight="bold" fill="#005587" text-anchor="middle">
+        理论框架
+    </text>
+
+    <!-- English Title -->
+    <text x="640" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" fill="#0077B5" text-anchor="middle" opacity="0.8">
+        Theoretical Framework
+    </text>
+
+    <!-- Decorative line -->
+    <line x1="340" y1="445" x2="940" y2="445" stroke="url(#accentLine)" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Subtitle -->
+    <text x="640" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" fill="#5D6D7E" text-anchor="middle">
+        形式化定义与演进阶段
+    </text>
+
+    <!-- Key Points -->
+    <rect x="380" y="530" width="520" height="100" fill="#FFFFFF" opacity="0.8" rx="10" />
+    <text x="640" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50" text-anchor="middle">
+        <tspan x="640" dy="0">• 实体、特征化、上下文的数学定义</tspan>
+        <tspan x="640" dy="30">• 四阶段演进模型（1.0 → 2.0 → 3.0 → 4.0）</tspan>
+        <tspan x="640" dy="30">• 技术突破驱动的范式转移</tspan>
+    </text>
+</svg>

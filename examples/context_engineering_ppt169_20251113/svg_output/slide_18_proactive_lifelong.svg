@@ -1,0 +1,115 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#C0392B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="card1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFEBEE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFCDD2;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="card2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        主动推理与终身学习挑战
+    </text>
+
+    <!-- Left Column: Proactive Inference -->
+    <rect x="80" y="130" width="560" height="250" fill="url(#card1Grad)" stroke="#C0392B" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="560" height="8" fill="#C0392B" rx="10" />
+    <text x="360" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#C0392B" text-anchor="middle">
+        主动推理（Proactive Inference）
+    </text>
+
+    <text x="100" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">核心概念：</tspan>
+        <tspan x="100" dy="26">系统主动预测用户需求，提前准备上下文</tspan>
+
+        <tspan x="100" dy="32" font-weight="600">技术路径：</tspan>
+        <tspan x="120" dy="26">• 意图预测：基于历史行为建模</tspan>
+        <tspan x="120" dy="22">• 情境感知：环境变化自动触发</tspan>
+        <tspan x="120" dy="22">• 预加载机制：高频上下文缓存</tspan>
+    </text>
+
+    <!-- Lifelong Learning Challenges -->
+    <rect x="80" y="400" width="560" height="240" fill="url(#card2Grad)" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="400" width="560" height="8" fill="#0077B5" rx="10" />
+    <text x="360" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#0077B5" text-anchor="middle">
+        终身学习挑战
+    </text>
+
+    <text x="100" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600" fill="#C0392B">1. 灾难性遗忘（Catastrophic Forgetting）</tspan>
+        <tspan x="120" dy="24">新知识覆盖旧知识，系统失去历史能力</tspan>
+
+        <tspan x="100" dy="30" font-weight="600" fill="#E67E22">2. 知识冲突（Knowledge Conflict）</tspan>
+        <tspan x="120" dy="24">新旧信息矛盾时的决策困境</tspan>
+
+        <tspan x="100" dy="30" font-weight="600" fill="#9B59B6">3. 可扩展性（Scalability）</tspan>
+        <tspan x="120" dy="24">持续积累导致的存储与检索效率下降</tspan>
+    </text>
+
+    <!-- Right Column: Solutions -->
+    <rect x="660" y="130" width="540" height="250" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="130" width="540" height="8" fill="#27AE60" rx="10" />
+    <text x="930" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#27AE60" text-anchor="middle">
+        解决方案
+    </text>
+
+    <text x="680" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600">对抗遗忘：</tspan>
+        <tspan x="700" dy="24">• Elastic Weight Consolidation (EWC)</tspan>
+        <tspan x="700" dy="20">• 记忆重放（Experience Replay）</tspan>
+        <tspan x="700" dy="20">• 渐进式神经网络（Progressive NN）</tspan>
+
+        <tspan x="680" dy="30" font-weight="600">知识整合：</tspan>
+        <tspan x="700" dy="24">• 时间戳标记：追踪信息来源与时效</tspan>
+        <tspan x="700" dy="20">• 置信度评分：冲突时选择高可信度</tspan>
+        <tspan x="700" dy="20">• 人类在环（HITL）：关键决策人工介入</tspan>
+    </text>
+
+    <!-- Meta-Learning -->
+    <rect x="660" y="400" width="540" height="240" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="400" width="540" height="8" fill="#9B59B6" rx="10" />
+    <text x="930" y="435" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        元学习（Meta-Learning）
+    </text>
+
+    <text x="680" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600">Learn to Learn：</tspan>
+        <tspan x="680" dy="24">系统学习如何更高效地学习新任务</tspan>
+
+        <tspan x="680" dy="30" font-weight="600">Few-Shot Adaptation：</tspan>
+        <tspan x="680" dy="24">仅需少量样本即可快速适应新场景</tspan>
+
+        <tspan x="680" dy="30" font-weight="600">Continual Learning Frameworks：</tspan>
+        <tspan x="680" dy="24">• Letta (MemGPT)：分层记忆 + 自主管理</tspan>
+        <tspan x="680" dy="20">• Multi-Agent Systems：专家协作模型</tspan>
+    </text>
+</svg>

@@ -1,0 +1,215 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0077B5;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="30" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        四个时代对比表
+    </text>
+
+    <!-- Table Header -->
+    <rect x="80" y="110" width="200" height="50" fill="#005587" />
+    <rect x="280" y="110" width="250" height="50" fill="#C0392B" />
+    <rect x="530" y="110" width="250" height="50" fill="#E67E22" />
+    <rect x="780" y="110" width="210" height="50" fill="#0077B5" />
+    <rect x="990" y="110" width="210" height="50" fill="#27AE60" />
+
+    <text x="180" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        维度
+    </text>
+    <text x="405" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Era 1.0
+    </text>
+    <text x="655" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Era 2.0
+    </text>
+    <text x="885" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Era 3.0
+    </text>
+    <text x="1095" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        Era 4.0
+    </text>
+
+    <!-- Row 1: Time Period -->
+    <rect x="80" y="160" width="200" height="70" fill="#FFFFFF" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="280" y="160" width="250" height="70" fill="#FFEBEE" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="530" y="160" width="250" height="70" fill="#FFF3E0" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="780" y="160" width="210" height="70" fill="#E3F2FD" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="990" y="160" width="210" height="70" fill="#E8F5E9" stroke="#BDC3C7" stroke-width="1" />
+
+    <text x="180" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        时间范围
+    </text>
+    <text x="405" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        1990s-2020
+    </text>
+    <text x="655" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        2020-Present
+    </text>
+    <text x="885" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        Future
+    </text>
+    <text x="1095" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        Speculative
+    </text>
+
+    <!-- Row 2: Intelligence Level -->
+    <rect x="80" y="230" width="200" height="90" fill="#FFFFFF" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="280" y="230" width="250" height="90" fill="#FFEBEE" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="530" y="230" width="250" height="90" fill="#FFF3E0" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="780" y="230" width="210" height="90" fill="#E3F2FD" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="990" y="230" width="210" height="90" fill="#E8F5E9" stroke="#BDC3C7" stroke-width="1" />
+
+    <text x="180" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        智能水平
+    </text>
+    <text x="405" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="405" dy="0">有限结构化</tspan>
+        <tspan x="405" dy="18">输入处理</tspan>
+    </text>
+    <text x="655" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="655" dy="0">NLP + 推理</tspan>
+        <tspan x="655" dy="18">工具调用</tspan>
+    </text>
+    <text x="885" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="885" dy="0">情感理解</tspan>
+        <tspan x="885" dy="18">社交智能</tspan>
+    </text>
+    <text x="1095" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="1095" dy="0">超越人类</tspan>
+        <tspan x="1095" dy="18">认知能力</tspan>
+    </text>
+
+    <!-- Row 3: Context Forms -->
+    <rect x="80" y="320" width="200" height="100" fill="#FFFFFF" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="280" y="320" width="250" height="100" fill="#FFEBEE" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="530" y="320" width="250" height="100" fill="#FFF3E0" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="780" y="320" width="210" height="100" fill="#E3F2FD" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="990" y="320" width="210" height="100" fill="#E8F5E9" stroke="#BDC3C7" stroke-width="1" />
+
+    <text x="180" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        上下文形式
+    </text>
+    <text x="405" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="405" dy="0">GUI</tspan>
+        <tspan x="405" dy="18">传感器数据</tspan>
+        <tspan x="405" dy="18">本体</tspan>
+    </text>
+    <text x="655" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="655" dy="0">Token 序列</tspan>
+        <tspan x="655" dy="18">RAG · Tool API</tspan>
+        <tspan x="655" dy="18">Memory</tspan>
+    </text>
+    <text x="885" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="885" dy="0">多模态</tspan>
+        <tspan x="885" dy="18">触觉</tspan>
+        <tspan x="885" dy="18">隐式意图</tspan>
+    </text>
+    <text x="1095" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="1095" dy="0">主动构建</tspan>
+        <tspan x="1095" dy="18">场景</tspan>
+        <tspan x="1095" dy="18">超前预知</tspan>
+    </text>
+
+    <!-- Row 4: Human Role -->
+    <rect x="80" y="420" width="200" height="80" fill="#FFFFFF" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="280" y="420" width="250" height="80" fill="#FFEBEE" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="530" y="420" width="250" height="80" fill="#FFF3E0" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="780" y="420" width="210" height="80" fill="#E3F2FD" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="990" y="420" width="210" height="80" fill="#E8F5E9" stroke="#BDC3C7" stroke-width="1" />
+
+    <text x="180" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        人类角色
+    </text>
+    <text x="405" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        意图翻译者
+    </text>
+    <text x="655" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        协作者
+    </text>
+    <text x="885" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        平等伙伴
+    </text>
+    <text x="1095" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#2C3E50" text-anchor="middle">
+        被引导者
+    </text>
+
+    <!-- Row 5: Representative Systems -->
+    <rect x="80" y="500" width="200" height="110" fill="#FFFFFF" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="280" y="500" width="250" height="110" fill="#FFEBEE" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="530" y="500" width="250" height="110" fill="#FFF3E0" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="780" y="500" width="210" height="110" fill="#E3F2FD" stroke="#BDC3C7" stroke-width="1" />
+    <rect x="990" y="500" width="210" height="110" fill="#E8F5E9" stroke="#BDC3C7" stroke-width="1" />
+
+    <text x="180" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        代表系统
+    </text>
+    <text x="405" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="405" dy="0">Context Toolkit</tspan>
+        <tspan x="405" dy="18">Cooltown</tspan>
+        <tspan x="405" dy="18">Semantic Web</tspan>
+    </text>
+    <text x="655" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="655" dy="0">ChatGPT</tspan>
+        <tspan x="655" dy="18">Claude</tspan>
+        <tspan x="655" dy="18">LangChain</tspan>
+    </text>
+    <text x="885" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="885" dy="0">未来系统</tspan>
+        <tspan x="885" dy="18">（设想中）</tspan>
+    </text>
+    <text x="1095" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50" text-anchor="middle">
+        <tspan x="1095" dy="0">AlphaGo</tspan>
+        <tspan x="1095" dy="18">启示</tspan>
+    </text>
+
+    <!-- Bottom Summary -->
+    <rect x="80" y="630" width="1120" height="50" fill="#005587" rx="8" filter="url(#shadow)" />
+    <text x="640" y="662" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        演进趋势：机器能力 ↑ → 上下文复杂度 ↑ → 人机关系重构 → 智能水平跃迁
+    </text>
+</svg>

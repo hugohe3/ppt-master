@@ -1,0 +1,126 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E67E22;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F39C12;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="card1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="card2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8F5E9;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C8E6C9;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="card3Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#F3E5F5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E1BEE7;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        多模态融合方法
+    </text>
+
+    <!-- Top Row: Three Modalities -->
+    <!-- Text Card -->
+    <rect x="80" y="130" width="360" height="220" fill="url(#card1Grad)" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="360" height="8" fill="#0077B5" rx="10" />
+    <text x="260" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        📝 文本模态
+    </text>
+    <text x="100" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">处理方式：</tspan>
+        <tspan x="100" dy="24">• Token 化 + Embedding</tspan>
+        <tspan x="100" dy="22">• 语义分块</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">模型：</tspan>
+        <tspan x="100" dy="24">text-embedding-3-large</tspan>
+        <tspan x="100" dy="22">Voyage AI, Cohere</tspan>
+    </text>
+
+    <!-- Image Card -->
+    <rect x="460" y="130" width="360" height="220" fill="url(#card2Grad)" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="460" y="130" width="360" height="8" fill="#27AE60" rx="10" />
+    <text x="640" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#27AE60" text-anchor="middle">
+        🖼️ 视觉模态
+    </text>
+    <text x="480" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="480" dy="0" font-weight="600">处理方式：</tspan>
+        <tspan x="480" dy="24">• 视觉特征提取</tspan>
+        <tspan x="480" dy="22">• OCR 文字识别</tspan>
+
+        <tspan x="480" dy="30" font-weight="600">模型：</tspan>
+        <tspan x="480" dy="24">CLIP, GPT-4V</tspan>
+        <tspan x="480" dy="22">PaddleOCR, Tesseract</tspan>
+    </text>
+
+    <!-- Audio Card -->
+    <rect x="840" y="130" width="360" height="220" fill="url(#card3Grad)" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="840" y="130" width="360" height="8" fill="#9B59B6" rx="10" />
+    <text x="1020" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        🎵 音频模态
+    </text>
+    <text x="860" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="860" dy="0" font-weight="600">处理方式：</tspan>
+        <tspan x="860" dy="24">• 语音转文本（ASR）</tspan>
+        <tspan x="860" dy="22">• 情感分析</tspan>
+
+        <tspan x="860" dy="30" font-weight="600">模型：</tspan>
+        <tspan x="860" dy="24">Whisper, Azure STT</tspan>
+        <tspan x="860" dy="22">Wav2Vec 2.0</tspan>
+    </text>
+
+    <!-- Fusion Strategies -->
+    <rect x="80" y="380" width="1120" height="150" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="380" width="1120" height="8" fill="#E67E22" rx="10" />
+    <text x="640" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#E67E22" text-anchor="middle">
+        融合策略
+    </text>
+
+    <text x="100" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">1. Early Fusion（早期融合）：在特征提取阶段直接融合，模型统一学习多模态表示</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">2. Late Fusion（后期融合）：各模态独立处理后，在决策层融合结果</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">3. Hybrid Fusion（混合融合）：结合早期和后期融合的优点，多层次交互</tspan>
+    </text>
+
+    <!-- Implementation Example -->
+    <rect x="80" y="550" width="1120" height="110" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="550" width="1120" height="8" fill="#0077B5" rx="10" />
+    <text x="640" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#0077B5" text-anchor="middle">
+        实现示例
+    </text>
+
+    <text x="100" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="100" dy="0">• 图文混合文档：CLIP 提取图像特征 → 与文本嵌入在统一向量空间对齐 → 联合检索</tspan>
+        <tspan x="100" dy="22">• 视频内容理解：Whisper 转录音频 + GPT-4V 提取关键帧 → 时间戳对齐 → 多模态索引</tspan>
+        <tspan x="100" dy="22">• 会议记录：语音识别 + 屏幕截图 OCR → 话题分割 → 结构化存储</tspan>
+    </text>
+</svg>

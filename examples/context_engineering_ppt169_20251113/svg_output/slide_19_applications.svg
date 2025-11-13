@@ -1,0 +1,121 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#27AE60;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#52BE80;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        Context Engineering 应用案例
+    </text>
+
+    <!-- Case 1: Gemini CLI -->
+    <rect x="80" y="130" width="360" height="260" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="360" height="8" fill="#0077B5" rx="10" />
+    <text x="260" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#0077B5" text-anchor="middle">
+        Gemini CLI
+    </text>
+
+    <text x="100" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">核心功能：</tspan>
+        <tspan x="100" dy="20">命令行界面的 AI 助手</tspan>
+
+        <tspan x="100" dy="26" font-weight="600">上下文策略：</tspan>
+        <tspan x="120" dy="20">• 当前目录文件树</tspan>
+        <tspan x="120" dy="19">• Git 状态与历史</tspan>
+        <tspan x="120" dy="19">• 最近命令执行记录</tspan>
+        <tspan x="120" dy="19">• 用户配置与偏好</tspan>
+
+        <tspan x="100" dy="26" font-weight="600">价值：</tspan>
+        <tspan x="100" dy="20">减少上下文切换，提升</tspan>
+        <tspan x="100" dy="19">开发效率</tspan>
+    </text>
+
+    <!-- Case 2: DeepResearch -->
+    <rect x="460" y="130" width="360" height="260" fill="#FFF3E0" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="460" y="130" width="360" height="8" fill="#E67E22" rx="10" />
+    <text x="640" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#E67E22" text-anchor="middle">
+        DeepResearch
+    </text>
+
+    <text x="480" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="480" dy="0" font-weight="600">核心功能：</tspan>
+        <tspan x="480" dy="20">深度网络研究与综述</tspan>
+
+        <tspan x="480" dy="26" font-weight="600">上下文策略：</tspan>
+        <tspan x="500" dy="20">• 多轮网络爬取</tspan>
+        <tspan x="500" dy="19">• 文献自动提取与索引</tspan>
+        <tspan x="500" dy="19">• 引用关系图谱构建</tspan>
+        <tspan x="500" dy="19">• 分层摘要生成</tspan>
+
+        <tspan x="480" dy="26" font-weight="600">价值：</tspan>
+        <tspan x="480" dy="20">自动化文献调研，节省</tspan>
+        <tspan x="480" dy="19">研究人员 80% 时间</tspan>
+    </text>
+
+    <!-- Case 3: Brain-Computer Interface -->
+    <rect x="840" y="130" width="360" height="260" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="840" y="130" width="360" height="8" fill="#9B59B6" rx="10" />
+    <text x="1020" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        BCI + Context
+    </text>
+
+    <text x="860" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#2C3E50">
+        <tspan x="860" dy="0" font-weight="600">核心功能：</tspan>
+        <tspan x="860" dy="20">脑机接口与 AI 融合</tspan>
+
+        <tspan x="860" dy="26" font-weight="600">上下文策略：</tspan>
+        <tspan x="880" dy="20">• 脑电信号实时解析</tspan>
+        <tspan x="880" dy="19">• 意图隐式捕获</tspan>
+        <tspan x="880" dy="19">• 多模态融合（EEG +</tspan>
+        <tspan x="880" dy="19"> 眼动 + 语音）</tspan>
+
+        <tspan x="860" dy="26" font-weight="600">价值：</tspan>
+        <tspan x="860" dy="20">辅助渐冻症患者沟通</tspan>
+        <tspan x="860" dy="19">（Synchron 案例）</tspan>
+    </text>
+
+    <!-- Bottom: Key Insights -->
+    <rect x="80" y="410" width="1120" height="270" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="410" width="1120" height="8" fill="#27AE60" rx="10" />
+    <text x="640" y="442" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#27AE60" text-anchor="middle">
+        应用共性洞察
+    </text>
+
+    <text x="100" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">1. 多模态整合是趋势：</tspan>
+        <tspan x="120" dy="24">从单一文本到视觉、语音、生理信号的全方位融合</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">2. 个性化至关重要：</tspan>
+        <tspan x="120" dy="24">通用模型 + 用户特定上下文 = 定制化体验</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">3. 隐私与控制权平衡：</tspan>
+        <tspan x="120" dy="24">用户需要对自己的上下文数据拥有完全控制权（On-Device Processing）</tspan>
+
+        <tspan x="100" dy="30" font-weight="600">4. 实时性要求提高：</tspan>
+        <tspan x="120" dy="24">从批处理到流式处理，上下文感知需要毫秒级响应</tspan>
+    </text>
+</svg>

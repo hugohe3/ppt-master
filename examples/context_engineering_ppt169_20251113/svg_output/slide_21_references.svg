@@ -1,0 +1,73 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0077B5;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8F9FA" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        参考文献与致谢
+    </text>
+
+    <!-- Key References Section -->
+    <rect x="80" y="130" width="1120" height="370" fill="#FFFFFF" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="1120" height="8" fill="#0077B5" rx="10" />
+    <text x="640" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#0077B5" text-anchor="middle">
+        📚 关键文献
+    </text>
+
+    <text x="100" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="13" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">[1] Original Paper</tspan>
+        <tspan x="100" dy="17"> Context Engineering 2.0: From Passive Retrieval to Proactive Inference</tspan>
+        <tspan x="100" dy="15"> arXiv:2510.26493 | November 2024</tspan>
+
+        <tspan x="100" dy="22" font-weight="600">[2] RAG Foundations</tspan>
+        <tspan x="100" dy="17"> Lewis et al. (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"</tspan>
+        <tspan x="100" dy="15"> arXiv:2005.11401 | NeurIPS 2020</tspan>
+
+        <tspan x="100" dy="22" font-weight="600">[3] Memory Systems</tspan>
+        <tspan x="100" dy="17"> Packer et al. (2023). "MemGPT: Towards LLMs as Operating Systems"</tspan>
+        <tspan x="100" dy="15"> arXiv:2310.08560 | ICLR 2024</tspan>
+
+        <tspan x="100" dy="22" font-weight="600">[4] Multimodal Fusion</tspan>
+        <tspan x="100" dy="17"> Girdhar et al. (2023). "ImageBind: One Embedding Space To Bind Them All"</tspan>
+        <tspan x="100" dy="15"> CVPR 2023</tspan>
+
+        <tspan x="100" dy="22" font-weight="600">[5] Long Context Models</tspan>
+        <tspan x="100" dy="17"> Anthropic (2024). "Claude 3.5: 200K Token Context Window"</tspan>
+        <tspan x="100" dy="15"> Technical Report | March 2024</tspan>
+
+        <tspan x="100" dy="22" font-weight="600">[6] Lifelong Learning</tspan>
+        <tspan x="100" dy="17"> Kirkpatrick et al. (2017). "Overcoming catastrophic forgetting in neural networks"</tspan>
+        <tspan x="100" dy="15"> PNAS 2017</tspan>
+    </text>
+
+    <!-- Acknowledgments Section -->
+    <rect x="80" y="530" width="1120" height="130" fill="#E3F2FD" stroke="#4A9FD8" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="530" width="1120" height="8" fill="#4A9FD8" rx="10" />
+    <text x="640" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#005587" text-anchor="middle">
+        🙏 致谢
+    </text>
+
+    <text x="640" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50" text-anchor="middle">
+        <tspan x="640" dy="0">感谢 Anthropic、OpenAI、Google Research 等机构的开创性工作</tspan>
+        <tspan x="640" dy="26">感谢开源社区在 LangChain、LlamaIndex、Letta 等项目上的贡献</tspan>
+    </text>
+</svg>

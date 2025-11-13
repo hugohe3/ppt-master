@@ -1,0 +1,116 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0077B5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A9FD8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="card1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="card2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Title -->
+    <rect x="80" y="40" width="1120" height="60" fill="url(#headerGrad)" rx="8" filter="url(#shadow)" />
+    <text x="640" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        上下文选择机制
+    </text>
+
+    <!-- Selection Methods -->
+    <rect x="80" y="130" width="560" height="260" fill="url(#card1Grad)" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="130" width="560" height="8" fill="#0077B5" rx="10" />
+    <text x="360" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#0077B5" text-anchor="middle">
+        主要选择方法
+    </text>
+
+    <text x="100" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600" fill="#E67E22">1. 相似度检索（Similarity Search）</tspan>
+        <tspan x="120" dy="26">• 查询向量 vs 记忆库向量</tspan>
+        <tspan x="120" dy="22">• 余弦相似度、欧氏距离</tspan>
+        <tspan x="120" dy="22">• Top-K 检索（K=3-10）</tspan>
+
+        <tspan x="100" dy="36" font-weight="600" fill="#27AE60">2. 关键词混合检索（Hybrid Search）</tspan>
+        <tspan x="120" dy="26">• 语义检索 + BM25 关键词匹配</tspan>
+        <tspan x="120" dy="22">• 互补优势，提升召回率</tspan>
+    </text>
+
+    <!-- Ranking Strategies -->
+    <rect x="660" y="130" width="540" height="260" fill="url(#card2Grad)" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="130" width="540" height="8" fill="#E67E22" rx="10" />
+    <text x="930" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#E67E22" text-anchor="middle">
+        排序策略
+    </text>
+
+    <text x="680" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600" fill="#9B59B6">时间衰减（Temporal Decay）：</tspan>
+        <tspan x="700" dy="26">score_final = score_sim × decay(time)</tspan>
+        <tspan x="700" dy="22">近期记忆权重更高</tspan>
+
+        <tspan x="680" dy="36" font-weight="600" fill="#C0392B">重要性加权（Importance）：</tspan>
+        <tspan x="700" dy="26">基于用户反馈、访问频率，LLM 评估记忆重要性打分</tspan>
+
+        <tspan x="680" dy="36" font-weight="600" fill="#0077B5">多样性（Diversity）：</tspan>
+        <tspan x="700" dy="26">MMR 算法：相关性 + 差异性平衡</tspan>
+    </text>
+
+    <!-- Advanced Techniques -->
+    <rect x="80" y="420" width="560" height="260" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="420" width="560" height="8" fill="#9B59B6" rx="10" />
+    <text x="360" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        高级技术
+    </text>
+
+    <text x="100" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">Reranking（重排序）：</tspan>
+        <tspan x="120" dy="26">• 初次检索 → LLM 精细评分 → 重新排序</tspan>
+        <tspan x="120" dy="22">• Cohere Rerank, BGE Reranker</tspan>
+
+        <tspan x="100" dy="36" font-weight="600">Query Expansion（查询扩展）：</tspan>
+        <tspan x="120" dy="26">• 用 LLM 生成多个改写查询，多查询结果融合，提升召回</tspan>
+        <tspan x="100" dy="36" font-weight="600">Self-RAG（自我检索）：</tspan>
+        <tspan x="120" dy="26">• LLM 自主决定是否需要检索，动态调整检索深度与范围</tspan>
+    </text>
+
+    <!-- Context Window Management -->
+    <rect x="660" y="420" width="540" height="260" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="660" y="420" width="540" height="8" fill="#27AE60" rx="10" />
+    <text x="930" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#27AE60" text-anchor="middle">
+        窗口管理
+    </text>
+
+    <text x="680" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="680" dy="0" font-weight="600">Token Budget（预算分配）：</tspan>
+        <tspan x="700" dy="26">• System Prompt: 10-20%</tspan>
+        <tspan x="700" dy="22">• Working Memory: 30-50%</tspan>
+        <tspan x="700" dy="22">• Retrieved Context: 20-40%</tspan>
+        <tspan x="700" dy="22">• Output Reserve: 10-20%</tspan>
+
+        <tspan x="680" dy="36" font-weight="600">动态压缩（Compression）：</tspan>
+        <tspan x="700" dy="26">• LLMLingua：去除冗余 token</tspan>
+        <tspan x="700" dy="22">• 摘要压缩：历史对话总结</tspan>
+    </text>
+</svg>

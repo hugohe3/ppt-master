@@ -1,0 +1,141 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0077B5;stop-opacity:1" />
+        </linearGradient>
+        <filter id="cardShadow">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.15" />
+        </filter>
+        <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Decorative elements -->
+    <circle cx="1150" cy="120" r="90" fill="#E3F2FD" opacity="0.4" />
+    <circle cx="100" cy="650" r="70" fill="#ECF0F1" opacity="0.3" />
+
+    <!-- Title -->
+    <rect x="80" y="60" width="1120" height="65" fill="url(#headerGrad)" rx="8" />
+    <text x="640" y="102" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="30" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        Context Engineering 的形式化定义
+    </text>
+
+    <!-- Core Definition Box -->
+    <rect x="180" y="155" width="920" height="150" fill="url(#cardGrad)" filter="url(#cardShadow)" stroke="#0077B5"
+        stroke-width="3" rx="12" />
+    <rect x="180" y="155" width="920" height="8" fill="url(#headerGrad)" rx="12" />
+
+    <text x="640" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="36" font-weight="bold" fill="#005587" text-anchor="middle">
+        CE: (C, T) → f<tspan baseline-shift="sub" font-size="24">context</tspan>
+    </text>
+
+    <text x="240" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50">
+        <tspan font-weight="600" fill="#005587">C</tspan>: 原始上下文信息（实体的情境特征化）
+    </text>
+
+    <text x="240" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50">
+        <tspan font-weight="600" fill="#005587">T</tspan>: 目标任务或应用领域
+    </text>
+
+    <!-- Key Components Section -->
+    <text x="80" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="24" font-weight="600" fill="#0077B5">
+        关键组件
+    </text>
+
+    <!-- 2x2 Grid for Components -->
+    <!-- Component 1: Entity -->
+    <rect x="80" y="375" width="560" height="140" fill="#E3F2FD" filter="url(#cardShadow)" rx="10" />
+    <rect x="80" y="375" width="560" height="6" fill="#0077B5" rx="3" />
+    <circle cx="110" cy="410" r="8" fill="#0077B5" />
+    <text x="130" y="417" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        Entity (实体)
+    </text>
+    <text x="110" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        用户、应用、对象、环境等所有相关实体
+    </text>
+    <text x="110" y="478" font-family="'Courier New', Consolas, monospace"
+        font-size="15" fill="#5D6D7E">
+        E = 实体空间
+    </text>
+    <text x="110" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#5D6D7E" font-style="italic">
+        示例：用户、Gemini CLI、终端环境、工具
+    </text>
+
+    <!-- Component 2: Characterization -->
+    <rect x="660" y="375" width="540" height="140" fill="#E8F5E9" filter="url(#cardShadow)" rx="10" />
+    <rect x="660" y="375" width="540" height="6" fill="#27AE60" rx="3" />
+    <circle cx="690" cy="410" r="8" fill="#27AE60" />
+    <text x="710" y="417" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        Characterization (特征化)
+    </text>
+    <text x="690" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        描述实体情境的信息集合
+    </text>
+    <text x="690" y="478" font-family="'Courier New', Consolas, monospace"
+        font-size="15" fill="#5D6D7E">
+        Char: E → P(F), 返回实体的特征信息
+    </text>
+    <text x="690" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#5D6D7E" font-style="italic">
+        示例：用户输入、系统配置、工作目录
+    </text>
+
+    <!-- Component 3: Context -->
+    <rect x="80" y="535" width="560" height="140" fill="#FFF3E0" filter="url(#cardShadow)" rx="10" />
+    <rect x="80" y="535" width="560" height="6" fill="#E67E22" rx="3" />
+    <circle cx="110" cy="570" r="8" fill="#E67E22" />
+    <text x="130" y="577" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        Context (上下文)
+    </text>
+    <text x="110" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        所有相关实体的特征化并集
+    </text>
+    <text x="110" y="638" font-family="'Courier New', Consolas, monospace"
+        font-size="15" fill="#5D6D7E">
+        C = ⋃ Char(e), e ∈ E<tspan baseline-shift="sub" font-size="12">rel</tspan>
+    </text>
+    <text x="110" y="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#5D6D7E" font-style="italic">
+        整合所有相关实体的情境信息
+    </text>
+
+    <!-- Component 4: Context Engineering -->
+    <rect x="660" y="535" width="540" height="140" fill="#F3E5F5" filter="url(#cardShadow)" rx="10" />
+    <rect x="660" y="535" width="540" height="6" fill="#9C27B0" rx="3" />
+    <circle cx="690" cy="570" r="8" fill="#9C27B0" />
+    <text x="710" y="577" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        Context Engineering
+    </text>
+    <text x="690" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50">
+        系统化设计并优化上下文的全流程
+    </text>
+    <text x="690" y="638" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="15" fill="#5D6D7E">
+        f<tspan baseline-shift="sub" font-size="12">context</tspan> = F(ϕ₁, ϕ₂, ..., ϕₙ)(C)
+    </text>
+    <text x="690" y="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="14" fill="#5D6D7E" font-style="italic">
+        收集 → 存储 → 管理 → 使用
+    </text>
+</svg>

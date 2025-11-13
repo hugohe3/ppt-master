@@ -1,0 +1,118 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#C0392B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFEBEE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFCDD2;stop-opacity:0.5" />
+        </linearGradient>
+        <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:0.5" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Header -->
+    <rect x="80" y="40" width="1120" height="70" fill="url(#headerGrad)" rx="10" filter="url(#shadow)" />
+    <text x="140" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="32" font-weight="bold" fill="#FFFFFF">
+        Era 1.0：原始计算时代
+    </text>
+    <text x="1100" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" fill="#FFFFFF" text-anchor="end">
+        1990s-2020
+    </text>
+
+    <!-- Left Column -->
+    <!-- Card 1: Characteristics -->
+    <rect x="80" y="140" width="550" height="240" fill="url(#cardGrad1)" stroke="#C0392B" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="140" width="550" height="8" fill="#C0392B" rx="10" />
+    <text x="355" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#C0392B" text-anchor="middle">
+        核心特征
+    </text>
+    <text x="100" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">• 智能水平：</tspan>
+        <tspan x="100" dy="26"> 有限的结构化数据处理能力</tspan>
+        <tspan x="100" dy="30" font-weight="600">• 上下文形式：</tspan>
+        <tspan x="100" dy="26"> GUI 交互、传感器数据</tspan>
+        <tspan x="100" dy="30" font-weight="600">• 人机关系：</tspan>
+        <tspan x="100" dy="26"> 人类作为"意图翻译者"</tspan>
+    </text>
+
+    <!-- Card 2: Representative Systems -->
+    <rect x="80" y="410" width="550" height="270" fill="url(#cardGrad2)" stroke="#E67E22" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="80" y="410" width="550" height="8" fill="#E67E22" rx="10" />
+    <text x="355" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#E67E22" text-anchor="middle">
+        代表性系统
+    </text>
+    <text x="100" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="100" dy="0" font-weight="600">Context Toolkit (Dey et al., 2001):</tspan>
+        <tspan x="100" dy="26"> 传感器数据抽象与分发框架</tspan>
+        <tspan x="100" dy="30" font-weight="600">Cooltown (HP Labs):</tspan>
+        <tspan x="100" dy="26"> 基于 Web 的物理空间数字化</tspan>
+        <tspan x="100" dy="30" font-weight="600">Semantic Web (Berners-Lee):</tspan>
+        <tspan x="100" dy="26"> 机器可理解的知识表示</tspan>
+        <tspan x="100" dy="30" font-weight="600">Active Badge (AT&amp;T):</tspan>
+        <tspan x="100" dy="26"> 位置感知系统原型</tspan>
+    </text>
+
+    <!-- Right Column -->
+    <!-- Card 3: Technical Limitations -->
+    <rect x="650" y="140" width="550" height="200" fill="#E3F2FD" stroke="#0077B5" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="140" width="550" height="8" fill="#0077B5" rx="10" />
+    <text x="925" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#0077B5" text-anchor="middle">
+        技术局限
+    </text>
+    <text x="670" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="670" dy="0">✗ 无法处理自然语言输入</tspan>
+        <tspan x="670" dy="26">✗ 依赖预定义规则和本体</tspan>
+        <tspan x="670" dy="26">✗ 缺乏语义理解能力</tspan>
+        <tspan x="670" dy="26">✗ 需要人工编码知识结构</tspan>
+    </text>
+
+    <!-- Card 4: Key Concepts -->
+    <rect x="650" y="370" width="550" height="200" fill="#F3E5F5" stroke="#9B59B6" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <rect x="650" y="370" width="550" height="8" fill="#9B59B6" rx="10" />
+    <text x="925" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-weight="600" fill="#9B59B6" text-anchor="middle">
+        关键概念
+    </text>
+    <text x="670" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="670" dy="0" font-weight="600">Context Awareness：</tspan>
+        <tspan x="670" dy="26"> 系统感知并响应环境变化</tspan>
+        <tspan x="670" dy="26" font-weight="600">Implicit Interaction：</tspan>
+        <tspan x="670" dy="26"> 减少显式用户输入</tspan>
+    </text>
+
+    <!-- Card 5: Historical Significance -->
+    <rect x="650" y="600" width="550" height="80" fill="#E8F5E9" stroke="#27AE60" stroke-width="2" rx="10"
+        filter="url(#shadow)" />
+    <text x="925" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" fill="#27AE60" text-anchor="middle">
+        历史意义
+    </text>
+    <text x="925" y="658" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" fill="#2C3E50" text-anchor="middle">
+        奠定了普适计算与情境感知的理论基础
+    </text>
+</svg>

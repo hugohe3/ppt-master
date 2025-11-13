@@ -1,0 +1,96 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Gradient Definitions -->
+    <defs>
+        <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0077B5;stop-opacity:1" />
+        </linearGradient>
+        <filter id="cardShadow">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15" />
+        </filter>
+        <linearGradient id="quoteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F8F9FA;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Decorative Elements -->
+    <circle cx="1150" cy="150" r="100" fill="#E3F2FD" opacity="0.6" />
+    <circle cx="100" cy="600" r="80" fill="#ECF0F1" opacity="0.5" />
+
+    <!-- Title Bar -->
+    <rect x="80" y="60" width="1120" height="70" fill="url(#headerGradient)" rx="8" />
+    <text x="640" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="32" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        中心问题：如何让机器更好地理解人类情境？
+    </text>
+
+    <!-- Quote Card -->
+    <rect x="80" y="160" width="1120" height="110" fill="url(#quoteGradient)" filter="url(#cardShadow)" rx="10" />
+    <rect x="80" y="160" width="6" height="110" fill="#0077B5" rx="3" />
+
+    <text x="120" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="22" font-style="italic" fill="#2C3E50" font-weight="500">
+        "人的本质是社会关系的总和" — 马克思, 1845
+    </text>
+    <text x="120" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#5D6D7E">
+        个体由其与其他实体的互动（Context）塑造
+    </text>
+
+    <!-- Core Challenge Section -->
+    <text x="80" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="26" font-weight="600" fill="#0077B5">
+        核心挑战
+    </text>
+
+    <rect x="80" y="335" width="1120" height="140" fill="#FFF3E0" filter="url(#cardShadow)" rx="10" />
+    <rect x="80" y="335" width="6" height="140" fill="#E67E22" rx="3" />
+
+    <circle cx="120" cy="370" r="6" fill="#E67E22" />
+    <text x="140" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        硅基智能与碳基智能的认知鸿沟
+    </text>
+
+    <rect x="140" y="390" width="1030" height="70" fill="#FFFFFF" rx="6" />
+    <text x="160" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="17" fill="#2C3E50">
+        <tspan x="160" dy="0">• 碳基（人类）：缓慢进化，但具备强大的情境推断能力和"填补空白"的认知</tspan>
+        <tspan x="160" dy="28">• 硅基（机器）：快速迭代，但难以主动理解隐含信息和高熵情境</tspan>
+    </text>
+
+    <!-- Essence Section -->
+    <text x="80" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="26" font-weight="600" fill="#0077B5">
+        Context Engineering 的本质
+    </text>
+
+    <rect x="80" y="540" width="1120" height="120" fill="#E8F5E9" filter="url(#cardShadow)" rx="10" />
+    <rect x="80" y="540" width="6" height="120" fill="#27AE60" rx="3" />
+
+    <text x="640" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="26" font-weight="bold" fill="#005587" text-anchor="middle">
+        熵减过程：高熵情境 → 低熵表示
+    </text>
+
+    <text x="640" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#2C3E50" text-anchor="middle">
+        将复杂的人类意图和情境"预处理"成机器可理解的形式
+    </text>
+
+    <text x="640" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="18" fill="#5D6D7E" text-anchor="middle">
+        这代表了人类必须投入的"努力" — 努力的多少取决于机器智能水平
+    </text>
+
+    <!-- Bottom insight -->
+    <rect x="80" y="680" width="1120" height="30" fill="#F8F9FA" rx="15" />
+    <text x="120" y="702" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+        font-size="16" font-weight="600" fill="#27AE60">
+        演进趋势：机器智能 ↑ → 上下文处理能力 ↑ → 人机交互成本 ↓
+    </text>
+</svg>
