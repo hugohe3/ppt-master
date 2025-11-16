@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1A2332;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2C3E50;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰性几何图形 - 左上 -->
+    <circle cx="100" cy="100" r="120" fill="#005587" opacity="0.1" />
+    <circle cx="100" cy="100" r="80" fill="#005587" opacity="0.15" />
+
+    <!-- 装饰性几何图形 - 右下 -->
+    <rect x="1050" y="500" width="180" height="180" fill="#005587" opacity="0.1" rx="8" />
+    <rect x="1080" y="530" width="120" height="120" fill="#005587" opacity="0.15" rx="8" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="4" fill="url(#accentGradient)" />
+
+    <!-- 主标题区域 -->
+    <text x="640" y="200"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        恒通银行重庆大学支行
+    </text>
+    <text x="640" y="260"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="44" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        前台客户经理营销积极性管理
+    </text>
+    <text x="640" y="315"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="44" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        困境与破解之道
+    </text>
+
+    <!-- 装饰线 -->
+    <line x1="440" y1="345" x2="840" y2="345" stroke="#005587" stroke-width="3" />
+
+    <!-- 副标题 -->
+    <text x="640" y="390"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="400" fill="#95A5A6" text-anchor="middle">
+        组织行为学课程案例分析
+    </text>
+
+    <!-- 课程信息区域 -->
+    <g id="courseInfo">
+        <rect x="340" y="440" width="600" height="140" fill="#2C3E50" rx="8" opacity="0.6" />
+
+        <!-- 第一行：课程与教师 -->
+        <text x="370" y="480"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0">
+            <tspan x="370" dy="0">课程：组织行为学</tspan>
+            <tspan x="610" dy="0">指导教师：廖冰</tspan>
+        </text>
+
+        <!-- 第二行：时间 -->
+        <text x="370" y="520"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0">
+            上课时间：2025 年 9 月 - 2025 年 10 月
+        </text>
+
+        <!-- 第三行：小组成员 -->
+        <text x="370" y="560"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="300" fill="#BDC3C7">
+            小组成员：何泉志、陈莲、王燕、冉鹰红、付琼、何雨果
+        </text>
+    </g>
+
+    <!-- 底部装饰 -->
+    <rect x="0" y="716" width="1280" height="4" fill="url(#accentGradient)" />
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        01
+    </text>
+</svg>

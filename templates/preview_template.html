@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kimsoong Customer Loyalty Programme - 预览</title>
+    <title>{{PROJECT_TITLE}} - 预览</title>
     <style>
         * {
             margin: 0;
@@ -12,10 +12,10 @@
         }
 
         :root {
-            --primary-color: #0076A8;
-            --secondary-color: #005587;
-            --background-gradient-start: #f5f7fa;
-            --background-gradient-end: #e8eef5;
+            --primary-color: {{PRIMARY_COLOR}};
+            --secondary-color: {{SECONDARY_COLOR}};
+            --background-gradient-start: {{BG_GRADIENT_START}};
+            --background-gradient-end: {{BG_GRADIENT_END}};
         }
 
         body {
@@ -377,24 +377,24 @@
 <body>
     <div class="container">
         <header>
-            <h1>Kimsoong Customer Loyalty Programme</h1>
-            <p class="subtitle"></p>
+            <h1>{{PROJECT_TITLE}}</h1>
+            <p class="subtitle">{{PROJECT_SUBTITLE}}</p>
             <div class="info">
                 <div class="info-item">
                     <span>📅</span>
-                    <span><strong>创建日期:</strong> 2025-11-09</span>
+                    <span><strong>创建日期:</strong> {{CREATE_DATE}}</span>
                 </div>
                 <div class="info-item">
                     <span>📐</span>
-                    <span><strong>画布:</strong> PPT 16:9 (1280×720)</span>
+                    <span><strong>画布:</strong> {{CANVAS_FORMAT}}</span>
                 </div>
                 <div class="info-item">
                     <span>🎨</span>
-                    <span><strong>风格:</strong> 高端咨询</span>
+                    <span><strong>风格:</strong> {{DESIGN_STYLE}}</span>
                 </div>
                 <div class="info-item">
                     <span>📄</span>
-                    <span><strong>页数:</strong> 8 页</span>
+                    <span><strong>页数:</strong> {{SLIDE_COUNT}} 页</span>
                 </div>
             </div>
         </header>
@@ -413,7 +413,7 @@
             <a href="README.md" class="btn" target="_blank">
                 📖 项目说明
             </a>
-            <a href="设计规范与内容大纲.md" class="btn" target="_blank">
+            <a href="{{SPEC_FILE}}" class="btn" target="_blank">
                 📋 设计规范
             </a>
         </div>
@@ -425,7 +425,7 @@
             </div>
             <div class="slide-info">
                 <div class="slide-number">
-                    第 <span id="slideNumber">1</span> 页 / 共 8 页
+                    第 <span id="slideNumber">1</span> 页 / 共 {{SLIDE_COUNT}} 页
                 </div>
                 <div class="slide-title" id="slideTitle"></div>
             </div>
@@ -441,7 +441,7 @@
 
         <footer>
             <p>✨ 基于 <strong>PPT Master</strong> 框架生成</p>
-            <p>© 2025 | 所有 SVG 文件遵循 PPT 16:9 (1280×720) 标准</p>
+            <p>{{FOOTER_TEXT}}</p>
             <p style="margin-top: 15px; opacity: 0.8;">💡 提示：点击幻灯片可放大查看 | 使用方向键导航</p>
         </footer>
     </div>
@@ -463,48 +463,7 @@
 
     <script>
         // 幻灯片数据（由生成工具填充）
-        const slides = [
-  {
-    "path": "svg_output/slide_01_cover.svg",
-    "title": "Cover",
-    "filename": "slide_01_cover.svg"
-  },
-  {
-    "path": "svg_output/slide_02_situation.svg",
-    "title": "Situation",
-    "filename": "slide_02_situation.svg"
-  },
-  {
-    "path": "svg_output/slide_03_customer_profile.svg",
-    "title": "Customer Profile",
-    "filename": "slide_03_customer_profile.svg"
-  },
-  {
-    "path": "svg_output/slide_04_priorities_matrix.svg",
-    "title": "Priorities Matrix",
-    "filename": "slide_04_priorities_matrix.svg"
-  },
-  {
-    "path": "svg_output/slide_05_root_cause.svg",
-    "title": "Root Cause",
-    "filename": "slide_05_root_cause.svg"
-  },
-  {
-    "path": "svg_output/slide_06_strategic_pillars.svg",
-    "title": "Strategic Pillars",
-    "filename": "slide_06_strategic_pillars.svg"
-  },
-  {
-    "path": "svg_output/slide_07_initiatives.svg",
-    "title": "Initiatives",
-    "filename": "slide_07_initiatives.svg"
-  },
-  {
-    "path": "svg_output/slide_08_roadmap.svg",
-    "title": "Roadmap",
-    "filename": "slide_08_roadmap.svg"
-  }
-];
+        const slides = {{SLIDES_JSON}};
 
         let currentSlide = 0;
         let isGridView = false;

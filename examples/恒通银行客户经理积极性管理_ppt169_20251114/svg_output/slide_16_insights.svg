@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg25"
+   sodipodi:docname="slide_16_insights.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview25"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.47777672"
+     inkscape:cx="1031.8627"
+     inkscape:cy="164.30269"
+     inkscape:window-width="1472"
+     inkscape:window-height="834"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg25" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="accentGradient"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="0%">
+      <stop
+         offset="0%"
+         style="stop-color:#005587;stop-opacity:1"
+         id="stop1" />
+      <stop
+         offset="100%"
+         style="stop-color:#0076A8;stop-opacity:1"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <rect
+     width="1280"
+     height="720"
+     fill="#FFFFFF"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect3" />
+  <!-- 页面标题 -->
+  <text
+     x="60"
+     y="70"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="36"
+     font-weight="600"
+     fill="#005587"
+     id="text3">
+        案例启示与管理智慧
+    </text>
+  <line
+     x1="60"
+     y1="90"
+     x2="1220"
+     y2="90"
+     stroke="#E0E0E0"
+     stroke-width="2"
+     id="line3" />
+  <!-- 核心启示 - 改进对比与强调 -->
+  <rect
+     x="60"
+     y="125"
+     width="1160"
+     height="190"
+     fill="#f8f9fa"
+     rx="8"
+     id="rect4"
+     style="stroke-width:1.01342" />
+  <rect
+     x="60"
+     y="125"
+     width="8"
+     height="190"
+     fill="#005587"
+     rx="4"
+     id="rect5"
+     style="stroke-width:1.01342" />
+  <text
+     x="90"
+     y="160"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="26"
+     font-weight="600"
+     fill="#005587"
+     id="text5">
+        案例核心启示
+    </text>
+  <text
+     x="110"
+     y="198"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="19"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text8"><tspan
+       x="110"
+       dy="0"
+       id="tspan5">1. 员工积极性是个体需求、团队氛围、组织机制共同作用的结果</tspan><tspan
+       x="110"
+       dy="34"
+       id="tspan6">2. 高压考核适得其反，需以需求满足激发动机</tspan><tspan
+       x="110"
+       dy="34"
+       id="tspan7">3. 服务特色客群需：激励因人而异、团队目标共生、管理以人为本</tspan><tspan
+       x="110"
+       dy="34"
+       id="tspan8">4. 特色客群团队战斗力是核心竞争力，需要系统化管理提升</tspan></text>
+  <!-- 管理启示标题 -->
+  <text
+     x="60"
+     y="355"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="26"
+     font-weight="600"
+     fill="#005587"
+     id="text9">
+        对金融机构管理的启示
+    </text>
+  <!-- 三栏结构 - 改进对齐、重复与视觉平衡 -->
+  <g
+     id="managementInsights">
+    <!-- 第1栏：激励因人而异 -->
+    <rect
+       x="60"
+       y="385"
+       width="370"
+       height="250"
+       fill="#F8F9FA"
+       rx="8"
+       id="rect9" />
+    <rect
+       x="60"
+       y="385"
+       width="370"
+       height="6"
+       fill="#005587"
+       rx="3"
+       id="rect10" />
+    <text
+       x="85"
+       y="425"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="22"
+       font-weight="600"
+       fill="#005587"
+       id="text10">
+            激励因人而异
+        </text>
+    <text
+       x="85"
+       y="465"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text14"><tspan
+         x="85"
+         dy="0"
+         id="tspan10">• 差异化考核指标</tspan><tspan
+         x="85"
+         dy="30"
+         id="tspan11">• 多元化激励手段</tspan><tspan
+         x="85"
+         dy="30"
+         id="tspan12">• 物质与非物质结合</tspan><tspan
+         x="85"
+         dy="30"
+         id="tspan13">• 关注员工真实需求</tspan><tspan
+         x="85"
+         dy="30"
+         id="tspan14">• 避免&quot;一刀切&quot;</tspan></text>
+    <!-- 第2栏：团队目标共生 -->
+    <rect
+       x="455"
+       y="385"
+       width="370"
+       height="250"
+       fill="#F8F9FA"
+       rx="8"
+       id="rect14" />
+    <rect
+       x="455"
+       y="385"
+       width="370"
+       height="6"
+       fill="#0076A8"
+       rx="3"
+       id="rect15" />
+    <text
+       x="480"
+       y="425"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="22"
+       font-weight="600"
+       fill="#0076A8"
+       id="text15">
+            团队目标共生
+        </text>
+    <text
+       x="480"
+       y="465"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text19"><tspan
+         x="480"
+         dy="0"
+         id="tspan15">• 建立共同目标</tspan><tspan
+         x="480"
+         dy="30"
+         id="tspan16">• 搭建协作平台</tspan><tspan
+         x="480"
+         dy="30"
+         id="tspan17">• 鼓励资源共享</tspan><tspan
+         x="480"
+         dy="30"
+         id="tspan18">• 避免恶性竞争</tspan><tspan
+         x="480"
+         dy="30"
+         id="tspan19">• 强化集体荣誉</tspan></text>
+    <!-- 第3栏：管理以人为本 -->
+    <rect
+       x="850"
+       y="385"
+       width="370"
+       height="250"
+       fill="#F8F9FA"
+       rx="8"
+       id="rect19" />
+    <rect
+       x="850"
+       y="385"
+       width="370"
+       height="6"
+       fill="#27AE60"
+       rx="3"
+       id="rect20" />
+    <text
+       x="875"
+       y="425"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="22"
+       font-weight="600"
+       fill="#27AE60"
+       id="text20">
+            管理以人为本
+        </text>
+    <text
+       x="875"
+       y="465"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text24"><tspan
+         x="875"
+         dy="0"
+         id="tspan20">• 服务型领导风格</tspan><tspan
+         x="875"
+         dy="30"
+         id="tspan21">• 关注员工成长</tspan><tspan
+         x="875"
+         dy="30"
+         id="tspan22">• 重视工作生活平衡</tspan><tspan
+         x="875"
+         dy="30"
+         id="tspan23">• 营造正向文化</tspan><tspan
+         x="875"
+         dy="30"
+         id="tspan24">• 增强组织认同</tspan></text>
+  </g>
+  <rect
+     x="0"
+     y="717"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect24" />
+  <text
+     x="1220"
+     y="700"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="16"
+     font-weight="300"
+     fill="#7F8C8D"
+     text-anchor="end"
+     id="text25">
+        16
+    </text>
+</svg>

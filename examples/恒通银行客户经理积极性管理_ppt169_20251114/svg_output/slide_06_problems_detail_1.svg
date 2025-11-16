@@ -1,0 +1,273 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#C0392B">
+        问题深度剖析：营销动力与业绩表现
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 左侧：营销动力不足 -->
+    <text x="60" y="135"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        营销动力严重不足
+    </text>
+
+    <!-- 数据可视化区域 -->
+    <rect x="60" y="160" width="550" height="250" fill="#F8F9FA" rx="8" />
+
+    <!-- 下降趋势图 -->
+    <text x="90" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        关键指标同比下降
+    </text>
+
+    <!-- 指标条 1 -->
+    <text x="90" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50">
+        主动新客量
+    </text>
+    <rect x="220" y="222" width="350" height="24" fill="#E0E0E0" rx="12" />
+    <rect x="220" y="222" width="133" height="24" fill="#C0392B" rx="12" />
+    <text x="360" y="240"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#C0392B">
+        ↓62%
+    </text>
+
+    <!-- 指标条 2 -->
+    <text x="90" y="290"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50">
+        陌生拜访量
+    </text>
+    <rect x="220" y="272" width="350" height="24" fill="#E0E0E0" rx="12" />
+    <rect x="220" y="272" width="117" height="24" fill="#C0392B" rx="12" />
+    <text x="342" y="290"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#C0392B">
+        不足 1/3
+    </text>
+
+    <!-- 指标条 3 -->
+    <text x="90" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50">
+        晨会分享质量
+    </text>
+    <rect x="220" y="322" width="350" height="24" fill="#E0E0E0" rx="12" />
+    <rect x="220" y="322" width="88" height="24" fill="#E67E22" rx="12" />
+    <text x="318" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#E67E22">
+        敷衍应付
+    </text>
+
+    <!-- 现象描述 -->
+    <line x1="90" y1="365" x2="580" y2="365" stroke="#E0E0E0" stroke-width="1" />
+    <text x="90" y="390"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="600" fill="#7F8C8D">
+        典型表现
+    </text>
+
+    <rect x="85" y="395" width="10" height="10" fill="#C0392B" rx="2" />
+    <text x="105" y="405"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#2C3E50">
+        普遍"等客上门"，主动开拓意识薄弱
+    </text>
+
+    <!-- 右侧：业绩完成率低 -->
+    <text x="670" y="135"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        业绩指标完成率低
+    </text>
+
+    <!-- 环形图区域 -->
+    <rect x="670" y="160" width="550" height="250" fill="#F8F9FA" rx="8" />
+
+    <!-- 整体完成率环形图 -->
+    <g id="donutChart">
+        <circle cx="810" cy="275" r="75" fill="none" stroke="#E0E0E0" stroke-width="30" />
+        <circle cx="810" cy="275" r="75" fill="none" stroke="#C0392B" stroke-width="30" stroke-dasharray="150 320"
+            transform="rotate(-90 810 275)" />
+        <text x="810" y="270"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#C0392B" text-anchor="middle">
+            32%
+        </text>
+        <text x="810" y="295"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+            团队完成率
+        </text>
+    </g>
+
+    <!-- 分项完成率 -->
+    <g id="detailedRates">
+        <text x="940" y="205"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#2C3E50">
+            分项完成率
+        </text>
+
+        <rect x="935" y="210" width="5" height="5" fill="#C0392B" rx="1" />
+        <text x="950" y="230"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="400" fill="#2C3E50">
+            科研经营贷
+        </text>
+        <text x="1150" y="230"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="700" fill="#C0392B" text-anchor="end">
+            25%
+        </text>
+
+        <rect x="935" y="250" width="5" height="5" fill="#E67E22" rx="1" />
+        <text x="950" y="260"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="400" fill="#2C3E50">
+            师生理财
+        </text>
+        <text x="1150" y="260"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="700" fill="#E67E22" text-anchor="end">
+            35%
+        </text>
+
+        <rect x="935" y="280" width="5" height="5" fill="#C0392B" rx="1" />
+        <text x="950" y="290"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="400" fill="#2C3E50">
+            信用卡发卡
+        </text>
+        <text x="1150" y="290"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="700" fill="#C0392B" text-anchor="end">
+            29%
+        </text>
+
+        <line x1="940" y1="310" x2="1150" y2="310" stroke="#E0E0E0" stroke-width="1" />
+
+        <text x="950" y="335"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="500" fill="#7F8C8D">
+            vs 分行均值
+        </text>
+        <text x="1150" y="335"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#27AE60" text-anchor="end">
+            48%
+        </text>
+    </g>
+
+    <!-- 底部：业绩分化分析 -->
+    <text x="60" y="455"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        业绩分化现象加剧
+    </text>
+
+    <rect x="60" y="480" width="1160" height="160" fill="#F8F9FA" rx="8" />
+
+    <!-- 漏斗图 -->
+    <g id="funnelChart">
+        <!-- 头部 -->
+        <path d="M 150 510 L 450 510 L 420 580 L 180 580 Z" fill="#27AE60" opacity="0.8" />
+        <text x="300" y="540"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            头部 2 人
+        </text>
+        <text x="300" y="565"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            45%
+        </text>
+        <text x="300" y="605"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+            服务教授及科创企业
+        </text>
+
+        <!-- 中部 -->
+        <path d="M 520 520 L 740 520 L 725 580 L 535 580 Z" fill="#E67E22" opacity="0.8" />
+        <text x="630" y="545"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            中部 5 人
+        </text>
+        <text x="630" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            45%
+        </text>
+        <text x="630" y="605"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+            普通客群维护
+        </text>
+
+        <!-- 尾部 -->
+        <path d="M 810 535 L 950 535 L 940 580 L 820 580 Z" fill="#C0392B" opacity="0.8" />
+        <text x="885" y="555"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            尾部 5 人
+        </text>
+        <text x="885" y="575"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            &lt;10%
+        </text>
+        <text x="885" y="605"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="14" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+            2 人连续未完成
+        </text>
+    </g>
+
+    <!-- 恶性循环标注 -->
+    <rect x="1000" y="520" width="180" height="70" fill="#C0392B" opacity="0.1" rx="6" />
+    <text x="1090" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#C0392B" text-anchor="middle">
+        恶性循环
+    </text>
+    <text x="1090" y="570"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+        <tspan x="1090" dy="0">头部承压不满</tspan>
+        <tspan x="1090" dy="18">尾部破罐破摔</tspan>
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        06
+    </text>
+</svg>

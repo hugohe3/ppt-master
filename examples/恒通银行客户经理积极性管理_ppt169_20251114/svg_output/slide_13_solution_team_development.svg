@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#0076A8">
+        策略二：强化团队建设 | 策略三：完善职业发展
+    </text>
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 左侧：团队建设 -->
+    <rect x="60" y="130" width="575" height="510" fill="#F8F9FA" rx="8" />
+    <rect x="60" y="130" width="8" height="510" fill="#0076A8" rx="4" />
+
+    <text x="90" y="165"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#0076A8">
+        强化团队建设
+    </text>
+
+    <rect x="90" y="185" width="500" height="110" fill="#FFFFFF" rx="6" />
+    <text x="110" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        1. 建立共同目标
+    </text>
+    <text x="110" y="245"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="110" dy="0">• 转化为"服务重大师生"团队目标</tspan>
+        <tspan x="110" dy="22">• 子目标：教师拓展、学生发卡等</tspan>
+        <tspan x="110" dy="22">• 团队超额奖励（业绩 2% 作为集体奖金）</tspan>
+    </text>
+
+    <rect x="90" y="310" width="500" height="130" fill="#FFFFFF" rx="6" />
+    <text x="110" y="340"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        2. 搭建协作平台
+    </text>
+    <text x="110" y="370"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="110" dy="0">• 客群资源共享系统（推荐成功 7:3 分）</tspan>
+        <tspan x="110" dy="22">• 复杂业务攻坚小组（资深带新人）</tspan>
+        <tspan x="110" dy="22">• 每周营销技巧分享会</tspan>
+        <tspan x="110" dy="22">• 避免资源浪费，提升服务能力</tspan>
+    </text>
+
+    <rect x="90" y="455" width="500" height="165" fill="#FFFFFF" rx="6" />
+    <text x="110" y="485"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        3. 化解角色冲突
+    </text>
+    <text x="110" y="515"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="110" dy="0">• 明确原则："服务为基、风控为底、</tspan>
+        <tspan x="110" dy="22"> 营销为目标"</tspan>
+        <tspan x="110" dy="22">• 制定《重大客群服务手册》</tspan>
+        <tspan x="110" dy="22">• 风控容错机制：客户资质不符时</tspan>
+        <tspan x="110" dy="22"> 风控优先，减免考核压力</tspan>
+    </text>
+
+    <!-- 右侧：职业发展 -->
+    <rect x="665" y="130" width="555" height="510" fill="#F8F9FA" rx="8" />
+    <rect x="665" y="130" width="8" height="510" fill="#27AE60" rx="4" />
+
+    <text x="695" y="165"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#27AE60">
+        完善职业发展
+    </text>
+
+    <rect x="695" y="185" width="480" height="140" fill="#FFFFFF" rx="6" />
+    <text x="715" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        1. 构建清晰晋升通道
+    </text>
+    <text x="715" y="245"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="715" dy="0">• 双轨制：</tspan>
+        <tspan x="730" dy="22">管理岗：客户经理 → 支行副行长</tspan>
+        <tspan x="730" dy="22">专业岗：客户经理 → 分行高校产品专家</tspan>
+        <tspan x="715" dy="22">• 薪资对等，考核纳入业绩+评价+协作</tspan>
+        <tspan x="715" dy="22">• 打破论资排辈</tspan>
+    </text>
+
+    <rect x="695" y="340" width="480" height="120" fill="#FFFFFF" rx="6" />
+    <text x="715" y="370"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        2. 改善工作环境与保障
+    </text>
+    <text x="715" y="400"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="715" dy="0">• 升级高校客群管理系统（流程线上化）</tspan>
+        <tspan x="715" dy="22">• 控制日工作时长 ≤8 小时</tspan>
+        <tspan x="715" dy="22">• 配备校园展业设备、定期体检团建</tspan>
+    </text>
+
+    <rect x="695" y="475" width="480" height="145" fill="#FFFFFF" rx="6" />
+    <text x="715" y="505"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#2C3E50">
+        3. 重塑组织文化与领导方式
+    </text>
+    <text x="715" y="535"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="715" dy="0">• 行长转向"服务型领导"</tspan>
+        <tspan x="715" dy="22">• 决策前征求意见，奖惩结合</tspan>
+        <tspan x="715" dy="22">• 重塑"协作服务高校"文化</tspan>
+        <tspan x="715" dy="22">• 文化墙、内部期刊、金融服务文化日</tspan>
+    </text>
+
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        13
+    </text>
+</svg>

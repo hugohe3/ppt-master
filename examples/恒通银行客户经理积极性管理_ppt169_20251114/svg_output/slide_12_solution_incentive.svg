@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg20"
+   sodipodi:docname="slide_12_solution_incentive.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview20"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.66907944"
+     inkscape:cx="639.68488"
+     inkscape:cy="399.80305"
+     inkscape:window-width="1472"
+     inkscape:window-height="834"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg20" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="accentGradient"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="0%">
+      <stop
+         offset="0%"
+         style="stop-color:#005587;stop-opacity:1"
+         id="stop1" />
+      <stop
+         offset="100%"
+         style="stop-color:#0076A8;stop-opacity:1"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <rect
+     width="1280"
+     height="720"
+     fill="#FFFFFF"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect3" />
+  <!-- 页面标题 -->
+  <text
+     x="60"
+     y="70"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="36"
+     font-weight="600"
+     fill="#005587"
+     id="text3">
+        策略一：优化激励机制
+    </text>
+  <line
+     x1="60"
+     y1="90"
+     x2="1220"
+     y2="90"
+     stroke="#E0E0E0"
+     stroke-width="2"
+     id="line3" />
+  <!-- 卡片1：科学设定考核指标 - 改进亲密性与对比 -->
+  <rect
+     x="60"
+     y="125"
+     width="1160"
+     height="155"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect4" />
+  <rect
+     x="60"
+     y="125"
+     width="8"
+     height="155"
+     fill="#005587"
+     rx="4"
+     id="rect5" />
+  <text
+     x="90"
+     y="157"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="24"
+     font-weight="600"
+     fill="#005587"
+     id="text5">
+        1. 科学设定考核指标（提升期望值）
+    </text>
+  <text
+     x="110"
+     y="192"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="18"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text8"><tspan
+       x="110"
+       dy="0"
+       id="tspan5">• 建立&quot;基础+弹性&quot;考核体系：资深员工增 10%（侧重科研贷），新人增 5%（侧重信用卡）</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan6">• 超额递增奖励机制：完成越多，奖励比例越高</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan7">• 过程指标纳入考核：校园活动参与度、师生满意度占 30%</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan8">• 季度动态调整：结合招生季、毕业季等特点，避免&quot;绝望感&quot;</tspan></text>
+  <!-- 卡片2：完善薪酬与奖励机制 - 改进间距与对齐 -->
+  <rect
+     x="60"
+     y="300"
+     width="1160"
+     height="160"
+     fill="#f8f9fa"
+     rx="8"
+     id="rect8"
+     style="stroke-width:1.016" />
+  <rect
+     x="60"
+     y="300"
+     width="8"
+     height="160"
+     fill="#0076a8"
+     rx="4"
+     id="rect9"
+     style="stroke-width:1.016" />
+  <text
+     x="90"
+     y="332"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="24"
+     font-weight="600"
+     fill="#0076A8"
+     id="text9">
+        2. 完善薪酬与奖励机制（强化工具性）
+    </text>
+  <text
+     x="110"
+     y="367"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="18"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text12"><tspan
+       x="110"
+       dy="0"
+       id="tspan9">• 优化薪酬结构：基础工资占比从 30% 提升至 50%，降低绩效压力</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan10">• 超额奖励梯度：超额 10% 内奖 5%，10%-20% 奖 8%，&gt;20% 奖 12%，按月发放</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan11">• 设立专项奖励：&quot;高校营销明星&quot;&quot;协作奖&quot;等</tspan><tspan
+       x="110"
+       dy="28"
+       id="tspan12">• 多元化回报：现金 + 分行荣誉 + 带薪培训 + 职业发展机会</tspan></text>
+  <!-- 卡片3：丰富非物质激励 - 改进布局重复与对比 -->
+  <rect
+     x="60"
+     y="475"
+     width="1160"
+     height="180"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect12" />
+  <rect
+     x="60"
+     y="475"
+     width="8"
+     height="180"
+     fill="#27AE60"
+     rx="4"
+     id="rect13" />
+  <text
+     x="90"
+     y="507"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="24"
+     font-weight="600"
+     fill="#27AE60"
+     id="text13">
+        3. 丰富非物质激励（提升效价）
+    </text>
+  <!-- 三栏结构 - 优化对齐与间距 -->
+  <g
+     id="nonMaterialIncentives">
+    <!-- 年轻员工 -->
+    <rect
+       x="90"
+       y="540"
+       width="355"
+       height="90"
+       fill="#FFFFFF"
+       rx="6"
+       stroke="#27AE60"
+       stroke-width="2"
+       id="rect14" />
+    <text
+       x="110"
+       y="565"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#27AE60"
+       id="text14">
+            年轻员工
+        </text>
+    <text
+       x="110"
+       y="591"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text15"><tspan
+         x="110"
+         dy="0"
+         id="tspan14">• 高校金融专项培训</tspan><tspan
+         x="110"
+         dy="22"
+         id="tspan15">• CFP 认证辅导</tspan></text>
+    <!-- 资深员工 -->
+    <rect
+       x="463"
+       y="540"
+       width="355"
+       height="90"
+       fill="#FFFFFF"
+       rx="6"
+       stroke="#27AE60"
+       stroke-width="2"
+       id="rect15" />
+    <text
+       x="483"
+       y="565"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#27AE60"
+       id="text16">
+            资深员工
+        </text>
+    <text
+       x="483"
+       y="591"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text17"><tspan
+         x="483"
+         dy="0"
+         id="tspan16">• &quot;重大客群导师&quot;称号</tspan><tspan
+         x="483"
+         dy="22"
+         id="tspan17">• 参与营销方案制定</tspan></text>
+    <!-- 全体员工 -->
+    <rect
+       x="836"
+       y="540"
+       width="355"
+       height="90"
+       fill="#FFFFFF"
+       rx="6"
+       stroke="#27AE60"
+       stroke-width="2"
+       id="rect17" />
+    <text
+       x="856"
+       y="565"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#27AE60"
+       id="text18">
+            全体员工
+        </text>
+    <text
+       x="856"
+       y="591"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#2C3E50"
+       id="text19"><tspan
+         x="856"
+         dy="0"
+         id="tspan18">• 正向反馈机制</tspan><tspan
+         x="856"
+         dy="22"
+         id="tspan19">• 公开表扬、一对一肯定</tspan></text>
+  </g>
+  <rect
+     x="0"
+     y="717"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect19" />
+  <text
+     x="1220"
+     y="700"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="16"
+     font-weight="300"
+     fill="#7F8C8D"
+     text-anchor="end"
+     id="text20">
+        12
+    </text>
+</svg>

@@ -1,0 +1,212 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Gradient top accent -->
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="33%" style="stop-color:#EA4335;stop-opacity:1" />
+            <stop offset="66%" style="stop-color:#FBBC04;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#34A853;stop-opacity:1" />
+        </linearGradient>
+
+        <filter id="projectCardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    <!-- Page Title -->
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="46" font-weight="700" fill="#1A237E">
+        3 Major Projects Delivered
+    </text>
+
+    <!-- Title underline -->
+    <rect x="60" y="100" width="140" height="4" rx="2" fill="#4285F4" />
+
+    <!-- Project Card 1: Smart Resource Scheduler -->
+    <g transform="translate(60, 140)" filter="url(#projectCardShadow)">
+        <!-- Card background with blue accent -->
+        <rect width="360" height="480" rx="16" fill="#FFFFFF" stroke="#4285F4" stroke-width="3" />
+        <rect width="360" height="10" rx="16" fill="#4285F4" />
+
+        <!-- Icon area -->
+        <circle cx="180" cy="70" r="35" fill="#E8F0FE" />
+        <text x="180" y="85"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="36" text-anchor="middle">⚙️</text>
+
+        <!-- Project Title -->
+        <text x="180" y="145"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            <tspan x="180" dy="0">Smart Resource</tspan>
+            <tspan x="180" dy="28">Scheduler</tspan>
+        </text>
+
+        <!-- Description -->
+        <text x="30" y="210"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            <tspan x="30" dy="0">ML-powered dynamic resource</tspan>
+            <tspan x="30" dy="24">allocation system for GCP</tspan>
+            <tspan x="30" dy="24">data centers</tspan>
+        </text>
+
+        <!-- Divider -->
+        <line x1="30" y1="290" x2="330" y2="290" stroke="#E8EAED" stroke-width="1" />
+
+        <!-- Key Metrics -->
+        <text x="180" y="325"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="42" font-weight="700" fill="#4285F4" text-anchor="middle">
+            +100%
+        </text>
+        <text x="180" y="355"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Resource Utilization
+        </text>
+
+        <text x="180" y="405"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="38" font-weight="700" fill="#34A853" text-anchor="middle">
+            $28M
+        </text>
+        <text x="180" y="435"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Annual Cost Savings
+        </text>
+    </g>
+
+    <!-- Project Card 2: Cross-Region Sync -->
+    <g transform="translate(460, 140)" filter="url(#projectCardShadow)">
+        <!-- Card background with green accent -->
+        <rect width="360" height="480" rx="16" fill="#FFFFFF" stroke="#34A853" stroke-width="3" />
+        <rect width="360" height="10" rx="16" fill="#34A853" />
+
+        <!-- Icon area -->
+        <circle cx="180" cy="70" r="35" fill="#E6F4EA" />
+        <text x="180" y="85"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="36" text-anchor="middle">🌐</text>
+
+        <!-- Project Title -->
+        <text x="180" y="145"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            <tspan x="180" dy="0">Cross-Region Sync</tspan>
+            <tspan x="180" dy="28">Optimization</tspan>
+        </text>
+
+        <!-- Description -->
+        <text x="30" y="210"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            <tspan x="30" dy="0">Intelligent routing and adaptive</tspan>
+            <tspan x="30" dy="24">compression for global data</tspan>
+            <tspan x="30" dy="24">synchronization</tspan>
+        </text>
+
+        <!-- Divider -->
+        <line x1="30" y1="290" x2="330" y2="290" stroke="#E8EAED" stroke-width="1" />
+
+        <!-- Key Metrics -->
+        <text x="180" y="325"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="42" font-weight="700" fill="#34A853" text-anchor="middle">
+            -82%
+        </text>
+        <text x="180" y="355"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Sync Latency
+        </text>
+
+        <text x="180" y="405"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="38" font-weight="700" fill="#4285F4" text-anchor="middle">
+            -63%
+        </text>
+        <text x="180" y="435"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Bandwidth Usage
+        </text>
+    </g>
+
+    <!-- Project Card 3: Auto-Recovery System -->
+    <g transform="translate(860, 140)" filter="url(#projectCardShadow)">
+        <!-- Card background with red accent -->
+        <rect width="360" height="480" rx="16" fill="#FFFFFF" stroke="#EA4335" stroke-width="3" />
+        <rect width="360" height="10" rx="16" fill="#EA4335" />
+
+        <!-- Icon area -->
+        <circle cx="180" cy="70" r="35" fill="#FCE8E6" />
+        <text x="180" y="85"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="36" text-anchor="middle">🔄</text>
+
+        <!-- Project Title -->
+        <text x="180" y="145"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            <tspan x="180" dy="0">Auto-Recovery</tspan>
+            <tspan x="180" dy="28">System</tspan>
+        </text>
+
+        <!-- Description -->
+        <text x="30" y="210"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            <tspan x="30" dy="0">Automated fault diagnosis</tspan>
+            <tspan x="30" dy="24">and recovery workflow for</tspan>
+            <tspan x="30" dy="24">production systems</tspan>
+        </text>
+
+        <!-- Divider -->
+        <line x1="30" y1="290" x2="330" y2="290" stroke="#E8EAED" stroke-width="1" />
+
+        <!-- Key Metrics -->
+        <text x="180" y="325"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="42" font-weight="700" fill="#EA4335" text-anchor="middle">
+            -82%
+        </text>
+        <text x="180" y="355"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            MTTR Reduction
+        </text>
+
+        <text x="180" y="405"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="38" font-weight="700" fill="#4285F4" text-anchor="middle">
+            99.99%
+        </text>
+        <text x="180" y="435"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+            System Availability
+        </text>
+    </g>
+
+    <!-- Page Number -->
+    <text x="1220" y="700"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#5F6368" text-anchor="end">
+        03
+    </text>
+</svg>

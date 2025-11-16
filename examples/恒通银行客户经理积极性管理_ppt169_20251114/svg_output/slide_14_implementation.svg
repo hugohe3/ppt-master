@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg26"
+   sodipodi:docname="slide_14_implementation.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview26"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.56962984"
+     inkscape:cx="614.4341"
+     inkscape:cy="278.25087"
+     inkscape:window-width="1472"
+     inkscape:window-height="834"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg26" />
+  <defs
+     id="defs2">
+    <rect
+       x="149.21971"
+       y="365.14941"
+       width="646.03357"
+       height="28.088416"
+       id="rect28" />
+    <linearGradient
+       id="accentGradient"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="0%">
+      <stop
+         offset="0%"
+         style="stop-color:#005587;stop-opacity:1"
+         id="stop1" />
+      <stop
+         offset="100%"
+         style="stop-color:#0076A8;stop-opacity:1"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <rect
+     width="1280"
+     height="720"
+     fill="#FFFFFF"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect3" />
+  <text
+     x="60"
+     y="75"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="36"
+     font-weight="600"
+     fill="#005587"
+     id="text3">
+        三阶段实施路线图
+    </text>
+  <line
+     x1="60"
+     y1="95"
+     x2="1220"
+     y2="95"
+     stroke="#E0E0E0"
+     stroke-width="2"
+     id="line3" />
+  <!-- 时间轴 -->
+  <line
+     x1="150"
+     y1="200"
+     x2="1130"
+     y2="200"
+     stroke="#005587"
+     stroke-width="4"
+     id="line4" />
+  <!-- 阶段1 -->
+  <circle
+     cx="240"
+     cy="200"
+     r="20"
+     fill="#E67E22"
+     id="circle4" />
+  <text
+     x="240"
+     y="165"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="20"
+     font-weight="600"
+     fill="#E67E22"
+     text-anchor="middle"
+     id="text4">
+        第 1-2 月
+    </text>
+  <rect
+     x="150"
+     y="240"
+     width="260"
+     height="180"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect4" />
+  <rect
+     x="150"
+     y="240"
+     width="260"
+     height="8"
+     fill="#E67E22"
+     rx="4"
+     id="rect5" />
+  <text
+     x="280"
+     y="275"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="22"
+     font-weight="600"
+     fill="#E67E22"
+     text-anchor="middle"
+     id="text5">
+        启动阶段
+    </text>
+  <text
+     x="170"
+     y="310"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="17"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text8"><tspan
+       x="170"
+       dy="0"
+       id="tspan5">• 召开动员大会消除抵触情绪</tspan><tspan
+       x="170"
+       dy="28"
+       id="tspan6">• 成立改革专项小组</tspan><tspan
+       x="170"
+       dy="28"
+       id="tspan7"> 细化实施方案</tspan><tspan
+       x="170"
+       dy="28"
+       id="tspan8">• 全员培训解读新机制</tspan></text>
+  <!-- 阶段2 -->
+  <circle
+     cx="640"
+     cy="200"
+     r="20"
+     fill="#005587"
+     id="circle8" />
+  <text
+     x="640"
+     y="165"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="20"
+     font-weight="600"
+     fill="#005587"
+     text-anchor="middle"
+     id="text9">
+        第 3-6 月
+    </text>
+  <rect
+     x="480"
+     y="240"
+     width="320"
+     height="180"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect9" />
+  <rect
+     x="480"
+     y="240"
+     width="320"
+     height="8"
+     fill="#005587"
+     rx="4"
+     id="rect10" />
+  <text
+     x="640"
+     y="275"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="22"
+     font-weight="600"
+     fill="#005587"
+     text-anchor="middle"
+     id="text10">
+        实施阶段
+    </text>
+  <text
+     x="500"
+     y="310"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="17"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text14"><tspan
+       x="500"
+       dy="0"
+       id="tspan10">• 3 月：优化考核薪酬体系</tspan><tspan
+       x="500"
+       dy="28"
+       id="tspan11">• 4 月：建立共享系统与攻坚小组</tspan><tspan
+       x="500"
+       dy="28"
+       id="tspan12">• 5 月：完善晋升通道</tspan><tspan
+       x="500"
+       dy="28"
+       id="tspan13">• 6 月：开展文化建设活动</tspan><tspan
+       x="500"
+       dy="28"
+       id="tspan14">• 每月复盘，动态调整方案</tspan></text>
+  <!-- 阶段3 -->
+  <circle
+     cx="1040"
+     cy="200"
+     r="20"
+     fill="#27AE60"
+     id="circle14" />
+  <text
+     x="1040"
+     y="165"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="20"
+     font-weight="600"
+     fill="#27AE60"
+     text-anchor="middle"
+     id="text15">
+        第 7-12 月
+    </text>
+  <rect
+     x="870"
+     y="240"
+     width="300"
+     height="180"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect15" />
+  <rect
+     x="870"
+     y="240"
+     width="300"
+     height="8"
+     fill="#27AE60"
+     rx="4"
+     id="rect16" />
+  <text
+     x="1020"
+     y="275"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="22"
+     font-weight="600"
+     fill="#27AE60"
+     text-anchor="middle"
+     id="text16">
+        巩固阶段
+    </text>
+  <text
+     x="890"
+     y="310"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="17"
+     font-weight="400"
+     fill="#2C3E50"
+     id="text18"><tspan
+       x="890"
+       dy="0"
+       id="tspan16">• 固化新制度形成长效机制</tspan><tspan
+       x="890"
+       dy="28"
+       id="tspan17">• 评估成效总结经验教训</tspan><tspan
+       x="890"
+       dy="28"
+       id="tspan18">• 上报分行供其他网点借鉴</tspan></text>
+  <!-- 保障措施 -->
+  <rect
+     x="60"
+     y="460"
+     width="1160"
+     height="180"
+     fill="#F8F9FA"
+     rx="8"
+     id="rect18" />
+  <rect
+     x="60"
+     y="460"
+     width="1160"
+     height="8"
+     fill="#005587"
+     rx="4"
+     id="rect19" />
+  <text
+     x="90"
+     y="500"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="26"
+     font-weight="600"
+     fill="#005587"
+     id="text19">
+        保障措施
+    </text>
+  <g
+     id="safeguards">
+    <rect
+       x="100"
+       y="530"
+       width="350"
+       height="80"
+       fill="#FFFFFF"
+       rx="6"
+       id="rect20" />
+    <circle
+       cx="130"
+       cy="560"
+       r="8"
+       fill="#005587"
+       id="circle20" />
+    <text
+       x="150"
+       y="560"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#2C3E50"
+       id="text20">
+            争取分行支持
+        </text>
+    <text
+       x="150"
+       y="585"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#7F8C8D"
+       id="text21">
+            指标调整权限、专项经费
+        </text>
+    <rect
+       x="470"
+       y="530"
+       width="350"
+       height="80"
+       fill="#FFFFFF"
+       rx="6"
+       id="rect21" />
+    <circle
+       cx="500"
+       cy="560"
+       r="8"
+       fill="#005587"
+       id="circle21" />
+    <text
+       x="520"
+       y="560"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#2C3E50"
+       id="text22">
+            专项小组监督
+        </text>
+    <text
+       x="520"
+       y="585"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#7F8C8D"
+       id="text23">
+            定期监督落实情况
+        </text>
+    <rect
+       x="840"
+       y="530"
+       width="350"
+       height="80"
+       fill="#FFFFFF"
+       rx="6"
+       id="rect23" />
+    <circle
+       cx="870"
+       cy="560"
+       r="8"
+       fill="#005587"
+       id="circle23" />
+    <text
+       x="890"
+       y="560"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       font-weight="600"
+       fill="#2C3E50"
+       id="text24">
+            反馈机制
+        </text>
+    <text
+       x="890"
+       y="585"
+       font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+       font-size="16"
+       font-weight="400"
+       fill="#7F8C8D"
+       id="text25">
+            意见箱、座谈会及时解决问题
+        </text>
+  </g>
+  <rect
+     x="0"
+     y="717"
+     width="1280"
+     height="3"
+     fill="url(#accentGradient)"
+     id="rect25" />
+  <text
+     x="1220"
+     y="700"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+     font-size="16"
+     font-weight="300"
+     fill="#7F8C8D"
+     text-anchor="end"
+     id="text26">
+        14
+    </text>
+  <text
+     xml:space="preserve"
+     style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
+     x="424.82458"
+     y="408.19443"
+     id="text27"><tspan
+       sodipodi:role="line"
+       id="tspan26"
+       x="424.82458"
+       y="408.19443">   </tspan></text>
+  <text
+     xml:space="preserve"
+     id="text28"
+     style="text-align:start;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect28);fill:#000000"><tspan
+       x="149.21875"
+       y="376.0964"
+       id="tspan1"> </tspan></text>
+</svg>

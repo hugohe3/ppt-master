@@ -27,22 +27,53 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 
 ## 开发常用命令
 
-### 预览生成的 SVG 幻灯片
+### 项目管理
+
+使用项目管理工具创建和管理项目：
+
+```bash
+# 初始化新项目
+python3 tools/project_manager.py init <project_name> --format ppt169
+
+# 验证项目结构
+python3 tools/project_manager.py validate <project_path>
+
+# 查看项目信息
+python3 tools/project_manager.py info <project_path>
+```
+
+### 预览生成
+
+为项目生成统一的预览页面：
+
+```bash
+# 为单个项目生成预览
+python3 tools/generate_preview.py <project_path>
+
+# 为所有项目生成预览
+python3 tools/generate_preview.py --all examples
+
+# 交互模式
+python3 tools/generate_preview.py
+```
+
+### 预览 SVG 幻灯片
 
 仓库中的示例均以「项目为单位」组织在 `examples/` 目录下，每个示例项目包含 `svg_output/` 文件夹。
 
 预览任一示例项目（以占位项目名为例）：
 
 ```bash
-# 方式一：使用内置 HTTP 服务器（推荐）
-python3 -m http.server --directory examples/<project_name>_<format>_<YYYYMMDD>/svg_output 8000
-
-# 方式二：直接用浏览器打开单个 SVG 或使用该项目自带的 preview.html（若存在）
-open examples/<project_name>_<format>_<YYYYMMDD>/svg_output/slide_01_cover.svg
+# 方式一：使用统一的预览页面（推荐）
 open examples/<project_name>_<format>_<YYYYMMDD>/preview.html
-```
 
-在浏览器访问 `http://localhost:8000` 以查看该项目的 SVG 文件。
+# 方式二：使用内置 HTTP 服务器
+python3 -m http.server --directory examples/<project_name>_<format>_<YYYYMMDD>/svg_output 8000
+# 访问 http://localhost:8000
+
+# 方式三：直接打开单个 SVG
+open examples/<project_name>_<format>_<YYYYMMDD>/svg_output/slide_01_cover.svg
+```
 
 ### 校验 SVG 画布规范（多格式）
 

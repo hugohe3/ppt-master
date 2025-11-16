@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>驱动IT基础设施发展的5大技术定律 - 预览</title>
+    <title>驱动 IT 基础设施发展的 5 大技术定律 - 微信公众号配图 - 预览</title>
     <style>
         * {
             margin: 0;
@@ -12,262 +11,653 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --background-gradient-start: #667eea;
+            --background-gradient-end: #764ba2;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
             min-height: 100vh;
+            padding: 40px 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        h1 {
+        header {
             text-align: center;
-            color: white;
-            margin-bottom: 20px;
-            font-size: 32px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 50px;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            font-size: 42px;
+            color: #202124;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
 
         .subtitle {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 40px;
-            font-size: 16px;
+            font-size: 18px;
+            color: #5F6368;
+            margin-bottom: 20px;
         }
 
-        .grid {
+        .info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #5F6368;
+        }
+
+        .info-item strong {
+            color: #202124;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: white;
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* 单页视图 */
+        .single-view {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-bottom: 40px;
+        }
+
+        .slide-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            position: relative;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .slide-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .slide-info {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .slide-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .slide-title {
+            font-size: 16px;
+            color: #5F6368;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        /* 网格视图 */
+        .grid-view {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 30px;
             margin-bottom: 40px;
         }
 
-        .card {
+        .slide-card {
             background: white;
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        .slide-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .slide-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: -20px -20px 20px -20px;
-            font-weight: 600;
-            font-size: 18px;
         }
 
-        .card img {
+        .slide-card-number {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .slide-card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .slide-preview {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            display: block;
+            background: #f8f9fa;
         }
 
-        .card-footer {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
-            color: #6b7280;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
+        .slide-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
             align-items: center;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: #f3f4f6;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #374151;
+        .modal.active {
+            display: flex;
         }
 
-        .info-box {
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #ccc;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            width: calc(100% + 100px);
+            left: -50px;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .modal-nav-btn {
+            pointer-events: all;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            font-size: 30px;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .modal-info {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
             background: white;
             border-radius: 12px;
-            padding: 30px;
-            margin-top: 40px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .info-box h2 {
-            color: #1f2937;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .info-box p {
-            color: #6b7280;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .info-box ul {
-            margin-left: 20px;
-            color: #6b7280;
-            line-height: 1.8;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .tech-badge {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #5F6368;
             font-size: 14px;
-            font-weight: 500;
         }
 
+        footer p {
+            margin: 8px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 24px;
+            body {
+                padding: 20px 10px;
             }
 
-            .grid {
+            header {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .info {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .grid-view {
                 grid-template-columns: 1fr;
+            }
+
+            .single-view {
+                padding: 20px;
+            }
+
+            .modal-nav {
+                width: 100%;
+                left: 0;
+            }
+
+            .modal-nav-btn {
+                font-size: 24px;
+                padding: 10px 15px;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        <h1>🚀 驱动IT基础设施发展的5大技术定律</h1>
-        <p class="subtitle">微信公众号配图预览 | 通用灵活风格 | 2025-11-12</p>
-
-        <div class="grid">
-            <!-- 封面头图 -->
-            <div class="card" style="grid-column: span 2;">
-                <div class="card-header">📄 封面头图</div>
-                <img src="svg_output/slide_01_cover.svg" alt="封面头图">
-                <div class="card-footer">
-                    <span>slide_01_cover.svg</span>
-                    <span class="badge">900×383</span>
+        <header>
+            <h1>驱动 IT 基础设施发展的 5 大技术定律 - 微信公众号配图</h1>
+            <p class="subtitle"></p>
+            <div class="info">
+                <div class="info-item">
+                    <span>📅</span>
+                    <span><strong>创建日期:</strong> 2025-11-12</span>
+                </div>
+                <div class="info-item">
+                    <span>📐</span>
+                    <span><strong>画布:</strong> 微信公众号 (900×383)</span>
+                </div>
+                <div class="info-item">
+                    <span>🎨</span>
+                    <span><strong>风格:</strong> 通用灵活</span>
+                </div>
+                <div class="info-item">
+                    <span>📄</span>
+                    <span><strong>页数:</strong> 7 页</span>
                 </div>
             </div>
+        </header>
 
-            <!-- 摩尔定律 -->
-            <div class="card">
-                <div class="card-header">🚀 摩尔定律</div>
-                <img src="svg_output/slide_02_moores_law.svg" alt="摩尔定律">
-                <div class="card-footer">
-                    <span>slide_02_moores_law.svg</span>
-                    <span class="badge">900×900</span>
-                </div>
+        <div class="controls">
+            <button class="btn btn-primary" onclick="toggleView()">
+                <span id="viewToggleIcon">🔲</span>
+                <span id="viewToggleText">网格视图</span>
+            </button>
+            <button class="btn" onclick="previousSlide()" id="prevBtn">
+                ⬅️ 上一页
+            </button>
+            <button class="btn" onclick="nextSlide()" id="nextBtn">
+                下一页 ➡️
+            </button>
+            <a href="README.md" class="btn" target="_blank">
+                📖 项目说明
+            </a>
+            <a href="设计规范与内容大纲.md" class="btn" target="_blank">
+                📋 设计规范
+            </a>
+        </div>
+
+        <!-- 单页视图 -->
+        <div id="singleView" class="single-view">
+            <div class="slide-container">
+                <img id="slideImage" src="" alt="Slide">
             </div>
-
-            <!-- 存储定律 -->
-            <div class="card">
-                <div class="card-header">💾 海量数字存储定律</div>
-                <img src="svg_output/slide_03_storage_law.svg" alt="存储定律">
-                <div class="card-footer">
-                    <span>slide_03_storage_law.svg</span>
-                    <span class="badge">900×900</span>
+            <div class="slide-info">
+                <div class="slide-number">
+                    第 <span id="slideNumber">1</span> 页 / 共 7 页
                 </div>
+                <div class="slide-title" id="slideTitle"></div>
             </div>
-
-            <!-- 梅特卡夫定律 -->
-            <div class="card">
-                <div class="card-header">🌐 梅特卡夫定律</div>
-                <img src="svg_output/slide_04_metcalfes_law.svg" alt="梅特卡夫定律">
-                <div class="card-footer">
-                    <span>slide_04_metcalfes_law.svg</span>
-                    <span class="badge">900×900</span>
-                </div>
-            </div>
-
-            <!-- 通信成本 -->
-            <div class="card">
-                <div class="card-header">📞 通信成本骤降</div>
-                <img src="svg_output/slide_05_comms_cost.svg" alt="通信成本">
-                <div class="card-footer">
-                    <span>slide_05_comms_cost.svg</span>
-                    <span class="badge">900×900</span>
-                </div>
-            </div>
-
-            <!-- 技术标准 -->
-            <div class="card">
-                <div class="card-header">🤝 技术标准</div>
-                <img src="svg_output/slide_06_standards.svg" alt="技术标准">
-                <div class="card-footer">
-                    <span>slide_06_standards.svg</span>
-                    <span class="badge">900×900</span>
-                </div>
-            </div>
-
-            <!-- 五力协同总结 -->
-            <div class="card">
-                <div class="card-header">✨ 五力协同总结</div>
-                <img src="svg_output/slide_07_summary.svg" alt="五力协同">
-                <div class="card-footer">
-                    <span>slide_07_summary.svg</span>
-                    <span class="badge">900×900</span>
-                </div>
+            <div class="navigation">
+                <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
+                <button class="btn btn-primary" onclick="openModal(currentSlide)">🔍 放大查看</button>
+                <button class="btn" onclick="nextSlide()">下一页 ➡️</button>
             </div>
         </div>
 
-        <!-- 项目信息 -->
-        <div class="info-box">
-            <h2>📊 项目信息</h2>
-            <p><strong>项目名称：</strong>驱动IT基础设施发展的5大技术定律</p>
-            <p><strong>创建日期：</strong>2025-11-12</p>
-            <p><strong>设计风格：</strong>通用灵活风格</p>
-            <p><strong>使用场景：</strong>微信公众号文章配图</p>
+        <!-- 网格视图 -->
+        <div id="gridView" class="grid-view hidden"></div>
 
-            <h2 style="margin-top: 30px;">🎨 设计特点</h2>
-            <ul>
-                <li><strong>差异化配色：</strong>每个技术定律使用独特色系（蓝、紫、绿、橙、青）</li>
-                <li><strong>图表可视化：</strong>指数曲线、网络图、对比图等多种图表形式</li>
-                <li><strong>信息层级清晰：</strong>emoji + 标题 + 核心数据 + 图表 + 说明</li>
-                <li><strong>手机友好：</strong>900×900 正方形配图适合微信阅读</li>
-            </ul>
+        <footer>
+            <p>✨ 基于 <strong>PPT Master</strong> 框架生成</p>
+            <p>© 2025 | 所有 SVG 文件遵循 微信公众号 (900×383) 标准</p>
+            <p style="margin-top: 15px; opacity: 0.8;">💡 提示：点击幻灯片可放大查看 | 使用方向键导航</p>
+        </footer>
+    </div>
 
-            <h2 style="margin-top: 30px;">🛠️ 技术栈</h2>
-            <div class="tech-stack">
-                <span class="tech-badge">SVG 矢量图形</span>
-                <span class="tech-badge">系统UI字体</span>
-                <span class="tech-badge">手动换行</span>
-                <span class="tech-badge">无foreignObject</span>
-                <span class="tech-badge">CRAP设计原则</span>
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <img id="modalImg" src="" alt="Slide">
+            <div class="modal-nav">
+                <button class="modal-nav-btn" onclick="modalPrev()" id="modalPrevBtn">‹</button>
+                <button class="modal-nav-btn" onclick="modalNext()" id="modalNextBtn">›</button>
             </div>
-
-            <h2 style="margin-top: 30px;">📝 核心内容</h2>
-            <ul>
-                <li><strong>摩尔定律：</strong>每18个月性能翻番，价格降50%</li>
-                <li><strong>存储定律：</strong>每15个月容量翻番，成本趋近于零</li>
-                <li><strong>梅特卡夫定律：</strong>网络价值 ∝ 用户数²，网络效应</li>
-                <li><strong>通信成本：</strong>通信成本 → 0，引爆移动互联网</li>
-                <li><strong>技术标准：</strong>统一规则，全球互通，规模经济</li>
-            </ul>
-
-            <p
-                style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #9ca3af; font-size: 14px;">
-                💡 <strong>使用提示：</strong>SVG 文件需转换为 PNG/JPG 格式后上传到微信公众号。建议导出 2x 尺寸以保证高清显示。
-            </p>
+            <div class="modal-info">
+                <span id="modalInfo"></span>
+            </div>
         </div>
     </div>
-</body>
 
+    <script>
+        // 幻灯片数据（由生成工具填充）
+        const slides = [
+  {
+    "path": "svg_output/slide_01_cover.svg",
+    "title": "Cover",
+    "filename": "slide_01_cover.svg"
+  },
+  {
+    "path": "svg_output/slide_02_moores_law.svg",
+    "title": "Moores Law",
+    "filename": "slide_02_moores_law.svg"
+  },
+  {
+    "path": "svg_output/slide_03_storage_law.svg",
+    "title": "Storage Law",
+    "filename": "slide_03_storage_law.svg"
+  },
+  {
+    "path": "svg_output/slide_04_metcalfes_law.svg",
+    "title": "Metcalfes Law",
+    "filename": "slide_04_metcalfes_law.svg"
+  },
+  {
+    "path": "svg_output/slide_05_comms_cost.svg",
+    "title": "Comms Cost",
+    "filename": "slide_05_comms_cost.svg"
+  },
+  {
+    "path": "svg_output/slide_06_standards.svg",
+    "title": "Standards",
+    "filename": "slide_06_standards.svg"
+  },
+  {
+    "path": "svg_output/slide_07_summary.svg",
+    "title": "Summary",
+    "filename": "slide_07_summary.svg"
+  }
+];
+
+        let currentSlide = 0;
+        let isGridView = false;
+
+        // 初始化
+        function init() {
+            updateSlide();
+            initGridView();
+        }
+
+        // 更新单页视图
+        function updateSlide() {
+            const slide = slides[currentSlide];
+            document.getElementById('slideImage').src = slide.path;
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+            document.getElementById('slideTitle').textContent = slide.title;
+            
+            // 更新按钮状态
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === slides.length - 1;
+        }
+
+        // 上一页
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        // 下一页
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        // 切换视图
+        function toggleView() {
+            isGridView = !isGridView;
+            const singleView = document.getElementById('singleView');
+            const gridView = document.getElementById('gridView');
+            const icon = document.getElementById('viewToggleIcon');
+            const text = document.getElementById('viewToggleText');
+
+            if (isGridView) {
+                singleView.classList.add('hidden');
+                gridView.classList.remove('hidden');
+                icon.textContent = '📄';
+                text.textContent = '单页视图';
+            } else {
+                singleView.classList.remove('hidden');
+                gridView.classList.add('hidden');
+                icon.textContent = '🔲';
+                text.textContent = '网格视图';
+            }
+        }
+
+        // 初始化网格视图
+        function initGridView() {
+            const gridView = document.getElementById('gridView');
+            gridView.innerHTML = '';
+
+            slides.forEach((slide, index) => {
+                const card = document.createElement('div');
+                card.className = 'slide-card';
+                card.onclick = () => {
+                    if (isGridView) {
+                        currentSlide = index;
+                        toggleView();
+                        updateSlide();
+                    } else {
+                        openModal(index);
+                    }
+                };
+
+                card.innerHTML = `
+                    <div class="slide-header">
+                        <div class="slide-card-number">第 ${index + 1} 页</div>
+                        <div class="slide-card-title">${slide.title}</div>
+                    </div>
+                    <div class="slide-preview">
+                        <img src="${slide.path}" alt="${slide.title}">
+                    </div>
+                `;
+
+                gridView.appendChild(card);
+            });
+        }
+
+        // 打开模态框
+        function openModal(index) {
+            currentSlide = index;
+            const slide = slides[currentSlide];
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('modalImg').src = slide.path;
+            document.getElementById('modalInfo').textContent = 
+                `第 ${currentSlide + 1} 页 / 共 ${slides.length} 页 - ${slide.title}`;
+            updateModalButtons();
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // 模态框上一页
+        function modalPrev() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                const slide = slides[currentSlide];
+                document.getElementById('modalImg').src = slide.path;
+                document.getElementById('modalInfo').textContent = 
+                    `第 ${currentSlide + 1} 页 / 共 ${slides.length} 页 - ${slide.title}`;
+                updateModalButtons();
+            }
+        }
+
+        // 模态框下一页
+        function modalNext() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                const slide = slides[currentSlide];
+                document.getElementById('modalImg').src = slide.path;
+                document.getElementById('modalInfo').textContent = 
+                    `第 ${currentSlide + 1} 页 / 共 ${slides.length} 页 - ${slide.title}`;
+                updateModalButtons();
+            }
+        }
+
+        // 更新模态框按钮状态
+        function updateModalButtons() {
+            document.getElementById('modalPrevBtn').disabled = currentSlide === 0;
+            document.getElementById('modalNextBtn').disabled = currentSlide === slides.length - 1;
+        }
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('modal');
+            if (modal.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') modalPrev();
+                if (e.key === 'ArrowRight') modalNext();
+                if (e.key === 'Escape') closeModal();
+            } else if (!isGridView) {
+                if (e.key === 'ArrowLeft') previousSlide();
+                if (e.key === 'ArrowRight') nextSlide();
+            }
+        });
+
+        // 点击模态框外部关闭
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        // 页面加载完成后初始化
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
 </html>
+

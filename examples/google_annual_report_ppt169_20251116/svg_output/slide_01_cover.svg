@@ -1,0 +1,112 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Definitions -->
+    <defs>
+        <!-- Dynamic gradient background -->
+        <linearGradient id="dynamicGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8F0FE;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E8F5E9;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Title card shadow -->
+        <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- Glow effect -->
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1280" height="720" fill="url(#dynamicGradient)" />
+
+    <!-- Decorative geometric shapes in background -->
+    <circle cx="150" cy="150" r="120" fill="#4285F4" opacity="0.08" />
+    <circle cx="1130" cy="570" r="150" fill="#34A853" opacity="0.08" />
+    <rect x="900" y="80" width="180" height="180" rx="20" fill="#FBBC04" opacity="0.06"
+        transform="rotate(15 990 170)" />
+
+    <!-- Google brand accent bars - left side -->
+    <rect x="0" y="0" width="10" height="180" fill="#4285F4" filter="url(#glow)" />
+    <rect x="0" y="180" width="10" height="180" fill="#EA4335" filter="url(#glow)" />
+    <rect x="0" y="360" width="10" height="180" fill="#FBBC04" filter="url(#glow)" />
+    <rect x="0" y="540" width="10" height="180" fill="#34A853" filter="url(#glow)" />
+
+    <!-- Main content card -->
+    <g filter="url(#cardShadow)">
+        <rect x="280" y="180" width="720" height="360" rx="24" fill="#FFFFFF" />
+    </g>
+
+    <!-- Main Title with gradient -->
+    <defs>
+        <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1A73E8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <text x="640" y="280"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="52"
+        font-weight="700" fill="url(#titleGradient)" text-anchor="middle">
+        2025 Annual Work Report
+    </text>
+
+    <!-- Subtitle with icon-style prefix -->
+    <text x="640" y="335"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22"
+        font-weight="500" fill="#5F6368" text-anchor="middle">
+        Google Cloud Platform • Infrastructure Optimization
+    </text>
+
+    <!-- Decorative divider with brand colors -->
+    <line x1="380" y1="380" x2="530" y2="380" stroke="#4285F4" stroke-width="3" stroke-linecap="round" />
+    <line x1="550" y1="380" x2="620" y2="380" stroke="#EA4335" stroke-width="3" stroke-linecap="round" />
+    <line x1="640" y1="380" x2="710" y2="380" stroke="#FBBC04" stroke-width="3" stroke-linecap="round" />
+    <line x1="730" y1="380" x2="900" y2="380" stroke="#34A853" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Name with emphasis -->
+    <text x="640" y="440"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="32"
+        font-weight="700" fill="#1A237E" text-anchor="middle">
+        Ming Zhang
+    </text>
+
+    <!-- Title/Role -->
+    <text x="640" y="478"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20"
+        font-weight="400" fill="#5F6368" text-anchor="middle">
+        Senior Software Engineer (L5)
+    </text>
+
+    <!-- Date with icon -->
+    <g transform="translate(640, 510)">
+        <circle cx="0" cy="0" r="3" fill="#4285F4" />
+        <text x="0" y="25"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="18" font-weight="500" fill="#5F6368" text-anchor="middle">
+            December 2025
+        </text>
+    </g>
+
+    <!-- Enhanced Google brand dots with sizes -->
+    <circle cx="520" cy="630" r="12" fill="#4285F4" opacity="0.9" />
+    <circle cx="570" cy="630" r="10" fill="#EA4335" opacity="0.9" />
+    <circle cx="610" cy="630" r="14" fill="#FBBC04" opacity="0.9" />
+    <circle cx="660" cy="630" r="10" fill="#34A853" opacity="0.9" />
+    <circle cx="700" cy="630" r="12" fill="#4285F4" opacity="0.9" />
+    <circle cx="750" cy="630" r="10" fill="#EA4335" opacity="0.9" />
+</svg>

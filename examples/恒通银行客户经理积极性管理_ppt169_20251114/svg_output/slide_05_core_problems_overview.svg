@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#C0392B">
+        前台客户经理积极性困境：四大核心问题
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 问题矩阵 -->
+    <!-- 问题 1：营销动力不足 -->
+    <rect x="80" y="140" width="540" height="230" fill="#F8F9FA" rx="8" />
+    <rect x="80" y="140" width="540" height="8" fill="#C0392B" rx="4" />
+
+    <!-- 图标区域 -->
+    <circle cx="150" cy="205" r="35" fill="#C0392B" opacity="0.1" />
+    <text x="150" y="218"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="700" fill="#C0392B" text-anchor="middle">
+        ↓
+    </text>
+
+    <text x="220" y="185"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#C0392B">
+        营销动力严重不足
+    </text>
+    <text x="220" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        主动开拓意识薄弱
+    </text>
+
+    <!-- 关键数据 -->
+    <line x1="105" y1="245" x2="595" y2="245" stroke="#E0E0E0" stroke-width="1" />
+    <text x="110" y="275"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50">
+        <tspan x="110" dy="0">• 主动新客量同比 ↓62%</tspan>
+        <tspan x="110" dy="30">• 陌生拜访量不足去年 1/3</tspan>
+        <tspan x="110" dy="30">• 普遍"等客上门"消极心态蔓延</tspan>
+    </text>
+
+    <!-- 问题 2：业绩指标完成率低 -->
+    <rect x="660" y="140" width="540" height="230" fill="#F8F9FA" rx="8" />
+    <rect x="660" y="140" width="540" height="8" fill="#C0392B" rx="4" />
+
+    <!-- 图标区域 -->
+    <circle cx="730" cy="205" r="35" fill="#C0392B" opacity="0.1" />
+    <text x="730" y="218"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="700" fill="#C0392B" text-anchor="middle">
+        ✗
+    </text>
+
+    <text x="800" y="185"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#C0392B">
+        业绩指标完成率低
+    </text>
+    <text x="800" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        业绩分化现象加剧
+    </text>
+
+    <!-- 关键数据 -->
+    <line x1="685" y1="245" x2="1175" y2="245" stroke="#E0E0E0" stroke-width="1" />
+    <text x="690" y="275"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50">
+        <tspan x="690" dy="0">• 团队整体完成率 32%（vs 分行 48%）</tspan>
+        <tspan x="690" dy="30">• 头部 2 人占 45%，尾部 5 人 &lt;10%</tspan>
+        <tspan x="690" dy="30">• 2 人连续 3 个月未完成基础任务</tspan>
+    </text>
+
+    <!-- 问题 3：团队协作氛围差 -->
+    <rect x="80" y="410" width="540" height="230" fill="#F8F9FA" rx="8" />
+    <rect x="80" y="410" width="540" height="8" fill="#E67E22" rx="4" />
+
+    <!-- 图标区域 -->
+    <circle cx="150" cy="475" r="35" fill="#E67E22" opacity="0.1" />
+    <text x="150" y="488"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="700" fill="#E67E22" text-anchor="middle">
+        ⚠
+    </text>
+
+    <text x="220" y="455"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#E67E22">
+        团队协作氛围差
+    </text>
+    <text x="220" y="485"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        内部资源争夺激烈
+    </text>
+
+    <!-- 关键数据 -->
+    <line x1="105" y1="515" x2="595" y2="515" stroke="#E0E0E0" stroke-width="1" />
+    <text x="110" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50">
+        <tspan x="110" dy="0">• 优质客群资源争夺，隐瞒需求</tspan>
+        <tspan x="110" dy="30">• 复杂业务无人协作，担心"被抢功"</tspan>
+        <tspan x="110" dy="30">• 晨会沦为"任务会"，凝聚力极低</tspan>
+    </text>
+
+    <!-- 问题 4：职业倦怠现象突出 -->
+    <rect x="660" y="410" width="540" height="230" fill="#F8F9FA" rx="8" />
+    <rect x="660" y="410" width="540" height="8" fill="#E67E22" rx="4" />
+
+    <!-- 图标区域 -->
+    <circle cx="730" cy="475" r="35" fill="#E67E22" opacity="0.1" />
+    <text x="730" y="488"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="700" fill="#E67E22" text-anchor="middle">
+        ⌛
+    </text>
+
+    <text x="800" y="455"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#E67E22">
+        职业倦怠现象突出
+    </text>
+    <text x="800" y="485"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        人员流失风险高
+    </text>
+
+    <!-- 关键数据 -->
+    <line x1="685" y1="515" x2="1175" y2="515" stroke="#E0E0E0" stroke-width="1" />
+    <text x="690" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50">
+        <tspan x="690" dy="0">• 80% 日均工作 &gt;10 小时，健康堪忧</tspan>
+        <tspan x="690" dy="30">• 70% 成就感低，60% 存在焦虑情绪</tspan>
+        <tspan x="690" dy="30">• 核心骨干离职，3 人计划转岗</tspan>
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        05
+    </text>
+</svg>

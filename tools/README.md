@@ -1,12 +1,124 @@
-# Tools
+# PPT Master 工具集
 
-## flatten_tspan.py — 文本扁平化（去 `<tspan>`）
+本目录包含用于项目管理、预览生成和文件处理的实用工具。
 
-用途：将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取；生成端仍应使用 `<tspan>` 手动换行（禁止 `<foreignObject>`）。
+## 工具列表
 
-用法：
+### 1. project_manager.py — 项目管理工具
+
+项目初始化、验证和管理的一站式工具。
+
+**功能**:
+- 初始化新项目（创建标准目录结构）
+- 验证项目完整性
+- 查看项目信息
+- 生成预览文件
+
+**用法**:
 
 ```bash
+# 初始化新项目
+python3 tools/project_manager.py init <project_name> --format ppt169
+
+# 验证项目结构
+python3 tools/project_manager.py validate <project_path>
+
+# 查看项目信息
+python3 tools/project_manager.py info <project_path>
+
+# 生成预览文件
+python3 tools/project_manager.py preview <project_path>
+```
+
+**支持的画布格式**:
+- `ppt169` - PPT 16:9 (1280×720)
+- `ppt43` - PPT 4:3 (1024×768)
+- `wechat` - 微信公众号头图 (900×383)
+- `xiaohongshu` - 小红书 3:4 (1242×1660)
+- `moments` - 朋友圈/Instagram 1:1 (1080×1080)
+- `story` - Story/竖版 9:16 (1080×1920)
+- `banner` - 横版 Banner 16:9 (1920×1080)
+- `a4` - A4 打印 (1240×1754)
+
+**示例**:
+
+```bash
+# 创建一个新的 PPT 16:9 项目
+python3 tools/project_manager.py init my_presentation --format ppt169
+
+# 验证项目
+python3 tools/project_manager.py validate projects/my_presentation_ppt169_20251116
+
+# 查看项目信息
+python3 tools/project_manager.py info projects/my_presentation_ppt169_20251116
+```
+
+---
+
+### 2. generate_preview.py — 预览文件生成工具
+
+为项目自动生成统一格式的 `preview.html` 预览页面。
+
+**功能**:
+- 自动检测项目信息（标题、日期、画布格式等）
+- 扫描 SVG 文件并生成预览
+- 支持单个项目、批量项目或所有项目
+- 交互模式和命令行模式
+
+**用法**:
+
+```bash
+# 交互模式（推荐新手）
+python3 tools/generate_preview.py
+
+# 为单个项目生成
+python3 tools/generate_preview.py <project_path>
+
+# 为所有项目生成
+python3 tools/generate_preview.py --all [base_dir]
+
+# 批量生成
+python3 tools/generate_preview.py --batch <path1> <path2> <path3>
+```
+
+**示例**:
+
+```bash
+# 为单个项目生成预览
+python3 tools/generate_preview.py examples/gemini_marketing_guide_ppt169_20251110
+
+# 为 examples 目录下所有项目生成预览
+python3 tools/generate_preview.py --all examples
+
+# 批量生成多个项目的预览
+python3 tools/generate_preview.py --batch \
+  examples/project_a_ppt169_20251110 \
+  examples/project_b_wechat_20251111
+```
+
+**特性**:
+- 自动检测项目信息（从目录名、README.md、设计规范等）
+- 智能选择配色方案（根据项目风格和内容）
+- 支持单页视图和网格视图切换
+- 模态框放大查看
+- 键盘导航支持
+- 响应式设计
+
+---
+
+### 3. flatten_tspan.py — 文本扁平化（去 `<tspan>`）
+
+将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取。
+
+**注意**: 生成端仍应使用 `<tspan>` 手动换行（禁止 `<foreignObject>`）。此工具仅用于后处理。
+
+**用法**:
+
+```bash
+# 交互模式
+python3 tools/flatten_tspan.py
+python3 tools/flatten_tspan.py -i
+
 # 扁平化整个输出目录（默认输出到同级 svg_output_flattext）
 python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
 
@@ -17,18 +129,99 @@ python3 tools/flatten_tspan.py examples/<project>/svg_output examples/<project>/
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 
-行为说明：
-- 逐个 `<tspan>` 计算绝对位置（综合 `x`/`y` 与 `dx`/`dy`），合并父/子样式，输出为独立 `<text>`；
-- 复制父 `<text>` 的通用文本属性和 `style`，子级覆盖优先；
-- 保留或合并 `transform`；
-- 输出采用 UTF‑8 编码，无 XML 声明，保持与仓库示例风格一致。
+**行为说明**:
+- 逐个 `<tspan>` 计算绝对位置（综合 `x`/`y` 与 `dx`/`dy`），合并父/子样式，输出为独立 `<text>`
+- 复制父 `<text>` 的通用文本属性和 `style`，子级覆盖优先
+- 保留或合并 `transform`
+- 输出采用 UTF-8 编码，无 XML 声明，保持与仓库示例风格一致
 
-建议校验：
-- 目标目录为 `svg_output_flattext`，不应含 `<tspan>`；
-- 抽检字号、字重、颜色、对齐和坐标是否与原文件一致；
-- 若发现偏差，优先在生成端修正 `<tspan>` 的 `x`/`dy` 或父 `<text>` 的样式后重跑。
+**建议校验**:
+- 目标目录为 `svg_output_flattext`，不应含 `<tspan>`
+- 抽检字号、字重、颜色、对齐和坐标是否与原文件一致
+- 若发现偏差，优先在生成端修正 `<tspan>` 的 `x`/`dy` 或父 `<text>` 的样式后重跑
 
-已知限制：
-- 仅处理 `<text>`/`<tspan>` 结构；其他子元素不做转换；
-- 复杂嵌套或特殊布局请先在生成端简化为规范的逐行 `<tspan>`。
+**已知限制**:
+- 仅处理 `<text>`/`<tspan>` 结构；其他子元素不做转换
+- 复杂嵌套或特殊布局请先在生成端简化为规范的逐行 `<tspan>`
+
+---
+
+## 工作流集成
+
+### 典型工作流程
+
+1. **创建新项目**
+   ```bash
+   python3 tools/project_manager.py init my_project --format ppt169
+   ```
+
+2. **编辑设计规范**
+   编辑生成的 `设计规范与内容大纲.md` 文件
+
+3. **生成 SVG 文件**
+   使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
+
+4. **生成预览**
+   ```bash
+   python3 tools/generate_preview.py projects/my_project_ppt169_20251116
+   ```
+
+5. **验证项目**
+   ```bash
+   python3 tools/project_manager.py validate projects/my_project_ppt169_20251116
+   ```
+
+6. **（可选）扁平化文本**
+   ```bash
+   python3 tools/flatten_tspan.py projects/my_project_ppt169_20251116/svg_output
+   ```
+
+### 批量操作
+
+为所有项目重新生成预览：
+
+```bash
+# examples 目录
+python3 tools/generate_preview.py --all examples
+
+# projects 目录
+python3 tools/generate_preview.py --all projects
+```
+
+## 依赖要求
+
+所有工具均使用 Python 3 标准库，无需额外依赖。
+
+**最低 Python 版本**: Python 3.6+
+
+## 故障排除
+
+### 问题：生成预览时提示"模板文件不存在"
+
+**解决方案**: 确保 `templates/preview_template.html` 文件存在。如果缺失，请从仓库重新获取。
+
+### 问题：项目验证失败
+
+**解决方案**: 
+1. 运行 `python3 tools/project_manager.py validate <path>` 查看详细错误
+2. 根据错误提示修复缺失的文件或目录
+3. 参考 `docs/project_structure.md` 了解标准结构
+
+### 问题：预览页面显示不正常
+
+**解决方案**:
+1. 确保 SVG 文件路径正确（相对于预览文件）
+2. 检查 SVG 文件命名是否符合规范（`slide_XX_name.svg`）
+3. 重新生成预览文件
+
+## 相关文档
+
+- [项目结构规范](../docs/project_structure.md)
+- [工作流教程](../docs/workflow_tutorial.md)
+- [快速参考](../docs/quick_reference.md)
+- [AGENTS 指南](../AGENTS.md)
+
+---
+
+*最后更新: 2025-11-16*
 

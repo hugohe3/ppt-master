@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#C0392B">
+        2024 年：竞争白热化与考核高压并存
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 上半部分：市场竞争环境 -->
+    <text x="60" y="135"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        市场竞争环境：三面夹击
+    </text>
+
+    <!-- 竞争卡片 1 -->
+    <rect x="60" y="160" width="360" height="140" fill="#F8F9FA" rx="8" />
+    <rect x="60" y="160" width="8" height="140" fill="#E67E22" rx="4" />
+    <text x="90" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        本地银行竞争
+    </text>
+    <text x="90" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="17" font-weight="400" fill="#2C3E50">
+        <tspan x="90" dy="0">• 工行、建行沙坪坝支行抢占社区客群</tspan>
+        <tspan x="90" dy="28">• 重庆银行、农商行推出"高校科创贷"</tspan>
+        <tspan x="105" dy="28">精准获客</tspan>
+    </text>
+
+    <!-- 竞争卡片 2 -->
+    <rect x="460" y="160" width="360" height="140" fill="#F8F9FA" rx="8" />
+    <rect x="460" y="160" width="8" height="140" fill="#E67E22" rx="4" />
+    <text x="490" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        互联网金融冲击
+    </text>
+    <text x="490" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="17" font-weight="400" fill="#2C3E50">
+        <tspan x="490" dy="0">• 分流年轻师生客群</tspan>
+        <tspan x="490" dy="28">• 支付与理财线上化</tspan>
+        <tspan x="490" dy="28">• 便捷性优势明显</tspan>
+    </text>
+
+    <!-- 竞争卡片 3 -->
+    <rect x="860" y="160" width="360" height="140" fill="#F8F9FA" rx="8" />
+    <rect x="860" y="160" width="8" height="140" fill="#E67E22" rx="4" />
+    <text x="890" y="195"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        客群需求升级
+    </text>
+    <text x="890" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="17" font-weight="400" fill="#2C3E50">
+        <tspan x="890" dy="0">• 服务便捷化要求提高</tspan>
+        <tspan x="890" dy="28">• 产品个性化需求增强</tspan>
+        <tspan x="890" dy="28">• 体验成为核心竞争力</tspan>
+    </text>
+
+    <!-- 下半部分：总行考核指标 -->
+    <text x="60" y="345"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        总行考核指标：2024 年较 2023 年大幅提升
+    </text>
+
+    <!-- 图表区域背景 -->
+    <rect x="60" y="370" width="1160" height="280" fill="#F8F9FA" rx="8" />
+
+    <!-- Y 轴标签 -->
+    <text x="100" y="410"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        增长幅度
+    </text>
+
+    <!-- Y 轴刻度线 -->
+    <line x1="130" y1="420" x2="1180" y2="420" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="5,5" />
+    <text x="115" y="425"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#95A5A6" text-anchor="end">
+        50%
+    </text>
+
+    <line x1="130" y1="480" x2="1180" y2="480" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="5,5" />
+    <text x="115" y="485"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#95A5A6" text-anchor="end">
+        40%
+    </text>
+
+    <line x1="130" y1="540" x2="1180" y2="540" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="5,5" />
+    <text x="115" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#95A5A6" text-anchor="end">
+        30%
+    </text>
+
+    <line x1="130" y1="600" x2="1180" y2="600" stroke="#E0E0E0" stroke-width="2" />
+    <text x="115" y="605"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#95A5A6" text-anchor="end">
+        0%
+    </text>
+
+    <!-- 柱状图 -->
+    <!-- 柱 1: 整体指标 +35% -->
+    <rect x="220" y="489" width="120" height="111" fill="#E67E22" rx="4" />
+    <text x="280" y="470"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#E67E22" text-anchor="middle">
+        +35%
+    </text>
+    <text x="280" y="625"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        整体指标
+    </text>
+
+    <!-- 柱 2: 科研经营贷 +40% -->
+    <rect x="430" y="468" width="120" height="132" fill="#C0392B" rx="4" />
+    <text x="490" y="448"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#C0392B" text-anchor="middle">
+        +40%
+    </text>
+    <text x="490" y="625"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        科研经营贷
+    </text>
+
+    <!-- 柱 3: 师生理财 +30% -->
+    <rect x="640" y="510" width="120" height="90" fill="#E67E22" rx="4" />
+    <text x="700" y="492"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#E67E22" text-anchor="middle">
+        +30%
+    </text>
+    <text x="700" y="625"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        师生理财
+    </text>
+
+    <!-- 柱 4: 信用卡 +50% -->
+    <rect x="850" y="420" width="120" height="180" fill="#C0392B" rx="4" />
+    <text x="910" y="400"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#C0392B" text-anchor="middle">
+        +50%
+    </text>
+    <text x="910" y="625"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        <tspan x="910" dy="0">定制</tspan>
+        <tspan x="910" dy="22">信用卡</tspan>
+    </text>
+
+    <!-- 结论标注 -->
+    <rect x="1020" y="450" width="140" height="120" fill="#C0392B" opacity="0.1" rx="6" />
+    <text x="1090" y="495"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#C0392B" text-anchor="middle">
+        <tspan x="1090" dy="0">任务压力</tspan>
+        <tspan x="1090" dy="30">陡增</tspan>
+    </text>
+    <text x="1090" y="550"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D" text-anchor="middle">
+        远超开发能力
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        04
+    </text>
+</svg>

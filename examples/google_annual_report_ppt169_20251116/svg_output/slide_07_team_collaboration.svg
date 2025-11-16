@@ -1,0 +1,235 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Gradient top accent -->
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#EA4335;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Enhanced shadows -->
+        <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
+            <feOffset dx="0" dy="3" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- Glow for connection lines -->
+        <filter id="lineGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    <!-- Page Title -->
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="46" font-weight="700" fill="#1A237E">
+        Team Collaboration &amp; Impact
+    </text>
+
+    <!-- Title underline -->
+    <rect x="60" y="100" width="150" height="4" rx="2" fill="#EA4335" />
+
+    <!-- Top Section: Collaboration Network with modern design -->
+    <g transform="translate(60, 140)">
+        <rect width="1160" height="220" rx="16" fill="#F8F9FA" filter="url(#cardShadow)" />
+
+        <text x="30" y="40"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="24" font-weight="600" fill="#1A237E">
+            Cross-Team Collaboration Network
+        </text>
+
+        <text x="30" y="70"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            Coordinated with 4 teams across multiple projects
+        </text>
+
+        <!-- Central hub -->
+        <circle cx="580" cy="140" r="40" fill="#4285F4" />
+        <text x="580" y="138"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            Infrastructure
+        </text>
+        <text x="580" y="155"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="12" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+            Team
+        </text>
+
+        <!-- Team connections with glow effect -->
+        <!-- Storage Team -->
+        <line x1="540" y1="140" x2="240" y2="110" stroke="#34A853" stroke-width="3" opacity="0.6"
+            filter="url(#lineGlow)" />
+        <circle cx="240" cy="110" r="32" fill="#34A853" />
+        <text x="240" y="115"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            Storage
+        </text>
+        <text x="240" y="160"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#5F6368" text-anchor="middle">
+            6 Projects
+        </text>
+
+        <!-- Network Team -->
+        <line x1="540" y1="140" x2="380" y2="140" stroke="#FBBC04" stroke-width="3" opacity="0.6"
+            filter="url(#lineGlow)" />
+        <circle cx="380" cy="140" r="32" fill="#FBBC04" />
+        <text x="380" y="145"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            Network
+        </text>
+        <text x="380" y="190"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#5F6368" text-anchor="middle">
+            4 Projects
+        </text>
+
+        <!-- SRE Team -->
+        <line x1="620" y1="140" x2="780" y2="140" stroke="#EA4335" stroke-width="3" opacity="0.6"
+            filter="url(#lineGlow)" />
+        <circle cx="780" cy="140" r="32" fill="#EA4335" />
+        <text x="780" y="145"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            SRE
+        </text>
+        <text x="780" y="190"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#5F6368" text-anchor="middle">
+            5 Projects
+        </text>
+
+        <!-- ML Team -->
+        <line x1="620" y1="140" x2="920" y2="110" stroke="#34A853" stroke-width="3" opacity="0.6"
+            filter="url(#lineGlow)" />
+        <circle cx="920" cy="110" r="32" fill="#34A853" />
+        <text x="920" y="115"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            ML Ops
+        </text>
+        <text x="920" y="160"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#5F6368" text-anchor="middle">
+            3 Projects
+        </text>
+    </g>
+
+    <!-- Bottom Row: Three Impact Cards -->
+    <!-- Card 1: Mentorship -->
+    <g transform="translate(60, 400)" filter="url(#cardShadow)">
+        <rect width="360" height="230" rx="16" fill="#FFFFFF" stroke="#4285F4" stroke-width="3" />
+
+        <text x="30" y="40"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E">
+            Mentorship Program
+        </text>
+
+        <circle cx="50" cy="95" r="8" fill="#4285F4" />
+        <text x="70" y="100"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            5 engineers mentored
+        </text>
+
+        <circle cx="50" cy="135" r="8" fill="#4285F4" />
+        <text x="70" y="140"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            3 promoted to next level
+        </text>
+
+        <circle cx="50" cy="175" r="8" fill="#4285F4" />
+        <text x="70" y="180"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            100+ mentoring hours
+        </text>
+    </g>
+
+    <!-- Card 2: Knowledge Sharing -->
+    <g transform="translate(460, 400)" filter="url(#cardShadow)">
+        <rect width="360" height="230" rx="16" fill="#FFFFFF" stroke="#34A853" stroke-width="3" />
+
+        <text x="30" y="40"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E">
+            Knowledge Sharing
+        </text>
+
+        <text x="30" y="100"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="48" font-weight="700" fill="#34A853">
+            12
+        </text>
+        <text x="30" y="130"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            Tech talks delivered
+        </text>
+
+        <text x="30" y="170"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="48" font-weight="700" fill="#34A853">
+            8
+        </text>
+        <text x="30" y="200"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="400" fill="#5F6368">
+            Documentation guides
+        </text>
+    </g>
+
+    <!-- Card 3: Community Impact -->
+    <g transform="translate(860, 400)" filter="url(#cardShadow)">
+        <rect width="360" height="230" rx="16" fill="#FFFFFF" stroke="#FBBC04" stroke-width="3" />
+
+        <text x="30" y="40"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="22" font-weight="600" fill="#1A237E">
+            Community Contributions
+        </text>
+
+        <circle cx="50" cy="95" r="8" fill="#FBBC04" />
+        <text x="70" y="100"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            3 open-source projects
+        </text>
+
+        <circle cx="50" cy="135" r="8" fill="#FBBC04" />
+        <text x="70" y="140"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            45 code reviews
+        </text>
+
+        <circle cx="50" cy="175" r="8" fill="#FBBC04" />
+        <text x="70" y="180"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#5F6368">
+            Interview panel member
+        </text>
+    </g>
+</svg>

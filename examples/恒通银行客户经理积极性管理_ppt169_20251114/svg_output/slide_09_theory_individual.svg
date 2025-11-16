@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+        <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <polygon points="0,0 6,3 0,6" fill="#C0392B" />
+        </marker>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 标题 -->
+    <text x="60" y="68"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="700" fill="#27AE60">
+        个体层面：需求满足缺失与期望价值降低
+    </text>
+    <line x1="60" y1="88" x2="1220" y2="88" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- ========== 左侧：马斯洛需求层次（表格式） ========== -->
+    <text x="60" y="128"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#005587">
+        马斯洛需求层次缺失分析
+    </text>
+
+    <!-- 需求层次卡片 - 从上到下 -->
+    <!-- 自我实现需求 -->
+    <rect x="60" y="155" width="560" height="48" fill="#C0392B" opacity="0.1" rx="6" />
+    <rect x="60" y="155" width="6" height="48" fill="#C0392B" rx="3" />
+    <text x="80" y="183"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="700" fill="#C0392B">
+        自我实现需求 ✗
+    </text>
+    <text x="250" y="183"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#2C3E50">
+        难以实现职业价值，成长受限晋升无望
+    </text>
+
+    <!-- 尊重需求 -->
+    <rect x="60" y="210" width="560" height="48" fill="#E74C3C" opacity="0.1" rx="6" />
+    <rect x="60" y="210" width="6" height="48" fill="#E74C3C" rx="3" />
+    <text x="80" y="238"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="700" fill="#E74C3C">
+        尊重需求 ✗
+    </text>
+    <text x="250" y="238"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#2C3E50">
+        缺乏认可公开批评，绩效压力尊严受损
+    </text>
+
+    <!-- 社交需求 -->
+    <rect x="60" y="265" width="560" height="48" fill="#E67E22" opacity="0.1" rx="6" />
+    <rect x="60" y="265" width="6" height="48" fill="#E67E22" rx="3" />
+    <text x="80" y="293"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="700" fill="#E67E22">
+        社交需求 ✗
+    </text>
+    <text x="250" y="293"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#2C3E50">
+        团队氛围差缺乏信任，内部竞争关系紧张
+    </text>
+
+    <!-- 安全需求 -->
+    <rect x="60" y="320" width="560" height="48" fill="#D35400" opacity="0.1" rx="6" />
+    <rect x="60" y="320" width="6" height="48" fill="#D35400" rx="3" />
+    <text x="80" y="348"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="700" fill="#D35400">
+        安全需求 ✗
+    </text>
+    <text x="250" y="348"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#2C3E50">
+        末位淘汰制度威胁，职业不稳焦虑增加
+    </text>
+
+    <!-- 生理需求 -->
+    <rect x="60" y="375" width="560" height="48" fill="#922B21" opacity="0.1" rx="6" />
+    <rect x="60" y="375" width="6" height="48" fill="#922B21" rx="3" />
+    <text x="80" y="403"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="700" fill="#922B21">
+        生理需求 ✗
+    </text>
+    <text x="250" y="403"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="400" fill="#2C3E50">
+        高强度工作压力，长期疲劳健康下滑
+    </text>
+
+    <!-- ========== 右侧：期望理论（流程卡片） ========== -->
+    <text x="660" y="128"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#005587">
+        期望理论：激励链路断裂
+    </text>
+
+    <!-- 流程卡片 -->
+    <!-- 期望值低 -->
+    <rect x="660" y="155" width="560" height="80" fill="#F8F9FA" rx="6" />
+    <rect x="660" y="155" width="6" height="80" fill="#C0392B" rx="3" />
+    <text x="685" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#C0392B">
+        1. 期望值低
+    </text>
+    <text x="685" y="205"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#2C3E50">
+        <tspan x="685" dy="0">指标设定过高 → 员工认为即使努力也难以完成任务</tspan>
+        <tspan x="685" dy="20">→ 放弃努力，工作动力下降</tspan>
+    </text>
+
+    <!-- 箭头 -->
+    <path d="M 940 235 L 940 248" stroke="#C0392B" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+    <!-- 工具性弱 -->
+    <rect x="660" y="253" width="560" height="80" fill="#F8F9FA" rx="6" />
+    <rect x="660" y="253" width="6" height="80" fill="#E67E22" rx="3" />
+    <text x="685" y="278"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#E67E22">
+        2. 工具性弱
+    </text>
+    <text x="685" y="303"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#2C3E50">
+        <tspan x="685" dy="0">奖励机制模糊不清 → 平均主义倾向明显</tspan>
+        <tspan x="685" dy="20">→ 干好干坏差别不大，缺乏激励作用</tspan>
+    </text>
+
+    <!-- 箭头 -->
+    <path d="M 940 333 L 940 346" stroke="#E67E22" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+
+    <!-- 效价不足 -->
+    <rect x="660" y="351" width="560" height="72" fill="#F8F9FA" rx="6" />
+    <rect x="660" y="351" width="6" height="72" fill="#C0392B" rx="3" />
+    <text x="685" y="376"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#C0392B">
+        3. 效价不足
+    </text>
+    <text x="685" y="401"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#2C3E50">
+        <tspan x="685" dy="0">回报形式单一 → 无法满足员工多元需求（培训、晋升等）</tspan>
+    </text>
+
+    <!-- ========== 结论区域 ========== -->
+    <rect x="60" y="455" width="1160" height="175" fill="#F0F8F5" rx="8" />
+    <rect x="60" y="455" width="8" height="175" fill="#27AE60" rx="4" />
+
+    <text x="90" y="488"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#27AE60">
+        理论诊断结论
+    </text>
+
+    <text x="90" y="524"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="17" font-weight="400" fill="#2C3E50" line-height="1.8">
+        <tspan x="90" dy="0">• 多维度需求未得到满足：从最基本的生理安全到高层次的自我实现，客户经理各层次需求均存在显著缺口</tspan>
+        <tspan x="90" dy="32">• 激励链路完全断裂：期望值低、工具性弱、效价不足三大因素共同作用，形成恶性循环</tspan>
+        <tspan x="90" dy="32">• 最终结果：营销动机急剧弱化，工作积极性严重不足，绩效持续下滑</tspan>
+    </text>
+
+    <!-- 页脚 -->
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        09
+    </text>
+</svg>

@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#005587">
+        恒通银行重庆大学支行：高校金融服务的核心网点
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 左侧内容区 -->
+    <g id="leftContent">
+        <!-- 组织定位 -->
+        <rect x="60" y="130" width="550" height="200" fill="#F8F9FA" rx="8" />
+        <text x="90" y="165"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#005587">
+            组织定位
+        </text>
+        <line x1="90" y1="175" x2="580" y2="175" stroke="#E0E0E0" stroke-width="1" />
+
+        <text x="90" y="210"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="400" fill="#2C3E50">
+            <tspan x="90" dy="0">• 全国性股份制商业银行</tspan>
+            <tspan x="90" dy="35">• 重庆分行核心网点</tspan>
+            <tspan x="90" dy="35">• 地理位置：沙坪坝区重庆大学主校区东门</tspan>
+            <tspan x="90" dy="35">• 服务辐射：高校师生、科研人员及周边科创企业</tspan>
+        </text>
+
+        <!-- 业务重点 -->
+        <rect x="60" y="360" width="550" height="200" fill="#F8F9FA" rx="8" />
+        <text x="90" y="395"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#005587">
+            业务重点
+        </text>
+        <line x1="90" y1="405" x2="580" y2="405" stroke="#E0E0E0" stroke-width="1" />
+
+        <g id="businessIcons">
+            <!-- 第一行 -->
+            <circle cx="140" cy="455" r="30" fill="#005587" opacity="0.1" />
+            <text x="140" y="465"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#005587" text-anchor="middle">
+                消费
+            </text>
+            <text x="195" y="465"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#2C3E50">
+                消费贷款
+            </text>
+
+            <circle cx="360" cy="455" r="30" fill="#005587" opacity="0.1" />
+            <text x="360" y="465"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#005587" text-anchor="middle">
+                经营
+            </text>
+            <text x="415" y="465"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#2C3E50">
+                科研经营贷
+            </text>
+
+            <!-- 第二行 -->
+            <circle cx="140" cy="525" r="30" fill="#005587" opacity="0.1" />
+            <text x="140" y="535"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#005587" text-anchor="middle">
+                理财
+            </text>
+            <text x="195" y="535"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#2C3E50">
+                理财产品
+            </text>
+
+            <circle cx="360" cy="525" r="30" fill="#005587" opacity="0.1" />
+            <text x="360" y="535"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#005587" text-anchor="middle">
+                信用
+            </text>
+            <text x="415" y="535"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="400" fill="#2C3E50">
+                信用卡营销
+            </text>
+        </g>
+    </g>
+
+    <!-- 右侧 KPI 卡片 -->
+    <g id="kpiCards">
+        <!-- KPI 1: 员工总数 -->
+        <rect x="670" y="130" width="260" height="120" fill="#005587" rx="8" />
+        <text x="800" y="175"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="48" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            45
+        </text>
+        <text x="800" y="210"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0" text-anchor="middle">
+            员工总数
+        </text>
+        <text x="800" y="235"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="300" fill="#BDC3C7" text-anchor="middle">
+            Total Staff
+        </text>
+
+        <!-- KPI 2: 客户经理 -->
+        <rect x="960" y="130" width="260" height="120" fill="#27AE60" rx="8" />
+        <text x="1090" y="175"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="48" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            12
+        </text>
+        <text x="1090" y="210"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0" text-anchor="middle">
+            前台客户经理
+        </text>
+        <text x="1090" y="235"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="300" fill="#BDC3C7" text-anchor="middle">
+            Account Managers
+        </text>
+
+        <!-- KPI 3: 服务客群 -->
+        <rect x="670" y="280" width="260" height="120" fill="#E67E22" rx="8" />
+        <text x="800" y="325"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            高校师生
+        </text>
+        <text x="800" y="355"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0" text-anchor="middle">
+            科研人员
+        </text>
+        <text x="800" y="385"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="300" fill="#BDC3C7" text-anchor="middle">
+            Target Customers
+        </text>
+
+        <!-- KPI 4: 特色定位 -->
+        <rect x="960" y="280" width="260" height="120" fill="#005587" rx="8" />
+        <text x="1090" y="325"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            高校金融
+        </text>
+        <text x="1090" y="355"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#E0E0E0" text-anchor="middle">
+            服务专家
+        </text>
+        <text x="1090" y="385"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="300" fill="#BDC3C7" text-anchor="middle">
+            Expertise
+        </text>
+    </g>
+
+    <!-- 团队结构说明 -->
+    <rect x="670" y="430" width="550" height="130" fill="#F8F9FA" rx="8" />
+    <text x="700" y="465"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#005587">
+        团队结构与职责
+    </text>
+    <text x="700" y="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="400" fill="#2C3E50">
+        <tspan x="700" dy="0">前台客户经理团队是零售业务核心，重点承担：</tspan>
+        <tspan x="700" dy="30">高校客群消费贷、科研经营贷、理财产品及信用卡营销与维护</tspan>
+    </text>
+
+    <!-- 底部标注 -->
+    <rect x="60" y="590" width="1160" height="60" fill="#005587" opacity="0.05" rx="6" />
+    <text x="640" y="625"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#005587" text-anchor="middle">
+        依托高校资源形成鲜明客群特色，打造高校金融服务标杆网点
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <!-- 页码 -->
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        03
+    </text>
+</svg>

@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect x="0" y="0" width="1280" height="3" fill="url(#accentGradient)" />
+
+    <text x="60" y="75"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#0076A8">
+        团队与组织层面：凝聚力缺失与机制缺陷
+    </text>
+    <line x1="60" y1="95" x2="1220" y2="95" stroke="#E0E0E0" stroke-width="2" />
+
+    <!-- 左侧：团队层面 -->
+    <rect x="60" y="130" width="575" height="510" fill="#F8F9FA" rx="8" />
+    <rect x="60" y="130" width="8" height="510" fill="#0076A8" rx="4" />
+
+    <text x="90" y="170"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#0076A8">
+        团队层面分析
+    </text>
+
+    <!-- 凝聚力缺失 -->
+    <text x="90" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        凝聚力缺失三因素
+    </text>
+
+    <rect x="90" y="230" width="500" height="95" fill="#FFFFFF" rx="6" />
+    <circle cx="120" cy="260" r="8" fill="#C0392B" />
+    <text x="140" y="265"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#2C3E50">
+        目标分歧
+    </text>
+    <text x="140" y="288"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        个人业绩优先，忽视团队协作
+    </text>
+    <text x="140" y="310"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        未形成"团队共同开发目标"
+    </text>
+
+    <rect x="90" y="340" width="500" height="95" fill="#FFFFFF" rx="6" />
+    <circle cx="120" cy="370" r="8" fill="#E67E22" />
+    <text x="140" y="375"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#2C3E50">
+        信任危机
+    </text>
+    <text x="140" y="398"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        考核过于严苛，存在"偏听偏信"
+    </text>
+    <text x="140" y="420"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        优质客群资源争夺引发矛盾
+    </text>
+
+    <rect x="90" y="450" width="500" height="75" fill="#FFFFFF" rx="6" />
+    <circle cx="120" cy="475" r="8" fill="#C0392B" />
+    <text x="140" y="480"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#2C3E50">
+        沟通失效
+    </text>
+    <text x="140" y="503"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        晨会沦为"任务会"，缺乏实质内容
+    </text>
+
+    <!-- 角色冲突 -->
+    <text x="90" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        角色冲突加剧心理压力
+    </text>
+
+    <rect x="90" y="575" width="500" height="50" fill="#E67E22" opacity="0.15" rx="6" />
+    <text x="340" y="605"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        营销员 ⚔ 服务员 ⚔ 风控员
+    </text>
+
+    <!-- 右侧：组织层面 -->
+    <rect x="665" y="130" width="555" height="510" fill="#F8F9FA" rx="8" />
+    <rect x="665" y="130" width="8" height="510" fill="#005587" rx="4" />
+
+    <text x="695" y="170"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#005587">
+        组织层面分析
+    </text>
+
+    <!-- 双因素理论 -->
+    <text x="695" y="215"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        双因素理论诊断
+    </text>
+
+    <rect x="695" y="230" width="480" height="155" fill="#FFFFFF" rx="6" />
+    <text x="715" y="260"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="19" font-weight="600" fill="#C0392B">
+        保健因素缺失
+    </text>
+    <text x="715" y="288"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="715" dy="0">• 薪酬体系不合理，基础工资低</tspan>
+        <tspan x="715" dy="24">• 工作环境差，缺乏营销工具支持</tspan>
+        <tspan x="715" dy="24">• 管理制度僵化，"末位淘汰"过于严苛</tspan>
+    </text>
+
+    <rect x="695" y="400" width="480" height="155" fill="#FFFFFF" rx="6" />
+    <text x="715" y="430"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="19" font-weight="600" fill="#E67E22">
+        激励因素不足
+    </text>
+    <text x="715" y="458"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="400" fill="#7F8C8D">
+        <tspan x="715" dy="0">• 缺乏认可，仅关注"业绩结果"</tspan>
+        <tspan x="715" dy="24">• 晋升通道狭窄，存在"论资排辈"</tspan>
+        <tspan x="715" dy="24">• 工作缺乏挑战性，无法激发热情</tspan>
+    </text>
+
+    <!-- 领导力与文化 -->
+    <text x="695" y="585"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#2C3E50">
+        领导力与文化问题
+    </text>
+
+    <rect x="695" y="595" width="230" height="35" fill="#C0392B" opacity="0.1" rx="6" />
+    <text x="810" y="620"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        "权威式"管理粗暴
+    </text>
+
+    <rect x="945" y="595" width="230" height="35" fill="#C0392B" opacity="0.1" rx="6" />
+    <text x="1060" y="620"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="500" fill="#2C3E50" text-anchor="middle">
+        "业绩至上"文化偏差
+    </text>
+
+    <rect x="0" y="717" width="1280" height="3" fill="url(#accentGradient)" />
+    <text x="1220" y="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="300" fill="#7F8C8D" text-anchor="end">
+        10
+    </text>
+</svg>
