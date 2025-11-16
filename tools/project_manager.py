@@ -19,12 +19,32 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
+# 导入公共工具模块
+try:
+    from project_utils import (
+        CANVAS_FORMATS, 
+        get_project_info, 
+        validate_project_structure,
+        validate_svg_viewbox
+    )
+except ImportError:
+    # 如果直接运行，尝试从当前目录导入
+    try:
+        import project_utils
+        CANVAS_FORMATS = project_utils.CANVAS_FORMATS
+        get_project_info = project_utils.get_project_info
+        validate_project_structure = project_utils.validate_project_structure
+        validate_svg_viewbox = project_utils.validate_svg_viewbox
+    except ImportError:
+        print("警告: 无法导入 project_utils 模块，将使用内置定义")
+        CANVAS_FORMATS = None
+
 
 class ProjectManager:
     """项目管理器"""
     
-    # 支持的画布格式
-    CANVAS_FORMATS = {
+    # 使用公共模块的画布格式定义（如果可用）
+    CANVAS_FORMATS = CANVAS_FORMATS if CANVAS_FORMATS else {
         'ppt169': {
             'name': 'PPT 16:9',
             'dimensions': '1280×720',

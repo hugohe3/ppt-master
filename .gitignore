@@ -163,4 +163,8 @@ yarn.lock
 TODO.md
 PERSONAL_NOTES.md
 
-projects/
+# Projects directory - ignore temporary files but keep project structure
+projects/*/logs/
+projects/*/temp/
+projects/*/.notes/
+projects/*/drafts/

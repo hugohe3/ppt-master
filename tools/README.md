@@ -4,7 +4,30 @@
 
 ## 工具列表
 
-### 1. project_manager.py — 项目管理工具
+### 1. project_utils.py — 项目工具公共模块
+
+提供项目信息解析、验证等公共功能，供其他工具复用。
+
+**功能**:
+- 画布格式定义和管理
+- 项目信息解析（从目录名提取格式、日期等）
+- 项目结构验证
+- SVG viewBox 验证
+- 项目查找和统计
+
+**用法**:
+
+```bash
+# 作为模块被其他工具导入
+from project_utils import get_project_info, validate_project_structure
+
+# 也可以直接运行测试
+python3 tools/project_utils.py <project_path>
+```
+
+---
+
+### 2. project_manager.py — 项目管理工具
 
 项目初始化、验证和管理的一站式工具。
 
@@ -55,7 +78,7 @@ python3 tools/project_manager.py info projects/my_presentation_ppt169_20251116
 
 ---
 
-### 2. generate_preview.py — 预览文件生成工具
+### 3. generate_preview.py — 预览文件生成工具
 
 为项目自动生成统一格式的 `preview.html` 预览页面。
 
@@ -106,7 +129,7 @@ python3 tools/generate_preview.py --batch \
 
 ---
 
-### 3. flatten_tspan.py — 文本扁平化（去 `<tspan>`）
+### 4. flatten_tspan.py — 文本扁平化（去 `<tspan>`）
 
 将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取。
 
@@ -146,6 +169,156 @@ python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 
 ---
 
+### 5. batch_validate.py — 批量项目验证工具
+
+一次性检查多个项目的结构完整性和规范性。
+
+**功能**:
+- 批量验证项目结构
+- 检查必需文件（README、设计规范、SVG 等）
+- 验证 SVG viewBox 设置
+- 生成验证报告
+- 提供修复建议
+
+**用法**:
+
+```bash
+# 验证单个目录
+python3 tools/batch_validate.py examples
+
+# 验证多个目录
+python3 tools/batch_validate.py examples projects
+
+# 验证所有
+python3 tools/batch_validate.py --all
+
+# 导出报告
+python3 tools/batch_validate.py examples --export
+```
+
+**示例输出**:
+
+```
+✅ google_annual_report_ppt169_20251116
+   路径: examples/google_annual_report_ppt169_20251116
+   格式: PPT 16:9 | SVG: 10 个 | 日期: 2025-11-16
+
+⚠️  某项目名称
+   路径: examples/某项目名称
+   格式: PPT 16:9 | SVG: 8 个 | 日期: 2025-10-15
+   ⚠️  警告 (2):
+      - 缺少 preview.html 预览文件
+      - SVG 文件命名不规范: old_name.svg
+```
+
+---
+
+### 6. generate_examples_index.py — Examples 索引生成工具
+
+自动扫描 examples 目录并生成 README.md 索引文件。
+
+**功能**:
+- 自动发现所有示例项目
+- 按格式分类整理
+- 生成统计信息
+- 创建预览链接
+- 更新使用说明
+
+**用法**:
+
+```bash
+# 生成 examples/README.md
+python3 tools/generate_examples_index.py
+
+# 指定目录
+python3 tools/generate_examples_index.py examples
+```
+
+**特性**:
+- 自动检测项目信息（名称、格式、日期、SVG 数量）
+- 按画布格式分组
+- 显示最近更新的项目
+- 包含使用说明和贡献指南
+
+---
+
+### 7. error_helper.py — 错误消息助手
+
+提供友好的错误消息和具体的修复建议。
+
+**功能**:
+- 标准化错误类型定义
+- 提供具体的解决方案
+- 支持上下文定制
+- 格式化输出
+
+**用法**:
+
+```bash
+# 查看所有错误类型
+python3 tools/error_helper.py
+
+# 查看特定错误的解决方案
+python3 tools/error_helper.py missing_readme
+
+# 带上下文
+python3 tools/error_helper.py missing_readme project_path=my_project
+```
+
+**支持的错误类型**:
+- `missing_readme` - 缺少 README.md
+- `missing_spec` - 缺少设计规范
+- `missing_svg_output` - 缺少 svg_output 目录
+- `viewbox_mismatch` - viewBox 不匹配
+- `foreignobject_detected` - 检测到禁用元素
+- 等等...
+
+---
+
+### 8. svg_quality_checker.py — SVG 质量检查工具
+
+检查 SVG 文件是否符合项目技术规范。
+
+**功能**:
+- 验证 viewBox 属性
+- 检测禁用元素（foreignObject）
+- 检查字体使用
+- 验证 width/height 与 viewBox 一致性
+- 检查文本换行方式
+- 分析文件大小
+
+**用法**:
+
+```bash
+# 检查单个文件
+python3 tools/svg_quality_checker.py examples/project/svg_output/slide_01.svg
+
+# 检查整个目录
+python3 tools/svg_quality_checker.py examples/project/svg_output
+
+# 检查项目（自动查找 svg_output）
+python3 tools/svg_quality_checker.py examples/project
+
+# 指定期望格式
+python3 tools/svg_quality_checker.py examples/project --format ppt169
+
+# 检查所有项目
+python3 tools/svg_quality_checker.py --all examples
+
+# 导出报告
+python3 tools/svg_quality_checker.py examples/project --export
+```
+
+**检查项目**:
+- ✅ viewBox 属性存在且格式正确
+- ✅ 无 `<foreignObject>` 元素
+- ✅ 使用系统 UI 字体栈
+- ✅ width/height 与 viewBox 一致
+- ✅ 文本使用 `<tspan>` 换行
+- ✅ 文件大小合理（< 500KB）
+
+---
+
 ## 工作流集成
 
 ### 典型工作流程
@@ -161,24 +334,35 @@ python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 3. **生成 SVG 文件**
    使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
 
-4. **生成预览**
+4. **质量检查**
+   ```bash
+   # 检查 SVG 质量
+   python3 tools/svg_quality_checker.py projects/my_project_ppt169_20251116
+   ```
+
+5. **生成预览**
    ```bash
    python3 tools/generate_preview.py projects/my_project_ppt169_20251116
    ```
 
-5. **验证项目**
+6. **验证项目**
    ```bash
    python3 tools/project_manager.py validate projects/my_project_ppt169_20251116
    ```
 
-6. **（可选）扁平化文本**
+7. **（可选）扁平化文本**
    ```bash
    python3 tools/flatten_tspan.py projects/my_project_ppt169_20251116/svg_output
    ```
 
+8. **更新索引**（如果是 examples 目录）
+   ```bash
+   python3 tools/generate_examples_index.py
+   ```
+
 ### 批量操作
 
-为所有项目重新生成预览：
+**批量生成预览**:
 
 ```bash
 # examples 目录
@@ -186,6 +370,26 @@ python3 tools/generate_preview.py --all examples
 
 # projects 目录
 python3 tools/generate_preview.py --all projects
+```
+
+**批量验证项目**:
+
+```bash
+# 验证所有示例项目
+python3 tools/batch_validate.py examples
+
+# 验证并导出报告
+python3 tools/batch_validate.py examples --export
+```
+
+**批量检查 SVG 质量**:
+
+```bash
+# 检查所有示例项目的 SVG
+python3 tools/svg_quality_checker.py --all examples
+
+# 导出质量报告
+python3 tools/svg_quality_checker.py --all examples --export
 ```
 
 ## 依赖要求
