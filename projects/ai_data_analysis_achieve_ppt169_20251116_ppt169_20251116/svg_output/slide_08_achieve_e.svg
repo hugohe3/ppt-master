@@ -1,0 +1,71 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#2563EB">
+    E - Enable Great Ideas to Scale
+  </text>
+  
+  <text x="60" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="400" fill="#64748B">
+    让好想法快速扩展 - AI 实现大规模个性化
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="145" x2="1220" y2="145" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 核心概念卡片 -->
+  <rect x="60" y="180" width="1160" height="120" rx="12" fill="#F0FDF4"/>
+  <text x="100" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#1E293B">
+    核心价值
+  </text>
+  <text x="100" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#166534">
+    <tspan x="100" dy="0">过去需要大量人力的个性化任务，现在可以通过 AI 自动完成。</tspan>
+    <tspan x="100" dy="30">让优质创意能够快速扩展到成百上千的个体，同时保持个性化质量。</tspan>
+  </text>
+  
+  <!-- 应用案例 -->
+  <text x="60" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#1E293B">
+    🚀 典型应用案例：Prompt 工程工作坊
+  </text>
+  
+  <!-- 场景描述 -->
+  <rect x="60" y="390" width="1160" height="80" rx="12" fill="#DBEAFE"/>
+  <text x="100" y="425" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1E40AF">
+    场景：为 200 名参加者生成个性化的 Prompt 技巧速查表
+  </text>
+  <text x="100" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#1E40AF">
+    每位参加者来自不同行业（金融、医疗、教育、零售...），需要针对其领域定制内容
+  </text>
+  
+  <!-- 对比卡片 -->
+  <g>
+    <!-- 传统方式 -->
+    <rect x="60" y="500" width="560" height="140" rx="12" fill="#FEF2F2" stroke="#DC2626" stroke-width="2"/>
+    <text x="90" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#DC2626">
+      ❌ 传统人工方式
+    </text>
+    <text x="90" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#7F1D1D">
+      <tspan x="90" dy="0">• 需要 10+ 人工作数天</tspan>
+      <tspan x="90" dy="26">• 质量难以保证一致性</tspan>
+      <tspan x="90" dy="26">• 成本高昂，几乎不可行</tspan>
+    </text>
+    
+    <!-- AI 方式 -->
+    <rect x="660" y="500" width="560" height="140" rx="12" fill="#F0FDF4" stroke="#10B981" stroke-width="2"/>
+    <text x="690" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#10B981">
+      ✅ AI 自动化方式
+    </text>
+    <text x="690" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#166534">
+      <tspan x="690" dy="0">• 上传参加者数据 + 通用模板</tspan>
+      <tspan x="690" dy="26">• AI 分析每人领域，生成定制内容</tspan>
+      <tspan x="690" dy="26">• 数小时内完成，质量稳定</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" fill="#94A3B8" text-anchor="end">
+    8
+  </text>
+</svg>
+

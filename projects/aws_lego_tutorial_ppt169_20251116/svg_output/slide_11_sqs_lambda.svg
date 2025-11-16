@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#27AE60" />
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    异步处理：SQS &amp; Lambda 🛒⚡
+  </text>
+  
+  <!-- 旧方式（同步，慢） -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="140" width="1160" height="220" rx="12" fill="#FFFFFF" stroke="#E74C3C" stroke-width="3"/>
+    
+    <text x="90" y="180" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#E74C3C">
+      ❌ 旧方式：同步处理（慢）
+    </text>
+    
+    <!-- 流程图 -->
+    <g transform="translate(120, 220)">
+      <!-- 用户结账 -->
+      <rect x="0" y="0" width="140" height="80" rx="8" fill="#4A90E2"/>
+      <text x="70" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        🛒
+      </text>
+      <text x="70" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        用户结账
+      </text>
+      
+      <!-- 箭头 -->
+      <path d="M 150 40 L 190 40" stroke="#E74C3C" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+      
+      <!-- 等待处理 -->
+      <rect x="200" y="0" width="140" height="80" rx="8" fill="#E67E22"/>
+      <text x="270" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        ⏳
+      </text>
+      <text x="270" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        <tspan x="270">确认库存</tspan>
+        <tspan x="270" dy="15">写数据库</tspan>
+        <tspan x="270" dy="15">发邮件...</tspan>
+      </text>
+      
+      <!-- 箭头 -->
+      <path d="M 350 40 L 390 40" stroke="#E74C3C" stroke-width="3" fill="none" marker-end="url(#arrowRed)"/>
+      
+      <!-- 最终确认 -->
+      <rect x="400" y="0" width="140" height="80" rx="8" fill="#E74C3C"/>
+      <text x="470" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        😫
+      </text>
+      <text x="470" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        用户等待...
+      </text>
+      
+      <!-- 时间标注 -->
+      <text x="600" y="45" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            font-weight="bold" 
+            fill="#E74C3C">
+        耗时 5-10 秒 ⏱️
+      </text>
+    </g>
+    
+    <text x="90" y="340" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666">
+      问题：所有任务必须等待完成，用户体验差，容易超时失败
+    </text>
+  </g>
+  
+  <!-- 新方式（异步，快） -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="390" width="1160" height="270" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <text x="90" y="430" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#27AE60">
+      ✅ 新方式：异步处理（快）
+    </text>
+    
+    <!-- 流程图 -->
+    <g transform="translate(120, 470)">
+      <!-- 用户结账 -->
+      <rect x="0" y="0" width="140" height="80" rx="8" fill="#4A90E2"/>
+      <text x="70" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        🛒
+      </text>
+      <text x="70" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        用户结账
+      </text>
+      
+      <!-- 箭头 -->
+      <path d="M 150 40 L 190 40" stroke="#27AE60" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+      
+      <!-- SQS 队列 -->
+      <rect x="200" y="0" width="140" height="80" rx="8" fill="#FF9900"/>
+      <text x="270" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        📬
+      </text>
+      <text x="270" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        SQS 队列
+      </text>
+      
+      <!-- 箭头 -->
+      <path d="M 350 40 L 390 40" stroke="#27AE60" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+      
+      <!-- 立即确认 -->
+      <rect x="400" y="0" width="140" height="80" rx="8" fill="#27AE60"/>
+      <text x="470" y="30" 
+            font-size="30" 
+            text-anchor="middle">
+        ✅
+      </text>
+      <text x="470" y="60" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="14" 
+            text-anchor="middle" 
+            fill="#FFFFFF">
+        <tspan x="470">订单已确认</tspan>
+        <tspan x="470" dy="15">立即返回</tspan>
+      </text>
+      
+      <!-- 时间标注 -->
+      <text x="600" y="45" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            font-weight="bold" 
+            fill="#27AE60">
+        耗时 &lt; 1 秒 ⚡
+      </text>
+      
+      <!-- Lambda 后台处理 -->
+      <g transform="translate(0, 110)">
+        <!-- 连接线 -->
+        <path d="M 270 -30 L 270 20" stroke="#9B59B6" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+        
+        <!-- Lambda 函数 -->
+        <rect x="200" y="20" width="140" height="80" rx="8" fill="#9B59B6"/>
+        <text x="270" y="50" 
+              font-size="30" 
+              text-anchor="middle">
+          ⚡
+        </text>
+        <text x="270" y="80" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" 
+              text-anchor="middle" 
+              fill="#FFFFFF">
+          <tspan x="270">Lambda 函数</tspan>
+          <tspan x="270" dy="15">后台处理</tspan>
+        </text>
+        
+        <!-- 处理任务 -->
+        <text x="370" y="55" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" 
+              fill="#666666">
+          • 更新数据库
+        </text>
+        <text x="370" y="80" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" 
+              fill="#666666">
+          • 发送邮件
+        </text>
+        <text x="370" y="105" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" 
+              fill="#666666">
+          • 通知物流
+        </text>
+      </g>
+    </g>
+    
+    <text x="90" y="645" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#27AE60">
+      💡 优势：用户无需等待，后台自动处理，支持高并发
+    </text>
+  </g>
+</svg>

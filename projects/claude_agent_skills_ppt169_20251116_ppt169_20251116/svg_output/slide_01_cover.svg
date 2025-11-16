@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 渐变装饰背景 -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97757;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:0.1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D97757;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C85A3C;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 装饰圆形 -->
+  <circle cx="200" cy="150" r="80" fill="url(#grad1)"/>
+  <circle cx="1100" cy="580" r="120" fill="url(#grad1)"/>
+  <circle cx="950" cy="200" r="60" fill="#FFF5F0"/>
+  
+  <!-- 大型图标 -->
+  <text x="640" y="220" font-size="120" text-anchor="middle" fill="#D97757">🤖</text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="330" font-size="56" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    Claude Agent Skills 完全指南
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="390" font-size="28" font-weight="400" text-anchor="middle" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    从入门到精通：打造可复用的 AI 工作流
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="440" y="420" width="400" height="4" fill="url(#grad2)" rx="2"/>
+  
+  <!-- 关键词标签 -->
+  <g transform="translate(640, 480)">
+    <!-- Skills -->
+    <rect x="-280" y="0" width="140" height="40" fill="#FFF5F0" rx="20"/>
+    <text x="-210" y="27" font-size="18" font-weight="600" text-anchor="middle" fill="#D97757" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Skills
+    </text>
+    
+    <!-- MCP -->
+    <rect x="-120" y="0" width="120" height="40" fill="#F3E5F5" rx="20"/>
+    <text x="-60" y="27" font-size="18" font-weight="600" text-anchor="middle" fill="#9C27B0" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      MCP
+    </text>
+    
+    <!-- Projects -->
+    <rect x="20" y="0" width="140" height="40" fill="#E3F2FD" rx="20"/>
+    <text x="90" y="27" font-size="18" font-weight="600" text-anchor="middle" fill="#2196F3" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Projects
+    </text>
+    
+    <!-- Automation -->
+    <rect x="180" y="0" width="160" height="40" fill="#FFF3E0" rx="20"/>
+    <text x="260" y="27" font-size="18" font-weight="600" text-anchor="middle" fill="#FF9800" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Automation
+    </text>
+  </g>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="620" font-size="18" font-weight="400" text-anchor="middle" fill="#757575" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    2025 年 11 月 16 日
+  </text>
+  
+  <text x="640" y="650" font-size="16" font-weight="400" text-anchor="middle" fill="#9E9E9E" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    基于官方教程整理
+  </text>
+</svg>
+

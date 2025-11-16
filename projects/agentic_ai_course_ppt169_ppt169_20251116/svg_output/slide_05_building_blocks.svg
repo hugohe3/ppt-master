@@ -1,0 +1,115 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.08" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FAFAFA" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="90"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="bold" fill="#1F2937">
+        🧱 The Three Building Blocks
+    </text>
+
+    <!-- 卡片 1: Models -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="170" width="353" height="480" rx="12" fill="#FFFFFF" />
+        <circle cx="237" cy="230" r="50" fill="#E0E7FF" />
+        <text x="237" y="250" font-size="48" text-anchor="middle">🧠</text>
+
+        <text x="237" y="320"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="600" fill="#6366F1" text-anchor="middle">
+            Models
+        </text>
+
+        <text x="237" y="380"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" fill="#1F2937" text-anchor="middle" font-weight="600">
+            AI 模型本身
+        </text>
+
+        <text x="237" y="430"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            <tspan x="237" dy="0">LLMs</tspan>
+            <tspan x="237" dy="30">Multimodal Models</tspan>
+            <tspan x="237" dy="30">(Video, Audio)</tspan>
+        </text>
+    </g>
+
+    <!-- 卡片 2: Tools -->
+    <g filter="url(#cardShadow)">
+        <rect x="463" y="170" width="353" height="480" rx="12" fill="#FFFFFF" />
+        <circle cx="640" cy="230" r="50" fill="#DBEAFE" />
+        <text x="640" y="250" font-size="48" text-anchor="middle">🔧</text>
+
+        <text x="640" y="320"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="600" fill="#3B82F6" text-anchor="middle">
+            Tools
+        </text>
+
+        <text x="640" y="380"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" fill="#1F2937" text-anchor="middle" font-weight="600">
+            函数与能力
+        </text>
+
+        <text x="640" y="430"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            <tspan x="640" dy="0">Web Search</tspan>
+            <tspan x="640" dy="30">Database Query</tspan>
+            <tspan x="640" dy="30">Code Execution</tspan>
+        </text>
+    </g>
+
+    <!-- 卡片 3: Evaluations (强调) -->
+    <g filter="url(#cardShadow)">
+        <rect x="866" y="170" width="353" height="480" rx="12" fill="#FFFFFF" stroke="#F59E0B" stroke-width="3" />
+        <circle cx="1043" cy="230" r="50" fill="#FEF3C7" />
+        <text x="1043" y="250" font-size="48" text-anchor="middle">✅</text>
+
+        <text x="1043" y="320"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="32" font-weight="600" fill="#F59E0B" text-anchor="middle">
+            Evaluations
+        </text>
+
+        <text x="1043" y="380"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#1F2937" text-anchor="middle" font-weight="600">
+            <tspan x="1043" dy="0">"The other half of</tspan>
+            <tspan x="1043" dy="28">building an AI agent"</tspan>
+        </text>
+
+        <rect x="906" y="440" width="274" height="60" rx="8" fill="#FEF3C7" />
+        <text x="1043" y="465"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#92400E" text-anchor="middle">
+            <tspan x="1043" dy="0">评估结果</tspan>
+            <tspan x="1043" dy="24">持续改进性能</tspan>
+        </text>
+
+        <text x="1043" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            <tspan x="1043" dy="0">Measure</tspan>
+            <tspan x="1043" dy="30">&amp;</tspan>
+            <tspan x="1043" dy="30">Improve</tspan>
+        </text>
+    </g>
+</svg>

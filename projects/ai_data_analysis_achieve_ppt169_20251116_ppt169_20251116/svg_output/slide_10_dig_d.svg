@@ -1,0 +1,97 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#7C3AED">
+    D - Description（描述）
+  </text>
+  
+  <text x="60" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="400" fill="#64748B">
+    第一步：与 AI 一起探索数据
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="145" x2="1220" y2="145" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 核心步骤 -->
+  <text x="60" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#1E293B">
+    📋 关键操作步骤
+  </text>
+  
+  <!-- 步骤 1 -->
+  <rect x="60" y="230" width="560" height="180" rx="12" fill="#F8FAFC" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="110" cy="285" r="30" fill="#7C3AED"/>
+  <text x="110" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    1
+  </text>
+  <text x="160" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1E293B">
+    上传数据
+  </text>
+  <text x="160" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#64748B">
+    <tspan x="160" dy="0">将电子表格、CSV 或其他</tspan>
+    <tspan x="160" dy="26">数据文件上传给 AI</tspan>
+  </text>
+  <rect x="90" y="360" width="500" height="30" rx="6" fill="#F3F4F6"/>
+  <text x="110" y="381" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#6B7280">
+    📎 sales_data_2024.xlsx
+  </text>
+  
+  <!-- 步骤 2 -->
+  <rect x="660" y="230" width="560" height="180" rx="12" fill="#F8FAFC" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="710" cy="285" r="30" fill="#7C3AED"/>
+  <text x="710" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2
+  </text>
+  <text x="760" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1E293B">
+    请求列表
+  </text>
+  <text x="760" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#64748B">
+    <tspan x="760" dy="0">提示词：</tspan>
+  </text>
+  <rect x="760" y="330" width="430" height="65" rx="6" fill="#FEF3C7"/>
+  <text x="780" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="400" fill="#92400E">
+    <tspan x="780" dy="0">"请列出所有列名，</tspan>
+    <tspan x="780" dy="22">并显示前 5 行数据样本"</tspan>
+  </text>
+  
+  <!-- 步骤 3 & 4 -->
+  <rect x="60" y="440" width="560" height="180" rx="12" fill="#F8FAFC" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="110" cy="495" r="30" fill="#7C3AED"/>
+  <text x="110" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    3
+  </text>
+  <text x="160" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1E293B">
+    检查输出
+  </text>
+  <text x="160" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#64748B">
+    <tspan x="160" dy="0">查看 AI 识别的列和数据</tspan>
+    <tspan x="160" dy="26">确保理解正确</tspan>
+  </text>
+  <text x="90" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="400" fill="#10B981">
+    ✓ Date, Product, Revenue, Region...
+  </text>
+  
+  <rect x="660" y="440" width="560" height="180" rx="12" fill="#F8FAFC" stroke="#7C3AED" stroke-width="2"/>
+  <circle cx="710" cy="495" r="30" fill="#7C3AED"/>
+  <text x="710" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    4
+  </text>
+  <text x="760" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1E293B">
+    发现问题
+  </text>
+  <text x="760" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#64748B">
+    <tspan x="760" dy="0">注意数据质量问题：</tspan>
+  </text>
+  <text x="760" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400" fill="#DC2626">
+    <tspan x="760" dy="0">⚠️ NaN 值（缺失数据）</tspan>
+    <tspan x="760" dy="24">⚠️ 格式错误的日期</tspan>
+    <tspan x="760" dy="24">⚠️ 异常值</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" fill="#94A3B8" text-anchor="end">
+    10
+  </text>
+</svg>
+

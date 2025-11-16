@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0066FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1A237E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰元素 - 代码符号 -->
+  <text x="100" y="120" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="90" font-weight="300" fill="#FFFFFF" opacity="0.12">&lt;/&gt;</text>
+  
+  <text x="1120" y="640" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="80" font-weight="300" fill="#FFFFFF" opacity="0.08">{}</text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="300" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="52" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    Cursor IDE 使用指南
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="350" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="400" fill="#FFFFFF" opacity="0.9" text-anchor="middle">
+    AI-Powered Development Tool
+  </text>
+  
+  <!-- 标语 -->
+  <text x="640" y="410" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="300" fill="#FFFFFF" opacity="0.8" text-anchor="middle">
+    Write Code at the Speed of Thought
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="540" y="435" width="200" height="2" fill="#FFFFFF" opacity="0.5"/>
+  
+  <!-- 日期 -->
+  <text x="640" y="495" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#FFFFFF" opacity="0.7" text-anchor="middle">
+    2025年
+  </text>
+  
+  <!-- 底部装饰点 -->
+  <circle cx="600" cy="600" r="4" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="640" cy="600" r="4" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="680" cy="600" r="4" fill="#FFFFFF" opacity="0.5"/>
+</svg>

@@ -1,0 +1,81 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <text x="640" y="70" font-size="40" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    🎯 何时创建 Skill？三大判断标准
+  </text>
+  
+  <!-- 三大标准 -->
+  <g transform="translate(0, 130)">
+    <!-- 标准 1 -->
+    <rect x="100" y="0" width="1080" height="110" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="0" width="8" height="110" fill="#4CAF50" rx="4"/>
+    
+    <text x="140" y="40" font-size="36" fill="#4CAF50">✅</text>
+    <text x="210" y="50" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      标准 1：是否重复相同指令 3+ 次？
+    </text>
+    <text x="140" y="85" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">如果你发现自己在不同对话中反复输入相同的详细指令，这就是创建 Skill 的明确信号。</tspan>
+    </text>
+    
+    <!-- 标准 2 -->
+    <rect x="100" y="130" width="1080" height="110" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="130" width="8" height="110" fill="#4CAF50" rx="4"/>
+    
+    <text x="140" y="170" font-size="36" fill="#4CAF50">✅</text>
+    <text x="210" y="180" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      标准 2：是否需要培训真人执行此流程？
+    </text>
+    <text x="140" y="215" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">如果这个任务复杂到需要写文档培训新员工，那么它也值得被打包成一个 Skill。</tspan>
+    </text>
+    
+    <!-- 标准 3 -->
+    <rect x="100" y="260" width="1080" height="110" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="260" width="8" height="110" fill="#4CAF50" rx="4"/>
+    
+    <text x="140" y="300" font-size="36" fill="#4CAF50">✅</text>
+    <text x="210" y="310" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      标准 3：是否需要每次保持质量/格式一致？
+    </text>
+    <text x="140" y="345" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">如果输出需要遵循特定的品牌规范、格式标准或质量要求，Skill 可以确保一致性。</tspan>
+    </text>
+  </g>
+  
+  <!-- 决策提示 -->
+  <rect x="200" y="400" width="880" height="80" fill="#E8F5E9" rx="16"/>
+  <text x="640" y="435" font-size="24" font-weight="700" text-anchor="middle" fill="#2E7D32" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    决策建议
+  </text>
+  <text x="640" y="465" font-size="19" font-weight="600" text-anchor="middle" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    满足 2 条或以上 → 强烈建议创建 Skill
+  </text>
+  
+  <!-- 注意事项 -->
+  <g transform="translate(0, 500)">
+    <text x="140" y="30" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      ⚠️ 注意事项
+    </text>
+    
+    <rect x="100" y="50" width="1080" height="140" fill="#FFFDE7" rx="12"/>
+    
+    <text x="130" y="85" font-size="18" font-weight="600" fill="#F57C00" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      • Token 用量
+    </text>
+    <text x="130" y="110" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      注意 Pro 计划的 token 限制，只为最常用的工作流创建 Skills。可用 ChatGPT 辅助生成。
+    </text>
+    
+    <text x="130" y="145" font-size="18" font-weight="600" fill="#F57C00" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      • Skills 维护
+    </text>
+    <text x="130" y="170" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Skills 是静态的。如果调用的 MCP 工具更新，Skill 可能失效。建议在指令中添加备份方案。
+    </text>
+  </g>
+</svg>
+

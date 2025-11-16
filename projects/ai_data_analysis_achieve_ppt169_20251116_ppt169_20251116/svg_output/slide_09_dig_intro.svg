@@ -1,0 +1,134 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 定义渐变和滤镜 -->
+  <defs>
+    <linearGradient id="bgGradient9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FAF5FF;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FEF3C7;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1"/>
+    </linearGradient>
+    <filter id="stepShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient9)"/>
+  
+  <!-- 装饰元素 -->
+  <circle cx="1050" cy="200" r="120" fill="#7C3AED" opacity="0.08"/>
+  <circle cx="230" cy="500" r="90" fill="#F59E0B" opacity="0.08"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="700" fill="#1E293B">
+    <tspan x="60" dy="0">🔑 DIG 框架</tspan>
+  </text>
+  
+  <text x="60" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="400" fill="#64748B">
+    如何进行 AI 数据分析：结构化的 3 步方法论
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="170" x2="1220" y2="170" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 对比说明 -->
+  <rect x="60" y="200" width="1160" height="60" rx="16" fill="#FEF3C7" filter="url(#stepShadow)"/>
+  <rect x="60" y="200" width="1160" height="6" rx="3" fill="#F59E0B"/>
+  <text x="640" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#92400E" text-anchor="middle">
+    💡 DIG 是 AI 时代的 EDA（探索性数据分析）- 与 AI 协作的正确方法
+  </text>
+  
+  <!-- 框架步骤卡片 -->
+  <!-- D - Description -->
+  <rect x="60" y="290" width="360" height="330" rx="20" fill="#FFFFFF" filter="url(#stepShadow)"/>
+  <rect x="60" y="290" width="360" height="10" rx="20" fill="url(#purpleGradient)"/>
+  <circle cx="240" cy="365" r="45" fill="url(#purpleGradient)" filter="url(#stepShadow)"/>
+  <circle cx="240" cy="365" r="35" fill="#FFFFFF"/>
+  <text x="240" y="378" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="800" fill="#7C3AED" text-anchor="middle">
+    D
+  </text>
+  <text x="240" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#1E293B" text-anchor="middle">
+    Description
+  </text>
+  <text x="240" y="472" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#7C3AED" text-anchor="middle">
+    描述
+  </text>
+  <text x="240" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#64748B" text-anchor="middle">
+    <tspan x="240" dy="0">与 AI 一起</tspan>
+    <tspan x="240" dy="26">探索数据</tspan>
+    <tspan x="240" dy="30">列出列、查看样本</tspan>
+    <tspan x="240" dy="26">发现数据问题</tspan>
+  </text>
+  
+  <!-- 箭头 -->
+  <path d="M 430 455 L 450 455" stroke="#7C3AED" stroke-width="3" fill="none"/>
+  <polygon points="450,455 442,451 442,459" fill="#7C3AED"/>
+  
+  <!-- I - Introspection -->
+  <rect x="460" y="290" width="360" height="330" rx="20" fill="#FFFFFF" filter="url(#stepShadow)"/>
+  <rect x="460" y="290" width="360" height="10" rx="20" fill="url(#purpleGradient)"/>
+  <circle cx="640" cy="365" r="45" fill="url(#purpleGradient)" filter="url(#stepShadow)"/>
+  <circle cx="640" cy="365" r="35" fill="#FFFFFF"/>
+  <text x="640" y="378" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="800" fill="#7C3AED" text-anchor="middle">
+    I
+  </text>
+  <text x="640" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#1E293B" text-anchor="middle">
+    Introspection
+  </text>
+  <text x="640" y="472" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#7C3AED" text-anchor="middle">
+    反思
+  </text>
+  <text x="640" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#64748B" text-anchor="middle">
+    <tspan x="640" dy="0">让 AI 提出</tspan>
+    <tspan x="640" dy="26">有趣的问题</tspan>
+    <tspan x="640" dy="30">发现 AI 的误解</tspan>
+    <tspan x="640" dy="26">立即纠正错误</tspan>
+  </text>
+  
+  <!-- 箭头 -->
+  <path d="M 830 455 L 850 455" stroke="#7C3AED" stroke-width="3" fill="none"/>
+  <polygon points="850,455 842,451 842,459" fill="#7C3AED"/>
+  
+  <!-- G - Goal Setting -->
+  <rect x="860" y="290" width="360" height="330" rx="20" fill="#FFFFFF" filter="url(#stepShadow)"/>
+  <rect x="860" y="290" width="360" height="10" rx="20" fill="url(#purpleGradient)"/>
+  <circle cx="1040" cy="365" r="45" fill="url(#purpleGradient)" filter="url(#stepShadow)"/>
+  <circle cx="1040" cy="365" r="35" fill="#FFFFFF"/>
+  <text x="1040" y="378" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="800" fill="#7C3AED" text-anchor="middle">
+    G
+  </text>
+  <text x="1040" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="700" fill="#1E293B" text-anchor="middle">
+    Goal Setting
+  </text>
+  <text x="1040" y="472" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#7C3AED" text-anchor="middle">
+    目标设定
+  </text>
+  <text x="1040" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#64748B" text-anchor="middle">
+    <tspan x="1040" dy="0">明确告知 AI</tspan>
+    <tspan x="1040" dy="26">你的目标</tspan>
+    <tspan x="1040" dy="30">场景决定输出</tspan>
+    <tspan x="1040" dy="26">（报告 vs 社交媒体）</tspan>
+  </text>
+  
+  <!-- 底部提示 -->
+  <rect x="60" y="645" width="1160" height="50" rx="16" fill="#DBEAFE" filter="url(#stepShadow)"/>
+  <rect x="60" y="645" width="1160" height="5" rx="3" fill="#2563EB"/>
+  <text x="640" y="677" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1E40AF" text-anchor="middle">
+    ⚠️ 关键：把 AI 当作"非常能干但仍然很初级"的数据分析师 - 必须验证理解再继续
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" fill="#94A3B8" text-anchor="end">
+    9 / 15
+  </text>
+</svg>

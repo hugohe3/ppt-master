@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <text x="640" y="70" font-size="40" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    💡 使用技巧与最佳实践
+  </text>
+  
+  <!-- Tip 1 -->
+  <g transform="translate(0, 130)">
+    <rect x="100" y="0" width="1080" height="160" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="0" width="8" height="160" fill="#FFC107" rx="4"/>
+    
+    <text x="140" y="40" font-size="36" fill="#FFC107">💡</text>
+    <text x="210" y="50" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Tip 1：在账户级指令中添加提醒
+    </text>
+    
+    <rect x="140" y="70" width="1000" height="70" fill="#FFFDE7" rx="10"/>
+    <text x="160" y="95" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="160" dy="0">Skills 可能不会自动触发。建议在账户级自定义指令中添加一行：</tspan>
+    </text>
+    <text x="160" y="123" font-size="18" font-weight="600" fill="#F57C00" font-family="ui-monospace, monospace">
+      "Always consider relevant skills when responding"
+    </text>
+  </g>
+  
+  <!-- Tip 2 -->
+  <g transform="translate(0, 320)">
+    <rect x="100" y="0" width="1080" height="140" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="0" width="8" height="140" fill="#2196F3" rx="4"/>
+    
+    <text x="140" y="40" font-size="36" fill="#2196F3">⚙️</text>
+    <text x="210" y="50" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Tip 2：选择性启用官方 Skills
+    </text>
+    
+    <text x="140" y="90" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">• 不要启用所有官方 Skills，只打开你实际需要的</tspan>
+    </text>
+    <text x="140" y="115" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">• 太多 Skills 会让 Claude 混淆，影响响应准确性和速度</tspan>
+    </text>
+  </g>
+  
+  <!-- Tip 3 -->
+  <g transform="translate(0, 490)">
+    <rect x="100" y="0" width="1080" height="160" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="0" width="8" height="160" fill="#9C27B0" rx="4"/>
+    
+    <text x="140" y="40" font-size="36" fill="#9C27B0">🔒</text>
+    <text x="210" y="50" font-size="26" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Tip 3：安全使用社区 Skills
+    </text>
+    
+    <text x="140" y="90" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">• 仔细审查社区 Skills 的代码和所需权限</tspan>
+    </text>
+    <text x="140" y="115" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">• 优先使用来自可信作者的 Skills</tspan>
+    </text>
+    
+    <rect x="140" y="135" width="1000" height="18" fill="#F3E5F5" rx="4"/>
+    <text x="160" y="148" font-size="15" font-weight="500" fill="#7B1FA2" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      ⚠️ 注意：未经审查的 Skills 可能存在安全风险，谨慎使用
+    </text>
+  </g>
+</svg>
+

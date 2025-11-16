@@ -1,0 +1,92 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <text x="640" y="70" font-size="40" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    Skills 解决的核心问题
+  </text>
+  
+  <!-- 上半部分：两大痛点 -->
+  <g transform="translate(0, 120)">
+    <!-- 痛点 1 -->
+    <rect x="80" y="0" width="520" height="220" fill="#FFFFFF" rx="16"/>
+    <rect x="80" y="0" width="8" height="220" fill="#FF5252" rx="4"/>
+    
+    <text x="120" y="50" font-size="48" fill="#FF5252">❌</text>
+    <text x="200" y="55" font-size="28" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      痛点 1：不可移植
+    </text>
+    
+    <text x="120" y="105" font-size="20" font-weight="600" fill="#D32F2F" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Not Portable
+    </text>
+    
+    <text x="120" y="145" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="120" dy="0">指令被锁定在特定项目中，无法在其</tspan>
+      <tspan x="120" dy="30">他对话或项目中使用。每次需要相同</tspan>
+      <tspan x="120" dy="30">的工作流，都要重新配置。</tspan>
+    </text>
+    
+    <!-- 痛点 2 -->
+    <rect x="680" y="0" width="520" height="220" fill="#FFFFFF" rx="16"/>
+    <rect x="680" y="0" width="8" height="220" fill="#FF5252" rx="4"/>
+    
+    <text x="720" y="50" font-size="48" fill="#FF5252">❌</text>
+    <text x="800" y="55" font-size="28" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      痛点 2：不可堆叠
+    </text>
+    
+    <text x="720" y="105" font-size="20" font-weight="600" fill="#D32F2F" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Not Stackable
+    </text>
+    
+    <text x="720" y="145" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="720" dy="0">不同项目的指令完全隔离，无法组合</tspan>
+      <tspan x="720" dy="30">使用。例如「文案撰写」和「活动分</tspan>
+      <tspan x="720" dy="30">析」项目无法为新任务联合工作。</tspan>
+    </text>
+  </g>
+  
+  <!-- 中间箭头 -->
+  <g transform="translate(640, 390)">
+    <circle cx="0" cy="0" r="30" fill="#D97757"/>
+    <text x="0" y="12" font-size="32" text-anchor="middle" fill="#FFFFFF">↓</text>
+  </g>
+  
+  <!-- 下半部分：解决方案 -->
+  <g transform="translate(0, 440)">
+    <!-- 解决方案卡片 -->
+    <rect x="140" y="0" width="1000" height="220" fill="#E8F5E9" rx="16"/>
+    <rect x="140" y="0" width="8" height="220" fill="#4CAF50" rx="4"/>
+    
+    <text x="180" y="50" font-size="48" fill="#4CAF50">✅</text>
+    <text x="260" y="55" font-size="32" font-weight="700" fill="#2E7D32" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Skills 的完美解决方案
+    </text>
+    
+    <!-- 两个优势 -->
+    <g transform="translate(200, 90)">
+      <!-- 账户级可用 -->
+      <rect x="0" y="0" width="380" height="90" fill="#FFFFFF" rx="12"/>
+      <text x="30" y="35" font-size="24" fill="#4CAF50">✅</text>
+      <text x="70" y="40" font-size="22" font-weight="600" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+        账户级可用
+      </text>
+      <text x="70" y="70" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+        跨 Web、API、代码全平台使用
+      </text>
+      
+      <!-- 自由组合 -->
+      <rect x="420" y="0" width="380" height="90" fill="#FFFFFF" rx="12"/>
+      <text x="450" y="35" font-size="24" fill="#4CAF50">✅</text>
+      <text x="490" y="40" font-size="22" font-weight="600" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+        自由组合堆叠
+      </text>
+      <text x="490" y="70" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+        多个 Skills 可在一个任务中协同
+      </text>
+    </g>
+  </g>
+</svg>
+

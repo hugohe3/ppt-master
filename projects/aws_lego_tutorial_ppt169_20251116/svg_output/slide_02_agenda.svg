@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区域 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    学习路线 📚
+  </text>
+  
+  <!-- 章节卡片 1 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="160" width="1160" height="150" rx="12" fill="#FFFFFF"/>
+    
+    <!-- 序号圆圈 -->
+    <circle cx="120" cy="235" r="35" fill="#FF9900"/>
+    <text x="120" y="248" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold" 
+          text-anchor="middle" 
+          fill="#FFFFFF">
+      1
+    </text>
+    
+    <!-- 标题与描述 -->
+    <text x="190" y="220" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      AWS 核心概念 🧩
+    </text>
+    <text x="190" y="260" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#666666">
+      什么是 AWS？像 LEGO 一样的云服务积木
+    </text>
+  </g>
+  
+  <!-- 章节卡片 2 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="330" width="1160" height="150" rx="12" fill="#FFFFFF"/>
+    
+    <!-- 序号圆圈 -->
+    <circle cx="120" cy="405" r="35" fill="#4A90E2"/>
+    <text x="120" y="418" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold" 
+          text-anchor="middle" 
+          fill="#FFFFFF">
+      2
+    </text>
+    
+    <!-- 标题与描述 -->
+    <text x="190" y="390" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      构建在线商店 🏪
+    </text>
+    <text x="190" y="430" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#666666">
+      5 个基础服务：EC2, VPC, S3, RDS, IAM, Route 53, CloudWatch
+    </text>
+  </g>
+  
+  <!-- 章节卡片 3 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="500" width="1160" height="150" rx="12" fill="#FFFFFF"/>
+    
+    <!-- 序号圆圈 -->
+    <circle cx="120" cy="575" r="35" fill="#27AE60"/>
+    <text x="120" y="588" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="bold" 
+          text-anchor="middle" 
+          fill="#FFFFFF">
+      3
+    </text>
+    
+    <!-- 标题与描述 -->
+    <text x="190" y="560" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      扩展与优化 📈
+    </text>
+    <text x="190" y="600" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#666666">
+      4 个高级场景：Auto Scaling, ELB, Lambda, SQS, CloudFront, 容器化
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,116 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.08" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#6366F1" />
+        </marker>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FAFAFA" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="bold" fill="#1F2937">
+        🔄 Modules 2&amp;3: Agentic Design Patterns
+    </text>
+
+    <!-- 副标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#6366F1">
+        Pattern 1: Reflection
+    </text>
+
+    <!-- 流程图 -->
+    <g transform="translate(140, 220)">
+        <!-- Input -->
+        <rect x="0" y="0" width="140" height="80" rx="12" fill="#E0E7FF" stroke="#6366F1" stroke-width="2" />
+        <text x="70" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#6366F1" text-anchor="middle">
+            Input
+        </text>
+
+        <!-- Arrow 1 -->
+        <line x1="150" y1="40" x2="220" y2="40" stroke="#6366F1" stroke-width="3" marker-end="url(#arrow)" />
+
+        <!-- Draft -->
+        <rect x="230" y="0" width="180" height="80" rx="12" fill="#FFFFFF" stroke="#6366F1" stroke-width="2" />
+        <text x="320" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#6366F1" text-anchor="middle">
+            Draft
+        </text>
+
+        <!-- Arrow 2 -->
+        <line x1="420" y1="40" x2="490" y2="40" stroke="#8B5CF6" stroke-width="3" marker-end="url(#arrow)" />
+
+        <!-- Reflect & Improve -->
+        <rect x="500" y="0" width="260" height="80" rx="12" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="2" />
+        <text x="630" y="40"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#8B5CF6" text-anchor="middle">
+            <tspan x="630" dy="0">Reflect &amp;</tspan>
+            <tspan x="630" dy="26">Improve</tspan>
+        </text>
+
+        <!-- Arrow 3 -->
+        <line x1="770" y1="40" x2="840" y2="40" stroke="#10B981" stroke-width="3" marker-end="url(#arrow)" />
+
+        <!-- Output -->
+        <rect x="850" y="0" width="150" height="80" rx="12" fill="#D1FAE5" stroke="#10B981" stroke-width="2" />
+        <text x="925" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#10B981" text-anchor="middle">
+            Output
+        </text>
+    </g>
+
+    <!-- 说明框 -->
+    <g filter="url(#cardShadow)">
+        <rect x="140" y="380" width="1000" height="260" rx="12" fill="#FFFFFF" />
+        <rect x="140" y="380" width="6" height="260" rx="3" fill="#6366F1" />
+
+        <text x="180" y="440"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#1F2937">
+            核心理念
+        </text>
+
+        <text x="180" y="490"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" fill="#1F2937">
+            <tspan x="180" dy="0">简单的两步流程（</tspan>
+            <tspan fill="#6366F1" font-weight="600">草稿 + 反思</tspan>
+            <tspan>）产生</tspan>
+            <tspan fill="#10B981" font-weight="600">远好于单步</tspan>
+            <tspan>的结果</tspan>
+        </text>
+
+        <rect x="180" y="540" width="900" height="70" rx="8" fill="#F9FAFB" />
+        <text x="630" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            <tspan x="630" dy="0">AI 先产生初稿，然后被指示"回顾并改进它"</tspan>
+            <tspan x="630" dy="28">这种模式直观且效果显著</tspan>
+        </text>
+
+        <text x="1100" y="625"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="end">
+            [00:12:39]
+        </text>
+    </g>
+</svg>

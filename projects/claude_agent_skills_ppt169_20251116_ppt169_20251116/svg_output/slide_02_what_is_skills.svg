@@ -1,0 +1,88 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <text x="640" y="70" font-size="40" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    🤖 什么是 Claude Agent Skills？
+  </text>
+  
+  <!-- 核心定义卡片 -->
+  <rect x="140" y="120" width="1000" height="140" fill="#FFF5F0" rx="16"/>
+  <rect x="140" y="120" width="8" height="140" fill="#D97757" rx="4"/>
+  
+  <text x="180" y="165" font-size="24" font-weight="600" fill="#D97757" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    核心概念
+  </text>
+  
+  <text x="180" y="200" font-size="20" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    <tspan x="180" dy="0">Skills 是一个「可复用指令菜单」，它教 Claude：</tspan>
+    <tspan x="180" dy="32">• 如何完成任务  • 使用什么工具  • 遵循什么标准</tspan>
+  </text>
+  
+  <!-- 三个对比卡片 -->
+  <!-- 过去的问题 -->
+  <rect x="60" y="290" width="360" height="360" fill="#FFFFFF" rx="16"/>
+  <rect x="60" y="290" width="360" height="8" fill="#FF5252" rx="4"/>
+  
+  <text x="240" y="335" font-size="28" font-weight="600" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    ❌ 过去的困境
+  </text>
+  
+  <rect x="90" y="360" width="300" height="240" fill="#FFEBEE" rx="12"/>
+  <text x="240" y="400" font-size="18" font-weight="600" text-anchor="middle" fill="#D32F2F" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    每次对话重复指令
+  </text>
+  <text x="100" y="440" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    <tspan x="100" dy="0">需要在每个新对话中重复</tspan>
+    <tspan x="100" dy="28">相同的复杂指令，才能</tspan>
+    <tspan x="100" dy="28">维持特定的品牌语气或</tspan>
+    <tspan x="100" dy="28">工作流程。</tspan>
+  </text>
+  <text x="240" y="570" font-size="16" font-weight="500" text-anchor="middle" fill="#757575" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    效率低 · 易出错
+  </text>
+  
+  <!-- Custom Instructions 的局限 -->
+  <rect x="460" y="290" width="360" height="360" fill="#FFFFFF" rx="16"/>
+  <rect x="460" y="290" width="360" height="8" fill="#FFC107" rx="4"/>
+  
+  <text x="640" y="335" font-size="28" font-weight="600" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    ⚠️ 部分解决
+  </text>
+  
+  <rect x="490" y="360" width="300" height="240" fill="#FFF8E1" rx="12"/>
+  <text x="640" y="400" font-size="18" font-weight="600" text-anchor="middle" fill="#F57C00" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    Custom Instructions
+  </text>
+  <text x="500" y="440" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    <tspan x="500" dy="0">Projects 中的自定义指令</tspan>
+    <tspan x="500" dy="28">有两大局限：</tspan>
+    <tspan x="500" dy="32">❌ 不可移植</tspan>
+    <tspan x="500" dy="24">   （锁定在项目内）</tspan>
+    <tspan x="500" dy="28">❌ 不可堆叠</tspan>
+    <tspan x="500" dy="24">   （无法组合）</tspan>
+  </text>
+  
+  <!-- Skills 的解决方案 -->
+  <rect x="860" y="290" width="360" height="360" fill="#FFFFFF" rx="16"/>
+  <rect x="860" y="290" width="360" height="8" fill="#4CAF50" rx="4"/>
+  
+  <text x="1040" y="335" font-size="28" font-weight="600" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    ✅ Skills 方案
+  </text>
+  
+  <rect x="890" y="360" width="300" height="240" fill="#E8F5E9" rx="12"/>
+  <text x="1040" y="400" font-size="18" font-weight="600" text-anchor="middle" fill="#2E7D32" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    账户级打包
+  </text>
+  <text x="900" y="440" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    <tspan x="900" dy="0">将工作流指令打包在账</tspan>
+    <tspan x="900" dy="28">户级别，实现：</tspan>
+    <tspan x="900" dy="32">✅ 跨平台可用</tspan>
+    <tspan x="900" dy="24">   （Web/API/代码）</tspan>
+    <tspan x="900" dy="28">✅ 自由组合</tspan>
+    <tspan x="900" dy="24">   （多技能堆叠）</tspan>
+  </text>
+</svg>
+

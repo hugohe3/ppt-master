@@ -1,0 +1,160 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 定义渐变和滤镜 -->
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="appBgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ECFDF5;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#EFF6FF;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- 卡片渐变 -->
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#34D399;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="purpleGradient14" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#A855F7;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- 阴影滤镜 -->
+    <filter id="appShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#appBgGradient)"/>
+  
+  <!-- 装饰元素 -->
+  <circle cx="1100" cy="150" r="100" fill="#10B981" opacity="0.08"/>
+  <circle cx="180" cy="600" r="80" fill="#2563EB" opacity="0.08"/>
+  <rect x="900" y="500" width="150" height="150" rx="20" fill="#7C3AED" opacity="0.06" transform="rotate(25 975 575)"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="700" fill="#1E293B">
+    🚀 从分析到应用
+  </text>
+  
+  <text x="60" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="400" fill="#64748B">
+    AI 数据分析只是开始，真正的价值在于应用
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="150" x2="1220" y2="150" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 中心理念 -->
+  <rect x="60" y="180" width="1160" height="80" rx="16" fill="#DBEAFE" filter="url(#appShadow)"/>
+  <rect x="60" y="180" width="1160" height="6" rx="3" fill="url(#blueGradient)"/>
+  <text x="640" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#1E40AF" text-anchor="middle">
+    <tspan x="640" dy="0">💡 分析的价值在于推动决策和行动</tspan>
+  </text>
+  <text x="640" y="253" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="500" fill="#1E40AF" text-anchor="middle">
+    AI 让你能快速将洞察转化为实际产出
+  </text>
+  
+  <!-- 应用场景 -->
+  <text x="60" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#1E293B">
+    四大应用方向
+  </text>
+  
+  <!-- 应用 1 - 生成报告 -->
+  <rect x="60" y="345" width="270" height="260" rx="20" fill="#FFFFFF" filter="url(#appShadow)"/>
+  <rect x="60" y="345" width="270" height="12" rx="20" fill="url(#greenGradient)"/>
+  <circle cx="195" cy="405" r="40" fill="url(#greenGradient)" filter="url(#appShadow)"/>
+  <circle cx="195" cy="405" r="32" fill="#FFFFFF"/>
+  <text x="195" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#10B981" text-anchor="middle">
+    01
+  </text>
+  <text x="195" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#1E293B" text-anchor="middle">
+    生成报告
+  </text>
+  <rect x="90" y="495" width="210" height="90" rx="10" fill="#F0FDF4"/>
+  <text x="195" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#166534" text-anchor="middle">
+    <tspan x="195" dy="0">商业报告</tspan>
+    <tspan x="195" dy="24">数据仪表盘</tspan>
+    <tspan x="195" dy="24">决策建议书</tspan>
+  </text>
+  
+  <!-- 应用 2 - 社交媒体 -->
+  <rect x="365" y="345" width="270" height="260" rx="20" fill="#FFFFFF" filter="url(#appShadow)"/>
+  <rect x="365" y="345" width="270" height="12" rx="20" fill="url(#blueGradient)"/>
+  <circle cx="500" cy="405" r="40" fill="url(#blueGradient)" filter="url(#appShadow)"/>
+  <circle cx="500" cy="405" r="32" fill="#FFFFFF"/>
+  <text x="500" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#2563EB" text-anchor="middle">
+    02
+  </text>
+  <text x="500" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#1E293B" text-anchor="middle">
+    社交媒体
+  </text>
+  <rect x="395" y="495" width="210" height="90" rx="10" fill="#EFF6FF"/>
+  <text x="500" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#1E40AF" text-anchor="middle">
+    <tspan x="500" dy="0">LinkedIn 文章</tspan>
+    <tspan x="500" dy="24">信息图表</tspan>
+    <tspan x="500" dy="24">数据故事</tspan>
+  </text>
+  
+  <!-- 应用 3 - 构建应用 -->
+  <rect x="670" y="345" width="270" height="260" rx="20" fill="#FFFFFF" filter="url(#appShadow)"/>
+  <rect x="670" y="345" width="270" height="12" rx="20" fill="url(#purpleGradient14)"/>
+  <circle cx="805" cy="405" r="40" fill="url(#purpleGradient14)" filter="url(#appShadow)"/>
+  <circle cx="805" cy="405" r="32" fill="#FFFFFF"/>
+  <text x="805" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#7C3AED" text-anchor="middle">
+    03
+  </text>
+  <text x="805" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#1E293B" text-anchor="middle">
+    构建应用
+  </text>
+  <rect x="700" y="495" width="210" height="90" rx="10" fill="#F5F3FF"/>
+  <text x="805" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#6B21A8" text-anchor="middle">
+    <tspan x="805" dy="0">数据分析工具</tspan>
+    <tspan x="805" dy="24">自动化脚本</tspan>
+    <tspan x="805" dy="24">API 接口</tspan>
+  </text>
+  
+  <!-- 应用 4 - AI 代理 -->
+  <rect x="975" y="345" width="270" height="260" rx="20" fill="#FFFFFF" filter="url(#appShadow)"/>
+  <rect x="975" y="345" width="270" height="12" rx="20" fill="url(#orangeGradient)"/>
+  <circle cx="1110" cy="405" r="40" fill="url(#orangeGradient)" filter="url(#appShadow)"/>
+  <circle cx="1110" cy="405" r="32" fill="#FFFFFF"/>
+  <text x="1110" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="800" fill="#F59E0B" text-anchor="middle">
+    04
+  </text>
+  <text x="1110" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#1E293B" text-anchor="middle">
+    AI 代理
+  </text>
+  <rect x="1005" y="495" width="210" height="90" rx="10" fill="#FEF3C7"/>
+  <text x="1110" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="500" fill="#92400E" text-anchor="middle">
+    <tspan x="1110" dy="0">投资研究助手</tspan>
+    <tspan x="1110" dy="24">客户分析代理</tspan>
+    <tspan x="1110" dy="24">市场洞察引擎</tspan>
+  </text>
+  
+  <!-- 底部案例 -->
+  <rect x="60" y="630" width="1160" height="55" rx="16" fill="#DCFCE7" filter="url(#appShadow)"/>
+  <rect x="60" y="630" width="1160" height="5" rx="3" fill="url(#greenGradient)"/>
+  <text x="640" y="665" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="17" font-weight="600" fill="#166534" text-anchor="middle">
+    💼 实例：投资研究 AI 代理 - 运用 ACHIEVE + DIG 原则构建的完整应用
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" fill="#94A3B8" text-anchor="end">
+    14 / 15
+  </text>
+</svg>

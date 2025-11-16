@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    AWS 是什么？🧩
+  </text>
+  
+  <!-- 主内容区：左右分栏 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="140" width="550" height="400" rx="12" fill="#FFFFFF"/>
+    
+    <!-- LEGO 积木盒插图 -->
+    <text x="335" y="220" 
+          font-size="100" 
+          text-anchor="middle">
+      🧩
+    </text>
+    
+    <!-- 积木块示意（彩色方块堆叠） -->
+    <g transform="translate(200, 260)">
+      <!-- 第一行积木 -->
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="#FF9900"/>
+      <circle cx="20" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      <circle cx="60" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      
+      <rect x="95" y="0" width="80" height="60" rx="8" fill="#4A90E2"/>
+      <circle cx="115" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      <circle cx="155" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      
+      <rect x="190" y="0" width="80" height="60" rx="8" fill="#27AE60"/>
+      <circle cx="210" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      <circle cx="250" cy="12" r="5" fill="#FFFFFF" opacity="0.5"/>
+      
+      <!-- 第二行积木 -->
+      <rect x="47" y="75" width="80" height="60" rx="8" fill="#E67E22"/>
+      <circle cx="67" cy="87" r="5" fill="#FFFFFF" opacity="0.5"/>
+      <circle cx="107" cy="87" r="5" fill="#FFFFFF" opacity="0.5"/>
+      
+      <rect x="142" y="75" width="80" height="60" rx="8" fill="#9B59B6"/>
+      <circle cx="162" cy="87" r="5" fill="#FFFFFF" opacity="0.5"/>
+      <circle cx="202" cy="87" r="5" fill="#FFFFFF" opacity="0.5"/>
+    </g>
+    
+    <text x="335" y="440" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          font-weight="600" 
+          text-anchor="middle" 
+          fill="#232F3E">
+      一盒巨大的 LEGO 积木
+    </text>
+    
+    <text x="335" y="480" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          text-anchor="middle" 
+          fill="#666666">
+      每块积木 = 一个专用云服务
+    </text>
+  </g>
+  
+  <!-- 右侧说明卡片 -->
+  <g filter="url(#cardShadow)">
+    <rect x="670" y="140" width="550" height="400" rx="12" fill="#FFFFFF"/>
+    
+    <text x="720" y="190" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      AWS = 云服务积木盒
+    </text>
+    
+    <!-- 服务示例列表 -->
+    <g transform="translate(720, 230)">
+      <circle cx="0" cy="0" r="8" fill="#FF9900"/>
+      <text x="25" y="7" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        🖥️ 虚拟机（EC2）
+      </text>
+      
+      <circle cx="0" cy="50" r="8" fill="#4A90E2"/>
+      <text x="25" y="57" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        🗄️ 文件存储（S3）
+      </text>
+      
+      <circle cx="0" cy="100" r="8" fill="#27AE60"/>
+      <text x="25" y="107" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        🗃️ 数据库（RDS）
+      </text>
+      
+      <circle cx="0" cy="150" r="8" fill="#E67E22"/>
+      <text x="25" y="157" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        🔑 权限管理（IAM）
+      </text>
+      
+      <circle cx="0" cy="200" r="8" fill="#9B59B6"/>
+      <text x="25" y="207" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ⚡ 无服务器函数（Lambda）
+      </text>
+      
+      <text x="0" y="260" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            fill="#95A5A6">
+        ...还有数百个服务等你探索
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部对比卡片 -->
+  <g transform="translate(60, 560)">
+    <!-- 传统方式 -->
+    <g filter="url(#cardShadow)">
+      <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFE5E5"/>
+      <text x="30" y="40" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#C0392B">
+        ❌ 传统方式
+      </text>
+      <text x="30" y="75" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            fill="#666666">
+        自己管理服务器、存储、安全... 缓慢且复杂
+      </text>
+    </g>
+    
+    <!-- AWS 方式 -->
+    <g filter="url(#cardShadow)">
+      <rect x="600" y="0" width="560" height="110" rx="12" fill="#E8F8F5"/>
+      <text x="630" y="40" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#27AE60">
+        ✅ AWS 方式
+      </text>
+      <text x="630" y="75" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            fill="#666666">
+        按需使用云服务，专注产品开发，快速且灵活
+      </text>
+    </g>
+  </g>
+</svg>

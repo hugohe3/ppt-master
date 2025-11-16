@@ -1,0 +1,154 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+        </linearGradient>
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.08" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FAFAFA" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="bold" fill="#1F2937">
+        🔑 Module 1: What is Agentic AI?
+    </text>
+
+    <!-- 定义框 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="140" width="1160" height="120" rx="12" fill="#FFFFFF" />
+        <rect x="60" y="140" width="8" height="120" rx="4" fill="#6366F1" />
+        <text x="90" y="190"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" fill="#1F2937">
+            <tspan x="90" dy="0">An </tspan>
+            <tspan font-weight="bold" fill="#6366F1">agentic AI workflow</tspan>
+            <tspan> is a process where an LLM-based app executes </tspan>
+            <tspan font-weight="bold" fill="#6366F1">multiple steps</tspan>
+        </text>
+        <text x="90" y="230"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" fill="#1F2937">
+            to complete a task
+        </text>
+    </g>
+
+    <!-- 自治度光谱标题 -->
+    <text x="640" y="310"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="600" fill="#6B7280" text-anchor="middle">
+        自治度光谱 (Spectrum of Autonomy)
+    </text>
+
+    <!-- 渐变箭头 -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#8B5CF6" />
+        </marker>
+    </defs>
+    <line x1="120" y1="370" x2="1160" y2="370" stroke="url(#arrowGradient)" stroke-width="8"
+        marker-end="url(#arrowhead)" />
+
+    <!-- Less Autonomous 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="410" width="540" height="250" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" />
+        <text x="330" y="450"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#3B82F6" text-anchor="middle">
+            Less Autonomous
+        </text>
+        <text x="330" y="490"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            预定义步骤 · 更多控制
+        </text>
+
+        <!-- 流程示例 -->
+        <g transform="translate(100, 520)">
+            <rect x="0" y="0" width="90" height="40" rx="6" fill="#E0E7FF" stroke="#3B82F6" stroke-width="1" />
+            <text x="45" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" fill="#3B82F6" text-anchor="middle">
+                Outline
+            </text>
+
+            <text x="110" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" fill="#6B7280">→</text>
+
+            <rect x="130" y="0" width="90" height="40" rx="6" fill="#E0E7FF" stroke="#3B82F6" stroke-width="1" />
+            <text x="175" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" fill="#3B82F6" text-anchor="middle">
+                Research
+            </text>
+
+            <text x="240" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" fill="#6B7280">→</text>
+
+            <rect x="260" y="0" width="70" height="40" rx="6" fill="#E0E7FF" stroke="#3B82F6" stroke-width="1" />
+            <text x="295" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" fill="#3B82F6" text-anchor="middle">
+                Draft
+            </text>
+
+            <text x="350" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="18" fill="#6B7280">→</text>
+
+            <rect x="370" y="0" width="80" height="40" rx="6" fill="#E0E7FF" stroke="#3B82F6" stroke-width="1" />
+            <text x="410" y="25"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+                font-size="16" fill="#3B82F6" text-anchor="middle">
+                Revise
+            </text>
+        </g>
+    </g>
+
+    <!-- More Autonomous 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="680" y="410" width="540" height="250" rx="12" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="2" />
+        <text x="950" y="450"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#8B5CF6" text-anchor="middle">
+            More Autonomous
+        </text>
+        <text x="950" y="490"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#6B7280" text-anchor="middle">
+            自主决策 · 更多创造力
+        </text>
+
+        <text x="950" y="540"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#1F2937" text-anchor="middle">
+            <tspan x="950" dy="0">给定 </tspan>
+            <tspan fill="#8B5CF6" font-weight="600">工具集 + 目标</tspan>
+        </text>
+        <text x="950" y="580"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#1F2937" text-anchor="middle">
+            Agent 自行决定：
+        </text>
+        <text x="950" y="620"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="middle">
+            使用哪些工具 · 何时反思 · 何时完成
+        </text>
+    </g>
+</svg>

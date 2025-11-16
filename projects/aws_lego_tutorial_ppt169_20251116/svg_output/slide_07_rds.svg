@@ -1,0 +1,241 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="rdsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#9B59B6;stop-opacity:0.15" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    数据库管理：RDS 🗃️
+  </text>
+  
+  <!-- 左侧：需要存储的数据 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="140" width="560" height="520" rx="12" fill="#FFFFFF"/>
+    
+    <text x="90" y="190" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      需要存储的数据
+    </text>
+    
+    <!-- 数据类型 1：用户账户 -->
+    <g transform="translate(90, 230)">
+      <circle cx="30" cy="30" r="30" fill="#4A90E2" opacity="0.2"/>
+      <text x="30" y="45" 
+            font-size="35" 
+            text-anchor="middle">
+        👤
+      </text>
+      
+      <text x="80" y="25" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#232F3E">
+        用户账户
+      </text>
+      
+      <text x="80" y="55" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 用户名、密码、邮箱
+      </text>
+      <text x="80" y="80" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 个人资料、收货地址
+      </text>
+      <text x="80" y="105" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 登录历史、偏好设置
+      </text>
+    </g>
+    
+    <!-- 数据类型 2：库存清单 -->
+    <g transform="translate(90, 380)">
+      <circle cx="30" cy="30" r="30" fill="#27AE60" opacity="0.2"/>
+      <text x="30" y="45" 
+            font-size="35" 
+            text-anchor="middle">
+        📦
+      </text>
+      
+      <text x="80" y="25" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#232F3E">
+        库存清单
+      </text>
+      
+      <text x="80" y="55" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 产品 ID、名称、描述
+      </text>
+      <text x="80" y="80" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 库存数量、价格
+      </text>
+      <text x="80" y="105" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 尺寸、颜色、分类
+      </text>
+    </g>
+    
+    <!-- 数据类型 3：订单记录 -->
+    <g transform="translate(90, 530)">
+      <circle cx="30" cy="30" r="30" fill="#E67E22" opacity="0.2"/>
+      <text x="30" y="45" 
+            font-size="35" 
+            text-anchor="middle">
+        🛒
+      </text>
+      
+      <text x="80" y="25" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#232F3E">
+        订单记录
+      </text>
+      
+      <text x="80" y="55" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 订单号、下单时间
+      </text>
+      <text x="80" y="80" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 购买商品、总金额
+      </text>
+      <text x="80" y="105" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            fill="#666666">
+        • 支付状态、物流信息
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右侧：RDS 解决方案 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="140" width="560" height="520" rx="12" fill="url(#rdsGradient)"/>
+    
+    <!-- RDS 图标 -->
+    <circle cx="900" cy="220" r="50" fill="#4A90E2"/>
+    <text x="900" y="240" 
+          font-size="50" 
+          text-anchor="middle">
+      🗃️
+    </text>
+    
+    <text x="740" y="300" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="36" 
+          font-weight="bold" 
+          text-anchor="middle" 
+          fill="#4A90E2">
+      RDS
+    </text>
+    
+    <text x="900" y="300" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          text-anchor="middle" 
+          fill="#666666">
+      Relational Database Service
+    </text>
+    
+    <!-- 功能说明 -->
+    <g transform="translate(700, 340)">
+      <text x="0" y="0" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="24" 
+            font-weight="600" 
+            fill="#232F3E">
+        托管式关系数据库
+      </text>
+      
+      <text x="0" y="50" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ✅ 支持 MySQL、PostgreSQL、Oracle 等
+      </text>
+      
+      <text x="0" y="90" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ✅ 自动备份与恢复
+      </text>
+      
+      <text x="0" y="130" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ✅ 自动软件更新与补丁
+      </text>
+      
+      <text x="0" y="170" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ✅ 高可用性与故障转移
+      </text>
+      
+      <text x="0" y="210" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            fill="#333333">
+        ✅ AWS 全托管，无需运维
+      </text>
+      
+      <!-- 底部强调 -->
+      <rect x="0" y="240" width="480" height="80" rx="8" fill="#FFFFFF" opacity="0.9"/>
+      <text x="240" y="275" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            font-weight="600" 
+            text-anchor="middle" 
+            fill="#9B59B6">
+        💡 你只需关注数据和查询
+      </text>
+      <text x="240" y="305" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            text-anchor="middle" 
+            fill="#666666">
+        AWS 负责所有底层维护工作
+      </text>
+    </g>
+  </g>
+</svg>

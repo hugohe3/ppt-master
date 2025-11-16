@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#2563EB">
+    A - Aiding Human Coordination
+  </text>
+  
+  <text x="60" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="400" fill="#64748B">
+    协助人类协作 - 将混乱的人类数据转化为清晰的信息
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="145" x2="1220" y2="145" stroke="#E2E8F0" stroke-width="2"/>
+  
+  <!-- 核心概念卡片 -->
+  <rect x="60" y="180" width="1160" height="120" rx="12" fill="#EFF6FF"/>
+  <text x="100" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#1E293B">
+    核心价值
+  </text>
+  <text x="100" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="400" fill="#1E40AF">
+    <tspan x="100" dy="0">AI 能够处理混乱的人类数据，提取关键信息并创建清晰度。</tspan>
+    <tspan x="100" dy="30">帮助团队更好地理解和协调工作。</tspan>
+  </text>
+  
+  <!-- 应用案例 -->
+  <text x="60" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#1E293B">
+    💼 典型应用案例
+  </text>
+  
+  <!-- 案例卡片 -->
+  <rect x="60" y="390" width="560" height="250" rx="12" fill="#F8FAFC" stroke="#2563EB" stroke-width="2"/>
+  <text x="90" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2563EB">
+    📝 会议记录转结构化摘要
+  </text>
+  <text x="90" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#475569">
+    <tspan x="90" dy="0">输入：非结构化的会议记录</tspan>
+    <tspan x="90" dy="30">↓</tspan>
+    <tspan x="90" dy="30">AI 处理：提取关键讨论点</tspan>
+    <tspan x="90" dy="30">↓</tspan>
+    <tspan x="90" dy="30">输出：清晰的要点摘要</tspan>
+  </text>
+  
+  <!-- 效果展示 -->
+  <rect x="660" y="390" width="560" height="250" rx="12" fill="#F0FDF4"/>
+  <text x="690" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#10B981">
+    ✨ 带来的价值
+  </text>
+  <text x="690" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="400" fill="#166534">
+    <tspan x="690" dy="0">✓ 节省整理时间</tspan>
+    <tspan x="690" dy="35">✓ 确保关键信息不遗漏</tspan>
+    <tspan x="690" dy="35">✓ 便于团队成员快速了解会议内容</tspan>
+    <tspan x="690" dy="35">✓ 提高后续行动的执行效率</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif" font-size="16" fill="#94A3B8" text-anchor="end">
+    4
+  </text>
+</svg>
+

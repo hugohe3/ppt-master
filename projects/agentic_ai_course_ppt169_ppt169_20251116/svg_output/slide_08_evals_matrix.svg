@@ -1,0 +1,140 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.08" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <linearGradient id="axisGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FAFAFA" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="44" font-weight="bold" fill="#1F2937">
+        📊 Module 4: Evaluations (Evals)
+    </text>
+
+    <!-- 核心引用 -->
+    <text x="60" y="120"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" fill="#F59E0B" font-weight="600">
+        最重要的模块 · Evals are the objective way to measure and systematically improve performance
+    </text>
+
+    <!-- Y 轴标签 -->
+    <text x="90" y="200"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" fill="#6B7280" font-weight="600" text-anchor="middle" transform="rotate(-90 90 200)">
+        Objective ← → Subjective
+    </text>
+
+    <!-- X 轴标签 -->
+    <text x="640" y="680"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" fill="#6B7280" font-weight="600" text-anchor="middle">
+        Per-Example Ground Truth ← → No Ground Truth
+    </text>
+
+    <!-- 矩阵网格线 -->
+    <line x1="640" y1="160" x2="640" y2="650" stroke="url(#axisGradient)" stroke-width="3" />
+    <line x1="140" y1="405" x2="1140" y2="405" stroke="url(#axisGradient)" stroke-width="3" />
+
+    <!-- 象限 1: 客观 + 有标准答案（左上） -->
+    <g filter="url(#cardShadow)">
+        <rect x="140" y="160" width="480" height="230" rx="12" fill="#EFF6FF" opacity="0.8" />
+        <text x="380" y="200"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#3B82F6" text-anchor="middle">
+            客观 + 有标准答案
+        </text>
+        <text x="380" y="240"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1F2937" text-anchor="middle">
+            <tspan x="380" dy="0">例：发票日期提取</tspan>
+        </text>
+        <rect x="180" y="270" width="400" height="90" rx="8" fill="#DBEAFE" />
+        <text x="380" y="295"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#1E40AF" text-anchor="middle">
+            <tspan x="380" dy="0">方法：代码对比</tspan>
+            <tspan x="380" dy="22">提取日期 == 标准答案？</tspan>
+            <tspan x="380" dy="22">结果：Equal / Not Equal</tspan>
+        </text>
+    </g>
+
+    <!-- 象限 2: 客观 + 无标准答案（右上） -->
+    <g filter="url(#cardShadow)">
+        <rect x="660" y="160" width="480" height="230" rx="12" fill="#F0FDF4" opacity="0.8" />
+        <text x="900" y="200"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#10B981" text-anchor="middle">
+            客观 + 无标准答案
+        </text>
+        <text x="900" y="240"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1F2937" text-anchor="middle">
+            <tspan x="900" dy="0">例：字数限制（≤10 词）</tspan>
+        </text>
+        <rect x="700" y="270" width="400" height="90" rx="8" fill="#D1FAE5" />
+        <text x="900" y="295"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#065F46" text-anchor="middle">
+            <tspan x="900" dy="0">方法：代码检查</tspan>
+            <tspan x="900" dy="22" font-family="Monaco, Consolas, monospace">len(text) &lt;= 10</tspan>
+            <tspan x="900" dy="22">结果：Pass / Fail</tspan>
+        </text>
+    </g>
+
+    <!-- 象限 3: 主观 + 有标准答案（左下） -->
+    <g filter="url(#cardShadow)">
+        <rect x="140" y="420" width="480" height="230" rx="12" fill="#FEF3C7" opacity="0.8" />
+        <text x="380" y="460"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#F59E0B" text-anchor="middle">
+            主观 + 有标准答案
+        </text>
+        <text x="380" y="500"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#1F2937" text-anchor="middle">
+            <tspan x="380" dy="0">例：研究报告质量</tspan>
+        </text>
+        <rect x="180" y="530" width="400" height="90" rx="8" fill="#FDE68A" />
+        <text x="380" y="555"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#92400E" text-anchor="middle">
+            <tspan x="380" dy="0">方法：</tspan>
+            <tspan font-weight="600">LM as Judge</tspan>
+            <tspan x="380" dy="22">1. 建立黄金标准（关键话题列表）</tspan>
+            <tspan x="380" dy="22">2. LLM 判断覆盖度并打分</tspan>
+        </text>
+    </g>
+
+    <!-- 象限 4: 主观 + 无标准答案（右下） -->
+    <g filter="url(#cardShadow)">
+        <rect x="660" y="420" width="480" height="230" rx="12" fill="#F3F4F6" opacity="0.8" />
+        <text x="900" y="460"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#6B7280" text-anchor="middle">
+            主观 + 无标准答案
+        </text>
+        <text x="900" y="530"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="middle">
+            <tspan x="900" dy="0">（较少使用的场景）</tspan>
+            <tspan x="900" dy="30">需要更复杂的评估设计</tspan>
+        </text>
+    </g>
+</svg>

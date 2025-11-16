@@ -1,0 +1,81 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题区 -->
+  <text x="640" y="65" font-size="38" font-weight="700" text-anchor="middle" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    🛠️ 方法 3：从零构建多个 Skills 并组合
+  </text>
+  
+  <rect x="360" y="80" width="560" height="36" fill="#F3E5F5" rx="8"/>
+  <text x="640" y="103" font-size="18" font-weight="600" text-anchor="middle" fill="#6A1B9A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    最高级方法 · 构建可组合的 Skills 生态系统
+  </text>
+  
+  <!-- 示例场景 -->
+  <rect x="100" y="140" width="1080" height="70" fill="#FFF5F0" rx="12"/>
+  <text x="140" y="170" font-size="22" font-weight="600" fill="#D97757" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    示例场景：博客内容创作工作流
+  </text>
+  <text x="140" y="197" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+    创建两个独立 Skills，在 Project 中组合使用，实现完整的博客创作自动化
+  </text>
+  
+  <!-- 两个 Skills 卡片 -->
+  <g transform="translate(0, 230)">
+    <!-- Skill 1 -->
+    <rect x="100" y="0" width="520" height="200" fill="#FFFFFF" rx="16"/>
+    <rect x="100" y="0" width="8" height="200" fill="#9C27B0" rx="4"/>
+    
+    <text x="140" y="40" font-size="28" fill="#9C27B0">📊</text>
+    <text x="200" y="50" font-size="24" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Skill 1: Keyword Research
+    </text>
+    <text x="140" y="85" font-size="18" font-weight="600" fill="#9C27B0" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      关键词研究 Skill
+    </text>
+    <text x="140" y="120" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">• 指定使用 Ahrefs MCP 工具</tspan>
+      <tspan x="140" dy="28">• 自动搜索热门关键词</tspan>
+      <tspan x="140" dy="28">• 分析搜索量和竞争度</tspan>
+    </text>
+    
+    <!-- Skill 2 -->
+    <rect x="660" y="0" width="520" height="200" fill="#FFFFFF" rx="16"/>
+    <rect x="660" y="0" width="8" height="200" fill="#9C27B0" rx="4"/>
+    
+    <text x="700" y="40" font-size="28" fill="#9C27B0">✍️</text>
+    <text x="760" y="50" font-size="24" font-weight="700" fill="#2D2D2D" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      Skill 2: Blog Writer
+    </text>
+    <text x="700" y="85" font-size="18" font-weight="600" fill="#9C27B0" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      博客撰写 Skill
+    </text>
+    <text x="700" y="120" font-size="17" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="700" dy="0">• 包含 AI 搜索引擎优化指南</tspan>
+      <tspan x="700" dy="28">• 定义输出格式标准</tspan>
+      <tspan x="700" dy="28">• 自动生成 Word 文档</tspan>
+    </text>
+  </g>
+  
+  <!-- 组合使用流程 -->
+  <g transform="translate(0, 450)">
+    <rect x="100" y="0" width="1080" height="200" fill="#E8F5E9" rx="16"/>
+    
+    <text x="140" y="40" font-size="28" font-weight="700" fill="#2E7D32" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      🎯 在 Project 中组合使用
+    </text>
+    
+    <text x="140" y="80" font-size="18" font-weight="400" fill="#4A4A4A" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      <tspan x="140" dy="0">1. 在新 Project 中添加这两个 Skills</tspan>
+      <tspan x="140" dy="32">2. 在项目自定义指令中说明：使用 Keyword Research 和 Blog Writer 完成任务</tspan>
+      <tspan x="140" dy="32">3. 只需一句简单提示："写一篇关于...的博客文章"</tspan>
+    </text>
+    
+    <rect x="140" y="170" width="1000" height="20" fill="#C8E6C9" rx="4"/>
+    <text x="640" y="184" font-size="16" font-weight="600" text-anchor="middle" fill="#1B5E20" font-family="ui-sans-serif, -apple-system, system-ui, sans-serif">
+      ✅ Claude 自动触发两个 Skills → 调用 Ahrefs 获取关键词 → 生成完整的格式化 Word 文档
+    </text>
+  </g>
+</svg>
+

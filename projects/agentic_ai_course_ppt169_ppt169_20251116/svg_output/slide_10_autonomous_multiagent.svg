@@ -1,0 +1,149 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.08" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FAFAFA" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="bold" fill="#1F2937">
+        🚀 Module 5: Highly Autonomous Agents
+    </text>
+
+    <!-- 副标题 -->
+    <text x="60" y="140"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="600" fill="#10B981">
+        Pattern 2: Multi-Agent Systems
+    </text>
+
+    <!-- 核心类比 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="180" width="520" height="140" rx="12" fill="#FEE2E2" />
+        <text x="320" y="230"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#DC2626" text-anchor="middle">
+            单人（单 Agent）
+        </text>
+        <text x="320" y="275"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="48" text-anchor="middle">
+            😰
+        </text>
+        <text x="320" y="305"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#991B1B" text-anchor="middle">
+            Overwhelmed
+        </text>
+    </g>
+
+    <text x="640" y="260"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="36" fill="#6B7280" text-anchor="middle">
+        VS
+    </text>
+
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="180" width="520" height="140" rx="12" fill="#D1FAE5" />
+        <text x="960" y="230"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="28" font-weight="600" fill="#10B981" text-anchor="middle">
+            团队（多 Agent）
+        </text>
+        <text x="960" y="275"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="48" text-anchor="middle">
+            🎯
+        </text>
+        <text x="960" y="305"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="20" fill="#065F46" text-anchor="middle">
+            Specialized &amp; Better
+        </text>
+    </g>
+
+    <!-- 示例：Marketing Team Agent -->
+    <text x="640" y="370"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="600" fill="#1F2937" text-anchor="middle">
+        示例：Marketing Team Agent
+    </text>
+
+    <!-- Researcher -->
+    <g filter="url(#cardShadow)">
+        <rect x="130" y="420" width="280" height="240" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" />
+        <circle cx="270" cy="480" r="40" fill="#DBEAFE" />
+        <text x="270" y="495" font-size="40" text-anchor="middle">🔍</text>
+        <text x="270" y="540"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#3B82F6" text-anchor="middle">
+            Researcher
+        </text>
+        <text x="270" y="590"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="middle">
+            <tspan x="270" dy="0">Conducts</tspan>
+            <tspan x="270" dy="24">trend research</tspan>
+        </text>
+    </g>
+
+    <!-- Graphic Designer -->
+    <g filter="url(#cardShadow)">
+        <rect x="500" y="420" width="280" height="240" rx="12" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="2" />
+        <circle cx="640" cy="480" r="40" fill="#EDE9FE" />
+        <text x="640" y="495" font-size="40" text-anchor="middle">🎨</text>
+        <text x="640" y="540"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#8B5CF6" text-anchor="middle">
+            Graphic Designer
+        </text>
+        <text x="640" y="590"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="middle">
+            <tspan x="640" dy="0">Creates</tspan>
+            <tspan x="640" dy="24">visualizations</tspan>
+        </text>
+    </g>
+
+    <!-- Writer -->
+    <g filter="url(#cardShadow)">
+        <rect x="870" y="420" width="280" height="240" rx="12" fill="#FFFFFF" stroke="#10B981" stroke-width="2" />
+        <circle cx="1010" cy="480" r="40" fill="#D1FAE5" />
+        <text x="1010" y="495" font-size="40" text-anchor="middle">✍️</text>
+        <text x="1010" y="540"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#10B981" text-anchor="middle">
+            Writer
+        </text>
+        <text x="1010" y="590"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#6B7280" text-anchor="middle">
+            <tspan x="1010" dy="0">Compiles</tspan>
+            <tspan x="1010" dy="24">final report</tspan>
+        </text>
+    </g>
+
+    <!-- 协作箭头 -->
+    <line x1="410" y1="540" x2="490" y2="540" stroke="#6B7280" stroke-width="2" stroke-dasharray="8,4" opacity="0.6" />
+    <line x1="790" y1="540" x2="860" y2="540" stroke="#6B7280" stroke-width="2" stroke-dasharray="8,4" opacity="0.6" />
+
+    <!-- Final Result -->
+    <text x="640" y="395"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+        font-size="20" fill="#6B7280" text-anchor="middle">
+        ↓ 协作产出 ↓
+    </text>
+</svg>

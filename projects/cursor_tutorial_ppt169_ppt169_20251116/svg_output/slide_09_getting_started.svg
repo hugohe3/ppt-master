@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 标题 -->
+  <text x="640" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#1A237E" text-anchor="middle">
+    Getting Started in 3 Steps
+  </text>
+  
+  <!-- 第一栏：安装配置 -->
+  <rect x="60" y="120" width="360" height="545" fill="#0066FF" rx="12"/>
+  
+  <text x="240" y="165" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    1️⃣ 安装配置
+  </text>
+  
+  <circle cx="240" cy="220" r="35" fill="#FFFFFF" opacity="0.2"/>
+  <text x="240" y="233" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" fill="#FFFFFF" text-anchor="middle">
+    📥
+  </text>
+  
+  <!-- 步骤列表 -->
+  <g>
+    <circle cx="105" cy="295" r="7" fill="#FFFFFF"/>
+    <text x="122" y="301" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#FFFFFF">
+      <tspan x="122" dy="0">下载 Cursor</tspan>
+      <tspan x="122" dy="24" font-size="15" opacity="0.8">cursor.sh</tspan>
+    </text>
+    
+    <circle cx="105" cy="365" r="7" fill="#FFFFFF"/>
+    <text x="122" y="371" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#FFFFFF">
+      登录账号
+    </text>
+    
+    <circle cx="105" cy="415" r="7" fill="#FFFFFF"/>
+    <text x="122" y="421" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#FFFFFF">
+      导入 VS Code 设置
+    </text>
+  </g>
+  
+  <rect x="100" y="490" width="280" height="55" fill="#FFFFFF" opacity="0.2" rx="8"/>
+  <text x="240" y="522" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    ⏱️ 时间：5分钟
+  </text>
+  
+  <!-- 第二栏：快捷键必记 -->
+  <rect x="460" y="120" width="360" height="545" fill="#10B981" rx="12"/>
+  
+  <text x="640" y="165" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    2️⃣ 快捷键必记
+  </text>
+  
+  <circle cx="640" cy="220" r="35" fill="#FFFFFF" opacity="0.2"/>
+  <text x="640" y="233" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" fill="#FFFFFF" text-anchor="middle">
+    ⌨️
+  </text>
+  
+  <!-- 快捷键卡片 -->
+  <g>
+    <rect x="500" y="275" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="640" y="303" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      Cmd + L
+    </text>
+    <text x="640" y="326" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" opacity="0.9" text-anchor="middle">
+      AI Chat
+    </text>
+    
+    <rect x="500" y="355" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="640" y="383" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      Cmd + K
+    </text>
+    <text x="640" y="406" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" opacity="0.9" text-anchor="middle">
+      AI Edit
+    </text>
+    
+    <rect x="500" y="435" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="640" y="463" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      Cmd + I
+    </text>
+    <text x="640" y="486" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" opacity="0.9" text-anchor="middle">
+      Composer
+    </text>
+  </g>
+  
+  <text x="640" y="545" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" opacity="0.8" text-anchor="middle">
+    💡 这三个键是核心，必须熟记
+  </text>
+  
+  <!-- 第三栏：学习资源 -->
+  <rect x="860" y="120" width="360" height="545" fill="#6366F1" rx="12"/>
+  
+  <text x="1040" y="165" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    3️⃣ 学习资源
+  </text>
+  
+  <circle cx="1040" cy="220" r="35" fill="#FFFFFF" opacity="0.2"/>
+  <text x="1040" y="233" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" fill="#FFFFFF" text-anchor="middle">
+    📚
+  </text>
+  
+  <!-- 资源列表 -->
+  <g>
+    <rect x="900" y="275" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="940" y="303" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+      📘 官方文档
+    </text>
+    <text x="940" y="326" font-family="'Monaco', 'Courier New', monospace" font-size="13" font-weight="400" fill="#FFFFFF" opacity="0.9">
+      cursor.sh/docs
+    </text>
+    
+    <rect x="900" y="355" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="940" y="383" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+      🎥 视频教程
+    </text>
+    <text x="940" y="406" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" opacity="0.9">
+      YouTube / Bilibili
+    </text>
+    
+    <rect x="900" y="435" width="280" height="65" fill="#FFFFFF" opacity="0.2" rx="8"/>
+    <text x="940" y="463" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+      💬 社区交流
+    </text>
+    <text x="940" y="486" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" opacity="0.9">
+      Discord / Forum
+    </text>
+  </g>
+  
+  <text x="1040" y="545" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" opacity="0.8" text-anchor="middle">
+    💡 遇到问题，社区有大量解答
+  </text>
+</svg>

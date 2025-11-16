@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    图片存储：S3 🖼️
+  </text>
+  
+  <!-- 问题卡片（左上） -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="140" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#E74C3C" stroke-width="3"/>
+    
+    <text x="90" y="185" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#E74C3C">
+      ❌ 问题
+    </text>
+    
+    <text x="90" y="230" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#333333">
+      在 EC2 实例上存储图片：
+    </text>
+    
+    <text x="110" y="265" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666">
+      • 存储成本高昂
+    </text>
+    
+    <text x="110" y="295" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666">
+      • 容量有限，扩展困难
+    </text>
+    
+    <text x="110" y="325" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666">
+      • 实例重启可能丢失数据
+    </text>
+  </g>
+  
+  <!-- 解决方案卡片（右侧） -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="140" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <!-- S3 图标 -->
+    <circle cx="730" cy="190" r="35" fill="#27AE60"/>
+    <text x="730" y="205" 
+          font-size="35" 
+          text-anchor="middle">
+      📦
+    </text>
+    
+    <text x="790" y="185" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="36" 
+          font-weight="bold" 
+          fill="#27AE60">
+      S3
+    </text>
+    <text x="870" y="185" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="22" 
+          fill="#666666">
+      Simple Storage Service
+    </text>
+    
+    <text x="790" y="230" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#333333">
+      ✅ 持久可靠（99.999999999% 耐久性）
+    </text>
+    
+    <text x="790" y="265" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#333333">
+      ✅ 几乎无限容量
+    </text>
+    
+    <text x="790" y="300" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#333333">
+      ✅ 成本极低（按实际使用量付费）
+    </text>
+  </g>
+  
+  <!-- S3 桶示意图 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="370" width="1160" height="300" rx="12" fill="#FFFFFF"/>
+    
+    <text x="90" y="420" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="28" 
+          font-weight="600" 
+          fill="#232F3E">
+      S3 Bucket（存储桶）示意
+    </text>
+    
+    <!-- 存储桶容器 -->
+    <rect x="90" y="450" width="1100" height="190" rx="8" fill="#E8F5E9" stroke="#27AE60" stroke-width="2"/>
+    
+    <text x="110" y="480" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" 
+          fill="#666666">
+      hoodiestore-images/
+    </text>
+    
+    <!-- 图片文件图标 -->
+    <g transform="translate(140, 500)">
+      <!-- 文件 1 -->
+      <rect x="0" y="0" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
+      <text x="60" y="65" 
+            font-size="50" 
+            text-anchor="middle">
+        🖼️
+      </text>
+      <text x="60" y="100" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="12" 
+            text-anchor="middle" 
+            fill="#666666">
+        hoodie_01.jpg
+      </text>
+      
+      <!-- 文件 2 -->
+      <rect x="150" y="0" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
+      <text x="210" y="65" 
+            font-size="50" 
+            text-anchor="middle">
+        🖼️
+      </text>
+      <text x="210" y="100" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="12" 
+            text-anchor="middle" 
+            fill="#666666">
+        hoodie_02.jpg
+      </text>
+      
+      <!-- 文件 3 -->
+      <rect x="300" y="0" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
+      <text x="360" y="65" 
+            font-size="50" 
+            text-anchor="middle">
+        🖼️
+      </text>
+      <text x="360" y="100" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="12" 
+            text-anchor="middle" 
+            fill="#666666">
+        hoodie_03.jpg
+      </text>
+      
+      <!-- 文件 4 -->
+      <rect x="450" y="0" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#4A90E2" stroke-width="2"/>
+      <text x="510" y="65" 
+            font-size="50" 
+            text-anchor="middle">
+        🖼️
+      </text>
+      <text x="510" y="100" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="12" 
+            text-anchor="middle" 
+            fill="#666666">
+        hoodie_04.jpg
+      </text>
+      
+      <!-- 省略号 -->
+      <text x="610" y="70" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="40" 
+            fill="#95A5A6">
+        ...
+      </text>
+      
+      <!-- 容量信息 -->
+      <rect x="680" y="20" width="250" height="80" rx="8" fill="#FFF3E0"/>
+      <text x="805" y="50" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            text-anchor="middle" 
+            fill="#E67E22">
+        存储统计
+      </text>
+      <text x="805" y="80" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="20" 
+            font-weight="bold" 
+            text-anchor="middle" 
+            fill="#333333">
+        1,234 张图片 / 5.6 GB
+      </text>
+    </g>
+  </g>
+</svg>

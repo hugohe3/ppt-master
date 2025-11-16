@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4A90E2" />
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="90" 
+        font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="48" 
+        font-weight="bold" 
+        fill="#1A1A1A">
+    流量扩展：Auto Scaling &amp; ELB 🚦
+  </text>
+  
+  <!-- 问题卡片 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="140" width="1160" height="100" rx="12" fill="#FFE5E5"/>
+    
+    <text x="90" y="180" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="24" 
+          font-weight="600" 
+          fill="#E74C3C">
+      ❌ 问题：单台服务器扛不住高流量
+    </text>
+    
+    <text x="90" y="220" 
+          font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="20" 
+          fill="#666666">
+      促销活动导致访问量激增 → 单个 EC2 实例 CPU 100% → 网站崩溃 💥
+    </text>
+  </g>
+  
+  <!-- 解决方案架构图 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="270" width="1160" height="390" rx="12" fill="#FFFFFF"/>
+    
+    <!-- Auto Scaling 区域 -->
+    <g transform="translate(120, 310)">
+      <text x="0" y="0" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="28" 
+            font-weight="bold" 
+            fill="#27AE60">
+        Auto Scaling
+      </text>
+      
+      <text x="0" y="35" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            fill="#666666">
+        自动伸缩组
+      </text>
+      
+      <!-- 高峰期场景 -->
+      <rect x="0" y="60" width="480" height="130" rx="8" fill="#E8F8F5" stroke="#27AE60" stroke-width="2"/>
+      <text x="20" y="85" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            font-weight="600" 
+            fill="#27AE60">
+        📈 高峰期
+      </text>
+      
+      <!-- 多个 EC2 实例 -->
+      <g transform="translate(20, 100)">
+        <rect x="0" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="35" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="90" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="125" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="180" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="215" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="270" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="305" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="360" y="0" width="70" height="70" rx="6" fill="#4A90E2" opacity="0.5"/>
+        <text x="395" y="45" font-size="30" text-anchor="middle" opacity="0.5">🖥️</text>
+        <text x="395" y="90" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" 
+              text-anchor="middle" 
+              fill="#27AE60">
+          自动添加
+        </text>
+      </g>
+      
+      <!-- 低峰期场景 -->
+      <rect x="0" y="210" width="480" height="130" rx="8" fill="#FFF3E0" stroke="#E67E22" stroke-width="2"/>
+      <text x="20" y="235" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            font-weight="600" 
+            fill="#E67E22">
+        📉 低峰期
+      </text>
+      
+      <!-- 少量 EC2 实例 -->
+      <g transform="translate(20, 250)">
+        <rect x="0" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="35" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="90" y="0" width="70" height="70" rx="6" fill="#4A90E2"/>
+        <text x="125" y="45" font-size="30" text-anchor="middle">🖥️</text>
+        
+        <rect x="180" y="0" width="70" height="70" rx="6" fill="#95A5A6" opacity="0.3"/>
+        <text x="215" y="45" font-size="30" text-anchor="middle" opacity="0.3">🖥️</text>
+        <text x="215" y="90" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" 
+              text-anchor="middle" 
+              fill="#95A5A6">
+          自动移除
+        </text>
+        
+        <text x="310" y="45" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" 
+              fill="#E67E22">
+          节省成本 💰
+        </text>
+      </g>
+    </g>
+    
+    <!-- ELB 区域 -->
+    <g transform="translate(680, 310)">
+      <text x="0" y="0" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="28" 
+            font-weight="bold" 
+            fill="#4A90E2">
+        ELB
+      </text>
+      
+      <text x="0" y="35" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            fill="#666666">
+        Elastic Load Balancing
+      </text>
+      
+      <!-- 负载均衡器 -->
+      <rect x="0" y="60" width="480" height="280" rx="8" fill="#E8F4F8"/>
+      
+      <!-- ELB 图标 -->
+      <circle cx="240" cy="130" r="40" fill="#4A90E2"/>
+      <text x="240" y="145" 
+            font-size="40" 
+            text-anchor="middle">
+        🚦
+      </text>
+      
+      <text x="240" y="190" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="18" 
+            font-weight="600" 
+            text-anchor="middle" 
+            fill="#232F3E">
+        负载均衡器
+      </text>
+      
+      <!-- 流量分发箭头 -->
+      <g transform="translate(0, 220)">
+        <!-- 用户流量进入 -->
+        <path d="M 240 -50 L 240 -10" stroke="#FF9900" stroke-width="4" fill="none" marker-end="url(#arrowBlue)"/>
+        <text x="240" y="-60" 
+              font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" 
+              text-anchor="middle" 
+              fill="#FF9900">
+          用户流量 👥
+        </text>
+        
+        <!-- 分发到多个服务器 -->
+        <path d="M 240 10 L 70 80" stroke="#4A90E2" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <path d="M 240 10 L 180 80" stroke="#4A90E2" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <path d="M 240 10 L 300 80" stroke="#4A90E2" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        <path d="M 240 10 L 410 80" stroke="#4A90E2" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
+        
+        <!-- 服务器组 -->
+        <rect x="30" y="85" width="50" height="50" rx="4" fill="#27AE60"/>
+        <text x="55" y="118" font-size="25" text-anchor="middle">🖥️</text>
+        
+        <rect x="155" y="85" width="50" height="50" rx="4" fill="#27AE60"/>
+        <text x="180" y="118" font-size="25" text-anchor="middle">🖥️</text>
+        
+        <rect x="275" y="85" width="50" height="50" rx="4" fill="#27AE60"/>
+        <text x="300" y="118" font-size="25" text-anchor="middle">🖥️</text>
+        
+        <rect x="400" y="85" width="50" height="50" rx="4" fill="#27AE60"/>
+        <text x="425" y="118" font-size="25" text-anchor="middle">🖥️</text>
+      </g>
+      
+      <!-- 说明文字 -->
+      <text x="240" y="310" 
+            font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+            font-size="16" 
+            text-anchor="middle" 
+            fill="#666666">
+        智能分配流量，避免单点过载
+      </text>
+    </g>
+  </g>
+</svg>

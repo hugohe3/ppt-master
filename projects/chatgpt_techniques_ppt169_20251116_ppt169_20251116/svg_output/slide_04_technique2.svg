@@ -1,0 +1,132 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F3F4F6"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#1F2937">
+    2. 五分钟放大器
+  </text>
+  
+  <!-- 英文名 -->
+  <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="400" fill="#6B7280" font-style="italic">
+    Five-Minute Amplifier Technique
+  </text>
+  
+  <!-- 核心概念卡片 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="160" width="400" height="240" fill="#FEF3C7" rx="12"/>
+    <text x="90" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#92400E">
+      核心概念
+    </text>
+    
+    <!-- 图示：1 到多 -->
+    <circle cx="230" cy="270" r="40" fill="#F97316" opacity="0.9"/>
+    <text x="230" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff" text-anchor="middle">
+      1
+    </text>
+    
+    <path d="M 280 270 L 320 270" stroke="#F97316" stroke-width="3" marker-end="url(#arrowOrange)"/>
+    
+    <circle cx="360" cy="240" r="20" fill="#F97316" opacity="0.6"/>
+    <circle cx="360" cy="270" r="20" fill="#F97316" opacity="0.6"/>
+    <circle cx="360" cy="300" r="20" fill="#F97316" opacity="0.6"/>
+    
+    <text x="90" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#1F2937">
+      <tspan x="90" dy="0">一份高质量</tspan>
+      <tspan x="90" dy="30">支柱内容</tspan>
+    </text>
+    
+    <text x="320" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#1F2937">
+      多种输出
+    </text>
+  </g>
+  
+  <defs>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#F97316" />
+    </marker>
+  </defs>
+  
+  <!-- 应用示例标题 -->
+  <text x="500" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#1F2937">
+    应用示例
+  </text>
+  
+  <!-- 示例 1 - 测验问卷 -->
+  <g filter="url(#cardShadow)">
+    <rect x="500" y="210" width="720" height="90" fill="#ffffff" rx="12"/>
+    <rect x="500" y="210" width="8" height="90" fill="#10B981" rx="12"/>
+    
+    <text x="530" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1F2937">
+      📝 创建测验问卷
+    </text>
+    <text x="530" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#6B7280">
+      基于幻灯片内容生成 10 个互动问题，提升参与度
+    </text>
+  </g>
+  
+  <!-- 示例 2 - 总结邮件 -->
+  <g filter="url(#cardShadow)">
+    <rect x="500" y="320" width="720" height="90" fill="#ffffff" rx="12"/>
+    <rect x="500" y="320" width="8" height="90" fill="#2563EB" rx="12"/>
+    
+    <text x="530" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1F2937">
+      ✉️ 起草总结邮件
+    </text>
+    <text x="530" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#6B7280">
+      为内部利益相关者提炼关键要点，节省阅读时间
+    </text>
+  </g>
+  
+  <!-- 示例 3 - 信息图表 -->
+  <g filter="url(#cardShadow)">
+    <rect x="500" y="430" width="720" height="90" fill="#ffffff" rx="12"/>
+    <rect x="500" y="430" width="8" height="90" fill="#8B5CF6" rx="12"/>
+    
+    <text x="530" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1F2937">
+      📊 生成客户信息图
+    </text>
+    <text x="530" y="495" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#6B7280">
+      提取最有冲击力的统计数据，制作视觉化内容
+    </text>
+  </g>
+  
+  <!-- 关键原则 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="440" width="400" height="220" fill="#FEE2E2" rx="12"/>
+    <text x="90" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#991B1B">
+      ⚠️ 关键原则
+    </text>
+    <text x="90" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#1F2937">
+      <tspan x="90" dy="0">只放大高质量的支柱内容！</tspan>
+      <tspan x="90" dy="35">遵循"垃圾进，垃圾出"原则，</tspan>
+      <tspan x="90" dy="30">低质量源材料无法产生优质</tspan>
+      <tspan x="90" dy="30">衍生内容。</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部提示 -->
+  <g filter="url(#cardShadow)">
+    <rect x="500" y="550" width="720" height="110" fill="#ffffff" rx="12"/>
+    <text x="530" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1F2937">
+      适用场景
+    </text>
+    <text x="530" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="400" fill="#6B7280">
+      <tspan x="530" dy="0">✓ 内容营销传播</tspan>
+      <tspan x="760" dy="0">✓ 知识库建设</tspan>
+      <tspan x="990" dy="0">✓ 培训材料开发</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="640" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#6B7280" text-anchor="middle">
+    4
+  </text>
+</svg>
+

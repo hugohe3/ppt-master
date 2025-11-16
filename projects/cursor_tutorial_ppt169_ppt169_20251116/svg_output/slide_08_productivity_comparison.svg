@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 标题 -->
+  <text x="640" y="70" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#1A237E" text-anchor="middle">
+    Productivity Gains with Cursor
+  </text>
+  
+  <!-- 图表区域 -->
+  <text x="60" y="125" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#0066FF">
+    效率对比（相对传统 IDE）
+  </text>
+  
+  <!-- 图表背景 -->
+  <rect x="60" y="150" width="1160" height="280" fill="#F0F4FF" rx="8"/>
+  
+  <!-- Y轴刻度线和标签 -->
+  <line x1="120" y1="185" x2="120" y2="400" stroke="#E8EAED" stroke-width="2"/>
+  <text x="110" y="192" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#5F6368" text-anchor="end">100%</text>
+  <text x="110" y="262" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#5F6368" text-anchor="end">75%</text>
+  <text x="110" y="332" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#5F6368" text-anchor="end">50%</text>
+  <text x="110" y="405" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#5F6368" text-anchor="end">0%</text>
+  
+  <!-- X轴线 -->
+  <line x1="120" y1="400" x2="1180" y2="400" stroke="#E8EAED" stroke-width="2"/>
+  
+  <!-- 组1：功能实现时间 -->
+  <!-- 传统IDE柱子 -->
+  <rect x="220" y="185" width="130" height="215" fill="#E8EAED" rx="4"/>
+  <text x="285" y="210" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#5F6368" text-anchor="middle">100%</text>
+  
+  <!-- Cursor柱子 -->
+  <rect x="370" y="325" width="130" height="75" fill="#0066FF" rx="4"/>
+  <text x="435" y="350" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">35%</text>
+  
+  <!-- X轴标签1 -->
+  <text x="360" y="420" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="middle">功能实现时间</text>
+  
+  <!-- 组2：代码审查时间 -->
+  <!-- 传统IDE柱子 -->
+  <rect x="570" y="185" width="130" height="215" fill="#E8EAED" rx="4"/>
+  <text x="635" y="210" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#5F6368" text-anchor="middle">100%</text>
+  
+  <!-- Cursor柱子 -->
+  <rect x="720" y="292" width="130" height="108" fill="#10B981" rx="4"/>
+  <text x="785" y="318" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">50%</text>
+  
+  <!-- X轴标签2 -->
+  <text x="710" y="420" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="middle">代码审查时间</text>
+  
+  <!-- 组3：学习新技术 -->
+  <!-- 传统IDE柱子 -->
+  <rect x="920" y="185" width="130" height="215" fill="#E8EAED" rx="4"/>
+  <text x="985" y="210" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#5F6368" text-anchor="middle">100%</text>
+  
+  <!-- Cursor柱子 -->
+  <rect x="1070" y="314" width="130" height="86" fill="#6366F1" rx="4"/>
+  <text x="1135" y="340" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">40%</text>
+  
+  <!-- X轴标签3 -->
+  <text x="1060" y="420" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="middle">学习新技术</text>
+  
+  <!-- 图例 -->
+  <rect x="920" y="165" width="18" height="18" fill="#E8EAED" rx="2"/>
+  <text x="946" y="178" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368">传统 IDE</text>
+  
+  <rect x="1050" y="165" width="18" height="18" fill="#0066FF" rx="2"/>
+  <text x="1076" y="178" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368">Cursor</text>
+  
+  <!-- 底部数据卡片 -->
+  <text x="60" y="475" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#1A237E">
+    关键指标
+  </text>
+  
+  <!-- KPI卡片1 -->
+  <rect x="60" y="495" width="360" height="80" fill="#0066FF" rx="8"/>
+  <text x="85" y="525" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF">编码速度</text>
+  <text x="85" y="560" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF">
+    +3x
+  </text>
+  <text x="380" y="545" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="end">↑</text>
+  
+  <!-- KPI卡片2 -->
+  <rect x="460" y="495" width="360" height="80" fill="#10B981" rx="8"/>
+  <text x="485" y="525" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF">Bug 率</text>
+  <text x="485" y="560" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF">
+    -40%
+  </text>
+  <text x="780" y="545" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="end">↓</text>
+  
+  <!-- KPI卡片3 -->
+  <rect x="860" y="495" width="360" height="80" fill="#6366F1" rx="8"/>
+  <text x="885" y="525" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF">开发者满意度</text>
+  <text x="885" y="560" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF">
+    95%
+  </text>
+  <text x="1180" y="545" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="end">♥</text>
+</svg>

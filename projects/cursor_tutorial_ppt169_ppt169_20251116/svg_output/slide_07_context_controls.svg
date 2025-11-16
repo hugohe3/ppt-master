@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#1A237E">
+    Advanced: Master Context Controls
+  </text>
+  
+  <!-- 左侧：@ 符号大全 -->
+  <text x="60" y="135" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#0066FF">
+    @ 符号大全
+  </text>
+  
+  <rect x="60" y="155" width="560" height="510" fill="#F0F4FF" rx="8"/>
+  
+  <!-- @ 符号列表 -->
+  <g>
+    <!-- @Files -->
+    <rect x="90" y="180" width="500" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="204" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#0066FF">
+      @Files
+    </text>
+    <text x="110" y="223" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      引用特定文件
+    </text>
+    
+    <!-- @Folders -->
+    <rect x="90" y="245" width="500" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="269" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#0066FF">
+      @Folders
+    </text>
+    <text x="110" y="288" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      引用整个目录
+    </text>
+    
+    <!-- @Code -->
+    <rect x="90" y="310" width="500" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="334" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#0066FF">
+      @Code
+    </text>
+    <text x="110" y="353" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      引用代码片段
+    </text>
+    
+    <!-- @Docs -->
+    <rect x="90" y="375" width="500" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="399" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#6366F1">
+      @Docs
+    </text>
+    <text x="110" y="418" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      引用官方文档
+    </text>
+    
+    <!-- @Web -->
+    <rect x="90" y="440" width="500" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="464" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#10B981">
+      @Web
+    </text>
+    <text x="110" y="483" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      搜索网络资源
+    </text>
+    
+    <!-- @Git -->
+    <rect x="90" y="505" width="240" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="110" y="529" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#F59E0B">
+      @Git
+    </text>
+    <text x="110" y="548" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      引用Git历史
+    </text>
+    
+    <!-- @Codebase -->
+    <rect x="350" y="505" width="240" height="52" fill="#FFFFFF" rx="6"/>
+    <text x="370" y="529" font-family="'Monaco', 'Courier New', monospace" font-size="18" font-weight="700" fill="#EA4335">
+      @Codebase
+    </text>
+    <text x="370" y="548" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#5F6368">
+      全项目上下文
+    </text>
+  </g>
+  
+  <!-- 右侧：最佳实践 -->
+  <text x="660" y="135" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#10B981">
+    最佳实践
+  </text>
+  
+  <!-- 实践卡片1 -->
+  <rect x="660" y="160" width="560" height="110" fill="#10B981" rx="12"/>
+  <text x="690" y="191" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="600" fill="#FFFFFF">
+    🎯 精准引用，减少 token 消耗
+  </text>
+  <text x="690" y="220" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" opacity="0.95">
+    <tspan x="690" dy="0">只引用需要的文件/文件夹，避免过度</tspan>
+    <tspan x="690" dy="22">使用 @Codebase，节省成本。</tspan>
+  </text>
+  
+  <!-- 实践卡片2 -->
+  <rect x="660" y="285" width="560" height="110" fill="#6366F1" rx="12"/>
+  <text x="690" y="316" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="600" fill="#FFFFFF">
+    📁 大项目优先用 @Folders
+  </text>
+  <text x="690" y="345" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" opacity="0.95">
+    <tspan x="690" dy="0">修改多个文件时，引用目录比逐个</tspan>
+    <tspan x="690" dy="22">引用文件更高效。</tspan>
+  </text>
+  
+  <!-- 实践卡片3 -->
+  <rect x="660" y="410" width="560" height="110" fill="#F59E0B" rx="12"/>
+  <text x="690" y="441" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="600" fill="#FFFFFF">
+    📚 学习新库配合 @Docs
+  </text>
+  <text x="690" y="470" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" opacity="0.95">
+    <tspan x="690" dy="0">使用陌生库时，@Docs 可自动查找</tspan>
+    <tspan x="690" dy="22">官方文档，提供准确示例。</tspan>
+  </text>
+  
+  <!-- 实践卡片4 -->
+  <rect x="660" y="535" width="560" height="80" fill="#EA4335" rx="12"/>
+  <text x="690" y="568" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="600" fill="#FFFFFF">
+    🔍 Debug 时结合 @Git 查历史
+  </text>
+  <text x="690" y="595" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" opacity="0.95">
+    发现问题时查看代码变更历史，快速定位。
+  </text>
+</svg>

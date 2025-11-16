@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 标题 -->
+  <text x="60" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="700" fill="#1A237E">
+    AI Chat - Your Coding Partner
+  </text>
+  
+  <!-- 上半部分：功能说明区域背景 -->
+  <rect x="60" y="115" width="1160" height="150" fill="#F0F4FF" rx="8"/>
+  
+  <!-- 功能说明 -->
+  <text x="90" y="155" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#5F6368">
+    <tspan x="90" dy="0">AI Chat 是 Cursor 的核心功能，提供实时的 AI 编程助手。</tspan>
+    <tspan x="90" dy="28">支持自然语言对话，无论是技术问题、代码调试还是学习新知识，AI 都能即时响应。</tspan>
+  </text>
+  
+  <!-- 使用场景标题 -->
+  <text x="90" y="220" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#0066FF">
+    典型使用场景
+  </text>
+  
+  <!-- 场景图标+文字 -->
+  <text x="110" y="248" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#5F6368">
+    <tspan x="110" dy="0">💡 询问技术问题</tspan>
+    <tspan x="360" dy="0">🐛 调试错误代码</tspan>
+    <tspan x="610" dy="0">📚 学习新概念</tspan>
+  </text>
+  
+  <!-- 下半部分分隔线 -->
+  <line x1="60" y1="295" x2="1220" y2="295" stroke="#E8EAED" stroke-width="2"/>
+  
+  <!-- 左侧：使用步骤 -->
+  <text x="60" y="335" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#1A237E">
+    使用步骤
+  </text>
+  
+  <!-- 步骤卡片 -->
+  <g>
+    <!-- 步骤1 -->
+    <circle cx="85" cy="378" r="16" fill="#0066FF"/>
+    <text x="85" y="384" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+    <text x="112" y="384" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#5F6368">
+      按 <tspan font-weight="600" fill="#0066FF">Cmd + L</tspan> 打开 Chat
+    </text>
+    
+    <!-- 步骤2 -->
+    <circle cx="85" cy="420" r="16" fill="#0066FF"/>
+    <text x="85" y="426" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+    <text x="112" y="426" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#5F6368">
+      输入你的问题或需求
+    </text>
+    
+    <!-- 步骤3 -->
+    <circle cx="85" cy="462" r="16" fill="#0066FF"/>
+    <text x="85" y="468" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+    <text x="112" y="468" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#5F6368">
+      获得即时 AI 答案
+    </text>
+    
+    <!-- 步骤4 -->
+    <circle cx="85" cy="504" r="16" fill="#0066FF"/>
+    <text x="85" y="510" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
+    <text x="112" y="510" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#5F6368">
+      可引用 <tspan font-weight="600" fill="#6366F1">@Files</tspan> <tspan font-weight="600" fill="#6366F1">@Docs</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：实战示例 -->
+  <text x="680" y="335" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#1A237E">
+    实战示例
+  </text>
+  
+  <!-- 对话框模拟 -->
+  <rect x="680" y="360" width="540" height="300" fill="#1A237E" rx="12"/>
+  
+  <!-- 用户问题 -->
+  <rect x="710" y="390" width="480" height="70" fill="#0066FF" rx="8"/>
+  <text x="730" y="412" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF">
+    <tspan x="730" dy="0">💭 用户提问：</tspan>
+    <tspan x="730" dy="24" font-weight="600" font-size="16">如何优化这个 React 组件的性能？</tspan>
+  </text>
+  
+  <!-- AI回答 -->
+  <rect x="710" y="480" width="480" height="160" fill="#E8EAED" rx="8"/>
+  <text x="730" y="505" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#1A237E">
+    <tspan x="730" dy="0">🤖 AI 回答：</tspan>
+    <tspan x="730" dy="26" font-size="15">建议使用以下优化策略：</tspan>
+    <tspan x="730" dy="22">1. 用 React.memo 包裹组件避免不必要渲染</tspan>
+    <tspan x="730" dy="20">2. 用 useCallback 优化事件处理函数</tspan>
+    <tspan x="730" dy="20">3. 使用 useMemo 缓存计算结果...</tspan>
+  </text>
+</svg>

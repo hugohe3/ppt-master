@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280px" height="720px">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 标题 -->
+  <text x="640" y="70" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#1A237E" text-anchor="middle">
+    Composer - Multi-File AI Agent
+  </text>
+  
+  <!-- 核心价值横幅 -->
+  <rect x="60" y="95" width="1160" height="60" fill="#6366F1" rx="8"/>
+  <text x="640" y="133" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="19" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    ⚡ 一次性编辑多个文件  •  🧠 理解项目结构  •  🚀 实现复杂功能
+  </text>
+  
+  <!-- 使用场景流程图标题 -->
+  <text x="60" y="195" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="600" fill="#0066FF">
+    工作流程示例
+  </text>
+  
+  <!-- 流程图：输入需求 -->
+  <rect x="60" y="220" width="300" height="95" fill="#0066FF" rx="12"/>
+  <text x="210" y="252" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    📝 输入需求
+  </text>
+  <text x="210" y="280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="210" dy="0">「添加用户登录功能」</tspan>
+  </text>
+  
+  <!-- 箭头1 -->
+  <path d="M 370 267 L 440 267" stroke="#0066FF" stroke-width="3" fill="none" marker-end="url(#arrow1)"/>
+  <defs>
+    <marker id="arrow1" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#0066FF"/>
+    </marker>
+  </defs>
+  
+  <!-- 流程图：AI分析 -->
+  <rect x="450" y="220" width="300" height="95" fill="#10B981" rx="12"/>
+  <text x="600" y="252" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    🤖 AI 分析
+  </text>
+  <text x="600" y="280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="600" dy="0">识别需要修改的文件</tspan>
+  </text>
+  
+  <!-- 箭头2 -->
+  <path d="M 760 267 L 830 267" stroke="#10B981" stroke-width="3" fill="none" marker-end="url(#arrow2)"/>
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <polygon points="0 0, 10 5, 0 10" fill="#10B981"/>
+    </marker>
+  </defs>
+  
+  <!-- 流程图：批量生成 -->
+  <rect x="840" y="220" width="300" height="95" fill="#6366F1" rx="12"/>
+  <text x="990" y="252" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    ✅ 批量生成
+  </text>
+  <text x="990" y="280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="990" dy="0">同时修改多个文件</tspan>
+  </text>
+  
+  <!-- 文件列表区域 -->
+  <text x="60" y="355" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E">
+    生成的文件清单
+  </text>
+  
+  <!-- 文件卡片背景 -->
+  <rect x="60" y="375" width="1160" height="150" fill="#F0F4FF" rx="8"/>
+  
+  <!-- 文件1 -->
+  <rect x="90" y="402" width="250" height="58" fill="#10B981" rx="6"/>
+  <text x="215" y="425" font-family="'Monaco', 'Courier New', monospace" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    📄 auth.ts
+  </text>
+  <text x="215" y="447" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    新建
+  </text>
+  
+  <!-- 文件2 -->
+  <rect x="365" y="402" width="250" height="58" fill="#10B981" rx="6"/>
+  <text x="490" y="425" font-family="'Monaco', 'Courier New', monospace" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    📄 login.tsx
+  </text>
+  <text x="490" y="447" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    新建
+  </text>
+  
+  <!-- 文件3 -->
+  <rect x="640" y="402" width="250" height="58" fill="#F59E0B" rx="6"/>
+  <text x="765" y="425" font-family="'Monaco', 'Courier New', monospace" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    📝 api.ts
+  </text>
+  <text x="765" y="447" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    修改
+  </text>
+  
+  <!-- 文件4 -->
+  <rect x="915" y="402" width="250" height="58" fill="#F59E0B" rx="6"/>
+  <text x="1040" y="425" font-family="'Monaco', 'Courier New', monospace" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    📝 routes.ts
+  </text>
+  <text x="1040" y="447" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    修改
+  </text>
+  
+  <!-- 底部KPI卡片 -->
+  <text x="60" y="565" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E">
+    关键数据
+  </text>
+  
+  <!-- KPI 1 -->
+  <rect x="300" y="570" width="220" height="75" fill="#0066FF" rx="8"/>
+  <text x="410" y="603" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    70%
+  </text>
+  <text x="410" y="628" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    节省时间
+  </text>
+  
+  <!-- KPI 2 -->
+  <rect x="550" y="570" width="220" height="75" fill="#10B981" rx="8"/>
+  <text x="660" y="603" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    20+
+  </text>
+  <text x="660" y="628" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    文件处理
+  </text>
+  
+  <!-- KPI 3 -->
+  <rect x="800" y="570" width="220" height="75" fill="#6366F1" rx="8"/>
+  <text x="910" y="603" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    90%+
+  </text>
+  <text x="910" y="628" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="400" fill="#FFFFFF" text-anchor="middle">
+    准确率
+  </text>
+</svg>
