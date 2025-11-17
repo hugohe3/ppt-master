@@ -163,8 +163,8 @@ yarn.lock
 TODO.md
 PERSONAL_NOTES.md
 
-# Projects directory - ignore temporary files but keep project structure
-projects/*/logs/
-projects/*/temp/
-projects/*/.notes/
-projects/*/drafts/
+# Projects directory - Work-in-progress projects (not version controlled)
+# Completed projects should be moved to examples/
+# Use cloud sync (iCloud/Dropbox) for backup and multi-device access
+projects/*
+!projects/README.md
