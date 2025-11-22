@@ -1,0 +1,107 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    元认知与心智化
+  </text>
+  
+  <!-- 连接线 -->
+  <line x1="340" y1="380" x2="540" y2="380" stroke="#F39C12" stroke-width="4"/>
+  <line x1="740" y1="380" x2="940" y2="380" stroke="#F39C12" stroke-width="4"/>
+  <circle cx="640" cy="380" r="50" fill="none" stroke="#F39C12" stroke-width="4"/>
+  <text x="640" y="395" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#F39C12" text-anchor="middle">
+    相互
+  </text>
+  <text x="640" y="415" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#F39C12" text-anchor="middle">
+    促进
+  </text>
+  
+  <!-- 左侧卡片：元认知 -->
+  <g transform="translate(80, 180)">
+    <rect x="0" y="0" width="530" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标和标题 -->
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#4A90A4">
+      🤔
+    </text>
+    <text x="135" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#4A90A4">
+      元认知
+    </text>
+    <text x="135" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Metacognition
+    </text>
+    
+    <!-- 定义 -->
+    <rect x="40" y="130" width="450" height="70" rx="8" fill="#ECF0F1"/>
+    <text x="265" y="170" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      "关于思考的思考"
+    </text>
+    
+    <!-- 功能 -->
+    <text x="50" y="245" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+      功能
+    </text>
+    <text x="50" y="280" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">认识到信念和感受</tspan>
+      <tspan x="50" dy="28">仅具有表征性质</tspan>
+    </text>
+    
+    <!-- 能力 -->
+    <text x="50" y="355" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+      核心能力
+    </text>
+    <text x="50" y="390" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">• 退后一步审视思维过程</tspan>
+      <tspan x="50" dy="28">• 区分表象与现实</tspan>
+      <tspan x="50" dy="28">• 元认知监测能力</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧卡片：心智化 -->
+  <g transform="translate(670, 180)">
+    <rect x="0" y="0" width="530" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标和标题 -->
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#4A90A4">
+      🧠
+    </text>
+    <text x="135" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#4A90A4">
+      心智化
+    </text>
+    <text x="135" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Mentalizing
+    </text>
+    
+    <!-- 定义 -->
+    <rect x="40" y="130" width="450" height="70" rx="8" fill="#ECF0F1"/>
+    <text x="265" y="155" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      <tspan x="265" dy="0">根据心理状态</tspan>
+      <tspan x="265" dy="28">理解行为与体验</tspan>
+    </text>
+    
+    <!-- 功能 -->
+    <text x="50" y="245" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+      功能
+    </text>
+    <text x="50" y="280" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">将体验视为可思考的</tspan>
+      <tspan x="50" dy="28">心理状态而非事实</tspan>
+    </text>
+    
+    <!-- 效果 -->
+    <text x="50" y="355" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+      重要作用
+    </text>
+    <text x="50" y="390" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">• 打破不安全依恋的</tspan>
+      <tspan x="50" dy="28">  代际传递</tspan>
+      <tspan x="50" dy="28">• 增强情感调节能力</tspan>
+    </text>
+  </g>
+</svg>
+

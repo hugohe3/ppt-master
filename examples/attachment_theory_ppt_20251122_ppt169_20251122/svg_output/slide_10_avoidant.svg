@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#7A8B99"/>
+  
+  <!-- 色彩标签 -->
+  <rect x="60" y="50" width="200" height="50" rx="25" fill="#7A8B99"/>
+  <text x="160" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    回避型依恋
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    回避型/冷漠型 Avoidant / Dismissing
+  </text>
+  
+  <!-- 婴儿期特征 -->
+  <g transform="translate(60, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#7A8B99"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      婴儿期特征
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 重聚时回避/忽视母亲</tspan>
+      <tspan x="30" dy="32">• 专注探索物体</tspan>
+      <tspan x="30" dy="32">• 表现极少苦恼</tspan>
+      <tspan x="30" dy="32">• 生理唤起水平高</tspan>
+    </text>
+  </g>
+  
+  <!-- 成人期特征 -->
+  <g transform="translate(460, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#7A8B99"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成人期特征 (AAI)
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 叙述不连贯</tspan>
+      <tspan x="30" dy="32">• 坚称缺乏记忆</tspan>
+      <tspan x="30" dy="32">• 贬低依恋重要性</tspan>
+      <tspan x="30" dy="32">• 无证据地理想化父母</tspan>
+    </text>
+  </g>
+  
+  <!-- 策略特征 -->
+  <g transform="translate(860, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#7A8B99"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      策略：降低活性
+    </text>
+    
+    <g transform="translate(180, 80)">
+      <!-- 策略类型标签 -->
+      <rect x="-75" y="0" width="150" height="35" rx="8" fill="#7A8B99"/>
+      <text x="0" y="24" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        降低活性
+      </text>
+      
+      <!-- 特征描述 -->
+      <text x="0" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" fill="#2C3E50" text-anchor="middle">
+        <tspan x="0" dy="0">限制对依恋</tspan>
+        <tspan x="0" dy="26">信息的关注</tspan>
+      </text>
+      
+      <!-- 核心表现框 -->
+      <rect x="-85" y="115" width="170" height="50" rx="8" fill="#7A8B99" opacity="0.12" stroke="#7A8B99" stroke-width="1.5"/>
+      <text x="0" y="145" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#7A8B99" text-anchor="middle">
+        强迫性自力更生
+      </text>
+    </g>
+  </g>
+  
+  <!-- 治疗挑战卡片 -->
+  <g transform="translate(60, 420)">
+    <rect x="0" y="0" width="1160" height="240" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    
+    <text x="80" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" fill="#7A8B99">
+      ❄️
+    </text>
+    
+    <text x="180" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#7A8B99">
+      治疗挑战
+    </text>
+    
+    <text x="180" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="180" dy="0">• 情感隔离：表现为"会说话的脑袋"，与身体和情感断连</tspan>
+      <tspan x="180" dy="32">• 左脑偏向：过度依赖理性和逻辑，回避右脑社交-情感体验</tspan>
+      <tspan x="180" dy="32">• 第二十二条军规：需要亲密来治愈，但亲密正是防御对象</tspan>
+      <tspan x="180" dy="32">• 核心干预：跟随情感，共情与面质并用</tspan>
+    </text>
+  </g>
+</svg>
+

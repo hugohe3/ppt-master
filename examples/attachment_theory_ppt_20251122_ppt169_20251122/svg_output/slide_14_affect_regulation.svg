@@ -1,0 +1,105 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    依恋关系如何塑造自我
+  </text>
+  
+  <!-- 核心定义 -->
+  <g transform="translate(140, 155)">
+    <rect x="0" y="0" width="1000" height="90" rx="12" fill="#4A90A4"/>
+    <text x="500" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      情感调节与依恋策略
+    </text>
+    <text x="500" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle">
+      依恋是"情绪的二元调节" (Schore)
+    </text>
+  </g>
+  
+  <!-- 安全型 -->
+  <g transform="translate(80, 290)">
+    <rect x="0" y="0" width="350" height="340" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    <rect x="0" y="0" width="350" height="60" rx="12" fill="#4A90A4"/>
+    <text x="175" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      安全型
+    </text>
+    
+    <text x="175" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" text-anchor="middle">
+      ⚖️
+    </text>
+    
+    <text x="175" y="170" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#4A90A4" text-anchor="middle">
+      灵活调节
+    </text>
+    
+    <text x="175" y="220" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">学会表达情感</tspan>
+      <tspan x="175" dy="30">能带来积极结果</tspan>
+    </text>
+    
+    <rect x="30" y="275" width="290" height="50" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="307" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#4A90A4" text-anchor="middle">
+      发展出情感调节能力
+    </text>
+  </g>
+  
+  <!-- 回避型 -->
+  <g transform="translate(465, 290)">
+    <rect x="0" y="0" width="350" height="340" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    <rect x="0" y="0" width="350" height="60" rx="12" fill="#7A8B99"/>
+    <text x="175" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      回避型
+    </text>
+    
+    <text x="175" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" text-anchor="middle">
+      ⬇️
+    </text>
+    
+    <text x="175" y="170" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#7A8B99" text-anchor="middle">
+      过度调节
+    </text>
+    
+    <text x="175" y="220" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">学会抑制情感</tspan>
+      <tspan x="175" dy="30">避免被拒绝</tspan>
+    </text>
+    
+    <rect x="30" y="275" width="290" height="50" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="307" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#7A8B99" text-anchor="middle">
+      降低活性策略
+    </text>
+  </g>
+  
+  <!-- 迷恋型 -->
+  <g transform="translate(850, 290)">
+    <rect x="0" y="0" width="350" height="340" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    <rect x="0" y="0" width="350" height="60" rx="12" fill="#B565A7"/>
+    <text x="175" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      迷恋型
+    </text>
+    
+    <text x="175" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" text-anchor="middle">
+      ⬆️
+    </text>
+    
+    <text x="175" y="170" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#B565A7" text-anchor="middle">
+      调节不足
+    </text>
+    
+    <text x="175" y="220" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">学会放大情感</tspan>
+      <tspan x="175" dy="30">维持连接</tspan>
+    </text>
+    
+    <rect x="30" y="275" width="290" height="50" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="307" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#B565A7" text-anchor="middle">
+      过度激活策略
+    </text>
+  </g>
+</svg>
+

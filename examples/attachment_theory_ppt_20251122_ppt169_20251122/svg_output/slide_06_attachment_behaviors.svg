@@ -1,0 +1,112 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    依恋行为系统的三种表现
+  </text>
+  
+  <!-- 卡片 1：寻求亲近 -->
+  <g transform="translate(60, 180)">
+    <rect x="0" y="0" width="350" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标 -->
+    <text x="175" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="80" text-anchor="middle">
+      🔍
+    </text>
+    
+    <!-- 标题 -->
+    <text x="175" y="190" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      寻求亲近
+    </text>
+    <text x="175" y="225" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99" text-anchor="middle">
+      Proximity Seeking
+    </text>
+    
+    <!-- 分隔线 -->
+    <line x1="40" y1="250" x2="310" y2="250" stroke="#ECF0F1" stroke-width="2"/>
+    
+    <!-- 内容 -->
+    <text x="175" y="300" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">寻求并维持与</tspan>
+      <tspan x="175" dy="30">依恋对象的</tspan>
+      <tspan x="175" dy="30">身体亲近</tspan>
+    </text>
+    
+    <rect x="40" y="410" width="270" height="45" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="440" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      生物学必要性
+    </text>
+  </g>
+  
+  <!-- 卡片 2：安全基地 -->
+  <g transform="translate(465, 180)">
+    <rect x="0" y="0" width="350" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标 -->
+    <text x="175" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="80" text-anchor="middle">
+      🏠
+    </text>
+    
+    <!-- 标题 -->
+    <text x="175" y="190" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      安全基地
+    </text>
+    <text x="175" y="225" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99" text-anchor="middle">
+      Secure Base
+    </text>
+    
+    <!-- 分隔线 -->
+    <line x1="40" y1="250" x2="310" y2="250" stroke="#ECF0F1" stroke-width="2"/>
+    
+    <!-- 内容 -->
+    <text x="175" y="300" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">以依恋对象</tspan>
+      <tspan x="175" dy="30">为基地探索</tspan>
+      <tspan x="175" dy="30">陌生环境</tspan>
+    </text>
+    
+    <rect x="40" y="410" width="270" height="45" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="440" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      支持探索与发展
+    </text>
+  </g>
+  
+  <!-- 卡片 3：安全港 -->
+  <g transform="translate(870, 180)">
+    <rect x="0" y="0" width="350" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标 -->
+    <text x="175" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="80" text-anchor="middle">
+      ⛵
+    </text>
+    
+    <!-- 标题 -->
+    <text x="175" y="190" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      安全港
+    </text>
+    <text x="175" y="225" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99" text-anchor="middle">
+      Safe Haven
+    </text>
+    
+    <!-- 分隔线 -->
+    <line x1="40" y1="250" x2="310" y2="250" stroke="#ECF0F1" stroke-width="2"/>
+    
+    <!-- 内容 -->
+    <text x="175" y="300" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50" text-anchor="middle">
+      <tspan x="175" dy="0">在危险或惊恐</tspan>
+      <tspan x="175" dy="30">时刻逃向依恋对象</tspan>
+      <tspan x="175" dy="30">寻求庇护</tspan>
+    </text>
+    
+    <rect x="40" y="410" width="270" height="45" rx="8" fill="#ECF0F1"/>
+    <text x="175" y="440" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      情感调节与保护
+    </text>
+  </g>
+</svg>
+

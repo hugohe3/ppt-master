@@ -1,0 +1,98 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    安全基地与内部工作模型
+  </text>
+  
+  <!-- 左侧卡片：安全基地 -->
+  <g transform="translate(80, 180)">
+    <rect x="0" y="0" width="530" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标 -->
+    <text x="265" y="80" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" text-anchor="middle">
+      🏠
+    </text>
+    
+    <!-- 标题 -->
+    <text x="265" y="150" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      安全基地
+    </text>
+    <text x="265" y="180" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99" text-anchor="middle">
+      Secure Base
+    </text>
+    
+    <!-- 内容 -->
+    <text x="50" y="240" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50">
+      定义
+    </text>
+    <text x="50" y="270" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">以依恋对象为基地</tspan>
+      <tspan x="50" dy="28">探索陌生世界</tspan>
+    </text>
+    
+    <text x="50" y="350" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50">
+      功能
+    </text>
+    <text x="50" y="380" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">• 提供保护与安全感</tspan>
+      <tspan x="50" dy="28">• 促进探索与学习</tspan>
+      <tspan x="50" dy="28">• 支持自主发展</tspan>
+    </text>
+  </g>
+  
+  <!-- 中间箭头 -->
+  <g transform="translate(640, 420)">
+    <path d="M -30 0 L 30 0" stroke="#F39C12" stroke-width="4" marker-end="url(#arrowhead)"/>
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+        <polygon points="0 0, 10 3, 0 6" fill="#F39C12"/>
+      </marker>
+    </defs>
+    <text x="0" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#F39C12" text-anchor="middle">
+      内化
+    </text>
+  </g>
+  
+  <!-- 右侧卡片：内部工作模型 -->
+  <g transform="translate(670, 180)">
+    <rect x="0" y="0" width="530" height="480" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 图标 -->
+    <text x="265" y="80" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" text-anchor="middle">
+      🗺️
+    </text>
+    
+    <!-- 标题 -->
+    <text x="265" y="150" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      内部工作模型
+    </text>
+    <text x="265" y="180" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99" text-anchor="middle">
+      Internal Working Models
+    </text>
+    
+    <!-- 内容 -->
+    <text x="50" y="240" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50">
+      定义
+    </text>
+    <text x="50" y="270" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">关于自我、他人及关系</tspan>
+      <tspan x="50" dy="28">的心理表征</tspan>
+    </text>
+    
+    <text x="50" y="350" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50">
+      来源
+    </text>
+    <text x="50" y="380" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="50" dy="0">• 过去互动经验的内化</tspan>
+      <tspan x="50" dy="28">• 指导感受、行为、注意力</tspan>
+      <tspan x="50" dy="28">• 塑造关系期望</tspan>
+    </text>
+  </g>
+</svg>
+

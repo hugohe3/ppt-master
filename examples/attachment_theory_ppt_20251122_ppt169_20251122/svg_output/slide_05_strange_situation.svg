@@ -1,0 +1,98 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    Ainsworth 陌生情境实验
+  </text>
+  <text x="640" y="135" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#7A8B99" text-anchor="middle">
+    Strange Situation · 评估婴儿依恋模式的经典实验
+  </text>
+  
+  <!-- 流程图 -->
+  <g transform="translate(140, 200)">
+    <!-- 步骤 1 -->
+    <rect x="0" y="0" width="240" height="100" rx="8" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="120" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      母亲在场
+    </text>
+    <text x="120" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      <tspan x="120" dy="0">婴儿探索环境</tspan>
+    </text>
+    
+    <!-- 箭头 1 -->
+    <path d="M 240 50 L 280 50" stroke="#F39C12" stroke-width="3" marker-end="url(#arrow)"/>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#F39C12"/>
+      </marker>
+    </defs>
+    
+    <!-- 步骤 2 -->
+    <rect x="280" y="0" width="240" height="100" rx="8" fill="#FFFFFF" stroke="#D97757" stroke-width="2"/>
+    <text x="400" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      母亲离开
+    </text>
+    <text x="400" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      <tspan x="400" dy="0">激活依恋系统</tspan>
+    </text>
+    
+    <!-- 箭头 2 -->
+    <path d="M 520 50 L 560 50" stroke="#F39C12" stroke-width="3" marker-end="url(#arrow)"/>
+    
+    <!-- 步骤 3 -->
+    <rect x="560" y="0" width="240" height="100" rx="8" fill="#FFFFFF" stroke="#D97757" stroke-width="2"/>
+    <text x="680" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      婴儿反应
+    </text>
+    <text x="680" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      <tspan x="680" dy="0">观察情绪表现</tspan>
+    </text>
+    
+    <!-- 箭头 3 -->
+    <path d="M 800 50 L 840 50" stroke="#F39C12" stroke-width="3" marker-end="url(#arrow)"/>
+    
+    <!-- 步骤 4 -->
+    <rect x="840" y="0" width="240" height="100" rx="8" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="960" y="40" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      母亲回归
+    </text>
+    <text x="960" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+      <tspan x="960" dy="0">重聚反应模式</tspan>
+    </text>
+  </g>
+  
+  <!-- 核心发现卡片 -->
+  <g transform="translate(140, 360)">
+    <rect x="0" y="0" width="1000" height="280" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <text x="50" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4">
+      Ainsworth 的核心贡献
+    </text>
+    
+    <g transform="translate(50, 90)">
+      <circle cx="0" cy="0" r="8" fill="#4A90A4"/>
+      <text x="25" y="5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+        依恋的可塑性
+      </text>
+      <text x="25" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+        个体依恋行为的差异取决于照看者行为的差异
+      </text>
+    </g>
+    
+    <g transform="translate(50, 170)">
+      <circle cx="0" cy="0" r="8" fill="#4A90A4"/>
+      <text x="25" y="5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600" fill="#2C3E50">
+        沟通品质的重要性
+      </text>
+      <text x="25" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+        沟通品质（敏感性、随机应变）是决定依恋安全性的关键
+      </text>
+    </g>
+  </g>
+</svg>
+

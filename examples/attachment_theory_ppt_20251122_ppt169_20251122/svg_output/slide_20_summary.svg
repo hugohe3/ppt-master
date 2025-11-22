@@ -1,0 +1,105 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <radialGradient id="bgGradient2" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" style="stop-color:#E8F4F8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="topBar4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#7A8B99;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B565A7;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#D97757;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F39C12;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient2)"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar4)"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="90" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    从依恋到改变
+  </text>
+  
+  <!-- 中心圆形 - 治疗关系 -->
+  <g transform="translate(640, 300)">
+    <circle cx="0" cy="0" r="85" fill="#4A90A4"/>
+    <text x="0" y="-10" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="30" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      治疗关系
+    </text>
+    <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#FFFFFF" text-anchor="middle">
+      新的依恋关系
+    </text>
+  </g>
+  
+  <!-- 路径 1：评估依恋模式 -->
+  <g transform="translate(280, 175)">
+    <line x1="0" y1="0" x2="280" y2="80" stroke="#4A90A4" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="#4A90A4"/>
+    <rect x="-100" y="-45" width="200" height="45" rx="8" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="0" y="-16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#4A90A4" text-anchor="middle">
+      评估依恋模式
+    </text>
+  </g>
+  
+  <!-- 路径 2：建立安全基地 -->
+  <g transform="translate(1000, 175)">
+    <line x1="0" y1="0" x2="-280" y2="80" stroke="#7A8B99" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="#7A8B99"/>
+    <rect x="-100" y="-45" width="200" height="45" rx="8" fill="#FFFFFF" stroke="#7A8B99" stroke-width="2"/>
+    <text x="0" y="-16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#7A8B99" text-anchor="middle">
+      建立安全基地
+    </text>
+  </g>
+  
+  <!-- 路径 3：处理非言语体验 -->
+  <g transform="translate(200, 410)">
+    <line x1="0" y1="0" x2="360" y2="-70" stroke="#B565A7" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="#B565A7"/>
+    <rect x="-120" y="10" width="240" height="45" rx="8" fill="#FFFFFF" stroke="#B565A7" stroke-width="2"/>
+    <text x="0" y="39" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#B565A7" text-anchor="middle">
+      处理非言语体验
+    </text>
+  </g>
+  
+  <!-- 路径 4：培养心智化与觉察 -->
+  <g transform="translate(1080, 410)">
+    <line x1="0" y1="0" x2="-360" y2="-70" stroke="#D97757" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="#D97757"/>
+    <rect x="-130" y="10" width="260" height="45" rx="8" fill="#FFFFFF" stroke="#D97757" stroke-width="2"/>
+    <text x="0" y="39" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#D97757" text-anchor="middle">
+      培养心智化与觉察
+    </text>
+  </g>
+  
+  <!-- 路径 5：促进整合与改变 -->
+  <g transform="translate(640, 480)">
+    <line x1="0" y1="0" x2="0" y2="-100" stroke="#F39C12" stroke-width="3"/>
+    <circle cx="0" cy="0" r="12" fill="#F39C12"/>
+    <rect x="-120" y="10" width="240" height="45" rx="8" fill="#FFFFFF" stroke="#F39C12" stroke-width="2"/>
+    <text x="0" y="39" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" font-weight="600" fill="#F39C12" text-anchor="middle">
+      促进整合与改变
+    </text>
+  </g>
+  
+  <!-- 核心理念卡片 -->
+  <g transform="translate(180, 560)">
+    <rect x="0" y="0" width="920" height="120" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <text x="40" y="42" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#4A90A4">
+      核心理念
+    </text>
+    
+    <text x="40" y="72" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="500" fill="#2C3E50">
+      "从摇篮到坟墓，我们的生活都围绕着亲密的依恋展开。
+    </text>
+    <text x="40" y="98" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="500" fill="#2C3E50">
+      心理治疗提供了重新学习的机会。" — John Bowlby
+    </text>
+  </g>
+</svg>
+

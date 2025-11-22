@@ -1,0 +1,119 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  
+  <!-- 色彩标签 -->
+  <rect x="60" y="50" width="220" height="50" rx="25" fill="#D97757"/>
+  <text x="170" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    未解决型依恋
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    未解决型/混乱型 Disorganized / Unresolved
+  </text>
+  
+  <!-- 婴儿期特征 -->
+  <g transform="translate(60, 140)">
+    <rect x="0" y="0" width="360" height="220" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#D97757"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      婴儿期特征
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 矛盾、冻结行为</tspan>
+      <tspan x="30" dy="32">• 表现恐惧或茫然</tspan>
+      <tspan x="30" dy="32">• 依恋策略崩溃</tspan>
+      <tspan x="30" dy="32">• 僵住或倒地反应</tspan>
+    </text>
+  </g>
+  
+  <!-- 成人期特征 -->
+  <g transform="translate(460, 140)">
+    <rect x="0" y="0" width="360" height="220" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#D97757"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成人期特征 (AAI)
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 讨论创伤时推理失误</tspan>
+      <tspan x="30" dy="32">• 话语监控失败</tspan>
+      <tspan x="30" dy="32">• 相信死者仍活着</tspan>
+      <tspan x="30" dy="32">• 时间感混乱</tspan>
+    </text>
+  </g>
+  
+  <!-- 成因悖论 -->
+  <g transform="translate(860, 140)">
+    <rect x="0" y="0" width="360" height="220" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#D97757"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成因：恐惧悖论
+    </text>
+    
+    <g transform="translate(50, 90)">
+      <text x="130" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#D97757" text-anchor="middle">
+        依恋对象
+      </text>
+      
+      <path d="M 80 20 L 20 80" stroke="#D97757" stroke-width="3" marker-end="url(#arrow1)"/>
+      <path d="M 180 20 L 240 80" stroke="#D97757" stroke-width="3" marker-end="url(#arrow2)"/>
+      <defs>
+        <marker id="arrow1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#D97757"/>
+        </marker>
+        <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#D97757"/>
+        </marker>
+      </defs>
+      
+      <text x="20" y="105" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+        安全港
+      </text>
+      <text x="200" y="105" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+        恐惧源
+      </text>
+    </g>
+  </g>
+  
+  <!-- 核心问题与治疗焦点 -->
+  <g transform="translate(60, 400)">
+    <rect x="0" y="0" width="560" height="260" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    
+    <text x="40" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#D97757">
+      核心问题：解离
+    </text>
+    
+    <text x="40" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="40" dy="0">• 自我状态的碎片化</tspan>
+      <tspan x="40" dy="32">• 身体承受创伤记忆</tspan>
+      <tspan x="40" dy="32">• 在受害者、迫害者、</tspan>
+      <tspan x="40" dy="32">  拯救者角色间转换</tspan>
+      <tspan x="40" dy="32">• 对安全的恐惧</tspan>
+    </text>
+  </g>
+  
+  <g transform="translate(660, 400)">
+    <rect x="0" y="0" width="560" height="260" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    
+    <text x="40" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" fill="#D97757">
+      💔
+    </text>
+    <text x="140" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#D97757">
+      治疗焦点
+    </text>
+    
+    <text x="40" y="120" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="40" dy="0">1. 建立安全关系</tspan>
+      <tspan x="40" dy="32">2. 创伤的言语化与情境化</tspan>
+      <tspan x="40" dy="32">3. 去躯体化</tspan>
+      <tspan x="40" dy="32">4. 心智化与觉察</tspan>
+    </text>
+  </g>
+</svg>
+

@@ -1,0 +1,99 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="90" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    依恋的神经生物学基础
+  </text>
+  
+  <!-- 简化脑图 -->
+  <g transform="translate(100, 150)">
+    <rect x="0" y="0" width="420" height="500" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <!-- 脑干 -->
+    <ellipse cx="210" cy="420" rx="60" ry="70" fill="#D97757" opacity="0.3"/>
+    <text x="210" y="430" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#D97757" text-anchor="middle">
+      脑干
+    </text>
+    
+    <!-- 边缘系统 -->
+    <ellipse cx="210" cy="300" rx="100" ry="90" fill="#B565A7" opacity="0.3"/>
+    <text x="210" y="285" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#B565A7" text-anchor="middle">
+      边缘系统
+    </text>
+    <text x="210" y="310" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#B565A7" text-anchor="middle">
+      <tspan x="210" dy="0">杏仁核</tspan>
+      <tspan x="210" dy="20">海马</tspan>
+    </text>
+    
+    <!-- 新皮层 -->
+    <ellipse cx="210" cy="150" rx="150" ry="100" fill="#4A90A4" opacity="0.3"/>
+    <text x="210" y="135" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      新皮层
+    </text>
+    <text x="210" y="160" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A90A4" text-anchor="middle">
+      <tspan x="210" dy="0">前额叶</tspan>
+      <tspan x="210" dy="20">眶回皮层</tspan>
+    </text>
+  </g>
+  
+  <!-- 功能说明 -->
+  <g transform="translate(560, 150)">
+    <rect x="0" y="0" width="640" height="500" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <text x="320" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+      大脑结构与依恋功能
+    </text>
+    
+    <!-- 脑干 -->
+    <g transform="translate(40, 85)">
+      <circle cx="0" cy="0" r="12" fill="#D97757"/>
+      <text x="30" y="5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#D97757">
+        脑干 (Brainstem)
+      </text>
+      <text x="30" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+        <tspan x="30" dy="0">• 基本生理调节和唤起</tspan>
+        <tspan x="30" dy="28">• 自主神经系统管理</tspan>
+        <tspan x="30" dy="28">• 战斗/逃跑/冻结反应</tspan>
+      </text>
+    </g>
+    
+    <!-- 边缘系统 -->
+    <g transform="translate(40, 215)">
+      <circle cx="0" cy="0" r="12" fill="#B565A7"/>
+      <text x="30" y="5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#B565A7">
+        边缘系统 (Limbic System)
+      </text>
+      <text x="30" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+        <tspan x="30" dy="0">• 杏仁核：恐惧调节、情绪记忆</tspan>
+        <tspan x="30" dy="28">• 海马：外显记忆、背景化</tspan>
+        <tspan x="30" dy="28">• 情感大脑</tspan>
+      </text>
+    </g>
+    
+    <!-- 新皮层 -->
+    <g transform="translate(40, 345)">
+      <circle cx="0" cy="0" r="12" fill="#4A90A4"/>
+      <text x="30" y="5" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#4A90A4">
+        新皮层 (Neocortex)
+      </text>
+      <text x="30" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+        <tspan x="30" dy="0">• 前额叶眶回皮层：情感调节</tspan>
+        <tspan x="30" dy="28">• 依恋与心智化的关键区域</tspan>
+        <tspan x="30" dy="28">• 连接边缘系统和皮层</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部注释 -->
+  <g transform="translate(100, 675)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      <tspan x="0" dy="0">右脑：社交-情感、非言语沟通 | 左脑：逻辑、语言 | 镜像神经元：共情与情感调谐的神经基础 🧠</tspan>
+    </text>
+  </g>
+</svg>
+

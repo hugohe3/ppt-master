@@ -1,0 +1,150 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <defs>
+    <linearGradient id="topBar2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#7A8B99;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#B565A7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97757;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar2)"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    四种依恋模式总览
+  </text>
+  
+  <!-- 色彩图例 -->
+  <g transform="translate(350, 140)">
+    <rect x="0" y="0" width="20" height="20" rx="4" fill="#4A90A4"/>
+    <text x="30" y="16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50">
+      安全型
+    </text>
+    
+    <rect x="150" y="0" width="20" height="20" rx="4" fill="#7A8B99"/>
+    <text x="180" y="16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50">
+      回避型
+    </text>
+    
+    <rect x="300" y="0" width="20" height="20" rx="4" fill="#B565A7"/>
+    <text x="330" y="16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50">
+      迷恋型
+    </text>
+    
+    <rect x="450" y="0" width="20" height="20" rx="4" fill="#D97757"/>
+    <text x="480" y="16" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#2C3E50">
+      未解决型
+    </text>
+  </g>
+  
+  <!-- 表格 -->
+  <g transform="translate(100, 210)">
+    <!-- 表头 -->
+    <rect x="0" y="0" width="1080" height="60" rx="8" fill="#2C3E50"/>
+    <text x="135" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      依恋模式
+    </text>
+    <text x="405" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      婴儿表现
+    </text>
+    <text x="675" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成人表现
+    </text>
+    <text x="945" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      策略特征
+    </text>
+    
+    <!-- 行1：安全型 -->
+    <g transform="translate(0, 60)">
+      <rect x="0" y="0" width="1080" height="95" rx="0" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+      <rect x="0" y="0" width="270" height="95" fill="#4A90A4" opacity="0.1"/>
+      <text x="135" y="30" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#4A90A4" text-anchor="middle">
+        安全型
+      </text>
+      <text x="135" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+        Secure/Autonomous
+      </text>
+      
+      <text x="405" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        能被安抚
+      </text>
+      <text x="675" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        叙述连贯
+      </text>
+      <text x="945" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        灵活平衡
+      </text>
+    </g>
+    
+    <!-- 行2：回避型 -->
+    <g transform="translate(0, 155)">
+      <rect x="0" y="0" width="1080" height="95" rx="0" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+      <rect x="0" y="0" width="270" height="95" fill="#7A8B99" opacity="0.1"/>
+      <text x="135" y="30" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#7A8B99" text-anchor="middle">
+        回避型
+      </text>
+      <text x="135" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+        Avoidant/Dismissing
+      </text>
+      
+      <text x="405" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        回避母亲
+      </text>
+      <text x="675" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        理想化/贬低
+      </text>
+      <text x="945" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        降低活性
+      </text>
+    </g>
+    
+    <!-- 行3：迷恋型 -->
+    <g transform="translate(0, 250)">
+      <rect x="0" y="0" width="1080" height="95" rx="0" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+      <rect x="0" y="0" width="270" height="95" fill="#B565A7" opacity="0.1"/>
+      <text x="135" y="30" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#B565A7" text-anchor="middle">
+        迷恋型
+      </text>
+      <text x="135" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+        Ambivalent/Preoccupied
+      </text>
+      
+      <text x="405" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        难以安抚
+      </text>
+      <text x="675" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        被过去纠缠
+      </text>
+      <text x="945" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        过度激活
+      </text>
+    </g>
+    
+    <!-- 行4：未解决型 -->
+    <g transform="translate(0, 345)">
+      <rect x="0" y="0" width="1080" height="95" rx="0" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+      <rect x="0" y="0" width="270" height="95" fill="#D97757" opacity="0.1"/>
+      <text x="135" y="30" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#D97757" text-anchor="middle">
+        未解决型
+      </text>
+      <text x="135" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99" text-anchor="middle">
+        Disorganized/Unresolved
+      </text>
+      
+      <text x="405" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        冻结混乱
+      </text>
+      <text x="675" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        推理失误
+      </text>
+      <text x="945" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50" text-anchor="middle">
+        策略崩溃
+      </text>
+    </g>
+  </g>
+</svg>
+

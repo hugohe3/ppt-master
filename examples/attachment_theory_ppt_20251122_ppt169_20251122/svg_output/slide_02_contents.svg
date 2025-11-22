@@ -1,0 +1,102 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+      <stop offset="33%" style="stop-color:#7A8B99;stop-opacity:1" />
+      <stop offset="66%" style="stop-color:#B565A7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97757;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    内容框架
+  </text>
+  
+  <!-- 左侧进度条装饰 -->
+  <g transform="translate(180, 200)">
+    <line x1="0" y1="0" x2="0" y2="420" stroke="#ECF0F1" stroke-width="4"/>
+    <circle cx="0" cy="0" r="10" fill="#4A90A4"/>
+    <circle cx="0" cy="105" r="10" fill="#7A8B99"/>
+    <circle cx="0" cy="210" r="10" fill="#B565A7"/>
+    <circle cx="0" cy="315" r="10" fill="#D97757"/>
+    <circle cx="0" cy="420" r="10" fill="#F39C12"/>
+  </g>
+  
+  <!-- 内容卡片 -->
+  <!-- 卡片 1: 依恋理论基础 -->
+  <g transform="translate(260, 170)">
+    <rect x="0" y="0" width="850" height="75" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    <text x="35" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4">
+      01
+    </text>
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+      依恋理论基础
+    </text>
+    <text x="100" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      Bowlby · Ainsworth · Main · 安全基地 · 内部工作模型
+    </text>
+  </g>
+  
+  <!-- 卡片 2: 依恋模式分类 -->
+  <g transform="translate(260, 275)">
+    <rect x="0" y="0" width="850" height="75" rx="12" fill="#FFFFFF" stroke="#7A8B99" stroke-width="3"/>
+    <text x="35" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#7A8B99">
+      02
+    </text>
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+      依恋模式分类
+    </text>
+    <text x="100" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      安全型 · 回避型 · 迷恋型 · 未解决型
+    </text>
+  </g>
+  
+  <!-- 卡片 3: 自我的多重维度 -->
+  <g transform="translate(260, 380)">
+    <rect x="0" y="0" width="850" height="75" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    <text x="35" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#B565A7">
+      03
+    </text>
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+      自我的多重维度
+    </text>
+    <text x="100" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      躯体 · 情绪 · 表征性 · 反思性 · 觉察性自我
+    </text>
+  </g>
+  
+  <!-- 卡片 4: 非言语体验 -->
+  <g transform="translate(260, 485)">
+    <rect x="0" y="0" width="850" height="75" rx="12" fill="#FFFFFF" stroke="#D97757" stroke-width="3"/>
+    <text x="35" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#D97757">
+      04
+    </text>
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+      非言语体验
+    </text>
+    <text x="100" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      未经思考的已知 · 活现 · 唤起 · 具身化
+    </text>
+  </g>
+  
+  <!-- 卡片 5: 临床应用策略 -->
+  <g transform="translate(260, 590)">
+    <rect x="0" y="0" width="850" height="75" rx="12" fill="#FFFFFF" stroke="#F39C12" stroke-width="3"/>
+    <text x="35" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#F39C12">
+      05
+    </text>
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+      临床应用策略
+    </text>
+    <text x="100" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      治疗关系 · 干预方法 · 心智化与觉察
+    </text>
+  </g>
+</svg>
+

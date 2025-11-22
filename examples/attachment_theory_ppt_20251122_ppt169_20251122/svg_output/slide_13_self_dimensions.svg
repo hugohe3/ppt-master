@@ -1,0 +1,105 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <defs>
+    <linearGradient id="rainbow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#7A8B99;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B565A7;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#D97757;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F39C12;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#rainbow)"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    自我的多重维度
+  </text>
+  
+  <!-- 连接线 -->
+  <line x1="130" y1="190" x2="130" y2="640" stroke="#ECF0F1" stroke-width="6"/>
+  
+  <!-- 维度 1：躯体自我 -->
+  <g transform="translate(80, 160)">
+    <circle cx="50" cy="50" r="35" fill="#4A90A4"/>
+    <text x="50" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle">
+      💪
+    </text>
+    
+    <rect x="120" y="10" width="1040" height="80" rx="10" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="160" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#4A90A4">
+      躯体自我 Somatic Self
+    </text>
+    <text x="160" y="75" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      身体的自我感 · 生理应激反应 · 前言语体验的基础
+    </text>
+  </g>
+  
+  <!-- 维度 2：情绪自我 -->
+  <g transform="translate(80, 265)">
+    <circle cx="50" cy="50" r="35" fill="#7A8B99"/>
+    <text x="50" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle">
+      ❤️
+    </text>
+    
+    <rect x="120" y="10" width="1040" height="80" rx="10" fill="#FFFFFF" stroke="#7A8B99" stroke-width="2"/>
+    <text x="160" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#7A8B99">
+      情绪自我 Emotional Self
+    </text>
+    <text x="160" y="75" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      情感调节模式 · 沟通的主要媒介 · 体验好坏的本能评估
+    </text>
+  </g>
+  
+  <!-- 维度 3：表征性自我 -->
+  <g transform="translate(80, 370)">
+    <circle cx="50" cy="50" r="35" fill="#B565A7"/>
+    <text x="50" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle">
+      🗺️
+    </text>
+    
+    <rect x="120" y="10" width="1040" height="80" rx="10" fill="#FFFFFF" stroke="#B565A7" stroke-width="2"/>
+    <text x="160" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#B565A7">
+      表征性自我 Representational Self
+    </text>
+    <text x="160" y="75" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      内部工作模型 · 关系知识 · 内在安全基地的表征
+    </text>
+  </g>
+  
+  <!-- 维度 4：反思性自我 -->
+  <g transform="translate(80, 475)">
+    <circle cx="50" cy="50" r="35" fill="#D97757"/>
+    <text x="50" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle">
+      🤔
+    </text>
+    
+    <rect x="120" y="10" width="1040" height="80" rx="10" fill="#FFFFFF" stroke="#D97757" stroke-width="2"/>
+    <text x="160" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#D97757">
+      反思性自我 Reflective Self
+    </text>
+    <text x="160" y="75" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      心智化能力 · 把体验视为心理状态 · 获得内部自由
+    </text>
+  </g>
+  
+  <!-- 维度 5：觉察性自我 -->
+  <g transform="translate(80, 580)">
+    <circle cx="50" cy="50" r="35" fill="#F39C12"/>
+    <text x="50" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="40" text-anchor="middle">
+      🧘
+    </text>
+    
+    <rect x="120" y="10" width="1040" height="80" rx="10" fill="#FFFFFF" stroke="#F39C12" stroke-width="2"/>
+    <text x="160" y="50" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#F39C12">
+      觉察性自我 Mindful Self
+    </text>
+    <text x="160" y="75" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      注意力主体 · 不加评判的关注当下 · 内在安全基地感
+    </text>
+  </g>
+</svg>
+

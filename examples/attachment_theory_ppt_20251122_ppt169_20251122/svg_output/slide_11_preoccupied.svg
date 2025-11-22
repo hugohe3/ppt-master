@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#B565A7"/>
+  
+  <!-- 色彩标签 -->
+  <rect x="60" y="50" width="200" height="50" rx="25" fill="#B565A7"/>
+  <text x="160" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    迷恋型依恋
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    迷恋型/矛盾型 Ambivalent / Preoccupied
+  </text>
+  
+  <!-- 婴儿期特征 -->
+  <g transform="translate(60, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#B565A7"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      婴儿期特征
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 极度痛苦，难以安抚</tspan>
+      <tspan x="30" dy="32">• 对母亲去向过度关注</tspan>
+      <tspan x="30" dy="32">• 无法探索环境</tspan>
+      <tspan x="30" dy="32">• 表现愤怒或被动</tspan>
+    </text>
+  </g>
+  
+  <!-- 成人期特征 -->
+  <g transform="translate(460, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#B565A7"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成人期特征 (AAI)
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">• 叙述混乱、冗长</tspan>
+      <tspan x="30" dy="32">• 表现愤怒或被动</tspan>
+      <tspan x="30" dy="32">• 似乎仍被过去纠缠</tspan>
+      <tspan x="30" dy="32">• 句子结构复杂难懂</tspan>
+    </text>
+  </g>
+  
+  <!-- 策略特征 -->
+  <g transform="translate(860, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#B565A7"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      策略：过度激活
+    </text>
+    
+    <g transform="translate(180, 80)">
+      <!-- 策略类型标签 -->
+      <rect x="-75" y="0" width="150" height="35" rx="8" fill="#B565A7"/>
+      <text x="0" y="24" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        过度激活
+      </text>
+      
+      <!-- 特征描述 -->
+      <text x="0" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" fill="#2C3E50" text-anchor="middle">
+        <tspan x="0" dy="0">放大情感表达</tspan>
+        <tspan x="0" dy="26">确保护理者关注</tspan>
+      </text>
+      
+      <!-- 核心表现框 -->
+      <rect x="-85" y="115" width="170" height="50" rx="8" fill="#B565A7" opacity="0.12" stroke="#B565A7" stroke-width="1.5"/>
+      <text x="0" y="145" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#B565A7" text-anchor="middle">
+        抑制自主性发展
+      </text>
+    </g>
+  </g>
+  
+  <!-- 治疗挑战卡片 -->
+  <g transform="translate(60, 420)">
+    <rect x="0" y="0" width="1160" height="240" rx="12" fill="#FFFFFF" stroke="#B565A7" stroke-width="3"/>
+    
+    <text x="80" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" fill="#B565A7">
+      🌪️
+    </text>
+    
+    <text x="180" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#B565A7">
+      治疗挑战
+    </text>
+    
+    <text x="180" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="180" dy="0">• 自我缺失：重心在他人身上，缺乏自我主体感</tspan>
+      <tspan x="180" dy="32">• 混乱叙述：被过去情感淹没，难以进行反思或心智化</tspan>
+      <tspan x="180" dy="32">• 亚型表现：歇斯底里型（无助、取悦）vs 边缘型（愤怒、混乱）</tspan>
+      <tspan x="180" dy="32">• 核心干预：共情与界限，搭脚手架培养主体感</tspan>
+    </text>
+  </g>
+</svg>
+

@@ -1,0 +1,78 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8F4F8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#7A8B99;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B565A7;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#D97757;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4A90A4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰性连接线条 - 象征依恋关系 -->
+  <g opacity="0.2">
+    <path d="M 200 150 Q 300 200, 400 150" stroke="#4A90A4" stroke-width="2" fill="none"/>
+    <circle cx="200" cy="150" r="6" fill="#4A90A4"/>
+    <circle cx="400" cy="150" r="6" fill="#4A90A4"/>
+    
+    <path d="M 880 550 Q 980 600, 1080 550" stroke="#B565A7" stroke-width="2" fill="none"/>
+    <circle cx="880" cy="550" r="6" fill="#B565A7"/>
+    <circle cx="1080" cy="550" r="6" fill="#B565A7"/>
+    
+    <path d="M 150 400 Q 200 450, 250 400" stroke="#7A8B99" stroke-width="2" fill="none"/>
+    <circle cx="150" cy="400" r="5" fill="#7A8B99"/>
+    <circle cx="250" cy="400" r="5" fill="#7A8B99"/>
+    
+    <path d="M 1030 200 Q 1080 250, 1130 200" stroke="#D97757" stroke-width="2" fill="none"/>
+    <circle cx="1030" cy="200" r="5" fill="#D97757"/>
+    <circle cx="1130" cy="200" r="5" fill="#D97757"/>
+  </g>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accentGradient)"/>
+  
+  <!-- 主标题区域 -->
+  <g transform="translate(640, 280)">
+    <!-- 中文主标题 -->
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+      依恋与改变
+    </text>
+    
+    <!-- 副标题 -->
+    <text x="0" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="36" font-weight="500" fill="#4A90A4" text-anchor="middle">
+      心理治疗中的依恋理论
+    </text>
+    
+    <!-- 英文标题 -->
+    <text x="0" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'Segoe UI', sans-serif" font-size="24" font-weight="300" fill="#7A8B99" text-anchor="middle" letter-spacing="1">
+      Attachment and Change in Psychotherapy
+    </text>
+  </g>
+  
+  <!-- 中央装饰图形 - 象征安全基地 -->
+  <g transform="translate(640, 450)">
+    <circle cx="0" cy="0" r="45" fill="none" stroke="#4A90A4" stroke-width="3" opacity="0.3"/>
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#4A90A4" stroke-width="2" opacity="0.25"/>
+    <circle cx="0" cy="0" r="15" fill="#4A90A4" opacity="0.4"/>
+  </g>
+  
+  <!-- 底部署名 -->
+  <g transform="translate(640, 600)">
+    <rect x="-280" y="-35" width="560" height="70" rx="12" fill="#FFFFFF" opacity="0.98" stroke="#4A90A4" stroke-width="1"/>
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#2C3E50" text-anchor="middle">
+      基于依恋研究的临床实践指南
+    </text>
+    <text x="0" y="32" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="500" fill="#7A8B99" text-anchor="middle">
+      Bowlby · Ainsworth · Main · Fonagy
+    </text>
+  </g>
+</svg>
+

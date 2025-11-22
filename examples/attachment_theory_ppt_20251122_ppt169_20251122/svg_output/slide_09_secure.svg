@@ -1,0 +1,86 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 色彩标签 -->
+  <rect x="60" y="50" width="180" height="50" rx="25" fill="#4A90A4"/>
+  <text x="150" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    安全型依恋
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="83" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    安全型依恋 Secure / Autonomous
+  </text>
+  
+  <!-- 婴儿期特征 -->
+  <g transform="translate(60, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#4A90A4"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      婴儿期特征
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">✓ 分离时可能苦恼</tspan>
+      <tspan x="30" dy="32">✓ 重聚时能被安抚</tspan>
+      <tspan x="30" dy="32">✓ 探索与依恋灵活切换</tspan>
+      <tspan x="30" dy="32">✓ 平衡的依恋行为</tspan>
+    </text>
+  </g>
+  
+  <!-- 成人期特征 -->
+  <g transform="translate(460, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#4A90A4"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      成人期特征 (AAI)
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">✓ 叙述连贯、协作</tspan>
+      <tspan x="30" dy="32">✓ 能客观反思经历</tspan>
+      <tspan x="30" dy="32">✓ 重视依恋关系</tspan>
+      <tspan x="30" dy="32">✓ 情感表达真实</tspan>
+    </text>
+  </g>
+  
+  <!-- 照看者行为 -->
+  <g transform="translate(860, 140)">
+    <rect x="0" y="0" width="360" height="240" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    <rect x="0" y="0" width="360" height="55" rx="12" fill="#4A90A4"/>
+    <text x="180" y="38" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      照看者行为
+    </text>
+    
+    <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#2C3E50">
+      <tspan x="30" dy="0">✓ 敏感且反应迅速</tspan>
+      <tspan x="30" dy="32">✓ 随机应变的沟通</tspan>
+      <tspan x="30" dy="32">✓ 互动具有协作性</tspan>
+      <tspan x="30" dy="32">✓ 情感上可得</tspan>
+    </text>
+  </g>
+  
+  <!-- 核心能力卡片 -->
+  <g transform="translate(60, 420)">
+    <rect x="0" y="0" width="1160" height="240" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3"/>
+    
+    <text x="80" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="72" fill="#4A90A4">
+      🧠
+    </text>
+    
+    <text x="180" y="70" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90A4">
+      核心能力：元认知监测
+    </text>
+    
+    <text x="180" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="180" dy="0">能够退后一步，审视自己的思维过程</tspan>
+      <tspan x="180" dy="32">认识到信念和感受仅仅是表征，而非绝对事实</tspan>
+      <tspan x="180" dy="32">具备情感调节能力，灵活应对关系挑战</tspan>
+    </text>
+  </g>
+</svg>
+

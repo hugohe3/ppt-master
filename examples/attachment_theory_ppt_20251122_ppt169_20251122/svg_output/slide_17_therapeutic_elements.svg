@@ -1,0 +1,104 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#27AE60"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    构建治疗中的安全基地
+  </text>
+  <text x="640" y="135" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" fill="#7A8B99" text-anchor="middle">
+    发展熔炉的四个要素
+  </text>
+  
+  <!-- 卡片 1：包纳性 -->
+  <g transform="translate(80, 190)">
+    <rect x="0" y="0" width="530" height="220" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#27AE60">
+      🤗
+    </text>
+    
+    <text x="140" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#27AE60">
+      包纳性
+    </text>
+    <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Inclusiveness
+    </text>
+    
+    <text x="50" y="140" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="50" dy="0">致力于了解患者全部</tspan>
+      <tspan x="50" dy="30">主观体验，特别是被</tspan>
+      <tspan x="50" dy="30">早期关系排斥的部分</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片 2：修复破裂 -->
+  <g transform="translate(670, 190)">
+    <rect x="0" y="0" width="530" height="220" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#27AE60">
+      🔧
+    </text>
+    
+    <text x="140" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#27AE60">
+      修复破裂
+    </text>
+    <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Repairing Rupture
+    </text>
+    
+    <text x="50" y="140" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="50" dy="0">主动识别并修复关系</tspan>
+      <tspan x="50" dy="30">中断，建立患者对互动</tspan>
+      <tspan x="50" dy="30">调节的信心</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片 3：搭脚手架 -->
+  <g transform="translate(80, 450)">
+    <rect x="0" y="0" width="530" height="220" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#27AE60">
+      🏗️
+    </text>
+    
+    <text x="140" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#27AE60">
+      搭脚手架
+    </text>
+    <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Scaffolding
+    </text>
+    
+    <text x="50" y="140" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="50" dy="0">支持新兴能力发展，</tspan>
+      <tspan x="50" dy="30">如帮助患者用语言</tspan>
+      <tspan x="50" dy="30">表达体验</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片 4：积极参与 -->
+  <g transform="translate(670, 450)">
+    <rect x="0" y="0" width="530" height="220" rx="12" fill="#FFFFFF" stroke="#27AE60" stroke-width="3"/>
+    
+    <text x="50" y="60" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="56" fill="#27AE60">
+      💬
+    </text>
+    
+    <text x="140" y="65" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#27AE60">
+      积极参与
+    </text>
+    <text x="140" y="95" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" fill="#7A8B99">
+      Active Engagement
+    </text>
+    
+    <text x="50" y="140" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="22" fill="#2C3E50">
+      <tspan x="50" dy="0">在患者自我认同变化</tspan>
+      <tspan x="50" dy="30">时期，愿意与其互动</tspan>
+      <tspan x="50" dy="30">甚至冲突</tspan>
+    </text>
+  </g>
+</svg>
+

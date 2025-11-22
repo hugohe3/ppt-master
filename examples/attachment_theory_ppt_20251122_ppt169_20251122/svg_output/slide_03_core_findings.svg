@@ -1,0 +1,64 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部色彩条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90A4"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="110" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+    依恋理论的三个核心发现
+  </text>
+  
+  <!-- 卡片 1 -->
+  <g transform="translate(140, 180)">
+    <rect x="0" y="0" width="1000" height="140" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="40" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" fill="#4A90A4">
+      🤝
+    </text>
+    <text x="120" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">
+      核心发现 1
+    </text>
+    <text x="120" y="80" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" fill="#2C3E50">
+      <tspan x="120" dy="0">共同创造的依恋关系是发展的关键背景</tspan>
+    </text>
+    <text x="120" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      Co-created attachment relationships as developmental context
+    </text>
+  </g>
+  
+  <!-- 卡片 2 -->
+  <g transform="translate(140, 345)">
+    <rect x="0" y="0" width="1000" height="140" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="40" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" fill="#4A90A4">
+      🗣️
+    </text>
+    <text x="120" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">
+      核心发现 2
+    </text>
+    <text x="120" y="80" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" fill="#2C3E50">
+      <tspan x="120" dy="0">非言语体验构成发展中自我的核心</tspan>
+    </text>
+    <text x="120" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      Nonverbal experience forms the core of the developing self
+    </text>
+  </g>
+  
+  <!-- 卡片 3 -->
+  <g transform="translate(140, 510)">
+    <rect x="0" y="0" width="1000" height="140" rx="12" fill="#FFFFFF" stroke="#4A90A4" stroke-width="2"/>
+    <text x="40" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="48" fill="#4A90A4">
+      🧠
+    </text>
+    <text x="120" y="45" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">
+      核心发现 3
+    </text>
+    <text x="120" y="80" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" fill="#2C3E50">
+      <tspan x="120" dy="0">自我对体验的姿态比个人历史更能预测依恋安全性</tspan>
+    </text>
+    <text x="120" y="115" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro SC', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" fill="#7A8B99">
+      Stance toward experience predicts security more than history
+    </text>
+  </g>
+</svg>
+
