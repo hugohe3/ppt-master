@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">数字化转型战略（二）</text>
+  <text x="380" y="55" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" fill="#666666">— 新技术应用与增值服务</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 四个技术模块 2x2 布局 -->
+  <g transform="translate(60, 110)">
+    <!-- 模块1: 远程审核 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="550" height="200" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="550" height="50" rx="8" fill="#004B8D"/>
+      <rect x="0" y="45" width="550" height="5" fill="#004B8D"/>
+      
+      <!-- 图标区域 -->
+      <circle cx="35" cy="25" r="18" fill="#FFFFFF" opacity="0.2"/>
+      <text x="35" y="32" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">📡</text>
+      
+      <text x="65" y="32" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">远程审核</text>
+      
+      <g transform="translate(20, 70)">
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#333333">
+          <tspan x="0" dy="0">• "远程审核 + 现场审核"相结合的新模式</tspan>
+          <tspan x="0" dy="28">• 视频会议、物联网设备实现异地工厂检查</tspan>
+          <tspan x="0" dy="28">• 保障审核质量的前提下降低差旅成本</tspan>
+          <tspan x="0" dy="28">• 提高审核及时性和响应速度</tspan>
+        </text>
+      </g>
+    </g>
+    
+    <!-- 模块2: 区块链存证 -->
+    <g transform="translate(580, 0)">
+      <rect x="0" y="0" width="550" height="200" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="550" height="50" rx="8" fill="#008CD6"/>
+      <rect x="0" y="45" width="550" height="5" fill="#008CD6"/>
+      
+      <!-- 图标区域 -->
+      <circle cx="35" cy="25" r="18" fill="#FFFFFF" opacity="0.2"/>
+      <text x="35" y="32" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">🔗</text>
+      
+      <text x="65" y="32" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">区块链存证</text>
+      
+      <g transform="translate(20, 70)">
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#333333">
+          <tspan x="0" dy="0">• 认证过程和证书存储加密存证</tspan>
+          <tspan x="0" dy="28">• 认证数据不可篡改、防止证书伪造</tspan>
+          <tspan x="0" dy="28">• 数字签名 + 时间戳技术</tspan>
+          <tspan x="0" dy="28">• 电子档案可靠存储与交换（OFD格式）</tspan>
+        </text>
+      </g>
+    </g>
+    
+    <!-- 模块3: AI辅助 -->
+    <g transform="translate(0, 220)">
+      <rect x="0" y="0" width="550" height="200" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="550" height="50" rx="8" fill="#28A745"/>
+      <rect x="0" y="45" width="550" height="5" fill="#28A745"/>
+      
+      <!-- 图标区域 -->
+      <circle cx="35" cy="25" r="18" fill="#FFFFFF" opacity="0.2"/>
+      <text x="35" y="32" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">🤖</text>
+      
+      <text x="65" y="32" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">AI 人工智能辅助</text>
+      
+      <g transform="translate(20, 70)">
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#333333">
+          <tspan x="0" dy="0">• 自动校验文件数据、智能匹配整改措施</tspan>
+          <tspan x="0" dy="28">• 辅助生成审核计划和报告</tspan>
+          <tspan x="0" dy="28">• 提高审核一致性，减少人为错误</tspan>
+          <tspan x="0" dy="28">• 认证效率提升约</tspan>
+          <tspan font-weight="bold" fill="#28A745"> 40%</tspan>
+        </text>
+      </g>
+      
+      <!-- 效率提升标签 -->
+      <g transform="translate(420, 140)">
+        <rect x="0" y="0" width="110" height="45" rx="22" fill="#28A745"/>
+        <text x="55" y="20" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">+40%</text>
+        <text x="55" y="38" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">效率提升</text>
+      </g>
+    </g>
+    
+    <!-- 模块4: 电子证书与数据服务 -->
+    <g transform="translate(580, 220)">
+      <rect x="0" y="0" width="550" height="200" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="550" height="50" rx="8" fill="#F0AD4E"/>
+      <rect x="0" y="45" width="550" height="5" fill="#F0AD4E"/>
+      
+      <!-- 图标区域 -->
+      <circle cx="35" cy="25" r="18" fill="#FFFFFF" opacity="0.2"/>
+      <text x="35" y="32" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">📊</text>
+      
+      <text x="65" y="32" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">电子证书与数据服务</text>
+      
+      <g transform="translate(20, 70)">
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#333333">
+          <tspan x="0" dy="0">• 线上平台签发电子证照，随时调取验证</tspan>
+          <tspan x="0" dy="28">• 满足监管部门证书信息公开要求</tspan>
+          <tspan x="0" dy="28">• 数据分析产品：合规趋势、质量改进建议</tspan>
+          <tspan x="0" dy="28">• 性能基准报告，帮助企业对标参考</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 实施阶段时间轴 -->
+  <g transform="translate(60, 550)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#008CD6">数字化实施阶段</text>
+    
+    <g transform="translate(0, 25)">
+      <!-- 时间轴线 -->
+      <line x1="0" y1="25" x2="1100" y2="25" stroke="#D0D5D9" stroke-width="3"/>
+      
+      <!-- 阶段1 -->
+      <g transform="translate(100, 0)">
+        <circle cx="0" cy="25" r="12" fill="#004B8D"/>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">1</text>
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" font-weight="bold" fill="#004B8D" text-anchor="middle">2026-2027</text>
+        <text x="0" y="55" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">平台搭建</text>
+        <text x="0" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">核心功能上线</text>
+      </g>
+      
+      <!-- 阶段2 -->
+      <g transform="translate(550, 0)">
+        <circle cx="0" cy="25" r="12" fill="#008CD6"/>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">2</text>
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" font-weight="bold" fill="#008CD6" text-anchor="middle">2028-2029</text>
+        <text x="0" y="55" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">AI算法深化</text>
+        <text x="0" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">报告审核+风险预警</text>
+      </g>
+      
+      <!-- 阶段3 -->
+      <g transform="translate(1000, 0)">
+        <circle cx="0" cy="25" r="12" fill="#28A745"/>
+        <text x="0" y="30" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">3</text>
+        <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" font-weight="bold" fill="#28A745" text-anchor="middle">2030</text>
+        <text x="0" y="55" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">智能化辅助</text>
+        <text x="0" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">行业数字化标杆</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">06 / 14</text>
+</svg>
+

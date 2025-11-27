@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#008CD6"/>
+    </marker>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">国际化发展路径</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 三大战略方向 -->
+  <g transform="translate(60, 100)">
+    <!-- 方向1: 标准互认 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="370" height="220" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="370" height="55" rx="8" fill="#004B8D"/>
+      <rect x="0" y="50" width="370" height="5" fill="#004B8D"/>
+      
+      <text x="20" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">对标国际标准与互认</text>
+      
+      <g transform="translate(15, 70)">
+        <circle cx="8" cy="8" r="4" fill="#004B8D"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">跟踪UN WP.29世界车辆法规</text>
+      </g>
+      <g transform="translate(15, 100)">
+        <circle cx="8" cy="8" r="4" fill="#004B8D"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">对接IEC/ISO汽车相关标准</text>
+      </g>
+      <g transform="translate(15, 130)">
+        <circle cx="8" cy="8" r="4" fill="#004B8D"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">参与国际标准制修订工作</text>
+      </g>
+      <g transform="translate(15, 160)">
+        <circle cx="8" cy="8" r="4" fill="#004B8D"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">加入ILAC/IAF多边互认框架</text>
+      </g>
+      <g transform="translate(15, 190)">
+        <circle cx="8" cy="8" r="4" fill="#28A745"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#28A745" font-weight="bold">"一张证书畅行多个市场"</text>
+      </g>
+    </g>
+    
+    <!-- 方向2: 海外布局 -->
+    <g transform="translate(395, 0)">
+      <rect x="0" y="0" width="370" height="220" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="370" height="55" rx="8" fill="#008CD6"/>
+      <rect x="0" y="50" width="370" height="5" fill="#008CD6"/>
+      
+      <text x="20" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">海外市场准入服务布局</text>
+      
+      <g transform="translate(15, 70)">
+        <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">欧洲和东南亚设立代表处</text>
+      </g>
+      <g transform="translate(15, 100)">
+        <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">派驻熟悉当地法规的技术团队</text>
+      </g>
+      <g transform="translate(15, 130)">
+        <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">并购合作获取境外认证资质</text>
+      </g>
+      <g transform="translate(15, 160)">
+        <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">提供境外认证咨询一站式服务</text>
+      </g>
+      <g transform="translate(15, 190)">
+        <circle cx="8" cy="8" r="4" fill="#F0AD4E"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#F0AD4E" font-weight="bold">全球服务网络覆盖</text>
+      </g>
+    </g>
+    
+    <!-- 方向3: 差异化应对 -->
+    <g transform="translate(790, 0)">
+      <rect x="0" y="0" width="370" height="220" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="370" height="55" rx="8" fill="#28A745"/>
+      <rect x="0" y="50" width="370" height="5" fill="#28A745"/>
+      
+      <text x="20" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">差异化法规应对策略</text>
+      
+      <g transform="translate(15, 70)">
+        <circle cx="8" cy="8" r="4" fill="#28A745"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">成立国际法规研究中心</text>
+      </g>
+      <g transform="translate(15, 100)">
+        <circle cx="8" cy="8" r="4" fill="#28A745"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">发布各国合规资讯简报</text>
+      </g>
+      <g transform="translate(15, 130)">
+        <circle cx="8" cy="8" r="4" fill="#28A745"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">定制差异化合规方案</text>
+      </g>
+      <g transform="translate(15, 160)">
+        <circle cx="8" cy="8" r="4" fill="#28A745"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">法规培训和技术交流平台</text>
+      </g>
+      <g transform="translate(15, 190)">
+        <circle cx="8" cy="8" r="4" fill="#004B8D"/>
+        <text x="22" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#004B8D" font-weight="bold">从"跟随者"到"引领者"</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 分阶段布局时间轴 -->
+  <g transform="translate(60, 350)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#008CD6">国际化布局阶段</text>
+    <line x1="0" y1="15" x2="180" y2="15" stroke="#008CD6" stroke-width="2"/>
+  </g>
+  
+  <g transform="translate(60, 390)">
+    <!-- 时间轴 -->
+    <line x1="50" y1="50" x2="1100" y2="50" stroke="#D0D5D9" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- 阶段1 -->
+    <g transform="translate(150, 0)">
+      <circle cx="0" cy="50" r="18" fill="#004B8D"/>
+      <text x="0" y="56" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="0" y="15" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#004B8D" text-anchor="middle">第一阶段</text>
+      <rect x="-120" y="80" width="240" height="65" rx="4" fill="#F5F7FA" stroke="#E1E4E8"/>
+      <text x="0" y="102" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">东盟国家合作试点</text>
+      <text x="0" y="122" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">签署1-2家MOU</text>
+      <text x="0" y="137" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">2026-2027</text>
+    </g>
+    
+    <!-- 阶段2 -->
+    <g transform="translate(550, 0)">
+      <circle cx="0" cy="50" r="18" fill="#008CD6"/>
+      <text x="0" y="56" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="0" y="15" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#008CD6" text-anchor="middle">第二阶段</text>
+      <rect x="-130" y="80" width="260" height="65" rx="4" fill="#F5F7FA" stroke="#E1E4E8"/>
+      <text x="0" y="102" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">中东、拉美设点或签约合作</text>
+      <text x="0" y="122" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">欧洲联合认证项目试点</text>
+      <text x="0" y="137" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">2028-2029</text>
+    </g>
+    
+    <!-- 阶段3 -->
+    <g transform="translate(950, 0)">
+      <circle cx="0" cy="50" r="18" fill="#28A745"/>
+      <text x="0" y="56" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="0" y="15" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#28A745" text-anchor="middle">第三阶段</text>
+      <rect x="-130" y="80" width="260" height="65" rx="4" fill="#F5F7FA" stroke="#E1E4E8"/>
+      <text x="0" y="102" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">欧美长期合作联盟</text>
+      <text x="0" y="122" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333" text-anchor="middle">投资设立认证分支机构</text>
+      <text x="0" y="137" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">2030</text>
+    </g>
+  </g>
+  
+  <!-- 底部愿景 -->
+  <g transform="translate(60, 570)">
+    <rect x="0" y="0" width="1160" height="60" rx="6" fill="#004B8D" opacity="0.08"/>
+    <rect x="0" y="0" width="6" height="60" rx="3" fill="#004B8D"/>
+    <text x="30" y="38" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">
+      <tspan font-weight="bold" fill="#004B8D">愿景目标：</tspan>
+      <tspan>通过国内国际资源统筹，实现认证服务网络全球覆盖，为国内企业"走出去"提供本土化支持</tspan>
+    </text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">09 / 14</text>
+</svg>
+

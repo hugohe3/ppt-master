@@ -1,0 +1,128 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    政策与监管环境
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    POLICY &amp; REGULATORY ENVIRONMENT
+  </text>
+  
+  <!-- 左栏：国内政策 -->
+  <g transform="translate(60, 115)">
+    <rect width="560" height="535" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="560" height="10" rx="5" fill="#003F6C"/>
+    
+    <g transform="translate(25, 35)">
+      <circle cx="20" cy="15" r="18" fill="#003F6C"/>
+      <text x="20" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">🇨🇳</text>
+      <text x="55" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">国内政策机遇</text>
+    </g>
+    
+    <!-- 政策条目 -->
+    <g transform="translate(25, 80)">
+      <rect width="510" height="80" rx="8" fill="#E3F2FD"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#0076A8"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">《质量强国建设纲要》</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">推动高质量发展，强化质量基础设施建设</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">✓ 支持自愿性认证创新发展</text>
+    </g>
+    
+    <g transform="translate(25, 170)">
+      <rect width="510" height="80" rx="8" fill="#E8F5E9"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#00A651"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">《新能源汽车贸易合作意见》</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">促进新能源汽车贸易便利化与标准协调</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651">✓ 推动国际标准互认与检测结果共享</text>
+    </g>
+    
+    <g transform="translate(25, 260)">
+      <rect width="510" height="80" rx="8" fill="#E3F2FD"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#0076A8"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">《绿色贸易发展实施意见》</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">发展绿色贸易，推进碳标签和绿色认证</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">✓ 碳足迹认证成为出口竞争力要素</text>
+    </g>
+    
+    <g transform="translate(25, 350)">
+      <rect width="510" height="80" rx="8" fill="#FFF3E0"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#FF6B35"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">《智能网联汽车标准体系建设指南》</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">完善智能网联汽车标准体系</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6B35">✓ 功能安全/网络安全认证需求激增</text>
+    </g>
+    
+    <!-- 机遇总结 -->
+    <g transform="translate(25, 450)">
+      <rect width="510" height="65" rx="8" fill="#003F6C"/>
+      <text x="255" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107" text-anchor="middle">政策机遇</text>
+      <text x="255" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">自愿性认证迎来制度红利期，创新空间广阔</text>
+    </g>
+  </g>
+  
+  <!-- 右栏：海外监管 -->
+  <g transform="translate(655, 115)">
+    <rect width="560" height="535" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="560" height="10" rx="5" fill="#FF6B35"/>
+    
+    <g transform="translate(25, 35)">
+      <circle cx="20" cy="15" r="18" fill="#FF6B35"/>
+      <text x="20" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">🌍</text>
+      <text x="55" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">海外监管挑战</text>
+    </g>
+    
+    <!-- 监管条目 -->
+    <g transform="translate(25, 80)">
+      <rect width="510" height="80" rx="8" fill="#FFEBEE"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#F44336"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">🇪🇺 欧盟电池法规 (2027生效)</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">动力电池碳足迹申报、电池护照强制要求</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F44336">⚠️ 不合规将无法进入欧盟市场</text>
+    </g>
+    
+    <g transform="translate(25, 170)">
+      <rect width="510" height="80" rx="8" fill="#FFF3E0"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#FF9800"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">🇪🇺 CBAM碳边境调节机制 (2026)</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">对进口产品征收碳关税</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF9800">⚠️ 汽车零部件可能纳入范围</text>
+    </g>
+    
+    <g transform="translate(25, 260)">
+      <rect width="510" height="80" rx="8" fill="#F3E5F5"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#9C27B0"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">🇪🇺 UN R155/R156 (已生效)</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">车辆网络安全与软件更新管理强制认证</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#9C27B0">⚠️ 2024年起新车型强制执行</text>
+    </g>
+    
+    <g transform="translate(25, 350)">
+      <rect width="510" height="80" rx="8" fill="#E3F2FD"/>
+      <rect x="0" y="0" width="6" height="80" rx="3" fill="#0076A8"/>
+      <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#003F6C">🇺🇸 美国自动驾驶监管动态</text>
+      <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">FMVSS豁免程序、州级法规差异</text>
+      <text x="20" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">⚠️ 监管不确定性需持续关注</text>
+    </g>
+    
+    <!-- 挑战总结 -->
+    <g transform="translate(25, 450)">
+      <rect width="510" height="65" rx="8" fill="#FF6B35"/>
+      <text x="255" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">应对策略</text>
+      <text x="255" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">提前布局合规能力，将挑战转化为服务机遇</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">16 / 20</text>
+</svg>

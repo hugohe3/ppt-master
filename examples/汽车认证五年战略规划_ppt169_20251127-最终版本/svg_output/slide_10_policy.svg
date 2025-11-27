@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">政策与监管环境影响</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 左侧：国内政策导向 -->
+  <g transform="translate(60, 100)">
+    <rect x="0" y="0" width="560" height="520" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="55" rx="8" fill="#004B8D"/>
+    <rect x="0" y="50" width="560" height="5" fill="#004B8D"/>
+    <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">国内政策导向</text>
+    
+    <!-- 政策项目 -->
+    <g transform="translate(20, 75)">
+      <!-- 政策1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#004B8D"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#004B8D">《质量强国建设纲要》</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">以标准、质量和认证筑牢经济发展新优势</text>
+        <text x="20" y="70" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">提高国际互认水平，推动认证行业创新发展</text>
+      </g>
+      
+      <!-- 政策2 -->
+      <g transform="translate(0, 95)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#008CD6"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#008CD6">九部门《新能源汽车贸易合作意见》</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">优化贸易环境，推进标准国际对接和认证结果互认</text>
+        <text x="20" y="70" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">6个方面18项政策措施（2023年12月发布）</text>
+      </g>
+      
+      <!-- 政策3 -->
+      <g transform="translate(0, 190)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#28A745"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#28A745">商务部《拓展绿色贸易实施意见》</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">加快建立与国际接轨的绿色低碳产品标准体系</text>
+        <text x="20" y="70" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">制定重点外贸产品碳足迹标准，强化多双边互认</text>
+      </g>
+      
+      <!-- 政策4 -->
+      <g transform="translate(0, 285)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#F0AD4E"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#F0AD4E">认监委《数字化管理能力指导意见》</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">2029年实现全行业数字化认证服务体系</text>
+        <text x="20" y="70" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">区块链留痕、AI分析强化认证过程监管</text>
+      </g>
+      
+      <!-- 趋势总结 -->
+      <g transform="translate(0, 380)">
+        <rect x="0" y="0" width="520" height="50" rx="6" fill="#004B8D" opacity="0.1"/>
+        <text x="15" y="32" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#004B8D">
+          <tspan font-weight="bold">发展方向：</tspan>
+          <tspan>数字化 • 绿色化 • 国际化</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 右侧：海外监管变化 -->
+  <g transform="translate(660, 100)">
+    <rect x="0" y="0" width="560" height="520" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="55" rx="8" fill="#008CD6"/>
+    <rect x="0" y="50" width="560" height="5" fill="#008CD6"/>
+    <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">海外监管变化</text>
+    
+    <!-- 法规项目 -->
+    <g transform="translate(20, 75)">
+      <!-- 欧洲法规 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="520" height="100" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="100" rx="2" fill="#004B8D"/>
+        <text x="20" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#004B8D">欧盟法规</text>
+        <g transform="translate(20, 40)">
+          <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">《电池法规》碳足迹、再生材料比例要求</text>
+        </g>
+        <g transform="translate(20, 60)">
+          <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">UN R155 网络安全管理体系强制认定</text>
+        </g>
+        <g transform="translate(20, 80)">
+          <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">UN R156 软件升级管理法规（2024年启动）</text>
+        </g>
+      </g>
+      
+      <!-- 北美法规 -->
+      <g transform="translate(0, 115)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#008CD6"/>
+        <text x="20" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#008CD6">北美法规</text>
+        <g transform="translate(20, 40)">
+          <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">FMVSS安全标准侧重碰撞和功能安全</text>
+        </g>
+        <g transform="translate(20, 60)">
+          <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">《自动驾驶汽车豁免》框架平衡创新与安全</text>
+        </g>
+      </g>
+      
+      <!-- 新兴市场 -->
+      <g transform="translate(0, 210)">
+        <rect x="0" y="0" width="520" height="80" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="80" rx="2" fill="#28A745"/>
+        <text x="20" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#28A745">新兴市场</text>
+        <g transform="translate(20, 40)">
+          <circle cx="6" cy="8" r="3" fill="#28A745"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">东盟、南美各国法规日趋完善但存在差异</text>
+        </g>
+        <g transform="translate(20, 60)">
+          <circle cx="6" cy="8" r="3" fill="#28A745"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">有的认可UN ECE规则，有的建立自有认证体系</text>
+        </g>
+      </g>
+      
+      <!-- 应对策略 -->
+      <g transform="translate(0, 305)">
+        <rect x="0" y="0" width="520" height="125" rx="6" fill="#FFF3E0" stroke="#F0AD4E" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="125" rx="2" fill="#F0AD4E"/>
+        <text x="20" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" font-weight="bold" fill="#F0AD4E">应对策略</text>
+        <g transform="translate(20, 45)">
+          <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">制定各地区合规手册，明确认证流程与注意事项</text>
+        </g>
+        <g transform="translate(20, 68)">
+          <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">加强与驻外机构联系，及时获取技术性贸易措施信息</text>
+        </g>
+        <g transform="translate(20, 91)">
+          <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+          <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">帮助企业提早准备，通过双边磋商争取认证结果采信</text>
+        </g>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">10 / 14</text>
+</svg>
+

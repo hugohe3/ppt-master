@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">阶段性目标与实施计划（二）</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 第二阶段 -->
+  <g transform="translate(60, 95)">
+    <rect x="0" y="0" width="560" height="280" rx="8" fill="#F5F7FA" stroke="#008CD6" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="55" rx="8" fill="#008CD6"/>
+    <rect x="0" y="50" width="560" height="5" fill="#008CD6"/>
+    <circle cx="40" cy="27" r="20" fill="#FFFFFF"/>
+    <text x="40" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#008CD6" text-anchor="middle">2</text>
+    <text x="75" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">第二阶段（2028–2029年）</text>
+    <text x="75" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#FFFFFF" opacity="0.9">拓展与提升</text>
+    
+    <!-- 关键举措 -->
+    <g transform="translate(20, 70)">
+      <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#008CD6">关键举措</text>
+      
+      <g transform="translate(0, 20)">
+        <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">升级智能审核系统，AI辅助报告和数据校验</text>
+      </g>
+      <g transform="translate(0, 45)">
+        <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">80%以上存量客户切换至线上服务平台</text>
+      </g>
+      <g transform="translate(0, 70)">
+        <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">四大类认证产品线全面铺开，各3–5项细分认证</text>
+      </g>
+      <g transform="translate(0, 95)">
+        <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">网络安全和自动驾驶测试实验室通过CNAS认可</text>
+      </g>
+      <g transform="translate(0, 120)">
+        <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">东南亚代表处成立，欧洲联合认证项目试点</text>
+      </g>
+    </g>
+    
+    <!-- 预期成果 -->
+    <g transform="translate(20, 215)">
+      <rect x="0" y="0" width="520" height="50" rx="4" fill="#008CD6" opacity="0.1"/>
+      <text x="15" y="20" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" font-weight="bold" fill="#008CD6">预期成果</text>
+      <text x="15" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">业务量年增15%+ | 新认证产品占比30% | 数字化平台全覆盖 | 多国出口互认</text>
+    </g>
+  </g>
+  
+  <!-- 第三阶段 -->
+  <g transform="translate(660, 95)">
+    <rect x="0" y="0" width="560" height="280" rx="8" fill="#F5F7FA" stroke="#28A745" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="55" rx="8" fill="#28A745"/>
+    <rect x="0" y="50" width="560" height="5" fill="#28A745"/>
+    <circle cx="40" cy="27" r="20" fill="#FFFFFF"/>
+    <text x="40" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#28A745" text-anchor="middle">3</text>
+    <text x="75" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">第三阶段（2030年）</text>
+    <text x="75" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#FFFFFF" opacity="0.9">巩固与引领</text>
+    
+    <!-- 关键举措 -->
+    <g transform="translate(20, 70)">
+      <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#28A745">关键举措</text>
+      
+      <g transform="translate(0, 20)">
+        <circle cx="6" cy="8" r="3" fill="#28A745"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">完成认证机构数字化管理行业标准贯彻落实</text>
+      </g>
+      <g transform="translate(0, 45)">
+        <circle cx="6" cy="8" r="3" fill="#28A745"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">尝试区块链证书联盟，跨机构证书互认验证</text>
+      </g>
+      <g transform="translate(0, 70)">
+        <circle cx="6" cy="8" r="3" fill="#28A745"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">发布行业首创认证规范（智能汽车综合性能星级）</text>
+      </g>
+      <g transform="translate(0, 95)">
+        <circle cx="6" cy="8" r="3" fill="#28A745"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">培养行业技术委员、标准主要起草人≥5人</text>
+      </g>
+      <g transform="translate(0, 120)">
+        <circle cx="6" cy="8" r="3" fill="#28A745"/>
+        <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">牵头成立汽车认证国际合作联盟，争取WP.29资质</text>
+      </g>
+    </g>
+    
+    <!-- 预期成果 -->
+    <g transform="translate(20, 215)">
+      <rect x="0" y="0" width="520" height="50" rx="4" fill="#28A745" opacity="0.1"/>
+      <text x="15" y="20" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" font-weight="bold" fill="#28A745">预期成果</text>
+      <text x="15" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">国内领先 | 国际知名 | 认证结果广受国际采信 | 行业数字化标杆</text>
+    </g>
+  </g>
+  
+  <!-- 五年目标总览 -->
+  <g transform="translate(60, 400)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#004B8D">五年战略目标总览</text>
+    <line x1="0" y1="15" x2="200" y2="15" stroke="#004B8D" stroke-width="2"/>
+  </g>
+  
+  <g transform="translate(60, 430)">
+    <!-- 时间轴 -->
+    <rect x="0" y="60" width="1160" height="8" rx="4" fill="#E1E4E8"/>
+    
+    <!-- 阶段1标记 -->
+    <g transform="translate(100, 0)">
+      <rect x="-80" y="30" width="160" height="24" rx="12" fill="#004B8D"/>
+      <text x="0" y="47" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">2026–2027 奠基与试点</text>
+      <circle cx="0" cy="64" r="12" fill="#004B8D"/>
+      <text x="0" y="95" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">数字平台搭建</text>
+      <text x="0" y="110" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">试点产品发布</text>
+    </g>
+    
+    <!-- 阶段2标记 -->
+    <g transform="translate(580, 0)">
+      <rect x="-80" y="30" width="160" height="24" rx="12" fill="#008CD6"/>
+      <text x="0" y="47" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">2028–2029 拓展与提升</text>
+      <circle cx="0" cy="64" r="12" fill="#008CD6"/>
+      <text x="0" y="95" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">产品线全覆盖</text>
+      <text x="0" y="110" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">海外网络建成</text>
+    </g>
+    
+    <!-- 阶段3标记 -->
+    <g transform="translate(1060, 0)">
+      <rect x="-75" y="30" width="150" height="24" rx="12" fill="#28A745"/>
+      <text x="0" y="47" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">2030 巩固与引领</text>
+      <circle cx="0" cy="64" r="12" fill="#28A745"/>
+      <text x="0" y="95" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">国际知名机构</text>
+      <text x="0" y="110" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="11" fill="#666666" text-anchor="middle">行业标准引领</text>
+    </g>
+    
+    <!-- 渐进填充 -->
+    <rect x="0" y="60" width="387" height="8" rx="4" fill="#004B8D"/>
+    <rect x="387" y="60" width="386" height="8" rx="4" fill="#008CD6"/>
+    <rect x="773" y="60" width="387" height="8" rx="4" fill="#28A745"/>
+  </g>
+  
+  <!-- 底部愿景 -->
+  <g transform="translate(60, 570)">
+    <rect x="0" y="0" width="1160" height="60" rx="6" fill="#004B8D" opacity="0.08"/>
+    <rect x="0" y="0" width="6" height="60" rx="3" fill="#004B8D"/>
+    <text x="30" y="38" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">
+      <tspan font-weight="bold" fill="#004B8D">终极愿景：</tspan>
+      <tspan>打造中国汽车认证的金字招牌，为中国汽车产业迈向全球价值链扮演关键角色</tspan>
+    </text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">13 / 14</text>
+</svg>
+

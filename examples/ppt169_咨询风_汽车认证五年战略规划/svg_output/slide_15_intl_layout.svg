@@ -1,0 +1,148 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    海外市场布局
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    OVERSEAS MARKET LAYOUT
+  </text>
+  
+  <!-- 世界地图区域 - 简化版 -->
+  <g transform="translate(60, 110)">
+    <rect width="700" height="450" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">全球市场布局路线图</text>
+    
+    <!-- 中心：中国 -->
+    <g transform="translate(450, 220)">
+      <circle cx="0" cy="0" r="35" fill="#003F6C"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">中国</text>
+      <text x="0" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#003F6C" text-anchor="middle">总部基地</text>
+    </g>
+    
+    <!-- 第一阶段: 东盟 -->
+    <g transform="translate(520, 300)">
+      <circle cx="0" cy="0" r="30" fill="#00A651"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">东盟</text>
+      <text x="0" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#00A651" text-anchor="middle">第一阶段</text>
+      <!-- 连线 -->
+      <line x1="-70" y1="-80" x2="-20" y2="-20" stroke="#00A651" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 第二阶段: 中东 -->
+    <g transform="translate(300, 260)">
+      <circle cx="0" cy="0" r="28" fill="#FF6B35"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">中东</text>
+      <text x="0" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FF6B35" text-anchor="middle">第二阶段</text>
+      <line x1="150" y1="-40" x2="40" y2="-10" stroke="#FF6B35" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 第二阶段: 拉美 -->
+    <g transform="translate(120, 320)">
+      <circle cx="0" cy="0" r="28" fill="#FF6B35"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">拉美</text>
+      <text x="0" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FF6B35" text-anchor="middle">第二阶段</text>
+      <line x1="330" y1="-100" x2="40" y2="-10" stroke="#FF6B35" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 第三阶段: 欧洲 -->
+    <g transform="translate(280, 130)">
+      <circle cx="0" cy="0" r="32" fill="#0076A8"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">欧洲</text>
+      <text x="0" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#0076A8" text-anchor="middle">第三阶段</text>
+      <line x1="170" y1="90" x2="40" y2="20" stroke="#0076A8" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 第三阶段: 北美 -->
+    <g transform="translate(100, 150)">
+      <circle cx="0" cy="0" r="32" fill="#0076A8"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">北美</text>
+      <text x="0" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#0076A8" text-anchor="middle">第三阶段</text>
+      <line x1="350" y1="70" x2="40" y2="10" stroke="#0076A8" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 俄罗斯 -->
+    <g transform="translate(450, 90)">
+      <circle cx="0" cy="0" r="25" fill="#9C27B0"/>
+      <text x="0" y="5" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">俄罗斯</text>
+      <text x="0" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#9C27B0" text-anchor="middle">持续深化</text>
+      <line x1="0" y1="130" x2="0" y2="35" stroke="#9C27B0" stroke-width="2" stroke-dasharray="5,3"/>
+    </g>
+    
+    <!-- 图例 -->
+    <g transform="translate(30, 380)">
+      <rect width="280" height="55" rx="8" fill="#F0F4F8"/>
+      <circle cx="25" cy="20" r="8" fill="#00A651"/>
+      <text x="40" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">第一阶段 (2026-2027)</text>
+      <circle cx="160" cy="20" r="8" fill="#FF6B35"/>
+      <text x="175" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">第二阶段</text>
+      <circle cx="25" cy="42" r="8" fill="#0076A8"/>
+      <text x="40" y="46" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">第三阶段 (2030)</text>
+      <circle cx="160" cy="42" r="8" fill="#9C27B0"/>
+      <text x="175" y="46" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">持续深化</text>
+    </g>
+  </g>
+  
+  <!-- 右侧：分阶段布局说明 -->
+  <g transform="translate(780, 110)">
+    <rect width="440" height="450" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">分阶段实施计划</text>
+    
+    <!-- 第一阶段 -->
+    <g transform="translate(30, 60)">
+      <rect width="380" height="110" rx="10" fill="#E8F5E9"/>
+      <rect x="0" y="0" width="8" height="110" rx="4" fill="#00A651"/>
+      <text x="25" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#00A651">第一阶段：2026-2027</text>
+      <text x="25" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">东盟试点突破</text>
+      <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 建立东盟区域代表处</text>
+      <text x="25" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 与本地机构签署互认协议</text>
+    </g>
+    
+    <!-- 第二阶段 -->
+    <g transform="translate(30, 185)">
+      <rect width="380" height="110" rx="10" fill="#FFF3E0"/>
+      <rect x="0" y="0" width="8" height="110" rx="4" fill="#FF6B35"/>
+      <text x="25" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FF6B35">第二阶段：2028-2029</text>
+      <text x="25" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">中东、拉美拓展</text>
+      <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 设立中东/拉美分支实验室</text>
+      <text x="25" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• GCC、INMETRO认证合作</text>
+    </g>
+    
+    <!-- 第三阶段 -->
+    <g transform="translate(30, 310)">
+      <rect width="380" height="110" rx="10" fill="#E3F2FD"/>
+      <rect x="0" y="0" width="8" height="110" rx="4" fill="#0076A8"/>
+      <text x="25" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#0076A8">第三阶段：2030</text>
+      <text x="25" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">欧美深度合作</text>
+      <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 欧盟E-Mark联合认证</text>
+      <text x="25" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 北美FMVSS技术合作</text>
+    </g>
+  </g>
+  
+  <!-- 底部关键里程碑 -->
+  <g transform="translate(60, 580)">
+    <rect width="1160" height="80" rx="10" fill="#003F6C"/>
+    <text x="30" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107">2030年目标</text>
+    
+    <g transform="translate(30, 45)">
+      <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">🌍 海外代表处/实验室 5+</text>
+      <text x="280" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">🤝 新增国际互认协议 10+</text>
+      <text x="580" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">📈 海外业务占比 20%+</text>
+      <text x="880" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">🚗 服务出海车企 50+</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">15 / 20</text>
+</svg>

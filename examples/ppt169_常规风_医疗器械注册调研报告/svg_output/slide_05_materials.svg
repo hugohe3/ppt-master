@@ -1,0 +1,226 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰线 -->
+  <line x1="60" y1="50" x2="1220" y2="50" stroke="#E0E6ED" stroke-width="2"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="100" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+        font-size="36" font-weight="bold" fill="#003D82" text-anchor="middle">
+    注册申请所需材料与技术文档
+  </text>
+  
+  <!-- 左栏：基本材料 -->
+  <g>
+    <rect x="80" y="140" width="560" height="440" fill="#F5F7FA" rx="10"/>
+    
+    <text x="360" y="175" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="22" font-weight="bold" fill="#0066CC" text-anchor="middle">
+      基本申报材料
+    </text>
+    
+    <!-- 材料1 -->
+    <g>
+      <circle cx="115" cy="215" r="8" fill="#00A86B"/>
+      <path d="M 111 215 L 114 218 L 119 212" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="220" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        产品风险分析资料
+      </text>
+    </g>
+    <text x="140" y="242" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#546E7A">
+      <tspan x="140" dy="0">风险识别、分析和控制措施</tspan>
+      <tspan x="140" dy="18">符合YY/T 0316 (ISO 14971)</tspan>
+    </text>
+    
+    <!-- 材料2 -->
+    <g>
+      <circle cx="115" cy="295" r="8" fill="#00A86B"/>
+      <path d="M 111 295 L 114 298 L 119 292" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="300" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        产品技术要求
+      </text>
+    </g>
+    <text x="140" y="322" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#546E7A">
+      <tspan x="140" dy="0">技术性能指标和测试方法</tspan>
+      <tspan x="140" dy="18">功能、性能、信息安全要求</tspan>
+    </text>
+    
+    <!-- 材料3 -->
+    <g>
+      <circle cx="115" cy="375" r="8" fill="#00A86B"/>
+      <path d="M 111 375 L 114 378 L 119 372" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="380" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        产品检验报告
+      </text>
+    </g>
+    <text x="140" y="402" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#546E7A">
+      <tspan x="140" dy="0">第三方检测机构出具</tspan>
+      <tspan x="140" dy="18">功能、性能、网络安全测试</tspan>
+    </text>
+    
+    <!-- 材料4 -->
+    <g>
+      <circle cx="115" cy="455" r="8" fill="#00A86B"/>
+      <path d="M 111 455 L 114 458 L 119 452" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="460" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        临床评价资料
+      </text>
+    </g>
+    <text x="140" y="480" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#546E7A">
+      临床试验或文献/同品比对
+    </text>
+    
+    <!-- 材料5 -->
+    <g>
+      <circle cx="115" cy="515" r="8" fill="#00A86B"/>
+      <path d="M 111 515 L 114 518 L 119 512" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="520" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        产品说明书和标签
+      </text>
+    </g>
+    <text x="140" y="540" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#546E7A">
+      符合医疗器械说明书管理规定
+    </text>
+    
+    <!-- 材料6 -->
+    <g>
+      <circle cx="115" cy="570" r="8" fill="#00A86B"/>
+      <path d="M 111 570 L 114 573 L 119 567" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="140" y="575" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="17" fill="#2C3E50" font-weight="bold">
+        质量管理体系文件
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右栏：软件特殊要求 -->
+  <g>
+    <rect x="660" y="140" width="560" height="440" fill="#E3F2FD" rx="10" stroke="#0066CC" stroke-width="2"/>
+    
+    <text x="940" y="175" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="22" font-weight="bold" fill="#0066CC" text-anchor="middle">
+      软件产品特殊要求
+    </text>
+    
+    <!-- 软件要求1 -->
+    <g>
+      <rect x="690" y="200" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="225" r="5" fill="#0066CC"/>
+      <text x="730" y="218" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        软件说明文件
+      </text>
+      <text x="730" y="236" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        功能描述、系统架构、算法原理
+      </text>
+    </g>
+    
+    <!-- 软件要求2 -->
+    <g>
+      <rect x="690" y="260" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="285" r="5" fill="#0066CC"/>
+      <text x="730" y="278" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        软件版本与更新控制
+      </text>
+      <text x="730" y="296" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        版本号定义、发布历史、变更管理
+      </text>
+    </g>
+    
+    <!-- 软件要求3 -->
+    <g>
+      <rect x="690" y="320" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="345" r="5" fill="#0066CC"/>
+      <text x="730" y="338" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        需求规格与验证
+      </text>
+      <text x="730" y="356" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        需求说明、双向追溯矩阵
+      </text>
+    </g>
+    
+    <!-- 软件要求4 -->
+    <g>
+      <rect x="690" y="380" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="405" r="5" fill="#FF8C00"/>
+      <text x="730" y="398" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        软件验证和确认测试
+      </text>
+      <text x="730" y="416" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        完整测试报告、关键算法验证
+      </text>
+    </g>
+    
+    <!-- 软件要求5 -->
+    <g>
+      <rect x="690" y="440" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="465" r="5" fill="#FF8C00"/>
+      <text x="730" y="458" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        网络安全与信息安全
+      </text>
+      <text x="730" y="476" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        权限管理、数据加密、防火墙
+      </text>
+    </g>
+    
+    <!-- 软件要求6 -->
+    <g>
+      <rect x="690" y="500" width="500" height="50" fill="#FFFFFF" rx="6"/>
+      <circle cx="710" cy="525" r="5" fill="#0066CC"/>
+      <text x="730" y="518" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="16" fill="#003D82" font-weight="bold">
+        维护和使用指南
+      </text>
+      <text x="730" y="536" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+            font-size="14" fill="#546E7A">
+        安装配置、培训资料、技术支持
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部参考标准 -->
+  <g>
+    <rect x="80" y="605" width="1140" height="60" fill="#F5F7FA" rx="8" stroke="#E0E6ED" stroke-width="2"/>
+    
+    <text x="100" y="627" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="15" fill="#2C3E50" font-weight="bold">
+      参考标准：
+    </text>
+    <text x="100" y="650" font-family="Microsoft YaHei, 微软雅黑, sans-serif" 
+          font-size="14" fill="#546E7A">
+      YY/T 0664《医疗器械软件 软件生命周期过程》 | 
+      YY 9706系列（网络安全标准） | 
+      2022年第9号《医疗器械软件注册审查指导原则》 | 
+      2022年第7号《医疗器械网络安全注册审查指导原则》
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="Segoe UI, sans-serif" 
+        font-size="14" fill="#B0BEC5" text-anchor="end">
+    5
+  </text>
+</svg>
+
+
+

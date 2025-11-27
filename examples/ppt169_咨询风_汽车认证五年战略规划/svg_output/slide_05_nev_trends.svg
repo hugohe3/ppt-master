@@ -1,0 +1,160 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A651"/>
+      <stop offset="100%" style="stop-color:#00753A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 章节标识 -->
+  <rect x="60" y="30" width="8" height="50" rx="4" fill="#003F6C"/>
+  <text x="80" y="58" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">01 行业发展趋势</text>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    新能源汽车市场趋势
+  </text>
+  
+  <!-- 左侧：柱状图区域 -->
+  <g transform="translate(60, 130)">
+    <rect width="620" height="450" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">新能源汽车销量占比趋势</text>
+    <text x="30" y="65" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">2020-2025年 新能源车占乘用车销量比例</text>
+    
+    <!-- 图表区域 -->
+    <g transform="translate(60, 100)">
+      <!-- Y轴 -->
+      <line x1="0" y1="0" x2="0" y2="280" stroke="#E8E8F0" stroke-width="2"/>
+      <!-- X轴 -->
+      <line x1="0" y1="280" x2="520" y2="280" stroke="#E8E8F0" stroke-width="2"/>
+      
+      <!-- Y轴刻度 -->
+      <text x="-10" y="5" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#8888A0">50%</text>
+      <text x="-10" y="75" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#8888A0">40%</text>
+      <text x="-10" y="145" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#8888A0">30%</text>
+      <text x="-10" y="215" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#8888A0">20%</text>
+      <text x="-10" y="285" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#8888A0">10%</text>
+      
+      <!-- 网格线 -->
+      <line x1="0" y1="70" x2="520" y2="70" stroke="#E8E8F0" stroke-width="1" stroke-dasharray="4"/>
+      <line x1="0" y1="140" x2="520" y2="140" stroke="#E8E8F0" stroke-width="1" stroke-dasharray="4"/>
+      <line x1="0" y1="210" x2="520" y2="210" stroke="#E8E8F0" stroke-width="1" stroke-dasharray="4"/>
+      
+      <!-- 柱状图 -->
+      <!-- 2020: 5.4% -->
+      <rect x="30" y="250" width="50" height="30" rx="4" fill="#00A651" opacity="0.4"/>
+      <text x="55" y="245" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">5.4%</text>
+      <text x="55" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#4A4A6A">2020</text>
+      
+      <!-- 2021: 13.4% -->
+      <rect x="110" y="205" width="50" height="75" rx="4" fill="#00A651" opacity="0.5"/>
+      <text x="135" y="200" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">13.4%</text>
+      <text x="135" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#4A4A6A">2021</text>
+      
+      <!-- 2022: 25.6% -->
+      <rect x="190" y="137" width="50" height="143" rx="4" fill="#00A651" opacity="0.6"/>
+      <text x="215" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">25.6%</text>
+      <text x="215" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#4A4A6A">2022</text>
+      
+      <!-- 2023: 31.6% -->
+      <rect x="270" y="103" width="50" height="177" rx="4" fill="#00A651" opacity="0.75"/>
+      <text x="295" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">31.6%</text>
+      <text x="295" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#4A4A6A">2023</text>
+      
+      <!-- 2024: 38% -->
+      <rect x="350" y="67" width="50" height="213" rx="4" fill="#00A651" opacity="0.85"/>
+      <text x="375" y="62" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">38%</text>
+      <text x="375" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#4A4A6A">2024</text>
+      
+      <!-- 2025: 44% (当前) -->
+      <rect x="430" y="35" width="50" height="245" rx="4" fill="url(#barGradient)"/>
+      <text x="455" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#00A651">44%</text>
+      <text x="455" y="305" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#00A651">2025*</text>
+    </g>
+    
+    <text x="30" y="430" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">* 2025年1-5月数据 | 数据来源：中国汽车工业协会</text>
+  </g>
+  
+  <!-- 右侧：关键数据与要点 -->
+  <g transform="translate(710, 130)">
+    <!-- 核心数据卡片 -->
+    <rect width="510" height="140" rx="12" fill="#00A651"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" opacity="0.9">2025年1-5月新能源车出口</text>
+    <text x="30" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF">85.5万辆</text>
+    <text x="30" y="120" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF">
+      <tspan>同比增长 </tspan>
+      <tspan font-weight="bold" font-size="24">+64.6%</tspan>
+    </text>
+    <!-- 趋势箭头 -->
+    <g transform="translate(420, 50)">
+      <polygon points="30,50 50,10 70,50 55,50 55,80 45,80 45,50" fill="#FFFFFF" opacity="0.3"/>
+    </g>
+  </g>
+  
+  <!-- 认证需求焦点 -->
+  <g transform="translate(710, 290)">
+    <rect width="510" height="290" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">认证需求新焦点</text>
+    
+    <!-- 焦点列表 -->
+    <g transform="translate(30, 70)">
+      <!-- 电池安全 -->
+      <g transform="translate(0, 0)">
+        <rect width="210" height="80" rx="8" fill="#00A651" opacity="0.08"/>
+        <circle cx="25" cy="40" r="18" fill="#00A651" opacity="0.2"/>
+        <text x="25" y="46" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18">🔋</text>
+        <text x="55" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#003F6C">电池安全</text>
+        <text x="55" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">热失控防护测试</text>
+      </g>
+      
+      <!-- 续航性能 -->
+      <g transform="translate(230, 0)">
+        <rect width="210" height="80" rx="8" fill="#0076A8" opacity="0.08"/>
+        <circle cx="25" cy="40" r="18" fill="#0076A8" opacity="0.2"/>
+        <text x="25" y="46" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18">⚡</text>
+        <text x="55" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#003F6C">续航性能</text>
+        <text x="55" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">实际里程评估</text>
+      </g>
+      
+      <!-- 充电兼容 -->
+      <g transform="translate(0, 100)">
+        <rect width="210" height="80" rx="8" fill="#FF6B35" opacity="0.08"/>
+        <circle cx="25" cy="40" r="18" fill="#FF6B35" opacity="0.2"/>
+        <text x="25" y="46" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18">🔌</text>
+        <text x="55" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#003F6C">充电设施</text>
+        <text x="55" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">兼容性与效率认证</text>
+      </g>
+      
+      <!-- 三电系统 -->
+      <g transform="translate(230, 100)">
+        <rect width="210" height="80" rx="8" fill="#9C27B0" opacity="0.08"/>
+        <circle cx="25" cy="40" r="18" fill="#9C27B0" opacity="0.2"/>
+        <text x="25" y="46" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18">⚙️</text>
+        <text x="55" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#003F6C">"三电"系统</text>
+        <text x="55" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">电池/电机/电控</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 底部洞察 -->
+  <g transform="translate(60, 600)">
+    <rect width="1160" height="70" rx="8" fill="#003F6C" opacity="0.08"/>
+    <text x="20" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#003F6C">机遇洞察</text>
+    <text x="20" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      新能源汽车产业的快速发展带动检测认证需求激增，电池安全、续航性能、充电兼容等成为自愿性认证的新蓝海市场
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" text-anchor="end" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">05 / 20</text>
+</svg>

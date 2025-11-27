@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">组织发展与能力建设</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 三大能力模块 -->
+  <!-- 模块1: 人才队伍培养 -->
+  <g transform="translate(60, 105)">
+    <rect x="0" y="0" width="370" height="400" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <!-- 标题 -->
+    <rect x="0" y="0" width="370" height="55" rx="8" fill="#004B8D"/>
+    <rect x="0" y="50" width="370" height="5" fill="#004B8D"/>
+    <circle cx="35" cy="27" r="18" fill="#FFFFFF" opacity="0.2"/>
+    <text x="35" y="34" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">👥</text>
+    <text x="65" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">人才队伍培养</text>
+    
+    <!-- 内容 -->
+    <g transform="translate(20, 75)">
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#004B8D"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">引进领军人才</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">行业领军人才和海外背景专家</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">提升整体视野和专业厚度</text>
+      </g>
+      
+      <g transform="translate(0, 85)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#008CD6"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">内部骨干培训</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">赴国内外专业机构培训进修</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">参加ISO/IEC技术委员会工作</text>
+      </g>
+      
+      <g transform="translate(0, 170)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#28A745"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">人才梯队建设</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">导师制和项目练兵机制</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">年轻工程师成长为审核专家</text>
+      </g>
+      
+      <g transform="translate(0, 255)">
+        <rect x="0" y="0" width="330" height="55" rx="4" fill="#004B8D" opacity="0.1"/>
+        <text x="15" y="22" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" font-weight="bold" fill="#004B8D">重点强化</text>
+        <text x="15" y="42" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">国际法规研读能力 + 外语水平</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 模块2: 检测能力提升 -->
+  <g transform="translate(455, 105)">
+    <rect x="0" y="0" width="370" height="400" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <!-- 标题 -->
+    <rect x="0" y="0" width="370" height="55" rx="8" fill="#008CD6"/>
+    <rect x="0" y="50" width="370" height="5" fill="#008CD6"/>
+    <circle cx="35" cy="27" r="18" fill="#FFFFFF" opacity="0.2"/>
+    <text x="35" y="34" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">🔬</text>
+    <text x="65" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">检测能力提升</text>
+    
+    <!-- 内容 -->
+    <g transform="translate(20, 75)">
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#28A745"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">新能源汽车检测实验室</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">动力电池安全测试设备</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">三电（电池、电机、电控）综合测试</text>
+      </g>
+      
+      <g transform="translate(0, 85)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#004B8D"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">网络安全与软件测试实验室</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">车载通信协议分析、整车渗透测试</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">OTA升级模拟验证环境</text>
+      </g>
+      
+      <g transform="translate(0, 170)">
+        <rect x="0" y="0" width="330" height="70" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="70" rx="2" fill="#F0AD4E"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">环境可靠性实验室</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">振动台、气候室等装置升级</text>
+        <text x="15" y="63" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">模拟高温、高寒、高湿极端条件</text>
+      </g>
+      
+      <g transform="translate(0, 255)">
+        <rect x="0" y="0" width="330" height="55" rx="4" fill="#008CD6" opacity="0.1"/>
+        <text x="15" y="22" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" font-weight="bold" fill="#008CD6">资质保障</text>
+        <text x="15" y="42" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">通过CNAS实验室认可扩项</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 模块3: 合作与资源整合 -->
+  <g transform="translate(850, 105)">
+    <rect x="0" y="0" width="370" height="400" rx="8" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <!-- 标题 -->
+    <rect x="0" y="0" width="370" height="55" rx="8" fill="#28A745"/>
+    <rect x="0" y="50" width="370" height="5" fill="#28A745"/>
+    <circle cx="35" cy="27" r="18" fill="#FFFFFF" opacity="0.2"/>
+    <text x="35" y="34" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle">🤝</text>
+    <text x="65" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">合作与资源整合</text>
+    
+    <!-- 内容 -->
+    <g transform="translate(20, 75)">
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="330" height="90" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="90" rx="2" fill="#004B8D"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">国内合作</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">与中汽中心等权威机构共建联合实验室</text>
+        <text x="15" y="65" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">与行业协会联动，参与标准制修订</text>
+        <text x="15" y="82" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">与大型车企联合开发定制认证项目</text>
+      </g>
+      
+      <g transform="translate(0, 105)">
+        <rect x="0" y="0" width="330" height="90" rx="4" fill="#FFFFFF" stroke="#E1E4E8"/>
+        <rect x="0" y="0" width="4" height="90" rx="2" fill="#008CD6"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">国际合作</text>
+        <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">加入IAF、ILAC等国际认可论坛</text>
+        <text x="15" y="65" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">与海外知名认证机构双边合作</text>
+        <text x="15" y="82" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">参与一带一路国际援助合作项目</text>
+      </g>
+      
+      <g transform="translate(0, 210)">
+        <rect x="0" y="0" width="330" height="100" rx="4" fill="#28A745" opacity="0.1"/>
+        <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#28A745">管理与质量保障</text>
+        <text x="15" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">• ISO/IEC 17065质量管理体系</text>
+        <text x="15" y="68" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">• 数字化风险监控工具</text>
+        <text x="15" y="86" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#333333">• 增设数字化/国际业务部门</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 底部核心理念 -->
+  <g transform="translate(60, 530)">
+    <rect x="0" y="0" width="1160" height="90" rx="6" fill="#004B8D" opacity="0.05"/>
+    <rect x="0" y="0" width="6" height="90" rx="3" fill="#004B8D"/>
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#004B8D">人才队伍目标</text>
+    <text x="30" y="65" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">打造一支"既懂技术又懂规则、善于创新又精通业务"的复合型人才队伍，为战略落实提供不竭动力</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">11 / 14</text>
+</svg>
+

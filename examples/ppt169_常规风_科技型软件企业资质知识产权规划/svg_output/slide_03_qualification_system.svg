@@ -1,0 +1,143 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect fill="#FFFFFF" width="1280" height="720"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#0066CC"/>
+  <text x="60" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="32" font-weight="700" fill="#1A1A1A">
+    资质体系全景图
+  </text>
+  
+  <!-- 第一行：基础合规资质 -->
+  <rect x="60" y="80" width="1160" height="165" rx="8" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- 左侧标签区 -->
+  <rect x="60" y="80" width="180" height="165" rx="8" fill="#0066CC"/>
+  <text x="150" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    基础合规
+  </text>
+  <text x="150" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    资质
+  </text>
+  
+  <!-- 核心内容区 -->
+  <g transform="translate(260, 105)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="17" font-weight="600" fill="#0066CC">
+      核心内容
+    </text>
+    <text x="0" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="0" dy="0">• 软件企业认定（双软认证）- 享受增值税超3%部分即征即退</tspan>
+      <tspan x="0" dy="23">• 增值电信业务许可证（ICP/EDI）- SaaS软件、线上交易必备</tspan>
+      <tspan x="0" dy="23">• 网络安全等级保护（等保2.0二级/三级）- 数据安全合规</tspan>
+    </text>
+  </g>
+  
+  <!-- 核心价值区 -->
+  <rect x="900" y="95" width="300" height="135" rx="6" fill="#E8F4FA"/>
+  <text x="1050" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="17" font-weight="600" fill="#0066CC" text-anchor="middle">
+    核心价值
+  </text>
+  <text x="920" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#1A1A1A">
+    <tspan x="920" dy="0">✓ 合法经营，规避监管风险</tspan>
+    <tspan x="920" dy="23">✓ 税收减免（年节省50-200万）</tspan>
+    <tspan x="920" dy="23">✓ 满足客户合作基础要求</tspan>
+  </text>
+  
+  <!-- 第二行：管理体系认证 -->
+  <rect x="60" y="265" width="1160" height="175" rx="8" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- 左侧标签区 -->
+  <rect x="60" y="265" width="180" height="175" rx="8" fill="#00A3E0"/>
+  <text x="150" y="343" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    管理体系
+  </text>
+  <text x="150" y="366" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    认证
+  </text>
+  
+  <!-- 核心内容区 -->
+  <g transform="translate(260, 288)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="17" font-weight="600" fill="#00A3E0">
+      核心内容
+    </text>
+    <text x="0" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="0" dy="0">• ISO9001 质量管理体系 - 覆盖软件开发全流程</tspan>
+      <tspan x="0" dy="23">• ISO20000 IT服务管理 - 软件运维、技术支持服务规范</tspan>
+      <tspan x="0" dy="23">• ISO27001 信息安全管理 - 保护用户数据、源代码安全</tspan>
+      <tspan x="0" dy="23">• CMMI 软件能力成熟度（三级/四级）- 证明开发过程规范化</tspan>
+    </text>
+  </g>
+  
+  <!-- 核心价值区 -->
+  <rect x="900" y="285" width="300" height="140" rx="6" fill="#E8F4FA"/>
+  <text x="1050" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="17" font-weight="600" fill="#00A3E0" text-anchor="middle">
+    核心价值
+  </text>
+  <text x="920" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#1A1A1A">
+    <tspan x="920" dy="0">✓ 提升管理效率，降低缺陷率</tspan>
+    <tspan x="920" dy="23">✓ 政府项目投标加分项</tspan>
+    <tspan x="920" dy="23">✓ 增强大客户信任（数据安全）</tspan>
+  </text>
+  
+  <!-- 第三行：行业专项资质 -->
+  <rect x="60" y="460" width="1160" height="190" rx="8" fill="#F5F7FA" stroke="#0066CC" stroke-width="2"/>
+  
+  <!-- 左侧标签区 -->
+  <rect x="60" y="460" width="180" height="190" rx="8" fill="#003D82"/>
+  <text x="150" y="543" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    行业专项
+  </text>
+  <text x="150" y="566" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    资质
+  </text>
+  
+  <!-- 核心内容区 -->
+  <g transform="translate(260, 485)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="17" font-weight="600" fill="#003D82">
+      核心内容
+    </text>
+    <text x="0" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" font-weight="400" fill="#1A1A1A">
+      <tspan x="0" dy="0">• 高新技术企业认定 - 需3项专利+研发投入占比≥5%</tspan>
+      <tspan x="0" dy="23">  享受15%企业所得税优惠（普通企业25%）</tspan>
+      <tspan x="0" dy="23">• 医疗器械认证（二类/三类）- 医疗软件行业准入门槛</tspan>
+      <tspan x="0" dy="23">• 工业软件专项资质 - 参与工业互联网项目，申报政府补贴</tspan>
+    </text>
+  </g>
+  
+  <!-- 核心价值区 -->
+  <rect x="900" y="480" width="300" height="150" rx="6" fill="#E8F4FA"/>
+  <text x="1050" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="17" font-weight="600" fill="#003D82" text-anchor="middle">
+    核心价值
+  </text>
+  <text x="920" y="533" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#1A1A1A">
+    <tspan x="920" dy="0">✓ 垂直行业入场券</tspan>
+    <tspan x="920" dy="23">✓ 政府政策支持（补贴+税收）</tspan>
+    <tspan x="920" dy="23">✓ 企业估值提升30%以上</tspan>
+    <tspan x="920" dy="23">✓ 支撑融资与资本运作</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+        font-size="14" font-weight="400" fill="#CCCCCC" text-anchor="end">
+    03
+  </text>
+</svg>

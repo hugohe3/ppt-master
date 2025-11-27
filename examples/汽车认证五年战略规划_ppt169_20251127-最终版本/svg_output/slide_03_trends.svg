@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">外部环境与行业发展趋势</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 三个KPI卡片 -->
+  <g transform="translate(60, 110)">
+    <!-- KPI 1: 新能源占比 -->
+    <g>
+      <rect x="0" y="0" width="360" height="130" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1" filter="url(#shadow)"/>
+      <rect x="0" y="0" width="6" height="130" rx="3" fill="#28A745"/>
+      <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">2025年前5月新能源车销量占比</text>
+      <text x="25" y="85" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="bold" fill="#28A745">44%</text>
+      <text x="130" y="85" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">同比持续上升</text>
+      <!-- 上升箭头 -->
+      <polygon points="320,75 335,50 350,75 340,75 340,100 330,100 330,75" fill="#28A745" opacity="0.3"/>
+    </g>
+    
+    <!-- KPI 2: 智能网联渗透率 -->
+    <g transform="translate(385, 0)">
+      <rect x="0" y="0" width="360" height="130" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="6" height="130" rx="3" fill="#008CD6"/>
+      <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">2025年L2/L3级自动驾驶新车占比</text>
+      <text x="25" y="85" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="bold" fill="#008CD6">50%+</text>
+      <text x="165" y="85" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">车联网终端装配率同步</text>
+      <!-- 网络图标 -->
+      <circle cx="330" cy="65" r="25" fill="none" stroke="#008CD6" stroke-width="2" opacity="0.3"/>
+      <circle cx="330" cy="65" r="15" fill="none" stroke="#008CD6" stroke-width="2" opacity="0.5"/>
+      <circle cx="330" cy="65" r="5" fill="#008CD6" opacity="0.7"/>
+    </g>
+    
+    <!-- KPI 3: 出口量 -->
+    <g transform="translate(770, 0)">
+      <rect x="0" y="0" width="390" height="130" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="6" height="130" rx="3" fill="#F0AD4E"/>
+      <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">2025年1-5月新能源汽车出口</text>
+      <text x="25" y="85" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="bold" fill="#F0AD4E">85.5</text>
+      <text x="130" y="85" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" fill="#F0AD4E">万辆</text>
+      <text x="185" y="85" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666">同比+64.6%</text>
+      <!-- 全球图标 -->
+      <circle cx="350" cy="65" r="25" fill="none" stroke="#F0AD4E" stroke-width="2" opacity="0.4"/>
+      <ellipse cx="350" cy="65" rx="25" ry="10" fill="none" stroke="#F0AD4E" stroke-width="1" opacity="0.4"/>
+      <line x1="350" y1="40" x2="350" y2="90" stroke="#F0AD4E" stroke-width="1" opacity="0.4"/>
+    </g>
+  </g>
+  
+  <!-- 趋势说明区域 -->
+  <g transform="translate(60, 270)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="bold" fill="#008CD6">产业变革趋势</text>
+    <line x1="0" y1="15" x2="150" y2="15" stroke="#008CD6" stroke-width="2"/>
+  </g>
+  
+  <!-- 左侧趋势卡片 -->
+  <g transform="translate(60, 305)">
+    <rect x="0" y="0" width="560" height="200" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#004B8D">电动化 + 智能化 颠覆性变革</text>
+    
+    <g transform="translate(25, 55)">
+      <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+      <text x="20" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">汽车从"机械制造"向"智能移动空间"转变</text>
+    </g>
+    
+    <g transform="translate(25, 85)">
+      <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+      <text x="20" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">认证需求从"合规性"扩展到"性能与品质"证明</text>
+    </g>
+    
+    <g transform="translate(25, 115)">
+      <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+      <text x="20" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">电池热失控防护、自动驾驶功能安全成新焦点</text>
+    </g>
+    
+    <g transform="translate(25, 145)">
+      <circle cx="8" cy="8" r="4" fill="#008CD6"/>
+      <text x="20" y="13" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">车辆网络安全 (ISO/SAE 21434) 需求激增</text>
+    </g>
+  </g>
+  
+  <!-- 右侧认证需求卡片 -->
+  <g transform="translate(650, 305)">
+    <rect x="0" y="0" width="570" height="200" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    
+    <text x="25" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#004B8D">新兴认证需求领域</text>
+    
+    <!-- 四个需求模块 -->
+    <g transform="translate(25, 55)">
+      <rect x="0" y="0" width="250" height="55" rx="4" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="55" rx="2" fill="#28A745"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#28A745">电池安全</text>
+      <text x="15" y="45" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">热失控、防水防火、电气安全</text>
+    </g>
+    
+    <g transform="translate(290, 55)">
+      <rect x="0" y="0" width="250" height="55" rx="4" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="55" rx="2" fill="#008CD6"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#008CD6">功能安全</text>
+      <text x="15" y="45" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">ISO 26262 自动驾驶系统</text>
+    </g>
+    
+    <g transform="translate(25, 125)">
+      <rect x="0" y="0" width="250" height="55" rx="4" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="55" rx="2" fill="#F0AD4E"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#F0AD4E">网络安全</text>
+      <text x="15" y="45" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">ISO 21434 车载通信数据防护</text>
+    </g>
+    
+    <g transform="translate(290, 125)">
+      <rect x="0" y="0" width="250" height="55" rx="4" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+      <rect x="0" y="0" width="4" height="55" rx="2" fill="#004B8D"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#004B8D">智能网联</text>
+      <text x="15" y="45" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">OTA升级、车联网互联互通</text>
+    </g>
+  </g>
+  
+  <!-- 底部核心洞察 -->
+  <g transform="translate(60, 530)">
+    <rect x="0" y="0" width="1160" height="90" rx="6" fill="#004B8D" opacity="0.05"/>
+    <rect x="0" y="0" width="6" height="90" rx="3" fill="#004B8D"/>
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#004B8D">核心洞察</text>
+    <text x="30" y="65" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="15" fill="#333333">行业发展趋势要求认证机构具备前瞻视野，在新能源汽车、智能网联和绿色低碳等领域提前布局，不断调整认证产品结构以满足新兴需求。</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">03 / 14</text>
+</svg>
+

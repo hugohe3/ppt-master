@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">创新自愿性认证产品拓展（一）</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 左侧：绿色低碳认证 -->
+  <g transform="translate(60, 100)">
+    <rect x="0" y="0" width="560" height="520" rx="8" fill="#E8F5E9" stroke="#28A745" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="60" rx="8" fill="#28A745"/>
+    <rect x="0" y="55" width="560" height="5" fill="#28A745"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="30" r="22" fill="#FFFFFF" opacity="0.2"/>
+    <text x="40" y="38" font-family="Arial, sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">🌱</text>
+    
+    <text x="75" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">绿色低碳认证</text>
+    
+    <!-- 副标题 -->
+    <text x="20" y="95" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#28A745" font-weight="bold">聚焦"双碳"目标，引领绿色发展</text>
+    
+    <!-- 认证项目列表 -->
+    <g transform="translate(20, 120)">
+      <!-- 项目1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#28A745"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">汽车产品碳足迹认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">评估整车及关键部件在全生命周期的碳排放</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">与国际标准接轨，助力跨越"碳壁垒"</text>
+      </g>
+      
+      <!-- 项目2 -->
+      <g transform="translate(0, 100)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#28A745"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">中国绿色产品认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">在汽车整车及材料领域拓展绿色产品认证资质</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">引导车企落实绿色设计和节能降碳措施</text>
+      </g>
+      
+      <!-- 项目3 -->
+      <g transform="translate(0, 200)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#28A745"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">动力电池回收利用认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">推动退役电池的循环利用和低碳管理</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">符合欧盟《电池法规》再生材料比例要求</text>
+      </g>
+      
+      <!-- 项目4 -->
+      <g transform="translate(0, 300)">
+        <rect x="0" y="0" width="520" height="70" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="70" rx="2" fill="#28A745"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">碳标签金融应用</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">与金融机构合作，助力企业获得绿色金融支持</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 右侧：安全性能认证 -->
+  <g transform="translate(660, 100)">
+    <rect x="0" y="0" width="560" height="520" rx="8" fill="#FFF3E0" stroke="#F0AD4E" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="60" rx="8" fill="#F0AD4E"/>
+    <rect x="0" y="55" width="560" height="5" fill="#F0AD4E"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="30" r="22" fill="#FFFFFF" opacity="0.2"/>
+    <text x="40" y="38" font-family="Arial, sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">🛡️</text>
+    
+    <text x="75" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">安全性能认证</text>
+    
+    <!-- 副标题 -->
+    <text x="20" y="95" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#F0AD4E" font-weight="bold">应对"电动化+智能化"新安全挑战</text>
+    
+    <!-- 认证项目列表 -->
+    <g transform="translate(20, 120)">
+      <!-- 项目1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#D9534F"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">动力电池安全认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">强化热失控、防水防火、电气安全等指标</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">高于法规要求的自愿安全认证项目</text>
+      </g>
+      
+      <!-- 项目2 -->
+      <g transform="translate(0, 100)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#008CD6"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">自动驾驶功能安全认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">评估L2/L3驾驶辅助系统在特定场景的安全有效性</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">符合ISO 26262功能安全标准</text>
+      </g>
+      
+      <!-- 项目3 -->
+      <g transform="translate(0, 200)">
+        <rect x="0" y="0" width="520" height="85" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="85" rx="2" fill="#004B8D"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">车载网络安全认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">依据TISAX/ISO 21434评估车载通信和数据防护</text>
+        <text x="20" y="72" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">满足欧盟UN R155网络安全强制要求</text>
+      </g>
+      
+      <!-- 项目4 -->
+      <g transform="translate(0, 300)">
+        <rect x="0" y="0" width="520" height="70" rx="6" fill="#FFFFFF" stroke="#E1E4E8" stroke-width="1"/>
+        <rect x="0" y="0" width="5" height="70" rx="2" fill="#F0AD4E"/>
+        <text x="20" y="28" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#333333">附属产品安全认证</text>
+        <text x="20" y="52" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#666666">儿童座椅、安全头盔等售后市场产品安全标准</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">07 / 14</text>
+</svg>
+

@@ -1,0 +1,178 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    国际市场准入与标准
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    INTERNATIONAL MARKET ACCESS &amp; STANDARDS
+  </text>
+  
+  <!-- 核心数据高亮 -->
+  <g transform="translate(820, 40)">
+    <rect width="400" height="60" rx="8" fill="#003F6C"/>
+    <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFC107">2023年里程碑</text>
+    <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">中国汽车出口量跃居全球第一</text>
+  </g>
+  
+  <!-- 简化世界地图区域 -->
+  <g transform="translate(60, 115)">
+    <rect width="600" height="380" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="20" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">全球主要市场分布</text>
+    
+    <!-- 简化地图 - 使用色块表示区域 -->
+    <!-- 欧洲 -->
+    <g transform="translate(280, 80)">
+      <ellipse cx="50" cy="40" rx="60" ry="45" fill="#0076A8" opacity="0.3"/>
+      <text x="50" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#0076A8" text-anchor="middle">欧洲</text>
+    </g>
+    
+    <!-- 美洲 -->
+    <g transform="translate(80, 100)">
+      <ellipse cx="50" cy="60" rx="55" ry="70" fill="#FF6B35" opacity="0.3"/>
+      <text x="50" y="65" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FF6B35" text-anchor="middle">美洲</text>
+    </g>
+    
+    <!-- 俄罗斯 -->
+    <g transform="translate(350, 60)">
+      <ellipse cx="60" cy="35" rx="80" ry="30" fill="#9C27B0" opacity="0.3"/>
+      <text x="60" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#9C27B0" text-anchor="middle">俄罗斯</text>
+    </g>
+    
+    <!-- 中国 -->
+    <g transform="translate(420, 130)">
+      <ellipse cx="45" cy="40" rx="50" ry="40" fill="#00A651" opacity="0.4"/>
+      <text x="45" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#00A651" text-anchor="middle">中国</text>
+    </g>
+    
+    <!-- 东南亚 -->
+    <g transform="translate(440, 190)">
+      <ellipse cx="40" cy="35" rx="45" ry="35" fill="#2196F3" opacity="0.3"/>
+      <text x="40" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#2196F3" text-anchor="middle">东南亚</text>
+    </g>
+    
+    <!-- 中东 -->
+    <g transform="translate(330, 170)">
+      <ellipse cx="35" cy="30" rx="40" ry="30" fill="#FFC107" opacity="0.4"/>
+      <text x="35" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FF9800" text-anchor="middle">中东</text>
+    </g>
+    
+    <!-- 连线箭头 从中国出发 -->
+    <g stroke="#00A651" stroke-width="2" fill="none" opacity="0.6">
+      <path d="M465,170 Q400,120 340,110" marker-end="url(#arrowhead)"/>
+      <path d="M465,170 Q350,200 260,180" marker-end="url(#arrowhead)"/>
+      <path d="M465,170 Q300,250 180,160" marker-end="url(#arrowhead)"/>
+      <path d="M465,170 Q460,210 480,225" marker-end="url(#arrowhead)"/>
+      <path d="M465,170 Q400,190 365,200" marker-end="url(#arrowhead)"/>
+    </g>
+    
+    <!-- 图例 -->
+    <g transform="translate(20, 300)">
+      <rect width="160" height="60" rx="6" fill="#F0F4F8"/>
+      <circle cx="20" cy="20" r="8" fill="#00A651"/>
+      <text x="35" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">出口来源</text>
+      <circle cx="20" cy="45" r="8" fill="#0076A8"/>
+      <text x="35" y="49" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">重点目标市场</text>
+    </g>
+  </g>
+  
+  <!-- 右侧区域认证要求表格 -->
+  <g transform="translate(680, 115)">
+    <rect width="540" height="380" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="20" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">各区域认证要求</text>
+    
+    <!-- 表头 -->
+    <rect x="20" y="55" width="500" height="35" rx="6" fill="#003F6C"/>
+    <text x="90" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">区域</text>
+    <text x="280" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">主要认证要求</text>
+    
+    <!-- 欧盟 -->
+    <g transform="translate(20, 100)">
+      <rect width="500" height="55" rx="0" fill="#F8F9FA"/>
+      <rect x="0" y="0" width="6" height="55" fill="#0076A8"/>
+      <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇪🇺 欧盟</text>
+      <text x="150" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">
+        <tspan x="150" dy="0">E-Mark、电池法规、CBAM碳边境税</tspan>
+        <tspan x="150" dy="20">UN R155/R156 网络安全</tspan>
+      </text>
+    </g>
+    
+    <!-- 美国 -->
+    <g transform="translate(20, 160)">
+      <rect width="500" height="55" rx="0" fill="#FFFFFF"/>
+      <rect x="0" y="0" width="6" height="55" fill="#FF6B35"/>
+      <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇺🇸 美国</text>
+      <text x="150" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">
+        <tspan x="150" dy="0">FMVSS联邦标准、DOT认证</tspan>
+        <tspan x="150" dy="20">自动驾驶豁免程序</tspan>
+      </text>
+    </g>
+    
+    <!-- 俄罗斯 -->
+    <g transform="translate(20, 220)">
+      <rect width="500" height="55" rx="0" fill="#F8F9FA"/>
+      <rect x="0" y="0" width="6" height="55" fill="#9C27B0"/>
+      <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇷🇺 俄罗斯</text>
+      <text x="150" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">
+        <tspan x="150" dy="0">OTTC型式批准</tspan>
+        <tspan x="150" dy="20">EAEU关税同盟技术法规</tspan>
+      </text>
+    </g>
+    
+    <!-- 东南亚/中东 -->
+    <g transform="translate(20, 280)">
+      <rect width="500" height="55" rx="0" fill="#FFFFFF"/>
+      <rect x="0" y="0" width="6" height="55" fill="#2196F3"/>
+      <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🌏 东南亚/中东</text>
+      <text x="150" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">
+        <tspan x="150" dy="0">本地标准体系完善中</tspan>
+        <tspan x="150" dy="20">互认协议推进机遇期</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部关键信息 -->
+  <g transform="translate(60, 520)">
+    <rect width="1160" height="130" rx="12" fill="#003F6C"/>
+    <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FFC107">认证互认合作成果</text>
+    
+    <!-- 三个数据点 -->
+    <g transform="translate(30, 55)">
+      <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF">21</text>
+      <text x="70" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">个国际组织</text>
+      <text x="70" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">成员资格</text>
+    </g>
+    
+    <g transform="translate(300, 55)">
+      <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF">15</text>
+      <text x="55" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">份多边协议</text>
+      <text x="55" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">认证互认</text>
+    </g>
+    
+    <g transform="translate(550, 55)">
+      <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF">128</text>
+      <text x="100" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">份双边安排</text>
+      <text x="100" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">合格评定</text>
+    </g>
+    
+    <g transform="translate(850, 55)">
+      <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" font-weight="bold" fill="#00A651">95%</text>
+      <text x="100" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">经济总量覆盖</text>
+      <text x="100" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">全球市场</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">07 / 20</text>
+</svg>

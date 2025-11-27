@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003D73"/>
+      <stop offset="50%" style="stop-color:#004B8D"/>
+      <stop offset="100%" style="stop-color:#006BB3"/>
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#008CD6"/>
+      <stop offset="100%" style="stop-color:#00B4E6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰线条 - 右上角科技感线条 -->
+  <g opacity="0.15">
+    <path d="M900,0 L1280,0 L1280,380 Q1100,350 900,0" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+    <path d="M950,0 L1280,0 L1280,330 Q1120,300 950,0" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+    <path d="M1000,0 L1280,0 L1280,280 Q1140,250 1000,0" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+  </g>
+  
+  <!-- 装饰线条 - 左下角 -->
+  <g opacity="0.1">
+    <path d="M0,450 Q200,500 380,720 L0,720 Z" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- 装饰圆点 -->
+  <g opacity="0.2">
+    <circle cx="1150" cy="150" r="60" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="1150" cy="150" r="80" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
+    <circle cx="1150" cy="150" r="100" fill="none" stroke="#FFFFFF" stroke-width="0.3"/>
+  </g>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="60" y="280" width="8" height="160" fill="url(#accentGradient)" rx="4"/>
+  
+  <!-- 主标题 -->
+  <text x="90" y="340" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="44" font-weight="bold" fill="#FFFFFF">
+    <tspan x="90" dy="0">汽车及零部件领域</tspan>
+    <tspan x="90" dy="60">自愿性产品认证五年战略规划</tspan>
+  </text>
+  
+  <!-- 年份标签 -->
+  <rect x="90" y="440" width="180" height="50" rx="25" fill="url(#accentGradient)"/>
+  <text x="180" y="473" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2026–2030</text>
+  
+  <!-- 日期 -->
+  <text x="90" y="530" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" opacity="0.7">2025年11月</text>
+  
+  <!-- LOGO 区域 - 右下角 (790, 530) 尺寸 420×140 -->
+  <g id="logo-area" transform="translate(790, 530)">
+  </g>
+  
+  <!-- 页码区域 -->
+  <text x="1220" y="695" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF" opacity="0.5" text-anchor="end">01 / 14</text>
+</svg>
+

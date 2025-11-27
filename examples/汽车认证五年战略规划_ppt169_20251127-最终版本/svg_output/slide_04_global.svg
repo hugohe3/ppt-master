@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 页眉装饰条 -->
+  <rect x="0" y="0" width="6" height="80" fill="#004B8D"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#004B8D"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="55" font-family="'Microsoft YaHei', 'PingFang SC', 'Heiti SC', system-ui, sans-serif" font-size="28" font-weight="bold" fill="#004B8D">国际市场准入与标准演进</text>
+  
+  <!-- 机构标识 -->
+  <text x="1220" y="50" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#666666" text-anchor="end">中国汽研</text>
+  
+  <!-- 核心数据展示 -->
+  <g transform="translate(60, 100)">
+    <rect x="0" y="0" width="400" height="100" rx="6" fill="#004B8D"/>
+    <text x="30" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">2023年中国汽车出口</text>
+    <text x="30" y="75" font-family="Arial, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">全球第一</text>
+    <text x="200" y="75" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">"认证先行"成为产业出海保障</text>
+  </g>
+  
+  <g transform="translate(480, 100)">
+    <rect x="0" y="0" width="350" height="100" rx="6" fill="#008CD6"/>
+    <text x="30" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">已签署互认协议</text>
+    <text x="30" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">128份</text>
+    <text x="150" y="75" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">覆盖95%+全球经济体</text>
+  </g>
+  
+  <g transform="translate(850, 100)">
+    <rect x="0" y="0" width="370" height="100" rx="6" fill="#28A745"/>
+    <text x="30" y="40" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">加入国际认证组织</text>
+    <text x="30" y="75" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">21个</text>
+    <text x="120" y="75" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.8">15份多边互认协议</text>
+  </g>
+  
+  <!-- 区域法规要求 -->
+  <g transform="translate(60, 230)">
+    <text x="0" y="0" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="bold" fill="#008CD6">主要市场认证要求</text>
+    <line x1="0" y1="15" x2="180" y2="15" stroke="#008CD6" stroke-width="2"/>
+  </g>
+  
+  <!-- 欧盟 -->
+  <g transform="translate(60, 265)">
+    <rect x="0" y="0" width="280" height="180" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    <rect x="0" y="0" width="280" height="45" rx="6" fill="#004B8D"/>
+    <rect x="0" y="40" width="280" height="5" fill="#004B8D"/>
+    <text x="20" y="30" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">欧盟 (EU)</text>
+    
+    <g transform="translate(15, 60)">
+      <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">E-Mark 整车型式认证</text>
+    </g>
+    <g transform="translate(15, 85)">
+      <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">《电池法规》碳足迹要求</text>
+    </g>
+    <g transform="translate(15, 110)">
+      <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">CBAM 碳边境调节机制</text>
+    </g>
+    <g transform="translate(15, 135)">
+      <circle cx="6" cy="8" r="3" fill="#004B8D"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">UN R155/R156 网络安全</text>
+    </g>
+  </g>
+  
+  <!-- 北美 -->
+  <g transform="translate(360, 265)">
+    <rect x="0" y="0" width="280" height="180" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    <rect x="0" y="0" width="280" height="45" rx="6" fill="#008CD6"/>
+    <rect x="0" y="40" width="280" height="5" fill="#008CD6"/>
+    <text x="20" y="30" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">北美 (USA)</text>
+    
+    <g transform="translate(15, 60)">
+      <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">FMVSS 联邦机动车安全标准</text>
+    </g>
+    <g transform="translate(15, 85)">
+      <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">EPA 环保署排放标准</text>
+    </g>
+    <g transform="translate(15, 110)">
+      <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">自动驾驶车辆豁免政策</text>
+    </g>
+    <g transform="translate(15, 135)">
+      <circle cx="6" cy="8" r="3" fill="#008CD6"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">DOT 认证体系</text>
+    </g>
+  </g>
+  
+  <!-- 俄罗斯/亚太 -->
+  <g transform="translate(660, 265)">
+    <rect x="0" y="0" width="280" height="180" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    <rect x="0" y="0" width="280" height="45" rx="6" fill="#F0AD4E"/>
+    <rect x="0" y="40" width="280" height="5" fill="#F0AD4E"/>
+    <text x="20" y="30" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">俄罗斯/欧亚</text>
+    
+    <g transform="translate(15, 60)">
+      <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">OTTC 型式认证</text>
+    </g>
+    <g transform="translate(15, 85)">
+      <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">EAC 欧亚经济联盟认证</text>
+    </g>
+    <g transform="translate(15, 110)">
+      <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">GOST-R 俄罗斯国家标准</text>
+    </g>
+    <g transform="translate(15, 135)">
+      <circle cx="6" cy="8" r="3" fill="#F0AD4E"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">独联体国家互认体系</text>
+    </g>
+  </g>
+  
+  <!-- 东南亚/新兴市场 -->
+  <g transform="translate(960, 265)">
+    <rect x="0" y="0" width="260" height="180" rx="6" fill="#F5F7FA" stroke="#E1E4E8" stroke-width="1"/>
+    <rect x="0" y="0" width="260" height="45" rx="6" fill="#28A745"/>
+    <rect x="0" y="40" width="260" height="5" fill="#28A745"/>
+    <text x="20" y="30" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">东南亚/新兴市场</text>
+    
+    <g transform="translate(15, 60)">
+      <circle cx="6" cy="8" r="3" fill="#28A745"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">东盟 MRA 互认协议</text>
+    </g>
+    <g transform="translate(15, 85)">
+      <circle cx="6" cy="8" r="3" fill="#28A745"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">本国标准体系完善中</text>
+    </g>
+    <g transform="translate(15, 110)">
+      <circle cx="6" cy="8" r="3" fill="#28A745"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">认可UN ECE规则</text>
+    </g>
+    <g transform="translate(15, 135)">
+      <circle cx="6" cy="8" r="3" fill="#28A745"/>
+      <text x="18" y="12" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="13" fill="#333333">差异化准入要求</text>
+    </g>
+  </g>
+  
+  <!-- 绿色低碳趋势 -->
+  <g transform="translate(60, 475)">
+    <rect x="0" y="0" width="1160" height="140" rx="6" fill="#E8F5E9" stroke="#28A745" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="140" rx="3" fill="#28A745"/>
+    
+    <text x="30" y="35" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" font-weight="bold" fill="#28A745">绿色低碳：全球共识与"碳壁垒"挑战</text>
+    
+    <g transform="translate(30, 55)">
+      <rect x="0" y="0" width="350" height="65" rx="4" fill="#FFFFFF"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">产品全生命周期碳足迹管理</text>
+      <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">碳排放核算、绿色标准国际接轨</text>
+    </g>
+    
+    <g transform="translate(400, 55)">
+      <rect x="0" y="0" width="350" height="65" rx="4" fill="#FFFFFF"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">绿色认证与碳标签</text>
+      <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">与国际低碳标准互认，助力绿色金融</text>
+    </g>
+    
+    <g transform="translate(770, 55)">
+      <rect x="0" y="0" width="360" height="65" rx="4" fill="#FFFFFF"/>
+      <text x="15" y="25" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" font-weight="bold" fill="#333333">避免"碳壁垒"贸易影响</text>
+      <text x="15" y="48" font-family="'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="12" fill="#666666">国内认证体系与国际碳排放核算接轨</text>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="680" x2="1220" y2="680" stroke="#E1E4E8" stroke-width="1"/>
+  <text x="60" y="700" font-family="'Microsoft YaHei', sans-serif" font-size="12" fill="#999999">汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）</text>
+  <text x="1220" y="700" font-family="Arial, sans-serif" font-size="12" fill="#999999" text-anchor="end">04 / 14</text>
+</svg>
+
