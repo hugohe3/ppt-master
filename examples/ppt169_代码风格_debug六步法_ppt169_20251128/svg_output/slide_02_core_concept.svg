@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    <!-- 顶部标题区 -->
+    <text x="60" y="80" font-family="SF Pro Display, -apple-system, sans-serif" font-size="36" font-weight="bold"
+        fill="#e6edf3">🤖 系统化 Debug 流程</text>
+    <rect x="60" y="100" width="120" height="4" rx="2" fill="url(#accentGradient)" />
+
+    <!-- 核心观点引用框 -->
+    <rect x="60" y="140" width="1160" height="100" rx="12" fill="#161b22" stroke="#30363d" stroke-width="1" />
+    <rect x="60" y="140" width="4" height="100" rx="2" fill="#58a6ff" />
+    <text x="90" y="200" font-family="SF Pro Display, -apple-system, sans-serif" font-size="28" fill="#e6edf3">
+        <tspan>"修 Bug 的关键不在于</tspan>
+        <tspan fill="#f85149" font-weight="bold">动手快</tspan>
+        <tspan>，而在于</tspan>
+        <tspan fill="#7ee787" font-weight="bold">理解问题准</tspan>
+        <tspan>"</tspan>
+    </text>
+
+    <!-- 对比区域标题 -->
+    <text x="640" y="300" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="20"
+        fill="#8b949e">两种 Debug 方式的对比</text>
+
+    <!-- 左侧卡片 - 错误方式 -->
+    <g transform="translate(60, 330)">
+        <rect width="540" height="300" rx="12" fill="#161b22" stroke="#f85149" stroke-width="2" opacity="0.8" />
+        <!-- 标题栏 -->
+        <rect width="540" height="50" rx="12" fill="#f85149" opacity="0.2" />
+        <text x="270" y="35" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="24"
+            font-weight="bold" fill="#f85149">❌ 瞎猜乱试</text>
+
+        <!-- 内容 -->
+        <g font-family="SF Pro Text, -apple-system, sans-serif" font-size="20" fill="#e6edf3">
+            <text x="30" y="90">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">看到错误就慌张</tspan>
+            </text>
+            <text x="30" y="130">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">改一行代码重启一下</tspan>
+            </text>
+            <text x="30" y="170">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">到处搜索碰运气</tspan>
+            </text>
+            <text x="30" y="210">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">修好 A 结果坏了 B</tspan>
+            </text>
+            <text x="30" y="250">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">问题反复出现</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- 右侧卡片 - 正确方式 -->
+    <g transform="translate(680, 330)">
+        <rect width="540" height="300" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" opacity="0.8" />
+        <!-- 标题栏 -->
+        <rect width="540" height="50" rx="12" fill="#7ee787" opacity="0.2" />
+        <text x="270" y="35" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="24"
+            font-weight="bold" fill="#7ee787">✅ 有条理地解决</text>
+
+        <!-- 内容 -->
+        <g font-family="SF Pro Text, -apple-system, sans-serif" font-size="20" fill="#e6edf3">
+            <text x="30" y="90">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">遇到问题先暂停思考</tspan>
+            </text>
+            <text x="30" y="130">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">系统化排查定位</tspan>
+            </text>
+            <text x="30" y="170">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">验证假设再动手</tspan>
+            </text>
+            <text x="30" y="210">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">检查副作用和连带影响</tspan>
+            </text>
+            <text x="30" y="250">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">记录文档，一劳永逸</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- 中间 VS -->
+    <circle cx="640" cy="480" r="30" fill="#0d1117" stroke="#30363d" stroke-width="2" />
+    <text x="640" y="488" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18"
+        font-weight="bold" fill="#8b949e">VS</text>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">02 /
+        10</text>
+</svg>
