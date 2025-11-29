@@ -1,133 +1,140 @@
 <svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.12" />
+        </filter>
+        <filter id="iconShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.2" />
+        </filter>
+    </defs>
+
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="#FAFAFA" />
 
     <!-- 顶部标题区 -->
     <rect x="0" y="0" width="1280" height="90" fill="#EFF6FF" />
     <text x="60" y="55" fill="#2563EB" font-size="32" font-weight="bold"
         font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📈 ERP 的四大商业价值</text>
     <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
-        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Business Value of Enterprise
-        Systems</text>
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Business Value of Enterprise Systems</text>
 
     <!-- 价值卡片 2x2 网格 -->
     <!-- 卡片1：提高运营效率 -->
-    <g transform="translate(60, 120)">
-        <rect x="0" y="0" width="545" height="260" rx="16" fill="#F0FDF4" stroke="#059669" stroke-width="2" />
-        <circle cx="50" cy="50" r="35" fill="#059669" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="28"
+    <g transform="translate(60, 120)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="545" height="260" rx="16" fill="#FFFFFF" stroke="#059669" stroke-width="2" />
+        <circle cx="50" cy="50" r="38" fill="#059669" filter="url(#iconShadow)" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="30"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">⚡</text>
-        <text x="105" y="45" fill="#1F2937" font-size="24" font-weight="bold"
+        <text x="108" y="45" fill="#1F2937" font-size="24" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">提高运营效率</text>
-        <text x="105" y="70" fill="#6B7280" font-size="14"
+        <text x="108" y="72" fill="#6B7280" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Operational Efficiency</text>
 
         <line x1="30" y1="100" x2="515" y2="100" stroke="#E5E7EB" stroke-width="1" />
 
         <g transform="translate(30, 120)">
-            <circle cx="10" cy="10" r="6" fill="#059669" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DCFCE7" stroke="#059669" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">消除冗余、低效的流程</text>
         </g>
         <g transform="translate(30, 160)">
-            <circle cx="10" cy="10" r="6" fill="#059669" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DCFCE7" stroke="#059669" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">缩短业务周期时间</text>
         </g>
         <g transform="translate(30, 200)">
-            <circle cx="10" cy="10" r="6" fill="#059669" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DCFCE7" stroke="#059669" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">公司作为统一实体运作</text>
         </g>
     </g>
 
     <!-- 卡片2：全公司信息共享 -->
-    <g transform="translate(635, 120)">
-        <rect x="0" y="0" width="545" height="260" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
-        <circle cx="50" cy="50" r="35" fill="#2563EB" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="28"
+    <g transform="translate(635, 120)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="545" height="260" rx="16" fill="#FFFFFF" stroke="#2563EB" stroke-width="2" />
+        <circle cx="50" cy="50" r="38" fill="#2563EB" filter="url(#iconShadow)" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="30"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📊</text>
-        <text x="105" y="45" fill="#1F2937" font-size="24" font-weight="bold"
+        <text x="108" y="45" fill="#1F2937" font-size="24" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">全公司信息共享</text>
-        <text x="105" y="70" fill="#6B7280" font-size="14"
-            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Enterprise-wide
-            Information</text>
+        <text x="108" y="72" fill="#6B7280" font-size="14"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Enterprise-wide Information</text>
 
         <line x1="30" y1="100" x2="515" y2="100" stroke="#E5E7EB" stroke-width="1" />
 
         <g transform="translate(30, 120)">
-            <circle cx="10" cy="10" r="6" fill="#2563EB" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">实时获取销售、库存、生产数据</text>
         </g>
         <g transform="translate(30, 160)">
-            <circle cx="10" cy="10" r="6" fill="#2563EB" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">做出更准确的预测</text>
         </g>
         <g transform="translate(30, 200)">
-            <circle cx="10" cy="10" r="6" fill="#2563EB" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">统一的数据视图</text>
         </g>
     </g>
 
     <!-- 卡片3：快速响应能力 -->
-    <g transform="translate(60, 410)">
-        <rect x="0" y="0" width="545" height="260" rx="16" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" />
-        <circle cx="50" cy="50" r="35" fill="#EA580C" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="28"
+    <g transform="translate(60, 410)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="545" height="260" rx="16" fill="#FFFFFF" stroke="#EA580C" stroke-width="2" />
+        <circle cx="50" cy="50" r="38" fill="#EA580C" filter="url(#iconShadow)" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="30"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🚀</text>
-        <text x="105" y="45" fill="#1F2937" font-size="24" font-weight="bold"
+        <text x="108" y="45" fill="#1F2937" font-size="24" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">快速响应能力</text>
-        <text x="105" y="70" fill="#6B7280" font-size="14"
+        <text x="108" y="72" fill="#6B7280" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Rapid Response</text>
 
         <line x1="30" y1="100" x2="515" y2="100" stroke="#E5E7EB" stroke-width="1" />
 
         <g transform="translate(30, 120)">
-            <circle cx="10" cy="10" r="6" fill="#EA580C" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#FED7AA" stroke="#EA580C" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">整合订单、制造和交付数据</text>
         </g>
         <g transform="translate(30, 160)">
-            <circle cx="10" cy="10" r="6" fill="#EA580C" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#FED7AA" stroke="#EA580C" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">迅速响应客户请求</text>
         </g>
         <g transform="translate(30, 200)">
-            <circle cx="10" cy="10" r="6" fill="#EA580C" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#FED7AA" stroke="#EA580C" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">提高客户满意度</text>
         </g>
     </g>
 
     <!-- 卡片4：加强管理决策 -->
-    <g transform="translate(635, 410)">
-        <rect x="0" y="0" width="545" height="260" rx="16" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
-        <circle cx="50" cy="50" r="35" fill="#7C3AED" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="28"
+    <g transform="translate(635, 410)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="545" height="260" rx="16" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" />
+        <circle cx="50" cy="50" r="38" fill="#7C3AED" filter="url(#iconShadow)" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="30"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎯</text>
-        <text x="105" y="45" fill="#1F2937" font-size="24" font-weight="bold"
+        <text x="108" y="45" fill="#1F2937" font-size="24" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">加强管理决策</text>
-        <text x="105" y="70" fill="#6B7280" font-size="14"
+        <text x="108" y="72" fill="#6B7280" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Better Decision Making</text>
 
         <line x1="30" y1="100" x2="515" y2="100" stroke="#E5E7EB" stroke-width="1" />
 
         <g transform="translate(30, 120)">
-            <circle cx="10" cy="10" r="6" fill="#7C3AED" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DDD6FE" stroke="#7C3AED" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">统一的数据定义和格式</text>
         </g>
         <g transform="translate(30, 160)">
-            <circle cx="10" cy="10" r="6" fill="#7C3AED" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DDD6FE" stroke="#7C3AED" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">轻松评估组织绩效</text>
         </g>
         <g transform="translate(30, 200)">
-            <circle cx="10" cy="10" r="6" fill="#7C3AED" />
-            <text x="30" y="16" fill="#374151" font-size="18"
+            <circle cx="12" cy="12" r="8" fill="#DDD6FE" stroke="#7C3AED" stroke-width="2" />
+            <text x="35" y="18" fill="#374151" font-size="18"
                 font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">确定最有利可图的产品</text>
         </g>
     </g>

@@ -1,31 +1,47 @@
 <svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.12" />
+        </filter>
+        <filter id="centerGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <radialGradient id="centerGradient" cx="50%" cy="30%">
+            <stop offset="0%" stop-color="#F97316" />
+            <stop offset="100%" stop-color="#C2410C" />
+        </radialGradient>
+    </defs>
+
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
+    <rect width="1280" height="720" fill="#FAFAFA" />
 
     <!-- 顶部标题区 -->
     <rect x="0" y="0" width="1280" height="90" fill="#FFF7ED" />
     <text x="60" y="55" fill="#EA580C" font-size="32" font-weight="bold"
         font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🚀 下一代企业应用</text>
     <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
-        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Next-Generation Enterprise
-        Applications</text>
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Next-Generation Enterprise Applications</text>
 
     <!-- 中心主题 -->
-    <g transform="translate(640, 380)">
-        <circle cx="0" cy="0" r="90" fill="#EA580C" />
-        <text x="0" y="-20" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+    <g transform="translate(640, 380)" filter="url(#centerGlow)">
+        <circle cx="0" cy="0" r="95" fill="url(#centerGradient)" />
+        <text x="0" y="-20" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">下一代</text>
-        <text x="0" y="10" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+        <text x="0" y="10" text-anchor="middle" fill="#FFFFFF" font-size="19" font-weight="bold"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">企业应用</text>
         <text x="0" y="40" text-anchor="middle" fill="#FED7AA" font-size="12"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Future Trends</text>
     </g>
 
     <!-- 趋势1：云解决方案 - 左上 -->
-    <g transform="translate(120, 180)">
-        <rect x="0" y="0" width="280" height="160" rx="16" fill="#ECFEFF" stroke="#0891B2" stroke-width="2" />
-        <circle cx="50" cy="50" r="30" fill="#0891B2" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="24"
+    <g transform="translate(120, 180)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FFFFFF" stroke="#0891B2" stroke-width="2" />
+        <circle cx="50" cy="50" r="32" fill="#0891B2" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="26"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">☁️</text>
 
         <text x="95" y="40" fill="#1F2937" font-size="18" font-weight="bold"
@@ -35,19 +51,18 @@
 
         <line x1="20" y1="85" x2="260" y2="85" stroke="#E5E7EB" stroke-width="1" />
 
-        <text x="20" y="110" fill="#374151" font-size="13"
+        <text x="20" y="110" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 降低中小企业成本</text>
-        <text x="20" y="135" fill="#374151" font-size="13"
+        <text x="20" y="135" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 提高部署灵活性</text>
     </g>
-    <!-- 连接线 -->
-    <line x1="400" y1="260" x2="555" y2="330" stroke="#0891B2" stroke-width="2" stroke-dasharray="5,3" />
+    <path d="M 400 260 Q 480 300 545 330" stroke="#0891B2" stroke-width="2" stroke-dasharray="6,4" fill="none" />
 
     <!-- 趋势2：移动平台 - 右上 -->
-    <g transform="translate(880, 180)">
-        <rect x="0" y="0" width="280" height="160" rx="16" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
-        <circle cx="50" cy="50" r="30" fill="#7C3AED" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="24"
+    <g transform="translate(880, 180)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" />
+        <circle cx="50" cy="50" r="32" fill="#7C3AED" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="26"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📱</text>
 
         <text x="95" y="40" fill="#1F2937" font-size="18" font-weight="bold"
@@ -57,19 +72,18 @@
 
         <line x1="20" y1="85" x2="260" y2="85" stroke="#E5E7EB" stroke-width="1" />
 
-        <text x="20" y="110" fill="#374151" font-size="13"
+        <text x="20" y="110" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 随时随地访问系统</text>
-        <text x="20" y="135" fill="#374151" font-size="13"
+        <text x="20" y="135" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 移动办公支持</text>
     </g>
-    <!-- 连接线 -->
-    <line x1="880" y1="260" x2="725" y2="330" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+    <path d="M 880 260 Q 800 300 735 330" stroke="#7C3AED" stroke-width="2" stroke-dasharray="6,4" fill="none" />
 
     <!-- 趋势3：系统集成 - 正上方 -->
-    <g transform="translate(500, 110)">
-        <rect x="0" y="0" width="280" height="160" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
-        <circle cx="50" cy="50" r="30" fill="#2563EB" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="24"
+    <g transform="translate(500, 110)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FFFFFF" stroke="#2563EB" stroke-width="2" />
+        <circle cx="50" cy="50" r="32" fill="#2563EB" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="26"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🔗</text>
 
         <text x="95" y="40" fill="#1F2937" font-size="18" font-weight="bold"
@@ -79,19 +93,18 @@
 
         <line x1="20" y1="85" x2="260" y2="85" stroke="#E5E7EB" stroke-width="1" />
 
-        <text x="20" y="110" fill="#374151" font-size="13"
+        <text x="20" y="110" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• ERP+SCM+CRM 协同</text>
-        <text x="20" y="135" fill="#374151" font-size="13"
+        <text x="20" y="135" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 统一的企业套件</text>
     </g>
-    <!-- 连接线 -->
-    <line x1="640" y1="270" x2="640" y2="290" stroke="#2563EB" stroke-width="2" stroke-dasharray="5,3" />
+    <path d="M 640 270 L 640 285" stroke="#2563EB" stroke-width="2" stroke-dasharray="6,4" fill="none" />
 
     <!-- 趋势4：社交CRM - 左下 -->
-    <g transform="translate(120, 470)">
-        <rect x="0" y="0" width="280" height="160" rx="16" fill="#DCFCE7" stroke="#16A34A" stroke-width="2" />
-        <circle cx="50" cy="50" r="30" fill="#16A34A" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="24"
+    <g transform="translate(120, 470)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FFFFFF" stroke="#16A34A" stroke-width="2" />
+        <circle cx="50" cy="50" r="32" fill="#16A34A" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="26"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💬</text>
 
         <text x="95" y="40" fill="#1F2937" font-size="18" font-weight="bold"
@@ -101,19 +114,18 @@
 
         <line x1="20" y1="85" x2="260" y2="85" stroke="#E5E7EB" stroke-width="1" />
 
-        <text x="20" y="110" fill="#374151" font-size="13"
+        <text x="20" y="110" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 集成社交网络技术</text>
-        <text x="20" y="135" fill="#374151" font-size="13"
+        <text x="20" y="135" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 分析客户情绪和对话</text>
     </g>
-    <!-- 连接线 -->
-    <line x1="400" y1="500" x2="555" y2="430" stroke="#16A34A" stroke-width="2" stroke-dasharray="5,3" />
+    <path d="M 400 500 Q 480 460 545 430" stroke="#16A34A" stroke-width="2" stroke-dasharray="6,4" fill="none" />
 
     <!-- 趋势5：内置BI/AI - 右下 -->
-    <g transform="translate(880, 470)">
-        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" />
-        <circle cx="50" cy="50" r="30" fill="#F59E0B" />
-        <text x="50" y="58" text-anchor="middle" fill="#FFFFFF" font-size="24"
+    <g transform="translate(880, 470)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="280" height="160" rx="16" fill="#FFFFFF" stroke="#F59E0B" stroke-width="2" />
+        <circle cx="50" cy="50" r="32" fill="#F59E0B" />
+        <text x="50" y="60" text-anchor="middle" fill="#FFFFFF" font-size="26"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🤖</text>
 
         <text x="95" y="40" fill="#1F2937" font-size="18" font-weight="bold"
@@ -123,13 +135,12 @@
 
         <line x1="20" y1="85" x2="260" y2="85" stroke="#E5E7EB" stroke-width="1" />
 
-        <text x="20" y="110" fill="#374151" font-size="13"
+        <text x="20" y="110" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 商业智能和分析功能</text>
-        <text x="20" y="135" fill="#374151" font-size="13"
+        <text x="20" y="135" fill="#374151" font-size="14"
             font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• AI/ML 驱动的洞察</text>
     </g>
-    <!-- 连接线 -->
-    <line x1="880" y1="500" x2="725" y2="430" stroke="#F59E0B" stroke-width="2" stroke-dasharray="5,3" />
+    <path d="M 880 500 Q 800 460 735 430" stroke="#F59E0B" stroke-width="2" stroke-dasharray="6,4" fill="none" />
 
     <!-- 页码 -->
     <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
