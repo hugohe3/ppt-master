@@ -1,0 +1,155 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部标题区 -->
+    <rect x="0" y="0" width="1280" height="90" fill="#EFF6FF" />
+    <text x="60" y="55" fill="#2563EB" font-size="32" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🏢 什么是企业系统 (ERP)</text>
+    <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Enterprise Resource Planning</text>
+
+    <!-- 定义卡片 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="500" height="100" rx="12" fill="#F8FAFC" stroke="#E5E7EB" stroke-width="1" />
+        <text x="20" y="35" fill="#1F2937" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📌 核心定义</text>
+        <text x="20" y="65" fill="#4B5563" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">基于<tspan fill="#2563EB"
+                font-weight="bold">集成的软件模块</tspan>和一个<tspan fill="#2563EB" font-weight="bold">通用中央数据库</tspan></text>
+        <text x="20" y="88" fill="#4B5563" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">实现跨部门的实时数据共享与流程自动化</text>
+    </g>
+
+    <!-- 中央数据库架构图 -->
+    <g transform="translate(640, 380)">
+        <!-- 中央数据库 -->
+        <ellipse cx="0" cy="0" rx="80" ry="50" fill="#2563EB" />
+        <ellipse cx="0" cy="-15" rx="80" ry="25" fill="#3B82F6" />
+        <text x="0" y="5" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">中央数据库</text>
+        <text x="0" y="22" text-anchor="middle" fill="#DBEAFE" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Central Database</text>
+
+        <!-- 生产模块 - 上 -->
+        <g transform="translate(0, -180)">
+            <rect x="-60" y="-30" width="120" height="60" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#1E40AF" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🏭</text>
+            <text x="0" y="18" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">生产</text>
+        </g>
+        <line x1="0" y1="-120" x2="0" y2="-55" stroke="#2563EB" stroke-width="3" marker-end="url(#arrowBlue)" />
+        <line x1="0" y1="-55" x2="0" y2="-120" stroke="#2563EB" stroke-width="3" stroke-dasharray="8,4" />
+
+        <!-- 财务模块 - 右 -->
+        <g transform="translate(200, 0)">
+            <rect x="-60" y="-30" width="120" height="60" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#1E40AF" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💰</text>
+            <text x="0" y="18" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">财务</text>
+        </g>
+        <line x1="85" y1="0" x2="135" y2="0" stroke="#2563EB" stroke-width="3" />
+        <line x1="135" y1="0" x2="85" y2="0" stroke="#2563EB" stroke-width="3" stroke-dasharray="8,4" />
+
+        <!-- 销售模块 - 下 -->
+        <g transform="translate(0, 180)">
+            <rect x="-60" y="-30" width="120" height="60" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#1E40AF" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🛒</text>
+            <text x="0" y="18" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">销售</text>
+        </g>
+        <line x1="0" y1="55" x2="0" y2="120" stroke="#2563EB" stroke-width="3" />
+        <line x1="0" y1="120" x2="0" y2="55" stroke="#2563EB" stroke-width="3" stroke-dasharray="8,4" />
+
+        <!-- 人力资源模块 - 左 -->
+        <g transform="translate(-200, 0)">
+            <rect x="-60" y="-30" width="120" height="60" rx="10" fill="#DBEAFE" stroke="#2563EB" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#1E40AF" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">👥</text>
+            <text x="0" y="18" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">人力资源</text>
+        </g>
+        <line x1="-85" y1="0" x2="-135" y2="0" stroke="#2563EB" stroke-width="3" />
+        <line x1="-135" y1="0" x2="-85" y2="0" stroke="#2563EB" stroke-width="3" stroke-dasharray="8,4" />
+    </g>
+
+    <!-- 右侧示例流程 -->
+    <g transform="translate(950, 130)">
+        <rect x="0" y="0" width="280" height="450" rx="12" fill="#F0FDF4" stroke="#059669" stroke-width="2" />
+        <text x="140" y="35" text-anchor="middle" fill="#059669" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">⚡ 实时联动示例</text>
+
+        <!-- 流程步骤 -->
+        <g transform="translate(20, 60)">
+            <circle cx="15" cy="15" r="15" fill="#2563EB" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">1</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">销售代表下订单</text>
+        </g>
+
+        <line x1="35" y1="105" x2="35" y2="125" stroke="#2563EB" stroke-width="2" />
+
+        <g transform="translate(20, 130)">
+            <circle cx="15" cy="15" r="15" fill="#2563EB" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">2</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">自动验证客户信用</text>
+        </g>
+
+        <line x1="35" y1="175" x2="35" y2="195" stroke="#2563EB" stroke-width="2" />
+
+        <g transform="translate(20, 200)">
+            <circle cx="15" cy="15" r="15" fill="#2563EB" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">3</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">安排发货时间</text>
+        </g>
+
+        <line x1="35" y1="245" x2="35" y2="265" stroke="#2563EB" stroke-width="2" />
+
+        <g transform="translate(20, 270)">
+            <circle cx="15" cy="15" r="15" fill="#2563EB" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">4</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">库存预留商品</text>
+        </g>
+
+        <line x1="35" y1="315" x2="35" y2="335" stroke="#2563EB" stroke-width="2" />
+
+        <g transform="translate(20, 340)">
+            <circle cx="15" cy="15" r="15" fill="#2563EB" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">5</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">更新生产计划</text>
+        </g>
+
+        <line x1="35" y1="385" x2="35" y2="405" stroke="#2563EB" stroke-width="2" />
+
+        <g transform="translate(20, 410)">
+            <circle cx="15" cy="15" r="15" fill="#059669" />
+            <text x="15" y="20" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">✓</text>
+            <text x="45" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">更新财务记录</text>
+        </g>
+    </g>
+
+    <!-- 底部关键特点 -->
+    <g transform="translate(60, 600)">
+        <rect x="0" y="0" width="350" height="50" rx="8" fill="#FEF3C7" />
+        <text x="20" y="32" fill="#92400E" font-size="16" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💡 关键特点：实时数据共享 · 流程自动触发</text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">3 / 12</text>
+</svg>

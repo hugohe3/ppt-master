@@ -1,0 +1,165 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部标题区 -->
+    <rect x="0" y="0" width="1280" height="90" fill="#F5F3FF" />
+    <text x="60" y="55" fill="#7C3AED" font-size="32" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">❤️ 客户关系管理 (CRM) 概述</text>
+    <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Customer Relationship
+        Management</text>
+
+    <!-- 核心思想卡片 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="550" height="80" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" />
+        <text x="30" y="35" fill="#92400E" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💡 核心思想</text>
+        <text x="30" y="60" fill="#374151" font-size="15"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">随着竞争优势变得短暂，<tspan fill="#7C3AED"
+                font-weight="bold">客户关系</tspan>可能是最持久的竞争优势</text>
+    </g>
+
+    <!-- 定义卡片 -->
+    <g transform="translate(640, 110)">
+        <rect x="0" y="0" width="550" height="80" rx="12" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+        <text x="30" y="35" fill="#7C3AED" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📌 CRM 定义</text>
+        <text x="30" y="60" fill="#374151" font-size="15"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">捕获 → 整合 → 分析 → 分发客户数据到各接触点</text>
+    </g>
+
+    <!-- 中心客户图 -->
+    <g transform="translate(860, 420)">
+        <!-- 中心客户圆 -->
+        <circle cx="0" cy="0" r="80" fill="#7C3AED" />
+        <text x="0" y="-15" text-anchor="middle" fill="#FFFFFF" font-size="36"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">👤</text>
+        <text x="0" y="20" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户</text>
+        <text x="0" y="42" text-anchor="middle" fill="#DDD6FE" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Customer</text>
+
+        <!-- 接触点 - 电话 -->
+        <g transform="translate(-180, -120)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📞</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">电话</text>
+        </g>
+        <line x1="-95" y1="-65" x2="-55" y2="-40" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 邮件 -->
+        <g transform="translate(0, -170)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">✉️</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">邮件</text>
+        </g>
+        <line x1="0" y1="-125" x2="0" y2="-85" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 网站 -->
+        <g transform="translate(180, -120)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🌐</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">网站</text>
+        </g>
+        <line x1="95" y1="-65" x2="55" y2="-40" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 社交媒体 -->
+        <g transform="translate(200, 40)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💬</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">社交媒体</text>
+        </g>
+        <line x1="115" y1="25" x2="75" y2="15" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 零售店 -->
+        <g transform="translate(120, 150)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🏪</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">零售店</text>
+        </g>
+        <line x1="55" y1="115" x2="35" y2="70" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 移动App -->
+        <g transform="translate(-120, 150)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📱</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">移动App</text>
+        </g>
+        <line x1="-55" y1="115" x2="-35" y2="70" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+
+        <!-- 接触点 - 客服 -->
+        <g transform="translate(-200, 40)">
+            <circle cx="0" cy="0" r="45" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <text x="0" y="-5" text-anchor="middle" fill="#7C3AED" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎧</text>
+            <text x="0" y="20" text-anchor="middle" fill="#374151" font-size="12" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客服</text>
+        </g>
+        <line x1="-115" y1="25" x2="-75" y2="15" stroke="#7C3AED" stroke-width="2" stroke-dasharray="5,3" />
+    </g>
+
+    <!-- 左侧核心问题 -->
+    <g transform="translate(60, 220)">
+        <rect x="0" y="0" width="360" height="200" rx="16" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+        <text x="30" y="40" fill="#7C3AED" font-size="20" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎯 CRM 核心问题</text>
+
+        <g transform="translate(30, 70)">
+            <rect x="0" y="0" width="300" height="50" rx="8" fill="#DDD6FE" />
+            <text x="15" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">❓ 谁是最忠诚、最有利可图的客户？</text>
+            <text x="15" y="40" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Who are our most valuable
+                customers?</text>
+        </g>
+
+        <g transform="translate(30, 130)">
+            <rect x="0" y="0" width="300" height="50" rx="8" fill="#DDD6FE" />
+            <text x="15" y="20" fill="#1F2937" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">❓ 他们想买什么？</text>
+            <text x="15" y="40" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">What do they want to
+                buy?</text>
+        </g>
+    </g>
+
+    <!-- 右侧目标 -->
+    <g transform="translate(60, 450)">
+        <rect x="0" y="0" width="360" height="160" rx="16" fill="#DCFCE7" stroke="#16A34A" stroke-width="2" />
+        <text x="30" y="40" fill="#16A34A" font-size="20" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">✅ CRM 目标</text>
+
+        <g transform="translate(30, 60)">
+            <circle cx="10" cy="12" r="6" fill="#16A34A" />
+            <text x="30" y="18" fill="#374151" font-size="16"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">更好地服务现有客户</text>
+        </g>
+        <g transform="translate(30, 95)">
+            <circle cx="10" cy="12" r="6" fill="#16A34A" />
+            <text x="30" y="18" fill="#374151" font-size="16"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">获取新客户</text>
+        </g>
+        <g transform="translate(30, 130)">
+            <circle cx="10" cy="12" r="6" fill="#16A34A" />
+            <text x="30" y="18" fill="#374151" font-size="16"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">提供统一的客户视图</text>
+        </g>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">7 / 12</text>
+</svg>

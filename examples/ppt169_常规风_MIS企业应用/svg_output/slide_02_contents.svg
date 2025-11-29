@@ -1,0 +1,119 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部标题区 -->
+    <rect x="0" y="0" width="1280" height="100" fill="#F8FAFC" />
+    <text x="60" y="62" fill="#1F2937" font-size="36" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📋 本章内容</text>
+    <text x="60" y="85" fill="#6B7280" font-size="16"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Chapter 9 Overview</text>
+
+    <!-- 左侧竖向导航条 -->
+    <rect x="60" y="130" width="8" height="530" rx="4" fill="#E5E7EB" />
+
+    <!-- 章节 1：ERP -->
+    <g transform="translate(90, 140)">
+        <circle cx="0" cy="20" r="12" fill="#2563EB" />
+        <rect x="30" y="0" width="500" height="80" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+        <text x="55" y="30" fill="#2563EB" font-size="24"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🏢</text>
+        <text x="95" y="32" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">企业系统 (ERP)</text>
+        <text x="55" y="58" fill="#6B7280" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">集成数据 · 标准化流程 · 卓越运营</text>
+    </g>
+
+    <!-- 章节 2：SCM -->
+    <g transform="translate(90, 240)">
+        <circle cx="0" cy="20" r="12" fill="#059669" />
+        <rect x="30" y="0" width="500" height="80" rx="12" fill="#ECFDF5" stroke="#059669" stroke-width="2" />
+        <text x="55" y="30" fill="#059669" font-size="24"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🚚</text>
+        <text x="95" y="32" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">供应链管理 (SCM)</text>
+        <text x="55" y="58" fill="#6B7280" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">协调供应商 · 优化物流 · 匹配供需</text>
+    </g>
+
+    <!-- 章节 3：CRM -->
+    <g transform="translate(90, 340)">
+        <circle cx="0" cy="20" r="12" fill="#7C3AED" />
+        <rect x="30" y="0" width="500" height="80" rx="12" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+        <text x="55" y="30" fill="#7C3AED" font-size="24"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">❤️</text>
+        <text x="95" y="32" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户关系管理 (CRM)</text>
+        <text x="55" y="58" fill="#6B7280" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户洞察 · 服务优化 · 客户亲密度</text>
+    </g>
+
+    <!-- 章节 4：挑战与新技术 -->
+    <g transform="translate(90, 440)">
+        <circle cx="0" cy="20" r="12" fill="#EA580C" />
+        <rect x="30" y="0" width="500" height="80" rx="12" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" />
+        <text x="55" y="30" fill="#EA580C" font-size="24"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💡</text>
+        <text x="95" y="32" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">挑战与新技术</text>
+        <text x="55" y="58" fill="#6B7280" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">实施难点 · 云计算 · AI/BI 创新</text>
+    </g>
+
+    <!-- 章节 5：职业价值 -->
+    <g transform="translate(90, 540)">
+        <circle cx="0" cy="20" r="12" fill="#0891B2" />
+        <rect x="30" y="0" width="500" height="80" rx="12" fill="#ECFEFF" stroke="#0891B2" stroke-width="2" />
+        <text x="55" y="30" fill="#0891B2" font-size="24"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💼</text>
+        <text x="95" y="32" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">MIS 职业价值</text>
+        <text x="55" y="58" fill="#6B7280" font-size="16"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">系统实施 · 业务分析 · 职业发展</text>
+    </g>
+
+    <!-- 右侧关系图 -->
+    <g transform="translate(750, 350)">
+        <!-- 中心圆 -->
+        <circle cx="200" cy="0" r="100" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="2" />
+        <text x="200" y="-20" text-anchor="middle" fill="#1F2937" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">企业级</text>
+        <text x="200" y="10" text-anchor="middle" fill="#1F2937" font-size="18" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">应用系统</text>
+
+        <!-- ERP 节点 - 顶部 -->
+        <circle cx="200" cy="-180" r="45" fill="#2563EB" />
+        <text x="200" y="-175" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">ERP</text>
+        <line x1="200" y1="-135" x2="200" y2="-110" stroke="#2563EB" stroke-width="3" marker-end="url(#arrowBlue)" />
+
+        <!-- SCM 节点 - 左下 -->
+        <circle cx="70" cy="140" r="45" fill="#059669" />
+        <text x="70" y="145" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">SCM</text>
+        <line x1="107" y1="108" x2="130" y2="80" stroke="#059669" stroke-width="3" marker-end="url(#arrowGreen)" />
+
+        <!-- CRM 节点 - 右下 -->
+        <circle cx="330" cy="140" r="45" fill="#7C3AED" />
+        <text x="330" y="145" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">CRM</text>
+        <line x1="293" y1="108" x2="270" y2="80" stroke="#7C3AED" stroke-width="3" marker-end="url(#arrowPurple)" />
+
+        <!-- 箭头标记定义 -->
+        <defs>
+            <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#2563EB" />
+            </marker>
+            <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#059669" />
+            </marker>
+            <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#7C3AED" />
+            </marker>
+        </defs>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">2 / 12</text>
+</svg>

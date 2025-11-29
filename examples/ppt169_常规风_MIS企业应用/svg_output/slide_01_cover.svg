@@ -1,0 +1,81 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景渐变 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+        </linearGradient>
+        <!-- 三环装饰 -->
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰圆环 - 右侧 -->
+    <g transform="translate(950, 360)" filter="url(#glow)">
+        <!-- ERP 圆环 -->
+        <circle cx="0" cy="-80" r="60" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.9" />
+        <text x="0" y="-75" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">ERP</text>
+
+        <!-- SCM 圆环 -->
+        <circle cx="-70" cy="50" r="60" fill="none" stroke="#10B981" stroke-width="4" opacity="0.9" />
+        <text x="-70" y="55" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">SCM</text>
+
+        <!-- CRM 圆环 -->
+        <circle cx="70" cy="50" r="60" fill="none" stroke="#A855F7" stroke-width="4" opacity="0.9" />
+        <text x="70" y="55" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">CRM</text>
+
+        <!-- 连接线 -->
+        <line x1="-30" y1="-30" x2="-45" y2="5" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <line x1="30" y1="-30" x2="45" y2="5" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <line x1="-10" y1="50" x2="10" y2="50" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+    </g>
+
+    <!-- 左侧内容区 -->
+    <g transform="translate(60, 180)">
+        <!-- 章节标识 -->
+        <rect x="0" y="0" width="120" height="36" rx="18" fill="#FFFFFF" opacity="0.2" />
+        <text x="60" y="24" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Chapter 9</text>
+
+        <!-- 主标题 -->
+        <text x="0" y="100" fill="#FFFFFF" font-size="56" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">企业级应用</text>
+
+        <!-- 副标题 -->
+        <text x="0" y="160" fill="#FFFFFF" font-size="28" font-weight="500" opacity="0.95"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">实现卓越运营与客户亲密度</text>
+
+        <!-- 英文标题 -->
+        <text x="0" y="210" fill="#FFFFFF" font-size="18" opacity="0.8"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Achieving Operational Excellence
+            and Customer Intimacy</text>
+
+        <!-- 分割线 -->
+        <rect x="0" y="240" width="400" height="3" fill="#FFFFFF" opacity="0.5" rx="1.5" />
+
+        <!-- 来源 -->
+        <text x="0" y="280" fill="#FFFFFF" font-size="16" opacity="0.7"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Management Information Systems:
+            Managing the Digital Firm</text>
+    </g>
+
+    <!-- 底部装饰线 -->
+    <rect x="60" y="660" width="200" height="4" rx="2" fill="#FFFFFF" opacity="0.4" />
+
+    <!-- 装饰点 -->
+    <circle cx="100" cy="600" r="4" fill="#FFFFFF" opacity="0.3" />
+    <circle cx="150" cy="580" r="6" fill="#FFFFFF" opacity="0.2" />
+    <circle cx="200" cy="620" r="5" fill="#FFFFFF" opacity="0.25" />
+</svg>

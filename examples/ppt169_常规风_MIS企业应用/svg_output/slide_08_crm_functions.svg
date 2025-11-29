@@ -1,0 +1,191 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部标题区 -->
+    <rect x="0" y="0" width="1280" height="90" fill="#F5F3FF" />
+    <text x="60" y="55" fill="#7C3AED" font-size="32" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🛠️ CRM 三大功能模块</text>
+    <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">CRM Software Functions</text>
+
+    <!-- 三列功能卡片 -->
+    <!-- 卡片1：销售队伍自动化 -->
+    <g transform="translate(60, 120)">
+        <rect x="0" y="0" width="360" height="520" rx="16" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+
+        <!-- 顶部图标区 -->
+        <rect x="0" y="0" width="360" height="100" rx="16" fill="#2563EB" />
+        <rect x="0" y="70" width="360" height="30" fill="#2563EB" />
+        <circle cx="180" cy="50" r="35" fill="#DBEAFE" />
+        <text x="180" y="60" text-anchor="middle" fill="#2563EB" font-size="32"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💼</text>
+
+        <!-- 标题 -->
+        <text x="180" y="135" text-anchor="middle" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">销售队伍自动化</text>
+        <text x="180" y="160" text-anchor="middle" fill="#6B7280" font-size="13"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Sales Force Automation
+            (SFA)</text>
+
+        <line x1="30" y1="180" x2="330" y2="180" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 功能列表 -->
+        <g transform="translate(30, 200)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DBEAFE" />
+            <text x="15" y="25" fill="#1E40AF" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎯 聚焦高价值客户</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">识别最有利可图的客户群体</text>
+        </g>
+
+        <g transform="translate(30, 270)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DBEAFE" />
+            <text x="15" y="25" fill="#1E40AF" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📋 销售前景管理</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">跟踪潜在客户和销售机会</text>
+        </g>
+
+        <g transform="translate(30, 340)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DBEAFE" />
+            <text x="15" y="25" fill="#1E40AF" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📄 报价自动生成</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">快速生成产品报价单</text>
+        </g>
+
+        <g transform="translate(30, 410)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DBEAFE" />
+            <text x="15" y="25" fill="#1E40AF" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📊 联系人信息库</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">集中管理客户联系信息</text>
+        </g>
+
+        <!-- 效果标签 -->
+        <rect x="30" y="480" width="300" height="30" rx="6" fill="#059669" />
+        <text x="180" y="500" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→ 提高销售效率</text>
+    </g>
+
+    <!-- 卡片2：客户服务 -->
+    <g transform="translate(450, 120)">
+        <rect x="0" y="0" width="360" height="520" rx="16" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+
+        <!-- 顶部图标区 -->
+        <rect x="0" y="0" width="360" height="100" rx="16" fill="#7C3AED" />
+        <rect x="0" y="70" width="360" height="30" fill="#7C3AED" />
+        <circle cx="180" cy="50" r="35" fill="#DDD6FE" />
+        <text x="180" y="60" text-anchor="middle" fill="#7C3AED" font-size="32"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📞</text>
+
+        <!-- 标题 -->
+        <text x="180" y="135" text-anchor="middle" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户服务</text>
+        <text x="180" y="160" text-anchor="middle" fill="#6B7280" font-size="13"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Customer Service</text>
+
+        <line x1="30" y1="180" x2="330" y2="180" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 功能列表 -->
+        <g transform="translate(30, 200)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DDD6FE" />
+            <text x="15" y="25" fill="#6D28D9" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎧 呼叫中心支持</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">统一的客户服务平台</text>
+        </g>
+
+        <g transform="translate(30, 270)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DDD6FE" />
+            <text x="15" y="25" fill="#6D28D9" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📲 电话自动路由</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">智能分配到合适的客服人员</text>
+        </g>
+
+        <g transform="translate(30, 340)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DDD6FE" />
+            <text x="15" y="25" fill="#6D28D9" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📑 完整客户信息</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">实时显示客户历史和偏好</text>
+        </g>
+
+        <g transform="translate(30, 410)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#DDD6FE" />
+            <text x="15" y="25" fill="#6D28D9" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💡 帮助台工具</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">问题解决方案库和知识库</text>
+        </g>
+
+        <!-- 效果标签 -->
+        <rect x="30" y="480" width="300" height="30" rx="6" fill="#059669" />
+        <text x="180" y="500" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→ 提高服务质量</text>
+    </g>
+
+    <!-- 卡片3：市场营销 -->
+    <g transform="translate(840, 120)">
+        <rect x="0" y="0" width="360" height="520" rx="16" fill="#FFF7ED" stroke="#EA580C" stroke-width="2" />
+
+        <!-- 顶部图标区 -->
+        <rect x="0" y="0" width="360" height="100" rx="16" fill="#EA580C" />
+        <rect x="0" y="70" width="360" height="30" fill="#EA580C" />
+        <circle cx="180" cy="50" r="35" fill="#FED7AA" />
+        <text x="180" y="60" text-anchor="middle" fill="#EA580C" font-size="32"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📣</text>
+
+        <!-- 标题 -->
+        <text x="180" y="135" text-anchor="middle" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">市场营销</text>
+        <text x="180" y="160" text-anchor="middle" fill="#6B7280" font-size="13"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Marketing</text>
+
+        <line x1="30" y1="180" x2="330" y2="180" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 功能列表 -->
+        <g transform="translate(30, 200)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#FED7AA" />
+            <text x="15" y="25" fill="#C2410C" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📧 直效营销活动</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">精准投放营销内容</text>
+        </g>
+
+        <g transform="translate(30, 270)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#FED7AA" />
+            <text x="15" y="25" fill="#C2410C" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎯 目标客户定位</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">细分市场和客户群体</text>
+        </g>
+
+        <g transform="translate(30, 340)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#FED7AA" />
+            <text x="15" y="25" fill="#C2410C" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📈 活动跟踪分析</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">监测营销效果和ROI</text>
+        </g>
+
+        <g transform="translate(30, 410)">
+            <rect x="0" y="0" width="300" height="55" rx="8" fill="#FED7AA" />
+            <text x="15" y="25" fill="#C2410C" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🔄 交叉销售</text>
+            <text x="15" y="45" fill="#4B5563" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">向现有客户营销互补产品</text>
+        </g>
+
+        <!-- 效果标签 -->
+        <rect x="30" y="480" width="300" height="30" rx="6" fill="#059669" />
+        <text x="180" y="500" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→ 增加销售收入</text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">8 / 12</text>
+</svg>

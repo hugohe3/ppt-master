@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIS 第9章 企业级应用 - PPT 预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .slides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        .slide-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .slide-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-bottom: 1px solid #eee;
+        }
+
+        .slide-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slide-info {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-title {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .slide-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .fullscreen-btn {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .fullscreen-btn a {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .fullscreen-btn a:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 管理信息系统 第9章</h1>
+            <p>企业级应用：实现卓越运营与客户亲密度</p>
+        </header>
+
+        <div class="slides-grid">
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_01_cover.svg" alt="封面">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">封面</span>
+                    <span class="slide-number">1/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_02_contents.svg" alt="目录">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">目录框架</span>
+                    <span class="slide-number">2/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_03_erp_overview.svg" alt="ERP概述">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">什么是企业系统 (ERP)</span>
+                    <span class="slide-number">3/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_04_erp_value.svg" alt="ERP价值">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">ERP 的四大商业价值</span>
+                    <span class="slide-number">4/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_05_scm_overview.svg" alt="供应链概述">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">供应链概述</span>
+                    <span class="slide-number">5/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_06_scm_models.svg" alt="SCM模型">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">SCM 软件与推拉模型</span>
+                    <span class="slide-number">6/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_07_crm_overview.svg" alt="CRM概述">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">客户关系管理 (CRM) 概述</span>
+                    <span class="slide-number">7/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_08_crm_functions.svg" alt="CRM功能">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">CRM 三大功能模块</span>
+                    <span class="slide-number">8/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_09_crm_types.svg" alt="CRM类型">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">运营型 vs 分析型 CRM</span>
+                    <span class="slide-number">9/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_10_challenges.svg" alt="挑战">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">企业应用的四大挑战</span>
+                    <span class="slide-number">10/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_11_future.svg" alt="未来趋势">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">下一代企业应用</span>
+                    <span class="slide-number">11/12</span>
+                </div>
+            </div>
+
+            <div class="slide-card">
+                <div class="slide-preview">
+                    <img src="svg_output/slide_12_summary.svg" alt="总结">
+                </div>
+                <div class="slide-info">
+                    <span class="slide-title">总结与职业价值</span>
+                    <span class="slide-number">12/12</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PPT Master · Management Information Systems Chapter 9</p>
+            <p>生成于 2025-11-29</p>
+        </footer>
+    </div>
+</body>
+
+</html>

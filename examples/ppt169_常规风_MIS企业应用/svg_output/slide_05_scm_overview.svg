@@ -1,0 +1,203 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- 顶部标题区 -->
+    <rect x="0" y="0" width="1280" height="90" fill="#ECFDF5" />
+    <text x="60" y="55" fill="#059669" font-size="32" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🚚 供应链概述</text>
+    <text x="1220" y="55" text-anchor="end" fill="#6B7280" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">The Supply Chain</text>
+
+    <!-- 定义卡片 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="700" height="70" rx="12" fill="#F8FAFC" stroke="#E5E7EB" stroke-width="1" />
+        <text x="20" y="28" fill="#1F2937" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📌 定义</text>
+        <text x="20" y="52" fill="#4B5563" font-size="15"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">采购原材料 → 转化为中间产品和成品 → 分销给客户 的
+            <tspan fill="#059669" font-weight="bold">组织和业务流程网络</tspan></text>
+    </g>
+
+    <!-- 供应链流程图 -->
+    <g transform="translate(60, 210)">
+        <!-- 上游标签 -->
+        <rect x="0" y="0" width="480" height="35" rx="6" fill="#D1FAE5" />
+        <text x="240" y="24" text-anchor="middle" fill="#059669" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">⬅️ 上游 Upstream</text>
+
+        <!-- 下游标签 -->
+        <rect x="680" y="0" width="480" height="35" rx="6" fill="#DCFCE7" />
+        <text x="920" y="24" text-anchor="middle" fill="#16A34A" font-size="16" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">下游 Downstream ➡️</text>
+    </g>
+
+    <!-- 供应链节点 -->
+    <g transform="translate(0, 300)">
+        <!-- 供应商的供应商 -->
+        <g transform="translate(80, 0)">
+            <rect x="0" y="0" width="140" height="90" rx="12" fill="#A7F3D0" stroke="#059669" stroke-width="2" />
+            <text x="70" y="35" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">供应商的</text>
+            <text x="70" y="55" text-anchor="middle" fill="#1F2937" font-size="14" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">供应商</text>
+            <text x="70" y="75" text-anchor="middle" fill="#6B7280" font-size="11"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">原材料</text>
+        </g>
+
+        <!-- 箭头 -->
+        <path d="M 225 45 L 255 45" stroke="#059669" stroke-width="3" fill="none" marker-end="url(#arrowGreen)" />
+
+        <!-- 供应商 -->
+        <g transform="translate(260, 0)">
+            <rect x="0" y="0" width="140" height="90" rx="12" fill="#6EE7B7" stroke="#059669" stroke-width="2" />
+            <text x="70" y="45" text-anchor="middle" fill="#1F2937" font-size="16" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">供应商</text>
+            <text x="70" y="70" text-anchor="middle" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">零部件</text>
+        </g>
+
+        <!-- 箭头 -->
+        <path d="M 405 45 L 435 45" stroke="#059669" stroke-width="3" fill="none" />
+
+        <!-- 公司（核心） -->
+        <g transform="translate(440, -20)">
+            <rect x="0" y="0" width="180" height="130" rx="16" fill="#059669" stroke="#047857" stroke-width="3" />
+            <text x="90" y="55" text-anchor="middle" fill="#FFFFFF" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🏢</text>
+            <text x="90" y="85" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">公司</text>
+            <text x="90" y="110" text-anchor="middle" fill="#D1FAE5" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">制造/加工</text>
+        </g>
+
+        <!-- 箭头 -->
+        <path d="M 625 45 L 655 45" stroke="#16A34A" stroke-width="3" fill="none" />
+
+        <!-- 分销商 -->
+        <g transform="translate(660, 0)">
+            <rect x="0" y="0" width="140" height="90" rx="12" fill="#86EFAC" stroke="#16A34A" stroke-width="2" />
+            <text x="70" y="45" text-anchor="middle" fill="#1F2937" font-size="16" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">分销商</text>
+            <text x="70" y="70" text-anchor="middle" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">批发</text>
+        </g>
+
+        <!-- 箭头 -->
+        <path d="M 805 45 L 835 45" stroke="#16A34A" stroke-width="3" fill="none" />
+
+        <!-- 零售商 -->
+        <g transform="translate(840, 0)">
+            <rect x="0" y="0" width="140" height="90" rx="12" fill="#BBF7D0" stroke="#16A34A" stroke-width="2" />
+            <text x="70" y="45" text-anchor="middle" fill="#1F2937" font-size="16" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">零售商</text>
+            <text x="70" y="70" text-anchor="middle" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">销售</text>
+        </g>
+
+        <!-- 箭头 -->
+        <path d="M 985 45 L 1015 45" stroke="#16A34A" stroke-width="3" fill="none" />
+
+        <!-- 客户 -->
+        <g transform="translate(1020, 0)">
+            <rect x="0" y="0" width="140" height="90" rx="12" fill="#DCFCE7" stroke="#16A34A" stroke-width="2" />
+            <text x="70" y="35" text-anchor="middle" fill="#1F2937" font-size="24"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">👤</text>
+            <text x="70" y="60" text-anchor="middle" fill="#1F2937" font-size="16" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户</text>
+            <text x="70" y="80" text-anchor="middle" fill="#6B7280" font-size="12"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">最终用户</text>
+        </g>
+    </g>
+
+    <!-- 箭头标记定义 -->
+    <defs>
+        <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#059669" />
+        </marker>
+    </defs>
+
+    <!-- 牛鞭效应卡片 -->
+    <g transform="translate(60, 440)">
+        <rect x="0" y="0" width="1160" height="200" rx="16" fill="#FEF2F2" stroke="#DC2626" stroke-width="2" />
+
+        <g transform="translate(30, 25)">
+            <text x="0" y="0" fill="#DC2626" font-size="22" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">⚠️ 牛鞭效应 (Bullwhip
+                Effect)</text>
+            <text x="320" y="0" fill="#6B7280" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">— 供应链中的信息扭曲现象</text>
+        </g>
+
+        <!-- 牛鞭效应图示 -->
+        <g transform="translate(50, 70)">
+            <!-- 波动图示 -->
+            <text x="0" y="20" fill="#374151" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">需求波动：</text>
+
+            <!-- 小波动 - 零售端 -->
+            <g transform="translate(100, 0)">
+                <rect x="0" y="0" width="100" height="40" rx="6" fill="#FEE2E2" />
+                <path d="M 10 20 Q 25 10 50 20 Q 75 30 90 20" stroke="#DC2626" stroke-width="2" fill="none" />
+                <text x="50" y="55" text-anchor="middle" fill="#6B7280" font-size="12"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">零售端</text>
+                <text x="50" y="70" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="bold"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">微小波动</text>
+            </g>
+
+            <text x="220" y="25" fill="#6B7280" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→</text>
+
+            <!-- 中波动 - 分销商 -->
+            <g transform="translate(250, 0)">
+                <rect x="0" y="-10" width="120" height="60" rx="6" fill="#FECACA" />
+                <path d="M 10 25 Q 30 0 60 25 Q 90 50 110 25" stroke="#DC2626" stroke-width="2" fill="none" />
+                <text x="60" y="65" text-anchor="middle" fill="#6B7280" font-size="12"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">分销商</text>
+                <text x="60" y="80" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="bold"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">放大</text>
+            </g>
+
+            <text x="390" y="25" fill="#6B7280" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→</text>
+
+            <!-- 大波动 - 制造商 -->
+            <g transform="translate(420, 0)">
+                <rect x="0" y="-20" width="140" height="80" rx="6" fill="#FCA5A5" />
+                <path d="M 10 30 Q 35 -10 70 30 Q 105 70 130 30" stroke="#DC2626" stroke-width="3" fill="none" />
+                <text x="70" y="75" text-anchor="middle" fill="#6B7280" font-size="12"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">制造商</text>
+                <text x="70" y="90" text-anchor="middle" fill="#DC2626" font-size="11" font-weight="bold"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">剧烈放大</text>
+            </g>
+
+            <text x="580" y="25" fill="#6B7280" font-size="20"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">→</text>
+
+            <!-- 结果 -->
+            <g transform="translate(620, -10)">
+                <rect x="0" y="0" width="180" height="80" rx="10" fill="#DC2626" />
+                <text x="90" y="35" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📦 过量库存</text>
+                <text x="90" y="58" text-anchor="middle" fill="#FEE2E2" font-size="14"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">资源浪费 · 成本上升</text>
+            </g>
+        </g>
+
+        <!-- 原因说明 -->
+        <g transform="translate(850, 70)">
+            <text x="0" y="20" fill="#374151" font-size="15" font-weight="600"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📍 根本原因：</text>
+            <text x="0" y="50" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 信息不准确</text>
+            <text x="0" y="75" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 信息不及时</text>
+            <text x="0" y="100" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 缺乏协调</text>
+        </g>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#9CA3AF" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">5 / 12</text>
+</svg>

@@ -1,0 +1,162 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景渐变 -->
+    <defs>
+        <linearGradient id="summaryBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#EFF6FF;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#F5F3FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ECFDF5;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="url(#summaryBg)" />
+
+    <!-- 顶部标题 -->
+    <text x="640" y="55" text-anchor="middle" fill="#1F2937" font-size="36" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">📚 总结与职业价值</text>
+    <text x="640" y="85" text-anchor="middle" fill="#6B7280" font-size="16"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Summary &amp; Career Value</text>
+
+    <!-- 左侧：核心概念回顾 -->
+    <g transform="translate(60, 120)">
+        <rect x="0" y="0" width="560" height="480" rx="20" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+        <text x="280" y="40" text-anchor="middle" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🎯 核心概念回顾</text>
+
+        <line x1="30" y1="60" x2="530" y2="60" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- ERP 卡片 -->
+        <g transform="translate(30, 80)">
+            <rect x="0" y="0" width="500" height="110" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
+            <circle cx="50" cy="55" r="35" fill="#2563EB" />
+            <text x="50" y="50" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">ERP</text>
+            <text x="50" y="70" text-anchor="middle" fill="#DBEAFE" font-size="10"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">企业系统</text>
+
+            <text x="110" y="35" fill="#1F2937" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">整合运营 · 统一数据</text>
+            <text x="110" y="60" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 中央数据库 + 集成模块</text>
+            <text x="110" y="82" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 实时信息共享，提高运营效率</text>
+        </g>
+
+        <!-- SCM 卡片 -->
+        <g transform="translate(30, 205)">
+            <rect x="0" y="0" width="500" height="110" rx="12" fill="#ECFDF5" stroke="#059669" stroke-width="2" />
+            <circle cx="50" cy="55" r="35" fill="#059669" />
+            <text x="50" y="50" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">SCM</text>
+            <text x="50" y="70" text-anchor="middle" fill="#D1FAE5" font-size="10"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">供应链</text>
+
+            <text x="110" y="35" fill="#1F2937" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">协调供应链 · 匹配供需</text>
+            <text x="110" y="60" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 计划 + 执行系统</text>
+            <text x="110" y="82" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 从推动到拉动，减少牛鞭效应</text>
+        </g>
+
+        <!-- CRM 卡片 -->
+        <g transform="translate(30, 330)">
+            <rect x="0" y="0" width="500" height="110" rx="12" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2" />
+            <circle cx="50" cy="55" r="35" fill="#7C3AED" />
+            <text x="50" y="50" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">CRM</text>
+            <text x="50" y="70" text-anchor="middle" fill="#DDD6FE" font-size="10"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户关系</text>
+
+            <text x="110" y="35" fill="#1F2937" font-size="18" font-weight="bold"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">客户亲密度 · 终身价值</text>
+            <text x="110" y="60" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 销售 + 服务 + 营销自动化</text>
+            <text x="110" y="82" fill="#4B5563" font-size="14"
+                font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">• 运营型 + 分析型，计算 CLTV</text>
+        </g>
+    </g>
+
+    <!-- 右侧：MIS 职业价值 -->
+    <g transform="translate(660, 120)">
+        <rect x="0" y="0" width="540" height="480" rx="20" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" />
+        <text x="270" y="40" text-anchor="middle" fill="#1F2937" font-size="22" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">💼 MIS 职业价值</text>
+
+        <line x1="30" y1="60" x2="510" y2="60" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 技能列表 -->
+        <g transform="translate(30, 80)">
+            <g transform="translate(0, 0)">
+                <circle cx="20" cy="20" r="20" fill="#2563EB" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">1</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">系统实施经验</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">了解 ERP、JDA 等制造系统</text>
+            </g>
+
+            <g transform="translate(0, 65)">
+                <circle cx="20" cy="20" r="20" fill="#059669" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">2</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">业务流程分析</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">理解业务流程和数据需求</text>
+            </g>
+
+            <g transform="translate(0, 130)">
+                <circle cx="20" cy="20" r="20" fill="#7C3AED" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">3</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">项目管理技能</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">跟踪变更、编写文档</text>
+            </g>
+
+            <g transform="translate(0, 195)">
+                <circle cx="20" cy="20" r="20" fill="#EA580C" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">4</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">办公软件能力</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">Excel、Access
+                    等数据分析工具</text>
+            </g>
+
+            <g transform="translate(0, 260)">
+                <circle cx="20" cy="20" r="20" fill="#0891B2" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">5</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">领导力与团队合作</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">团队项目经验</text>
+            </g>
+
+            <g transform="translate(0, 325)">
+                <circle cx="20" cy="20" r="20" fill="#DC2626" />
+                <text x="20" y="26" text-anchor="middle" fill="#FFFFFF" font-size="16"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">6</text>
+                <text x="55" y="18" fill="#1F2937" font-size="17" font-weight="600"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">行业洞察力</text>
+                <text x="55" y="38" fill="#6B7280" font-size="13"
+                    font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">研究行业趋势和技术动态</text>
+            </g>
+        </g>
+    </g>
+
+    <!-- 底部激励语 -->
+    <g transform="translate(60, 625)">
+        <rect x="0" y="0" width="1140" height="60" rx="12" fill="#1F2937" />
+        <text x="570" y="38" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="600"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">🌟 掌握企业应用知识，成为数字化转型的推动者！</text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" fill="#6B7280" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif">12 / 12</text>
+</svg>
