@@ -1,120 +1,149 @@
 <svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
-    <!-- 背景 -->
-    <rect width="1280" height="720" fill="#ffffff" />
+    <!-- 渐变背景 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
 
     <!-- 标题区 -->
-    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
-    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+    <rect x="0" y="0" width="1280" height="90" fill="#0f172a" opacity="0.8" />
+    <text x="640" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="34" font-weight="600" fill="#e2e8f0" text-anchor="middle">
         SHA-1 哈希：唯一身份标识
     </text>
+    <rect x="540" y="75" width="200" height="3" rx="1.5" fill="#3b82f6" />
 
     <!-- 左侧概念卡片 -->
-    <rect x="60" y="140" width="560" height="520" rx="12" fill="#f3f4f6" />
+    <rect x="50" y="110" width="560" height="550" rx="16" fill="url(#cardGradient)" stroke="#334155" stroke-width="1" />
 
     <!-- 标题 -->
-    <text x="340" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="28" font-weight="600" fill="#1e40af" text-anchor="middle">
+    <text x="330" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="600" fill="#3b82f6" text-anchor="middle">
         什么是 SHA-1？
     </text>
+    <rect x="180" y="175" width="300" height="2" rx="1" fill="#334155" />
 
     <!-- 内容点 1 -->
-    <circle cx="90" cy="245" r="8" fill="#2563eb" />
-    <text x="120" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="20" fill="#1f2937">
-        <tspan x="120" dy="0" font-weight="600">40 位十六进制字符串</tspan>
-        <tspan x="120" dy="28">每个 Git 对象的唯一标识符</tspan>
+    <rect x="80" y="205" width="8" height="8" rx="4" fill="#3b82f6" />
+    <text x="105" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#e2e8f0">
+        40 位十六进制字符串
+    </text>
+    <text x="105" y="243" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#94a3b8">
+        每个 Git 对象的唯一标识符
     </text>
 
     <!-- 内容点 2 -->
-    <circle cx="90" cy="325" r="8" fill="#10b981" />
-    <text x="120" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="20" fill="#1f2937">
-        <tspan x="120" dy="0" font-weight="600">内容相同，哈希必同</tspan>
-        <tspan x="120" dy="28">通过对内容进行哈希计算生成</tspan>
-        <tspan x="120" dy="28">确保数据完整性</tspan>
+    <rect x="80" y="290" width="8" height="8" rx="4" fill="#10b981" />
+    <text x="105" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#e2e8f0">
+        内容相同，哈希必同
+    </text>
+    <text x="105" y="328" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#94a3b8">
+        <tspan x="105" dy="0">通过对内容进行哈希计算生成</tspan>
+        <tspan x="105" dy="26">确保数据完整性</tspan>
     </text>
 
     <!-- 内容点 3 -->
-    <circle cx="90" cy="425" r="8" fill="#f59e0b" />
-    <text x="120" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="20" fill="#1f2937">
-        <tspan x="120" dy="0" font-weight="600">作为对象的"键"</tspan>
-        <tspan x="120" dy="28">在 .git/objects/ 中索引对象</tspan>
-        <tspan x="120" dy="28">前 2 位为目录名，后 38 位为文件名</tspan>
+    <rect x="80" y="400" width="8" height="8" rx="4" fill="#f59e0b" />
+    <text x="105" y="408" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#e2e8f0">
+        作为对象的"键"
+    </text>
+    <text x="105" y="438" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#94a3b8">
+        <tspan x="105" dy="0">在 .git/objects/ 中索引对象</tspan>
+        <tspan x="105" dy="26">前 2 位为目录名，后 38 位为文件名</tspan>
     </text>
 
     <!-- 内容点 4 -->
-    <circle cx="90" cy="545" r="8" fill="#8b5cf6" />
-    <text x="120" y="552" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="20" fill="#1f2937">
-        <tspan x="120" dy="0" font-weight="600">内容寻址系统</tspan>
-        <tspan x="120" dy="28">基于内容而非位置来存储和检索</tspan>
-        <tspan x="120" dy="28">自动去重相同内容</tspan>
+    <rect x="80" y="510" width="8" height="8" rx="4" fill="#8b5cf6" />
+    <text x="105" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#e2e8f0">
+        内容寻址系统
+    </text>
+    <text x="105" y="548" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#94a3b8">
+        <tspan x="105" dy="0">基于内容而非位置来存储和检索</tspan>
+        <tspan x="105" dy="26">自动去重相同内容</tspan>
     </text>
 
-    <!-- 右侧哈希示例 -->
-    <rect x="660" y="140" width="560" height="520" rx="12" fill="#1f2937" />
+    <!-- 右侧哈希示例面板 -->
+    <rect x="670" y="110" width="560" height="550" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1" />
 
-    <text x="940" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="24" font-weight="600" fill="#e5e7eb" text-anchor="middle">
+    <text x="950" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#e2e8f0" text-anchor="middle">
         哈希值示例
     </text>
+    <rect x="800" y="175" width="300" height="2" rx="1" fill="#334155" />
 
     <!-- Commit 哈希 -->
-    <rect x="690" y="220" width="500" height="120" rx="8" fill="#2563eb" opacity="0.1" />
-    <text x="940" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="18" fill="#f59e0b" text-anchor="middle">
+    <rect x="700" y="200" width="500" height="130" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+    <circle cx="730" cy="230" r="12" fill="#f59e0b" opacity="0.3" />
+    <text x="730" y="235" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="14" fill="#f59e0b"
+        text-anchor="middle" font-weight="bold">C</text>
+    <text x="760" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="600" fill="#fcd34d">
         Commit 对象
     </text>
-    <text x="940" y="280" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#22c55e" text-anchor="middle">
-        a3f8d91c2e547b8a
+    <text x="950" y="275" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="15"
+        fill="#22c55e" text-anchor="middle" filter="url(#glow)">
+        a3f8d91c2e547b8a9012d4e7890f12b3
     </text>
-    <text x="940" y="305" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#22c55e" text-anchor="middle">
-        9012d4e7890f12b3
-    </text>
-    <text x="940" y="330" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#22c55e" text-anchor="middle">
+    <text x="950" y="305" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="13"
+        fill="#64748b" text-anchor="middle">
         4567c8a9b0123def
     </text>
 
     <!-- Tree 哈希 -->
-    <rect x="690" y="360" width="500" height="120" rx="8" fill="#2563eb" opacity="0.1" />
-    <text x="940" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="18" fill="#10b981" text-anchor="middle">
+    <rect x="700" y="350" width="500" height="130" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+    <circle cx="730" cy="380" r="12" fill="#10b981" opacity="0.3" />
+    <text x="730" y="385" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="14" fill="#10b981"
+        text-anchor="middle" font-weight="bold">T</text>
+    <text x="760" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="600" fill="#6ee7b7">
         Tree 对象
     </text>
-    <text x="940" y="420" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#3b82f6" text-anchor="middle">
-        e5c7d4f1a28b3906
+    <text x="950" y="425" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="15"
+        fill="#3b82f6" text-anchor="middle" filter="url(#glow)">
+        e5c7d4f1a28b39065432178f9a0bcd1e
     </text>
-    <text x="940" y="445" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#3b82f6" text-anchor="middle">
-        5432178f9a0bcd1e
-    </text>
-    <text x="940" y="470" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#3b82f6" text-anchor="middle">
+    <text x="950" y="455" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="13"
+        fill="#64748b" text-anchor="middle">
         234567890abcdef1
     </text>
 
     <!-- Blob 哈希 -->
-    <rect x="690" y="500" width="500" height="120" rx="8" fill="#2563eb" opacity="0.1" />
-    <text x="940" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="18" fill="#8b5cf6" text-anchor="middle">
+    <rect x="700" y="500" width="500" height="130" rx="12" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" />
+    <circle cx="730" cy="530" r="12" fill="#8b5cf6" opacity="0.3" />
+    <text x="730" y="535" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="14" fill="#8b5cf6"
+        text-anchor="middle" font-weight="bold">B</text>
+    <text x="760" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" font-weight="600" fill="#c4b5fd">
         Blob 对象
     </text>
-    <text x="940" y="560" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#fb923c" text-anchor="middle">
-        b2d8f6e3c1a79045
+    <text x="950" y="575" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="15"
+        fill="#fb923c" text-anchor="middle" filter="url(#glow)">
+        b2d8f6e3c1a790456789012345abcdef
     </text>
-    <text x="940" y="585" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#fb923c" text-anchor="middle">
-        6789012345abcdef
-    </text>
-    <text x="940" y="610" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="16"
-        fill="#fb923c" text-anchor="middle">
+    <text x="950" y="605" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="13"
+        fill="#64748b" text-anchor="middle">
         0123456789fedcba
     </text>
 </svg>

@@ -1,116 +1,143 @@
 <svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
-    <!-- 背景 -->
-    <rect width="1280" height="720" fill="#ffffff" />
+    <!-- 渐变背景 -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
 
     <!-- 标题区 -->
-    <rect x="0" y="0" width="1280" height="100" fill="#f3f4f6" />
-    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="32" font-weight="600" fill="#1e40af" text-anchor="middle">
+    <rect x="0" y="0" width="1280" height="90" fill="#0f172a" opacity="0.8" />
+    <text x="640" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="34" font-weight="600" fill="#e2e8f0" text-anchor="middle">
         为什么要了解 Git 底层？
     </text>
+    <rect x="540" y="75" width="200" height="3" rx="1.5" fill="#3b82f6" />
 
     <!-- 左列：应用场景 -->
-    <g transform="translate(60, 130)">
+    <g transform="translate(50, 115)">
         <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="26" font-weight="600" fill="#2563eb">
+            font-size="22" font-weight="600" fill="#3b82f6">
             🎯 实践应用场景
         </text>
 
         <!-- 场景1 -->
-        <rect x="0" y="30" width="560" height="130" rx="12" fill="#dbeafe" />
-        <circle cx="30" cy="65" r="10" fill="#2563eb" />
-        <text x="55" y="73" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#1e40af">
+        <rect x="0" y="25" width="570" height="120" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+        <rect x="0" y="25" width="570" height="40" rx="12" fill="#3b82f6" opacity="0.1" />
+        <circle cx="30" cy="50" r="8" fill="#3b82f6" />
+        <text x="50" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#e2e8f0">
             深度故障排查
         </text>
-        <text x="30" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#1f2937">
+        <text x="30" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">在遇到仓库损坏等复杂问题时</tspan>
-            <tspan x="30" dy="26">理解对象模型有助于诊断和修复</tspan>
+            <tspan x="30" dy="24">理解对象模型有助于诊断和修复</tspan>
         </text>
 
         <!-- 场景2 -->
-        <rect x="0" y="175" width="560" height="130" rx="12" fill="#d1fae5" />
-        <circle cx="30" cy="210" r="10" fill="#10b981" />
-        <text x="55" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#065f46">
+        <rect x="0" y="160" width="570" height="120" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+        <rect x="0" y="160" width="570" height="40" rx="12" fill="#10b981" opacity="0.1" />
+        <circle cx="30" cy="185" r="8" fill="#10b981" />
+        <text x="50" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#e2e8f0">
             数据恢复与审计
         </text>
-        <text x="30" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#1f2937">
+        <text x="30" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">精确审查任何历史提交的内部状态</tspan>
-            <tspan x="30" dy="26">用于安全审计或理解代码演变过程</tspan>
+            <tspan x="30" dy="24">用于安全审计或理解代码演变过程</tspan>
         </text>
 
         <!-- 场景3 -->
-        <rect x="0" y="320" width="560" height="130" rx="12" fill="#fef3c7" />
-        <circle cx="30" cy="355" r="10" fill="#f59e0b" />
-        <text x="55" y="363" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#92400e">
+        <rect x="0" y="295" width="570" height="120" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+        <rect x="0" y="295" width="570" height="40" rx="12" fill="#f59e0b" opacity="0.1" />
+        <circle cx="30" cy="320" r="8" fill="#f59e0b" />
+        <text x="50" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#e2e8f0">
             构建 Git 工具
         </text>
-        <text x="30" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#1f2937">
+        <text x="30" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">在底层与 Git 交互</tspan>
-            <tspan x="30" dy="26">编写自定义脚本或客户端</tspan>
+            <tspan x="30" dy="24">编写自定义脚本或客户端</tspan>
         </text>
     </g>
 
     <!-- 右列：最佳实践 -->
-    <g transform="translate(660, 130)">
+    <g transform="translate(660, 115)">
         <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="26" font-weight="600" fill="#22c55e">
+            font-size="22" font-weight="600" fill="#22c55e">
             ✅ 最佳实践
         </text>
 
         <!-- 实践1 -->
-        <rect x="0" y="30" width="560" height="130" rx="12" fill="#f3f4f6" stroke="#22c55e" stroke-width="3" />
-        <text x="30" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#1f2937">
+        <rect x="0" y="25" width="570" height="120" rx="12" fill="url(#cardGradient)" stroke="#22c55e"
+            stroke-width="2" />
+        <text x="30" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#e2e8f0">
             重在理解概念
         </text>
-        <text x="30" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#6b7280">
+        <text x="30" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">无需记住所有管道命令</tspan>
-            <tspan x="30" dy="26">关键是建立心智模型：Git 是基于</tspan>
-            <tspan x="30" dy="26">内容寻址的文件系统</tspan>
+            <tspan x="30" dy="24">关键是建立心智模型：Git 是基于</tspan>
+            <tspan x="30" dy="24">内容寻址的文件系统</tspan>
         </text>
 
         <!-- 实践2 -->
-        <rect x="0" y="175" width="560" height="130" rx="12" fill="#f3f4f6" stroke="#3b82f6" stroke-width="3" />
-        <text x="30" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#1f2937">
+        <rect x="0" y="160" width="570" height="120" rx="12" fill="url(#cardGradient)" stroke="#3b82f6"
+            stroke-width="2" />
+        <text x="30" y="195" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#e2e8f0">
             从根本理解高层命令
         </text>
-        <text x="30" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#6b7280">
+        <text x="30" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">理解对象模型能帮助你明白</tspan>
-            <tspan x="30" dy="26">commit、branch、merge 等</tspan>
-            <tspan x="30" dy="26">日常命令的工作原理</tspan>
+            <tspan x="30" dy="24">commit、branch、merge 等日常命令</tspan>
+            <tspan x="30" dy="24">的工作原理</tspan>
         </text>
 
         <!-- 实践3 -->
-        <rect x="0" y="320" width="560" height="130" rx="12" fill="#fee2e2" stroke="#ef4444" stroke-width="3" />
-        <text x="30" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="22" font-weight="600" fill="#dc2626">
+        <rect x="0" y="295" width="570" height="120" rx="12" fill="url(#cardGradient)" stroke="#ef4444"
+            stroke-width="2" />
+        <text x="30" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="600" fill="#fca5a5">
             ⚠️ 不要手动修改 .git 目录
         </text>
-        <text x="30" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="17" fill="#6b7280">
+        <text x="30" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="15" fill="#94a3b8">
             <tspan x="30" dy="0">可以查看学习，但绝不要手动编辑</tspan>
-            <tspan x="30" dy="26">或删除其中的文件（除非你是专家）</tspan>
+            <tspan x="30" dy="24">或删除其中的文件（除非你是专家）</tspan>
         </text>
     </g>
 
     <!-- 底部提示 -->
-    <rect x="60" y="600" width="1160" height="100" rx="12" fill="#ede9fe" />
-    <text x="640" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="24" font-weight="600" fill="#7c3aed" text-anchor="middle">
+    <rect x="50" y="550" width="1180" height="115" rx="16" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" />
+    <text x="640" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="600" fill="#c4b5fd" text-anchor="middle" filter="url(#glow)">
         💡 记住
     </text>
-    <text x="640" y="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="20" fill="#1f2937" text-anchor="middle">
-        <tspan x="640" dy="0">这些知识是"锦上添花"，初学者应该先掌握日常高频命令</tspan>
-        <tspan x="640" dy="30">(add、commit、push、pull、branch、merge 等)再深入理解底层原理，才能事半功倍</tspan>
+    <text x="640" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="17" fill="#e2e8f0" text-anchor="middle">
+        这些知识是"锦上添花"，初学者应该先掌握日常高频命令
+    </text>
+    <text x="640" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#94a3b8" text-anchor="middle">
+        (add、commit、push、pull、branch、merge 等) 再深入理解底层原理，才能事半功倍
     </text>
 </svg>

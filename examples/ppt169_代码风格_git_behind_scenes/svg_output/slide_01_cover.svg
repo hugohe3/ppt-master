@@ -1,68 +1,126 @@
 <svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
-    <!-- 背景 -->
-    <rect width="1280" height="720" fill="#ffffff" />
-
-    <!-- 装饰性背景图案 -->
+    <!-- 渐变背景 -->
     <defs>
         <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#2563eb;stop-opacity:0.05" />
-            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.05" />
+            <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#1e293b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
         </linearGradient>
+        <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.4" />
+            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.4" />
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
     </defs>
     <rect width="1280" height="720" fill="url(#bgGradient)" />
 
-    <!-- 装饰圆点网络 -->
-    <circle cx="200" cy="150" r="8" fill="#2563eb" opacity="0.2" />
-    <circle cx="350" cy="200" r="6" fill="#10b981" opacity="0.2" />
-    <circle cx="500" cy="180" r="10" fill="#f59e0b" opacity="0.2" />
-    <circle cx="650" cy="220" r="7" fill="#8b5cf6" opacity="0.2" />
-    <circle cx="800" cy="160" r="9" fill="#2563eb" opacity="0.2" />
-    <circle cx="950" cy="190" r="6" fill="#10b981" opacity="0.2" />
-    <circle cx="1080" cy="170" r="8" fill="#f59e0b" opacity="0.2" />
+    <!-- 网格背景 -->
+    <g opacity="0.05">
+        <line x1="0" y1="120" x2="1280" y2="120" stroke="#fff" stroke-width="1" />
+        <line x1="0" y1="240" x2="1280" y2="240" stroke="#fff" stroke-width="1" />
+        <line x1="0" y1="360" x2="1280" y2="360" stroke="#fff" stroke-width="1" />
+        <line x1="0" y1="480" x2="1280" y2="480" stroke="#fff" stroke-width="1" />
+        <line x1="0" y1="600" x2="1280" y2="600" stroke="#fff" stroke-width="1" />
+        <line x1="160" y1="0" x2="160" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="320" y1="0" x2="320" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="480" y1="0" x2="480" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="640" y1="0" x2="640" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="800" y1="0" x2="800" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="960" y1="0" x2="960" y2="720" stroke="#fff" stroke-width="1" />
+        <line x1="1120" y1="0" x2="1120" y2="720" stroke="#fff" stroke-width="1" />
+    </g>
 
-    <!-- 连接线 -->
-    <line x1="200" y1="150" x2="350" y2="200" stroke="#2563eb" stroke-width="2" opacity="0.15" />
-    <line x1="350" y1="200" x2="500" y2="180" stroke="#10b981" stroke-width="2" opacity="0.15" />
-    <line x1="500" y1="180" x2="650" y2="220" stroke="#f59e0b" stroke-width="2" opacity="0.15" />
-    <line x1="650" y1="220" x2="800" y2="160" stroke="#8b5cf6" stroke-width="2" opacity="0.15" />
-    <line x1="800" y1="160" x2="950" y2="190" stroke="#2563eb" stroke-width="2" opacity="0.15" />
-    <line x1="950" y1="190" x2="1080" y2="170" stroke="#10b981" stroke-width="2" opacity="0.15" />
+    <!-- 装饰性连接网络 -->
+    <g filter="url(#softGlow)">
+        <!-- 节点 -->
+        <circle cx="180" cy="130" r="6" fill="#f59e0b" opacity="0.9" />
+        <circle cx="340" cy="180" r="5" fill="#10b981" opacity="0.9" />
+        <circle cx="520" cy="150" r="8" fill="#8b5cf6" opacity="0.9" />
+        <circle cx="760" cy="200" r="6" fill="#3b82f6" opacity="0.9" />
+        <circle cx="940" cy="140" r="5" fill="#f59e0b" opacity="0.9" />
+        <circle cx="1100" cy="180" r="7" fill="#10b981" opacity="0.9" />
 
-    <!-- Git 图标 -->
-    <g transform="translate(540, 280)">
-        <circle cx="100" cy="0" r="60" fill="#2563eb" opacity="0.1" />
-        <path d="M 70 -30 L 130 -30 L 130 30 L 70 30 Z" fill="none" stroke="#2563eb" stroke-width="4"
-            stroke-linejoin="round" />
-        <circle cx="85" cy="-15" r="8" fill="#2563eb" />
-        <circle cx="115" cy="-15" r="8" fill="#10b981" />
-        <circle cx="85" cy="15" r="8" fill="#f59e0b" />
-        <circle cx="115" cy="15" r="8" fill="#8b5cf6" />
-        <line x1="85" y1="-15" x2="115" y2="-15" stroke="#6b7280" stroke-width="2.5" />
-        <line x1="85" y1="-15" x2="85" y2="15" stroke="#6b7280" stroke-width="2.5" />
-        <line x1="115" y1="-15" x2="115" y2="15" stroke="#6b7280" stroke-width="2.5" />
-        <line x1="85" y1="15" x2="115" y2="15" stroke="#6b7280" stroke-width="2.5" />
+        <!-- 底部节点 -->
+        <circle cx="200" cy="580" r="5" fill="#8b5cf6" opacity="0.9" />
+        <circle cx="380" cy="620" r="6" fill="#3b82f6" opacity="0.9" />
+        <circle cx="900" cy="600" r="5" fill="#f59e0b" opacity="0.9" />
+        <circle cx="1080" cy="560" r="7" fill="#10b981" opacity="0.9" />
+
+        <!-- 连接线 -->
+        <line x1="180" y1="130" x2="340" y2="180" stroke="#3b82f6" stroke-width="1.5" opacity="0.3" />
+        <line x1="340" y1="180" x2="520" y2="150" stroke="#10b981" stroke-width="1.5" opacity="0.3" />
+        <line x1="520" y1="150" x2="760" y2="200" stroke="#8b5cf6" stroke-width="1.5" opacity="0.3" />
+        <line x1="760" y1="200" x2="940" y2="140" stroke="#3b82f6" stroke-width="1.5" opacity="0.3" />
+        <line x1="940" y1="140" x2="1100" y2="180" stroke="#f59e0b" stroke-width="1.5" opacity="0.3" />
+        <line x1="200" y1="580" x2="380" y2="620" stroke="#8b5cf6" stroke-width="1.5" opacity="0.3" />
+        <line x1="900" y1="600" x2="1080" y2="560" stroke="#10b981" stroke-width="1.5" opacity="0.3" />
+    </g>
+
+    <!-- 中心光晕 -->
+    <ellipse cx="640" cy="320" rx="300" ry="180" fill="url(#glowGradient)" opacity="0.15" />
+
+    <!-- Git 对象图示 -->
+    <g transform="translate(640, 260)" filter="url(#glow)">
+        <!-- 中心连接框 -->
+        <rect x="-80" y="-60" width="160" height="120" rx="16" fill="none" stroke="#3b82f6" stroke-width="3"
+            opacity="0.6" />
+
+        <!-- 四个对象节点 -->
+        <circle cx="-45" cy="-25" r="18" fill="#f59e0b" />
+        <circle cx="45" cy="-25" r="18" fill="#10b981" />
+        <circle cx="-45" cy="25" r="18" fill="#8b5cf6" />
+        <circle cx="45" cy="25" r="18" fill="#3b82f6" />
+
+        <!-- 对象标签 -->
+        <text x="-45" y="-20" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="11" fill="#0f172a"
+            text-anchor="middle" font-weight="bold">C</text>
+        <text x="45" y="-20" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="11" fill="#0f172a"
+            text-anchor="middle" font-weight="bold">T</text>
+        <text x="-45" y="30" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="11" fill="#0f172a"
+            text-anchor="middle" font-weight="bold">B</text>
+        <text x="45" y="30" font-family="'Cascadia Code', 'Fira Code', monospace" font-size="11" fill="#0f172a"
+            text-anchor="middle" font-weight="bold">#</text>
+
+        <!-- 连接线 -->
+        <line x1="-27" y1="-25" x2="27" y2="-25" stroke="#475569" stroke-width="2" />
+        <line x1="-45" y1="-7" x2="-45" y2="7" stroke="#475569" stroke-width="2" />
+        <line x1="45" y1="-7" x2="45" y2="7" stroke="#475569" stroke-width="2" />
+        <line x1="-27" y1="25" x2="27" y2="25" stroke="#475569" stroke-width="2" />
     </g>
 
     <!-- 主标题 -->
-    <text x="640" y="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="56" font-weight="bold" fill="#1e40af" text-anchor="middle">
+    <text x="640" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="64" font-weight="bold" fill="#ffffff" text-anchor="middle" filter="url(#softGlow)">
         Git 幕后探秘
     </text>
 
     <!-- 副标题 -->
-    <text x="640" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-        font-size="32" font-weight="600" fill="#2563eb" text-anchor="middle">
-        哈希与对象 (Hashing &amp; Objects)
+    <text x="640" y="480" font-family="'Cascadia Code', 'Fira Code', 'Consolas', monospace" font-size="28"
+        font-weight="500" fill="#94a3b8" text-anchor="middle">
+        Hashing &amp; Objects
     </text>
 
     <!-- 装饰线 -->
-    <line x1="440" y1="490" x2="840" y2="490" stroke="#2563eb" stroke-width="3" opacity="0.3" />
+    <rect x="440" y="510" width="400" height="4" rx="2" fill="url(#glowGradient)" opacity="0.6" />
 
     <!-- 底部标签 -->
-    <g transform="translate(640, 580)">
-        <rect x="-120" y="-25" width="240" height="50" rx="25" fill="#f3f4f6" />
-        <text x="0" y="8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
-            font-size="20" fill="#6b7280" text-anchor="middle">
+    <g transform="translate(640, 620)">
+        <rect x="-140" y="-22" width="280" height="44" rx="22" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+        <text x="0" y="6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#e2e8f0" text-anchor="middle">
             深入理解 Git 数据模型
         </text>
     </g>
