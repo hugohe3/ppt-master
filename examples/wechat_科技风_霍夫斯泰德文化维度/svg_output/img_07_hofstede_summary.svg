@@ -1,0 +1,300 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F1F5F9;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 标题 -->
+    <text x="540" y="70"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="44" font-weight="800" fill="#1E293B" text-anchor="middle">
+        📎 Hofstede 五维度速查表
+    </text>
+    <text x="540" y="110"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#64748B" text-anchor="middle">
+        当团队协作"不对劲"时，对照这张表找原因
+    </text>
+
+    <!-- 表头 -->
+    <rect x="80" y="140" width="920" height="60" fill="#1E3A8A" rx="12" />
+    <text x="200" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        维度参数
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        高分表现 ↑
+    </text>
+    <text x="840" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        低分表现 ↓
+    </text>
+
+    <!-- 行1：权力距离 -->
+    <rect x="80" y="210" width="920" height="130" fill="#FEE2E2" rx="10" filter="url(#shadow)" />
+    <rect x="80" y="210" width="180" height="130" fill="#DC2626" rx="10" />
+    <rect x="248" y="210" width="0" height="130" fill="#DC2626" />
+    <text x="170" y="265"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        权力距离
+    </text>
+    <text x="170" y="295"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="14" font-weight="500" fill="#FECACA" text-anchor="middle">
+        Power Distance
+    </text>
+
+    <text x="420" y="255"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#991B1B" text-anchor="middle">
+        等级森严
+    </text>
+    <text x="420" y="285"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        下级依赖上级指令
+    </text>
+    <text x="420" y="315"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：马来西亚
+    </text>
+
+    <text x="760" y="255"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#1E40AF" text-anchor="middle">
+        扁平化
+    </text>
+    <text x="760" y="285"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        强调机会平等/合作
+    </text>
+    <text x="760" y="315"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：奥地利
+    </text>
+
+    <!-- 行2：不确定性规避 -->
+    <rect x="80" y="350" width="920" height="130" fill="#FEF3C7" rx="10" filter="url(#shadow)" />
+    <rect x="80" y="350" width="180" height="130" fill="#D97706" rx="10" />
+    <rect x="248" y="350" width="0" height="130" fill="#D97706" />
+    <text x="170" y="400"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        不确定性规避
+    </text>
+    <text x="170" y="430"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="12" font-weight="500" fill="#FDE68A" text-anchor="middle">
+        Uncertainty Avoidance
+    </text>
+
+    <text x="420" y="395"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#92400E" text-anchor="middle">
+        厌恶风险
+    </text>
+    <text x="420" y="425"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        依赖法律、SOP、合同
+    </text>
+    <text x="420" y="455"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：希腊、日本
+    </text>
+
+    <text x="760" y="395"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#047857" text-anchor="middle">
+        拥抱变化
+    </text>
+    <text x="760" y="425"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        更能容忍混乱和创新
+    </text>
+    <text x="760" y="455"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：新加坡
+    </text>
+
+    <!-- 行3：个/集体主义 -->
+    <rect x="80" y="490" width="920" height="130" fill="#EDE9FE" rx="10" filter="url(#shadow)" />
+    <rect x="80" y="490" width="180" height="130" fill="#8B5CF6" rx="10" />
+    <rect x="248" y="490" width="0" height="130" fill="#8B5CF6" />
+    <text x="170" y="545"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        个/集体主义
+    </text>
+    <text x="170" y="575"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="12" font-weight="500" fill="#DDD6FE" text-anchor="middle">
+        Indiv vs Collectivism
+    </text>
+
+    <text x="420" y="535"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#6B21A8" text-anchor="middle">
+        个人主义
+    </text>
+    <text x="420" y="565"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        关注个人权利/成就
+    </text>
+    <text x="420" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：美国
+    </text>
+
+    <text x="760" y="535"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#1E40AF" text-anchor="middle">
+        集体主义
+    </text>
+    <text x="760" y="565"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        关注群体利益/忠诚
+    </text>
+    <text x="760" y="595"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：危地马拉
+    </text>
+
+    <!-- 行4：阳/阴柔气质 -->
+    <rect x="80" y="630" width="920" height="130" fill="#FCE7F3" rx="10" filter="url(#shadow)" />
+    <rect x="80" y="630" width="180" height="130" fill="#EC4899" rx="10" />
+    <rect x="248" y="630" width="0" height="130" fill="#EC4899" />
+    <text x="170" y="685"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        阳/阴柔气质
+    </text>
+    <text x="170" y="715"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="12" font-weight="500" fill="#FBCFE8" text-anchor="middle">
+        Masc vs Femininity
+    </text>
+
+    <text x="420" y="675"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#BE185D" text-anchor="middle">
+        竞争导向
+    </text>
+    <text x="420" y="705"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        追求成就、金钱、权力
+    </text>
+    <text x="420" y="735"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：日本
+    </text>
+
+    <text x="760" y="675"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#0E7490" text-anchor="middle">
+        生活导向
+    </text>
+    <text x="760" y="705"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        追求平等、生活质量
+    </text>
+    <text x="760" y="735"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：瑞典
+    </text>
+
+    <!-- 行5：长/短期导向 -->
+    <rect x="80" y="770" width="920" height="130" fill="#D1FAE5" rx="10" filter="url(#shadow)" />
+    <rect x="80" y="770" width="180" height="130" fill="#10B981" rx="10" />
+    <rect x="248" y="770" width="0" height="130" fill="#10B981" />
+    <text x="170" y="825"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        长/短期导向
+    </text>
+    <text x="170" y="855"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="12" font-weight="500" fill="#A7F3D0" text-anchor="middle">
+        Long vs Short-term
+    </text>
+
+    <text x="420" y="815"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#047857" text-anchor="middle">
+        长期主义
+    </text>
+    <text x="420" y="845"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        节俭、毅力、延迟满足
+    </text>
+    <text x="420" y="875"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：东亚国家
+    </text>
+
+    <text x="760" y="815"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#92400E" text-anchor="middle">
+        短期主义
+    </text>
+    <text x="760" y="845"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="15" font-weight="400" fill="#64748B" text-anchor="middle">
+        看重面子、当下业绩
+    </text>
+    <text x="760" y="875"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        例：巴基斯坦
+    </text>
+
+    <!-- 底部提示 -->
+    <rect x="180" y="930" width="720" height="100" fill="#1E293B" rx="16" />
+    <text x="540" y="975"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        💾 保存这张图，项目卡壳时对照检查
+    </text>
+    <text x="540" y="1010"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        也许导致死机的 Bug，就藏在这些隐形参数里
+    </text>
+</svg>

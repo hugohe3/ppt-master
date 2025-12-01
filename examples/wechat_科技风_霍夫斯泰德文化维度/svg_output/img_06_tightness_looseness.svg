@@ -1,0 +1,207 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1E293B;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="tightCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#6D28D9;stop-opacity:0.2" />
+        </linearGradient>
+        <linearGradient id="looseCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#059669;stop-opacity:0.2" />
+        </linearGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+            <feOffset dx="0" dy="6" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 背景网格（代码感） -->
+    <g opacity="0.05" stroke="#60A5FA" stroke-width="1">
+        <line x1="0" y1="150" x2="1080" y2="150" />
+        <line x1="0" y1="300" x2="1080" y2="300" />
+        <line x1="0" y1="540" x2="1080" y2="540" />
+        <line x1="0" y1="780" x2="1080" y2="780" />
+        <line x1="0" y1="930" x2="1080" y2="930" />
+    </g>
+
+    <!-- 标题 -->
+    <text x="540" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#EC4899" text-anchor="middle">
+        文化松紧度
+    </text>
+    <text x="540" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="48" font-weight="800" fill="#FFFFFF" text-anchor="middle">
+        给组织代码做一次 Debug
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="500" fill="#94A3B8" text-anchor="middle">
+        Cultural Tightness vs Looseness
+    </text>
+
+    <!-- 左侧：紧文化 = C++ -->
+    <g filter="url(#shadow)">
+        <rect x="80" y="240" width="420" height="420" fill="url(#tightCard)" stroke="#8B5CF6" stroke-width="3"
+            rx="20" />
+
+        <text x="290" y="300"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#C4B5FD" text-anchor="middle">
+            🔒 紧文化
+        </text>
+
+        <!-- C++ 代码示例 -->
+        <g transform="translate(290, 420)" font-family="Monaco, Consolas, 'Courier New', monospace">
+            <rect x="-150" y="-80" width="300" height="160" fill="#1E1E1E" rx="10" stroke="#8B5CF6" stroke-width="2" />
+
+            <text x="-130" y="-50" font-size="18" fill="#569CD6">int</text>
+            <text x="-90" y="-50" font-size="18" fill="#DCDCAA">main</text>
+            <text x="-40" y="-50" font-size="18" fill="#D4D4D4">() {</text>
+
+            <text x="-110" y="-20" font-size="18" fill="#569CD6">int</text>
+            <text x="-70" y="-20" font-size="18" fill="#9CDCFE">x</text>
+            <text x="-55" y="-20" font-size="18" fill="#D4D4D4">=</text>
+            <text x="-40" y="-20" font-size="18" fill="#B5CEA8">10</text>
+            <text x="-15" y="-20" font-size="18" fill="#F44747" font-weight="700">;</text>
+            <text x="5" y="-20" font-size="14" fill="#6A9955">// 必须有分号</text>
+
+            <text x="-110" y="10" font-size="18" fill="#C586C0">return</text>
+            <text x="-50" y="10" font-size="18" fill="#B5CEA8">0</text>
+            <text x="-35" y="10" font-size="18" fill="#F44747" font-weight="700">;</text>
+
+            <text x="-130" y="40" font-size="18" fill="#D4D4D4">}</text>
+
+            <text x="0" y="65" font-size="14" fill="#F44747" text-anchor="middle">error: expected ';'</text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="290" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#E2E8F0" text-anchor="middle">
+            语法严格，错一个分号就编译失败
+        </text>
+        <text x="290" y="610"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#94A3B8" text-anchor="middle">
+            规范清晰 · 零容忍 · 明确制裁
+        </text>
+        <text x="290" y="640"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="500" fill="#C4B5FD" text-anchor="middle">
+            适用：财务、法务、安监、核电
+        </text>
+    </g>
+
+    <!-- 中间 VS -->
+    <text x="540" y="460"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="800" fill="#475569" text-anchor="middle">
+        VS
+    </text>
+
+    <!-- 右侧：松文化 = Python -->
+    <g filter="url(#shadow)">
+        <rect x="580" y="240" width="420" height="420" fill="url(#looseCard)" stroke="#10B981" stroke-width="3"
+            rx="20" />
+
+        <text x="790" y="300"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#86EFAC" text-anchor="middle">
+            🔓 松文化
+        </text>
+
+        <!-- Python 代码示例 -->
+        <g transform="translate(790, 420)" font-family="Monaco, Consolas, 'Courier New', monospace">
+            <rect x="-150" y="-80" width="300" height="160" fill="#1E1E1E" rx="10" stroke="#10B981" stroke-width="2" />
+
+            <text x="-130" y="-50" font-size="18" fill="#C586C0">def</text>
+            <text x="-95" y="-50" font-size="18" fill="#DCDCAA">main</text>
+            <text x="-50" y="-50" font-size="18" fill="#D4D4D4">():</text>
+
+            <text x="-110" y="-20" font-size="18" fill="#9CDCFE">x</text>
+            <text x="-95" y="-20" font-size="18" fill="#D4D4D4">=</text>
+            <text x="-80" y="-20" font-size="18" fill="#B5CEA8">10</text>
+            <text x="-45" y="-20" font-size="14" fill="#6A9955"># 不需要分号</text>
+
+            <text x="-110" y="10" font-size="18" fill="#9CDCFE">y</text>
+            <text x="-95" y="10" font-size="18" fill="#D4D4D4">=</text>
+            <text x="-80" y="10" font-size="18" fill="#CE9178">"动态类型"</text>
+
+            <text x="-110" y="40" font-size="18" fill="#C586C0">return</text>
+            <text x="-55" y="40" font-size="18" fill="#9CDCFE">x</text>
+
+            <text x="0" y="65" font-size="14" fill="#10B981" text-anchor="middle">✓ 运行成功</text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="790" y="570"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#E2E8F0" text-anchor="middle">
+            灵活包容，允许动态类型
+        </text>
+        <text x="790" y="610"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#94A3B8" text-anchor="middle">
+            规范模糊 · 容忍度高 · 允许偏差
+        </text>
+        <text x="790" y="640"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="16" font-weight="500" fill="#86EFAC" text-anchor="middle">
+            适用：研发、设计、市场、战略
+        </text>
+    </g>
+
+    <!-- 底部管理艺术 -->
+    <rect x="120" y="700" width="840" height="120" fill="#1E3A8A" rx="20" opacity="0.4" stroke="#60A5FA"
+        stroke-width="2" />
+    <text x="540" y="755"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+        🎯 所谓"管理艺术"
+    </text>
+    <text x="540" y="795"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="500" fill="#E0E7FF" text-anchor="middle">
+        不是把所有人变成一种人，而是识别不同模块所需的"松紧度"
+    </text>
+
+    <!-- 底部结语 -->
+    <rect x="120" y="860" width="840" height="160" fill="#1E293B" rx="20" filter="url(#shadow)" />
+    <text x="540" y="915"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#F59E0B" text-anchor="middle">
+        💡 写在最后
+    </text>
+    <text x="540" y="960"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        下次当项目推进不动时，试着用这几个维度
+    </text>
+    <text x="540" y="995"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        给团队或合作方做一次"系统诊断" 🔧
+    </text>
+</svg>

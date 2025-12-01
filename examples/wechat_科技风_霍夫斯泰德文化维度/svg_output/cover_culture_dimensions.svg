@@ -1,0 +1,107 @@
+<svg viewBox="0 0 900 383" width="900" height="383" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0A0E27;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#1E3A8A;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#312E81;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#EF4444;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+        </linearGradient>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="softGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="900" height="383" fill="url(#bgGradient)" />
+
+    <!-- 网格装饰（代码感） -->
+    <g opacity="0.08" stroke="#60A5FA" stroke-width="1">
+        <line x1="0" y1="80" x2="900" y2="80" />
+        <line x1="0" y1="160" x2="900" y2="160" />
+        <line x1="0" y1="240" x2="900" y2="240" />
+        <line x1="0" y1="320" x2="900" y2="320" />
+        <line x1="150" y1="0" x2="150" y2="383" />
+        <line x1="300" y1="0" x2="300" y2="383" />
+        <line x1="600" y1="0" x2="600" y2="383" />
+        <line x1="750" y1="0" x2="750" y2="383" />
+    </g>
+
+    <!-- 左侧代码装饰 -->
+    <g opacity="0.4" font-family="Monaco, Consolas, monospace" font-size="12" fill="#60A5FA">
+        <text x="30" y="60">// culture_kernel.config</text>
+        <text x="30" y="80">power_distance: <tspan fill="#F59E0B">HIGH</tspan></text>
+        <text x="30" y="100">uncertainty: <tspan fill="#10B981">LOW</tspan></text>
+        <text x="30" y="120">time_orient: <tspan fill="#8B5CF6">LONG</tspan></text>
+        <text x="30" y="280">// financial_ui.display</text>
+        <text x="30" y="300">IRR: <tspan fill="#10B981">18.5%</tspan></text>
+        <text x="30" y="320">NPV: <tspan fill="#10B981">¥2.3M</tspan></text>
+    </g>
+
+    <!-- 右侧图形装饰 -->
+    <g opacity="0.3">
+        <!-- 金字塔（权力距离） -->
+        <polygon points="800,90 830,140 770,140" fill="none" stroke="#DC2626" stroke-width="2" />
+        <line x1="780" y1="115" x2="820" y2="115" stroke="#DC2626" stroke-width="1.5" />
+
+        <!-- 循环箭头（时间导向） -->
+        <circle cx="820" cy="220" r="25" fill="none" stroke="#10B981" stroke-width="2" />
+        <polygon points="845,220 838,212 838,228" fill="#10B981" />
+
+        <!-- 网状连接（集体主义） -->
+        <circle cx="780" cy="300" r="6" fill="#8B5CF6" />
+        <circle cx="810" cy="280" r="6" fill="#8B5CF6" />
+        <circle cx="840" cy="300" r="6" fill="#8B5CF6" />
+        <circle cx="810" cy="320" r="6" fill="#8B5CF6" />
+        <line x1="780" y1="300" x2="810" y2="280" stroke="#8B5CF6" stroke-width="1.5" />
+        <line x1="810" y1="280" x2="840" y2="300" stroke="#8B5CF6" stroke-width="1.5" />
+        <line x1="840" y1="300" x2="810" y2="320" stroke="#8B5CF6" stroke-width="1.5" />
+        <line x1="810" y1="320" x2="780" y2="300" stroke="#8B5CF6" stroke-width="1.5" />
+    </g>
+
+    <!-- 主标题区域 -->
+    <text x="450" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="54" font-weight="800" fill="#FFFFFF" text-anchor="middle" filter="url(#softGlow)">
+        文化维度
+    </text>
+
+    <text x="450" y="175"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="500" fill="url(#accentGlow)" text-anchor="middle">
+        HOFSTEDE CULTURAL DIMENSIONS
+    </text>
+
+    <!-- 副标题 -->
+    <text x="450" y="230"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="26" font-weight="500" fill="#E0E7FF" text-anchor="middle" opacity="0.95">
+        决定项目生死的 5 个非财务指标
+    </text>
+
+    <!-- 底部标签 -->
+    <rect x="290" y="280" width="320" height="50" fill="#1E3A8A" rx="25" opacity="0.5" stroke="#60A5FA"
+        stroke-width="1.5" />
+    <text x="450" y="313"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+        💻 财务是 UI，文化是 Kernel
+    </text>
+
+    <!-- 底部装饰线 -->
+    <rect x="350" y="350" width="200" height="3" fill="url(#accentGlow)" rx="1.5" opacity="0.6" />
+</svg>

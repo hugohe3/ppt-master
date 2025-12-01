@@ -1,0 +1,210 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ECFDF5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#D1FAE5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="timelineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#10B981;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="shortCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FDE68A;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="longCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#EDE9FE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#DDD6FE;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+            <feOffset dx="0" dy="8" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="540" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#10B981" text-anchor="middle">
+        03
+    </text>
+    <text x="540" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="800" fill="#1E293B" text-anchor="middle">
+        长期 vs 短期导向
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="500" fill="#64748B" text-anchor="middle">
+        Long-term vs Short-term Orientation
+    </text>
+
+    <!-- 核心问题 -->
+    <rect x="120" y="210" width="840" height="60" fill="#10B981" rx="30" opacity="0.15" />
+    <text x="540" y="250"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#047857" text-anchor="middle">
+        当我们谈论 ROI 时，时间颗粒度是多少？
+    </text>
+
+    <!-- 时间轴 -->
+    <g transform="translate(0, 340)">
+        <rect x="100" y="0" width="880" height="10" fill="url(#timelineGradient)" rx="5" />
+
+        <!-- 时间刻度 -->
+        <text x="100" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#D97706" text-anchor="start">
+            📅 当下
+        </text>
+        <text x="540" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#10B981" text-anchor="middle">
+            ⏳ 3-5年
+        </text>
+        <text x="980" y="50"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="22" font-weight="600" fill="#8B5CF6" text-anchor="end">
+            🔭 10年+
+        </text>
+    </g>
+
+    <!-- 左侧：短期导向 -->
+    <g filter="url(#shadow)">
+        <rect x="80" y="420" width="420" height="380" fill="url(#shortCard)" stroke="#D97706" stroke-width="3"
+            rx="24" />
+
+        <text x="290" y="480"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#92400E" text-anchor="middle">
+            ⚡ 短期导向
+        </text>
+
+        <!-- 短期图形 - 当季财报 -->
+        <g transform="translate(290, 580)">
+            <!-- 日历/报表图标 -->
+            <rect x="-50" y="-50" width="100" height="80" fill="#FFFFFF" stroke="#D97706" stroke-width="3" rx="8" />
+            <rect x="-50" y="-50" width="100" height="25" fill="#D97706" rx="8" />
+            <rect x="-50" y="-25" width="100" height="0" fill="#D97706" />
+            <text x="0" y="-32"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                Q4 财报
+            </text>
+            <text x="0" y="10"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="28" font-weight="700" fill="#D97706" text-anchor="middle">
+                $$$
+            </text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="290" y="700"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#1E293B" text-anchor="middle">
+            当下业绩 · 面子 · 即时回报
+        </text>
+        <text x="290" y="740"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            盯着下一季度的财报分红
+        </text>
+        <text x="290" y="775"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#92400E" text-anchor="middle">
+            例：部分西方企业
+        </text>
+    </g>
+
+    <!-- 中间箭头 -->
+    <g transform="translate(540, 610)">
+        <line x1="-20" y1="0" x2="20" y2="0" stroke="#64748B" stroke-width="3" />
+        <polygon points="25,0 15,-8 15,8" fill="#64748B" />
+        <polygon points="-25,0 -15,-8 -15,8" fill="#64748B" />
+    </g>
+
+    <!-- 右侧：长期导向 -->
+    <g filter="url(#shadow)">
+        <rect x="580" y="420" width="420" height="380" fill="url(#longCard)" stroke="#8B5CF6" stroke-width="3"
+            rx="24" />
+
+        <text x="790" y="480"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#6B21A8" text-anchor="middle">
+            🔭 长期导向
+        </text>
+
+        <!-- 长期图形 - 望远镜/增长曲线 -->
+        <g transform="translate(790, 580)">
+            <!-- 增长曲线 -->
+            <path d="M -60,40 Q -20,30 0,0 T 60,-50" fill="none" stroke="#8B5CF6" stroke-width="4"
+                stroke-linecap="round" />
+
+            <!-- 星星目标 -->
+            <polygon points="60,-55 63,-45 73,-45 65,-38 68,-28 60,-35 52,-28 55,-38 47,-45 57,-45" fill="#8B5CF6" />
+
+            <!-- 时间标注 -->
+            <text x="-55" y="60"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="14" font-weight="500" fill="#64748B" text-anchor="start">
+                今天
+            </text>
+            <text x="55" y="-65"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="14" font-weight="500" fill="#6B21A8" text-anchor="end">
+                10年后
+            </text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="790" y="700"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="24" font-weight="600" fill="#1E293B" text-anchor="middle">
+            节俭 · 毅力 · 延迟满足
+        </text>
+        <text x="790" y="740"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            愿意为 10 年后忍受前 3 年亏损
+        </text>
+        <text x="790" y="775"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#6B21A8" text-anchor="middle">
+            例：东亚文化圈企业
+        </text>
+    </g>
+
+    <!-- 底部案例警示 -->
+    <rect x="120" y="840" width="840" height="170" fill="#1E293B" rx="20" filter="url(#shadow)" />
+    <text x="540" y="890"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#86EFAC" text-anchor="middle">
+        ⚠️ 实战复盘
+    </text>
+    <text x="540" y="940"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        一方在算 20 年全生命周期的 IRR
+    </text>
+    <text x="540" y="980"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        另一方却在盯着下一季度的财报分红
+    </text>
+    <text x="540" y="1005"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="600" fill="#F59E0B" text-anchor="middle">
+        没有对错，只有时间颗粒度的不同 ⏰
+    </text>
+</svg>

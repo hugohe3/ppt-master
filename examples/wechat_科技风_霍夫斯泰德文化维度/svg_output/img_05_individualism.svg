@@ -1,0 +1,209 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F5F3FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EDE9FE;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="indivCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FEE2E2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FECACA;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="collectCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#DBEAFE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BFDBFE;stop-opacity:1" />
+        </linearGradient>
+        <radialGradient id="spotlight" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#FBBF24;stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:0" />
+        </radialGradient>
+        <radialGradient id="groupGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.3" />
+            <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0" />
+        </radialGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+            <feOffset dx="0" dy="8" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="540" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#8B5CF6" text-anchor="middle">
+        04
+    </text>
+    <text x="540" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="800" fill="#1E293B" text-anchor="middle">
+        个人主义 vs 集体主义
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="500" fill="#64748B" text-anchor="middle">
+        Individualism vs Collectivism
+    </text>
+
+    <!-- 核心问题 -->
+    <rect x="120" y="210" width="840" height="60" fill="#8B5CF6" rx="30" opacity="0.15" />
+    <text x="540" y="250"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#6B21A8" text-anchor="middle">
+        你设计的股权激励方案，为什么没人买账？
+    </text>
+
+    <!-- 左侧：个人主义 -->
+    <g filter="url(#shadow)">
+        <rect x="80" y="310" width="420" height="480" fill="url(#indivCard)" stroke="#DC2626" stroke-width="3"
+            rx="24" />
+
+        <text x="290" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#991B1B" text-anchor="middle">
+            👤 个人主义
+        </text>
+
+        <!-- 聚光灯下的明星 -->
+        <g transform="translate(290, 520)">
+            <!-- 聚光灯效果 -->
+            <ellipse cx="0" cy="30" rx="80" ry="40" fill="url(#spotlight)" />
+
+            <!-- 明星人物 -->
+            <circle cx="0" cy="-20" r="35" fill="#DC2626" />
+            <circle cx="0" cy="-55" r="20" fill="#DC2626" />
+
+            <!-- 星星装饰 -->
+            <polygon points="-70,-40 -65,-30 -55,-30 -63,-22 -60,-12 -70,-18 -80,-12 -77,-22 -85,-30 -75,-30"
+                fill="#FBBF24" />
+            <polygon points="70,-30 75,-20 85,-20 77,-12 80,-2 70,-8 60,-2 63,-12 55,-20 65,-20" fill="#FBBF24" />
+
+            <!-- 奖杯 -->
+            <text x="0" y="80"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="40" text-anchor="middle">🏆</text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="290" y="660"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            强调"我"的成就
+        </text>
+        <text x="290" y="700"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            奖励超级明星
+        </text>
+        <text x="290" y="730"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            推崇个人英雄主义
+        </text>
+        <text x="290" y="765"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#991B1B" text-anchor="middle">
+            例：美国企业
+        </text>
+    </g>
+
+    <!-- 中间 VS -->
+    <text x="540" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="800" fill="#94A3B8" text-anchor="middle">
+        VS
+    </text>
+
+    <!-- 右侧：集体主义 -->
+    <g filter="url(#shadow)">
+        <rect x="580" y="310" width="420" height="480" fill="url(#collectCard)" stroke="#3B82F6" stroke-width="3"
+            rx="24" />
+
+        <text x="790" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#1E40AF" text-anchor="middle">
+            👥 集体主义
+        </text>
+
+        <!-- 团队群体 -->
+        <g transform="translate(790, 520)">
+            <!-- 群体光环 -->
+            <ellipse cx="0" cy="0" rx="90" ry="70" fill="url(#groupGlow)" />
+
+            <!-- 多个人物 -->
+            <circle cx="0" cy="-30" r="25" fill="#3B82F6" />
+            <circle cx="0" cy="-50" r="15" fill="#3B82F6" />
+
+            <circle cx="-55" cy="10" r="22" fill="#3B82F6" opacity="0.9" />
+            <circle cx="-55" cy="-8" r="13" fill="#3B82F6" opacity="0.9" />
+
+            <circle cx="55" cy="10" r="22" fill="#3B82F6" opacity="0.9" />
+            <circle cx="55" cy="-8" r="13" fill="#3B82F6" opacity="0.9" />
+
+            <circle cx="-30" cy="50" r="20" fill="#3B82F6" opacity="0.8" />
+            <circle cx="-30" cy="34" r="12" fill="#3B82F6" opacity="0.8" />
+
+            <circle cx="30" cy="50" r="20" fill="#3B82F6" opacity="0.8" />
+            <circle cx="30" cy="34" r="12" fill="#3B82F6" opacity="0.8" />
+
+            <!-- 连接线 -->
+            <line x1="0" y1="-15" x2="-40" y2="10" stroke="#3B82F6" stroke-width="2" opacity="0.5" />
+            <line x1="0" y1="-15" x2="40" y2="10" stroke="#3B82F6" stroke-width="2" opacity="0.5" />
+            <line x1="-40" y1="25" x2="-25" y2="40" stroke="#3B82F6" stroke-width="2" opacity="0.5" />
+            <line x1="40" y1="25" x2="25" y2="40" stroke="#3B82F6" stroke-width="2" opacity="0.5" />
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="790" y="660"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            强调"我们"的和谐
+        </text>
+        <text x="790" y="700"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            作为群体被照顾
+        </text>
+        <text x="790" y="730"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            关注群体利益与忠诚
+        </text>
+        <text x="790" y="765"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#1E40AF" text-anchor="middle">
+            例：东亚、拉美企业
+        </text>
+    </g>
+
+    <!-- 底部警示 -->
+    <rect x="120" y="830" width="840" height="180" fill="#1E293B" rx="20" filter="url(#shadow)" />
+    <text x="540" y="880"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#C4B5FD" text-anchor="middle">
+        ⚠️ 激励机制的陷阱
+    </text>
+    <text x="540" y="930"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        在集体主义环境里，只重奖个别销冠
+    </text>
+    <text x="540" y="970"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        而忽视后勤支持 →
+    </text>
+    <text x="540" y="1000"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#F59E0B" text-anchor="middle">
+        可能引发巨大的内部矛盾 💥
+    </text>
+</svg>

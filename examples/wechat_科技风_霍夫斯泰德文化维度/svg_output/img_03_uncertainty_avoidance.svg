@@ -1,0 +1,180 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFFBEB;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FEF3C7;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="highCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FEF3C7;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FDE68A;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="lowCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D1FAE5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#A7F3D0;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+            <feOffset dx="0" dy="8" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="540" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#D97706" text-anchor="middle">
+        02
+    </text>
+    <text x="540" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="800" fill="#1E293B" text-anchor="middle">
+        不确定性规避
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="500" fill="#64748B" text-anchor="middle">
+        Uncertainty Avoidance
+    </text>
+
+    <!-- 核心问题 -->
+    <rect x="140" y="210" width="800" height="60" fill="#D97706" rx="30" opacity="0.1" />
+    <text x="540" y="250"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#92400E" text-anchor="middle">
+        面对模糊情境时感到的威胁程度
+    </text>
+
+    <!-- 左侧：高规避 -->
+    <g filter="url(#shadow)">
+        <rect x="80" y="310" width="420" height="480" fill="url(#highCard)" stroke="#D97706" stroke-width="3" rx="24" />
+
+        <text x="290" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#92400E" text-anchor="middle">
+            📚 高规避型
+        </text>
+
+        <!-- 厚合同/书本图形 -->
+        <g transform="translate(290, 520)">
+            <!-- 堆叠的文件/合同 -->
+            <rect x="-60" y="-60" width="120" height="20" fill="#92400E" rx="3" opacity="0.6" />
+            <rect x="-60" y="-35" width="120" height="20" fill="#92400E" rx="3" opacity="0.7" />
+            <rect x="-60" y="-10" width="120" height="20" fill="#92400E" rx="3" opacity="0.8" />
+            <rect x="-60" y="15" width="120" height="20" fill="#92400E" rx="3" opacity="0.9" />
+            <rect x="-60" y="40" width="120" height="20" fill="#92400E" rx="3" />
+
+            <!-- 标签 -->
+            <text x="0" y="85"
+                font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+                font-size="16" font-weight="600" fill="#64748B" text-anchor="middle">
+                SOP × 50 页
+            </text>
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="290" y="650"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            落袋为安
+        </text>
+        <text x="290" y="690"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            "不确定 = 危险"
+        </text>
+        <text x="290" y="720"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            依赖法律、SOP、合规文件
+        </text>
+        <text x="290" y="760"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#92400E" text-anchor="middle">
+            例：日本、德国企业
+        </text>
+    </g>
+
+    <!-- 中间 VS -->
+    <text x="540" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="800" fill="#94A3B8" text-anchor="middle">
+        VS
+    </text>
+
+    <!-- 右侧：低规避 -->
+    <g filter="url(#shadow)">
+        <rect x="580" y="310" width="420" height="480" fill="url(#lowCard)" stroke="#10B981" stroke-width="3" rx="24" />
+
+        <text x="790" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#047857" text-anchor="middle">
+            🚀 低规避型
+        </text>
+
+        <!-- 火箭/创新图形 -->
+        <g transform="translate(790, 510)">
+            <!-- 向上的箭头/火箭 -->
+            <polygon points="0,-70 40,20 15,20 15,60 -15,60 -15,20 -40,20" fill="#10B981" opacity="0.9" />
+
+            <!-- 星星装饰 -->
+            <circle cx="-60" cy="-30" r="4" fill="#10B981" opacity="0.5" />
+            <circle cx="60" cy="-50" r="3" fill="#10B981" opacity="0.5" />
+            <circle cx="50" cy="10" r="5" fill="#10B981" opacity="0.4" />
+            <circle cx="-55" cy="30" r="3" fill="#10B981" opacity="0.4" />
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="790" y="650"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            拥抱变化
+        </text>
+        <text x="790" y="690"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            "混乱是上升的阶梯"
+        </text>
+        <text x="790" y="720"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            容忍模糊，先行先试
+        </text>
+        <text x="790" y="760"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#047857" text-anchor="middle">
+            例：新加坡、美国创新企业
+        </text>
+    </g>
+
+    <!-- 底部案例警示 -->
+    <rect x="120" y="830" width="840" height="180" fill="#1E293B" rx="20" filter="url(#shadow)" />
+    <text x="540" y="880"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#FCD34D" text-anchor="middle">
+        ⚠️ 实战复盘
+    </text>
+    <text x="540" y="930"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        拿着高风险、商业模式尚在探索的方案（低规避）
+    </text>
+    <text x="540" y="970"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        去寻求追求稳健现金流的机构融资（高规避）
+    </text>
+    <text x="540" y="1000"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#F59E0B" text-anchor="middle">
+        这不叫"挑战"，这叫"不懂用户画像" 🎯
+    </text>
+</svg>

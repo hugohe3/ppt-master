@@ -1,0 +1,191 @@
+<svg viewBox="0 0 1080 1080" width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FEF2F2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FEE2E2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="highCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FEE2E2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FECACA;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="lowCard" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#DBEAFE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BFDBFE;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+            <feOffset dx="0" dy="8" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1080" height="1080" fill="url(#bgGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="540" y="80"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#DC2626" text-anchor="middle">
+        01
+    </text>
+    <text x="540" y="130"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="52" font-weight="800" fill="#1E293B" text-anchor="middle">
+        权力距离
+    </text>
+    <text x="540" y="180"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="500" fill="#64748B" text-anchor="middle">
+        Power Distance
+    </text>
+
+    <!-- 核心问题 -->
+    <rect x="180" y="210" width="720" height="60" fill="#DC2626" rx="30" opacity="0.1" />
+    <text x="540" y="250"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="600" fill="#991B1B" text-anchor="middle">
+        对"权力分配不平等"的接受程度
+    </text>
+
+    <!-- 左侧：高权力距离 -->
+    <g filter="url(#shadow)">
+        <rect x="80" y="310" width="420" height="480" fill="url(#highCard)" stroke="#DC2626" stroke-width="3" rx="24" />
+
+        <text x="290" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#991B1B" text-anchor="middle">
+            🔺 高权力距离
+        </text>
+
+        <!-- 金字塔图形 -->
+        <g transform="translate(290, 520)">
+            <!-- 金字塔层级 -->
+            <polygon points="0,-100 80,60 -80,60" fill="#DC2626" opacity="0.8" />
+            <line x1="-50" y1="0" x2="50" y2="0" stroke="#FFFFFF" stroke-width="2" />
+            <line x1="-30" y1="-40" x2="30" y2="-40" stroke="#FFFFFF" stroke-width="2" />
+
+            <!-- 人物图标 -->
+            <circle cx="0" cy="-70" r="12" fill="#FFFFFF" />
+            <circle cx="-25" cy="-20" r="8" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="25" cy="-20" r="8" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="-40" cy="30" r="6" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="0" cy="30" r="6" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="40" cy="30" r="6" fill="#FFFFFF" opacity="0.6" />
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="290" y="650"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            等级森严
+        </text>
+        <text x="290" y="690"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            下级依赖上级指令
+        </text>
+        <text x="290" y="720"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            权威不容挑战
+        </text>
+        <text x="290" y="760"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#991B1B" text-anchor="middle">
+            例：传统实业集团
+        </text>
+    </g>
+
+    <!-- 中间 VS -->
+    <text x="540" y="560"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="36" font-weight="800" fill="#94A3B8" text-anchor="middle">
+        VS
+    </text>
+
+    <!-- 右侧：低权力距离 -->
+    <g filter="url(#shadow)">
+        <rect x="580" y="310" width="420" height="480" fill="url(#lowCard)" stroke="#3B82F6" stroke-width="3" rx="24" />
+
+        <text x="790" y="370"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="700" fill="#1E40AF" text-anchor="middle">
+            🔻 低权力距离
+        </text>
+
+        <!-- 扁平网络图形 -->
+        <g transform="translate(790, 500)">
+            <!-- 网状连接 -->
+            <circle cx="0" cy="0" r="18" fill="#3B82F6" opacity="0.9" />
+            <circle cx="-70" cy="-40" r="14" fill="#3B82F6" opacity="0.8" />
+            <circle cx="70" cy="-40" r="14" fill="#3B82F6" opacity="0.8" />
+            <circle cx="-70" cy="40" r="14" fill="#3B82F6" opacity="0.8" />
+            <circle cx="70" cy="40" r="14" fill="#3B82F6" opacity="0.8" />
+            <circle cx="0" cy="-70" r="12" fill="#3B82F6" opacity="0.7" />
+            <circle cx="0" cy="70" r="12" fill="#3B82F6" opacity="0.7" />
+
+            <!-- 连接线 -->
+            <line x1="0" y1="0" x2="-70" y2="-40" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="0" y1="0" x2="70" y2="-40" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="0" y1="0" x2="-70" y2="40" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="0" y1="0" x2="70" y2="40" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="0" y1="0" x2="0" y2="-70" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="0" y1="0" x2="0" y2="70" stroke="#3B82F6" stroke-width="2" opacity="0.6" />
+            <line x1="-70" y1="-40" x2="0" y2="-70" stroke="#3B82F6" stroke-width="1.5" opacity="0.4" />
+            <line x1="70" y1="-40" x2="0" y2="-70" stroke="#3B82F6" stroke-width="1.5" opacity="0.4" />
+            <line x1="-70" y1="40" x2="0" y2="70" stroke="#3B82F6" stroke-width="1.5" opacity="0.4" />
+            <line x1="70" y1="40" x2="0" y2="70" stroke="#3B82F6" stroke-width="1.5" opacity="0.4" />
+        </g>
+
+        <!-- 特征描述 -->
+        <text x="790" y="650"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="26" font-weight="600" fill="#1E293B" text-anchor="middle">
+            扁平化
+        </text>
+        <text x="790" y="690"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            强调机会平等
+        </text>
+        <text x="790" y="720"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="20" font-weight="400" fill="#64748B" text-anchor="middle">
+            实习生可质疑 CEO
+        </text>
+        <text x="790" y="760"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+            font-size="18" font-weight="500" fill="#1E40AF" text-anchor="middle">
+            例：科技初创公司
+        </text>
+    </g>
+
+    <!-- 底部案例警示 -->
+    <rect x="120" y="830" width="840" height="180" fill="#1E293B" rx="20" filter="url(#shadow)" />
+    <text x="540" y="880"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="24" font-weight="700" fill="#FCA5A5" text-anchor="middle">
+        ⚠️ 实战复盘
+    </text>
+    <text x="540" y="925"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        收购方推行"全员谏言"→ 被解读为"领导没主见"
+    </text>
+    <text x="540" y="965"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="22" font-weight="500" fill="#E2E8F0" text-anchor="middle">
+        老员工"层层汇报"→ 被解读为"官僚主义"
+    </text>
+    <text x="540" y="995"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="600" fill="#F59E0B" text-anchor="middle">
+        结果：核心人才流失殆尽
+    </text>
+</svg>

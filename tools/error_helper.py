@@ -10,7 +10,7 @@ from typing import Dict, List, Optional
 
 class ErrorHelper:
     """错误消息助手"""
-    
+
     # 错误类型和对应的修复建议
     ERROR_SOLUTIONS = {
         'missing_readme': {
@@ -59,22 +59,13 @@ class ErrorHelper:
             ],
             'severity': 'warning'
         },
-        'missing_date_suffix': {
-            'message': '目录名缺少日期后缀',
+        'missing_project_date': {
+            'message': '项目目录缺少日期后缀',
             'solutions': [
                 '重命名项目目录，添加日期后缀: _YYYYMMDD',
                 '格式: {项目名}_{格式}_{YYYYMMDD}',
                 '示例: my_project_ppt169_20251116',
                 '命令: mv old_name new_name_ppt169_20251116'
-            ],
-            'severity': 'warning'
-        },
-        'missing_preview': {
-            'message': '缺少 preview.html 预览文件',
-            'solutions': [
-                '使用预览生成工具: python3 tools/generate_preview.py <project_path>',
-                '或批量生成: python3 tools/generate_preview.py --all examples',
-                '预览文件可帮助快速查看所有 SVG 页面'
             ],
             'severity': 'warning'
         },
@@ -130,118 +121,119 @@ class ErrorHelper:
             'severity': 'warning'
         }
     }
-    
+
     @classmethod
     def get_solution(cls, error_type: str, context: Optional[Dict] = None) -> Dict:
         """
         获取错误的解决方案
-        
+
         Args:
             error_type: 错误类型
             context: 上下文信息（可选）
-            
+
         Returns:
             包含 message, solutions, severity 的字典
         """
         if error_type in cls.ERROR_SOLUTIONS:
             solution = cls.ERROR_SOLUTIONS[error_type].copy()
-            
+
             # 根据上下文定制消息
             if context:
                 solution = cls._customize_solution(solution, context)
-            
+
             return solution
-        
+
         # 未知错误类型
         return {
             'message': '未知错误',
             'solutions': ['请查看文档或联系维护者'],
             'severity': 'error'
         }
-    
+
     @classmethod
     def _customize_solution(cls, solution: Dict, context: Dict) -> Dict:
         """
         根据上下文定制解决方案
-        
+
         Args:
             solution: 原始解决方案
             context: 上下文信息
-            
+
         Returns:
             定制后的解决方案
         """
         customized = solution.copy()
-        
+
         # 根据项目路径定制
         if 'project_path' in context:
             project_path = context['project_path']
             customized['solutions'] = [
-                s.replace('<project_path>', project_path).replace('<your_project>', project_path)
+                s.replace('<project_path>', project_path).replace(
+                    '<your_project>', project_path)
                 for s in customized['solutions']
             ]
-        
+
         # 根据文件名定制
         if 'file_name' in context:
             file_name = context['file_name']
             customized['message'] = f"{customized['message']}: {file_name}"
-        
+
         # 根据期望值定制
         if 'expected' in context and 'actual' in context:
             customized['message'] += f" (期望: {context['expected']}, 实际: {context['actual']})"
-        
+
         return customized
-    
+
     @classmethod
     def format_error_message(cls, error_type: str, context: Optional[Dict] = None) -> str:
         """
         格式化错误消息（用于终端输出）
-        
+
         Args:
             error_type: 错误类型
             context: 上下文信息
-            
+
         Returns:
             格式化的错误消息字符串
         """
         solution = cls.get_solution(error_type, context)
-        
+
         lines = []
-        
+
         # 错误消息
         severity_icon = "❌" if solution['severity'] == 'error' else "⚠️ "
         lines.append(f"{severity_icon} {solution['message']}")
-        
+
         # 解决方案
         if solution['solutions']:
             lines.append("\n💡 解决方案:")
             for i, sol in enumerate(solution['solutions'], 1):
                 lines.append(f"   {i}. {sol}")
-        
+
         return "\n".join(lines)
-    
+
     @classmethod
     def print_error(cls, error_type: str, context: Optional[Dict] = None):
         """
         打印格式化的错误消息
-        
+
         Args:
             error_type: 错误类型
             context: 上下文信息
         """
         print(cls.format_error_message(error_type, context))
-    
+
     @classmethod
     def get_all_error_types(cls) -> List[str]:
         """获取所有支持的错误类型"""
         return list(cls.ERROR_SOLUTIONS.keys())
-    
+
     @classmethod
     def print_help(cls):
         """打印所有错误类型和解决方案"""
         print("PPT Master - 错误类型和解决方案\n")
         print("=" * 80)
-        
+
         for error_type, info in cls.ERROR_SOLUTIONS.items():
             print(f"\n【{error_type}】")
             print(f"消息: {info['message']}")
@@ -255,17 +247,17 @@ class ErrorHelper:
 def main():
     """主函数 - 用于测试"""
     import sys
-    
+
     if len(sys.argv) > 1:
         error_type = sys.argv[1]
         context = {}
-        
+
         # 解析上下文参数
         for arg in sys.argv[2:]:
             if '=' in arg:
                 key, value = arg.split('=', 1)
                 context[key] = value
-        
+
         print(ErrorHelper.format_error_message(error_type, context))
     else:
         ErrorHelper.print_help()
@@ -273,4 +265,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -42,21 +42,6 @@ python3 tools/project_manager.py validate <project_path>
 python3 tools/project_manager.py info <project_path>
 ```
 
-### 预览生成
-
-为项目生成统一的预览页面：
-
-```bash
-# 为单个项目生成预览
-python3 tools/generate_preview.py <project_path>
-
-# 为所有项目生成预览
-python3 tools/generate_preview.py --all examples
-
-# 交互模式
-python3 tools/generate_preview.py
-```
-
 ### 预览 SVG 幻灯片
 
 仓库中的示例均以「项目为单位」组织在 `examples/` 目录下，每个示例项目包含 `svg_output/` 文件夹。
@@ -64,14 +49,11 @@ python3 tools/generate_preview.py
 预览任一示例项目（以占位项目名为例）：
 
 ```bash
-# 方式一：使用统一的预览页面（推荐）
-open examples/<project_name>_<format>_<YYYYMMDD>/preview.html
-
-# 方式二：使用内置 HTTP 服务器
+# 方式一：使用内置 HTTP 服务器（推荐）
 python3 -m http.server --directory examples/<project_name>_<format>_<YYYYMMDD>/svg_output 8000
 # 访问 http://localhost:8000
 
-# 方式三：直接打开单个 SVG
+# 方式二：直接打开单个 SVG
 open examples/<project_name>_<format>_<YYYYMMDD>/svg_output/slide_01_cover.svg
 ```
 
@@ -116,6 +98,7 @@ python3 tools/flatten_tspan.py examples/<project>/svg_output/slide_01_cover.svg 
 ```
 
 注意：
+
 - 生成阶段仍以 `<tspan>` 手动换行为准；`flatten_tspan` 是可选后处理工具。
 - 工具会将每个 `<tspan>` 转换为独立的 `<text>`，尽量保留样式与定位；原有 `<foreignObject>` 仍然禁止。
 - 默认输出：目录输入若路径以 `svg_output` 结尾，则输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`。文件输入输出为 `<文件名>_flattext.svg`。
@@ -147,6 +130,7 @@ npx markdownlint "**/*.md"
 - 1:1（1080×1080）：核心区约 800×800px，避免拥挤
 
 边距建议：
+
 - 横屏（16:9/4:3/2.35:1）：40–80px
 - 竖屏（3:4/9:16）：60–120px（Story 顶/底安全区更大）
 
@@ -182,7 +166,6 @@ examples/
 └── <project_name>_<format>_<YYYYMMDD>/
     ├── README.md                       # 项目说明（可选）
     ├── 设计规范与内容大纲.md / design_specification.md
-    ├── preview.html                    # 预览入口（可选）
     └── svg_output/                     # SVG 输出
         ├── slide_01_cover.svg
         ├── slide_02_xxx.svg
@@ -296,5 +279,5 @@ examples/
 - **图表模板库**：templates/charts/（标准化图表模板，见 templates/charts/README.md）
 - **速查表**：docs/quick_reference.md
 - **质检清单**：docs/doc_qa_checklist.md
-- **角色定义**：roles/*.md
+- **角色定义**：roles/\*.md
 - **示例索引**：examples/（项目化目录，见 examples/README.md）

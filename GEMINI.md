@@ -37,9 +37,8 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 # 方式一：使用内置 HTTP 服务器（推荐）
 python3 -m http.server --directory examples/<project_name>_<format>_<YYYYMMDD>/svg_output 8000
 
-# 方式二：直接用浏览器打开单个 SVG 或使用该项目自带的 preview.html（若存在）
+# 方式二：直接用浏览器打开单个 SVG
 open examples/<project_name>_<format>_<YYYYMMDD>/svg_output/slide_01_cover.svg
-open examples/<project_name>_<format>_<YYYYMMDD>/preview.html
 ```
 
 在浏览器访问 `http://localhost:8000` 以查看该项目的 SVG 文件。
@@ -147,7 +146,6 @@ examples/
 └── <project_name>_<format>_<YYYYMMDD>/
     ├── README.md                       # 项目说明（可选）
     ├── 设计规范与内容大纲.md / design_specification.md
-    ├── preview.html                    # 预览入口（可选）
     └── svg_output/                     # SVG 输出
         ├── slide_01_cover.svg
         ├── slide_02_xxx.svg
