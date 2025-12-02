@@ -1,0 +1,59 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <defs>
+        <linearGradient id="sectionBg2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2E8B57;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1E6B47;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <rect width="1280" height="720" fill="url(#sectionBg2)" />
+
+    <!-- 装饰圆环 -->
+    <circle cx="1100" cy="360" r="400" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.05" />
+    <circle cx="1100" cy="360" r="320" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.08" />
+    <circle cx="1100" cy="360" r="240" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.1" />
+
+    <!-- 左侧装饰线条 -->
+    <rect x="60" y="280" width="8" height="160" fill="#FFFFFF" opacity="0.3" rx="4" />
+    <rect x="80" y="300" width="4" height="120" fill="#FFFFFF" opacity="0.5" rx="2" />
+    <rect x="95" y="320" width="4" height="80" fill="#FFFFFF" opacity="0.7" rx="2" />
+
+    <!-- 章节编号 -->
+    <text x="130" y="300" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="120"
+        font-weight="700" fill="#FFFFFF" opacity="0.15">
+        02
+    </text>
+
+    <!-- 章节标题 -->
+    <text x="130" y="380" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="56"
+        font-weight="700" fill="#FFFFFF">
+        资金使用要求
+    </text>
+
+    <!-- 分隔线 -->
+    <rect x="130" y="410" width="120" height="4" fill="#FFFFFF" rx="2" />
+
+    <!-- 核心原则预览 -->
+    <text x="130" y="470" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="24"
+        font-weight="400" fill="#FFFFFF" opacity="0.8">
+        专款专用 · 及时拨付 · 资金安全 · 扩围领域
+    </text>
+
+    <!-- 右侧大图标 -->
+    <g transform="translate(950, 250)">
+        <circle cx="100" cy="100" r="90" fill="#FFFFFF" opacity="0.1" />
+        <circle cx="100" cy="100" r="70" fill="#FFFFFF" opacity="0.15" />
+        <!-- 金币图标 -->
+        <circle cx="100" cy="100" r="50" fill="none" stroke="#FFFFFF" stroke-width="3" />
+        <text x="100" y="115" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="36" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            ¥
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#FFFFFF" opacity="0.6" text-anchor="middle">
+        08 / 14
+    </text>
+</svg>

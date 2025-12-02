@@ -1,0 +1,107 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <defs>
+        <linearGradient id="sectionBg3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <rect width="1280" height="720" fill="url(#sectionBg3)" />
+
+    <!-- 装饰圆环 -->
+    <circle cx="1100" cy="360" r="400" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.05" />
+    <circle cx="1100" cy="360" r="320" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.08" />
+    <circle cx="1100" cy="360" r="240" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.1" />
+
+    <!-- 左侧装饰线条 -->
+    <rect x="60" y="280" width="8" height="160" fill="#FFFFFF" opacity="0.3" rx="4" />
+    <rect x="80" y="300" width="4" height="120" fill="#FFFFFF" opacity="0.5" rx="2" />
+    <rect x="95" y="320" width="4" height="80" fill="#FFFFFF" opacity="0.7" rx="2" />
+
+    <!-- 章节编号 -->
+    <text x="130" y="300" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="120"
+        font-weight="700" fill="#FFFFFF" opacity="0.15">
+        03
+    </text>
+
+    <!-- 章节标题 -->
+    <text x="130" y="380" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="56"
+        font-weight="700" fill="#FFFFFF">
+        工作程序
+    </text>
+
+    <!-- 分隔线 -->
+    <rect x="130" y="410" width="120" height="4" fill="#FFFFFF" rx="2" />
+
+    <!-- 五步流程预览 -->
+    <g transform="translate(130, 460)">
+        <!-- 步骤1 -->
+        <rect x="0" y="0" width="150" height="50" fill="#FFFFFF" opacity="0.2" rx="25" />
+        <text x="75" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            资料收集
+        </text>
+
+        <!-- 箭头1 -->
+        <path d="M160 25 L185 25" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <polygon points="190,25 182,20 182,30" fill="#FFFFFF" opacity="0.6" />
+
+        <!-- 步骤2 -->
+        <rect x="200" y="0" width="150" height="50" fill="#FFFFFF" opacity="0.2" rx="25" />
+        <text x="275" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            报告编制
+        </text>
+
+        <!-- 箭头2 -->
+        <path d="M360 25 L385 25" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <polygon points="390,25 382,20 382,30" fill="#FFFFFF" opacity="0.6" />
+
+        <!-- 步骤3 -->
+        <rect x="400" y="0" width="150" height="50" fill="#FFFFFF" opacity="0.2" rx="25" />
+        <text x="475" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            项目申报
+        </text>
+
+        <!-- 箭头3 -->
+        <path d="M560 25 L585 25" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <polygon points="590,25 582,20 582,30" fill="#FFFFFF" opacity="0.6" />
+
+        <!-- 步骤4 -->
+        <rect x="600" y="0" width="150" height="50" fill="#FFFFFF" opacity="0.2" rx="25" />
+        <text x="675" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            评审审查
+        </text>
+
+        <!-- 箭头4 -->
+        <path d="M760 25 L785 25" stroke="#FFFFFF" stroke-width="2" opacity="0.6" />
+        <polygon points="790,25 782,20 782,30" fill="#FFFFFF" opacity="0.6" />
+
+        <!-- 步骤5 -->
+        <rect x="800" y="0" width="150" height="50" fill="#FFFFFF" opacity="0.2" rx="25" />
+        <text x="875" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            材料补充
+        </text>
+    </g>
+
+    <!-- 右侧大图标 -->
+    <g transform="translate(1000, 200)">
+        <circle cx="80" cy="80" r="70" fill="#FFFFFF" opacity="0.1" />
+        <circle cx="80" cy="80" r="55" fill="#FFFFFF" opacity="0.15" />
+        <!-- 流程图标 -->
+        <rect x="50" y="45" width="60" height="15" fill="none" stroke="#FFFFFF" stroke-width="2" rx="3" />
+        <rect x="50" y="70" width="60" height="15" fill="none" stroke="#FFFFFF" stroke-width="2" rx="3" />
+        <rect x="50" y="95" width="60" height="15" fill="none" stroke="#FFFFFF" stroke-width="2" rx="3" />
+        <line x1="80" y1="60" x2="80" y2="70" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="80" y1="85" x2="80" y2="95" stroke="#FFFFFF" stroke-width="2" />
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#FFFFFF" opacity="0.6" text-anchor="middle">
+        10 / 14
+    </text>
+</svg>

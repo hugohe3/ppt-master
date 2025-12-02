@@ -1,0 +1,218 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+        font-weight="700" fill="#1F2937">
+        资料收集清单
+    </text>
+    <rect x="60" y="85" width="60" height="4" fill="#F59E0B" rx="2" />
+
+    <!-- 左栏 - 建设单位资料 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="560" height="520" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="520" fill="#1E5AAF" rx="3" />
+
+        <!-- 标题区 -->
+        <circle cx="45" cy="45" r="28" fill="#1E5AAF" opacity="0.1" />
+        <text x="45" y="53" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="22"
+            text-anchor="middle">
+            📁
+        </text>
+
+        <text x="90" y="50" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="600" fill="#1F2937">
+            项目建设单位资料
+        </text>
+
+        <line x1="20" y1="85" x2="540" y2="85" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 资料1 -->
+        <g transform="translate(20, 105)">
+            <rect x="0" y="0" width="520" height="80" fill="#1E5AAF" opacity="0.03" rx="8" />
+            <circle cx="30" cy="40" r="18" fill="#1E5AAF" opacity="0.15" />
+            <text x="30" y="46" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#1E5AAF" text-anchor="middle">
+                1
+            </text>
+            <text x="60" y="35" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#1F2937">
+                营业执照或法人证书
+            </text>
+            <text x="60" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                项目建设单位营业执照或事业单位法人证书
+            </text>
+        </g>
+
+        <!-- 资料2 -->
+        <g transform="translate(20, 200)">
+            <rect x="0" y="0" width="520" height="140" fill="#1E5AAF" opacity="0.03" rx="8" />
+            <circle cx="30" cy="25" r="18" fill="#1E5AAF" opacity="0.15" />
+            <text x="30" y="31" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#1E5AAF" text-anchor="middle">
+                2
+            </text>
+            <text x="60" y="30" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#1F2937">
+                企业简介
+            </text>
+            <text x="60" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                包括但不限于：
+            </text>
+            <text x="70" y="82" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 企业投资人（或股东）构成及实控人
+            </text>
+            <text x="70" y="102" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 主营业务、主要投资项目
+            </text>
+            <text x="70" y="122" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 现有生产能力、单位信用等
+            </text>
+        </g>
+
+        <!-- 资料3 -->
+        <g transform="translate(20, 360)">
+            <rect x="0" y="0" width="520" height="80" fill="#1E5AAF" opacity="0.03" rx="8" />
+            <circle cx="30" cy="40" r="18" fill="#1E5AAF" opacity="0.15" />
+            <text x="30" y="46" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#1E5AAF" text-anchor="middle">
+                3
+            </text>
+            <text x="60" y="35" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#1F2937">
+                财务审计报告
+            </text>
+            <text x="60" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                近三年财务审计报告（若涉及）
+            </text>
+        </g>
+    </g>
+
+    <!-- 右栏 - 申报项目资料 -->
+    <g transform="translate(660, 110)">
+        <rect x="0" y="0" width="560" height="520" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="520" fill="#F59E0B" rx="3" />
+
+        <!-- 标题区 -->
+        <circle cx="45" cy="45" r="28" fill="#F59E0B" opacity="0.1" />
+        <text x="45" y="53" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="22"
+            text-anchor="middle">
+            📋
+        </text>
+
+        <text x="90" y="50" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="600" fill="#1F2937">
+            申报项目资料
+        </text>
+
+        <line x1="20" y1="85" x2="540" y2="85" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 立项批复资料表格 -->
+        <text x="20" y="115" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#1F2937">
+            立项批复资料
+        </text>
+
+        <!-- 表格 -->
+        <g transform="translate(20, 130)">
+            <!-- 表头 -->
+            <rect x="0" y="0" width="520" height="35" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="80" y="24" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" font-weight="600" fill="#1F2937" text-anchor="middle">
+                项目类型
+            </text>
+            <text x="330" y="24" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" font-weight="600" fill="#1F2937" text-anchor="middle">
+                需收集资料
+            </text>
+
+            <!-- 行1 -->
+            <rect x="0" y="35" width="520" height="40" fill="#FFFFFF" />
+            <line x1="0" y1="75" x2="520" y2="75" stroke="#E5E7EB" stroke-width="1" />
+            <text x="80" y="60" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#1F2937" text-anchor="middle">
+                审批制
+            </text>
+            <text x="330" y="60" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" fill="#6B7280" text-anchor="middle">
+                项目建议书、可研报告、初设及批复
+            </text>
+
+            <!-- 行2 -->
+            <rect x="0" y="75" width="520" height="40" fill="#F8FAFC" />
+            <line x1="0" y1="115" x2="520" y2="115" stroke="#E5E7EB" stroke-width="1" />
+            <text x="80" y="100" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#1F2937" text-anchor="middle">
+                核准制
+            </text>
+            <text x="330" y="100" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" fill="#6B7280" text-anchor="middle">
+                项目申请报告及核准批复
+            </text>
+
+            <!-- 行3 -->
+            <rect x="0" y="115" width="520" height="40" fill="#FFFFFF" />
+            <text x="80" y="140" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#1F2937" text-anchor="middle">
+                备案制
+            </text>
+            <text x="330" y="140" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" fill="#6B7280" text-anchor="middle">
+                项目备案证明
+            </text>
+
+            <!-- 分隔 -->
+            <line x1="160" y1="0" x2="160" y2="155" stroke="#E5E7EB" stroke-width="1" />
+        </g>
+
+        <!-- 其他资料 -->
+        <text x="20" y="315" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="600" fill="#1F2937">
+            其他项目资料
+        </text>
+
+        <g transform="translate(20, 330)">
+            <rect x="0" y="0" width="520" height="170" fill="#F59E0B" opacity="0.05" rx="8" />
+
+            <text x="15" y="28" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 列入国家/省/市/县规划情况
+            </text>
+            <text x="15" y="53" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 项目现场照片（体现建设必要性和可行性）
+            </text>
+            <text x="15" y="78" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 能评、环评、用地、工程许可等审查意见
+            </text>
+            <text x="15" y="103" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 项目资金到位证明或承诺函
+            </text>
+            <text x="15" y="128" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                • 根据申请方向确定的其他材料
+            </text>
+        </g>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        11 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>

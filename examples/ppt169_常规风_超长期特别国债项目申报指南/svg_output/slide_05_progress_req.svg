@@ -1,0 +1,220 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+        font-weight="700" fill="#1F2937">
+        项目实施进度要求
+    </text>
+    <rect x="60" y="85" width="60" height="4" fill="#1E5AAF" rx="2" />
+
+    <!-- 左侧 - 四大基础条件 2×2网格 -->
+    <text x="60" y="130" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+        font-weight="600" fill="#1F2937">
+        四大基础条件
+    </text>
+
+    <!-- 条件1: 技术成熟 -->
+    <g transform="translate(60, 150)">
+        <rect x="0" y="0" width="280" height="130" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="280" height="130" fill="#2E8B57" opacity="0.03" rx="12" />
+
+        <circle cx="35" cy="35" r="22" fill="#2E8B57" opacity="0.15" />
+        <text x="35" y="42" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="700" fill="#2E8B57" text-anchor="middle">
+            ✓
+        </text>
+
+        <text x="70" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            技术成熟
+        </text>
+
+        <text x="20" y="80" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            技术路线成熟可行
+        </text>
+        <text x="20" y="105" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#9CA3AF">
+            Technology Maturity
+        </text>
+    </g>
+
+    <!-- 条件2: 方案清晰 -->
+    <g transform="translate(360, 150)">
+        <rect x="0" y="0" width="280" height="130" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="280" height="130" fill="#2E8B57" opacity="0.03" rx="12" />
+
+        <circle cx="35" cy="35" r="22" fill="#2E8B57" opacity="0.15" />
+        <text x="35" y="42" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="700" fill="#2E8B57" text-anchor="middle">
+            ✓
+        </text>
+
+        <text x="70" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            方案清晰
+        </text>
+
+        <text x="20" y="80" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            建设方案明确具体
+        </text>
+        <text x="20" y="105" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#9CA3AF">
+            Clear Planning
+        </text>
+    </g>
+
+    <!-- 条件3: 要素齐全 -->
+    <g transform="translate(60, 300)">
+        <rect x="0" y="0" width="280" height="130" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="280" height="130" fill="#2E8B57" opacity="0.03" rx="12" />
+
+        <circle cx="35" cy="35" r="22" fill="#2E8B57" opacity="0.15" />
+        <text x="35" y="42" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="700" fill="#2E8B57" text-anchor="middle">
+            ✓
+        </text>
+
+        <text x="70" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            要素齐全
+        </text>
+
+        <text x="20" y="80" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            配套要素完备到位
+        </text>
+        <text x="20" y="105" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#9CA3AF">
+            Complete Elements
+        </text>
+    </g>
+
+    <!-- 条件4: 纳入规划 -->
+    <g transform="translate(360, 300)">
+        <rect x="0" y="0" width="280" height="130" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="280" height="130" fill="#2E8B57" opacity="0.03" rx="12" />
+
+        <circle cx="35" cy="35" r="22" fill="#2E8B57" opacity="0.15" />
+        <text x="35" y="42" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="700" fill="#2E8B57" text-anchor="middle">
+            ✓
+        </text>
+
+        <text x="70" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            纳入规划
+        </text>
+
+        <text x="20" y="80" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            已纳入地方或行业专项规划
+        </text>
+        <text x="20" y="105" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#9CA3AF">
+            Included in Planning
+        </text>
+    </g>
+
+    <!-- 右侧 - 建设周期要求 -->
+    <g transform="translate(700, 120)">
+        <rect x="0" y="0" width="520" height="420" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="420" fill="#1E5AAF" rx="3" />
+
+        <!-- 标题 -->
+        <text x="30" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="600" fill="#1F2937">
+            建设周期要求
+        </text>
+        <line x1="30" y1="60" x2="490" y2="60" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 要点1 -->
+        <g transform="translate(30, 85)">
+            <rect x="0" y="0" width="460" height="70" fill="#1E5AAF" opacity="0.05" rx="8" />
+            <circle cx="25" cy="35" r="18" fill="#1E5AAF" opacity="0.15" />
+            <text x="25" y="41" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#1E5AAF" text-anchor="middle">
+                1
+            </text>
+            <text x="55" y="30" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                有明确的建设周期和分阶段目标
+            </text>
+            <text x="55" y="52" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                确保项目可控、进度可追踪
+            </text>
+        </g>
+
+        <!-- 要点2: 未开工项目 -->
+        <g transform="translate(30, 175)">
+            <rect x="0" y="0" width="460" height="90" fill="#F59E0B" opacity="0.05" rx="8" />
+            <rect x="0" y="0" width="4" height="90" fill="#F59E0B" rx="2" />
+            <circle cx="25" cy="45" r="18" fill="#F59E0B" opacity="0.15" />
+            <text x="25" y="51" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                2
+            </text>
+            <text x="55" y="30" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="500" fill="#F59E0B">
+                未开工项目
+            </text>
+            <text x="55" y="55" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                确保资金下达后可实质性开工
+            </text>
+            <text x="55" y="77" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                前期手续完备、开工条件成熟
+            </text>
+        </g>
+
+        <!-- 要点3: 已开工项目 -->
+        <g transform="translate(30, 285)">
+            <rect x="0" y="0" width="460" height="110" fill="#2E8B57" opacity="0.05" rx="8" />
+            <rect x="0" y="0" width="4" height="110" fill="#2E8B57" rx="2" />
+            <circle cx="25" cy="55" r="18" fill="#2E8B57" opacity="0.15" />
+            <text x="25" y="61" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="700" fill="#2E8B57" text-anchor="middle">
+                3
+            </text>
+            <text x="55" y="30" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="500" fill="#2E8B57">
+                已开工项目
+            </text>
+            <text x="55" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                投资完成额未超过
+                <tspan font-size="24" font-weight="700" fill="#2E8B57">80%</tspan>
+            </text>
+            <text x="55" y="85" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="13" fill="#6B7280">
+                确保有足够的资金使用空间
+            </text>
+        </g>
+    </g>
+
+    <!-- 底部提示 -->
+    <g transform="translate(60, 560)">
+        <rect x="0" y="0" width="580" height="50" fill="#1E5AAF" opacity="0.05" rx="8" />
+        <text x="20" y="32" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+            fill="#1E5AAF">
+            💡 项目应同时满足以上四项基础条件及建设周期要求
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        05 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>

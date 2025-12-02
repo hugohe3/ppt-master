@@ -1,0 +1,165 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+        font-weight="700" fill="#1F2937">
+        禁止性规定
+    </text>
+    <rect x="60" y="85" width="60" height="4" fill="#DC3545" rx="2" />
+
+    <!-- 警示横幅 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="1160" height="50" fill="#DC3545" rx="8" />
+        <text x="580" y="33" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="20" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            🚫 以下情况不予支持
+        </text>
+    </g>
+
+    <!-- 四项否决条件 -->
+    <!-- 条件1 -->
+    <g transform="translate(60, 180)">
+        <rect x="0" y="0" width="1160" height="110" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="110" fill="#DC3545" rx="3" />
+
+        <!-- 序号 -->
+        <circle cx="45" cy="55" r="24" fill="#DC3545" />
+        <text x="45" y="63" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            1
+        </text>
+
+        <!-- 内容 -->
+        <text x="90" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            失信主体限制
+        </text>
+        <text x="90" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            项目建设单位纳入失信联合惩戒对象名单或严重失信主体名单
+        </text>
+        <text x="90" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            安全生产严重失信主体名单
+        </text>
+
+        <!-- 标签 -->
+        <rect x="1000" y="40" width="120" height="30" fill="#DC3545" opacity="0.1" rx="15" />
+        <text x="1060" y="61" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#DC3545" text-anchor="middle">
+            信用否决
+        </text>
+    </g>
+
+    <!-- 条件2 -->
+    <g transform="translate(60, 305)">
+        <rect x="0" y="0" width="1160" height="110" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="110" fill="#DC3545" rx="3" />
+
+        <!-- 序号 -->
+        <circle cx="45" cy="55" r="24" fill="#DC3545" />
+        <text x="45" y="63" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            2
+        </text>
+
+        <!-- 内容 -->
+        <text x="90" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            政策禁止性内容
+        </text>
+        <text x="90" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            项目包含房地产开发、楼堂馆所、形象工程和政绩工程
+        </text>
+        <text x="90" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            等国家政策禁止性内容
+        </text>
+
+        <!-- 标签 -->
+        <rect x="1000" y="40" width="120" height="30" fill="#DC3545" opacity="0.1" rx="15" />
+        <text x="1060" y="61" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#DC3545" text-anchor="middle">
+            内容否决
+        </text>
+    </g>
+
+    <!-- 条件3 -->
+    <g transform="translate(60, 430)">
+        <rect x="0" y="0" width="1160" height="110" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="110" fill="#DC3545" rx="3" />
+
+        <!-- 序号 -->
+        <circle cx="45" cy="55" r="24" fill="#DC3545" />
+        <text x="45" y="63" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            3
+        </text>
+
+        <!-- 内容 -->
+        <text x="90" y="40" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            重复申报限制
+        </text>
+        <text x="90" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            已通过其他渠道获得中央预算内投资支持的项目
+        </text>
+        <text x="90" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            原则上不予支持（国家另有规定的除外）
+        </text>
+
+        <!-- 标签 -->
+        <rect x="1000" y="40" width="120" height="30" fill="#F59E0B" opacity="0.1" rx="15" />
+        <text x="1060" y="61" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#F59E0B" text-anchor="middle">
+            原则否决
+        </text>
+    </g>
+
+    <!-- 条件4 -->
+    <g transform="translate(60, 555)">
+        <rect x="0" y="0" width="1160" height="90" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="90" fill="#DC3545" rx="3" />
+
+        <!-- 序号 -->
+        <circle cx="45" cy="45" r="24" fill="#DC3545" />
+        <text x="45" y="53" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+            font-weight="700" fill="#FFFFFF" text-anchor="middle">
+            4
+        </text>
+
+        <!-- 内容 -->
+        <text x="90" y="35" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="600" fill="#1F2937">
+            其他前置性否决条件
+        </text>
+        <text x="90" y="63" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="15"
+            fill="#6B7280">
+            附录C中规定的其他前置性否决条件
+        </text>
+
+        <!-- 标签 -->
+        <rect x="1000" y="30" width="120" height="30" fill="#DC3545" opacity="0.1" rx="15" />
+        <text x="1060" y="51" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" font-weight="500" fill="#DC3545" text-anchor="middle">
+            合规否决
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        06 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>

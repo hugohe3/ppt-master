@@ -1,0 +1,288 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="80" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="32"
+        font-weight="700" fill="#1F2937">
+        内容导航
+    </text>
+    <rect x="60" y="95" width="80" height="4" fill="#1E5AAF" rx="2" />
+
+    <!-- 三栏卡片容器 -->
+    <!-- 卡片1: 申报工作要点 -->
+    <g transform="translate(60, 140)">
+        <rect x="0" y="0" width="360" height="480" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="480" fill="#1E5AAF" rx="3" />
+
+        <!-- 图标背景 -->
+        <circle cx="50" cy="60" r="32" fill="#1E5AAF" opacity="0.1" />
+        <text x="50" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+            text-anchor="middle">
+            📋
+        </text>
+
+        <!-- 章节编号 -->
+        <text x="100" y="50" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#1E5AAF">
+            PART 01
+        </text>
+
+        <!-- 章节标题 -->
+        <text x="100" y="75" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="24" font-weight="700" fill="#1F2937">
+            申报工作要点
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="110" x2="336" y2="110" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容条目 -->
+        <g transform="translate(24, 140)">
+            <circle cx="8" cy="8" r="6" fill="#1E5AAF" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#1E5AAF" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                支持领域与投资标准
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                "两重"与"两新"政策范畴解读
+            </text>
+        </g>
+
+        <g transform="translate(24, 210)">
+            <circle cx="8" cy="8" r="6" fill="#1E5AAF" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#1E5AAF" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                项目实施进度要求
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                四大基础条件与建设周期
+            </text>
+        </g>
+
+        <g transform="translate(24, 280)">
+            <circle cx="8" cy="8" r="6" fill="#DC3545" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#DC3545" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                禁止性规定
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                四类不予支持的情形
+            </text>
+        </g>
+
+        <g transform="translate(24, 350)">
+            <circle cx="8" cy="8" r="6" fill="#2E8B57" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#2E8B57" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                前期工作要求
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                "两重"与"两新"对比解析
+            </text>
+        </g>
+
+        <!-- 页码指示 -->
+        <text x="310" y="450" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#9CA3AF" text-anchor="end">
+            P03-07
+        </text>
+    </g>
+
+    <!-- 卡片2: 资金使用要求 -->
+    <g transform="translate(460, 140)">
+        <rect x="0" y="0" width="360" height="480" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="480" fill="#2E8B57" rx="3" />
+
+        <!-- 图标背景 -->
+        <circle cx="50" cy="60" r="32" fill="#2E8B57" opacity="0.1" />
+        <text x="50" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+            text-anchor="middle">
+            💰
+        </text>
+
+        <!-- 章节编号 -->
+        <text x="100" y="50" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#2E8B57">
+            PART 02
+        </text>
+
+        <!-- 章节标题 -->
+        <text x="100" y="75" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="24" font-weight="700" fill="#1F2937">
+            资金使用要求
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="110" x2="336" y2="110" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容条目 -->
+        <g transform="translate(24, 140)">
+            <circle cx="8" cy="8" r="6" fill="#2E8B57" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#2E8B57" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                核心原则
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                聚焦"两重"与"两新"领域
+            </text>
+        </g>
+
+        <g transform="translate(24, 210)">
+            <circle cx="8" cy="8" r="6" fill="#2E8B57" opacity="0.2" />
+            <circle cx="8" cy="8" r="3" fill="#2E8B57" />
+            <text x="28" y="13" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="18" font-weight="500" fill="#1F2937">
+                管理四原则
+            </text>
+            <text x="28" y="38" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                专款专用 · 及时拨付
+            </text>
+            <text x="28" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" fill="#6B7280">
+                资金安全 · 扩围领域
+            </text>
+        </g>
+
+        <!-- 重点提示框 -->
+        <rect x="24" y="300" width="312" height="80" fill="#2E8B57" opacity="0.08" rx="8" />
+        <text x="40" y="330" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#2E8B57">
+            💡 严禁擅自调整用途
+        </text>
+        <text x="40" y="355" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#2E8B57">
+            　 杜绝挤占、挪用和截留
+        </text>
+
+        <!-- 页码指示 -->
+        <text x="310" y="450" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#9CA3AF" text-anchor="end">
+            P08-09
+        </text>
+    </g>
+
+    <!-- 卡片3: 工作程序 -->
+    <g transform="translate(860, 140)">
+        <rect x="0" y="0" width="360" height="480" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="480" fill="#F59E0B" rx="3" />
+
+        <!-- 图标背景 -->
+        <circle cx="50" cy="60" r="32" fill="#F59E0B" opacity="0.1" />
+        <text x="50" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+            text-anchor="middle">
+            📝
+        </text>
+
+        <!-- 章节编号 -->
+        <text x="100" y="50" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#F59E0B">
+            PART 03
+        </text>
+
+        <!-- 章节标题 -->
+        <text x="100" y="75" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="24" font-weight="700" fill="#1F2937">
+            工作程序
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="110" x2="336" y2="110" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容条目 -->
+        <g transform="translate(24, 140)">
+            <rect x="0" y="0" width="24" height="24" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="12" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                1
+            </text>
+            <text x="36" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                资料收集
+            </text>
+        </g>
+
+        <g transform="translate(24, 180)">
+            <rect x="0" y="0" width="24" height="24" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="12" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                2
+            </text>
+            <text x="36" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                报告编制
+            </text>
+        </g>
+
+        <g transform="translate(24, 220)">
+            <rect x="0" y="0" width="24" height="24" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="12" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                3
+            </text>
+            <text x="36" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                项目申报
+            </text>
+        </g>
+
+        <g transform="translate(24, 260)">
+            <rect x="0" y="0" width="24" height="24" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="12" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                4
+            </text>
+            <text x="36" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                评审审查
+            </text>
+        </g>
+
+        <g transform="translate(24, 300)">
+            <rect x="0" y="0" width="24" height="24" fill="#F59E0B" opacity="0.15" rx="4" />
+            <text x="12" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle">
+                5
+            </text>
+            <text x="36" y="17" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#1F2937">
+                材料补充
+            </text>
+        </g>
+
+        <!-- 流程箭头示意 -->
+        <g transform="translate(200, 140)">
+            <line x1="0" y1="12" x2="0" y2="172" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4,4" />
+            <polygon points="0,180 -6,168 6,168" fill="#F59E0B" />
+        </g>
+
+        <!-- 页码指示 -->
+        <text x="310" y="450" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#9CA3AF" text-anchor="end">
+            P10-14
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        02 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>

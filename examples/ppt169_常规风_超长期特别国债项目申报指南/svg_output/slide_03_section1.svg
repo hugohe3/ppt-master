@@ -1,0 +1,89 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <defs>
+        <linearGradient id="sectionBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1E5AAF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#143D7A;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    <rect width="1280" height="720" fill="url(#sectionBg)" />
+
+    <!-- 装饰圆环 -->
+    <circle cx="1100" cy="360" r="400" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.05" />
+    <circle cx="1100" cy="360" r="320" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.08" />
+    <circle cx="1100" cy="360" r="240" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.1" />
+
+    <!-- 左侧装饰线条 -->
+    <rect x="60" y="280" width="8" height="160" fill="#FFFFFF" opacity="0.3" rx="4" />
+    <rect x="80" y="300" width="4" height="120" fill="#FFFFFF" opacity="0.5" rx="2" />
+    <rect x="95" y="320" width="4" height="80" fill="#FFFFFF" opacity="0.7" rx="2" />
+
+    <!-- 章节编号 -->
+    <text x="130" y="300" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="120"
+        font-weight="700" fill="#FFFFFF" opacity="0.15">
+        01
+    </text>
+
+    <!-- 章节标题 -->
+    <text x="130" y="380" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="56"
+        font-weight="700" fill="#FFFFFF">
+        申报工作要点
+    </text>
+
+    <!-- 分隔线 -->
+    <rect x="130" y="410" width="120" height="4" fill="#FFFFFF" rx="2" />
+
+    <!-- 要点预览标签 -->
+    <g transform="translate(130, 460)">
+        <rect x="0" y="0" width="140" height="40" fill="#FFFFFF" opacity="0.15" rx="20" />
+        <text x="70" y="27" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            支持领域
+        </text>
+    </g>
+
+    <g transform="translate(290, 460)">
+        <rect x="0" y="0" width="140" height="40" fill="#FFFFFF" opacity="0.15" rx="20" />
+        <text x="70" y="27" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            进度要求
+        </text>
+    </g>
+
+    <g transform="translate(450, 460)">
+        <rect x="0" y="0" width="140" height="40" fill="#FFFFFF" opacity="0.15" rx="20" />
+        <text x="70" y="27" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            禁止规定
+        </text>
+    </g>
+
+    <g transform="translate(610, 460)">
+        <rect x="0" y="0" width="140" height="40" fill="#FFFFFF" opacity="0.15" rx="20" />
+        <text x="70" y="27" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            前期工作
+        </text>
+    </g>
+
+    <!-- 右侧大图标 -->
+    <g transform="translate(950, 250)">
+        <circle cx="100" cy="100" r="90" fill="#FFFFFF" opacity="0.1" />
+        <circle cx="100" cy="100" r="70" fill="#FFFFFF" opacity="0.15" />
+        <!-- 文档清单图标 -->
+        <rect x="60" y="50" width="80" height="100" fill="none" stroke="#FFFFFF" stroke-width="3" rx="6" />
+        <line x1="75" y1="75" x2="125" y2="75" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="75" y1="95" x2="125" y2="95" stroke="#FFFFFF" stroke-width="2" />
+        <line x1="75" y1="115" x2="110" y2="115" stroke="#FFFFFF" stroke-width="2" />
+        <!-- 勾选标记 -->
+        <circle cx="130" cy="140" r="18" fill="#2E8B57" />
+        <path d="M122 140 L128 146 L140 134" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"
+            stroke-linejoin="round" />
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#FFFFFF" opacity="0.6" text-anchor="middle">
+        03 / 14
+    </text>
+</svg>

@@ -1,0 +1,205 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+        font-weight="700" fill="#1F2937">
+        支持领域与投资标准
+    </text>
+    <rect x="60" y="85" width="60" height="4" fill="#1E5AAF" rx="2" />
+
+    <!-- 上区块 - 政策范畴 -->
+    <g transform="translate(60, 110)">
+        <rect x="0" y="0" width="1160" height="180" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="6" height="180" fill="#1E5AAF" rx="3" />
+
+        <!-- 标题区 -->
+        <rect x="24" y="20" width="120" height="36" fill="#1E5AAF" opacity="0.1" rx="8" />
+        <text x="44" y="45" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="16"
+            font-weight="600" fill="#1E5AAF">
+            🎯 政策范畴
+        </text>
+
+        <!-- 主要内容 -->
+        <text x="24" y="90" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="18"
+            font-weight="400" fill="#1F2937">
+            超长期特别国债申报项目需严格符合国家
+            <tspan font-weight="600" fill="#1E5AAF">"两重"</tspan>
+            和
+            <tspan font-weight="600" fill="#1E5AAF">"两新"</tspan>
+            范畴
+        </text>
+        <text x="24" y="118" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="18" font-weight="400" fill="#1F2937">
+            以及下一阶段国家调整支持的方向。
+        </text>
+
+        <!-- 提示标签 -->
+        <rect x="24" y="140" width="340" height="28" fill="#F59E0B" opacity="0.1" rx="14" />
+        <text x="44" y="160" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#F59E0B">
+            ⚠️ 支持领域动态更新，以当年政策通知为准
+        </text>
+
+        <!-- 两重两新说明 -->
+        <g transform="translate(700, 30)">
+            <rect x="0" y="0" width="200" height="60" fill="#1E5AAF" opacity="0.08" rx="8" />
+            <text x="100" y="25" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="600" fill="#1E5AAF" text-anchor="middle">
+                "两重"
+            </text>
+            <text x="100" y="48" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" fill="#6B7280" text-anchor="middle">
+                国家重大战略 · 重点领域
+            </text>
+        </g>
+
+        <g transform="translate(920, 30)">
+            <rect x="0" y="0" width="200" height="60" fill="#2E8B57" opacity="0.08" rx="8" />
+            <text x="100" y="25" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="14" font-weight="600" fill="#2E8B57" text-anchor="middle">
+                "两新"
+            </text>
+            <text x="100" y="48" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+                font-size="12" fill="#6B7280" text-anchor="middle">
+                设备更新 · 消费品以旧换新
+            </text>
+        </g>
+    </g>
+
+    <!-- 下区块 - 投资标准三栏卡片 -->
+    <text x="60" y="330" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="20"
+        font-weight="600" fill="#1F2937">
+        项目规模与投资标准
+    </text>
+
+    <!-- 卡片1: 总投资规模 -->
+    <g transform="translate(60, 350)">
+        <rect x="0" y="0" width="360" height="260" fill="#FFFFFF" rx="12" />
+
+        <!-- 图标 -->
+        <circle cx="50" cy="50" r="32" fill="#1E5AAF" opacity="0.1" />
+        <text x="50" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="24"
+            text-anchor="middle">
+            📊
+        </text>
+
+        <!-- 标题 -->
+        <text x="100" y="45" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="20" font-weight="600" fill="#1F2937">
+            总投资规模
+        </text>
+        <text x="100" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            Investment Scale
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="95" x2="336" y2="95" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="24" y="130" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" fill="#1F2937">
+            <tspan x="24" dy="0">总投资规模需符合</tspan>
+            <tspan x="24" dy="28" font-weight="600" fill="#1E5AAF">当年申报项目要求</tspan>
+        </text>
+
+        <!-- 要点标签 -->
+        <rect x="24" y="200" width="312" height="40" fill="#1E5AAF" opacity="0.05" rx="8" />
+        <text x="40" y="226" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            具体标准以年度申报通知为准
+        </text>
+    </g>
+
+    <!-- 卡片2: 跨区域项目 -->
+    <g transform="translate(460, 350)">
+        <rect x="0" y="0" width="360" height="260" fill="#FFFFFF" rx="12" />
+
+        <!-- 图标 -->
+        <circle cx="50" cy="50" r="32" fill="#2E8B57" opacity="0.1" />
+        <text x="50" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="24"
+            text-anchor="middle">
+            🌐
+        </text>
+
+        <!-- 标题 -->
+        <text x="100" y="45" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="20" font-weight="600" fill="#1F2937">
+            跨区域项目
+        </text>
+        <text x="100" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            Cross-regional Projects
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="95" x2="336" y2="95" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="24" y="130" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" fill="#1F2937">
+            <tspan x="24" dy="0">对跨区域或战略性项目</tspan>
+            <tspan x="24" dy="28" font-weight="600" fill="#2E8B57">可适当放宽</tspan>
+        </text>
+
+        <!-- 要点标签 -->
+        <rect x="24" y="200" width="312" height="40" fill="#2E8B57" opacity="0.05" rx="8" />
+        <text x="40" y="226" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            体现国家战略导向的弹性空间
+        </text>
+    </g>
+
+    <!-- 卡片3: 资金比例 -->
+    <g transform="translate(860, 350)">
+        <rect x="0" y="0" width="360" height="260" fill="#FFFFFF" rx="12" />
+
+        <!-- 图标 -->
+        <circle cx="50" cy="50" r="32" fill="#F59E0B" opacity="0.1" />
+        <text x="50" y="58" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="24"
+            text-anchor="middle">
+            💰
+        </text>
+
+        <!-- 标题 -->
+        <text x="100" y="45" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="20" font-weight="600" fill="#1F2937">
+            资金比例
+        </text>
+        <text x="100" y="68" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            Fund Ratio
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="24" y1="95" x2="336" y2="95" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="24" y="130" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="16" fill="#1F2937">
+            <tspan x="24" dy="0">申报资金比例应符合</tspan>
+            <tspan x="24" dy="28" font-weight="600" fill="#F59E0B">国家规定和政策要求</tspan>
+        </text>
+
+        <!-- 要点标签 -->
+        <rect x="24" y="200" width="312" height="40" fill="#F59E0B" opacity="0.05" rx="8" />
+        <text x="40" y="226" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280">
+            确保资金结构合理合规
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        04 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>

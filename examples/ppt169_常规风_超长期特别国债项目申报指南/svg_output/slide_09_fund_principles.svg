@@ -1,0 +1,225 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 顶部装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="#1E5AAF" />
+
+    <!-- 页面标题 -->
+    <text x="60" y="70" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="28"
+        font-weight="700" fill="#1F2937">
+        资金管理四原则
+    </text>
+    <rect x="60" y="85" width="60" height="4" fill="#2E8B57" rx="2" />
+
+    <!-- 四栏卡片 -->
+    <!-- 卡片1: 专款专用 -->
+    <g transform="translate(60, 120)">
+        <rect x="0" y="0" width="270" height="380" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="270" height="8" fill="#1E5AAF" rx="4" />
+
+        <!-- 图标 -->
+        <circle cx="135" cy="80" r="45" fill="#1E5AAF" opacity="0.1" />
+        <text x="135" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="36" text-anchor="middle">
+            🎯
+        </text>
+
+        <!-- 标题 -->
+        <text x="135" y="160" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="22" font-weight="700" fill="#1F2937" text-anchor="middle">
+            专款专用
+        </text>
+
+        <!-- 英文 -->
+        <text x="135" y="185" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="12" fill="#9CA3AF" text-anchor="middle">
+            Dedicated Funding
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="30" y1="205" x2="240" y2="205" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="135" y="245" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="15" fill="#6B7280" text-anchor="middle">
+            确保资金专款专用
+        </text>
+
+        <!-- 警示框 -->
+        <rect x="20" y="280" width="230" height="80" fill="#DC3545" opacity="0.08" rx="8" />
+        <text x="135" y="310" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#DC3545" text-anchor="middle">
+            🚫 严禁
+        </text>
+        <text x="135" y="335" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#DC3545" text-anchor="middle">
+            擅自调整用途或
+        </text>
+        <text x="135" y="355" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#DC3545" text-anchor="middle">
+            扩大支出范围
+        </text>
+    </g>
+
+    <!-- 卡片2: 及时拨付 -->
+    <g transform="translate(360, 120)">
+        <rect x="0" y="0" width="270" height="380" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="270" height="8" fill="#2E8B57" rx="4" />
+
+        <!-- 图标 -->
+        <circle cx="135" cy="80" r="45" fill="#2E8B57" opacity="0.1" />
+        <text x="135" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="36" text-anchor="middle">
+            ⏱️
+        </text>
+
+        <!-- 标题 -->
+        <text x="135" y="160" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="22" font-weight="700" fill="#1F2937" text-anchor="middle">
+            及时拨付
+        </text>
+
+        <!-- 英文 -->
+        <text x="135" y="185" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="12" fill="#9CA3AF" text-anchor="middle">
+            Timely Disbursement
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="30" y1="205" x2="240" y2="205" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="135" y="250" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="15" fill="#6B7280" text-anchor="middle">
+            按照工程进度
+        </text>
+        <text x="135" y="275" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="15" fill="#6B7280" text-anchor="middle">
+            及时拨付到位
+        </text>
+
+        <!-- 提示框 -->
+        <rect x="20" y="310" width="230" height="50" fill="#2E8B57" opacity="0.08" rx="8" />
+        <text x="135" y="342" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#2E8B57" text-anchor="middle">
+            ✓ 确保项目建设进度
+        </text>
+    </g>
+
+    <!-- 卡片3: 资金安全 -->
+    <g transform="translate(660, 120)">
+        <rect x="0" y="0" width="270" height="380" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="270" height="8" fill="#F59E0B" rx="4" />
+
+        <!-- 图标 -->
+        <circle cx="135" cy="80" r="45" fill="#F59E0B" opacity="0.1" />
+        <text x="135" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="36" text-anchor="middle">
+            🛡️
+        </text>
+
+        <!-- 标题 -->
+        <text x="135" y="160" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="22" font-weight="700" fill="#1F2937" text-anchor="middle">
+            资金安全
+        </text>
+
+        <!-- 英文 -->
+        <text x="135" y="185" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="12" fill="#9CA3AF" text-anchor="middle">
+            Fund Security
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="30" y1="205" x2="240" y2="205" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="135" y="245" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="15" fill="#6B7280" text-anchor="middle">
+            确保资金安全
+        </text>
+
+        <!-- 警示框 -->
+        <rect x="20" y="280" width="230" height="80" fill="#DC3545" opacity="0.08" rx="8" />
+        <text x="135" y="310" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" font-weight="500" fill="#DC3545" text-anchor="middle">
+            杜绝
+        </text>
+        <text x="135" y="335" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#DC3545" text-anchor="middle">
+            挤占 · 挪用 · 截留
+        </text>
+    </g>
+
+    <!-- 卡片4: 扩围领域 -->
+    <g transform="translate(960, 120)">
+        <rect x="0" y="0" width="270" height="380" fill="#FFFFFF" rx="12" />
+        <rect x="0" y="0" width="270" height="8" fill="#1E5AAF" rx="4" />
+
+        <!-- 图标 -->
+        <circle cx="135" cy="80" r="45" fill="#1E5AAF" opacity="0.1" />
+        <text x="135" y="92" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="36" text-anchor="middle">
+            📈
+        </text>
+
+        <!-- 标题 -->
+        <text x="135" y="160" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="22" font-weight="700" fill="#1F2937" text-anchor="middle">
+            扩围领域
+        </text>
+
+        <!-- 英文 -->
+        <text x="135" y="185" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="12" fill="#9CA3AF" text-anchor="middle">
+            Extended Fields
+        </text>
+
+        <!-- 分隔线 -->
+        <line x1="30" y1="205" x2="240" y2="205" stroke="#E5E7EB" stroke-width="1" />
+
+        <!-- 内容 -->
+        <text x="135" y="240" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280" text-anchor="middle">
+            设备更新
+        </text>
+        <text x="135" y="265" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#6B7280" text-anchor="middle">
+            消费品以旧换新
+        </text>
+
+        <!-- 提示框 -->
+        <rect x="20" y="295" width="230" height="65" fill="#1E5AAF" opacity="0.08" rx="8" />
+        <text x="135" y="322" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#1E5AAF" text-anchor="middle">
+            支持符合技术标准、
+        </text>
+        <text x="135" y="345" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="13" fill="#1E5AAF" text-anchor="middle">
+            能效要求的先进设备
+        </text>
+    </g>
+
+    <!-- 底部核心原则横幅 -->
+    <g transform="translate(60, 530)">
+        <rect x="0" y="0" width="1160" height="70" fill="#1E5AAF" rx="12" />
+        <text x="580" y="28" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="14" fill="#FFFFFF" opacity="0.8" text-anchor="middle">
+            核心原则
+        </text>
+        <text x="580" y="52" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif"
+            font-size="18" font-weight="500" fill="#FFFFFF" text-anchor="middle">
+            聚焦"两重"领域和"两新"领域，严格遵循国家宏观调控政策导向
+        </text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="640" y="680" font-family="Microsoft YaHei, PingFang SC, Helvetica Neue, Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#9CA3AF" text-anchor="middle">
+        09 / 14
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="714" width="1280" height="6" fill="#1E5AAF" />
+</svg>
