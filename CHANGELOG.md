@@ -9,6 +9,12 @@
 
 ### 新增
 
+- **主文件夹文档全面更新** (2025-12-03)
+  - README.md: 更新示例案例（24 个项目）、工具集（7 个工具）、路线图
+  - INIT.md: 重写为完整的项目初始化向导，添加多格式支持和工具命令
+  - GEMINI.md/CLAUDE.md: 添加项目管理、SVG 质量检查命令和图表模板库引用
+  - CONTRIBUTING.md: 更新贡献方向，标记已完成项目，添加新工具使用说明
+
 - **统一预览系统** - 为所有项目提供一致的预览体验
   - 新增 `templates/preview_template.html` 统一预览模板
   - 新增 `tools/generate_preview.py` 预览生成工具

@@ -27,6 +27,23 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 
 ## 开发常用命令
 
+### 项目管理
+
+使用项目管理工具创建和管理项目：
+
+```bash
+# 初始化新项目
+python3 tools/project_manager.py init <project_name> --format ppt169
+
+# 验证项目结构
+python3 tools/project_manager.py validate <project_path>
+
+# 查看项目信息
+python3 tools/project_manager.py info <project_path>
+```
+
+支持的画布格式：`ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `moments`, `story`, `banner`, `a4`
+
 ### 预览生成的 SVG 幻灯片
 
 仓库中的示例均以「项目为单位」组织在 `examples/` 目录下，每个示例项目包含 `svg_output/` 文件夹。
@@ -42,6 +59,19 @@ open examples/<project_name>_<format>_<YYYYMMDD>/svg_output/slide_01_cover.svg
 ```
 
 在浏览器访问 `http://localhost:8000` 以查看该项目的 SVG 文件。
+
+### SVG 质量检查
+
+```bash
+# 检查单个项目
+python3 tools/svg_quality_checker.py examples/<project>
+
+# 检查所有项目
+python3 tools/svg_quality_checker.py --all examples
+
+# 批量验证项目结构
+python3 tools/batch_validate.py examples
+```
 
 ### 校验 SVG 画布规范（多格式）
 
@@ -217,13 +247,32 @@ examples/
 - 通用风格与咨询风格在规范格式上有本质区别
 - CRAP 优化虽为可选，但对关键页面价值显著
 
+## 图表模板库
+
+为提高 SVG 图表生成的质量和一致性，项目提供了标准化的图表模板库，位于 `templates/charts/` 目录。
+
+### 可用模板
+
+- **KPI 卡片** (`kpi_cards.svg`)：关键业绩指标展示
+- **柱状图** (`bar_chart.svg`)：类别数据对比
+- **折线图** (`line_chart.svg`)：趋势分析
+- **环形图** (`donut_chart.svg`)：占比分析
+- **漏斗图** (`funnel_chart.svg`)：转化流程分析
+- **矩阵图** (`matrix_2x2.svg`)：四象限分析
+- **时间轴** (`timeline.svg`)：时序事件展示
+- **流程图** (`process_flow.svg`)：业务流程展示
+
+详细使用说明请参阅 `templates/charts/README.md`。
+
 ## 参考文档
 
 - **快速开始**：README.md
 - **工作流详解**：docs/workflow_tutorial.md
 - **设计规范**：docs/design_guidelines.md
 - **画布格式**：docs/canvas_formats.md
+- **图表模板库**：templates/charts/（标准化图表模板，见 templates/charts/README.md）
 - **速查表**：docs/quick_reference.md
 - **质检清单**：docs/doc_qa_checklist.md
+- **工具使用指南**：tools/README.md
 - **角色定义**：roles/\*.md
 - **示例索引**：examples/（项目化目录，见 examples/README.md）

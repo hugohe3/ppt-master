@@ -219,12 +219,14 @@ Closes #123
    - 添加更多不同主题和风格的示例项目
    - 创建不同行业的演示文稿案例（商业、教育、科技等）
    - 提供完整的工作流程记录
+   - ✅ 目前已有 24+ 示例项目
 
 2. **设计模板**
 
    - 开发新的行业特定模板
    - 扩展图表和可视化组件库
    - 创建可重用的设计元素集
+   - ✅ 已有 8 种标准化图表模板（`templates/charts/`）
 
 3. **文档改进**
    - 添加更详细的使用教程
@@ -236,14 +238,17 @@ Closes #123
 
 1. **工具开发**
 
-   - SVG 预览和编辑工具
+   - ✅ 项目管理工具（`project_manager.py`）
+   - ✅ SVG 质量检查工具（`svg_quality_checker.py`）
+   - ✅ 批量验证工具（`batch_validate.py`）
    - 配色方案生成器
-   - 布局计算器和验证工具
+   - 布局计算器
 
 2. **角色优化**
    - 增强现有角色的能力
    - 优化角色间协作流程
    - 添加更多设计风格选项
+   - ✅ Strategist 已升级为"主动顾问"模式
 
 ### 欢迎的贡献
 
@@ -305,18 +310,22 @@ git clone https://github.com/hugohe3/ppt-master.git
 cd ppt-master
 
 # 查看项目结构
-ls -R
+ls -la
 
-# 查看角色定义文件
-cd roles
-ls
+# 初始化新项目（推荐方式）
+python3 tools/project_manager.py init my_project --format ppt169
 
-# 查看示例项目
-cd ../examples
-ls -R
+# 验证项目结构
+python3 tools/project_manager.py validate projects/my_project_ppt169_YYYYMMDD
 
-# 在浏览器中查看SVG输出
-# 打开任意示例项目的 svg_output/ 下的 SVG 文件
+# 检查 SVG 质量
+python3 tools/svg_quality_checker.py projects/my_project_ppt169_YYYYMMDD
+
+# 批量验证示例项目
+python3 tools/batch_validate.py examples
+
+# 在浏览器中查看 SVG 输出
+python3 -m http.server --directory examples/<project>/svg_output 8000
 ```
 
 ## 项目组织
