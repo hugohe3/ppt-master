@@ -1,0 +1,141 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    公益性用地获取方式
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    08 / 14
+  </text>
+  
+  <!-- 第一层：特许经营适用领域 -->
+  <rect x="60" y="115" width="1160" height="120" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="115" width="6" height="120" rx="3" fill="#0D47A1"/>
+  <text x="90" y="145" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D47A1">
+    📋 特许经营适用领域（有经营性收入的基础设施和公用事业）
+  </text>
+  
+  <!-- 领域标签 -->
+  <rect x="90" y="160" width="100" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="140" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#1976D2">
+    公路铁路
+  </text>
+  
+  <rect x="200" y="160" width="100" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="250" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#1976D2">
+    民航交通
+  </text>
+  
+  <rect x="310" y="160" width="100" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="360" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#1976D2">
+    物流园区
+  </text>
+  
+  <rect x="420" y="160" width="100" height="28" rx="14" fill="#E8F5E9"/>
+  <text x="470" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    供水供气
+  </text>
+  
+  <rect x="530" y="160" width="100" height="28" rx="14" fill="#E8F5E9"/>
+  <text x="580" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    供热停车
+  </text>
+  
+  <rect x="640" y="160" width="100" height="28" rx="14" fill="#E8F5E9"/>
+  <text x="690" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    污水垃圾
+  </text>
+  
+  <rect x="750" y="160" width="100" height="28" rx="14" fill="#FFF3E0"/>
+  <text x="800" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6F00">
+    水利发电
+  </text>
+  
+  <rect x="860" y="160" width="100" height="28" rx="14" fill="#FFF3E0"/>
+  <text x="910" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6F00">
+    体育旅游
+  </text>
+  
+  <rect x="970" y="160" width="100" height="28" rx="14" fill="#F3E5F5"/>
+  <text x="1020" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#7B1FA2">
+    智慧城市
+  </text>
+  
+  <rect x="1080" y="160" width="100" height="28" rx="14" fill="#F3E5F5"/>
+  <text x="1130" y="179" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#7B1FA2">
+    城市更新
+  </text>
+  
+  <text x="90" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    以上领域一般具备民生保障、公用、公益属性，基本符合划拨用地范围
+  </text>
+  
+  <!-- 箭头 -->
+  <polygon points="640,245 625,235 655,235" fill="#0D47A1"/>
+  <line x1="640" y1="245" x2="640" y2="270" stroke="#0D47A1" stroke-width="2"/>
+  
+  <!-- 第二层：划拨用地目录 -->
+  <rect x="60" y="275" width="1160" height="140" rx="8" fill="#FFFFFF" stroke="#0D47A1" stroke-width="2"/>
+  <rect x="60" y="275" width="1160" height="45" rx="8" fill="#0D47A1"/>
+  <text x="640" y="305" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    📜 《划拨用地目录》（国土资源部令第9号，2001年）
+  </text>
+  
+  <text x="90" y="355" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    <tspan font-weight="600" fill="#43A047">✓ 可划拨：</tspan>
+    <tspan>国家重点扶持的能源、交通、水利等基础设施用地项目</tspan>
+  </text>
+  
+  <text x="90" y="385" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    <tspan font-weight="600" fill="#FF6F00">✗ 需出让：</tspan>
+    <tspan>以营利为目的、非国家重点扶持的能源、交通、水利等基础设施用地项目</tspan>
+  </text>
+  
+  <!-- 第三层：政策红利 -->
+  <rect x="60" y="430" width="560" height="100" rx="8" fill="#E8F5E9" stroke="#43A047" stroke-width="1"/>
+  <text x="90" y="465" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#43A047">
+    ✓ 政策利好（不得设限）
+  </text>
+  <text x="90" y="495" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    不得以民间投资、外商投资或PPP为由限制划拨申请
+  </text>
+  <text x="90" y="518" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    不得对未明确要求"非营利性"的项目提出同等要求
+  </text>
+  
+  <rect x="660" y="430" width="560" height="100" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="1"/>
+  <text x="690" y="465" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1976D2">
+    📌 划拨对象
+  </text>
+  <text x="690" y="495" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    • 政府授权实施机构
+  </text>
+  <text x="690" y="518" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    • 出资代表 / 项目公司（根据模式选择）
+  </text>
+  
+  <!-- 核心结论框 -->
+  <rect x="60" y="550" width="1160" height="80" rx="8" fill="#0D47A1"/>
+  <text x="110" y="585" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">
+    ✅ 核心结论
+  </text>
+  <text x="280" y="585" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF">
+    绝大部分特许经营项目的土地（不包括附属商业设施）可通过无偿划拨方式获取
+  </text>
+  <text x="110" y="615" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="rgba(255,255,255,0.7)">
+    关键在于：配套设施用地（服务区、加油站、商业配套等）的获取方式需要单独论证
+  </text>
+  
+  <!-- 底部流程箭头 -->
+  <text x="640" y="660" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    ➡️ 下一节：配套设施用地获取方式详解
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

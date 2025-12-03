@@ -1,0 +1,164 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    PPP新机制政策体系
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    03 / 14
+  </text>
+  
+  <!-- 时间轴主线 -->
+  <line x1="100" y1="280" x2="1180" y2="280" stroke="#0D47A1" stroke-width="3"/>
+  
+  <!-- 时间节点1: 2023.11 -->
+  <circle cx="180" cy="280" r="12" fill="#0D47A1"/>
+  <circle cx="180" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="180" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    2023.11
+  </text>
+  <rect x="100" y="310" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="100" y="310" width="160" height="4" rx="2" fill="#0D47A1"/>
+  <text x="180" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    国办函〔2023〕115号
+  </text>
+  <text x="180" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    新机制指导意见
+  </text>
+  <text x="180" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">
+    ★ 核心纲领文件
+  </text>
+  
+  <!-- 时间节点2: 2024.01 -->
+  <circle cx="380" cy="280" r="12" fill="#1976D2"/>
+  <circle cx="380" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="380" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    2024.01
+  </text>
+  <rect x="300" y="310" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="300" y="310" width="160" height="4" rx="2" fill="#1976D2"/>
+  <text x="380" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    发改办〔2024〕227号
+  </text>
+  <text x="380" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    方案编写大纲
+  </text>
+  <text x="380" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    试行版
+  </text>
+  
+  <!-- 时间节点3: 2024.03 -->
+  <circle cx="580" cy="280" r="12" fill="#1976D2"/>
+  <circle cx="580" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="580" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    2024.03
+  </text>
+  <rect x="500" y="310" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="500" y="310" width="160" height="4" rx="2" fill="#1976D2"/>
+  <text x="580" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    六部委17号令
+  </text>
+  <text x="580" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    特许经营管理办法
+  </text>
+  <text x="580" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">
+    ★ 法规依据
+  </text>
+  
+  <!-- 时间节点4: 2024.04 -->
+  <circle cx="780" cy="280" r="12" fill="#42A5F5"/>
+  <circle cx="780" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="780" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#42A5F5">
+    2024.04
+  </text>
+  <rect x="700" y="310" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="700" y="310" width="160" height="4" rx="2" fill="#42A5F5"/>
+  <text x="780" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    协议范本
+  </text>
+  <text x="780" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    特许经营协议编制
+  </text>
+  <text x="780" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    2024年试行版
+  </text>
+  
+  <!-- 时间节点5: 2024.05 -->
+  <circle cx="980" cy="280" r="12" fill="#42A5F5"/>
+  <circle cx="980" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="980" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#42A5F5">
+    2024.05
+  </text>
+  <rect x="900" y="310" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="900" y="310" width="160" height="4" rx="2" fill="#42A5F5"/>
+  <text x="980" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    发改办〔2024〕151号
+  </text>
+  <text x="980" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    全国PPP信息系统
+  </text>
+  <text x="980" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    项目管理平台
+  </text>
+  
+  <!-- 时间节点6: 2024.10 -->
+  <circle cx="1100" cy="280" r="12" fill="#0D47A1"/>
+  <circle cx="1100" cy="280" r="6" fill="#FFFFFF"/>
+  <text x="1100" y="250" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    2024.10
+  </text>
+  <rect x="1020" y="120" width="160" height="100" rx="6" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="1020" y="120" width="160" height="4" rx="2" fill="#0D47A1"/>
+  <text x="1100" y="155" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1A1A1A">
+    发改办〔2024〕1013号
+  </text>
+  <text x="1100" y="180" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    规范实施工作
+  </text>
+  <text x="1100" y="205" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">
+    ★ 最新细则
+  </text>
+  
+  <!-- 核心转变信息框 -->
+  <rect x="60" y="450" width="1160" height="90" rx="8" fill="#FFFFFF" stroke="#0D47A1" stroke-width="2"/>
+  <rect x="60" y="450" width="6" height="90" rx="3" fill="#FF6F00"/>
+  <text x="100" y="485" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#0D47A1">
+    核心转变
+  </text>
+  <text x="100" y="515" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#1A1A1A">
+    财政部PPP政策体系废止（财金[2023]98号）  →  发改委主导特许经营新机制
+  </text>
+  
+  <!-- 关键信息卡片 -->
+  <rect x="60" y="560" width="360" height="80" rx="6" fill="#E3F2FD"/>
+  <text x="80" y="595" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    📋 旧机制（已废止）
+  </text>
+  <text x="80" y="620" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    财政部主导 · 可用性付费 · 财政承担
+  </text>
+  
+  <rect x="460" y="560" width="360" height="80" rx="6" fill="#E8F5E9"/>
+  <text x="480" y="595" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    ✅ 新机制（现行）
+  </text>
+  <text x="480" y="620" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    发改委主导 · 使用者付费 · 市场化运作
+  </text>
+  
+  <rect x="860" y="560" width="360" height="80" rx="6" fill="#FFF3E0"/>
+  <text x="880" y="595" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6F00">
+    ⚠️ 过渡期关注
+  </text>
+  <text x="880" y="620" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    存量项目处置 · 新旧政策衔接 · 合规审查
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

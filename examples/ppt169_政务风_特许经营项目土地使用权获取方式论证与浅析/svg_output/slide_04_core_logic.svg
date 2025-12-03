@@ -1,0 +1,105 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    特许经营核心逻辑
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    04 / 14
+  </text>
+  
+  <!-- 核心目标框 -->
+  <rect x="440" y="120" width="400" height="70" rx="8" fill="#0D47A1"/>
+  <text x="640" y="162" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">
+    🎯 核心目标
+  </text>
+  
+  <!-- 核心目标说明 -->
+  <rect x="340" y="205" width="600" height="50" rx="6" fill="#FFF3E0" stroke="#FF6F00" stroke-width="2"/>
+  <text x="640" y="238" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FF6F00">
+    防控地方政府违规举债
+  </text>
+  
+  <!-- 连接线：核心目标到三个分支 -->
+  <line x1="640" y1="255" x2="640" y2="290" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="640" y1="290" x2="240" y2="290" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="640" y1="290" x2="1040" y2="290" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="240" y1="290" x2="240" y2="320" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="640" y1="290" x2="640" y2="320" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="1040" y1="290" x2="1040" y2="320" stroke="#0D47A1" stroke-width="2"/>
+  
+  <!-- 三个核心要素卡片 -->
+  <!-- 卡片1: 禁止可用性付费 -->
+  <rect x="100" y="320" width="280" height="140" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="100" y="320" width="280" height="6" rx="3" fill="#FF6F00"/>
+  <text x="140" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A1A">
+    ❌ 禁止可用性付费
+  </text>
+  <text x="120" y="395" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    <tspan x="120" dy="0">旧模式本质：政府通过PPP向社会</tspan>
+    <tspan x="120" dy="22">资本购买融资举债服务</tspan>
+    <tspan x="120" dy="22" fill="#FF6F00">触及违规举债红线</tspan>
+  </text>
+  
+  <!-- 卡片2: 使用者付费 -->
+  <rect x="500" y="320" width="280" height="140" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="500" y="320" width="280" height="6" rx="3" fill="#43A047"/>
+  <text x="540" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A1A">
+    ✅ 使用者付费
+  </text>
+  <text x="520" y="395" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    <tspan x="520" dy="0">新机制要求：项目通过向用户收费</tspan>
+    <tspan x="520" dy="22">或其他开发经营权益取得收益</tspan>
+    <tspan x="520" dy="22" fill="#43A047">市场化运作 自负盈亏</tspan>
+  </text>
+  
+  <!-- 卡片3: 项目谋划关键 -->
+  <rect x="900" y="320" width="280" height="140" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="900" y="320" width="280" height="6" rx="3" fill="#0D47A1"/>
+  <text x="940" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A1A">
+    🔑 项目谋划关键
+  </text>
+  <text x="920" y="395" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    <tspan x="920" dy="0">真正能够实现自平衡的项目较少</tspan>
+    <tspan x="920" dy="22">项目拆分打包是关键</tspan>
+    <tspan x="920" dy="22" fill="#0D47A1">挖掘衍生经济 搭配资源补偿</tspan>
+  </text>
+  
+  <!-- 箭头连接到实现路径 -->
+  <line x1="240" y1="460" x2="240" y2="490" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="640" y1="460" x2="640" y2="490" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="1040" y1="460" x2="1040" y2="490" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="240" y1="490" x2="1040" y2="490" stroke="#0D47A1" stroke-width="2"/>
+  <line x1="640" y1="490" x2="640" y2="510" stroke="#0D47A1" stroke-width="2"/>
+  <polygon points="640,520 632,505 648,505" fill="#0D47A1"/>
+  
+  <!-- 实现路径框 -->
+  <rect x="200" y="525" width="880" height="70" rx="8" fill="#0D47A1"/>
+  <text x="640" y="555" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="rgba(255,255,255,0.7)">
+    实现路径
+  </text>
+  <text x="640" y="582" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    项目拆分打包  +  挖掘衍生经济  +  搭配资源补偿
+  </text>
+  
+  <!-- 底部警示信息 -->
+  <rect x="60" y="620" width="1160" height="55" rx="6" fill="#FFF3E0"/>
+  <rect x="60" y="620" width="6" height="55" rx="3" fill="#FF6F00"/>
+  <text x="90" y="650" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    ⚠️ 
+  </text>
+  <text x="115" y="650" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6F00">
+    关键提示：
+  </text>
+  <text x="210" y="650" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    以往缺口补贴穿透审查，包含可用性付费部分 = 通过未来财政支出为项目建设投资买单 = 违规举债
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

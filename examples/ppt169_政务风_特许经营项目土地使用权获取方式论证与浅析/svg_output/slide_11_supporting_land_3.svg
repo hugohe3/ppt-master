@@ -1,0 +1,169 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    配套设施用地获取方式（三）
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    11 / 14
+  </text>
+  
+  <!-- 左侧栏：集体经营性建设用地 -->
+  <rect x="60" y="115" width="560" height="540" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="115" width="560" height="50" rx="8" fill="#43A047"/>
+  <text x="340" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    🏘️ 集体经营性建设用地
+  </text>
+  
+  <!-- 法律依据 -->
+  <text x="90" y="195" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    法律依据
+  </text>
+  <rect x="90" y="205" width="500" height="40" rx="4" fill="#E8F5E9"/>
+  <text x="110" y="230" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    新版《土地管理法》《土地管理法实施条例》
+  </text>
+  
+  <!-- 使用范畴 -->
+  <text x="90" y="275" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    使用范畴
+  </text>
+  <text x="90" y="300" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    • 国土空间规划确定为工业、商业等经营性用途
+  </text>
+  <text x="90" y="322" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    • 已依法办理土地所有权登记
+  </text>
+  
+  <!-- 适用项目类型 -->
+  <text x="90" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    适用项目类型
+  </text>
+  <rect x="90" y="375" width="500" height="130" rx="6" fill="#F5F7FA"/>
+  
+  <rect x="110" y="390" width="100" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="160" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#43A047">休闲农业</text>
+  
+  <rect x="220" y="390" width="100" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="270" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#43A047">乡村旅游</text>
+  
+  <rect x="330" y="390" width="100" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="380" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#43A047">医养结合</text>
+  
+  <rect x="440" y="390" width="100" height="26" rx="13" fill="#E8F5E9"/>
+  <text x="490" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#43A047">露营民宿</text>
+  
+  <rect x="110" y="425" width="100" height="26" rx="13" fill="#E3F2FD"/>
+  <text x="160" y="443" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#1976D2">文化体验</text>
+  
+  <rect x="220" y="425" width="100" height="26" rx="13" fill="#E3F2FD"/>
+  <text x="270" y="443" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#1976D2">创意办公</text>
+  
+  <rect x="330" y="425" width="100" height="26" rx="13" fill="#E3F2FD"/>
+  <text x="380" y="443" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#1976D2">电子商务</text>
+  
+  <rect x="440" y="425" width="100" height="26" rx="13" fill="#E3F2FD"/>
+  <text x="490" y="443" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#1976D2">农村能源</text>
+  
+  <rect x="110" y="460" width="100" height="26" rx="13" fill="#FFF3E0"/>
+  <text x="160" y="478" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">农产品冷链</text>
+  
+  <rect x="220" y="460" width="100" height="26" rx="13" fill="#FFF3E0"/>
+  <text x="270" y="478" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">初加工</text>
+  
+  <rect x="330" y="460" width="100" height="26" rx="13" fill="#FFF3E0"/>
+  <text x="380" y="478" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6F00">物流仓储</text>
+  
+  <!-- 使用方式 -->
+  <text x="90" y="535" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    使用方式
+  </text>
+  <text x="90" y="560" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    自营 · 出租 · 入股 · 联营 · 收益共享
+  </text>
+  
+  <rect x="90" y="580" width="500" height="55" rx="4" fill="#E8F5E9"/>
+  <text x="110" y="605" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    💡 建立与村集体的合作机制，依法合规、低成本获取集体经营性建设用地
+  </text>
+  <text x="110" y="625" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    开展配套设施开发，拓展经营性收入
+  </text>
+  
+  <!-- 右侧栏：土地流转 -->
+  <rect x="660" y="115" width="560" height="540" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="660" y="115" width="560" height="50" rx="8" fill="#1976D2"/>
+  <text x="940" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    🔄 土地流转
+  </text>
+  
+  <!-- 核心概念 -->
+  <text x="690" y="195" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    核心概念：三权分置
+  </text>
+  <rect x="690" y="205" width="500" height="60" rx="4" fill="#E3F2FD"/>
+  <text x="710" y="230" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    所有权 + 承包权 + 经营权
+  </text>
+  <text x="710" y="252" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    土地流转 = 土地使用权（经营权）流转，仅限于农村土地
+  </text>
+  
+  <!-- 三种流转方式 -->
+  <text x="690" y="295" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    三种流转方式
+  </text>
+  
+  <!-- 方式1 -->
+  <rect x="690" y="310" width="500" height="80" rx="6" fill="#F5F7FA"/>
+  <rect x="690" y="310" width="4" height="80" rx="2" fill="#0D47A1"/>
+  <text x="715" y="335" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    土地转包
+  </text>
+  <text x="715" y="358" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    村集体内部流转，不改变土地承包关系
+  </text>
+  <text x="715" y="378" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    村集体主导 / 种粮大户承包 / 社会化服务
+  </text>
+  
+  <!-- 方式2 -->
+  <rect x="690" y="400" width="500" height="80" rx="6" fill="#F5F7FA"/>
+  <rect x="690" y="400" width="4" height="80" rx="2" fill="#1976D2"/>
+  <text x="715" y="425" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    政府返租
+  </text>
+  <text x="715" y="448" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    乡镇/村集体支付租金返租后再承包给大户或企业
+  </text>
+  <text x="715" y="468" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    有助于规模经营和发展现代农业
+  </text>
+  
+  <!-- 方式3 -->
+  <rect x="690" y="490" width="500" height="80" rx="6" fill="#F5F7FA"/>
+  <rect x="690" y="490" width="4" height="80" rx="2" fill="#43A047"/>
+  <text x="715" y="515" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    作价入股
+  </text>
+  <text x="715" y="538" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    土地承包经营权出资入股项目公司
+  </text>
+  <text x="715" y="558" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#999999">
+    农户获得保底收入 + 股东 + 职工双重身份
+  </text>
+  
+  <!-- 关键提示 -->
+  <rect x="690" y="585" width="500" height="50" rx="4" fill="#FFF3E0"/>
+  <text x="710" y="615" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6F00">
+    ⚠️ 关键：突显农户主体地位，不能代签合同，践行市场化机制
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

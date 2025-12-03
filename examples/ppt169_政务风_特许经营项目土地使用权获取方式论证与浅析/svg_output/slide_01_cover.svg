@@ -1,0 +1,58 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0D47A1"/>
+      <stop offset="100%" style="stop-color:#1565C0"/>
+    </linearGradient>
+    <!-- 装饰线渐变 -->
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
+      <stop offset="50%" style="stop-color:rgba(255,255,255,0.5)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 装饰元素：左下角几何图形 -->
+  <polygon points="0,720 0,520 200,720" fill="rgba(255,255,255,0.05)"/>
+  <polygon points="0,720 0,600 120,720" fill="rgba(255,255,255,0.08)"/>
+  
+  <!-- 装饰元素：右上角几何图形 -->
+  <polygon points="1280,0 1280,200 1080,0" fill="rgba(255,255,255,0.05)"/>
+  <polygon points="1280,0 1280,120 1160,0" fill="rgba(255,255,255,0.08)"/>
+  
+  <!-- 上装饰线 -->
+  <rect x="440" y="220" width="400" height="2" fill="url(#lineGradient)"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="300" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">
+    特许经营项目土地使用权获取方式
+  </text>
+  <text x="640" y="365" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">
+    论证与浅析
+  </text>
+  
+  <!-- 下装饰线 -->
+  <rect x="440" y="400" width="400" height="2" fill="url(#lineGradient)"/>
+  
+  <!-- 副标题 -->
+  <text x="640" y="470" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" fill="rgba(255,255,255,0.8)">
+    PPP新机制下的土地要素保障实务
+  </text>
+  
+  <!-- 分隔点 -->
+  <circle cx="590" cy="530" r="3" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="640" cy="530" r="3" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="690" cy="530" r="3" fill="rgba(255,255,255,0.4)"/>
+  
+  <!-- 日期 -->
+  <text x="640" y="620" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" fill="rgba(255,255,255,0.6)">
+    2025年12月
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="rgba(255,255,255,0.2)"/>
+</svg>

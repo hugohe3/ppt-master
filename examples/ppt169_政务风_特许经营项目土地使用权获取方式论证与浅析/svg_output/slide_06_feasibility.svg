@@ -1,0 +1,146 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    项目可行性与招标条件
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    06 / 14
+  </text>
+  
+  <!-- 左侧栏：项目可行性要求 -->
+  <rect x="60" y="115" width="560" height="540" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="115" width="560" height="50" rx="8" fill="#0D47A1"/>
+  <text x="340" y="148" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">
+    📋 项目可行性要求
+  </text>
+  
+  <!-- 收益来源 -->
+  <text x="90" y="200" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#0D47A1">
+    收益来源
+  </text>
+  <rect x="90" y="210" width="500" height="60" rx="4" fill="#E8F5E9"/>
+  <text x="110" y="235" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    ✓ 向用户收费
+  </text>
+  <text x="110" y="258" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    ✓ 获得与特许经营项目相关的其他开发经营权益
+  </text>
+  
+  <!-- 盈利能力提升措施 -->
+  <text x="90" y="305" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#0D47A1">
+    盈利能力不足时的提升措施
+  </text>
+  <text x="90" y="335" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="90" dy="0">• 合理确定特许经营期限</tspan>
+    <tspan x="90" dy="24">• 政府在建设期提供投资支持</tspan>
+    <tspan x="90" dy="24">• 依法依规合理调整土地规划用途和开发强度</tspan>
+    <tspan x="90" dy="24">• 提供与项目合理相关的资源补偿</tspan>
+  </text>
+  
+  <!-- 可打包项目 -->
+  <text x="90" y="455" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#43A047">
+    ✓ 可综合平衡的项目类型
+  </text>
+  <rect x="90" y="465" width="500" height="80" rx="4" fill="#E3F2FD"/>
+  <text x="110" y="490" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#1A1A1A">
+    <tspan x="110" dy="0">• 厂网一体化项目：污水管网、供热管网、供水管网等</tspan>
+    <tspan x="110" dy="20">• 综合交通项目：公水联运、公铁联运等多式联运</tspan>
+    <tspan x="110" dy="20">• 产业链延伸：公益性较强行业与收益较好产业融合</tspan>
+  </text>
+  
+  <!-- 禁止打包 -->
+  <text x="90" y="580" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6F00">
+    ✗ 禁止打捆的项目类型
+  </text>
+  <rect x="90" y="590" width="500" height="50" rx="4" fill="#FFF3E0"/>
+  <text x="110" y="615" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6F00">
+    <tspan x="110" dy="0">• 商业项目与公益项目相互打捆</tspan>
+    <tspan x="110" dy="20">• 与适合特许经营的项目打捆开展PPP</tspan>
+  </text>
+  
+  <!-- 右侧栏：招标条件要求 -->
+  <rect x="660" y="115" width="560" height="540" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="660" y="115" width="560" height="50" rx="8" fill="#1976D2"/>
+  <text x="940" y="148" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">
+    📝 招标条件要求
+  </text>
+  
+  <!-- 特许经营者条件 -->
+  <text x="690" y="200" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1976D2">
+    特许经营者应具备的条件
+  </text>
+  
+  <rect x="690" y="220" width="240" height="100" rx="6" fill="#E3F2FD"/>
+  <text x="810" y="255" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" fill="#1976D2">
+    💼
+  </text>
+  <text x="810" y="285" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    项目管理经验
+  </text>
+  <text x="810" y="305" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#666666">
+    同类项目实施业绩
+  </text>
+  
+  <rect x="950" y="220" width="240" height="100" rx="6" fill="#E3F2FD"/>
+  <text x="1070" y="255" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" fill="#1976D2">
+    ⚙️
+  </text>
+  <text x="1070" y="285" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    专业运营能力
+  </text>
+  <text x="1070" y="305" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#666666">
+    运营团队及技术实力
+  </text>
+  
+  <rect x="690" y="335" width="240" height="100" rx="6" fill="#E3F2FD"/>
+  <text x="810" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" fill="#1976D2">
+    🏢
+  </text>
+  <text x="810" y="400" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    企业综合实力
+  </text>
+  <text x="810" y="420" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#666666">
+    资产规模及财务状况
+  </text>
+  
+  <rect x="950" y="335" width="240" height="100" rx="6" fill="#E3F2FD"/>
+  <text x="1070" y="370" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" fill="#1976D2">
+    ⭐
+  </text>
+  <text x="1070" y="400" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    信用状况
+  </text>
+  <text x="1070" y="420" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="11" fill="#666666">
+    无不良记录
+  </text>
+  
+  <!-- 评标标准 -->
+  <text x="690" y="475" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1976D2">
+    重要评标标准
+  </text>
+  
+  <rect x="690" y="495" width="500" height="150" rx="6" fill="#F5F7FA" stroke="#1976D2" stroke-width="1"/>
+  <text x="700" y="525" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="710" dy="0">📄 项目运营方案</tspan>
+    <tspan x="910" dy="0">💰 收费单价</tspan>
+    <tspan x="710" dy="30">⏱️ 特许经营期限</tspan>
+    <tspan x="910" dy="0">🤝 政府支持条件</tspan>
+  </text>
+  
+  <rect x="710" y="575" width="460" height="55" rx="4" fill="#E8F5E9"/>
+  <text x="730" y="600" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#43A047">
+    💡 评标核心：运营能力 > 建设能力
+  </text>
+  <text x="730" y="620" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    特许经营强调全生命周期运营，而非单纯的工程建设
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

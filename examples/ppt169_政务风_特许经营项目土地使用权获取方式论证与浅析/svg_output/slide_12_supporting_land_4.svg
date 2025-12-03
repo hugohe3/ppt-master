@@ -1,0 +1,115 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    配套设施用地获取方式（四）
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    12 / 14
+  </text>
+  
+  <!-- 上半部分：产业用地政策 -->
+  <rect x="60" y="115" width="1160" height="250" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="115" width="1160" height="50" rx="8" fill="#FF6F00"/>
+  <text x="640" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    🏭 产业用地政策
+  </text>
+  
+  <!-- 三种获取方式 -->
+  <rect x="90" y="185" width="340" height="160" rx="6" fill="#FFF3E0"/>
+  <rect x="90" y="185" width="340" height="6" rx="3" fill="#FF6F00"/>
+  <text x="260" y="215" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6F00">
+    📋 多种供应方式
+  </text>
+  <text x="110" y="250" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="110" dy="0">• 长期租赁</tspan>
+    <tspan x="110" dy="24">• 先租后让</tspan>
+    <tspan x="110" dy="24">• 租让结合</tspan>
+    <tspan x="110" dy="24">• 弹性年期</tspan>
+  </text>
+  
+  <rect x="460" y="185" width="340" height="160" rx="6" fill="#E3F2FD"/>
+  <rect x="460" y="185" width="340" height="6" rx="3" fill="#1976D2"/>
+  <text x="630" y="215" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1976D2">
+    💼 作价出资入股
+  </text>
+  <text x="480" y="250" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="480" dy="0">政府以土地使用权作价</tspan>
+    <tspan x="480" dy="24">出资投入改组后新设企业</tspan>
+    <tspan x="480" dy="24">出资代表持有后与社会资本</tspan>
+    <tspan x="480" dy="24">共同成立项目公司</tspan>
+  </text>
+  
+  <rect x="830" y="185" width="360" height="160" rx="6" fill="#E8F5E9"/>
+  <rect x="830" y="185" width="360" height="6" rx="3" fill="#43A047"/>
+  <text x="1010" y="215" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#43A047">
+    ⏱️ 过渡期政策
+  </text>
+  <text x="850" y="250" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="850" dy="0">存量房产/土地发展国家支持产业</tspan>
+    <tspan x="850" dy="24">过渡期以5年为限</tspan>
+    <tspan x="850" dy="24">期满后可协议方式办理</tspan>
+    <tspan x="850" dy="24" fill="#43A047">依据：自然资源要素指导目录(2024)</tspan>
+  </text>
+  
+  <!-- 下半部分：存量资产盘活 -->
+  <rect x="60" y="385" width="1160" height="270" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="385" width="1160" height="50" rx="8" fill="#0D47A1"/>
+  <text x="640" y="417" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    📦 存量资产盘活
+  </text>
+  
+  <!-- 三类资产 -->
+  <rect x="90" y="455" width="340" height="180" rx="6" fill="#E3F2FD"/>
+  <text x="260" y="485" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#0D47A1">
+    经营性/准经营性基础设施
+  </text>
+  <text x="110" y="515" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="110" dy="0">• 交通、水利、清洁能源</tspan>
+    <tspan x="110" dy="20">• 保障性租赁住房</tspan>
+    <tspan x="110" dy="20">• 水电气热等市政设施</tspan>
+    <tspan x="110" dy="20">• 生态环保、产业园区</tspan>
+    <tspan x="110" dy="20">• 仓储物流、旅游</tspan>
+    <tspan x="110" dy="20">• 新型基础设施</tspan>
+  </text>
+  
+  <rect x="460" y="455" width="340" height="180" rx="6" fill="#E8F5E9"/>
+  <text x="630" y="485" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#43A047">
+    存量+改扩建结合项目
+  </text>
+  <text x="480" y="515" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="480" dy="0">• 综合交通枢纽改造</tspan>
+    <tspan x="480" dy="20">• 地上地下空间综合开发</tspan>
+    <tspan x="480" dy="20">• 工业企业退城进园</tspan>
+    <tspan x="480" dy="20">• 污水处理厂下沉</tspan>
+    <tspan x="480" dy="20">• 地铁上盖物业</tspan>
+    <tspan x="480" dy="20">• 公共交通用地综合开发</tspan>
+  </text>
+  
+  <rect x="830" y="455" width="360" height="180" rx="6" fill="#FFF3E0"/>
+  <text x="1010" y="485" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6F00">
+    长期闲置但有开发价值
+  </text>
+  <text x="850" y="515" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="850" dy="0">• 老旧厂房</tspan>
+    <tspan x="850" dy="20">• 文化体育场馆</tspan>
+    <tspan x="850" dy="20">• 闲置土地</tspan>
+    <tspan x="850" dy="20">• 老旧小区、街区改造</tspan>
+    <tspan x="850" dy="20">• 国有企业开办的酒店、餐饮、</tspan>
+    <tspan x="850" dy="20">  疗养院等非主业资产</tspan>
+  </text>
+  
+  <!-- 应用提示 -->
+  <rect x="60" y="665" width="1160" height="35" rx="4" fill="#0D47A1"/>
+  <text x="640" y="688" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">
+    💡 应用：通过剥离或整合，识别可特许经营的项目包，充分运用存量资产盘活政策红利
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="710" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

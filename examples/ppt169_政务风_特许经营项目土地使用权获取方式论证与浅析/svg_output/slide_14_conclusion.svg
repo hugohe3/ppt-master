@@ -1,0 +1,130 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    关键结论与实操要点
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    14 / 14
+  </text>
+  
+  <!-- 核心结论框 -->
+  <rect x="60" y="115" width="1160" height="150" rx="8" fill="#0D47A1"/>
+  <text x="110" y="150" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">
+    💡 核心结论
+  </text>
+  
+  <text x="110" y="190" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+    <tspan x="110" dy="0">1. 特许经营底层逻辑：</tspan>
+    <tspan fill="rgba(255,255,255,0.8)">防控地方政府违规举债，聚焦使用者付费</tspan>
+  </text>
+  <text x="110" y="218" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+    <tspan x="110" dy="0">2. 公益性用地：</tspan>
+    <tspan fill="rgba(255,255,255,0.8)">绝大部分可通过无偿划拨获取（划拨于实施机构/出资代表/项目公司）</tspan>
+  </text>
+  <text x="110" y="246" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+    <tspan x="110" dy="0">3. 配套设施用地：</tspan>
+    <tspan fill="rgba(255,255,255,0.8)">需通过多种方式（协议出让/带方案挂牌/综合评价等）精准锁定土地使用权</tspan>
+  </text>
+  
+  <!-- 两列布局 -->
+  <!-- 左列：四条红线 -->
+  <rect x="60" y="285" width="560" height="220" rx="8" fill="#FFF3E0" stroke="#FF6F00" stroke-width="1"/>
+  <rect x="60" y="285" width="560" height="45" rx="8" fill="#FF6F00"/>
+  <text x="340" y="315" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    ⚠️ 四条红线（牢记）
+  </text>
+  
+  <text x="90" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0" font-weight="600">1. 聚焦使用者付费项目</tspan>
+    <tspan x="320" fill="#666666">不能补贴建设成本</tspan>
+  </text>
+  <text x="90" y="390" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0" font-weight="600">2. 准确把握使用范围</tspan>
+    <tspan x="320" fill="#666666">商业/产业/纯公益不得采用</tspan>
+  </text>
+  <text x="90" y="420" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0" font-weight="600">3. 最大程度鼓励民企参与</tspan>
+    <tspan x="320" fill="#666666">按清单严格执行</tspan>
+  </text>
+  <text x="90" y="450" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0" font-weight="600">4. 本级国企参与限制</tspan>
+    <tspan x="320" fill="#666666">不得投标/控股</tspan>
+  </text>
+  
+  <rect x="90" y="470" width="500" height="25" rx="4" fill="rgba(255,111,0,0.1)"/>
+  <text x="110" y="488" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6F00">
+    底线：不因采取PPP模式而额外新增地方政府财政支出
+  </text>
+  
+  <!-- 右列：六种配套用地获取方式 -->
+  <rect x="660" y="285" width="560" height="220" rx="8" fill="#E8F5E9" stroke="#43A047" stroke-width="1"/>
+  <rect x="660" y="285" width="560" height="45" rx="8" fill="#43A047"/>
+  <text x="940" y="315" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    ✅ 六种配套用地获取方式
+  </text>
+  
+  <rect x="690" y="345" width="160" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="770" y="368" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    1. 协议出让
+  </text>
+  
+  <rect x="870" y="345" width="160" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="950" y="368" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    2. 定向/带方案挂牌
+  </text>
+  
+  <rect x="1050" y="345" width="140" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="1120" y="368" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    3. 综合评价
+  </text>
+  
+  <rect x="690" y="395" width="160" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="770" y="418" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    4. 集体经营性建设用地
+  </text>
+  
+  <rect x="870" y="395" width="160" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="950" y="418" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    5. 土地流转
+  </text>
+  
+  <rect x="1050" y="395" width="140" height="35" rx="6" fill="#FFFFFF"/>
+  <text x="1120" y="418" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    6. 产业用地+存量
+  </text>
+  
+  <rect x="690" y="445" width="500" height="50" rx="4" fill="rgba(67,160,71,0.1)"/>
+  <text x="710" y="470" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    关键：通过依法合规的方式精准锁定特许经营者获取配套土地使用权
+  </text>
+  <text x="710" y="488" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    实现项目资金平衡逻辑合理、路径畅通、具备可融性和可操作性
+  </text>
+  
+  <!-- 实操建议 -->
+  <rect x="60" y="525" width="1160" height="130" rx="8" fill="#FFFFFF" stroke="#0D47A1" stroke-width="2"/>
+  <text x="110" y="560" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#0D47A1">
+    🎯 实操建议
+  </text>
+  
+  <text x="110" y="595" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    • 项目谋划阶段即需考虑土地要素保障的完整路径
+  </text>
+  <text x="110" y="620" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    • 明确BOT/BOOT模式选择对立项主体和土地权属的影响（立项主体=土地使用权人=资产权属人）
+  </text>
+  <text x="110" y="645" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    • 配套设施用地获取方式需在实施方案中明确约定，充分运用产业用地政策和存量资产盘活政策红利
+  </text>
+  
+  <!-- 感谢 -->
+  <text x="640" y="690" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#0D47A1">
+    ━━━ 谢谢 ━━━
+  </text>
+</svg>

@@ -1,0 +1,137 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    配套设施用地获取方式（一）
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    09 / 14
+  </text>
+  
+  <!-- 问题背景框 -->
+  <rect x="60" y="115" width="1160" height="100" rx="8" fill="#FFF3E0" stroke="#FF6F00" stroke-width="1"/>
+  <rect x="60" y="115" width="6" height="100" rx="3" fill="#FF6F00"/>
+  <text x="90" y="145" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6F00">
+    ⚠️ 问题背景：配套设施的界定
+  </text>
+  <text x="90" y="175" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    配套设施指非项目主体结构部分产生的收益：高速公路服务区、加油站、停车场、广告牌；学校医院配套的食堂、充电桩等
+  </text>
+  <text x="90" y="200" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    大部分特许经营项目的实施方案和合同体系中，未明确配套设施土地的获取方式，仅提出"以出让方式获取土地"等模糊描述
+  </text>
+  
+  <!-- 招拍挂问题分析 -->
+  <rect x="60" y="230" width="560" height="190" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="230" width="560" height="45" rx="8" fill="#FF6F00"/>
+  <text x="340" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    ❌ 招拍挂方式的问题
+  </text>
+  
+  <text x="90" y="300" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" font-weight="600" fill="#FF6F00">问题一：</tspan>
+    <tspan>项目公司未必成为配套用地使用权人</tspan>
+  </text>
+  <text x="90" y="325" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    → 推翻项目实施方案中的资金平衡机制及预期收益水平
+  </text>
+  
+  <text x="90" y="360" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" font-weight="600" fill="#FF6F00">问题二：</tspan>
+    <tspan>特许经营招标无法代替招拍挂程序</tspan>
+  </text>
+  <text x="90" y="385" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    → 招拍挂往往在项目投资计划后半部分，前期需投入资金达到净地条件
+  </text>
+  
+  <!-- 解决方案：协议出让 -->
+  <rect x="660" y="230" width="560" height="190" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="660" y="230" width="560" height="45" rx="8" fill="#43A047"/>
+  <text x="940" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    ✅ 解决方案一：协议出让
+  </text>
+  
+  <text x="690" y="300" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    法律依据
+  </text>
+  <text x="690" y="325" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    《城市房地产管理法》、《协议出让国有土地使用权规定》
+  </text>
+  
+  <text x="690" y="355" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    适用条件
+  </text>
+  <text x="690" y="380" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    同一地块仅一个意向用地者（商旅娱住除外）
+  </text>
+  <text x="690" y="400" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    商旅娱住无条件时，可协议出让（不低于最低价）
+  </text>
+  
+  <!-- 可协议出让的配套设施类型 -->
+  <rect x="60" y="440" width="1160" height="180" rx="8" fill="#FFFFFF" stroke="#43A047" stroke-width="2"/>
+  <text x="90" y="475" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#43A047">
+    ✓ 可协议出让的配套设施用地类型
+  </text>
+  
+  <!-- 用地类型标签 - 第一行 -->
+  <rect x="90" y="495" width="120" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="150" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    加油(气)站
+  </text>
+  
+  <rect x="230" y="495" width="120" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="290" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    农贸市场
+  </text>
+  
+  <rect x="370" y="495" width="120" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="430" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    社区综合体
+  </text>
+  
+  <rect x="510" y="495" width="120" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="570" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    养老设施
+  </text>
+  
+  <rect x="650" y="495" width="140" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="720" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    保障性安居工程
+  </text>
+  
+  <rect x="810" y="495" width="120" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="870" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    文体设施
+  </text>
+  
+  <rect x="950" y="495" width="130" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="1015" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    历史文化保护
+  </text>
+  
+  <rect x="1100" y="495" width="100" height="40" rx="6" fill="#E8F5E9"/>
+  <text x="1150" y="520" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    科教创新
+  </text>
+  
+  <!-- 核心逻辑 -->
+  <rect x="90" y="555" width="1100" height="50" rx="6" fill="#E3F2FD"/>
+  <text x="110" y="585" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan font-weight="600" fill="#0D47A1">核心逻辑：</tspan>
+    <tspan>通过协议出让锁定特许经营中标主体作为土地二级开发和受益的主体，使项目资金平衡逻辑合理、路径畅通、具备可融性和可操作性</tspan>
+  </text>
+  
+  <!-- 其他方式提示 -->
+  <text x="90" y="640" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#666666">
+    💡 其他灵活方式：租赁、作价出资（入股）等有偿供应土地
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

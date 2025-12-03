@@ -1,0 +1,136 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    配套设施用地获取方式（二）
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    10 / 14
+  </text>
+  
+  <!-- 三列布局 -->
+  <!-- 第一列：定向挂牌 -->
+  <rect x="60" y="115" width="360" height="500" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="115" width="360" height="50" rx="8" fill="#0D47A1"/>
+  <text x="240" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    📌 定向挂牌
+  </text>
+  
+  <text x="90" y="195" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    概念说明
+  </text>
+  <text x="90" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="90" dy="0">法律法规无明确描述</tspan>
+    <tspan x="90" dy="20">南方土地出让实操中运用较多</tspan>
+    <tspan x="90" dy="20">本质上不违背土地出让法律约束</tspan>
+  </text>
+  
+  <text x="90" y="305" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    限制条件类型
+  </text>
+  <rect x="90" y="320" width="300" height="120" rx="6" fill="#E3F2FD"/>
+  <text x="110" y="350" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="110" dy="0">• 企业经营范围限制</tspan>
+    <tspan x="110" dy="24">• 自持比例要求</tspan>
+    <tspan x="110" dy="24">• 规划条件约束</tspan>
+    <tspan x="110" dy="24">• 其他特定条件</tspan>
+  </text>
+  
+  <text x="90" y="475" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D47A1">
+    适用用地类型
+  </text>
+  <text x="90" y="500" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    工业用地、商服用地
+  </text>
+  <text x="90" y="525" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    基本底价成交
+  </text>
+  
+  <!-- 第二列：带方案挂牌 -->
+  <rect x="460" y="115" width="360" height="500" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="460" y="115" width="360" height="50" rx="8" fill="#1976D2"/>
+  <text x="640" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    📐 带方案挂牌
+  </text>
+  
+  <text x="490" y="195" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    概念说明
+  </text>
+  <text x="490" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="490" dy="0">带建设工程设计方案出让</tspan>
+    <tspan x="490" dy="20">方案需符合上位规划要求</tspan>
+    <tspan x="490" dy="20">统筹城市公共利益和安全</tspan>
+  </text>
+  
+  <text x="490" y="305" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    方案内容
+  </text>
+  <rect x="490" y="320" width="300" height="120" rx="6" fill="#E3F2FD"/>
+  <text x="510" y="350" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="510" dy="0">• 项目总平面图</tspan>
+    <tspan x="510" dy="24">• 单体建筑方案</tspan>
+    <tspan x="510" dy="24">• 效果图</tspan>
+    <tspan x="510" dy="24">• 规划条件要求</tspan>
+  </text>
+  
+  <text x="490" y="475" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1976D2">
+    约束要求
+  </text>
+  <text x="490" y="500" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    受让人必须按合同约定建设经营
+  </text>
+  <text x="490" y="525" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    落实必要条件和要求
+  </text>
+  
+  <!-- 第三列：综合评价 -->
+  <rect x="860" y="115" width="360" height="500" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="860" y="115" width="360" height="50" rx="8" fill="#43A047"/>
+  <text x="1040" y="147" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    📊 综合评价
+  </text>
+  
+  <text x="890" y="195" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    概念说明
+  </text>
+  <text x="890" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    <tspan x="890" dy="0">不同于"价高者得"</tspan>
+    <tspan x="890" dy="20">类似招投标综合评分法</tspan>
+    <tspan x="890" dy="20">综合比选确定中标企业</tspan>
+  </text>
+  
+  <text x="890" y="305" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    评价因素
+  </text>
+  <rect x="890" y="320" width="300" height="120" rx="6" fill="#E8F5E9"/>
+  <text x="910" y="350" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    <tspan x="910" dy="0">• 土地报价</tspan>
+    <tspan x="910" dy="24">• 资金实力</tspan>
+    <tspan x="910" dy="24">• 资信水平</tspan>
+    <tspan x="910" dy="24">• 区域贡献 / 实施方案</tspan>
+  </text>
+  
+  <text x="890" y="475" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#43A047">
+    优势特点
+  </text>
+  <text x="890" y="500" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#1A1A1A">
+    多维度评估企业能力
+  </text>
+  <text x="890" y="525" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#43A047">
+    更适合特许经营场景
+  </text>
+  
+  <!-- 共同逻辑框 -->
+  <rect x="60" y="630" width="1160" height="50" rx="6" fill="#0D47A1"/>
+  <text x="640" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+    💡 共同逻辑：通过限制条件形成信息壁垒，将一级实施主体较大概率锁定为二级开发拿地主体
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="690" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

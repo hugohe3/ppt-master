@@ -1,0 +1,167 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    项目立项方式解析：BOT vs BOOT
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    07 / 14
+  </text>
+  
+  <!-- 优化后的对比表格：总宽1160px，列宽 160 + 500 + 500 -->
+  <!-- 表头 -->
+  <rect x="60" y="115" width="160" height="55" rx="6" fill="#F5F7FA" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#666666">
+    对比维度
+  </text>
+  
+  <rect x="220" y="115" width="500" height="55" rx="6" fill="#0D47A1"/>
+  <text x="470" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    BOT / TOT / ROT
+  </text>
+  
+  <rect x="720" y="115" width="500" height="55" rx="6" fill="#1976D2"/>
+  <text x="970" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    BOOT
+  </text>
+  
+  <!-- 行1: 立项主体 -->
+  <rect x="60" y="175" width="160" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="215" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    立项主体
+  </text>
+  
+  <rect x="220" y="175" width="500" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="470" y="202" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    政府授权的实施机构 / 出资代表
+  </text>
+  <text x="470" y="225" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    履行审批手续
+  </text>
+  
+  <rect x="720" y="175" width="500" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="970" y="202" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    社会资本（项目公司）
+  </text>
+  <text x="970" y="225" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    通过核准或备案方式立项
+  </text>
+  
+  <!-- 行2: 资产权属 -->
+  <rect x="60" y="240" width="160" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    资产权属
+  </text>
+  
+  <rect x="220" y="240" width="500" height="65" fill="#E8F5E9" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="470" y="267" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#43A047">
+    政府
+  </text>
+  <text x="470" y="292" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    合作期内资产权属在政府
+  </text>
+  
+  <rect x="720" y="240" width="500" height="65" fill="#E3F2FD" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="970" y="267" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1976D2">
+    企业（项目公司）
+  </text>
+  <text x="970" y="292" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    合作期内资产权属在项目公司
+  </text>
+  
+  <!-- 行3: 土地使用权 -->
+  <rect x="60" y="305" width="160" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="345" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    土地使用权
+  </text>
+  
+  <rect x="220" y="305" width="500" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="470" y="332" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    划拨于政府实施机构 / 出资代表
+  </text>
+  <text x="470" y="357" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    社会资本仅拥有收费权 / 经营权
+  </text>
+  
+  <rect x="720" y="305" width="500" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="970" y="332" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    划拨 / 出让于项目公司
+  </text>
+  <text x="970" y="357" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    项目公司拥有土地使用权
+  </text>
+  
+  <!-- 行4: 投资性质 -->
+  <rect x="60" y="370" width="160" height="65" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="410" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    投资性质
+  </text>
+  
+  <rect x="220" y="370" width="500" height="65" fill="#FFF3E0" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="470" y="397" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6F00">
+    政府投资类项目
+  </text>
+  <text x="470" y="422" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    政府可提供资本金支持
+  </text>
+  
+  <rect x="720" y="370" width="500" height="65" fill="#E3F2FD" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="970" y="397" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1976D2">
+    企业投资类项目
+  </text>
+  <text x="970" y="422" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    政府可提供投资补助和贷款贴息
+  </text>
+  
+  <!-- 行5: 期满处置 -->
+  <rect x="60" y="435" width="160" height="55" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="140" y="470" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A1A">
+    期满处置
+  </text>
+  
+  <rect x="220" y="435" width="500" height="55" fill="#F5F7FA" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="470" y="470" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    无偿移交政府
+  </text>
+  
+  <rect x="720" y="435" width="500" height="55" fill="#F5F7FA" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="970" y="470" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    无偿移交政府
+  </text>
+  
+  <!-- 关键结论框 -->
+  <rect x="60" y="510" width="1160" height="85" rx="8" fill="#0D47A1"/>
+  <text x="640" y="545" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">
+    💡 关键结论：立项主体 = 土地使用权人 = 资产权属人
+  </text>
+  <text x="640" y="575" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="rgba(255,255,255,0.8)">
+    三者保持一致是项目合规的基础
+  </text>
+  
+  <!-- 补充说明 -->
+  <rect x="60" y="610" width="565" height="60" rx="6" fill="#E8F5E9"/>
+  <rect x="60" y="610" width="4" height="60" rx="2" fill="#43A047"/>
+  <text x="90" y="638" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#43A047">
+    BOT 模式要点
+  </text>
+  <text x="90" y="658" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    立项工作可由项目公司具体落实，但立项主体仍为政府
+  </text>
+  
+  <rect x="655" y="610" width="565" height="60" rx="6" fill="#E3F2FD"/>
+  <rect x="655" y="610" width="4" height="60" rx="2" fill="#1976D2"/>
+  <text x="685" y="638" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1976D2">
+    BOOT 模式要点
+  </text>
+  <text x="685" y="658" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    如政府已完成前期手续，需办理项目法人变更手续
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

@@ -1,0 +1,134 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    发改委四条红线
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    05 / 14
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="60" y="120" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    2024年4月29日 国家发展改革委全国投资项目前期工作和项目管理专题培训会
+  </text>
+  
+  <!-- 红线卡片1: 聚焦使用者付费 -->
+  <rect x="60" y="145" width="560" height="240" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="145" width="560" height="6" rx="3" fill="#FF6F00"/>
+  <rect x="60" y="145" width="6" height="240" rx="3" fill="#FF6F00"/>
+  
+  <text x="90" y="185" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FF6F00">
+    ⚠️ 红线一：聚焦使用者付费项目
+  </text>
+  
+  <text x="90" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0">✓ 可一视同仁原则在建设期给予政府投资支持</tspan>
+    <tspan x="90" dy="26">✓ 可按行业统一规定补贴运营</tspan>
+    <tspan x="90" dy="26" fill="#FF6F00" font-weight="600">✗ 不能补贴建设成本</tspan>
+    <tspan x="90" dy="26" fill="#FF6F00" font-weight="600">✗ 不得针对单个项目私设补贴标准</tspan>
+    <tspan x="90" dy="26" fill="#FF6F00" font-weight="600">✗ 不因PPP模式额外新增地方财政支出</tspan>
+  </text>
+  
+  <!-- 红线卡片2: 准确把握使用范围 -->
+  <rect x="660" y="145" width="560" height="240" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="660" y="145" width="560" height="6" rx="3" fill="#FF6F00"/>
+  <rect x="660" y="145" width="6" height="240" rx="3" fill="#FF6F00"/>
+  
+  <text x="690" y="185" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FF6F00">
+    ⚠️ 红线二：准确把握使用范围
+  </text>
+  
+  <text x="690" y="220" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="690" dy="0" fill="#FF6F00" font-weight="600">✗ 市场化程度高的商业项目</tspan>
+    <tspan x="880" dy="0" fill="#666666">不得采用</tspan>
+    <tspan x="690" dy="26" fill="#FF6F00" font-weight="600">✗ 市场化程度高的产业项目</tspan>
+    <tspan x="880" dy="0" fill="#666666">不得采用</tspan>
+    <tspan x="690" dy="26" fill="#FF6F00" font-weight="600">✗ 纯公益性项目</tspan>
+    <tspan x="880" dy="0" fill="#666666">不得采用</tspan>
+  </text>
+  
+  <rect x="690" y="310" width="500" height="55" rx="4" fill="#E8F5E9"/>
+  <text x="710" y="335" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047" font-weight="600">
+    ✓ 适用范围：有经营性收入的基础设施和公用事业
+  </text>
+  <text x="710" y="355" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    公路、铁路、民航、市政、环保、水利、体育、旅游、智慧城市等
+  </text>
+  
+  <!-- 红线卡片3: 最大程度鼓励民企 -->
+  <rect x="60" y="405" width="560" height="240" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="405" width="560" height="6" rx="3" fill="#FF6F00"/>
+  <rect x="60" y="405" width="6" height="240" rx="3" fill="#FF6F00"/>
+  
+  <text x="90" y="445" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FF6F00">
+    ⚠️ 红线三：最大程度鼓励民企参与
+  </text>
+  
+  <text x="90" y="480" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    <tspan x="90" dy="0">• 115号文列出了民企参与特许经营项目的清单</tspan>
+    <tspan x="90" dy="26">• 明确提出行业类别划分</tspan>
+  </text>
+  
+  <rect x="90" y="540" width="220" height="80" rx="4" fill="#E8F5E9"/>
+  <text x="110" y="565" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#43A047">
+    应由民企独资/控股
+  </text>
+  <text x="110" y="590" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    垃圾固废、园林绿化、
+  </text>
+  <text x="110" y="608" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    城市环卫等
+  </text>
+  
+  <rect x="330" y="540" width="260" height="80" rx="4" fill="#E3F2FD"/>
+  <text x="350" y="565" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1976D2">
+    民企应参股/优先支持
+  </text>
+  <text x="350" y="590" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    收费公路、轨道交通、污水处理、
+  </text>
+  <text x="350" y="608" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="12" fill="#666666">
+    供水供气等
+  </text>
+  
+  <!-- 红线卡片4: 本级国企参与限制 -->
+  <rect x="660" y="405" width="560" height="240" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="660" y="405" width="560" height="6" rx="3" fill="#FF6F00"/>
+  <rect x="660" y="405" width="6" height="240" rx="3" fill="#FF6F00"/>
+  
+  <text x="690" y="445" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700" fill="#FF6F00">
+    ⚠️ 红线四：本级国企参与限制
+  </text>
+  
+  <text x="690" y="480" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A1A">
+    • 严格落实PPP新机制本级国企参与要求
+  </text>
+  
+  <rect x="690" y="510" width="500" height="115" rx="4" fill="#FFF3E0"/>
+  <text x="710" y="540" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6F00">
+    地方本级国有独资/控股企业：
+  </text>
+  <text x="710" y="570" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    <tspan x="710" dy="0" font-weight="600" fill="#FF6F00">✗</tspan>
+    <tspan dx="8">不得作为PPP项目的投标方</tspan>
+  </text>
+  <text x="710" y="600" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" fill="#1A1A1A">
+    <tspan x="710" dy="0" font-weight="600" fill="#FF6F00">✗</tspan>
+    <tspan dx="8">不得作为PPP项目的控股方</tspan>
+  </text>
+  
+  <rect x="690" y="535" width="4" height="85" rx="2" fill="#FF6F00"/>
+  
+  <text x="710" y="640" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#43A047">
+    ✓ 例外情况：资本金注入除外
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>

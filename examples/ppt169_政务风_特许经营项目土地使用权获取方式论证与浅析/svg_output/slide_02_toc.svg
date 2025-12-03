@@ -1,0 +1,92 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="32" font-weight="700" fill="#0D47A1">
+    目录
+  </text>
+  <rect x="60" y="85" width="1160" height="3" fill="#0D47A1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="70" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    02 / 14
+  </text>
+  
+  <!-- 目录项1 -->
+  <rect x="60" y="140" width="50" height="50" rx="6" fill="#0D47A1"/>
+  <text x="85" y="173" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    01
+  </text>
+  <text x="130" y="165" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A1A">
+    政策背景
+  </text>
+  <line x1="260" y1="165" x2="950" y2="165" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="970" y="165" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666">
+    PPP新机制政策体系
+  </text>
+  
+  <!-- 目录项2 -->
+  <rect x="60" y="220" width="50" height="50" rx="6" fill="#0D47A1"/>
+  <text x="85" y="253" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    02
+  </text>
+  <text x="130" y="245" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A1A">
+    核心逻辑
+  </text>
+  <line x1="260" y1="245" x2="950" y2="245" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="970" y="245" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666">
+    特许经营底层逻辑解析
+  </text>
+  
+  <!-- 目录项3 -->
+  <rect x="60" y="300" width="50" height="50" rx="6" fill="#0D47A1"/>
+  <text x="85" y="333" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    03
+  </text>
+  <text x="130" y="325" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A1A">
+    边界条件
+  </text>
+  <line x1="260" y1="325" x2="950" y2="325" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="970" y="325" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666">
+    四条红线与项目要求
+  </text>
+  
+  <!-- 目录项4 -->
+  <rect x="60" y="380" width="50" height="50" rx="6" fill="#0D47A1"/>
+  <text x="85" y="413" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    04
+  </text>
+  <text x="130" y="405" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A1A">
+    土地获取
+  </text>
+  <line x1="260" y1="405" x2="950" y2="405" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="970" y="405" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666">
+    公益性用地与配套设施用地
+  </text>
+  
+  <!-- 目录项5 -->
+  <rect x="60" y="460" width="50" height="50" rx="6" fill="#0D47A1"/>
+  <text x="85" y="493" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    05
+  </text>
+  <text x="130" y="485" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A1A">
+    组合供应
+  </text>
+  <line x1="260" y1="485" x2="950" y2="485" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="970" y="485" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="16" fill="#666666">
+    自然资源组合供应政策
+  </text>
+  
+  <!-- 底部页码区域 -->
+  <rect x="60" y="560" width="1160" height="100" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="120" y="600" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="14" fill="#666666">
+    页码分布
+  </text>
+  <text x="120" y="630" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="13" fill="#999999">
+    01 政策背景 (P3) → 02 核心逻辑 (P4) → 03 边界条件 (P5-7) → 04 土地获取 (P8-12) → 05 组合供应 (P13-14)
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="60" y="680" width="1160" height="1" fill="#E0E0E0"/>
+</svg>
