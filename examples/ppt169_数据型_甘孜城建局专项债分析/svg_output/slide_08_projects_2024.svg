@@ -1,0 +1,358 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 页面07 - 2024年项目明细 -->
+
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="2" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#f0f2f5" />
+
+    <!-- 标题区域 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="bold" fill="#1a1a2e">
+        <tspan>📋 项目明细（2024年）</tspan>
+    </text>
+
+    <!-- 统计概览 -->
+    <rect x="420" y="30" width="180" height="40" rx="20" fill="#f3e8ff" />
+    <text x="510" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#9966ff" text-anchor="middle">
+        <tspan>共 12 个项目</tspan>
+    </text>
+
+    <rect x="620" y="30" width="200" height="40" rx="20" fill="#f3e8ff" />
+    <text x="720" y="57" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#9966ff" text-anchor="middle">
+        <tspan>融资 2.77 亿元</tspan>
+    </text>
+
+    <!-- 左侧列表卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="85" width="570" height="585" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <!-- 左侧标题栏 -->
+    <rect x="60" y="85" width="570" height="45" rx="12" fill="#9966ff" />
+    <rect x="60" y="118" width="570" height="12" fill="#9966ff" />
+    <text x="345" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>项目清单（1-6）</tspan>
+    </text>
+
+    <!-- 项目1 -->
+    <text x="90" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>01</tspan>
+    </text>
+    <text x="125" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>理塘县城镇老旧小区改造</tspan>
+    </text>
+    <text x="590" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.6500 亿</tspan>
+    </text>
+    <line x1="90" y1="180" x2="590" y2="180" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目2 -->
+    <text x="90" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>02</tspan>
+    </text>
+    <text x="125" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>巴塘县第二自来水厂建设项目</tspan>
+    </text>
+    <text x="590" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.6000 亿</tspan>
+    </text>
+    <line x1="90" y1="225" x2="590" y2="225" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目3 -->
+    <text x="90" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>03</tspan>
+    </text>
+    <text x="125" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>雅江县污水处理厂二期</tspan>
+    </text>
+    <text x="590" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.4000 亿</tspan>
+    </text>
+    <line x1="90" y1="270" x2="590" y2="270" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目4 -->
+    <text x="90" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>04</tspan>
+    </text>
+    <text x="125" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>九龙县第一停车场建设项目</tspan>
+    </text>
+    <text x="590" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.2000 亿</tspan>
+    </text>
+    <line x1="90" y1="315" x2="590" y2="315" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目5 -->
+    <text x="90" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>05</tspan>
+    </text>
+    <text x="125" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>白玉县城市停车场建设项目</tspan>
+    </text>
+    <text x="590" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.2000 亿</tspan>
+    </text>
+    <line x1="90" y1="360" x2="590" y2="360" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目6 -->
+    <text x="90" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>06</tspan>
+    </text>
+    <text x="125" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>白玉县污水处理厂技改扩容</tspan>
+    </text>
+    <text x="590" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.1400 亿</tspan>
+    </text>
+
+    <!-- 左侧分析区域 -->
+    <rect x="90" y="430" width="510" height="220" rx="8" fill="#f9f0ff" />
+    <text x="110" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#9966ff">
+        <tspan>📊 2024年项目类型分布</tspan>
+    </text>
+
+    <!-- 类型条形图 -->
+    <text x="110" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333">
+        <tspan>老旧小区改造</tspan>
+    </text>
+    <rect x="230" y="487" width="200" height="18" rx="4" fill="#e6e6e6" />
+    <rect x="230" y="487" width="130" height="18" rx="4" fill="#9966ff" />
+    <text x="560" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="end">
+        <tspan>2个 · 0.73亿</tspan>
+    </text>
+
+    <text x="110" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333">
+        <tspan>供水工程</tspan>
+    </text>
+    <rect x="230" y="517" width="200" height="18" rx="4" fill="#e6e6e6" />
+    <rect x="230" y="517" width="107" height="18" rx="4" fill="#36a2eb" />
+    <text x="560" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="end">
+        <tspan>2个 · 0.66亿</tspan>
+    </text>
+
+    <text x="110" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333">
+        <tspan>污水处理</tspan>
+    </text>
+    <rect x="230" y="547" width="200" height="18" rx="4" fill="#e6e6e6" />
+    <rect x="230" y="547" width="88" height="18" rx="4" fill="#4bc0c0" />
+    <text x="560" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="end">
+        <tspan>2个 · 0.54亿</tspan>
+    </text>
+
+    <text x="110" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333">
+        <tspan>停车场</tspan>
+    </text>
+    <rect x="230" y="577" width="200" height="18" rx="4" fill="#e6e6e6" />
+    <rect x="230" y="577" width="80" height="18" rx="4" fill="#ff6384" />
+    <text x="560" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="end">
+        <tspan>3个 · 0.50亿</tspan>
+    </text>
+
+    <text x="110" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333">
+        <tspan>供暖工程</tspan>
+    </text>
+    <rect x="230" y="607" width="200" height="18" rx="4" fill="#e6e6e6" />
+    <rect x="230" y="607" width="55" height="18" rx="4" fill="#ff9f40" />
+    <text x="560" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="end">
+        <tspan>3个 · 0.34亿</tspan>
+    </text>
+
+    <!-- 右侧列表卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="650" y="85" width="570" height="585" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <!-- 右侧标题栏 -->
+    <rect x="650" y="85" width="570" height="45" rx="12" fill="#9966ff" />
+    <rect x="650" y="118" width="570" height="12" fill="#9966ff" />
+    <text x="935" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>项目清单（7-12）</tspan>
+    </text>
+
+    <!-- 项目7 -->
+    <text x="680" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>07</tspan>
+    </text>
+    <text x="715" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>康定市排水管网工程项目</tspan>
+    </text>
+    <text x="1180" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.1200 亿</tspan>
+    </text>
+    <line x1="680" y1="180" x2="1180" y2="180" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目8 -->
+    <text x="680" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>08</tspan>
+    </text>
+    <text x="715" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>康定市第二中学供暖工程</tspan>
+    </text>
+    <text x="1180" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.1180 亿</tspan>
+    </text>
+    <line x1="680" y1="225" x2="1180" y2="225" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目9 -->
+    <text x="680" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>09</tspan>
+    </text>
+    <text x="715" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>石渠县城市供暖四期</tspan>
+    </text>
+    <text x="1180" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.1000 亿</tspan>
+    </text>
+    <line x1="680" y1="270" x2="1180" y2="270" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目10 -->
+    <text x="680" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>10</tspan>
+    </text>
+    <text x="715" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>雅江县城南智能停车场(一期)</tspan>
+    </text>
+    <text x="1180" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.1000 亿</tspan>
+    </text>
+    <line x1="680" y1="315" x2="1180" y2="315" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目11 -->
+    <text x="680" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>11</tspan>
+    </text>
+    <text x="715" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>炉霍县章谷社区老旧小区改造</tspan>
+    </text>
+    <text x="1180" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.0800 亿</tspan>
+    </text>
+    <line x1="680" y1="360" x2="1180" y2="360" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 项目12 -->
+    <text x="680" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#9966ff">
+        <tspan>12</tspan>
+    </text>
+    <text x="715" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#333333">
+        <tspan>色达县自来水厂扩容扩建</tspan>
+    </text>
+    <text x="1180" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.0600 亿</tspan>
+    </text>
+
+    <!-- 右侧分析区域 -->
+    <rect x="680" y="430" width="510" height="220" rx="8" fill="#fff7e6" />
+    <text x="700" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        font-weight="bold" fill="#d48806">
+        <tspan>📈 年度关键数据</tspan>
+    </text>
+
+    <!-- KPI数据 -->
+    <rect x="700" y="480" width="145" height="70" rx="8" fill="#FFFFFF" />
+    <text x="772" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22"
+        font-weight="bold" fill="#1890ff" text-anchor="middle">
+        <tspan>+26.5%</tspan>
+    </text>
+    <text x="772" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        fill="#666666" text-anchor="middle">
+        <tspan>融资额同比增长</tspan>
+    </text>
+
+    <rect x="860" y="480" width="145" height="70" rx="8" fill="#FFFFFF" />
+    <text x="932" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>+71%</tspan>
+    </text>
+    <text x="932" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        fill="#666666" text-anchor="middle">
+        <tspan>项目数同比增长</tspan>
+    </text>
+
+    <rect x="1020" y="480" width="145" height="70" rx="8" fill="#FFFFFF" />
+    <text x="1092" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22"
+        font-weight="bold" fill="#9966ff" text-anchor="middle">
+        <tspan>9</tspan>
+    </text>
+    <text x="1092" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        fill="#666666" text-anchor="middle">
+        <tspan>覆盖县区数</tspan>
+    </text>
+
+    <!-- 关键变化说明 -->
+    <text x="700" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#d48806">
+        <tspan>🔑 关键特点</tspan>
+    </text>
+    <text x="700" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>• 老旧小区改造项目首次成为重点投入方向</tspan>
+    </text>
+    <text x="700" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>• 供水类项目投资额显著增加</tspan>
+    </text>
+</svg>

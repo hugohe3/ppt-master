@@ -1,0 +1,180 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.1)" />
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 页面标题 -->
+    <text x="640" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B"
+        text-anchor="middle" font-weight="700">效率对比：用数据说话</text>
+    <text x="640" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B"
+        text-anchor="middle">以实现"用户登录 + 双因素认证"功能为例</text>
+
+    <!-- 文档产出量对比 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="110" width="560" height="200" rx="12" fill="#FFFFFF" />
+        <text x="85" y="145" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#1E293B"
+            font-weight="600">📊 文档产出量对比</text>
+
+        <!-- Spec Kit -->
+        <rect x="85" y="165" width="500" height="35" rx="6" fill="#F5F3FF" />
+        <text x="100" y="188" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#8B5CF6"
+            font-weight="600">Spec Kit</text>
+        <rect x="200" y="172" width="360" height="20" rx="4" fill="#E9D5FF" />
+        <rect x="200" y="172" width="360" height="20" rx="4" fill="#8B5CF6" />
+        <text x="570" y="188" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF"
+            text-anchor="end" font-weight="600">6-8 文件 / 2000-3000字 / 1-2小时</text>
+
+        <!-- OpenSpec -->
+        <rect x="85" y="210" width="500" height="35" rx="6" fill="#EFF6FF" />
+        <text x="100" y="233" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB"
+            font-weight="600">OpenSpec</text>
+        <rect x="200" y="217" width="150" height="20" rx="4" fill="#2563EB" />
+        <text x="360" y="233" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            font-weight="600">2-3 文件 / 500-800字 / 20-30分钟</text>
+
+        <!-- ZCF -->
+        <rect x="85" y="255" width="500" height="35" rx="6" fill="#ECFDF5" />
+        <text x="100" y="278" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981"
+            font-weight="600">ZCF</text>
+        <rect x="200" y="262" width="30" height="20" rx="4" fill="#10B981" />
+        <text x="245" y="278" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            font-weight="600">0 文件 / 0字 / 5分钟配置</text>
+    </g>
+
+    <!-- 执行效率评分 -->
+    <g filter="url(#cardShadow)">
+        <rect x="660" y="110" width="560" height="200" rx="12" fill="#FFFFFF" />
+        <text x="685" y="145" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#1E293B"
+            font-weight="600">⭐ 执行效率评分（5星制）</text>
+
+        <!-- 表头 -->
+        <rect x="685" y="160" width="510" height="28" rx="4" fill="#F1F5F9" />
+        <text x="770" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B"
+            text-anchor="middle" font-weight="600">场景</text>
+        <text x="895" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#8B5CF6"
+            text-anchor="middle" font-weight="600">Spec Kit</text>
+        <text x="1010" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#2563EB"
+            text-anchor="middle" font-weight="600">OpenSpec</text>
+        <text x="1120" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#10B981"
+            text-anchor="middle" font-weight="600">ZCF</text>
+
+        <!-- 数据行 -->
+        <text x="770" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            text-anchor="middle">新项目 0→1</text>
+        <text x="895" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#F97316"
+            text-anchor="middle">⭐⭐⭐⭐⭐</text>
+        <text x="1010" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">⭐⭐⭐</text>
+        <text x="1120" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">—</text>
+
+        <text x="770" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            text-anchor="middle">存量项目加功能</text>
+        <text x="895" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">⭐⭐⭐</text>
+        <text x="1010" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#F97316"
+            text-anchor="middle">⭐⭐⭐⭐⭐</text>
+        <text x="1120" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">—</text>
+
+        <text x="770" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            text-anchor="middle">快速配置环境</text>
+        <text x="895" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">—</text>
+        <text x="1010" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">—</text>
+        <text x="1120" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#F97316"
+            text-anchor="middle">⭐⭐⭐⭐⭐</text>
+
+        <text x="770" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B"
+            text-anchor="middle">需求不明确探索</text>
+        <text x="895" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#F97316"
+            text-anchor="middle">⭐⭐⭐⭐⭐</text>
+        <text x="1010" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">⭐⭐</text>
+        <text x="1120" y="285" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">—</text>
+    </g>
+
+    <!-- 效率提升量化 - KPI卡片 -->
+    <text x="60" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#1E293B"
+        font-weight="600">📈 效率提升量化</text>
+
+    <!-- OpenSpec vs Spec Kit -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="365" width="380" height="180" rx="12" fill="#FFFFFF" />
+        <rect x="60" y="365" width="380" height="8" rx="4" fill="#2563EB" />
+        <text x="250" y="405" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#2563EB"
+            text-anchor="middle" font-weight="600">OpenSpec 相比 Spec Kit</text>
+
+        <text x="160" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#2563EB"
+            text-anchor="middle" font-weight="700">↓70-80%</text>
+        <text x="160" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">文档产出量</text>
+
+        <text x="340" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#10B981"
+            text-anchor="middle" font-weight="700">↑100-200%</text>
+        <text x="340" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">整体效率</text>
+
+        <text x="250" y="525" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#94A3B8"
+            text-anchor="middle">⚠️ 但调整空间变小，过程中难看到完整方案</text>
+    </g>
+
+    <!-- ZCF vs 手动配置 -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="365" width="380" height="180" rx="12" fill="#FFFFFF" />
+        <rect x="460" y="365" width="380" height="8" rx="4" fill="#10B981" />
+        <text x="650" y="405" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#10B981"
+            text-anchor="middle" font-weight="600">ZCF 相比 手动配置</text>
+
+        <text x="560" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#10B981"
+            text-anchor="middle" font-weight="700">30→5min</text>
+        <text x="560" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">配置时间</text>
+
+        <text x="740" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#10B981"
+            text-anchor="middle" font-weight="700">↓90%</text>
+        <text x="740" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">配置错误</text>
+
+        <text x="650" y="525" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#94A3B8"
+            text-anchor="middle">⚠️ 但它解决的是"环境"问题，不是"开发"问题</text>
+    </g>
+
+    <!-- 选择建议 -->
+    <g filter="url(#cardShadow)">
+        <rect x="860" y="365" width="360" height="180" rx="12" fill="#1E293B" />
+        <text x="1040" y="405" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">💡 如何选择？</text>
+
+        <circle cx="890" cy="440" r="6" fill="#8B5CF6" />
+        <text x="905" y="445" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF">完整方案 → Spec Kit</text>
+
+        <circle cx="890" cy="475" r="6" fill="#2563EB" />
+        <text x="905" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF">快速执行 → OpenSpec</text>
+
+        <circle cx="890" cy="510" r="6" fill="#10B981" />
+        <text x="905" y="515" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFFFFF">环境配置 → ZCF</text>
+    </g>
+
+    <!-- 底部说明 -->
+    <rect x="60" y="565" width="1160" height="100" rx="12" fill="#F1F5F9" />
+    <text x="640" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B"
+        text-anchor="middle" font-weight="600">核心结论</text>
+    <text x="640" y="635" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#64748B"
+        text-anchor="middle">效率不是绝对的好坏，而是</text>
+    <text x="796" y="635" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB"
+        font-weight="600">适合的才是最好的</text>
+    <text x="640" y="655" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#94A3B8"
+        text-anchor="middle">新项目探索选 Spec Kit，存量迭代选 OpenSpec，环境配置选 ZCF</text>
+
+    <!-- 页码 -->
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+        text-anchor="end">07 / 11</text>
+</svg>

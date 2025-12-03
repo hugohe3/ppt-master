@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 封面页 - 甘孜州城乡建设局专项债项目融资分析 -->
+
+    <defs>
+        <!-- 渐变背景 -->
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+        </linearGradient>
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="2" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰线条 -->
+    <rect x="60" y="180" width="80" height="4" rx="2" fill="#1890ff" />
+
+    <!-- 主标题 -->
+    <text x="60" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="42" font-weight="bold" fill="#FFFFFF">
+        <tspan>甘孜州城乡建设局</tspan>
+    </text>
+    <text x="60" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="42" font-weight="bold" fill="#FFFFFF">
+        <tspan>专项债项目融资分析</tspan>
+    </text>
+
+    <!-- 副标题 -->
+    <text x="60" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" fill="#9CA3AF">
+        <tspan>数据更新时间：2025年12月3日</tspan>
+    </text>
+
+    <!-- 四个KPI卡片 -->
+    <!-- 卡片1：融资总额 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="440" width="265" height="120" rx="12" fill="#FFFFFF" opacity="0.95" />
+        <text x="90" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="bold" fill="#1890ff">
+            <tspan>14.69</tspan>
+        </text>
+        <text x="210" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#666666">
+            <tspan>亿元</tspan>
+        </text>
+        <text x="90" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#666666">
+            <tspan>融资总额</tspan>
+        </text>
+    </g>
+
+    <!-- 卡片2：项目总数 -->
+    <g filter="url(#cardShadow)">
+        <rect x="355" y="440" width="265" height="120" rx="12" fill="#FFFFFF" opacity="0.95" />
+        <text x="385" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="bold" fill="#1890ff">
+            <tspan>35</tspan>
+        </text>
+        <text x="445" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#666666">
+            <tspan>个</tspan>
+        </text>
+        <text x="385" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#666666">
+            <tspan>项目总数</tspan>
+        </text>
+    </g>
+
+    <!-- 卡片3：覆盖年份 -->
+    <g filter="url(#cardShadow)">
+        <rect x="650" y="440" width="265" height="120" rx="12" fill="#FFFFFF" opacity="0.95" />
+        <text x="680" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="bold" fill="#1890ff">
+            <tspan>6</tspan>
+        </text>
+        <text x="720" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="18" fill="#666666">
+            <tspan>年</tspan>
+        </text>
+        <text x="680" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#666666">
+            <tspan>覆盖年份</tspan>
+        </text>
+    </g>
+
+    <!-- 卡片4：2025年融资 -->
+    <g filter="url(#cardShadow)">
+        <rect x="945" y="440" width="265" height="120" rx="12" fill="#FFFFFF" opacity="0.95" />
+        <text x="975" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="36" font-weight="bold" fill="#ff9f40">
+            <tspan>6.82</tspan>
+        </text>
+        <text x="1085" y="485"
+            font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18"
+            fill="#666666">
+            <tspan>亿元</tspan>
+        </text>
+        <text x="975" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+            font-size="16" fill="#666666">
+            <tspan>2025年融资</tspan>
+        </text>
+    </g>
+
+    <!-- 底部装饰 -->
+    <rect x="60" y="600" width="1160" height="1" fill="#374151" />
+    <text x="640" y="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="14" fill="#6B7280" text-anchor="middle">
+        <tspan>甘孜州城乡建设局 | 专项债项目融资数据分析报告</tspan>
+    </text>
+</svg>

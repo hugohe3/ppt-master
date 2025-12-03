@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 页面06 - 总结与展望 -->
+
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="2" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <linearGradient id="summaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#f0f2f5" />
+
+    <!-- 标题区域 -->
+    <text x="60" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="32" font-weight="bold" fill="#1a1a2e">
+        <tspan>🎯 总结与展望</tspan>
+    </text>
+    <text x="60" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="16" fill="#666666">
+        <tspan>甘孜州城乡建设局专项债融资核心发现</tspan>
+    </text>
+
+    <!-- 左侧：核心发现卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="130" width="700" height="540" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="90" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="20" font-weight="bold" fill="#1a1a2e">
+        <tspan>📈 核心发现</tspan>
+    </text>
+
+    <!-- 发现1 -->
+    <rect x="90" y="200" width="640" height="80" rx="8" fill="#e6f7ff" />
+    <text x="120" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#1890ff">
+        <tspan>1. 融资规模快速增长</tspan>
+    </text>
+    <text x="120" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666">
+        <tspan>6年间从0.64亿增至6.82亿，复合增长率超60%</tspan>
+    </text>
+
+    <!-- 发现2 -->
+    <rect x="90" y="300" width="640" height="80" rx="8" fill="#fff7e6" />
+    <text x="120" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#ff9f40">
+        <tspan>2. 项目类型多元化</tspan>
+    </text>
+    <text x="120" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666">
+        <tspan>覆盖城镇改造、供暖供气、污水处理、停车场等多领域</tspan>
+    </text>
+
+    <!-- 发现3 -->
+    <rect x="90" y="400" width="640" height="80" rx="8" fill="#f0fff4" />
+    <text x="120" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#52c41a">
+        <tspan>3. 2025年为投资高峰</tspan>
+    </text>
+    <text x="120" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666">
+        <tspan>单年融资占总量46.4%，项目数达19个创历史新高</tspan>
+    </text>
+
+    <!-- 发现4 -->
+    <rect x="90" y="500" width="640" height="80" rx="8" fill="#f9f0ff" />
+    <text x="120" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#9966ff">
+        <tspan>4. 民生基础设施优先</tspan>
+    </text>
+    <text x="120" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666">
+        <tspan>城镇改造、供暖工程成为重点投入方向，助力高原地区民生改善</tspan>
+    </text>
+
+    <!-- 右侧：项目类型分布 -->
+    <g filter="url(#cardShadow)">
+        <rect x="800" y="130" width="420" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="830" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#1a1a2e">
+        <tspan>📊 项目类型分布</tspan>
+    </text>
+
+    <!-- 类型条形图 -->
+    <!-- 城镇改造 -->
+    <text x="830" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>城镇/街区改造</tspan>
+    </text>
+    <rect x="960" y="200" width="200" height="20" rx="4" fill="#e6f7ff" />
+    <rect x="960" y="200" width="160" height="20" rx="4" fill="#1890ff" />
+    <text x="1175" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>35%</tspan>
+    </text>
+
+    <!-- 供暖供气 -->
+    <text x="830" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>供暖/供气工程</tspan>
+    </text>
+    <rect x="960" y="240" width="200" height="20" rx="4" fill="#fff7e6" />
+    <rect x="960" y="240" width="120" height="20" rx="4" fill="#ff9f40" />
+    <text x="1175" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>25%</tspan>
+    </text>
+
+    <!-- 污水/垃圾处理 -->
+    <text x="830" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>污水/垃圾处理</tspan>
+    </text>
+    <rect x="960" y="280" width="200" height="20" rx="4" fill="#e6fffb" />
+    <rect x="960" y="280" width="100" height="20" rx="4" fill="#4bc0c0" />
+    <text x="1175" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>20%</tspan>
+    </text>
+
+    <!-- 停车场 -->
+    <text x="830" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>停车场建设</tspan>
+    </text>
+    <rect x="960" y="320" width="200" height="20" rx="4" fill="#f9f0ff" />
+    <rect x="960" y="320" width="60" height="20" rx="4" fill="#9966ff" />
+    <text x="1175" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>12%</tspan>
+    </text>
+
+    <!-- 其他 -->
+    <text x="830" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>其他（管廊等）</tspan>
+    </text>
+    <rect x="960" y="360" width="200" height="20" rx="4" fill="#f5f5f5" />
+    <rect x="960" y="360" width="40" height="20" rx="4" fill="#999999" />
+    <text x="1175" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>8%</tspan>
+    </text>
+
+    <!-- 右侧：展望卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="800" y="430" width="420" height="240" rx="12" fill="url(#summaryGradient)" />
+    </g>
+
+    <text x="830" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#FFFFFF">
+        <tspan>🚀 未来展望</tspan>
+    </text>
+
+    <circle cx="850" cy="520" r="6" fill="#1890ff" />
+    <text x="870" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#FFFFFF">
+        <tspan>持续推进城镇老旧小区改造</tspan>
+    </text>
+
+    <circle cx="850" cy="560" r="6" fill="#ff9f40" />
+    <text x="870" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#FFFFFF">
+        <tspan>加大高原供暖工程投入</tspan>
+    </text>
+
+    <circle cx="850" cy="600" r="6" fill="#4bc0c0" />
+    <text x="870" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#FFFFFF">
+        <tspan>完善市政基础设施体系</tspan>
+    </text>
+
+    <circle cx="850" cy="640" r="6" fill="#52c41a" />
+    <text x="870" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#FFFFFF">
+        <tspan>提升城乡人居环境品质</tspan>
+    </text>
+
+    <!-- 底部标注 -->
+    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="12" fill="#999999" text-anchor="middle">
+        <tspan>甘孜州城乡建设局 · 专项债项目融资分析报告 · 2025年12月</tspan>
+    </text>
+</svg>

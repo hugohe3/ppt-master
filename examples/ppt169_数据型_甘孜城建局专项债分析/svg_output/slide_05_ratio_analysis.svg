@@ -1,0 +1,397 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 页面05 - 城乡建设局专项债占比分析 -->
+
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="2" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#f0f2f5" />
+
+    <!-- 标题区域 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="bold" fill="#1a1a2e">
+        <tspan>📊 城乡建设局专项债占比分析</tspan>
+    </text>
+    <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+        fill="#666666">
+        <tspan>甘孜州专项债总额 vs 城乡建设局项目融资对比（2020-2025年）</tspan>
+    </text>
+
+    <!-- 左侧：总量对比卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="110" width="560" height="270" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="90" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#1a1a2e">
+        <tspan>📈 六年融资总量对比</tspan>
+    </text>
+
+    <!-- 甘孜州专项债总额 -->
+    <rect x="90" y="175" width="230" height="85" rx="8" fill="#e6f7ff" />
+    <text x="205" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36"
+        font-weight="bold" fill="#1890ff" text-anchor="middle">
+        <tspan>45.38</tspan>
+    </text>
+    <text x="205" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666" text-anchor="middle">
+        <tspan>甘孜州专项债总额（亿元）</tspan>
+    </text>
+
+    <!-- 城乡建设局融资额 -->
+    <rect x="340" y="175" width="230" height="85" rx="8" fill="#fff7e6" />
+    <text x="455" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36"
+        font-weight="bold" fill="#ff9f40" text-anchor="middle">
+        <tspan>14.69</tspan>
+    </text>
+    <text x="455" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666" text-anchor="middle">
+        <tspan>城乡建设局融资额（亿元）</tspan>
+    </text>
+
+    <!-- 占比显示 -->
+    <rect x="90" y="275" width="480" height="75" rx="8" fill="#f0fff4" />
+    <text x="330" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#52c41a" text-anchor="middle">
+        <tspan>城乡建设局专项债占甘孜州总额比例</tspan>
+    </text>
+    <text x="330" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>32.4%</tspan>
+    </text>
+
+    <!-- 右侧：年度对比表格 -->
+    <g filter="url(#cardShadow)">
+        <rect x="640" y="110" width="580" height="270" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="670" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#1a1a2e">
+        <tspan>📋 年度对比明细</tspan>
+    </text>
+
+    <!-- 表头 -->
+    <rect x="670" y="165" width="520" height="35" rx="4" fill="#fafafa" />
+    <text x="720" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>年份</tspan>
+    </text>
+    <text x="820" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>州专项债</tspan>
+    </text>
+    <text x="930" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>城建局</tspan>
+    </text>
+    <text x="1040" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>占比</tspan>
+    </text>
+    <text x="1140" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>趋势</tspan>
+    </text>
+
+    <!-- 2020年 -->
+    <text x="720" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333" text-anchor="middle">
+        <tspan>2020</tspan>
+    </text>
+    <text x="820" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#1890ff" text-anchor="middle">
+        <tspan>4.29亿</tspan>
+    </text>
+    <text x="930" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff9f40" text-anchor="middle">
+        <tspan>0.64亿</tspan>
+    </text>
+    <text x="1040" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>14.9%</tspan>
+    </text>
+    <text x="1140" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666" text-anchor="middle">
+        <tspan>—</tspan>
+    </text>
+    <line x1="670" y1="228" x2="1190" y2="228" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 2021年 -->
+    <text x="720" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333" text-anchor="middle">
+        <tspan>2021</tspan>
+    </text>
+    <text x="820" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#1890ff" text-anchor="middle">
+        <tspan>10.91亿</tspan>
+    </text>
+    <text x="930" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff9f40" text-anchor="middle">
+        <tspan>0.30亿</tspan>
+    </text>
+    <text x="1040" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#EF4444" text-anchor="middle">
+        <tspan>2.7%</tspan>
+    </text>
+    <text x="1140" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#EF4444" text-anchor="middle">
+        <tspan>↓</tspan>
+    </text>
+    <line x1="670" y1="258" x2="1190" y2="258" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 2022年 -->
+    <text x="720" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333" text-anchor="middle">
+        <tspan>2022</tspan>
+    </text>
+    <text x="820" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#1890ff" text-anchor="middle">
+        <tspan>4.22亿</tspan>
+    </text>
+    <text x="930" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff9f40" text-anchor="middle">
+        <tspan>1.98亿</tspan>
+    </text>
+    <text x="1040" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>46.9%</tspan>
+    </text>
+    <text x="1140" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#52c41a" text-anchor="middle">
+        <tspan>↑↑</tspan>
+    </text>
+    <line x1="670" y1="288" x2="1190" y2="288" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 2023年 -->
+    <text x="720" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333" text-anchor="middle">
+        <tspan>2023</tspan>
+    </text>
+    <text x="820" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#1890ff" text-anchor="middle">
+        <tspan>8.81亿</tspan>
+    </text>
+    <text x="930" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff9f40" text-anchor="middle">
+        <tspan>2.19亿</tspan>
+    </text>
+    <text x="1040" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>24.9%</tspan>
+    </text>
+    <text x="1140" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#EF4444" text-anchor="middle">
+        <tspan>↓</tspan>
+    </text>
+    <line x1="670" y1="318" x2="1190" y2="318" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 2024年 -->
+    <text x="720" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#333333" text-anchor="middle">
+        <tspan>2024</tspan>
+    </text>
+    <text x="820" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#1890ff" text-anchor="middle">
+        <tspan>7.11亿</tspan>
+    </text>
+    <text x="930" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff9f40" text-anchor="middle">
+        <tspan>2.77亿</tspan>
+    </text>
+    <text x="1040" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>39.0%</tspan>
+    </text>
+    <text x="1140" y="338" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#52c41a" text-anchor="middle">
+        <tspan>↑</tspan>
+    </text>
+    <line x1="670" y1="348" x2="1190" y2="348" stroke="#f0f0f0" stroke-width="1" />
+
+    <!-- 2025年 -->
+    <rect x="670" y="350" width="520" height="25" fill="#fff7e6" />
+    <text x="720" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#ff9f40" text-anchor="middle">
+        <tspan>2025</tspan>
+    </text>
+    <text x="820" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#1890ff" text-anchor="middle">
+        <tspan>10.04亿</tspan>
+    </text>
+    <text x="930" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#ff9f40" text-anchor="middle">
+        <tspan>6.82亿</tspan>
+    </text>
+    <text x="1040" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>67.9%</tspan>
+    </text>
+    <text x="1140" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>↑↑</tspan>
+    </text>
+
+    <!-- 下方：占比趋势图 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="390" width="1160" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="90" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#1a1a2e">
+        <tspan>📉 城乡建设局专项债占比变化趋势</tspan>
+    </text>
+
+    <!-- 图表区域 -->
+    <!-- Y轴 -->
+    <line x1="150" y1="470" x2="150" y2="620" stroke="#e0e0e0" stroke-width="1" />
+    <line x1="150" y1="620" x2="1100" y2="620" stroke="#e0e0e0" stroke-width="1" />
+
+    <!-- Y轴刻度 -->
+    <text x="135" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#999999" text-anchor="end">
+        <tspan>70%</tspan>
+    </text>
+    <line x1="145" y1="470" x2="1100" y2="470" stroke="#f0f0f0" stroke-width="1" stroke-dasharray="4,4" />
+
+    <text x="135" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#999999" text-anchor="end">
+        <tspan>50%</tspan>
+    </text>
+    <line x1="145" y1="515" x2="1100" y2="515" stroke="#f0f0f0" stroke-width="1" stroke-dasharray="4,4" />
+
+    <text x="135" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#999999" text-anchor="end">
+        <tspan>30%</tspan>
+    </text>
+    <line x1="145" y1="560" x2="1100" y2="560" stroke="#f0f0f0" stroke-width="1" stroke-dasharray="4,4" />
+
+    <text x="135" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#999999" text-anchor="end">
+        <tspan>10%</tspan>
+    </text>
+    <line x1="145" y1="605" x2="1100" y2="605" stroke="#f0f0f0" stroke-width="1" stroke-dasharray="4,4" />
+
+    <!-- 柱状图 + 占比折线 -->
+    <!-- 2020年 柱子 -->
+    <rect x="180" y="572" width="60" height="48" rx="4" fill="#1890ff" opacity="0.3" />
+    <rect x="245" y="608" width="60" height="12" rx="4" fill="#ff9f40" />
+    <circle cx="275" cy="598" r="6" fill="#52c41a" />
+    <text x="275" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>14.9%</tspan>
+    </text>
+    <text x="242" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="middle">
+        <tspan>2020</tspan>
+    </text>
+
+    <!-- 2021年 柱子 -->
+    <rect x="330" y="498" width="60" height="122" rx="4" fill="#1890ff" opacity="0.3" />
+    <rect x="395" y="614" width="60" height="6" rx="4" fill="#ff9f40" />
+    <circle cx="425" r="6" cy="614" fill="#52c41a" />
+    <text x="425" y="596" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        font-weight="bold" fill="#EF4444" text-anchor="middle">
+        <tspan>2.7%</tspan>
+    </text>
+    <text x="392" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="middle">
+        <tspan>2021</tspan>
+    </text>
+
+    <!-- 2022年 柱子 -->
+    <rect x="480" y="573" width="60" height="47" rx="4" fill="#1890ff" opacity="0.3" />
+    <rect x="545" y="598" width="60" height="22" rx="4" fill="#ff9f40" />
+    <circle cx="575" r="6" cy="523" fill="#52c41a" />
+    <text x="575" y="508" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>46.9%</tspan>
+    </text>
+    <text x="542" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="middle">
+        <tspan>2022</tspan>
+    </text>
+
+    <!-- 2023年 柱子 -->
+    <rect x="630" y="522" width="60" height="98" rx="4" fill="#1890ff" opacity="0.3" />
+    <rect x="695" y="596" width="60" height="24" rx="4" fill="#ff9f40" />
+    <circle cx="725" r="6" cy="565" fill="#52c41a" />
+    <text x="725" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>24.9%</tspan>
+    </text>
+    <text x="692" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="middle">
+        <tspan>2023</tspan>
+    </text>
+
+    <!-- 2024年 柱子 -->
+    <rect x="780" y="541" width="60" height="79" rx="4" fill="#1890ff" opacity="0.3" />
+    <rect x="845" y="590" width="60" height="30" rx="4" fill="#ff9f40" />
+    <circle cx="875" r="6" cy="540" fill="#52c41a" />
+    <text x="875" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>39.0%</tspan>
+    </text>
+    <text x="842" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666" text-anchor="middle">
+        <tspan>2024</tspan>
+    </text>
+
+    <!-- 2025年 柱子 (高亮) -->
+    <rect x="930" y="508" width="60" height="112" rx="4" fill="#1890ff" opacity="0.5" />
+    <rect x="995" y="544" width="60" height="76" rx="4" fill="#ff9f40" />
+    <circle cx="1025" r="8" cy="476" fill="#52c41a" stroke="#FFFFFF" stroke-width="2" />
+    <text x="1025" y="458" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>67.9%</tspan>
+    </text>
+    <text x="992" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        font-weight="bold" fill="#ff9f40" text-anchor="middle">
+        <tspan>2025</tspan>
+    </text>
+
+    <!-- 折线连接 -->
+    <polyline points="275,598 425,614 575,523 725,565 875,540 1025,476" fill="none" stroke="#52c41a" stroke-width="2"
+        stroke-dasharray="6,3" />
+
+    <!-- 图例 -->
+    <rect x="90" y="448" width="16" height="16" rx="2" fill="#1890ff" opacity="0.3" />
+    <text x="115" y="461" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>州专项债总额</tspan>
+    </text>
+
+    <rect x="200" y="448" width="16" height="16" rx="2" fill="#ff9f40" />
+    <text x="225" y="461" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>城建局融资额</tspan>
+    </text>
+
+    <circle cx="318" cy="456" r="5" fill="#52c41a" />
+    <text x="333" y="461" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+        fill="#666666">
+        <tspan>占比趋势</tspan>
+    </text>
+
+    <!-- 关键结论 -->
+    <rect x="1100" y="448" width="110" height="40" rx="6" fill="#f0fff4" />
+    <text x="1155" y="465" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11"
+        fill="#52c41a" text-anchor="middle">
+        <tspan>2025年占比</tspan>
+    </text>
+    <text x="1155" y="481" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>创历史新高</tspan>
+    </text>
+</svg>

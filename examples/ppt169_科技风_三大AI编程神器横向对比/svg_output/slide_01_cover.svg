@@ -1,0 +1,94 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1E293B" />
+            <stop offset="100%" style="stop-color:#0F172A" />
+        </linearGradient>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.3)" />
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰性圆形 -->
+    <circle cx="100" cy="600" r="200" fill="#2563EB" opacity="0.1" />
+    <circle cx="1180" cy="120" r="150" fill="#8B5CF6" opacity="0.1" />
+    <circle cx="640" cy="680" r="300" fill="#10B981" opacity="0.05" />
+
+    <!-- 顶部标签 -->
+    <rect x="540" y="80" width="200" height="32" rx="16" fill="#2563EB" opacity="0.2" />
+    <text x="640" y="102" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#60A5FA"
+        text-anchor="middle" font-weight="500">AI 编程工具深度对比</text>
+
+    <!-- 主标题 -->
+    <text x="640" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="48" fill="#FFFFFF"
+        text-anchor="middle" font-weight="700">三大 AI 编程神器横向对比</text>
+
+    <!-- 副标题 -->
+    <text x="640" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#94A3B8"
+        text-anchor="middle" font-weight="400">OpenSpec vs ZCF vs Spec Kit</text>
+
+    <!-- 三个工具卡片 -->
+    <!-- Spec Kit 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="140" y="320" width="300" height="200" rx="16" fill="#FFFFFF" opacity="0.05" />
+        <rect x="140" y="320" width="300" height="200" rx="16" fill="none" stroke="#8B5CF6" stroke-width="2"
+            opacity="0.5" />
+        <circle cx="290" cy="380" r="30" fill="#8B5CF6" opacity="0.2" />
+        <text x="290" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#8B5CF6"
+            text-anchor="middle" font-weight="700">SK</text>
+        <text x="290" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">Spec Kit</text>
+        <text x="290" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+            text-anchor="middle">
+            <tspan x="290" dy="0">产品经理 + 架构师</tspan>
+            <tspan x="290" dy="20">+ 程序员 三合一</tspan>
+        </text>
+    </g>
+
+    <!-- OpenSpec 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="490" y="320" width="300" height="200" rx="16" fill="#FFFFFF" opacity="0.05" />
+        <rect x="490" y="320" width="300" height="200" rx="16" fill="none" stroke="#2563EB" stroke-width="2"
+            opacity="0.5" />
+        <circle cx="640" cy="380" r="30" fill="#2563EB" opacity="0.2" />
+        <text x="640" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#2563EB"
+            text-anchor="middle" font-weight="700">OS</text>
+        <text x="640" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">OpenSpec</text>
+        <text x="640" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+            text-anchor="middle">
+            <tspan x="640" dy="0">存量项目的</tspan>
+            <tspan x="640" dy="20">需求管理专家</tspan>
+        </text>
+    </g>
+
+    <!-- ZCF 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="840" y="320" width="300" height="200" rx="16" fill="#FFFFFF" opacity="0.05" />
+        <rect x="840" y="320" width="300" height="200" rx="16" fill="none" stroke="#10B981" stroke-width="2"
+            opacity="0.5" />
+        <circle cx="990" cy="380" r="30" fill="#10B981" opacity="0.2" />
+        <text x="990" y="388" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#10B981"
+            text-anchor="middle" font-weight="700">ZCF</text>
+        <text x="990" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">ZCF</text>
+        <text x="990" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+            text-anchor="middle">
+            <tspan x="990" dy="0">AI 编程环境的</tspan>
+            <tspan x="990" dy="20">一键配置器</tspan>
+        </text>
+    </g>
+
+    <!-- 底部标语 -->
+    <rect x="440" y="580" width="400" height="50" rx="25" fill="#F97316" opacity="0.15" />
+    <text x="640" y="612" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#FB923C"
+        text-anchor="middle" font-weight="600">选对工具，效率翻倍</text>
+
+    <!-- 底部装饰线 -->
+    <line x1="200" y1="670" x2="1080" y2="670" stroke="#334155" stroke-width="1" />
+    <text x="640" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#475569"
+        text-anchor="middle">2025 · AI 编程工具对比指南</text>
+</svg>

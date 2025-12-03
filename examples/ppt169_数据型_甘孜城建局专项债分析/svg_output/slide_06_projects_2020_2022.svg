@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 页面05 - 2020-2022年项目明细 -->
+
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="2" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#f0f2f5" />
+
+    <!-- 标题区域 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="28" font-weight="bold" fill="#1a1a2e">
+        <tspan>📋 项目明细（2020-2022年）</tspan>
+    </text>
+
+    <!-- ========== 2020年卡片 ========== -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="90" width="380" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <!-- 2020年标题栏 -->
+    <rect x="60" y="90" width="380" height="50" rx="12" fill="#36a2eb" />
+    <rect x="60" y="128" width="380" height="12" fill="#36a2eb" />
+    <text x="250" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>2020年 · 3个项目 · 0.64亿元</tspan>
+    </text>
+
+    <!-- 2020年项目列表 -->
+    <text x="80" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#36a2eb">
+        <tspan>01</tspan>
+    </text>
+    <text x="110" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>得荣县新区公共停车场</tspan>
+    </text>
+    <text x="420" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.23亿</tspan>
+    </text>
+    <line x1="80" y1="190" x2="420" y2="190" stroke="#f0f0f0" stroke-width="1" />
+
+    <text x="80" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#36a2eb">
+        <tspan>02</tspan>
+    </text>
+    <text x="110" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>新龙县格萨尔停车场</tspan>
+    </text>
+    <text x="420" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.21亿</tspan>
+    </text>
+    <line x1="80" y1="235" x2="420" y2="235" stroke="#f0f0f0" stroke-width="1" />
+
+    <text x="80" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#36a2eb">
+        <tspan>03</tspan>
+    </text>
+    <text x="110" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>九龙县污水处理设施建设项目</tspan>
+    </text>
+    <text x="420" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.20亿</tspan>
+    </text>
+
+    <!-- ========== 2021年卡片 ========== -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="90" width="380" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <!-- 2021年标题栏 -->
+    <rect x="460" y="90" width="380" height="50" rx="12" fill="#ff6384" />
+    <rect x="460" y="128" width="380" height="12" fill="#ff6384" />
+    <text x="650" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>2021年 · 1个项目 · 0.30亿元</tspan>
+    </text>
+
+    <!-- 2021年项目列表 -->
+    <text x="480" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#ff6384">
+        <tspan>01</tspan>
+    </text>
+    <text x="510" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>理塘县生活垃圾无害化处理工程项目</tspan>
+    </text>
+    <text x="820" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.30亿</tspan>
+    </text>
+
+    <!-- 2021年说明 -->
+    <rect x="480" y="220" width="340" height="60" rx="8" fill="#fff0f3" />
+    <text x="500" y="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff6384">
+        <tspan>💡 2021年融资规模较小，仅有1个</tspan>
+    </text>
+    <text x="500" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#ff6384">
+        <tspan>垃圾处理类项目获得专项债支持</tspan>
+    </text>
+
+    <!-- ========== 2022年卡片 ========== -->
+    <g filter="url(#cardShadow)">
+        <rect x="860" y="90" width="360" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <!-- 2022年标题栏 -->
+    <rect x="860" y="90" width="360" height="50" rx="12" fill="#ffce56" />
+    <rect x="860" y="128" width="360" height="12" fill="#ffce56" />
+    <text x="1040" y="123" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+        font-weight="bold" fill="#333333" text-anchor="middle">
+        <tspan>2022年 · 3个项目 · 1.98亿元</tspan>
+    </text>
+
+    <!-- 2022年项目列表 -->
+    <text x="880" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#e6a700">
+        <tspan>01</tspan>
+    </text>
+    <text x="910" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>新城综合管廊及配套设施</tspan>
+    </text>
+    <text x="1200" y="175" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>1.00亿</tspan>
+    </text>
+    <line x1="880" y1="190" x2="1200" y2="190" stroke="#f0f0f0" stroke-width="1" />
+
+    <text x="880" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#e6a700">
+        <tspan>02</tspan>
+    </text>
+    <text x="910" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>甘孜县供暖(一期)建设项目</tspan>
+    </text>
+    <text x="1200" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.90亿</tspan>
+    </text>
+    <line x1="880" y1="235" x2="1200" y2="235" stroke="#f0f0f0" stroke-width="1" />
+
+    <text x="880" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#e6a700">
+        <tspan>03</tspan>
+    </text>
+    <text x="910" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#333333">
+        <tspan>道孚县城市地下停车场</tspan>
+    </text>
+    <text x="1200" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#1890ff" text-anchor="end">
+        <tspan>0.08亿</tspan>
+    </text>
+
+    <!-- ========== 底部统计区 ========== -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="390" width="1160" height="280" rx="12" fill="#FFFFFF" />
+    </g>
+
+    <text x="90" y="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif"
+        font-size="18" font-weight="bold" fill="#1a1a2e">
+        <tspan>📊 2020-2022年项目分析</tspan>
+    </text>
+
+    <!-- 统计卡片 -->
+    <rect x="90" y="455" width="240" height="90" rx="8" fill="#e6f7ff" />
+    <text x="210" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32"
+        font-weight="bold" fill="#1890ff" text-anchor="middle">
+        <tspan>7</tspan>
+    </text>
+    <text x="210" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666" text-anchor="middle">
+        <tspan>项目总数</tspan>
+    </text>
+
+    <rect x="350" y="455" width="240" height="90" rx="8" fill="#fff7e6" />
+    <text x="470" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32"
+        font-weight="bold" fill="#ff9f40" text-anchor="middle">
+        <tspan>2.92</tspan>
+    </text>
+    <text x="470" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666" text-anchor="middle">
+        <tspan>融资总额（亿元）</tspan>
+    </text>
+
+    <rect x="610" y="455" width="240" height="90" rx="8" fill="#f0fff4" />
+    <text x="730" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32"
+        font-weight="bold" fill="#52c41a" text-anchor="middle">
+        <tspan>19.9%</tspan>
+    </text>
+    <text x="730" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#666666" text-anchor="middle">
+        <tspan>占总融资比例</tspan>
+    </text>
+
+    <!-- 项目类型分析 -->
+    <rect x="870" y="455" width="330" height="90" rx="8" fill="#f9f0ff" />
+    <text x="890" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#9966ff">
+        <tspan>🔍 项目类型特点</tspan>
+    </text>
+    <text x="890" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>• 停车场建设为主要投入方向</tspan>
+    </text>
+    <text x="890" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>• 2022年供暖项目开始发力</tspan>
+    </text>
+
+    <!-- 年度对比 -->
+    <text x="90" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        font-weight="bold" fill="#333333">
+        <tspan>年度对比：</tspan>
+    </text>
+
+    <!-- 2020年条 -->
+    <rect x="180" y="565" width="20" height="20" rx="4" fill="#36a2eb" />
+    <text x="210" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>2020年: 0.64亿 (3项)</tspan>
+    </text>
+
+    <!-- 2021年条 -->
+    <rect x="380" y="565" width="20" height="20" rx="4" fill="#ff6384" />
+    <text x="410" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>2021年: 0.30亿 (1项)</tspan>
+    </text>
+
+    <!-- 2022年条 -->
+    <rect x="580" y="565" width="20" height="20" rx="4" fill="#ffce56" />
+    <text x="610" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#666666">
+        <tspan>2022年: 1.98亿 (3项)</tspan>
+    </text>
+
+    <!-- 增长说明 -->
+    <rect x="90" y="605" width="1110" height="50" rx="8" fill="#fffbe6" />
+    <text x="110" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+        fill="#d48806">
+        <tspan>📈 趋势分析：2022年融资额较2020年增长209%，标志着甘孜州专项债项目进入快速发展期，管廊和供暖类大型项目开始启动</tspan>
+    </text>
+</svg>
