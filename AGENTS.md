@@ -6,6 +6,90 @@
 
 PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角色协作将来源文档转化为高质量输出。除演示文稿外，还支持社交媒体与营销物料等多种画布格式。本项目是一个「文档与工作流框架」项目，而非可编译的传统代码库。此处的“代码”特指基于角色规范由 AI 代理生成的 SVG 标记。
 
+## 🚀 快速启动
+
+> 新用户也可参阅 [INIT.md](./INIT.md) 获取更详细的项目初始化向导。
+
+### 启动新项目（4 步）
+
+**第 1 步：初始化项目**
+
+```bash
+python3 tools/project_manager.py init <项目名称> --format <格式>
+```
+
+示例：
+
+```bash
+python3 tools/project_manager.py init quarterly_report --format ppt169
+# 创建: projects/quarterly_report_ppt169_20251203/
+```
+
+支持的格式：`ppt169`（PPT 16:9）、`ppt43`（PPT 4:3）、`wechat`（公众号头图）、`xiaohongshu`（小红书）、`moments`（朋友圈）、`story`（竖版 9:16）、`banner`（横版海报）、`a4`（A4 打印）
+
+**第 2 步：与策略师（Strategist）对话**
+
+将 `roles/Strategist.md` 的内容作为系统提示，然后：
+
+1. 提供你的来源文档/内容
+2. 策略师会主动给出**五项建议**：
+   - 页数范围（基于内容复杂度）
+   - 目标受众与使用场景
+   - 设计风格推荐（通用灵活 / 高端咨询）
+   - 画布格式推荐
+   - **配色方案建议**（主导色、辅助色、强调色，提供具体 HEX 色值）
+3. 确认后，策略师生成《设计规范与内容大纲》
+4. 将规范保存到项目目录的 `设计规范与内容大纲.md`
+
+**第 3 步：与执行师（Executor）对话**
+
+根据选择的风格，使用对应的执行师角色：
+
+- 通用灵活风格 → `roles/Executor_General.md`
+- 高端咨询风格 → `roles/Executor_Consultant.md`
+
+执行流程：
+
+1. 提供《设计规范与内容大纲》
+2. 按顺序请求生成每一页：`请生成第1页：封面`
+3. 将生成的 SVG 代码保存到 `svg_output/slide_01_cover.svg`
+4. 重复直到所有页面完成
+
+**第 4 步：（可选）使用优化师（Optimizer）**
+
+对关键页面使用 `roles/Optimizer_CRAP.md` 进行 CRAP 原则优化：
+
+- 优化后的文件命名为 `yh_slide_XX_xxx.svg`
+
+### 验证项目
+
+```bash
+# 验证项目结构
+python3 tools/project_manager.py validate projects/<项目目录>
+
+# 检查 SVG 质量
+python3 tools/svg_quality_checker.py projects/<项目目录>
+
+# 预览 SVG
+python3 -m http.server --directory projects/<项目目录>/svg_output 8000
+# 访问 http://localhost:8000
+```
+
+### 快速参考
+
+| 任务 | 命令/文件 |
+|------|----------|
+| 初始化项目 | `python3 tools/project_manager.py init <name> --format <fmt>` |
+| 策略师角色 | `roles/Strategist.md` |
+| 通用执行师 | `roles/Executor_General.md` |
+| 咨询执行师 | `roles/Executor_Consultant.md` |
+| 优化师角色 | `roles/Optimizer_CRAP.md` |
+| 画布格式规范 | `docs/canvas_formats.md` |
+| 图表模板 | `templates/charts/` |
+| 设计指南 | `docs/design_guidelines.md` |
+
+---
+
 ## 核心角色与流程
 
 系统以顺序式工作流组织四个专业化 AI 角色：
@@ -22,6 +106,7 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 - 目标受众与使用场景：**给出初步判断与定位**
 - 设计风格选择：A）通用灵活 或 B）高端咨询 —— **给出推荐并说明理由**
 - 输出画布格式：**根据使用场景推荐（PPT 16:9/4:3、小红书、朋友圈、Story、Banner、A4 等）**
+- **配色方案建议**：**给出主导色、辅助色、强调色的具体 HEX 色值，并说明选色理由**
 
 策略师不仅要提出问题，更要基于来源文档分析，对以上确认点逐项给出专业建议与理由。
 
@@ -266,7 +351,7 @@ examples/
 - 需优先维持角色定义与产出的一致性
 - 质量取决于对设计规范与画布格式的严格执行
 - 策略师的「初次沟通」阶段是强制要求，非可选项
-- **策略师必须对四项确认问题均给出专业化建议**（页数范围、受众/场景、风格选择、画布格式），且需基于来源文档分析
+- **策略师必须对五项确认问题均给出专业化建议**（页数范围、受众/场景、风格选择、画布格式、配色方案），且需基于来源文档分析
 - 通用风格与咨询风格在规范格式上有本质区别
 - CRAP 优化虽为可选，但对关键页面价值显著
 
