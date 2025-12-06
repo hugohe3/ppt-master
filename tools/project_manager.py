@@ -18,7 +18,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
-# 导入公共工具模块
+# 导入公共工具模块（必须成功）
 try:
     from project_utils import (
         CANVAS_FORMATS,
@@ -28,63 +28,31 @@ try:
     )
 except ImportError:
     # 如果直接运行，尝试从当前目录导入
+    import os
+    import sys
+    # 将 tools 目录添加到路径
+    tools_dir = os.path.dirname(os.path.abspath(__file__))
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
     try:
-        import project_utils
-        CANVAS_FORMATS = project_utils.CANVAS_FORMATS
-        get_project_info = project_utils.get_project_info
-        validate_project_structure = project_utils.validate_project_structure
-        validate_svg_viewbox = project_utils.validate_svg_viewbox
-    except ImportError:
-        print("警告: 无法导入 project_utils 模块，将使用内置定义")
-        CANVAS_FORMATS = None
+        from project_utils import (
+            CANVAS_FORMATS,
+            get_project_info,
+            validate_project_structure,
+            validate_svg_viewbox
+        )
+    except ImportError as e:
+        print(f"错误: 无法导入 project_utils 模块")
+        print(f"请确保在 tools/ 目录下运行，或将 tools/ 添加到 PYTHONPATH")
+        print(f"详细信息: {e}")
+        sys.exit(1)
 
 
 class ProjectManager:
     """项目管理器"""
 
-    # 使用公共模块的画布格式定义（如果可用）
-    CANVAS_FORMATS = CANVAS_FORMATS if CANVAS_FORMATS else {
-        'ppt169': {
-            'name': 'PPT 16:9',
-            'dimensions': '1280×720',
-            'viewbox': '0 0 1280 720'
-        },
-        'ppt43': {
-            'name': 'PPT 4:3',
-            'dimensions': '1024×768',
-            'viewbox': '0 0 1024 768'
-        },
-        'wechat': {
-            'name': '微信公众号头图',
-            'dimensions': '900×383',
-            'viewbox': '0 0 900 383'
-        },
-        'xiaohongshu': {
-            'name': '小红书 3:4',
-            'dimensions': '1242×1660',
-            'viewbox': '0 0 1242 1660'
-        },
-        'moments': {
-            'name': '朋友圈/Instagram 1:1',
-            'dimensions': '1080×1080',
-            'viewbox': '0 0 1080 1080'
-        },
-        'story': {
-            'name': 'Story/竖版 9:16',
-            'dimensions': '1080×1920',
-            'viewbox': '0 0 1080 1920'
-        },
-        'banner': {
-            'name': '横版 Banner 16:9',
-            'dimensions': '1920×1080',
-            'viewbox': '0 0 1920 1080'
-        },
-        'a4': {
-            'name': 'A4 打印',
-            'dimensions': '1240×1754',
-            'viewbox': '0 0 1240 1754'
-        }
-    }
+    # 使用公共模块的画布格式定义（统一来源）
+    CANVAS_FORMATS = CANVAS_FORMATS
 
     def __init__(self, base_dir: str = 'projects'):
         """初始化项目管理器
