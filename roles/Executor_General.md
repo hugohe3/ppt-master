@@ -71,6 +71,54 @@
 
 ---
 
+## 图片处理原则
+
+**核心原则**: SVG 生成过程不阻塞，所有外部资源使用占位符或链接方式处理。
+
+### 方式 A: 不使用图片
+直接跳过，无需处理。
+
+### 方式 B: 用户提供图片
+使用外部链接引用图片（需 HTTP 服务器预览）：
+```xml
+<image x="100" y="200" width="400" height="300" 
+       href="images/product.png" 
+       preserveAspectRatio="xMidYMid meet"/>
+```
+
+**注意**: 
+- 使用相对路径引用图片文件
+- 预览时需启动 HTTP 服务器（如 `python3 -m http.server 8000`）
+- 生成完成后可使用 `tools/embed_images.py` 转换为 Base64 内嵌
+
+### 方式 C: AI 生成图片
+**先用占位符预留位置**，并添加图片描述供后续 AI 生成：
+```xml
+<!-- 图片占位符：[描述] -->
+<rect x="100" y="200" width="400" height="300" 
+      fill="#F0F4F8" stroke="#94A3B8" stroke-width="2" 
+      stroke-dasharray="8,4" rx="8"/>
+<text x="300" y="350" text-anchor="middle" fill="#64748B" font-size="14">
+  [AI生成：展示团队协作的现代办公场景]
+</text>
+```
+
+**后续处理**: SVG 生成完成后，根据占位符描述批量生成图片并替换。
+
+### 方式 D: 占位符预留
+与方式 C 相同格式，用于后续手动替换：
+```xml
+<!-- 图片占位符：[描述] -->
+<rect x="100" y="200" width="400" height="300" 
+      fill="#F5F5F5" stroke="#CCCCCC" stroke-width="2" 
+      stroke-dasharray="8,4" rx="8"/>
+<text x="300" y="350" text-anchor="middle" fill="#999999" font-size="14">
+  [图片：产品实拍图]
+</text>
+```
+
+---
+
 ## 图表模板引用
 
 当页面需要数据可视化时，**优先参考标准图表模板**，位于 [templates/charts/](../templates/charts/)：
