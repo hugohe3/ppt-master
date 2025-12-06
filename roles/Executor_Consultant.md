@@ -14,6 +14,55 @@
 - 每个部分需包含简洁的标题和要点列举，避免冗长文本。
 - 通过图表（折线图、柱状图、饼图等）可视化相关数据点，提升信息传达效果。
 
+## 图标使用指南
+
+根据《设计规范与内容大纲》中确定的**图标使用方式**，选择对应方法。咨询风格推荐使用**内置图标库**以保持专业统一感。
+
+### 方式 A: Emoji 表情
+适合轻松场景，直接在 `<text>` 中使用：
+```xml
+<text x="100" y="200" font-size="32">📊 数据分析</text>
+```
+
+### 方式 B: AI 生成
+使用 SVG 基本元素绘制，与配色方案保持一致。
+
+### 方式 C: 内置图标库（咨询风格推荐）
+使用 `templates/icons/` 中的 **640+ 预置图标**，用 `<g>` 包裹并设置 transform：
+
+```xml
+<!-- 嵌入图标：translate(X,Y) 定位，scale(N) 缩放，fill 设置颜色 -->
+<g transform="translate(100, 200) scale(3)" fill="#005587">
+  <!-- 从 templates/icons/chart-bar.svg 复制 path 内容 -->
+  <path d="M16 1H12V15H16V1Z"/>
+  <path d="M6 5H10V15H6V5Z"/>
+  <path d="M0 9H4V15H0V9Z"/>
+</g>
+```
+
+**常用尺寸**：`scale(2)`=32px, `scale(3)`=48px, `scale(4)`=64px（基础 16px）
+
+**咨询场景常用图标**：
+| 场景 | 图标文件 |
+|------|----------|
+| 增长/业绩 | `arrow-trend-up.svg`, `rocket.svg`, `chart-line.svg` |
+| 下降/风险 | `arrow-trend-down.svg`, `triangle-exclamation.svg` |
+| 数据分析 | `chart-bar.svg`, `chart-pie.svg`, `database.svg` |
+| 战略/目标 | `target.svg`, `target-arrow.svg`, `flag.svg` |
+| 组织/团队 | `users.svg`, `building.svg`, `sitemap.svg` |
+| 财务/成本 | `dollar.svg`, `coin.svg`, `wallet.svg` |
+| 时间/规划 | `calendar.svg`, `clock.svg`, `stopwatch.svg` |
+| 成功/达成 | `circle-checkmark.svg`, `trophy.svg`, `badge-check.svg` |
+| 安全/合规 | `shield-check.svg`, `lock-closed.svg`, `file.svg` |
+| 创新/方案 | `lightbulb.svg`, `sparkles.svg`, `wand-with-sparkles.svg` |
+
+完整图标列表参见 [templates/icons/README.md](../templates/icons/README.md)
+
+### 方式 D: 自定义图标
+使用用户指定路径的图标文件，嵌入方式与方式 C 相同。
+
+---
+
 ## 图表模板引用
 
 咨询风格强调数据驱动，**优先使用标准图表模板**，位于 [templates/charts/](../templates/charts/)：
@@ -60,7 +109,7 @@
 - **时间轴**: 以时间线形式展示重要信息，增强时间维度的理解。
 - **KPI 强调**: 以可视化方式突出关键绩效指标（KPI）。
 - **表格整理**: 用表格结构化展示风险与关键问题，便于快速阅读。
-- **图标**: 融入与内容领域相关的图标（icon），增强专业感。可采用 https://lucide.dev/ 网站提供的 SVG 图标或者 emoji 图标。
+- **图标**: 根据设计规范中确定的图标方式嵌入图标，优先使用 `templates/icons/` 内置图标库（参见上方图标使用指南）。
 - **画布适配**: 根据规范中指定的画布格式（PPT/小红书/朋友圈/Story等）调整布局策略：
   - **横屏格式** (16:9, 4:3): 多栏布局，数据图表横向展开
   - **竖屏格式** (3:4, 9:16): 纵向流动，单栏为主，信息层次分明

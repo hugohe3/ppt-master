@@ -24,6 +24,53 @@
   - 优先使用系统 UI 字体栈。
   - 参考 [画布格式规范](../docs/canvas_formats.md) 了解不同格式的设计要点。
 
+## 图标使用指南
+
+根据《设计规范与内容大纲》中确定的**图标使用方式**，选择对应方法：
+
+### 方式 A: Emoji 表情
+直接在 `<text>` 中使用 Unicode emoji：
+```xml
+<text x="100" y="200" font-size="32">🚀 快速增长</text>
+```
+
+### 方式 B: AI 生成
+使用 SVG 基本元素（circle, rect, path）绘制图标，与配色方案保持一致。
+
+### 方式 C: 内置图标库（推荐）
+使用 `templates/icons/` 中的 **640+ 预置图标**，用 `<g>` 包裹并设置 transform：
+
+```xml
+<!-- 嵌入图标：translate(X,Y) 定位，scale(N) 缩放 -->
+<g transform="translate(100, 200) scale(3)" fill="#0076A8">
+  <!-- 从 templates/icons/rocket.svg 复制 path 内容 -->
+  <path d="M10 16L12 14V10L13.6569 8.34314..."/>
+</g>
+```
+
+**常用尺寸**：`scale(2)`=32px, `scale(3)`=48px, `scale(4)`=64px（基础 16px）
+
+**常用图标速查**：
+| 场景 | 图标文件 |
+|------|----------|
+| 增长/启动 | `rocket.svg`, `arrow-trend-up.svg` |
+| 数据/分析 | `chart-bar.svg`, `chart-pie.svg`, `chart-line.svg` |
+| 用户/团队 | `user.svg`, `users.svg`, `person.svg` |
+| 设置/配置 | `cog.svg`, `sliders.svg`, `wrench.svg` |
+| 成功/完成 | `circle-checkmark.svg`, `badge-check.svg`, `thumbs-up.svg` |
+| 警告/错误 | `triangle-exclamation.svg`, `circle-x.svg` |
+| 目标/方向 | `target.svg`, `compass.svg`, `flag.svg` |
+| 安全/保护 | `shield.svg`, `lock-closed.svg`, `key.svg` |
+| 时间/日程 | `clock.svg`, `calendar.svg`, `stopwatch.svg` |
+| 文件/文档 | `file.svg`, `folder.svg`, `clipboard.svg` |
+
+完整图标列表参见 [templates/icons/README.md](../templates/icons/README.md)
+
+### 方式 D: 自定义图标
+使用用户指定路径的图标文件，嵌入方式与方式 C 相同。
+
+---
+
 ## 图表模板引用
 
 当页面需要数据可视化时，**优先参考标准图表模板**，位于 [templates/charts/](../templates/charts/)：
