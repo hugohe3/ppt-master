@@ -1,0 +1,36 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰色块 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="60" y="60" width="120" height="4" fill="#B71C1C"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="310" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="700" fill="#212121">
+    中国社会各阶级的分析
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="380" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="400" fill="#616161">
+    毛泽东 · 1925年12月1日
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="540" y="420" width="200" height="2" fill="#1A237E"/>
+  
+  <!-- 底部说明 -->
+  <text x="640" y="620" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    《毛泽东选集》第一卷
+  </text>
+  
+  <!-- 右下角装饰 -->
+  <rect x="1220" y="660" width="40" height="40" fill="#B71C1C" opacity="0.1"/>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    1
+  </text>
+</svg>

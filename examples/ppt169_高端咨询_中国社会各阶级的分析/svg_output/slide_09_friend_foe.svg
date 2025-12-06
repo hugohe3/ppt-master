@@ -1,0 +1,143 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    敌友关系总结
+  </text>
+  
+  <!-- 三栏矩阵 -->
+  <!-- 敌人栏 -->
+  <rect x="60" y="120" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#EF5350" stroke-width="2"/>
+  
+  <rect x="60" y="120" width="370" height="55" rx="8" fill="#EF5350"/>
+  <rect x="60" y="160" width="370" height="15" fill="#EF5350"/>
+  <text x="245" y="158" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">
+    ⚔️ 敌人
+  </text>
+  
+  <rect x="85" y="195" width="320" height="50" rx="4" fill="#EF5350" opacity="0.1"/>
+  <text x="245" y="228" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#C62828">
+    勾结帝国主义的军阀
+  </text>
+  
+  <rect x="85" y="255" width="320" height="50" rx="4" fill="#EF5350" opacity="0.1"/>
+  <text x="245" y="288" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#C62828">
+    官僚
+  </text>
+  
+  <rect x="85" y="315" width="320" height="50" rx="4" fill="#EF5350" opacity="0.1"/>
+  <text x="245" y="348" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#C62828">
+    买办阶级
+  </text>
+  
+  <rect x="85" y="375" width="320" height="50" rx="4" fill="#EF5350" opacity="0.1"/>
+  <text x="245" y="408" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#C62828">
+    大地主阶级
+  </text>
+  
+  <rect x="85" y="435" width="320" height="50" rx="4" fill="#EF5350" opacity="0.1"/>
+  <text x="245" y="468" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#C62828">
+    反动知识界
+  </text>
+  
+  <!-- 警惕对象栏 -->
+  <rect x="455" y="120" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#FFC107" stroke-width="2"/>
+  
+  <rect x="455" y="120" width="370" height="55" rx="8" fill="#FFC107"/>
+  <rect x="455" y="160" width="370" height="15" fill="#FFC107"/>
+  <text x="640" y="158" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#212121">
+    ⚠️ 警惕对象
+  </text>
+  
+  <rect x="480" y="195" width="320" height="90" rx="4" fill="#FFC107" opacity="0.15"/>
+  <text x="640" y="232" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#F57F17">
+    动摇不定的中产阶级
+  </text>
+  <text x="640" y="265" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#616161">
+    其右翼可能是我们的敌人
+  </text>
+  
+  <rect x="480" y="300" width="320" height="90" rx="4" fill="#FFC107" opacity="0.15"/>
+  <text x="640" y="337" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#F57F17">
+    游民无产阶级
+  </text>
+  <text x="640" y="370" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#616161">
+    勇敢但有破坏性
+  </text>
+  
+  <rect x="480" y="410" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="640" y="450" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#616161">
+    💡 处置原则
+  </text>
+  <text x="640" y="480" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="500" fill="#212121">
+    要时常提防他们
+  </text>
+  <text x="640" y="510" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="500" fill="#B71C1C">
+    不要让他们扰乱了我们的阵线
+  </text>
+  
+  <!-- 朋友栏 -->
+  <rect x="850" y="120" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#66BB6A" stroke-width="2"/>
+  
+  <rect x="850" y="120" width="370" height="55" rx="8" fill="#66BB6A"/>
+  <rect x="850" y="160" width="370" height="15" fill="#66BB6A"/>
+  <text x="1035" y="158" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">
+    🤝 朋友
+  </text>
+  
+  <!-- 领导力量 -->
+  <rect x="875" y="195" width="320" height="75" rx="4" fill="#B71C1C"/>
+  <text x="1035" y="228" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">
+    工业无产阶级
+  </text>
+  <text x="1035" y="255" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="500" fill="#FFFFFF">
+    ⭐ 革命的领导力量
+  </text>
+  
+  <!-- 最接近的朋友 -->
+  <rect x="875" y="285" width="320" height="60" rx="4" fill="#66BB6A" opacity="0.2"/>
+  <text x="1035" y="315" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E7D32">
+    半无产阶级
+  </text>
+  <text x="1035" y="338" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    最接近的朋友
+  </text>
+  
+  <rect x="875" y="360" width="320" height="60" rx="4" fill="#66BB6A" opacity="0.2"/>
+  <text x="1035" y="390" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E7D32">
+    小资产阶级
+  </text>
+  <text x="1035" y="413" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    最接近的朋友
+  </text>
+  
+  <rect x="875" y="435" width="320" height="55" rx="4" fill="#66BB6A" opacity="0.1"/>
+  <text x="1035" y="462" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="500" fill="#388E3C">
+    中产阶级左翼
+  </text>
+  <text x="1035" y="483" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    可能是我们的朋友
+  </text>
+  
+  <!-- 底部核心结论 -->
+  <rect x="60" y="560" width="1160" height="100" rx="8" fill="#1A237E" opacity="0.08" stroke="#1A237E" stroke-width="1"/>
+  
+  <text x="640" y="600" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A237E">
+    🎯 毛泽东的核心洞见
+  </text>
+  
+  <text x="640" y="635" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#212121">
+    中国无产阶级的最广大和最忠实的同盟军是农民
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    9
+  </text>
+</svg>

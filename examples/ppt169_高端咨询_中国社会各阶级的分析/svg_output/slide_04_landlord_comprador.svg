@@ -1,0 +1,128 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    地主阶级与买办阶级
+  </text>
+  
+  <!-- 定性标签 -->
+  <rect x="60" y="100" width="160" height="36" rx="4" fill="#37474F"/>
+  <text x="140" y="125" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    ⚠️ 极端反革命派
+  </text>
+  
+  <!-- 主内容区域 - 左右布局 -->
+  <!-- 左侧：阶级特征卡片 -->
+  <rect x="60" y="160" width="560" height="480" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="340" y="205" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#1A237E">
+    阶级特征
+  </text>
+  
+  <rect x="80" y="225" width="520" height="1" fill="#E0E0E0"/>
+  
+  <!-- 特征列表 -->
+  <rect x="100" y="260" width="10" height="10" fill="#37474F"/>
+  <text x="130" y="272" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#212121">
+    经济地位
+  </text>
+  <text x="130" y="305" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#212121">
+    国际资产阶级的附庸
+  </text>
+  <text x="130" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#212121">
+    生存和发展附属于帝国主义
+  </text>
+  
+  <rect x="100" y="375" width="10" height="10" fill="#37474F"/>
+  <text x="130" y="387" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#212121">
+    阶级性质
+  </text>
+  <text x="130" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#212121">
+    代表最落后、最反动的生产关系
+  </text>
+  <text x="130" y="450" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#212121">
+    阻碍中国生产力的发展
+  </text>
+  
+  <rect x="100" y="490" width="10" height="10" fill="#37474F"/>
+  <text x="130" y="502" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#212121">
+    政治代表
+  </text>
+  <text x="130" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#212121">
+    国家主义派、国民党右派
+  </text>
+  
+  <rect x="100" y="575" width="10" height="10" fill="#B71C1C"/>
+  <text x="130" y="587" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#B71C1C">
+    革命态度
+  </text>
+  <text x="130" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#B71C1C">
+    与革命目的完全不兼容，始终站在帝国主义一边
+  </text>
+  
+  <!-- 右侧：关系图示 -->
+  <rect x="660" y="160" width="560" height="480" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="940" y="205" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="600" fill="#1A237E">
+    依附关系图示
+  </text>
+  
+  <rect x="680" y="225" width="520" height="1" fill="#E0E0E0"/>
+  
+  <!-- 帝国主义图标 -->
+  <rect x="840" y="260" width="200" height="70" rx="8" fill="#1A237E"/>
+  <text x="940" y="305" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#FFFFFF">
+    🌐 帝国主义
+  </text>
+  
+  <!-- 帝国主义到地主阶级的连接线 -->
+  <line x1="870" y1="330" x2="820" y2="400" stroke="#37474F" stroke-width="2"/>
+  
+  <!-- 帝国主义到买办阶级的连接线 -->
+  <line x1="1010" y1="330" x2="1060" y2="400" stroke="#37474F" stroke-width="2"/>
+  
+  <!-- 依附标签 -->
+  <text x="940" y="375" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    依附
+  </text>
+  
+  <!-- 地主阶级 -->
+  <rect x="720" y="410" width="180" height="60" rx="8" fill="#37474F"/>
+  <text x="810" y="448" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+    🏛️ 地主阶级
+  </text>
+  
+  <!-- 买办阶级 -->
+  <rect x="980" y="410" width="180" height="60" rx="8" fill="#37474F"/>
+  <text x="1070" y="448" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+    💼 买办阶级
+  </text>
+  
+  <!-- 连接线到人民 -->
+  <line x1="810" y1="470" x2="810" y2="520" stroke="#B71C1C" stroke-width="2"/>
+  <line x1="1070" y1="470" x2="1070" y2="520" stroke="#B71C1C" stroke-width="2"/>
+  <line x1="810" y1="520" x2="1070" y2="520" stroke="#B71C1C" stroke-width="2"/>
+  <line x1="940" y1="520" x2="940" y2="555" stroke="#B71C1C" stroke-width="2"/>
+  <polygon points="940,565 935,555 945,555" fill="#B71C1C"/>
+  
+  <!-- 压迫剥削标签 -->
+  <text x="1090" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#B71C1C">
+    压迫剥削
+  </text>
+  
+  <!-- 中国人民 -->
+  <rect x="840" y="575" width="200" height="55" rx="8" fill="#B71C1C" opacity="0.15" stroke="#B71C1C" stroke-width="1"/>
+  <text x="940" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#B71C1C">
+    👥 中国人民
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    4
+  </text>
+</svg>

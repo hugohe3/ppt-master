@@ -1,0 +1,119 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    中产阶级（民族资产阶级）
+  </text>
+  
+  <!-- 定性标签 -->
+  <rect x="60" y="95" width="140" height="36" rx="4" fill="#FFC107"/>
+  <text x="130" y="120" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#212121">
+    ⚠️ 动摇的阶级
+  </text>
+  
+  <!-- 核心矛盾展示区 -->
+  <rect x="60" y="150" width="1160" height="200" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="640" y="185" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="600" fill="#1A237E">
+    阶级矛盾心理
+  </text>
+  
+  <!-- 左手 -->
+  <rect x="90" y="205" width="480" height="125" rx="8" fill="#66BB6A" opacity="0.15"/>
+  <text x="330" y="245" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" fill="#66BB6A">
+    ✋
+  </text>
+  <text x="330" y="285" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E7D32">
+    "举起你的左手打倒帝国主义"
+  </text>
+  <text x="330" y="315" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#616161">
+    受外资打击、军阀压迫时 → 需要革命
+  </text>
+  
+  <!-- VS -->
+  <text x="640" y="280" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#FFC107">
+    VS
+  </text>
+  
+  <!-- 右手 -->
+  <rect x="710" y="205" width="480" height="125" rx="8" fill="#EF5350" opacity="0.15"/>
+  <text x="950" y="245" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" fill="#EF5350">
+    🤚
+  </text>
+  <text x="950" y="285" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#C62828">
+    "举起你的右手打倒共产党"
+  </text>
+  <text x="950" y="315" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#616161">
+    惧怕无产阶级壮大 → 怀疑革命
+  </text>
+  
+  <!-- 分析区域 -->
+  <rect x="60" y="370" width="560" height="270" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="340" y="410" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="600" fill="#1A237E">
+    历史必然
+  </text>
+  
+  <rect x="80" y="430" width="520" height="1" fill="#E0E0E0"/>
+  
+  <circle cx="100" cy="470" r="6" fill="#1A237E"/>
+  <text x="125" y="478" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="400" fill="#212121">
+    "独立"革命思想仅仅是一个幻想
+  </text>
+  
+  <circle cx="100" cy="515" r="6" fill="#1A237E"/>
+  <text x="125" y="523" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="400" fill="#212121">
+    世界局面：革命与反革命最后斗争
+  </text>
+  
+  <circle cx="100" cy="560" r="6" fill="#1A237E"/>
+  <text x="125" y="568" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="400" fill="#212121">
+    中间阶级必定很快分化
+  </text>
+  
+  <circle cx="100" cy="605" r="6" fill="#B71C1C"/>
+  <text x="125" y="613" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="500" fill="#B71C1C">
+    1927年事变证明了这一预见
+  </text>
+  
+  <!-- 分化结果图示 -->
+  <rect x="660" y="370" width="560" height="270" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="940" y="410" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="600" fill="#1A237E">
+    分化走向
+  </text>
+  
+  <rect x="680" y="430" width="520" height="1" fill="#E0E0E0"/>
+  
+  <!-- 分化箭头图 -->
+  <rect x="850" y="460" width="180" height="50" rx="4" fill="#FFC107"/>
+  <text x="940" y="493" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#212121">
+    中产阶级
+  </text>
+  
+  <!-- 左连接线 -->
+  <line x1="850" y1="510" x2="760" y2="570" stroke="#66BB6A" stroke-width="2"/>
+  
+  <rect x="680" y="570" width="160" height="50" rx="4" fill="#66BB6A"/>
+  <text x="760" y="602" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    左翼 → 革命派
+  </text>
+  
+  <!-- 右连接线 -->
+  <line x1="1030" y1="510" x2="1120" y2="570" stroke="#EF5350" stroke-width="2"/>
+  
+  <rect x="1040" y="570" width="160" height="50" rx="4" fill="#EF5350"/>
+  <text x="1120" y="602" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    右翼 → 反革命派
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    5
+  </text>
+</svg>

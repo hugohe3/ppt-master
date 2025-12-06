@@ -1,0 +1,61 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    革命的首要问题
+  </text>
+  
+  <!-- 核心引文卡片背景 -->
+  <rect x="80" y="130" width="1120" height="180" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 左侧引号装饰 -->
+  <text x="100" y="200" font-family="Georgia, serif" font-size="80" fill="#B71C1C" opacity="0.3">"</text>
+  
+  <!-- 核心引文 -->
+  <text x="640" y="210" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="600" fill="#212121">
+    谁是我们的敌人？谁是我们的朋友？
+  </text>
+  <text x="640" y="265" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="600" fill="#212121">
+    这个问题是革命的首要问题。
+  </text>
+  
+  <!-- 右侧引号装饰 -->
+  <text x="1160" y="290" font-family="Georgia, serif" font-size="80" fill="#B71C1C" opacity="0.3">"</text>
+  
+  <!-- 分隔线 -->
+  <rect x="80" y="340" width="1120" height="1" fill="#E0E0E0"/>
+  
+  <!-- 说明要点1 -->
+  <circle cx="110" cy="400" r="8" fill="#1A237E"/>
+  <text x="140" y="408" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#212121">
+    过去革命失败的根本原因：不能团结真正的朋友，攻击真正的敌人
+  </text>
+  
+  <!-- 说明要点2 -->
+  <circle cx="110" cy="470" r="8" fill="#1A237E"/>
+  <text x="140" y="478" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#212121">
+    革命党是群众的向导，在革命中未有革命党领错了路而革命不失败的
+  </text>
+  
+  <!-- 说明要点3 -->
+  <circle cx="110" cy="540" r="8" fill="#1A237E"/>
+  <text x="140" y="548" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#212121">
+    必须分辨真正的敌友，分析各阶级的经济地位及其对革命的态度
+  </text>
+  
+  <!-- 底部强调框 -->
+  <rect x="80" y="600" width="1120" height="60" rx="4" fill="#FFC107" opacity="0.15"/>
+  <text x="640" y="640" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#212121">
+    💡 关键洞察：革命成功的前提是正确识别敌友关系
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    2
+  </text>
+</svg>

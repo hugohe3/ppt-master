@@ -1,0 +1,134 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    中国社会各阶级结构
+  </text>
+  
+  <!-- 金字塔图 - 使用path绘制梯形 -->
+  
+  <!-- 第1层：地主阶级与买办阶级（顶层小梯形）-->
+  <path d="M 540,120 L 660,120 L 700,175 L 500,175 Z" fill="#37474F"/>
+  <text x="600" y="155" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">
+    地主·买办阶级
+  </text>
+  
+  <!-- 第2层：中产阶级 -->
+  <path d="M 495,180 L 705,180 L 760,250 L 440,250 Z" fill="#546E7A"/>
+  <text x="600" y="223" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    中产阶级（民族资产阶级）
+  </text>
+  
+  <!-- 第3层：小资产阶级 -->
+  <path d="M 435,255 L 765,255 L 840,345 L 360,345 Z" fill="#78909C"/>
+  <text x="600" y="295" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    小资产阶级
+  </text>
+  <text x="600" y="320" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF">
+    自耕农·手工业主·小知识阶层
+  </text>
+  
+  <!-- 第4层：半无产阶级 -->
+  <path d="M 355,350 L 845,350 L 930,455 L 270,455 Z" fill="#A5D6A7"/>
+  <text x="600" y="395" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#2E7D32">
+    半无产阶级
+  </text>
+  <text x="600" y="422" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#2E7D32">
+    半自耕农·贫农·小手工业者·店员·小贩
+  </text>
+  
+  <!-- 第5层：无产阶级（底层最宽）-->
+  <path d="M 265,460 L 935,460 L 1020,565 L 180,565 Z" fill="#B71C1C"/>
+  <text x="600" y="505" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">
+    无产阶级
+  </text>
+  <text x="600" y="535" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#FFFFFF">
+    工业无产阶级·都市苦力·农村雇农
+  </text>
+  
+  <!-- 左侧连接线和标签 -->
+  <line x1="200" y1="147" x2="500" y2="147" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="132" width="130" height="30" rx="15" fill="#37474F"/>
+  <text x="125" y="153" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">
+    极端反革命
+  </text>
+  
+  <line x1="200" y1="215" x2="440" y2="215" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="200" width="130" height="30" rx="15" fill="#FFC107"/>
+  <text x="125" y="221" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="500" fill="#212121">
+    动摇派
+  </text>
+  
+  <line x1="200" y1="300" x2="360" y2="300" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="285" width="130" height="30" rx="15" fill="#78909C"/>
+  <text x="125" y="306" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">
+    可争取
+  </text>
+  
+  <line x1="200" y1="400" x2="270" y2="400" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="40" y="385" width="150" height="30" rx="15" fill="#66BB6A"/>
+  <text x="115" y="406" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">
+    最接近的朋友
+  </text>
+  
+  <line x1="200" y1="510" x2="180" y2="510" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="40" y="495" width="150" height="30" rx="15" fill="#B71C1C"/>
+  <text x="115" y="516" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="500" fill="#FFFFFF">
+    革命领导力量
+  </text>
+  
+  <!-- 右侧图例卡片 -->
+  <rect x="1050" y="120" width="180" height="200" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="1140" y="150" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    阅读指南
+  </text>
+  
+  <rect x="1070" y="165" width="140" height="1" fill="#E0E0E0"/>
+  
+  <text x="1140" y="195" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    ↑ 层级越高
+  </text>
+  <text x="1140" y="215" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    人数越少
+  </text>
+  
+  <rect x="1070" y="235" width="140" height="1" fill="#E0E0E0"/>
+  
+  <text x="1140" y="265" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    ↓ 层级越低
+  </text>
+  <text x="1140" y="285" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    革命性越强
+  </text>
+  
+  <!-- 游民无产阶级标注 -->
+  <rect x="1050" y="350" width="180" height="100" rx="8" fill="#FFFFFF" stroke="#FFC107" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="1140" y="380" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#F57F17">
+    ⚠️ 游民无产阶级
+  </text>
+  <text x="1140" y="405" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">
+    失地农民·失业手工业者
+  </text>
+  <text x="1140" y="425" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">
+    勇敢但有破坏性
+  </text>
+  <text x="1140" y="445" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="500" fill="#B71C1C">
+    引导得法可成革命力量
+  </text>
+  
+  <!-- 底部说明 -->
+  <text x="600" y="620" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    📊 社会阶级金字塔：从上到下，人数渐增、革命性渐强
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    3
+  </text>
+</svg>

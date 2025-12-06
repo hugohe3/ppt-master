@@ -1,0 +1,164 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    小资产阶级
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="60" y="110" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#616161">
+    自耕农、手工业主、小知识阶层、小商人等
+  </text>
+  
+  <!-- 三栏卡片 -->
+  <!-- 右翼卡片 -->
+  <rect x="60" y="140" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#78909C" stroke-width="2"/>
+  
+  <rect x="60" y="140" width="370" height="55" rx="8" fill="#78909C"/>
+  <rect x="60" y="180" width="370" height="15" fill="#78909C"/>
+  <text x="245" y="178" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">
+    右翼（少数）
+  </text>
+  
+  <text x="85" y="230" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    💰 经济状况
+  </text>
+  <text x="85" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    有余钱剩米，每年有余剩
+  </text>
+  
+  <rect x="85" y="285" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="85" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    🧠 心理特征
+  </text>
+  <text x="85" y="345" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    发财观念极重
+  </text>
+  <text x="85" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    "对赵公元帅礼拜最勤"
+  </text>
+  <text x="85" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    想爬上中产阶级地位
+  </text>
+  <text x="85" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    胆子小，怕官也怕革命
+  </text>
+  
+  <rect x="85" y="460" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="85" y="490" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    ⚡ 革命态度
+  </text>
+  <rect x="85" y="505" width="110" height="35" rx="4" fill="#78909C" opacity="0.3"/>
+  <text x="140" y="530" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" fill="#546E7A">
+    怀疑革命
+  </text>
+  
+  <!-- 中派卡片 -->
+  <rect x="455" y="140" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#FFC107" stroke-width="2"/>
+  
+  <rect x="455" y="140" width="370" height="55" rx="8" fill="#FFC107"/>
+  <rect x="455" y="180" width="370" height="15" fill="#FFC107"/>
+  <text x="640" y="178" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#212121">
+    中派（约一半）
+  </text>
+  
+  <text x="480" y="230" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    💰 经济状况
+  </text>
+  <text x="480" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    大体上可以自给
+  </text>
+  
+  <rect x="480" y="285" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="480" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    🧠 心理特征
+  </text>
+  <text x="480" y="345" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    感觉世道变坏了
+  </text>
+  <text x="480" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    开始骂人：骂"洋鬼子"
+  </text>
+  <text x="480" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    骂"抢钱司令"、"为富不仁"
+  </text>
+  <text x="480" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    怀疑革命未必成功
+  </text>
+  
+  <rect x="480" y="460" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="480" y="490" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    ⚡ 革命态度
+  </text>
+  <rect x="480" y="505" width="110" height="35" rx="4" fill="#FFC107" opacity="0.3"/>
+  <text x="535" y="530" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" fill="#F57F17">
+    中立观望
+  </text>
+  
+  <!-- 左翼卡片 -->
+  <rect x="850" y="140" width="370" height="420" rx="8" fill="#FFFFFF" stroke="#66BB6A" stroke-width="2"/>
+  
+  <rect x="850" y="140" width="370" height="55" rx="8" fill="#66BB6A"/>
+  <rect x="850" y="180" width="370" height="15" fill="#66BB6A"/>
+  <text x="1035" y="178" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">
+    左翼（数量不小）
+  </text>
+  
+  <text x="875" y="230" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    💰 经济状况
+  </text>
+  <text x="875" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    生活下降，负债渐多
+  </text>
+  
+  <rect x="875" y="285" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="875" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    🧠 心理特征
+  </text>
+  <text x="875" y="345" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    "瞻念前途，不寒而栗"
+  </text>
+  <text x="875" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    每逢年终结账就吃惊：
+  </text>
+  <text x="875" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    "咳，又亏了！"
+  </text>
+  <text x="875" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="400" fill="#212121">
+    精神痛苦感很大
+  </text>
+  
+  <rect x="875" y="460" width="320" height="1" fill="#E0E0E0"/>
+  
+  <text x="875" y="490" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1A237E">
+    ⚡ 革命态度
+  </text>
+  <rect x="875" y="505" width="170" height="35" rx="4" fill="#66BB6A" opacity="0.3"/>
+  <text x="960" y="530" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" fill="#2E7D32">
+    颇要紧的革命力量
+  </text>
+  
+  <!-- 底部结论 -->
+  <rect x="60" y="580" width="1160" height="80" rx="8" fill="#B71C1C" opacity="0.1"/>
+  <text x="640" y="615" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#B71C1C">
+    💡 关键结论
+  </text>
+  <text x="640" y="645" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#212121">
+    革命高涨时，不但左派参加革命，中派亦可参加，右派分子也只得附和着革命（五卅运动已证明）
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    6
+  </text>
+</svg>

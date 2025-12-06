@@ -1,0 +1,135 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    半无产阶级
+  </text>
+  
+  <!-- 五类人群卡片 - 一行5个 -->
+  
+  <!-- 卡片1：半自耕农 -->
+  <rect x="60" y="100" width="220" height="290" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="60" y="100" width="220" height="45" rx="8" fill="#90A4AE"/>
+  <rect x="60" y="132" width="220" height="13" fill="#90A4AE"/>
+  <text x="170" y="132" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    🌾 半自耕农
+  </text>
+  
+  <text x="75" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">食粮每年约一半不够</text>
+  <text x="75" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">须租别人田地</text>
+  <text x="75" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">或出卖部分劳动力</text>
+  
+  <rect x="75" y="245" width="190" height="1" fill="#E0E0E0"/>
+  
+  <text x="75" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"青黄不接，高利借债"</text>
+  <text x="75" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"重价向别人籴粮"</text>
+  
+  <rect x="75" y="320" width="90" height="26" rx="4" fill="#66BB6A" opacity="0.2"/>
+  <text x="120" y="339" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#2E7D32">革命性较强</text>
+  
+  <!-- 卡片2：贫农 -->
+  <rect x="300" y="100" width="220" height="290" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="300" y="100" width="220" height="45" rx="8" fill="#78909C"/>
+  <rect x="300" y="132" width="220" height="13" fill="#78909C"/>
+  <text x="410" y="132" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    🏚️ 贫农
+  </text>
+  
+  <text x="315" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">农村中的佃农</text>
+  <text x="315" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">受地主的剥削</text>
+  <text x="315" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">上层：有农具，勉强维持</text>
+  <text x="315" y="247" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">下层：无农具，极艰苦</text>
+  
+  <rect x="315" y="265" width="190" height="1" fill="#E0E0E0"/>
+  
+  <text x="315" y="290" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"债务丛集，如牛负重"</text>
+  
+  <rect x="315" y="320" width="100" height="26" rx="4" fill="#B71C1C" opacity="0.2"/>
+  <text x="365" y="339" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#B71C1C">极易接受革命</text>
+  
+  <!-- 卡片3：小手工业者 -->
+  <rect x="540" y="100" width="220" height="290" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="540" y="100" width="220" height="45" rx="8" fill="#90A4AE"/>
+  <rect x="540" y="132" width="220" height="13" fill="#90A4AE"/>
+  <text x="650" y="132" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    🔨 小手工业者
+  </text>
+  
+  <text x="555" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">自有简单生产手段</text>
+  <text x="555" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">系一种自由职业</text>
+  <text x="555" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">但常被迫出卖劳动力</text>
+  
+  <rect x="555" y="245" width="190" height="1" fill="#E0E0E0"/>
+  
+  <text x="555" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">经济地位与贫农相当</text>
+  <text x="555" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"时有贫困和失业恐慌"</text>
+  
+  <rect x="555" y="320" width="80" height="26" rx="4" fill="#66BB6A" opacity="0.2"/>
+  <text x="595" y="339" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#2E7D32">革命性强</text>
+  
+  <!-- 卡片4：店员 -->
+  <rect x="780" y="100" width="220" height="290" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="780" y="100" width="220" height="45" rx="8" fill="#90A4AE"/>
+  <rect x="780" y="132" width="220" height="13" fill="#90A4AE"/>
+  <text x="890" y="132" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    🏪 店员
+  </text>
+  
+  <text x="795" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">商店的雇员</text>
+  <text x="795" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">微薄的薪资</text>
+  <text x="795" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">供家庭费用</text>
+  
+  <rect x="795" y="245" width="190" height="1" fill="#E0E0E0"/>
+  
+  <text x="795" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"物价年年增长"</text>
+  <text x="795" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"薪给须数年一增"</text>
+  
+  <rect x="795" y="320" width="100" height="26" rx="4" fill="#B71C1C" opacity="0.2"/>
+  <text x="845" y="339" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#B71C1C">极易接受革命</text>
+  
+  <!-- 卡片5：小贩 -->
+  <rect x="1020" y="100" width="200" height="290" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="1020" y="100" width="200" height="45" rx="8" fill="#90A4AE"/>
+  <rect x="1020" y="132" width="200" height="13" fill="#90A4AE"/>
+  <text x="1120" y="132" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">
+    🛒 小贩
+  </text>
+  
+  <text x="1035" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">肩挑叫卖</text>
+  <text x="1035" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#212121">或街畔摊售</text>
+  
+  <rect x="1035" y="225" width="170" height="1" fill="#E0E0E0"/>
+  
+  <text x="1035" y="250" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">"本小利微，吃着不够"</text>
+  <text x="1035" y="272" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">地位和贫农不相上下</text>
+  <text x="1035" y="294" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="400" fill="#616161">需要变更现状的革命</text>
+  
+  <rect x="1035" y="320" width="115" height="26" rx="4" fill="#B71C1C" opacity="0.2"/>
+  <text x="1092" y="339" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#B71C1C">与贫农态度相同</text>
+  
+  <!-- 底部核心结论 -->
+  <rect x="60" y="420" width="1160" height="100" rx="8" fill="#B71C1C" opacity="0.1" stroke="#B71C1C" stroke-width="1"/>
+  
+  <text x="640" y="460" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#B71C1C">
+    💡 核心结论
+  </text>
+  <text x="640" y="495" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="500" fill="#212121">
+    所谓农民问题，主要就是他们的问题
+  </text>
+  
+  <!-- 补充说明 -->
+  <rect x="60" y="540" width="1160" height="60" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="640" y="580" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    📌 半自耕农和贫农是农村中一个数量极大的群众，他们是中国无产阶级的最广大和最忠实的同盟军
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    7
+  </text>
+</svg>

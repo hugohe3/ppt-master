@@ -1,0 +1,51 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="540" y="200" width="200" height="2" fill="#1A237E"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="320" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="64" font-weight="700" fill="#212121">
+    谢谢
+  </text>
+  
+  <!-- 英文副标题 -->
+  <text x="640" y="380" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="400" fill="#616161">
+    Thank You
+  </text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="540" y="420" width="200" height="2" fill="#1A237E"/>
+  
+  <!-- 来源信息卡片 -->
+  <rect x="400" y="480" width="480" height="120" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="640" y="520" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    📚 文献来源
+  </text>
+  
+  <text x="640" y="555" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="500" fill="#212121">
+    《毛泽东选集》第一卷
+  </text>
+  
+  <text x="640" y="585" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    中文马克思主义文库
+  </text>
+  
+  <!-- 右下角装饰 -->
+  <rect x="1220" y="660" width="40" height="40" fill="#B71C1C" opacity="0.1"/>
+  
+  <!-- 版本信息 -->
+  <text x="640" y="660" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#9E9E9E">
+    本演示文稿基于原文制作，仅供学习交流使用
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    10
+  </text>
+</svg>

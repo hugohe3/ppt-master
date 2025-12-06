@@ -1,0 +1,172 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFAFA"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#B71C1C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#B71C1C">
+    无产阶级
+  </text>
+  
+  <!-- 定性标签 -->
+  <rect x="60" y="100" width="170" height="36" rx="4" fill="#B71C1C"/>
+  <text x="145" y="125" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">
+    ⭐ 革命的领导力量
+  </text>
+  
+  <!-- KPI 卡片区域 -->
+  <rect x="60" y="160" width="280" height="130" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="200" y="200" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    工业无产阶级规模
+  </text>
+  <text x="200" y="260" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="700" fill="#B71C1C">
+    ~200万
+  </text>
+  
+  <rect x="370" y="160" width="280" height="130" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="510" y="200" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    主要产业
+  </text>
+  <text x="510" y="245" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+    铁路 · 矿山 · 海运
+  </text>
+  <text x="510" y="275" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+    纺织 · 造船
+  </text>
+  
+  <rect x="680" y="160" width="280" height="130" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="820" y="200" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    处境
+  </text>
+  <text x="820" y="245" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="500" fill="#212121">
+    很大一部分在
+  </text>
+  <text x="820" y="275" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#B71C1C">
+    外资产业的奴役下
+  </text>
+  
+  <rect x="990" y="160" width="230" height="130" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="1105" y="200" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="400" fill="#616161">
+    历史地位
+  </text>
+  <text x="1105" y="245" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="500" fill="#212121">
+    新生产力的代表者
+  </text>
+  <text x="1105" y="275" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="600" fill="#1A237E">
+    近代中国最进步的阶级
+  </text>
+  
+  <!-- 革命优势 -->
+  <rect x="60" y="310" width="580" height="200" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="350" y="350" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+    为何能成为领导力量？
+  </text>
+  
+  <rect x="80" y="370" width="540" height="1" fill="#E0E0E0"/>
+  
+  <!-- 优势1 -->
+  <rect x="100" y="390" width="240" height="100" rx="8" fill="#B71C1C" opacity="0.08"/>
+  <text x="220" y="430" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#B71C1C">
+    👥
+  </text>
+  <text x="220" y="465" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#B71C1C">
+    集中程度高
+  </text>
+  
+  <!-- 优势2 -->
+  <rect x="380" y="390" width="240" height="100" rx="8" fill="#B71C1C" opacity="0.08"/>
+  <text x="500" y="430" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#B71C1C">
+    💪
+  </text>
+  <text x="500" y="465" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#B71C1C">
+    特别能战斗
+  </text>
+  
+  <!-- 其他无产阶级群体 -->
+  <rect x="680" y="310" width="540" height="200" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <text x="950" y="350" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+    其他无产阶级群体
+  </text>
+  
+  <rect x="700" y="370" width="500" height="1" fill="#E0E0E0"/>
+  
+  <!-- 都市苦力 -->
+  <rect x="700" y="390" width="250" height="55" rx="4" fill="#90A4AE" opacity="0.2"/>
+  <text x="825" y="418" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#37474F">
+    🏗️ 都市苦力
+  </text>
+  <text x="825" y="440" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    码头搬运夫、人力车夫
+  </text>
+  
+  <!-- 农村雇农 -->
+  <rect x="960" y="390" width="250" height="55" rx="4" fill="#90A4AE" opacity="0.2"/>
+  <text x="1085" y="418" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#37474F">
+    🌾 农村雇农
+  </text>
+  <text x="1085" y="440" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    长工、月工、零工
+  </text>
+  
+  <text x="950" y="480" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#B71C1C">
+    是乡村中最感困难者，与贫农处于同一紧要地位
+  </text>
+  
+  <!-- 罢工运动实证 -->
+  <rect x="60" y="530" width="1160" height="120" rx="8" fill="#1A237E" opacity="0.08"/>
+  
+  <text x="640" y="565" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1A237E">
+    📊 四年来罢工运动的力量证明
+  </text>
+  
+  <text x="160" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#212121">
+    🚢 海员罢工
+  </text>
+  <text x="160" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    1922年
+  </text>
+  
+  <text x="350" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#212121">
+    🚂 铁路罢工
+  </text>
+  <text x="350" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    1922-1923年
+  </text>
+  
+  <text x="540" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#212121">
+    ⛏️ 开滦焦作煤矿
+  </text>
+  <text x="540" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    1922年/1925年
+  </text>
+  
+  <text x="730" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#212121">
+    🏭 沙面罢工
+  </text>
+  <text x="730" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    1924年
+  </text>
+  
+  <text x="940" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" fill="#B71C1C">
+    ⭐ 五卅后沪港大罢工
+  </text>
+  <text x="940" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#616161">
+    1925年，25万人
+  </text>
+  
+  <text x="1120" y="610" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="600" fill="#1A237E">
+    省港罢工
+  </text>
+  <text x="1120" y="632" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="400" fill="#B71C1C">
+    持续一年零四个月
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" text-anchor="end" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="400" fill="#616161">
+    8
+  </text>
+</svg>
