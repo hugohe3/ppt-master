@@ -1,0 +1,117 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <rect x="80" y="25" width="200" height="30" rx="4" fill="#003C71"/>
+  <text x="180" y="47" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="500" font-family="-apple-system, 'PingFang SC', sans-serif">06 阶段性目标</text>
+  <text x="300" y="47" fill="#003C71" font-size="28" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">三阶段实施路线图（2026-2030）</text>
+  
+  <!-- 时间轴 -->
+  <rect x="60" y="100" width="1160" height="8" rx="4" fill="#E2E8F0"/>
+  <rect x="60" y="100" width="380" height="8" rx="4" fill="#0066B3"/>
+  <rect x="440" y="100" width="380" height="8" rx="4" fill="#F59E0B"/>
+  <rect x="820" y="100" width="400" height="8" rx="4" fill="#22C55E"/>
+  
+  <circle cx="250" cy="104" r="12" fill="#0066B3" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="630" cy="104" r="12" fill="#F59E0B" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="1010" cy="104" r="12" fill="#22C55E" stroke="#FFFFFF" stroke-width="3"/>
+  
+  <text x="250" y="85" text-anchor="middle" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">2026-2027</text>
+  <text x="630" y="85" text-anchor="middle" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">2028-2029</text>
+  <text x="1010" y="85" text-anchor="middle" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">2030</text>
+  
+  <!-- 第一阶段 -->
+  <g transform="translate(60, 130)">
+    <rect x="0" y="0" width="380" height="540" rx="12" fill="#FFFFFF" stroke="#0066B3" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#0066B3"/>
+    <rect x="0" y="30" width="380" height="30" fill="#0066B3"/>
+    <text x="190" y="40" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">第一阶段：奠基与试点</text>
+    
+    <text x="20" y="90" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📋 数字化</text>
+    <text x="20" y="115" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 建成认证管理信息系统</text>
+    <text x="20" y="135" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 实现线上申请、电子证书</text>
+    <text x="20" y="155" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 试行远程审核模式</text>
+    
+    <text x="20" y="185" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🚀 业务创新</text>
+    <text x="20" y="210" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 推出2-3项自愿认证试点</text>
+    <text x="20" y="230" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 电池安全、碳足迹评价</text>
+    <text x="20" y="250" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 取得首批证书和案例</text>
+    
+    <text x="20" y="280" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🔬 能力建设</text>
+    <text x="20" y="305" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 电池、充电设备测试能力</text>
+    <text x="20" y="325" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 招聘培训国际法规人才5-8名</text>
+    
+    <text x="20" y="355" fill="#003C71" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🌍 国际探索</text>
+    <text x="20" y="380" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 与1-2家一带一路国家签署MOU</text>
+    <text x="20" y="400" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 开展标准比对和人员交流</text>
+    
+    <rect x="20" y="430" width="340" height="90" rx="8" fill="#F0F9FF"/>
+    <text x="190" y="460" text-anchor="middle" fill="#0066B3" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📊 预期成果</text>
+    <text x="40" y="485" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 认证周期平均缩短20%</text>
+    <text x="40" y="505" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 首批绿色低碳认证证书发布</text>
+  </g>
+  
+  <!-- 第二阶段 -->
+  <g transform="translate(450, 130)">
+    <rect x="0" y="0" width="380" height="540" rx="12" fill="#FFFFFF" stroke="#F59E0B" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#F59E0B"/>
+    <rect x="0" y="30" width="380" height="30" fill="#F59E0B"/>
+    <text x="190" y="40" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">第二阶段：拓展与提升</text>
+    
+    <text x="20" y="90" fill="#92400E" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📋 数字化</text>
+    <text x="20" y="115" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 升级AI智能审核系统</text>
+    <text x="20" y="135" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 报告审核和数据校验智能化</text>
+    <text x="20" y="155" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 80%客户切换线上平台</text>
+    
+    <text x="20" y="185" fill="#92400E" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🚀 业务创新</text>
+    <text x="20" y="210" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 四大类认证产品线全面铺开</text>
+    <text x="20" y="230" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 各推出3-5项细分认证</text>
+    <text x="20" y="250" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 形成产品组合并持续优化</text>
+    
+    <text x="20" y="280" fill="#92400E" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🔬 能力建设</text>
+    <text x="20" y="305" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 网络安全和自动驾驶测试实验室</text>
+    <text x="20" y="325" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 通过CNAS认可扩项</text>
+    
+    <text x="20" y="355" fill="#92400E" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🌍 国际拓展</text>
+    <text x="20" y="380" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 东南亚设立代表处</text>
+    <text x="20" y="400" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 欧洲开展联合认证项目试点</text>
+    
+    <rect x="20" y="430" width="340" height="90" rx="8" fill="#FEF3C7"/>
+    <text x="190" y="460" text-anchor="middle" fill="#92400E" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📊 预期成果</text>
+    <text x="40" y="485" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 业务量年均增长15%以上</text>
+    <text x="40" y="505" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 新认证产品贡献业务占比达30%</text>
+  </g>
+  
+  <!-- 第三阶段 -->
+  <g transform="translate(840, 130)">
+    <rect x="0" y="0" width="380" height="540" rx="12" fill="#FFFFFF" stroke="#22C55E" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#22C55E"/>
+    <rect x="0" y="30" width="380" height="30" fill="#22C55E"/>
+    <text x="190" y="40" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">第三阶段：巩固与引领</text>
+    
+    <text x="20" y="90" fill="#166534" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📋 数字化</text>
+    <text x="20" y="115" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 完成行业数字化标准贯彻</text>
+    <text x="20" y="135" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 打造标杆示范</text>
+    <text x="20" y="155" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 区块链证书跨机构互验</text>
+    
+    <text x="20" y="185" fill="#166534" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🚀 业务引领</text>
+    <text x="20" y="210" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 发布行业首创认证规范</text>
+    <text x="20" y="230" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 综合性能星级认证体系</text>
+    <text x="20" y="250" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 引领市场新趋势</text>
+    
+    <text x="20" y="280" fill="#166534" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🔬 能力世界级</text>
+    <text x="20" y="305" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 培养行业技术委员≥5人</text>
+    <text x="20" y="325" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 实验室能力达国际先进水平</text>
+    
+    <text x="20" y="355" fill="#166534" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🌍 国际地位</text>
+    <text x="20" y="380" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 牵头成立汽车认证国际合作联盟</text>
+    <text x="20" y="400" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">• 争取WP.29技术服务机构资格</text>
+    
+    <rect x="20" y="430" width="340" height="90" rx="8" fill="#F0FDF4"/>
+    <text x="190" y="460" text-anchor="middle" fill="#166534" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">📊 预期成果</text>
+    <text x="40" y="485" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 与国际一流认证机构齐名</text>
+    <text x="40" y="505" fill="#1E293B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 认证结果广受国际采信</text>
+  </g>
+  
+  <text x="1200" y="700" fill="#64748B" font-size="14" font-family="-apple-system, 'PingFang SC', sans-serif">18 / 20</text>
+</svg>

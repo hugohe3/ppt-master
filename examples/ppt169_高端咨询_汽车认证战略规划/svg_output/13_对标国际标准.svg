@@ -1,0 +1,156 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 左侧深蓝色装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <!-- 章节标签 -->
+  <rect x="80" y="25" width="180" height="30" rx="4" fill="#003C71"/>
+  <text x="170" y="47" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">04 国际化发展</text>
+  
+  <!-- 页面标题 -->
+  <text x="280" y="47" fill="#003C71" font-size="28" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    对标国际标准与认证互认
+  </text>
+  
+  <!-- 顶部成果展示 -->
+  <g transform="translate(60, 75)">
+    <rect x="0" y="0" width="1160" height="130" rx="10" fill="#003C71"/>
+    <text x="580" y="40" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+      🌍 中国认证认可国际化成果
+    </text>
+    
+    <!-- 四个数据指标 -->
+    <g transform="translate(60, 60)">
+      <rect x="0" y="0" width="230" height="55" rx="6" fill="#FFFFFF" opacity="0.15"/>
+      <text x="115" y="25" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">21</text>
+      <text x="115" y="45" text-anchor="middle" fill="#FFFFFF" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">加入国际认证认可组织</text>
+      
+      <rect x="250" y="0" width="230" height="55" rx="6" fill="#FFFFFF" opacity="0.15"/>
+      <text x="365" y="25" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">15</text>
+      <text x="365" y="45" text-anchor="middle" fill="#FFFFFF" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">多边互认协议</text>
+      
+      <rect x="500" y="0" width="230" height="55" rx="6" fill="#FFFFFF" opacity="0.15"/>
+      <text x="615" y="25" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">128</text>
+      <text x="615" y="45" text-anchor="middle" fill="#FFFFFF" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">双边互认安排</text>
+      
+      <rect x="750" y="0" width="230" height="55" rx="6" fill="#22C55E" opacity="0.8"/>
+      <text x="865" y="25" text-anchor="middle" fill="#FFFFFF" font-size="28" font-weight="bold"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">95%+</text>
+      <text x="865" y="45" text-anchor="middle" fill="#FFFFFF" font-size="12"
+            font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">覆盖全球经济总量</text>
+    </g>
+  </g>
+  
+  <!-- 三大战略方向 -->
+  <g transform="translate(60, 225)">
+    <!-- 标准对接 -->
+    <rect x="0" y="0" width="373" height="290" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="0" width="373" height="10" rx="5" fill="#0066B3"/>
+    <text x="186" y="50" text-anchor="middle" fill="#003C71" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">📋 标准对接</text>
+    <text x="25" y="85" fill="#1E293B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+      <tspan x="25" dy="0">• 跟踪研究UN WP.29世界车辆法规</tspan>
+      <tspan x="25" dy="26">• 同步IEC/ISO汽车相关标准</tspan>
+      <tspan x="25" dy="26">• 跟进欧美亚主要市场技术法规</tspan>
+      <tspan x="25" dy="26">• 确保认证依据与国际同步升级</tspan>
+    </text>
+    <rect x="25" y="210" width="323" height="60" rx="6" fill="#F0F9FF"/>
+    <text x="186" y="240" text-anchor="middle" fill="#003C71" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 目标</text>
+    <text x="186" y="260" text-anchor="middle" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">参与国际标准制修订，输出中国方案</text>
+    
+    <!-- 互认合作 -->
+    <rect x="393" y="0" width="374" height="290" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="393" y="0" width="374" height="10" rx="5" fill="#22C55E"/>
+    <text x="580" y="50" text-anchor="middle" fill="#166534" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🤝 互认合作</text>
+    <text x="418" y="85" fill="#1E293B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+      <tspan x="418" dy="0">• 加入ILAC/IAF多边互认框架</tspan>
+      <tspan x="418" dy="26">• 亚太、一带一路重点区域合作</tspan>
+      <tspan x="418" dy="26">• 签署双边/多边互认协议</tspan>
+      <tspan x="418" dy="26">• 检测报告和证书国际采信</tspan>
+    </text>
+    <rect x="418" y="210" width="323" height="60" rx="6" fill="#F0FDF4"/>
+    <text x="580" y="240" text-anchor="middle" fill="#166534" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 目标</text>
+    <text x="580" y="260" text-anchor="middle" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">"一张证书畅行多个市场"</text>
+    
+    <!-- 话语权提升 -->
+    <rect x="787" y="0" width="373" height="290" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="787" y="0" width="373" height="10" rx="5" fill="#F59E0B"/>
+    <text x="973" y="50" text-anchor="middle" fill="#92400E" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🏆 话语权提升</text>
+    <text x="812" y="85" fill="#1E293B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+      <tspan x="812" dy="0">• 争取WP.29技术服务机构资格</tspan>
+      <tspan x="812" dy="26">• 输出中国经验和技术方案</tspan>
+      <tspan x="812" dy="26">• 积极参与规则制定</tspan>
+      <tspan x="812" dy="26">• 推动中国标准国际化</tspan>
+    </text>
+    <rect x="812" y="210" width="323" height="60" rx="6" fill="#FEF3C7"/>
+    <text x="973" y="240" text-anchor="middle" fill="#92400E" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 目标</text>
+    <text x="973" y="260" text-anchor="middle" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">从"标准跟随者"到"规则引领者"</text>
+  </g>
+  
+  <!-- 底部核心框架 -->
+  <rect x="60" y="535" width="1160" height="150" rx="10" fill="#003C71"/>
+  <text x="640" y="575" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    📋 参与的核心国际组织与框架
+  </text>
+  
+  <g transform="translate(100, 600)">
+    <rect x="0" y="0" width="200" height="60" rx="8" fill="#FFFFFF" opacity="0.15"/>
+    <text x="100" y="28" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">UN WP.29</text>
+    <text x="100" y="48" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">世界车辆法规协调论坛</text>
+    
+    <rect x="220" y="0" width="200" height="60" rx="8" fill="#FFFFFF" opacity="0.15"/>
+    <text x="320" y="28" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">ILAC</text>
+    <text x="320" y="48" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国际实验室认可合作组织</text>
+    
+    <rect x="440" y="0" width="200" height="60" rx="8" fill="#FFFFFF" opacity="0.15"/>
+    <text x="540" y="28" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">IAF</text>
+    <text x="540" y="48" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国际认可论坛</text>
+    
+    <rect x="660" y="0" width="200" height="60" rx="8" fill="#FFFFFF" opacity="0.15"/>
+    <text x="760" y="28" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">ISO/IEC</text>
+    <text x="760" y="48" text-anchor="middle" fill="#FFFFFF" font-size="11" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国际标准化组织</text>
+    
+    <rect x="880" y="0" width="200" height="60" rx="8" fill="#22C55E" opacity="0.8"/>
+    <text x="980" y="28" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">一带一路</text>
+    <text x="980" y="48" text-anchor="middle" fill="#FFFFFF" font-size="11"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">沿线国家认证合作</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1200" y="665" fill="#FFFFFF" font-size="14" opacity="0.8"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    13 / 20
+  </text>
+</svg>

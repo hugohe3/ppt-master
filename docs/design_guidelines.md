@@ -329,7 +329,26 @@ system-ui, -apple-system, BlinkMacSystemFont,
 
 ## 图标使用
 
-### 推荐图标库
+### 项目内置图标库（推荐）
+
+本项目提供 **预置图标库**，位于 `templates/icons/`，包含 40+ 常用图标，风格统一，可直接复制使用。
+
+```
+查看图标: 浏览器打开 templates/icons/preview.html
+使用方式: 详见 templates/icons/README.md
+```
+
+**分类概览**：
+- 通用图标：home, settings, search, user, calendar, mail...
+- 数据图标：trending-up, chart-bar, database, file-text...
+- 业务图标：rocket, target, lightbulb, trophy, star...
+- 箭头图标：arrow-right/left/up/down, chevron-right...
+- 状态图标：check, check-circle, x-circle, alert-circle...
+- 工具图标：edit, trash, download, upload, share...
+
+### 外部图标库
+
+如需更多图标，推荐从以下开源库获取：
 
 1. **Lucide Icons** (https://lucide.dev/)
 
@@ -337,13 +356,13 @@ system-ui, -apple-system, BlinkMacSystemFont,
    - SVG 格式
    - 高度一致性
 
-2. **Material Icons**
+2. **Material Icons** (https://fonts.google.com/icons)
 
    - 通用性强
    - 识别度高
    - 多种样式
 
-3. **Feather Icons**
+3. **Feather Icons** (https://feathericons.com/)
    - 极简风格
    - 线条清晰
    - 轻量级

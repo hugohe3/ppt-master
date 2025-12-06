@@ -1,0 +1,149 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 左侧深蓝色装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <!-- 章节标签 -->
+  <rect x="80" y="25" width="180" height="30" rx="4" fill="#003C71"/>
+  <text x="170" y="47" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">03 创新认证产品</text>
+  
+  <!-- 页面标题 -->
+  <text x="280" y="47" fill="#003C71" font-size="28" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    四大创新认证产品线布局
+  </text>
+  
+  <!-- 2x2矩阵 -->
+  <g transform="translate(60, 80)">
+    <!-- 绿色低碳认证 -->
+    <rect x="0" y="0" width="570" height="290" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="0" width="10" height="290" rx="5" fill="#22C55E"/>
+    <text x="40" y="45" fill="#166534" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🌱 绿色低碳认证</text>
+    <text x="40" y="75" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">聚焦"双碳"目标，引领绿色发展</text>
+    
+    <rect x="40" y="100" width="240" height="70" rx="6" fill="#F0FDF4"/>
+    <text x="60" y="130" fill="#166534" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">碳足迹认证</text>
+    <text x="60" y="150" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">整车及部件全生命周期碳排放</text>
+    
+    <rect x="295" y="100" width="240" height="70" rx="6" fill="#F0FDF4"/>
+    <text x="315" y="130" fill="#166534" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">绿色产品认证</text>
+    <text x="315" y="150" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">中国绿色产品认证体系</text>
+    
+    <rect x="40" y="185" width="240" height="70" rx="6" fill="#F0FDF4"/>
+    <text x="60" y="215" fill="#166534" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">电池回收认证</text>
+    <text x="60" y="235" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">退役电池循环利用管理</text>
+    
+    <rect x="295" y="185" width="240" height="70" rx="6" fill="#F0FDF4"/>
+    <text x="315" y="215" fill="#166534" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">碳标签服务</text>
+    <text x="315" y="235" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">助力获得绿色金融支持</text>
+    
+    <!-- 安全性能认证 -->
+    <rect x="590" y="0" width="570" height="290" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="590" y="0" width="10" height="290" rx="5" fill="#EF4444"/>
+    <text x="630" y="45" fill="#991B1B" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🛡️ 安全性能认证</text>
+    <text x="630" y="75" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">高于法规要求，打造安全标杆</text>
+    
+    <rect x="630" y="100" width="240" height="70" rx="6" fill="#FEE2E2"/>
+    <text x="650" y="130" fill="#991B1B" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">电池安全认证</text>
+    <text x="650" y="150" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">热失控/防水防火/电气安全</text>
+    
+    <rect x="885" y="100" width="240" height="70" rx="6" fill="#FEE2E2"/>
+    <text x="905" y="130" fill="#991B1B" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">功能安全认证</text>
+    <text x="905" y="150" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">ISO26262自动驾驶系统</text>
+    
+    <rect x="630" y="185" width="240" height="70" rx="6" fill="#FEE2E2"/>
+    <text x="650" y="215" fill="#991B1B" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">网络安全认证</text>
+    <text x="650" y="235" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">ISO/SAE21434车载通信</text>
+    
+    <rect x="885" y="185" width="240" height="70" rx="6" fill="#FEE2E2"/>
+    <text x="905" y="215" fill="#991B1B" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">附属产品认证</text>
+    <text x="905" y="235" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">儿童座椅/安全头盔</text>
+    
+    <!-- 功能智能认证 -->
+    <rect x="0" y="305" width="570" height="290" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="305" width="10" height="290" rx="5" fill="#0066B3"/>
+    <text x="40" y="350" fill="#003C71" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🤖 功能智能认证</text>
+    <text x="40" y="380" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">围绕智能网联，差异化服务</text>
+    
+    <rect x="40" y="405" width="240" height="70" rx="6" fill="#F0F9FF"/>
+    <text x="60" y="435" fill="#003C71" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">智能座舱认证</text>
+    <text x="60" y="455" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">人机交互/软件可靠性</text>
+    
+    <rect x="295" y="405" width="240" height="70" rx="6" fill="#F0F9FF"/>
+    <text x="315" y="435" fill="#003C71" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">辅助驾驶认证</text>
+    <text x="315" y="455" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">自动泊车/分级认证</text>
+    
+    <rect x="40" y="490" width="240" height="70" rx="6" fill="#F0F9FF"/>
+    <text x="60" y="520" fill="#003C71" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">车联网认证</text>
+    <text x="60" y="540" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">互联互通/数据安全</text>
+    
+    <rect x="295" y="490" width="240" height="70" rx="6" fill="#F0F9FF"/>
+    <text x="315" y="520" fill="#003C71" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">续航性能认证</text>
+    <text x="315" y="540" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">续航/充电/低温性能</text>
+    
+    <!-- 高端品质认证 -->
+    <rect x="590" y="305" width="570" height="290" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="590" y="305" width="10" height="290" rx="5" fill="#F59E0B"/>
+    <text x="630" y="350" fill="#92400E" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">⭐ 高端品质认证</text>
+    <text x="630" y="380" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">服务中高端制造，权威品质背书</text>
+    
+    <rect x="630" y="405" width="240" height="70" rx="6" fill="#FEF3C7"/>
+    <text x="650" y="435" fill="#92400E" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">零部件优选</text>
+    <text x="650" y="455" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">发动机/变速箱/底盘/芯片</text>
+    
+    <rect x="885" y="405" width="240" height="70" rx="6" fill="#FEF3C7"/>
+    <text x="905" y="435" fill="#92400E" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">改装车认证</text>
+    <text x="905" y="455" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">动力提升/安全改进</text>
+    
+    <rect x="630" y="490" width="495" height="70" rx="6" fill="#003C71"/>
+    <text x="877" y="525" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 从合规性认证向卓越性能认证扩展</text>
+    <text x="877" y="550" text-anchor="middle" fill="#FFFFFF" font-size="13" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">让"自愿认证"成为提升产品附加值的重要依据</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1200" y="700" fill="#64748B" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    09 / 20
+  </text>
+</svg>

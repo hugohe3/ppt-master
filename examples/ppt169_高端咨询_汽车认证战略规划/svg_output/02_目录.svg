@@ -1,0 +1,111 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 左侧深蓝色装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="70" fill="#003C71" font-size="36" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    目录 CONTENTS
+  </text>
+  
+  <!-- 分割线 -->
+  <line x1="80" y1="90" x2="400" y2="90" stroke="#003C71" stroke-width="3"/>
+  
+  <!-- 目录项1 -->
+  <g transform="translate(80, 140)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">01</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">外部环境与行业发展趋势</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">新能源汽车 · 智能网联 · 国际市场</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 目录项2 -->
+  <g transform="translate(80, 235)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">02</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">数字化转型战略</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">数字平台 · AI审核 · 区块链存证</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 目录项3 -->
+  <g transform="translate(80, 330)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">03</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">创新认证产品拓展</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">绿色低碳 · 安全性能 · 功能智能 · 高端品质</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 目录项4 -->
+  <g transform="translate(660, 140)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">04</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国际化发展路径</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">标准互认 · 海外布局 · 差异化合规</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 目录项5 -->
+  <g transform="translate(660, 235)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">05</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">组织发展与能力建设</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">人才培养 · 实验室建设 · 合作生态</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 目录项6 -->
+  <g transform="translate(660, 330)">
+    <text x="0" y="0" fill="#003C71" font-size="56" font-weight="bold" opacity="0.2"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">06</text>
+    <text x="90" y="-5" fill="#1E293B" font-size="26" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">阶段性目标与实施计划</text>
+    <text x="90" y="25" fill="#64748B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">三阶段路线图 · 关键里程碑</text>
+    <line x1="90" y1="45" x2="450" y2="45" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  
+  <!-- 底部战略定位卡片 -->
+  <rect x="60" y="440" width="1160" height="220" rx="12" fill="#003C71"/>
+  
+  <!-- 卡片装饰 -->
+  <circle cx="160" cy="550" r="80" fill="#0066B3" opacity="0.3"/>
+  <circle cx="1120" cy="550" r="60" fill="#0066B3" opacity="0.2"/>
+  
+  <!-- 卡片标题 -->
+  <text x="640" y="500" text-anchor="middle" fill="#FFFFFF" font-size="18" opacity="0.8"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    战略定位
+  </text>
+  
+  <!-- 核心定位 -->
+  <text x="640" y="555" text-anchor="middle" fill="#FFFFFF" font-size="26" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    "以数字化驱动、绿色低碳和智能创新为双轮"
+  </text>
+  <text x="640" y="600" text-anchor="middle" fill="#FFFFFF" font-size="26" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    "构建国内领先、国际互认的汽车产品认证服务平台"
+  </text>
+  
+  <!-- 页码 -->
+  <text x="640" y="640" text-anchor="middle" fill="#FFFFFF" font-size="14" opacity="0.7"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    02 / 20
+  </text>
+</svg>

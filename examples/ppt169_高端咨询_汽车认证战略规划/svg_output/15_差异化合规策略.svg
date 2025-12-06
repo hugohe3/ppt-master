@@ -1,0 +1,97 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <rect x="80" y="25" width="180" height="30" rx="4" fill="#003C71"/>
+  <text x="170" y="47" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="500" font-family="-apple-system, 'PingFang SC', sans-serif">04 国际化发展</text>
+  <text x="280" y="47" fill="#003C71" font-size="28" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">差异化法规合规策略</text>
+  
+  <g transform="translate(60, 80)">
+    <rect x="0" y="0" width="1160" height="580" rx="10" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="30" y="45" fill="#003C71" font-size="20" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🌍 主要目标市场合规要点与应对策略</text>
+    
+    <!-- 表头 -->
+    <rect x="30" y="70" width="200" height="50" fill="#003C71"/>
+    <text x="130" y="100" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">目标市场</text>
+    <rect x="230" y="70" width="280" height="50" fill="#003C71"/>
+    <text x="370" y="100" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">重点关注领域</text>
+    <rect x="510" y="70" width="280" height="50" fill="#003C71"/>
+    <text x="650" y="100" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">认证要求</text>
+    <rect x="790" y="70" width="340" height="50" fill="#003C71"/>
+    <text x="960" y="100" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">应对策略</text>
+    
+    <!-- 欧洲 -->
+    <rect x="30" y="120" width="200" height="90" fill="#F0F9FF" stroke="#E2E8F0"/>
+    <text x="130" y="160" text-anchor="middle" fill="#003C71" font-size="18" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🇪🇺 欧洲</text>
+    <text x="130" y="185" text-anchor="middle" fill="#64748B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">欧盟/ECE成员国</text>
+    <rect x="230" y="120" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="250" y="155" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 碳排放与碳足迹</text>
+    <text x="250" y="180" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 安全碰撞测试</text>
+    <text x="250" y="205" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 网络安全与软件升级</text>
+    <rect x="510" y="120" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="530" y="155" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">E-Mark认证</text>
+    <text x="530" y="180" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">UN R155/R156</text>
+    <text x="530" y="205" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">电池法规/CBAM</text>
+    <rect x="790" y="120" width="340" height="90" fill="#F0FDF4" stroke="#E2E8F0"/>
+    <text x="810" y="155" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 联合欧洲机构开展E-Mark服务</text>
+    <text x="810" y="180" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 碳足迹核算与标签服务</text>
+    <text x="810" y="205" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 网络安全管理体系认证</text>
+    
+    <!-- 北美 -->
+    <rect x="30" y="210" width="200" height="90" fill="#FEF3C7" stroke="#E2E8F0"/>
+    <text x="130" y="250" text-anchor="middle" fill="#92400E" font-size="18" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🇺🇸 北美</text>
+    <text x="130" y="275" text-anchor="middle" fill="#64748B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">美国/加拿大</text>
+    <rect x="230" y="210" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="250" y="245" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 功能安全与碰撞保护</text>
+    <text x="250" y="270" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 自动驾驶豁免政策</text>
+    <text x="250" y="295" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 电动车环保要求</text>
+    <rect x="510" y="210" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="530" y="245" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">FMVSS安全标准</text>
+    <text x="530" y="270" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">EPA环保认证</text>
+    <text x="530" y="295" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">DOT认证</text>
+    <rect x="790" y="210" width="340" height="90" fill="#FEF3C7" stroke="#E2E8F0"/>
+    <text x="810" y="245" fill="#92400E" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 自动驾驶功能测试评价</text>
+    <text x="810" y="270" fill="#92400E" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ FMVSS符合性验证服务</text>
+    <text x="810" y="295" fill="#92400E" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 跟进AV豁免框架动态</text>
+    
+    <!-- 中东 -->
+    <rect x="30" y="300" width="200" height="90" fill="#FEE2E2" stroke="#E2E8F0"/>
+    <text x="130" y="340" text-anchor="middle" fill="#991B1B" font-size="18" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🇸🇦 中东</text>
+    <text x="130" y="365" text-anchor="middle" fill="#64748B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">GCC海湾国家</text>
+    <rect x="230" y="300" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="250" y="335" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 高温环境可靠性</text>
+    <text x="250" y="360" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 沙漠工况适应性</text>
+    <text x="250" y="385" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 极端气候耐久性</text>
+    <rect x="510" y="300" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="530" y="335" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">GSO标准认证</text>
+    <text x="530" y="360" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">SASO符合性</text>
+    <text x="530" y="385" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">ESMA认证(阿联酋)</text>
+    <rect x="790" y="300" width="340" height="90" fill="#FEE2E2" stroke="#E2E8F0"/>
+    <text x="810" y="335" fill="#991B1B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 高温环境可靠性专项测试</text>
+    <text x="810" y="360" fill="#991B1B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 电池热管理性能验证</text>
+    <text x="810" y="385" fill="#991B1B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 沙尘防护等级认证</text>
+    
+    <!-- 东南亚 -->
+    <rect x="30" y="390" width="200" height="90" fill="#F0FDF4" stroke="#E2E8F0"/>
+    <text x="130" y="430" text-anchor="middle" fill="#166534" font-size="18" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🇹🇭 东南亚</text>
+    <text x="130" y="455" text-anchor="middle" fill="#64748B" font-size="12" font-family="-apple-system, 'PingFang SC', sans-serif">东盟十国</text>
+    <rect x="230" y="390" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="250" y="425" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 经济耐用性</text>
+    <text x="250" y="450" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 成本效益平衡</text>
+    <text x="250" y="475" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">• 热带气候适应性</text>
+    <rect x="510" y="390" width="280" height="90" fill="#F5F7FA" stroke="#E2E8F0"/>
+    <text x="530" y="425" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">UN ECE规则(部分)</text>
+    <text x="530" y="450" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">各国自有认证体系</text>
+    <text x="530" y="475" fill="#1E293B" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">ASEAN互认协议</text>
+    <rect x="790" y="390" width="340" height="90" fill="#F0FDF4" stroke="#E2E8F0"/>
+    <text x="810" y="425" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 成本效益导向认证方案</text>
+    <text x="810" y="450" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 与当地机构签署互认协议</text>
+    <text x="810" y="475" fill="#166534" font-size="13" font-family="-apple-system, 'PingFang SC', sans-serif">✓ 设立代表处提供本地服务</text>
+    
+    <!-- 底部行动 -->
+    <rect x="30" y="500" width="1100" height="60" rx="8" fill="#003C71"/>
+    <text x="580" y="535" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold" font-family="-apple-system, 'PingFang SC', sans-serif">🎯 建立国际法规研究中心，及时跟进目标市场政策变动，发布合规资讯简报，帮助企业提早准备</text>
+  </g>
+  
+  <text x="1200" y="700" fill="#64748B" font-size="14" font-family="-apple-system, 'PingFang SC', sans-serif">15 / 20</text>
+</svg>

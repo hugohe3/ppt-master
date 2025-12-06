@@ -1,0 +1,101 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 左侧深蓝色装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <!-- 页面标题 -->
+  <text x="80" y="60" fill="#003C71" font-size="32" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    战略定位与核心使命
+  </text>
+  
+  <!-- 战略定位金字塔 - 居中放大 -->
+  <g transform="translate(400, 360)">
+    <!-- 金字塔层级 - 边缘点对齐在同一直线上 -->
+    <!-- 顶层 - 愿景 -->
+    <polygon points="0,-220 -78,-120 78,-120" fill="#003C71"/>
+    <text x="0" y="-160" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">愿景</text>
+    <text x="0" y="-135" text-anchor="middle" fill="#FFFFFF" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">汽车认证金字招牌</text>
+    
+    <!-- 第二层 - 战略定位 -->
+    <polygon points="-78,-120 -156,-20 156,-20 78,-120" fill="#0066B3"/>
+    <text x="0" y="-65" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">战略定位</text>
+    <text x="0" y="-40" text-anchor="middle" fill="#FFFFFF" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国内领先 · 国际互认</text>
+    
+    <!-- 第三层 - 双轮驱动 -->
+    <polygon points="-156,-20 -234,80 234,80 156,-20" fill="#22C55E"/>
+    <text x="0" y="25" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">双轮驱动</text>
+    <text x="0" y="55" text-anchor="middle" fill="#FFFFFF" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">数字化 + 绿色低碳 + 智能创新</text>
+    
+    <!-- 底层 - 基础能力 -->
+    <polygon points="-234,80 -312,180 312,180 234,80" fill="#64748B"/>
+    <text x="0" y="125" text-anchor="middle" fill="#FFFFFF" font-size="16" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">基础能力</text>
+    <text x="0" y="155" text-anchor="middle" fill="#FFFFFF" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">人才 · 技术 · 标准 · 合作</text>
+  </g>
+  
+  <!-- 右侧四个说明卡片 -->
+  <g transform="translate(780, 100)">
+    <!-- 愿景卡片 -->
+    <rect x="0" y="0" width="420" height="110" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="110" rx="4" fill="#003C71"/>
+    <text x="30" y="35" fill="#003C71" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 愿景</text>
+    <text x="30" y="65" fill="#1E293B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">打造中国汽车认证的金字招牌</text>
+    <text x="30" y="90" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">从跟跑到并跑乃至领跑的跨越</text>
+    
+    <!-- 定位卡片 -->
+    <rect x="0" y="125" width="420" height="110" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="125" width="8" height="110" rx="4" fill="#0066B3"/>
+    <text x="30" y="160" fill="#0066B3" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">📍 战略定位</text>
+    <text x="30" y="190" fill="#1E293B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">国内领先、国际互认的认证服务平台</text>
+    <text x="30" y="215" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">公正科学 · 国际接轨 · 服务产业</text>
+    
+    <!-- 双轮卡片 -->
+    <rect x="0" y="250" width="420" height="110" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="250" width="8" height="110" rx="4" fill="#22C55E"/>
+    <text x="30" y="285" fill="#166534" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">⚡ 双轮驱动</text>
+    <text x="30" y="315" fill="#1E293B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">数字化 × 绿色低碳 × 智能创新</text>
+    <text x="30" y="340" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">以高标准认证助力产业高质量发展</text>
+    
+    <!-- 基础卡片 -->
+    <rect x="0" y="375" width="420" height="110" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="375" width="8" height="110" rx="4" fill="#64748B"/>
+    <text x="30" y="410" fill="#475569" font-size="20" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🏗️ 基础能力</text>
+    <text x="30" y="440" fill="#1E293B" font-size="15"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">人才队伍 · 技术平台 · 标准体系 · 合作生态</text>
+    <text x="30" y="465" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">为战略落实提供不竭动力</text>
+  </g>
+  
+  <!-- 底部核心理念 -->
+  <rect x="60" y="600" width="1160" height="80" rx="10" fill="#003C71"/>
+  <text x="640" y="645" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="600"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    💡 以数字化驱动、绿色低碳和智能创新为双轮，构建国内领先、国际互认的汽车产品认证服务平台
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1200" y="660" fill="#FFFFFF" font-size="14" opacity="0.8"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    03 / 20
+  </text>
+</svg>

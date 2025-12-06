@@ -1,0 +1,134 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  
+  <!-- 左侧深蓝色装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#003C71"/>
+  
+  <!-- 章节标签 -->
+  <rect x="80" y="25" width="180" height="30" rx="4" fill="#003C71"/>
+  <text x="170" y="47" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="500"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">03 创新认证产品</text>
+  
+  <!-- 页面标题 -->
+  <text x="280" y="47" fill="#003C71" font-size="28" font-weight="bold"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    功能智能认证 &amp; 高端品质认证
+  </text>
+  
+  <!-- 双栏布局 -->
+  <g transform="translate(60, 75)">
+    <!-- 左栏：功能智能认证 -->
+    <rect x="0" y="0" width="570" height="610" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="0" width="570" height="12" rx="6" fill="#0066B3"/>
+    
+    <text x="30" y="55" fill="#003C71" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🤖 功能智能认证</text>
+    <text x="30" y="85" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">围绕智能网联和用户体验，推出差异化认证项目</text>
+    
+    <!-- 项目1 -->
+    <rect x="30" y="110" width="510" height="95" rx="8" fill="#F0F9FF" stroke="#0066B3" stroke-width="1"/>
+    <text x="55" y="140" fill="#003C71" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🖥️ 智能座舱功能认证</text>
+    <text x="55" y="165" fill="#1E293B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">车载信息娱乐系统的人机交互便利性、软件可靠性评估</text>
+    <text x="55" y="190" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">语音交互 · 触控响应 · 多屏联动 · 系统稳定性</text>
+    
+    <!-- 项目2 -->
+    <rect x="30" y="220" width="510" height="95" rx="8" fill="#F0F9FF" stroke="#0066B3" stroke-width="1"/>
+    <text x="55" y="250" fill="#003C71" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🚗 自动泊车/辅助驾驶性能认证</text>
+    <text x="55" y="275" fill="#1E293B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">权威测试验证智能功能在不同环境下的有效性和稳定性</text>
+    <text x="55" y="300" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">场景覆盖度 · 成功率 · 安全边界 · 分级认证标识</text>
+    
+    <!-- 项目3 -->
+    <rect x="30" y="330" width="510" height="95" rx="8" fill="#F0F9FF" stroke="#0066B3" stroke-width="1"/>
+    <text x="55" y="360" fill="#003C71" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">📡 车联网互联互通认证</text>
+    <text x="55" y="385" fill="#1E293B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">测试车机与手机App、云服务的兼容性和数据安全</text>
+    <text x="55" y="410" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">多端互联 · 数据加密 · 隐私保护 · 跨品牌兼容</text>
+    
+    <!-- 项目4 -->
+    <rect x="30" y="440" width="510" height="95" rx="8" fill="#F0F9FF" stroke="#0066B3" stroke-width="1"/>
+    <text x="55" y="470" fill="#003C71" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">⚡ 电动汽车整车性能认证</text>
+    <text x="55" y="495" fill="#1E293B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">从续航里程、充电效率、低温性能等方面设定高于国标的评价等级</text>
+    <text x="55" y="520" fill="#64748B" font-size="12"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">帮助优质车型突出性能卖点</text>
+    
+    <rect x="30" y="550" width="510" height="45" rx="6" fill="#003C71"/>
+    <text x="285" y="580" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 在法规未强制覆盖的领域树立行业评价基准</text>
+    
+    <!-- 右栏：高端品质认证 -->
+    <rect x="590" y="0" width="570" height="610" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="590" y="0" width="570" height="12" rx="6" fill="#F59E0B"/>
+    
+    <text x="620" y="55" fill="#92400E" font-size="24" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">⭐ 高端品质认证</text>
+    <text x="620" y="85" fill="#64748B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">服务汽车产业迈向中高端制造，为高品质产品提供权威背书</text>
+    
+    <!-- 高端零部件 -->
+    <rect x="620" y="110" width="510" height="200" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+    <text x="645" y="140" fill="#92400E" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🏅 高端零部件优选认证计划</text>
+    <text x="645" y="170" fill="#1E293B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">针对关键零部件制定严于行业平均水平的性能指标</text>
+    
+    <!-- 零部件标签 -->
+    <rect x="645" y="190" width="110" height="35" rx="4" fill="#F59E0B" opacity="0.3"/>
+    <text x="700" y="213" text-anchor="middle" fill="#92400E" font-size="13" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">发动机</text>
+    
+    <rect x="765" y="190" width="110" height="35" rx="4" fill="#F59E0B" opacity="0.3"/>
+    <text x="820" y="213" text-anchor="middle" fill="#92400E" font-size="13" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">变速箱</text>
+    
+    <rect x="885" y="190" width="110" height="35" rx="4" fill="#F59E0B" opacity="0.3"/>
+    <text x="940" y="213" text-anchor="middle" fill="#92400E" font-size="13" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">底盘系统</text>
+    
+    <rect x="1005" y="190" width="110" height="35" rx="4" fill="#F59E0B" opacity="0.3"/>
+    <text x="1060" y="213" text-anchor="middle" fill="#92400E" font-size="13" font-weight="600"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">车用芯片</text>
+    
+    <text x="645" y="260" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">评估维度：寿命 · 精度 · 可靠性 · 一致性</text>
+    <text x="645" y="285" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">✅ 助力自主零部件品牌在高端市场树立信誉</text>
+    
+    <!-- 改装车认证 -->
+    <rect x="620" y="325" width="510" height="130" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+    <text x="645" y="355" fill="#92400E" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🏎️ 改装和运动型车辆认证</text>
+    <text x="645" y="385" fill="#1E293B" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">针对改装零件、性能车的动力提升、安全改进项目进行专业认证</text>
+    <text x="645" y="415" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">• 规范改装市场 · 满足车迷群体对性能提升的合规需求</text>
+    <text x="645" y="440" fill="#64748B" font-size="13"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">• 动力系统 · 制动升级 · 悬挂调校 · 外观改装</text>
+    
+    <!-- 底部总结 -->
+    <rect x="620" y="470" width="510" height="125" rx="8" fill="#003C71"/>
+    <text x="875" y="510" text-anchor="middle" fill="#FFFFFF" font-size="18" font-weight="bold"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">🎯 战略目标</text>
+    <text x="875" y="545" text-anchor="middle" fill="#FFFFFF" font-size="14"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">引领从产品合规性认证向卓越性能认证扩展的潮流</text>
+    <text x="875" y="575" text-anchor="middle" fill="#FFFFFF" font-size="13" opacity="0.9"
+          font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">让"自愿认证"成为企业提升产品附加值、消费者识别优质产品的重要依据</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1200" y="700" fill="#64748B" font-size="14"
+        font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    12 / 20
+  </text>
+</svg>
