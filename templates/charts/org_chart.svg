@@ -1,0 +1,316 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    组织结构图模板
+    用途: 层级关系展示、组织架构、汇报关系
+    适用场景: 公司架构、团队结构、项目组织
+    支持: 3层结构（可扩展）
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 -->
+        <filter id="orgShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- CEO卡片渐变 -->
+        <linearGradient id="ceoGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1976D2;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 副总裁卡片渐变 -->
+        <linearGradient id="vpGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#388E3C;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8F9FA"/>
+    
+    <!-- 标题 -->
+    <text x="640" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>公司组织架构</tspan>
+    </text>
+    
+    <!-- 连接线 - 第1层到第2层 -->
+    <line x1="640" y1="175" x2="640" y2="210" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="150" y1="210" x2="1130" y2="210" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="150" y1="210" x2="150" y2="245" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="395" y1="210" x2="395" y2="245" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="640" y1="210" x2="640" y2="245" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="885" y1="210" x2="885" y2="245" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="1130" y1="210" x2="1130" y2="245" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 连接线 - 第2层到第3层 -->
+    <!-- 技术VP → 前端、后端 -->
+    <line x1="150" y1="355" x2="150" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="100" y1="390" x2="200" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="100" y1="390" x2="100" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="200" y1="390" x2="200" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 产品VP → 产品设计、用户研究 -->
+    <line x1="395" y1="355" x2="395" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="345" y1="390" x2="445" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="345" y1="390" x2="345" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="445" y1="390" x2="445" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 销售VP → 华东、华南 -->
+    <line x1="640" y1="355" x2="640" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="590" y1="390" x2="690" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="590" y1="390" x2="590" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="690" y1="390" x2="690" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 财务VP → 财务核算、预算管理 -->
+    <line x1="885" y1="355" x2="885" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="835" y1="390" x2="935" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="835" y1="390" x2="835" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="935" y1="390" x2="935" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 人力VP → 招聘培训、薪酬福利 -->
+    <line x1="1130" y1="355" x2="1130" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="1080" y1="390" x2="1180" y2="390" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="1080" y1="390" x2="1080" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    <line x1="1180" y1="390" x2="1180" y2="425" stroke="#BDC3C7" stroke-width="2"/>
+    
+    <!-- 第1层 - CEO -->
+    <g filter="url(#orgShadow)">
+        <rect x="540" y="85" width="200" height="90" rx="8" fill="url(#ceoGrad)"/>
+        <text x="640" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>张三</tspan>
+        </text>
+        <text x="640" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#E3F2FD" text-anchor="middle">
+            <tspan>首席执行官 CEO</tspan>
+        </text>
+    </g>
+    
+    <!-- 第2层 - 副总裁们 (宽度180px, 间距调整) -->
+    <g filter="url(#orgShadow)">
+        <rect x="60" y="245" width="180" height="110" rx="8" fill="url(#vpGrad)"/>
+        <text x="150" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>李四</tspan>
+        </text>
+        <text x="150" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#E8F5E9" text-anchor="middle">
+            <tspan>技术副总裁</tspan>
+        </text>
+        <text x="150" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#C8E6C9" text-anchor="middle">
+            <tspan>VP of Engineering</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="305" y="245" width="180" height="110" rx="8" fill="url(#vpGrad)"/>
+        <text x="395" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>王五</tspan>
+        </text>
+        <text x="395" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#E8F5E9" text-anchor="middle">
+            <tspan>产品副总裁</tspan>
+        </text>
+        <text x="395" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#C8E6C9" text-anchor="middle">
+            <tspan>VP of Product</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="550" y="245" width="180" height="110" rx="8" fill="url(#vpGrad)"/>
+        <text x="640" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>赵六</tspan>
+        </text>
+        <text x="640" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#E8F5E9" text-anchor="middle">
+            <tspan>销售副总裁</tspan>
+        </text>
+        <text x="640" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#C8E6C9" text-anchor="middle">
+            <tspan>VP of Sales</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="795" y="245" width="180" height="110" rx="8" fill="url(#vpGrad)"/>
+        <text x="885" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>钱七</tspan>
+        </text>
+        <text x="885" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#E8F5E9" text-anchor="middle">
+            <tspan>财务副总裁</tspan>
+        </text>
+        <text x="885" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#C8E6C9" text-anchor="middle">
+            <tspan>VP of Finance</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="1040" y="245" width="180" height="110" rx="8" fill="url(#vpGrad)"/>
+        <text x="1130" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>孙八</tspan>
+        </text>
+        <text x="1130" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#E8F5E9" text-anchor="middle">
+            <tspan>人力副总裁</tspan>
+        </text>
+        <text x="1130" y="335" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#C8E6C9" text-anchor="middle">
+            <tspan>VP of HR</tspan>
+        </text>
+    </g>
+    
+    <!-- 第3层 - 部门负责人 (宽度90px, 避免重叠) -->
+    <!-- 技术VP下属 -->
+    <g filter="url(#orgShadow)">
+        <rect x="55" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#2196F3" stroke-width="2"/>
+        <text x="100" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>前端团队</tspan>
+        </text>
+        <text x="100" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>12人</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="155" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#2196F3" stroke-width="2"/>
+        <text x="200" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>后端团队</tspan>
+        </text>
+        <text x="200" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>15人</tspan>
+        </text>
+    </g>
+    
+    <!-- 产品VP下属 -->
+    <g filter="url(#orgShadow)">
+        <rect x="300" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#4CAF50" stroke-width="2"/>
+        <text x="345" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>产品设计</tspan>
+        </text>
+        <text x="345" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>8人</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="400" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#4CAF50" stroke-width="2"/>
+        <text x="445" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>用户研究</tspan>
+        </text>
+        <text x="445" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>5人</tspan>
+        </text>
+    </g>
+    
+    <!-- 销售VP下属 -->
+    <g filter="url(#orgShadow)">
+        <rect x="545" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#FF9800" stroke-width="2"/>
+        <text x="590" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>华东区</tspan>
+        </text>
+        <text x="590" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>20人</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="645" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#FF9800" stroke-width="2"/>
+        <text x="690" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>华南区</tspan>
+        </text>
+        <text x="690" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>18人</tspan>
+        </text>
+    </g>
+    
+    <!-- 财务VP下属 -->
+    <g filter="url(#orgShadow)">
+        <rect x="790" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#9C27B0" stroke-width="2"/>
+        <text x="835" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>财务核算</tspan>
+        </text>
+        <text x="835" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>6人</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="890" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#9C27B0" stroke-width="2"/>
+        <text x="935" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>预算管理</tspan>
+        </text>
+        <text x="935" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>4人</tspan>
+        </text>
+    </g>
+    
+    <!-- 人力VP下属 -->
+    <g filter="url(#orgShadow)">
+        <rect x="1035" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#E91E63" stroke-width="2"/>
+        <text x="1080" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>招聘培训</tspan>
+        </text>
+        <text x="1080" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>5人</tspan>
+        </text>
+    </g>
+    
+    <g filter="url(#orgShadow)">
+        <rect x="1135" y="425" width="90" height="70" rx="6" fill="#FFFFFF" stroke="#E91E63" stroke-width="2"/>
+        <text x="1180" y="455" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>薪酬福利</tspan>
+        </text>
+        <text x="1180" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D" text-anchor="middle">
+            <tspan>3人</tspan>
+        </text>
+    </g>
+    
+    <!-- 统计信息 -->
+    <text x="640" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D" text-anchor="middle">
+        <tspan>总员工数: 96人 | 管理层: 6人 | 部门: 10个</tspan>
+    </text>
+    
+    <!-- 更新时间 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>更新时间: 2025年12月</tspan>
+    </text>
+</svg>
