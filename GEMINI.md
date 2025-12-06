@@ -1,5 +1,6 @@
 # GEMINI.md
 
+
 本文件为 AI 代理协作指引。详细文档请参阅 [README.md](./README.md)。
 
 ## 项目概述
@@ -8,12 +9,12 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 
 ## 角色与流程速查
 
-| 角色 | 文件 | 职责 |
-|------|------|------|
-| **Strategist** | `roles/Strategist.md` | 初次沟通、内容分析、设计规范编制 |
-| **Executor_General** | `roles/Executor_General.md` | 通用灵活风格 SVG 生成 |
-| **Executor_Consultant** | `roles/Executor_Consultant.md` | 高端咨询风格 SVG 生成 |
-| **Optimizer_CRAP** | `roles/Optimizer_CRAP.md` | CRAP 原则视觉优化（可选） |
+| 角色                          | 文件                             | 职责                             |
+| ----------------------------- | -------------------------------- | -------------------------------- |
+| **Strategist**          | `roles/Strategist.md`          | 初次沟通、内容分析、设计规范编制 |
+| **Executor_General**    | `roles/Executor_General.md`    | 通用灵活风格 SVG 生成            |
+| **Executor_Consultant** | `roles/Executor_Consultant.md` | 高端咨询风格 SVG 生成            |
+| **Optimizer_CRAP**      | `roles/Optimizer_CRAP.md`      | CRAP 原则视觉优化（可选）        |
 
 ### 工作流程
 
@@ -25,13 +26,15 @@ Strategist → Executor (General/Consultant) → Optimizer_CRAP (可选)
 
 ### 1. 策略师初次沟通（强制）
 
-在任何内容分析之前，**必须先完成五项确认**：
+在任何内容分析之前，**必须先完成七项确认**：
 
-1. **页数范围** - 基于内容量给出建议
-2. **目标受众与场景** - 给出初步判断
-3. **设计风格** - A) 通用灵活 或 B) 高端咨询，给出推荐理由
-4. **画布格式** - 根据场景推荐（PPT/小红书/朋友圈等）
+1. **画布格式** - 根据场景推荐（PPT/小红书/朋友圈等）
+2. **页数范围** - 基于内容量给出建议
+3. **目标受众与场景** - 给出初步判断
+4. **设计风格** - A) 通用灵活 或 B) 高端咨询，给出推荐理由
 5. **配色方案** - 给出主导色、辅助色、强调色的 HEX 色值
+6. **图标方式** - 四选一：A) Emoji B) AI生成 C) 内置图标库 D) 自定义路径
+7. **图片使用** - 四选一：A) 不使用 B) 用户提供 C) AI生成 D) 占位符预留
 
 **策略师必须主动给出专业建议，而非仅提问。**
 
@@ -44,14 +47,14 @@ Strategist → Executor (General/Consultant) → Optimizer_CRAP (可选)
 
 ### 3. 画布格式
 
-| 格式 | 尺寸 | viewBox |
-|------|------|---------|
-| PPT 16:9 | 1280×720 | `0 0 1280 720` |
-| PPT 4:3 | 1024×768 | `0 0 1024 768` |
-| 小红书 | 1242×1660 | `0 0 1242 1660` |
-| 朋友圈 | 1080×1080 | `0 0 1080 1080` |
-| Story | 1080×1920 | `0 0 1080 1920` |
-| 公众号头图 | 900×383 | `0 0 900 383` |
+| 格式       | 尺寸       | viewBox           |
+| ---------- | ---------- | ----------------- |
+| PPT 16:9   | 1280×720  | `0 0 1280 720`  |
+| PPT 4:3    | 1024×768  | `0 0 1024 768`  |
+| 小红书     | 1242×1660 | `0 0 1242 1660` |
+| 朋友圈     | 1080×1080 | `0 0 1080 1080` |
+| Story      | 1080×1920 | `0 0 1080 1920` |
+| 公众号头图 | 900×383   | `0 0 900 383`   |
 
 完整格式列表: [docs/canvas_formats.md](./docs/canvas_formats.md)
 
@@ -86,20 +89,23 @@ python3 -m http.server --directory <路径>/svg_output 8000
 
 ## 重要资源
 
-| 资源 | 路径 |
-|------|------|
-| 图表模板 | `templates/charts/` |
-| 设计指南 | `docs/design_guidelines.md` |
-| 画布格式 | `docs/canvas_formats.md` |
-| 工作流教程 | `docs/workflow_tutorial.md` |
-| 快速参考 | `docs/quick_reference.md` |
-| 示例项目 | `examples/` |
-| 工具说明 | `tools/README.md` |
+| 资源             | 路径                             |
+| ---------------- | -------------------------------- |
+| 图表模板         | `templates/charts/`            |
+| **图标库** | `templates/icons/` (640+ 图标) |
+| 设计指南         | `docs/design_guidelines.md`    |
+| 画布格式         | `docs/canvas_formats.md`       |
+| 工作流教程       | `docs/workflow_tutorial.md`    |
+| 快速参考         | `docs/quick_reference.md`      |
+| 示例项目         | `examples/`                    |
+| 工具说明         | `tools/README.md`              |
 
 ## AI 代理重要提示
 
 - 本项目定义 AI 角色协作机制，而非可执行代码
 - 质量取决于对设计规范与画布格式的严格执行
 - 策略师的「初次沟通」是**强制要求**
-- 策略师必须对五项确认问题**均给出专业建议**
+- 策略师必须对七项确认问题**均给出专业建议**
 - 通用风格与咨询风格在规范格式上有本质区别
+- 图标使用方式需在初次沟通中确认（Emoji / AI生成 / 内置库 / 自定义）
+- 图片使用方式需在初次沟通中确认（不使用 / 用户提供 / AI生成 / 占位符）
