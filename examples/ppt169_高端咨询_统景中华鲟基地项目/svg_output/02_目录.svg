@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="26" font-weight="600">目录</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14">CONTENTS</text>
+  
+  <!-- 左侧装饰线 -->
+  <rect x="60" y="110" width="4" height="560" fill="#C9A962" rx="2"/>
+  
+  <!-- 目录项 -->
+  <!-- 第1项 -->
+  <g transform="translate(90, 120)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">01</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">执行摘要与核心风险提示</text>
+    <rect x="480" y="18" width="50" height="24" rx="4" fill="#C41E3A"/>
+    <text x="505" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">高风险</text>
+  </g>
+  
+  <!-- 第2项 -->
+  <g transform="translate(90, 190)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">02</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">宏观环境与区域承载力分析</text>
+  </g>
+  
+  <!-- 第3项 -->
+  <g transform="translate(90, 260)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">03</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">技术可行性深度研判</text>
+  </g>
+  
+  <!-- 第4项 -->
+  <g transform="translate(90, 330)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">04</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">合作伙伴尽职调查</text>
+    <rect x="440" y="18" width="90" height="24" rx="4" fill="#E67E22"/>
+    <text x="485" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">信息不足</text>
+  </g>
+  
+  <!-- 第5项 -->
+  <g transform="translate(650, 120)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">05</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">市场可行性与商业模式重构</text>
+  </g>
+  
+  <!-- 第6项 -->
+  <g transform="translate(650, 190)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">06</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">法律合规与行政许可路线图</text>
+  </g>
+  
+  <!-- 第7项 -->
+  <g transform="translate(650, 260)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">07</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">财务模型与敏感性分析</text>
+  </g>
+  
+  <!-- 第8项 -->
+  <g transform="translate(650, 330)">
+    <rect width="540" height="60" rx="6" fill="white" stroke="#E8ECF0" stroke-width="1"/>
+    <text x="20" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700">08</text>
+    <text x="70" y="38" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600">结论与战略建议</text>
+    <rect x="440" y="18" width="90" height="24" rx="4" fill="#228B22"/>
+    <text x="485" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">行动方案</text>
+  </g>
+  
+  <!-- 核心议题框 -->
+  <g transform="translate(90, 420)">
+    <rect width="1100" height="200" rx="8" fill="#1E3A5F"/>
+    <text x="30" y="40" fill="#C9A962" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">核心议题</text>
+    <text x="30" y="80" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="400">
+      <tspan x="30" dy="0">2025年8月拟建统景中华鲟基地项目的</tspan>
+      <tspan x="30" dy="28" font-weight="600" fill="#C9A962">环境、技术、法律及商业可行性</tspan>
+      <tspan x="320" dy="0" font-weight="400" fill="white">深度分析</tspan>
+    </text>
+    
+    <!-- 四个关键维度 -->
+    <g transform="translate(30, 130)">
+      <rect width="240" height="50" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <text x="120" y="32" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="500">🌡️ 环境可行性</text>
+    </g>
+    <g transform="translate(290, 130)">
+      <rect width="240" height="50" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <text x="120" y="32" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="500">🔬 技术可行性</text>
+    </g>
+    <g transform="translate(550, 130)">
+      <rect width="240" height="50" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <text x="120" y="32" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="500">⚖️ 法律合规性</text>
+    </g>
+    <g transform="translate(810, 130)">
+      <rect width="240" height="50" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <text x="120" y="32" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="500">💼 商业可行性</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">02</text>
+</svg>

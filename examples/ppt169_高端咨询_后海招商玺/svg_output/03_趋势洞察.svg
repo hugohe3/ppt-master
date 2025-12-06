@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+    <linearGradient id="cardGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A962"/>
+      <stop offset="100%" style="stop-color:#B89850"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient3)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    趋势洞察：豪宅成为财富锚点
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    03/10
+  </text>
+  
+  <!-- 三栏案例卡片 -->
+  <!-- 案例1：上海土拍 -->
+  <g transform="translate(60, 110)">
+    <rect x="0" y="0" width="370" height="420" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <!-- 顶部金色条 -->
+    <rect x="0" y="0" width="370" height="8" rx="10" fill="url(#cardGold)"/>
+    <rect x="0" y="8" width="370" height="2" fill="url(#cardGold)"/>
+    
+    <!-- 城市标签 -->
+    <rect x="20" y="30" width="60" height="28" rx="4" fill="#1A2F4A"/>
+    <text x="50" y="49" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">上海</text>
+    
+    <!-- 案例标题 -->
+    <text x="20" y="95" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" font-weight="bold">
+      全国地王诞生
+    </text>
+    
+    <!-- 核心数据 -->
+    <text x="185" y="180" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="56" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      20万+
+    </text>
+    <text x="185" y="215" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#4A4A4A" text-anchor="middle">
+      楼板价 (元/㎡)
+    </text>
+    
+    <!-- 详情 -->
+    <rect x="20" y="250" width="330" height="1" fill="#E5E5E5"/>
+    <text x="20" y="285" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#4A4A4A">
+      <tspan x="20" dy="0">• 民企买家斩获真正意义上的全国地王</tspan>
+      <tspan x="20" dy="28">• 土地面积 4705.49㎡</tspan>
+      <tspan x="20" dy="28">• 容积率仅 1.3</tspan>
+      <tspan x="20" dy="28">• 大概率用于家族资产配置和传承</tspan>
+    </text>
+  </g>
+  
+  <!-- 案例2：金陵华庭 -->
+  <g transform="translate(455, 110)">
+    <rect x="0" y="0" width="370" height="420" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <!-- 顶部金色条 -->
+    <rect x="0" y="0" width="370" height="8" rx="10" fill="url(#cardGold)"/>
+    <rect x="0" y="8" width="370" height="2" fill="url(#cardGold)"/>
+    
+    <!-- 城市标签 -->
+    <rect x="20" y="30" width="60" height="28" rx="4" fill="#1A2F4A"/>
+    <text x="50" y="49" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">上海</text>
+    
+    <!-- 案例标题 -->
+    <text x="20" y="95" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" font-weight="bold">
+      金陵华庭外滩
+    </text>
+    
+    <!-- 核心数据 -->
+    <text x="185" y="180" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="56" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      220亿
+    </text>
+    <text x="185" y="215" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#4A4A4A" text-anchor="middle">
+      三期累计销售额
+    </text>
+    
+    <!-- 详情 -->
+    <rect x="20" y="250" width="330" height="1" fill="#E5E5E5"/>
+    <text x="20" y="285" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#4A4A4A">
+      <tspan x="20" dy="0">• 坐拥外滩一线江景</tspan>
+      <tspan x="20" dy="28">• 最高单价突破 32.68万元/㎡</tspan>
+      <tspan x="20" dy="28">• 刷新上海新房备案单价天花板</tspan>
+      <tspan x="20" dy="28">• 顶级资产的价值标杆</tspan>
+    </text>
+  </g>
+  
+  <!-- 案例3：广州保利 -->
+  <g transform="translate(850, 110)">
+    <rect x="0" y="0" width="370" height="420" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <!-- 顶部金色条 -->
+    <rect x="0" y="0" width="370" height="8" rx="10" fill="url(#cardGold)"/>
+    <rect x="0" y="8" width="370" height="2" fill="url(#cardGold)"/>
+    
+    <!-- 城市标签 -->
+    <rect x="20" y="30" width="60" height="28" rx="4" fill="#1A2F4A"/>
+    <text x="50" y="49" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">广州</text>
+    
+    <!-- 案例标题 -->
+    <text x="20" y="95" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" font-weight="bold">
+      保利现象级开盘
+    </text>
+    
+    <!-- 核心数据 -->
+    <text x="185" y="180" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="56" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      106亿
+    </text>
+    <text x="185" y="215" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#4A4A4A" text-anchor="middle">
+      首开销售额
+    </text>
+    
+    <!-- 详情 -->
+    <rect x="20" y="250" width="330" height="1" fill="#E5E5E5"/>
+    <text x="20" y="285" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#4A4A4A">
+      <tspan x="20" dy="0">• 2025年全国第一个"开盘即破百亿"</tspan>
+      <tspan x="20" dy="28">• 一举刷新广州高端住宅开盘纪录</tspan>
+      <tspan x="20" dy="28">• 现象级楼盘</tspan>
+      <tspan x="20" dy="28">• 市场信心的集中释放</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部核心观点 -->
+  <rect x="60" y="560" width="1160" height="100" rx="8" fill="#1A2F4A"/>
+  <text x="640" y="600" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">
+    将家族财富锚定于核心城市的优质不动产
+  </text>
+  <text x="640" y="635" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle">
+    不仅是一种面对现实的理性，更是一种穿越时间周期的远见与智慧
+  </text>
+</svg>

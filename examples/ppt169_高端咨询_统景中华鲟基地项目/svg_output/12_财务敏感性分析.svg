@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">财务敏感性分析</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-size="14">FINANCIAL SENSITIVITY ANALYSIS</text>
+  
+  <!-- 左侧：投资成本结构 -->
+  <g transform="translate(60, 110)">
+    <rect width="560" height="250" rx="10" fill="white" stroke="#E0E0E0"/>
+    <text x="25" y="32" fill="#1E3A5F" font-size="16" font-weight="600">📊 初始投资 (CAPEX) 估算</text>
+    
+    <!-- 成本条形图 -->
+    <g transform="translate(25, 55)">
+      <text x="0" y="15" fill="#6C757D" font-size="12">RAS系统</text>
+      <rect x="100" y="0" width="400" height="24" rx="4" fill="#C41E3A" opacity="0.2"/>
+      <rect x="100" y="0" width="280" height="24" rx="4" fill="#C41E3A"/>
+      <text x="390" y="16" fill="white" font-size="11" font-weight="600">3,500 万</text>
+      
+      <text x="0" y="50" fill="#6C757D" font-size="12">土建工程</text>
+      <rect x="100" y="35" width="400" height="24" rx="4" fill="#4682B4" opacity="0.2"/>
+      <rect x="100" y="35" width="160" height="24" rx="4" fill="#4682B4"/>
+      <text x="270" y="51" fill="white" font-size="11" font-weight="600">2,000 万</text>
+      
+      <text x="0" y="85" fill="#6C757D" font-size="12">鱼苗采购</text>
+      <rect x="100" y="70" width="400" height="24" rx="4" fill="#228B22" opacity="0.2"/>
+      <rect x="100" y="70" width="80" height="24" rx="4" fill="#228B22"/>
+      <text x="190" y="86" fill="white" font-size="11" font-weight="600">1,000 万</text>
+      
+      <text x="0" y="120" fill="#6C757D" font-size="12">其他设备</text>
+      <rect x="100" y="105" width="400" height="24" rx="4" fill="#E67E22" opacity="0.2"/>
+      <rect x="100" y="105" width="120" height="24" rx="4" fill="#E67E22"/>
+      <text x="230" y="121" fill="white" font-size="11" font-weight="600">1,500 万</text>
+    </g>
+    
+    <!-- 总计 -->
+    <rect x="380" y="195" width="160" height="45" rx="6" fill="#1E3A5F"/>
+    <text x="460" y="215" text-anchor="middle" fill="#C9A962" font-size="11">CAPEX 总计</text>
+    <text x="460" y="233" text-anchor="middle" fill="white" font-size="18" font-weight="700">8,000 万元</text>
+  </g>
+  
+  <!-- 右侧：运营成本结构 -->
+  <g transform="translate(660, 110)">
+    <rect width="560" height="250" rx="10" fill="white" stroke="#E0E0E0"/>
+    <text x="25" y="32" fill="#1E3A5F" font-size="16" font-weight="600">📊 年度运营成本 (OPEX) 结构</text>
+    
+    <!-- 饼图替代 - 条形 -->
+    <g transform="translate(25, 55)">
+      <text x="0" y="15" fill="#6C757D" font-size="12">电费能耗</text>
+      <rect x="100" y="0" width="350" height="24" rx="4" fill="#C41E3A" opacity="0.2"/>
+      <rect x="100" y="0" width="105" height="24" rx="4" fill="#C41E3A"/>
+      <text x="220" y="16" fill="#4A5568" font-size="11">600 万 (30%)</text>
+      
+      <text x="0" y="50" fill="#6C757D" font-size="12">饲料成本</text>
+      <rect x="100" y="35" width="350" height="24" rx="4" fill="#E67E22" opacity="0.2"/>
+      <rect x="100" y="35" width="87" height="24" rx="4" fill="#E67E22"/>
+      <text x="200" y="51" fill="#4A5568" font-size="11">500 万 (25%)</text>
+      
+      <text x="0" y="85" fill="#6C757D" font-size="12">人工薪酬</text>
+      <rect x="100" y="70" width="350" height="24" rx="4" fill="#4682B4" opacity="0.2"/>
+      <rect x="100" y="70" width="70" height="24" rx="4" fill="#4682B4"/>
+      <text x="185" y="86" fill="#4A5568" font-size="11">400 万 (20%)</text>
+      
+      <text x="0" y="120" fill="#6C757D" font-size="12">其他费用</text>
+      <rect x="100" y="105" width="350" height="24" rx="4" fill="#6C757D" opacity="0.2"/>
+      <rect x="100" y="105" width="87" height="24" rx="4" fill="#6C757D"/>
+      <text x="200" y="121" fill="#4A5568" font-size="11">500 万 (25%)</text>
+    </g>
+    
+    <rect x="380" y="195" width="160" height="45" rx="6" fill="#C41E3A"/>
+    <text x="460" y="215" text-anchor="middle" fill="white" font-size="11">OPEX 总计</text>
+    <text x="460" y="233" text-anchor="middle" fill="white" font-size="18" font-weight="700">2,000 万/年</text>
+  </g>
+  
+  <!-- 敏感性矩阵 -->
+  <g transform="translate(60, 380)">
+    <rect width="1160" height="220" rx="10" fill="white" stroke="#E0E0E0"/>
+    <text x="25" y="32" fill="#1E3A5F" font-size="16" font-weight="600">⚠ 关键敏感性矩阵：电价 × 成活率 对 IRR 的影响</text>
+    
+    <!-- 矩阵表格 -->
+    <g transform="translate(25, 55)">
+      <!-- 表头 -->
+      <rect x="0" y="0" width="180" height="35" fill="#1E3A5F"/>
+      <text x="90" y="23" text-anchor="middle" fill="white" font-size="12">电价 \ 成活率</text>
+      
+      <rect x="180" y="0" width="180" height="35" fill="#1E3A5F"/>
+      <text x="270" y="23" text-anchor="middle" fill="white" font-size="12">70% (悲观)</text>
+      
+      <rect x="360" y="0" width="180" height="35" fill="#1E3A5F"/>
+      <text x="450" y="23" text-anchor="middle" fill="white" font-size="12">85% (基准)</text>
+      
+      <rect x="540" y="0" width="180" height="35" fill="#1E3A5F"/>
+      <text x="630" y="23" text-anchor="middle" fill="white" font-size="12">95% (乐观)</text>
+      
+      <!-- 行1: 0.55元 -->
+      <rect x="0" y="35" width="180" height="35" fill="#F8F9FA"/>
+      <text x="90" y="58" text-anchor="middle" fill="#4A5568" font-size="12">0.55 元/kWh (谷电)</text>
+      <rect x="180" y="35" width="180" height="35" fill="#FEF7ED"/>
+      <text x="270" y="58" text-anchor="middle" fill="#E67E22" font-size="13" font-weight="600">5.2%</text>
+      <rect x="360" y="35" width="180" height="35" fill="#F0FFF0"/>
+      <text x="450" y="58" text-anchor="middle" fill="#228B22" font-size="13" font-weight="600">12.5%</text>
+      <rect x="540" y="35" width="180" height="35" fill="#F0FFF0"/>
+      <text x="630" y="58" text-anchor="middle" fill="#228B22" font-size="13" font-weight="600">18.3%</text>
+      
+      <!-- 行2: 0.65元 -->
+      <rect x="0" y="70" width="180" height="35" fill="white"/>
+      <text x="90" y="93" text-anchor="middle" fill="#4A5568" font-size="12">0.65 元/kWh (平电)</text>
+      <rect x="180" y="70" width="180" height="35" fill="#FEF2F2"/>
+      <text x="270" y="93" text-anchor="middle" fill="#C41E3A" font-size="13" font-weight="600">-2.1%</text>
+      <rect x="360" y="70" width="180" height="35" fill="#FEF7ED"/>
+      <text x="450" y="93" text-anchor="middle" fill="#E67E22" font-size="13" font-weight="600">8.0%</text>
+      <rect x="540" y="70" width="180" height="35" fill="#F0FFF0"/>
+      <text x="630" y="93" text-anchor="middle" fill="#228B22" font-size="13" font-weight="600">14.6%</text>
+      
+      <!-- 行3: 0.80元 -->
+      <rect x="0" y="105" width="180" height="35" fill="#F8F9FA"/>
+      <text x="90" y="128" text-anchor="middle" fill="#4A5568" font-size="12">0.80 元/kWh (峰电)</text>
+      <rect x="180" y="105" width="180" height="35" fill="#FEF2F2"/>
+      <text x="270" y="128" text-anchor="middle" fill="#C41E3A" font-size="13" font-weight="600">-12.4%</text>
+      <rect x="360" y="105" width="180" height="35" fill="#FEF2F2"/>
+      <text x="450" y="128" text-anchor="middle" fill="#C41E3A" font-size="13" font-weight="600">1.8%</text>
+      <rect x="540" y="105" width="180" height="35" fill="#FEF7ED"/>
+      <text x="630" y="128" text-anchor="middle" fill="#E67E22" font-size="13" font-weight="600">9.1%</text>
+    </g>
+    
+    <!-- 右侧结论 -->
+    <rect x="760" y="55" width="380" height="120" rx="8" fill="#1A2F4A"/>
+    <text x="780" y="85" fill="#C9A962" font-size="13" font-weight="600">💡 财务敏感性结论</text>
+    <text fill="white" font-size="12">
+      <tspan x="780" y="110">1. 电价是最大成本风险因子</tspan>
+      <tspan x="780" y="130">2. 成活率低于80%时IRR承压</tspan>
+      <tspan x="780" y="150">3. 建议锁定谷电合约+储能设施</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部警示 -->
+  <g transform="translate(60, 620)">
+    <rect width="1160" height="55" rx="6" fill="#C41E3A"/>
+    <text x="30" y="34" fill="white" font-size="14" font-weight="600">⛔ 财务红线：若电价维持 0.65 元/kWh 且成活率低于 80%，项目 IRR 将跌破 5% 融资成本线，财务不可行。</text>
+  </g>
+  
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-size="12">12</text>
+</svg>

@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+    <linearGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C9A962;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#C9A962;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient6)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    区位价值：大后海生态系统
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    06/10
+  </text>
+  
+  <!-- 中心圆形 - 后海招商玺 -->
+  <circle cx="640" cy="380" r="85" fill="#1A2F4A" stroke="#C9A962" stroke-width="3"/>
+  <text x="640" y="365" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#C9A962" text-anchor="middle">
+    后海招商玺
+  </text>
+  <text x="640" y="395" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">
+    城市巅峰资源
+  </text>
+  
+  <!-- 连接线 -->
+  <line x1="555" y1="380" x2="380" y2="260" stroke="#C9A962" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="555" y1="380" x2="380" y2="500" stroke="#C9A962" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="725" y1="380" x2="900" y2="260" stroke="#C9A962" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="725" y1="380" x2="900" y2="500" stroke="#C9A962" stroke-width="2" stroke-dasharray="5,3"/>
+  
+  <!-- 左上 - 硅谷的头脑 -->
+  <g transform="translate(100, 130)">
+    <rect x="0" y="0" width="300" height="200" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="300" height="50" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="40" width="300" height="10" fill="#1A2F4A"/>
+    
+    <!-- 图标 -->
+    <circle cx="30" cy="25" r="16" fill="#C9A962"/>
+    <text x="30" y="31" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle">💡</text>
+    
+    <text x="55" y="32" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">
+      硅谷的头脑
+    </text>
+    
+    <text x="20" y="80" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      <tspan x="20" dy="0">• 深港穗科技集群</tspan>
+      <tspan fill="#C9A962" font-weight="bold">全球第一</tspan>
+    </text>
+    <text x="20" y="108" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 《人民日报》称深圳为"中国硅谷"
+    </text>
+    <text x="20" y="136" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 后海：能量高度集中的"发动机"
+    </text>
+    <text x="20" y="164" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 每平方公里GDP产出近
+      <tspan fill="#C9A962" font-weight="bold">860亿</tspan>
+    </text>
+  </g>
+  
+  <!-- 左下 - 涩谷的心脏 -->
+  <g transform="translate(100, 390)">
+    <rect x="0" y="0" width="300" height="200" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="300" height="50" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="40" width="300" height="10" fill="#1A2F4A"/>
+    
+    <!-- 图标 -->
+    <circle cx="30" cy="25" r="16" fill="#C9A962"/>
+    <text x="30" y="31" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle">❤</text>
+    
+    <text x="55" y="32" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">
+      涩谷的心脏
+    </text>
+    
+    <text x="20" y="80" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 规划升维为"大后海"生态系统
+    </text>
+    <text x="20" y="108" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 深圳面向世界的"生活心脏"
+    </text>
+    <text x="20" y="136" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 国际邮轮母港 · 深圳歌剧院
+    </text>
+    <text x="20" y="164" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 海上世界文化艺术中心
+    </text>
+  </g>
+  
+  <!-- 右上 - 塔尖配套 -->
+  <g transform="translate(880, 130)">
+    <rect x="0" y="0" width="300" height="200" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="300" height="50" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="40" width="300" height="10" fill="#1A2F4A"/>
+    
+    <!-- 图标 -->
+    <circle cx="30" cy="25" r="16" fill="#C9A962"/>
+    <text x="30" y="31" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle">🏢</text>
+    
+    <text x="55" y="32" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">
+      塔尖配套
+    </text>
+    
+    <text x="20" y="80" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 深圳湾万象城
+    </text>
+    <text x="20" y="108" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • K11 ECOAST
+    </text>
+    <text x="20" y="136" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 太子湾VILLA街区（"深圳小比弗利"）
+    </text>
+    <text x="20" y="164" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 海上世界商业集群
+    </text>
+  </g>
+  
+  <!-- 右下 - 教育资源 -->
+  <g transform="translate(880, 390)">
+    <rect x="0" y="0" width="300" height="200" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="300" height="50" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="40" width="300" height="10" fill="#1A2F4A"/>
+    
+    <!-- 图标 -->
+    <circle cx="30" cy="25" r="16" fill="#C9A962"/>
+    <text x="30" y="31" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle">🎓</text>
+    
+    <text x="55" y="32" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" font-weight="bold">
+      人文教育高地
+    </text>
+    
+    <text x="20" y="80" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 育才二小 + 育才二中（
+      <tspan fill="#C9A962" font-weight="bold">全市第一梯队</tspan>
+      ）
+    </text>
+    <text x="20" y="108" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 深圳贝赛思国际学校
+    </text>
+    <text x="20" y="136" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 蛇口国际学校（SIS）
+    </text>
+    <text x="20" y="164" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      • 全链条国际化教育通路
+    </text>
+  </g>
+  
+  <!-- 底部说明 -->
+  <rect x="60" y="620" width="1160" height="60" rx="6" fill="#1A2F4A"/>
+  <text x="640" y="658" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    兼具CBD全球视野与经济动能，坐拥核心居住区的静谧与纯粹，为塔尖圈层提供传世资产
+  </text>
+</svg>

@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient8)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    户型价值：全生命周期的陪伴
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    08/10
+  </text>
+  
+  <!-- 户型规格标签 -->
+  <rect x="60" y="110" width="280" height="60" rx="6" fill="#1A2F4A"/>
+  <text x="200" y="135" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">
+    首推户型
+  </text>
+  <text x="200" y="158" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">
+    建面约197-237㎡
+  </text>
+  
+  <!-- 新规标签 -->
+  <rect x="360" y="110" width="150" height="60" rx="6" fill="#C9A962"/>
+  <text x="435" y="148" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+    新规户型
+  </text>
+  
+  <!-- 核心卖点区域 -->
+  <!-- 卖点1 -->
+  <g transform="translate(60, 195)">
+    <rect x="0" y="0" width="370" height="110" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="110" rx="4" fill="#C9A962"/>
+    
+    <circle cx="45" cy="55" r="25" fill="#1A2F4A"/>
+    <text x="45" y="62" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">🏠</text>
+    
+    <text x="85" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="bold">
+      板楼设计
+    </text>
+    <text x="85" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      南北通透，户型方正
+    </text>
+    <text x="85" y="88" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      三面采光，双套房朝南
+    </text>
+  </g>
+  
+  <!-- 卖点2 -->
+  <g transform="translate(455, 195)">
+    <rect x="0" y="0" width="370" height="110" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="110" rx="4" fill="#C9A962"/>
+    
+    <circle cx="45" cy="55" r="25" fill="#1A2F4A"/>
+    <text x="45" y="62" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">🔒</text>
+    
+    <text x="85" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="bold">
+      专梯入户
+    </text>
+    <text x="85" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      每户独享专属电梯
+    </text>
+    <text x="85" y="88" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      减少交叉干扰，提升私密性与尊崇感
+    </text>
+  </g>
+  
+  <!-- 卖点3 -->
+  <g transform="translate(850, 195)">
+    <rect x="0" y="0" width="370" height="110" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="110" rx="4" fill="#C9A962"/>
+    
+    <circle cx="45" cy="55" r="25" fill="#1A2F4A"/>
+    <text x="45" y="62" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">🏗️</text>
+    
+    <text x="85" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="bold">
+      框架核心筒结构
+    </text>
+    <text x="85" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      突破剪力墙局限
+    </text>
+    <text x="85" y="88" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+      除湿区外，空间可自由组合
+    </text>
+  </g>
+  
+  <!-- 核心理念区域 -->
+  <rect x="60" y="330" width="1160" height="180" rx="10" fill="#1A2F4A"/>
+  
+  <text x="640" y="375" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#C9A962" text-anchor="middle" font-weight="bold">
+    全景无柱设计 · 全生命周期户型
+  </text>
+  
+  <!-- 生命周期示意 -->
+  <g transform="translate(100, 400)">
+    <!-- 阶段1 -->
+    <rect x="0" y="0" width="180" height="80" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="90" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">👫 二人世界</text>
+    <text x="90" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="middle">开放式布局</text>
+    
+    <!-- 箭头 -->
+    <path d="M 195 40 L 230 40" stroke="#C9A962" stroke-width="2" fill="none"/>
+    <polygon points="230,35 240,40 230,45" fill="#C9A962"/>
+  </g>
+  
+  <g transform="translate(350, 400)">
+    <!-- 阶段2 -->
+    <rect x="0" y="0" width="180" height="80" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="90" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">👨‍👩‍👧 三口之家</text>
+    <text x="90" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="middle">增加儿童房</text>
+    
+    <!-- 箭头 -->
+    <path d="M 195 40 L 230 40" stroke="#C9A962" stroke-width="2" fill="none"/>
+    <polygon points="230,35 240,40 230,45" fill="#C9A962"/>
+  </g>
+  
+  <g transform="translate(600, 400)">
+    <!-- 阶段3 -->
+    <rect x="0" y="0" width="180" height="80" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="90" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">👨‍👩‍👧‍👦 二孩家庭</text>
+    <text x="90" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="middle">独立学习区</text>
+    
+    <!-- 箭头 -->
+    <path d="M 195 40 L 230 40" stroke="#C9A962" stroke-width="2" fill="none"/>
+    <polygon points="230,35 240,40 230,45" fill="#C9A962"/>
+  </g>
+  
+  <g transform="translate(850, 400)">
+    <!-- 阶段4 -->
+    <rect x="0" y="0" width="180" height="80" rx="6" fill="#C9A962"/>
+    <text x="90" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle" font-weight="bold">👨‍👩‍👧‍👦👴👵 三代同堂</text>
+    <text x="90" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="#1A2F4A" text-anchor="middle">双主套+独立空间</text>
+  </g>
+  
+  <!-- 底部金句 -->
+  <rect x="60" y="540" width="1160" height="130" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+  
+  <text x="640" y="590" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="26" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+    "不再是人去将就房子，而是房子来适应人"
+  </text>
+  
+  <text x="640" y="630" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A" text-anchor="middle">
+    优越设计叠加新规福利，户型使用率直接硬核起飞，堪称后海片区的"天花板"
+  </text>
+  
+  <!-- 首推信息 -->
+  <rect x="1000" y="560" width="200" height="90" rx="6" fill="#1A2F4A"/>
+  <text x="1100" y="595" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">
+    首推 1栋
+  </text>
+  <text x="1100" y="625" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">
+    2T2户 · 专梯入户
+  </text>
+</svg>

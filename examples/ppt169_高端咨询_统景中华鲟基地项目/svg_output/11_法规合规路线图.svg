@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">法规合规路线图</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-size="14">REGULATORY COMPLIANCE ROADMAP</text>
+  
+  <!-- 时间轴背景 -->
+  <rect x="60" y="110" width="1160" height="530" rx="10" fill="white" stroke="#E0E0E0"/>
+  
+  <!-- 时间轴主线 -->
+  <line x1="150" y1="160" x2="150" y2="590" stroke="#1E3A5F" stroke-width="4"/>
+  
+  <!-- 阶段1：人工繁育许可证 -->
+  <g transform="translate(150, 160)">
+    <circle cx="0" cy="0" r="16" fill="#C41E3A"/>
+    <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="700">1</text>
+    
+    <rect x="30" y="-30" width="950" height="100" rx="8" fill="#FEF2F2" stroke="#C41E3A"/>
+    <text x="50" y="-5" fill="#C41E3A" font-size="16" font-weight="600">人工繁育许可证（一级保护动物）</text>
+    <rect x="750" y="-20" width="100" height="24" rx="4" fill="#C41E3A"/>
+    <text x="800" y="-3" text-anchor="middle" fill="white" font-size="11" font-weight="600">难度：极高</text>
+    <rect x="860" y="-20" width="100" height="24" rx="4" fill="rgba(196,30,58,0.2)"/>
+    <text x="910" y="-3" text-anchor="middle" fill="#C41E3A" font-size="11">周期：18-36月</text>
+    
+    <text fill="#4A5568" font-size="12">
+      <tspan x="50" y="20">• 主管部门：国家林业和草原局</tspan>
+      <tspan x="350" y="20">• 中华鲟为国家一级保护动物，许可证仅授予科研院所</tspan>
+      <tspan x="50" y="42">• 关键障碍：民营企业几乎不可能获得纯种中华鲟繁育许可，须采用杂交鲟替代方案</tspan>
+    </text>
+  </g>
+  
+  <!-- 阶段2：经营利用许可证 -->
+  <g transform="translate(150, 275)">
+    <circle cx="0" cy="0" r="16" fill="#E67E22"/>
+    <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="700">2</text>
+    
+    <rect x="30" y="-30" width="950" height="100" rx="8" fill="#FEF7ED" stroke="#E67E22"/>
+    <text x="50" y="-5" fill="#E67E22" font-size="16" font-weight="600">经营利用许可证（杂交鲟）</text>
+    <rect x="750" y="-20" width="100" height="24" rx="4" fill="#E67E22"/>
+    <text x="800" y="-3" text-anchor="middle" fill="white" font-size="11" font-weight="600">难度：中等</text>
+    <rect x="860" y="-20" width="100" height="24" rx="4" fill="rgba(230,126,34,0.2)"/>
+    <text x="910" y="-3" text-anchor="middle" fill="#E67E22" font-size="11">周期：6-12月</text>
+    
+    <text fill="#4A5568" font-size="12">
+      <tspan x="50" y="20">• 主管部门：重庆市农业农村委员会</tspan>
+      <tspan x="350" y="20">• 杂交鲟不属于国家保护动物，可合法商业养殖</tspan>
+      <tspan x="50" y="42">• 关键要求：须证明杂交鲟亲本来源合法，并建立可追溯养殖档案</tspan>
+    </text>
+  </g>
+  
+  <!-- 阶段3：排污许可证 -->
+  <g transform="translate(150, 390)">
+    <circle cx="0" cy="0" r="16" fill="#4682B4"/>
+    <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="700">3</text>
+    
+    <rect x="30" y="-30" width="950" height="100" rx="8" fill="#EBF4FF" stroke="#4682B4"/>
+    <text x="50" y="-5" fill="#4682B4" font-size="16" font-weight="600">排污许可证与环评批复</text>
+    <rect x="750" y="-20" width="100" height="24" rx="4" fill="#4682B4"/>
+    <text x="800" y="-3" text-anchor="middle" fill="white" font-size="11" font-weight="600">难度：中等</text>
+    <rect x="860" y="-20" width="100" height="24" rx="4" fill="rgba(70,130,180,0.2)"/>
+    <text x="910" y="-3" text-anchor="middle" fill="#4682B4" font-size="11">周期：3-6月</text>
+    
+    <text fill="#4A5568" font-size="12">
+      <tspan x="50" y="20">• 主管部门：重庆市生态环境局 / 渝北区生态环境分局</tspan>
+      <tspan x="50" y="42">• 须达到GB/T 25023 一类水域标准，RAS系统尾水处理后方可外排</tspan>
+    </text>
+  </g>
+  
+  <!-- 阶段4：河长制备案 -->
+  <g transform="translate(150, 505)">
+    <circle cx="0" cy="0" r="16" fill="#228B22"/>
+    <text x="0" y="5" text-anchor="middle" fill="white" font-size="12" font-weight="700">4</text>
+    
+    <rect x="30" y="-30" width="950" height="100" rx="8" fill="#F0FFF0" stroke="#228B22"/>
+    <text x="50" y="-5" fill="#228B22" font-size="16" font-weight="600">河长制涉水项目备案</text>
+    <rect x="750" y="-20" width="100" height="24" rx="4" fill="#228B22"/>
+    <text x="800" y="-3" text-anchor="middle" fill="white" font-size="11" font-weight="600">难度：可控</text>
+    <rect x="860" y="-20" width="100" height="24" rx="4" fill="rgba(34,139,34,0.2)"/>
+    <text x="910" y="-3" text-anchor="middle" fill="#228B22" font-size="11">周期：1-3月</text>
+    
+    <text fill="#4A5568" font-size="12">
+      <tspan x="50" y="20">• 主管部门：御临河河长办 / 渝北区水利局</tspan>
+      <tspan x="50" y="42">• 项目位于嘉陵江二级支流，须获得河长办审批同意，取水与排水需同步报批</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部结论 -->
+  <g transform="translate(60, 660)">
+    <rect width="1160" height="45" rx="6" fill="#1E3A5F"/>
+    <text x="30" y="29" fill="#C9A962" font-size="14" font-weight="600">⏱ 合规路径建议：</text>
+    <text x="200" y="29" fill="white" font-size="14">采用「杂交鲟替代策略」绕开一级保护动物许可壁垒，预计完整合规周期 12-18 个月。</text>
+  </g>
+  
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-size="12">11</text>
+</svg>

@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient4)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    痛点分析：传承十字路口的困境
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    04/10
+  </text>
+  
+  <!-- 左栏：供应稀缺 -->
+  <g transform="translate(60, 110)">
+    <!-- 卡片背景 -->
+    <rect x="0" y="0" width="540" height="440" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    
+    <!-- 标题区域 -->
+    <rect x="0" y="0" width="540" height="60" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="50" width="540" height="20" fill="#1A2F4A"/>
+    
+    <!-- 警示图标 -->
+    <circle cx="35" cy="30" r="18" fill="none" stroke="#C9A962" stroke-width="2"/>
+    <text x="35" y="37" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#C9A962" text-anchor="middle" font-weight="bold">!</text>
+    
+    <text x="65" y="38" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#FFFFFF" font-weight="bold">
+      供应端：土地资源枯竭
+    </text>
+    
+    <!-- 痛点列表 -->
+    <g transform="translate(30, 90)">
+      <!-- 痛点1 -->
+      <rect x="0" y="0" width="480" height="90" rx="6" fill="#FEF7F0" stroke="#E5D5C5" stroke-width="1"/>
+      <circle cx="25" cy="45" r="8" fill="#C9A962"/>
+      <text x="50" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#1A2F4A" font-weight="600">
+        一线城市核心区住宅用地近乎枯竭
+      </text>
+      <text x="50" y="62" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666">
+        能匹配终极需求的选择少之又少
+      </text>
+      
+      <!-- 痛点2 -->
+      <rect x="0" y="105" width="480" height="90" rx="6" fill="#FEF7F0" stroke="#E5D5C5" stroke-width="1"/>
+      <circle cx="25" cy="150" r="8" fill="#C9A962"/>
+      <text x="50" y="140" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#1A2F4A" font-weight="600">
+        深圳核心区土地尤为稀缺
+      </text>
+      <text x="50" y="167" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666">
+        2025年核心区住宅用地供应不到20%，仅12-15公顷/年
+      </text>
+      
+      <!-- 痛点3 - 核心数据 -->
+      <rect x="0" y="210" width="480" height="110" rx="6" fill="#1A2F4A"/>
+      <text x="240" y="255" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="48" fill="#C9A962" font-weight="bold" text-anchor="middle">
+        断供12年
+      </text>
+      <text x="240" y="295" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+        后海才上新三块住宅用地
+      </text>
+    </g>
+  </g>
+  
+  <!-- 中间箭头 -->
+  <g transform="translate(620, 320)">
+    <rect x="0" y="0" width="40" height="40" rx="20" fill="#C9A962"/>
+    <path d="M 12 20 L 28 20 M 22 14 L 28 20 L 22 26" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- 右栏：需求升级 -->
+  <g transform="translate(680, 110)">
+    <!-- 卡片背景 -->
+    <rect x="0" y="0" width="540" height="440" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    
+    <!-- 标题区域 -->
+    <rect x="0" y="0" width="540" height="60" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="50" width="540" height="20" fill="#1A2F4A"/>
+    
+    <!-- 上升图标 -->
+    <path d="M 20 40 L 35 20 L 50 40" stroke="#C9A962" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <text x="65" y="38" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#FFFFFF" font-weight="bold">
+      需求端：标准全面升级
+    </text>
+    
+    <!-- 需求列表 -->
+    <g transform="translate(30, 90)">
+      <!-- 需求1 -->
+      <rect x="0" y="0" width="480" height="80" rx="6" fill="#F0F7FE" stroke="#C5D5E5" stroke-width="1"/>
+      <circle cx="25" cy="40" r="8" fill="#1A2F4A"/>
+      <text x="50" y="32" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#1A2F4A" font-weight="600">
+        财富后浪与二代
+      </text>
+      <text x="50" y="57" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666">
+        早已不再满足于父辈们的地段信条
+      </text>
+      
+      <!-- 需求2 -->
+      <rect x="0" y="95" width="480" height="80" rx="6" fill="#F0F7FE" stroke="#C5D5E5" stroke-width="1"/>
+      <circle cx="25" cy="135" r="8" fill="#1A2F4A"/>
+      <text x="50" y="127" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="17" fill="#1A2F4A" font-weight="600">
+        多维度综合考量
+      </text>
+      <text x="50" y="152" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666">
+        区域面貌、配套、圈层、效率、品质等全方位要求更高
+      </text>
+      
+      <!-- 需求3 - 结论 -->
+      <rect x="0" y="190" width="480" height="130" rx="6" fill="#C9A962"/>
+      <text x="240" y="235" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" font-weight="bold" text-anchor="middle">
+        豪宅价值逻辑转向
+      </text>
+      <text x="240" y="275" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="32" fill="#FFFFFF" font-weight="bold" text-anchor="middle">
+        "场景综合论"
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部转折语 -->
+  <rect x="60" y="580" width="1160" height="90" rx="8" fill="#1A2F4A"/>
+  <text x="640" y="620" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="600">
+    后海招商玺的出现，恰逢其时
+  </text>
+  <text x="640" y="655" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle">
+    以一座城市的巅峰资源，回应一个时代的传承之问
+  </text>
+</svg>

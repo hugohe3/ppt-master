@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">合作方尽调：广东芙蓉国际旅游集团</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-size="14">PARTNER DUE DILIGENCE</text>
+  
+  <!-- 主卡片 -->
+  <g transform="translate(60, 110)">
+    <rect width="1160" height="500" rx="10" fill="white" stroke="#E67E22" stroke-width="2"/>
+    
+    <!-- 公司信息头部 -->
+    <rect x="0" y="0" width="1160" height="60" rx="10" fill="#E67E22"/>
+    <rect x="0" y="30" width="1160" height="30" fill="#E67E22"/>
+    <text x="30" y="40" fill="white" font-size="20" font-weight="700">🔍 广东芙蓉国际旅游集团有限公司</text>
+    <rect x="1000" y="15" width="130" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="1065" y="36" text-anchor="middle" fill="white" font-size="12" font-weight="600">⚠ 尽调存疑</text>
+  </g>
+  
+  <!-- 三栏风险 -->
+  <g transform="translate(85, 195)">
+    <!-- 风险1 -->
+    <rect width="350" height="200" rx="8" fill="#FEF7ED" stroke="#E67E22"/>
+    <rect x="0" y="0" width="350" height="40" rx="8" fill="rgba(230,126,34,0.2)"/>
+    <rect x="0" y="20" width="350" height="20" fill="rgba(230,126,34,0.2)"/>
+    <text x="20" y="27" fill="#E67E22" font-size="14" font-weight="600">? 企业身份模糊性</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="20" y="65">• 企业工商注册信息不透明</tspan>
+      <tspan x="20" y="90">• 股权结构与实控人不明确</tspan>
+      <tspan x="20" y="115">• 关联公司网络尚未厘清</tspan>
+      <tspan x="20" y="140">• 资金来源与合规性待查</tspan>
+    </text>
+    
+    <rect x="20" y="160" width="80" height="24" rx="4" fill="#E67E22"/>
+    <text x="60" y="177" text-anchor="middle" fill="white" font-size="11" font-weight="600">待核实</text>
+  </g>
+  
+  <g transform="translate(460, 195)">
+    <!-- 风险2 -->
+    <rect width="350" height="200" rx="8" fill="#FEF7ED" stroke="#E67E22"/>
+    <rect x="0" y="0" width="350" height="40" rx="8" fill="rgba(230,126,34,0.2)"/>
+    <rect x="0" y="20" width="350" height="20" fill="rgba(230,126,34,0.2)"/>
+    <text x="20" y="27" fill="#E67E22" font-size="14" font-weight="600">? 技术胜任力缺口</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="20" y="65">• 无RAS系统建设运维记录</tspan>
+      <tspan x="20" y="90">• 无鲟鱼类养殖相关资质</tspan>
+      <tspan x="20" y="115">• 技术团队背景不详</tspan>
+      <tspan x="20" y="140">• 无冷水鱼养殖成功案例</tspan>
+    </text>
+    
+    <rect x="20" y="160" width="80" height="24" rx="4" fill="#C41E3A"/>
+    <text x="60" y="177" text-anchor="middle" fill="white" font-size="11" font-weight="600">高风险</text>
+  </g>
+  
+  <g transform="translate(835, 195)">
+    <!-- 风险3 -->
+    <rect width="350" height="200" rx="8" fill="#FEF7ED" stroke="#E67E22"/>
+    <rect x="0" y="0" width="350" height="40" rx="8" fill="rgba(230,126,34,0.2)"/>
+    <rect x="0" y="20" width="350" height="20" fill="rgba(230,126,34,0.2)"/>
+    <text x="20" y="27" fill="#E67E22" font-size="14" font-weight="600">? 历史业绩空白</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="20" y="65">• 公开数据库无项目记录</tspan>
+      <tspan x="20" y="90">• 旅游运营业绩不可考</tspan>
+      <tspan x="20" y="115">• 无政府合作项目先例</tspan>
+      <tspan x="20" y="140">• 征信与司法记录待查</tspan>
+    </text>
+    
+    <rect x="20" y="160" width="80" height="24" rx="4" fill="#E67E22"/>
+    <text x="60" y="177" text-anchor="middle" fill="white" font-size="11" font-weight="600">待核实</text>
+  </g>
+  
+  <!-- 尽调建议 -->
+  <g transform="translate(85, 420)">
+    <rect width="1100" height="170" rx="8" fill="#1A2F4A"/>
+    <text x="25" y="30" fill="#C9A962" font-size="15" font-weight="600">📋 尽调行动建议（优先级排序）</text>
+    
+    <g transform="translate(25, 50)">
+      <rect width="250" height="100" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <circle cx="20" cy="20" r="14" fill="#C9A962"/>
+      <text x="20" y="25" text-anchor="middle" fill="#1A2F4A" font-size="12" font-weight="700">1</text>
+      <text x="45" y="25" fill="white" font-size="13" font-weight="600">工商穿透调查</text>
+      <text fill="rgba(255,255,255,0.8)" font-size="11">
+        <tspan x="15" y="50">查询股权结构、实控人</tspan>
+        <tspan x="15" y="68">关联企业、征信记录</tspan>
+        <tspan x="15" y="86">司法涉诉情况</tspan>
+      </text>
+    </g>
+    
+    <g transform="translate(295, 50)">
+      <rect width="250" height="100" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <circle cx="20" cy="20" r="14" fill="#C9A962"/>
+      <text x="20" y="25" text-anchor="middle" fill="#1A2F4A" font-size="12" font-weight="700">2</text>
+      <text x="45" y="25" fill="white" font-size="13" font-weight="600">技术能力验证</text>
+      <text fill="rgba(255,255,255,0.8)" font-size="11">
+        <tspan x="15" y="50">要求提供RAS系统</tspan>
+        <tspan x="15" y="68">建设运维案例佐证</tspan>
+        <tspan x="15" y="86">核心技术团队简历</tspan>
+      </text>
+    </g>
+    
+    <g transform="translate(565, 50)">
+      <rect width="250" height="100" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <circle cx="20" cy="20" r="14" fill="#C9A962"/>
+      <text x="20" y="25" text-anchor="middle" fill="#1A2F4A" font-size="12" font-weight="700">3</text>
+      <text x="45" y="25" fill="white" font-size="13" font-weight="600">履约保障设计</text>
+      <text fill="rgba(255,255,255,0.8)" font-size="11">
+        <tspan x="15" y="50">设定分阶段付款机制</tspan>
+        <tspan x="15" y="68">要求履约保函</tspan>
+        <tspan x="15" y="86">明确违约责任条款</tspan>
+      </text>
+    </g>
+    
+    <g transform="translate(835, 50)">
+      <rect width="250" height="100" rx="6" fill="rgba(255,255,255,0.1)"/>
+      <circle cx="20" cy="20" r="14" fill="#C9A962"/>
+      <text x="20" y="25" text-anchor="middle" fill="#1A2F4A" font-size="12" font-weight="700">4</text>
+      <text x="45" y="25" fill="white" font-size="13" font-weight="600">替代方案储备</text>
+      <text fill="rgba(255,255,255,0.8)" font-size="11">
+        <tspan x="15" y="50">平行接触2-3家备选</tspan>
+        <tspan x="15" y="68">有资质的RAS供应商</tspan>
+        <tspan x="15" y="86">降低单一依赖风险</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部警示 -->
+  <g transform="translate(60, 630)">
+    <rect width="1160" height="45" rx="6" fill="#C41E3A"/>
+    <text x="30" y="29" fill="white" font-size="14" font-weight="600">⛔ 一票否决机制：若上述任一尽调事项无法获得满意答复，建议立即终止合作谈判，另寻技术合作方。</text>
+  </g>
+  
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-size="12">09</text>
+</svg>

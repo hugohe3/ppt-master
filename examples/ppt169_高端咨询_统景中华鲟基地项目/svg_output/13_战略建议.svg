@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">战略建议与行动计划</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-size="14">STRATEGIC RECOMMENDATIONS</text>
+  
+  <!-- 四大行动卡片 -->
+  <!-- 卡片1 -->
+  <g transform="translate(60, 110)">
+    <rect width="560" height="200" rx="12" fill="white" stroke="#228B22" stroke-width="2"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#228B22"/>
+    <rect x="0" y="25" width="560" height="25" fill="#228B22"/>
+    
+    <circle cx="35" cy="25" r="18" fill="white"/>
+    <text x="35" y="31" text-anchor="middle" fill="#228B22" font-size="16" font-weight="700">1</text>
+    <text x="65" y="32" fill="white" font-size="16" font-weight="600">重新定义项目性质</text>
+    <rect x="430" y="12" width="110" height="26" rx="4" fill="rgba(255,255,255,0.3)"/>
+    <text x="485" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="600">优先级：最高</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="25" y="80" font-weight="600" fill="#1E3A5F">核心策略：公益化包装</tspan>
+      <tspan x="25" y="105">• 申请纳入「长江大保护」生态修复示范项目</tspan>
+      <tspan x="25" y="128">• 争取「珍稀物种保种基地」官方认定</tspan>
+      <tspan x="25" y="151">• 构建「公益保种 + 商业杂交鲟」双轨架构</tspan>
+      <tspan x="25" y="174">• 对接中国水产科学研究院建立技术背书</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片2 -->
+  <g transform="translate(660, 110)">
+    <rect width="560" height="200" rx="12" fill="white" stroke="#4682B4" stroke-width="2"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#4682B4"/>
+    <rect x="0" y="25" width="560" height="25" fill="#4682B4"/>
+    
+    <circle cx="35" cy="25" r="18" fill="white"/>
+    <text x="35" y="31" text-anchor="middle" fill="#4682B4" font-size="16" font-weight="700">2</text>
+    <text x="65" y="32" fill="white" font-size="16" font-weight="600">物理空间切割</text>
+    <rect x="430" y="12" width="110" height="26" rx="4" fill="rgba(255,255,255,0.3)"/>
+    <text x="485" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="600">优先级：高</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="25" y="80" font-weight="600" fill="#1E3A5F">核心策略：Satellite Model</tspan>
+      <tspan x="25" y="105">• 统景主场地定位为「展示体验中心」</tspan>
+      <tspan x="25" y="128">• 核心养殖车间选址冷水区（北碚/武隆）</tspan>
+      <tspan x="25" y="151">• 活鱼冷链物流连接两地</tspan>
+      <tspan x="25" y="174">• 规避热力学冲突，降低能耗成本50%+</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片3 -->
+  <g transform="translate(60, 330)">
+    <rect width="560" height="200" rx="12" fill="white" stroke="#C41E3A" stroke-width="2"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#C41E3A"/>
+    <rect x="0" y="25" width="560" height="25" fill="#C41E3A"/>
+    
+    <circle cx="35" cy="25" r="18" fill="white"/>
+    <text x="35" y="31" text-anchor="middle" fill="#C41E3A" font-size="16" font-weight="700">3</text>
+    <text x="65" y="32" fill="white" font-size="16" font-weight="600">技术尽调一票否决制</text>
+    <rect x="430" y="12" width="110" height="26" rx="4" fill="rgba(255,255,255,0.3)"/>
+    <text x="485" y="30" text-anchor="middle" fill="white" font-size="11" font-weight="600">优先级：紧急</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="25" y="80" font-weight="600" fill="#1E3A5F">核心策略：合作方能力验证</tspan>
+      <tspan x="25" y="105">• 要求广东芙蓉提供RAS系统成功案例</tspan>
+      <tspan x="25" y="128">• 第三方背调股权结构与征信记录</tspan>
+      <tspan x="25" y="151">• 设定技术验收「对赌条款」</tspan>
+      <tspan x="25" y="174">• 若尽调不通过，立即启动备选供应商</tspan>
+    </text>
+  </g>
+  
+  <!-- 卡片4 -->
+  <g transform="translate(660, 330)">
+    <rect width="560" height="200" rx="12" fill="white" stroke="#C9A962" stroke-width="2"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#C9A962"/>
+    <rect x="0" y="25" width="560" height="25" fill="#C9A962"/>
+    
+    <circle cx="35" cy="25" r="18" fill="white"/>
+    <text x="35" y="31" text-anchor="middle" fill="#C9A962" font-size="16" font-weight="700">4</text>
+    <text x="65" y="32" fill="#1A2F4A" font-size="16" font-weight="600">建立绿色防火墙</text>
+    <rect x="430" y="12" width="110" height="26" rx="4" fill="rgba(26,47,74,0.3)"/>
+    <text x="485" y="30" text-anchor="middle" fill="#1A2F4A" font-size="11" font-weight="600">优先级：重要</text>
+    
+    <text fill="#4A5568" font-size="13">
+      <tspan x="25" y="80" font-weight="600" fill="#1E3A5F">核心策略：风险隔离机制</tspan>
+      <tspan x="25" y="105">• 成立独立SPV公司运营，隔离母体风险</tspan>
+      <tspan x="25" y="128">• 投资分三期，设置里程碑对赌</tspan>
+      <tspan x="25" y="151">• 第一期仅投入土建+部分RAS（2000万）</tspan>
+      <tspan x="25" y="174">• 成活率达标后方可启动二期扩产</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部行动时间表 -->
+  <g transform="translate(60, 550)">
+    <rect width="1160" height="120" rx="10" fill="#1A2F4A"/>
+    <text x="30" y="30" fill="#C9A962" font-size="15" font-weight="600">📅 30天行动计划时间表</text>
+    
+    <!-- 时间节点 -->
+    <line x1="50" y1="70" x2="1110" y2="70" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+    
+    <g transform="translate(100, 70)">
+      <circle cx="0" cy="0" r="10" fill="#C9A962"/>
+      <text x="0" y="30" text-anchor="middle" fill="white" font-size="11">第1周</text>
+      <text x="0" y="-20" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">启动尽调</text>
+    </g>
+    
+    <g transform="translate(350, 70)">
+      <circle cx="0" cy="0" r="10" fill="#C9A962"/>
+      <text x="0" y="30" text-anchor="middle" fill="white" font-size="11">第2周</text>
+      <text x="0" y="-20" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">尽调报告</text>
+    </g>
+    
+    <g transform="translate(600, 70)">
+      <circle cx="0" cy="0" r="10" fill="#C9A962"/>
+      <text x="0" y="30" text-anchor="middle" fill="white" font-size="11">第3周</text>
+      <text x="0" y="-20" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Go/No-Go决策</text>
+    </g>
+    
+    <g transform="translate(850, 70)">
+      <circle cx="0" cy="0" r="10" fill="#C9A962"/>
+      <text x="0" y="30" text-anchor="middle" fill="white" font-size="11">第4周</text>
+      <text x="0" y="-20" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">签约/终止</text>
+    </g>
+    
+    <g transform="translate(1060, 70)">
+      <circle cx="0" cy="0" r="12" fill="#228B22"/>
+      <text x="0" y="30" text-anchor="middle" fill="white" font-size="11">M1结束</text>
+      <text x="0" y="-20" text-anchor="middle" fill="#228B22" font-size="10" font-weight="600">阶段性结论</text>
+    </g>
+  </g>
+  
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-size="12">13</text>
+</svg>

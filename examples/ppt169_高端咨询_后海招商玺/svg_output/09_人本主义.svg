@@ -1,0 +1,222 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient9)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    人本主义：看不见的奢侈
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="370" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#C9A962">
+    真正的豪宅，是醒着时的面子，更是睡着时的里子
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    09/10
+  </text>
+  
+  <!-- 三栏特性卡片 -->
+  <!-- 卡片1：睡眠屋 -->
+  <g transform="translate(60, 110)">
+    <rect x="0" y="0" width="370" height="550" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    
+    <!-- 顶部图标区 -->
+    <rect x="0" y="0" width="370" height="100" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="90" width="370" height="20" fill="#1A2F4A"/>
+    <circle cx="185" cy="50" r="35" fill="#C9A962"/>
+    <text x="185" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="32" fill="#1A2F4A" text-anchor="middle">😴</text>
+    
+    <text x="185" y="140" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+      睡眠屋
+    </text>
+    
+    <text x="185" y="170" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      深圳人均睡眠仅6.45小时，全国最短
+    </text>
+    
+    <!-- 分隔线 -->
+    <rect x="30" y="190" width="310" height="1" fill="#E5E5E5"/>
+    
+    <!-- 特性列表 -->
+    <g transform="translate(30, 210)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0F7FE"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        楼板厚度
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#C9A962" font-weight="bold">
+        130-220mm
+      </text>
+      <text x="160" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="#666666">
+        （传统住宅约3倍）
+      </text>
+    </g>
+    
+    <g transform="translate(30, 285)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0F7FE"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        毫米波雷达
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        非接触式睡眠质量感知
+      </text>
+    </g>
+    
+    <g transform="translate(30, 360)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0F7FE"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        智能联动
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        空调与遮光系统动态调节
+      </text>
+    </g>
+    
+    <!-- 认证标签 -->
+    <rect x="30" y="440" width="310" height="80" rx="6" fill="#1A2F4A"/>
+    <text x="185" y="475" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">
+      权威认证
+    </text>
+    <text x="185" y="505" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">
+      金级宁静住宅
+    </text>
+  </g>
+  
+  <!-- 卡片2：空气系统 -->
+  <g transform="translate(455, 110)">
+    <rect x="0" y="0" width="370" height="550" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    
+    <!-- 顶部图标区 -->
+    <rect x="0" y="0" width="370" height="100" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="90" width="370" height="20" fill="#1A2F4A"/>
+    <circle cx="185" cy="50" r="35" fill="#C9A962"/>
+    <text x="185" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="32" fill="#1A2F4A" text-anchor="middle">🌬️</text>
+    
+    <text x="185" y="140" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+      空气系统
+    </text>
+    
+    <text x="185" y="170" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      温度湿度独立控制，告别妥协
+    </text>
+    
+    <!-- 分隔线 -->
+    <rect x="30" y="190" width="310" height="1" fill="#E5E5E5"/>
+    
+    <!-- 特性列表 -->
+    <g transform="translate(30, 210)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#FEF7F0"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        大金三管制空调
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        温度调节精度 ±0.5℃
+      </text>
+    </g>
+    
+    <g transform="translate(30, 285)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#FEF7F0"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        智能除湿
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        湿度&gt;70%自动开启，&lt;60%自动关闭
+      </text>
+    </g>
+    
+    <g transform="translate(30, 360)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#FEF7F0"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        HEPA高效滤网
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        长效除甲醛技术
+      </text>
+    </g>
+    
+    <!-- 新风系统 -->
+    <rect x="30" y="440" width="310" height="80" rx="6" fill="#1A2F4A"/>
+    <text x="185" y="475" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">
+      全热回收新风
+    </text>
+    <text x="185" y="505" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+      夏冷却除湿 · 冬预热加湿
+    </text>
+  </g>
+  
+  <!-- 卡片3：智能舒适 -->
+  <g transform="translate(850, 110)">
+    <rect x="0" y="0" width="370" height="550" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    
+    <!-- 顶部图标区 -->
+    <rect x="0" y="0" width="370" height="100" rx="10" fill="#1A2F4A"/>
+    <rect x="0" y="90" width="370" height="20" fill="#1A2F4A"/>
+    <circle cx="185" cy="50" r="35" fill="#C9A962"/>
+    <text x="185" y="60" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="32" fill="#1A2F4A" text-anchor="middle">🏡</text>
+    
+    <text x="185" y="140" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="22" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+      智能舒适
+    </text>
+    
+    <text x="185" y="170" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      每个角落都被温柔照顾
+    </text>
+    
+    <!-- 分隔线 -->
+    <rect x="30" y="190" width="310" height="1" fill="#E5E5E5"/>
+    
+    <!-- 特性列表 -->
+    <g transform="translate(30, 210)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0FEF5"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        卫生间电地暖
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" font-weight="600">
+        深圳首创
+      </text>
+    </g>
+    
+    <g transform="translate(30, 285)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0FEF5"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        厨房专属空调
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        做饭不再闷热
+      </text>
+    </g>
+    
+    <g transform="translate(30, 360)">
+      <rect x="0" y="0" width="310" height="60" rx="6" fill="#F0FEF5"/>
+      <text x="20" y="25" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="15" fill="#1A2F4A" font-weight="600">
+        衣帽间恒温恒湿
+      </text>
+      <text x="20" y="48" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A">
+        给衣物隐形保护罩
+      </text>
+    </g>
+    
+    <!-- 理念 -->
+    <rect x="30" y="440" width="310" height="80" rx="6" fill="#C9A962"/>
+    <text x="185" y="462" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="13" fill="#1A2F4A" text-anchor="middle">
+      值得珍藏的生活
+    </text>
+    <text x="185" y="485" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+      不止看得见的华美
+    </text>
+    <text x="185" y="508" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle" font-weight="bold">
+      更在看不见的舒适
+    </text>
+  </g>
+</svg>

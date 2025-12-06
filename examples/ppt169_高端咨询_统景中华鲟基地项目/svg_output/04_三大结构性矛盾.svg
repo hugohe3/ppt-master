@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">三大结构性矛盾详解</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14">CRITICAL RISK FACTORS</text>
+  
+  <!-- 风险1：热力学冲突 -->
+  <g transform="translate(60, 110)">
+    <rect width="370" height="480" rx="10" fill="white" stroke="#C41E3A" stroke-width="3"/>
+    
+    <!-- 风险标签 -->
+    <rect x="0" y="0" width="370" height="60" rx="10" fill="#C41E3A"/>
+    <rect x="0" y="30" width="370" height="30" fill="#C41E3A"/>
+    <text x="20" y="40" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700">🌡️ 致命的热力学冲突</text>
+    <rect x="290" y="15" width="60" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="320" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">致命</text>
+    
+    <!-- 内容 -->
+    <text x="20" y="95" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">核心问题</text>
+    <text x="20" y="120" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">统景是"温泉之乡"，地表水夏季</tspan>
+      <tspan x="20" dy="20">极易突破30°C；中华鲟属于亚冷</tspan>
+      <tspan x="20" dy="20">水性鱼类，生存上限28-30°C。</tspan>
+    </text>
+    
+    <!-- 数据对比 -->
+    <g transform="translate(20, 200)">
+      <rect width="330" height="100" rx="6" fill="#FEF2F2"/>
+      <text x="15" y="25" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">关键温度对比</text>
+      <text x="15" y="50" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11">温泉尾水温度</text>
+      <text x="200" y="50" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700">50-60°C</text>
+      <text x="15" y="75" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11">深层热储温度</text>
+      <text x="200" y="75" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700">86°C</text>
+    </g>
+    
+    <!-- 后果 -->
+    <text x="20" y="330" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">潜在后果</text>
+    <text x="20" y="355" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">• 必须依赖高能耗工业制冷系统</tspan>
+      <tspan x="20" dy="22">• 运营成本(OPEX)呈指数级上升</tspan>
+      <tspan x="20" dy="22">• 极可能摧毁项目商业回报率</tspan>
+    </text>
+    
+    <!-- 底部标签 -->
+    <rect x="20" y="430" width="110" height="28" rx="4" fill="#C41E3A"/>
+    <text x="75" y="449" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">物理定律</text>
+    <text x="145" y="449" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">不可逾越</text>
+  </g>
+  
+  <!-- 风险2：合规性红线 -->
+  <g transform="translate(455, 110)">
+    <rect width="370" height="480" rx="10" fill="white" stroke="#C41E3A" stroke-width="3"/>
+    
+    <!-- 风险标签 -->
+    <rect x="0" y="0" width="370" height="60" rx="10" fill="#C41E3A"/>
+    <rect x="0" y="30" width="370" height="30" fill="#C41E3A"/>
+    <text x="20" y="40" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700">⚖️ 合规性与法律红线</text>
+    <rect x="290" y="15" width="60" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="320" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">严重</text>
+    
+    <!-- 内容 -->
+    <text x="20" y="95" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">核心问题</text>
+    <text x="20" y="120" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">中华鲟为国家一级保护动物，</tspan>
+      <tspan x="20" dy="20">严禁任何形式的商业捕捞与交易。</tspan>
+      <tspan x="20" dy="20">公益保种与商业盈利须严格区分。</tspan>
+    </text>
+    
+    <!-- 法规提示 -->
+    <g transform="translate(20, 200)">
+      <rect width="330" height="100" rx="6" fill="#FEF2F2"/>
+      <text x="15" y="25" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">法规约束</text>
+      <text x="15" y="50" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11">
+        <tspan x="15" dy="0">《野生动物保护法》</tspan>
+        <tspan x="15" dy="18">长江大保护特别条款</tspan>
+        <tspan x="15" dy="18">"河长制"一票否决权</tspan>
+      </text>
+    </g>
+    
+    <!-- 后果 -->
+    <text x="20" y="330" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">潜在后果</text>
+    <text x="20" y="355" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">• 概念混淆触犯刑法风险</tspan>
+      <tspan x="20" dy="22">• 河长制行政一票否决</tspan>
+      <tspan x="20" dy="22">• 商业许可几乎无法获得</tspan>
+    </text>
+    
+    <!-- 底部标签 -->
+    <rect x="20" y="430" width="110" height="28" rx="4" fill="#C41E3A"/>
+    <text x="75" y="449" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">法规禁区</text>
+    <text x="145" y="449" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">刑事风险</text>
+  </g>
+  
+  <!-- 风险3：合作方存疑 -->
+  <g transform="translate(850, 110)">
+    <rect width="370" height="480" rx="10" fill="white" stroke="#E67E22" stroke-width="3"/>
+    
+    <!-- 风险标签 -->
+    <rect x="0" y="0" width="370" height="60" rx="10" fill="#E67E22"/>
+    <rect x="0" y="30" width="370" height="30" fill="#E67E22"/>
+    <text x="20" y="40" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="18" font-weight="700">🔍 合作方主体存疑</text>
+    <rect x="290" y="15" width="60" height="30" rx="4" fill="rgba(255,255,255,0.2)"/>
+    <text x="320" y="35" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11" font-weight="600">待查</text>
+    
+    <!-- 内容 -->
+    <text x="20" y="95" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">核心问题</text>
+    <text x="20" y="120" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">"广东芙蓉国际旅游集团"在公开</tspan>
+      <tspan x="20" dy="20">数据库中未见显著历史业绩记录，</tspan>
+      <tspan x="20" dy="20">RAS技术能力待验证。</tspan>
+    </text>
+    
+    <!-- 背调发现 -->
+    <g transform="translate(20, 200)">
+      <rect width="330" height="100" rx="6" fill="#FEF7ED"/>
+      <text x="15" y="25" fill="#E67E22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">背调发现</text>
+      <text x="15" y="50" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="11">
+        <tspan x="15" dy="0">? 水产养殖经验：未知</tspan>
+        <tspan x="15" dy="18">? RAS工程运维经验：未知</tspan>
+        <tspan x="15" dy="18">? 文旅运营案例：未见记录</tspan>
+      </text>
+    </g>
+    
+    <!-- 后果 -->
+    <text x="20" y="330" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">潜在后果</text>
+    <text x="20" y="355" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+      <tspan x="20" dy="0">• 技术失控致大规模死亡事件</tspan>
+      <tspan x="20" dy="22">• 可能演变为"圈地运动"</tspan>
+      <tspan x="20" dy="22">• 政府补贴退坡后撤资风险</tspan>
+    </text>
+    
+    <!-- 底部标签 -->
+    <rect x="20" y="430" width="110" height="28" rx="4" fill="#E67E22"/>
+    <text x="75" y="449" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600">信息缺失</text>
+    <text x="145" y="449" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">需深入尽调</text>
+  </g>
+  
+  <!-- 底部警示 -->
+  <g transform="translate(60, 610)">
+    <rect width="1160" height="60" rx="6" fill="#1E3A5F"/>
+    <text x="30" y="38" fill="#C9A962" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">⚠ 关键提示：</text>
+    <text x="140" y="38" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14">三大风险相互叠加，任一维度的失控都可能导致项目整体失败。建议采取"并行应对"而非"串行处理"策略。</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">04</text>
+</svg>

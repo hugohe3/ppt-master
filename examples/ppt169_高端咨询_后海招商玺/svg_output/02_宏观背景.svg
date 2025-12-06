@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C9A962"/>
+      <stop offset="100%" style="stop-color:#D4B96E"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    宏观背景：财富传承大时代
+  </text>
+  
+  <!-- 左侧核心数据区域 -->
+  <rect x="60" y="120" width="520" height="540" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+  
+  <!-- 核心数据标题 -->
+  <text x="80" y="165" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#4A4A4A" font-weight="600">
+    未来财富传承规模预测
+  </text>
+  
+  <!-- 主数据 79万亿 -->
+  <text x="320" y="290" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="72" font-weight="bold" fill="#1A2F4A" text-anchor="middle">
+    79
+    <tspan font-size="36">万亿</tspan>
+  </text>
+  <text x="320" y="340" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-weight="600">
+    30年财富传承总额
+  </text>
+  
+  <!-- 金色装饰线 -->
+  <rect x="160" y="370" width="320" height="3" fill="url(#goldAccent)" rx="1"/>
+  
+  <!-- 10年/20年数据 -->
+  <g transform="translate(110, 420)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="48" font-weight="bold" fill="#1A2F4A">
+      20<tspan font-size="24">万亿</tspan>
+    </text>
+    <text x="0" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      10年内传承规模
+    </text>
+  </g>
+  
+  <g transform="translate(320, 420)">
+    <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="48" font-weight="bold" fill="#1A2F4A">
+      45<tspan font-size="24">万亿</tspan>
+    </text>
+    <text x="0" y="35" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      20年内传承规模
+    </text>
+  </g>
+  
+  <!-- 趋势箭头 -->
+  <path d="M 170 530 L 450 530 L 440 520 M 450 530 L 440 540" stroke="#C9A962" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="310" y="565" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#4A4A4A" text-anchor="middle">
+    财富代际传承加速
+  </text>
+  
+  <!-- 右侧要点区域 -->
+  <rect x="620" y="120" width="600" height="540" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+  
+  <!-- 要点标题 -->
+  <text x="650" y="165" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#4A4A4A" font-weight="600">
+    全球经济与财富管理趋势
+  </text>
+  
+  <!-- 分隔线 -->
+  <rect x="650" y="185" width="540" height="1" fill="#E5E5E5"/>
+  
+  <!-- 要点1 -->
+  <g transform="translate(650, 220)">
+    <circle cx="12" cy="12" r="12" fill="#1A2F4A"/>
+    <text x="12" y="17" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+    <text x="40" y="10" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="600">
+      全球经济增速放缓
+    </text>
+    <text x="40" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      IMF预测：全球经济增速从
+      <tspan fill="#C9A962" font-weight="bold">3.6%</tspan>
+      降至
+      <tspan fill="#C9A962" font-weight="bold">2.6%</tspan>
+    </text>
+    <text x="40" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#888888">
+      ——《世界经济展望》2025
+    </text>
+  </g>
+  
+  <!-- 要点2 -->
+  <g transform="translate(650, 330)">
+    <circle cx="12" cy="12" r="12" fill="#1A2F4A"/>
+    <text x="12" y="17" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+    <text x="40" y="10" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="600">
+      财富管理逻辑转变
+    </text>
+    <text x="40" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      从"追求增长"转向
+      <tspan fill="#C9A962" font-weight="bold">"守住根基"</tspan>
+    </text>
+    <text x="40" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#888888">
+      资产保值与代际传承成为核心诉求
+    </text>
+  </g>
+  
+  <!-- 要点3 -->
+  <g transform="translate(650, 440)">
+    <circle cx="12" cy="12" r="12" fill="#1A2F4A"/>
+    <text x="12" y="17" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+    <text x="40" y="10" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" font-weight="600">
+      高净值家庭优先策略
+    </text>
+    <text x="40" y="40" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      更注重
+      <tspan fill="#C9A962" font-weight="bold">稳健传承</tspan>
+      与
+      <tspan fill="#C9A962" font-weight="bold">长期规划</tspan>
+    </text>
+    <text x="40" y="65" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#888888">
+      ——胡润《高净值人群消费心态及行为研究报告2025》
+    </text>
+  </g>
+  
+  <!-- 核心洞察 -->
+  <rect x="650" y="540" width="540" height="100" rx="6" fill="#1A2F4A"/>
+  <text x="920" y="580" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="920" dy="0">高净值家庭的财富流向，正以前所未有的决心和力度，</tspan>
+    <tspan x="920" dy="28">涌向核心城市的超级豪宅</tspan>
+  </text>
+  
+  <!-- 数据来源 -->
+  <text x="1220" y="700" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="12" fill="#888888" text-anchor="end">
+    数据来源：胡润财富报告、IMF《世界经济展望》
+  </text>
+</svg>

@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8F6F1"/>
+      <stop offset="100%" style="stop-color:#EFEAE3"/>
+    </linearGradient>
+    <linearGradient id="kpiGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4B96E"/>
+      <stop offset="100%" style="stop-color:#C9A962"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient5)"/>
+  
+  <!-- 顶部深色条 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#1A2F4A"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
+    价值核心：稀缺是豪宅的共识
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="52" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.6)" text-anchor="end">
+    05/10
+  </text>
+  
+  <!-- 4个KPI卡片 -->
+  <!-- KPI 1 -->
+  <g transform="translate(60, 110)">
+    <rect x="0" y="0" width="275" height="220" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="275" height="6" rx="10" fill="url(#kpiGold)"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="50" r="22" fill="#1A2F4A"/>
+    <text x="40" y="58" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#C9A962" text-anchor="middle">¥</text>
+    
+    <text x="75" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      年度经济产出
+    </text>
+    
+    <text x="137" y="130" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      3000亿+
+    </text>
+    
+    <rect x="20" y="165" width="235" height="1" fill="#E5E5E5"/>
+    
+    <text x="137" y="195" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      后海片区经济总量
+    </text>
+  </g>
+  
+  <!-- KPI 2 -->
+  <g transform="translate(360, 110)">
+    <rect x="0" y="0" width="275" height="220" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="275" height="6" rx="10" fill="url(#kpiGold)"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="50" r="22" fill="#1A2F4A"/>
+    <text x="40" y="57" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle">№1</text>
+    
+    <text x="75" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      经济密度
+    </text>
+    
+    <text x="137" y="130" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="44" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      860亿/km²
+    </text>
+    
+    <rect x="20" y="165" width="235" height="1" fill="#E5E5E5"/>
+    
+    <text x="137" y="195" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      全国第一，世界一流水平
+    </text>
+  </g>
+  
+  <!-- KPI 3 -->
+  <g transform="translate(660, 110)">
+    <rect x="0" y="0" width="275" height="220" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="275" height="6" rx="10" fill="url(#kpiGold)"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="50" r="22" fill="#1A2F4A"/>
+    <text x="40" y="57" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#C9A962" text-anchor="middle">★</text>
+    
+    <text x="75" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      稀缺席位
+    </text>
+    
+    <text x="137" y="130" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      261席
+    </text>
+    
+    <rect x="20" y="165" width="235" height="1" fill="#E5E5E5"/>
+    
+    <text x="137" y="195" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      项目仅规划261席
+    </text>
+  </g>
+  
+  <!-- KPI 4 -->
+  <g transform="translate(960, 110)">
+    <rect x="0" y="0" width="260" height="220" rx="10" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+    <rect x="0" y="0" width="260" height="6" rx="10" fill="url(#kpiGold)"/>
+    
+    <!-- 图标 -->
+    <circle cx="40" cy="50" r="22" fill="#1A2F4A"/>
+    <text x="40" y="57" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#C9A962" text-anchor="middle">⏱</text>
+    
+    <text x="75" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+      断供时长
+    </text>
+    
+    <text x="130" y="130" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="52" fill="#C9A962" font-weight="bold" text-anchor="middle">
+      12年
+    </text>
+    
+    <rect x="20" y="165" width="220" height="1" fill="#E5E5E5"/>
+    
+    <text x="130" y="195" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#666666" text-anchor="middle">
+      后海住宅用地断供时长
+    </text>
+  </g>
+  
+  <!-- 对标说明区域 -->
+  <rect x="60" y="360" width="1160" height="180" rx="10" fill="#1A2F4A"/>
+  
+  <text x="640" y="410" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="600">
+    比肩世界顶级中央商务区
+  </text>
+  
+  <!-- 对标城市 -->
+  <g transform="translate(160, 440)">
+    <rect x="0" y="0" width="200" height="70" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">纽约</text>
+    <text x="100" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">曼哈顿</text>
+  </g>
+  
+  <g transform="translate(400, 440)">
+    <rect x="0" y="0" width="200" height="70" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">伦敦</text>
+    <text x="100" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">金融城</text>
+  </g>
+  
+  <g transform="translate(640, 440)">
+    <rect x="0" y="0" width="200" height="70" rx="6" fill="rgba(255,255,255,0.1)"/>
+    <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#C9A962" text-anchor="middle">香港</text>
+    <text x="100" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">中环</text>
+  </g>
+  
+  <g transform="translate(880, 440)">
+    <rect x="0" y="0" width="200" height="70" rx="6" fill="#C9A962"/>
+    <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="14" fill="#1A2F4A" text-anchor="middle">深圳</text>
+    <text x="100" y="55" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="18" fill="#1A2F4A" text-anchor="middle" font-weight="bold">后海</text>
+  </g>
+  
+  <!-- 底部引用 -->
+  <rect x="60" y="570" width="1160" height="100" rx="8" fill="#FFFFFF" stroke="#E5E5E5" stroke-width="1"/>
+  <text x="100" y="612" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#1A2F4A">
+    "
+  </text>
+  <text x="120" y="612" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+    从纽约ONE57俯瞰中央公园，到伦敦海德公园一号毗邻皇家园林，从香港傲璇俯瞰维港，到深圳湾壹号屹立后海
+  </text>
+  <text x="120" y="640" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#4A4A4A">
+    ——这些作品无一例外，都占据着城市的绝对核心。城市极核，是价值共识、身份象征、资源壁垒。
+  </text>
+  <text x="1150" y="640" font-family="PingFang SC, Microsoft YaHei, Helvetica Neue, Arial, sans-serif" font-size="16" fill="#1A2F4A">
+    "
+  </text>
+</svg>

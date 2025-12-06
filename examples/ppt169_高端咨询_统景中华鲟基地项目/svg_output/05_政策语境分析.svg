@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#2A5080"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="80" fill="url(#headerGrad)"/>
+  <text x="60" y="50" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="24" font-weight="600">政策语境分析：机遇与红线</text>
+  <text x="1220" y="50" text-anchor="end" fill="#8A9AAE" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14">POLICY CONTEXT ANALYSIS</text>
+  
+  <!-- 左栏：政策红利 -->
+  <g transform="translate(60, 110)">
+    <rect width="560" height="490" rx="10" fill="white" stroke="#228B22" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="56" rx="10" fill="#228B22"/>
+    <rect x="0" y="28" width="560" height="28" fill="#228B22"/>
+    <text x="30" y="38" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700">✓ 政策红利窗口</text>
+    <text x="520" y="38" text-anchor="end" fill="rgba(255,255,255,0.7)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">OPPORTUNITIES</text>
+    
+    <!-- 政策项1：绿色金融 -->
+    <g transform="translate(25, 80)">
+      <rect width="510" height="90" rx="6" fill="#F0FFF0"/>
+      <circle cx="25" cy="45" r="18" fill="#228B22"/>
+      <text x="25" y="51" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700">1</text>
+      <text x="55" y="30" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">绿色金融专项扶持</text>
+      <text x="55" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="55" dy="0">央行绿色信贷贴息政策，ESG框架下的生物多样性</tspan>
+        <tspan x="55" dy="20">投资可获优惠利率，预计节省融资成本15-20%</tspan>
+      </text>
+    </g>
+    
+    <!-- 政策项2：生态补偿 -->
+    <g transform="translate(25, 185)">
+      <rect width="510" height="90" rx="6" fill="#F0FFF0"/>
+      <circle cx="25" cy="45" r="18" fill="#228B22"/>
+      <text x="25" y="51" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700">2</text>
+      <text x="55" y="30" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">长江流域生态补偿机制</text>
+      <text x="55" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="55" dy="0">纳入珍稀物种保种基地体系，可申请中央生态转移</tspan>
+        <tspan x="55" dy="20">支付资金，年度补贴规模可达500-1000万元</tspan>
+      </text>
+    </g>
+    
+    <!-- 政策项3：产业基金 -->
+    <g transform="translate(25, 290)">
+      <rect width="510" height="90" rx="6" fill="#F0FFF0"/>
+      <circle cx="25" cy="45" r="18" fill="#228B22"/>
+      <text x="25" y="51" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700">3</text>
+      <text x="55" y="30" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">渝北区产业引导基金</text>
+      <text x="55" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="55" dy="0">地方政府招商引资优惠政策，生态文旅产业可获</tspan>
+        <tspan x="55" dy="20">用地成本折让、税收返还等多重政策叠加支持</tspan>
+      </text>
+    </g>
+    
+    <!-- 政策项4：碳汇收益 -->
+    <g transform="translate(25, 395)">
+      <rect width="510" height="75" rx="6" fill="#F0FFF0"/>
+      <circle cx="25" cy="38" r="18" fill="#228B22"/>
+      <text x="25" y="44" text-anchor="middle" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="700">4</text>
+      <text x="55" y="28" fill="#1E3A5F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">碳汇与生态产品价值实现</text>
+      <text x="55" y="50" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="55" dy="0">生态保护产业可纳入碳交易市场，实现增值创收</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右栏：监管高压线 -->
+  <g transform="translate(660, 110)">
+    <rect width="560" height="490" rx="10" fill="white" stroke="#C41E3A" stroke-width="2"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="56" rx="10" fill="#C41E3A"/>
+    <rect x="0" y="28" width="560" height="28" fill="#C41E3A"/>
+    <text x="30" y="38" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="20" font-weight="700">✕ 监管高压红线</text>
+    <text x="520" y="38" text-anchor="end" fill="rgba(255,255,255,0.7)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">REGULATORY BARRIERS</text>
+    
+    <!-- 红线项1：特许经营 -->
+    <g transform="translate(25, 80)">
+      <rect width="510" height="90" rx="6" fill="#FEF2F2"/>
+      <rect x="0" y="0" width="5" height="90" rx="2" fill="#C41E3A"/>
+      <text x="20" y="30" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">⛔ 特许经营壁垒</text>
+      <text x="20" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="20" dy="0">中华鲟人工繁殖许可证全国仅授予极少数机构</tspan>
+        <tspan x="20" dy="20">（主要为国有科研院所），民营企业几乎无准入可能</tspan>
+      </text>
+    </g>
+    
+    <!-- 红线项2：河长制 -->
+    <g transform="translate(25, 185)">
+      <rect width="510" height="90" rx="6" fill="#FEF2F2"/>
+      <rect x="0" y="0" width="5" height="90" rx="2" fill="#C41E3A"/>
+      <text x="20" y="30" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">⛔ 河长制一票否决</text>
+      <text x="20" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="20" dy="0">统景位于嘉陵江二级支流御临河流域，河长办对</tspan>
+        <tspan x="20" dy="20">涉水养殖项目拥有终审否决权，审批周期不确定</tspan>
+      </text>
+    </g>
+    
+    <!-- 红线项3：排放标准 -->
+    <g transform="translate(25, 290)">
+      <rect width="510" height="90" rx="6" fill="#FEF2F2"/>
+      <rect x="0" y="0" width="5" height="90" rx="2" fill="#C41E3A"/>
+      <text x="20" y="30" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">⛔ 养殖尾水排放标准</text>
+      <text x="20" y="52" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="20" dy="0">须达到《淡水水产养殖水排放要求》(GB/T 2502)</tspan>
+        <tspan x="20" dy="20">一类水域标准，尾水处理成本或占OPEX的15%+</tspan>
+      </text>
+    </g>
+    
+    <!-- 红线项4：刑法风险 -->
+    <g transform="translate(25, 395)">
+      <rect width="510" height="75" rx="6" fill="#FEF2F2"/>
+      <rect x="0" y="0" width="5" height="75" rx="2" fill="#C41E3A"/>
+      <text x="20" y="28" fill="#C41E3A" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600">⛔ 刑事合规风险</text>
+      <text x="20" y="50" fill="#4A5568" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="13">
+        <tspan x="20" dy="0">非法交易国家一级保护动物可追究刑事责任</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部对比结论 -->
+  <g transform="translate(60, 620)">
+    <rect width="1160" height="55" rx="6" fill="#1E3A5F"/>
+    <text x="30" y="34" fill="#C9A962" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600">⚖ 政策博弈结论：</text>
+    <text x="180" y="34" fill="white" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14">政策红利获取前提是合规基础，在核心许可证获取之前，任何资金扶持均为\"空中阁楼\"。建议「合规优先」战略。</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" text-anchor="end" fill="#6C757D" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="12">05</text>
+</svg>
