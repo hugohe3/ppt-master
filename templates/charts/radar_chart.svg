@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    雷达图模板
+    用途: 多维度能力评估、综合对比分析
+    适用场景: 能力评估、竞品对比、绩效分析
+    支持: 6个维度（可调整为4-8个）
+    -->
+    
+    <defs>
+        <!-- 数据区域渐变 -->
+        <linearGradient id="radarGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.6" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:0.4" />
+        </linearGradient>
+        
+        <linearGradient id="radarGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.5" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:0.3" />
+        </linearGradient>
+        
+        <!-- 阴影 -->
+        <filter id="radarShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>综合能力评估对比</tspan>
+    </text>
+    
+    <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>产品 A vs 产品 B · 六维度分析</tspan>
+    </text>
+    
+    <!-- 雷达图区域 - 中心点 (640, 400), 半径 220 -->
+    <g id="radarChart" transform="translate(640, 400)">
+        
+        <!-- 背景网格 - 5层同心六边形 -->
+        <!-- 第5层 (100%) -->
+        <polygon points="0,-220 190.5,-110 190.5,110 0,220 -190.5,110 -190.5,-110" 
+                 fill="none" stroke="#E0E0E0" stroke-width="1"/>
+        <!-- 第4层 (80%) -->
+        <polygon points="0,-176 152.4,-88 152.4,88 0,176 -152.4,88 -152.4,-88" 
+                 fill="none" stroke="#E0E0E0" stroke-width="1"/>
+        <!-- 第3层 (60%) -->
+        <polygon points="0,-132 114.3,-66 114.3,66 0,132 -114.3,66 -114.3,-66" 
+                 fill="none" stroke="#E0E0E0" stroke-width="1"/>
+        <!-- 第2层 (40%) -->
+        <polygon points="0,-88 76.2,-44 76.2,44 0,88 -76.2,44 -76.2,-44" 
+                 fill="none" stroke="#E0E0E0" stroke-width="1"/>
+        <!-- 第1层 (20%) -->
+        <polygon points="0,-44 38.1,-22 38.1,22 0,44 -38.1,22 -38.1,-22" 
+                 fill="none" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <!-- 轴线 -->
+        <line x1="0" y1="0" x2="0" y2="-220" stroke="#BDC3C7" stroke-width="1"/>
+        <line x1="0" y1="0" x2="190.5" y2="-110" stroke="#BDC3C7" stroke-width="1"/>
+        <line x1="0" y1="0" x2="190.5" y2="110" stroke="#BDC3C7" stroke-width="1"/>
+        <line x1="0" y1="0" x2="0" y2="220" stroke="#BDC3C7" stroke-width="1"/>
+        <line x1="0" y1="0" x2="-190.5" y2="110" stroke="#BDC3C7" stroke-width="1"/>
+        <line x1="0" y1="0" x2="-190.5" y2="-110" stroke="#BDC3C7" stroke-width="1"/>
+        
+        <!-- 数据区域 1 - 产品 A (蓝色) -->
+        <!-- 数值: 性能90%, 安全85%, 易用75%, 价格70%, 服务80%, 创新88% -->
+        <polygon points="0,-198 162,-93.5 143,77 0,154 -152.4,88 -167.2,-96.8" 
+                 fill="url(#radarGrad1)" stroke="#2196F3" stroke-width="2.5" filter="url(#radarShadow)"/>
+        
+        <!-- 数据点 - 产品 A -->
+        <circle cx="0" cy="-198" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="162" cy="-93.5" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="143" cy="77" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="0" cy="154" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="-152.4" cy="88" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="-167.2" cy="-96.8" r="6" fill="#2196F3" stroke="#FFFFFF" stroke-width="2"/>
+        
+        <!-- 数据区域 2 - 产品 B (绿色) -->
+        <!-- 数值: 性能75%, 安全90%, 易用85%, 价格80%, 服务70%, 创新65% -->
+        <polygon points="0,-165 171.5,-99 162,93.5 0,176 -133.4,77 -124,-71.5" 
+                 fill="url(#radarGrad2)" stroke="#4CAF50" stroke-width="2.5"/>
+        
+        <!-- 数据点 - 产品 B -->
+        <circle cx="0" cy="-165" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="171.5" cy="-99" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="162" cy="93.5" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="0" cy="176" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="-133.4" cy="77" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+        <circle cx="-124" cy="-71.5" r="6" fill="#4CAF50" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+    
+    <!-- 维度标签 -->
+    <text x="640" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        <tspan>性能</tspan>
+    </text>
+    <text x="870" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="start">
+        <tspan>安全性</tspan>
+    </text>
+    <text x="870" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="start">
+        <tspan>易用性</tspan>
+    </text>
+    <text x="640" y="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="middle">
+        <tspan>价格竞争力</tspan>
+    </text>
+    <text x="410" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="end">
+        <tspan>售后服务</tspan>
+    </text>
+    <text x="410" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="end">
+        <tspan>创新能力</tspan>
+    </text>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(1020, 150)">
+        <rect x="0" y="0" width="200" height="120" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <text x="100" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>图例</tspan>
+        </text>
+        
+        <rect x="20" y="50" width="24" height="12" rx="2" fill="#2196F3" opacity="0.7"/>
+        <text x="55" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>产品 A</tspan>
+        </text>
+        
+        <rect x="20" y="80" width="24" height="12" rx="2" fill="#4CAF50" opacity="0.6"/>
+        <text x="55" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>产品 B</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 产品评估报告 2025</tspan>
+    </text>
+</svg>
+

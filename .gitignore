@@ -1,0 +1,171 @@
+# Operating System Files
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Editor and IDE Files
+# VSCode
+.vscode/
+.claude/
+.spec-workflow/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~.nib
+*.log
+
+# Project Specific
+# Generated SVG files (uncomment if you don't want to commit generated files)
+# output/
+# generated/
+# *.svg
+
+# Working drafts and notes
+drafts/
+notes/
+scratch/
+.notes/
+
+# Test files
+test_output/
+temp_files/
+
+# Large media files (if any)
+*.psd
+*.ai
+*.sketch
+*.fig
+
+# Compressed files
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+
+# Documentation build outputs
+docs/_build/
+docs/.doctrees/
+site/
+
+# Python (if you add Python tools later)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Node.js (if you add Node.js tools later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+.eslintcache
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache and locks
+.cache/
+*.lock
+.lock
+
+# Personal notes
+TODO.md
+PERSONAL_NOTES.md
+
+# Projects directory - Work-in-progress projects (not version controlled)
+# Completed projects should be moved to examples/
+# Use cloud sync (iCloud/Dropbox) for backup and multi-device access
+projects/*
+!projects/README.md

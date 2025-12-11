@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "total": 640,
+    "viewBox": "0 0 16 16",
+    "style": "solid",
+    "updated": "2025-12-06"
+  },
+  "categories": {
+    "navigation": {
+      "label": "导航与箭头",
+      "icons": [
+        "arrow-up", "arrow-down", "arrow-left", "arrow-right",
+        "arrow-up-left", "arrow-up-right", "arrow-down-left", "arrow-down-right",
+        "arrow-trend-up", "arrow-trend-down",
+        "arrow-rotate-left", "arrow-rotate-right",
+        "arrows-left-right", "arrows-up-down", "arrows-repeat",
+        "angle-up", "angle-down", "angle-left", "angle-right",
+        "angles-up", "angles-down", "angles-left", "angles-right",
+        "caret-up", "caret-down", "caret-left", "caret-right",
+        "circle-arrow-up", "circle-arrow-down", "circle-arrow-left", "circle-arrow-right"
+      ]
+    },
+    "data": {
+      "label": "数据与图表",
+      "icons": [
+        "chart-bar", "chart-line", "chart-pie",
+        "gauge-high", "gauge-medium", "gauge-low",
+        "table", "database", "server", "funnel", "filter", "sort", "sliders"
+      ]
+    },
+    "users": {
+      "label": "用户与人物",
+      "icons": [
+        "user", "users", "person", "person-walking", "person-wave",
+        "circle-user", "square-user", "group", "address-card", "head-side"
+      ]
+    },
+    "status": {
+      "label": "状态与反馈",
+      "icons": [
+        "checkmark", "circle-checkmark", "square-checkmark", "badge-check", "shield-check",
+        "thumbs-up", "thumbs-down",
+        "x", "x-1", "circle-x", "square-x", "ban",
+        "circle-exclamation", "triangle-exclamation", "diamond-exclamation", "octagon-exclamation",
+        "circle-info", "circle-question",
+        "plus", "minus", "circle-plus", "circle-minus", "square-plus", "square-minus"
+      ]
+    },
+    "files": {
+      "label": "文件与文件夹",
+      "icons": [
+        "file", "file-plus", "files", "folder", "folder-open", "folders",
+        "floppy-disk", "archive-box", "clipboard", "copy",
+        "image", "images", "newspaper", "receipt", "sticky-note"
+      ]
+    },
+    "tools": {
+      "label": "工具与操作",
+      "icons": [
+        "pencil", "pencil-square", "pen-nib", "brush", "paint-bucket", "paint-roller",
+        "eyedropper", "palette", "crop", "scissors", "ruler",
+        "cog", "sliders", "wrench", "hammer", "screwdriver", "toolbox",
+        "magnifying-glass", "zoom-in", "zoom-out", "eye", "eye-slash",
+        "maximize", "minimize", "trash", "delete"
+      ]
+    },
+    "devices": {
+      "label": "设备与技术",
+      "icons": [
+        "desktop", "laptop", "mobile", "tablet", "smartwatch", "tv", "tv-retro",
+        "keyboard", "mouse", "joystick", "game-controller", "d-pad",
+        "database", "server", "microchip", "plug", "outlet", "usb",
+        "wifi", "wifi-low", "wifi-medium", "wifi-slash",
+        "signal", "signal-fair", "signal-good", "signal-weak", "signal-slash",
+        "bluetooth", "globe", "rss",
+        "battery-full", "battery-half", "battery-empty", "battery-charge", "battery-slash"
+      ]
+    },
+    "communication": {
+      "label": "通讯与社交",
+      "icons": [
+        "phone", "phone-slash", "envelope", "mailbox", "paper-plane",
+        "comment", "comment-dots", "comments", "comments-slash",
+        "bell", "bell-slash", "at", "hashtag", "share-nodes"
+      ]
+    },
+    "business": {
+      "label": "商业与金融",
+      "icons": [
+        "dollar", "euro", "british-pound", "yen", "coin", "money", "wallet", "credit-card",
+        "shopping-cart", "shopping-bag", "shopping-basket", "shop", "receipt", "tag", "ticket",
+        "building", "city", "factory", "hospital", "museum", "castle", "home", "home-1",
+        "briefcase", "suitcase"
+      ]
+    },
+    "transport": {
+      "label": "交通与出行",
+      "icons": [
+        "car", "bus", "train", "plane", "ship", "truck", "bicycle", "scooter", "rocket",
+        "route", "map", "map-pin", "location-arrow", "location-target",
+        "signpost", "traffic-light", "traffic-cone"
+      ]
+    },
+    "media": {
+      "label": "媒体与娱乐",
+      "icons": [
+        "play", "pause", "stop", "play-pause", "fast-forward", "rewind",
+        "skip-forward", "skip-backward", "shuffle", "arrows-repeat",
+        "volume-high", "volume-low", "volume-none", "volume-x", "volume-slash",
+        "microphone", "microphone-slash", "headphones", "music", "waveform",
+        "video", "video-camera", "video-camera-slash", "camera", "camera-slash",
+        "film", "compact-disc",
+        "game-controller", "joystick", "dice", "playing-card", "meeple"
+      ]
+    },
+    "sports": {
+      "label": "运动与健身",
+      "icons": [
+        "soccer", "basketball", "baseball", "football", "tennis-ball",
+        "hockey", "curling-stone", "trophy", "target", "target-arrow", "bow-and-arrow"
+      ]
+    },
+    "food": {
+      "label": "食物与饮品",
+      "icons": [
+        "burger", "pizza", "cake", "cake-slice", "cupcake", "ice-cream",
+        "citrus-slice", "bowl", "utensils", "mug", "cocktail", "wine-glass", "soda", "bottle"
+      ]
+    },
+    "weather": {
+      "label": "天气与自然",
+      "icons": [
+        "sun", "sun-cloud", "sun-fog", "moon", "moon-cloud", "moon-fog",
+        "cloud", "cloud-fog", "cloud-rain", "cloud-snow", "cloud-lightning",
+        "rainbow", "rainbow-cloud", "snow", "wind", "droplet", "umbrella",
+        "tree", "tree-evergreen", "leaf", "seedling", "flower", "mountains", "water", "fire"
+      ]
+    },
+    "shapes": {
+      "label": "形状与装饰",
+      "icons": [
+        "circle", "square", "triangle", "hexagon", "octagon", "diamond-shape",
+        "star", "star-half", "heart", "heart-half", "heart-broken",
+        "sparkles", "bolt", "crown", "gem", "crystal-ball", "wand-with-sparkles",
+        "spade", "club", "diamond"
+      ]
+    },
+    "security": {
+      "label": "安全与权限",
+      "icons": [
+        "lock-closed", "lock-open", "key", "key-skeleton", "keyhole",
+        "shield", "shield-check", "shield-half", "eye", "eye-slash", "face-id"
+      ]
+    },
+    "text": {
+      "label": "文本与编辑",
+      "icons": [
+        "bold", "italic", "underline", "strikethrough", "text", "font-case",
+        "align-left", "align-right", "align-text-center", "align-text-justify",
+        "indent", "outdent",
+        "quote-left", "quote-right", "block-quote", "list", "list-ordered",
+        "code", "code-block", "terminal"
+      ]
+    },
+    "layout": {
+      "label": "布局与对齐",
+      "icons": [
+        "align-top", "align-bottom", "align-left", "align-right",
+        "align-center-horizontal", "align-center-vertical",
+        "distribute-horizontal", "distribute-vertical",
+        "grid", "grid-masonry", "columns", "rows", "layers", "frame", "component"
+      ]
+    },
+    "numbers": {
+      "label": "数字与字母",
+      "icons": [
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x-1", "y", "z",
+        "number-0", "number-1", "number-2", "number-3", "number-4",
+        "number-5", "number-6", "number-7", "number-8", "number-9",
+        "circle-number-0", "circle-number-1", "circle-number-2", "circle-number-3", "circle-number-4",
+        "circle-number-5", "circle-number-6", "circle-number-7", "circle-number-8", "circle-number-9"
+      ]
+    },
+    "zodiac": {
+      "label": "星座",
+      "icons": [
+        "aries", "taurus", "gemini", "cancer", "leo", "virgo",
+        "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
+      ]
+    },
+    "chess": {
+      "label": "国际象棋",
+      "icons": ["king", "queen", "rook", "bishop", "knight", "pawn"]
+    },
+    "emoji": {
+      "label": "表情",
+      "icons": [
+        "face-smile", "face-laugh", "face-meh", "face-sad", "face-cry",
+        "face-angry", "face-open-mouth", "face-no-mouth", "face-melt"
+      ]
+    },
+    "animals": {
+      "label": "动物",
+      "icons": ["dog", "cat", "fish", "bee", "butterfly", "paw", "bone"]
+    },
+    "time": {
+      "label": "时间",
+      "icons": [
+        "clock", "stopwatch", "alarm-clock", "calendar", "watch",
+        "hourglass-empty", "hourglass-half-top", "hourglass-half-bottom"
+      ]
+    },
+    "misc": {
+      "label": "其他常用",
+      "icons": [
+        "power", "toggle-circle-left", "toggle-circle-right",
+        "book", "book-open", "books", "bookmark", "bookmark-plus",
+        "gift", "trophy", "crown", "sparkles",
+        "lightbulb", "flag", "anchor", "compass", "life-ring",
+        "rocket", "robot", "ghost", "skull", "alien", "ufo",
+        "mortarboard", "globe", "link", "paperclip"
+      ]
+    },
+    "git": {
+      "label": "Git",
+      "icons": ["git-branch", "git-commit", "git-compare", "git-fork", "git-merge"]
+    }
+  },
+  "quickLookup": {
+    "growth": ["arrow-trend-up", "rocket", "chart-line"],
+    "decline": ["arrow-trend-down", "triangle-exclamation"],
+    "success": ["circle-checkmark", "badge-check", "thumbs-up", "trophy"],
+    "error": ["circle-x", "ban", "triangle-exclamation"],
+    "warning": ["triangle-exclamation", "circle-exclamation"],
+    "info": ["circle-info", "circle-question", "lightbulb"],
+    "settings": ["cog", "sliders", "wrench"],
+    "search": ["magnifying-glass", "zoom-in", "filter"],
+    "user": ["user", "users", "group", "person"],
+    "money": ["dollar", "wallet", "coin", "credit-card"],
+    "time": ["clock", "calendar", "stopwatch"],
+    "document": ["file", "folder", "clipboard", "copy"],
+    "communication": ["envelope", "phone", "comment", "bell"],
+    "security": ["shield", "lock-closed", "key", "shield-check"],
+    "target": ["target", "flag", "crosshairs"]
+  }
+}
+
