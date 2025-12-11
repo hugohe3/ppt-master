@@ -5,8 +5,53 @@
 
 一个基于 AI 的智能视觉内容生成系统，通过四个专业角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
 
+> 🎴 **在线示例**：[幻灯片展示库](https://notes.36sjs.com/pages/ppt/slides-library.html) - 查看实际生成效果
+
+---
+
+## 🚀 快速使用指南
+
+### 推荐工具
+
+| 工具 | 推荐度 | 说明 |
+|------|:------:|------|
+| **[Antigravity](https://antigravity.dev/)** | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.5，集成 Banana 生图功能，可直接在仓库里生成配图 |
+| [Cursor](https://cursor.sh/) | ⭐⭐ | 主流 AI 编辑器，支持多种模型 |
+| [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 微软官方方案 |
+| [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic 官方 CLI 工具 |
+
+### 三步开始
+
+```
+1️⃣ 克隆仓库
+   打开编辑器 → Clone Repository → 输入本仓库地址
+   git clone https://github.com/hugohe3/ppt-master.git
+
+2️⃣ 打开聊天窗口
+   在编辑器中打开 AI 聊天面板（Antigravity/Cursor/Copilot Chat）
+
+3️⃣ 开始对话
+   直接告诉 AI 你想创建什么内容，AI 会自动按照仓库中的角色定义工作
+```
+
+### 使用示例
+
+```
+用户：我有一份关于 Q3 季度业绩的报告，需要制作成 PPT
+
+AI（Strategist 角色）：好的，在开始之前我需要完成七项确认...
+   1. 画布格式：[建议] PPT 16:9
+   2. 页数范围：[建议] 8-10 页
+   ...
+```
+
+💡 **模型推荐**：Opus 4.5 效果最佳，Antigravity 目前可免费使用
+
+---
+
 ## 📋 目录
 
+- [快速使用指南](#🚀-快速使用指南)
 - [项目简介](#项目简介)
 - [核心特性](#核心特性)
 - [系统架构](#系统架构)
