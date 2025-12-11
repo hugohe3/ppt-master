@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow5" x="-15%" y="-15%" width="130%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feOffset in="blur" dx="0" dy="3" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  
+  <!-- 页面标签 -->
+  <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
+    CASE STUDIES
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    Agent 实践领域：客户支持 &amp; 编程代理
+  </text>
+  <text x="60" y="135" font-family="Arial, sans-serif" font-size="18" fill="#64748B">
+    两个已验证的高价值应用场景
+  </text>
+  
+  <!-- 左侧：客户支持 -->
+  <g transform="translate(60, 165)">
+    <rect x="0" y="0" width="560" height="480" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow5)"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="80" rx="16" fill="#4A90D9"/>
+    <rect x="0" y="40" width="560" height="40" fill="#4A90D9"/>
+    
+    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="users" x="32" y="22" width="36" height="36" fill="#FFFFFF"/>
+    
+    <text x="95" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+      Customer Support
+    </text>
+    <text x="95" y="58" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.9">
+      客户支持
+    </text>
+    
+    <!-- 为什么适合 -->
+    <text x="30" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4A90D9">
+      为什么 Agent 适合？
+    </text>
+    
+    <g font-family="Arial, sans-serif" transform="translate(30, 135)">
+      <g>
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">🗣️ 自然对话流</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">支持交互天然符合聊天界面</text>
+      </g>
+      
+      <g transform="translate(0, 60)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">🔧 工具集成</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">拉取客户数据、订单历史、知识库</text>
+      </g>
+      
+      <g transform="translate(0, 120)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">⚡ 执行操作</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">发起退款、更新工单、转接人工</text>
+      </g>
+      
+      <g transform="translate(0, 180)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">📊 成功可量化</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">用户定义的问题解决率</text>
+      </g>
+    </g>
+    
+    <!-- 商业验证 -->
+    <rect x="30" y="390" width="500" height="65" rx="10" fill="#10B981" fill-opacity="0.1" stroke="#10B981" stroke-width="1"/>
+    <text x="50" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#10B981">
+      ✓ 商业验证
+    </text>
+    <text x="50" y="440" font-family="Arial, sans-serif" font-size="13" fill="#1A1A2E">
+      多家公司采用按解决率收费模式，展现对 Agent 效果的信心
+    </text>
+  </g>
+  
+  <!-- 右侧：编程代理 -->
+  <g transform="translate(660, 165)">
+    <rect x="0" y="0" width="560" height="480" rx="16" fill="#FEF7F5" stroke="#D97757" stroke-width="1" filter="url(#cardShadow5)"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="560" height="80" rx="16" fill="#D97757"/>
+    <rect x="0" y="40" width="560" height="40" fill="#D97757"/>
+    
+    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="code" x="32" y="22" width="36" height="36" fill="#FFFFFF"/>
+    
+    <text x="95" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
+      Coding Agents
+    </text>
+    <text x="95" y="58" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.9">
+      编程代理
+    </text>
+    
+    <!-- 为什么适合 -->
+    <text x="30" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97757">
+      为什么 Agent 适合？
+    </text>
+    
+    <g font-family="Arial, sans-serif" transform="translate(30, 135)">
+      <g>
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">✅ 可验证性</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">代码解决方案可通过自动化测试验证</text>
+      </g>
+      
+      <g transform="translate(0, 60)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">🔄 迭代反馈</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">使用测试结果作为反馈进行迭代</text>
+      </g>
+      
+      <g transform="translate(0, 120)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">📐 结构化问题</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">问题空间明确且结构化</text>
+      </g>
+      
+      <g transform="translate(0, 180)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <text x="15" y="22" font-size="15" fill="#1A1A2E">
+          <tspan font-weight="600">📊 可量化质量</tspan>
+        </text>
+        <text x="15" y="40" font-size="13" fill="#64748B">输出质量可客观衡量（测试通过率）</text>
+      </g>
+    </g>
+    
+    <!-- 提醒 -->
+    <rect x="30" y="390" width="500" height="65" rx="10" fill="#F59E0B" fill-opacity="0.1" stroke="#F59E0B" stroke-width="1"/>
+    <text x="50" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#F59E0B">
+      ⚠️ 仍需人工审查
+    </text>
+    <text x="50" y="440" font-family="Arial, sans-serif" font-size="13" fill="#1A1A2E">
+      自动测试验证功能，但人工审查确保符合系统整体需求
+    </text>
+  </g>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="690" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    13 / 15
+  </text>
+  
+</svg>

@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#D97757; stop-opacity:0.3"/>
+      <stop offset="70%" style="stop-color:#D97757; stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#D97757; stop-opacity:0"/>
+    </radialGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  
+  <!-- 页面标签 -->
+  <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
+    BUILDING BLOCK
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    基础构建模块：增强型 LLM (Augmented LLM)
+  </text>
+  
+  <!-- 左侧说明卡片 -->
+  <g transform="translate(60, 140)">
+    <rect x="0" y="0" width="280" height="320" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="20" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4A90D9">
+      🔍 Retrieval 检索
+    </text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      <tspan x="20" dy="0">生成搜索查询</tspan>
+      <tspan x="20" dy="22">获取相关上下文</tspan>
+    </text>
+    
+    <line x1="20" y1="100" x2="260" y2="100" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="20" y="130" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#10B981">
+      🔧 Tools 工具
+    </text>
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      <tspan x="20" dy="0">选择适当工具</tspan>
+      <tspan x="20" dy="22">调用外部服务/API</tspan>
+    </text>
+    
+    <line x1="20" y1="195" x2="260" y2="195" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="20" y="225" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97757">
+      💾 Memory 记忆
+    </text>
+    <text x="20" y="250" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      <tspan x="20" dy="0">决定保留哪些信息</tspan>
+      <tspan x="20" dy="22">维持对话上下文</tspan>
+    </text>
+    
+    <!-- MCP 推荐 -->
+    <rect x="15" y="285" width="250" height="25" rx="6" fill="#D97757" fill-opacity="0.1"/>
+    <text x="140" y="303" font-family="Arial, sans-serif" font-size="12" fill="#D97757" text-anchor="middle">
+      推荐: Model Context Protocol (MCP)
+    </text>
+  </g>
+  
+  <!-- 中央图示区域 - 调整位置避免遮挡 -->
+  <g transform="translate(640, 360)">
+    <!-- 光晕效果 - 缩小 -->
+    <ellipse cx="0" cy="0" rx="150" ry="140" fill="url(#coreGlow)"/>
+    
+    <!-- 核心 LLM 圆 -->
+    <circle cx="0" cy="0" r="65" fill="#1A1A2E" filter="url(#softShadow)"/>
+    <circle cx="0" cy="0" r="55" fill="#2D2D44"/>
+    <text x="0" y="-8" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      LLM
+    </text>
+    <text x="0" y="18" font-family="Arial, sans-serif" font-size="12" fill="#D97757" text-anchor="middle">
+      核心模型
+    </text>
+    
+    <!-- 连接线 - 调整角度 -->
+    <g stroke="#CBD5E1" stroke-width="2" fill="none">
+      <path d="M-50,-35 Q-100,-80 -140,-80"/>
+      <path d="M50,-35 Q100,-80 140,-80"/>
+      <path d="M0,65 Q0,110 0,140"/>
+    </g>
+    
+    <!-- 模块 1: Retrieval (左上) -->
+    <g transform="translate(-200, -100)">
+      <rect x="-55" y="-35" width="110" height="70" rx="10" fill="#4A90D9" fill-opacity="0.15" stroke="#4A90D9" stroke-width="2"/>
+      <circle cx="0" cy="-5" r="18" fill="#4A90D9"/>
+      <!-- icon: magnifying-glass -->
+  <g transform="translate(-12.0, -17.0) scale(1.5)" fill="#FFFFFF">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.1922 12.6064C10.0236 13.4816 8.57234 14 7 14C3.13401 14 0 10.866 0 7C0 3.13401 3.13401 0 7 0C10.866 0 14 3.13401 14 7C14 8.57234 13.4816 10.0236 12.6064 11.1922L15.7071 14.2929L14.2929 15.7071L11.1922 12.6064ZM5.58579 8.41421L4.17157 9.82843C2.60948 8.26633 2.60948 5.73367 4.17157 4.17157C5.73367 2.60948 8.26633 2.60948 9.82843 4.17157L8.41421 5.58579C7.63316 4.80474 6.36683 4.80474 5.58579 5.58579C4.80474 6.36684 4.80474 7.63316 5.58579 8.41421Z"/>
+  </g>
+      <text x="0" y="28" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#4A90D9" text-anchor="middle">
+        Retrieval
+      </text>
+    </g>
+    
+    <!-- 模块 2: Tools (右上) -->
+    <g transform="translate(200, -100)">
+      <rect x="-55" y="-35" width="110" height="70" rx="10" fill="#10B981" fill-opacity="0.15" stroke="#10B981" stroke-width="2"/>
+      <circle cx="0" cy="-5" r="18" fill="#10B981"/>
+      <!-- icon: cog -->
+  <g transform="translate(-12.0, -17.0) scale(1.5)" fill="#FFFFFF">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.50001 0H9.50001L10.0939 2.37548C10.7276 2.6115 11.3107 2.95155 11.8223 3.37488L14.1782 2.70096L15.6782 5.29904L13.9173 7.00166C13.9717 7.32634 14 7.65987 14 8C14 8.34013 13.9717 8.67366 13.9173 8.99834L15.6782 10.701L14.1782 13.299L11.8223 12.6251C11.3107 13.0484 10.7276 13.3885 10.0939 13.6245L9.50001 16H6.50001L5.90614 13.6245C5.27242 13.3885 4.68934 13.0484 4.17768 12.6251L1.82181 13.299L0.321808 10.701L2.08269 8.99834C2.02831 8.67366 2.00001 8.34013 2.00001 8C2.00001 7.65987 2.02831 7.32634 2.08269 7.00166L0.321808 5.29904L1.82181 2.70096L4.17768 3.37488C4.68934 2.95155 5.27241 2.6115 5.90614 2.37548L6.50001 0ZM8.00001 10C9.10458 10 10 9.10457 10 8C10 6.89543 9.10458 6 8.00001 6C6.89544 6 6.00001 6.89543 6.00001 8C6.00001 9.10457 6.89544 10 8.00001 10Z"/>
+  </g>
+      <text x="0" y="28" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#10B981" text-anchor="middle">
+        Tools
+      </text>
+    </g>
+    
+    <!-- 模块 3: Memory (下方) - 调整位置 -->
+    <g transform="translate(0, 180)">
+      <rect x="-55" y="-35" width="110" height="70" rx="10" fill="#D97757" fill-opacity="0.15" stroke="#D97757" stroke-width="2"/>
+      <circle cx="0" cy="-5" r="18" fill="#D97757"/>
+      <!-- icon: database -->
+  <g transform="translate(-12.0, -17.0) scale(1.5)" fill="#FFFFFF">
+    <path d="M13.1371 6.91018C13.4184 6.7695 13.7123 6.59981 14 6.40001V8C14 9.65685 11.3137 11 8 11C4.68629 11 2 9.65685 2 8V6.40001C2.28772 6.59981 2.58158 6.7695 2.86293 6.91018C4.28096 7.61919 6.09998 8 8 8C9.90002 8 11.719 7.61919 13.1371 6.91018Z"/>
+    <path d="M2 11.4V13C2 14.6569 4.68629 16 8 16C11.3137 16 14 14.6569 14 13V11.4C13.7123 11.5998 13.4184 11.7695 13.1371 11.9102C11.719 12.6192 9.90002 13 8 13C6.09998 13 4.28096 12.6192 2.86293 11.9102C2.58158 11.7695 2.28772 11.5998 2 11.4Z"/>
+    <path d="M8 0C11.3137 0 14 1.34315 14 3C14 4.65685 11.3137 6 8 6C4.68629 6 2 4.65685 2 3C2 1.34315 4.68629 0 8 0Z"/>
+  </g>
+      <text x="0" y="28" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#D97757" text-anchor="middle">
+        Memory
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右侧关键建议卡片 -->
+  <g transform="translate(940, 140)">
+    <rect x="0" y="0" width="280" height="320" rx="12" fill="#1A1A2E"/>
+    
+    <text x="20" y="35" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#D97757" letter-spacing="1">
+      KEY RECOMMENDATIONS
+    </text>
+    
+    <text x="20" y="80" font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF">
+      <tspan x="20" dy="0" font-weight="600">1. 针对用例定制</tspan>
+      <tspan x="20" dy="26" fill="#94A3B8">根据特定场景调整能力</tspan>
+    </text>
+    
+    <text x="20" y="155" font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF">
+      <tspan x="20" dy="0" font-weight="600">2. 易用接口</tspan>
+      <tspan x="20" dy="26" fill="#94A3B8">确保文档完善、易于调用</tspan>
+    </text>
+    
+    <text x="20" y="230" font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF">
+      <tspan x="20" dy="0" font-weight="600">3. 推荐: MCP</tspan>
+      <tspan x="20" dy="26" fill="#94A3B8">Model Context Protocol</tspan>
+      <tspan x="20" dy="24" fill="#94A3B8">简化第三方工具集成</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部提示 -->
+  <rect x="60" y="610" width="1160" height="50" rx="8" fill="#F0FDF4" stroke="#10B981" stroke-width="1"/>
+  <!-- icon: lightbulb -->
+  <g transform="translate(80.0, 618.0) scale(2.0)" fill="#10B981">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+  </g>
+  <text x="130" y="642" font-family="Arial, sans-serif" font-size="15" fill="#065F46">
+    当前模型已能主动使用这些能力 — 生成查询、选择工具、决定保留信息
+  </text>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="690" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    6 / 15
+  </text>
+  
+</svg>

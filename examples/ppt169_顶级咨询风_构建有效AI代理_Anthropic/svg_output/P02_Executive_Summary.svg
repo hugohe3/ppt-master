@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="cardGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#F8FAFC"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调色条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  
+  <!-- 页面标题区域 -->
+  <text x="60" y="65" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
+    EXECUTIVE SUMMARY
+  </text>
+  
+  <!-- 核心观点标题 -->
+  <text x="60" y="105" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A2E">
+    成功的 Agent 实现不依赖复杂框架，
+  </text>
+  <text x="60" y="140" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A2E">
+    而是简单、可组合的模式
+  </text>
+  
+  <!-- 三个核心洞察卡片 -->
+  
+  <!-- 卡片 1: 简单优先 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="180" width="360" height="420" rx="12" fill="url(#cardGradient1)" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  <!-- 卡片顶部色条 -->
+  <rect x="60" y="180" width="360" height="6" rx="12" fill="#10B981"/>
+  <rect x="60" y="180" width="360" height="6" fill="#10B981"/>
+  <rect x="60" y="180" width="360" height="12" rx="12" fill="#10B981"/>
+  
+  <!-- 图标区域 -->
+  <circle cx="130" cy="250" r="35" fill="#10B981" fill-opacity="0.1"/>
+  <use data-icon="lightbulb" x="112" y="232" width="36" height="36" fill="#10B981"/>
+  
+  <text x="90" y="320" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1A1A2E">
+    简单优先
+  </text>
+  <text x="90" y="345" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#64748B">
+    Start Simple
+  </text>
+  
+  <text x="90" y="390" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E" line-height="1.6">
+    <tspan x="90" dy="0">先寻找最简单的解决方案，</tspan>
+    <tspan x="90" dy="28">只在必要时增加复杂性。</tspan>
+    <tspan x="90" dy="50" fill="#64748B" font-size="15">许多应用只需优化单一 LLM</tspan>
+    <tspan x="90" dy="24" fill="#64748B" font-size="15">调用 + 检索即可满足需求。</tspan>
+  </text>
+  
+  <!-- 底部标签 -->
+  <rect x="90" y="545" width="80" height="28" rx="14" fill="#10B981" fill-opacity="0.1"/>
+  <text x="130" y="564" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#10B981" text-anchor="middle">
+    核心原则
+  </text>
+  
+  <!-- 卡片 2: Workflow vs Agent -->
+  <g filter="url(#cardShadow)">
+    <rect x="460" y="180" width="360" height="420" rx="12" fill="url(#cardGradient1)" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  <rect x="460" y="180" width="360" height="6" fill="#4A90D9"/>
+  <rect x="460" y="180" width="360" height="12" rx="12" fill="#4A90D9"/>
+  
+  <circle cx="530" cy="250" r="35" fill="#4A90D9" fill-opacity="0.1"/>
+  <use data-icon="layers" x="512" y="232" width="36" height="36" fill="#4A90D9"/>
+  
+  <text x="490" y="320" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1A1A2E">
+    Workflow vs Agent
+  </text>
+  <text x="490" y="345" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#64748B">
+    Two Architectures
+  </text>
+  
+  <text x="490" y="390" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+    <tspan x="490" dy="0" font-weight="600">Workflows:</tspan>
+    <tspan x="490" dy="26">预定义代码路径编排</tspan>
+    <tspan x="490" dy="40" font-weight="600">Agents:</tspan>
+    <tspan x="490" dy="26">LLM 动态自主决策</tspan>
+    <tspan x="490" dy="40" fill="#64748B" font-size="15">根据任务特性选择架构，</tspan>
+    <tspan x="490" dy="24" fill="#64748B" font-size="15">而非一味追求"智能"。</tspan>
+  </text>
+  
+  <rect x="490" y="545" width="80" height="28" rx="14" fill="#4A90D9" fill-opacity="0.1"/>
+  <text x="530" y="564" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#4A90D9" text-anchor="middle">
+    架构选择
+  </text>
+  
+  <!-- 卡片 3: 工具设计 -->
+  <g filter="url(#cardShadow)">
+    <rect x="860" y="180" width="360" height="420" rx="12" fill="url(#cardGradient1)" stroke="#E2E8F0" stroke-width="1"/>
+  </g>
+  <rect x="860" y="180" width="360" height="6" fill="#D97757"/>
+  <rect x="860" y="180" width="360" height="12" rx="12" fill="#D97757"/>
+  
+  <circle cx="930" cy="250" r="35" fill="#D97757" fill-opacity="0.1"/>
+  <use data-icon="cog" x="912" y="232" width="36" height="36" fill="#D97757"/>
+  
+  <text x="890" y="320" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1A1A2E">
+    工具设计关键
+  </text>
+  <text x="890" y="345" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#64748B">
+    Agent-Computer Interface
+  </text>
+  
+  <text x="890" y="390" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+    <tspan x="890" dy="0">ACI（代理-计算机接口）</tspan>
+    <tspan x="890" dy="28">与 HCI 同等重要。</tspan>
+    <tspan x="890" dy="50" fill="#64748B" font-size="15">"我们在工具优化上花的</tspan>
+    <tspan x="890" dy="24" fill="#64748B" font-size="15">时间比整体 prompt 更多"</tspan>
+  </text>
+  
+  <rect x="890" y="545" width="80" height="28" rx="14" fill="#D97757" fill-opacity="0.1"/>
+  <text x="930" y="564" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#D97757" text-anchor="middle">
+    关键洞察
+  </text>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    2 / 15
+  </text>
+  
+</svg>

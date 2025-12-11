@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="summaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97757"/>
+      <stop offset="100%" style="stop-color:#F59E0B"/>
+    </linearGradient>
+    <filter id="cardGlow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#D97757" flood-opacity="0.15" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="8" fill="url(#summaryGradient)"/>
+  
+  <!-- 页面标签 -->
+  <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
+    SUMMARY
+  </text>
+  
+  <!-- 核心观点标题 -->
+  <text x="60" y="105" font-family="Arial, sans-serif" font-size="34" font-weight="bold" fill="#1A1A2E">
+    构建正确的系统，而非最复杂的系统
+  </text>
+  
+  <!-- 三大原则卡片 -->
+  <g transform="translate(60, 150)">
+    <!-- 原则 1 -->
+    <rect x="0" y="0" width="370" height="200" rx="16" fill="#FFFFFF" stroke="#D97757" stroke-width="2" filter="url(#cardGlow)"/>
+    <rect x="0" y="0" width="370" height="60" rx="16" fill="#D97757"/>
+    <rect x="0" y="30" width="370" height="30" fill="#D97757"/>
+    
+    <circle cx="45" cy="30" r="24" fill="#FFFFFF"/>
+    <text x="45" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#D97757" text-anchor="middle">1</text>
+    <text x="85" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+      保持简单
+    </text>
+    
+    <text x="30" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#1A1A2E">
+      Maintain Simplicity
+    </text>
+    <text x="30" y="125" font-family="Arial, sans-serif" font-size="15" fill="#64748B">
+      <tspan x="30" dy="0">Agent 设计应简洁</tspan>
+      <tspan x="30" dy="24">避免过度工程</tspan>
+      <tspan x="30" dy="24">复杂度按需增加</tspan>
+    </text>
+    
+    <!-- 原则 2 -->
+    <rect x="395" y="0" width="370" height="200" rx="16" fill="#FFFFFF" stroke="#4A90D9" stroke-width="2" filter="url(#cardGlow)"/>
+    <rect x="395" y="0" width="370" height="60" rx="16" fill="#4A90D9"/>
+    <rect x="395" y="30" width="370" height="30" fill="#4A90D9"/>
+    
+    <circle cx="440" cy="30" r="24" fill="#FFFFFF"/>
+    <text x="440" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#4A90D9" text-anchor="middle">2</text>
+    <text x="480" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+      透明可见
+    </text>
+    
+    <text x="425" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#1A1A2E">
+      Prioritize Transparency
+    </text>
+    <text x="425" y="125" font-family="Arial, sans-serif" font-size="15" fill="#64748B">
+      <tspan x="425" dy="0">显式展示 Agent 规划步骤</tspan>
+      <tspan x="425" dy="24">便于调试与理解</tspan>
+      <tspan x="425" dy="24">建立用户信任</tspan>
+    </text>
+    
+    <!-- 原则 3 -->
+    <rect x="790" y="0" width="370" height="200" rx="16" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#cardGlow)"/>
+    <rect x="790" y="0" width="370" height="60" rx="16" fill="#10B981"/>
+    <rect x="790" y="30" width="370" height="30" fill="#10B981"/>
+    
+    <circle cx="835" cy="30" r="24" fill="#FFFFFF"/>
+    <text x="835" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#10B981" text-anchor="middle">3</text>
+    <text x="875" y="38" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+      精心设计 ACI
+    </text>
+    
+    <text x="820" y="95" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#1A1A2E">
+      Craft Your ACI
+    </text>
+    <text x="820" y="125" font-family="Arial, sans-serif" font-size="15" fill="#64748B">
+      <tspan x="820" dy="0">详尽的工具文档</tspan>
+      <tspan x="820" dy="24">充分的测试覆盖</tspan>
+      <tspan x="820" dy="24">打造优质接口</tspan>
+    </text>
+  </g>
+  
+  <!-- 行动建议 -->
+  <g transform="translate(60, 385)">
+    <rect x="0" y="0" width="1160" height="140" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="30" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">
+      行动建议
+    </text>
+    
+    <!-- 步骤流程 -->
+    <g transform="translate(30, 60)">
+      <rect x="0" y="0" width="250" height="60" rx="8" fill="#10B981" fill-opacity="0.1"/>
+      <text x="20" y="25" font-family="Arial, sans-serif" font-size="12" fill="#10B981" font-weight="600">STEP 1</text>
+      <text x="20" y="45" font-family="Arial, sans-serif" font-size="15" fill="#1A1A2E" font-weight="600">从简单 prompt 开始</text>
+      
+      <text x="270" y="35" font-family="Arial, sans-serif" font-size="20" fill="#64748B">→</text>
+      
+      <rect x="300" y="0" width="250" height="60" rx="8" fill="#4A90D9" fill-opacity="0.1"/>
+      <text x="320" y="25" font-family="Arial, sans-serif" font-size="12" fill="#4A90D9" font-weight="600">STEP 2</text>
+      <text x="320" y="45" font-family="Arial, sans-serif" font-size="15" fill="#1A1A2E" font-weight="600">用全面评估优化</text>
+      
+      <text x="570" y="35" font-family="Arial, sans-serif" font-size="20" fill="#64748B">→</text>
+      
+      <rect x="600" y="0" width="320" height="60" rx="8" fill="#D97757" fill-opacity="0.1"/>
+      <text x="620" y="25" font-family="Arial, sans-serif" font-size="12" fill="#D97757" font-weight="600">STEP 3</text>
+      <text x="620" y="45" font-family="Arial, sans-serif" font-size="15" fill="#1A1A2E" font-weight="600">仅在简单方案不足时添加 Agent</text>
+    </g>
+  </g>
+  
+  <!-- 结语引用 -->
+  <g transform="translate(60, 550)">
+    <rect x="0" y="0" width="1160" height="100" rx="16" fill="#1A1A2E"/>
+    
+    <text x="30" y="45" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" font-style="italic">
+      "框架可帮助快速起步，但走向生产时不要犹豫减少抽象层，
+    </text>
+    <text x="30" y="75" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" font-style="italic">
+      用基础组件构建。"
+    </text>
+    
+    <text x="1130" y="75" font-family="Arial, sans-serif" font-size="14" fill="#D97757" text-anchor="end">
+      — Anthropic Engineering
+    </text>
+  </g>
+  
+  <!-- 底部信息 -->
+  <g font-family="Arial, sans-serif" font-size="13" fill="#64748B">
+    <text x="60" y="690">anthropic.com/engineering/building-effective-agents</text>
+    <text x="1220" y="690" text-anchor="end">15 / 15</text>
+  </g>
+  
+</svg>

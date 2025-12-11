@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <marker id="arrowRight" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4A90D9"/>
+    </marker>
+    <filter id="boxShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#4A90D9"/>
+  
+  <!-- 页面标签 -->
+  <rect x="60" y="40" width="130" height="28" rx="14" fill="#4A90D9" fill-opacity="0.1"/>
+  <text x="125" y="59" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#4A90D9" text-anchor="middle">
+    WORKFLOW 1/5
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="110" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    Prompt Chaining：提示链
+  </text>
+  <text x="60" y="145" font-family="Arial, sans-serif" font-size="18" fill="#64748B">
+    将任务分解为序列步骤，每个 LLM 调用处理上一步的输出
+  </text>
+  
+  <!-- 流程图区域 -->
+  <g transform="translate(100, 200)">
+    <!-- 步骤 1 -->
+    <rect x="0" y="50" width="180" height="80" rx="12" fill="#4A90D9" filter="url(#boxShadow)"/>
+    <text x="90" y="85" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      LLM Call 1
+    </text>
+    <text x="90" y="108" font-family="Arial, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      生成内容
+    </text>
+    
+    <!-- 箭头 1 -->
+    <line x1="180" y1="90" x2="230" y2="90" stroke="#4A90D9" stroke-width="3" marker-end="url(#arrowRight)"/>
+    
+    <!-- Gate 1 -->
+    <g transform="translate(260, 90)">
+      <polygon points="0,-35 35,0 0,35 -35,0" fill="#10B981" stroke="#10B981" stroke-width="2"/>
+      <text x="0" y="5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        Gate
+      </text>
+    </g>
+    <text x="260" y="145" font-family="Arial, sans-serif" font-size="12" fill="#10B981" text-anchor="middle">
+      ✓ 检查
+    </text>
+    
+    <!-- 箭头 2 -->
+    <line x1="295" y1="90" x2="345" y2="90" stroke="#4A90D9" stroke-width="3" marker-end="url(#arrowRight)"/>
+    
+    <!-- 步骤 2 -->
+    <rect x="375" y="50" width="180" height="80" rx="12" fill="#4A90D9" filter="url(#boxShadow)"/>
+    <text x="465" y="85" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      LLM Call 2
+    </text>
+    <text x="465" y="108" font-family="Arial, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      处理/转换
+    </text>
+    
+    <!-- 箭头 3 -->
+    <line x1="555" y1="90" x2="605" y2="90" stroke="#4A90D9" stroke-width="3" marker-end="url(#arrowRight)"/>
+    
+    <!-- Gate 2 -->
+    <g transform="translate(635, 90)">
+      <polygon points="0,-35 35,0 0,35 -35,0" fill="#10B981" stroke="#10B981" stroke-width="2"/>
+      <text x="0" y="5" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        Gate
+      </text>
+    </g>
+    <text x="635" y="145" font-family="Arial, sans-serif" font-size="12" fill="#10B981" text-anchor="middle">
+      ✓ 检查
+    </text>
+    
+    <!-- 箭头 4 -->
+    <line x1="670" y1="90" x2="720" y2="90" stroke="#4A90D9" stroke-width="3" marker-end="url(#arrowRight)"/>
+    
+    <!-- 步骤 3 -->
+    <rect x="750" y="50" width="180" height="80" rx="12" fill="#4A90D9" filter="url(#boxShadow)"/>
+    <text x="840" y="85" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      LLM Call 3
+    </text>
+    <text x="840" y="108" font-family="Arial, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      最终输出
+    </text>
+    
+    <!-- 输出箭头 -->
+    <line x1="930" y1="90" x2="1000" y2="90" stroke="#D97757" stroke-width="3" marker-end="url(#arrowRight)"/>
+    <rect x="1010" y="60" width="80" height="60" rx="8" fill="#D97757" fill-opacity="0.1" stroke="#D97757" stroke-width="2"/>
+    <text x="1050" y="95" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#D97757" text-anchor="middle">
+      Output
+    </text>
+  </g>
+  
+  <!-- 底部说明区域 -->
+  <g transform="translate(60, 420)">
+    <!-- 何时使用 -->
+    <rect x="0" y="0" width="560" height="200" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#4A90D9" fill-opacity="0.1"/>
+    <rect x="0" y="25" width="560" height="25" fill="#4A90D9" fill-opacity="0.1"/>
+    
+    <!-- icon: circle-checkmark -->
+  <g transform="translate(20.0, 10.0) scale(1.875)" fill="#4A90D9">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.7071 5.70711L11.2929 4.29289L6.5 9.08579L4.70711 7.29289L3.29289 8.70711L6.5 11.9142L12.7071 5.70711Z"/>
+  </g>
+    <text x="60" y="32" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#4A90D9">
+      何时使用 When to Use
+    </text>
+    
+    <text x="30" y="80" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+      <tspan x="30" dy="0">• 任务可</tspan>
+      <tspan font-weight="bold">清晰分解</tspan>
+      <tspan>为固定子任务</tspan>
+    </text>
+    <text x="30" y="110" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+      • 需要用延迟换取更高准确性
+    </text>
+    <text x="30" y="140" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+      • 中间步骤需要程序化检查
+    </text>
+    <text x="30" y="175" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      目标：让每个 LLM 调用成为更简单的任务
+    </text>
+  </g>
+  
+  <!-- 示例区域 -->
+  <g transform="translate(660, 420)">
+    <rect x="0" y="0" width="560" height="200" rx="12" fill="#FEF7F5" stroke="#D97757" stroke-width="1"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#D97757" fill-opacity="0.1"/>
+    <rect x="0" y="25" width="560" height="25" fill="#D97757" fill-opacity="0.1"/>
+    
+    <!-- icon: lightbulb -->
+  <g transform="translate(20.0, 10.0) scale(1.875)" fill="#D97757">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+  </g>
+    <text x="60" y="32" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#D97757">
+      典型示例 Examples
+    </text>
+    
+    <g font-family="Arial, sans-serif" font-size="15" fill="#1A1A2E">
+      <text x="30" y="80">
+        <tspan font-weight="600" fill="#4A90D9">示例 1：</tspan>
+        <tspan>营销文案多语言发布</tspan>
+      </text>
+      <text x="30" y="105" fill="#64748B" font-size="14">
+        生成英文文案 → 翻译为中文/日文/韩文
+      </text>
+      
+      <text x="30" y="140">
+        <tspan font-weight="600" fill="#4A90D9">示例 2：</tspan>
+        <tspan>文档结构化写作</tspan>
+      </text>
+      <text x="30" y="165" fill="#64748B" font-size="14">
+        写大纲 → 检查标准 → 基于大纲扩写全文
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    7 / 15
+  </text>
+  
+</svg>

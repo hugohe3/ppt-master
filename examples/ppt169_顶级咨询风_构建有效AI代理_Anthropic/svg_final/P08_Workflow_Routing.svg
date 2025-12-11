@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <marker id="arrowDown2" markerWidth="10" markerHeight="10" refX="5" refY="9" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L5,9 L10,0" fill="#64748B"/>
+    </marker>
+    <filter id="boxShadow2" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#10B981"/>
+  
+  <!-- 页面标签 -->
+  <rect x="60" y="40" width="130" height="28" rx="14" fill="#10B981" fill-opacity="0.1"/>
+  <text x="125" y="59" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#10B981" text-anchor="middle">
+    WORKFLOW 2/5
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="110" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    Routing：路由分发
+  </text>
+  <text x="60" y="140" font-family="Arial, sans-serif" font-size="17" fill="#64748B">
+    对输入分类，导向专门的后续任务处理
+  </text>
+  
+  <!-- 流程图区域 - 整体上移并缩小 -->
+  <g transform="translate(640, 190)">
+    <!-- 输入 -->
+    <rect x="-55" y="-55" width="110" height="40" rx="8" fill="#64748B"/>
+    <text x="0" y="-28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      Input
+    </text>
+    
+    <!-- 箭头到分类器 -->
+    <line x1="0" y1="-15" x2="0" y2="10" stroke="#64748B" stroke-width="2"/>
+    <polygon points="0,18 -5,10 5,10" fill="#64748B"/>
+    
+    <!-- 分类器 -->
+    <rect x="-70" y="22" width="140" height="50" rx="10" fill="#10B981" filter="url(#boxShadow2)"/>
+    <text x="0" y="48" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      Classifier
+    </text>
+    <text x="0" y="64" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      LLM / 传统模型
+    </text>
+    
+    <!-- 分支线 -->
+    <g stroke="#64748B" stroke-width="2" fill="none">
+      <path d="M-35,72 L-35,95 L-180,95 L-180,120"/>
+      <path d="M0,72 L0,120"/>
+      <path d="M35,72 L35,95 L180,95 L180,120"/>
+    </g>
+    
+    <!-- 箭头 -->
+    <polygon points="-180,128 -185,120 -175,120" fill="#64748B"/>
+    <polygon points="0,128 -5,120 5,120" fill="#64748B"/>
+    <polygon points="180,128 175,120 185,120" fill="#64748B"/>
+    
+    <!-- 专业模块 A -->
+    <rect x="-250" y="132" width="140" height="80" rx="10" fill="#4A90D9" filter="url(#boxShadow2)"/>
+    <text x="-180" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      专业流程 A
+    </text>
+    <text x="-180" y="180" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      常规问题
+    </text>
+    <text x="-180" y="198" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.6" text-anchor="middle">
+      Haiku (成本低)
+    </text>
+    
+    <!-- 专业模块 B -->
+    <rect x="-70" y="132" width="140" height="80" rx="10" fill="#D97757" filter="url(#boxShadow2)"/>
+    <text x="0" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      专业流程 B
+    </text>
+    <text x="0" y="180" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      退款请求
+    </text>
+    <text x="0" y="198" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.6" text-anchor="middle">
+      专用工具链
+    </text>
+    
+    <!-- 专业模块 C -->
+    <rect x="110" y="132" width="140" height="80" rx="10" fill="#8B5CF6" filter="url(#boxShadow2)"/>
+    <text x="180" y="160" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      专业流程 C
+    </text>
+    <text x="180" y="180" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">
+      技术支持
+    </text>
+    <text x="180" y="198" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.6" text-anchor="middle">
+      Sonnet (能力强)
+    </text>
+  </g>
+  
+  <!-- 底部说明区域 - 调整位置 -->
+  <g transform="translate(60, 450)">
+    <!-- 核心优势 -->
+    <rect x="0" y="0" width="370" height="160" rx="12" fill="#F0FDF4" stroke="#10B981" stroke-width="1"/>
+    
+    <text x="20" y="32" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#10B981">
+      ✓ 核心优势
+    </text>
+    
+    <text x="20" y="62" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 关注点分离 (Separation of Concerns)
+    </text>
+    <text x="20" y="88" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 针对不同类别优化专用 prompt
+    </text>
+    <text x="20" y="114" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 避免"一刀切"导致的性能损失
+    </text>
+  </g>
+  
+  <!-- 使用条件 -->
+  <g transform="translate(455, 450)">
+    <rect x="0" y="0" width="370" height="160" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    
+    <text x="20" y="32" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#4A90D9">
+      📋 适用条件
+    </text>
+    
+    <text x="20" y="62" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 任务有明确的分类类别
+    </text>
+    <text x="20" y="88" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 不同类别适合分别处理
+    </text>
+    <text x="20" y="114" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 分类可被准确执行
+    </text>
+  </g>
+  
+  <!-- 示例 -->
+  <g transform="translate(850, 450)">
+    <rect x="0" y="0" width="370" height="160" rx="12" fill="#FEF7F5" stroke="#D97757" stroke-width="1"/>
+    
+    <text x="20" y="32" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#D97757">
+      💡 典型场景
+    </text>
+    
+    <text x="20" y="62" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 客服工单自动分流
+    </text>
+    <text x="20" y="88" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 模型分流：简单→小模型
+    </text>
+    <text x="35" y="110" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
+      复杂/罕见→大模型
+    </text>
+    <text x="20" y="136" font-family="Arial, sans-serif" font-size="14" fill="#1A1A2E">
+      • 多语言检测与处理
+    </text>
+  </g>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    8 / 15
+  </text>
+  
+</svg>

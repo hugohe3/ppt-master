@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feOffset in="blur" dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- 顶部强调条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  
+  <!-- 页面标签 -->
+  <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
+    DEFINITIONS
+  </text>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    Agentic Systems = Workflows + Agents
+  </text>
+  
+  <!-- 副标题说明 -->
+  <text x="60" y="135" font-family="Arial, sans-serif" font-size="18" fill="#64748B">
+    两种核心架构模式，根据任务特性选择
+  </text>
+  
+  <!-- 中间分隔线 -->
+  <line x1="640" y1="180" x2="640" y2="620" stroke="#E2E8F0" stroke-width="2" stroke-dasharray="8,4"/>
+  
+  <!-- 左侧: Workflows -->
+  <g transform="translate(60, 180)">
+    <!-- 标题区域 -->
+    <rect x="0" y="0" width="540" height="80" rx="12" fill="#4A90D9" fill-opacity="0.1"/>
+    <circle cx="50" cy="40" r="28" fill="#4A90D9"/>
+    <!-- icon: git-branch -->
+  <g transform="translate(32.0, 22.0) scale(2.25)" fill="#FFFFFF">
+    <path d="M5 4.79198C5.88295 4.4062 6.5 3.52516 6.5 2.5C6.5 1.11929 5.38071 0 4 0C2.61929 0 1.5 1.11929 1.5 2.5C1.5 3.52516 2.11705 4.4062 3 4.79198V11.208C2.11705 11.5938 1.5 12.4748 1.5 13.5C1.5 14.8807 2.61929 16 4 16C5.38071 16 6.5 14.8807 6.5 13.5C6.5 12.4748 5.88295 11.5938 5 11.208V9H13V4.79198C13.883 4.4062 14.5 3.52516 14.5 2.5C14.5 1.11929 13.3807 0 12 0C10.6193 0 9.5 1.11929 9.5 2.5C9.5 3.52516 10.117 4.4062 11 4.79198V7H5V4.79198Z"/>
+  </g>
+    
+    <text x="95" y="35" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#4A90D9">
+      Workflows
+    </text>
+    <text x="95" y="58" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      预定义编排模式
+    </text>
+    
+    <!-- 特征列表 -->
+    <g font-family="Arial, sans-serif" transform="translate(0, 110)">
+      <g>
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#F8FAFC"/>
+        <circle cx="30" cy="30" r="12" fill="#4A90D9"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">预定义代码路径</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">LLM 和工具通过固定流程编排</text>
+      </g>
+      
+      <g transform="translate(0, 75)">
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#F8FAFC"/>
+        <circle cx="30" cy="30" r="12" fill="#4A90D9"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">可预测性强</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">执行路径明确，结果一致性高</text>
+      </g>
+      
+      <g transform="translate(0, 150)">
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#F8FAFC"/>
+        <circle cx="30" cy="30" r="12" fill="#4A90D9"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">适合明确定义的任务</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">任务边界清晰，步骤可枚举</text>
+      </g>
+    </g>
+    
+    <!-- 适用场景标签 -->
+    <rect x="0" y="350" width="540" height="70" rx="8" fill="#4A90D9" fill-opacity="0.05" stroke="#4A90D9" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="20" y="378" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">
+      适用场景
+    </text>
+    <text x="20" y="402" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      内容生成管道、分类路由、质量检查流程
+    </text>
+  </g>
+  
+  <!-- 右侧: Agents -->
+  <g transform="translate(680, 180)">
+    <!-- 标题区域 -->
+    <rect x="0" y="0" width="540" height="80" rx="12" fill="#D97757" fill-opacity="0.1"/>
+    <circle cx="50" cy="40" r="28" fill="#D97757"/>
+    <!-- icon: robot -->
+  <g transform="translate(32.0, 22.0) scale(2.25)" fill="#FFFFFF">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0V2H13L16 8.5L13 15H3L0 8.5L3 2H7V0H9ZM4.59794 11.7384L8 12.2618L11.4021 11.7384L11.0979 9.76163L8 10.2382L4.90206 9.76163L4.59794 11.7384ZM7 6.75C7 7.44036 6.44036 8 5.75 8C5.05964 8 4.5 7.44036 4.5 6.75C4.5 6.05964 5.05964 5.5 5.75 5.5C6.44036 5.5 7 6.05964 7 6.75ZM10.25 8C10.9404 8 11.5 7.44036 11.5 6.75C11.5 6.05964 10.9404 5.5 10.25 5.5C9.55964 5.5 9 6.05964 9 6.75C9 7.44036 9.55964 8 10.25 8Z"/>
+  </g>
+    
+    <text x="95" y="35" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#D97757">
+      Agents
+    </text>
+    <text x="95" y="58" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      动态自主决策模式
+    </text>
+    
+    <!-- 特征列表 -->
+    <g font-family="Arial, sans-serif" transform="translate(0, 110)">
+      <g>
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#FEF7F5"/>
+        <circle cx="30" cy="30" r="12" fill="#D97757"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">动态指导流程</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">LLM 自主决定执行步骤和工具使用</text>
+      </g>
+      
+      <g transform="translate(0, 75)">
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#FEF7F5"/>
+        <circle cx="30" cy="30" r="12" fill="#D97757"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">高度灵活</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">适应复杂多变的任务需求</text>
+      </g>
+      
+      <g transform="translate(0, 150)">
+        <rect x="0" y="0" width="540" height="60" rx="8" fill="#FEF7F5"/>
+        <circle cx="30" cy="30" r="12" fill="#D97757"/>
+        <text x="30" y="35" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+        <text x="55" y="26" font-size="17" font-weight="600" fill="#1A1A2E">模型驱动决策</text>
+        <text x="55" y="46" font-size="14" fill="#64748B">需要信任 LLM 的判断能力</text>
+      </g>
+    </g>
+    
+    <!-- 适用场景标签 -->
+    <rect x="0" y="350" width="540" height="70" rx="8" fill="#D97757" fill-opacity="0.05" stroke="#D97757" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="20" y="378" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#D97757">
+      适用场景
+    </text>
+    <text x="20" y="402" font-family="Arial, sans-serif" font-size="14" fill="#64748B">
+      开放式编程任务、复杂问题解决、自主探索
+    </text>
+  </g>
+  
+  <!-- VS 标识 -->
+  <circle cx="640" cy="400" r="30" fill="#1A1A2E"/>
+  <text x="640" y="408" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    VS
+  </text>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    4 / 15
+  </text>
+  
+</svg>
