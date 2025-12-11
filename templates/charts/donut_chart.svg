@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    环形图模板
+    用途: 占比和构成分析
+    适用场景: 市场份额、预算分配、结构分析
+    支持: 5个分块 (推荐3-6个)
+    -->
+    
+    <defs>
+        <!-- 扇区阴影 -->
+        <filter id="sectorShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>产品线营收占比</tspan>
+    </text>
+    
+    <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2025年第三季度 · 总收入 5.2亿元</tspan>
+    </text>
+    
+    <!-- 环形图中心 -->
+    <g id="donutChart" transform="translate(400, 410)">
+        <!-- 
+        圆心: (400, 410)
+        外半径: 180px
+        内半径: 100px
+        起始角度: -90° (12点方向)
+        
+        数据:
+        1. 企业服务: 35% (蓝色 #2196F3) - 角度: 126°
+        2. 消费电子: 28% (绿色 #4CAF50) - 角度: 100.8°
+        3. 云计算: 20% (橙色 #FF9800) - 角度: 72°
+        4. 物联网: 12% (紫色 #9C27B0) - 角度: 43.2°
+        5. 其他: 5% (灰色 #95A5A6) - 角度: 18°
+        -->
+        
+        <!-- 扇区1: 企业服务 35% (从-90°到36°) -->
+        <path d="M 0,-180 A 180,180 0 0,1 156.36,88.18 L 86.87,49.04 A 100,100 0 0,0 0,-100 Z" 
+              fill="#2196F3" filter="url(#sectorShadow)"/>
+        
+        <!-- 扇区2: 消费电子 28% (从36°到136.8°) -->
+        <path d="M 156.36,88.18 A 180,180 0 0,1 -123.43,130.14 L -68.57,72.30 A 100,100 0 0,0 86.87,49.04 Z" 
+              fill="#4CAF50" filter="url(#sectorShadow)"/>
+        
+        <!-- 扇区3: 云计算 20% (从136.8°到208.8°) -->
+        <path d="M -123.43,130.14 A 180,180 0 0,1 -175.36,-51.76 L -97.42,-28.76 A 100,100 0 0,0 -68.57,72.30 Z" 
+              fill="#FF9800" filter="url(#sectorShadow)"/>
+        
+        <!-- 扇区4: 物联网 12% (从208.8°到252°) -->
+        <path d="M -175.36,-51.76 A 180,180 0 0,1 -54.46,-171.54 L -30.26,-95.30 A 100,100 0 0,0 -97.42,-28.76 Z" 
+              fill="#9C27B0" filter="url(#sectorShadow)"/>
+        
+        <!-- 扇区5: 其他 5% (从252°到270°/360°-90°) -->
+        <path d="M -54.46,-171.54 A 180,180 0 0,1 0,-180 L 0,-100 A 100,100 0 0,0 -30.26,-95.30 Z" 
+              fill="#95A5A6" filter="url(#sectorShadow)"/>
+        
+        <!-- 中心白色圆 -->
+        <circle cx="0" cy="0" r="100" fill="#FFFFFF"/>
+        
+        <!-- 中心文字 -->
+        <text x="0" y="-15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="48" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+            <tspan>5.2亿</tspan>
+        </text>
+        <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#7F8C8D" text-anchor="middle">
+            <tspan>总收入</tspan>
+        </text>
+    </g>
+    
+    <!-- 百分比标签 -->
+    <!-- 标签1: 企业服务 35% -->
+    <g>
+        <line x1="530" y1="295" x2="620" y2="250" stroke="#2196F3" stroke-width="1.5"/>
+        <circle cx="530" cy="295" r="3" fill="#2196F3"/>
+        <text x="630" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2196F3">
+            <tspan>35%</tspan>
+        </text>
+    </g>
+    
+    <!-- 标签2: 消费电子 28% -->
+    <g>
+        <line x1="510" y1="500" x2="620" y2="540" stroke="#4CAF50" stroke-width="1.5"/>
+        <circle cx="510" cy="500" r="3" fill="#4CAF50"/>
+        <text x="630" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#4CAF50">
+            <tspan>28%</tspan>
+        </text>
+    </g>
+    
+    <!-- 标签3: 云计算 20% -->
+    <g>
+        <line x1="250" y1="480" x2="150" y2="520" stroke="#FF9800" stroke-width="1.5"/>
+        <circle cx="250" cy="480" r="3" fill="#FF9800"/>
+        <text x="140" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#FF9800" text-anchor="end">
+            <tspan>20%</tspan>
+        </text>
+    </g>
+    
+    <!-- 标签4: 物联网 12% -->
+    <g>
+        <line x1="310" y1="265" x2="200" y2="220" stroke="#9C27B0" stroke-width="1.5"/>
+        <circle cx="310" cy="265" r="3" fill="#9C27B0"/>
+        <text x="190" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#9C27B0" text-anchor="end">
+            <tspan>12%</tspan>
+        </text>
+    </g>
+    
+    <!-- 标签5: 其他 5% -->
+    <g>
+        <line x1="375" y1="240" x2="340" y2="180" stroke="#95A5A6" stroke-width="1.5"/>
+        <circle cx="375" cy="240" r="3" fill="#95A5A6"/>
+        <text x="330" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#95A5A6" text-anchor="end">
+            <tspan>5%</tspan>
+        </text>
+    </g>
+    
+    <!-- 右侧详细列表 -->
+    <g id="detailList">
+        <!-- 列表标题 -->
+        <text x="750" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="22" font-weight="600" fill="#2C3E50">
+            <tspan>详细数据</tspan>
+        </text>
+        
+        <!-- 项目1: 企业服务 -->
+        <rect x="750" y="250" width="8" height="40" rx="4" fill="#2196F3"/>
+        <text x="775" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>企业服务</tspan>
+        </text>
+        <text x="1100" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>¥1.82亿</tspan>
+        </text>
+        <text x="1180" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#2196F3" text-anchor="end">
+            <tspan>35%</tspan>
+        </text>
+        
+        <!-- 项目2: 消费电子 -->
+        <rect x="750" y="310" width="8" height="40" rx="4" fill="#4CAF50"/>
+        <text x="775" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>消费电子</tspan>
+        </text>
+        <text x="1100" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>¥1.46亿</tspan>
+        </text>
+        <text x="1180" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#4CAF50" text-anchor="end">
+            <tspan>28%</tspan>
+        </text>
+        
+        <!-- 项目3: 云计算 -->
+        <rect x="750" y="370" width="8" height="40" rx="4" fill="#FF9800"/>
+        <text x="775" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>云计算</tspan>
+        </text>
+        <text x="1100" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>¥1.04亿</tspan>
+        </text>
+        <text x="1180" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#FF9800" text-anchor="end">
+            <tspan>20%</tspan>
+        </text>
+        
+        <!-- 项目4: 物联网 -->
+        <rect x="750" y="430" width="8" height="40" rx="4" fill="#9C27B0"/>
+        <text x="775" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>物联网</tspan>
+        </text>
+        <text x="1100" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>¥0.62亿</tspan>
+        </text>
+        <text x="1180" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#9C27B0" text-anchor="end">
+            <tspan>12%</tspan>
+        </text>
+        
+        <!-- 项目5: 其他 -->
+        <rect x="750" y="490" width="8" height="40" rx="4" fill="#95A5A6"/>
+        <text x="775" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>其他</tspan>
+        </text>
+        <text x="1100" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>¥0.26亿</tspan>
+        </text>
+        <text x="1180" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" fill="#95A5A6" text-anchor="end">
+            <tspan>5%</tspan>
+        </text>
+        
+        <!-- 分隔线 -->
+        <line x1="750" y1="550" x2="1180" y2="550" stroke="#E0E0E0" stroke-width="2"/>
+        
+        <!-- 合计 -->
+        <text x="775" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50">
+            <tspan>合计</tspan>
+        </text>
+        <text x="1100" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="bold" fill="#2C3E50" text-anchor="end">
+            <tspan>¥5.20亿</tspan>
+        </text>
+        <text x="1180" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>100%</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 财务部门季度报告</tspan>
+    </text>
+</svg>
+

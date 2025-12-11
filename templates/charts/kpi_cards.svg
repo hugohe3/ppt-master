@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    KPI 卡片模板 - 2×2 布局（CRAP 优化版）
+    用途: 展示关键业绩指标
+    适用场景: 财务指标、业务数据看板、增长率展示
+    优化: 强化对齐、对比、重复、亲密性原则
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 - 更精致柔和 -->
+        <filter id="cardShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.15"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- 渐变背景 - 增加层次感 -->
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ECF0F1;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)"/>
+    
+    <!-- 标题区域 - 增强对比 -->
+    <text x="60" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="36" font-weight="700" fill="#1A252F" letter-spacing="-0.5">
+        <tspan>关键业绩指标</tspan>
+    </text>
+    <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D">
+        <tspan>Key Performance Indicators</tspan>
+    </text>
+    
+    <!-- KPI 卡片布局 2×2 - 统一间距 40px -->
+    
+    <!-- 卡片 1 - 左上 (收入增长) -->
+    <g filter="url(#cardShadow)">
+        <!-- 卡片背景 - 更圆润的圆角 -->
+        <rect x="60" y="150" width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E8EAED" stroke-width="1"/>
+        
+        <!-- 左侧色块指示器 - 更粗更醒目 -->
+        <rect x="76" y="170" width="8" height="70" rx="4" fill="#2196F3"/>
+        
+        <!-- 指标名称 - 统一左边距 100px -->
+        <text x="100" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="500" fill="#5F6368" letter-spacing="0.2">
+            <tspan>总收入</tspan>
+        </text>
+        <text x="100" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#9AA0A6">
+            <tspan>Total Revenue</tspan>
+        </text>
+        
+        <!-- 主数值 - 增强视觉权重 -->
+        <text x="100" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="64" font-weight="700" fill="#1A252F" letter-spacing="-1">
+            <tspan>¥2.45</tspan>
+        </text>
+        <text x="310" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="500" fill="#5F6368">
+            <tspan>亿</tspan>
+        </text>
+        
+        <!-- 趋势指示 - 优化间距和对齐 -->
+        <circle cx="110" cy="340" r="18" fill="#E8F5E9"/>
+        <polygon points="110,333 116,347 104,347" fill="#27AE60"/>
+        <text x="140" y="349" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="700" fill="#27AE60">
+            <tspan>+18.5%</tspan>
+        </text>
+        
+        <!-- 同比说明 - 更紧凑的分组 -->
+        <text x="245" y="349" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" fill="#9AA0A6">
+            <tspan>较去年同期</tspan>
+        </text>
+    </g>
+    
+    <!-- 卡片 2 - 右上 (用户数量) -->
+    <g filter="url(#cardShadow)">
+        <!-- 卡片背景 -->
+        <rect x="660" y="150" width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E8EAED" stroke-width="1"/>
+        
+        <!-- 左侧色块指示器 -->
+        <rect x="676" y="170" width="8" height="70" rx="4" fill="#4CAF50"/>
+        
+        <!-- 指标名称 -->
+        <text x="700" y="190" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="500" fill="#5F6368" letter-spacing="0.2">
+            <tspan>活跃用户</tspan>
+        </text>
+        <text x="700" y="213" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#9AA0A6">
+            <tspan>Active Users</tspan>
+        </text>
+        
+        <!-- 主数值 -->
+        <text x="700" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="64" font-weight="700" fill="#1A252F" letter-spacing="-1">
+            <tspan>128.3</tspan>
+        </text>
+        <text x="930" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="500" fill="#5F6368">
+            <tspan>万</tspan>
+        </text>
+        
+        <!-- 趋势指示 -->
+        <circle cx="710" cy="340" r="18" fill="#E8F5E9"/>
+        <polygon points="710,333 716,347 704,347" fill="#27AE60"/>
+        <text x="740" y="349" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="700" fill="#27AE60">
+            <tspan>+12.3%</tspan>
+        </text>
+        
+        <!-- 同比说明 -->
+        <text x="845" y="349" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" fill="#9AA0A6">
+            <tspan>月同比增长</tspan>
+        </text>
+    </g>
+    
+    <!-- 卡片 3 - 左下 (客单价) -->
+    <g filter="url(#cardShadow)">
+        <!-- 卡片背景 -->
+        <rect x="60" y="440" width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E8EAED" stroke-width="1"/>
+        
+        <!-- 左侧色块指示器 -->
+        <rect x="76" y="460" width="8" height="70" rx="4" fill="#FF9800"/>
+        
+        <!-- 指标名称 -->
+        <text x="100" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="500" fill="#5F6368" letter-spacing="0.2">
+            <tspan>平均客单价</tspan>
+        </text>
+        <text x="100" y="503" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#9AA0A6">
+            <tspan>Avg Order Value</tspan>
+        </text>
+        
+        <!-- 主数值 -->
+        <text x="100" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="64" font-weight="700" fill="#1A252F" letter-spacing="-1">
+            <tspan>¥432</tspan>
+        </text>
+        
+        <!-- 趋势指示 - 下降趋势 -->
+        <circle cx="110" cy="630" r="18" fill="#FFEBEE"/>
+        <polygon points="110,643 116,629 104,629" fill="#E74C3C"/>
+        <text x="140" y="639" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="700" fill="#E74C3C">
+            <tspan>-3.2%</tspan>
+        </text>
+        
+        <!-- 同比说明 -->
+        <text x="235" y="639" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" fill="#9AA0A6">
+            <tspan>环比上月</tspan>
+        </text>
+    </g>
+    
+    <!-- 卡片 4 - 右下 (转化率) -->
+    <g filter="url(#cardShadow)">
+        <!-- 卡片背景 -->
+        <rect x="660" y="440" width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E8EAED" stroke-width="1"/>
+        
+        <!-- 左侧色块指示器 -->
+        <rect x="676" y="460" width="8" height="70" rx="4" fill="#9C27B0"/>
+        
+        <!-- 指标名称 -->
+        <text x="700" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="500" fill="#5F6368" letter-spacing="0.2">
+            <tspan>转化率</tspan>
+        </text>
+        <text x="700" y="503" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#9AA0A6">
+            <tspan>Conversion Rate</tspan>
+        </text>
+        
+        <!-- 主数值 -->
+        <text x="700" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="64" font-weight="700" fill="#1A252F" letter-spacing="-1">
+            <tspan>8.7%</tspan>
+        </text>
+        
+        <!-- 趋势指示 -->
+        <circle cx="710" cy="630" r="18" fill="#E8F5E9"/>
+        <polygon points="710,623 716,637 704,637" fill="#27AE60"/>
+        <text x="740" y="639" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="700" fill="#27AE60">
+            <tspan>+0.8%</tspan>
+        </text>
+        
+        <!-- 同比说明 -->
+        <text x="835" y="639" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" fill="#9AA0A6">
+            <tspan>百分点提升</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源标注 - 优化样式 -->
+    <text x="1160" y="705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#9AA0A6" text-anchor="end">
+        <tspan>数据截至 2025年11月 | Data as of Nov 2025</tspan>
+    </text>
+</svg>
+

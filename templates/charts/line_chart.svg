@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    折线图模板
+    用途: 趋势和变化展示
+    适用场景: 时间序列分析、增长趋势、多指标对比
+    支持: 双折线对比
+    -->
+    
+    <defs>
+        <!-- 线条渐变 -->
+        <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#42A5F5;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="lineGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#66BB6A;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 区域填充渐变 -->
+        <linearGradient id="areaGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.2" />
+            <stop offset="100%" style="stop-color:#2196F3;stop-opacity:0.05" />
+        </linearGradient>
+        
+        <linearGradient id="areaGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.2" />
+            <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0.05" />
+        </linearGradient>
+        
+        <!-- 数据点阴影 -->
+        <filter id="dotShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.4"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>营收与利润趋势</tspan>
+    </text>
+    
+    <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2024年 1月 - 12月 · 单位：百万元</tspan>
+    </text>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- 网格线 -->
+        <line x1="140" y1="550" x2="1160" y2="550" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="470" x2="1160" y2="470" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="390" x2="1160" y2="390" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="310" x2="1160" y2="310" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="230" x2="1160" y2="230" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="150" x2="1160" y2="150" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- Y轴刻度标签 -->
+        <text x="125" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>0</tspan>
+        </text>
+        <text x="125" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>20</tspan>
+        </text>
+        <text x="125" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>40</tspan>
+        </text>
+        <text x="125" y="315" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>60</tspan>
+        </text>
+        <text x="125" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>80</tspan>
+        </text>
+        <text x="125" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>100</tspan>
+        </text>
+        
+        <!-- 坐标轴 -->
+        <line x1="140" y1="150" x2="140" y2="550" stroke="#95A5A6" stroke-width="2"/>
+        <line x1="140" y1="550" x2="1160" y2="550" stroke="#95A5A6" stroke-width="2"/>
+        
+        <!-- X轴月份标签 (12个月, 间距85px) -->
+        <text x="225" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>1月</tspan>
+        </text>
+        <text x="310" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>2月</tspan>
+        </text>
+        <text x="395" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>3月</tspan>
+        </text>
+        <text x="480" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>4月</tspan>
+        </text>
+        <text x="565" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>5月</tspan>
+        </text>
+        <text x="650" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>6月</tspan>
+        </text>
+        <text x="735" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>7月</tspan>
+        </text>
+        <text x="820" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>8月</tspan>
+        </text>
+        <text x="905" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>9月</tspan>
+        </text>
+        <text x="990" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>10月</tspan>
+        </text>
+        <text x="1075" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>11月</tspan>
+        </text>
+        <text x="1160" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle">
+            <tspan>12月</tspan>
+        </text>
+        
+        <!-- 折线1区域填充 (营收) - 数据点: 32,38,45,52,58,62,68,75,78,82,88,92 -->
+        <path d="M 225,422 L 310,398 L 395,370 L 480,342 L 565,318 L 650,302 L 735,278 L 820,250 L 905,238 L 990,222 L 1075,198 L 1160,182 L 1160,550 L 225,550 Z" 
+              fill="url(#areaGrad1)" opacity="0.3"/>
+        
+        <!-- 折线1 (营收) -->
+        <polyline points="225,422 310,398 395,370 480,342 565,318 650,302 735,278 820,250 905,238 990,222 1075,198 1160,182" 
+                  fill="none" stroke="url(#lineGrad1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <!-- 折线1数据点 -->
+        <circle cx="225" cy="422" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="310" cy="398" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="395" cy="370" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="480" cy="342" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="565" cy="318" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="650" cy="302" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="735" cy="278" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="820" cy="250" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="905" cy="238" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="990" cy="222" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="1075" cy="198" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        <circle cx="1160" cy="182" r="5" fill="#2196F3" filter="url(#dotShadow)"/>
+        
+        <!-- 折线2区域填充 (利润) - 数据点: 12,15,18,22,25,28,32,36,38,42,48,52 -->
+        <path d="M 225,502 L 310,490 L 395,478 L 480,462 L 565,450 L 650,438 L 735,422 L 820,406 L 905,398 L 990,382 L 1075,358 L 1160,342 L 1160,550 L 225,550 Z" 
+              fill="url(#areaGrad2)" opacity="0.3"/>
+        
+        <!-- 折线2 (利润) -->
+        <polyline points="225,502 310,490 395,478 480,462 565,450 650,438 735,422 820,406 905,398 990,382 1075,358 1160,342" 
+                  fill="none" stroke="url(#lineGrad2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <!-- 折线2数据点 -->
+        <circle cx="225" cy="502" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="310" cy="490" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="395" cy="478" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="480" cy="462" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="565" cy="450" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="650" cy="438" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="735" cy="422" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="820" cy="406" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="905" cy="398" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="990" cy="382" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="1075" cy="358" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+        <circle cx="1160" cy="342" r="5" fill="#4CAF50" filter="url(#dotShadow)"/>
+    </g>
+    
+    <!-- 图例 -->
+    <g id="legend">
+        <line x1="920" y1="630" x2="950" y2="630" stroke="#2196F3" stroke-width="3"/>
+        <circle cx="935" cy="630" r="5" fill="#2196F3"/>
+        <text x="960" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>营收</tspan>
+        </text>
+        
+        <line x1="1040" y1="630" x2="1070" y2="630" stroke="#4CAF50" stroke-width="3"/>
+        <circle cx="1055" cy="630" r="5" fill="#4CAF50"/>
+        <text x="1080" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>净利润</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 财务部门月度报告</tspan>
+    </text>
+</svg>
+

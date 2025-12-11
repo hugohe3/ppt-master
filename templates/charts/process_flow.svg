@@ -1,0 +1,333 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    流程图模板 - CRAP 优化版
+    用途: 业务流程、决策步骤、操作流程展示
+    适用场景: 业务流程图、操作指南、决策树
+    优化重点:
+      - 对齐: 步骤卡片网格化布局
+      - 对比: 不同类型节点视觉区分
+      - 重复: 统一的卡片样式和连接线
+      - 亲密性: 相关步骤分组，流程线清晰
+    -->
+
+    <defs>
+        <!-- 整体背景渐变 -->
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FAFBFC;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F5F6F8;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- 主流程卡片渐变 -->
+        <linearGradient id="cardGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- 决策节点渐变 -->
+        <linearGradient id="decisionGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- 结束节点渐变 -->
+        <linearGradient id="endGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- 箭头标记 -->
+        <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+            <path d="M 0,0 L 10,5 L 0,10 Z" fill="#1976D2" />
+        </marker>
+
+        <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+            <path d="M 0,0 L 10,5 L 0,10 Z" fill="#F57C00" />
+        </marker>
+
+        <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+            <path d="M 0,0 L 10,5 L 0,10 Z" fill="#388E3C" />
+        </marker>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 标题区域 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36"
+        font-weight="700" fill="#1A252F" letter-spacing="-0.5">
+        <tspan>业务流程图</tspan>
+    </text>
+    <text x="60" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+        fill="#9AA0A6">
+        <tspan>Business Process Flow · 标准化操作流程</tspan>
+    </text>
+
+    <!-- 流程主区域 -->
+    <g id="processFlow">
+        <!-- 第一行：开始 → 步骤1 → 决策 -->
+
+        <!-- 开始节点 -->
+        <g id="start">
+            <rect x="60" y="160" width="180" height="80" rx="40" fill="url(#cardGradient)" filter="url(#cardShadow)" />
+            <text x="150" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18"
+                font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                <tspan>开始</tspan>
+            </text>
+            <text x="150" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Start</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 开始 → 步骤1 -->
+        <line x1="240" y1="200" x2="300" y2="200" stroke="#1976D2" stroke-width="3" marker-end="url(#arrowBlue)" />
+
+        <!-- 步骤1：需求收集 -->
+        <g id="step1">
+            <rect x="300" y="160" width="200" height="80" rx="8" fill="url(#cardGradient)" filter="url(#cardShadow)" />
+            <text x="400" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17"
+                font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                <tspan>需求收集</tspan>
+            </text>
+            <text x="400" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Requirement Gathering</tspan>
+            </text>
+            <text x="400" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+                <tspan>1-2 天</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 步骤1 → 决策 -->
+        <line x1="500" y1="200" x2="560" y2="200" stroke="#1976D2" stroke-width="3" marker-end="url(#arrowBlue)" />
+
+        <!-- 决策节点：是否可行 -->
+        <g id="decision1">
+            <path d="M 660,160 L 740,200 L 660,240 L 580,200 Z" fill="url(#decisionGradient)"
+                filter="url(#cardShadow)" />
+            <text x="660" y="197" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+                font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                <tspan>是否可行？</tspan>
+            </text>
+            <text x="660" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Feasible?</tspan>
+            </text>
+        </g>
+
+        <!-- 决策箭头: 是 → 步骤2 -->
+        <line x1="740" y1="200" x2="800" y2="200" stroke="#1976D2" stroke-width="3" marker-end="url(#arrowBlue)" />
+        <text x="740" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#388E3C">
+            <tspan>是 Yes</tspan>
+        </text>
+
+        <!-- 决策箭头: 否 → 重新评估 (向下) -->
+        <path d="M 660,240 L 660,280" stroke="#F57C00" stroke-width="3" marker-end="url(#arrowOrange)" />
+        <text x="680" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#E74C3C">
+            <tspan>否 No</tspan>
+        </text>
+
+        <!-- 第二行：步骤2 → 步骤3 → 步骤4 -->
+
+        <!-- 步骤2：方案设计 -->
+        <g id="step2">
+            <rect x="800" y="160" width="200" height="80" rx="8" fill="url(#cardGradient)" filter="url(#cardShadow)" />
+            <text x="900" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17"
+                font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                <tspan>方案设计</tspan>
+            </text>
+            <text x="900" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Solution Design</tspan>
+            </text>
+            <text x="900" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+                <tspan>3-5 天</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 步骤2 → 下方 -->
+        <path d="M 900,240 L 900,320" stroke="#1976D2" stroke-width="3" marker-end="url(#arrowBlue)" />
+
+        <!-- 重新评估节点 (第二行左侧) -->
+        <g id="reevaluate">
+            <rect x="560" y="280" width="200" height="80" rx="8" fill="#FFFFFF" stroke="#F57C00" stroke-width="3"
+                filter="url(#cardShadow)" />
+            <text x="660" y="312" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17"
+                font-weight="700" fill="#F57C00" text-anchor="middle">
+                <tspan>重新评估</tspan>
+            </text>
+            <text x="660" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#F57C00" text-anchor="middle">
+                <tspan>Re-evaluation</tspan>
+            </text>
+            <text x="660" y="347" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#9AA0A6" text-anchor="middle">
+                <tspan>调整需求</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 重新评估 → 步骤1 (回环) - 从左侧折线上升 -->
+        <path d="M 560,320 L 280,320 L 280,240 L 300,240" stroke="#F57C00" stroke-width="3" stroke-dasharray="5,5"
+            marker-end="url(#arrowOrange)" fill="none" />
+        <text x="255" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+            font-weight="500" fill="#F57C00">
+            <tspan>重新收集</tspan>
+        </text>
+
+        <!-- 第三行：步骤3 → 步骤4 → 结束 -->
+
+        <!-- 步骤3：开发实施 -->
+        <g id="step3">
+            <rect x="800" y="320" width="200" height="80" rx="8" fill="url(#cardGradient)" filter="url(#cardShadow)" />
+            <text x="900" y="352" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17"
+                font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                <tspan>开发实施</tspan>
+            </text>
+            <text x="900" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Development</tspan>
+            </text>
+            <text x="900" y="387" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+                <tspan>7-14 天</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 步骤3 → 步骤4 -->
+        <path d="M 900,400 L 900,480" stroke="#1976D2" stroke-width="3" marker-end="url(#arrowBlue)" />
+
+        <!-- 步骤4：测试验收 -->
+        <g id="step4">
+            <rect x="800" y="480" width="200" height="80" rx="8" fill="url(#cardGradient)" filter="url(#cardShadow)" />
+            <text x="900" y="512" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17"
+                font-weight="700" fill="#FFFFFF" text-anchor="middle">
+                <tspan>测试验收</tspan>
+            </text>
+            <text x="900" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Testing &amp; Acceptance</tspan>
+            </text>
+            <text x="900" y="547" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12"
+                fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+                <tspan>2-3 天</tspan>
+            </text>
+        </g>
+
+        <!-- 箭头: 步骤4 → 结束 -->
+        <line x1="1000" y1="520" x2="1060" y2="520" stroke="#388E3C" stroke-width="3" marker-end="url(#arrowGreen)" />
+
+        <!-- 结束节点 -->
+        <g id="end">
+            <rect x="1060" y="480" width="180" height="80" rx="40" fill="url(#endGradient)" filter="url(#cardShadow)" />
+            <text x="1150" y="527" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                <tspan>完成</tspan>
+            </text>
+            <text x="1150" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                font-size="13" fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+                <tspan>Complete</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- 图例说明 -->
+    <g id="legend">
+        <text x="60" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16"
+            font-weight="700" fill="#1A252F">
+            <tspan>图例说明</tspan>
+        </text>
+
+        <!-- 流程步骤 -->
+        <rect x="60" y="500" width="80" height="40" rx="6" fill="url(#cardGradient)" />
+        <text x="150" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+            font-weight="500" fill="#5F6368">
+            <tspan>流程步骤</tspan>
+        </text>
+
+        <!-- 决策节点 -->
+        <path d="M 100,570 L 130,590 L 100,610 L 70,590 Z" fill="url(#decisionGradient)" />
+        <text x="150" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+            font-weight="500" fill="#5F6368">
+            <tspan>决策节点</tspan>
+        </text>
+
+        <!-- 异常处理 -->
+        <rect x="60" y="630" width="80" height="40" rx="6" fill="#FFFFFF" stroke="#F57C00" stroke-width="2" />
+        <text x="150" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14"
+            font-weight="500" fill="#5F6368">
+            <tspan>异常处理</tspan>
+        </text>
+    </g>
+
+    <!-- 时间统计 -->
+    <g id="timeInfo">
+        <rect x="280" y="500" width="200" height="170" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"
+            opacity="0.95" />
+
+        <text x="380" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15"
+            font-weight="700" fill="#1A252F" text-anchor="middle">
+            <tspan>流程时间统计</tspan>
+        </text>
+
+        <line x1="295" y1="545" x2="465" y2="545" stroke="#E0E0E0" stroke-width="1" />
+
+        <text x="295" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            fill="#5F6368">
+            <tspan>总周期：</tspan>
+        </text>
+        <text x="440" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#2196F3" text-anchor="end">
+            <tspan>13-24 天</tspan>
+        </text>
+
+        <text x="295" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            fill="#5F6368">
+            <tspan>关键步骤：</tspan>
+        </text>
+        <text x="440" y="595" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#2196F3" text-anchor="end">
+            <tspan>4 个</tspan>
+        </text>
+
+        <text x="295" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            fill="#5F6368">
+            <tspan>决策节点：</tspan>
+        </text>
+        <text x="440" y="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#FF9800" text-anchor="end">
+            <tspan>1 个</tspan>
+        </text>
+
+        <text x="295" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            fill="#5F6368">
+            <tspan>风险等级：</tspan>
+        </text>
+        <text x="440" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+            font-weight="600" fill="#388E3C" text-anchor="end">
+            <tspan>低</tspan>
+        </text>
+    </g>
+
+    <!-- 数据来源 -->
+    <text x="60" y="705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13"
+        fill="#9AA0A6">
+        <tspan>流程版本: v2.1 | 最后更新: 2025-11-09 | Process Management System</tspan>
+    </text>
+</svg>

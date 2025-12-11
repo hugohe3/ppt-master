@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图表模板预览 - PPT Master</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .chart-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+
+        .chart-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .chart-description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .chart-preview {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            position: relative;
+            background: #f5f5f5;
+        }
+
+        .chart-preview object {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-filename {
+            font-size: 14px;
+            color: #5d6d7e;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .view-button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .view-button:hover {
+            background: #5568d3;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .info-box h2 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .info-box p {
+            color: #5d6d7e;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 25px;
+            color: #5d6d7e;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .info-box code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .chart-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 图表模板库</h1>
+            <p class="subtitle">PPT Master 标准化 SVG 图表模板</p>
+        </header>
+
+        <div class="info-box">
+            <h2>💡 使用说明</h2>
+            <p>这些模板旨在提高 SVG 图表生成的质量和一致性，所有模板遵循以下规范：</p>
+            <ul>
+                <li>禁止使用 <code>&lt;foreignObject&gt;</code>，文本换行使用 <code>&lt;tspan&gt;</code></li>
+                <li>使用系统 UI 字体栈，确保跨平台一致性</li>
+                <li>配色符合通用灵活或高端咨询风格</li>
+                <li>遵循 CRAP 设计原则（对齐、对比、重复、亲密性）</li>
+                <li>默认画布：16:9 (1280×720)，其他格式需按比例调整</li>
+            </ul>
+            <p style="margin-top: 15px;">详细文档请参阅 <code>README.md</code></p>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">KPI 卡片</div>
+                    <div class="chart-description">关键业绩指标展示 · 2×2 布局</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="kpi_cards.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">kpi_cards.svg</span>
+                    <a href="kpi_cards.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">柱状图</div>
+                    <div class="chart-description">类别数据对比 · 支持 3-8 个柱子</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="bar_chart.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">bar_chart.svg</span>
+                    <a href="bar_chart.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">折线图</div>
+                    <div class="chart-description">趋势分析 · 支持多条折线对比</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="line_chart.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">line_chart.svg</span>
+                    <a href="line_chart.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">环形图</div>
+                    <div class="chart-description">占比分析 · 支持 3-6 个分块</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="donut_chart.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">donut_chart.svg</span>
+                    <a href="donut_chart.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">漏斗图</div>
+                    <div class="chart-description">转化流程分析 · 支持 3-5 个阶段</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="funnel_chart.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">funnel_chart.svg</span>
+                    <a href="funnel_chart.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">矩阵图 (2×2)</div>
+                    <div class="chart-description">四象限分析 · 如波士顿矩阵</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="matrix_2x2.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">matrix_2x2.svg</span>
+                    <a href="matrix_2x2.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">时间轴</div>
+                    <div class="chart-description">时序事件展示 · 支持 3-8 个节点</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="timeline.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">timeline.svg</span>
+                    <a href="timeline.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">流程图</div>
+                    <div class="chart-description">业务流程展示 · 支持决策节点和回环</div>
+                </div>
+                <div class="chart-preview">
+                    <object type="image/svg+xml" data="process_flow.svg"></object>
+                </div>
+                <div class="chart-footer">
+                    <span class="chart-filename">process_flow.svg</span>
+                    <a href="process_flow.svg" class="view-button" target="_blank">查看源码</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PPT Master · 图表模板库 v1.0</p>
+            <p>最后更新：2025-11-09</p>
+        </footer>
+    </div>
+</body>
+</html>
+
