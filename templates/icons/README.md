@@ -2,6 +2,8 @@
 
 本目录提供 **640+ 个高质量 SVG 图标**，可直接嵌入到 PPT Master 生成的 SVG 文件中。
 
+> 📦 **图标来源**：[SVG Repo](https://www.svgrepo.com/) - 免费开源 SVG 图标库
+
 - **完整索引**：[FULL_INDEX.md](./FULL_INDEX.md)（按需查阅）
 - **JSON 索引**：[icons_index.json](./icons_index.json)（程序化查询）
 

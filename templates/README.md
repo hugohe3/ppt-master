@@ -20,6 +20,6 @@
 
 ## 🎨 图标库
 
-`icons/` 目录包含 640+ 矢量图标，来源于 [Lucide Icons](https://lucide.dev/)。
+`icons/` 目录包含 640+ 矢量图标，来源于 [SVG Repo](https://www.svgrepo.com/)。
 
 [查看图标库说明](./icons/README.md)
