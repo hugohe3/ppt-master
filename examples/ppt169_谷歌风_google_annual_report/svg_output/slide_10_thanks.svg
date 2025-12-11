@@ -1,0 +1,126 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Definitions -->
+    <defs>
+        <!-- Dynamic gradient background -->
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E8F5E9;stop-opacity:0.5" />
+        </linearGradient>
+
+        <!-- Card shadow -->
+        <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+            <feOffset dx="0" dy="5" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <!-- Text gradient -->
+        <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1A73E8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- Decorative Google brand elements in corners with varied sizes -->
+    <circle cx="100" cy="100" r="60" fill="#4285F4" opacity="0.12" />
+    <circle cx="1180" cy="100" r="45" fill="#EA4335" opacity="0.12" />
+    <circle cx="100" cy="620" r="50" fill="#FBBC04" opacity="0.12" />
+    <circle cx="1180" cy="620" r="55" fill="#34A853" opacity="0.12" />
+
+    <!-- Central content card -->
+    <g filter="url(#cardShadow)">
+        <rect x="240" y="140" width="800" height="440" rx="24" fill="#FFFFFF" />
+    </g>
+
+    <!-- Thank You Title with gradient -->
+    <text x="640" y="240"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="64"
+        font-weight="700" fill="url(#textGradient)" text-anchor="middle">
+        Thank You!
+    </text>
+
+    <!-- Subtitle -->
+    <text x="640" y="290"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20"
+        font-weight="400" fill="#5F6368" text-anchor="middle">
+        For Your Time and Support
+    </text>
+
+    <!-- Decorative color line -->
+    <g transform="translate(640, 320)">
+        <line x1="-120" y1="0" x2="-40" y2="0" stroke="#4285F4" stroke-width="4" stroke-linecap="round" />
+        <line x1="-30" y1="0" x2="30" y2="0" stroke="#EA4335" stroke-width="4" stroke-linecap="round" />
+        <line x1="40" y1="0" x2="120" y2="0" stroke="#34A853" stroke-width="4" stroke-linecap="round" />
+    </g>
+
+    <!-- Appreciation section with icons -->
+    <g transform="translate(300, 370)">
+        <!-- Manager -->
+        <circle cx="20" cy="0" r="10" fill="#4285F4" />
+        <text x="45" y="5"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="18" font-weight="600" fill="#1A237E">
+            Manager Sarah
+        </text>
+        <text x="45" y="28"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="15" font-weight="400" fill="#5F6368">
+            For invaluable guidance and unwavering support
+        </text>
+    </g>
+
+    <g transform="translate(300, 450)">
+        <!-- Tech Lead -->
+        <circle cx="20" cy="0" r="10" fill="#34A853" />
+        <text x="45" y="5"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="18" font-weight="600" fill="#1A237E">
+            Tech Lead Kevin
+        </text>
+        <text x="45" y="28"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="15" font-weight="400" fill="#5F6368">
+            For technical mentorship and engineering excellence
+        </text>
+    </g>
+
+    <g transform="translate(300, 530)">
+        <!-- Team -->
+        <circle cx="20" cy="0" r="10" fill="#FBBC04" />
+        <text x="45" y="5"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="18" font-weight="600" fill="#1A237E">
+            Amazing Teammates
+        </text>
+        <text x="45" y="28"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="15" font-weight="400" fill="#5F6368">
+            For collaboration, trust, and camaraderie
+        </text>
+    </g>
+
+    <!-- Bottom tagline -->
+    <text x="640" y="650"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18"
+        font-weight="500" fill="#5F6368" text-anchor="middle">
+        Looking forward to an even more impactful 2026!
+    </text>
+
+    <!-- Small Google brand dots -->
+    <g transform="translate(640, 680)">
+        <circle cx="-60" cy="0" r="6" fill="#4285F4" />
+        <circle cx="-30" cy="0" r="6" fill="#EA4335" />
+        <circle cx="0" cy="0" r="6" fill="#FBBC04" />
+        <circle cx="30" cy="0" r="6" fill="#34A853" />
+        <circle cx="60" cy="0" r="6" fill="#4285F4" />
+    </g>
+</svg>

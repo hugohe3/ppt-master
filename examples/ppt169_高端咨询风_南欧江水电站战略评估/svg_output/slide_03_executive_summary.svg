@@ -1,0 +1,114 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">执行摘要</text>
+  <text x="1240" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7ED4E6" text-anchor="end">EXECUTIVE SUMMARY</text>
+  
+  <!-- KPI卡片区域 -->
+  <!-- KPI 1: 装机容量 -->
+  <g transform="translate(40, 110)">
+    <rect width="280" height="120" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#1A6B7C"/>
+    <text x="24" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">总装机容量</text>
+    <text x="24" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#1A6B7C">1,272</text>
+    <text x="160" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#4A5568">MW</text>
+    <text x="24" y="105" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#718096">七级梯级水电站</text>
+  </g>
+  
+  <!-- KPI 2: 投资额 -->
+  <g transform="translate(340, 110)">
+    <rect width="280" height="120" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#C9A227"/>
+    <text x="24" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">总投资额</text>
+    <text x="24" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#C9A227">27.33</text>
+    <text x="155" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#4A5568">亿美元</text>
+    <text x="24" y="105" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#718096">中国政策性银行融资</text>
+  </g>
+  
+  <!-- KPI 3: 仲裁索赔 -->
+  <g transform="translate(640, 110)">
+    <rect width="280" height="120" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#B8352B"/>
+    <text x="24" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#B8352B" font-weight="500">⚠️ 仲裁索赔额</text>
+    <text x="24" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#B8352B">5.55</text>
+    <text x="125" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#4A5568">亿美元</text>
+    <text x="24" y="105" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#B8352B">占老挝GDP约4%</text>
+  </g>
+  
+  <!-- KPI 4: 欠款时间 -->
+  <g transform="translate(940, 110)">
+    <rect width="280" height="120" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#D97706"/>
+    <text x="24" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">欠款时间跨度</text>
+    <text x="24" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#D97706">4</text>
+    <text x="60" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#4A5568">年</text>
+    <text x="24" y="105" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#718096">2020年1月至2024年12月</text>
+  </g>
+  
+  <!-- 分隔线 -->
+  <line x1="40" y1="260" x2="1240" y2="260" stroke="#D4DEE4" stroke-width="1"/>
+  
+  <!-- 核心结论区 -->
+  <text x="40" y="300" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#0D2B3E">核心结论</text>
+  
+  <!-- 结论卡片1 -->
+  <g transform="translate(40, 320)">
+    <rect width="380" height="160" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <circle cx="30" cy="30" r="18" fill="#1A6B7C"/>
+    <text x="30" y="36" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+    <text x="60" y="36" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D2B3E">仲裁即债务重组的序曲</text>
+    <text x="20" y="70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A5568">
+      <tspan x="20" dy="0">5.55亿美元索赔并非终局对抗，而是</tspan>
+      <tspan x="20" dy="22">迫使老挝回到谈判桌的筹码。鉴于老</tspan>
+      <tspan x="20" dy="22">挝财政枯竭，最终方案极可能是</tspan>
+      <tspan x="20" dy="22" font-weight="600" fill="#B8352B">债务重组 + 能源资产控制权让渡</tspan>
+    </text>
+  </g>
+  
+  <!-- 结论卡片2 -->
+  <g transform="translate(440, 320)">
+    <rect width="380" height="160" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <circle cx="30" cy="30" r="18" fill="#C9A227"/>
+    <text x="30" y="36" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+    <text x="60" y="36" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D2B3E">商业逻辑压倒外交辞令</text>
+    <text x="20" y="70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A5568">
+      <tspan x="20" dy="0">此案确立先例：一带一路项目中的商</tspan>
+      <tspan x="20" dy="22">业利益将受法律契约严格保护，即便</tspan>
+      <tspan x="20" dy="22">涉及友好国家。</tspan>
+      <tspan x="20" dy="22" font-weight="600" fill="#C9A227">"亲兄弟，明算账"成为新常态</tspan>
+    </text>
+  </g>
+  
+  <!-- 结论卡片3 -->
+  <g transform="translate(840, 320)">
+    <rect width="380" height="160" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <circle cx="30" cy="30" r="18" fill="#B8352B"/>
+    <text x="30" y="36" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+    <text x="60" y="36" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D2B3E">"蓄电池"模式不可持续</text>
+    <text x="20" y="70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A5568">
+      <tspan x="20" dy="0">老挝以美元举债建设水电站，却依靠</tspan>
+      <tspan x="20" dy="22">贬值本币回收成本，缺乏对冲机制必</tspan>
+      <tspan x="20" dy="22">然破产。</tspan>
+      <tspan x="20" dy="22" font-weight="600" fill="#B8352B">能源主权加速"空心化"</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部关键信息栏 -->
+  <rect x="40" y="510" width="1200" height="80" rx="8" fill="#0D2B3E" opacity="0.05"/>
+  <text x="60" y="545" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D2B3E">战略定位一句话</text>
+  <text x="60" y="575" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A5568">
+    <tspan>南欧江项目从</tspan>
+    <tspan fill="#1A6B7C" font-weight="600">"一带一路标杆工程"</tspan>
+    <tspan>演变为</tspan>
+    <tspan fill="#B8352B" font-weight="600">"主权债务危机典型案例"</tspan>
+    <tspan>，揭示了新兴市场基建项目"美元债务-软货币收入"错配的系统性风险。</tspan>
+  </text>
+  
+  <!-- 页脚 -->
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="670" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="670" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#718096" text-anchor="end">03 / 20</text>
+</svg>

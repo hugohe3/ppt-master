@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    <!-- 步骤编号 -->
+    <g transform="translate(60, 60)">
+        <rect width="100" height="100" rx="16" fill="url(#stepGradient)" opacity="0.2" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold"
+            fill="url(#stepGradient)">05</text>
+    </g>
+
+    <!-- 标题 -->
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold"
+        fill="#e6edf3">✅ 确认修正结果与副作用</text>
+
+    <!-- 警告框 -->
+    <rect x="60" y="175" width="1160" height="65" rx="10" fill="#f85149" opacity="0.15" stroke="#f85149"
+        stroke-width="2" />
+    <text x="640" y="215" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="24"
+        fill="#f85149">
+        <tspan font-weight="bold">⚠️ 警告：</tspan>
+        <tspan>修好 A 坏了 B 是最可怕的！</tspan>
+    </text>
+
+    <!-- 三列检查清单 -->
+    <g transform="translate(60, 270)">
+        <!-- 卡片1: 对照测试 -->
+        <g>
+            <rect width="360" height="300" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="2" />
+            <rect width="360" height="55" rx="12" fill="#58a6ff" opacity="0.15" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif"
+                font-size="22" font-weight="bold" fill="#58a6ff">📊 对照测试</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17"
+                fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">记录修正前后的输出差异</text>
+
+                <!-- Before/After 对比 -->
+                <rect x="0" y="25" width="310" height="45" rx="6" fill="#1f2428" />
+                <text x="15" y="45" font-family="SF Mono, monospace" font-size="14" fill="#f85149">Before:</text>
+                <text x="80" y="45" font-family="SF Mono, monospace" font-size="14" fill="#f85149">undefined</text>
+                <text x="15" y="62" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">After: </text>
+                <text x="80" y="62" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">"success"</text>
+
+                <text x="0" y="105">
+                    <tspan fill="#7ee787">✓</tspan>
+                    <tspan dx="10">输出符合预期</tspan>
+                </text>
+                <text x="0" y="140">
+                    <tspan fill="#7ee787">✓</tspan>
+                    <tspan dx="10">数据格式正确</tspan>
+                </text>
+                <text x="0" y="175">
+                    <tspan fill="#7ee787">✓</tspan>
+                    <tspan dx="10">性能无明显下降</tspan>
+                </text>
+            </g>
+        </g>
+
+        <!-- 卡片2: 连带影响 -->
+        <g transform="translate(400, 0)">
+            <rect width="360" height="300" rx="12" fill="#161b22" stroke="#f0883e" stroke-width="2" />
+            <rect width="360" height="55" rx="12" fill="#f0883e" opacity="0.15" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif"
+                font-size="22" font-weight="bold" fill="#f0883e">🔗 连带影响</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17"
+                fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">检查这个函数的引用</text>
+
+                <!-- 代码框 -->
+                <rect x="0" y="25" width="310" height="70" rx="6" fill="#1f2428" />
+                <text x="15" y="48" font-family="SF Mono, monospace" font-size="13" fill="#8b949e">// 被引用 5 次</text>
+                <text x="15" y="68" font-family="SF Mono, monospace" font-size="13" fill="#58a6ff">formatPrice()</text>
+                <text x="15" y="85" font-family="SF Mono, monospace" font-size="13" fill="#8b949e">→ cart.js, order.js,
+                    invoice.js...</text>
+
+                <text x="0" y="130" font-weight="bold" fill="#f0883e">必问问题：</text>
+                <text x="0" y="160">
+                    <tspan fill="#f0883e">?</tspan>
+                    <tspan dx="10">这个函数被共用了吗？</tspan>
+                </text>
+                <text x="0" y="195">
+                    <tspan fill="#f0883e">?</tspan>
+                    <tspan dx="10">改了格式会让别人崩掉吗？</tspan>
+                </text>
+            </g>
+        </g>
+
+        <!-- 卡片3: 可维护性 -->
+        <g transform="translate(800, 0)">
+            <rect width="360" height="300" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
+            <rect width="360" height="55" rx="12" fill="#7ee787" opacity="0.15" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif"
+                font-size="22" font-weight="bold" fill="#7ee787">📝 可维护性</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17"
+                fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">为未来的自己负责</text>
+
+                <!-- 代码框 -->
+                <rect x="0" y="25" width="310" height="90" rx="6" fill="#1f2428" />
+                <text x="15" y="48" font-family="SF Mono, monospace" font-size="13" fill="#8b949e">// HACK: 暴力解法</text>
+                <text x="15" y="68" font-family="SF Mono, monospace" font-size="13" fill="#8b949e">// TODO: 待重构</text>
+                <text x="15" y="88" font-family="SF Mono, monospace" font-size="13" fill="#8b949e">// 临时修复 #1234</text>
+                <text x="15" y="105" font-family="SF Mono, monospace" font-size="13" fill="#f0883e">// @author
+                    2025-11-28</text>
+
+                <text x="0" y="145" font-weight="bold" fill="#7ee787">好习惯：</text>
+                <text x="0" y="175">
+                    <tspan fill="#7ee787">✓</tspan>
+                    <tspan dx="10">暴力解法务必写注释</tspan>
+                </text>
+                <text x="0" y="210">
+                    <tspan fill="#7ee787">✓</tspan>
+                    <tspan dx="10">记录修复的上下文</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+
+    <!-- 底部提示 -->
+    <rect x="60" y="600" width="1160" height="70" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1" />
+    <text x="640" y="635" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18"
+        fill="#e6edf3">
+        <tspan fill="#58a6ff" font-weight="bold">💡 Pro Tip：</tspan>
+        <tspan>用 Git 先提交一个"修复前"的快照，方便对比和回滚</tspan>
+    </text>
+    <text x="640" y="658" text-anchor="middle" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">git stash
+        或 git commit -m "WIP: before fix"</text>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">07 /
+        10</text>
+</svg>

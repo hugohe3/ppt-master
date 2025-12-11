@@ -1,0 +1,88 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 深色模式 -->
+  <rect width="1280" height="720" fill="#2C3E50"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">心理学与品牌声誉管理</text>
+  <line x1="60" y1="120" x2="400" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  
+  <!-- 上区 - 达克效应 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="1160" height="220" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#1ABC9C"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#1ABC9C"/>
+    <text x="60" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC">达克效应（Dunning-Kruger Effect）与认知纠偏</text>
+    
+    <!-- 效应说明 -->
+    <g transform="translate(40, 70)">
+      <rect x="0" y="0" width="400" height="120" rx="8" fill="#2C3E50" stroke="#C0392B" stroke-width="1"/>
+      <text x="200" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" text-anchor="middle" font-weight="bold">达克效应</text>
+      <text x="20" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC">
+        <tspan x="20" dy="0">• 能力越差的人越倾向于高估自己</tspan>
+        <tspan x="20" dy="24">• 这是一种认知偏差的「盈」</tspan>
+        <tspan x="20" dy="24">• 无法准确评估自身能力边界</tspan>
+      </text>
+    </g>
+    
+    <!-- 箭头 -->
+    <text x="500" y="140" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#D4A84B">→</text>
+    
+    <!-- 谦卦认知疗法 -->
+    <g transform="translate(580, 70)">
+      <rect x="0" y="0" width="540" height="120" rx="8" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+      <text x="270" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#D4A84B" text-anchor="middle" font-weight="bold">谦卦的认知疗法</text>
+      <text x="20" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC">
+        <tspan x="20" dy="0">• 「卑以自牧」= 强制性认知纠偏机制</tspan>
+        <tspan x="20" dy="24">• 时刻保持「不足」心态，扫描环境新信息</tspan>
+        <tspan x="20" dy="24">• 只有保持谦卦状态才能维持陡峭学习曲线</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 下区 - 品牌"鸣谦" -->
+  <g transform="translate(60, 400)">
+    <rect x="0" y="0" width="1160" height="220" rx="12" fill="#34495E" stroke="#C0392B" stroke-width="2"/>
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#C0392B"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#C0392B"/>
+    <text x="60" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">品牌声誉管理与「鸣谦」策略</text>
+    
+    <!-- 传统营销 vs 现代策略 -->
+    <g transform="translate(40, 70)">
+      <rect x="0" y="0" width="340" height="120" rx="8" fill="#2C3E50" stroke="#4A5568" stroke-width="1"/>
+      <text x="170" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#4A5568" text-anchor="middle" font-weight="bold">传统炫耀式营销（大有卦）</text>
+      <text x="20" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC">
+        <tspan x="20" dy="0">• 强调自己的优势与成就</tspan>
+        <tspan x="20" dy="24">• 越来越容易引起公众反感</tspan>
+        <tspan x="20" dy="24">• 社交媒体时代尤其脆弱</tspan>
+      </text>
+    </g>
+    
+    <g transform="translate(420, 70)">
+      <rect x="0" y="0" width="340" height="120" rx="8" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+      <text x="170" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#D4A84B" text-anchor="middle" font-weight="bold">现代「鸣谦」策略</text>
+      <text x="20" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC">
+        <tspan x="20" dy="0">• 承认缺陷、展示真诚</tspan>
+        <tspan x="20" dy="24">• 强调服务社会的使命</tspan>
+        <tspan x="20" dy="24">• 赢得公众自发共鸣</tspan>
+      </text>
+    </g>
+    
+    <g transform="translate(800, 70)">
+      <rect x="0" y="0" width="320" height="120" rx="8" fill="#2C3E50" stroke="#C0392B" stroke-width="1"/>
+      <text x="160" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" text-anchor="middle" font-weight="bold">危机公关</text>
+      <text x="20" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC">
+        <tspan x="20" dy="0">• 涉大川（危机）时</tspan>
+        <tspan x="20" dy="24">• 唯有「谦谦」策略有效</tspan>
+        <tspan x="20" dy="24">• 彻底道歉与整改</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部小结 -->
+  <rect x="60" y="640" width="1160" height="40" rx="6" fill="#2C3E50" stroke="#D4A84B" stroke-width="1"/>
+  <text x="640" y="667" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#D4A84B" text-anchor="middle">一旦认为自己「满了」（大有），学习通道即刻关闭，熵增随之开始</text>
+  
+  <!-- 页脚 -->
+  <text x="60" y="710" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第六部分：现代应用</text>
+  <text x="1220" y="710" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">17 / 20</text>
+</svg>

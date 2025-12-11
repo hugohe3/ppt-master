@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <!-- 霓虹发光效果 -->
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 深空黑背景 -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  
+  <!-- 网格背景装饰 -->
+  <g opacity="0.1">
+    <line x1="0" y1="60" x2="1280" y2="60" stroke="#39FF14" stroke-width="1"/>
+    <line x1="0" y1="120" x2="1280" y2="120" stroke="#39FF14" stroke-width="1"/>
+    <line x1="0" y1="180" x2="1280" y2="180" stroke="#39FF14" stroke-width="1"/>
+    <line x1="0" y1="540" x2="1280" y2="540" stroke="#39FF14" stroke-width="1"/>
+    <line x1="0" y1="600" x2="1280" y2="600" stroke="#39FF14" stroke-width="1"/>
+    <line x1="0" y1="660" x2="1280" y2="660" stroke="#39FF14" stroke-width="1"/>
+    <line x1="60" y1="0" x2="60" y2="720" stroke="#39FF14" stroke-width="1"/>
+    <line x1="1220" y1="0" x2="1220" y2="720" stroke="#39FF14" stroke-width="1"/>
+  </g>
+  
+  <!-- 顶部像素装饰边框 -->
+  <rect x="40" y="30" width="1200" height="8" fill="#39FF14" opacity="0.8"/>
+  <rect x="40" y="42" width="1200" height="4" fill="#39FF14" opacity="0.4"/>
+  
+  <!-- 左上角装饰方块 -->
+  <rect x="40" y="60" width="16" height="16" fill="#39FF14"/>
+  <rect x="60" y="60" width="16" height="16" fill="#39FF14" opacity="0.6"/>
+  <rect x="80" y="60" width="16" height="16" fill="#39FF14" opacity="0.3"/>
+  
+  <!-- 右上角装饰方块 -->
+  <rect x="1184" y="60" width="16" height="16" fill="#FF2E97" opacity="0.3"/>
+  <rect x="1204" y="60" width="16" height="16" fill="#FF2E97" opacity="0.6"/>
+  <rect x="1224" y="60" width="16" height="16" fill="#FF2E97"/>
+  
+  <!-- 游戏手柄图标 (像素风) -->
+  <g transform="translate(540, 140)">
+    <!-- 手柄主体 -->
+    <rect x="0" y="20" width="200" height="80" rx="8" fill="#161B22" stroke="#39FF14" stroke-width="3"/>
+    <!-- 左摇杆区域 -->
+    <rect x="25" y="40" width="40" height="40" rx="4" fill="#0D1117" stroke="#8B949E" stroke-width="2"/>
+    <circle cx="45" cy="60" r="12" fill="#39FF14" filter="url(#glowGreen)"/>
+    <!-- 右按钮区域 -->
+    <rect x="135" y="40" width="40" height="40" rx="4" fill="#0D1117" stroke="#8B949E" stroke-width="2"/>
+    <rect x="147" y="52" width="16" height="16" fill="#FF2E97"/>
+    <!-- 中间按钮 -->
+    <rect x="85" y="55" width="30" height="10" rx="2" fill="#00D4FF"/>
+  </g>
+  
+  <!-- 主标题 -->
+  <text x="640" y="320" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="72" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    Introducing...Git!
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="380" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="28" fill="#E6EDF3">
+    版本控制入门完全指南
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="440" y="410" width="400" height="3" fill="#00D4FF" opacity="0.8"/>
+  
+  <!-- 特性标签 -->
+  <g transform="translate(340, 460)">
+    <rect x="0" y="0" width="140" height="40" fill="#161B22" stroke="#39FF14" stroke-width="2"/>
+    <text x="70" y="27" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#39FF14">💾 SAVE</text>
+  </g>
+  <g transform="translate(500, 460)">
+    <rect x="0" y="0" width="140" height="40" fill="#161B22" stroke="#00D4FF" stroke-width="2"/>
+    <text x="70" y="27" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#00D4FF">🔀 BRANCH</text>
+  </g>
+  <g transform="translate(660, 460)">
+    <rect x="0" y="0" width="140" height="40" fill="#161B22" stroke="#FF2E97" stroke-width="2"/>
+    <text x="70" y="27" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#FF2E97">⏪ REVERT</text>
+  </g>
+  <g transform="translate(820, 460)">
+    <rect x="0" y="0" width="140" height="40" fill="#161B22" stroke="#FFD700" stroke-width="2"/>
+    <text x="70" y="27" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#FFD700">🤝 COLLAB</text>
+  </g>
+  
+  <!-- 底部提示 -->
+  <g>
+    <text x="640" y="600" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="24" fill="#8B949E">
+      ▶ PRESS START TO LEARN ◀
+    </text>
+  </g>
+  
+  <!-- 底部装饰 -->
+  <rect x="40" y="680" width="1200" height="4" fill="#39FF14" opacity="0.4"/>
+  <rect x="40" y="688" width="1200" height="8" fill="#39FF14" opacity="0.8"/>
+  
+  <!-- 版本号装饰 -->
+  <text x="1200" y="660" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">
+    v1.0 // Git Basics
+  </text>
+  
+  <!-- 左下角页码 -->
+  <text x="60" y="660" font-family="Consolas, monospace" font-size="14" fill="#8B949E">
+    01/10
+  </text>
+</svg>

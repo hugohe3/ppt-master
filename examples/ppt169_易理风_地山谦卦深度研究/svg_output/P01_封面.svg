@@ -1,0 +1,65 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A84B"/>
+      <stop offset="100%" stop-color="#E8C078"/>
+    </linearGradient>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2C3E50"/>
+      <stop offset="100%" stop-color="#34495E"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 - 温润墨蓝灰 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 背景图片 -->
+  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.35"/>
+  
+  <!-- 太极圆相装饰 -->
+  <circle cx="640" cy="360" r="280" fill="none" stroke="#D4A84B" stroke-width="1" opacity="0.35"/>
+  <circle cx="640" cy="360" r="320" fill="none" stroke="#D4A84B" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="640" cy="360" r="240" fill="none" stroke="#D4A84B" stroke-width="1.5" opacity="0.45"/>
+  
+  <!-- 顶部谦卦符号 ☷☶ -->
+  <g transform="translate(590, 120)">
+    <!-- 上卦 坤 ☷ (三个阴爻) -->
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="60" y1="0" x2="100" y2="0" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="18" x2="40" y2="18" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="60" y1="18" x2="100" y2="18" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="36" x2="40" y2="36" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="60" y1="36" x2="100" y2="36" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <!-- 下卦 艮 ☶ (上阳下二阴) -->
+    <line x1="0" y1="60" x2="100" y2="60" stroke="#E74C3C" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="78" x2="40" y2="78" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="60" y1="78" x2="100" y2="78" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="0" y1="96" x2="40" y2="96" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+    <line x1="60" y1="96" x2="100" y2="96" stroke="#5D6D7E" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 顶部装饰线 -->
+  <line x1="440" y1="260" x2="840" y2="260" stroke="url(#goldGradient)" stroke-width="1" opacity="0.6"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="bold" fill="#D4A84B" text-anchor="middle">地山谦卦综合深度研究报告</text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" fill="#ECF0F1" text-anchor="middle" letter-spacing="4">象数理占与现代哲学的多维同构</text>
+  
+  <!-- 分隔线 -->
+  <line x1="480" y1="440" x2="800" y2="440" stroke="#D4A84B" stroke-width="2"/>
+  
+  <!-- 卦名标识 -->
+  <text x="640" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#1ABC9C" text-anchor="middle">☷☶</text>
+  <text x="640" y="540" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#BDC3C7" text-anchor="middle">周易第十五卦 · 上坤下艮 · 六爻皆吉</text>
+  
+  <!-- 底部装饰线 -->
+  <line x1="440" y1="620" x2="840" y2="620" stroke="url(#goldGradient)" stroke-width="1" opacity="0.4"/>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="660" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#7F8C8D" text-anchor="middle">基于《周易》原典及历代易学核心注疏</text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#7F8C8D" text-anchor="end">1 / 20</text>
+</svg>

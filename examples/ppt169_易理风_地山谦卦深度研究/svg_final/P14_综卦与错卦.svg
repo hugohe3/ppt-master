@@ -1,0 +1,92 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">卦际关系网：综卦与错卦</text>
+  <line x1="60" y1="120" x2="440" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 综卦：雷地豫 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="1160" height="220" rx="12" fill="#FFFFFF" stroke="#2D5A5A" stroke-width="2"/>
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#2D5A5A"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#2D5A5A"/>
+    <text x="580" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">综卦关系：谦卦 ⟷ 豫卦（翻转）</text>
+    
+    <!-- 两卦对比 -->
+    <g transform="translate(100, 80)">
+      <!-- 谦卦 -->
+      <rect x="0" y="0" width="200" height="120" rx="8" fill="#F5F3EF" stroke="#2D5A5A" stroke-width="1"/>
+      <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#2D5A5A" text-anchor="middle" font-weight="bold">地山谦 ☷☶</text>
+      <text x="100" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">内敛</text>
+      <text x="100" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">地在上，山在下</text>
+      <text x="100" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">谦虚安宁</text>
+      
+      <!-- 翻转箭头 -->
+      <text x="280" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#B8860B">⟷</text>
+      <text x="280" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#8B9A9A" text-anchor="middle">翻转</text>
+      
+      <!-- 豫卦 -->
+      <rect x="360" y="0" width="200" height="120" rx="8" fill="#F5F3EF" stroke="#C94C4C" stroke-width="1"/>
+      <text x="460" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C94C4C" text-anchor="middle" font-weight="bold">雷地豫 ☳☷</text>
+      <text x="460" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">外发</text>
+      <text x="460" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">雷出地奋</text>
+      <text x="460" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">欢愉顺动</text>
+    </g>
+    
+    <!-- 辩证逻辑 -->
+    <g transform="translate(680, 80)">
+      <rect x="0" y="0" width="420" height="120" rx="8" fill="#F0EDE8" stroke="#B8860B" stroke-width="1"/>
+      <text x="210" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#B8860B" text-anchor="middle" font-weight="bold">辩证逻辑</text>
+      <text x="30" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+        <tspan x="30" dy="0">• 谦是内敛的豫，豫是外发的谦</tspan>
+        <tspan x="30" dy="24">• 内心具备谦的安宁 → 外在从容欢愉</tspan>
+        <tspan x="30" dy="24">• 君子应当「内谦而外豫」</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 错卦：天泽履 -->
+  <g transform="translate(60, 400)">
+    <rect x="0" y="0" width="1160" height="220" rx="12" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#C94C4C"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#C94C4C"/>
+    <text x="580" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">错卦关系：谦卦 ⟷ 履卦（阴阳互换）</text>
+    
+    <!-- 两卦对比 -->
+    <g transform="translate(100, 80)">
+      <!-- 谦卦 -->
+      <rect x="0" y="0" width="200" height="120" rx="8" fill="#F5F3EF" stroke="#2D5A5A" stroke-width="1"/>
+      <text x="100" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#2D5A5A" text-anchor="middle" font-weight="bold">地山谦 ☷☶</text>
+      <text x="100" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">内在修养（德）</text>
+      <text x="100" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">心态谦和</text>
+      <text x="100" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">谦是内在的礼</text>
+      
+      <!-- 互换箭头 -->
+      <text x="280" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#B8860B">⟷</text>
+      <text x="280" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#8B9A9A" text-anchor="middle">阴阳换</text>
+      
+      <!-- 履卦 -->
+      <rect x="360" y="0" width="200" height="120" rx="8" fill="#F5F3EF" stroke="#C94C4C" stroke-width="1"/>
+      <text x="460" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C94C4C" text-anchor="middle" font-weight="bold">天泽履 ☰☱</text>
+      <text x="460" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">外在规范（礼）</text>
+      <text x="460" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">履虎尾 · 小心翼翼</text>
+      <text x="460" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">礼是外在的谦</text>
+    </g>
+    
+    <!-- 互补性 -->
+    <g transform="translate(680, 80)">
+      <rect x="0" y="0" width="420" height="120" rx="8" fill="#F0EDE8" stroke="#B8860B" stroke-width="1"/>
+      <text x="210" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#B8860B" text-anchor="middle" font-weight="bold">互补性</text>
+      <text x="30" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+        <tspan x="30" dy="0">• 无谦心之礼 = 虚伪的表演</tspan>
+        <tspan x="30" dy="24">• 无礼仪之谦 = 无原则的退让</tspan>
+        <tspan x="30" dy="24">• 谦与礼互为表里，缺一不可</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第五部分：卦际关系</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">14 / 20</text>
+</svg>

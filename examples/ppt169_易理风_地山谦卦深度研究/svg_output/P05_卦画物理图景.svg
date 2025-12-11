@@ -1,0 +1,80 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 - 深色模式 -->
+  <rect width="1280" height="720" fill="#2C3E50"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">地中有山：卦画结构的物理图景</text>
+  <line x1="60" y1="120" x2="540" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  
+  <!-- 左侧图片区 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="520" height="380" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
+    <image xlink:href="../images/mountain_earth.png" x="10" y="10" width="500" height="300" preserveAspectRatio="xMidYMid slice" clip-path="url(#imgClip)"/>
+    
+    <!-- 图示说明 -->
+    <rect x="20" y="320" width="480" height="50" rx="6" fill="#2C3E50"/>
+    <text x="260" y="352" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" text-anchor="middle">山本高耸于地面，却甘愿隐没于平地之下</text>
+  </g>
+  
+  <!-- 右侧结构分析表 -->
+  <g transform="translate(620, 150)">
+    <rect x="0" y="0" width="600" height="380" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
+    
+    <!-- 表头 -->
+    <rect x="0" y="0" width="600" height="45" rx="12" fill="#1ABC9C"/>
+    <rect x="0" y="35" width="600" height="10" fill="#1ABC9C"/>
+    <text x="75" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#E8E4DC" text-anchor="middle">构成</text>
+    <text x="200" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#E8E4DC" text-anchor="middle">象征</text>
+    <text x="340" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#E8E4DC" text-anchor="middle">能量状态</text>
+    <text x="510" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#E8E4DC" text-anchor="middle">相互作用</text>
+    
+    <!-- 行1：外卦坤 -->
+    <rect x="10" y="55" width="580" height="90" rx="6" fill="#2C3E50"/>
+    <text x="75" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#4A5568" text-anchor="middle">外卦</text>
+    <text x="75" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">坤 ☷</text>
+    <text x="200" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">顺、众、地</text>
+    <text x="200" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">柔顺包容</text>
+    <text x="340" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">低势能</text>
+    <text x="340" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">广覆盖</text>
+    <text x="510" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">
+      <tspan x="510" dy="0">厚德载物</tspan>
+      <tspan x="510" dy="20">掩盖保护内在锋芒</tspan>
+      <tspan x="510" dy="20">外部感知为柔和</tspan>
+    </text>
+    
+    <!-- 行2：内卦艮 -->
+    <rect x="10" y="155" width="580" height="90" rx="6" fill="#34495E" stroke="#C0392B" stroke-width="1"/>
+    <text x="75" y="185" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C0392B" text-anchor="middle">内卦</text>
+    <text x="75" y="208" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C0392B" text-anchor="middle">艮 ☶</text>
+    <text x="200" y="185" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">止、笃、山</text>
+    <text x="200" y="208" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">笃实稳重</text>
+    <text x="340" y="185" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C0392B" text-anchor="middle">高势能</text>
+    <text x="340" y="208" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">聚焦点</text>
+    <text x="510" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">
+      <tspan x="510" dy="0">内核坚硬实力雄厚</tspan>
+      <tspan x="510" dy="20">能量内敛不外泄</tspan>
+      <tspan x="510" dy="20">重心极低结构超稳</tspan>
+    </text>
+    
+    <!-- 行3：整体格局 -->
+    <rect x="10" y="255" width="580" height="90" rx="6" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+    <text x="75" y="285" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#D4A84B" text-anchor="middle">整体</text>
+    <text x="75" y="310" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#D4A84B" text-anchor="middle">格局</text>
+    <text x="200" y="300" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#D4A84B" text-anchor="middle">内刚外柔</text>
+    <text x="340" y="300" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#D4A84B" text-anchor="middle">蓄势待发</text>
+    <text x="510" y="293" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">
+      <tspan x="510" dy="0">避免"木秀于林"风阻</tspan>
+      <tspan x="510" dy="22">保留随时隆起之潜能</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部洞见 -->
+  <rect x="60" y="555" width="1160" height="80" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
+  <use data-icon="lightbulb" x="90" y="580" width="28" height="28" fill="#D4A84B"/>
+  <text x="140" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#D4A84B">核心洞见</text>
+  <text x="140" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">完美的防御性现实主义策略：在物理上消除摩擦力，在心理上消除嫉妒心。故谦卦能「亨」。</text>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第二部分：符号学溯源</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">5 / 20</text>
+</svg>

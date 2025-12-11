@@ -1,0 +1,95 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  
+  <!-- 顶部标题栏 -->
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">项目战略定位</text>
+  <text x="1240" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7ED4E6" text-anchor="end">PROJECT OVERVIEW</text>
+  
+  <!-- 左侧地图区域 -->
+  <g transform="translate(40, 100)">
+    <rect width="560" height="500" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D2B3E">南欧江流域位置示意</text>
+    
+    <!-- 地图图片 -->
+    <image href="../images/laos_map.png" x="20" y="50" width="520" height="380" preserveAspectRatio="xMidYMid meet"/>
+    
+    <!-- 地图图例 -->
+    <g transform="translate(20, 450)">
+      <circle cx="8" cy="8" r="6" fill="#1A6B7C"/>
+      <text x="22" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A5568">梯级电站</text>
+      <line x1="100" y1="8" x2="130" y2="8" stroke="#2E96B3" stroke-width="3"/>
+      <text x="140" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A5568">南欧江</text>
+      <line x1="220" y1="8" x2="250" y2="8" stroke="#546E7A" stroke-width="3"/>
+      <text x="260" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A5568">湄公河</text>
+      <rect x="340" y="2" width="12" height="12" fill="#C9A227" rx="2"/>
+      <text x="358" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A5568">琅勃拉邦</text>
+    </g>
+  </g>
+  
+  <!-- 右侧信息卡片 -->
+  <g transform="translate(620, 100)">
+    <!-- 河流信息卡片 -->
+    <rect width="620" height="130" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="8" height="130" rx="4" fill="#1A6B7C"/>
+    <text x="28" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#0D2B3E">南欧江概况</text>
+    <text x="28" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A5568">湄公河在老挝境内的最大左岸支流</text>
+    
+    <g transform="translate(28, 80)">
+      <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">
+        <tspan x="0" dy="0">全长</tspan>
+        <tspan x="0" dy="20" font-size="18" font-weight="600" fill="#1A6B7C">475 公里</tspan>
+      </text>
+      <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">
+        <tspan x="150" dy="0">天然落差</tspan>
+        <tspan x="150" dy="20" font-size="18" font-weight="600" fill="#1A6B7C">430 米</tspan>
+      </text>
+      <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">
+        <tspan x="300" dy="0">开发模式</tspan>
+        <tspan x="300" dy="20" font-size="18" font-weight="600" fill="#C9A227">一库七级</tspan>
+      </text>
+      <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">
+        <tspan x="450" dy="0">年发电量</tspan>
+        <tspan x="450" dy="20" font-size="18" font-weight="600" fill="#1A6B7C">>50亿 kWh</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 战略地位卡片 -->
+  <g transform="translate(620, 250)">
+    <rect width="620" height="120" rx="12" fill="#0D2B3E"/>
+    <text x="28" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#7ED4E6">战略地位</text>
+    <text x="28" y="65" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">"东南亚蓄电池"核心工程</text>
+    <text x="28" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6">装机容量占老挝全国水电总装机（18GW）的 7%，具有基荷地位</text>
+  </g>
+  
+  <!-- 开发方信息 -->
+  <g transform="translate(620, 390)">
+    <rect width="300" height="100" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">开发主体</text>
+    <text x="20" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#0D2B3E">中国电力建设集团</text>
+    <text x="20" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A5568">PowerChina · 世界500强企业</text>
+  </g>
+  
+  <g transform="translate(940, 390)">
+    <rect width="300" height="100" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096">商业模式</text>
+    <text x="20" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#0D2B3E">BOT（建设-运营-移交）</text>
+    <text x="20" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A5568">特许经营期 29 年</text>
+  </g>
+  
+  <!-- 一带一路标签 -->
+  <g transform="translate(620, 510)">
+    <rect width="620" height="90" rx="12" fill="#C9A227" opacity="0.1"/>
+    <rect x="0" y="0" width="8" height="90" rx="4" fill="#C9A227"/>
+    <text x="28" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#C9A227">一带一路倡议标杆项目</text>
+    <text x="28" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A5568">中国企业在海外实施的全流域规划、建设和运营（BOT）模式的典型案例</text>
+    <text x="28" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A5568">调节湄公河支流水力资源，具有举足轻重的战略地位</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="670" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="670" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#718096" text-anchor="end">04 / 20</text>
+</svg>

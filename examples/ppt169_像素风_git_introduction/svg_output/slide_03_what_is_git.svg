@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg35"
+   sodipodi:docname="slide_03_what_is_git.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview35"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.89722222"
+     inkscape:cx="640.3096"
+     inkscape:cy="360"
+     inkscape:window-width="1536"
+     inkscape:window-height="890"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g16" />
+  <defs
+     id="defs2">
+    <filter
+       id="glowGreen"
+       x="-0.026261461"
+       y="-0.19212008"
+       width="1.0525229"
+       height="1.3842402">
+      <feGaussianBlur
+         stdDeviation="3"
+         result="blur"
+         id="feGaussianBlur1" />
+      <feMerge
+         id="feMerge2">
+        <feMergeNode
+           in="blur"
+           id="feMergeNode1" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode2" />
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- 深空黑背景 -->
+  <rect
+     width="1280"
+     height="720"
+     fill="#0D1117"
+     id="rect2" />
+  <!-- 顶部装饰线 -->
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="4"
+     fill="#39FF14"
+     opacity="0.6"
+     id="rect3" />
+  <!-- 页面标题 -->
+  <text
+     x="60"
+     y="70"
+     font-family="Consolas, Monaco, monospace"
+     font-size="36"
+     font-weight="bold"
+     fill="#39FF14"
+     filter="url(#glowGreen)"
+     id="text3">
+    🤔 什么是 Git？
+  </text>
+  <text
+     x="60"
+     y="100"
+     font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif"
+     font-size="18"
+     fill="#8B949E"
+     id="text4">
+    What Exactly Is Git
+  </text>
+  <!-- 分隔线 -->
+  <rect
+     x="60"
+     y="120"
+     width="200"
+     height="2"
+     fill="#30363D"
+     id="rect4" />
+  <!-- 核心定义卡片 -->
+  <g
+     transform="translate(60, 150)"
+     id="g10">
+    <rect
+       x="0"
+       y="0"
+       width="700"
+       height="120"
+       fill="#161B22"
+       stroke="#39FF14"
+       stroke-width="3"
+       id="rect5" />
+    <!-- 像素风装饰角 -->
+    <rect
+       x="-4"
+       y="-4"
+       width="20"
+       height="8"
+       fill="#39FF14"
+       id="rect6" />
+    <rect
+       x="-4"
+       y="-4"
+       width="8"
+       height="20"
+       fill="#39FF14"
+       id="rect7" />
+    <rect
+       x="684"
+       y="-4"
+       width="20"
+       height="8"
+       fill="#39FF14"
+       id="rect8" />
+    <rect
+       x="696"
+       y="-4"
+       width="8"
+       height="20"
+       fill="#39FF14"
+       id="rect9" />
+    <text
+       x="30"
+       y="50"
+       font-family="Consolas, monospace"
+       font-size="28"
+       font-weight="bold"
+       fill="#FFFFFF"
+       id="text9">
+      Git = 版本控制系统 (VCS)
+    </text>
+    <text
+       x="30"
+       y="85"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="18"
+       fill="#8B949E"
+       id="text10">
+      Version Control System - 追踪和管理文件变更的软件
+    </text>
+  </g>
+  <!-- 世界最流行 -->
+  <g
+     transform="translate(780, 150)"
+     id="g13">
+    <rect
+       x="0"
+       y="0"
+       width="440"
+       height="120"
+       fill="#161B22"
+       stroke="#FF2E97"
+       stroke-width="3"
+       id="rect10" />
+    <text
+       x="20"
+       y="40"
+       font-family="Consolas, monospace"
+       font-size="18"
+       fill="#FF2E97"
+       id="text11">🏆 WORLD #1</text>
+    <text
+       x="20"
+       y="75"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="22"
+       font-weight="bold"
+       fill="#E6EDF3"
+       id="text12">
+      世界上最流行的 VCS
+    </text>
+    <text
+       x="20"
+       y="100"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="14"
+       fill="#8B949E"
+       id="text13">
+      The most popular version control system
+    </text>
+  </g>
+  <!-- 使用率统计 -->
+  <g
+     transform="translate(60, 300)"
+     id="g16">
+    <text
+       x="0"
+       y="25"
+       font-family="Consolas, monospace"
+       font-size="20"
+       fill="#00D4FF"
+       id="text14">📊 开发者使用率</text>
+    <!-- 进度条背景 -->
+    <rect
+       x="0"
+       y="45"
+       width="700"
+       height="40"
+       fill="#161B22"
+       stroke="#30363D"
+       stroke-width="2"
+       id="rect14" />
+    <!-- 进度条填充 (90%) -->
+    <rect
+       x="2"
+       y="47"
+       width="626"
+       height="36"
+       fill="#39FF14"
+       opacity="0.8"
+       id="rect15" />
+    <!-- 百分比标签 -->
+    <text
+       x="561.15625"
+       y="73"
+       font-family="Consolas, monospace"
+       font-size="24px"
+       font-weight="bold"
+       fill="#ffffff"
+       id="text15">90%+</text>
+    <text
+       x="0"
+       y="110"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="16"
+       fill="#8B949E"
+       id="text16">
+      根据 StackOverflow 调查，超过 90% 的开发者选择 Git 作为版本控制工具
+    </text>
+  </g>
+  <!-- 其他 VCS 对比 - 横向排列 -->
+  <g
+     transform="translate(780, 300)"
+     id="g21">
+    <text
+       x="0"
+       y="20"
+       font-family="Consolas, monospace"
+       font-size="16"
+       fill="#8B949E"
+       id="text17">其他 VCS (已被 Git 超越)</text>
+    <g
+       transform="translate(0, 35)"
+       id="g20">
+      <!-- Subversion -->
+      <rect
+         x="0"
+         y="0"
+         width="130"
+         height="28"
+         fill="#161B22"
+         stroke="#30363D"
+         stroke-width="1"
+         id="rect17" />
+      <text
+         x="8"
+         y="19"
+         font-family="Consolas, monospace"
+         font-size="12"
+         fill="#8B949E"
+         id="text18">SVN ☠️</text>
+      <!-- CVS -->
+      <rect
+         x="140"
+         y="0"
+         width="130"
+         height="28"
+         fill="#161B22"
+         stroke="#30363D"
+         stroke-width="1"
+         id="rect18" />
+      <text
+         x="148"
+         y="19"
+         font-family="Consolas, monospace"
+         font-size="12"
+         fill="#8B949E"
+         id="text19">CVS ☠️</text>
+      <!-- Mercurial -->
+      <rect
+         x="280"
+         y="0"
+         width="130"
+         height="28"
+         fill="#161B22"
+         stroke="#30363D"
+         stroke-width="1"
+         id="rect19" />
+      <text
+         x="288"
+         y="19"
+         font-family="Consolas, monospace"
+         font-size="12"
+         fill="#8B949E"
+         id="text20">Mercurial ☠️</text>
+    </g>
+  </g>
+  <!-- Git 官方定义引用 -->
+  <g
+     transform="translate(60, 450)"
+     id="g29">
+    <rect
+       x="0"
+       y="0"
+       width="1160"
+       height="150"
+       fill="#161B22"
+       stroke="#00D4FF"
+       stroke-width="2"
+       stroke-dasharray="8 4"
+       id="rect21" />
+    <text
+       x="30"
+       y="35"
+       font-family="Consolas, monospace"
+       font-size="16"
+       fill="#00D4FF"
+       id="text21">// Git 官方定义</text>
+    <text
+       x="30"
+       y="75"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="18"
+       fill="#E6EDF3"
+       id="text25"><tspan
+         x="30"
+         dy="0"
+         id="tspan21">&quot;Git is a </tspan><tspan
+         fill="#39FF14"
+         id="tspan22">free and open source</tspan><tspan
+         id="tspan23" /><tspan
+         fill="#FF2E97"
+         id="tspan24">distributed version control system</tspan><tspan
+         id="tspan25">&quot;</tspan></text>
+    <text
+       x="30"
+       y="105"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="18"
+       fill="#E6EDF3"
+       id="text28"><tspan
+         x="30"
+         dy="0"
+         id="tspan26">&quot;designed to handle everything from </tspan><tspan
+         fill="#FFD700"
+         id="tspan27">small to very large projects</tspan><tspan
+         id="tspan28">&quot;</tspan></text>
+    <text
+       x="30"
+       y="135"
+       font-family="-apple-system, Microsoft YaHei, sans-serif"
+       font-size="16"
+       fill="#8B949E"
+       id="text29">
+      免费开源 · 分布式 · 可大可小 · 快速高效
+    </text>
+  </g>
+  <!-- 底部装饰要点 -->
+  <g
+     transform="translate(60, 630)"
+     id="g33">
+    <rect
+       x="0"
+       y="0"
+       width="200"
+       height="30"
+       fill="#39FF14"
+       opacity="0.2"
+       id="rect29" />
+    <text
+       x="100"
+       y="21"
+       text-anchor="middle"
+       font-family="Consolas, monospace"
+       font-size="14"
+       fill="#39FF14"
+       id="text30">✓ 免费</text>
+    <rect
+       x="220"
+       y="0"
+       width="200"
+       height="30"
+       fill="#39FF14"
+       opacity="0.2"
+       id="rect30" />
+    <text
+       x="320"
+       y="21"
+       text-anchor="middle"
+       font-family="Consolas, monospace"
+       font-size="14"
+       fill="#39FF14"
+       id="text31">✓ 开源</text>
+    <rect
+       x="440"
+       y="0"
+       width="200"
+       height="30"
+       fill="#39FF14"
+       opacity="0.2"
+       id="rect31" />
+    <text
+       x="540"
+       y="21"
+       text-anchor="middle"
+       font-family="Consolas, monospace"
+       font-size="14"
+       fill="#39FF14"
+       id="text32">✓ 分布式</text>
+    <rect
+       x="660"
+       y="0"
+       width="200"
+       height="30"
+       fill="#39FF14"
+       opacity="0.2"
+       id="rect32" />
+    <text
+       x="760"
+       y="21"
+       text-anchor="middle"
+       font-family="Consolas, monospace"
+       font-size="14"
+       fill="#39FF14"
+       id="text33">✓ 高性能</text>
+  </g>
+  <!-- 底部装饰 -->
+  <rect
+     x="0"
+     y="716"
+     width="1280"
+     height="4"
+     fill="#39FF14"
+     opacity="0.6"
+     id="rect33" />
+  <!-- 页码 -->
+  <text
+     x="60"
+     y="690"
+     font-family="Consolas, monospace"
+     font-size="14"
+     fill="#8B949E"
+     id="text34">03/10</text>
+  <text
+     x="1220"
+     y="690"
+     text-anchor="end"
+     font-family="Consolas, monospace"
+     font-size="14"
+     fill="#8B949E"
+     id="text35">What is Git</text>
+</svg>

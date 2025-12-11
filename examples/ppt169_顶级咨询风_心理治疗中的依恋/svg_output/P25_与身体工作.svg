@@ -1,0 +1,127 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    与身体工作：容纳之窗与身体干预
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Working with the Body: Window of Tolerance and Somatic Interventions
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="600" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 容纳之窗图示 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <text x="0" y="0" font-size="18" font-weight="600" fill="#2E5C8E">容纳之窗 Window of Tolerance</text>
+    <line x1="0" y1="15" x2="240" y2="15" stroke="#2E5C8E" stroke-width="2"/>
+    
+    <!-- 图示区域 -->
+    <g transform="translate(0, 40)">
+      <!-- 过度激活区 -->
+      <rect x="0" y="0" width="500" height="80" rx="12" fill="#FECACA" stroke="#B54545" stroke-width="1"/>
+      <text x="20" y="35" font-size="15" font-weight="bold" fill="#B54545">过度激活区 (SNS)</text>
+      <text x="20" y="58" font-size="13" fill="#374151">战斗/逃跑 | 呼吸心跳加快 | 瞳孔放大 | 肤色苍白</text>
+      <text x="380" y="50" font-size="12" fill="#B54545">被淹没/混乱</text>
+      
+      <!-- 箭头向上 -->
+      <path d="M470,85 L470,100" stroke="#B54545" stroke-width="2"/>
+      <polygon points="470,85 464,95 476,95" fill="#B54545"/>
+      
+      <!-- 容纳之窗 -->
+      <rect x="0" y="100" width="500" height="100" rx="12" fill="#D4EDDA" stroke="#3D8B7A" stroke-width="2"/>
+      <text x="250" y="140" font-size="18" font-weight="bold" fill="#3D8B7A" text-anchor="middle">容纳之窗</text>
+      <text x="250" y="165" font-size="14" fill="#374151" text-anchor="middle">最佳调节区域 — 有效的治疗干预保持在此范围内</text>
+      <text x="250" y="185" font-size="12" fill="#6B7280" text-anchor="middle">长期目标：扩大这个"窗口"</text>
+      
+      <!-- 箭头向下 -->
+      <path d="M470,200 L470,215" stroke="#64748B" stroke-width="2"/>
+      <polygon points="470,220 464,210 476,210" fill="#64748B"/>
+      
+      <!-- 过度激活区（副交感） -->
+      <rect x="0" y="220" width="500" height="80" rx="12" fill="#E2E8F0" stroke="#64748B" stroke-width="1"/>
+      <text x="20" y="255" font-size="15" font-weight="bold" fill="#64748B">过度激活区 (PNS)</text>
+      <text x="20" y="278" font-size="13" fill="#374151">冻结/麻木 | 呼吸心跳变慢 | 瞳孔收缩 | 面色潮红</text>
+      <text x="380" y="270" font-size="12" fill="#64748B">关闭/麻木</text>
+    </g>
+    
+    <!-- 干预说明 -->
+    <g transform="translate(0, 370)">
+      <rect x="0" y="0" width="500" height="85" rx="12" fill="#FEF3C7"/>
+      <text x="20" y="28" font-size="15" font-weight="600" fill="#E07843">⚡ 刹车干预</text>
+      <text x="20" y="52" font-size="14" fill="#374151">当患者超出容纳之窗时，引导其关注：</text>
+      <text x="20" y="74" font-size="13" fill="#6B7280">具体身体感觉（内感）| 外部环境（外感）| 缓慢呼吸练习 → 着陆于当下</text>
+    </g>
+  </g>
+  
+  <!-- 四种身体干预策略 -->
+  <g transform="translate(600, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <text x="0" y="0" font-size="18" font-weight="600" fill="#E07843">四种具体身体干预策略</text>
+    <line x1="0" y1="15" x2="220" y2="15" stroke="#E07843" stroke-width="2"/>
+    
+    <!-- 1. 谈论身体 -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="620" height="95" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="1"/>
+      <rect x="0" y="0" width="8" height="95" rx="4" fill="#2E5C8E"/>
+      
+      <text x="25" y="30" font-size="16" font-weight="bold" fill="#2E5C8E">1. 谈论身体</text>
+      <text x="140" y="30" font-size="12" fill="#6B7280">Talking about the Body</text>
+      
+      <text x="25" y="55" font-size="14" fill="#374151">观察并评论患者的身体表现，或邀请患者描述身体感觉</text>
+      <text x="25" y="78" font-size="13" fill="#6B7280">例："你现在的声音似乎是从喉咙而不是腹部发出来的"</text>
+    </g>
+    
+    <!-- 2. 动员身体 -->
+    <g transform="translate(0, 150)">
+      <rect x="0" y="0" width="620" height="95" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="1"/>
+      <rect x="0" y="0" width="8" height="95" rx="4" fill="#3D8B7A"/>
+      
+      <text x="25" y="30" font-size="16" font-weight="bold" fill="#3D8B7A">2. 动员身体</text>
+      <text x="140" y="30" font-size="12" fill="#6B7280">Mobilizing the Body</text>
+      
+      <text x="25" y="55" font-size="14" fill="#374151">帮助患者完成未完成的防御动作，打破抑制</text>
+      <text x="25" y="78" font-size="13" fill="#6B7280">推开、踢腿、逃跑动作（即使对着空气）| 想象中完成也有效</text>
+    </g>
+    
+    <!-- 3. 去躯体化 -->
+    <g transform="translate(0, 260)">
+      <rect x="0" y="0" width="620" height="95" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="1"/>
+      <rect x="0" y="0" width="8" height="95" rx="4" fill="#E07843"/>
+      
+      <text x="25" y="30" font-size="16" font-weight="bold" fill="#E07843">3. 去躯体化</text>
+      <text x="130" y="30" font-size="12" fill="#6B7280">Desomatization — 针对未解决型患者</text>
+      
+      <text x="25" y="55" font-size="14" fill="#374151">将身体语言翻译为情感词语（如"胃部紧缩"→"恐惧"）</text>
+      <text x="25" y="78" font-size="13" fill="#6B7280">目标：帮助患者识别身体感觉并建立与情感的联系</text>
+    </g>
+    
+    <!-- 4. 再躯体化 -->
+    <g transform="translate(0, 370)">
+      <rect x="0" y="0" width="620" height="95" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="1"/>
+      <rect x="0" y="0" width="8" height="95" rx="4" fill="#64748B"/>
+      
+      <text x="25" y="30" font-size="16" font-weight="bold" fill="#64748B">4. 再躯体化</text>
+      <text x="130" y="30" font-size="12" fill="#6B7280">Resomatization — 针对冷漠型患者</text>
+      
+      <text x="25" y="55" font-size="14" fill="#374151">帮助"离体的头脑"重新连接身体感觉</text>
+      <text x="25" y="78" font-size="13" fill="#6B7280">目标：从头脑中下来，重新连接被屏蔽的情感和依恋需求</text>
+    </g>
+  </g>
+  
+  <!-- 底部总结 -->
+  <rect x="60" y="620" width="1160" height="60" rx="12" fill="#1E3A5F"/>
+  <text x="640" y="656" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    <tspan font-weight="bold">躯体反移情原则：</tspan>
+    <tspan dx="10">治疗师首先在自己的身体里（最直接的是呼吸中）感受到患者传达的信息</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">25</text>
+</svg>

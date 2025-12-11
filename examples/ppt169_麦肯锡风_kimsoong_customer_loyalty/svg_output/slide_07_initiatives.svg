@@ -1,0 +1,225 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Header bar -->
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    <!-- Title -->
+    <text x="60" y="70" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Five Key Initiatives for Loyalty Programme</tspan>
+    </text>
+
+    <!-- Subtitle -->
+    <text x="60" y="105" font-family="Arial, sans-serif" font-size="18" fill="#5D6D7E">
+        <tspan>Prioritized recommendations based on impact and feasibility analysis</tspan>
+    </text>
+
+    <!-- Initiative 1: Priority 1 -->
+    <rect x="60" y="135" width="560" height="95" fill="#FFFFFF" stroke="#005587" stroke-width="3" />
+    <rect x="60" y="135" width="10" height="95" fill="#005587" />
+
+    <text x="90" y="158" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#005587">
+        <tspan>★ PRIORITY 1</tspan>
+    </text>
+    <text x="90" y="182" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+        <tspan>3-Year Free After-Sales Service</tspan>
+    </text>
+    <text x="90" y="203" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Direct response to #1 pain point</tspan>
+    </text>
+
+    <rect x="460" y="150" width="140" height="28" fill="#E74C3C" opacity="0.2" />
+    <text x="530" y="168" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C"
+        text-anchor="middle">
+        <tspan>HIGH IMPACT</tspan>
+    </text>
+
+    <text x="460" y="207" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Cost: Medium-High</tspan>
+    </text>
+
+    <!-- Initiative 2: Priority 2 -->
+    <rect x="660" y="135" width="560" height="95" fill="#FFFFFF" stroke="#0076A8" stroke-width="3" />
+    <rect x="660" y="135" width="10" height="95" fill="#0076A8" />
+
+    <text x="690" y="158" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0076A8">
+        <tspan>PRIORITY 2</tspan>
+    </text>
+    <text x="690" y="182" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+        <tspan>20% Loyalty Discount</tspan>
+    </text>
+    <text x="690" y="203" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Direct financial incentive for repeat purchase</tspan>
+    </text>
+
+    <rect x="1060" y="150" width="140" height="28" fill="#F5A623" opacity="0.2" />
+    <text x="1130" y="168" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#F5A623"
+        text-anchor="middle">
+        <tspan>HIGH ROI</tspan>
+    </text>
+
+    <text x="1060" y="207" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Cost: Medium</tspan>
+    </text>
+
+    <!-- Initiative 3 -->
+    <rect x="60" y="255" width="560" height="95" fill="#FFFFFF" stroke="#4A90A4" stroke-width="3" />
+    <rect x="60" y="255" width="10" height="95" fill="#4A90A4" />
+
+    <text x="90" y="278" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4A90A4">
+        <tspan>PRIORITY 3</tspan>
+    </text>
+    <text x="90" y="302" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+        <tspan>Enhanced Trade-in Programme</tspan>
+    </text>
+    <text x="90" y="323" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Generous trade-in deals to lower barrier</tspan>
+    </text>
+
+    <rect x="460" y="270" width="140" height="28" fill="#4A90A4" opacity="0.2" />
+    <text x="530" y="288" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#4A90A4"
+        text-anchor="middle">
+        <tspan>QUICK WIN</tspan>
+    </text>
+
+    <text x="460" y="327" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Cost: Low-Medium</tspan>
+    </text>
+
+    <!-- Initiative 4 -->
+    <rect x="660" y="255" width="560" height="95" fill="#FFFFFF" stroke="#7FB3C7" stroke-width="3" />
+    <rect x="660" y="255" width="10" height="95" fill="#7FB3C7" />
+
+    <text x="690" y="278" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7FB3C7">
+        <tspan>PRIORITY 4</tspan>
+    </text>
+    <text x="690" y="302" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+        <tspan>Customer Magazine</tspan>
+    </text>
+    <text x="690" y="323" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Monthly publication with owner features</tspan>
+    </text>
+
+    <rect x="1060" y="270" width="140" height="28" fill="#7FB3C7" opacity="0.2" />
+    <text x="1130" y="288" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#7FB3C7"
+        text-anchor="middle">
+        <tspan>ENGAGEMENT</tspan>
+    </text>
+
+    <text x="1060" y="327" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Cost: Low</tspan>
+    </text>
+
+    <!-- Initiative 5 -->
+    <rect x="60" y="375" width="560" height="95" fill="#FFFFFF" stroke="#B0BEC5" stroke-width="3" />
+    <rect x="60" y="375" width="10" height="95" fill="#B0BEC5" />
+
+    <text x="90" y="398" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#B0BEC5">
+        <tspan>PRIORITY 5</tspan>
+    </text>
+    <text x="90" y="422" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#2C3E50">
+        <tspan>Questionnaire Incentive (Pen)</tspan>
+    </text>
+    <text x="90" y="443" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Premium pen to boost response rate</tspan>
+    </text>
+
+    <rect x="460" y="390" width="140" height="28" fill="#B0BEC5" opacity="0.2" />
+    <text x="530" y="408" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#B0BEC5"
+        text-anchor="middle">
+        <tspan>DATA QUALITY</tspan>
+    </text>
+
+    <text x="460" y="447" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Cost: Low</tspan>
+    </text>
+
+    <!-- Impact-Cost Matrix (small visual) -->
+    <rect x="660" y="375" width="560" height="95" fill="#F8F9FA" stroke="#005587" stroke-width="2" />
+    <text x="690" y="400" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#005587">
+        <tspan>Implementation Approach</tspan>
+    </text>
+
+    <circle cx="690" cy="433" r="5" fill="#005587" />
+    <text x="710" y="437" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+        <tspan>Phase 1 (Q1): Quick wins - Magazine, Questionnaire</tspan>
+    </text>
+
+    <circle cx="690" cy="457" r="5" fill="#005587" />
+    <text x="710" y="461" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+        <tspan>Phase 2 (Q2-Q3): Core - After-sales, Discount</tspan>
+    </text>
+
+    <!-- Expected Outcomes -->
+    <rect x="60" y="495" width="1160" height="115" fill="#E8F4F8" stroke="#005587" stroke-width="2" />
+    <text x="90" y="525" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#005587">
+        <tspan>Expected Outcomes (Year 2)</tspan>
+    </text>
+
+    <!-- Metric cards -->
+    <rect x="90" y="552" width="250" height="50" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="215" y="570" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E" text-anchor="middle">
+        <tspan>Repeat Purchase Rate</tspan>
+    </text>
+    <text x="165" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E74C3C"
+        text-anchor="end">
+        <tspan>15%</tspan>
+    </text>
+    <text x="180" y="592" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E" text-anchor="middle">
+        <tspan>→</tspan>
+    </text>
+    <text x="195" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
+        text-anchor="start">
+        <tspan>30%+</tspan>
+    </text>
+
+    <rect x="370" y="552" width="250" height="50" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="495" y="570" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E" text-anchor="middle">
+        <tspan>Service Satisfaction (Good+)</tspan>
+    </text>
+    <text x="445" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E74C3C"
+        text-anchor="end">
+        <tspan>33%</tspan>
+    </text>
+    <text x="460" y="592" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E" text-anchor="middle">
+        <tspan>→</tspan>
+    </text>
+    <text x="475" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
+        text-anchor="start">
+        <tspan>60%+</tspan>
+    </text>
+
+    <rect x="650" y="552" width="250" height="50" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="775" y="570" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E" text-anchor="middle">
+        <tspan>Questionnaire Response</tspan>
+    </text>
+    <text x="725" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#E74C3C"
+        text-anchor="end">
+        <tspan>40%</tspan>
+    </text>
+    <text x="740" y="592" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E" text-anchor="middle">
+        <tspan>→</tspan>
+    </text>
+    <text x="755" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
+        text-anchor="start">
+        <tspan>70%+</tspan>
+    </text>
+
+    <rect x="930" y="552" width="250" height="50" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="1055" y="570" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E" text-anchor="middle">
+        <tspan>Customer Lifetime Value</tspan>
+    </text>
+    <text x="1055" y="592" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
+        text-anchor="middle">
+        <tspan>+40-50%</tspan>
+    </text>
+
+    <!-- Footer -->
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>7</tspan>
+    </text>
+    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Programme Initiatives Portfolio</tspan>
+    </text>
+</svg>

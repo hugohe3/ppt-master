@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   version="1.1"
+   id="svg45"
+   sodipodi:docname="P06_佛陀日常行为.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview45"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.9138998"
+     inkscape:cx="862.23894"
+     inkscape:cy="506.07298"
+     inkscape:window-width="1472"
+     inkscape:window-height="832"
+     inkscape:window-x="0"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g44" />
+  <defs
+     id="defs3">
+    <marker
+       id="arrowhead"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#8B9A9A"
+         id="polygon1" />
+    </marker>
+    <linearGradient
+       id="flowGradient"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="0%">
+      <stop
+         offset="0%"
+         stop-color="#C9A962"
+         id="stop1" />
+      <stop
+         offset="50%"
+         stop-color="#5D8C6A"
+         id="stop2" />
+      <stop
+         offset="100%"
+         stop-color="#2E4A62"
+         id="stop3" />
+    </linearGradient>
+    <clipPath
+       id="imgClip2">
+      <rect
+         x="10"
+         y="10"
+         width="300"
+         height="260"
+         rx="8"
+         id="rect3" />
+    </clipPath>
+  </defs>
+  <!-- 背景 -->
+  <rect
+     width="1280"
+     height="720"
+     fill="#F9F6F1"
+     id="rect4" />
+  <!-- 页面标题 -->
+  <text
+     x="40"
+     y="85"
+     font-family="PingFang SC, Microsoft YaHei, sans-serif"
+     font-size="28"
+     font-weight="bold"
+     fill="#2E4A62"
+     id="text4">平凡的序幕：佛陀的日常作息</text>
+  <line
+     x1="40"
+     y1="105"
+     x2="400"
+     y2="105"
+     stroke="#C9A962"
+     stroke-width="3"
+     id="line4" />
+  <!-- 左上：配图 -->
+  <g
+     transform="translate(40, 125)"
+     id="g5">
+    <rect
+       x="0"
+       y="0"
+       width="320"
+       height="280"
+       rx="12"
+       fill="#FFFFFF"
+       stroke="#E5E7EB"
+       stroke-width="1"
+       id="rect5" />
+    <image
+       xlink:href="../images/buddha_daily.png"
+       x="10"
+       y="10"
+       width="300"
+       height="260"
+       preserveAspectRatio="xMidYMid slice"
+       clip-path="url(#imgClip2)"
+       id="image5" />
+  </g>
+  <!-- 左下：核心洞见 -->
+  <g
+     transform="translate(40, 420)"
+     id="g9">
+    <rect
+       x="0"
+       y="0"
+       width="320"
+       height="210"
+       rx="12"
+       fill="#FDF8E8"
+       stroke="#C9A962"
+       stroke-width="2"
+       id="rect6" />
+    <use
+       data-icon="lightbulb"
+       x="20"
+       y="20"
+       width="28"
+       height="28"
+       fill="#C9A962"
+       id="use6" />
+    <text
+       x="58"
+       y="42"
+       font-family="PingFang SC, Microsoft YaHei, sans-serif"
+       font-size="17"
+       font-weight="bold"
+       fill="#C9A962"
+       id="text6">核心洞见</text>
+    <line
+       x1="20"
+       y1="60"
+       x2="300"
+       y2="60"
+       stroke="#C9A962"
+       stroke-width="1"
+       opacity="0.3"
+       id="line6" />
+    <text
+       x="20"
+       y="95"
+       font-family="PingFang SC, Microsoft YaHei, sans-serif"
+       font-size="15"
+       fill="#374151"
+       id="text9"><tspan
+         x="20"
+         dy="0"
+         id="tspan6">这些看似平淡无奇的动作，</tspan><tspan
+         x="20"
+         dy="28"
+         id="tspan7">在佛教修行语境中</tspan><tspan
+         x="20"
+         dy="28"
+         id="tspan8">蕴含着深刻的意义，</tspan><tspan
+         x="20"
+         dy="28"
+         id="tspan9">是佛陀身体力行的教法示范。</tspan></text>
+  </g>
+  <!-- 右侧：行为序列流程图 -->
+  <g
+     transform="translate(390, 125)"
+     id="g44">
+    <rect
+       x="0"
+       y="0"
+       width="850"
+       height="505"
+       rx="12"
+       fill="#FFFFFF"
+       stroke="#E5E7EB"
+       stroke-width="1"
+       id="rect9" />
+    <!-- 标题与进度条 -->
+    <text
+       x="30"
+       y="40"
+       font-family="PingFang SC, Microsoft YaHei, sans-serif"
+       font-size="18"
+       font-weight="bold"
+       fill="#2E4A62"
+       id="text10">佛陀日常行为序列</text>
+    <rect
+       x="30"
+       y="55"
+       width="790"
+       height="4"
+       rx="2"
+       fill="#E5E7EB"
+       id="rect10" />
+    <rect
+       x="30"
+       y="55"
+       width="790"
+       height="4"
+       rx="2"
+       fill="url(#flowGradient)"
+       id="rect11" />
+    <!-- 阶段标签 -->
+    <g
+       transform="translate(30, 75)"
+       id="g14">
+      <rect
+         x="0"
+         y="0"
+         width="80"
+         height="24"
+         rx="12"
+         fill="#C9A962"
+         opacity="0.2"
+         id="rect12" />
+      <text
+         x="40"
+         y="17"
+         font-family="PingFang SC, Microsoft YaHei, sans-serif"
+         font-size="12"
+         fill="#C9A962"
+         text-anchor="middle"
+         font-weight="bold"
+         id="text12">准备阶段</text>
+      <rect
+         x="270"
+         y="0"
+         width="80"
+         height="24"
+         rx="12"
+         fill="#5D8C6A"
+         opacity="0.2"
+         id="rect13" />
+      <text
+         x="310"
+         y="17"
+         font-family="PingFang SC, Microsoft YaHei, sans-serif"
+         font-size="12"
+         fill="#5D8C6A"
+         text-anchor="middle"
+         font-weight="bold"
+         id="text13">乞食阶段</text>
+      <rect
+         x="540"
+         y="0"
+         width="80"
+         height="24"
+         rx="12"
+         fill="#2E4A62"
+         opacity="0.2"
+         id="rect14" />
+      <text
+         x="580"
+         y="17"
+         font-family="PingFang SC, Microsoft YaHei, sans-serif"
+         font-size="12"
+         fill="#2E4A62"
+         text-anchor="middle"
+         font-weight="bold"
+         id="text14">安住阶段</text>
+    </g>
+    <!-- 流程图 - 第一行（准备阶段）-->
+    <g
+       transform="translate(30, 115)"
+       id="g24">
+      <!-- 步骤1: 食时 -->
+      <g
+         id="g17">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#C9A962"
+           id="circle14" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text15">1</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#FDF8E8"
+           stroke="#C9A962"
+           stroke-width="2"
+           id="rect15" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#C9A962"
+           text-anchor="middle"
+           id="text16">食时</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text17">用餐时间到</text>
+      </g>
+      <!-- 箭头 -->
+      <path
+         d="M190 35 L220 35"
+         stroke="#C9A962"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path17" />
+      <!-- 步骤2: 著衣持钵 -->
+      <g
+         transform="translate(230, 0)"
+         id="g20">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#C9A962"
+           id="circle17" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text18">2</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#FDF8E8"
+           stroke="#C9A962"
+           stroke-width="2"
+           id="rect18" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#C9A962"
+           text-anchor="middle"
+           id="text19">著衣持钵</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text20">穿衣拿钵</text>
+      </g>
+      <!-- 箭头 -->
+      <path
+         d="M420 35 L450 35"
+         stroke="#5D8C6A"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path20" />
+      <!-- 步骤3: 入城乞食 -->
+      <g
+         transform="translate(460, 0)"
+         id="g23">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#5D8C6A"
+           id="circle20" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text21">3</text>
+        <rect
+           x="50"
+           y="0"
+           width="160"
+           height="70"
+           rx="8"
+           fill="#E8F0EA"
+           stroke="#5D8C6A"
+           stroke-width="2"
+           id="rect21" />
+        <text
+           x="130"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#5D8C6A"
+           text-anchor="middle"
+           id="text22">入舍卫大城</text>
+        <text
+           x="130"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text23">进城乞食</text>
+      </g>
+    </g>
+    <!-- 转折箭头 3→4 -->
+    <path
+       d="m 622,189 v 30"
+       stroke="#5d8c6a"
+       stroke-width="2"
+       marker-end="url(#arrowhead)"
+       id="path24" />
+    <!-- 流程图 - 第二行（乞食阶段）-->
+    <g
+       transform="translate(30, 225)"
+       id="g33">
+      <!-- 步骤4: 次第乞已 -->
+      <g
+         transform="translate(460, 0)"
+         id="g26">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#5D8C6A"
+           id="circle24" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text24">4</text>
+        <rect
+           x="50"
+           y="0"
+           width="160"
+           height="70"
+           rx="8"
+           fill="#E8F0EA"
+           stroke="#5D8C6A"
+           stroke-width="2"
+           id="rect24" />
+        <text
+           x="130"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#5D8C6A"
+           text-anchor="middle"
+           id="text25">次第乞已</text>
+        <text
+           x="130"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text26">依序乞食完毕</text>
+      </g>
+      <!-- 箭头（反向） -->
+      <path
+         d="M450 35 L420 35"
+         stroke="#5D8C6A"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path26" />
+      <!-- 步骤5: 还至本处 -->
+      <g
+         transform="translate(230, 0)"
+         id="g29">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#5D8C6A"
+           id="circle26" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text27">5</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#E8F0EA"
+           stroke="#5D8C6A"
+           stroke-width="2"
+           id="rect27" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#5D8C6A"
+           text-anchor="middle"
+           id="text28">还至本处</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text29">返回住处</text>
+      </g>
+      <!-- 箭头（反向） -->
+      <path
+         d="M220 35 L190 35"
+         stroke="#C9A962"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path29" />
+      <!-- 步骤6: 饭食讫 -->
+      <g
+         id="g32">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#C9A962"
+           id="circle29" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text30">6</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#FDF8E8"
+           stroke="#C9A962"
+           stroke-width="2"
+           id="rect30" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#C9A962"
+           text-anchor="middle"
+           id="text31">饭食讫</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text32">用餐完毕</text>
+      </g>
+    </g>
+    <!-- 转折箭头 6→7 -->
+    <path
+       d="m 145,301 v 30"
+       stroke="#2e4a62"
+       stroke-width="2"
+       marker-end="url(#arrowhead)"
+       id="path33" />
+    <!-- 流程图 - 第三行（安住阶段）-->
+    <g
+       transform="translate(30, 335)"
+       id="g42">
+      <!-- 步骤7: 收衣钵 -->
+      <g
+         id="g35">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#2E4A62"
+           id="circle33" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text33">7</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#E8EBF0"
+           stroke="#2E4A62"
+           stroke-width="2"
+           id="rect33" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#2E4A62"
+           text-anchor="middle"
+           id="text34">收衣钵</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text35">收拾衣钵</text>
+      </g>
+      <!-- 箭头 -->
+      <path
+         d="M190 35 L220 35"
+         stroke="#2E4A62"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path35" />
+      <!-- 步骤8: 洗足已 -->
+      <g
+         transform="translate(230, 0)"
+         id="g38">
+        <circle
+           cx="20"
+           cy="35"
+           r="18"
+           fill="#2E4A62"
+           id="circle35" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text36">8</text>
+        <rect
+           x="50"
+           y="0"
+           width="130"
+           height="70"
+           rx="8"
+           fill="#E8EBF0"
+           stroke="#2E4A62"
+           stroke-width="2"
+           id="rect36" />
+        <text
+           x="115"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#2E4A62"
+           text-anchor="middle"
+           id="text37">洗足已</text>
+        <text
+           x="115"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#6B7280"
+           text-anchor="middle"
+           id="text38">洗净双足</text>
+      </g>
+      <!-- 箭头 -->
+      <path
+         d="M420 35 L450 35"
+         stroke="#2E4A62"
+         stroke-width="2"
+         marker-end="url(#arrowhead)"
+         id="path38" />
+      <!-- 步骤9: 敷座而坐（终点高亮） -->
+      <g
+         transform="translate(460, 0)"
+         id="g41">
+        <circle
+           cx="20"
+           cy="35"
+           r="22"
+           fill="#2E4A62"
+           stroke="#C9A962"
+           stroke-width="3"
+           id="circle38" />
+        <text
+           x="20"
+           y="40"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="14"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text39">9</text>
+        <rect
+           x="50"
+           y="0"
+           width="160"
+           height="70"
+           rx="8"
+           fill="#2E4A62"
+           id="rect39" />
+        <text
+           x="130"
+           y="30"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="16"
+           font-weight="bold"
+           fill="#FFFFFF"
+           text-anchor="middle"
+           id="text40">敷座而坐</text>
+        <text
+           x="130"
+           y="52"
+           font-family="PingFang SC, Microsoft YaHei, sans-serif"
+           font-size="13"
+           fill="#E8EBF0"
+           text-anchor="middle"
+           id="text41">铺座安坐 ✦</text>
+      </g>
+    </g>
+    <!-- 底部强调 -->
+    <g
+       transform="translate(30, 450)"
+       id="g43">
+      <rect
+         x="0"
+         y="0"
+         width="790"
+         height="45"
+         rx="8"
+         fill="#FDF8E8"
+         stroke="#C9A962"
+         stroke-width="1"
+         id="rect42" />
+      <use
+         data-icon="sparkles"
+         x="20"
+         y="8"
+         width="28"
+         height="28"
+         fill="#C9A962"
+         id="use42" />
+      <text
+         x="60"
+         y="30"
+         font-family="PingFang SC, Microsoft YaHei, sans-serif"
+         font-size="15"
+         fill="#374151"
+         id="text42">修行即在行住坐卧之间 —— 每一个动作都是无言的教法示范，平凡即是非凡</text>
+    </g>
+  </g>
+  <!-- 页脚 -->
+  <text
+     x="40"
+     y="695"
+     font-family="PingFang SC, Microsoft YaHei, sans-serif"
+     font-size="14"
+     fill="#8B9A9A"
+     id="text44">第二部分：叙事基础</text>
+  <text
+     x="1240"
+     y="695"
+     font-family="PingFang SC, Microsoft YaHei, sans-serif"
+     font-size="14"
+     fill="#8B9A9A"
+     text-anchor="end"
+     id="text45">6 / 15</text>
+</svg>

@@ -1,0 +1,142 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">债转股与控制权转移</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">DEBT-FOR-EQUITY SWAP</text>
+  
+  <!-- 已发生案例：EDL-T -->
+  <g transform="translate(40, 100)">
+    <rect width="1200" height="200" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
+    <rect x="0" y="0" width="1200" height="45" rx="12" fill="#B8352B"/>
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">⚠️ 已发生案例：EDL-T（老挝国家输电网公司）— 2020年</text>
+    
+    <g transform="translate(30, 65)">
+      <!-- Before -->
+      <g transform="translate(0, 0)">
+        <rect width="250" height="110" rx="8" fill="#1A6B7C" opacity="0.1"/>
+        <text x="125" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">转让前</text>
+        <text x="125" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">EDL 100% 控制输电网</text>
+        <text x="125" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" text-anchor="middle">因债务无法偿还</text>
+        <text x="125" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#B8352B" text-anchor="middle">被迫寻求重组</text>
+      </g>
+      
+      <text x="280" y="60" font-family="system-ui" font-size="32" fill="#B8352B" font-weight="700">→</text>
+      
+      <!-- After -->
+      <g transform="translate(310, 0)">
+        <rect width="350" height="110" rx="8" fill="#B8352B" opacity="0.1"/>
+        <text x="175" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#B8352B" text-anchor="middle">转让后 · 股权结构</text>
+        
+        <!-- 股权饼图简化 -->
+        <g transform="translate(80, 70)">
+          <circle cx="0" cy="0" r="30" fill="#B8352B"/>
+          <text x="0" y="5" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">90%</text>
+        </g>
+        <text x="130" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">中国南方电网</text>
+        <text x="130" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#B8352B" font-weight="600">绝对控股</text>
+        
+        <g transform="translate(250, 70)">
+          <circle cx="0" cy="0" r="20" fill="#C9A227"/>
+          <text x="0" y="5" font-family="system-ui" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">10%</text>
+        </g>
+        <text x="285" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568">老挝</text>
+      </g>
+      
+      <!-- 特许权说明 -->
+      <g transform="translate(690, 0)">
+        <rect width="240" height="110" rx="8" fill="#0D2B3E" opacity="0.08"/>
+        <text x="20" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#0D2B3E">特许经营权</text>
+        <text x="20" y="55" font-family="system-ui" font-size="18" font-weight="700" fill="#1A6B7C">25年</text>
+        <text x="20" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568">业务范围：</text>
+        <text x="20" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568">230kV以上高压输电网</text>
+      </g>
+      
+      <!-- 影响说明 -->
+      <g transform="translate(950, 0)">
+        <rect width="180" height="110" rx="8" fill="#B8352B"/>
+        <text x="90" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">实际影响</text>
+        <text x="90" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">老挝高压输电网</text>
+        <text x="90" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">由中国国企运营</text>
+        <text x="90" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6" text-anchor="middle">含跨境出口线路</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 南欧江案可能走向 -->
+  <g transform="translate(40, 320)">
+    <rect width="1200" height="200" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2" stroke-dasharray="8,4"/>
+    <rect x="0" y="0" width="1200" height="45" rx="12" fill="#D97706"/>
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">🔮 南欧江仲裁案可能走向（推演）</text>
+    
+    <g transform="translate(30, 65)">
+      <text x="0" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">如果EDL无法支付$5.55亿赔偿金...</text>
+      
+      <!-- 可能方案 -->
+      <g transform="translate(0, 40)">
+        <rect width="280" height="80" rx="8" fill="#D97706" opacity="0.1"/>
+        <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#D97706">方案A</text>
+        <text x="15" y="48" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">老挝让渡南欧江项目</text>
+        <text x="15" y="68" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">剩余15%股权</text>
+      </g>
+      
+      <g transform="translate(310, 40)">
+        <rect width="280" height="80" rx="8" fill="#D97706" opacity="0.1"/>
+        <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#D97706">方案B</text>
+        <text x="15" y="48" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">更多水电资产</text>
+        <text x="15" y="68" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">转让给中方企业</text>
+      </g>
+      
+      <g transform="translate(620, 40)">
+        <rect width="280" height="80" rx="8" fill="#D97706" opacity="0.1"/>
+        <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#D97706">方案C</text>
+        <text x="15" y="48" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">配电网络经营权</text>
+        <text x="15" y="68" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">让渡</text>
+      </g>
+      
+      <g transform="translate(930, 40)">
+        <rect width="200" height="80" rx="8" fill="#B8352B"/>
+        <text x="100" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">结果</text>
+        <text x="100" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">能源控制权</text>
+        <text x="100" y="72" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">进一步让渡</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 电力系统控制权版图 -->
+  <g transform="translate(40, 540)">
+    <rect width="1200" height="120" rx="12" fill="#0D2B3E"/>
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#7ED4E6">老挝电力系统控制权版图（现状+趋势）</text>
+    
+    <g transform="translate(30, 50)">
+      <rect width="280" height="55" rx="6" fill="#FFFFFF" opacity="0.1"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">发电（南欧江等）</text>
+      <text x="15" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" font-weight="600">中国电建 85%+</text>
+    </g>
+    
+    <text x="330" y="78" font-family="system-ui" font-size="24" fill="#C9A227">+</text>
+    
+    <g transform="translate(360, 50)">
+      <rect width="280" height="55" rx="6" fill="#FFFFFF" opacity="0.1"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">输电（EDL-T）</text>
+      <text x="15" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" font-weight="600">中国南方电网 90%</text>
+    </g>
+    
+    <text x="660" y="78" font-family="system-ui" font-size="24" fill="#C9A227">+</text>
+    
+    <g transform="translate(690, 50)">
+      <rect width="200" height="55" rx="6" fill="#D97706" opacity="0.3"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#D97706">配电（？）</text>
+      <text x="15" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" font-weight="600">未来可能...</text>
+    </g>
+    
+    <text x="910" y="78" font-family="system-ui" font-size="24" fill="#B8352B">=</text>
+    
+    <g transform="translate(940, 50)">
+      <rect width="220" height="55" rx="6" fill="#B8352B"/>
+      <text x="110" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle">能源主权</text>
+      <text x="110" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">"空心化"</text>
+    </g>
+  </g>
+  
+  <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">14 / 20</text>
+</svg>

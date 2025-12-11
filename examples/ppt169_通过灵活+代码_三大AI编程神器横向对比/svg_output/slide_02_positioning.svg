@@ -1,0 +1,150 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.1)" />
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 页面标题 -->
+    <text x="640" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B"
+        text-anchor="middle" font-weight="700">一句话定位</text>
+    <text x="640" y="105" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#64748B"
+        text-anchor="middle">快速了解三款工具的核心差异</text>
+
+    <!-- Spec Kit 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="150" width="360" height="340" rx="16" fill="#FFFFFF" />
+        <rect x="60" y="150" width="360" height="8" rx="4" fill="#8B5CF6" />
+
+        <!-- 图标 -->
+        <circle cx="240" cy="210" r="35" fill="#8B5CF6" opacity="0.15" />
+        <text x="240" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#8B5CF6"
+            text-anchor="middle" font-weight="700">SK</text>
+
+        <!-- 工具名 -->
+        <text x="240" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B"
+            text-anchor="middle" font-weight="700">Spec Kit</text>
+        <text x="240" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#8B5CF6"
+            text-anchor="middle">GitHub 官方出品</text>
+
+        <!-- 定位 -->
+        <rect x="90" y="320" width="300" height="60" rx="8" fill="#F5F3FF" />
+        <text x="240" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#5B21B6"
+            text-anchor="middle" font-weight="600">
+            <tspan x="240" dy="0">产品经理 + 架构师 + 程序员</tspan>
+            <tspan x="240" dy="22">的三合一工作台</tspan>
+        </text>
+
+        <!-- 核心理念 -->
+        <text x="240" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">核心理念</text>
+        <text x="240" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B"
+            text-anchor="middle" font-weight="600">规格驱动开发</text>
+        <text x="240" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">Spec-Driven Development</text>
+    </g>
+
+    <!-- OpenSpec 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="150" width="360" height="340" rx="16" fill="#FFFFFF" />
+        <rect x="460" y="150" width="360" height="8" rx="4" fill="#2563EB" />
+
+        <!-- 图标 -->
+        <circle cx="640" cy="210" r="35" fill="#2563EB" opacity="0.15" />
+        <text x="640" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#2563EB"
+            text-anchor="middle" font-weight="700">OS</text>
+
+        <!-- 工具名 -->
+        <text x="640" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B"
+            text-anchor="middle" font-weight="700">OpenSpec</text>
+        <text x="640" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#2563EB"
+            text-anchor="middle">Fission-AI</text>
+
+        <!-- 定位 -->
+        <rect x="490" y="320" width="300" height="60" rx="8" fill="#EFF6FF" />
+        <text x="640" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#1D4ED8"
+            text-anchor="middle" font-weight="600">
+            <tspan x="640" dy="0">存量项目的</tspan>
+            <tspan x="640" dy="22">需求管理专家</tspan>
+        </text>
+
+        <!-- 核心理念 -->
+        <text x="640" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">核心理念</text>
+        <text x="640" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B"
+            text-anchor="middle" font-weight="600">变更驱动开发</text>
+        <text x="640" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">Change-Driven Development</text>
+    </g>
+
+    <!-- ZCF 卡片 -->
+    <g filter="url(#cardShadow)">
+        <rect x="860" y="150" width="360" height="340" rx="16" fill="#FFFFFF" />
+        <rect x="860" y="150" width="360" height="8" rx="4" fill="#10B981" />
+
+        <!-- 图标 -->
+        <circle cx="1040" cy="210" r="35" fill="#10B981" opacity="0.15" />
+        <text x="1040" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#10B981"
+            text-anchor="middle" font-weight="700">ZCF</text>
+
+        <!-- 工具名 -->
+        <text x="1040" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B"
+            text-anchor="middle" font-weight="700">ZCF</text>
+        <text x="1040" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#10B981"
+            text-anchor="middle">UfoMiao（社区）</text>
+
+        <!-- 定位 -->
+        <rect x="890" y="320" width="300" height="60" rx="8" fill="#ECFDF5" />
+        <text x="1040" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#047857"
+            text-anchor="middle" font-weight="600">
+            <tspan x="1040" dy="0">AI 编程环境的</tspan>
+            <tspan x="1040" dy="22">一键配置器</tspan>
+        </text>
+
+        <!-- 核心理念 -->
+        <text x="1040" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B"
+            text-anchor="middle">核心理念</text>
+        <text x="1040" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B"
+            text-anchor="middle" font-weight="600">零配置，开箱即用</text>
+        <text x="1040" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B"
+            text-anchor="middle">Zero-Config Code Flow</text>
+    </g>
+
+    <!-- 底部总结 -->
+    <rect x="60" y="520" width="1160" height="140" rx="12" fill="#1E293B" />
+
+    <text x="130" y="565" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8">简单来说</text>
+
+    <!-- 三条总结 -->
+    <circle cx="100" cy="600" r="6" fill="#8B5CF6" />
+    <text x="120" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#C4B5FD">Spec Kit</tspan>
+        <tspan fill="#94A3B8"> 帮你从 0 到 1 想清楚</tspan>
+        <tspan fill="#FFFFFF">"做什么"</tspan>
+        <tspan fill="#94A3B8">和</tspan>
+        <tspan fill="#FFFFFF">"怎么做"</tspan>
+    </text>
+
+    <circle cx="500" cy="600" r="6" fill="#2563EB" />
+    <text x="520" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#93C5FD">OpenSpec</tspan>
+        <tspan fill="#94A3B8"> 帮你管理</tspan>
+        <tspan fill="#FFFFFF">"改什么"</tspan>
+        <tspan fill="#94A3B8">和</tspan>
+        <tspan fill="#FFFFFF">"改了哪些"</tspan>
+    </text>
+
+    <circle cx="900" cy="600" r="6" fill="#10B981" />
+    <text x="920" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#6EE7B7">ZCF</tspan>
+        <tspan fill="#94A3B8"> 帮你</tspan>
+        <tspan fill="#FFFFFF">"5 分钟配好环境就能干活"</tspan>
+    </text>
+
+    <!-- 页码 -->
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+        text-anchor="end">02 / 11</text>
+</svg>

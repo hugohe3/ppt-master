@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+        <marker id="flowArrow" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+            <polygon points="0 0, 12 4, 0 8" fill="url(#accentGradient)" />
+        </marker>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    <!-- 顶部标题 -->
+    <text x="640" y="80" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="44"
+        font-weight="bold" fill="#e6edf3">✨ Debug 的本质</text>
+    <rect x="540" y="95" width="200" height="4" rx="2" fill="url(#accentGradient)" />
+
+    <!-- 三步流程图 -->
+    <g transform="translate(60, 150)">
+        <!-- 步骤 1: 先理解 -->
+        <g>
+            <rect width="320" height="200" rx="16" fill="#161b22" stroke="#58a6ff" stroke-width="3" />
+            <rect width="320" height="60" rx="16" fill="#58a6ff" opacity="0.2" />
+            <text x="160" y="42" text-anchor="middle" font-family="SF Mono, monospace" font-size="28" font-weight="bold" fill="#58a6ff">01</text>
+
+            <text x="160" y="100" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="32" font-weight="bold" fill="#e6edf3">先理解</text>
+            <text x="160" y="140" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">厘清流程合理性</text>
+            <text x="160" y="170" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">用白话描述问题</text>
+        </g>
+
+        <!-- 箭头 1 -->
+        <line x1="340" y1="100" x2="400" y2="100" stroke="url(#accentGradient)" stroke-width="4" marker-end="url(#flowArrow)" />
+
+        <!-- 步骤 2: 再定位 -->
+        <g transform="translate(420, 0)">
+            <rect width="320" height="200" rx="16" fill="#161b22" stroke="#f0883e" stroke-width="3" />
+            <rect width="320" height="60" rx="16" fill="#f0883e" opacity="0.2" />
+            <text x="160" y="42" text-anchor="middle" font-family="SF Mono, monospace" font-size="28" font-weight="bold" fill="#f0883e">02</text>
+
+            <text x="160" y="100" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="32" font-weight="bold" fill="#e6edf3">再定位</text>
+            <text x="160" y="140" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">画出事件流</text>
+            <text x="160" y="170" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">二分法缩小范围</text>
+        </g>
+
+        <!-- 箭头 2 -->
+        <line x1="760" y1="100" x2="820" y2="100" stroke="url(#accentGradient)" stroke-width="4" marker-end="url(#flowArrow)" />
+
+        <!-- 步骤 3: 后验证 -->
+        <g transform="translate(840, 0)">
+            <rect width="320" height="200" rx="16" fill="#161b22" stroke="#7ee787" stroke-width="3" />
+            <rect width="320" height="60" rx="16" fill="#7ee787" opacity="0.2" />
+            <text x="160" y="42" text-anchor="middle" font-family="SF Mono, monospace" font-size="28" font-weight="bold" fill="#7ee787">03</text>
+
+            <text x="160" y="100" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="32" font-weight="bold" fill="#e6edf3">后验证</text>
+            <text x="160" y="140" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">控制变量测试</text>
+            <text x="160" y="170" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#8b949e">确认无副作用</text>
+        </g>
+    </g>
+
+    <!-- 金句区域 -->
+    <rect x="100" y="400" width="1080" height="100" rx="12" fill="#161b22" stroke="url(#accentGradient)"
+        stroke-width="2" />
+    <text x="640" y="460" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="26"
+        fill="#e6edf3">
+        <tspan>从</tspan>
+        <tspan fill="#f85149" font-weight="bold">"修补匠"</tspan>
+        <tspan>进阶为能</tspan>
+        <tspan fill="#7ee787" font-weight="bold">掌控系统</tspan>
+        <tspan>的开发者</tspan>
+    </text>
+
+    <!-- 适用场景 -->
+    <g transform="translate(60, 540)">
+        <text x="0" y="0" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#58a6ff">🚀 适用场景</text>
+
+        <!-- 场景卡片 -->
+        <g transform="translate(0, 25)">
+            <rect width="560" height="70" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1" />
+            <circle cx="40" cy="35" r="20" fill="#58a6ff" opacity="0.2" />
+            <text x="40" y="42" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" fill="#58a6ff">⌨️</text>
+            <text x="80" y="30" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#e6edf3">手写代码</text>
+            <text x="80" y="55" font-family="SF Pro Text, -apple-system, sans-serif" font-size="15" fill="#8b949e">传统开发流程中的问题排查</text>
+        </g>
+
+        <g transform="translate(600, 25)">
+            <rect width="560" height="70" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1" />
+            <circle cx="40" cy="35" r="20" fill="#7ee787" opacity="0.2" />
+            <text x="40" y="42" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" fill="#7ee787">🤖</text>
+            <text x="80" y="30" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#e6edf3">AI 辅助开发</text>
+            <text x="80" y="55" font-family="SF Pro Text, -apple-system, sans-serif" font-size="15" fill="#8b949e">与 Copilot/GPT 协作时的问题诊断</text>
+        </g>
+    </g>
+
+    <!-- 底部装饰 -->
+    <line x1="60" y1="660" x2="1220" y2="660" stroke="#30363d" stroke-width="1" />
+    <text x="640" y="685" text-anchor="middle" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">掌握方法论 → 解决任何 Bug 都更有底气</text>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">09 / 10</text>
+</svg>

@@ -1,0 +1,96 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">「谦」字的语源学解构</text>
+  <line x1="60" y1="120" x2="400" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 字形演变区 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="1160" height="140" rx="12" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    
+    <!-- 字形分解 -->
+    <g transform="translate(100, 30)">
+      <rect x="0" y="0" width="120" height="80" rx="8" fill="#2D5A5A"/>
+      <text x="60" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="bold" fill="#E8E4DC" text-anchor="middle">言</text>
+    </g>
+    
+    <text x="280" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" fill="#4A5568" text-anchor="middle">+</text>
+    
+    <g transform="translate(340, 30)">
+      <rect x="0" y="0" width="120" height="80" rx="8" fill="#C94C4C"/>
+      <text x="60" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">兼</text>
+    </g>
+    
+    <text x="520" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" fill="#4A5568" text-anchor="middle">=</text>
+    
+    <g transform="translate(580, 30)">
+      <rect x="0" y="0" width="120" height="80" rx="8" fill="#B8860B"/>
+      <text x="60" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">谦</text>
+    </g>
+    
+    <!-- 说文解字引用 -->
+    <text x="780" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
+      <tspan x="780" dy="0">《说文解字》：</tspan>
+      <tspan x="780" dy="26" font-style="italic">「谦，敬也。」</tspan>
+    </text>
+    
+    <text x="780" y="110" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">兼：手持两禾，意为合并、统合</text>
+  </g>
+  
+  <!-- 双重指涉解析 -->
+  <g transform="translate(60, 320)">
+    <!-- 左卡片：言语层面 -->
+    <rect x="0" y="0" width="555" height="280" rx="12" fill="#FFFFFF" stroke="#2D5A5A" stroke-width="2"/>
+    <rect x="0" y="0" width="555" height="50" rx="12" fill="#2D5A5A"/>
+    <rect x="0" y="40" width="555" height="10" fill="#2D5A5A"/>
+    <!-- icon: comment -->
+  <g transform="translate(20.0, 12.0) scale(1.625)" fill="#E8E4DC">
+    <path d="M0 1H16V13H11L8 16L5 13H0V1Z"/>
+  </g>
+    <text x="60" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC">言语层面的克制</text>
+    
+    <g transform="translate(30, 70)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E">
+        <tspan x="0" dy="20" font-weight="bold" fill="#2D5A5A">表层含义</tspan>
+        <tspan x="0" dy="30">言辞上的恭敬与不自满</tspan>
+        <tspan x="0" dy="50" font-weight="bold" fill="#2D5A5A">行为表现</tspan>
+        <tspan x="0" dy="30">• 不自吹自擂</tspan>
+        <tspan x="0" dy="26">• 不贬低他人以抬高自己</tspan>
+        <tspan x="0" dy="26">• 承认他人的价值与贡献</tspan>
+      </text>
+    </g>
+    
+    <!-- 右卡片：实质层面 -->
+    <rect x="605" y="0" width="555" height="280" rx="12" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+    <rect x="605" y="0" width="555" height="50" rx="12" fill="#C94C4C"/>
+    <rect x="605" y="40" width="555" height="10" fill="#C94C4C"/>
+    <!-- icon: layers -->
+  <g transform="translate(625.0, 12.0) scale(1.625)" fill="#FFFFFF">
+    <path d="M1 5V3L8 0L15 3V5L8 8L1 5Z"/>
+    <path d="M8 16L1 13V11L8 14L15 11V13L8 16Z"/>
+    <path d="M1 9L8 12L15 9V7L8 10L1 7V9Z"/>
+  </g>
+    <text x="665" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">实质层面的包容</text>
+    
+    <g transform="translate(635, 70)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E">
+        <tspan x="0" dy="20" font-weight="bold" fill="#C94C4C">核心哲学隐喻</tspan>
+        <tspan x="0" dy="30">「兼」= 兼收并蓄，虚空容纳万物</tspan>
+        <tspan x="0" dy="50" font-weight="bold" fill="#C94C4C">能量状态</tspan>
+        <tspan x="0" dy="30">• 有而不居：拥有实力（禾）</tspan>
+        <tspan x="0" dy="26">• 却不独占，通过分享合并（兼）</tspan>
+        <tspan x="0" dy="26">• 达到更高维度的平衡</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部引用 -->
+  <rect x="60" y="620" width="1160" height="50" rx="8" fill="#F0EDE8" stroke="#B8860B" stroke-width="1"/>
+  <text x="640" y="652" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#B8860B" text-anchor="middle">《尚书》：「满招损，谦受益。」—— 物理容器隐喻</text>
+  
+  <!-- 页脚 -->
+  <text x="60" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第二部分：符号学溯源</text>
+  <text x="1220" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">4 / 20</text>
+</svg>

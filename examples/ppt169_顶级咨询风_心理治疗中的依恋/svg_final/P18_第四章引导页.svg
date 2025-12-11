@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chapterGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#64748B"/>
+      <stop offset="100%" style="stop-color:#475569"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#chapterGradient4)"/>
+  
+  <!-- 装饰性四象限 -->
+  <g opacity="0.1">
+    <line x1="640" y1="100" x2="640" y2="620" stroke="#FFFFFF" stroke-width="2"/>
+    <line x1="200" y1="360" x2="1080" y2="360" stroke="#FFFFFF" stroke-width="2"/>
+    
+    <circle cx="400" cy="230" r="80" fill="none" stroke="#3D8B7A" stroke-width="3"/>
+    <circle cx="880" cy="230" r="80" fill="none" stroke="#64748B" stroke-width="3"/>
+    <circle cx="400" cy="490" r="80" fill="none" stroke="#E07843" stroke-width="3"/>
+    <circle cx="880" cy="490" r="80" fill="none" stroke="#B54545" stroke-width="3"/>
+    
+    <text x="400" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">安全型</text>
+    <text x="880" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">回避型</text>
+    <text x="400" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">矛盾型</text>
+    <text x="880" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">混乱型</text>
+  </g>
+  
+  <!-- 章节编号 -->
+  <text x="640" y="300" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+    04
+  </text>
+  
+  <!-- 章节标识 -->
+  <rect x="550" y="350" width="180" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <text x="640" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    CHAPTER FOUR
+  </text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="44" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    依恋模式与临床实践
+  </text>
+  
+  <!-- 英文副标题 -->
+  <text x="640" y="510" font-family="system-ui, sans-serif" font-size="22" fill="#CBD5E1" text-anchor="middle">
+    Attachment Patterns in Clinical Practice
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="540" y="535" width="200" height="3" rx="1.5" fill="#E07843"/>
+  
+  <!-- 关键词 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(280, 580)">
+    <rect x="0" y="0" width="120" height="30" rx="15" fill="rgba(61,139,122,0.4)"/>
+    <text x="60" y="20" text-anchor="middle">安全/自主型</text>
+    
+    <rect x="140" y="0" width="120" height="30" rx="15" fill="rgba(100,116,139,0.4)"/>
+    <text x="200" y="20" text-anchor="middle">回避/冷漠型</text>
+    
+    <rect x="280" y="0" width="120" height="30" rx="15" fill="rgba(224,120,67,0.4)"/>
+    <text x="340" y="20" text-anchor="middle">矛盾/迷恋型</text>
+    
+    <rect x="420" y="0" width="140" height="30" rx="15" fill="rgba(181,69,69,0.4)"/>
+    <text x="490" y="20" text-anchor="middle">混乱/未解决型</text>
+  </g>
+  
+  <!-- 底部提示 -->
+  <text x="640" y="660" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#94A3B8" text-anchor="middle">
+    从评估到干预：针对不同依恋模式的临床策略
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">18</text>
+</svg>

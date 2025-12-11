@@ -1,0 +1,118 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="bold" fill="#1E293B">
+    内容概览
+  </text>
+  <text x="60" y="110" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Contents Overview
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="130" x2="400" y2="130" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 左侧：五大模块 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <!-- 模块 I -->
+    <g transform="translate(60, 170)">
+      <rect x="0" y="0" width="50" height="50" rx="8" fill="#2E5C8E"/>
+      <text x="25" y="33" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Ⅰ</text>
+      <text x="70" y="22" font-size="20" font-weight="600" fill="#1E293B">依恋与改变的核心逻辑</text>
+      <text x="70" y="44" font-size="14" fill="#64748B">安全基地 · 心智化 · 非言语体验</text>
+    </g>
+    
+    <!-- 模块 II -->
+    <g transform="translate(60, 250)">
+      <rect x="0" y="0" width="50" height="50" rx="8" fill="#3D8B7A"/>
+      <text x="25" y="33" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Ⅱ</text>
+      <text x="70" y="22" font-size="20" font-weight="600" fill="#1E293B">依恋理论的四位奠基者</text>
+      <text x="70" y="44" font-size="14" fill="#64748B">Bowlby · Ainsworth · Main · Fonagy</text>
+    </g>
+    
+    <!-- 模块 III -->
+    <g transform="translate(60, 330)">
+      <rect x="0" y="0" width="50" height="50" rx="8" fill="#E07843"/>
+      <text x="25" y="33" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Ⅲ</text>
+      <text x="70" y="22" font-size="20" font-weight="600" fill="#1E293B">自我的多重维度</text>
+      <text x="70" y="44" font-size="14" fill="#64748B">躯体 · 情绪 · 表征 · 反思 · 觉察</text>
+    </g>
+    
+    <!-- 模块 IV -->
+    <g transform="translate(60, 410)">
+      <rect x="0" y="0" width="50" height="50" rx="8" fill="#64748B"/>
+      <text x="25" y="33" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Ⅳ</text>
+      <text x="70" y="22" font-size="20" font-weight="600" fill="#1E293B">依恋模式与临床实践</text>
+      <text x="70" y="44" font-size="14" fill="#64748B">安全型 · 回避型 · 矛盾型 · 混乱型</text>
+    </g>
+    
+    <!-- 模块 V -->
+    <g transform="translate(60, 490)">
+      <rect x="0" y="0" width="50" height="50" rx="8" fill="#B54545"/>
+      <text x="25" y="33" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Ⅴ</text>
+      <text x="70" y="22" font-size="20" font-weight="600" fill="#1E293B">非言语领域与治愈之路</text>
+      <text x="70" y="44" font-size="14" fill="#64748B">活现 · 唤起 · 具身化 · 双螺旋</text>
+    </g>
+  </g>
+  
+  <!-- 垂直分隔线 -->
+  <line x1="620" y1="150" x2="620" y2="600" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6,4"/>
+  
+  <!-- 右侧：学习目标 -->
+  <g transform="translate(680, 170)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <text x="0" y="0" font-size="18" font-weight="600" fill="#2E5C8E">
+      <tspan>📎</tspan>
+      <tspan dx="8">学习目标</tspan>
+    </text>
+    
+    <!-- 目标卡片背景 -->
+    <rect x="0" y="20" width="520" height="420" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <!-- 目标列表 -->
+    <g transform="translate(30, 60)">
+      <circle cx="8" cy="8" r="8" fill="#3D8B7A"/>
+      <text x="8" y="12" font-size="12" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="30" y="12" font-size="17" fill="#374151">理解依恋理论的核心概念与临床意义</text>
+      <text x="30" y="38" font-size="14" fill="#6B7280">掌握安全基地、内部工作模型、心智化等关键概念</text>
+    </g>
+    
+    <g transform="translate(30, 130)">
+      <circle cx="8" cy="8" r="8" fill="#3D8B7A"/>
+      <text x="8" y="12" font-size="12" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="30" y="12" font-size="17" fill="#374151">识别四种主要依恋模式及其表现</text>
+      <text x="30" y="38" font-size="14" fill="#6B7280">安全型、回避型、矛盾型、混乱型的特征与策略</text>
+    </g>
+    
+    <g transform="translate(30, 200)">
+      <circle cx="8" cy="8" r="8" fill="#3D8B7A"/>
+      <text x="8" y="12" font-size="12" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="30" y="12" font-size="17" fill="#374151">运用非言语沟通进行临床干预</text>
+      <text x="30" y="38" font-size="14" fill="#6B7280">活现、唤起、具身化的识别与处理技术</text>
+    </g>
+    
+    <g transform="translate(30, 270)">
+      <circle cx="8" cy="8" r="8" fill="#3D8B7A"/>
+      <text x="8" y="12" font-size="12" fill="#FFFFFF" text-anchor="middle">4</text>
+      <text x="30" y="12" font-size="17" fill="#374151">培养心智化与觉察的双螺旋能力</text>
+      <text x="30" y="38" font-size="14" fill="#6B7280">将反思与临在融入治疗过程</text>
+    </g>
+    
+    <g transform="translate(30, 340)">
+      <circle cx="8" cy="8" r="8" fill="#3D8B7A"/>
+      <text x="8" y="12" font-size="12" fill="#FFFFFF" text-anchor="middle">5</text>
+      <text x="30" y="12" font-size="17" fill="#374151">构建治疗中的安全基地</text>
+      <text x="30" y="38" font-size="14" fill="#6B7280">成为患者发展与转化的"足够好"的依恋对象</text>
+    </g>
+  </g>
+  
+  <!-- 底部信息 -->
+  <line x1="60" y1="650" x2="1220" y2="650" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="640" y="685" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="middle">
+    心理治疗中的依恋 —— 从养育到治愈，从理论到实践
+  </text>
+  <text x="1220" y="685" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">02</text>
+</svg>

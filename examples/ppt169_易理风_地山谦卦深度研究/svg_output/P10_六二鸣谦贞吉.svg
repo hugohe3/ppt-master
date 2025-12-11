@@ -1,0 +1,93 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">六二：鸣谦，贞吉</text>
+  <line x1="60" y1="120" x2="340" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 阴阳分栏 -->
+  <!-- 左栏 - 象数分析 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="555" height="450" rx="12" fill="#FFFFFF" stroke="#2D5A5A" stroke-width="2"/>
+    
+    <!-- 卡片标题 -->
+    <rect x="0" y="0" width="555" height="50" rx="12" fill="#2D5A5A"/>
+    <rect x="0" y="40" width="555" height="10" fill="#2D5A5A"/>
+    <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">象数分析</text>
+    
+    <!-- 爻位图示 -->
+    <g transform="translate(180, 80)">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="80" y1="0" x2="120" y2="0" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="0" y1="16" x2="40" y2="16" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="80" y1="16" x2="120" y2="16" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="0" y1="32" x2="40" y2="32" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="80" y1="32" x2="120" y2="32" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="0" y1="48" x2="120" y2="48" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <!-- 六二高亮 -->
+      <rect x="-10" y="57" width="200" height="22" rx="4" fill="#2D5A5A" opacity="0.2"/>
+      <line x1="0" y1="68" x2="40" y2="68" stroke="#2D5A5A" stroke-width="5" stroke-linecap="round"/>
+      <line x1="80" y1="68" x2="120" y2="68" stroke="#2D5A5A" stroke-width="5" stroke-linecap="round"/>
+      <text x="155" y="73" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2D5A5A" font-weight="bold">六二</text>
+      
+      <line x1="0" y1="88" x2="40" y2="88" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+      <line x1="80" y1="88" x2="120" y2="88" stroke="#4A5568" stroke-width="4" opacity="0.4"/>
+    </g>
+    
+    <!-- 分析内容 -->
+    <g transform="translate(30, 200)">
+      <rect x="0" y="0" width="495" height="80" rx="6" fill="#F5F3EF" stroke="#D4D4D4" stroke-width="1"/>
+      <text x="25" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#2D5A5A">柔顺中正</text>
+      <text x="25" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">阴爻居阴位（得位），且在下卦中位（得中）</text>
+      
+      <rect x="0" y="100" width="495" height="80" rx="6" fill="#F5F3EF" stroke="#D4D4D4" stroke-width="1"/>
+      <text x="25" y="130" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#2D5A5A">与六五不相应</text>
+      <text x="25" y="155" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">但因其德行纯正，自发地产生影响力</text>
+    </g>
+    
+    <!-- 底部备注 -->
+    <text x="278" y="425" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="middle">艮体之中，笃实内敛</text>
+  </g>
+  
+  <!-- 右栏 - 义理阐发 -->
+  <g transform="translate(665, 150)">
+    <rect x="0" y="0" width="555" height="450" rx="12" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+    
+    <!-- 卡片标题 -->
+    <rect x="0" y="0" width="555" height="50" rx="12" fill="#C94C4C"/>
+    <rect x="0" y="40" width="555" height="10" fill="#C94C4C"/>
+    <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">义理阐发</text>
+    
+    <!-- "鸣"的机制 -->
+    <g transform="translate(30, 70)">
+      <rect x="0" y="0" width="495" height="125" rx="8" fill="#F5F3EF" stroke="#B8860B" stroke-width="1"/>
+      <text x="25" y="28" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#B8860B">「鸣」的机制</text>
+      <text x="25" y="52" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+        <tspan x="25" dy="0">此处的「鸣」并非自我吹嘘</tspan>
+        <tspan x="25" dy="22">而是「鹤鸣在阴，其子和之」的共鸣</tspan>
+        <tspan x="25" dy="22">真诚的谦虚如声波般向外扩散，赢得社会的广泛赞誉</tspan>
+      </text>
+    </g>
+    
+    <!-- 风险警示 -->
+    <g transform="translate(30, 210)">
+      <rect x="0" y="0" width="495" height="130" rx="8" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+      <use data-icon="triangle-exclamation" x="20" y="18" width="24" height="24" fill="#C94C4C"/>
+      <text x="55" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C94C4C">风险警示：「贞」字</text>
+      <text x="25" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+        <tspan x="25" dy="0">名声是谦虚的副产品，也可能是杀手</tspan>
+        <tspan x="25" dy="22">一旦为了「鸣」而「谦」，就陷入伪善</tspan>
+        <tspan x="25" dy="22">「贞」警示：获得美名后必须保持初心，防止因名声而滋生傲慢</tspan>
+      </text>
+    </g>
+    
+    <!-- 底部核心洞见 -->
+    <rect x="30" y="355" width="495" height="55" rx="6" fill="#C94C4C"/>
+    <text x="278" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle">名声是谦虚的副产品，也可能成为杀手</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第四部分：六爻微观动力学</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">10 / 20</text>
+</svg>

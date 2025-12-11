@@ -1,0 +1,145 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    Lyons-Ruth：促进安全发展的四要素
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Developmental Desiderata for Secure Attachment
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="500" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 2×2 四要素卡片 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 合作性沟通 -->
+    <g>
+      <rect x="0" y="0" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <!-- 图标区 -->
+      <rect x="0" y="0" width="100" height="200" rx="12" fill="#2E5C8E"/>
+      <rect x="88" y="0" width="12" height="200" fill="#2E5C8E"/>
+      <text x="50" y="105" font-size="48" text-anchor="middle" fill="#FFFFFF">🗣️</text>
+      
+      <!-- 内容 -->
+      <text x="130" y="40" font-size="22" font-weight="bold" fill="#2E5C8E">合作性沟通</text>
+      <text x="130" y="65" font-size="14" fill="#64748B">Collaborative Communication</text>
+      
+      <text x="130" y="100" font-size="15" fill="#374151">
+        <tspan x="130" dy="0">对儿童的体验（感受、欲望、需求）持开放态度</tspan>
+        <tspan x="130" dy="26">不仅关注痛苦，也关注积极体验</tspan>
+      </text>
+      
+      <rect x="130" y="145" width="400" height="40" rx="8" fill="#E0F2FE"/>
+      <text x="330" y="170" font-size="14" fill="#2E5C8E" text-anchor="middle">
+        💡 治疗意义：致力于了解患者全部的主观体验
+      </text>
+    </g>
+    
+    <!-- 修复破裂 -->
+    <g transform="translate(600, 0)">
+      <rect x="0" y="0" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <!-- 图标区 -->
+      <rect x="0" y="0" width="100" height="200" rx="12" fill="#3D8B7A"/>
+      <rect x="88" y="0" width="12" height="200" fill="#3D8B7A"/>
+      <text x="50" y="105" font-size="48" text-anchor="middle" fill="#FFFFFF">🔧</text>
+      
+      <!-- 内容 -->
+      <text x="130" y="40" font-size="22" font-weight="bold" fill="#3D8B7A">修复破裂</text>
+      <text x="130" y="65" font-size="14" fill="#64748B">Repairing a Rupture</text>
+      
+      <text x="130" y="100" font-size="15" fill="#374151">
+        <tspan x="130" dy="0">当关系中断时，照看者主动发起修复</tspan>
+        <tspan x="130" dy="26">建立对互动调节的信心</tspan>
+      </text>
+      
+      <rect x="130" y="145" width="400" height="40" rx="8" fill="#D4EDDA"/>
+      <text x="330" y="170" font-size="14" fill="#3D8B7A" text-anchor="middle">
+        💡 治疗意义：主动识别并修复治疗关系中的中断
+      </text>
+    </g>
+    
+    <!-- 搭脚手架 -->
+    <g transform="translate(0, 230)">
+      <rect x="0" y="0" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      
+      <!-- 图标区 -->
+      <rect x="0" y="0" width="100" height="200" rx="12" fill="#E07843"/>
+      <rect x="88" y="0" width="12" height="200" fill="#E07843"/>
+      <text x="50" y="105" font-size="48" text-anchor="middle" fill="#FFFFFF">🏗️</text>
+      
+      <!-- 内容 -->
+      <text x="130" y="40" font-size="22" font-weight="bold" fill="#E07843">搭脚手架</text>
+      <text x="130" y="65" font-size="14" fill="#64748B">Scaffolding</text>
+      
+      <text x="130" y="100" font-size="15" fill="#374151">
+        <tspan x="130" dy="0">支持儿童新兴的能力</tspan>
+        <tspan x="130" dy="26">帮助其用语言表达体验</tspan>
+      </text>
+      
+      <rect x="130" y="145" width="400" height="40" rx="8" fill="#FED7AA"/>
+      <text x="330" y="170" font-size="14" fill="#E07843" text-anchor="middle">
+        💡 治疗意义：期望患者做得比他认为的更多
+      </text>
+    </g>
+    
+    <!-- 积极参与和斗争 -->
+    <g transform="translate(600, 230)">
+      <rect x="0" y="0" width="560" height="200" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+      
+      <!-- 图标区 -->
+      <rect x="0" y="0" width="100" height="200" rx="12" fill="#64748B"/>
+      <rect x="88" y="0" width="12" height="200" fill="#64748B"/>
+      <text x="50" y="105" font-size="48" text-anchor="middle" fill="#FFFFFF">⚔️</text>
+      
+      <!-- 内容 -->
+      <text x="130" y="40" font-size="22" font-weight="bold" fill="#64748B">积极参与和斗争</text>
+      <text x="130" y="65" font-size="14" fill="#94A3B8">Engagement and Struggle</text>
+      
+      <text x="130" y="100" font-size="15" fill="#374151">
+        <tspan x="130" dy="0">在儿童自我发展变化时</tspan>
+        <tspan x="130" dy="26">愿意与其互动甚至冲突</tspan>
+      </text>
+      
+      <rect x="130" y="145" width="400" height="40" rx="8" fill="#E2E8F0"/>
+      <text x="330" y="170" font-size="14" fill="#64748B" text-anchor="middle">
+        💡 治疗意义：设定界限，在连接中保持独立
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部强调 -->
+  <rect x="60" y="610" width="1160" height="70" rx="12" fill="#1E3A5F"/>
+  
+  <text x="100" y="645" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF">
+    <tspan font-weight="bold">核心公式：</tspan>
+  </text>
+  
+  <g transform="translate(220, 625)" font-family="PingFang SC, sans-serif" font-size="14">
+    <rect x="0" y="0" width="160" height="30" rx="15" fill="#2E5C8E"/>
+    <text x="80" y="20" fill="#FFFFFF" text-anchor="middle">随机应变的沟通</text>
+    
+    <text x="180" y="20" fill="#FFFFFF" font-size="20">+</text>
+    
+    <rect x="205" y="0" width="130" height="30" rx="15" fill="#3D8B7A"/>
+    <text x="270" y="20" fill="#FFFFFF" text-anchor="middle">情感调谐</text>
+    
+    <text x="355" y="20" fill="#FFFFFF" font-size="20">=</text>
+    
+    <rect x="380" y="0" width="180" height="30" rx="15" fill="#E07843"/>
+    <text x="470" y="20" fill="#FFFFFF" text-anchor="middle">让孩子感到"被感受"</text>
+    
+    <text x="580" y="20" fill="#94A3B8" font-size="13">Feeling Felt</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">17</text>
+</svg>

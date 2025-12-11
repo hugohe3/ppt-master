@@ -1,0 +1,78 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 深蓝渐变背景 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D2B3E"/>
+      <stop offset="100%" style="stop-color:#1A6B7C"/>
+    </linearGradient>
+    <!-- 水波纹装饰 -->
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E96B3;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#0D2B3E;stop-opacity:0.1"/>
+    </linearGradient>
+    <!-- 图片叠加遮罩 -->
+    <linearGradient id="overlayGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D2B3E;stop-opacity:0.7"/>
+      <stop offset="60%" style="stop-color:#0D2B3E;stop-opacity:0.5"/>
+      <stop offset="100%" style="stop-color:#1A6B7C;stop-opacity:0.8"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 背景图片 -->
+  <image href="../images/cover_dam.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.4"/>
+  
+  <!-- 渐变遮罩 -->
+  <rect width="1280" height="720" fill="url(#overlayGradient)"/>
+  
+  <!-- 水波纹装饰 -->
+  <path d="M0 580 Q320 540 640 580 T1280 560 L1280 720 L0 720 Z" fill="url(#waveGradient)"/>
+  <path d="M0 620 Q320 590 640 620 T1280 600 L1280 720 L0 720 Z" fill="url(#waveGradient)" opacity="0.5"/>
+  
+  <!-- 顶部标签 -->
+  <rect x="40" y="40" width="200" height="32" rx="4" fill="#C9A227" opacity="0.9"/>
+  <text x="140" y="62" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0D2B3E" text-anchor="middle">深度战略评估报告</text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="280" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <tspan x="640" dy="0">南欧江梯级水电站项目</tspan>
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="360" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="400" fill="#7ED4E6" text-anchor="middle">
+    <tspan x="640" dy="0">主权债务危机与中国电建-EDL仲裁案全景分析</tspan>
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="440" y1="410" x2="840" y2="410" stroke="#7ED4E6" stroke-width="2" opacity="0.6"/>
+  
+  <!-- 关键数据标签 -->
+  <g transform="translate(640, 480)">
+    <!-- 装机容量 -->
+    <g transform="translate(-280, 0)">
+      <rect x="-80" y="-25" width="160" height="50" rx="6" fill="#FFFFFF" opacity="0.1"/>
+      <text x="0" y="-5" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7ED4E6" text-anchor="middle">总装机容量</text>
+      <text x="0" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">1,272 MW</text>
+    </g>
+    <!-- 投资额 -->
+    <g transform="translate(0, 0)">
+      <rect x="-80" y="-25" width="160" height="50" rx="6" fill="#FFFFFF" opacity="0.1"/>
+      <text x="0" y="-5" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#7ED4E6" text-anchor="middle">总投资额</text>
+      <text x="0" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">$27.33亿</text>
+    </g>
+    <!-- 仲裁索赔 -->
+    <g transform="translate(280, 0)">
+      <rect x="-80" y="-25" width="160" height="50" rx="6" fill="#B8352B" opacity="0.3"/>
+      <text x="0" y="-5" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#FFCCCC" text-anchor="middle">仲裁索赔额</text>
+      <text x="0" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF" text-anchor="middle">$5.55亿</text>
+    </g>
+  </g>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="660" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" text-anchor="middle" opacity="0.8">
+    <tspan x="640" dy="0">2025年12月 | 老挝人民民主共和国 · 南欧江流域 · 一带一路关键项目</tspan>
+  </text>
+  
+</svg>

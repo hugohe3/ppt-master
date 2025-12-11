@@ -1,0 +1,91 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">理解的光谱：历代注疏举隅</text>
+  <line x1="40" y1="105" x2="360" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 时间线 -->
+  <line x1="120" y1="150" x2="120" y2="620" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 印度论师 -->
+  <g transform="translate(100, 150)">
+    <circle cx="20" cy="0" r="12" fill="#C9A962"/>
+    <text x="50" y="8" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962">印度论师 (4-8世纪)</text>
+    
+    <g transform="translate(50, 25)">
+      <rect x="0" y="0" width="500" height="90" rx="8" fill="#FDF8E8" stroke="#C9A962" stroke-width="1"/>
+      <text x="20" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">无著、世亲</text>
+      <text x="120" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">瑜伽行派大师</text>
+      <text x="20" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">破除"我"、"法"二执，阐明无住与实相</text>
+      <text x="20" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">莲花戒</text>
+      <text x="80" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">中观派论师</text>
+    </g>
+  </g>
+  
+  <!-- 中国早期 -->
+  <g transform="translate(100, 280)">
+    <circle cx="20" cy="0" r="12" fill="#5D8C6A"/>
+    <text x="50" y="8" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A">中国早期 (5-7世纪)</text>
+    
+    <g transform="translate(50, 25)">
+      <rect x="0" y="0" width="500" height="90" rx="8" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1"/>
+      <text x="20" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">僧肇、吉藏</text>
+      <text x="20" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">般若学说与中国玄学交融碰撞</text>
+      <text x="20" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">天台智顗</text>
+      <text x="110" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">判教体系中将其归为"通教"</text>
+    </g>
+  </g>
+  
+  <!-- 禅宗传统 -->
+  <g transform="translate(100, 410)">
+    <circle cx="20" cy="0" r="12" fill="#2E4A62"/>
+    <text x="50" y="8" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">禅宗传统 (7世纪后)</text>
+    
+    <g transform="translate(50, 25)">
+      <rect x="0" y="0" width="500" height="90" rx="8" fill="#E8EBF0" stroke="#2E4A62" stroke-width="1"/>
+      <text x="20" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">六祖慧能</text>
+      <text x="20" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">因《金刚经》"应无所住而生其心"开悟</text>
+      <text x="20" y="78" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">"直指人心，见性成佛"</text>
+    </g>
+  </g>
+  
+  <!-- 现代解读 -->
+  <g transform="translate(100, 540)">
+    <circle cx="20" cy="0" r="12" fill="#8B9A9A"/>
+    <text x="50" y="8" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#8B9A9A">现代解读</text>
+    
+    <g transform="translate(50, 25)">
+      <rect x="0" y="0" width="500" height="50" rx="8" fill="#F0F2F2" stroke="#8B9A9A" stroke-width="1"/>
+      <text x="20" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">南怀瑾</text>
+      <text x="100" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">生活化解读，破除神秘感，将传统智慧应用于现代生活</text>
+    </g>
+  </g>
+  
+  <!-- 右侧洞见卡片 -->
+  <g transform="translate(680, 150)">
+    <rect x="0" y="0" width="520" height="460" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+    <rect x="0" y="0" width="520" height="55" rx="12" fill="#C9A962"/>
+    <rect x="0" y="45" width="520" height="10" fill="#C9A962"/>
+    <text x="260" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">诠释的多样性</text>
+    
+    <text x="30" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151">
+      <tspan x="30" dy="0">这些不同的解读视角并非相互排斥，</tspan>
+      <tspan x="30" dy="30">而是共同构成了理解第一品的丰富维度：</tspan>
+    </text>
+    
+    <text x="30" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">
+      <tspan x="30" dy="0">• 禅师强调其中的"平常心"</tspan>
+      <tspan x="30" dy="35">• 义学僧分析其在判教体系中的位置</tspan>
+      <tspan x="30" dy="35">• 现代学者关注其历史语境或现代意义</tspan>
+    </text>
+    
+    <line x1="30" y1="300" x2="490" y2="300" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <text x="260" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">"第一品如同一扇门，</text>
+    <text x="260" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">不同的钥匙可以开启</text>
+    <text x="260" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">通往不同思想堂奥的路径。"</text>
+  </g>
+  
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第四部分：多元解读</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">11 / 15</text>
+</svg>

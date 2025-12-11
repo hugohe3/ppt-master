@@ -1,0 +1,95 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">环境与社会影响</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">ENVIRONMENTAL &amp; SOCIAL IMPACTS</text>
+  
+  <!-- 标签 -->
+  <g transform="translate(40, 100)">
+    <rect width="180" height="30" rx="6" fill="#8D6E63"/>
+    <text x="90" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">被遗忘的代价</text>
+  </g>
+  
+  <!-- 三栏卡片 -->
+  <!-- 卡片1：移民安置 -->
+  <g transform="translate(40, 150)">
+    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#8D6E63"/>
+    <text x="30" y="38" font-family="system-ui" font-size="28">🏠</text>
+    <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">移民安置与生计断裂</text>
+    
+    <g transform="translate(20, 80)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">影响规模</text>
+      <text x="0" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">七级大坝蓄水淹没大量河谷耕地和森林</text>
+      <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B" font-weight="500">数千人被迫搬迁（多为少数民族）</text>
+      
+      <text x="0" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">生计崩溃</text>
+      <text x="0" y="105" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 原住民依赖河岸种植和捕鱼</text>
+      <text x="0" y="125" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 安置点土地贫瘠、无法耕种</text>
+      <text x="0" y="145" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 传统渔业资源因大坝阻隔枯竭</text>
+      
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">补偿争议</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• NGO报告：搬迁数年后仍未获</text>
+      <text x="0" y="225" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">  足额补偿</text>
+      <text x="0" y="245" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 缺乏长期生计恢复支持项目</text>
+    </g>
+  </g>
+  
+  <!-- 卡片2：水文改变 -->
+  <g transform="translate(450, 150)">
+    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#2E96B3"/>
+    <text x="30" y="38" font-family="system-ui" font-size="28">🌊</text>
+    <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">水文改变与灾害风险</text>
+    
+    <g transform="translate(20, 80)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">泥沙阻隔</text>
+      <text x="0" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">南欧江曾是湄公河重要泥沙来源</text>
+      <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B" font-weight="500">→ 湄公河三角洲海岸侵蚀加剧</text>
+      
+      <text x="0" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">"调峰"运行影响</text>
+      <text x="0" y="105" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 日内调节导致下游水位剧烈波动</text>
+      <text x="0" y="125" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 水生生物栖息地破坏</text>
+      <text x="0" y="145" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 航运和生活用水安全隐患</text>
+      
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">系统性风险</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 极端气候事件下的脆弱性</text>
+      <text x="0" y="225" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 梯级联动风险</text>
+      <text x="0" y="245" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 紧急泄洪加剧下游灾害</text>
+    </g>
+  </g>
+  
+  <!-- 卡片3：文化遗产 -->
+  <g transform="translate(860, 150)">
+    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="380" height="60" rx="12" fill="#2E7D32"/>
+    <text x="30" y="38" font-family="system-ui" font-size="28">🏛️</text>
+    <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">文化遗产影响</text>
+    
+    <g transform="translate(20, 80)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">琅勃拉邦影响</text>
+      <text x="0" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">南欧江在琅勃拉邦附近汇入湄公河</text>
+      <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">帕乌石窟（Pak Ou Caves）位于汇流处</text>
+      
+      <text x="0" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">景观破坏</text>
+      <text x="0" y="105" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 泥沙减少导致水色变化</text>
+      <text x="0" y="125" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 水位非自然波动</text>
+      <text x="0" y="145" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#D97706" font-weight="500">• 世界文化遗产完整性存疑</text>
+      
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">经济影响</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 旅游体验下降</text>
+      <text x="0" y="225" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">• 依赖旅游业的社区收入减少</text>
+    </g>
+  </g>
+  
+  <!-- 底部说明 -->
+  <g transform="translate(40, 550)">
+    <rect width="1200" height="80" rx="12" fill="#8D6E63" opacity="0.1"/>
+    <text x="25" y="32" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#8D6E63">未计入成本</text>
+    <text x="25" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">这些社会与环境成本往往未被计入PPA的电价中，而是由当地社区默默承担。在宏大的金融博弈背后，这些是"被遗忘的代价"。</text>
+  </g>
+  
+  <line x1="40" y1="650" x2="1240" y2="650" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="680" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="680" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">16 / 20</text>
+</svg>

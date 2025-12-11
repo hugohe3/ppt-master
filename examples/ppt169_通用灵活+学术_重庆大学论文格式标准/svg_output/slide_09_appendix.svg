@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F7F9FC" />
+            <stop offset="100%" style="stop-color:#EDF2F7" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 顶部装饰线 -->
+    <rect x="0" y="0" width="1280" height="4" fill="#1A5F9E" />
+
+    <!-- 页面标题 -->
+    <text x="640" y="50" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="32"
+        font-weight="bold" fill="#1A5F9E">附录与致谢</text>
+    <text x="640" y="75" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+        fill="#718096">论文的补充材料与感谢表达</text>
+
+    <!-- 左栏：附录 -->
+    <g transform="translate(60, 100)">
+        <rect width="700" height="520" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
+            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+
+        <rect width="700" height="50" rx="12" fill="#1A5F9E" />
+        <rect y="40" width="700" height="10" fill="#1A5F9E" />
+        <text x="350" y="35" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="22"
+            font-weight="bold" fill="#FFFFFF">附录 Appendix</text>
+
+        <!-- 附录内容 -->
+        <text x="30" y="85" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" font-weight="bold"
+            fill="#2D3748">附录可包含的内容：</text>
+
+        <g transform="translate(30, 105)">
+            <rect width="310" height="70" rx="8" fill="#EBF8FF" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#1A5F9E">1. 公式推导与证明</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">正文中过长的公式推导过程</text>
+        </g>
+
+        <g transform="translate(360, 105)">
+            <rect width="310" height="70" rx="8" fill="#F0FFF4" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#38A169">2. 分析证明材料</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">非作者本人的分析、证明、工具表格</text>
+        </g>
+
+        <g transform="translate(30, 190)">
+            <rect width="310" height="70" rx="8" fill="#FFFAF0" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#C05621">3. 实验数据与程序</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">正文中无法列出的数据、程序代码</text>
+        </g>
+
+        <g transform="translate(360, 190)">
+            <rect width="310" height="70" rx="8" fill="#FFF5F5" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#E53E3E">4. 缩写及程序说明</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">论文使用的缩写及程序说明等</text>
+        </g>
+
+        <g transform="translate(30, 275)">
+            <rect width="310" height="70" rx="8" fill="#FAF5FF" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#805AD5">5. 发表论著与成果</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">攻读学位期间的论文、专利、获奖等</text>
+        </g>
+
+        <g transform="translate(360, 275)">
+            <rect width="310" height="70" rx="8" fill="#E6FFFA" />
+            <text x="15" y="25" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#319795">6. 阅读型参考文献</text>
+            <text x="15" y="48" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">正文未引用但阅读过的补充文献</text>
+        </g>
+
+        <g transform="translate(30, 360)">
+            <rect width="640" height="50" rx="8" fill="#F7FAFC" stroke="#E2E8F0" stroke-width="1" />
+            <text x="20" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" font-weight="bold"
+                fill="#2D3748">7. 学位论文数据集</text>
+            <text x="250" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+                fill="#718096">反映学位论文主要特征的数据组成</text>
+        </g>
+
+        <!-- 附录编写格式 -->
+        <line x1="30" y1="430" x2="670" y2="430" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="30" y="455" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" font-weight="bold"
+            fill="#2D3748">附录编写格式：</text>
+
+        <rect x="30" y="470" width="640" height="40" rx="6" fill="#EBF8FF" />
+        <text x="50" y="495" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13"
+            fill="#1A5F9E">编号：附录A、附录B、附录C... | 图表：图A1、表B2、式(B3)、文献[A5]</text>
+    </g>
+
+    <!-- 右栏：致谢 -->
+    <g transform="translate(800, 100)">
+        <rect width="420" height="520" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
+            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+
+        <rect width="420" height="50" rx="12" fill="#38A169" />
+        <rect y="40" width="420" height="10" fill="#38A169" />
+        <text x="210" y="35" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="22"
+            font-weight="bold" fill="#FFFFFF">致谢 Acknowledgements</text>
+
+        <text x="25" y="85" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" font-weight="bold"
+            fill="#2D3748">感谢对象：</text>
+
+        <g transform="translate(25, 100)">
+            <rect width="370" height="45" rx="6" fill="#F0FFF4" />
+            <circle cx="20" cy="23" r="6" fill="#38A169" />
+            <text x="35" y="28" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+                fill="#2D3748">导师</text>
+        </g>
+
+        <g transform="translate(25, 155)">
+            <rect width="370" height="45" rx="6" fill="#F0FFF4" />
+            <circle cx="20" cy="23" r="6" fill="#38A169" />
+            <text x="35" y="28" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+                fill="#2D3748">对论文有直接贡献及帮助的人士和单位</text>
+        </g>
+
+        <g transform="translate(25, 210)">
+            <rect width="370" height="45" rx="6" fill="#F0FFF4" />
+            <circle cx="20" cy="23" r="6" fill="#38A169" />
+            <text x="35" y="28" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+                fill="#2D3748">提供资助的基金会或企业</text>
+        </g>
+
+        <g transform="translate(25, 265)">
+            <rect width="370" height="45" rx="6" fill="#F0FFF4" />
+            <circle cx="20" cy="23" r="6" fill="#38A169" />
+            <text x="35" y="28" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+                fill="#2D3748">提供调研条件的组织</text>
+        </g>
+
+        <g transform="translate(25, 320)">
+            <rect width="370" height="45" rx="6" fill="#F0FFF4" />
+            <circle cx="20" cy="23" r="6" fill="#38A169" />
+            <text x="35" y="28" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+                fill="#2D3748">提供资料的个人</text>
+        </g>
+
+        <line x1="25" y1="385" x2="395" y2="385" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="25" y="415" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" font-weight="bold"
+            fill="#2D3748">格式要求：</text>
+
+        <rect x="25" y="430" width="370" height="75" rx="8" fill="#FFFAF0" stroke="#E07C24" stroke-width="1" />
+        <text x="45" y="455" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#C05621">•
+            致谢另起页</text>
+        <text x="45" y="480" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#C05621">•
+            放置在附录页面之后</text>
+        <text x="45" y="500" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+            fill="#718096">（论文终版格式最后一部分）</text>
+    </g>
+
+    <!-- 底部装饰 -->
+    <rect x="60" y="640" width="1160" height="1" fill="#E2E8F0" />
+
+    <!-- 页脚信息 -->
+    <text x="100" y="680" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12"
+        fill="#A0AEC0">重庆大学硕士学位论文撰写格式标准</text>
+
+    <!-- 页码 -->
+    <text x="640" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#A0AEC0">9 /
+        11</text>
+</svg>

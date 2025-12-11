@@ -1,0 +1,158 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+    <linearGradient id="pyramidGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0076A8"/>
+      <stop offset="100%" style="stop-color:#005580"/>
+    </linearGradient>
+    <linearGradient id="pyramidGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A651"/>
+      <stop offset="100%" style="stop-color:#007B3D"/>
+    </linearGradient>
+    <linearGradient id="pyramidGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#003F6C"/>
+      <stop offset="100%" style="stop-color:#002845"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    数字化转型战略总览
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    DIGITAL TRANSFORMATION STRATEGY OVERVIEW
+  </text>
+  
+  <!-- 目标标签 -->
+  <g transform="translate(900, 45)">
+    <rect width="320" height="50" rx="8" fill="#FF6B35"/>
+    <text x="20" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">2029年目标</text>
+    <text x="20" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">认证效率提升 40%</text>
+  </g>
+  
+  <!-- 金字塔架构图 -->
+  <g transform="translate(60, 0)">
+    <!-- 服务层 - 顶层 (对齐右侧卡片 y=130-230) -->
+    <g>
+      <polygon points="300,130 220,230 380,230" fill="url(#pyramidGrad1)" filter="url(#cardShadow)"/>
+      <text x="300" y="195" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">服务层</text>
+    </g>
+    
+    <!-- 能力层 - 中层 (对齐右侧卡片 y=250-350) -->
+    <g>
+      <polygon points="220,250 140,350 460,350 380,250" fill="url(#pyramidGrad2)" filter="url(#cardShadow)"/>
+      <text x="300" y="310" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">能力层</text>
+    </g>
+    
+    <!-- 基础层 - 底层 (对齐右侧卡片 y=370-470) -->
+    <g>
+      <polygon points="140,370 60,470 540,470 460,370" fill="url(#pyramidGrad3)" filter="url(#cardShadow)"/>
+      <text x="300" y="430" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">基础层</text>
+    </g>
+    
+    <!-- 连接线 -->
+    <g stroke="#CCCCCC" stroke-width="2" stroke-dasharray="5,5" fill="none">
+      <line x1="380" y1="180" x2="670" y2="180"/>
+      <line x1="460" y1="300" x2="670" y2="300"/>
+      <line x1="540" y1="420" x2="670" y2="420"/>
+    </g>
+  </g>
+  
+  <!-- 右侧详细说明卡片 -->
+  <!-- 服务层说明 -->
+  <g transform="translate(730, 130)">
+    <rect width="490" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="8" height="100" rx="4" fill="#0076A8"/>
+    <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#0076A8">服务层：智能服务交付</text>
+    <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 电子证书全流程在线化</tspan>
+      <tspan x="250" dy="0">• 数据赋能增值服务</tspan>
+    </text>
+    <text x="25" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 智能客户服务平台</tspan>
+      <tspan x="250" dy="0">• 一站式认证服务门户</tspan>
+    </text>
+  </g>
+  
+  <!-- 能力层说明 -->
+  <g transform="translate(730, 250)">
+    <rect width="490" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="8" height="100" rx="4" fill="#00A651"/>
+    <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#00A651">能力层：核心技术支撑</text>
+    <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 远程审核技术</tspan>
+      <tspan x="180" dy="0">• 区块链存证</tspan>
+      <tspan x="330" dy="0">• AI智能辅助</tspan>
+    </text>
+    <text x="25" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 物联网数据采集</tspan>
+      <tspan x="180" dy="0">• 大数据分析</tspan>
+      <tspan x="330" dy="0">• 云计算架构</tspan>
+    </text>
+  </g>
+  
+  <!-- 基础层说明 -->
+  <g transform="translate(730, 370)">
+    <rect width="490" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="0" y="0" width="8" height="100" rx="4" fill="#003F6C"/>
+    <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C">基础层：数字化平台</text>
+    <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 统一认证管理平台</tspan>
+      <tspan x="250" dy="0">• 数据中台建设</tspan>
+    </text>
+    <text x="25" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan x="25" dy="0">• 标准数据库</tspan>
+      <tspan x="250" dy="0">• 安全合规基础设施</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部核心价值 -->
+  <g transform="translate(60, 510)">
+    <rect width="1160" height="140" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">数字化转型核心价值</text>
+    
+    <!-- 四个价值点 -->
+    <g transform="translate(30, 55)">
+      <rect width="260" height="65" rx="8" fill="#F0F4F8"/>
+      <circle cx="25" cy="32" r="18" fill="#0076A8"/>
+      <text x="25" y="38" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">效率提升</text>
+      <text x="55" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">认证周期缩短40%</text>
+    </g>
+    
+    <g transform="translate(310, 55)">
+      <rect width="260" height="65" rx="8" fill="#F0F4F8"/>
+      <circle cx="25" cy="32" r="18" fill="#00A651"/>
+      <text x="25" y="38" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">质量保障</text>
+      <text x="55" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">AI辅助风险预警</text>
+    </g>
+    
+    <g transform="translate(590, 55)">
+      <rect width="260" height="65" rx="8" fill="#F0F4F8"/>
+      <circle cx="25" cy="32" r="18" fill="#FF6B35"/>
+      <text x="25" y="38" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">信任增强</text>
+      <text x="55" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">区块链加密存证</text>
+    </g>
+    
+    <g transform="translate(870, 55)">
+      <rect width="260" height="65" rx="8" fill="#F0F4F8"/>
+      <circle cx="25" cy="32" r="18" fill="#9C27B0"/>
+      <text x="25" y="38" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+      <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">服务升级</text>
+      <text x="55" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">全流程在线化</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">08 / 20</text>
+</svg>

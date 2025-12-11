@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 深空黑背景 -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6"/>
+  
+  <!-- 页面标题 -->
+  <text x="640" y="70" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="42" font-weight="bold" fill="#FFD700">
+    ⚠️ Git ≠ GitHub
+  </text>
+  <text x="640" y="105" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#8B949E">
+    What's The Difference - A Critical Distinction
+  </text>
+  
+  <!-- 分隔线 -->
+  <rect x="540" y="120" width="200" height="2" fill="#30363D"/>
+  
+  <!-- 左侧：Git -->
+  <g transform="translate(60, 160)">
+    <!-- Git 卡片 -->
+    <rect x="0" y="0" width="520" height="400" fill="#161B22" stroke="#39FF14" stroke-width="4"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="520" height="70" fill="#39FF14" opacity="0.15"/>
+    <text x="260" y="48" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="36" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">Git</text>
+    
+    <!-- 图标区域 -->
+    <g transform="translate(200, 100)">
+      <!-- 电脑图标 -->
+      <rect x="0" y="0" width="120" height="80" fill="#0D1117" stroke="#39FF14" stroke-width="3"/>
+      <rect x="10" y="10" width="100" height="55" fill="#161B22"/>
+      <text x="60" y="45" text-anchor="middle" font-size="28">💻</text>
+      <!-- 底座 -->
+      <rect x="40" y="80" width="40" height="10" fill="#39FF14"/>
+      <rect x="30" y="90" width="60" height="8" fill="#39FF14"/>
+    </g>
+    <text x="260" y="220" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#39FF14">本地运行</text>
+    
+    <!-- 特性列表 -->
+    <g transform="translate(30, 250)">
+      <rect x="0" y="0" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="27" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">📦 是一款软件 (Software)</text>
+      
+      <rect x="0" y="50" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="77" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">💻 运行在你的电脑上</text>
+      
+      <rect x="0" y="100" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="127" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">🔌 不需要网络连接</text>
+    </g>
+  </g>
+  
+  <!-- 中间：不等号 -->
+  <g transform="translate(600, 320)">
+    <text x="40" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="60" fill="#FFD700">≠</text>
+  </g>
+  
+  <!-- 右侧：GitHub -->
+  <g transform="translate(700, 160)">
+    <!-- GitHub 卡片 -->
+    <rect x="0" y="0" width="520" height="400" fill="#161B22" stroke="#FF2E97" stroke-width="4"/>
+    
+    <!-- 标题区 -->
+    <rect x="0" y="0" width="520" height="70" fill="#FF2E97" opacity="0.15"/>
+    <text x="260" y="48" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="36" font-weight="bold" fill="#FF2E97" filter="url(#glowPink)">GitHub</text>
+    
+    <!-- 图标区域 - 像素风云服务器 -->
+    <g transform="translate(180, 90)">
+      <!-- 像素风云朵 -->
+      <rect x="30" y="0" width="100" height="20" fill="#FF2E97" opacity="0.3"/>
+      <rect x="20" y="20" width="120" height="30" fill="#FF2E97" opacity="0.3"/>
+      <rect x="10" y="35" width="140" height="25" fill="#FF2E97" opacity="0.3"/>
+      <!-- 云边框 -->
+      <rect x="30" y="0" width="100" height="20" fill="none" stroke="#FF2E97" stroke-width="2"/>
+      <rect x="20" y="20" width="120" height="30" fill="none" stroke="#FF2E97" stroke-width="2"/>
+      <rect x="10" y="35" width="140" height="25" fill="none" stroke="#FF2E97" stroke-width="2"/>
+      <!-- 服务器图标在云中 -->
+      <rect x="55" y="25" width="50" height="35" fill="#161B22" stroke="#FF2E97" stroke-width="2"/>
+      <rect x="60" y="30" width="8" height="4" fill="#39FF14"/>
+      <rect x="60" y="38" width="8" height="4" fill="#00D4FF"/>
+      <rect x="60" y="46" width="8" height="4" fill="#FFD700"/>
+      <!-- 连接线 -->
+      <line x1="80" y1="70" x2="80" y2="95" stroke="#FF2E97" stroke-width="2" stroke-dasharray="4 2"/>
+      <text x="80" y="110" text-anchor="middle" font-size="18">🌐</text>
+    </g>
+    <text x="260" y="220" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#FF2E97">云端服务</text>
+    
+    <!-- 特性列表 -->
+    <g transform="translate(30, 250)">
+      <rect x="0" y="0" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="27" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">🌐 是一个网站/服务 (Web Service)</text>
+      
+      <rect x="0" y="50" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="77" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">☁️ 在云端托管 Git 仓库</text>
+      
+      <rect x="0" y="100" width="460" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1"/>
+      <text x="20" y="127" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">👥 方便与他人协作分享</text>
+    </g>
+  </g>
+  
+  <!-- 底部说明 -->
+  <g transform="translate(60, 590)">
+    <!-- 关系说明 -->
+    <rect x="0" y="0" width="1160" height="80" fill="#161B22" stroke="#00D4FF" stroke-width="2"/>
+    
+    <text x="30" y="35" font-family="Consolas, monospace" font-size="18" fill="#00D4FF">💡 它们的关系：</text>
+    
+    <text x="200" y="35" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      GitHub 是基于 Git 构建的云端托管平台。你可以：
+    </text>
+    
+    <text x="30" y="62" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="15" fill="#8B949E">
+      <tspan>• 用 Git 在本地管理代码</tspan>
+      <tspan dx="40">• 把代码推送到 GitHub 与他人分享</tspan>
+      <tspan dx="40">• 从 GitHub 拉取别人的代码</tspan>
+    </text>
+    
+    <!-- 提示 -->
+    <rect x="900" y="15" width="240" height="50" fill="#FFD700" opacity="0.2" stroke="#FFD700" stroke-width="1"/>
+    <text x="1020" y="47" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#FFD700">
+      先学 Git → 再学 GitHub
+    </text>
+  </g>
+  
+  <!-- 底部装饰 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6"/>
+  
+  <!-- 页码 -->
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">09/10</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">Git vs GitHub</text>
+</svg>

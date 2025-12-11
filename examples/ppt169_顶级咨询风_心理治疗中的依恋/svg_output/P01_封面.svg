@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="coverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="50%" style="stop-color:#2E5C8E"/>
+      <stop offset="100%" style="stop-color:#3D8B7A"/>
+    </linearGradient>
+    <clipPath id="coverClip">
+      <rect x="0" y="0" width="1280" height="720"/>
+    </clipPath>
+  </defs>
+  
+  <!-- 渐变背景 -->
+  <rect width="1280" height="720" fill="url(#coverGradient)"/>
+  
+  <!-- 背景图片（半透明叠加） -->
+  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" 
+         clip-path="url(#coverClip)" preserveAspectRatio="xMidYMid slice" opacity="0.25"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    心理治疗中的依恋
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#E5E7EB" text-anchor="middle">
+    从养育到治愈，从理论到实践
+  </text>
+  
+  <!-- 英文副标题 -->
+  <text x="640" y="400" font-family="system-ui, sans-serif" font-size="18" fill="#94A3B8" text-anchor="middle">
+    Attachment in Psychotherapy: From Nurturing to Healing, From Theory to Practice
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="490" y="440" width="300" height="4" rx="2" fill="#E07843"/>
+  
+  <!-- 关键词标签 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(320, 500)">
+    <rect x="0" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="50" y="21" text-anchor="middle">安全基地</text>
+    
+    <rect x="120" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="170" y="21" text-anchor="middle">依恋模式</text>
+    
+    <rect x="240" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="280" y="21" text-anchor="middle">心智化</text>
+    
+    <rect x="340" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="380" y="21" text-anchor="middle">觉察</text>
+    
+    <rect x="440" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="490" y="21" text-anchor="middle">情感调节</text>
+    
+    <rect x="560" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <text x="600" y="21" text-anchor="middle">治愈</text>
+  </g>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#CBD5E1" text-anchor="middle">
+    基于 David J. Wallin《Attachment in Psychotherapy》
+  </text>
+  
+  <text x="640" y="660" font-family="system-ui, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
+    2025
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#64748B" text-anchor="end">01</text>
+</svg>

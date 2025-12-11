@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff" />
+        </marker>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    <!-- 步骤编号 -->
+    <g transform="translate(60, 60)">
+        <rect width="100" height="100" rx="16" fill="url(#stepGradient)" opacity="0.2" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold"
+            fill="url(#stepGradient)">02</text>
+    </g>
+
+    <!-- 标题 -->
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold"
+        fill="#e6edf3">📍 厘清 Bug 在流程中的位置</text>
+
+    <!-- 核心观点 -->
+    <rect x="60" y="180" width="1160" height="60" rx="12" fill="#161b22" stroke="#f85149" stroke-width="1" />
+    <text x="640" y="218" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="22"
+        fill="#e6edf3">
+        <tspan fill="#f85149">✗</tspan>
+        <tspan dx="10">不要直接查报错信息（如按钮没反应就查按钮代码）</tspan>
+        <tspan dx="30" fill="#7ee787">✓</tspan>
+        <tspan dx="10">要定位问题发生的</tspan>
+        <tspan font-weight="bold" fill="#7ee787">转折点</tspan>
+    </text>
+
+    <!-- 事件流程图 -->
+    <text x="60" y="290" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold"
+        fill="#58a6ff">🔄 画出事件流</text>
+
+    <!-- 流程图 -->
+    <g transform="translate(60, 310)">
+        <!-- 节点1: 用户触发 -->
+        <rect x="0" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
+        <text x="90" y="35" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14"
+            fill="#8b949e">用户操作</text>
+        <text x="90" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18"
+            font-weight="bold" fill="#e6edf3">触发事件</text>
+
+        <!-- 箭头1 -->
+        <line x1="190" y1="40" x2="260" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
+            marker-end="url(#arrowhead)" />
+
+        <!-- 节点2: 前端处理 -->
+        <rect x="270" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
+        <text x="360" y="35" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14"
+            fill="#8b949e">前端</text>
+        <text x="360" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18"
+            font-weight="bold" fill="#e6edf3">处理/发送请求</text>
+
+        <!-- 箭头2 -->
+        <line x1="460" y1="40" x2="530" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
+            marker-end="url(#arrowhead)" />
+
+        <!-- 节点3: 后端处理 - 可能出错的地方 -->
+        <rect x="540" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#f85149" stroke-width="3" />
+        <text x="630" y="35" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14"
+            fill="#8b949e">后端 API</text>
+        <text x="630" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18"
+            font-weight="bold" fill="#e6edf3">业务逻辑处理</text>
+        <!-- Bug 标记 -->
+        <circle cx="700" cy="10" r="20" fill="#f85149" />
+        <text x="700" y="16" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="14"
+            font-weight="bold" fill="#fff">BUG?</text>
+
+        <!-- 箭头3 -->
+        <line x1="730" y1="40" x2="800" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
+            marker-end="url(#arrowhead)" />
+
+        <!-- 节点4: 数据库 -->
+        <rect x="810" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
+        <text x="900" y="35" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">数据库</text>
+        <text x="900" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#e6edf3">读写数据</text>
+
+        <!-- 箭头4 返回 - 使用直角折线 -->
+        <line x1="990" y1="40" x2="1040" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
+        <line x1="1040" y1="40" x2="1040" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
+        <line x1="1040" y1="110" x2="90" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
+        <line x1="90" y1="110" x2="90" y2="85" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <text x="565" y="128" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">返回结果</text>
+    </g>
+
+    <!-- 三问卡片 -->
+    <g transform="translate(60, 470)">
+        <text x="0" y="0" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold"
+            fill="#f0883e">🎯 定位三问</text>
+
+        <!-- 问题卡片 -->
+        <g transform="translate(0, 20)">
+            <rect width="360" height="70" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1" />
+            <text x="20" y="30" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16"
+                fill="#8b949e">Q1</text>
+            <text x="20" y="52" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18"
+                fill="#e6edf3">用户从哪里触发？</text>
+        </g>
+
+        <g transform="translate(390, 20)">
+            <rect width="360" height="70" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1" />
+            <text x="20" y="30" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16"
+                fill="#8b949e">Q2</text>
+            <text x="20" y="52" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18"
+                fill="#e6edf3">系统接下来该呼叫谁？</text>
+        </g>
+
+        <g transform="translate(780, 20)">
+            <rect width="360" height="70" rx="10" fill="#161b22" stroke="#30363d" stroke-width="1" />
+            <text x="20" y="30" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16"
+                fill="#8b949e">Q3</text>
+            <text x="20" y="52" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18"
+                fill="#e6edf3">哪一步没接上？</text>
+        </g>
+    </g>
+
+    <!-- 目标框 -->
+    <rect x="60" y="610" width="1160" height="55" rx="8" fill="#7ee787" opacity="0.15" />
+    <text x="640" y="645" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="20"
+        fill="#7ee787">
+        <tspan font-weight="bold">目标：</tspan>
+        <tspan>明确指出 Bug 发生在 "</tspan>
+        <tspan fill="#e6edf3" font-weight="bold">A 与 B 之间</tspan>
+        <tspan>" 或 "</tspan>
+        <tspan fill="#e6edf3" font-weight="bold">B 处理 C 时</tspan>
+        <tspan>"</tspan>
+    </text>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">04 /
+        10</text>
+</svg>

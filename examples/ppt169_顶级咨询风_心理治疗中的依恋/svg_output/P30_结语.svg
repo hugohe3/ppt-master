@@ -1,0 +1,148 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="conclusionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E5C8E"/>
+      <stop offset="50%" style="stop-color:#3D8B7A"/>
+      <stop offset="100%" style="stop-color:#2D6B5A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#conclusionGradient)"/>
+  
+  <!-- 装饰性连接网络 -->
+  <g opacity="0.15" stroke="#FFFFFF" stroke-width="1">
+    <circle cx="200" cy="200" r="5" fill="#FFFFFF"/>
+    <circle cx="280" cy="150" r="4" fill="#FFFFFF"/>
+    <circle cx="150" cy="280" r="3" fill="#FFFFFF"/>
+    <line x1="200" y1="200" x2="280" y2="150"/>
+    <line x1="200" y1="200" x2="150" y2="280"/>
+    
+    <circle cx="1080" cy="180" r="5" fill="#FFFFFF"/>
+    <circle cx="1150" cy="130" r="4" fill="#FFFFFF"/>
+    <circle cx="1000" cy="220" r="3" fill="#FFFFFF"/>
+    <line x1="1080" y1="180" x2="1150" y2="130"/>
+    <line x1="1080" y1="180" x2="1000" y2="220"/>
+    
+    <circle cx="100" cy="500" r="4" fill="#FFFFFF"/>
+    <circle cx="180" cy="560" r="3" fill="#FFFFFF"/>
+    <line x1="100" y1="500" x2="180" y2="560"/>
+    
+    <circle cx="1100" cy="520" r="5" fill="#FFFFFF"/>
+    <circle cx="1180" cy="480" r="3" fill="#FFFFFF"/>
+    <line x1="1100" y1="520" x2="1180" y2="480"/>
+  </g>
+  
+  <!-- 核心信息 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 主标题 -->
+    <text x="640" y="140" font-size="40" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      从养育到治愈的旅程
+    </text>
+    
+    <!-- 引言 -->
+    <rect x="280" y="180" width="720" height="80" rx="16" fill="rgba(255,255,255,0.1)"/>
+    <rect x="284" y="180" width="4" height="80" rx="2" fill="#E07843"/>
+    
+    <text x="640" y="215" font-size="22" fill="#FFFFFF" text-anchor="middle" font-style="italic">
+      "依恋关系是发展的熔炉，也是治愈的容器"
+    </text>
+    <text x="640" y="248" font-size="14" fill="#94A3B8" text-anchor="middle">
+      Attachment relationships are both the crucible of development and the container of healing
+    </text>
+    
+    <!-- 三个带走信息 -->
+    <g transform="translate(120, 300)">
+      
+      <!-- 信息1 -->
+      <g>
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        
+        <circle cx="40" cy="40" r="25" fill="#3D8B7A"/>
+        <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+        
+        <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">安全依恋可以重建</text>
+        
+        <text x="30" y="85" font-size="15" fill="#E5E7EB">
+          <tspan x="30" dy="0">安全依恋可以在治疗关系中</tspan>
+          <tspan x="30" dy="24">重新建立</tspan>
+        </text>
+        
+        <text x="30" y="140" font-size="13" fill="#94A3B8">治疗关系本身就是改变的机制</text>
+      </g>
+      
+      <!-- 信息2 -->
+      <g transform="translate(365, 0)">
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        
+        <circle cx="40" cy="40" r="25" fill="#E07843"/>
+        <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+        
+        <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">非言语需要被看见</text>
+        
+        <text x="30" y="85" font-size="15" fill="#E5E7EB">
+          <tspan x="30" dy="0">非言语体验需要被看见、</tspan>
+          <tspan x="30" dy="24">容纳和转化</tspan>
+        </text>
+        
+        <text x="30" y="140" font-size="13" fill="#94A3B8">活现、唤起、具身化是治愈的通道</text>
+      </g>
+      
+      <!-- 信息3 -->
+      <g transform="translate(730, 0)">
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        
+        <circle cx="40" cy="40" r="25" fill="#2E5C8E"/>
+        <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+        
+        <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">双螺旋通向解放</text>
+        
+        <text x="30" y="85" font-size="15" fill="#E5E7EB">
+          <tspan x="30" dy="0">心智化与觉察是</tspan>
+          <tspan x="30" dy="24">心理解放的双螺旋</tspan>
+        </text>
+        
+        <text x="30" y="140" font-size="13" fill="#94A3B8">反思过去，临在当下，走向整合</text>
+      </g>
+    </g>
+    
+    <!-- 底部感谢 -->
+    <text x="640" y="540" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      感谢聆听
+    </text>
+    
+    <text x="640" y="575" font-size="16" fill="#CBD5E1" text-anchor="middle">
+      Thank You for Your Attention
+    </text>
+    
+    <!-- 关键词回顾 -->
+    <g transform="translate(280, 610)">
+      <rect x="0" y="0" width="120" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="60" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">安全基地</text>
+      
+      <rect x="140" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="190" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">心智化</text>
+      
+      <rect x="260" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="300" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">觉察</text>
+      
+      <rect x="360" y="0" width="120" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="420" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">情感调节</text>
+      
+      <rect x="500" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="550" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">双螺旋</text>
+      
+      <rect x="620" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <text x="670" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">整合</text>
+    </g>
+    
+    <!-- 日期 -->
+    <text x="640" y="690" font-size="14" fill="#64748B" text-anchor="middle">
+      2025
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">30</text>
+</svg>

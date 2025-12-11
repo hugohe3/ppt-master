@@ -1,0 +1,127 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <!-- 页面标题 -->
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">从行为到修行：隐含的教法</text>
+  <line x1="40" y1="105" x2="380" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 四卡片矩阵 2x2 -->
+  <!-- 第一行 -->
+  <!-- 简朴与离欲 -->
+  <g transform="translate(40, 130)">
+    <rect x="0" y="0" width="580" height="260" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
+    <rect x="0" y="0" width="580" height="55" rx="12" fill="#5D8C6A"/>
+    <rect x="0" y="45" width="580" height="10" fill="#5D8C6A"/>
+    <!-- icon: home -->
+  <g transform="translate(20.0, 14.0) scale(1.75)" fill="#FFFFFF">
+    <path d="M1 6V15H6V11C6 9.89543 6.89543 9 8 9C9.10457 9 10 9.89543 10 11V15H15V6L8 0L1 6Z"/>
+  </g>
+    <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">简朴与离欲</text>
+    
+    <g transform="translate(25, 75)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A">三衣一钵</text>
+      <text x="0" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">穿着简单的"三衣"，使用唯一的食器"钵"</text>
+      
+      <line x1="0" y1="50" x2="530" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A">舍离物欲</text>
+      <text x="0" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">象征出家生活的简朴原则和对物质享受的舍离</text>
+      
+      <line x1="0" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A">出家本怀</text>
+      <text x="0" y="180" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">以少欲知足为修行的基础</text>
+    </g>
+  </g>
+  
+  <!-- 平等与谦卑 -->
+  <g transform="translate(660, 130)">
+    <rect x="0" y="0" width="580" height="260" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+    <rect x="0" y="0" width="580" height="55" rx="12" fill="#C9A962"/>
+    <rect x="0" y="45" width="580" height="10" fill="#C9A962"/>
+    <!-- icon: users -->
+  <g transform="translate(20.0, 14.0) scale(1.75)" fill="#FFFFFF">
+    <path d="M8 3.5C8 4.88071 6.88071 6 5.5 6C4.11929 6 3 4.88071 3 3.5C3 2.11929 4.11929 1 5.5 1C6.88071 1 8 2.11929 8 3.5Z"/>
+    <path d="M3 8C1.34315 8 0 9.34315 0 11V15H8V8H3Z"/>
+    <path d="M13 8H10V15H16V11C16 9.34315 14.6569 8 13 8Z"/>
+    <path d="M12 6C13.1046 6 14 5.10457 14 4C14 2.89543 13.1046 2 12 2C10.8954 2 10 2.89543 10 4C10 5.10457 10.8954 6 12 6Z"/>
+  </g>
+    <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">平等与谦卑</text>
+    
+    <g transform="translate(25, 75)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962">次第乞食</text>
+      <text x="0" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">不分贫富贵贱，挨家挨户平等乞食</text>
+      
+      <line x1="0" y1="50" x2="530" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962">不分贵贱</text>
+      <text x="0" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">破除阶级观念，对一切众生无分别的慈悲</text>
+      
+      <line x1="0" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962">破除我慢</text>
+      <text x="0" y="180" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">即使是觉悟者也亲自托钵，以行动对治傲慢</text>
+    </g>
+  </g>
+  
+  <!-- 第二行 -->
+  <!-- 纪律与专注 -->
+  <g transform="translate(40, 405)">
+    <rect x="0" y="0" width="580" height="260" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
+    <rect x="0" y="0" width="580" height="55" rx="12" fill="#2E4A62"/>
+    <rect x="0" y="45" width="580" height="10" fill="#2E4A62"/>
+    <!-- icon: target -->
+  <g transform="translate(20.0, 14.0) scale(1.75)" fill="#FFFFFF">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4ZM6 8C6 6.89543 6.89543 6 8 6C9.10457 6 10 6.89543 10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8Z"/>
+  </g>
+    <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">纪律与专注</text>
+    
+    <g transform="translate(25, 75)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">井然有序</text>
+      <text x="0" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">从乞食到返回、用餐、收拾，遵循僧团仪轨</text>
+      
+      <line x1="0" y1="50" x2="530" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">威仪具足</text>
+      <text x="0" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">行住坐卧皆有威仪，反映严谨自律</text>
+      
+      <line x1="0" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">正念当下</text>
+      <text x="0" y="180" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">专注当下行动，修习正念</text>
+    </g>
+  </g>
+  
+  <!-- 清净与安住 -->
+  <g transform="translate(660, 405)">
+    <rect x="0" y="0" width="580" height="260" rx="12" fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2"/>
+    <rect x="0" y="0" width="580" height="55" rx="12" fill="#8B9A9A"/>
+    <rect x="0" y="45" width="580" height="10" fill="#8B9A9A"/>
+    <!-- icon: shield -->
+  <g transform="translate(20.0, 14.0) scale(1.75)" fill="#FFFFFF">
+    <path d="M4.35009 13.3929L8 16L11.6499 13.3929C13.7523 11.8912 15 9.46667 15 6.88306V3L8 0L1 3V6.88306C1 9.46667 2.24773 11.8912 4.35009 13.3929Z"/>
+  </g>
+    <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">清净与安住</text>
+    
+    <g transform="translate(25, 75)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#6B7280">洗足净身</text>
+      <text x="0" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">象征洗去外界尘劳，保持身心清净</text>
+      
+      <line x1="0" y1="50" x2="530" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#6B7280">敷座而坐</text>
+      <text x="0" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">亲自整理座位并安然坐下，显内心安定</text>
+      
+      <line x1="0" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#6B7280">心安意净</text>
+      <text x="0" y="180" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">预示即将进入宁静的说法状态</text>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第二部分：叙事基础</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">7 / 15</text>
+</svg>

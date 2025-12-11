@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1280"
+   height="720"
+   viewBox="0 0 1280 720"
+   version="1.1"
+   id="svg23"
+   sodipodi:docname="slide_20_conclusion.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview23"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.89722222"
+     inkscape:cx="640.3096"
+     inkscape:cy="360"
+     inkscape:window-width="1536"
+     inkscape:window-height="890"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg23" />
+  <defs
+     id="defs4">
+    <linearGradient
+       id="bgGradient"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="100%">
+      <stop
+         offset="0%"
+         style="stop-color:#003F6C"
+         id="stop1" />
+      <stop
+         offset="50%"
+         style="stop-color:#002845"
+         id="stop2" />
+      <stop
+         offset="100%"
+         style="stop-color:#001A33"
+         id="stop3" />
+    </linearGradient>
+    <filter
+       id="glowEffect"
+       x="-0.014608687"
+       y="-0.28356923"
+       width="1.0292174"
+       height="1.5671385">
+      <feGaussianBlur
+         stdDeviation="3"
+         result="coloredBlur"
+         id="feGaussianBlur3" />
+      <feMerge
+         id="feMerge4">
+        <feMergeNode
+           in="coloredBlur"
+           id="feMergeNode3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode4" />
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- 深蓝渐变背景 -->
+  <rect
+     width="1280"
+     height="720"
+     fill="url(#bgGradient)"
+     id="rect4" />
+  <!-- 背景图片 -->
+  <image
+     x="0"
+     y="0"
+     width="1280"
+     height="720"
+     href="../images/conclusion_background.png"
+     preserveAspectRatio="xMidYMid slice"
+     opacity="0.5"
+     id="image4" />
+  <!-- 装饰性几何图形 -->
+  <g
+     opacity="0.1"
+     id="g8">
+    <circle
+       cx="1150"
+       cy="120"
+       r="200"
+       fill="none"
+       stroke="#FFFFFF"
+       stroke-width="2"
+       id="circle4" />
+    <circle
+       cx="1150"
+       cy="120"
+       r="150"
+       fill="none"
+       stroke="#FFFFFF"
+       stroke-width="1"
+       id="circle5" />
+    <circle
+       cx="1150"
+       cy="120"
+       r="100"
+       fill="none"
+       stroke="#FFFFFF"
+       stroke-width="1"
+       id="circle6" />
+    <circle
+       cx="130"
+       cy="600"
+       r="180"
+       fill="none"
+       stroke="#FFFFFF"
+       stroke-width="2"
+       id="circle7" />
+    <circle
+       cx="130"
+       cy="600"
+       r="130"
+       fill="none"
+       stroke="#FFFFFF"
+       stroke-width="1"
+       id="circle8" />
+  </g>
+  <!-- 顶部装饰线 -->
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="4"
+     fill="#FFC107"
+     id="rect8" />
+  <!-- 主标题区域 -->
+  <g
+     transform="translate(640, 180)"
+     id="g9">
+    <text
+       x="0"
+       y="0"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="18"
+       fill="#FFC107"
+       text-anchor="middle"
+       letter-spacing="8"
+       id="text8">
+      战略定位与愿景
+    </text>
+    <text
+       x="0"
+       y="50"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="14"
+       fill="#8888A0"
+       text-anchor="middle"
+       letter-spacing="4"
+       id="text9">
+      STRATEGIC POSITIONING &amp; VISION
+    </text>
+  </g>
+  <!-- 核心战略定位 -->
+  <g
+     transform="translate(140, 280)"
+     id="g12">
+    <rect
+       width="1000"
+       height="140"
+       rx="16"
+       fill="#FFFFFF"
+       opacity="0.1"
+       id="rect9" />
+    <rect
+       x="0"
+       y="0"
+       width="8"
+       height="140"
+       rx="4"
+       fill="#FFC107"
+       id="rect10" />
+    <text
+       x="40"
+       y="45"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="14"
+       fill="#FFC107"
+       id="text10">
+      核心战略定位
+    </text>
+    <text
+       x="40"
+       y="85"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="26"
+       font-weight="bold"
+       fill="#FFFFFF"
+       filter="url(#glowEffect)"
+       id="text11">
+      以数字化驱动、绿色低碳和智能创新为双轮
+    </text>
+    <text
+       x="40"
+       y="120"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="26"
+       font-weight="bold"
+       fill="#FFFFFF"
+       filter="url(#glowEffect)"
+       id="text12">
+      构建国内领先、国际互认的汽车产品认证服务平台
+    </text>
+  </g>
+  <!-- 愿景演进路径 -->
+  <g
+     transform="translate(140,544)"
+     id="g21">
+    <text
+       x="0"
+       y="0"
+       font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+       font-size="16px"
+       fill="#ffc107"
+       id="text13">发展愿景</text>
+    <!-- 三阶段演进 -->
+    <g
+       transform="translate(0,30)"
+       id="g20">
+      <!-- 跟跑 -->
+      <g
+         id="g15">
+        <rect
+           width="300"
+           height="80"
+           rx="10"
+           fill="#ffffff"
+           opacity="0.08"
+           id="rect13"
+           x="0"
+           y="0" />
+        <text
+           x="150"
+           y="35"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="28px"
+           fill="#64b5f6"
+           text-anchor="middle"
+           id="text14">跟跑</text>
+        <text
+           x="150"
+           y="60"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="12px"
+           fill="#8888a0"
+           text-anchor="middle"
+           id="text15">学习国际先进经验</text>
+      </g>
+      <!-- 箭头 -->
+      <g
+         transform="translate(315,30)"
+         id="g16">
+        <polygon
+           points="30,20 0,30 0,10 "
+           fill="#ffc107"
+           id="polygon15" />
+      </g>
+      <!-- 并跑 -->
+      <g
+         transform="translate(350)"
+         id="g17">
+        <rect
+           width="300"
+           height="80"
+           rx="10"
+           fill="#ffffff"
+           opacity="0.12"
+           id="rect16"
+           x="0"
+           y="0" />
+        <text
+           x="150"
+           y="35"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="28px"
+           fill="#00a651"
+           text-anchor="middle"
+           id="text16">并跑</text>
+        <text
+           x="150"
+           y="60"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="12px"
+           fill="#8888a0"
+           text-anchor="middle"
+           id="text17">与国际标准同步</text>
+      </g>
+      <!-- 箭头 -->
+      <g
+         transform="translate(665,30)"
+         id="g18">
+        <polygon
+           points="30,20 0,30 0,10 "
+           fill="#ffc107"
+           id="polygon17" />
+      </g>
+      <!-- 领跑 -->
+      <g
+         transform="translate(700)"
+         id="g19">
+        <rect
+           width="300"
+           height="80"
+           rx="10"
+           fill="#ffc107"
+           opacity="0.2"
+           id="rect18"
+           x="0"
+           y="0" />
+        <text
+           x="150"
+           y="35"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="28px"
+           font-weight="bold"
+           fill="#ffc107"
+           text-anchor="middle"
+           id="text18">领跑</text>
+        <text
+           x="150"
+           y="60"
+           font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
+           font-size="12px"
+           fill="#ffffff"
+           text-anchor="middle"
+           id="text19">引领行业创新发展</text>
+      </g>
+    </g>
+  </g>
+  <!-- 底部信息栏 -->
+  <g
+     transform="translate(0, 680)"
+     id="g22">
+    <rect
+       width="1280"
+       height="40"
+       fill="#001A33"
+       id="rect21" />
+    <text
+       x="60"
+       y="26"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="12"
+       fill="#8888A0"
+       id="text21">
+      汽车及零部件领域自愿性产品认证五年战略规划（2026–2030）
+    </text>
+    <text
+       x="1220"
+       y="26"
+       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+       font-size="12"
+       fill="#8888A0"
+       text-anchor="end"
+       id="text22">
+      2025年11月
+    </text>
+  </g>
+  <!-- 页码 -->
+  <text
+     x="640"
+     y="700"
+     font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
+     font-size="14"
+     fill="#8888A0"
+     text-anchor="middle"
+     id="text23">20 / 20</text>
+</svg>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 深空黑背景 -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="Consolas, Monaco, monospace" font-size="36" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    📍 本章学习导航
+  </text>
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#8B949E">
+    What Really Matters In This Section
+  </text>
+  
+  <!-- 分隔线 -->
+  <rect x="60" y="120" width="300" height="2" fill="#30363D"/>
+  
+  <!-- 关键必学区域 -->
+  <g transform="translate(60, 160)">
+    <!-- 标题 -->
+    <rect x="0" y="0" width="200" height="36" fill="#FF2E97" opacity="0.2"/>
+    <rect x="0" y="0" width="6" height="36" fill="#FF2E97"/>
+    <text x="20" y="25" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FF2E97">🔴 关键必学 CRITICAL</text>
+    
+    <!-- 卡片组 -->
+    <g transform="translate(0, 50)">
+      <!-- 卡片1 -->
+      <rect x="0" y="0" width="360" height="70" fill="#161B22" stroke="#FF2E97" stroke-width="2"/>
+      <text x="20" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">什么是 Git？</text>
+      <text x="20" y="52" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">理解版本控制系统的核心概念</text>
+      
+      <!-- 卡片2 -->
+      <rect x="380" y="0" width="360" height="70" fill="#161B22" stroke="#FF2E97" stroke-width="2"/>
+      <text x="400" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">Git vs GitHub</text>
+      <text x="400" y="52" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">区分本地工具与云端服务</text>
+      
+      <!-- 卡片3 -->
+      <rect x="760" y="0" width="360" height="70" fill="#161B22" stroke="#FF2E97" stroke-width="2"/>
+      <text x="780" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">Git 能做什么？</text>
+      <text x="780" y="52" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">版本控制的实际功能与价值</text>
+    </g>
+  </g>
+  
+  <!-- 建议了解区域 -->
+  <g transform="translate(60, 340)">
+    <!-- 标题 -->
+    <rect x="0" y="0" width="200" height="36" fill="#FFD700" opacity="0.2"/>
+    <rect x="0" y="0" width="6" height="36" fill="#FFD700"/>
+    <text x="20" y="25" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FFD700">🟡 建议了解 IMPORTANT</text>
+    
+    <!-- 卡片 -->
+    <g transform="translate(0, 50)">
+      <rect x="0" y="0" width="550" height="70" fill="#161B22" stroke="#FFD700" stroke-width="2"/>
+      <text x="20" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">谁在使用 Git？</text>
+      <text x="20" y="52" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">开发者、政府、科学家、作家...Git 的应用场景</text>
+    </g>
+  </g>
+  
+  <!-- 可选内容区域 -->
+  <g transform="translate(60, 510)">
+    <!-- 标题 -->
+    <rect x="0" y="0" width="200" height="36" fill="#39FF14" opacity="0.2"/>
+    <rect x="0" y="0" width="6" height="36" fill="#39FF14"/>
+    <text x="20" y="25" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#39FF14">🟢 可选内容 OPTIONAL</text>
+    
+    <!-- 卡片 -->
+    <g transform="translate(0, 50)">
+      <rect x="0" y="0" width="550" height="70" fill="#161B22" stroke="#39FF14" stroke-width="2"/>
+      <text x="20" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">Git 的历史</text>
+      <text x="20" y="52" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">Linus Torvalds 和 Git 诞生的故事</text>
+    </g>
+  </g>
+  
+  <!-- 右侧说明面板 -->
+  <g transform="translate(800, 340)">
+    <rect x="0" y="0" width="400" height="280" fill="#161B22" stroke="#30363D" stroke-width="2"/>
+    <text x="20" y="35" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#00D4FF">💡 学习建议</text>
+    <rect x="20" y="50" width="360" height="1" fill="#30363D"/>
+    
+    <text x="20" y="85" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      <tspan x="20" dy="0">• 按优先级学习，先掌握关键内容</tspan>
+      <tspan x="20" dy="32">• 红色标签 = 核心概念，必须理解</tspan>
+      <tspan x="20" dy="32">• 黄色标签 = 有助于理解全貌</tspan>
+      <tspan x="20" dy="32">• 绿色标签 = 感兴趣可以了解</tspan>
+      <tspan x="20" dy="48">• 遇到困难？可以跳过后再回来</tspan>
+    </text>
+    
+    <rect x="20" y="235" width="360" height="30" fill="#39FF14" opacity="0.1"/>
+    <text x="200" y="256" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#39FF14">
+      Focus on what matters first! 🎯
+    </text>
+  </g>
+  
+  <!-- 底部装饰 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6"/>
+  
+  <!-- 页码 -->
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">02/10</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">Navigation</text>
+</svg>

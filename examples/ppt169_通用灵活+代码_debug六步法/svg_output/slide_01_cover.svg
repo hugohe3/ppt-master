@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    <!-- 装饰性代码符号背景 -->
+    <g fill="#161b22" font-family="SF Mono, Menlo, monospace" font-size="120" opacity="0.3">
+        <text x="50" y="150">{</text>
+        <text x="1150" y="200">}</text>
+        <text x="150" y="600">&lt;/&gt;</text>
+        <text x="1000" y="550">/*</text>
+        <text x="900" y="150">;</text>
+        <text x="200" y="350">=&gt;</text>
+    </g>
+
+    <!-- 中央装饰线条 -->
+    <line x1="200" y1="280" x2="500" y2="280" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6" />
+    <line x1="780" y1="280" x2="1080" y2="280" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6" />
+
+    <!-- Bug 图标 -->
+    <g transform="translate(640, 200)" filter="url(#glow)">
+        <circle cx="0" cy="0" r="50" fill="none" stroke="#f85149" stroke-width="3" />
+        <path d="M-20,-15 L20,15 M-20,15 L20,-15" stroke="#f85149" stroke-width="3" stroke-linecap="round" />
+        <!-- 小虫子触角 -->
+        <path d="M-25,-30 Q-15,-45 0,-40 Q15,-45 25,-30" fill="none" stroke="#f85149" stroke-width="2" />
+    </g>
+
+    <!-- 主标题 -->
+    <text x="640" y="340" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="72"
+        font-weight="bold" fill="url(#accentGradient)">Debug 六步法</text>
+
+    <!-- 副标题 -->
+    <text x="640" y="410" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="32"
+        fill="#e6edf3">高手都做对哪些事？</text>
+
+    <!-- 装饰性分割线 -->
+    <rect x="540" y="450" width="200" height="3" rx="1.5" fill="url(#accentGradient)" opacity="0.8" />
+
+    <!-- 底部代码风格装饰 -->
+    <g font-family="SF Mono, Menlo, monospace" font-size="16" fill="#8b949e">
+        <text x="640" y="550" text-anchor="middle">
+            <tspan fill="#7ee787">function</tspan>
+            <tspan fill="#e6edf3"> debug</tspan>
+            <tspan fill="#8b949e">(</tspan>
+            <tspan fill="#f0883e">problem</tspan>
+            <tspan fill="#8b949e">) {</tspan>
+            <tspan fill="#7ee787"> return</tspan>
+            <tspan fill="#58a6ff"> solution</tspan>
+            <tspan fill="#8b949e">; }</tspan>
+        </text>
+    </g>
+
+    <!-- 底部信息 -->
+    <text x="640" y="650" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18"
+        fill="#8b949e">技术分享 · 2025</text>
+
+    <!-- 页码 -->
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">01 /
+        10</text>
+</svg>

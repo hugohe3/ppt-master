@@ -1,0 +1,146 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    The Unthought Known —— 非言语维度
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Accessing the Emotional Core of the Self
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="500" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 上层：概念定义卡片 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="1160" height="140" rx="12" fill="#1E3A5F"/>
+    
+    <!-- 引号装饰 -->
+    <text x="40" y="60" font-size="60" fill="rgba(255,255,255,0.2)" font-family="Georgia, serif">"</text>
+    
+    <!-- 核心定义 -->
+    <text x="80" y="55" font-size="20" fill="#E5E7EB">
+      <tspan font-weight="bold" fill="#FFFFFF">未经思考的已知</tspan>
+      <tspan fill="#94A3B8"> (Christopher Bollas)</tspan>
+    </text>
+    
+    <text x="80" y="90" font-size="18" fill="#CBD5E1">
+      我们"知道"但从未思考过、也无法用语言表达的体验
+    </text>
+    
+    <text x="80" y="120" font-size="16" fill="#94A3B8">
+      这些体验通常不仅未被语言化，而且无法被语言化——它们形成于语言获得之前
+    </text>
+  </g>
+  
+  <!-- 分隔标题 -->
+  <text x="60" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E5C8E">
+    非言语体验的三种临床表现途径
+  </text>
+  <line x1="60" y1="345" x2="350" y2="345" stroke="#2E5C8E" stroke-width="2"/>
+  
+  <!-- 下层：三通道卡片 -->
+  <g transform="translate(60, 370)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 活现 -->
+    <g>
+      <rect x="0" y="0" width="360" height="260" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部标签 -->
+      <rect x="0" y="0" width="360" height="60" rx="12" fill="#E07843"/>
+      <rect x="0" y="48" width="360" height="12" fill="#E07843"/>
+      
+      <text x="180" y="40" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">活现 Enactments</text>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="110" r="35" fill="#FED7AA"/>
+      <text x="180" y="120" font-size="32" text-anchor="middle">🎭</text>
+      
+      <!-- 说明 -->
+      <text x="180" y="175" font-size="16" fill="#374151" text-anchor="middle">
+        <tspan x="180" dy="0">在与治疗师的关系中</tspan>
+        <tspan x="180" dy="24" font-weight="600" fill="#E07843">重演过去的模式</tspan>
+      </text>
+      
+      <!-- 特征 -->
+      <text x="30" y="230" font-size="14" fill="#6B7280">
+        <tspan>• 由患者与治疗师共同创造</tspan>
+      </text>
+      <text x="30" y="250" font-size="14" fill="#6B7280">
+        <tspan>• 反映双方潜意识的需求</tspan>
+      </text>
+    </g>
+    
+    <!-- 唤起 -->
+    <g transform="translate(400, 0)">
+      <rect x="0" y="0" width="360" height="260" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部标签 -->
+      <rect x="0" y="0" width="360" height="60" rx="12" fill="#3D8B7A"/>
+      <rect x="0" y="48" width="360" height="12" fill="#3D8B7A"/>
+      
+      <text x="180" y="40" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">唤起 Evocation</text>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="110" r="35" fill="#D4EDDA"/>
+      <text x="180" y="120" font-size="32" text-anchor="middle">🪞</text>
+      
+      <!-- 说明 -->
+      <text x="180" y="175" font-size="16" fill="#374151" text-anchor="middle">
+        <tspan x="180" dy="0">通过投射性认同</tspan>
+        <tspan x="180" dy="24" font-weight="600" fill="#3D8B7A">在治疗师身上唤起体验</tspan>
+      </text>
+      
+      <!-- 特征 -->
+      <text x="30" y="230" font-size="14" fill="#6B7280">
+        <tspan>• 患者无法容忍的恐惧、羞耻、愤怒</tspan>
+      </text>
+      <text x="30" y="250" font-size="14" fill="#6B7280">
+        <tspan>• 治疗师成为理解患者的窗口</tspan>
+      </text>
+    </g>
+    
+    <!-- 具身化 -->
+    <g transform="translate(800, 0)">
+      <rect x="0" y="0" width="360" height="260" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部标签 -->
+      <rect x="0" y="0" width="360" height="60" rx="12" fill="#2E5C8E"/>
+      <rect x="0" y="48" width="360" height="12" fill="#2E5C8E"/>
+      
+      <text x="180" y="40" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">具身化 Embodiment</text>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="110" r="35" fill="#E0F2FE"/>
+      <text x="180" y="120" font-size="32" text-anchor="middle">🧘</text>
+      
+      <!-- 说明 -->
+      <text x="180" y="175" font-size="16" fill="#374151" text-anchor="middle">
+        <tspan x="180" dy="0">通过身体感觉、姿势</tspan>
+        <tspan x="180" dy="24" font-weight="600" fill="#2E5C8E">和运动来表达</tspan>
+      </text>
+      
+      <!-- 特征 -->
+      <text x="30" y="230" font-size="14" fill="#6B7280">
+        <tspan>• 身体记录着分数</tspan>
+      </text>
+      <text x="30" y="250" font-size="14" fill="#6B7280">
+        <tspan>• 创伤以躯体形式存储</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部提示 -->
+  <rect x="60" y="650" width="1160" height="40" rx="8" fill="#FEF3C7"/>
+  <text x="640" y="676" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#92400E" text-anchor="middle">
+    ⚡ 治疗师必须调整频道，接收患者尚无言语表达的非言语体验
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">06</text>
+</svg>

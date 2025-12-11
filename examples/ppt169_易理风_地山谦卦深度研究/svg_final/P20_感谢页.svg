@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A84B"/>
+      <stop offset="100%" stop-color="#D4A84B"/>
+    </linearGradient>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2C3E50"/>
+      <stop offset="100%" stop-color="#34495E"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 太极圆相装饰 -->
+  <circle cx="640" cy="320" r="200" fill="none" stroke="#D4A84B" stroke-width="1" opacity="0.4"/>
+  <circle cx="640" cy="320" r="240" fill="none" stroke="#D4A84B" stroke-width="0.5" opacity="0.25"/>
+  <circle cx="640" cy="320" r="280" fill="none" stroke="#D4A84B" stroke-width="0.5" opacity="0.15"/>
+  
+  <!-- 谦卦符号 -->
+  <g transform="translate(590, 180)">
+    <!-- 上卦 坤 ☷ -->
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="0" x2="100" y2="0" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="20" x2="40" y2="20" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="20" x2="100" y2="20" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="40" x2="40" y2="40" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="40" x2="100" y2="40" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <!-- 下卦 艮 ☶ -->
+    <line x1="0" y1="70" x2="100" y2="70" stroke="#C0392B" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="90" x2="40" y2="90" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="90" x2="100" y2="90" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="110" x2="40" y2="110" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="110" x2="100" y2="110" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 顶部装饰线 -->
+  <line x1="440" y1="320" x2="840" y2="320" stroke="url(#goldGradient)" stroke-width="2"/>
+  
+  <!-- 主文 -->
+  <text x="640" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="bold" fill="#D4A84B" text-anchor="middle">君子有終</text>
+  
+  <!-- 副文 -->
+  <text x="640" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#E8E4DC" text-anchor="middle" letter-spacing="4">谦卦之道，穿越周期，长盛不衰</text>
+  
+  <!-- 分隔线 -->
+  <line x1="480" y1="500" x2="800" y2="500" stroke="#D4A84B" stroke-width="1" opacity="0.5"/>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="middle">基于《周易》原典及历代易学核心注疏</text>
+  <text x="640" y="575" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="middle">融合王弼、程颐、朱熹经典观点与现代社会科学</text>
+  
+  <!-- 底部装饰线 -->
+  <line x1="440" y1="620" x2="840" y2="620" stroke="url(#goldGradient)" stroke-width="1" opacity="0.3"/>
+  
+  <!-- 感谢 -->
+  <text x="640" y="665" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#4A5568" text-anchor="middle">感谢聆听</text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">20 / 20</text>
+</svg>

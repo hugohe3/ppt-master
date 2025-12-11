@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1280"
+   height="720"
+   viewBox="0 0 1280 720"
+   version="1.1"
+   id="svg35"
+   sodipodi:docname="slide_15_geopolitics.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs35" />
+  <sodipodi:namedview
+     id="namedview35"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1638889"
+     inkscape:cx="639.66587"
+     inkscape:cy="360"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="2451"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8" />
+  <rect
+     width="1280"
+     height="720"
+     fill="#F0F5F7"
+     id="rect1" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="80"
+     fill="#0D2B3E"
+     id="rect2" />
+  <text
+     x="40"
+     y="50"
+     font-family="system-ui, 'Microsoft YaHei'"
+     font-size="28"
+     font-weight="700"
+     fill="#FFFFFF"
+     id="text2">地缘政治影响</text>
+  <text
+     x="1240"
+     y="50"
+     font-family="system-ui"
+     font-size="14"
+     fill="#7ED4E6"
+     text-anchor="end"
+     id="text3">GEOPOLITICAL IMPLICATIONS</text>
+  <!-- 左侧地图区域 -->
+  <g
+     transform="translate(40, 100)"
+     id="g8">
+    <rect
+       width="500"
+       height="450"
+       rx="12"
+       fill="#FFFFFF"
+       stroke="#D4DEE4"
+       stroke-width="1"
+       id="rect3" />
+    <text
+       x="20"
+       y="35"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="16"
+       font-weight="600"
+       fill="#0D2B3E"
+       id="text4">老挝电力系统控制权版图</text>
+    <!-- 地图图片 -->
+    <image
+       href="../images/energy_geopolitics.png"
+       x="20"
+       y="50"
+       width="460"
+       height="340"
+       preserveAspectRatio="xMidYMid meet"
+       id="image4" />
+    <!-- 图例 -->
+    <g
+       transform="translate(20, 410)"
+       id="g7">
+      <rect
+         width="16"
+         height="16"
+         rx="4"
+         fill="#1A6B7C"
+         id="rect4" />
+      <text
+         x="25"
+         y="13"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text5">发电（中国电建85%+）</text>
+      <rect
+         x="180"
+         y="0"
+         width="16"
+         height="16"
+         rx="4"
+         fill="#B8352B"
+         id="rect5" />
+      <text
+         x="205"
+         y="13"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text6">输电（南方电网90%）</text>
+      <rect
+         x="360"
+         y="0"
+         width="16"
+         height="16"
+         rx="4"
+         fill="#c9a227"
+         id="rect6" />
+      <text
+         x="385"
+         y="13"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11px"
+         fill="#4a5568"
+         id="text7">老挝仅剩10-15%</text>
+    </g>
+  </g>
+  <!-- 右侧分析 -->
+  <g
+     transform="translate(560, 100)"
+     id="g11">
+    <!-- 关键洞察 -->
+    <rect
+       width="680"
+       height="130"
+       rx="12"
+       fill="#B8352B"
+       id="rect8" />
+    <text
+       x="25"
+       y="35"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="16"
+       font-weight="600"
+       fill="#FFFFFF"
+       id="text8">🔑 核心洞察</text>
+    <text
+       x="25"
+       y="65"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="15"
+       fill="#FFFFFF"
+       font-weight="600"
+       id="text9"><tspan
+         id="tspan8">从&quot;东南亚蓄电池&quot; → &quot;外国资本的发电厂&quot;</tspan></text>
+    <text
+       x="25"
+       y="95"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="13"
+       fill="#FFFFFF"
+       opacity="0.9"
+       id="text10">老挝电力系统的发电、输电环节已全面由中国国企主导运营</text>
+    <text
+       x="25"
+       y="115"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="13"
+       fill="#FFFFFF"
+       opacity="0.9"
+       id="text11">能源主权正在被逐步&quot;空心化&quot;</text>
+  </g>
+  <!-- 区域影响 -->
+  <g
+     transform="translate(560, 250)"
+     id="g22">
+    <rect
+       width="680"
+       height="150"
+       rx="12"
+       fill="#FFFFFF"
+       stroke="#D4DEE4"
+       stroke-width="1"
+       id="rect11" />
+    <text
+       x="25"
+       y="35"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="16"
+       font-weight="600"
+       fill="#0D2B3E"
+       id="text12">区域关系的&quot;新常态&quot;</text>
+    <g
+       transform="translate(25, 55)"
+       id="g15">
+      <rect
+         width="200"
+         height="70"
+         rx="6"
+         fill="#C9A227"
+         opacity="0.1"
+         id="rect12" />
+      <text
+         x="15"
+         y="25"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="13"
+         font-weight="600"
+         fill="#C9A227"
+         id="text13">&quot;硬约束&quot;时代</text>
+      <text
+         x="15"
+         y="48"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text14">商业契约优先</text>
+      <text
+         x="15"
+         y="63"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text15">法律手段护航</text>
+    </g>
+    <g
+       transform="translate(245, 55)"
+       id="g18">
+      <rect
+         width="200"
+         height="70"
+         rx="6"
+         fill="#D97706"
+         opacity="0.1"
+         id="rect15" />
+      <text
+         x="15"
+         y="25"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="13"
+         font-weight="600"
+         fill="#D97706"
+         id="text16">先例效应</text>
+      <text
+         x="15"
+         y="48"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text17">其他债权人</text>
+      <text
+         x="15"
+         y="63"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text18">可能效仿</text>
+    </g>
+    <g
+       transform="translate(465, 55)"
+       id="g21">
+      <rect
+         width="190"
+         height="70"
+         rx="6"
+         fill="#B8352B"
+         opacity="0.1"
+         id="rect18" />
+      <text
+         x="15"
+         y="25"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="13"
+         font-weight="600"
+         fill="#B8352B"
+         id="text19">融资难度加剧</text>
+      <text
+         x="15"
+         y="48"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text20">外部投资者</text>
+      <text
+         x="15"
+         y="63"
+         font-family="system-ui, 'Microsoft YaHei'"
+         font-size="11"
+         fill="#4A5568"
+         id="text21">更加谨慎</text>
+    </g>
+  </g>
+  <!-- 一带一路项目的新态势 -->
+  <g
+     transform="translate(560, 420)"
+     id="g26">
+    <rect
+       width="680"
+       height="130"
+       rx="12"
+       fill="#FFFFFF"
+       stroke="#1A6B7C"
+       stroke-width="2"
+       id="rect22" />
+    <text
+       x="25"
+       y="35"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="16"
+       font-weight="600"
+       fill="#1A6B7C"
+       id="text22">一带一路项目的新态势</text>
+    <text
+       x="25"
+       y="65"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="13"
+       fill="#4A5568"
+       id="text23"><tspan
+         font-weight="600"
+         fill="#0D2B3E"
+         id="tspan22">过去认知：</tspan><tspan
+         id="tspan23">中国会为地缘政治利益（如中老铁路）无限期展期债务</tspan></text>
+    <text
+       x="25"
+       y="90"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="13"
+       fill="#4A5568"
+       id="text25"><tspan
+         font-weight="600"
+         fill="#B8352B"
+         id="tspan24">现实教训：</tspan><tspan
+         id="tspan25">微观项目层面，中国企业面临财务考核压力</tspan></text>
+    <text
+       x="25"
+       y="115"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="14"
+       fill="#C9A227"
+       font-weight="600"
+       id="text26"><tspan
+         id="tspan26">&quot;亲兄弟，明算账&quot; —— 商业利益不再无底线让步</tspan></text>
+  </g>
+  <!-- 底部警示 -->
+  <g
+     transform="translate(40, 570)"
+     id="g33">
+    <rect
+       width="1200"
+       height="80"
+       rx="12"
+       fill="#0D2B3E"
+       id="rect26" />
+    <text
+       x="25"
+       y="32"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="14"
+       font-weight="600"
+       fill="#C9A227"
+       id="text27">对其他发展中国家的警示</text>
+    <text
+       x="25"
+       y="58"
+       font-family="system-ui, 'Microsoft YaHei'"
+       font-size="13"
+       fill="#FFFFFF"
+       id="text33"><tspan
+         id="tspan27">南欧江项目提供了一个关于</tspan><tspan
+         fill="#D97706"
+         font-weight="600"
+         id="tspan28">基建狂热</tspan><tspan
+         id="tspan29">、</tspan><tspan
+         fill="#B8352B"
+         font-weight="600"
+         id="tspan30">债务陷阱</tspan><tspan
+         id="tspan31">与</tspan><tspan
+         fill="#B8352B"
+         font-weight="600"
+         id="tspan32">主权风险</tspan><tspan
+         id="tspan33">的深刻教训。</tspan></text>
+  </g>
+  <line
+     x1="40"
+     y1="670"
+     x2="1240"
+     y2="670"
+     stroke="#D4DEE4"
+     stroke-width="1"
+     id="line33" />
+  <text
+     x="40"
+     y="700"
+     font-family="system-ui, 'Microsoft YaHei'"
+     font-size="11"
+     fill="#718096"
+     id="text34">南欧江梯级水电站项目战略评估报告</text>
+  <text
+     x="1240"
+     y="700"
+     font-family="system-ui"
+     font-size="12"
+     fill="#718096"
+     text-anchor="end"
+     id="text35">15 / 20</text>
+</svg>

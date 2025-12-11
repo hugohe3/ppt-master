@@ -1,0 +1,113 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">研究架构</text>
+  <line x1="60" y1="120" x2="240" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 左侧目录列表 -->
+  <g transform="translate(60, 160)">
+    <!-- 目录项1 -->
+    <rect x="0" y="0" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="54" rx="2" fill="#C94C4C"/>
+    <text x="24" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C94C4C" font-weight="bold">一</text>
+    <text x="50" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">绪论：谦卦的元伦理地位</text>
+    <text x="50" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">六十四卦中的唯一全吉之卦</text>
+    
+    <!-- 目录项2 -->
+    <rect x="0" y="64" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="64" width="4" height="54" rx="2" fill="#2D5A5A"/>
+    <text x="24" y="86" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#2D5A5A" font-weight="bold">二</text>
+    <text x="50" y="86" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">符号学：谦的本体论基础</text>
+    <text x="50" y="106" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">字源解构与卦画物理图景</text>
+    
+    <!-- 目录项3 -->
+    <rect x="0" y="128" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="128" width="4" height="54" rx="2" fill="#B8860B"/>
+    <text x="24" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#B8860B" font-weight="bold">三</text>
+    <text x="50" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">宇宙法则：天地神人四维</text>
+    <text x="50" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">亏盈益谦的热力学与社会学机制</text>
+    
+    <!-- 目录项4 -->
+    <rect x="0" y="192" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="192" width="4" height="54" rx="2" fill="#C94C4C"/>
+    <text x="24" y="214" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C94C4C" font-weight="bold">四</text>
+    <text x="50" y="214" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">六爻动力学：进阶路径</text>
+    <text x="50" y="234" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">从谦谦到鸣谦的六个生存情境</text>
+    
+    <!-- 目录项5 -->
+    <rect x="0" y="256" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="256" width="4" height="54" rx="2" fill="#2D5A5A"/>
+    <text x="24" y="278" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#2D5A5A" font-weight="bold">五</text>
+    <text x="50" y="278" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">卦际关系：全息定位</text>
+    <text x="50" y="298" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">综卦、错卦、交互卦网络</text>
+    
+    <!-- 目录项6 -->
+    <rect x="0" y="320" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="320" width="4" height="54" rx="2" fill="#B8860B"/>
+    <text x="24" y="342" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#B8860B" font-weight="bold">六</text>
+    <text x="50" y="342" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">现代应用：高维策略</text>
+    <text x="50" y="362" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">领导力、心理学与品牌管理</text>
+    
+    <!-- 目录项7 -->
+    <rect x="0" y="384" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="384" width="4" height="54" rx="2" fill="#4A5568"/>
+    <text x="24" y="406" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" font-weight="bold">七</text>
+    <text x="50" y="406" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">真伪辨析：边界厘定</text>
+    <text x="50" y="426" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">真谦与伪谦的本质区分</text>
+    
+    <!-- 目录项8 -->
+    <rect x="0" y="448" width="620" height="54" rx="6" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <rect x="0" y="448" width="4" height="54" rx="2" fill="#C94C4C"/>
+    <text x="24" y="470" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C94C4C" font-weight="bold">八</text>
+    <text x="50" y="470" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1A1A2E">结论：有终之道</text>
+    <text x="50" y="490" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280">通往君子有终的元算法</text>
+  </g>
+  
+  <!-- 右侧六爻图 -->
+  <g transform="translate(780, 200)">
+    <rect x="0" y="0" width="400" height="400" rx="12" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    <text x="200" y="40" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E" text-anchor="middle">谦卦六爻结构</text>
+    
+    <!-- 六爻从上到下 -->
+    <g transform="translate(100, 70)">
+      <!-- 上六 -->
+      <line x1="0" y1="0" x2="80" y2="0" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <line x1="120" y1="0" x2="200" y2="0" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="5" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A5568">上六</text>
+      
+      <!-- 六五 -->
+      <line x1="0" y1="50" x2="80" y2="50" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <line x1="120" y1="50" x2="200" y2="50" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A5568">六五</text>
+      
+      <!-- 六四 -->
+      <line x1="0" y1="100" x2="80" y2="100" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <line x1="120" y1="100" x2="200" y2="100" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A5568">六四</text>
+      
+      <!-- 九三 - 唯一阳爻，高亮 -->
+      <rect x="-10" y="140" width="290" height="30" rx="4" fill="#C94C4C" opacity="0.15"/>
+      <line x1="0" y1="155" x2="200" y2="155" stroke="#C94C4C" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#C94C4C" font-weight="bold">九三 ★</text>
+      
+      <!-- 六二 -->
+      <line x1="0" y1="205" x2="80" y2="205" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <line x1="120" y1="205" x2="200" y2="205" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="210" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A5568">六二</text>
+      
+      <!-- 初六 -->
+      <line x1="0" y1="255" x2="80" y2="255" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <line x1="120" y1="255" x2="200" y2="255" stroke="#4A5568" stroke-width="6" stroke-linecap="round"/>
+      <text x="230" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A5568">初六</text>
+    </g>
+    
+    <!-- 底部说明 -->
+    <text x="200" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#8B9A9A" text-anchor="middle">五阴一阳 · 九三为卦主</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">开篇</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">2 / 20</text>
+</svg>

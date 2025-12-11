@@ -1,0 +1,125 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    未解决型患者：治愈创伤的伤口
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Unresolved Patient: Healing the Wounds of Trauma and Loss
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="560" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 核心挑战卡片 -->
+  <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="440" height="200" rx="12" fill="#FFFFFF" stroke="#B54545" stroke-width="2"/>
+    
+    <!-- 标题 -->
+    <rect x="0" y="0" width="440" height="50" rx="12" fill="#B54545"/>
+    <rect x="0" y="38" width="440" height="12" fill="#B54545"/>
+    <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">💔 核心挑战</text>
+    
+    <!-- 内容 -->
+    <g transform="translate(20, 70)">
+      <text x="0" y="0" font-size="15" font-weight="600" fill="#B54545">未解决的创伤</text>
+      <text x="0" y="25" font-size="14" fill="#374151">决定性因素不是创伤事件本身，而是缺乏解决</text>
+      <text x="0" y="48" font-size="13" fill="#6B7280">表现：在讨论创伤时出现推理或话语监控失误</text>
+    </g>
+    
+    <line x1="20" y1="130" x2="420" y2="130" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <g transform="translate(20, 145)">
+      <text x="0" y="0" font-size="15" font-weight="600" fill="#B54545">恐惧的悖论</text>
+      <text x="0" y="25" font-size="14" fill="#374151">既渴望依恋带来的安全，又恐惧依恋对象</text>
+      <text x="0" y="48" font-size="13" fill="#6B7280">因此，治疗中的安全感本身可能触发恐惧</text>
+    </g>
+  </g>
+  
+  <!-- 解离说明 -->
+  <g transform="translate(60, 365)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="440" height="100" rx="12" fill="#FEF3C7" stroke="#E07843" stroke-width="1"/>
+    
+    <text x="20" y="30" font-size="15" font-weight="600" fill="#E07843">⚠️ 解离 Dissociation</text>
+    <text x="20" y="55" font-size="14" fill="#374151">作为逃避无法承受之痛的防御，导致自我状态碎片化</text>
+    <text x="20" y="80" font-size="13" fill="#6B7280">患者在受害者、迫害者和拯救者角色之间转换</text>
+  </g>
+  
+  <!-- 治疗四阶段 -->
+  <g transform="translate(540, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <text x="0" y="0" font-size="18" font-weight="600" fill="#B54545">治疗四阶段</text>
+    <line x1="0" y1="15" x2="130" y2="15" stroke="#B54545" stroke-width="2"/>
+    
+    <!-- 阶段1 -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <circle cx="45" cy="40" r="25" fill="#3D8B7A"/>
+      <text x="45" y="47" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      
+      <text x="90" y="30" font-size="16" font-weight="bold" fill="#3D8B7A">建立安全关系</text>
+      <text x="90" y="55" font-size="14" fill="#374151">克服对安全的恐惧，通过重复的破裂与修复建立新的安全基地</text>
+    </g>
+    
+    <!-- 连接箭头 -->
+    <path d="M340,125 L340,145" stroke="#6B7280" stroke-width="2" fill="none"/>
+    <polygon points="340,150 334,140 346,140" fill="#6B7280"/>
+    
+    <!-- 阶段2 -->
+    <g transform="translate(0, 155)">
+      <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <circle cx="45" cy="40" r="25" fill="#2E5C8E"/>
+      <text x="45" y="47" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      
+      <text x="90" y="30" font-size="16" font-weight="bold" fill="#2E5C8E">创伤的言语化与情境化</text>
+      <text x="90" y="55" font-size="14" fill="#374151">将碎片化的内隐记忆转化为外显的、有时间标记的自传体记忆</text>
+    </g>
+    
+    <!-- 连接箭头 -->
+    <path d="M340,240 L340,260" stroke="#6B7280" stroke-width="2" fill="none"/>
+    <polygon points="340,265 334,255 346,255" fill="#6B7280"/>
+    
+    <!-- 阶段3 -->
+    <g transform="translate(0, 270)">
+      <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      
+      <circle cx="45" cy="40" r="25" fill="#E07843"/>
+      <text x="45" y="47" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      
+      <text x="90" y="30" font-size="16" font-weight="bold" fill="#E07843">去躯体化 Desomatization</text>
+      <text x="90" y="55" font-size="14" fill="#374151">帮助患者识别身体感觉，将其翻译为情感语言（如"胃紧缩"→"恐惧"）</text>
+    </g>
+    
+    <!-- 连接箭头 -->
+    <path d="M340,355 L340,375" stroke="#6B7280" stroke-width="2" fill="none"/>
+    <polygon points="340,380 334,370 346,370" fill="#6B7280"/>
+    
+    <!-- 阶段4 -->
+    <g transform="translate(0, 385)">
+      <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+      
+      <circle cx="45" cy="40" r="25" fill="#64748B"/>
+      <text x="45" y="47" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+      
+      <text x="90" y="30" font-size="16" font-weight="bold" fill="#64748B">心智化与觉察</text>
+      <text x="90" y="55" font-size="14" fill="#374151">区分当下感受与客观现实，从心理等同模式中解脱，"着陆"于当下</text>
+    </g>
+  </g>
+  
+  <!-- 底部强调 -->
+  <rect x="60" y="620" width="1160" height="60" rx="12" fill="#1E3A5F"/>
+  <text x="640" y="655" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    <tspan font-weight="bold">关键原则：</tspan>
+    <tspan dx="10">仅仅宣泄情绪是不够的，甚至可能导致再次创伤。必须在安全关系背景下进行整合。</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">22</text>
+</svg>

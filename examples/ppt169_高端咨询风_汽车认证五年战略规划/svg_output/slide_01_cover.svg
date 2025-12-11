@@ -1,0 +1,65 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 深蓝渐变背景 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003F6C"/>
+      <stop offset="100%" style="stop-color:#001A33"/>
+    </linearGradient>
+    <!-- 科技线条装饰 -->
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0076A8;stop-opacity:0"/>
+      <stop offset="50%" style="stop-color:#0076A8;stop-opacity:0.6"/>
+      <stop offset="100%" style="stop-color:#0076A8;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 背景图片 -->
+  <image x="0" y="0" width="1280" height="720" href="../images/cover_background.png" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+  
+  <!-- 科技装饰线条 -->
+  <line x1="0" y1="200" x2="1280" y2="200" stroke="url(#lineGradient)" stroke-width="1"/>
+  <line x1="0" y1="520" x2="1280" y2="520" stroke="url(#lineGradient)" stroke-width="1"/>
+  
+  <!-- 抽象汽车轮廓装饰 -->
+  <g opacity="0.15" transform="translate(900, 280)">
+    <ellipse cx="0" cy="80" rx="120" ry="40" fill="none" stroke="#0076A8" stroke-width="2"/>
+    <ellipse cx="200" cy="80" rx="120" ry="40" fill="none" stroke="#0076A8" stroke-width="2"/>
+    <path d="M-80 40 Q100 -60 280 40" fill="none" stroke="#0076A8" stroke-width="2"/>
+  </g>
+  
+  <!-- 左侧装饰圆环 -->
+  <circle cx="100" cy="360" r="300" fill="none" stroke="#0076A8" stroke-width="1" opacity="0.1"/>
+  <circle cx="100" cy="360" r="250" fill="none" stroke="#0076A8" stroke-width="1" opacity="0.08"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="280" text-anchor="middle" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="52" font-weight="bold" fill="#FFFFFF">
+    <tspan x="640" dy="0">汽车及零部件领域</tspan>
+    <tspan x="640" dy="70">自愿性产品认证</tspan>
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="440" text-anchor="middle" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="600" fill="#FFC107">
+    五年战略规划（2026–2030）
+  </text>
+  
+  <!-- 分隔线 -->
+  <rect x="540" y="490" width="200" height="3" fill="#0076A8" rx="1.5"/>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="560" text-anchor="middle" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" fill="#8EAFC4">
+    战略汇报
+  </text>
+  
+  <text x="640" y="620" text-anchor="middle" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#6A8FA8">
+    2025年11月
+  </text>
+  
+  <!-- 右下角装饰 -->
+  <g transform="translate(1150, 600)">
+    <rect x="0" y="0" width="80" height="4" fill="#00A651" rx="2"/>
+    <rect x="40" y="10" width="40" height="4" fill="#0076A8" rx="2"/>
+  </g>
+</svg>

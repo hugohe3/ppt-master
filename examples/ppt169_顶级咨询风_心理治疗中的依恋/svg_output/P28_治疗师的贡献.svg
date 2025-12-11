@@ -1,0 +1,131 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    治疗师：作为安全基地的存在
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Therapist's Contribution: Being the Secure Base
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="400" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 中央治疗二元图片 -->
+  <g transform="translate(440, 140)">
+    <defs>
+      <clipPath id="therapyClip">
+        <rect x="0" y="0" width="400" height="300" rx="16"/>
+      </clipPath>
+    </defs>
+    <rect x="0" y="0" width="400" height="300" rx="16" fill="#F1F5F9" stroke="#2E5C8E" stroke-width="2"/>
+    <image xlink:href="../images/therapy_dyad.png" x="0" y="0" width="400" height="300" 
+           clip-path="url(#therapyClip)" preserveAspectRatio="xMidYMid slice"/>
+    
+    <!-- 图片标注 -->
+    <rect x="120" y="255" width="160" height="35" rx="8" fill="rgba(46,92,142,0.9)"/>
+    <text x="200" y="278" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">治疗二元关系</text>
+  </g>
+  
+  <!-- 核心信息 -->
+  <g transform="translate(60, 160)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="360" height="100" rx="12" fill="#1E3A5F"/>
+    
+    <text x="180" y="40" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      治疗师自身的
+    </text>
+    <text x="180" y="70" font-size="18" font-weight="bold" fill="#E07843" text-anchor="middle">
+      整合、心智化和觉察能力
+    </text>
+    <text x="180" y="92" font-size="14" fill="#94A3B8" text-anchor="middle">
+      是治疗成功的关键
+    </text>
+  </g>
+  
+  <!-- 右侧关键点 -->
+  <g transform="translate(860, 160)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="360" height="280" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <rect x="0" y="0" width="360" height="50" rx="12" fill="#3D8B7A"/>
+    <rect x="0" y="38" width="360" height="12" fill="#3D8B7A"/>
+    <text x="180" y="32" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">治疗师的核心贡献</text>
+    
+    <g transform="translate(20, 70)">
+      <circle cx="12" cy="12" r="12" fill="#2E5C8E"/>
+      <text x="12" y="17" font-size="12" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="35" y="17" font-size="14" fill="#374151">提供"随机应变的沟通"</text>
+      
+      <circle cx="12" cy="52" r="12" fill="#3D8B7A"/>
+      <text x="12" y="57" font-size="12" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="35" y="57" font-size="14" fill="#374151">主动修复关系破裂</text>
+      
+      <circle cx="12" cy="92" r="12" fill="#E07843"/>
+      <text x="12" y="97" font-size="12" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="35" y="97" font-size="14" fill="#374151">从活现中解脱并示范改变</text>
+      
+      <circle cx="12" cy="132" r="12" fill="#64748B"/>
+      <text x="12" y="137" font-size="12" fill="#FFFFFF" text-anchor="middle">4</text>
+      <text x="35" y="137" font-size="14" fill="#374151">促进患者的心智化与觉察</text>
+      
+      <circle cx="12" cy="172" r="12" fill="#B54545"/>
+      <text x="12" y="177" font-size="12" fill="#FFFFFF" text-anchor="middle">5</text>
+      <text x="35" y="177" font-size="14" fill="#374151">成为内化的安全基地</text>
+    </g>
+  </g>
+  
+  <!-- 双栏布局：两条路径 -->
+  <g transform="translate(60, 470)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 通过心智化 -->
+    <g>
+      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="560" height="50" rx="12" fill="#2E5C8E"/>
+      <rect x="0" y="38" width="560" height="12" fill="#2E5C8E"/>
+      <text x="25" y="32" font-size="16" font-weight="bold" fill="#FFFFFF">🧠 通过心智化 → 重写自传叙事</text>
+      
+      <g transform="translate(25, 65)">
+        <text x="0" y="0" font-size="14" fill="#374151">
+          <tspan x="0" dy="0">帮助患者从多视角理解自己的历史，</tspan>
+          <tspan x="0" dy="24">将碎片化的记忆整合为连贯叙事，</tspan>
+          <tspan x="0" dy="24">理解过去如何影响当下，创造新的意义。</tspan>
+        </text>
+        
+        <rect x="0" y="90" width="510" height="30" rx="8" fill="#E0F2FE"/>
+        <text x="255" y="110" font-size="14" fill="#2E5C8E" text-anchor="middle">
+          产出：心理主体感 — "我是我体验的解释者"
+        </text>
+      </g>
+    </g>
+    
+    <!-- 通过觉察 -->
+    <g transform="translate(600, 0)">
+      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="560" height="50" rx="12" fill="#3D8B7A"/>
+      <rect x="0" y="38" width="560" height="12" fill="#3D8B7A"/>
+      <text x="25" y="32" font-size="16" font-weight="bold" fill="#FFFFFF">🧘 通过觉察 → 转化作者体验</text>
+      
+      <g transform="translate(25, 65)">
+        <text x="0" y="0" font-size="14" fill="#374151">
+          <tspan x="0" dy="0">帮助患者培养对当下体验的开放觉知，</tspan>
+          <tspan x="0" dy="24">从习惯性反应中解脱，建立内在的安全基地感，</tspan>
+          <tspan x="0" dy="24">接纳体验的流动性和无常。</tspan>
+        </text>
+        
+        <rect x="0" y="90" width="510" height="30" rx="8" fill="#D4EDDA"/>
+        <text x="255" y="110" font-size="14" fill="#3D8B7A" text-anchor="middle">
+          产出：注意力主体感 — "我可以控制我的注意力"
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">28</text>
+</svg>

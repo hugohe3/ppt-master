@@ -1,0 +1,142 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    核心概念速查表
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Quick Reference: Key Concepts in Attachment-Oriented Psychotherapy
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="400" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 三栏布局 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 第一栏：依恋理论核心 -->
+    <g>
+      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="370" height="45" rx="12" fill="#2E5C8E"/>
+      <rect x="0" y="33" width="370" height="12" fill="#2E5C8E"/>
+      <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">依恋理论核心</text>
+      
+      <g transform="translate(15, 60)" font-size="13">
+        <text x="0" y="0" font-weight="600" fill="#2E5C8E">安全基地 Secure Base</text>
+        <text x="0" y="18" fill="#6B7280">探索世界的安全起点</text>
+        
+        <text x="0" y="50" font-weight="600" fill="#2E5C8E">安全港 Safe Haven</text>
+        <text x="0" y="68" fill="#6B7280">危险时的庇护所</text>
+        
+        <text x="0" y="100" font-weight="600" fill="#2E5C8E">内部工作模型 IWM</text>
+        <text x="0" y="118" fill="#6B7280">关于自我和关系的心理表征</text>
+        
+        <text x="0" y="150" font-weight="600" fill="#2E5C8E">心智化 Mentalizing</text>
+        <text x="0" y="168" fill="#6B7280">根据心理状态理解行为</text>
+        
+        <text x="0" y="200" font-weight="600" fill="#2E5C8E">反思功能 RF</text>
+        <text x="0" y="218" fill="#6B7280">将他人视为有心理深度的存在</text>
+        
+        <text x="0" y="250" font-weight="600" fill="#2E5C8E">觉察 Mindfulness</text>
+        <text x="0" y="268" fill="#6B7280">对当下体验的非评判性关注</text>
+        
+        <text x="0" y="300" font-weight="600" fill="#2E5C8E">情感调谐 Affect Attunement</text>
+        <text x="0" y="318" fill="#6B7280">跨感官模式的情感共鸣</text>
+        
+        <text x="0" y="350" font-weight="600" fill="#2E5C8E">镜映 Mirroring</text>
+        <text x="0" y="368" fill="#6B7280">标识性地反映孩子的情感</text>
+        
+        <text x="0" y="400" font-weight="600" fill="#2E5C8E">容纳 Containment</text>
+        <text x="0" y="418" fill="#6B7280">容纳无法管理的痛苦情感</text>
+      </g>
+    </g>
+    
+    <!-- 第二栏：依恋模式与策略 -->
+    <g transform="translate(395, 0)">
+      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="370" height="45" rx="12" fill="#3D8B7A"/>
+      <rect x="0" y="33" width="370" height="12" fill="#3D8B7A"/>
+      <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">依恋模式与策略</text>
+      
+      <g transform="translate(15, 60)" font-size="13">
+        <text x="0" y="0" font-weight="600" fill="#3D8B7A">安全型 Secure</text>
+        <text x="0" y="18" fill="#6B7280">灵活整合，情感可调节</text>
+        
+        <text x="0" y="50" font-weight="600" fill="#64748B">回避型 Avoidant</text>
+        <text x="0" y="68" fill="#6B7280">降低活性策略，情感隔离</text>
+        
+        <text x="0" y="100" font-weight="600" fill="#E07843">矛盾型 Ambivalent</text>
+        <text x="0" y="118" fill="#6B7280">过度激活策略，情感淹没</text>
+        
+        <text x="0" y="150" font-weight="600" fill="#B54545">混乱型 Disorganized</text>
+        <text x="0" y="168" fill="#6B7280">策略崩溃，解离</text>
+        
+        <line x1="0" y1="195" x2="340" y2="195" stroke="#E5E7EB" stroke-width="1"/>
+        
+        <text x="0" y="220" font-weight="600" fill="#1E3A5F">成人AAI分类</text>
+        
+        <text x="0" y="250" fill="#3D8B7A">自主型 → 连贯协作叙述</text>
+        <text x="0" y="280" fill="#64748B">冷漠型 → 贬低依恋，缺乏记忆</text>
+        <text x="0" y="310" fill="#E07843">迷恋型 → 混乱冗长，被过去纠缠</text>
+        <text x="0" y="340" fill="#B54545">未解决型 → 推理/话语监控失误</text>
+        
+        <line x1="0" y1="365" x2="340" y2="365" stroke="#E5E7EB" stroke-width="1"/>
+        
+        <text x="0" y="390" font-weight="600" fill="#1E3A5F">三种体验模式</text>
+        <text x="0" y="415" fill="#B54545">心理等同：信念=事实</text>
+        <text x="0" y="440" fill="#E07843">假装模式：想象与现实脱钩</text>
+        <text x="0" y="465" fill="#3D8B7A">心智化：分离但关联</text>
+      </g>
+    </g>
+    
+    <!-- 第三栏：临床干预要点 -->
+    <g transform="translate(790, 0)">
+      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="370" height="45" rx="12" fill="#E07843"/>
+      <rect x="0" y="33" width="370" height="12" fill="#E07843"/>
+      <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">临床干预要点</text>
+      
+      <g transform="translate(15, 60)" font-size="13">
+        <text x="0" y="0" font-weight="600" fill="#E07843">活现 Enactments</text>
+        <text x="0" y="18" fill="#6B7280">移情-反移情交织的重演</text>
+        
+        <text x="0" y="50" font-weight="600" fill="#E07843">唤起 Evocation</text>
+        <text x="0" y="68" fill="#6B7280">投射性认同，在治疗师身上唤起</text>
+        
+        <text x="0" y="100" font-weight="600" fill="#E07843">具身化 Embodiment</text>
+        <text x="0" y="118" fill="#6B7280">身体记录情感，躯体表达</text>
+        
+        <line x1="0" y1="145" x2="340" y2="145" stroke="#E5E7EB" stroke-width="1"/>
+        
+        <text x="0" y="170" font-weight="600" fill="#1E3A5F">容纳之窗</text>
+        <text x="0" y="195" fill="#6B7280">SNS过度激活：战斗/逃跑</text>
+        <text x="0" y="218" fill="#6B7280">PNS过度激活：冻结/麻木</text>
+        
+        <line x1="0" y1="245" x2="340" y2="245" stroke="#E5E7EB" stroke-width="1"/>
+        
+        <text x="0" y="270" font-weight="600" fill="#1E3A5F">身体干预四策略</text>
+        <text x="0" y="295" fill="#374151">1. 谈论身体</text>
+        <text x="0" y="318" fill="#374151">2. 动员身体</text>
+        <text x="0" y="341" fill="#374151">3. 去躯体化（未解决型）</text>
+        <text x="0" y="364" fill="#374151">4. 再躯体化（冷漠型）</text>
+        
+        <line x1="0" y1="390" x2="340" y2="390" stroke="#E5E7EB" stroke-width="1"/>
+        
+        <text x="0" y="415" font-weight="600" fill="#1E3A5F">发展的四要素</text>
+        <text x="0" y="440" fill="#374151">合作性沟通 | 修复破裂</text>
+        <text x="0" y="465" fill="#374151">搭脚手架 | 积极参与</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">29</text>
+</svg>

@@ -1,0 +1,119 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">EDL财务困境</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">EDL FINANCIAL BLACK HOLE</text>
+  
+  <!-- 债务数字 -->
+  <g transform="translate(40, 100)">
+    <rect width="350" height="130" rx="12" fill="#B8352B"/>
+    <text x="25" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" opacity="0.8">EDL债务总额</text>
+    <text x="25" y="90" font-family="system-ui" font-size="48" font-weight="700" fill="#FFFFFF">$54</text>
+    <text x="160" y="90" font-family="system-ui" font-size="24" fill="#FFFFFF">亿</text>
+    <text x="25" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" opacity="0.8">占老挝公共债务约40%</text>
+  </g>
+  
+  <g transform="translate(410, 100)">
+    <rect width="250" height="130" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#718096">财务状况</text>
+    <text x="20" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="22" font-weight="700" fill="#B8352B">资不抵债</text>
+    <text x="20" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">完全丧失履行PPA</text>
+    <text x="20" y="118" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">的财务能力</text>
+  </g>
+  
+  <!-- 困境三角 -->
+  <g transform="translate(680, 100)">
+    <rect width="560" height="130" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
+    <text x="280" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="15" font-weight="600" fill="#B8352B" text-anchor="middle">⚠️ EDL困境三角</text>
+    
+    <g transform="translate(30, 50)">
+      <rect width="155" height="65" rx="6" fill="#1A6B7C" opacity="0.1"/>
+      <text x="78" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#1A6B7C" text-anchor="middle" font-weight="600">收入端</text>
+      <text x="78" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">管制电价（基普）</text>
+      <text x="78" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">低于成本价</text>
+    </g>
+    
+    <g transform="translate(200, 50)">
+      <rect width="155" height="65" rx="6" fill="#D97706" opacity="0.1"/>
+      <text x="78" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#D97706" text-anchor="middle" font-weight="600">支出端</text>
+      <text x="78" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">支付给IPP（美元）</text>
+      <text x="78" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">刚性合同义务</text>
+    </g>
+    
+    <g transform="translate(370, 50)">
+      <rect width="155" height="65" rx="6" fill="#B8352B" opacity="0.1"/>
+      <text x="78" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#B8352B" text-anchor="middle" font-weight="600">债务端</text>
+      <text x="78" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">$54亿累计债务</text>
+      <text x="78" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">持续增长</text>
+    </g>
+  </g>
+  
+  <!-- 资金流向图 -->
+  <g transform="translate(40, 260)">
+    <rect width="1200" height="300" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">EDL资金流困局示意</text>
+    
+    <!-- 流程图 -->
+    <g transform="translate(50, 70)">
+      <!-- 收入来源 -->
+      <g transform="translate(0, 0)">
+        <rect width="200" height="100" rx="10" fill="#2E7D32" opacity="0.15"/>
+        <text x="100" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#2E7D32" text-anchor="middle">国内售电收入</text>
+        <text x="100" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">老挝基普 (LAK)</text>
+        <text x="100" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" text-anchor="middle">管制低价 · 居民补贴</text>
+      </g>
+      
+      <text x="220" y="55" font-family="system-ui" font-size="28" fill="#1A6B7C">→</text>
+      
+      <!-- EDL中心 -->
+      <g transform="translate(260, 0)">
+        <rect width="180" height="100" rx="10" fill="#B8352B"/>
+        <text x="90" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">EDL</text>
+        <text x="90" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">老挝国家电力公司</text>
+        <text x="90" y="85" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">资金缺口巨大</text>
+      </g>
+      
+      <text x="460" y="55" font-family="system-ui" font-size="28" fill="#B8352B">→</text>
+      
+      <!-- 支出项 -->
+      <g transform="translate(500, 0)">
+        <rect width="200" height="100" rx="10" fill="#D97706" opacity="0.15"/>
+        <text x="100" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706" text-anchor="middle">购电支出（IPP）</text>
+        <text x="100" y="55" font-family="system-ui" font-size="16" font-weight="700" fill="#D97706" text-anchor="middle">美元 USD</text>
+        <text x="100" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" text-anchor="middle">照付不议 · 刚性义务</text>
+      </g>
+      
+      <text x="720" y="55" font-family="system-ui" font-size="28" fill="#D97706">→</text>
+      
+      <!-- 南欧江 -->
+      <g transform="translate(760, 0)">
+        <rect width="200" height="100" rx="10" fill="#1A6B7C"/>
+        <text x="100" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">南欧江项目公司</text>
+        <text x="100" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6" text-anchor="middle">应收：$5.55亿</text>
+        <text x="100" y="85" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">实收：贬值基普</text>
+      </g>
+    </g>
+    
+    <!-- 核心矛盾说明 -->
+    <g transform="translate(50, 200)">
+      <rect width="1100" height="70" rx="8" fill="#0D2B3E" opacity="0.06"/>
+      <text x="20" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">核心矛盾</text>
+      <text x="20" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">
+        <tspan>汇率稳定时，模式勉强维持；基普崩盘后，EDL的</tspan>
+        <tspan fill="#B8352B" font-weight="600">资产负债表瞬间穿孔</tspan>
+        <tspan>，用贬值60%的基普支付美元账单 = 实际上只付了约40%</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 底部说明 -->
+  <g transform="translate(40, 580)">
+    <rect width="1200" height="70" rx="12" fill="#D97706" opacity="0.1"/>
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">无法救助的原因</text>
+    <text x="25" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">老挝政府自身处于债务困境（Debt Distress），财政枯竭，无力对EDL进行注资救助。EDL实际上是国家财政的延伸性黑洞。</text>
+  </g>
+  
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="700" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="700" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">13 / 20</text>
+</svg>

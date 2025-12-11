@@ -1,0 +1,122 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    智能网联汽车趋势
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    INTELLIGENT CONNECTED VEHICLE TRENDS
+  </text>
+  
+  <!-- 左侧：环形进度图 -->
+  <g transform="translate(60, 120)">
+    <rect width="520" height="520" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">智能网联渗透率</text>
+    
+    <!-- 环形图1: L2/L3渗透率 (50%) -->
+    <g transform="translate(130, 180)">
+      <!-- 背景环 -->
+      <circle cx="0" cy="0" r="90" fill="none" stroke="#E8E8F0" stroke-width="20"/>
+      <!-- 进度弧线: 50% = 半圆, 从顶部(0,-90)顺时针到底部(0,90) -->
+      <path d="M 0 -90 A 90 90 0 0 1 0 90" fill="none" stroke="#0076A8" stroke-width="20" stroke-linecap="round"/>
+      <text x="0" y="-10" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C" text-anchor="middle">50%</text>
+      <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="middle">L2/L3渗透率</text>
+      <text x="0" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8" text-anchor="middle">2025预期</text>
+    </g>
+    
+    <!-- 环形图2: 车联网装配率 (50%) -->
+    <g transform="translate(380, 180)">
+      <!-- 背景环 -->
+      <circle cx="0" cy="0" r="90" fill="none" stroke="#E8E8F0" stroke-width="20"/>
+      <!-- 进度弧线: 50% = 半圆, 从顶部(0,-90)顺时针到底部(0,90) -->
+      <path d="M 0 -90 A 90 90 0 0 1 0 90" fill="none" stroke="#00A651" stroke-width="20" stroke-linecap="round"/>
+      <text x="0" y="-10" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#003F6C" text-anchor="middle">50%</text>
+      <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="middle">车联网装配率</text>
+      <text x="0" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" text-anchor="middle">新车标配</text>
+    </g>
+    
+    <!-- 趋势说明 -->
+    <g transform="translate(30, 340)">
+      <rect width="460" height="150" rx="10" fill="#F0F4F8"/>
+      <text x="20" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#003F6C">发展趋势</text>
+      <text x="20" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="20" dy="0">• 智能驾驶从辅助向自动演进</tspan>
+        <tspan x="20" dy="26">• 车路云协同加速落地</tspan>
+        <tspan x="20" dy="26">• 软件定义汽车成为主流</tspan>
+        <tspan x="20" dy="26">• OTA升级带来持续迭代需求</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 右侧：技术要点矩阵 -->
+  <g transform="translate(610, 120)">
+    <rect width="610" height="520" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">新兴认证需求</text>
+    
+    <!-- 需求1: 功能安全 -->
+    <g transform="translate(30, 70)">
+      <rect width="550" height="100" rx="10" fill="#E3F2FD"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#0076A8"/>
+      <g transform="translate(25, 20)">
+        <circle cx="25" cy="25" r="25" fill="#0076A8" opacity="0.2"/>
+        <text x="25" y="32" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#0076A8" text-anchor="middle">⚙️</text>
+      </g>
+      <text x="90" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">功能安全认证</text>
+      <text x="90" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">ISO 26262 ASIL等级评估 | 自动驾驶系统可靠性验证</text>
+      <rect x="90" y="72" width="120" height="22" rx="11" fill="#0076A8"/>
+      <text x="150" y="87" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">ISO 26262</text>
+    </g>
+    
+    <!-- 需求2: 网络安全 -->
+    <g transform="translate(30, 185)">
+      <rect width="550" height="100" rx="10" fill="#F3E5F5"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#9C27B0"/>
+      <g transform="translate(25, 20)">
+        <circle cx="25" cy="25" r="25" fill="#9C27B0" opacity="0.2"/>
+        <text x="25" y="32" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#9C27B0" text-anchor="middle">🔒</text>
+      </g>
+      <text x="90" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">网络安全认证</text>
+      <text x="90" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">CSMS管理体系 | 车载系统渗透测试 | 数据隐私保护</text>
+      <rect x="90" y="72" width="140" height="22" rx="11" fill="#9C27B0"/>
+      <text x="160" y="87" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">ISO/SAE 21434</text>
+    </g>
+    
+    <!-- 需求3: 软件可靠性 -->
+    <g transform="translate(30, 300)">
+      <rect width="550" height="100" rx="10" fill="#FFF3E0"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#FF6B35"/>
+      <g transform="translate(25, 20)">
+        <circle cx="25" cy="25" r="25" fill="#FF6B35" opacity="0.2"/>
+        <text x="25" y="32" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FF6B35" text-anchor="middle">💻</text>
+      </g>
+      <text x="90" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">软件更新认证</text>
+      <text x="90" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">OTA升级管理 | 软件版本控制 | 回滚机制验证</text>
+      <rect x="90" y="72" width="100" height="22" rx="11" fill="#FF6B35"/>
+      <text x="140" y="87" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">UN R156</text>
+    </g>
+    
+    <!-- 底部认证需求增长 -->
+    <g transform="translate(30, 420)">
+      <rect width="550" height="75" rx="10" fill="#003F6C"/>
+      <text x="20" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107">认证需求预测</text>
+      <text x="20" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF">
+        <tspan>2024-2030年，智能网联相关认证需求年均增长</tspan>
+        <tspan font-size="22" font-weight="bold" fill="#FFC107"> 25%+ </tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">06 / 20</text>
+</svg>

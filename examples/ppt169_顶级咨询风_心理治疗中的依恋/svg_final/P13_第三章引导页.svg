@@ -1,0 +1,71 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chapterGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E07843"/>
+      <stop offset="100%" style="stop-color:#C45F30"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#chapterGradient3)"/>
+  
+  <!-- 装饰性同心圆 - 象征自我的层级 -->
+  <g opacity="0.15">
+    <circle cx="640" cy="360" r="280" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="360" r="220" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="360" r="160" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="360" r="100" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="360" r="50" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+  
+  <!-- 层级标注 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="rgba(255,255,255,0.4)">
+    <text x="640" y="100" text-anchor="middle">觉察性自我</text>
+    <text x="640" y="150" text-anchor="middle">反思性自我</text>
+    <text x="640" y="210" text-anchor="middle">表征性自我</text>
+    <text x="640" y="280" text-anchor="middle">情绪自我</text>
+    <text x="640" y="360" text-anchor="middle" fill="rgba(255,255,255,0.6)">躯体自我</text>
+  </g>
+  
+  <!-- 章节编号 -->
+  <text x="640" y="430" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+    03
+  </text>
+  
+  <!-- 章节标识 -->
+  <rect x="545" y="480" width="190" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <text x="640" y="507" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    CHAPTER THREE
+  </text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="570" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    自我的多重维度
+  </text>
+  
+  <!-- 英文副标题 -->
+  <text x="640" y="615" font-family="system-ui, sans-serif" font-size="24" fill="#FED7AA" text-anchor="middle">
+    The Multiple Dimensions of the Self
+  </text>
+  
+  <!-- 关键词 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(300, 660)">
+    <rect x="0" y="0" width="90" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+    <text x="45" y="19" text-anchor="middle">躯体自我</text>
+    
+    <rect x="110" y="0" width="90" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+    <text x="155" y="19" text-anchor="middle">情绪自我</text>
+    
+    <rect x="220" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+    <text x="270" y="19" text-anchor="middle">表征性自我</text>
+    
+    <rect x="340" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+    <text x="390" y="19" text-anchor="middle">反思性自我</text>
+    
+    <rect x="460" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+    <text x="510" y="19" text-anchor="middle">觉察性自我</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#FED7AA" text-anchor="end">13</text>
+</svg>

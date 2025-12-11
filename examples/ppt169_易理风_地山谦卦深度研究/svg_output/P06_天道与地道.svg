@@ -1,0 +1,72 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">宇宙法则（上）：天道下济，地道流谦</text>
+  <line x1="60" y1="120" x2="600" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 天道卡片 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="1160" height="230" rx="12" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    
+    <!-- 卡片标题 -->
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#2D5A5A"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#2D5A5A"/>
+    <use data-icon="globe" x="25" y="12" width="26" height="26" fill="#E8E4DC"/>
+    <text x="65" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC">天道：热力学与能量均衡</text>
+    
+    <!-- 原文引用 -->
+    <rect x="30" y="70" width="500" height="60" rx="8" fill="#F0EDE8" stroke="#B8860B" stroke-width="1"/>
+    <text x="280" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#B8860B" text-anchor="middle">「天道下济而光明……天道亏盈而益谦」</text>
+    
+    <!-- 解读内容 -->
+    <g transform="translate(560, 70)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E">
+        <tspan x="0" dy="20" font-weight="bold" fill="#2D5A5A">天体物理学视角</tspan>
+        <tspan x="0" dy="28">太阳必须将光热向下辐射（下济），才能体现其光明</tspan>
+        <tspan x="0" dy="26">若能量只聚敛于自身，将走向热寂或坍塌</tspan>
+        <tspan x="0" dy="40" font-weight="bold" fill="#2D5A5A">负反馈调节机制</tspan>
+        <tspan x="0" dy="28">高压区 → 低压区 ｜ 高温 → 低温</tspan>
+      </text>
+    </g>
+    
+    <!-- 结论标签 -->
+    <rect x="30" y="175" width="500" height="40" rx="6" fill="#2D5A5A"/>
+    <text x="280" y="202" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">谦卦主动处于"不足"与"低位"，成为能量汇聚的洼地</text>
+  </g>
+  
+  <!-- 地道卡片 -->
+  <g transform="translate(60, 400)">
+    <rect x="0" y="0" width="1160" height="230" rx="12" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    
+    <!-- 卡片标题 -->
+    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#C94C4C"/>
+    <rect x="0" y="40" width="1160" height="10" fill="#C94C4C"/>
+    <use data-icon="mountains" x="25" y="12" width="26" height="26" fill="#FFFFFF"/>
+    <text x="65" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">地道：地质演变与流体动力学</text>
+    
+    <!-- 原文引用 -->
+    <rect x="30" y="70" width="500" height="60" rx="8" fill="#F0EDE8" stroke="#B8860B" stroke-width="1"/>
+    <text x="280" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#B8860B" text-anchor="middle">「地道变盈而流谦」</text>
+    
+    <!-- 解读内容 -->
+    <g transform="translate(560, 70)">
+      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E">
+        <tspan x="0" dy="20" font-weight="bold" fill="#C94C4C">地理演化规律</tspan>
+        <tspan x="0" dy="28">长期趋势：剥蚀高山（变盈）填平沟壑（流谦）</tspan>
+        <tspan x="0" dy="26">水流作为地道载体，永远遵循重力法则流向最低处</tspan>
+        <tspan x="0" dy="40" font-weight="bold" fill="#C94C4C">社会学隐喻</tspan>
+        <tspan x="0" dy="28">高高在上的特权结构终将被底层力量侵蚀瓦解</tspan>
+      </text>
+    </g>
+    
+    <!-- 结论标签 -->
+    <rect x="30" y="175" width="500" height="40" rx="6" fill="#C94C4C"/>
+    <text x="280" y="202" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">谦卦模拟"流谦"形态，处于不断接受补给的优势生态位</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第三部分：宇宙四大法则</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">6 / 20</text>
+</svg>

@@ -1,0 +1,148 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    情感调节与依恋策略
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Affect Regulation and Attachment Strategies
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="380" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 核心定义 -->
+  <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="1160" height="70" rx="12" fill="#1E3A5F"/>
+    <text x="30" y="30" font-size="16" fill="#FFFFFF">
+      <tspan font-weight="bold">Schore 的核心定义：</tspan>
+      <tspan dx="10">依恋 = 情绪的二元调节</tspan>
+    </text>
+    <text x="30" y="55" font-size="14" fill="#94A3B8">
+      依恋对象通过调节婴儿的情感（放大积极情感，缓解消极情感）来塑造婴儿的自我
+    </text>
+  </g>
+  
+  <!-- 三栏策略对比 -->
+  <g transform="translate(60, 240)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 安全型策略 -->
+    <g>
+      <rect x="0" y="0" width="340" height="410" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <!-- 标题栏 -->
+      <rect x="0" y="0" width="340" height="60" rx="12" fill="#3D8B7A"/>
+      <rect x="0" y="48" width="340" height="12" fill="#3D8B7A"/>
+      <text x="170" y="25" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">安全型策略</text>
+      <text x="170" y="48" font-size="12" fill="#D4EDDA" text-anchor="middle">Secure Strategy</text>
+      
+      <!-- 核心模式 -->
+      <rect x="15" y="80" width="310" height="60" rx="8" fill="#D4EDDA"/>
+      <text x="170" y="105" font-size="15" fill="#3D8B7A" text-anchor="middle">表达情感 → 积极回应</text>
+      <text x="170" y="128" font-size="15" fill="#3D8B7A" text-anchor="middle">→ 发展情感调节能力</text>
+      
+      <!-- 特征列表 -->
+      <text x="25" y="175" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">📌 养育特征</tspan>
+        <tspan x="25" dy="28" font-size="14">• 父母敏感且反应迅速</tspan>
+        <tspan x="25" dy="24" font-size="14">• 情感表达被接纳和镜映</tspan>
+        <tspan x="25" dy="24" font-size="14">• 痛苦时获得安慰</tspan>
+      </text>
+      
+      <line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="25" y="315" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">🎯 结果</tspan>
+        <tspan x="25" dy="28" font-size="14">• 情感可识别、可调节</tspan>
+        <tspan x="25" dy="24" font-size="14">• 灵活的应对策略</tspan>
+        <tspan x="25" dy="24" font-size="14">• 能够寻求和接受帮助</tspan>
+      </text>
+      
+      <!-- 结论标签 -->
+      <rect x="85" y="420" width="170" height="36" rx="18" fill="#3D8B7A"/>
+      <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✓ 整合</text>
+    </g>
+    
+    <!-- 回避型策略 -->
+    <g transform="translate(410, 0)">
+      <rect x="0" y="0" width="340" height="410" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+      
+      <!-- 标题栏 -->
+      <rect x="0" y="0" width="340" height="60" rx="12" fill="#64748B"/>
+      <rect x="0" y="48" width="340" height="12" fill="#64748B"/>
+      <text x="170" y="25" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">回避型策略</text>
+      <text x="170" y="48" font-size="12" fill="#E2E8F0" text-anchor="middle">Deactivating Strategy</text>
+      
+      <!-- 核心模式 -->
+      <rect x="15" y="80" width="310" height="60" rx="8" fill="#E2E8F0"/>
+      <text x="170" y="105" font-size="15" fill="#64748B" text-anchor="middle">表达情感 → 被拒绝/忽视</text>
+      <text x="170" y="128" font-size="15" fill="#64748B" text-anchor="middle">→ 过度调节/抑制情感</text>
+      
+      <!-- 特征列表 -->
+      <text x="25" y="175" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">📌 养育特征</tspan>
+        <tspan x="25" dy="28" font-size="14">• 父母拒绝或厌恶亲近</tspan>
+        <tspan x="25" dy="24" font-size="14">• 情感表达被忽视或贬低</tspan>
+        <tspan x="25" dy="24" font-size="14">• 只有"坚强"才被接纳</tspan>
+      </text>
+      
+      <line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="25" y="315" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">🎯 结果</tspan>
+        <tspan x="25" dy="28" font-size="14">• 情感被最小化</tspan>
+        <tspan x="25" dy="24" font-size="14">• 强迫性自力更生</tspan>
+        <tspan x="25" dy="24" font-size="14">• 避免依赖他人</tspan>
+      </text>
+      
+      <!-- 结论标签 -->
+      <rect x="85" y="420" width="170" height="36" rx="18" fill="#64748B"/>
+      <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✗ 隔离</text>
+    </g>
+    
+    <!-- 矛盾型策略 -->
+    <g transform="translate(820, 0)">
+      <rect x="0" y="0" width="340" height="410" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      
+      <!-- 标题栏 -->
+      <rect x="0" y="0" width="340" height="60" rx="12" fill="#E07843"/>
+      <rect x="0" y="48" width="340" height="12" fill="#E07843"/>
+      <text x="170" y="25" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">矛盾型策略</text>
+      <text x="170" y="48" font-size="12" fill="#FED7AA" text-anchor="middle">Hyperactivating Strategy</text>
+      
+      <!-- 核心模式 -->
+      <rect x="15" y="80" width="310" height="60" rx="8" fill="#FED7AA"/>
+      <text x="170" y="105" font-size="15" fill="#E07843" text-anchor="middle">表达情感 → 不可预测回应</text>
+      <text x="170" y="128" font-size="15" fill="#E07843" text-anchor="middle">→ 调节不足/放大情感</text>
+      
+      <!-- 特征列表 -->
+      <text x="25" y="175" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">📌 养育特征</tspan>
+        <tspan x="25" dy="28" font-size="14">• 父母反应不可预测</tspan>
+        <tspan x="25" dy="24" font-size="14">• 时而可用时而不可用</tspan>
+        <tspan x="25" dy="24" font-size="14">• 只有"足够痛苦"才被关注</tspan>
+      </text>
+      
+      <line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="25" y="315" font-size="15" fill="#374151">
+        <tspan x="25" dy="0">🎯 结果</tspan>
+        <tspan x="25" dy="28" font-size="14">• 情感被最大化</tspan>
+        <tspan x="25" dy="24" font-size="14">• 持续警惕和焦虑</tspan>
+        <tspan x="25" dy="24" font-size="14">• 过度依赖他人</tspan>
+      </text>
+      
+      <!-- 结论标签 -->
+      <rect x="85" y="420" width="170" height="36" rx="18" fill="#E07843"/>
+      <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✗ 淹没</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">16</text>
+</svg>

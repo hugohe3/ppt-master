@@ -1,0 +1,137 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#0D2B3E"/>
+  
+  <!-- 顶部标题栏 -->
+  <text x="40" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">仲裁案概览</text>
+  <text x="1240" y="55" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">ARBITRATION OVERVIEW</text>
+  <line x1="40" y1="75" x2="1240" y2="75" stroke="#1A6B7C" stroke-width="1"/>
+  
+  <!-- 核心数据 KPI -->
+  <g transform="translate(40, 100)">
+    <rect width="280" height="140" rx="12" fill="#1E3A4D"/>
+    <rect x="0" y="0" width="6" height="140" rx="3" fill="#B8352B"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#7ED4E6">索赔总额</text>
+    <text x="25" y="85" font-family="system-ui" font-size="48" font-weight="700" fill="#FFFFFF">$5.55</text>
+    <text x="195" y="85" font-family="system-ui" font-size="22" fill="#7ED4E6">亿</text>
+    <text x="25" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B">约占老挝GDP的 4%</text>
+  </g>
+  
+  <g transform="translate(340, 100)">
+    <rect width="200" height="140" rx="12" fill="#1E3A4D"/>
+    <rect x="0" y="0" width="6" height="140" rx="3" fill="#C9A227"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#7ED4E6">仲裁机构</text>
+    <text x="25" y="70" font-family="system-ui" font-size="20" font-weight="600" fill="#FFFFFF">SIAC</text>
+    <text x="25" y="95" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">新加坡国际</text>
+    <text x="25" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">仲裁中心</text>
+  </g>
+  
+  <g transform="translate(560, 100)">
+    <rect width="200" height="140" rx="12" fill="#1E3A4D"/>
+    <rect x="0" y="0" width="6" height="140" rx="3" fill="#D97706"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#7ED4E6">欠款时间</text>
+    <text x="25" y="80" font-family="system-ui" font-size="36" font-weight="700" fill="#FFFFFF">4</text>
+    <text x="60" y="80" font-family="system-ui" font-size="18" fill="#7ED4E6">年</text>
+    <text x="25" y="110" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">2020.01 - 2024.12</text>
+  </g>
+  
+  <g transform="translate(780, 100)">
+    <rect width="460" height="140" rx="12" fill="#2D3038"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" font-weight="600">⚠️ 国家信用破产的缩影</text>
+    <text x="25" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">中老能源合作从"援助与建设"模式</text>
+    <text x="25" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">转向"商业契约执行"阶段</text>
+    <text x="25" y="120" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">这是一带一路项目首次大规模商业仲裁</text>
+  </g>
+  
+  <!-- 时间轴 -->
+  <g transform="translate(40, 280)">
+    <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">关键事件时间轴</text>
+    
+    <!-- 时间轴线 -->
+    <line x1="0" y1="50" x2="1200" y2="50" stroke="#1A6B7C" stroke-width="3"/>
+    
+    <!-- 节点 2020.01 -->
+    <g transform="translate(50, 50)">
+      <circle cx="0" cy="0" r="12" fill="#D97706"/>
+      <text x="0" y="35" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="middle">2020.01</text>
+      <text x="0" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">EDL开始</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">拖欠电费</text>
+    </g>
+    
+    <!-- 节点 2020 疫情 -->
+    <g transform="translate(200, 50)">
+      <circle cx="0" cy="0" r="12" fill="#718096"/>
+      <text x="0" y="35" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="middle">2020</text>
+      <text x="0" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">新冠疫情</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">经济冲击</text>
+    </g>
+    
+    <!-- 节点 2020 EDL-T -->
+    <g transform="translate(350, 50)">
+      <circle cx="0" cy="0" r="12" fill="#B8352B"/>
+      <text x="0" y="35" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="middle">2020</text>
+      <text x="0" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">EDL-T成立</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#B8352B" text-anchor="middle">南网控股90%</text>
+    </g>
+    
+    <!-- 节点 2021 -->
+    <g transform="translate(500, 50)">
+      <circle cx="0" cy="0" r="12" fill="#2E7D32"/>
+      <text x="0" y="35" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="middle">2021.09</text>
+      <text x="0" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">二期工程</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#2E7D32" text-anchor="middle">全面投产</text>
+    </g>
+    
+    <!-- 节点 2022-2024 -->
+    <g transform="translate(700, 50)">
+      <circle cx="0" cy="0" r="12" fill="#D97706"/>
+      <text x="0" y="35" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="middle">2022-2024</text>
+      <text x="0" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#FFFFFF" text-anchor="middle">基普持续贬值</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#D97706" text-anchor="middle">累计贬值60%</text>
+    </g>
+    
+    <!-- 节点 2025 仲裁 -->
+    <g transform="translate(950, 50)">
+      <circle cx="0" cy="0" r="18" fill="#B8352B" stroke="#FFFFFF" stroke-width="3"/>
+      <text x="0" y="45" font-family="system-ui" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="700">2025.01</text>
+      <text x="0" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">SIAC仲裁</text>
+      <text x="0" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#B8352B" text-anchor="middle" font-weight="600">正式提起</text>
+    </g>
+    
+    <!-- 进行中标识 -->
+    <g transform="translate(1100, 50)">
+      <rect x="-40" y="-15" width="80" height="30" rx="15" fill="#C9A227"/>
+      <text x="0" y="5" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle" font-weight="600">进行中</text>
+    </g>
+  </g>
+  
+  <!-- 仲裁选择原因 -->
+  <g transform="translate(40, 450)">
+    <rect width="1200" height="160" rx="12" fill="#1A3547"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">为何选择在2025年提起仲裁？</text>
+    
+    <g transform="translate(25, 60)">
+      <rect width="360" height="80" rx="8" fill="#2D3038"/>
+      <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF">债务累积临界点</text>
+      <text x="15" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">四年拖欠累积近$5亿</text>
+      <text x="15" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">严重影响中国电建现金流</text>
+    </g>
+    
+    <g transform="translate(410, 60)">
+      <rect width="360" height="80" rx="8" fill="#2F3A3A"/>
+      <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF">谈判破裂信号</text>
+      <text x="15" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">双边政府协调未果</text>
+      <text x="15" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">超出政策性银行容忍底线</text>
+    </g>
+    
+    <g transform="translate(795, 60)">
+      <rect width="380" height="80" rx="8" fill="#2A3A42"/>
+      <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF">SIAC选择</text>
+      <text x="15" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">国际中立管辖权</text>
+      <text x="15" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">避免老挝国内司法保护主义</text>
+    </g>
+  </g>
+  
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#1A6B7C" stroke-width="1"/>
+  <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="end">09 / 20</text>
+</svg>

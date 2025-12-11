@@ -1,0 +1,124 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    John Bowlby —— 依恋行为系统
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Attachment Behavioral System
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="450" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 左侧：人物简介 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="300" height="380" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <!-- 头像区域 -->
+    <rect x="0" y="0" width="300" height="120" rx="12" fill="#2E5C8E"/>
+    <rect x="0" y="108" width="300" height="12" fill="#2E5C8E"/>
+    
+    <circle cx="150" cy="60" r="40" fill="rgba(255,255,255,0.2)"/>
+    <text x="150" y="72" font-size="36" text-anchor="middle" fill="#FFFFFF">👤</text>
+    <text x="150" y="110" font-size="14" fill="#E5E7EB" text-anchor="middle">1907 - 1990</text>
+    
+    <!-- 简介文字 -->
+    <text x="20" y="155" font-size="16" font-weight="600" fill="#1E293B">核心贡献</text>
+    
+    <text x="20" y="185" font-size="14" fill="#374151">
+      <tspan x="20" dy="0">• 创立依恋理论</tspan>
+      <tspan x="20" dy="24">• 提出依恋行为系统概念</tspan>
+      <tspan x="20" dy="24">• 发展内部工作模型理论</tspan>
+      <tspan x="20" dy="24">• 强调真实关系体验的作用</tspan>
+    </text>
+    
+    <line x1="20" y1="300" x2="280" y2="300" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <text x="20" y="325" font-size="16" font-weight="600" fill="#1E293B">核心观点</text>
+    <text x="20" y="355" font-size="14" fill="#6B7280" font-style="italic">
+      <tspan x="20" dy="0">"依恋是基于进化的</tspan>
+      <tspan x="20" dy="20">生物学必要性"</tspan>
+    </text>
+  </g>
+  
+  <!-- 右侧：三大行为表现 -->
+  <g transform="translate(400, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 标题 -->
+    <text x="0" y="0" font-size="18" font-weight="600" fill="#2E5C8E">依恋行为的三种核心表现</text>
+    <line x1="0" y1="15" x2="260" y2="15" stroke="#2E5C8E" stroke-width="2"/>
+    
+    <!-- 寻求亲近 -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="820" height="95" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="80" height="95" rx="12" fill="#3D8B7A"/>
+      <rect x="68" y="0" width="12" height="95" fill="#3D8B7A"/>
+      <text x="40" y="55" font-size="28" text-anchor="middle" fill="#FFFFFF">🤝</text>
+      
+      <text x="110" y="35" font-size="20" font-weight="bold" fill="#3D8B7A">寻求亲近 Proximity Seeking</text>
+      <text x="110" y="60" font-size="15" fill="#374151">寻求并维持与依恋对象的身体亲近</text>
+      <text x="110" y="82" font-size="14" fill="#6B7280">婴儿通过哭泣、追随、攀附等行为确保照看者在身边</text>
+    </g>
+    
+    <!-- 安全基地 -->
+    <g transform="translate(0, 155)">
+      <rect x="0" y="0" width="820" height="95" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="80" height="95" rx="12" fill="#2E5C8E"/>
+      <rect x="68" y="0" width="12" height="95" fill="#2E5C8E"/>
+      <text x="40" y="55" font-size="28" text-anchor="middle" fill="#FFFFFF">🏠</text>
+      
+      <text x="110" y="35" font-size="20" font-weight="bold" fill="#2E5C8E">安全基地 Secure Base</text>
+      <text x="110" y="60" font-size="15" fill="#374151">以依恋对象为基地探索陌生环境</text>
+      <text x="110" y="82" font-size="14" fill="#6B7280">有了安全的后盾，儿童才敢于冒险探索世界</text>
+    </g>
+    
+    <!-- 安全港 -->
+    <g transform="translate(0, 270)">
+      <rect x="0" y="0" width="820" height="95" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="80" height="95" rx="12" fill="#E07843"/>
+      <rect x="68" y="0" width="12" height="95" fill="#E07843"/>
+      <text x="40" y="55" font-size="28" text-anchor="middle" fill="#FFFFFF">⚓</text>
+      
+      <text x="110" y="35" font-size="20" font-weight="bold" fill="#E07843">安全港 Safe Haven</text>
+      <text x="110" y="60" font-size="15" fill="#374151">在危险或惊恐时刻逃向依恋对象寻求庇护</text>
+      <text x="110" y="82" font-size="14" fill="#6B7280">当遭遇威胁时，依恋对象成为避风港</text>
+    </g>
+  </g>
+  
+  <!-- 底部：内部工作模型 -->
+  <g transform="translate(60, 555)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="1160" height="110" rx="12" fill="#1E3A5F"/>
+    
+    <text x="30" y="35" font-size="18" font-weight="bold" fill="#FFFFFF">
+      <tspan>📐</tspan>
+      <tspan dx="8">内部工作模型 Internal Working Models</tspan>
+    </text>
+    
+    <text x="30" y="65" font-size="15" fill="#CBD5E1">
+      儿童对照看者可用性的评估，基于过去互动的实际经验，被内化为关于自我、他人及关系的心理表征
+    </text>
+    
+    <g transform="translate(30, 80)">
+      <rect x="0" y="0" width="160" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <text x="80" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">从外在到内在</text>
+      
+      <rect x="180" y="0" width="180" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <text x="270" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">现实事件的重要性</text>
+      
+      <rect x="380" y="0" width="200" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <text x="480" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">反对仅关注内在幻想</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">09</text>
+</svg>

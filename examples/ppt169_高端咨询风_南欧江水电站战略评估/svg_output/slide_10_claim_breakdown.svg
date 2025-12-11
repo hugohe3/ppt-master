@@ -1,0 +1,101 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">索赔明细拆解</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">CLAIM BREAKDOWN</text>
+  
+  <!-- 总额突出显示 -->
+  <g transform="translate(40, 100)">
+    <rect width="350" height="140" rx="12" fill="#B8352B"/>
+    <text x="25" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" opacity="0.8">索赔总额</text>
+    <text x="25" y="100" font-family="system-ui" font-size="56" font-weight="700" fill="#FFFFFF">$5.55</text>
+    <text x="245" y="100" font-family="system-ui" font-size="24" fill="#FFFFFF">亿</text>
+    <text x="25" y="125" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" opacity="0.8">USD 555,080,000</text>
+  </g>
+  
+  <!-- 时间跨度 -->
+  <g transform="translate(410, 100)">
+    <rect width="250" height="140" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#718096">涵盖时间</text>
+    <text x="20" y="70" font-family="system-ui" font-size="28" font-weight="700" fill="#0D2B3E">2020.01</text>
+    <text x="20" y="95" font-family="system-ui" font-size="16" fill="#718096">至</text>
+    <text x="20" y="125" font-family="system-ui" font-size="28" font-weight="700" fill="#0D2B3E">2024.12</text>
+  </g>
+  
+  <!-- 占比说明 -->
+  <g transform="translate(680, 100)">
+    <rect width="560" height="140" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">⚠️ 对老挝财政的冲击</text>
+    <text x="20" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="16" fill="#0D2B3E">
+      <tspan>索赔金额占老挝GDP比重：</tspan>
+      <tspan font-size="32" font-weight="700" fill="#B8352B">约4%</tspan>
+    </text>
+    <text x="20" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">对于一个GDP仅约140亿美元的国家，这是天文数字</text>
+    <text x="20" y="125" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#718096">老挝财政根本无力一次性偿还</text>
+  </g>
+  
+  <!-- 索赔构成条形图 -->
+  <g transform="translate(40, 270)">
+    <rect width="1200" height="280" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">索赔构成明细</text>
+    
+    <!-- 图表区域 -->
+    <g transform="translate(25, 60)">
+      <!-- 电费本金 -->
+      <g transform="translate(0, 0)">
+        <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">拖欠电费本金</text>
+        <rect x="150" y="0" width="860" height="40" rx="6" fill="#B8352B"/>
+        <text x="160" y="27" font-family="system-ui" font-size="16" font-weight="700" fill="#FFFFFF">$486,270,000</text>
+        <text x="1020" y="27" font-family="system-ui" font-size="14" fill="#FFFFFF" text-anchor="end">87.6%</text>
+      </g>
+      
+      <!-- 逾期利息 -->
+      <g transform="translate(0, 55)">
+        <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">逾期利息</text>
+        <rect x="150" y="0" width="119" height="40" rx="6" fill="#D97706"/>
+        <text x="160" y="27" font-family="system-ui" font-size="14" font-weight="600" fill="#FFFFFF">$65,790,000</text>
+        <text x="279" y="27" font-family="system-ui" font-size="12" fill="#D97706" dx="10">11.9%</text>
+      </g>
+      
+      <!-- 汇率损失 -->
+      <g transform="translate(0, 110)">
+        <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">货币/汇率损失</text>
+        <rect x="150" y="0" width="5" height="40" rx="3" fill="#C9A227"/>
+        <text x="165" y="27" font-family="system-ui" font-size="13" fill="#C9A227">$3,020,000 (0.5%)</text>
+      </g>
+      
+      <!-- 分析说明 -->
+      <g transform="translate(0, 165)">
+        <rect width="1140" height="55" rx="8" fill="#0D2B3E" opacity="0.05"/>
+        <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">
+          <tspan font-weight="600">关键洞察：</tspan>
+          <tspan>虽然汇率损失金额最小，但它揭示了核心问题 —— EDL违反"85%美元支付"条款，</tspan>
+        </text>
+        <text x="15" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">
+          <tspan>使用严重贬值的基普支付。5年内基普贬值近</tspan>
+          <tspan font-weight="700" fill="#B8352B">60%</tspan>
+          <tspan>，实际收入大幅缩水。</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 核心指控 -->
+  <g transform="translate(40, 570)">
+    <rect width="580" height="70" rx="12" fill="#B8352B" opacity="0.1"/>
+    <rect x="0" y="0" width="8" height="70" rx="4" fill="#B8352B"/>
+    <text x="25" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">核心指控</text>
+    <text x="25" y="52" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">EDL违反PPA合同中"85%美元支付"条款，主要使用基普支付</text>
+  </g>
+  
+  <g transform="translate(660, 570)">
+    <rect width="580" height="70" rx="12" fill="#D97706" opacity="0.1"/>
+    <rect x="0" y="0" width="8" height="70" rx="4" fill="#D97706"/>
+    <text x="25" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">汇率背景</text>
+    <text x="25" y="52" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">基普兑美元5年贬值约60%，用基普支付等于收入腰斩</text>
+  </g>
+  
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">10 / 20</text>
+</svg>

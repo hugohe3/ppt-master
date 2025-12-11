@@ -1,0 +1,184 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#00A651"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    绿色低碳认证
+  </text>
+  <text x="60" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0">
+    GREEN &amp; LOW-CARBON CERTIFICATION
+  </text>
+  
+  <!-- 左侧：碳足迹循环图 -->
+  <g transform="translate(60, 120)">
+    <rect width="520" height="520" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">全生命周期碳足迹</text>
+    
+    <!-- 循环图 - 中心 -->
+    <g transform="translate(260, 275)">
+      
+      <!-- 外圈装饰环 -->
+      <circle cx="0" cy="0" r="165" fill="none" stroke="#E8F5E9" stroke-width="25" opacity="0.6"/>
+      
+      <!-- 流程弧线 - 顺时针方向，形成完整圆环 -->
+      <!-- 弧线1: 原材料→制造 -->
+      <path d="M -100 -130 A 165 165 0 0 1 0 -165" fill="none" stroke="#2E7D32" stroke-width="4"/>
+      
+      <!-- 弧线2: 制造→运输 -->
+      <path d="M 0 -165 A 165 165 0 0 1 130 -100" fill="none" stroke="#388E3C" stroke-width="4"/>
+      
+      <!-- 弧线3: 运输→使用 -->
+      <path d="M 155 -50 A 165 165 0 0 1 155 50" fill="none" stroke="#43A047" stroke-width="4"/>
+      
+      <!-- 弧线4: 使用→回收 -->
+      <path d="M 130 100 A 165 165 0 0 1 -130 100" fill="none" stroke="#4CAF50" stroke-width="4"/>
+      
+      <!-- 弧线5: 回收→原材料 -->
+      <path d="M -155 50 A 165 165 0 0 1 -130 -100" fill="none" stroke="#66BB6A" stroke-width="4"/>
+      
+      <!-- 中心圆 - 更大更醒目 -->
+      <circle cx="0" cy="0" r="65" fill="#00A651"/>
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+      <text x="0" y="-12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">碳足迹</text>
+      <text x="0" y="10" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">全周期追踪</text>
+      <text x="0" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FFFFFF" opacity="0.8" text-anchor="middle">Carbon Footprint</text>
+      
+      <!-- 节点1: 原材料 (左上) -->
+      <g transform="translate(-130, -110)">
+        <circle cx="0" cy="0" r="45" fill="#FFFFFF" stroke="#2E7D32" stroke-width="3"/>
+        <circle cx="0" cy="0" r="38" fill="#E8F5E9"/>
+        <text x="0" y="-8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" text-anchor="middle">🌿</text>
+        <text x="0" y="16" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#2E7D32" text-anchor="middle">原材料</text>
+        <!-- 序号 -->
+        <circle cx="30" cy="-30" r="12" fill="#2E7D32"/>
+        <text x="30" y="-26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      </g>
+      
+      <!-- 节点2: 制造 (顶部) -->
+      <g transform="translate(0, -160)">
+        <circle cx="0" cy="0" r="45" fill="#FFFFFF" stroke="#388E3C" stroke-width="3"/>
+        <circle cx="0" cy="0" r="38" fill="#E8F5E9"/>
+        <text x="0" y="-8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" text-anchor="middle">🏭</text>
+        <text x="0" y="16" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#388E3C" text-anchor="middle">制造</text>
+        <!-- 序号 -->
+        <circle cx="30" cy="-30" r="12" fill="#388E3C"/>
+        <text x="30" y="-26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      </g>
+      
+      <!-- 节点3: 运输 (右上) -->
+      <g transform="translate(130, -110)">
+        <circle cx="0" cy="0" r="45" fill="#FFFFFF" stroke="#43A047" stroke-width="3"/>
+        <circle cx="0" cy="0" r="38" fill="#E8F5E9"/>
+        <text x="0" y="-8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" text-anchor="middle">🚛</text>
+        <text x="0" y="16" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#43A047" text-anchor="middle">运输</text>
+        <!-- 序号 -->
+        <circle cx="30" cy="-30" r="12" fill="#43A047"/>
+        <text x="30" y="-26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      </g>
+      
+      <!-- 节点4: 使用 (右下) -->
+      <g transform="translate(130, 110)">
+        <circle cx="0" cy="0" r="45" fill="#FFFFFF" stroke="#4CAF50" stroke-width="3"/>
+        <circle cx="0" cy="0" r="38" fill="#E8F5E9"/>
+        <text x="0" y="-8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" text-anchor="middle">🚗</text>
+        <text x="0" y="16" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#4CAF50" text-anchor="middle">使用</text>
+        <!-- 序号 -->
+        <circle cx="30" cy="-30" r="12" fill="#4CAF50"/>
+        <text x="30" y="-26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+      </g>
+      
+      <!-- 节点5: 回收 (左下) -->
+      <g transform="translate(-130, 110)">
+        <circle cx="0" cy="0" r="45" fill="#FFFFFF" stroke="#66BB6A" stroke-width="3"/>
+        <circle cx="0" cy="0" r="38" fill="#E8F5E9"/>
+        <text x="0" y="-8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" text-anchor="middle">♻️</text>
+        <text x="0" y="16" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#66BB6A" text-anchor="middle">回收</text>
+        <!-- 序号 -->
+        <circle cx="30" cy="-30" r="12" fill="#66BB6A"/>
+        <text x="30" y="-26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+      </g>
+    </g>
+    
+    <!-- 底部标准对接 -->
+    <g transform="translate(30, 470)">
+      <rect width="460" height="35" rx="6" fill="#E8F5E9"/>
+      <text x="20" y="23" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">对接标准：ISO 14067 | ISO 14064 | PAS 2050</text>
+    </g>
+  </g>
+  
+  <!-- 右侧：产品列表 -->
+  <g transform="translate(610, 120)">
+    <rect width="610" height="520" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">认证产品与服务</text>
+    
+    <!-- 产品1: 碳足迹认证 -->
+    <g transform="translate(30, 65)">
+      <rect width="550" height="100" rx="10" fill="#F1F8E9"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#00A651"/>
+      <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">碳足迹认证</text>
+      <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 产品碳足迹核算与验证</tspan>
+        <tspan x="300" dy="0">• 碳标签发放</tspan>
+      </text>
+      <text x="25" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 供应链碳管理</tspan>
+        <tspan x="300" dy="0">• 碳中和声明验证</tspan>
+      </text>
+    </g>
+    
+    <!-- 产品2: 中国绿色产品认证 -->
+    <g transform="translate(30, 180)">
+      <rect width="550" height="100" rx="10" fill="#E8F5E9"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#4CAF50"/>
+      <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">中国绿色产品认证</text>
+      <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 国家统一绿色产品标识</tspan>
+        <tspan x="300" dy="0">• 整车/零部件认证</tspan>
+      </text>
+      <text x="25" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 绿色制造体系</tspan>
+        <tspan x="300" dy="0">• 绿色金融支持</tspan>
+      </text>
+    </g>
+    
+    <!-- 产品3: 动力电池回收利用认证 -->
+    <g transform="translate(30, 295)">
+      <rect width="550" height="100" rx="10" fill="#F1F8E9"/>
+      <rect x="0" y="0" width="8" height="100" rx="4" fill="#2E7D32"/>
+      <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">动力电池回收利用认证</text>
+      <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 梯次利用评估认证</tspan>
+        <tspan x="300" dy="0">• 再生利用规范认证</tspan>
+      </text>
+      <text x="25" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+        <tspan x="25" dy="0">• 溯源管理系统验证</tspan>
+        <tspan x="300" dy="0">• 闭环循环经济</tspan>
+      </text>
+    </g>
+    
+    <!-- 价值主张 -->
+    <g transform="translate(30, 415)">
+      <rect width="550" height="85" rx="10" fill="#003F6C"/>
+      <text x="25" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107">价值主张</text>
+      <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+        <tspan x="25" dy="0">✓ 满足欧盟电池法规CBAM要求</tspan>
+      </text>
+      <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+        <tspan x="25" dy="0">✓ 助力企业ESG披露与绿色供应链建设</tspan>
+      </text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">12 / 20</text>
+</svg>

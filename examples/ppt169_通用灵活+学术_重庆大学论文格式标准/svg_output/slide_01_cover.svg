@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F7F9FC" />
+            <stop offset="100%" style="stop-color:#E8EEF5" />
+        </linearGradient>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1A5F9E" />
+            <stop offset="100%" style="stop-color:#2B7BC4" />
+        </linearGradient>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    <!-- 装饰元素 - 左上角几何图形 -->
+    <circle cx="80" cy="80" r="120" fill="#1A5F9E" opacity="0.08" />
+    <circle cx="120" cy="60" r="60" fill="#1A5F9E" opacity="0.12" />
+
+    <!-- 装饰元素 - 右下角几何图形 -->
+    <circle cx="1200" cy="640" r="150" fill="#1A5F9E" opacity="0.08" />
+    <circle cx="1150" cy="680" r="80" fill="#1A5F9E" opacity="0.12" />
+
+    <!-- 装饰元素 - 顶部线条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="url(#accentGradient)" />
+
+    <!-- 装饰性书本图标 -->
+    <g transform="translate(640, 180)">
+        <rect x="-60" y="-40" width="120" height="80" rx="4" fill="#1A5F9E" opacity="0.15" />
+        <rect x="-50" y="-30" width="100" height="60" rx="2" fill="#FFFFFF" stroke="#1A5F9E" stroke-width="2" />
+        <line x1="-50" y1="0" x2="50" y2="0" stroke="#1A5F9E" stroke-width="1" opacity="0.3" />
+        <line x1="0" y1="-30" x2="0" y2="30" stroke="#1A5F9E" stroke-width="2" />
+        <rect x="-40" y="-20" width="30" height="3" fill="#1A5F9E" opacity="0.4" />
+        <rect x="-40" y="-12" width="25" height="3" fill="#1A5F9E" opacity="0.3" />
+        <rect x="-40" y="-4" width="28" height="3" fill="#1A5F9E" opacity="0.4" />
+        <rect x="10" y="-20" width="30" height="3" fill="#1A5F9E" opacity="0.4" />
+        <rect x="10" y="-12" width="25" height="3" fill="#1A5F9E" opacity="0.3" />
+        <rect x="10" y="-4" width="28" height="3" fill="#1A5F9E" opacity="0.4" />
+    </g>
+
+    <!-- 主标题 -->
+    <text x="640" y="320" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="52"
+        font-weight="bold" fill="#1A5F9E">
+        重庆大学硕士学位论文
+    </text>
+
+    <!-- 副标题 -->
+    <text x="640" y="390" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="32"
+        fill="#2D3748">
+        撰写格式标准及要求
+    </text>
+
+    <!-- 版本信息 -->
+    <text x="640" y="440" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="20"
+        fill="#718096">
+        （2019年修订版）
+    </text>
+
+    <!-- 分隔线 -->
+    <rect x="440" y="480" width="400" height="3" rx="1.5" fill="url(#accentGradient)" />
+
+    <!-- 底部说明 -->
+    <text x="640" y="540" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18"
+        fill="#4A5568">
+        适用于学术学位与专业学位研究生
+    </text>
+
+    <!-- 参考标准说明 -->
+    <text x="640" y="580" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
+        fill="#718096">
+        依据 GB/T 7713.1-2006 · GB/T 7714-2015 · APA · MLA
+    </text>
+
+    <!-- 页码 -->
+    <text x="640" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#A0AEC0">
+        1 / 11
+    </text>
+</svg>

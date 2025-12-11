@@ -1,0 +1,86 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">研究发现：第一品的多重面向</text>
+  <line x1="40" y1="105" x2="420" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 四卡片矩阵 2x2 -->
+  <!-- 叙事与认证 -->
+  <g transform="translate(40, 130)">
+    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
+    <rect x="0" y="0" width="590" height="50" rx="12" fill="#2E4A62"/>
+    <rect x="0" y="40" width="590" height="10" fill="#2E4A62"/>
+    <use data-icon="file" x="20" y="12" width="26" height="26" fill="#FFFFFF"/>
+    <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">叙事与认证框架</text>
+    
+    <g transform="translate(30, 70)">
+      <text x="0" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">✓ 六种成就具足</text>
+      <text x="22" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">信、闻、时、主、处、众</text>
+      
+      <text x="0" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2E4A62">✓ 证信序 + 发起序</text>
+      <text x="22" y="113" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">遵循佛经传统开篇范式</text>
+      
+      <text x="0" y="148" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">为经典的真实性与权威性奠定基础</text>
+    </g>
+  </g>
+  
+  <!-- 日常的神圣化 -->
+  <g transform="translate(650, 130)">
+    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
+    <rect x="0" y="0" width="590" height="50" rx="12" fill="#5D8C6A"/>
+    <rect x="0" y="40" width="590" height="10" fill="#5D8C6A"/>
+    <use data-icon="sun" x="20" y="12" width="26" height="26" fill="#FFFFFF"/>
+    <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">日常生活的神圣化</text>
+    
+    <g transform="translate(30, 70)">
+      <text x="0" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#5D8C6A">✓ 朴素笔触</text>
+      <text x="22" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">描绘佛陀及僧团遵循戒律的日常作息</text>
+      
+      <text x="0" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#5D8C6A">✓ 真实面貌</text>
+      <text x="22" y="113" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">展现早期佛教生活的真实情境</text>
+      
+      <text x="0" y="148" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">平实的开端暗含深邃智慧</text>
+    </g>
+  </g>
+  
+  <!-- 隐含的修行 -->
+  <g transform="translate(40, 390)">
+    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+    <rect x="0" y="0" width="590" height="50" rx="12" fill="#C9A962"/>
+    <rect x="0" y="40" width="590" height="10" fill="#C9A962"/>
+    <use data-icon="target" x="20" y="12" width="26" height="26" fill="#FFFFFF"/>
+    <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">隐含的修行示范</text>
+    
+    <g transform="translate(30, 70)">
+      <text x="0" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C9A962">✓ 四大核心原则</text>
+      <text x="22" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">简朴、平等、专注、清净</text>
+      
+      <text x="0" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C9A962">✓ 身教重于言教</text>
+      <text x="22" y="113" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">佛陀以行动示范修行要旨</text>
+      
+      <text x="0" y="148" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">体现"道在平常"的甚深禅意</text>
+    </g>
+  </g>
+  
+  <!-- 关键的序幕 -->
+  <g transform="translate(650, 390)">
+    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2"/>
+    <rect x="0" y="0" width="590" height="50" rx="12" fill="#8B9A9A"/>
+    <rect x="0" y="40" width="590" height="10" fill="#8B9A9A"/>
+    <use data-icon="flag" x="20" y="12" width="26" height="26" fill="#FFFFFF"/>
+    <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">关键的序幕功能</text>
+    
+    <g transform="translate(30, 70)">
+      <text x="0" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#6B7280">✓ 引出须菩提之问</text>
+      <text x="22" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">"云何应住？云何降伏其心？"</text>
+      
+      <text x="0" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#6B7280">✓ 开启般若法门</text>
+      <text x="22" y="113" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">为整部经典的核心教法铺垫</text>
+      
+      <text x="0" y="148" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">自然而然地引出发菩提心者的根本问题</text>
+    </g>
+  </g>
+  
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第五部分：结论</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">13 / 15</text>
+</svg>

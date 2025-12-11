@@ -1,0 +1,109 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F0F5F7"/>
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">融资架构</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">FINANCING STRUCTURE</text>
+  
+  <!-- 总投资额 -->
+  <g transform="translate(40, 100)">
+    <rect width="300" height="100" rx="12" fill="#0D2B3E"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#7ED4E6">总投资额</text>
+    <text x="25" y="75" font-family="system-ui" font-size="42" font-weight="700" fill="#FFFFFF">$27.33</text>
+    <text x="195" y="75" font-family="system-ui" font-size="18" fill="#7ED4E6">亿</text>
+  </g>
+  
+  <!-- 资金来源流向图 -->
+  <g transform="translate(360, 100)">
+    <rect width="880" height="300" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">分期融资结构</text>
+    
+    <!-- 一期 -->
+    <g transform="translate(30, 60)">
+      <rect width="400" height="100" rx="8" fill="#2E96B3" opacity="0.1" stroke="#2E96B3" stroke-width="2"/>
+      <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#1A6B7C">一期工程 (2012-2016)</text>
+      <text x="15" y="50" font-family="system-ui" font-size="24" font-weight="700" fill="#1A6B7C">$10.35亿</text>
+      <text x="15" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">国开行买方信贷：$6.6亿 | 股本金：$3.75亿</text>
+      <text x="15" y="92" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">装机容量：540MW (二、五、六级)</text>
+    </g>
+    
+    <!-- 二期 -->
+    <g transform="translate(450, 60)">
+      <rect width="400" height="100" rx="8" fill="#C9A227" opacity="0.1" stroke="#C9A227" stroke-width="2"/>
+      <text x="15" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227">二期工程 (2016-2021)</text>
+      <text x="15" y="50" font-family="system-ui" font-size="24" font-weight="700" fill="#C9A227">$16.44亿</text>
+      <text x="15" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">银团贷款：$13亿 | 股本金：$3.44亿</text>
+      <text x="15" y="92" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">装机容量：732MW (一、三、四、七级)</text>
+    </g>
+    
+    <!-- 贷款方 -->
+    <text x="30" y="195" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#0D2B3E">主要贷款方（银团）</text>
+    <g transform="translate(30, 210)">
+      <rect width="200" height="50" rx="6" fill="#B8352B" opacity="0.08"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" font-weight="500">中国国家开发银行</text>
+      <text x="15" y="40" font-family="system-ui" font-size="11" fill="#718096">CDB · 主承销</text>
+    </g>
+    <g transform="translate(250, 210)">
+      <rect width="200" height="50" rx="6" fill="#B8352B" opacity="0.08"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" font-weight="500">中国进出口银行</text>
+      <text x="15" y="40" font-family="system-ui" font-size="11" fill="#718096">China Exim Bank</text>
+    </g>
+    <g transform="translate(470, 210)">
+      <rect width="200" height="50" rx="6" fill="#B8352B" opacity="0.08"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" font-weight="500">中国建设银行</text>
+      <text x="15" y="40" font-family="system-ui" font-size="11" fill="#718096">CCB</text>
+    </g>
+    <g transform="translate(690, 210)">
+      <rect width="160" height="50" rx="6" fill="#2E7D32" opacity="0.1"/>
+      <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#2E7D32" font-weight="500">中信保</text>
+      <text x="15" y="40" font-family="system-ui" font-size="11" fill="#718096">海外投资保险</text>
+    </g>
+  </g>
+  
+  <!-- 美元债务风险 -->
+  <g transform="translate(40, 220)">
+    <rect width="300" height="180" rx="12" fill="#B8352B" opacity="0.1" stroke="#B8352B" stroke-width="2"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">⚠️ 核心风险</text>
+    <text x="20" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">美元债务总额</text>
+    <text x="20" y="100" font-family="system-ui" font-size="32" font-weight="700" fill="#B8352B">~$20亿</text>
+    <text x="20" y="130" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">需要稳定美元现金流偿债</text>
+    <text x="20" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">EDL无法支付美元时</text>
+    <text x="20" y="170" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#B8352B" font-weight="600">→ 项目公司面临银行违约</text>
+  </g>
+  
+  <!-- 系统性风险说明 -->
+  <g transform="translate(40, 420)">
+    <rect width="1200" height="180" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <rect x="0" y="0" width="10" height="180" rx="5" fill="#B8352B"/>
+    <text x="30" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#B8352B">系统性阿喀琉斯之踵：美元债务-软货币收入错配</text>
+    
+    <!-- 错配图示 -->
+    <g transform="translate(30, 60)">
+      <rect width="350" height="80" rx="8" fill="#1A6B7C" opacity="0.1"/>
+      <text x="20" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#1A6B7C">债务端（刚性）</text>
+      <text x="20" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">向中国政策性银行偿还</text>
+      <text x="20" y="73" font-family="system-ui" font-size="16" font-weight="700" fill="#1A6B7C">美元 USD</text>
+    </g>
+    
+    <text x="400" y="100" font-family="system-ui" font-size="24" fill="#B8352B" font-weight="700">≠</text>
+    
+    <g transform="translate(430, 60)">
+      <rect width="350" height="80" rx="8" fill="#D97706" opacity="0.1"/>
+      <text x="20" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">收入端（脆弱）</text>
+      <text x="20" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">EDL支付的电费实际上是</text>
+      <text x="20" y="73" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="700" fill="#D97706">老挝基普 LAK（贬值60%）</text>
+    </g>
+    
+    <g transform="translate(810, 60)">
+      <rect width="360" height="80" rx="8" fill="#B8352B"/>
+      <text x="20" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">结果</text>
+      <text x="20" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">收入实际腰斩，无法覆盖</text>
+      <text x="20" y="73" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" font-weight="600">美元债务本息 → 触发仲裁</text>
+    </g>
+    
+    <text x="30" y="160" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">这种错配是所有新兴市场基建项目的系统性风险，南欧江案例将成为警示标本。</text>
+  </g>
+  
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <text x="40" y="670" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="670" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">08 / 20</text>
+</svg>

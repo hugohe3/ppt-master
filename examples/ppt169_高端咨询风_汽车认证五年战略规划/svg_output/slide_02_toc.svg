@@ -1,0 +1,129 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#1A1A2E">
+    目录
+  </text>
+  <text x="60" y="100" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#8888A0">
+    CONTENTS
+  </text>
+  
+  <!-- 六宫格导航 -->
+  <!-- 第一行 -->
+  <!-- 卡片1: 行业发展趋势 -->
+  <g transform="translate(60, 140)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#003F6C"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#003F6C">01</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">行业发展趋势</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">新能源、智能网联、国际标准</text>
+    <!-- 图标：趋势向上 -->
+    <g transform="translate(300, 90)">
+      <polyline points="0,30 15,15 30,25 45,5" fill="none" stroke="#00A651" stroke-width="3" stroke-linecap="round"/>
+      <polygon points="40,0 50,5 45,15" fill="#00A651"/>
+    </g>
+  </g>
+  
+  <!-- 卡片2: 数字化转型 -->
+  <g transform="translate(455, 140)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#0076A8"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#0076A8">02</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">数字化转型</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">平台建设、远程审核、AI技术</text>
+    <!-- 图标：数字化 -->
+    <g transform="translate(295, 85)">
+      <rect x="0" y="0" width="12" height="35" rx="2" fill="#0076A8"/>
+      <rect x="18" y="10" width="12" height="25" rx="2" fill="#0076A8" opacity="0.7"/>
+      <rect x="36" y="5" width="12" height="30" rx="2" fill="#0076A8" opacity="0.5"/>
+    </g>
+  </g>
+  
+  <!-- 卡片3: 创新认证产品 -->
+  <g transform="translate(850, 140)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#00A651"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#00A651">03</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">创新认证产品</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">绿色低碳、安全、智能、高端</text>
+    <!-- 图标：创新灯泡 -->
+    <g transform="translate(300, 80)">
+      <circle cx="20" cy="15" r="15" fill="none" stroke="#00A651" stroke-width="2"/>
+      <path d="M12,30 L12,40 L28,40 L28,30" fill="none" stroke="#00A651" stroke-width="2"/>
+      <line x1="20" y1="5" x2="20" y2="0" stroke="#00A651" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- 第二行 -->
+  <!-- 卡片4: 国际化发展 -->
+  <g transform="translate(60, 340)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#FF6B35"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35">04</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">国际化发展</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">标准互认、海外布局、法规应对</text>
+    <!-- 图标：地球 -->
+    <g transform="translate(295, 80)">
+      <circle cx="22" cy="22" r="20" fill="none" stroke="#FF6B35" stroke-width="2"/>
+      <ellipse cx="22" cy="22" rx="8" ry="20" fill="none" stroke="#FF6B35" stroke-width="1.5"/>
+      <line x1="2" y1="22" x2="42" y2="22" stroke="#FF6B35" stroke-width="1.5"/>
+    </g>
+  </g>
+  
+  <!-- 卡片5: 政策监管环境 -->
+  <g transform="translate(455, 340)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#9C27B0"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#9C27B0">05</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">政策监管环境</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">国内政策、海外法规、机遇挑战</text>
+    <!-- 图标：政策文件 -->
+    <g transform="translate(295, 80)">
+      <rect x="5" y="0" width="35" height="45" rx="3" fill="none" stroke="#9C27B0" stroke-width="2"/>
+      <line x1="12" y1="12" x2="33" y2="12" stroke="#9C27B0" stroke-width="2"/>
+      <line x1="12" y1="22" x2="33" y2="22" stroke="#9C27B0" stroke-width="2"/>
+      <line x1="12" y1="32" x2="25" y2="32" stroke="#9C27B0" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- 卡片6: 组织能力建设 -->
+  <g transform="translate(850, 340)">
+    <rect width="370" height="170" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect width="370" height="6" rx="3" fill="#2196F3"/>
+    <text x="30" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#2196F3">06</text>
+    <text x="30" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#1A1A2E">组织能力建设</text>
+    <text x="30" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">人才、检测、合作、管理</text>
+    <!-- 图标：团队 -->
+    <g transform="translate(295, 80)">
+      <circle cx="22" cy="12" r="10" fill="none" stroke="#2196F3" stroke-width="2"/>
+      <path d="M5,45 Q5,30 22,28 Q39,30 39,45" fill="none" stroke="#2196F3" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- 底部附加信息 -->
+  <g transform="translate(60, 550)">
+    <rect width="1160" height="100" rx="12" fill="#003F6C" opacity="0.05"/>
+    <text x="30" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#003F6C">战略实施路线图</text>
+    <text x="30" y="70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
+      <tspan>第一阶段 2026-2027 奠基与试点</tspan>
+      <tspan dx="40">→</tspan>
+      <tspan dx="40">第二阶段 2028-2029 拓展与提升</tspan>
+      <tspan dx="40">→</tspan>
+      <tspan dx="40">第三阶段 2030 巩固与引领</tspan>
+    </text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="690" text-anchor="end" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">02 / 20</text>
+</svg>

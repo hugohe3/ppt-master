@@ -1,0 +1,112 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <!-- 页面标题 -->
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">《金刚经》：大乘思想的基石</text>
+  <line x1="40" y1="105" x2="420" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 左栏：经典定位 -->
+  <g transform="translate(40, 130)">
+    <rect x="0" y="0" width="560" height="480" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="560" height="50" rx="12" fill="#2E4A62"/>
+    <rect x="0" y="40" width="560" height="10" fill="#2E4A62"/>
+    <text x="280" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">经典定位</text>
+    
+    <!-- 内容项 -->
+    <g transform="translate(30, 80)">
+      <!-- icon: book -->
+  <g transform="translate(0.0, 0.0) scale(1.75)" fill="#C9A962">
+    <path d="M5 0C3.34315 0 2 1.34315 2 3V13C2 14.6569 3.34315 16 5 16H14V14H4V12H14V0H5Z"/>
+  </g>
+      <text x="45" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#2E4A62">大乘般若部核心经典</text>
+      <text x="45" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">Vajracchedikā Prajñāpāramitā Sūtra</text>
+      <text x="45" y="73" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">"智慧到彼岸"思想体系的凝练</text>
+    </g>
+    
+    <line x1="30" y1="175" x2="530" y2="175" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <g transform="translate(30, 195)">
+      <!-- icon: star -->
+  <g transform="translate(0.0, 0.0) scale(1.75)" fill="#C9A962">
+    <path d="M9.00001 0H7.00001L5.51292 4.57681L0.700554 4.57682L0.0825195 6.47893L3.97581 9.30756L2.48873 13.8843L4.10677 15.0599L8.00002 12.2313L11.8933 15.0599L13.5113 13.8843L12.0242 9.30754L15.9175 6.47892L15.2994 4.57681L10.4871 4.57681L9.00001 0Z"/>
+  </g>
+      <text x="45" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#2E4A62">禅宗"开悟之经"</text>
+      <text x="45" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">六祖慧能因此经开悟</text>
+      <text x="45" y="73" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">对东亚禅宗发展产生深远影响</text>
+    </g>
+    
+    <line x1="30" y1="290" x2="530" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <g transform="translate(30, 310)">
+      <!-- icon: globe -->
+  <g transform="translate(0.0, 0.0) scale(1.75)" fill="#C9A962">
+    <path d="M1.51967 3.30803C0.748393 4.37143 0.232465 5.63209 0.0618896 7L15.9381 7C15.7675 5.63208 15.2516 4.37142 14.4803 3.30801C14.4387 3.3313 14.3965 3.3546 14.3538 3.3779C12.8684 4.1881 10.7045 5 7.99997 5C5.29547 5 3.13149 4.1881 1.64611 3.3779C1.60342 3.35461 1.56127 3.33131 1.51967 3.30803Z"/>
+    <path d="M13.0562 1.80011C11.8114 2.42548 10.0975 3 7.99997 3C5.90247 3 4.18861 2.42549 2.94376 1.80013C4.32185 0.674887 6.08211 0 8 0C9.91787 0 11.6781 0.674881 13.0562 1.80011Z"/>
+    <path d="M0.0618896 9C0.232466 10.3679 0.748398 11.6286 1.51968 12.692C1.56128 12.6687 1.60344 12.6454 1.64614 12.6221C3.13152 11.8119 5.2955 11 8 11C10.7045 11 12.8685 11.8119 14.3538 12.6221C14.3966 12.6454 14.4387 12.6687 14.4803 12.692C15.2516 11.6286 15.7675 10.3679 15.9381 9L0.0618896 9Z"/>
+    <path d="M8 16C6.08212 16 4.32186 15.3251 2.94377 14.1999C4.18862 13.5745 5.90249 13 8 13C10.0975 13 11.8114 13.5745 13.0562 14.1999C11.6781 15.3251 9.91788 16 8 16Z"/>
+  </g>
+      <text x="45" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#2E4A62">东亚流传最广的经典之一</text>
+      <text x="45" y="48" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">鸠摩罗什译本影响最大</text>
+      <text x="45" y="73" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">历代注疏超过800种</text>
+    </g>
+    
+    <line x1="30" y1="405" x2="530" y2="405" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <g transform="translate(30, 420)">
+      <!-- icon: clock -->
+  <g transform="translate(0.0, 0.0) scale(1.75)" fill="#C9A962">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM7 3V8.41421L10.2929 11.7071L11.7071 10.2929L9 7.58579V3H7Z"/>
+  </g>
+      <text x="45" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">成书年代：约公元1世纪</text>
+    </g>
+  </g>
+  
+  <!-- 右栏：核心要义 -->
+  <g transform="translate(660, 130)">
+    <rect x="0" y="0" width="580" height="480" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="580" height="50" rx="12" fill="#5D8C6A"/>
+    <rect x="0" y="40" width="580" height="10" fill="#5D8C6A"/>
+    <text x="290" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">核心要义</text>
+    
+    <!-- 四大概念 -->
+    <g transform="translate(25, 75)">
+      <!-- 空 -->
+      <rect x="0" y="0" width="255" height="90" rx="8" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1"/>
+      <text x="128" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#5D8C6A" text-anchor="middle">空</text>
+      <text x="128" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">śūnyatā</text>
+      <text x="128" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">诸法无自性</text>
+      
+      <!-- 无我 -->
+      <rect x="275" y="0" width="255" height="90" rx="8" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1"/>
+      <text x="403" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#5D8C6A" text-anchor="middle">无我</text>
+      <text x="403" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">anātman</text>
+      <text x="403" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">破除我执</text>
+      
+      <!-- 无相 -->
+      <rect x="0" y="110" width="255" height="90" rx="8" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1"/>
+      <text x="128" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#5D8C6A" text-anchor="middle">无相</text>
+      <text x="128" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">alakṣaṇa</text>
+      <text x="128" y="190" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">离一切相</text>
+      
+      <!-- 破执 -->
+      <rect x="275" y="110" width="255" height="90" rx="8" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1"/>
+      <text x="403" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#5D8C6A" text-anchor="middle">破执</text>
+      <text x="403" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">无住</text>
+      <text x="403" y="190" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">金刚断惑</text>
+    </g>
+    
+    <!-- 核心教导 -->
+    <g transform="translate(25, 295)">
+      <rect x="0" y="0" width="530" height="160" rx="8" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+      <text x="265" y="40" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C9A962" text-anchor="middle">核心教导</text>
+      <text x="265" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="26" font-weight="bold" fill="#2E4A62" text-anchor="middle">"应无所住而生其心"</text>
+      <text x="265" y="125" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280" text-anchor="middle">指引菩萨行者如何在不住一切相的状态下</text>
+      <text x="265" y="148" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280" text-anchor="middle">生起清净心，行菩萨道</text>
+    </g>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第一部分：引言</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">3 / 15</text>
+</svg>

@@ -1,0 +1,123 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="darkBg2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D2B3E"/>
+      <stop offset="100%" style="stop-color:#1A4A5E"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#darkBg2)"/>
+  
+  <!-- 背景图片 -->
+  <image href="../images/currency_crisis.png" x="800" y="0" width="480" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.25"/>
+  
+  <text x="40" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">货币崩溃与债务危机</text>
+  <text x="1240" y="55" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">CURRENCY COLLAPSE</text>
+  <line x1="40" y1="75" x2="1240" y2="75" stroke="#1A6B7C" stroke-width="1"/>
+  
+  <!-- KPI卡片 -->
+  <g transform="translate(40, 100)">
+    <rect width="220" height="120" rx="12" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#B8352B"/>
+    <text x="22" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#7ED4E6">基普贬值幅度</text>
+    <text x="22" y="75" font-family="system-ui" font-size="42" font-weight="700" fill="#B8352B">~60%</text>
+    <text x="22" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">2020-2025年</text>
+  </g>
+  
+  <g transform="translate(280, 100)">
+    <rect width="220" height="120" rx="12" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#D97706"/>
+    <text x="22" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#7ED4E6">公共债务/GDP</text>
+    <text x="22" y="75" font-family="system-ui" font-size="42" font-weight="700" fill="#D97706">~100%</text>
+    <text x="22" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">接近债务上限</text>
+  </g>
+  
+  <g transform="translate(520, 100)">
+    <rect width="220" height="120" rx="12" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="6" height="120" rx="3" fill="#B8352B"/>
+    <text x="22" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#7ED4E6">对华债务占比</text>
+    <text x="22" y="75" font-family="system-ui" font-size="42" font-weight="700" fill="#FFFFFF">&gt;50%</text>
+    <text x="22" y="100" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">半数公共债务</text>
+  </g>
+  
+  <!-- IMF评级 -->
+  <g transform="translate(760, 100)">
+    <rect width="220" height="120" rx="12" fill="#B8352B"/>
+    <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" opacity="0.8">IMF评级</text>
+    <text x="20" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="20" font-weight="700" fill="#FFFFFF">债务困境</text>
+    <text x="20" y="95" font-family="system-ui" font-size="13" fill="#FFFFFF">Debt Distress</text>
+  </g>
+  
+  <!-- 汇率走势示意图 -->
+  <g transform="translate(40, 250)">
+    <rect width="700" height="280" rx="12" fill="#FFFFFF" opacity="0.08"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">基普兑美元汇率走势（示意）</text>
+    
+    <!-- 图表区域 -->
+    <g transform="translate(50, 60)">
+      <!-- Y轴 -->
+      <line x1="0" y1="0" x2="0" y2="180" stroke="#7ED4E6" stroke-width="1" opacity="0.5"/>
+      <text x="-10" y="10" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="end">稳定</text>
+      <text x="-10" y="180" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="end">贬值</text>
+      
+      <!-- X轴 -->
+      <line x1="0" y1="180" x2="580" y2="180" stroke="#7ED4E6" stroke-width="1" opacity="0.5"/>
+      <text x="50" y="200" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="middle">2020</text>
+      <text x="170" y="200" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="middle">2021</text>
+      <text x="290" y="200" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="middle">2022</text>
+      <text x="410" y="200" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="middle">2023</text>
+      <text x="530" y="200" font-family="system-ui" font-size="10" fill="#7ED4E6" text-anchor="middle">2024</text>
+      
+      <!-- 下降曲线 -->
+      <path d="M50 30 Q100 35 170 50 Q240 70 290 100 Q340 130 410 150 Q480 165 530 170" 
+            stroke="#B8352B" stroke-width="4" fill="none" stroke-linecap="round"/>
+      
+      <!-- 关键节点 -->
+      <circle cx="50" cy="30" r="6" fill="#2E7D32"/>
+      <text x="50" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#2E7D32" text-anchor="middle">疫情前</text>
+      
+      <circle cx="290" cy="100" r="6" fill="#D97706"/>
+      <text x="290" y="85" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#D97706" text-anchor="middle">加速贬值</text>
+      
+      <circle cx="530" cy="170" r="8" fill="#B8352B"/>
+      <text x="530" y="155" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#B8352B" text-anchor="middle">触发仲裁</text>
+    </g>
+  </g>
+  
+  <!-- 外汇储备警示 -->
+  <g transform="translate(760, 250)">
+    <rect width="480" height="130" rx="12" fill="#D97706" opacity="0.2"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">⚠️ 外汇储备枯竭</text>
+    <text x="25" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">储备水平：</text>
+    <text x="110" y="65" font-family="system-ui" font-size="20" font-weight="700" fill="#D97706">&lt; 2个月</text>
+    <text x="225" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">进口覆盖</text>
+    <text x="25" y="95" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">国际警戒线：3个月进口覆盖</text>
+    <text x="25" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">有限美元优先用于购买燃油和偿还主权债券</text>
+  </g>
+  
+  <!-- 无法救助说明 -->
+  <g transform="translate(760, 400)">
+    <rect width="480" height="130" rx="12" fill="#B8352B" opacity="0.3"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">政府无法救助EDL</text>
+    <text x="25" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">国家层面流动性危机</text>
+    <text x="25" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">政府财政枯竭，无力对EDL注资</text>
+    <text x="25" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B" font-weight="600">EDL支付给中国企业的电费被排在次要位置</text>
+  </g>
+  
+  <!-- 底部总结 -->
+  <g transform="translate(40, 560)">
+    <rect width="1200" height="80" rx="12" fill="#FFFFFF" opacity="0.08"/>
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227">核心洞察</text>
+    <text x="25" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">
+      <tspan>基普汇率稳定时，EDL的"基普收入-美元支出"模式尚能维持；一旦</tspan>
+      <tspan fill="#B8352B" font-weight="600">基普崩盘</tspan>
+      <tspan>，EDL的资产负债表便</tspan>
+      <tspan fill="#B8352B" font-weight="600">瞬间穿孔</tspan>
+      <tspan>，完全丧失履约能力。</tspan>
+    </text>
+  </g>
+  
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#1A6B7C" stroke-width="1"/>
+  <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="end">12 / 20</text>
+</svg>

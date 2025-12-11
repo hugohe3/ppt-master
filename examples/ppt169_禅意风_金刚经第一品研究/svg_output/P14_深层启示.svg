@@ -1,0 +1,67 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F9F6F1"/>
+      <stop offset="100%" stop-color="#E8EBF0"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#bgGradient2)"/>
+  
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">深层启示：平凡生活即是道场</text>
+  <line x1="40" y1="105" x2="420" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 装饰圆相 -->
+  <circle cx="640" cy="400" r="200" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.2"/>
+  <circle cx="640" cy="400" r="240" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.1"/>
+  
+  <!-- 中央引用框 -->
+  <g transform="translate(140, 150)">
+    <rect x="0" y="0" width="1000" height="140" rx="20" fill="#FDF8E8" stroke="#C9A962" stroke-width="3"/>
+    <text x="500" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" fill="#C9A962" text-anchor="middle" font-style="italic">"般若智慧并非悬浮于空中的理论，</text>
+    <text x="500" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" fill="#C9A962" text-anchor="middle" font-style="italic">而是源于并指导着行住坐卧的每一个当下。"</text>
+  </g>
+  
+  <!-- 三要点 -->
+  <g transform="translate(100, 330)">
+    <!-- 要点一 -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="340" height="150" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
+      <circle cx="170" cy="-20" r="35" fill="#5D8C6A"/>
+      <text x="170" y="-10" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      <text x="170" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A" text-anchor="middle">觉悟之路</text>
+      <text x="170" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A" text-anchor="middle">始于日常觉照</text>
+      <text x="170" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">修行不必远离生活</text>
+    </g>
+    
+    <!-- 要点二 -->
+    <g transform="translate(380, 0)">
+      <rect x="0" y="0" width="340" height="150" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+      <circle cx="170" cy="-20" r="35" fill="#C9A962"/>
+      <text x="170" y="-10" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      <text x="170" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962" text-anchor="middle">空性智慧</text>
+      <text x="170" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962" text-anchor="middle">可被体验与实践</text>
+      <text x="170" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">非抽象理论或空洞概念</text>
+    </g>
+    
+    <!-- 要点三 -->
+    <g transform="translate(760, 0)">
+      <rect x="0" y="0" width="340" height="150" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
+      <circle cx="170" cy="-20" r="35" fill="#2E4A62"/>
+      <text x="170" y="-10" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      <text x="170" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62" text-anchor="middle">朴素的开场</text>
+      <text x="170" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62" text-anchor="middle">正是最深的教法</text>
+      <text x="170" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">平凡即是非凡</text>
+    </g>
+  </g>
+  
+  <!-- 底部总结 -->
+  <g transform="translate(140, 530)">
+    <rect x="0" y="0" width="1000" height="100" rx="12" fill="#2E4A62"/>
+    <text x="500" y="40" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">《金刚经》选择以如此平凡的日常细节作为开篇，</text>
+    <text x="500" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" text-anchor="middle">有力地宣示：通往最高智慧的道路，植根于对每一个平凡瞬间的觉照。</text>
+  </g>
+  
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第五部分：结论</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">14 / 15</text>
+</svg>

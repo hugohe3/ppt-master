@@ -1,0 +1,71 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="chapterGradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#B54545"/>
+      <stop offset="100%" style="stop-color:#8B3232"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#chapterGradient5)"/>
+  
+  <!-- 装饰性元素 - 身体轮廓抽象 -->
+  <g opacity="0.1">
+    <ellipse cx="640" cy="300" rx="200" ry="250" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="640" cy="180" r="60" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+    <line x1="480" y1="350" x2="380" y2="500" stroke="#FFFFFF" stroke-width="2"/>
+    <line x1="800" y1="350" x2="900" y2="500" stroke="#FFFFFF" stroke-width="2"/>
+  </g>
+  
+  <!-- 三个核心图标 -->
+  <g opacity="0.2" font-size="48" fill="#FFFFFF">
+    <text x="350" y="300" text-anchor="middle">🎭</text>
+    <text x="640" y="250" text-anchor="middle">🪞</text>
+    <text x="930" y="300" text-anchor="middle">🧘</text>
+  </g>
+  
+  <!-- 章节编号 -->
+  <text x="640" y="380" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+    05
+  </text>
+  
+  <!-- 章节标识 -->
+  <rect x="555" y="430" width="170" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <text x="640" y="457" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
+    CHAPTER FIVE
+  </text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="530" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="44" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    非言语领域与治愈之路
+  </text>
+  
+  <!-- 英文副标题 -->
+  <text x="640" y="575" font-family="system-ui, sans-serif" font-size="22" fill="#FECACA" text-anchor="middle">
+    The Nonverbal Realm and the Path to Healing
+  </text>
+  
+  <!-- 装饰线 -->
+  <rect x="540" y="600" width="200" height="3" rx="1.5" fill="#3D8B7A"/>
+  
+  <!-- 关键词 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(310, 640)">
+    <rect x="0" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.2)"/>
+    <text x="50" y="19" text-anchor="middle">被唤起</text>
+    
+    <rect x="120" y="0" width="80" height="28" rx="14" fill="rgba(255,255,255,0.2)"/>
+    <text x="160" y="19" text-anchor="middle">活现</text>
+    
+    <rect x="220" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.2)"/>
+    <text x="270" y="19" text-anchor="middle">具身化</text>
+    
+    <rect x="340" y="0" width="120" height="28" rx="14" fill="rgba(255,255,255,0.2)"/>
+    <text x="400" y="19" text-anchor="middle">容纳之窗</text>
+    
+    <rect x="480" y="0" width="100" height="28" rx="14" fill="rgba(255,255,255,0.2)"/>
+    <text x="530" y="19" text-anchor="middle">双螺旋</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#FECACA" text-anchor="end">23</text>
+</svg>

@@ -1,0 +1,100 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <!-- 页面标题 -->
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">研究焦点：法会因由分</text>
+  <line x1="40" y1="105" x2="340" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 经文引用框 -->
+  <g transform="translate(40, 130)">
+    <rect x="0" y="0" width="1200" height="140" rx="12" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+    <text x="30" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C9A962" font-weight="bold">原典经文（鸠摩罗什译）</text>
+    <text x="30" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#374151" font-style="italic">
+      <tspan x="30" dy="0">"如是我闻。一时，佛在舍卫国祇树给孤独园，与大比丘众千二百五十人俱。</tspan>
+      <tspan x="30" dy="30">尔时，世尊食时，著衣持钵，入舍卫大城乞食。于其城中，次第乞已，还至本处。</tspan>
+      <tspan x="30" dy="30">饭食讫，收衣钵，洗足已，敷座而坐。"</tspan>
+    </text>
+  </g>
+  
+  <!-- 三列分析 -->
+  <!-- 文本层面 -->
+  <g transform="translate(40, 295)">
+    <rect x="0" y="0" width="380" height="300" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="50" rx="12" fill="#2E4A62"/>
+    <rect x="0" y="40" width="380" height="10" fill="#2E4A62"/>
+    <!-- icon: file -->
+  <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
+    <path d="M7 0H2V16H14V7H7V0Z"/>
+    <path d="M9 0V5H14L9 0Z"/>
+  </g>
+    <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">文本层面</text>
+    
+    <text x="25" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151">
+      <tspan x="25" dy="0" font-weight="bold" fill="#2E4A62">• 鸠摩罗什译本</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">后秦弘始年间（约404年）</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#2E4A62">• 三十二分之首</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">相传为昭明太子所立</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#2E4A62">• 六种成就具足</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">信、闻、时、主、处、众</tspan>
+    </text>
+  </g>
+  
+  <!-- 功能层面 -->
+  <g transform="translate(450, 295)">
+    <rect x="0" y="0" width="380" height="300" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="50" rx="12" fill="#5D8C6A"/>
+    <rect x="0" y="40" width="380" height="10" fill="#5D8C6A"/>
+    <!-- icon: layers -->
+  <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
+    <path d="M1 5V3L8 0L15 3V5L8 8L1 5Z"/>
+    <path d="M8 16L1 13V11L8 14L15 11V13L8 16Z"/>
+    <path d="M1 9L8 12L15 9V7L8 10L1 7V9Z"/>
+  </g>
+    <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">功能层面</text>
+    
+    <text x="25" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151">
+      <tspan x="25" dy="0" font-weight="bold" fill="#5D8C6A">• 叙事开端</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">交代时间、地点、人物</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#5D8C6A">• 证信序（通序）</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">证明经典的真实性</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#5D8C6A">• 发起序（别序）</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">引发说法的直接原因</tspan>
+    </text>
+  </g>
+  
+  <!-- 思想层面 -->
+  <g transform="translate(860, 295)">
+    <rect x="0" y="0" width="380" height="300" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+    <rect x="0" y="0" width="380" height="50" rx="12" fill="#C9A962"/>
+    <rect x="0" y="40" width="380" height="10" fill="#C9A962"/>
+    <!-- icon: lightbulb -->
+  <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+  </g>
+    <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">思想层面</text>
+    
+    <text x="25" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151">
+      <tspan x="25" dy="0" font-weight="bold" fill="#C9A962">• 道在平常</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">最高真理体现于日常</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#C9A962">• 般若智慧的隐含示范</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">佛陀行为即是无言的教法</tspan>
+      <tspan x="25" dy="40" font-weight="bold" fill="#C9A962">• 日常即修行</tspan>
+      <tspan x="35" dy="28" font-size="14" fill="#6B7280">行住坐卧皆可证道</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部说明 -->
+  <g transform="translate(40, 615)">
+    <rect x="0" y="0" width="1200" height="50" rx="8" fill="#E8EBF0"/>
+    <!-- icon: circle-info -->
+  <g transform="translate(20.0, 12.0) scale(1.625)" fill="#8B9A9A">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM7 8H6V6H9V11H10V13H7V8ZM9 5V3H7V5H9Z"/>
+  </g>
+    <text x="60" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">说明：三十二分法相传为梁代昭明太子萧统所立，并非鸠摩罗什译本原有，早期译本多不分品。</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第一部分：引言</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">4 / 15</text>
+</svg>

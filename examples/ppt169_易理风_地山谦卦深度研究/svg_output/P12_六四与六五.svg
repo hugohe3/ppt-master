@@ -1,0 +1,77 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">中上层的谦德实践：六四与六五</text>
+  <line x1="60" y1="120" x2="540" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 左卡片 - 六四 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="555" height="460" rx="12" fill="#FFFFFF" stroke="#2D5A5A" stroke-width="2"/>
+    <rect x="0" y="0" width="555" height="55" rx="12" fill="#2D5A5A"/>
+    <rect x="0" y="45" width="555" height="10" fill="#2D5A5A"/>
+    <text x="278" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#E8E4DC" text-anchor="middle">六四：撝谦，无不利</text>
+    
+    <!-- 爻辞 -->
+    <rect x="30" y="75" width="495" height="50" rx="6" fill="#F5F3EF" stroke="#B8860B" stroke-width="1"/>
+    <text x="278" y="107" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#B8860B" text-anchor="middle">「无不利，撝谦。」</text>
+    
+    <!-- 语意考证 -->
+    <text x="30" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2D5A5A">语意考证</text>
+    <text x="30" y="190" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+      <tspan x="30" dy="0">• 「撝」通「挥」，意为发挥、施展</tspan>
+      <tspan x="30" dy="24">• 一说通「麾」，意为指挥</tspan>
+      <tspan x="30" dy="24">• 朱熹解为「发挥其谦」</tspan>
+    </text>
+    
+    <!-- 系统位置 -->
+    <text x="30" y="290" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2D5A5A">系统位置</text>
+    <text x="30" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+      <tspan x="30" dy="0">• 柔居阴位，得正</tspan>
+      <tspan x="30" dy="24">• 处于九三（权臣）与六五（君主）之间</tspan>
+      <tspan x="30" dy="24">• 典型的「夹心层」或高层幕僚</tspan>
+    </text>
+    
+    <!-- 策略分析 -->
+    <rect x="30" y="400" width="495" height="45" rx="6" fill="#2D5A5A"/>
+    <text x="278" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">彻底消融自我，成为系统的润滑剂</text>
+  </g>
+  
+  <!-- 右卡片 - 六五 -->
+  <g transform="translate(665, 150)">
+    <rect x="0" y="0" width="555" height="460" rx="12" fill="#FFFFFF" stroke="#C94C4C" stroke-width="2"/>
+    <rect x="0" y="0" width="555" height="55" rx="12" fill="#C94C4C"/>
+    <rect x="0" y="45" width="555" height="10" fill="#C94C4C"/>
+    <text x="278" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">六五：不富以其邻，利用侵伐</text>
+    
+    <!-- 爻辞 -->
+    <rect x="30" y="75" width="495" height="50" rx="6" fill="#F5F3EF" stroke="#B8860B" stroke-width="1"/>
+    <text x="278" y="107" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#B8860B" text-anchor="middle">「不富以其邻，利用侵伐，无不利。」</text>
+    
+    <!-- 反常性分析 -->
+    <text x="30" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C94C4C">反常性分析</text>
+    <text x="30" y="190" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+      <tspan x="30" dy="0">• 作为君位，通常讲究恩泽</tspan>
+      <tspan x="30" dy="24">• 为何此处出现「侵伐」？</tspan>
+      <tspan x="30" dy="24">• 这触及了谦德的辩证法</tspan>
+    </text>
+    
+    <!-- 义理推演 -->
+    <text x="30" y="290" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C94C4C">义理推演</text>
+    <text x="30" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E">
+      <tspan x="30" dy="0">• 六五居中得位，极其谦虚</tspan>
+      <tspan x="30" dy="24">• 不靠财富收买，邻国自然归附</tspan>
+      <tspan x="30" dy="24">• 软实力胜利 + 对顽固者动用雷霆手段</tspan>
+      <tspan x="30" dy="24">• 六五下令，九三执行 = 完美君臣配合</tspan>
+    </text>
+    
+    <!-- 启示 -->
+    <rect x="30" y="400" width="495" height="45" rx="6" fill="#C94C4C"/>
+    <text x="278" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">没有实力的谦让是懦弱，敢于亮剑才是帝王之谦</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第四部分：六爻微观动力学</text>
+  <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">12 / 20</text>
+</svg>

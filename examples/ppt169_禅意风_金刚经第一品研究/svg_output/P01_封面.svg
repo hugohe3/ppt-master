@@ -1,0 +1,48 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F9F6F1"/>
+      <stop offset="100%" stop-color="#E8EBF0"/>
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C9A962"/>
+      <stop offset="100%" stop-color="#D4B87A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 背景图片 -->
+  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.35"/>
+  
+  <!-- 装饰圆相 -->
+  <circle cx="640" cy="360" r="260" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.25"/>
+  <circle cx="640" cy="360" r="300" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.15"/>
+  
+  <!-- 顶部装饰线 -->
+  <line x1="440" y1="180" x2="840" y2="180" stroke="url(#goldGradient)" stroke-width="2" opacity="0.6"/>
+  
+  <!-- 副标题 -->
+  <text x="640" y="230" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#8B9A9A" text-anchor="middle" letter-spacing="8">大乘般若思想的核心经典</text>
+  
+  <!-- 主标题 -->
+  <text x="640" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="bold" fill="#2E4A62" text-anchor="middle">《金刚般若波罗蜜经》</text>
+  
+  <text x="640" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="bold" fill="#2E4A62" text-anchor="middle">第一品"法会因由分"研究</text>
+  
+  <!-- 分隔线 -->
+  <line x1="480" y1="430" x2="800" y2="430" stroke="#C9A962" stroke-width="2"/>
+  
+  <!-- 副主题 -->
+  <text x="640" y="480" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" fill="#5D8C6A" text-anchor="middle">平凡中的深邃 —— 从日常到般若</text>
+  
+  <!-- 底部信息 -->
+  <text x="640" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#8B9A9A" text-anchor="middle">学术研究 · 禅意解读</text>
+  
+  <!-- 底部装饰线 -->
+  <line x1="440" y1="650" x2="840" y2="650" stroke="url(#goldGradient)" stroke-width="1" opacity="0.4"/>
+  
+  <!-- 页码 -->
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">1 / 15</text>
+</svg>

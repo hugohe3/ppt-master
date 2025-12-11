@@ -1,0 +1,157 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    依恋研究对心理治疗的核心启示
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Three Key Findings from Attachment Research
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="500" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 三栏卡片 -->
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 发现一 -->
+    <g transform="translate(60, 160)">
+      <rect x="0" y="0" width="360" height="440" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部色块 -->
+      <rect x="0" y="0" width="360" height="80" rx="16" fill="#2E5C8E"/>
+      <rect x="0" y="64" width="360" height="16" fill="#2E5C8E"/>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🔗</text>
+      
+      <!-- 编号 -->
+      <rect x="20" y="100" width="40" height="40" rx="8" fill="#2E5C8E"/>
+      <text x="40" y="128" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+      
+      <!-- 标题 -->
+      <text x="75" y="115" font-size="18" font-weight="bold" fill="#1E293B">发现一</text>
+      <text x="75" y="138" font-size="14" fill="#64748B">Finding One</text>
+      
+      <!-- 核心观点 -->
+      <text x="20" y="180" font-size="20" font-weight="600" fill="#2E5C8E">
+        <tspan x="20" dy="0">共同创造的依恋关系</tspan>
+        <tspan x="20" dy="30">是发展的关键背景</tspan>
+      </text>
+      
+      <!-- 分隔线 -->
+      <line x1="20" y1="250" x2="340" y2="250" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 详细说明 -->
+      <text x="20" y="280" font-size="15" fill="#374151">
+        <tspan x="20" dy="0">• 关系塑造大脑结构</tspan>
+        <tspan x="20" dy="28">• 互动模式内化为内部工作模型</tspan>
+        <tspan x="20" dy="28">• 安全依恋促进神经整合</tspan>
+        <tspan x="20" dy="28">• 治疗关系可重塑依恋模式</tspan>
+      </text>
+      
+      <!-- 关键词标签 -->
+      <rect x="20" y="400" width="100" height="26" rx="13" fill="#E0F2FE"/>
+      <text x="70" y="418" font-size="13" fill="#2E5C8E" text-anchor="middle">关系塑造大脑</text>
+    </g>
+    
+    <!-- 发现二 -->
+    <g transform="translate(460, 160)">
+      <rect x="0" y="0" width="360" height="440" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部色块 -->
+      <rect x="0" y="0" width="360" height="80" rx="16" fill="#3D8B7A"/>
+      <rect x="0" y="64" width="360" height="16" fill="#3D8B7A"/>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🎭</text>
+      
+      <!-- 编号 -->
+      <rect x="20" y="100" width="40" height="40" rx="8" fill="#3D8B7A"/>
+      <text x="40" y="128" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+      
+      <!-- 标题 -->
+      <text x="75" y="115" font-size="18" font-weight="bold" fill="#1E293B">发现二</text>
+      <text x="75" y="138" font-size="14" fill="#64748B">Finding Two</text>
+      
+      <!-- 核心观点 -->
+      <text x="20" y="180" font-size="20" font-weight="600" fill="#3D8B7A">
+        <tspan x="20" dy="0">非言语体验构成</tspan>
+        <tspan x="20" dy="30">发展中自我的核心</tspan>
+      </text>
+      
+      <!-- 分隔线 -->
+      <line x1="20" y1="250" x2="340" y2="250" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 详细说明 -->
+      <text x="20" y="280" font-size="15" fill="#374151">
+        <tspan x="20" dy="0">• 12个月前已形成核心模式</tspan>
+        <tspan x="20" dy="28">• 语言前经验构成内隐记忆</tspan>
+        <tspan x="20" dy="28">• 身体记录着早期关系体验</tspan>
+        <tspan x="20" dy="28">• 需关注非言语沟通通道</tspan>
+      </text>
+      
+      <!-- 关键词标签 -->
+      <rect x="20" y="400" width="100" height="26" rx="13" fill="#D4EDDA"/>
+      <text x="70" y="418" font-size="13" fill="#3D8B7A" text-anchor="middle">前语言期印记</text>
+    </g>
+    
+    <!-- 发现三 -->
+    <g transform="translate(860, 160)">
+      <rect x="0" y="0" width="360" height="440" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 顶部色块 -->
+      <rect x="0" y="0" width="360" height="80" rx="16" fill="#E07843"/>
+      <rect x="0" y="64" width="360" height="16" fill="#E07843"/>
+      
+      <!-- 图标 -->
+      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🧠</text>
+      
+      <!-- 编号 -->
+      <rect x="20" y="100" width="40" height="40" rx="8" fill="#E07843"/>
+      <text x="40" y="128" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+      
+      <!-- 标题 -->
+      <text x="75" y="115" font-size="18" font-weight="bold" fill="#1E293B">发现三</text>
+      <text x="75" y="138" font-size="14" fill="#64748B">Finding Three</text>
+      
+      <!-- 核心观点 -->
+      <text x="20" y="180" font-size="20" font-weight="600" fill="#E07843">
+        <tspan x="20" dy="0">自我对体验的姿态</tspan>
+        <tspan x="20" dy="30">比历史事实更重要</tspan>
+      </text>
+      
+      <!-- 分隔线 -->
+      <line x1="20" y1="250" x2="340" y2="250" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <!-- 详细说明 -->
+      <text x="20" y="280" font-size="15" fill="#374151">
+        <tspan x="20" dy="0">• 反思能力决定依恋安全性</tspan>
+        <tspan x="20" dy="28">• 元认知监测调节情绪反应</tspan>
+        <tspan x="20" dy="28">• 心智化能力可以后天培养</tspan>
+        <tspan x="20" dy="28">• 觉察同样促进安全感建立</tspan>
+      </text>
+      
+      <!-- 关键词标签 -->
+      <rect x="20" y="400" width="120" height="26" rx="13" fill="#FED7AA"/>
+      <text x="80" y="418" font-size="13" fill="#E07843" text-anchor="middle">反思能力决定命运</text>
+    </g>
+  </g>
+  
+  <!-- 底部总结 -->
+  <rect x="60" y="620" width="1160" height="50" rx="8" fill="#F1F5F9"/>
+  <text x="640" y="652" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#475569" text-anchor="middle">
+    💡 这三大发现共同指向：治疗关系本身就是改变的关键机制，而非仅仅是技术施展的背景
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">04</text>
+</svg>

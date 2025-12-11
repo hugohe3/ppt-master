@@ -1,0 +1,138 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    心理解放的双螺旋
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Double Helix of Psychological Liberation: Mentalizing and Mindfulness
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="320" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 去嵌入概念 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="400" height="80" rx="12" fill="#1E3A5F"/>
+    
+    <text x="20" y="30" font-size="16" font-weight="bold" fill="#FFFFFF">🔓 去嵌入 Disembedding</text>
+    <text x="20" y="55" font-size="14" fill="#CBD5E1">心理痛苦常源于嵌入——被困在单一视角中，</text>
+    <text x="20" y="75" font-size="14" fill="#CBD5E1">将主观体验等同于绝对事实</text>
+  </g>
+  
+  <!-- 中央双螺旋图片 -->
+  <g transform="translate(480, 140)">
+    <defs>
+      <clipPath id="helixClip2">
+        <rect x="0" y="0" width="320" height="280" rx="16"/>
+      </clipPath>
+    </defs>
+    <rect x="0" y="0" width="320" height="280" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
+    <image xlink:href="../images/double_helix.png" x="0" y="0" width="320" height="280" clip-path="url(#helixClip2)" preserveAspectRatio="xMidYMid slice"/>
+    
+    <!-- 中心标签 -->
+    <rect x="110" y="230" width="100" height="30" rx="15" fill="#1E3A5F"/>
+    <text x="160" y="250" font-family="PingFang SC, sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">整合</text>
+  </g>
+  
+  <!-- 左侧：心智化详解 -->
+  <g transform="translate(60, 250)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="400" height="180" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+    
+    <rect x="0" y="0" width="400" height="45" rx="12" fill="#2E5C8E"/>
+    <rect x="0" y="33" width="400" height="12" fill="#2E5C8E"/>
+    <text x="20" y="28" font-size="16" font-weight="bold" fill="#FFFFFF">🧠 心智化 Mentalizing</text>
+    
+    <g transform="translate(20, 60)">
+      <text x="0" y="0" font-size="14" font-weight="600" fill="#2E5C8E">隐喻：望远镜 🔭</text>
+      <text x="0" y="22" font-size="13" fill="#374151">将远处的体验（过去、潜意识）拉近</text>
+      
+      <line x1="0" y1="38" x2="360" y2="38" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="60" font-size="13" fill="#374151">• 理解心理状态的表征性质</text>
+      <text x="0" y="82" font-size="13" fill="#374151">• 促进表征性重新描述</text>
+      <text x="0" y="104" font-size="13" fill="#6B7280">→ 产出：心理主体感</text>
+    </g>
+  </g>
+  
+  <!-- 右侧：觉察详解 -->
+  <g transform="translate(820, 250)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="400" height="180" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+    
+    <rect x="0" y="0" width="400" height="45" rx="12" fill="#3D8B7A"/>
+    <rect x="0" y="33" width="400" height="12" fill="#3D8B7A"/>
+    <text x="20" y="28" font-size="16" font-weight="bold" fill="#FFFFFF">🧘 觉察 Mindfulness</text>
+    
+    <g transform="translate(20, 60)">
+      <text x="0" y="0" font-size="14" font-weight="600" fill="#3D8B7A">隐喻：显微镜 🔬</text>
+      <text x="0" y="22" font-size="13" fill="#374151">通过全景式关注揭示当下的细节</text>
+      
+      <line x1="0" y1="38" x2="360" y2="38" stroke="#E5E7EB" stroke-width="1"/>
+      
+      <text x="0" y="60" font-size="13" fill="#374151">• 区分觉察本身与觉察对象</text>
+      <text x="0" y="82" font-size="13" fill="#374151">• 意识到体验的流动性和无常</text>
+      <text x="0" y="104" font-size="13" fill="#6B7280">→ 产出：注意力主体感</text>
+    </g>
+  </g>
+  
+  <!-- 底部：共同收益 -->
+  <rect x="60" y="455" width="1160" height="200" rx="12" fill="#1E3A5F"/>
+  
+  <text x="100" y="495" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">
+    双螺旋共同收益
+  </text>
+  
+  <g transform="translate(80, 520)" font-family="PingFang SC, sans-serif">
+    <!-- 第一行 -->
+    <g>
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">增强情感调节</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">容纳并转化痛苦情感</text>
+    </g>
+    
+    <g transform="translate(280, 0)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#E07843" text-anchor="middle" font-weight="600">提升自我主体感</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">成为体验的作者和解释者</text>
+    </g>
+    
+    <g transform="translate(560, 0)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#2E5C8E" text-anchor="middle" font-weight="600">整合解离体验</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">将碎片化记忆转化为连贯叙事</text>
+    </g>
+    
+    <g transform="translate(840, 0)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">建立内在安全基地</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">从外部依赖到内在力量</text>
+    </g>
+    
+    <!-- 第二行 -->
+    <g transform="translate(140, 70)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#64748B" text-anchor="middle" font-weight="600">促进左右脑整合</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">语言与非语言的桥接</text>
+    </g>
+    
+    <g transform="translate(420, 70)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#B54545" text-anchor="middle" font-weight="600">扩大容纳之窗</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">增强对强烈情绪的耐受</text>
+    </g>
+    
+    <g transform="translate(700, 70)">
+      <rect x="0" y="0" width="260" height="55" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="130" y="25" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">去自动化反应</text>
+      <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">从习惯性模式中解脱</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">26</text>
+</svg>

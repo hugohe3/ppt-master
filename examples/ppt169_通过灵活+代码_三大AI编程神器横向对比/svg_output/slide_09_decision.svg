@@ -1,0 +1,126 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.1)" />
+        </filter>
+    </defs>
+
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    <!-- 页面标题 -->
+    <text x="640" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B"
+        text-anchor="middle" font-weight="700">选型决策树</text>
+    <text x="640" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B"
+        text-anchor="middle">回答几个问题，快速找到最适合的工具</text>
+
+    <!-- 决策树 -->
+    <!-- 根节点 -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="105" width="360" height="55" rx="27" fill="#1E293B" />
+        <text x="640" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">你的项目是什么阶段？</text>
+    </g>
+
+    <!-- 连接线 -->
+    <line x1="540" y1="160" x2="220" y2="210" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="640" y1="160" x2="640" y2="210" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="740" y1="160" x2="1060" y2="210" stroke="#E2E8F0" stroke-width="2" />
+
+    <!-- 分支1：需求不明确 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="210" width="320" height="50" rx="10" fill="#FFF7ED" />
+        <text x="220" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#C2410C"
+            text-anchor="middle" font-weight="500">刚开始，连需求都没想清楚</text>
+    </g>
+    <line x1="220" y1="260" x2="220" y2="295" stroke="#F97316" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <rect x="110" y="295" width="220" height="50" rx="25" fill="#8B5CF6" />
+        <text x="220" y="327" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">✅ 用 Spec Kit</text>
+    </g>
+
+    <!-- 分支2：需求明确 -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="210" width="360" height="50" rx="10" fill="#F1F5F9" />
+        <text x="640" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#475569"
+            text-anchor="middle" font-weight="500">需求明确，有完整 PRD</text>
+    </g>
+    <line x1="640" y1="260" x2="640" y2="295" stroke="#64748B" stroke-width="2" />
+
+    <!-- 子问题节点 -->
+    <g filter="url(#cardShadow)">
+        <rect x="460" y="295" width="360" height="45" rx="10" fill="#E2E8F0" />
+        <text x="640" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B"
+            text-anchor="middle" font-weight="500">新项目还是存量项目？</text>
+    </g>
+
+    <!-- 子分支连接线 -->
+    <line x1="540" y1="340" x2="460" y2="380" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="740" y1="340" x2="820" y2="380" stroke="#E2E8F0" stroke-width="2" />
+
+    <!-- 子分支：新项目 -->
+    <g filter="url(#cardShadow)">
+        <rect x="360" y="380" width="200" height="40" rx="8" fill="#F5F3FF" />
+        <text x="460" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7C3AED"
+            text-anchor="middle">新项目</text>
+    </g>
+    <line x1="460" y1="420" x2="460" y2="455" stroke="#8B5CF6" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <rect x="350" y="455" width="220" height="45" rx="22" fill="#8B5CF6" />
+        <text x="460" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">✅ 用 Spec Kit</text>
+    </g>
+
+    <!-- 子分支：存量项目 -->
+    <g filter="url(#cardShadow)">
+        <rect x="720" y="380" width="200" height="40" rx="8" fill="#EFF6FF" />
+        <text x="820" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB"
+            text-anchor="middle">存量项目</text>
+    </g>
+    <line x1="820" y1="420" x2="820" y2="455" stroke="#2563EB" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <rect x="710" y="455" width="220" height="45" rx="22" fill="#2563EB" />
+        <text x="820" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">✅ 用 OpenSpec</text>
+    </g>
+
+    <!-- 分支3：快速配置环境 -->
+    <g filter="url(#cardShadow)">
+        <rect x="900" y="210" width="320" height="50" rx="10" fill="#ECFDF5" />
+        <text x="1060" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#047857"
+            text-anchor="middle" font-weight="500">只是想快速配置环境</text>
+    </g>
+    <line x1="1060" y1="260" x2="1060" y2="295" stroke="#10B981" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <rect x="950" y="295" width="220" height="50" rx="25" fill="#10B981" />
+        <text x="1060" y="327" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF"
+            text-anchor="middle" font-weight="600">✅ 用 ZCF</text>
+    </g>
+
+    <!-- 底部：综合方案 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="530" width="1160" height="130" rx="16" fill="#FFFFFF" />
+        <rect x="60" y="530" width="1160" height="8" rx="4" fill="#F97316" />
+
+        <text x="640" y="570" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#F97316"
+            text-anchor="middle" font-weight="700">🎯 以上都需要？</text>
+
+        <text x="640" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B"
+            text-anchor="middle">
+            <tspan fill="#10B981" font-weight="600">ZCF</tspan>
+            <tspan fill="#64748B"> + </tspan>
+            <tspan fill="#8B5CF6" font-weight="600">Spec Kit</tspan>
+            <tspan fill="#64748B"> / </tspan>
+            <tspan fill="#2563EB" font-weight="600">OpenSpec</tspan>
+            <tspan fill="#64748B"> 组合使用</tspan>
+        </text>
+
+        <text x="640" y="640" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#64748B"
+            text-anchor="middle">如果你是全能选手，建议三个都装上，按场景灵活切换</text>
+    </g>
+
+    <!-- 页码 -->
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8"
+        text-anchor="end">09 / 11</text>
+</svg>

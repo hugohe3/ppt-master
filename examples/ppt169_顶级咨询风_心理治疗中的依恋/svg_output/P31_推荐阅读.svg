@@ -1,0 +1,120 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    推荐阅读与延伸资源
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    Recommended Reading and Further Resources
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="400" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 双栏布局 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 核心文献 -->
+    <g>
+      <rect x="0" y="0" width="560" height="520" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="560" height="55" rx="12" fill="#2E5C8E"/>
+      <rect x="0" y="43" width="560" height="12" fill="#2E5C8E"/>
+      <text x="25" y="35" font-size="18" font-weight="bold" fill="#FFFFFF">📚 核心文献</text>
+      
+      <g transform="translate(20, 75)" font-size="14">
+        <!-- 本书 -->
+        <rect x="0" y="0" width="520" height="55" rx="8" fill="#E0F2FE"/>
+        <text x="15" y="22" font-weight="bold" fill="#2E5C8E">Attachment in Psychotherapy</text>
+        <text x="15" y="42" fill="#374151">David J. Wallin (2007) — 本PPT的主要参考书</text>
+        
+        <!-- 其他文献 -->
+        <text x="0" y="85" font-weight="600" fill="#1E293B">John Bowlby</text>
+        <text x="0" y="105" fill="#6B7280">A Secure Base (1988)</text>
+        
+        <text x="0" y="135" font-weight="600" fill="#1E293B">Mary Ainsworth</text>
+        <text x="0" y="155" fill="#6B7280">Patterns of Attachment (1978)</text>
+        
+        <text x="0" y="185" font-weight="600" fill="#1E293B">Mary Main</text>
+        <text x="0" y="205" fill="#6B7280">AAI相关论文 (1991, 1995)</text>
+        
+        <text x="0" y="235" font-weight="600" fill="#1E293B">Peter Fonagy</text>
+        <text x="0" y="255" fill="#6B7280">Affect Regulation, Mentalization, and the Development of the Self (2002)</text>
+        
+        <text x="0" y="285" font-weight="600" fill="#1E293B">Allan Schore</text>
+        <text x="0" y="305" fill="#6B7280">Affect Regulation and the Origin of the Self (1994)</text>
+        
+        <text x="0" y="335" font-weight="600" fill="#1E293B">Daniel Stern</text>
+        <text x="0" y="355" fill="#6B7280">The Interpersonal World of the Infant (1985)</text>
+        
+        <text x="0" y="385" font-weight="600" fill="#1E293B">Patrick Casement</text>
+        <text x="0" y="405" fill="#6B7280">Learning from the Patient (1985)</text>
+      </g>
+    </g>
+    
+    <!-- 延伸资源 -->
+    <g transform="translate(600, 0)">
+      <rect x="0" y="0" width="560" height="520" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      
+      <rect x="0" y="0" width="560" height="55" rx="12" fill="#3D8B7A"/>
+      <rect x="0" y="43" width="560" height="12" fill="#3D8B7A"/>
+      <text x="25" y="35" font-size="18" font-weight="bold" fill="#FFFFFF">🔗 延伸资源</text>
+      
+      <g transform="translate(20, 75)" font-size="14">
+        
+        <!-- 相关主题 -->
+        <text x="0" y="0" font-weight="600" fill="#3D8B7A">相关研究主题</text>
+        
+        <rect x="0" y="15" width="520" height="90" rx="8" fill="#D4EDDA"/>
+        <text x="15" y="35" fill="#374151">• 婴儿观察与发展心理学</text>
+        <text x="15" y="55" fill="#374151">• 神经科学与社会神经科学</text>
+        <text x="15" y="75" fill="#374151">• 创伤与躯体心理治疗</text>
+        <text x="15" y="95" fill="#374151">• 正念在心理治疗中的应用</text>
+        
+        <!-- 学派与疗法 -->
+        <text x="0" y="130" font-weight="600" fill="#3D8B7A">相关治疗学派</text>
+        
+        <g transform="translate(0, 145)">
+          <rect x="0" y="0" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="80" y="20" fill="#374151" font-size="13" text-anchor="middle">关系精神分析</text>
+          
+          <rect x="180" y="0" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="260" y="20" fill="#374151" font-size="13" text-anchor="middle">心智化为本治疗</text>
+          
+          <rect x="360" y="0" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="440" y="20" fill="#374151" font-size="13" text-anchor="middle">情绪聚焦疗法</text>
+          
+          <rect x="0" y="45" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="80" y="65" fill="#374151" font-size="13" text-anchor="middle">躯体体验疗法</text>
+          
+          <rect x="180" y="45" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="260" y="65" fill="#374151" font-size="13" text-anchor="middle">EMDR</text>
+          
+          <rect x="360" y="45" width="160" height="30" rx="6" fill="#F1F5F9"/>
+          <text x="440" y="65" fill="#374151" font-size="13" text-anchor="middle">辩证行为疗法</text>
+        </g>
+        
+        <!-- 评估工具 -->
+        <text x="0" y="265" font-weight="600" fill="#3D8B7A">评估工具</text>
+        
+        <text x="0" y="290" fill="#374151">• Adult Attachment Interview (AAI)</text>
+        <text x="0" y="312" fill="#374151">• Strange Situation Procedure (SSP)</text>
+        <text x="0" y="334" fill="#374151">• Reflective Functioning Scale (RFS)</text>
+        <text x="0" y="356" fill="#374151">• Experiences in Close Relationships (ECR)</text>
+        
+        <!-- 培训机构 -->
+        <text x="0" y="390" font-weight="600" fill="#3D8B7A">培训与组织</text>
+        <text x="0" y="415" fill="#6B7280">International Attachment Network</text>
+        <text x="0" y="437" fill="#6B7280">Anna Freud Centre</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">31</text>
+</svg>

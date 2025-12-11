@@ -1,0 +1,139 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    自我对于体验的姿态
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Stance of the Self toward Experience
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="380" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 中央双螺旋图片 -->
+  <g transform="translate(430, 140)">
+    <!-- 图片容器（圆角裁剪） -->
+    <defs>
+      <clipPath id="helixClip">
+        <rect x="0" y="0" width="420" height="320" rx="16"/>
+      </clipPath>
+    </defs>
+    <rect x="0" y="0" width="420" height="320" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
+    <image xlink:href="../images/double_helix.png" x="10" y="10" width="400" height="300" clip-path="url(#helixClip)" preserveAspectRatio="xMidYMid slice"/>
+    
+    <!-- 标签 -->
+    <g transform="translate(40, 280)">
+      <rect x="0" y="0" width="100" height="30" rx="15" fill="#2E5C8E"/>
+      <text x="50" y="20" font-family="PingFang SC, sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">心智化</text>
+    </g>
+    
+    <g transform="translate(280, 280)">
+      <rect x="0" y="0" width="100" height="30" rx="15" fill="#3D8B7A"/>
+      <text x="50" y="20" font-family="PingFang SC, sans-serif" font-size="13" fill="#FFFFFF" text-anchor="middle">觉察</text>
+    </g>
+  </g>
+  
+  <!-- 左侧：心智化说明 -->
+  <g transform="translate(60, 155)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="350" height="240" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+    
+    <!-- 标题栏 -->
+    <rect x="0" y="0" width="350" height="50" rx="12" fill="#2E5C8E"/>
+    <rect x="0" y="38" width="350" height="12" fill="#2E5C8E"/>
+    <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🧠 心智化 Mentalizing</text>
+    
+    <!-- 定义 -->
+    <text x="20" y="80" font-size="15" fill="#374151">
+      <tspan font-weight="600">根据心理状态理解行为和体验</tspan>
+    </text>
+    
+    <line x1="20" y1="95" x2="330" y2="95" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <!-- 特点 -->
+    <text x="20" y="120" font-size="14" fill="#374151">
+      <tspan x="20" dy="0">• 将体验视为心理状态而非绝对事实</tspan>
+      <tspan x="20" dy="24">• 创造心理空间，允许多种视角</tspan>
+      <tspan x="20" dy="24">• 理解表象与现实的区别</tspan>
+      <tspan x="20" dy="24">• 增强元认知监测能力</tspan>
+    </text>
+    
+    <!-- 隐喻 -->
+    <rect x="20" y="210" width="310" height="24" rx="4" fill="#E0F2FE"/>
+    <text x="175" y="227" font-size="13" fill="#2E5C8E" text-anchor="middle">
+      🔭 如同望远镜——将远处体验拉近
+    </text>
+  </g>
+  
+  <!-- 右侧：觉察说明 -->
+  <g transform="translate(870, 155)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="350" height="240" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+    
+    <!-- 标题栏 -->
+    <rect x="0" y="0" width="350" height="50" rx="12" fill="#3D8B7A"/>
+    <rect x="0" y="38" width="350" height="12" fill="#3D8B7A"/>
+    <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🧘 觉察 Mindfulness</text>
+    
+    <!-- 定义 -->
+    <text x="20" y="80" font-size="15" fill="#374151">
+      <tspan font-weight="600">对当下体验的刻意、不加评判的关注</tspan>
+    </text>
+    
+    <line x1="20" y1="95" x2="330" y2="95" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <!-- 特点 -->
+    <text x="20" y="120" font-size="14" fill="#374151">
+      <tspan x="20" dy="0">• 关注体验的过程而非内容</tspan>
+      <tspan x="20" dy="24">• 意识到觉察本身与觉察对象分离</tspan>
+      <tspan x="20" dy="24">• 建立内在的安全基地感</tspan>
+      <tspan x="20" dy="24">• 去自动化习惯性反应</tspan>
+    </text>
+    
+    <!-- 隐喻 -->
+    <rect x="20" y="210" width="310" height="24" rx="4" fill="#D4EDDA"/>
+    <text x="175" y="227" font-size="13" fill="#3D8B7A" text-anchor="middle">
+      🔬 如同显微镜——揭示当下的细节
+    </text>
+  </g>
+  
+  <!-- 底部：共同作用 -->
+  <g transform="translate(60, 500)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    <rect x="0" y="0" width="1160" height="160" rx="12" fill="#1E3A5F"/>
+    
+    <text x="580" y="35" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+      双螺旋共同作用
+    </text>
+    
+    <g transform="translate(80, 60)">
+      <rect x="0" y="0" width="220" height="80" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="110" y="35" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">增强情感调节</text>
+      <text x="110" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">容纳并转化痛苦情感</text>
+    </g>
+    
+    <g transform="translate(330, 60)">
+      <rect x="0" y="0" width="220" height="80" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="110" y="35" font-size="15" fill="#E07843" text-anchor="middle" font-weight="600">提升自我主体感</text>
+      <text x="110" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">成为体验的解释者</text>
+    </g>
+    
+    <g transform="translate(580, 60)">
+      <rect x="0" y="0" width="220" height="80" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="110" y="35" font-size="15" fill="#2E5C8E" text-anchor="middle" font-weight="600">整合解离体验</text>
+      <text x="110" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">将碎片化记忆整合</text>
+    </g>
+    
+    <g transform="translate(830, 60)">
+      <rect x="0" y="0" width="250" height="80" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <text x="125" y="35" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">建立内在安全基地</text>
+      <text x="125" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">从外部依赖到内在力量</text>
+    </g>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">07</text>
+</svg>

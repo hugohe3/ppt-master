@@ -1,0 +1,115 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="conclusionBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D2B3E"/>
+      <stop offset="100%" style="stop-color:#1A4A5E"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="1280" height="720" fill="url(#conclusionBg)"/>
+  
+  <text x="40" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">核心结论</text>
+  <text x="1240" y="55" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">CORE CONCLUSIONS</text>
+  <line x1="40" y1="75" x2="1240" y2="75" stroke="#1A6B7C" stroke-width="1"/>
+  
+  <!-- 结论卡片1 -->
+  <g transform="translate(40, 100)">
+    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="380" height="70" rx="16" fill="#1A6B7C"/>
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#1A6B7C" text-anchor="middle">1</text>
+    <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">仲裁即重组序曲</text>
+    
+    <g transform="translate(25, 95)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
+        <tspan x="0" dy="0">$5.55亿索赔</tspan>
+        <tspan x="0" dy="25" font-weight="600" fill="#7ED4E6">并非终局对抗</tspan>
+        <tspan x="0" dy="25">而是迫使老挝政府</tspan>
+        <tspan x="0" dy="25">回到谈判桌的筹码</tspan>
+      </text>
+      
+      <line x1="0" y1="120" x2="330" y2="120" stroke="#1A6B7C" stroke-width="1" opacity="0.5"/>
+      
+      <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227">最可能的解决方案：</text>
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 债务重组/延期</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 能源资产控制权让渡</text>
+      <text x="0" y="230" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 股权结构调整</text>
+      
+      <text x="0" y="280" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">老挝财政枯竭，无力一次性偿付</text>
+    </g>
+  </g>
+  
+  <!-- 结论卡片2 -->
+  <g transform="translate(450, 100)">
+    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="380" height="70" rx="16" fill="#C9A227"/>
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#C9A227" text-anchor="middle">2</text>
+    <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#0D2B3E">商业逻辑压倒外交</text>
+    
+    <g transform="translate(25, 95)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
+        <tspan x="0" dy="0">此案确立了一个先例：</tspan>
+        <tspan x="0" dy="28" font-weight="600" fill="#C9A227">"一带一路"项目中的</tspan>
+        <tspan x="0" dy="25" font-weight="600" fill="#C9A227">商业利益将受法律契约</tspan>
+        <tspan x="0" dy="25" font-weight="600" fill="#C9A227">严格保护</tspan>
+      </text>
+      
+      <line x1="0" y1="120" x2="330" y2="120" stroke="#C9A227" stroke-width="1" opacity="0.5"/>
+      
+      <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">即便涉及友好国家：</text>
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 中国企业面临财务考核压力</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 不再无底线承担违约成本</text>
+      <text x="0" y="230" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 法律手段成为常规选项</text>
+      
+      <text x="0" y="280" font-family="system-ui, 'Microsoft YaHei'" font-size="16" fill="#C9A227" font-weight="700">"亲兄弟，明算账"</text>
+    </g>
+  </g>
+  
+  <!-- 结论卡片3 -->
+  <g transform="translate(860, 100)">
+    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
+    <rect x="0" y="0" width="380" height="70" rx="16" fill="#B8352B"/>
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#B8352B" text-anchor="middle">3</text>
+    <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">"蓄电池"模式破产</text>
+    
+    <g transform="translate(25, 95)">
+      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
+        <tspan x="0" dy="0">老挝模式的致命缺陷：</tspan>
+        <tspan x="0" dy="28" font-weight="600" fill="#B8352B">美元举债建设</tspan>
+        <tspan x="0" dy="25" font-weight="600" fill="#B8352B">本币回收成本</tspan>
+        <tspan x="0" dy="25" font-weight="600" fill="#B8352B">= 必然破产</tspan>
+      </text>
+      
+      <line x1="0" y1="120" x2="330" y2="120" stroke="#B8352B" stroke-width="1" opacity="0.5"/>
+      
+      <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">后果：</text>
+      <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 能源主权加速"空心化"</text>
+      <text x="0" y="205" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 从"蓄电池"变为</text>
+      <text x="0" y="230" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">  "外国资本发电厂"</text>
+      
+      <text x="0" y="280" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6">出路：跨境直接出口换汇</text>
+    </g>
+  </g>
+  
+  <!-- 底部一句话总结 -->
+  <g transform="translate(40, 530)">
+    <rect width="1200" height="100" rx="12" fill="#FFFFFF" opacity="0.08"/>
+    <text x="600" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">战略定位一句话</text>
+    <text x="600" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="15" fill="#7ED4E6" text-anchor="middle">
+      <tspan>南欧江项目从</tspan>
+      <tspan fill="#2E7D32" font-weight="600">"一带一路标杆工程"</tspan>
+      <tspan>演变为</tspan>
+      <tspan fill="#B8352B" font-weight="600">"主权债务危机典型案例"</tspan>
+      <tspan>，</tspan>
+    </text>
+    <text x="600" y="95" font-family="system-ui, 'Microsoft YaHei'" font-size="15" fill="#7ED4E6" text-anchor="middle">
+      <tspan>揭示了新兴市场基建项目"美元债务-软货币收入"错配的系统性风险。</tspan>
+    </text>
+  </g>
+  
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#1A6B7C" stroke-width="1"/>
+  <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="end">18 / 20</text>
+</svg>

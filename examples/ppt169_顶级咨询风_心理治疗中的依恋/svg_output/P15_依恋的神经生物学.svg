@@ -1,0 +1,146 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
+    依恋的神经生物学
+  </text>
+  <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
+    The Neurobiology of Attachment
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="60" y1="125" x2="320" y2="125" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 中央大脑图片 -->
+  <g transform="translate(340, 140)">
+    <defs>
+      <clipPath id="brainClip">
+        <rect x="0" y="0" width="400" height="360" rx="16"/>
+      </clipPath>
+    </defs>
+    <rect x="0" y="0" width="400" height="360" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
+    <image xlink:href="../images/brain_attachment.png" x="0" y="0" width="400" height="360" clip-path="url(#brainClip)" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+  
+  <!-- 左侧标注卡片 -->
+  <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 前额叶皮层 -->
+    <rect x="0" y="0" width="260" height="95" rx="8" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="1"/>
+    <rect x="0" y="0" width="6" height="95" rx="3" fill="#2E5C8E"/>
+    <text x="20" y="28" font-size="15" font-weight="bold" fill="#2E5C8E">前额叶皮层</text>
+    <text x="115" y="28" font-size="11" fill="#64748B">Prefrontal Cortex</text>
+    <text x="20" y="50" font-size="13" fill="#374151">• 情感调节的关键区域</text>
+    <text x="20" y="70" font-size="13" fill="#374151">• 依恋与心智化中心</text>
+    <text x="20" y="90" font-size="13" fill="#374151">• 连接边缘系统与皮层</text>
+    
+    <!-- 边缘系统 -->
+    <rect x="0" y="110" width="260" height="120" rx="8" fill="#FFFFFF" stroke="#E07843" stroke-width="1"/>
+    <rect x="0" y="110" width="6" height="120" rx="3" fill="#E07843"/>
+    <text x="20" y="138" font-size="15" font-weight="bold" fill="#E07843">边缘系统</text>
+    <text x="95" y="138" font-size="11" fill="#64748B">Limbic System</text>
+    
+    <text x="20" y="163" font-size="13" fill="#374151">
+      <tspan font-weight="600" fill="#B54545">杏仁核：</tspan>
+      <tspan>恐惧调节、情绪评估</tspan>
+    </text>
+    <text x="20" y="183" font-size="12" fill="#6B7280">存储非意识的情绪记忆</text>
+    
+    <text x="20" y="205" font-size="13" fill="#374151">
+      <tspan font-weight="600" fill="#3D8B7A">海马：</tspan>
+      <tspan>外显记忆、背景化</tspan>
+    </text>
+    <text x="20" y="225" font-size="12" fill="#6B7280">调节杏仁核反应</text>
+    
+    <!-- 脑干 -->
+    <rect x="0" y="245" width="260" height="75" rx="8" fill="#FFFFFF" stroke="#64748B" stroke-width="1"/>
+    <rect x="0" y="245" width="6" height="75" rx="3" fill="#64748B"/>
+    <text x="20" y="273" font-size="15" font-weight="bold" fill="#64748B">脑干</text>
+    <text x="65" y="273" font-size="11" fill="#94A3B8">Brainstem</text>
+    <text x="20" y="295" font-size="13" fill="#374151">• 基本生理调节和唤起</text>
+    <text x="20" y="315" font-size="13" fill="#374151">• 战斗/逃跑/冻结反应 (ANS)</text>
+  </g>
+  
+  <!-- 右侧标注卡片 -->
+  <g transform="translate(760, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+    
+    <!-- 右脑与左脑 -->
+    <rect x="0" y="0" width="460" height="160" rx="12" fill="#1E3A5F"/>
+    
+    <text x="20" y="30" font-size="16" font-weight="bold" fill="#FFFFFF">🧠 右脑 vs 左脑</text>
+    
+    <g transform="translate(20, 50)">
+      <rect x="0" y="0" width="200" height="95" rx="8" fill="rgba(255,255,255,0.1)"/>
+      <text x="100" y="25" font-size="14" font-weight="600" fill="#E07843" text-anchor="middle">右脑</text>
+      <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">社交-情感大脑</text>
+      <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">非言语沟通</text>
+      <text x="100" y="82" font-size="11" fill="#94A3B8" text-anchor="middle">身体状态感知</text>
+    </g>
+    
+    <g transform="translate(240, 50)">
+      <rect x="0" y="0" width="200" height="95" rx="8" fill="rgba(255,255,255,0.1)"/>
+      <text x="100" y="25" font-size="14" font-weight="600" fill="#3D8B7A" text-anchor="middle">左脑</text>
+      <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">逻辑-语言大脑</text>
+      <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">逻辑推理</text>
+      <text x="100" y="82" font-size="11" fill="#94A3B8" text-anchor="middle">线性处理</text>
+    </g>
+    
+    <!-- 镜像神经元 -->
+    <rect x="0" y="180" width="460" height="100" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+    
+    <text x="20" y="210" font-size="15" font-weight="bold" fill="#3D8B7A">🪞 镜像神经元系统</text>
+    <text x="180" y="210" font-size="11" fill="#64748B">Mirror Neuron System</text>
+    
+    <text x="20" y="238" font-size="13" fill="#374151">通过模拟他人行为和意图来理解他人</text>
+    
+    <g transform="translate(20, 255)">
+      <rect x="0" y="0" width="100" height="24" rx="4" fill="#E0F2FE"/>
+      <text x="50" y="16" font-size="11" fill="#2E5C8E" text-anchor="middle">共情基础</text>
+      
+      <rect x="115" y="0" width="100" height="24" rx="4" fill="#D4EDDA"/>
+      <text x="165" y="16" font-size="11" fill="#3D8B7A" text-anchor="middle">情感调谐</text>
+      
+      <rect x="230" y="0" width="110" height="24" rx="4" fill="#FED7AA"/>
+      <text x="285" y="16" font-size="11" fill="#E07843" text-anchor="middle">互为主体性</text>
+    </g>
+    
+    <!-- 整合说明 -->
+    <rect x="0" y="300" width="460" height="55" rx="8" fill="#F1F5F9"/>
+    <text x="230" y="325" font-size="14" fill="#374151" text-anchor="middle">
+      <tspan font-weight="600" fill="#2E5C8E">健康的依恋</tspan>
+      <tspan>促进左右脑及皮层与皮层下区域的整合</tspan>
+    </text>
+  </g>
+  
+  <!-- 底部强调 -->
+  <rect x="60" y="530" width="1160" height="130" rx="12" fill="#2E5C8E"/>
+  
+  <text x="100" y="570" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">
+    🔑 核心洞见
+  </text>
+  
+  <text x="100" y="605" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E5E7EB">
+    依恋关系的形成主要涉及
+    <tspan font-weight="bold" fill="#E07843">右脑对右脑的沟通</tspan>
+    ，发生在语言之前、意识之外
+  </text>
+  
+  <g transform="translate(100, 625)" font-family="PingFang SC, sans-serif" font-size="13">
+    <rect x="0" y="0" width="200" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <text x="100" y="18" fill="#CBD5E1" text-anchor="middle">Schore: 社交-情感大脑</text>
+    
+    <rect x="220" y="0" width="220" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <text x="330" y="18" fill="#CBD5E1" text-anchor="middle">发展在18个月前基本完成</text>
+    
+    <rect x="460" y="0" width="200" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <text x="560" y="18" fill="#CBD5E1" text-anchor="middle">内隐关系知识</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">15</text>
+</svg>

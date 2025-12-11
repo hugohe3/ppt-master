@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F9F6F1"/>
+  
+  <!-- 页面标题 -->
+  <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">语境分析：舍卫城祇园精舍</text>
+  <line x1="40" y1="105" x2="400" y2="105" stroke="#C9A962" stroke-width="3"/>
+  
+  <!-- 左栏：地点与人物解析 -->
+  <g transform="translate(40, 130)">
+    <!-- 地点卡片 -->
+    <rect x="0" y="0" width="600" height="240" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="4" height="240" rx="2" fill="#5D8C6A"/>
+    
+    <use data-icon="map-pin" x="25" y="25" width="32" height="32" fill="#5D8C6A"/>
+    <text x="70" y="50" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62">说法地点</text>
+    
+    <text x="25" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#5D8C6A">舍卫城（Śrāvastī）</text>
+    <text x="25" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">古印度憍萨罗国（Kośala）首都</text>
+    
+    <text x="25" y="150" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#5D8C6A">祇树给孤独园</text>
+    <text x="25" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">Jetavana Anāthapiṇḍikārāma</text>
+    <text x="25" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">• 给孤独长者购地，祇陀太子献树共建</text>
+    <text x="25" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">• 佛陀在此度过20+雨季安居</text>
+    
+    <!-- 说法者卡片 -->
+    <rect x="0" y="260" width="600" height="130" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="260" width="4" height="130" rx="2" fill="#C9A962"/>
+    
+    <use data-icon="star" x="25" y="285" width="32" height="32" fill="#C9A962"/>
+    <text x="70" y="310" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62">说法者</text>
+    
+    <text x="25" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#C9A962">佛陀（世尊 Bhagavān）</text>
+    <text x="25" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">经文未描绘神通或超凡状态，而是遵循戒律的日常导师形象</text>
+    
+    <!-- 听众卡片 -->
+    <rect x="0" y="410" width="600" height="130" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="410" width="4" height="130" rx="2" fill="#2E4A62"/>
+    
+    <use data-icon="users" x="25" y="435" width="32" height="32" fill="#2E4A62"/>
+    <text x="70" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62">听法大众</text>
+    
+    <text x="25" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#2E4A62">大比丘众千二百五十人</text>
+    <text x="25" y="525" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">佛陀核心弟子群体，完全受具足戒的出家比丘</text>
+  </g>
+  
+  <!-- 右栏：配图 -->
+  <g transform="translate(700, 140)">
+    <rect x="0" y="0" width="540" height="380" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <image xlink:href="../images/jetavana.png" x="10" y="10" width="520" height="360" preserveAspectRatio="xMidYMid slice" clip-path="url(#imgClip)"/>
+    <defs>
+      <clipPath id="imgClip">
+        <rect x="10" y="10" width="520" height="360" rx="8"/>
+      </clipPath>
+    </defs>
+  </g>
+  
+  <!-- 右栏：意义说明 -->
+  <g transform="translate(700, 540)">
+    <rect x="0" y="0" width="540" height="100" rx="12" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+    <use data-icon="lightbulb" x="25" y="35" width="28" height="28" fill="#C9A962"/>
+    <text x="65" y="45" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C9A962">场景意涵</text>
+    <text x="65" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151">熟悉且神圣的语境，暗示即将宣说教法的重要性与普遍性</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第二部分：叙事基础</text>
+  <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">5 / 15</text>
+</svg>

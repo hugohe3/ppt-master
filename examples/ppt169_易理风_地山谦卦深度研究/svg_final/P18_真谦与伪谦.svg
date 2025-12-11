@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 - 浅色模式 -->
+  <rect width="1280" height="720" fill="#F5F3EF"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#B8860B">深度辨析：真谦与伪谦的界限</text>
+  <line x1="60" y1="120" x2="500" y2="120" stroke="#B8860B" stroke-width="3"/>
+  
+  <!-- 对比表格 -->
+  <g transform="translate(60, 150)">
+    <rect x="0" y="0" width="1160" height="380" rx="12" fill="#FFFFFF" stroke="#D4D4D4" stroke-width="1"/>
+    
+    <!-- 表头 -->
+    <rect x="0" y="0" width="1160" height="55" rx="12" fill="#1A1A2E"/>
+    <rect x="0" y="45" width="1160" height="10" fill="#1A1A2E"/>
+    <text x="100" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#E8E4DC" text-anchor="middle">维度</text>
+    <line x1="200" y1="10" x2="200" y2="45" stroke="#4A5568" stroke-width="1"/>
+    <text x="430" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#2D5A5A" text-anchor="middle">真谦（Authentic Humility）</text>
+    <line x1="660" y1="10" x2="660" y2="45" stroke="#4A5568" stroke-width="1"/>
+    <text x="910" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C94C4C" text-anchor="middle">伪谦 / 病态谦（Pseudo-Humility）</text>
+    
+    <!-- 行1：根源 -->
+    <rect x="10" y="65" width="1140" height="70" rx="4" fill="#F5F3EF"/>
+    <text x="100" y="107" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" text-anchor="middle" font-weight="bold">根源</text>
+    <text x="430" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">基于对真理的敬畏</text>
+    <text x="430" y="118" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">和实力的自信（艮之笃实）</text>
+    <text x="910" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">基于恐惧、自卑</text>
+    <text x="910" y="118" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">或操纵他人的企图</text>
+    
+    <!-- 行2：表现 -->
+    <rect x="10" y="145" width="1140" height="70" rx="4" fill="#FFFFFF"/>
+    <text x="100" y="187" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" text-anchor="middle" font-weight="bold">表现</text>
+    <text x="430" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">承认他人的价值</text>
+    <text x="430" y="198" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">同时客观认知自己的价值</text>
+    <text x="910" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" text-anchor="middle">否定自己的价值</text>
+    <text x="910" y="198" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">过度的自我贬低（乡愿）</text>
+    
+    <!-- 行3：效果 -->
+    <rect x="10" y="225" width="1140" height="70" rx="4" fill="#F5F3EF"/>
+    <text x="100" y="267" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" text-anchor="middle" font-weight="bold">效果</text>
+    <text x="430" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#2D5A5A" text-anchor="middle">赢得尊重，促进合作</text>
+    <text x="430" y="278" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#2D5A5A" text-anchor="middle">提升能量</text>
+    <text x="910" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C94C4C" text-anchor="middle">招致轻视，压抑潜能</text>
+    <text x="910" y="278" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#C94C4C" text-anchor="middle">导致能量耗散</text>
+    
+    <!-- 行4：卦象对应 -->
+    <rect x="10" y="305" width="1140" height="65" rx="4" fill="#FFFFFF"/>
+    <text x="100" y="345" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" text-anchor="middle" font-weight="bold">卦象</text>
+    <text x="430" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#2D5A5A" text-anchor="middle" font-weight="bold">地山谦 ☷☶</text>
+    <text x="430" y="358" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">内实外虚</text>
+    <text x="910" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C94C4C" text-anchor="middle" font-weight="bold">明夷/小过</text>
+    <text x="910" y="358" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">真空无实</text>
+  </g>
+  
+  <!-- 底部引用 -->
+  <g transform="translate(60, 555)">
+    <rect x="0" y="0" width="1160" height="90" rx="12" fill="#F0EDE8" stroke="#B8860B" stroke-width="2"/>
+    <text x="580" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#B8860B" text-anchor="middle" font-weight="bold">《朱子语类》</text>
+    <text x="580" y="65" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#1A1A2E" text-anchor="middle">「谦是无中生有，不是有中生无。」</text>
+    <text x="580" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">真正的谦是本来「有」（山），但表现得像「无」（地）。本来就「无」，那叫空虚，不叫谦虚。</text>
+  </g>
+  
+  <!-- 页脚 -->
+  <text x="60" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第七部分：真伪辨析</text>
+  <text x="1220" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">18 / 20</text>
+</svg>

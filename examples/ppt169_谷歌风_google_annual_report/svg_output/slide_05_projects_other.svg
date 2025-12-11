@@ -1,0 +1,261 @@
+<svg viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    <!-- Definitions for shadows -->
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#EA4335;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:1" />
+        </linearGradient>
+
+        <filter id="sectionShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
+            <feOffset dx="0" dy="3" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    <!-- Page Title -->
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="46" font-weight="700" fill="#1A237E">
+        More Technical Achievements
+    </text>
+
+    <!-- Title underline -->
+    <rect x="60" y="100" width="150" height="4" rx="2" fill="#34A853" />
+
+    <!-- Upper Section: Cross-Region Sync Optimization -->
+    <g transform="translate(60, 130)">
+        <rect width="1160" height="250" rx="16" fill="#FFFFFF" stroke="#34A853" stroke-width="3"
+            filter="url(#sectionShadow)" />
+
+        <!-- Section Header -->
+        <rect width="1160" height="10" rx="16" fill="#34A853" />
+        <text x="30" y="50"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="28" font-weight="600" fill="#1A237E">
+            Cross-Region Sync Optimization
+        </text>
+
+        <!-- Left side: Line chart visualization -->
+        <g transform="translate(40, 80)">
+            <!-- Chart Title -->
+            <text x="0" y="0"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="18" font-weight="600" fill="#5F6368">
+                Sync Latency Reduction
+            </text>
+
+            <!-- Y-axis labels -->
+            <text x="0" y="35"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" fill="#5F6368">2.5s</text>
+            <text x="0" y="85"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" fill="#5F6368">1.5s</text>
+            <text x="0" y="135"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" fill="#5F6368">0.5s</text>
+
+            <!-- Grid lines -->
+            <line x1="50" y1="30" x2="450" y2="30" stroke="#E8EAED" stroke-width="1" />
+            <line x1="50" y1="80" x2="450" y2="80" stroke="#E8EAED" stroke-width="1" />
+            <line x1="50" y1="130" x2="450" y2="130" stroke="#E8EAED" stroke-width="1" />
+
+            <!-- Baseline (Before) -->
+            <line x1="50" y1="32" x2="250" y2="32" stroke="#EA4335" stroke-width="4" stroke-dasharray="5,5" />
+            <circle cx="50" cy="32" r="5" fill="#EA4335" />
+            <circle cx="250" cy="32" r="5" fill="#EA4335" />
+            <text x="140" y="20"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" font-weight="600" fill="#EA4335" text-anchor="middle">
+                Before: 2.3s
+            </text>
+
+            <!-- After optimization -->
+            <polyline points="250,32 300,75 350,110 450,125" stroke="#34A853" stroke-width="4" fill="none" />
+            <circle cx="250" cy="32" r="5" fill="#34A853" />
+            <circle cx="300" cy="75" r="5" fill="#34A853" />
+            <circle cx="350" cy="110" r="5" fill="#34A853" />
+            <circle cx="450" cy="125" r="5" fill="#34A853" />
+            <text x="380" y="145"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" font-weight="600" fill="#34A853" text-anchor="middle">
+                After: 0.4s (-82%)
+            </text>
+
+            <!-- X-axis -->
+            <line x1="50" y1="140" x2="450" y2="140" stroke="#5F6368" stroke-width="2" />
+            <text x="150" y="165"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" fill="#5F6368">Before</text>
+            <text x="380" y="165"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" fill="#5F6368">After</text>
+        </g>
+
+        <!-- Right side: Key metrics -->
+        <g transform="translate(540, 80)">
+            <!-- Metric 1 -->
+            <rect width="280" height="70" rx="6" fill="#E6F4EA" />
+            <text x="140" y="30"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="32" font-weight="700" fill="#34A853" text-anchor="middle">
+                -82%
+            </text>
+            <text x="140" y="55"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Sync Latency
+            </text>
+
+            <!-- Metric 2 -->
+            <rect y="85" width="280" height="70" rx="6" fill="#E8F0FE" />
+            <text x="140" y="115"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="32" font-weight="700" fill="#4285F4" text-anchor="middle">
+                -63%
+            </text>
+            <text x="140" y="140"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="14" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Bandwidth Usage
+            </text>
+        </g>
+
+        <!-- Right side: Highlights -->
+        <g transform="translate(850, 80)">
+            <rect width="270" height="155" rx="6" fill="#FFFFFF" stroke="#E8EAED" stroke-width="2" />
+            <text x="135" y="30"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="18" font-weight="600" fill="#1A237E" text-anchor="middle">
+                Highlights
+            </text>
+            <circle cx="20" cy="60" r="4" fill="#4285F4" />
+            <text x="35" y="65"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="15" font-weight="400" fill="#5F6368">
+                <tspan x="35" dy="0">Patent Application</tspan>
+                <tspan x="35" dy="20">Submitted</tspan>
+            </text>
+            <circle cx="20" cy="110" r="4" fill="#4285F4" />
+            <text x="35" y="115"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="15" font-weight="400" fill="#5F6368">
+                <tspan x="35" dy="0">SIGCOMM Poster</tspan>
+                <tspan x="35" dy="20">Presentation</tspan>
+            </text>
+        </g>
+    </g>
+
+    <!-- Lower Section: Auto-Recovery System -->
+    <g transform="translate(60, 410)">
+        <rect width="1160" height="250" rx="16" fill="#FFFFFF" stroke="#EA4335" stroke-width="3"
+            filter="url(#sectionShadow)" />
+
+        <!-- Section Header -->
+        <rect width="1160" height="10" rx="16" fill="#EA4335" />
+        <text x="30" y="50"
+            font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="28" font-weight="600" fill="#1A237E">
+            Auto-Recovery System
+        </text>
+
+        <!-- Left side: MTTR Comparison -->
+        <g transform="translate(40, 80)">
+            <text x="0" y="0"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="18" font-weight="600" fill="#5F6368">
+                Mean Time To Recovery (MTTR)
+            </text>
+
+            <!-- Before bar -->
+            <text x="0" y="40"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#5F6368">
+                Before
+            </text>
+            <rect x="80" y="25" width="360" height="35" rx="4" fill="#EA4335" />
+            <text x="90" y="48"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#FFFFFF">
+                45 minutes
+            </text>
+
+            <!-- After bar -->
+            <text x="0" y="95"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="500" fill="#5F6368">
+                After
+            </text>
+            <rect x="80" y="80" width="70" height="35" rx="4" fill="#34A853" />
+            <text x="90" y="103"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#FFFFFF">
+                8 min
+            </text>
+            <text x="160" y="103"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="600" fill="#34A853">
+                (-82%)
+            </text>
+        </g>
+
+        <!-- Center: Success Rate -->
+        <g transform="translate(520, 80)">
+            <rect width="220" height="130" rx="8" fill="#E6F4EA" stroke="#34A853" stroke-width="2" />
+            <text x="110" y="50"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="42" font-weight="700" fill="#34A853" text-anchor="middle">
+                94%
+            </text>
+            <text x="110" y="80"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Auto-Recovery
+            </text>
+            <text x="110" y="105"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Success Rate
+            </text>
+        </g>
+
+        <!-- Right: Impact -->
+        <g transform="translate(780, 80)">
+            <rect width="340" height="130" rx="8" fill="#E8F0FE" stroke="#4285F4" stroke-width="2" />
+            <text x="170" y="35"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="20" font-weight="600" fill="#1A237E" text-anchor="middle">
+                Impact on Team
+            </text>
+            <text x="170" y="70"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="36" font-weight="700" fill="#4285F4" text-anchor="middle">
+                -70%
+            </text>
+            <text x="170" y="100"
+                font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+                font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                On-call Burden Reduction
+            </text>
+        </g>
+    </g>
+
+    <!-- Page Number -->
+    <text x="1220" y="700"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14"
+        font-weight="400" fill="#5F6368" text-anchor="end">
+        05
+    </text>
+</svg>
