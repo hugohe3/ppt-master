@@ -356,11 +356,11 @@ yh_slide_02_kpi_dashboard.svg
 ## 🔗 快速链接
 
 - [完整文档](../README.md)
-- [工作流教程](../docs/workflow_tutorial.md)
-- [设计指南](../docs/design_guidelines.md)
+- [工作流教程](./workflow_tutorial.md)
+- [设计指南](./design_guidelines.md)
+- [画布格式](./canvas_formats.md)
 - [角色定义](../roles/)
 - [示例项目](../examples/)
-- [贡献指南](../CONTRIBUTING.md)
 
 ## 💡 专业提示
 
