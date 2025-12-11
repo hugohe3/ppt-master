@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366F1"/>
+      <stop offset="100%" style="stop-color:#06B6D4"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFBFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
+    PPT Master：AI 驱动的智能解决方案
+  </text>
+  <text x="60" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#6B7280">
+    通过四角色 AI 协作，将 PPT 制作时间从 4-8 小时缩短至 30 分钟内
+  </text>
+  
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <!-- Before vs After -->
+  <g transform="translate(60, 150)">
+    <!-- Before -->
+    <g>
+      <rect width="480" height="150" rx="16" fill="#FFFFFF" stroke="#EF4444" stroke-width="2"/>
+      <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#EF4444">❌ 传统方式</text>
+      <line x1="20" y1="50" x2="460" y2="50" stroke="#FEE2E2" stroke-width="1"/>
+      <text x="240" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="bold" text-anchor="middle" fill="#EF4444">4-8 小时</text>
+      <text x="240" y="125" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">手动设计 · 反复调整 · 效果不稳定</text>
+    </g>
+    
+    <!-- 箭头 -->
+    <g transform="translate(500, 55)">
+      <rect x="0" y="10" width="60" height="20" rx="10" fill="url(#gradient1)"/>
+      <polygon points="60,0 80,20 60,40" fill="#6366F1"/>
+    </g>
+    
+    <!-- After -->
+    <g transform="translate(600, 0)">
+      <rect width="480" height="150" rx="16" fill="#FFFFFF" stroke="#10B981" stroke-width="2"/>
+      <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#10B981">✅ PPT Master</text>
+      <line x1="20" y1="50" x2="460" y2="50" stroke="#D1FAE5" stroke-width="1"/>
+      <text x="240" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="bold" text-anchor="middle" fill="#10B981">30 分钟</text>
+      <text x="240" y="125" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">AI 协作 · 一键生成 · 专业品质</text>
+    </g>
+  </g>
+  
+  <!-- 效率提升指标 -->
+  <g transform="translate(540, 320)">
+    <rect width="200" height="80" rx="16" fill="url(#gradient1)"/>
+    <text x="100" y="45" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#FFFFFF">10x</text>
+    <text x="100" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle" fill="#FFFFFF" opacity="0.9">效率提升</text>
+  </g>
+  
+  <!-- 核心能力卡片 -->
+  <g transform="translate(60, 430)">
+    <g>
+      <rect width="265" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <text x="20" y="38" font-size="26">🧠</text>
+      <text x="55" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">智能内容解构</text>
+      <text x="20" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">自动分析源文档并重组为</text>
+      <text x="20" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">清晰的页面序列</text>
+    </g>
+    
+    <g transform="translate(290, 0)">
+      <rect width="265" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <text x="20" y="38" font-size="26">🎨</text>
+      <text x="55" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">三重设计风格</text>
+      <text x="20" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">通用灵活 / 一般咨询 /</text>
+      <text x="20" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">顶级咨询 (MBB 级)</text>
+    </g>
+    
+    <g transform="translate(580, 0)">
+      <rect width="265" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <text x="20" y="38" font-size="26">📐</text>
+      <text x="55" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">多格式支持</text>
+      <text x="20" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">PPT / 小红书 / 朋友圈 /</text>
+      <text x="20" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">Story 等 10+ 种格式</text>
+    </g>
+    
+    <g transform="translate(870, 0)">
+      <rect width="265" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <text x="20" y="38" font-size="26">🖼️</text>
+      <text x="55" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">纯 SVG 输出</text>
+      <text x="20" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">高质量矢量图形，</text>
+      <text x="20" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#6B7280">任意缩放不失真</text>
+    </g>
+  </g>
+  
+  <!-- 底部洞察 -->
+  <rect x="60" y="565" width="1160" height="55" rx="12" fill="url(#gradient1)"/>
+  <text x="640" y="600" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
+    💡 核心洞察：让 AI 处理格式，人类专注内容创作
+  </text>
+  
+  <!-- 页脚 -->
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 解决方案</text>
+  <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">03 / 10</text>
+  <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>
+</svg>

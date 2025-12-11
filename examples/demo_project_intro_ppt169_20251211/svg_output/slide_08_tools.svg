@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg54"
+   sodipodi:docname="slide_08_tools.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview54"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1638889"
+     inkscape:cx="639.66587"
+     inkscape:cy="360"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="2451"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg54" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="gradient1"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="100%">
+      <stop
+         offset="0%"
+         style="stop-color:#6366F1"
+         id="stop1" />
+      <stop
+         offset="100%"
+         style="stop-color:#06B6D4"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <!-- 背景 -->
+  <rect
+     width="1280"
+     height="720"
+     fill="#FAFBFC"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="4"
+     fill="url(#gradient1)"
+     id="rect3" />
+  <!-- 页面标题 -->
+  <text
+     x="60"
+     y="65"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="30"
+     font-weight="bold"
+     fill="#1F2937"
+     id="text3">
+    工具生态：完善的工具链支持
+  </text>
+  <text
+     x="60"
+     y="100"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="15"
+     fill="#6B7280"
+     id="text4">
+    从项目初始化到质量检查，覆盖完整开发流程
+  </text>
+  <line
+     x1="60"
+     y1="120"
+     x2="1220"
+     y2="120"
+     stroke="#E5E7EB"
+     stroke-width="1"
+     id="line4" />
+  <!-- 项目管理工具 -->
+  <g
+     transform="translate(60, 145)"
+     id="g15">
+    <rect
+       width="555"
+       height="190"
+       rx="16"
+       fill="#FFFFFF"
+       stroke="#6366F1"
+       stroke-width="2"
+       id="rect4" />
+    <text
+       x="20"
+       y="35"
+       font-family="system-ui, -apple-system, sans-serif"
+       font-size="18"
+       font-weight="bold"
+       fill="#6366F1"
+       id="text5">🛠️ 项目管理工具</text>
+    <line
+       x1="20"
+       y1="50"
+       x2="535"
+       y2="50"
+       stroke="#E5E7EB"
+       stroke-width="1"
+       id="line5" />
+    <g
+       transform="translate(20, 70)"
+       id="g14">
+      <g
+         id="g7">
+        <rect
+           width="245"
+           height="50"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect5" />
+        <text
+           x="15"
+           y="22"
+           font-family="monospace"
+           font-size="11"
+           fill="#6366F1"
+           id="text6">project_manager.py</text>
+        <text
+           x="15"
+           y="38"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           fill="#6B7280"
+           id="text7">项目初始化 · 验证 · 信息查看</text>
+      </g>
+      <g
+         transform="translate(265, 0)"
+         id="g9">
+        <rect
+           width="245"
+           height="50"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect7" />
+        <text
+           x="15"
+           y="22"
+           font-family="monospace"
+           font-size="11"
+           fill="#6366F1"
+           id="text8">svg_quality_checker.py</text>
+        <text
+           x="15"
+           y="38"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           fill="#6B7280"
+           id="text9">SVG 质量检查 · 规范验证</text>
+      </g>
+      <g
+         transform="translate(0, 60)"
+         id="g11">
+        <rect
+           width="245"
+           height="50"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect9" />
+        <text
+           x="15"
+           y="22"
+           font-family="monospace"
+           font-size="11"
+           fill="#6366F1"
+           id="text10">finalize_svg.py</text>
+        <text
+           x="15"
+           y="38"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           fill="#6B7280"
+           id="text11">最终化处理 · 图标嵌入</text>
+      </g>
+      <g
+         transform="translate(265, 60)"
+         id="g13">
+        <rect
+           width="245"
+           height="50"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect11" />
+        <text
+           x="15"
+           y="22"
+           font-family="monospace"
+           font-size="11"
+           fill="#6366F1"
+           id="text12">batch_validate.py</text>
+        <text
+           x="15"
+           y="38"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           fill="#6B7280"
+           id="text13">批量验证多个项目</text>
+      </g>
+    </g>
+  </g>
+  <!-- 资源库 -->
+  <g
+     transform="translate(640, 145)"
+     id="g25">
+    <rect
+       width="555"
+       height="190"
+       rx="16"
+       fill="#FFFFFF"
+       stroke="#06B6D4"
+       stroke-width="2"
+       id="rect15" />
+    <text
+       x="20"
+       y="35"
+       font-family="system-ui, -apple-system, sans-serif"
+       font-size="18"
+       font-weight="bold"
+       fill="#06B6D4"
+       id="text15">📦 资源库</text>
+    <line
+       x1="20"
+       y1="50"
+       x2="535"
+       y2="50"
+       stroke="#E5E7EB"
+       stroke-width="1"
+       id="line15" />
+    <g
+       transform="translate(20, 65)"
+       id="g24">
+      <g
+         id="g19">
+        <rect
+           width="245"
+           height="105"
+           rx="12"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect16" />
+        <text
+           x="122"
+           y="35"
+           font-size="28"
+           text-anchor="middle"
+           id="text16">🎨</text>
+        <text
+           x="122"
+           y="58"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="13"
+           font-weight="bold"
+           text-anchor="middle"
+           fill="#1F2937"
+           id="text17">矢量图标库</text>
+        <text
+           x="122"
+           y="84"
+           font-family="system-ui, '-apple-system', sans-serif"
+           font-size="28px"
+           font-weight="bold"
+           text-anchor="middle"
+           fill="#06b6d4"
+           id="text18">640+</text>
+        <text
+           x="122"
+           y="98"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           text-anchor="middle"
+           fill="#9CA3AF"
+           id="text19">来自 SVG Repo</text>
+      </g>
+      <g
+         transform="translate(265, 0)"
+         id="g23">
+        <rect
+           width="245"
+           height="105"
+           rx="12"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect19" />
+        <text
+           x="122"
+           y="35"
+           font-size="28"
+           text-anchor="middle"
+           id="text20">📊</text>
+        <text
+           x="122"
+           y="58"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="13"
+           font-weight="bold"
+           text-anchor="middle"
+           fill="#1F2937"
+           id="text21">图表模板</text>
+        <text
+           x="122"
+           y="84"
+           font-family="system-ui, '-apple-system', sans-serif"
+           font-size="28px"
+           font-weight="bold"
+           text-anchor="middle"
+           fill="#06b6d4"
+           id="text22">13</text>
+        <text
+           x="122"
+           y="98"
+           font-family="system-ui, -apple-system, sans-serif"
+           font-size="10"
+           text-anchor="middle"
+           fill="#9CA3AF"
+           id="text23">种常用图表类型</text>
+      </g>
+    </g>
+  </g>
+  <!-- 文档中心 -->
+  <g
+     transform="translate(60, 360)"
+     id="g51">
+    <rect
+       width="1160"
+       height="175"
+       rx="16"
+       fill="#FFFFFF"
+       stroke="#10B981"
+       stroke-width="2"
+       id="rect25" />
+    <text
+       x="20"
+       y="35"
+       font-family="system-ui, -apple-system, sans-serif"
+       font-size="18"
+       font-weight="bold"
+       fill="#10B981"
+       id="text25">📚 文档中心</text>
+    <line
+       x1="20"
+       y1="50"
+       x2="1140"
+       y2="50"
+       stroke="#E5E7EB"
+       stroke-width="1"
+       id="line25" />
+    <g
+       transform="translate(20, 70)"
+       font-family="system-ui, -apple-system, sans-serif"
+       id="g50">
+      <g
+         id="g29">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect26" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text26">🎨</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text27">设计指南</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text28">design_guidelines.md</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text29">颜色/排版/布局规范</text>
+      </g>
+      <g
+         transform="translate(190, 0)"
+         id="g33">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect29" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text30">📐</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text31">画布格式</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text32">canvas_formats.md</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text33">10+ 种格式规范</text>
+      </g>
+      <g
+         transform="translate(380, 0)"
+         id="g37">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect33" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text34">📖</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text35">工作流教程</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text36">workflow_tutorial.md</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text37">实际案例演示</text>
+      </g>
+      <g
+         transform="translate(570, 0)"
+         id="g41">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect37" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text38">⚡</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text39">快速参考</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text40">quick_reference.md</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text41">速查手册</text>
+      </g>
+      <g
+         transform="translate(760, 0)"
+         id="g45">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect41" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text42">🖼️</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text43">图片嵌入</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text44">svg_image_embedding.md</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text45">图片处理指南</text>
+      </g>
+      <g
+         transform="translate(950, 0)"
+         id="g49">
+        <rect
+           width="175"
+           height="80"
+           rx="8"
+           fill="#FAFBFC"
+           stroke="#E5E7EB"
+           stroke-width="1"
+           id="rect45" />
+        <text
+           x="15"
+           y="28"
+           font-size="18"
+           id="text46">🔧</text>
+        <text
+           x="45"
+           y="28"
+           font-size="12"
+           font-weight="bold"
+           fill="#1F2937"
+           id="text47">角色定义</text>
+        <text
+           x="15"
+           y="48"
+           font-size="10"
+           fill="#6B7280"
+           id="text48">roles/</text>
+        <text
+           x="15"
+           y="65"
+           font-size="9"
+           fill="#9CA3AF"
+           id="text49">5 个角色文件</text>
+      </g>
+    </g>
+  </g>
+  <!-- 底部 -->
+  <rect
+     x="60"
+     y="560"
+     width="1160"
+     height="50"
+     rx="12"
+     fill="url(#gradient1)"
+     id="rect51" />
+  <text
+     x="640"
+     y="593"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="17"
+     font-weight="bold"
+     text-anchor="middle"
+     fill="#FFFFFF"
+     id="text51">
+    🎯 开箱即用 · 文档完善 · 持续更新
+  </text>
+  <!-- 页脚 -->
+  <line
+     x1="60"
+     y1="660"
+     x2="1220"
+     y2="660"
+     stroke="#E5E7EB"
+     stroke-width="1"
+     id="line51" />
+  <text
+     x="60"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     fill="#9CA3AF"
+     id="text52">PPT Master - 工具生态</text>
+  <text
+     x="640"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     text-anchor="middle"
+     fill="#9CA3AF"
+     id="text53">08 / 10</text>
+  <text
+     x="1220"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     text-anchor="end"
+     fill="#9CA3AF"
+     id="text54">github.com/hugohe3/ppt-master</text>
+</svg>

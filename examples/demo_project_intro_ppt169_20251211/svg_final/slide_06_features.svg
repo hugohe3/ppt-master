@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1280 720"
+   width="1280"
+   height="720"
+   version="1.1"
+   id="svg57"
+   sodipodi:docname="slide_06_features.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview57"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1638889"
+     inkscape:cx="639.66587"
+     inkscape:cy="360"
+     inkscape:window-width="2048"
+     inkscape:window-height="1082"
+     inkscape:window-x="2451"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g35" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="gradient1"
+       x1="0%"
+       y1="0%"
+       x2="100%"
+       y2="100%">
+      <stop
+         offset="0%"
+         style="stop-color:#6366F1"
+         id="stop1" />
+      <stop
+         offset="100%"
+         style="stop-color:#06B6D4"
+         id="stop2" />
+    </linearGradient>
+  </defs>
+  <!-- 背景 -->
+  <rect
+     width="1280"
+     height="720"
+     fill="#FAFBFC"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1280"
+     height="4"
+     fill="url(#gradient1)"
+     id="rect3" />
+  <!-- 页面标题 -->
+  <text
+     x="60"
+     y="65"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="30"
+     font-weight="bold"
+     fill="#1F2937"
+     id="text3">
+    六大核心特性：全面提升内容创作效率
+  </text>
+  <text
+     x="60"
+     y="100"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="15"
+     fill="#6B7280"
+     id="text4">
+    从内容解构到最终输出，覆盖完整工作流程
+  </text>
+  <line
+     x1="60"
+     y1="120"
+     x2="1220"
+     y2="120"
+     stroke="#E5E7EB"
+     stroke-width="1"
+     id="line4" />
+  <!-- 3x2 特性卡片 -->
+  <g
+     transform="translate(60, 145)"
+     id="g54">
+    <!-- 智能内容解构 -->
+    <g
+       id="g11">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect4" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#6366F1"
+         id="rect5" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#6366F1"
+         id="rect6" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text6">🧠</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text7">智能内容解构</text>
+      <g
+         transform="translate(20, 75)"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="13"
+         fill="#6B7280"
+         id="g10">
+        <text
+           x="0"
+           y="0"
+           id="text8">自动分析源文档结构</text>
+        <text
+           x="0"
+           y="22"
+           id="text9">将内容重组为清晰的页面序列</text>
+        <text
+           x="0"
+           y="44"
+           id="text10">智能提取关键信息和数据</text>
+      </g>
+      <rect
+         x="280"
+         y="75"
+         width="60"
+         height="60"
+         rx="8"
+         fill="#F5F3FF"
+         id="rect10" />
+      <text
+         x="310"
+         y="115"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="22"
+         font-weight="bold"
+         text-anchor="middle"
+         fill="#6366F1"
+         id="text11">AI</text>
+    </g>
+    <!-- 三重设计风格 -->
+    <g
+       transform="translate(390, 0)"
+       id="g19">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect11" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#06B6D4"
+         id="rect12" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#06B6D4"
+         id="rect13" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text13">🎨</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text14">三重设计风格</text>
+      <g
+         transform="translate(20, 75)"
+         font-family="system-ui, -apple-system, sans-serif"
+         id="g18">
+        <rect
+           x="0"
+           y="0"
+           width="95"
+           height="28"
+           rx="6"
+           fill="#E0F2FE"
+           id="rect14" />
+        <text
+           x="47"
+           y="19"
+           font-size="12"
+           text-anchor="middle"
+           fill="#06B6D4"
+           id="text15">通用灵活</text>
+        <rect
+           x="105"
+           y="0"
+           width="95"
+           height="28"
+           rx="6"
+           fill="#E0F2FE"
+           id="rect15" />
+        <text
+           x="152"
+           y="19"
+           font-size="12"
+           text-anchor="middle"
+           fill="#06B6D4"
+           id="text16">一般咨询</text>
+        <rect
+           x="210"
+           y="0"
+           width="95"
+           height="28"
+           rx="6"
+           fill="#6366F1"
+           id="rect16" />
+        <text
+           x="257"
+           y="19"
+           font-size="12"
+           text-anchor="middle"
+           fill="#FFFFFF"
+           id="text17">MBB 级</text>
+        <text
+           x="0"
+           y="55"
+           font-size="13"
+           fill="#6B7280"
+           id="text18">适配不同场景：商务/咨询/战略</text>
+      </g>
+    </g>
+    <!-- 多格式支持 -->
+    <g
+       transform="translate(780, 0)"
+       id="g27">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect19" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#10B981"
+         id="rect20" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#10B981"
+         id="rect21" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text21">📐</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text22">多格式支持</text>
+      <g
+         transform="translate(20, 70)"
+         font-family="system-ui, -apple-system, sans-serif"
+         id="g26">
+        <text
+           x="0"
+           y="17"
+           font-size="36px"
+           font-weight="bold"
+           fill="#10b981"
+           id="text23">10+</text>
+        <text
+           x="75"
+           y="5"
+           font-size="14"
+           fill="#1F2937"
+           id="text24">种画布格式</text>
+        <text
+           x="0"
+           y="35"
+           font-size="12"
+           fill="#6B7280"
+           id="text25">PPT 16:9 · PPT 4:3 · 小红书</text>
+        <text
+           x="0"
+           y="55"
+           font-size="12"
+           fill="#6B7280"
+           id="text26">朋友圈 · Story · Banner · A4</text>
+      </g>
+    </g>
+    <!-- 数据可视化 -->
+    <g
+       transform="translate(0, 195)"
+       id="g35">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect27" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#F59E0B"
+         id="rect28" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#F59E0B"
+         id="rect29" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text29">📊</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text30">数据可视化</text>
+      <g
+         transform="translate(20, 70)"
+         font-family="system-ui, -apple-system, sans-serif"
+         id="g34">
+        <text
+           x="-2"
+           y="15"
+           font-size="36px"
+           font-weight="bold"
+           fill="#f59e0b"
+           id="text31">13</text>
+        <text
+           x="40"
+           y="5"
+           font-size="14"
+           fill="#1F2937"
+           id="text32">种图表模板</text>
+        <text
+           x="0"
+           y="35"
+           font-size="12"
+           fill="#6B7280"
+           id="text33">KPI 卡片 · 柱状图 · 折线图</text>
+        <text
+           x="0"
+           y="55"
+           font-size="12"
+           fill="#6B7280"
+           id="text34">饼图 · 矩阵图 · 时间轴</text>
+      </g>
+    </g>
+    <!-- CRAP 原则 -->
+    <g
+       transform="translate(390, 195)"
+       id="g44">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect35" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#EF4444"
+         id="rect36" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#EF4444"
+         id="rect37" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text37">🎯</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text38">CRAP 设计原则</text>
+      <g
+         transform="translate(20, 70)"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="12"
+         id="g43">
+        <rect
+           x="0"
+           y="0"
+           width="70"
+           height="26"
+           rx="6"
+           fill="#FEE2E2"
+           id="rect38" />
+        <text
+           x="35"
+           y="17"
+           text-anchor="middle"
+           fill="#EF4444"
+           font-weight="bold"
+           id="text39">C 对比</text>
+        <rect
+           x="80"
+           y="0"
+           width="70"
+           height="26"
+           rx="6"
+           fill="#FEE2E2"
+           id="rect39" />
+        <text
+           x="115"
+           y="17"
+           text-anchor="middle"
+           fill="#EF4444"
+           font-weight="bold"
+           id="text40">R 重复</text>
+        <rect
+           x="160"
+           y="0"
+           width="70"
+           height="26"
+           rx="6"
+           fill="#FEE2E2"
+           id="rect40" />
+        <text
+           x="195"
+           y="17"
+           text-anchor="middle"
+           fill="#EF4444"
+           font-weight="bold"
+           id="text41">A 对齐</text>
+        <rect
+           x="240"
+           y="0"
+           width="80"
+           height="26"
+           rx="6"
+           fill="#FEE2E2"
+           id="rect41" />
+        <text
+           x="280"
+           y="17"
+           text-anchor="middle"
+           fill="#EF4444"
+           font-weight="bold"
+           id="text42">P 亲密性</text>
+        <text
+           x="0"
+           y="50"
+           font-size="13"
+           fill="#6B7280"
+           id="text43">专业设计原则，提升视觉质量</text>
+      </g>
+    </g>
+    <!-- 纯 SVG 输出 -->
+    <g
+       transform="translate(780, 195)"
+       id="g53">
+      <rect
+         width="360"
+         height="170"
+         rx="16"
+         fill="#FFFFFF"
+         stroke="#E5E7EB"
+         stroke-width="1"
+         id="rect44" />
+      <rect
+         x="0"
+         y="0"
+         width="360"
+         height="55"
+         rx="16"
+         fill="#8B5CF6"
+         id="rect45" />
+      <rect
+         x="0"
+         y="16"
+         width="360"
+         height="39"
+         fill="#8B5CF6"
+         id="rect46" />
+      <text
+         x="25"
+         y="38"
+         font-size="24"
+         id="text46">🖼️</text>
+      <text
+         x="60"
+         y="38"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="16"
+         font-weight="bold"
+         fill="#FFFFFF"
+         id="text47">纯 SVG 输出</text>
+      <g
+         transform="translate(20, 70)"
+         font-family="system-ui, -apple-system, sans-serif"
+         font-size="13"
+         fill="#6B7280"
+         id="g52">
+        <text
+           x="0"
+           y="0"
+           id="text48">✓ 无限缩放不失真</text>
+        <text
+           x="160"
+           y="0"
+           id="text49">✓ 文件体积小</text>
+        <text
+           x="0"
+           y="25"
+           id="text50">✓ 易于编辑修改</text>
+        <text
+           x="160"
+           y="25"
+           id="text51">✓ 浏览器原生支持</text>
+        <text
+           x="0"
+           y="50"
+           id="text52">✓ 无需第三方依赖</text>
+      </g>
+    </g>
+  </g>
+  <!-- 底部总结 -->
+  <rect
+     x="60"
+     y="545"
+     width="1160"
+     height="50"
+     rx="12"
+     fill="url(#gradient1)"
+     id="rect54" />
+  <text
+     x="640"
+     y="578"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="17"
+     font-weight="bold"
+     text-anchor="middle"
+     fill="#FFFFFF"
+     id="text54">
+    🚀 完整的工具链 + 专业的设计体系 = 高效的内容创作
+  </text>
+  <!-- 页脚 -->
+  <line
+     x1="60"
+     y1="660"
+     x2="1220"
+     y2="660"
+     stroke="#E5E7EB"
+     stroke-width="1"
+     id="line54" />
+  <text
+     x="60"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     fill="#9CA3AF"
+     id="text55">PPT Master - 核心特性</text>
+  <text
+     x="640"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     text-anchor="middle"
+     fill="#9CA3AF"
+     id="text56">06 / 10</text>
+  <text
+     x="1220"
+     y="690"
+     font-family="system-ui, -apple-system, sans-serif"
+     font-size="12"
+     text-anchor="end"
+     fill="#9CA3AF"
+     id="text57">github.com/hugohe3/ppt-master</text>
+</svg>
