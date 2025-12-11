@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    Porter's Five Forces Chart Template
+    Purpose: Industry competitive analysis, strategic planning
+    Use cases: Industry reports, market entry evaluation, competitive strategy, investment analysis
+    Supports: Five forces radial layout
+    -->
+    
+    <defs>
+        <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2C3E50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#34495E;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="forceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="forceGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#3498DB;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#2980B9;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="forceGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2ECC71;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#27AE60;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="forceGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8E44AD;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="forceGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F39C12;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E67E22;stop-opacity:1" />
+        </linearGradient>
+        
+        <filter id="forceShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="3"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#7F8C8D"/>
+        </marker>
+    </defs>
+    
+    <rect width="1280" height="720" fill="#FAFBFC"/>
+    
+    <text x="640" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>Porter's Five Forces - Industry Analysis</tspan>
+    </text>
+    
+    <text x="640" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D" text-anchor="middle">
+        <tspan>Enterprise SaaS Market - Competitive Landscape Assessment 2025</tspan>
+    </text>
+    
+    <!-- Center circle - Industry Competition -->
+    <circle cx="640" cy="380" r="90" fill="url(#centerGrad)" filter="url(#forceShadow)"/>
+    <text x="640" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Industry</tspan>
+    </text>
+    <text x="640" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Rivalry</tspan>
+    </text>
+    <text x="640" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" fill="#BDC3C7" text-anchor="middle">
+        <tspan>High</tspan>
+    </text>
+    
+    <!-- Force 1: Top - Threat of New Entrants -->
+    <g id="force1" transform="translate(640, 150)">
+        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad1)" filter="url(#forceShadow)"/>
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>Threat of New Entrants</tspan>
+        </text>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="90" height="10" rx="5" fill="#FFFFFF"/>
+        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="bold" fill="#FFFFFF">
+            <tspan>Medium</tspan>
+        </text>
+        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+            <tspan>Capital barriers, Tech accumulation needed</tspan>
+        </text>
+    </g>
+    <line x1="640" y1="210" x2="640" y2="290" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
+    
+    <!-- Force 2: Right - Buyer Power -->
+    <g id="force2" transform="translate(950, 380)">
+        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad2)" filter="url(#forceShadow)"/>
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>Bargaining Power of Buyers</tspan>
+        </text>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="135" height="10" rx="5" fill="#FFFFFF"/>
+        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="bold" fill="#FFFFFF">
+            <tspan>High</tspan>
+        </text>
+        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+            <tspan>Many choices, Low switching costs</tspan>
+        </text>
+    </g>
+    <line x1="730" y1="380" x2="785" y2="380" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
+    
+    <!-- Force 3: Bottom - Threat of Substitutes -->
+    <g id="force3" transform="translate(640, 610)">
+        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad3)" filter="url(#forceShadow)"/>
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>Threat of Substitutes</tspan>
+        </text>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="54" height="10" rx="5" fill="#FFFFFF"/>
+        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="bold" fill="#FFFFFF">
+            <tspan>Low</tspan>
+        </text>
+        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+            <tspan>Few effective alternatives</tspan>
+        </text>
+    </g>
+    <line x1="640" y1="470" x2="640" y2="540" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
+    
+    <!-- Force 4: Left - Supplier Power -->
+    <g id="force4" transform="translate(330, 380)">
+        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad4)" filter="url(#forceShadow)"/>
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>Bargaining Power of Suppliers</tspan>
+        </text>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="108" height="10" rx="5" fill="#FFFFFF"/>
+        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="bold" fill="#FFFFFF">
+            <tspan>Medium-High</tspan>
+        </text>
+        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+            <tspan>Cloud vendors concentrated</tspan>
+        </text>
+    </g>
+    <line x1="550" y1="380" x2="495" y2="380" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
+    
+    <!-- Force 5: Top Right Corner - Competitive Rivalry Detail -->
+    <g id="force5" transform="translate(1050, 150)">
+        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad5)" filter="url(#forceShadow)"/>
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+            <tspan>Competitive Rivalry</tspan>
+        </text>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="162" height="10" rx="5" fill="#FFFFFF"/>
+        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="bold" fill="#FFFFFF">
+            <tspan>Very High</tspan>
+        </text>
+        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+            <tspan>Many competitors, Price wars common</tspan>
+        </text>
+    </g>
+    
+    <!-- Info panels -->
+    <g id="infoPanel">
+        <rect x="60" y="520" width="200" height="100" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#forceShadow)"/>
+        <text x="160" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+            <tspan>Overall Assessment</tspan>
+        </text>
+        <text x="160" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="bold" fill="#E74C3C" text-anchor="middle">
+            <tspan>3.4 / 5</tspan>
+        </text>
+        <text x="160" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#7F8C8D" text-anchor="middle">
+            <tspan>High Competition Intensity</tspan>
+        </text>
+    </g>
+    
+    <!-- Strategy recommendations -->
+    <g id="recommendations">
+        <rect x="60" y="110" width="200" height="120" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+        <text x="160" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" font-weight="bold" fill="#2E7D32" text-anchor="middle">
+            <tspan>Strategic Advice</tspan>
+        </text>
+        <text x="75" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>1. Build technical moats</tspan>
+        </text>
+        <text x="75" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>2. Improve customer stickiness</tspan>
+        </text>
+        <text x="75" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>3. Diversify supply chain</tspan>
+        </text>
+        <text x="75" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>4. Focus on differentiation</tspan>
+        </text>
+    </g>
+    
+    <!-- Legend -->
+    <g id="legend" transform="translate(60, 635)">
+        <text x="0" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" font-weight="600" fill="#5D6D7E">
+            <tspan>Threat Level:</tspan>
+        </text>
+        <rect x="90" y="5" width="40" height="14" rx="7" fill="#4CAF50"/>
+        <text x="138" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#5D6D7E"><tspan>Low</tspan></text>
+        <rect x="165" y="5" width="60" height="14" rx="7" fill="#F39C12"/>
+        <text x="233" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#5D6D7E"><tspan>Medium</tspan></text>
+        <rect x="280" y="5" width="80" height="14" rx="7" fill="#E74C3C"/>
+        <text x="368" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#5D6D7E"><tspan>High</tspan></text>
+    </g>
+    
+    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="12" fill="#95A5A6" text-anchor="middle">
+        <tspan>Data Source: Industry Research Department - 2025 Market Competition Analysis Report</tspan>
+    </text>
+</svg>

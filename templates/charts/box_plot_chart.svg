@@ -1,0 +1,308 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    箱线图模板
+    用途: 数据分布可视化、统计分析
+    适用场景: 薪资分布、成绩分析、质量控制、异常值检测
+    支持: 5组箱线图对比
+    -->
+    
+    <defs>
+        <!-- 箱体渐变 -->
+        <linearGradient id="boxGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#42A5F5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boxGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#66BB6A;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boxGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFB74D;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boxGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#BA68C8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#7B1FA2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="boxGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#EF5350;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#D32F2F;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 阴影 -->
+        <filter id="boxShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>各部门薪资分布分析</tspan>
+    </text>
+    
+    <text x="60" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2025年度薪酬报告 · 单位：万元/年</tspan>
+    </text>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- Y轴网格线 -->
+        <line x1="140" y1="550" x2="1000" y2="550" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="480" x2="1000" y2="480" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="410" x2="1000" y2="410" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="340" x2="1000" y2="340" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="270" x2="1000" y2="270" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="200" x2="1000" y2="200" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="130" x2="1000" y2="130" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- Y轴刻度标签 -->
+        <text x="125" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>0</tspan></text>
+        <text x="125" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>10</tspan></text>
+        <text x="125" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>20</tspan></text>
+        <text x="125" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>30</tspan></text>
+        <text x="125" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>40</tspan></text>
+        <text x="125" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>50</tspan></text>
+        <text x="125" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>60</tspan></text>
+        
+        <!-- Y轴标题 -->
+        <text x="45" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90, 45, 340)">
+            <tspan>年薪（万元）</tspan>
+        </text>
+        
+        <!-- 坐标轴 -->
+        <line x1="140" y1="130" x2="140" y2="550" stroke="#95A5A6" stroke-width="2"/>
+        <line x1="140" y1="550" x2="1000" y2="550" stroke="#95A5A6" stroke-width="2"/>
+        
+        <!-- 
+        箱线图说明：
+        - 每个箱体宽度: 80px
+        - 箱体间距: 100px
+        - 每10万=70px
+        
+        数据（最小值, Q1, 中位数, Q3, 最大值）：
+        技术部: 15, 25, 35, 45, 58 + 异常值 8
+        产品部: 12, 22, 28, 38, 50
+        设计部: 10, 18, 24, 32, 42
+        市场部: 8, 15, 22, 30, 45 + 异常值 55
+        运营部: 8, 14, 20, 26, 38
+        -->
+        
+        <!-- 箱线图1: 技术部 (蓝色) -->
+        <g id="box1" transform="translate(230, 0)">
+            <!-- 上须线 (max=58) -->
+            <line x1="0" y1="143.4" x2="0" y2="235" stroke="#1976D2" stroke-width="2"/>
+            <line x1="-20" y1="143.4" x2="20" y2="143.4" stroke="#1976D2" stroke-width="2"/>
+            
+            <!-- 箱体 (Q1=25到Q3=45) -->
+            <rect x="-40" y="235" width="80" height="140" rx="4" fill="url(#boxGrad1)" filter="url(#boxShadow)"/>
+            
+            <!-- 中位数线 (median=35) -->
+            <line x1="-40" y1="305" x2="40" y2="305" stroke="#FFFFFF" stroke-width="3"/>
+            
+            <!-- 下须线 (min=15) -->
+            <line x1="0" y1="375" x2="0" y2="445" stroke="#1976D2" stroke-width="2"/>
+            <line x1="-20" y1="445" x2="20" y2="445" stroke="#1976D2" stroke-width="2"/>
+            
+            <!-- 异常值 (outlier=8) -->
+            <circle cx="0" cy="494" r="6" fill="#FFFFFF" stroke="#1976D2" stroke-width="2"/>
+            
+            <!-- 标签 -->
+            <text x="0" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#1976D2" text-anchor="middle"><tspan>技术部</tspan></text>
+            
+            <!-- 数值标注 -->
+            <text x="50" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>58</tspan></text>
+            <text x="50" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>45</tspan></text>
+            <text x="50" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#2196F3"><tspan>35</tspan></text>
+            <text x="50" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>25</tspan></text>
+            <text x="50" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>15</tspan></text>
+        </g>
+        
+        <!-- 箱线图2: 产品部 (绿色) -->
+        <g id="box2" transform="translate(400, 0)">
+            <!-- 上须线 (max=50) -->
+            <line x1="0" y1="200" x2="0" y2="284" stroke="#388E3C" stroke-width="2"/>
+            <line x1="-20" y1="200" x2="20" y2="200" stroke="#388E3C" stroke-width="2"/>
+            
+            <!-- 箱体 (Q1=22到Q3=38) -->
+            <rect x="-40" y="284" width="80" height="112" rx="4" fill="url(#boxGrad2)" filter="url(#boxShadow)"/>
+            
+            <!-- 中位数线 (median=28) -->
+            <line x1="-40" y1="354" x2="40" y2="354" stroke="#FFFFFF" stroke-width="3"/>
+            
+            <!-- 下须线 (min=12) -->
+            <line x1="0" y1="396" x2="0" y2="466" stroke="#388E3C" stroke-width="2"/>
+            <line x1="-20" y1="466" x2="20" y2="466" stroke="#388E3C" stroke-width="2"/>
+            
+            <!-- 标签 -->
+            <text x="0" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#388E3C" text-anchor="middle"><tspan>产品部</tspan></text>
+        </g>
+        
+        <!-- 箱线图3: 设计部 (橙色) -->
+        <g id="box3" transform="translate(570, 0)">
+            <!-- 上须线 (max=42) -->
+            <line x1="0" y1="256" x2="0" y2="326" stroke="#F57C00" stroke-width="2"/>
+            <line x1="-20" y1="256" x2="20" y2="256" stroke="#F57C00" stroke-width="2"/>
+            
+            <!-- 箱体 (Q1=18到Q3=32) -->
+            <rect x="-40" y="326" width="80" height="98" rx="4" fill="url(#boxGrad3)" filter="url(#boxShadow)"/>
+            
+            <!-- 中位数线 (median=24) -->
+            <line x1="-40" y1="382" x2="40" y2="382" stroke="#FFFFFF" stroke-width="3"/>
+            
+            <!-- 下须线 (min=10) -->
+            <line x1="0" y1="424" x2="0" y2="480" stroke="#F57C00" stroke-width="2"/>
+            <line x1="-20" y1="480" x2="20" y2="480" stroke="#F57C00" stroke-width="2"/>
+            
+            <!-- 标签 -->
+            <text x="0" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#F57C00" text-anchor="middle"><tspan>设计部</tspan></text>
+        </g>
+        
+        <!-- 箱线图4: 市场部 (紫色) -->
+        <g id="box4" transform="translate(740, 0)">
+            <!-- 上须线 (max=45) -->
+            <line x1="0" y1="235" x2="0" y2="340" stroke="#7B1FA2" stroke-width="2"/>
+            <line x1="-20" y1="235" x2="20" y2="235" stroke="#7B1FA2" stroke-width="2"/>
+            
+            <!-- 箱体 (Q1=15到Q3=30) -->
+            <rect x="-40" y="340" width="80" height="105" rx="4" fill="url(#boxGrad4)" filter="url(#boxShadow)"/>
+            
+            <!-- 中位数线 (median=22) -->
+            <line x1="-40" y1="396" x2="40" y2="396" stroke="#FFFFFF" stroke-width="3"/>
+            
+            <!-- 下须线 (min=8) -->
+            <line x1="0" y1="445" x2="0" y2="494" stroke="#7B1FA2" stroke-width="2"/>
+            <line x1="-20" y1="494" x2="20" y2="494" stroke="#7B1FA2" stroke-width="2"/>
+            
+            <!-- 异常值 (outlier=55) -->
+            <circle cx="0" cy="165" r="6" fill="#FFFFFF" stroke="#7B1FA2" stroke-width="2"/>
+            
+            <!-- 标签 -->
+            <text x="0" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#7B1FA2" text-anchor="middle"><tspan>市场部</tspan></text>
+        </g>
+        
+        <!-- 箱线图5: 运营部 (红色) -->
+        <g id="box5" transform="translate(910, 0)">
+            <!-- 上须线 (max=38) -->
+            <line x1="0" y1="284" x2="0" y2="368" stroke="#D32F2F" stroke-width="2"/>
+            <line x1="-20" y1="284" x2="20" y2="284" stroke="#D32F2F" stroke-width="2"/>
+            
+            <!-- 箱体 (Q1=14到Q3=26) -->
+            <rect x="-40" y="368" width="80" height="84" rx="4" fill="url(#boxGrad5)" filter="url(#boxShadow)"/>
+            
+            <!-- 中位数线 (median=20) -->
+            <line x1="-40" y1="410" x2="40" y2="410" stroke="#FFFFFF" stroke-width="3"/>
+            
+            <!-- 下须线 (min=8) -->
+            <line x1="0" y1="452" x2="0" y2="494" stroke="#D32F2F" stroke-width="2"/>
+            <line x1="-20" y1="494" x2="20" y2="494" stroke="#D32F2F" stroke-width="2"/>
+            
+            <!-- 标签 -->
+            <text x="0" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#D32F2F" text-anchor="middle"><tspan>运营部</tspan></text>
+        </g>
+    </g>
+    
+    <!-- 箱线图说明 -->
+    <g id="boxLegend" transform="translate(1040, 130)">
+        <rect x="0" y="0" width="200" height="240" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <text x="100" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>图例说明</tspan></text>
+        
+        <line x1="15" y1="42" x2="185" y2="42" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <!-- 示意图 -->
+        <g transform="translate(30, 60)">
+            <!-- 上须线 -->
+            <line x1="30" y1="0" x2="30" y2="25" stroke="#5D6D7E" stroke-width="2"/>
+            <line x1="20" y1="0" x2="40" y2="0" stroke="#5D6D7E" stroke-width="2"/>
+            <text x="70" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>最大值</tspan></text>
+            
+            <!-- 箱体 -->
+            <rect x="10" y="25" width="40" height="60" rx="3" fill="#BDC3C7"/>
+            <text x="70" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>Q3 (75%)</tspan></text>
+            
+            <!-- 中位数 -->
+            <line x1="10" y1="55" x2="50" y2="55" stroke="#2C3E50" stroke-width="2"/>
+            <text x="70" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#2C3E50"><tspan>中位数</tspan></text>
+            
+            <text x="70" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>Q1 (25%)</tspan></text>
+            
+            <!-- 下须线 -->
+            <line x1="30" y1="85" x2="30" y2="110" stroke="#5D6D7E" stroke-width="2"/>
+            <line x1="20" y1="110" x2="40" y2="110" stroke="#5D6D7E" stroke-width="2"/>
+            <text x="70" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#7F8C8D"><tspan>最小值</tspan></text>
+            
+            <!-- 异常值 -->
+            <circle cx="30" cy="135" r="5" fill="#FFFFFF" stroke="#5D6D7E" stroke-width="2"/>
+            <text x="70" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="11" fill="#E91E63"><tspan>异常值</tspan></text>
+        </g>
+        
+        <text x="15" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="10" fill="#95A5A6"><tspan>IQR = Q3 - Q1</tspan></text>
+        <text x="15" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="10" fill="#95A5A6"><tspan>异常值 > Q3+1.5*IQR</tspan></text>
+    </g>
+    
+    <!-- 统计摘要 -->
+    <g id="statsSummary" transform="translate(1040, 390)">
+        <rect x="0" y="0" width="200" height="160" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+        
+        <text x="15" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" font-weight="600" fill="#2E7D32"><tspan>📊 统计摘要</tspan></text>
+        
+        <text x="15" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E"><tspan>最高中位数: 技术部 35万</tspan></text>
+        <text x="15" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E"><tspan>最低中位数: 运营部 20万</tspan></text>
+        <text x="15" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E"><tspan>分布最广: 技术部</tspan></text>
+        <text x="15" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E"><tspan>分布最集中: 运营部</tspan></text>
+        <text x="15" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#E91E63"><tspan>发现异常值: 2个</tspan></text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 人力资源部门薪酬统计</tspan>
+    </text>
+</svg>
+

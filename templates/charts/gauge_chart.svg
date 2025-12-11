@@ -1,0 +1,262 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    仪表盘图模板
+    用途: 单一指标达成度展示
+    适用场景: KPI完成率、健康指数、性能评分、目标达成
+    支持: 3个仪表盘并排展示
+    -->
+    
+    <defs>
+        <!-- 背景弧渐变 -->
+        <linearGradient id="bgArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E0E0E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EEEEEE;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 优秀区域渐变（绿色） -->
+        <linearGradient id="excellentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8BC34A;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 良好区域渐变（蓝色） -->
+        <linearGradient id="goodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#03A9F4;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 警告区域渐变（橙色） -->
+        <linearGradient id="warningGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFC107;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 危险区域渐变（红色） -->
+        <linearGradient id="dangerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#f44336;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#E91E63;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 指针阴影 -->
+        <filter id="needleShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.4"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="640" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>业务核心指标仪表盘</tspan>
+    </text>
+    
+    <text x="640" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D" text-anchor="middle">
+        <tspan>2025年第四季度实时数据</tspan>
+    </text>
+    
+    <!-- 仪表盘1: 销售完成率 85% -->
+    <g id="gauge1" transform="translate(220, 380)">
+        <!-- 背景弧 -->
+        <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#EEEEEE" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度区域 (0-60% 红色, 60-80% 橙色, 80-100% 绿色) -->
+        <!-- 红色区域 0-60% (0° to 108°) -->
+        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FFCDD2" stroke-width="30" stroke-linecap="round"/>
+        <!-- 橙色区域 60-80% (108° to 144°) -->
+        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FFE0B2" stroke-width="30" stroke-linecap="round"/>
+        <!-- 绿色区域 80-100% (144° to 180°) -->
+        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#C8E6C9" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 当前值弧 85% (从左到85%位置，约153°) -->
+        <path d="M -150,0 A 150,150 0 0,1 103.95,-108.45" fill="none" stroke="url(#excellentGrad)" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度线 -->
+        <line x1="-135" y1="0" x2="-120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="0" y1="-135" x2="0" y2="-120" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="95.5" y1="-95.5" x2="84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="135" y1="0" x2="120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        
+        <!-- 刻度标签 -->
+        <text x="-155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>0%</tspan></text>
+        <text x="0" y="-155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>50%</tspan></text>
+        <text x="155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>100%</tspan></text>
+        
+        <!-- 指针 (85% = 153°, 从-90°开始) -->
+        <g transform="rotate(63)">
+            <path d="M 0,-100 L -8,0 L 0,15 L 8,0 Z" fill="#2C3E50" filter="url(#needleShadow)"/>
+        </g>
+        <circle cx="0" cy="0" r="15" fill="#2C3E50"/>
+        <circle cx="0" cy="0" r="8" fill="#FFFFFF"/>
+        
+        <!-- 中心数值 -->
+        <text x="0" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="48" font-weight="bold" fill="#4CAF50" text-anchor="middle">
+            <tspan>85%</tspan>
+        </text>
+        
+        <!-- 标题 -->
+        <text x="0" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>销售完成率</tspan>
+        </text>
+        
+        <!-- 状态标签 -->
+        <rect x="-35" y="115" width="70" height="26" rx="13" fill="#E8F5E9"/>
+        <text x="0" y="133" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#4CAF50" text-anchor="middle">
+            <tspan>优秀</tspan>
+        </text>
+    </g>
+    
+    <!-- 仪表盘2: 客户满意度 72% -->
+    <g id="gauge2" transform="translate(640, 380)">
+        <!-- 背景弧 -->
+        <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#EEEEEE" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度区域 -->
+        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FFCDD2" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FFE0B2" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#C8E6C9" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 当前值弧 72% (约129.6°) -->
+        <path d="M -150,0 A 150,150 0 0,1 24.93,-147.91" fill="none" stroke="url(#goodGrad)" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度线 -->
+        <line x1="-135" y1="0" x2="-120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="0" y1="-135" x2="0" y2="-120" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="95.5" y1="-95.5" x2="84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="135" y1="0" x2="120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        
+        <!-- 刻度标签 -->
+        <text x="-155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>0%</tspan></text>
+        <text x="0" y="-155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>50%</tspan></text>
+        <text x="155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>100%</tspan></text>
+        
+        <!-- 指针 (72% = 129.6°, 从-90°开始，即39.6°) -->
+        <g transform="rotate(39.6)">
+            <path d="M 0,-100 L -8,0 L 0,15 L 8,0 Z" fill="#2C3E50" filter="url(#needleShadow)"/>
+        </g>
+        <circle cx="0" cy="0" r="15" fill="#2C3E50"/>
+        <circle cx="0" cy="0" r="8" fill="#FFFFFF"/>
+        
+        <!-- 中心数值 -->
+        <text x="0" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="48" font-weight="bold" fill="#2196F3" text-anchor="middle">
+            <tspan>72%</tspan>
+        </text>
+        
+        <!-- 标题 -->
+        <text x="0" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>客户满意度</tspan>
+        </text>
+        
+        <!-- 状态标签 -->
+        <rect x="-35" y="115" width="70" height="26" rx="13" fill="#E3F2FD"/>
+        <text x="0" y="133" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#2196F3" text-anchor="middle">
+            <tspan>良好</tspan>
+        </text>
+    </g>
+    
+    <!-- 仪表盘3: 库存周转 58% -->
+    <g id="gauge3" transform="translate(1060, 380)">
+        <!-- 背景弧 -->
+        <path d="M -150,0 A 150,150 0 0,1 150,0" fill="none" stroke="#EEEEEE" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度区域 -->
+        <path d="M -150,0 A 150,150 0 0,1 -46.35,-142.65" fill="none" stroke="#FFCDD2" stroke-width="30" stroke-linecap="round"/>
+        <path d="M -46.35,-142.65 A 150,150 0 0,1 58.68,-138.05" fill="none" stroke="#FFE0B2" stroke-width="30" stroke-linecap="round"/>
+        <path d="M 58.68,-138.05 A 150,150 0 0,1 150,0" fill="none" stroke="#C8E6C9" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 当前值弧 58% (约104.4°) -->
+        <path d="M -150,0 A 150,150 0 0,1 -58.36,-138.17" fill="none" stroke="url(#warningGrad)" stroke-width="30" stroke-linecap="round"/>
+        
+        <!-- 刻度线 -->
+        <line x1="-135" y1="0" x2="-120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="-95.5" y1="-95.5" x2="-84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="0" y1="-135" x2="0" y2="-120" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="95.5" y1="-95.5" x2="84.85" y2="-84.85" stroke="#7F8C8D" stroke-width="2"/>
+        <line x1="135" y1="0" x2="120" y2="0" stroke="#7F8C8D" stroke-width="2"/>
+        
+        <!-- 刻度标签 -->
+        <text x="-155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>0%</tspan></text>
+        <text x="0" y="-155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>50%</tspan></text>
+        <text x="155" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>100%</tspan></text>
+        
+        <!-- 指针 (58% = 104.4°, 从-90°开始，即14.4°) -->
+        <g transform="rotate(14.4)">
+            <path d="M 0,-100 L -8,0 L 0,15 L 8,0 Z" fill="#2C3E50" filter="url(#needleShadow)"/>
+        </g>
+        <circle cx="0" cy="0" r="15" fill="#2C3E50"/>
+        <circle cx="0" cy="0" r="8" fill="#FFFFFF"/>
+        
+        <!-- 中心数值 -->
+        <text x="0" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="48" font-weight="bold" fill="#FF9800" text-anchor="middle">
+            <tspan>58%</tspan>
+        </text>
+        
+        <!-- 标题 -->
+        <text x="0" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>库存周转率</tspan>
+        </text>
+        
+        <!-- 状态标签 -->
+        <rect x="-35" y="115" width="70" height="26" rx="13" fill="#FFF3E0"/>
+        <text x="0" y="133" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#FF9800" text-anchor="middle">
+            <tspan>需关注</tspan>
+        </text>
+    </g>
+    
+    <!-- 图例说明 -->
+    <g id="legendBar" transform="translate(340, 600)">
+        <rect x="0" y="0" width="600" height="40" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <rect x="30" y="12" width="16" height="16" rx="3" fill="#FFCDD2"/>
+        <text x="55" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>危险 (0-60%)</tspan></text>
+        
+        <rect x="170" y="12" width="16" height="16" rx="3" fill="#FFE0B2"/>
+        <text x="195" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>警告 (60-80%)</tspan></text>
+        
+        <rect x="320" y="12" width="16" height="16" rx="3" fill="#C8E6C9"/>
+        <text x="345" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>优秀 (80-100%)</tspan></text>
+        
+        <text x="500" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#95A5A6"><tspan>目标: 80%</tspan></text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="middle">
+        <tspan>数据来源: 业务数据平台 · 实时更新</tspan>
+    </text>
+</svg>
+

@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    Pareto Chart Template
+    Purpose: 80/20 analysis, identify key factors
+    Use cases: Quality issue analysis, sales contribution, cost structure, defect attribution
+    Supports: Bar chart + cumulative line chart combination
+    -->
+    
+    <defs>
+        <linearGradient id="paretoBarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="paretoBarHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="cumulativeLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="areaFill80" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:0.8" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:0.3" />
+        </linearGradient>
+    </defs>
+    
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <text x="640" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>Product Quality Issue Pareto Analysis</tspan>
+    </text>
+    
+    <text x="640" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D" text-anchor="middle">
+        <tspan>2025 Q4 - Customer Complaint Attribution (Total: 1,000 cases)</tspan>
+    </text>
+    
+    <!-- Legend -->
+    <g id="legend" transform="translate(150, 100)">
+        <rect x="0" y="0" width="20" height="14" fill="url(#paretoBarHighlight)" rx="2"/>
+        <text x="28" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>Key Factors (80%)</tspan></text>
+        
+        <rect x="170" y="0" width="20" height="14" fill="url(#paretoBarGrad)" rx="2"/>
+        <text x="198" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>Minor Factors</tspan></text>
+        
+        <line x1="320" y1="7" x2="340" y2="7" stroke="#E74C3C" stroke-width="3"/>
+        <circle cx="330" cy="7" r="5" fill="#E74C3C"/>
+        <text x="348" y="11" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>Cumulative %</tspan></text>
+    </g>
+    
+    <!-- Y-axis (Left - Count) -->
+    <line x1="130" y1="130" x2="130" y2="580" stroke="#E0E0E0" stroke-width="2"/>
+    <text x="70" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#2C3E50" text-anchor="middle" transform="rotate(-90, 70, 360)">
+        <tspan>Complaint Count</tspan>
+    </text>
+    
+    <!-- Y-axis ticks (Left) -->
+    <text x="120" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>0</tspan></text>
+    <text x="120" y="490" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>100</tspan></text>
+    <text x="120" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>200</tspan></text>
+    <text x="120" y="300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>300</tspan></text>
+    <text x="120" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>400</tspan></text>
+    <text x="120" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D" text-anchor="end"><tspan>450</tspan></text>
+    
+    <!-- Y-axis (Right - Percentage) -->
+    <line x1="1150" y1="130" x2="1150" y2="580" stroke="#E0E0E0" stroke-width="2"/>
+    <text x="1210" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#E74C3C" text-anchor="middle" transform="rotate(90, 1210, 360)">
+        <tspan>Cumulative %</tspan>
+    </text>
+    
+    <!-- Y-axis ticks (Right) -->
+    <text x="1160" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#E74C3C"><tspan>0%</tspan></text>
+    <text x="1160" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#E74C3C"><tspan>25%</tspan></text>
+    <text x="1160" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#E74C3C"><tspan>50%</tspan></text>
+    <text x="1160" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#E74C3C"><tspan>75%</tspan></text>
+    <text x="1160" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#E74C3C"><tspan>100%</tspan></text>
+    
+    <!-- X-axis -->
+    <line x1="130" y1="580" x2="1150" y2="580" stroke="#E0E0E0" stroke-width="2"/>
+    
+    <!-- Grid lines -->
+    <line x1="130" y1="490" x2="1150" y2="490" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="130" y1="395" x2="1150" y2="395" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="130" y1="300" x2="1150" y2="300" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="130" y1="205" x2="1150" y2="205" stroke="#F0F0F0" stroke-width="1" stroke-dasharray="5,5"/>
+    
+    <!-- 80% reference line -->
+    <line x1="130" y1="220" x2="1150" y2="220" stroke="#FF9800" stroke-width="2" stroke-dasharray="10,5"/>
+    <text x="145" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#FF9800"><tspan>80% Key Factor Line</tspan></text>
+    
+    <!-- 80% area fill -->
+    <rect x="130" y="220" width="640" height="360" fill="url(#areaFill80)" opacity="0.3"/>
+    
+    <!-- Bar chart data (sorted by frequency high to low) -->
+    <!-- 1. Function Error: 350 (35%) - Cumulative 35% -->
+    <rect x="170" y="230" width="100" height="350" fill="url(#paretoBarHighlight)" rx="4"/>
+    <text x="220" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="bold" fill="#F57C00" text-anchor="middle"><tspan>350</tspan></text>
+    <text x="220" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Function Error</tspan></text>
+    <text x="220" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(35%)</tspan></text>
+    
+    <!-- 2. Appearance Defect: 220 (22%) - Cumulative 57% -->
+    <rect x="300" y="360" width="100" height="220" fill="url(#paretoBarHighlight)" rx="4"/>
+    <text x="350" y="350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="bold" fill="#F57C00" text-anchor="middle"><tspan>220</tspan></text>
+    <text x="350" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Appearance</tspan></text>
+    <text x="350" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(22%)</tspan></text>
+    
+    <!-- 3. Missing Parts: 150 (15%) - Cumulative 72% -->
+    <rect x="430" y="430" width="100" height="150" fill="url(#paretoBarHighlight)" rx="4"/>
+    <text x="480" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="bold" fill="#F57C00" text-anchor="middle"><tspan>150</tspan></text>
+    <text x="480" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Missing Parts</tspan></text>
+    <text x="480" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(15%)</tspan></text>
+    
+    <!-- 4. Shipping Damage: 120 (12%) - Cumulative 84% -->
+    <rect x="560" y="460" width="100" height="120" fill="url(#paretoBarHighlight)" rx="4"/>
+    <text x="610" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="bold" fill="#F57C00" text-anchor="middle"><tspan>120</tspan></text>
+    <text x="610" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Ship Damage</tspan></text>
+    <text x="610" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(12%)</tspan></text>
+    
+    <!-- 5. Manual Error: 70 (7%) - Cumulative 91% -->
+    <rect x="690" y="510" width="100" height="70" fill="url(#paretoBarGrad)" rx="4"/>
+    <text x="740" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="bold" fill="#1565C0" text-anchor="middle"><tspan>70</tspan></text>
+    <text x="740" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Manual Error</tspan></text>
+    <text x="740" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(7%)</tspan></text>
+    
+    <!-- 6. Packaging Issue: 50 (5%) - Cumulative 96% -->
+    <rect x="820" y="530" width="100" height="50" fill="url(#paretoBarGrad)" rx="4"/>
+    <text x="870" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="bold" fill="#1565C0" text-anchor="middle"><tspan>50</tspan></text>
+    <text x="870" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Packaging</tspan></text>
+    <text x="870" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(5%)</tspan></text>
+    
+    <!-- 7. Other Issues: 40 (4%) - Cumulative 100% -->
+    <rect x="950" y="540" width="100" height="40" fill="url(#paretoBarGrad)" rx="4"/>
+    <text x="1000" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="bold" fill="#1565C0" text-anchor="middle"><tspan>40</tspan></text>
+    <text x="1000" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#2C3E50" text-anchor="middle"><tspan>Other</tspan></text>
+    <text x="1000" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>(4%)</tspan></text>
+    
+    <!-- Cumulative line chart -->
+    <polyline points="220,420 350,322 480,254 610,205 740,170 870,151 1000,130" 
+              fill="none" stroke="#E74C3C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Cumulative line data points -->
+    <circle cx="220" cy="420" r="8" fill="#E74C3C"/>
+    <text x="220" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>35%</tspan></text>
+    
+    <circle cx="350" cy="322" r="8" fill="#E74C3C"/>
+    <text x="350" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>57%</tspan></text>
+    
+    <circle cx="480" cy="254" r="8" fill="#E74C3C"/>
+    <text x="480" y="242" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>72%</tspan></text>
+    
+    <circle cx="610" cy="205" r="8" fill="#FF9800"/>
+    <text x="610" y="193" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" font-weight="bold" fill="#FF9800" text-anchor="middle"><tspan>84%</tspan></text>
+    
+    <circle cx="740" cy="170" r="6" fill="#E74C3C"/>
+    <text x="740" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="11" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>91%</tspan></text>
+    
+    <circle cx="870" cy="151" r="6" fill="#E74C3C"/>
+    <text x="870" y="139" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="11" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>96%</tspan></text>
+    
+    <circle cx="1000" cy="130" r="6" fill="#E74C3C"/>
+    <text x="1000" y="118" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="11" font-weight="bold" fill="#E74C3C" text-anchor="middle"><tspan>100%</tspan></text>
+    
+    <!-- Insight box -->
+    <rect x="130" y="655" width="1020" height="50" rx="6" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+    <text x="150" y="678" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="16" font-weight="600" fill="#E65100">
+        <tspan>Key Finding:</tspan>
+    </text>
+    <text x="270" y="678" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="15" fill="#5D6D7E">
+        <tspan>Top 4 issues account for 84% of complaints - prioritize resolution</tspan>
+    </text>
+    <text x="150" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="13" fill="#7F8C8D">
+        <tspan>Action: Enhance QC process, optimize logistics packaging, improve parts checklist verification</tspan>
+    </text>
+</svg>

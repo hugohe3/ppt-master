@@ -1,0 +1,275 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    分组柱状图模板
+    用途: 多系列数据对比
+    适用场景: 多产品/时期/分类对比、同比环比分析
+    支持: 4组 × 3系列（可调整为3-6组，2-4系列）
+    与普通柱状图区别: 每个类别下有多个并排柱子，用于对比
+    -->
+    
+    <defs>
+        <!-- 系列1渐变（蓝色） -->
+        <linearGradient id="groupGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 系列2渐变（绿色） -->
+        <linearGradient id="groupGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 系列3渐变（橙色） -->
+        <linearGradient id="groupGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 阴影 -->
+        <filter id="groupShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>各季度产品线销售对比</tspan>
+    </text>
+    
+    <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2025年度 · 单位：百万元</tspan>
+    </text>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(900, 70)">
+        <rect x="0" y="0" width="20" height="20" rx="3" fill="url(#groupGrad1)"/>
+        <text x="30" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>产品线A</tspan>
+        </text>
+        
+        <rect x="120" y="0" width="20" height="20" rx="3" fill="url(#groupGrad2)"/>
+        <text x="150" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>产品线B</tspan>
+        </text>
+        
+        <rect x="240" y="0" width="20" height="20" rx="3" fill="url(#groupGrad3)"/>
+        <text x="270" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>产品线C</tspan>
+        </text>
+    </g>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- Y轴网格线 -->
+        <line x1="140" y1="570" x2="1180" y2="570" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="480" x2="1180" y2="480" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="390" x2="1180" y2="390" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="300" x2="1180" y2="300" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="210" x2="1180" y2="210" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- Y轴刻度标签 -->
+        <text x="125" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>0</tspan>
+        </text>
+        <text x="125" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>50</tspan>
+        </text>
+        <text x="125" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>100</tspan>
+        </text>
+        <text x="125" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>150</tspan>
+        </text>
+        <text x="125" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end">
+            <tspan>200</tspan>
+        </text>
+        
+        <!-- 坐标轴 -->
+        <line x1="140" y1="165" x2="140" y2="570" stroke="#95A5A6" stroke-width="2"/>
+        <line x1="140" y1="570" x2="1180" y2="570" stroke="#95A5A6" stroke-width="2"/>
+        
+        <!-- 
+        分组说明：
+        - 4个组（Q1-Q4），每组3个柱子
+        - 组宽度：240px，组间距：20px
+        - 柱宽：60px，柱间距：10px
+        - 每组起始：170, 430, 690, 950
+        - 每50单位=90px高度
+        -->
+        
+        <!-- Q1 组 -->
+        <!-- Q1 产品线A: 120M (高度216px) -->
+        <rect x="170" y="354" width="60" height="216" rx="4" fill="url(#groupGrad1)" filter="url(#groupShadow)"/>
+        <text x="200" y="342" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>120</tspan>
+        </text>
+        
+        <!-- Q1 产品线B: 85M (高度153px) -->
+        <rect x="240" y="417" width="60" height="153" rx="4" fill="url(#groupGrad2)" filter="url(#groupShadow)"/>
+        <text x="270" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>85</tspan>
+        </text>
+        
+        <!-- Q1 产品线C: 65M (高度117px) -->
+        <rect x="310" y="453" width="60" height="117" rx="4" fill="url(#groupGrad3)" filter="url(#groupShadow)"/>
+        <text x="340" y="441" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>65</tspan>
+        </text>
+        
+        <!-- Q1 标签 -->
+        <text x="255" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E" text-anchor="middle">
+            <tspan>Q1</tspan>
+        </text>
+        
+        <!-- Q2 组 -->
+        <!-- Q2 产品线A: 145M (高度261px) -->
+        <rect x="430" y="309" width="60" height="261" rx="4" fill="url(#groupGrad1)" filter="url(#groupShadow)"/>
+        <text x="460" y="297" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>145</tspan>
+        </text>
+        
+        <!-- Q2 产品线B: 98M (高度176px) -->
+        <rect x="500" y="394" width="60" height="176" rx="4" fill="url(#groupGrad2)" filter="url(#groupShadow)"/>
+        <text x="530" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>98</tspan>
+        </text>
+        
+        <!-- Q2 产品线C: 78M (高度140px) -->
+        <rect x="570" y="430" width="60" height="140" rx="4" fill="url(#groupGrad3)" filter="url(#groupShadow)"/>
+        <text x="600" y="418" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>78</tspan>
+        </text>
+        
+        <!-- Q2 标签 -->
+        <text x="515" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E" text-anchor="middle">
+            <tspan>Q2</tspan>
+        </text>
+        
+        <!-- Q3 组 -->
+        <!-- Q3 产品线A: 168M (高度302px) -->
+        <rect x="690" y="268" width="60" height="302" rx="4" fill="url(#groupGrad1)" filter="url(#groupShadow)"/>
+        <text x="720" y="256" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>168</tspan>
+        </text>
+        
+        <!-- Q3 产品线B: 112M (高度202px) -->
+        <rect x="760" y="368" width="60" height="202" rx="4" fill="url(#groupGrad2)" filter="url(#groupShadow)"/>
+        <text x="790" y="356" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>112</tspan>
+        </text>
+        
+        <!-- Q3 产品线C: 92M (高度166px) -->
+        <rect x="830" y="404" width="60" height="166" rx="4" fill="url(#groupGrad3)" filter="url(#groupShadow)"/>
+        <text x="860" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>92</tspan>
+        </text>
+        
+        <!-- Q3 标签 -->
+        <text x="775" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E" text-anchor="middle">
+            <tspan>Q3</tspan>
+        </text>
+        
+        <!-- Q4 组 -->
+        <!-- Q4 产品线A: 185M (高度333px) -->
+        <rect x="950" y="237" width="60" height="333" rx="4" fill="url(#groupGrad1)" filter="url(#groupShadow)"/>
+        <text x="980" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>185</tspan>
+        </text>
+        
+        <!-- Q4 产品线B: 125M (高度225px) -->
+        <rect x="1020" y="345" width="60" height="225" rx="4" fill="url(#groupGrad2)" filter="url(#groupShadow)"/>
+        <text x="1050" y="333" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>125</tspan>
+        </text>
+        
+        <!-- Q4 产品线C: 108M (高度194px) -->
+        <rect x="1090" y="376" width="60" height="194" rx="4" fill="url(#groupGrad3)" filter="url(#groupShadow)"/>
+        <text x="1120" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>108</tspan>
+        </text>
+        
+        <!-- Q4 标签 -->
+        <text x="1035" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E" text-anchor="middle">
+            <tspan>Q4</tspan>
+        </text>
+    </g>
+    
+    <!-- 趋势总结卡片 -->
+    <g id="summaryCard">
+        <rect x="60" y="630" width="400" height="60" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        <text x="80" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>年度总计:</tspan>
+        </text>
+        <text x="160" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#2196F3">
+            <tspan>618M</tspan>
+        </text>
+        <text x="220" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>|</tspan>
+        </text>
+        <text x="240" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#4CAF50">
+            <tspan>420M</tspan>
+        </text>
+        <text x="300" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>|</tspan>
+        </text>
+        <text x="320" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#FF9800">
+            <tspan>343M</tspan>
+        </text>
+        
+        <text x="80" y="675" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#95A5A6">
+            <tspan>同比增长: +15.2%</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="end">
+        <tspan>数据来源: 销售部门</tspan>
+    </text>
+</svg>
+

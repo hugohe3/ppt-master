@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    对比条形图（蝴蝶图）模板
+    用途: 左右对比、双向数据展示
+    适用场景: 人口金字塔、AB测试、男女对比、收支对比
+    支持: 8个类别，左右两组数据
+    -->
+    
+    <defs>
+        <!-- 左侧渐变（蓝色） -->
+        <linearGradient id="leftGrad" x1="100%" y1="0%" x2="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 右侧渐变（粉色） -->
+        <linearGradient id="rightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F06292;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 阴影 -->
+        <filter id="barShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>用户年龄分布对比</tspan>
+    </text>
+    
+    <text x="640" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D" text-anchor="middle">
+        <tspan>2025年度用户画像分析 · 样本量 N=50,000</tspan>
+    </text>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(480, 115)">
+        <rect x="0" y="0" width="20" height="20" rx="3" fill="url(#leftGrad)"/>
+        <text x="28" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>男性用户</tspan>
+        </text>
+        
+        <rect x="140" y="0" width="20" height="20" rx="3" fill="url(#rightGrad)"/>
+        <text x="168" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>女性用户</tspan>
+        </text>
+    </g>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- 中轴线 -->
+        <line x1="640" y1="160" x2="640" y2="620" stroke="#BDC3C7" stroke-width="2"/>
+        
+        <!-- 左侧X轴刻度 -->
+        <text x="160" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>20%</tspan></text>
+        <text x="280" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>15%</tspan></text>
+        <text x="400" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>10%</tspan></text>
+        <text x="520" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>5%</tspan></text>
+        
+        <!-- 右侧X轴刻度 -->
+        <text x="760" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>5%</tspan></text>
+        <text x="880" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>10%</tspan></text>
+        <text x="1000" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>15%</tspan></text>
+        <text x="1120" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>20%</tspan></text>
+        
+        <!-- 网格线 -->
+        <line x1="160" y1="160" x2="160" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="280" y1="160" x2="280" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="400" y1="160" x2="400" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="520" y1="160" x2="520" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="760" y1="160" x2="760" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="880" y1="160" x2="880" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="1000" y1="160" x2="1000" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="1120" y1="160" x2="1120" y2="620" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- 
+        数据说明：
+        每个年龄段的条形高度: 50px，间距: 6px
+        最大宽度: 480px (代表20%)
+        每1% = 24px
+        
+        男性数据: 3%, 8%, 15%, 18%, 16%, 12%, 6%, 2%
+        女性数据: 4%, 10%, 17%, 15%, 14%, 10%, 5%, 3%
+        -->
+        
+        <!-- 年龄段1: 60+ -->
+        <g transform="translate(0, 168)">
+            <!-- 左侧条形 (男性 3%) -->
+            <rect x="568" y="0" width="72" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="555" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>3%</tspan></text>
+            
+            <!-- 中间标签 -->
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>60+</tspan></text>
+            
+            <!-- 右侧条形 (女性 4%) -->
+            <rect x="640" y="0" width="96" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="745" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>4%</tspan></text>
+        </g>
+        
+        <!-- 年龄段2: 50-59 -->
+        <g transform="translate(0, 224)">
+            <rect x="448" y="0" width="192" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="435" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>8%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>50-59</tspan></text>
+            
+            <rect x="640" y="0" width="240" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="890" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>10%</tspan></text>
+        </g>
+        
+        <!-- 年龄段3: 40-49 -->
+        <g transform="translate(0, 280)">
+            <rect x="280" y="0" width="360" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="267" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>15%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>40-49</tspan></text>
+            
+            <rect x="640" y="0" width="408" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="1058" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>17%</tspan></text>
+        </g>
+        
+        <!-- 年龄段4: 30-39 (峰值) -->
+        <g transform="translate(0, 336)">
+            <rect x="208" y="0" width="432" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="195" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" font-weight="bold" fill="#2196F3" text-anchor="end"><tspan>18%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>30-39</tspan></text>
+            
+            <rect x="640" y="0" width="360" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="1010" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>15%</tspan></text>
+        </g>
+        
+        <!-- 年龄段5: 25-29 -->
+        <g transform="translate(0, 392)">
+            <rect x="256" y="0" width="384" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="243" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>16%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>25-29</tspan></text>
+            
+            <rect x="640" y="0" width="336" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="986" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>14%</tspan></text>
+        </g>
+        
+        <!-- 年龄段6: 20-24 -->
+        <g transform="translate(0, 448)">
+            <rect x="352" y="0" width="288" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="339" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>12%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>20-24</tspan></text>
+            
+            <rect x="640" y="0" width="240" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="890" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>10%</tspan></text>
+        </g>
+        
+        <!-- 年龄段7: 18-19 -->
+        <g transform="translate(0, 504)">
+            <rect x="496" y="0" width="144" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="483" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>6%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>18-19</tspan></text>
+            
+            <rect x="640" y="0" width="120" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="770" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>5%</tspan></text>
+        </g>
+        
+        <!-- 年龄段8: <18 -->
+        <g transform="translate(0, 560)">
+            <rect x="592" y="0" width="48" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>
+            <text x="579" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#2196F3" text-anchor="end"><tspan>2%</tspan></text>
+            
+            <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>&lt;18</tspan></text>
+            
+            <rect x="640" y="0" width="72" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
+            <text x="722" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="14" fill="#E91E63"><tspan>3%</tspan></text>
+        </g>
+    </g>
+    
+    <!-- 统计摘要 -->
+    <g id="summary" transform="translate(60, 665)">
+        <rect x="0" y="0" width="280" height="40" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+        <text x="20" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#1976D2">
+            <tspan>👨 男性用户: 52% | 平均年龄: 34岁</tspan>
+        </text>
+        
+        <rect x="300" y="0" width="280" height="40" rx="8" fill="#FCE4EC" stroke="#E91E63" stroke-width="1"/>
+        <text x="320" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#C2185B">
+            <tspan>👩 女性用户: 48% | 平均年龄: 32岁</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="end">
+        <tspan>数据来源: 用户数据分析平台</tspan>
+    </text>
+</svg>
+

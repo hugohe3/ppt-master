@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    饼图模板
+    用途: 占比和构成分析（基础版）
+    适用场景: 市场份额、预算分配、结构分析
+    支持: 5个分块 (推荐3-6个)
+    与环形图区别: 无中心孔，更适合简单占比展示
+    -->
+    
+    <defs>
+        <!-- 扇区阴影 -->
+        <filter id="pieShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- 颜色定义 -->
+        <linearGradient id="pieGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#7B1FA2;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#607D8B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#455A64;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>市场份额分布</tspan>
+    </text>
+    
+    <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2025年第三季度 · 行业整体市场规模 120亿</tspan>
+    </text>
+    
+    <!-- 饼图中心 -->
+    <g id="pieChart" transform="translate(420, 400)">
+        <!-- 
+        圆心: (420, 400)
+        半径: 200px
+        起始角度: -90° (12点方向)
+        
+        数据:
+        1. 公司A: 35% (蓝色) - 角度: 126°
+        2. 公司B: 25% (绿色) - 角度: 90°
+        3. 公司C: 20% (橙色) - 角度: 72°
+        4. 公司D: 12% (紫色) - 角度: 43.2°
+        5. 其他: 8% (灰色) - 角度: 28.8°
+        -->
+        
+        <!-- 扇区1: 公司A 35% (从-90°到36°, 即126°) -->
+        <path d="M 0,0 L 0,-200 A 200,200 0 0,1 173.2,100 Z" 
+              fill="url(#pieGrad1)" filter="url(#pieShadow)"/>
+        
+        <!-- 扇区2: 公司B 25% (从36°到126°, 即90°) -->
+        <path d="M 0,0 L 173.2,100 A 200,200 0 0,1 -117.56,162.34 Z" 
+              fill="url(#pieGrad2)" filter="url(#pieShadow)"/>
+        
+        <!-- 扇区3: 公司C 20% (从126°到198°, 即72°) -->
+        <path d="M 0,0 L -117.56,162.34 A 200,200 0 0,1 -195.63,-62.93 Z" 
+              fill="url(#pieGrad3)" filter="url(#pieShadow)"/>
+        
+        <!-- 扇区4: 公司D 12% (从198°到241.2°, 即43.2°) -->
+        <path d="M 0,0 L -195.63,-62.93 A 200,200 0 0,1 -62.93,-189.87 Z" 
+              fill="url(#pieGrad4)" filter="url(#pieShadow)"/>
+        
+        <!-- 扇区5: 其他 8% (从241.2°到270°, 即28.8°) -->
+        <path d="M 0,0 L -62.93,-189.87 A 200,200 0 0,1 0,-200 Z" 
+              fill="url(#pieGrad5)" filter="url(#pieShadow)"/>
+    </g>
+    
+    <!-- 百分比标签（直接在扇区上显示） -->
+    <!-- 标签1: 公司A 35% -->
+    <text x="500" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>35%</tspan>
+    </text>
+    
+    <!-- 标签2: 公司B 25% -->
+    <text x="450" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>25%</tspan>
+    </text>
+    
+    <!-- 标签3: 公司C 20% -->
+    <text x="280" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>20%</tspan>
+    </text>
+    
+    <!-- 标签4: 公司D 12% -->
+    <text x="280" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>12%</tspan>
+    </text>
+    
+    <!-- 标签5: 其他 8% (扇区较小，使用引线标签) -->
+    <g>
+        <line x1="380" y1="220" x2="340" y2="170" stroke="#607D8B" stroke-width="1.5"/>
+        <circle cx="380" cy="220" r="3" fill="#607D8B"/>
+        <text x="330" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="600" fill="#607D8B" text-anchor="end">
+            <tspan>8%</tspan>
+        </text>
+    </g>
+    
+    <!-- 右侧图例 -->
+    <g id="legend" transform="translate(720, 200)">
+        <!-- 图例标题 -->
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="20" font-weight="600" fill="#2C3E50">
+            <tspan>市场份额</tspan>
+        </text>
+        
+        <!-- 图例项1: 公司A -->
+        <rect x="0" y="30" width="24" height="24" rx="4" fill="url(#pieGrad1)"/>
+        <text x="40" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>公司A</tspan>
+        </text>
+        <text x="460" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>42亿 (35%)</tspan>
+        </text>
+        
+        <!-- 图例项2: 公司B -->
+        <rect x="0" y="70" width="24" height="24" rx="4" fill="url(#pieGrad2)"/>
+        <text x="40" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>公司B</tspan>
+        </text>
+        <text x="460" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>30亿 (25%)</tspan>
+        </text>
+        
+        <!-- 图例项3: 公司C -->
+        <rect x="0" y="110" width="24" height="24" rx="4" fill="url(#pieGrad3)"/>
+        <text x="40" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>公司C</tspan>
+        </text>
+        <text x="460" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>24亿 (20%)</tspan>
+        </text>
+        
+        <!-- 图例项4: 公司D -->
+        <rect x="0" y="150" width="24" height="24" rx="4" fill="url(#pieGrad4)"/>
+        <text x="40" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>公司D</tspan>
+        </text>
+        <text x="460" y="168" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>14.4亿 (12%)</tspan>
+        </text>
+        
+        <!-- 图例项5: 其他 -->
+        <rect x="0" y="190" width="24" height="24" rx="4" fill="url(#pieGrad5)"/>
+        <text x="40" y="208" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" fill="#5D6D7E">
+            <tspan>其他</tspan>
+        </text>
+        <text x="460" y="208" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50" text-anchor="end">
+            <tspan>9.6亿 (8%)</tspan>
+        </text>
+        
+        <!-- 分隔线 -->
+        <line x1="0" y1="240" x2="460" y2="240" stroke="#E0E0E0" stroke-width="2"/>
+        
+        <!-- 合计 -->
+        <text x="0" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="18" font-weight="600" fill="#2C3E50">
+            <tspan>市场总规模</tspan>
+        </text>
+        <text x="460" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="20" font-weight="bold" fill="#2C3E50" text-anchor="end">
+            <tspan>120亿 (100%)</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 行业研究报告</tspan>
+    </text>
+</svg>
+

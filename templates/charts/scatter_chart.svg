@@ -1,0 +1,235 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    散点图模板
+    用途: 相关性分析、数据分布展示
+    适用场景: 价格vs销量、投入vs产出、身高vs体重
+    支持: 2个系列，每系列多个数据点
+    -->
+    
+    <defs>
+        <!-- 数据点阴影 -->
+        <filter id="scatterShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- 系列1渐变 -->
+        <radialGradient id="dotGrad1" cx="30%" cy="30%">
+            <stop offset="0%" style="stop-color:#42A5F5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </radialGradient>
+        
+        <!-- 系列2渐变 -->
+        <radialGradient id="dotGrad2" cx="30%" cy="30%">
+            <stop offset="0%" style="stop-color:#66BB6A;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </radialGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>广告投入与销售额关系分析</tspan>
+    </text>
+    
+    <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2025年各区域数据 · 样本量 N=24</tspan>
+    </text>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(950, 70)">
+        <circle cx="10" cy="10" r="8" fill="url(#dotGrad1)"/>
+        <text x="28" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>线上渠道</tspan>
+        </text>
+        
+        <circle cx="130" cy="10" r="8" fill="url(#dotGrad2)"/>
+        <text x="148" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="15" fill="#5D6D7E">
+            <tspan>线下渠道</tspan>
+        </text>
+    </g>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- 网格线 -->
+        <!-- 水平网格线 -->
+        <line x1="140" y1="560" x2="1100" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="470" x2="1100" y2="470" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="380" x2="1100" y2="380" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="290" x2="1100" y2="290" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="200" x2="1100" y2="200" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- 垂直网格线 -->
+        <line x1="300" y1="160" x2="300" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="460" y1="160" x2="460" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="620" y1="160" x2="620" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="780" y1="160" x2="780" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="940" y1="160" x2="940" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="1100" y1="160" x2="1100" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- Y轴刻度标签 -->
+        <text x="125" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>0</tspan></text>
+        <text x="125" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>200</tspan></text>
+        <text x="125" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>400</tspan></text>
+        <text x="125" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>600</tspan></text>
+        <text x="125" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>800</tspan></text>
+        
+        <!-- Y轴标题 -->
+        <text x="45" y="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90, 45, 360)">
+            <tspan>销售额（万元）</tspan>
+        </text>
+        
+        <!-- X轴刻度标签 -->
+        <text x="140" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>0</tspan></text>
+        <text x="300" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>20</tspan></text>
+        <text x="460" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>40</tspan></text>
+        <text x="620" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>60</tspan></text>
+        <text x="780" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>80</tspan></text>
+        <text x="940" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="middle"><tspan>100</tspan></text>
+        
+        <!-- X轴标题 -->
+        <text x="620" y="625" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#5D6D7E" text-anchor="middle">
+            <tspan>广告投入（万元）</tspan>
+        </text>
+        
+        <!-- 坐标轴 -->
+        <line x1="140" y1="160" x2="140" y2="560" stroke="#95A5A6" stroke-width="2"/>
+        <line x1="140" y1="560" x2="1100" y2="560" stroke="#95A5A6" stroke-width="2"/>
+        
+        <!-- 
+        数据点计算：
+        X: 140 + (value/100) * 960
+        Y: 560 - (value/800) * 400
+        -->
+        
+        <!-- 趋势线（线上渠道） -->
+        <line x1="180" y1="505" x2="1020" y2="215" stroke="#2196F3" stroke-width="2" stroke-dasharray="8,4" opacity="0.5"/>
+        
+        <!-- 趋势线（线下渠道） -->
+        <line x1="220" y1="515" x2="900" y2="295" stroke="#4CAF50" stroke-width="2" stroke-dasharray="8,4" opacity="0.5"/>
+        
+        <!-- 系列1: 线上渠道数据点（蓝色） -->
+        <circle cx="220" cy="470" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="300" cy="425" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="340" cy="445" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="420" cy="380" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="500" cy="350" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="540" cy="320" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="620" cy="310" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="700" cy="270" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="780" cy="250" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="860" cy="230" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="940" cy="210" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        <circle cx="1000" cy="195" r="10" fill="url(#dotGrad1)" filter="url(#scatterShadow)"/>
+        
+        <!-- 系列2: 线下渠道数据点（绿色） -->
+        <circle cx="260" cy="490" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="320" cy="460" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="400" cy="430" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="460" cy="400" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="540" cy="380" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="600" cy="365" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="680" cy="340" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="740" cy="325" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="820" cy="305" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="880" cy="290" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="920" cy="280" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+        <circle cx="980" cy="265" r="10" fill="url(#dotGrad2)" filter="url(#scatterShadow)"/>
+    </g>
+    
+    <!-- 统计信息卡片 -->
+    <g id="statsPanel" transform="translate(1120, 160)">
+        <rect x="0" y="0" width="140" height="200" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <text x="70" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>统计摘要</tspan>
+        </text>
+        
+        <line x1="15" y1="45" x2="125" y2="45" stroke="#E0E0E0" stroke-width="1"/>
+        
+        <!-- 线上渠道 -->
+        <circle cx="25" cy="70" r="6" fill="url(#dotGrad1)"/>
+        <text x="40" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E">
+            <tspan>线上渠道</tspan>
+        </text>
+        <text x="25" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#7F8C8D">
+            <tspan>R² = 0.94</tspan>
+        </text>
+        <text x="25" y="112" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#7F8C8D">
+            <tspan>斜率 = 6.8</tspan>
+        </text>
+        
+        <!-- 线下渠道 -->
+        <circle cx="25" cy="140" r="6" fill="url(#dotGrad2)"/>
+        <text x="40" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E">
+            <tspan>线下渠道</tspan>
+        </text>
+        <text x="25" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#7F8C8D">
+            <tspan>R² = 0.91</tspan>
+        </text>
+        <text x="25" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#7F8C8D">
+            <tspan>斜率 = 5.2</tspan>
+        </text>
+    </g>
+    
+    <!-- 洞察卡片 -->
+    <g id="insightCard" transform="translate(1120, 380)">
+        <rect x="0" y="0" width="140" height="100" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+        <text x="15" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" font-weight="600" fill="#1976D2">
+            <tspan>💡 洞察</tspan>
+        </text>
+        <text x="15" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>线上渠道ROI</tspan>
+        </text>
+        <text x="15" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="12" fill="#5D6D7E">
+            <tspan>高于线下 31%</tspan>
+        </text>
+        <text x="15" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" fill="#7F8C8D">
+            <tspan>建议增加线上投入</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6">
+        <tspan>数据来源: 市场营销部门</tspan>
+    </text>
+</svg>
+
