@@ -96,103 +96,65 @@ class ProjectManager:
         canvas_info = self.CANVAS_FORMATS.get(
             canvas_format, self.CANVAS_FORMATS['ppt169'])
 
-        # 创建 README.md
-        readme_content = f"""# {project_name}
+        # 创建设计规范与内容大纲
+        spec_content = f"""# {project_name} - 设计规范与内容大纲
 
-## 项目信息
+## 📋 项目信息
 
-- **创建日期**: {datetime.now().strftime('%Y-%m-%d')}
-- **画布格式**: {canvas_info['name']} ({canvas_info['dimensions']})
-- **设计风格**: {design_style}
-- **状态**: 进行中
-
-## 项目说明
-
-[在此添加项目描述]
-
-## 内容概览
-
-[在此添加内容概览]
-
-## 使用说明
-
-### 预览 SVG 文件
-
-方式一：使用本地服务器
-```bash
-python3 -m http.server --directory svg_output 8000
-# 访问 http://localhost:8000
-```
-
-方式二：直接打开单个 SVG
-```bash
-open svg_output/slide_01_cover.svg
-```
-
-## 文件说明
-
-- `设计规范与内容大纲.md` - 设计规范和内容结构
-- `来源文档.md` - 原始内容文档（可选）
-- `svg_output/` - SVG 输出文件
-
-## 技术规范
-
-- viewBox: `{canvas_info['viewbox']}`
-- 禁止使用 `<foreignObject>`
-- 文本换行使用 `<tspan>`
-- 字体: 系统 UI 字体栈
+| 项目 | 内容 |
+|------|------|
+| **项目名称** | {project_name} |
+| **画布格式** | {canvas_info['name']} ({canvas_info['dimensions']}) |
+| **页数** | [待定] |
+| **设计风格** | {design_style} |
+| **目标受众** | [待填写] |
+| **使用场景** | [待填写] |
+| **创建日期** | {datetime.now().strftime('%Y-%m-%d')} |
 
 ---
 
-*基于 PPT Master 框架生成*
-"""
-
-        with open(project_path / 'README.md', 'w', encoding='utf-8') as f:
-            f.write(readme_content)
-
-        # 创建设计规范模板
-        spec_content = f"""# 设计规范与内容大纲
-
-## 一、项目基本信息
-
-- **项目名称**: {project_name}
-- **画布格式**: {canvas_info['name']} ({canvas_info['dimensions']})
-- **设计风格**: {design_style}
-- **目标受众**: [待填写]
-- **使用场景**: [待填写]
-
-## 二、设计规范
+## 🎨 设计规范
 
 ### 1. 画布设置
 
 - **尺寸**: {canvas_info['dimensions']}
 - **viewBox**: `{canvas_info['viewbox']}`
-- **背景**: 使用 `<rect>` 元素
+- **安全边距**: 60px（四边）
+- **内容区域**: [根据画布计算]
 
-### 2. 颜色方案
+### 2. 配色方案
 
-**主色调**:
-- 主色: [待定义]
-- 辅助色: [待定义]
-- 强调色: [待定义]
-
-**中性色**:
-- 深色文本: #2C2C2C
-- 浅色文本: #666666
-- 背景色: #FFFFFF / #F5F5F5
+| 用途 | 色值 | 说明 |
+|------|------|------|
+| 背景色 | `#FFFFFF` | 页面主背景 |
+| 卡片背景 | `#F8FAFC` | 次级容器 |
+| 边框色 | `#E5E7EB` | 分隔线、边框 |
+| 主强调色 | `#[待定]` | 标题、重点强调 |
+| 次强调色 | `#[待定]` | 次要强调、图标 |
+| 成功色 | `#10B981` | 正向指标 |
+| 警示色 | `#EF4444` | 问题标注 |
+| 主文字 | `#1F2937` | 标题、重要文字 |
+| 次文字 | `#6B7280` | 正文、说明 |
+| 弱文字 | `#9CA3AF` | 辅助信息、页脚 |
 
 ### 3. 字体规范
 
-- **字体栈**: `-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif`
-- **标题字号**: [待定义]
-- **正文字号**: [待定义]
-- **注释字号**: [待定义]
+| 层级 | 字号 | 字重 | 颜色 | 用途 |
+|------|------|------|------|------|
+| H1 | 36px | Bold | `#1F2937` | 页面主标题 |
+| H2 | 24px | SemiBold | `#1F2937` | 章节标题 |
+| H3 | 20px | SemiBold | `#1F2937` | 卡片标题 |
+| Body | 16px | Regular | `#6B7280` | 正文内容 |
+| Small | 14px | Regular | `#9CA3AF` | 说明文字、页脚 |
+
+**字体栈**: `"PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif`
 
 ### 4. 布局规范
 
-- **边距**: [待定义]
-- **卡片间距**: [待定义]
-- **对齐方式**: 左对齐/居中对齐
+- **卡片间距**: 24px
+- **卡片圆角**: 12px
+- **卡片内边距**: 24px
+- **元素间距**: 16px（同组）、32px（跨组）
 
 ### 5. 技术约束
 
@@ -201,47 +163,55 @@ open svg_output/slide_01_cover.svg
 - ✅ 背景使用 `<rect>` 元素
 - ✅ 遵循 CRAP 设计原则（对齐、对比、重复、亲密性）
 
-## 三、内容大纲
+---
 
-### 页面列表
+## 📑 内容大纲
 
-1. **封面** (slide_01_cover.svg)
-   - 标题
-   - 副标题
-   - 日期/作者信息
+### Slide 01 - 封面
+**核心信息**: [主题]
 
-2. **[页面名称]** (slide_02_xxx.svg)
-   - [内容要点]
-
-[继续添加更多页面...]
-
-## 四、页面详细规划
-
-### 第1页：封面
-
-**布局**:
-- [描述布局结构]
-
-**内容**:
-- [列出具体内容]
-
-**设计要点**:
-- [设计注意事项]
+- 主标题
+- 副标题
+- 日期/作者信息
 
 ---
 
-[为每一页添加详细规划...]
+### Slide 02 - [页面名称]
+**核心信息**: [一句话概括]
 
-## 五、设计检查清单
+- [内容要点1]
+- [内容要点2]
+- [内容要点3]
 
+---
+
+[继续添加更多页面...]
+
+---
+
+## 📊 图片资源清单（如需要）
+
+| 文件名 | 尺寸 | 用途 | 使用页面 | 状态 |
+|--------|------|------|----------|------|
+| cover_bg.png | {canvas_info['dimensions']} | 封面背景 | Slide 01 | ⏳ 待生成 |
+
+---
+
+## ✅ 设计检查清单
+
+### 生成前
+- [ ] 内容符合页面容量
+- [ ] 布局模式选择正确
+- [ ] 颜色使用符合语义
+
+### 生成后
+- [ ] viewBox = `{canvas_info['viewbox']}`
+- [ ] 无 `<foreignObject>` 元素
+- [ ] 所有文本可读（≥14px）
+- [ ] 内容在安全区域内
 - [ ] 所有元素对齐到网格
-- [ ] 建立清晰的视觉层级
 - [ ] 相同元素保持一致样式
-- [ ] 相关内容空间聚合
-- [ ] 所有文本使用 `<tspan>` 换行
-- [ ] viewBox 设置正确
 - [ ] 颜色符合规范
-- [ ] 字体大小合适
 
 ---
 
@@ -250,21 +220,6 @@ open svg_output/slide_01_cover.svg
 
         with open(project_path / '设计规范与内容大纲.md', 'w', encoding='utf-8') as f:
             f.write(spec_content)
-
-        # 创建来源文档模板（可选）
-        source_content = f"""# 来源文档
-
-## 原始内容
-
-[在此粘贴或编写原始内容]
-
----
-
-*导入日期: {datetime.now().strftime('%Y-%m-%d')}*
-"""
-
-        with open(project_path / '来源文档.md', 'w', encoding='utf-8') as f:
-            f.write(source_content)
 
         return str(project_path)
 
@@ -290,17 +245,11 @@ open svg_output/slide_01_cover.svg
             errors.append(f"不是有效的目录: {project_path}")
             return False, errors, warnings
 
-        # 检查必需文件
-        required_files = ['README.md']
-        for file in required_files:
-            if not (project_path / file).exists():
-                errors.append(f"缺少必需文件: {file}")
-
-        # 检查设计规范文件（多个可能的名称）
+        # 检查设计规范文件（核心必需文件）
         spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
         has_spec = any((project_path / f).exists() for f in spec_files)
         if not has_spec:
-            warnings.append("缺少设计规范文件（建议文件名: 设计规范与内容大纲.md）")
+            errors.append("缺少设计规范文件（建议文件名: 设计规范与内容大纲.md）")
 
         # 检查 svg_output 目录
         svg_output = project_path / 'svg_output'
