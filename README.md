@@ -51,26 +51,46 @@ AI（Strategist 角色）：好的，在开始之前我需要完成七项确认.
 
 ## 🎴 精选示例
 
-> 📁 **项目路径**: [`examples/demo_project_intro_ppt169_20251211/`](./examples/demo_project_intro_ppt169_20251211/)
+> 📁 **示例库**: [`examples/`](./examples/) · **12 个项目** · **177 页 SVG**
 
-一个完整的 10 页演示文稿，展示 PPT Master 的核心能力：
+### 示例项目总览
 
-| 页码 | 主题 | 预览 |
-|:----:|------|------|
-| 01 | 封面 | [slide_01_cover.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_01_cover.svg) |
-| 02 | 痛点与挑战 | [slide_02_pain_points.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_02_pain_points.svg) |
-| 03 | 解决方案 | [slide_03_solution.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_03_solution.svg) |
-| 04 | 系统架构 | [slide_04_architecture.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_04_architecture.svg) |
-| 05 | 四大角色 | [slide_05_roles.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_05_roles.svg) |
-| 06 | 核心特性 | [slide_06_features.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_06_features.svg) |
-| 07 | 支持格式 | [slide_07_formats.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_07_formats.svg) |
-| 08 | 工具生态 | [slide_08_tools.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_08_tools.svg) |
-| 09 | 快速开始 | [slide_09_quickstart.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_09_quickstart.svg) |
-| 10 | 行动号召 | [slide_10_cta.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_10_cta.svg) |
+| 类别 | 项目 | 页数 | 特色 |
+|------|------|:----:|------|
+| 🏢 **咨询风格** | [心理治疗中的依恋](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) | 32 | 顶级咨询风格，最大规模示例 |
+| | [南欧江水电站战略评估](./examples/ppt169_高端咨询风_南欧江水电站战略评估/) | 20 | "流域危机"设计语言 |
+| | [汽车认证五年战略规划](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) | 20 | McKinsey/BCG 风格 |
+| | [麦肯锡风客户忠诚度](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/) | 8 | 麦肯锡经典 MECE 原则 |
+| | [Google 年度工作汇报](./examples/ppt169_谷歌风_google_annual_report/) | 10 | Google 品牌设计语言 |
+| 🎨 **通用灵活** | [Debug 六步法](./examples/ppt169_通用灵活+代码_debug六步法/) | 10 | 深色科技风格 |
+| | [重庆大学论文格式](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/) | 11 | 学术规范指南 |
+| | [AI 编程工具对比](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/) | 11 | 技术评测风格 |
+| ✨ **创意风格** | [地山谦卦深度研究](./examples/ppt169_易理风_地山谦卦深度研究/) | 20 | 易经本体美学，阴阳爻变设计 |
+| | [金刚经第一品研究](./examples/ppt169_禅意风_金刚经第一品研究/) | 15 | 禅意学术，水墨留白 |
+| | [Git 入门指南](./examples/ppt169_像素风_git_introduction/) | 10 | 像素复古游戏风 |
+| | [PPT Master 介绍](./examples/demo_project_intro_ppt169_20251211/) | 10 | 清新科技风格 |
 
-**设计风格**: 清新科技风格 · **画布格式**: PPT 16:9 (1280×720) · **配色**: 靛蓝紫渐变 (#6366F1 → #06B6D4)
+📖 [查看完整示例文档](./examples/README.md)
 
-📄 [查看完整设计规范](./examples/demo_project_intro_ppt169_20251211/设计规范与内容大纲.md)
+### 代表作品展示
+
+#### 顶级咨询风格 · 心理治疗中的依恋（32 页）
+
+> 最大规模示例项目，"安全基地"视觉隐喻
+
+📁 [查看项目](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) · 📄 [设计规范](./examples/ppt169_顶级咨询风_心理治疗中的依恋/设计规范与内容大纲.md)
+
+#### 易理玄学风格 · 地山谦卦深度研究（20 页）
+
+> 阴阳爻变设计语言，六爻层进结构
+
+📁 [查看项目](./examples/ppt169_易理风_地山谦卦深度研究/) · 📄 [设计规范](./examples/ppt169_易理风_地山谦卦深度研究/设计规范与内容大纲.md)
+
+#### 像素复古风格 · Git 入门指南（10 页）
+
+> 霓虹色系，"存档点"隐喻版本控制
+
+📁 [查看项目](./examples/ppt169_像素风_git_introduction/) · 📄 [设计规范](./examples/ppt169_像素风_git_introduction/设计规范与内容大纲.md)
 
 ---
 
@@ -622,10 +642,10 @@ A: 可以！在与 Strategist 沟通时，明确提出你的品牌色或偏好�
 - [x] 标准化图表模板库（13 种常用图表类型）
 - [x] 640+ 矢量图标库（来源于 SVG Repo）
 - [x] Strategist 主动建议功能（从被动提问升级为主动顾问）
+- [x] **示例项目库**（12 个项目、177 页 SVG，涵盖咨询/通用/创意风格）
 
 ### 🚧 进行中
 
-- [ ] 添加公开示例项目
 - [ ] 扩展图表库和可视化组件
 - [ ] GitHub Pages 自动部署（展示所有项目画廊）
 
