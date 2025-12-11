@@ -350,13 +350,19 @@ system-ui, -apple-system, BlinkMacSystemFont,
 
 如需更多图标，推荐从以下开源库获取：
 
-1. **Lucide Icons** (https://lucide.dev/)
+1. **SVG Repo** (https://www.svgrepo.com/)
+
+   - 本项目图标来源
+   - 50万+ 免费 SVG 图标
+   - 多种风格可选
+
+2. **Lucide Icons** (https://lucide.dev/)
 
    - 简洁现代
    - SVG 格式
    - 高度一致性
 
-2. **Material Icons** (https://fonts.google.com/icons)
+3. **Material Icons** (https://fonts.google.com/icons)
 
    - 通用性强
    - 识别度高
