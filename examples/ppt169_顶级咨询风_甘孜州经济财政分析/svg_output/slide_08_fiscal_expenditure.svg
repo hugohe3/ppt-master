@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F"/>
+  
+  <rect x="40" y="30" width="6" height="50" rx="3" fill="#C41E3A"/>
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">四、财政支出分析</text>
+  
+  <!-- 顶部KPI卡片 -->
+  <g>
+    <rect x="40" y="100" width="290" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="40" y="100" width="290" height="6" rx="3" fill="#C41E3A"/>
+    <text x="60" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">一般公共预算支出</text>
+    <text x="60" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#C41E3A">454.49</text>
+    <text x="230" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">亿元</text>
+    <text x="60" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">增速 2.32%（低于全省5.6%）</text>
+  </g>
+  
+  <g>
+    <rect x="345" y="100" width="290" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="345" y="100" width="290" height="6" rx="3" fill="#D4AF37"/>
+    <text x="365" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">全省占比</text>
+    <text x="365" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#D4AF37">3.38</text>
+    <text x="480" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">%</text>
+    <text x="365" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#C41E3A">远超GDP0.90%和人口1.33%</text>
+  </g>
+  
+  <g>
+    <rect x="650" y="100" width="290" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="650" y="100" width="290" height="6" rx="3" fill="#00A651"/>
+    <text x="670" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">人均财政支出</text>
+    <text x="670" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#00A651">40,908</text>
+    <text x="870" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">元</text>
+    <text x="670" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">全省平均的 2.54倍</text>
+  </g>
+  
+  <g>
+    <rect x="955" y="100" width="285" height="140" rx="12" fill="#FFFFFF"/>
+    <rect x="955" y="100" width="285" height="6" rx="3" fill="#1E3A5F"/>
+    <text x="975" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">支出/收入</text>
+    <text x="975" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#1E3A5F">7.5</text>
+    <text x="1065" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">倍</text>
+    <text x="975" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">高度依赖转移支付</text>
+  </g>
+  
+  <!-- 基准线对比 -->
+  <g>
+    <rect x="40" y="260" width="600" height="280" rx="12" fill="#FFFFFF"/>
+    <text x="60" y="300" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 财政支出占比 vs 基准线</text>
+    
+    <!-- 柱状图 - 基线在 y=490，顶部预留到 y=320 -->
+    <rect x="120" y="320" width="100" height="170" rx="4" fill="#C41E3A"/>
+    <text x="170" y="400" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">3.38%</text>
+    <text x="170" y="505" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">财政支出</text>
+    
+    <rect x="280" y="430" width="100" height="60" rx="4" fill="#1E3A5F"/>
+    <text x="330" y="465" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">0.90%</text>
+    <text x="330" y="505" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">GDP占比</text>
+    
+    <rect x="440" y="400" width="100" height="90" rx="4" fill="#2E5A8B"/>
+    <text x="490" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1.33%</text>
+    <text x="490" y="505" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">人口占比</text>
+    
+    <text x="320" y="528" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#C41E3A">支出占比是GDP的3.76倍、人口的2.54倍</text>
+  </g>
+  
+  <!-- 支出结构评价 -->
+  <g>
+    <rect x="660" y="260" width="580" height="280" rx="12" fill="#FFFFFF"/>
+    <text x="680" y="300" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">🏛️ 支出结构评价</text>
+    
+    <rect x="680" y="320" width="540" height="70" rx="8" fill="#00A651" opacity="0.1"/>
+    <text x="700" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#00A651">✓ 典型的高转移支付依赖地区</text>
+    <text x="700" y="375" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">作为民族地区、生态功能区，享受特殊财政支持政策</text>
+    
+    <rect x="680" y="400" width="540" height="70" rx="8" fill="#00A651" opacity="0.1"/>
+    <text x="700" y="430" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#00A651">✓ 人均支出全省最高</text>
+    <text x="700" y="455" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">40,908元/人 vs 全省16,078元/人，公共服务投入力度大</text>
+    
+    <rect x="680" y="480" width="540" height="50" rx="8" fill="#4A90D9" opacity="0.1"/>
+    <text x="700" y="512" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#4A90D9">📌 高于13个市州的支出规模</text>
+    <text x="1000" y="512" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">攀枝花、资阳、雅安、自贡等</text>
+  </g>
+  
+  <!-- 底部总结 -->
+  <g>
+    <rect x="40" y="560" width="1200" height="100" rx="12" fill="#1E3A5F"/>
+    <text x="640" y="600" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">📌 财政支出结论</text>
+    <text x="640" y="635" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.9">支出规模远超经济人口规模 → 高度依赖中央和省级转移支付 → 体现国家对民族地区的政策倾斜</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">08 / 17</text>
+</svg>

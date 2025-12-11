@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F"/>
+  
+  <rect x="40" y="30" width="6" height="50" rx="3" fill="#C41E3A"/>
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">五、政府性基金与国有资本经营</text>
+  
+  <!-- 三栏卡片 -->
+  <g>
+    <rect x="40" y="110" width="380" height="300" rx="12" fill="#FFFFFF"/>
+    <rect x="40" y="110" width="380" height="6" rx="3" fill="#FF6B35"/>
+    <text x="60" y="155" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📉 政府性基金收入</text>
+    
+    <text x="60" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35">6.72</text>
+    <text x="175" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A">亿元</text>
+    <text x="250" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#FF6B35">↓28.6%</text>
+    
+    <line x1="60" y1="220" x2="400" y2="220" stroke="#E8E8F0" stroke-width="1"/>
+    
+    <text x="60" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">全省同期降幅：-16.7%</text>
+    <text x="60" y="285" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">全省占比：<tspan font-weight="bold" fill="#FF6B35">0.18%</tspan></text>
+    <text x="60" y="315" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 仅为GDP占比的1/5</text>
+    <text x="60" y="340" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 基金收入极低</text>
+    
+    <rect x="60" y="360" width="340" height="35" rx="6" fill="#FF6B35" opacity="0.1"/>
+    <text x="230" y="383" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">⚠️ 土地财政能力严重不足</text>
+  </g>
+  
+  <g>
+    <rect x="440" y="110" width="380" height="300" rx="12" fill="#FFFFFF"/>
+    <rect x="440" y="110" width="380" height="6" rx="3" fill="#C41E3A"/>
+    <text x="460" y="155" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">🏠 土地出让收入</text>
+    
+    <text x="460" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#C41E3A">3.44</text>
+    <text x="565" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A">亿元</text>
+    
+    <line x1="460" y1="220" x2="800" y2="220" stroke="#E8E8F0" stroke-width="1"/>
+    
+    <text x="460" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">占基金收入比重：<tspan font-weight="bold" fill="#C41E3A">51.15%</tspan></text>
+    <text x="460" y="285" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 土地市场低迷</text>
+    <text x="460" y="310" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 土地财政贡献极小</text>
+    <text x="460" y="335" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 大幅下滑</text>
+    
+    <rect x="460" y="360" width="340" height="35" rx="6" fill="#C41E3A" opacity="0.1"/>
+    <text x="630" y="383" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#C41E3A">⚠️ 土地财政模式不可持续</text>
+  </g>
+  
+  <g>
+    <rect x="840" y="110" width="400" height="300" rx="12" fill="#FFFFFF"/>
+    <rect x="840" y="110" width="400" height="6" rx="3" fill="#1E3A5F"/>
+    <text x="860" y="155" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">🏛️ 国有资本经营</text>
+    
+    <rect x="860" y="175" width="360" height="80" rx="8" fill="#F5F7FA"/>
+    <text x="880" y="205" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">国有资本经营收入</text>
+    <text x="880" y="240" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#1E3A5F">1.52亿元</text>
+    
+    <rect x="860" y="265" width="360" height="80" rx="8" fill="#F5F7FA"/>
+    <text x="880" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">国有资本经营支出</text>
+    <text x="880" y="330" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#1E3A5F">1.23亿元</text>
+    
+    <rect x="860" y="360" width="360" height="35" rx="6" fill="#1E3A5F" opacity="0.1"/>
+    <text x="1040" y="383" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1E3A5F">规模较小，运营能力有限</text>
+  </g>
+  
+  <!-- 基准线对比 -->
+  <g>
+    <rect x="40" y="430" width="1200" height="230" rx="12" fill="#FFFFFF"/>
+    <text x="60" y="470" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 政府性基金收入占比 vs 基准线</text>
+    
+    <!-- 柱状图对比 -->
+    <rect x="150" y="510" width="80" height="20" rx="4" fill="#FF6B35"/>
+    <text x="150" y="505" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">0.18%</text>
+    <text x="240" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">政府性基金收入占比</text>
+    
+    <rect x="150" y="550" width="400" height="20" rx="4" fill="#1E3A5F"/>
+    <text x="150" y="545" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">0.90%</text>
+    <text x="560" y="565" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">GDP占比</text>
+    
+    <rect x="150" y="590" width="590" height="20" rx="4" fill="#C41E3A"/>
+    <text x="150" y="585" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#C41E3A">1.33%</text>
+    <text x="750" y="605" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">人口占比</text>
+    
+    <!-- 右侧结论 -->
+    <rect x="850" y="490" width="370" height="150" rx="8" fill="#FF6B35" opacity="0.08"/>
+    <text x="870" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35">🔍 结构性分析</text>
+    <text x="870" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 基金收入占比严重低于基准线</text>
+    <text x="870" y="580" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 仅为GDP占比的 <tspan font-weight="bold" fill="#FF6B35">20%</tspan></text>
+    <text x="870" y="605" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 土地财政模式在甘孜州不适用</text>
+    <text x="870" y="630" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 需探索其他财政收入渠道</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">10 / 17</text>
+</svg>

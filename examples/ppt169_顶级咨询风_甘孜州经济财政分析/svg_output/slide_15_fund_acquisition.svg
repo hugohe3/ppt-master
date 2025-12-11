@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F"/>
+  
+  <rect x="40" y="30" width="6" height="50" rx="3" fill="#C41E3A"/>
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">八、甘孜州获取资金情况</text>
+  
+  <!-- 超长期特别国债 -->
+  <g>
+    <rect x="40" y="100" width="590" height="280" rx="12" fill="#FFFFFF"/>
+    <rect x="40" y="100" width="590" height="6" rx="3" fill="#D4AF37"/>
+    <text x="60" y="145" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">💰 超长期特别国债转移支付</text>
+    <text x="60" y="175" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">2024年中央、省级对甘孜州政府性基金转移支付</text>
+    
+    <rect x="60" y="195" width="250" height="100" rx="8" fill="#D4AF37" opacity="0.1"/>
+    <text x="80" y="230" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">转移支付收入</text>
+    <text x="80" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#D4AF37">21,773</text>
+    <text x="220" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">万元</text>
+    
+    <rect x="330" y="195" width="280" height="100" rx="8" fill="#4A90D9" opacity="0.1"/>
+    <text x="350" y="230" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">转移支付支出（州对市县）</text>
+    <text x="350" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#4A90D9">21,626</text>
+    <text x="490" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">万元</text>
+    
+    <line x1="60" y1="310" x2="610" y2="310" stroke="#E8E8F0" stroke-width="1"/>
+    
+    <text x="60" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">📌 资金性质说明</text>
+    <text x="60" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 超长期特别国债是中央支持地方重大项目的重要资金来源</text>
+  </g>
+  
+  <!-- 城乡社区支出 -->
+  <g>
+    <rect x="650" y="100" width="590" height="280" rx="12" fill="#FFFFFF"/>
+    <rect x="650" y="100" width="590" height="6" rx="3" fill="#00A651"/>
+    <text x="670" y="145" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">🏘️ 城乡社区支出</text>
+    <text x="670" y="175" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">2024年甘孜州一般公共预算支出</text>
+    
+    <!-- 预算对比 -->
+    <rect x="670" y="195" width="550" height="80" rx="8" fill="#F5F7FA"/>
+    <text x="690" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0">年初预算</text>
+    <text x="690" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#4A4A6A">68,732万</text>
+    
+    <text x="870" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0">调整预算</text>
+    <text x="870" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#1E3A5F">210,126万</text>
+    
+    <text x="1060" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0">决算数</text>
+    <text x="1060" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="24" font-weight="bold" fill="#00A651">184,102万</text>
+    
+    <!-- 完成率进度条 -->
+    <text x="670" y="305" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">执行进度（占调整预算）</text>
+    <rect x="670" y="315" width="450" height="20" rx="4" fill="#E8E8F0"/>
+    <rect x="670" y="315" width="394" height="20" rx="4" fill="#00A651"/>
+    <text x="1130" y="330" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#00A651">87.62%</text>
+    
+    <line x1="670" y1="350" x2="1220" y2="350" stroke="#E8E8F0" stroke-width="1"/>
+    
+    <text x="670" y="375" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">城乡社区专项转移支付收入：<tspan font-weight="bold" fill="#1E3A5F">16,239万元</tspan></text>
+  </g>
+  
+  <!-- 资金来源汇总 -->
+  <g>
+    <rect x="40" y="400" width="1200" height="260" rx="12" fill="#FFFFFF"/>
+    <text x="60" y="440" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 2024年重要资金来源汇总</text>
+    
+    <rect x="60" y="465" width="1160" height="35" rx="4" fill="#1E3A5F"/>
+    <text x="200" y="488" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">资金类别</text>
+    <text x="450" y="488" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">金额（万元）</text>
+    <text x="700" y="488" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">来源</text>
+    <text x="1000" y="488" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">备注</text>
+    
+    <rect x="60" y="500" width="1160" height="40" fill="#F5F7FA"/>
+    <text x="200" y="525" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">超长期特别国债转移支付收入</text>
+    <text x="450" y="525" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#D4AF37">21,773</text>
+    <text x="700" y="525" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">中央、省级</text>
+    <text x="1000" y="525" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">政府性基金转移支付</text>
+    
+    <rect x="60" y="540" width="1160" height="40" fill="#FFFFFF"/>
+    <text x="200" y="565" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">城乡社区专项转移支付收入</text>
+    <text x="450" y="565" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#4A90D9">16,239</text>
+    <text x="700" y="565" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">中央、省级</text>
+    <text x="1000" y="565" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">税收返还和转移支付</text>
+    
+    <rect x="60" y="580" width="1160" height="40" fill="#F5F7FA"/>
+    <text x="200" y="605" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">城乡社区支出决算</text>
+    <text x="450" y="605" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">184,102</text>
+    <text x="700" y="605" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">一般公共预算</text>
+    <text x="1000" y="605" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">完成率87.62%</text>
+    
+    <rect x="60" y="625" width="1160" height="30" rx="4" fill="#1E3A5F" opacity="0.1"/>
+    <text x="640" y="645" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#1E3A5F">📌 说明：以上数据来源于甘孜藏族自治州2024年决算相关表格</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">15 / 17</text>
+</svg>

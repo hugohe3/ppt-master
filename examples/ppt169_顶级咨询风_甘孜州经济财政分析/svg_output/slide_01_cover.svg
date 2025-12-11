@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <!-- 主背景渐变 - 更深邃的政务蓝 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="50%" style="stop-color:#152A45"/>
+      <stop offset="100%" style="stop-color:#0A1628"/>
+    </linearGradient>
+    
+    <!-- 藏红色装饰渐变 -->
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C41E3A;stop-opacity:0"/>
+      <stop offset="30%" style="stop-color:#C41E3A"/>
+      <stop offset="70%" style="stop-color:#C41E3A"/>
+      <stop offset="100%" style="stop-color:#C41E3A;stop-opacity:0"/>
+    </linearGradient>
+    
+    <!-- 金色渐变 -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37"/>
+      <stop offset="50%" style="stop-color:#F0D78C"/>
+      <stop offset="100%" style="stop-color:#D4AF37"/>
+    </linearGradient>
+    
+    <!-- 标题光晕效果 -->
+    <filter id="titleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- 装饰光效 -->
+    <radialGradient id="glowEffect" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C41E3A;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#C41E3A;stop-opacity:0"/>
+    </radialGradient>
+    
+    <!-- 藏式云纹图案 -->
+    <pattern id="cloudPattern" x="0" y="0" width="120" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 30 Q45 15 30 30 Q15 30 15 45 Q15 55 30 55 Q45 55 60 45 Q75 55 90 55 Q105 55 105 45 Q105 30 90 30 Q75 15 60 30 Z" 
+            fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.08"/>
+    </pattern>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)"/>
+  
+  <!-- 云纹背景图案 -->
+  <rect width="1280" height="720" fill="url(#cloudPattern)"/>
+  
+  <!-- 顶部装饰光效 -->
+  <ellipse cx="640" cy="-100" rx="600" ry="300" fill="url(#glowEffect)" opacity="0.4"/>
+  
+  <!-- 精致几何装饰线条 -->
+  <g opacity="0.12">
+    <!-- 顶部水平线 -->
+    <line x1="0" y1="120" x2="320" y2="120" stroke="#FFFFFF" stroke-width="1"/>
+    <line x1="960" y1="120" x2="1280" y2="120" stroke="#FFFFFF" stroke-width="1"/>
+    
+    <!-- 底部水平线 -->
+    <line x1="0" y1="600" x2="250" y2="600" stroke="#FFFFFF" stroke-width="1"/>
+    <line x1="1030" y1="600" x2="1280" y2="600" stroke="#FFFFFF" stroke-width="1"/>
+    
+    <!-- 左侧装饰圆 -->
+    <circle cx="180" cy="150" r="100" fill="none" stroke="#FFFFFF" stroke-width="0.8"/>
+    <circle cx="180" cy="150" r="60" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
+    
+    <!-- 右侧装饰圆 -->
+    <circle cx="1100" cy="570" r="120" fill="none" stroke="#FFFFFF" stroke-width="0.8"/>
+    <circle cx="1100" cy="570" r="80" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
+    
+    <!-- 角落三角形装饰 -->
+    <polygon points="50,650 120,580 120,650" fill="none" stroke="#FFFFFF" stroke-width="0.8"/>
+    <polygon points="1160,70 1230,70 1230,140" fill="none" stroke="#FFFFFF" stroke-width="0.8"/>
+  </g>
+  
+  <!-- 藏式装饰边框 - 左侧 -->
+  <g opacity="0.15">
+    <path d="M40 200 L40 520" stroke="#D4AF37" stroke-width="2"/>
+    <circle cx="40" cy="200" r="5" fill="#D4AF37"/>
+    <circle cx="40" cy="520" r="5" fill="#D4AF37"/>
+    <path d="M35 280 L45 280 M35 360 L45 360 M35 440 L45 440" stroke="#D4AF37" stroke-width="1"/>
+  </g>
+  
+  <!-- 藏式装饰边框 - 右侧 -->
+  <g opacity="0.15">
+    <path d="M1240 200 L1240 520" stroke="#D4AF37" stroke-width="2"/>
+    <circle cx="1240" cy="200" r="5" fill="#D4AF37"/>
+    <circle cx="1240" cy="520" r="5" fill="#D4AF37"/>
+    <path d="M1235 280 L1245 280 M1235 360 L1245 360 M1235 440 L1245 440" stroke="#D4AF37" stroke-width="1"/>
+  </g>
+  
+  <!-- 顶部藏红色装饰条 -->
+  <rect x="380" y="260" width="520" height="4" fill="url(#accentLine)" rx="2"/>
+  
+  <!-- 主标题 - 带光晕效果 -->
+  <text x="640" y="330" text-anchor="middle" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" 
+        font-size="56" font-weight="bold" fill="#FFFFFF" filter="url(#titleGlow)">
+    甘孜藏族自治州
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="640" y="400" text-anchor="middle" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" 
+        font-size="38" font-weight="600" fill="#FFFFFF" opacity="0.95">
+    经济财政分析报告
+  </text>
+  
+  <!-- 底部藏红色装饰条 -->
+  <rect x="380" y="430" width="520" height="4" fill="url(#accentLine)" rx="2"/>
+  
+  <!-- 年份标签 - 优化设计 -->
+  <g>
+    <rect x="540" y="475" width="200" height="46" rx="23" fill="#C41E3A"/>
+    <rect x="540" y="475" width="200" height="46" rx="23" fill="url(#goldGradient)" opacity="0.15"/>
+    <text x="640" y="506" text-anchor="middle" 
+          font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" 
+          font-size="20" font-weight="600" fill="#FFFFFF" letter-spacing="2">
+      2024年度
+    </text>
+  </g>
+  
+  <!-- 装饰分隔符 -->
+  <g opacity="0.5">
+    <line x1="440" y1="560" x2="540" y2="560" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="555" cy="560" r="3" fill="#D4AF37"/>
+    <line x1="570" y1="560" x2="640" y2="560" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="640" cy="560" r="5" fill="#C41E3A"/>
+    <line x1="640" y1="560" x2="710" y2="560" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="725" cy="560" r="3" fill="#D4AF37"/>
+    <line x1="740" y1="560" x2="840" y2="560" stroke="#FFFFFF" stroke-width="1"/>
+  </g>
+  
+  <!-- 底部信息区 -->
+  <text x="640" y="620" text-anchor="middle" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" 
+        font-size="15" fill="#FFFFFF" opacity="0.6" letter-spacing="1">
+    基于 2024年度决算数据 · 四川省甘孜藏族自治州
+  </text>
+  
+  <text x="640" y="660" text-anchor="middle" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" 
+        font-size="13" fill="#FFFFFF" opacity="0.45">
+    数据来源：甘孜藏族自治州财政局、统计局公开数据
+  </text>
+  
+  <!-- 左下角装饰 - 藏式元素 -->
+  <g opacity="0.25">
+    <path d="M0 720 L0 600 Q60 600 60 660 L60 720 Z" fill="#C41E3A"/>
+    <path d="M60 720 L60 640 Q100 640 100 680 L100 720 Z" fill="#D4AF37"/>
+    <path d="M100 720 L100 670 Q125 670 125 695 L125 720 Z" fill="#C41E3A" opacity="0.5"/>
+  </g>
+  
+  <!-- 右下角装饰 - 藏式元素 -->
+  <g opacity="0.25">
+    <path d="M1280 720 L1280 600 Q1220 600 1220 660 L1220 720 Z" fill="#C41E3A"/>
+    <path d="M1220 720 L1220 640 Q1180 640 1180 680 L1180 720 Z" fill="#D4AF37"/>
+    <path d="M1180 720 L1180 670 Q1155 670 1155 695 L1155 720 Z" fill="#C41E3A" opacity="0.5"/>
+  </g>
+  
+  <!-- 顶部光晕装饰 -->
+  <ellipse cx="640" cy="360" rx="400" ry="150" fill="url(#glowEffect)" opacity="0.15"/>
+</svg>

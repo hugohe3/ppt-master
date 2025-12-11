@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA"/>
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F"/>
+  
+  <rect x="40" y="30" width="6" height="50" rx="3" fill="#C41E3A"/>
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">六、债务风险评估</text>
+  
+  <!-- 三个仪表盘 -->
+  <g>
+    <rect x="40" y="100" width="380" height="300" rx="12" fill="#FFFFFF"/>
+    <text x="230" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">债务率</text>
+    
+    <!-- 仪表盘背景圆环 -->
+    <circle cx="230" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20"/>
+    <!-- 35.35%对应约127度角(35.35/100*360=127.26), 从-90度开始 -->
+    <!-- 起点(230, 170), 终点使用cos/sin计算: x=230+90*cos(37.26°)=301.6, y=260+90*sin(37.26°)=314.5 -->
+    <path d="M 230 170 A 90 90 0 0 1 301.6 314.5" fill="none" stroke="#00A651" stroke-width="20" stroke-linecap="round"/>
+    <text x="230" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#00A651">35.35%</text>
+    <text x="230" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">警戒线 100%</text>
+    
+    <rect x="100" y="360" width="260" height="30" rx="6" fill="#00A651" opacity="0.15"/>
+    <text x="230" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 风险等级：低</text>
+  </g>
+  
+  <g>
+    <rect x="440" y="100" width="380" height="300" rx="12" fill="#FFFFFF"/>
+    <text x="630" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">负债率</text>
+    
+    <!-- 仪表盘背景圆环 -->
+    <circle cx="630" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20"/>
+    <!-- 27.11%对应约97.6度角, 从-90度开始, 终点角度7.6度 -->
+    <!-- 起点(630, 170), 终点: x=630+90*cos(7.6°)=719.2, y=260+90*sin(7.6°)=271.9 -->
+    <path d="M 630 170 A 90 90 0 0 1 719.2 271.9" fill="none" stroke="#00A651" stroke-width="20" stroke-linecap="round"/>
+    <text x="630" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#00A651">27.11%</text>
+    <text x="630" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">债务余额/GDP</text>
+    
+    <rect x="500" y="360" width="260" height="30" rx="6" fill="#00A651" opacity="0.15"/>
+    <text x="630" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 风险等级：低</text>
+  </g>
+  
+  <g>
+    <rect x="840" y="100" width="400" height="300" rx="12" fill="#FFFFFF"/>
+    <text x="1040" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">限额使用率</text>
+    
+    <!-- 仪表盘背景圆环 -->
+    <circle cx="1040" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20"/>
+    <!-- 96.03%对应约345.7度角, 需要使用large-arc-flag=1 -->
+    <!-- 起点(1040, 170), 终点角度255.7度(-90+345.7): x=1040+90*cos(255.7°)=1017.7, y=260+90*sin(255.7°)=172.8 -->
+    <path d="M 1040 170 A 90 90 0 1 1 1017.7 172.8" fill="none" stroke="#FF6B35" stroke-width="20" stroke-linecap="round"/>
+    <text x="1040" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35">96.03%</text>
+    <text x="1040" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">余额/限额</text>
+    
+    <rect x="900" y="360" width="280" height="30" rx="6" fill="#FF6B35" opacity="0.15"/>
+    <text x="1040" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35">⚠️ 融资空间不足</text>
+  </g>
+  
+  <!-- 综合评价 -->
+  <g>
+    <rect x="40" y="420" width="1200" height="240" rx="12" fill="#FFFFFF"/>
+    <text x="60" y="460" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 债务风险综合评价</text>
+    
+    <!-- 评价表格 -->
+    <rect x="60" y="480" width="1160" height="35" rx="4" fill="#1E3A5F"/>
+    <text x="180" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">指标</text>
+    <text x="400" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">数值</text>
+    <text x="600" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">警戒标准</text>
+    <text x="800" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">风险评级</text>
+    <text x="1050" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">说明</text>
+    
+    <rect x="60" y="515" width="1160" height="35" fill="#F5F7FA"/>
+    <text x="180" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">债务率</text>
+    <text x="400" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">35.35%</text>
+    <text x="600" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">100%</text>
+    <text x="800" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">低风险</text>
+    <text x="1050" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">远低于警戒线</text>
+    
+    <rect x="60" y="550" width="1160" height="35" fill="#FFFFFF"/>
+    <text x="180" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">负债率</text>
+    <text x="400" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">27.11%</text>
+    <text x="600" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">60%</text>
+    <text x="800" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">低风险</text>
+    <text x="1050" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">债务负担轻</text>
+    
+    <rect x="60" y="585" width="1160" height="35" fill="#F5F7FA"/>
+    <text x="180" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">限额使用率</text>
+    <text x="400" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">96.03%</text>
+    <text x="600" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">-</text>
+    <text x="800" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">空间紧张</text>
+    <text x="1050" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">新增融资受限</text>
+    
+    <rect x="60" y="625" width="1160" height="30" rx="4" fill="#1E3A5F" opacity="0.1"/>
+    <text x="640" y="645" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">📌 综合结论：债务风险总体可控，但新增融资能力严重不足，需争取更多限额支持</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">13 / 17</text>
+</svg>
