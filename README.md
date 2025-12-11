@@ -49,26 +49,57 @@ AI（Strategist 角色）：好的，在开始之前我需要完成七项确认.
 
 ---
 
-## 📋 目录
+## 🎴 精选示例
 
-- [快速使用指南](#🚀-快速使用指南)
-- [项目简介](#项目简介)
-- [核心特性](#核心特性)
-- [系统架构](#系统架构)
-- [四大角色](#四大角色)
-- [快速开始](#快速开始)
-- [示例案例](#示例案例)
-- [设计风格](#设计风格)
-- [技术规范](#技术规范)
-- [项目结构](#项目结构)
-- [最佳实践](#最佳实践)
-- [常见问题](#常见问题)
-- [贡献指南](#贡献指南)
-- [路线图](#路线图)
-- [工具集](#🛠️-工具集)
-- [开源协议](#📄-开源协议)
-- [致谢](#🙏-致谢)
-- [联系方式](#📮-联系方式)
+> 📁 **项目路径**: [`examples/demo_project_intro_ppt169_20251211/`](./examples/demo_project_intro_ppt169_20251211/)
+
+一个完整的 10 页演示文稿，展示 PPT Master 的核心能力：
+
+| 页码 | 主题 | 预览 |
+|:----:|------|------|
+| 01 | 封面 | [slide_01_cover.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_01_cover.svg) |
+| 02 | 痛点与挑战 | [slide_02_pain_points.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_02_pain_points.svg) |
+| 03 | 解决方案 | [slide_03_solution.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_03_solution.svg) |
+| 04 | 系统架构 | [slide_04_architecture.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_04_architecture.svg) |
+| 05 | 四大角色 | [slide_05_roles.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_05_roles.svg) |
+| 06 | 核心特性 | [slide_06_features.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_06_features.svg) |
+| 07 | 支持格式 | [slide_07_formats.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_07_formats.svg) |
+| 08 | 工具生态 | [slide_08_tools.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_08_tools.svg) |
+| 09 | 快速开始 | [slide_09_quickstart.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_09_quickstart.svg) |
+| 10 | 行动号召 | [slide_10_cta.svg](./examples/demo_project_intro_ppt169_20251211/svg_final/slide_10_cta.svg) |
+
+**设计风格**: 清新科技风格 · **画布格式**: PPT 16:9 (1280×720) · **配色**: 靛蓝紫渐变 (#6366F1 → #06B6D4)
+
+📄 [查看完整设计规范](./examples/demo_project_intro_ppt169_20251211/设计规范与内容大纲.md)
+
+---
+
+<details>
+<summary><b>📋 目录（点击展开）</b></summary>
+
+| 章节 | 链接 |
+|------|------|
+| 🚀 快速使用指南 | [跳转](#-快速使用指南) |
+| 🎴 精选示例 | [跳转](#-精选示例) |
+| 项目简介 | [跳转](#项目简介) |
+| 核心特性 | [跳转](#核心特性) |
+| 系统架构 | [跳转](#系统架构) |
+| 四大角色 | [跳转](#四大角色) |
+| 快速开始 | [跳转](#快速开始) |
+| 更多示例 | [跳转](#更多示例) |
+| 设计风格 | [跳转](#设计风格) |
+| 技术规范 | [跳转](#技术规范) |
+| 项目结构 | [跳转](#项目结构) |
+| 最佳实践 | [跳转](#最佳实践) |
+| 常见问题 | [跳转](#常见问题) |
+| 贡献指南 | [跳转](#贡献指南) |
+| 路线图 | [跳转](#路线图) |
+| 🛠️ 工具集 | [跳转](#️-工具集) |
+| 📄 开源协议 | [跳转](#-开源协议) |
+| 🙏 致谢 | [跳转](#-致谢) |
+| 📮 联系方式 | [跳转](#-联系方式) |
+
+</details>
 
 ## 📚 文档导航
 
@@ -452,31 +483,28 @@ ppt-master/
 3. **格式转换** - 根据需要转换为 PNG 或 PDF
 4. **项目组织** - 将每个演示项目放在 `projects/` 目录下，包含设计规范和 SVG 输出
 
-## 示例案例
+## 更多示例
 
 本仓库是一个 **AI 工作流框架**，提供完整的角色定义、模板和工具集。
 
-### 📂 项目结构示例
+### 📂 项目结构
 
 示例项目应位于 `examples/` 目录下，采用以下结构：
 
 ```
 examples/
 └── <project_name>_<format>_<YYYYMMDD>/
-    ├── README.md
-    ├── 设计规范与内容大纲.md（或 design_specification.md）
-    ├── preview.html（可选）
-    └── svg_output/
-        ├── slide_01_cover.svg
-        ├── slide_02_xxx.svg
-        └── ...
+    ├── 设计规范与内容大纲.md
+    ├── images/              # 图片资源
+    ├── svg_output/          # 原始 SVG（带占位符）
+    └── svg_final/           # 最终 SVG（嵌入图标/图片）
 ```
 
 ### 🔍 预览 SVG
 
 ```bash
 # 使用本地服务器预览
-python3 -m http.server --directory examples/<project>/svg_output 8000
+python3 -m http.server --directory examples/<project>/svg_final 8000
 # 然后访问 http://localhost:8000
 ```
 
@@ -609,12 +637,6 @@ A: 可以！在与 Strategist 沟通时，明确提出你的品牌色或偏好�
 - [ ] API 接口设计
 - [ ] GitHub Actions CI/CD 集成
 
-## 致谢
-
-- 设计灵感来源于麦肯锡、波士顿咨询等顶尖咨询公司
-- CRAP 设计原则由 Robin Williams 提出
-- 图标资源来自 [SVG Repo](https://www.svgrepo.com/)
-
 ## 🛠️ 工具集
 
 PPT Master 提供了一套完整的工具来简化项目管理和内容生成流程。
@@ -743,7 +765,13 @@ python3 tools/error_helper.py missing_readme
 
 如果这个项目对你有帮助，请给一个 ⭐ Star 支持一下！
 
-[![Star History Chart](https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date)](https://star-history.com/#hugohe3/ppt-master&Date)
+<a href="https://star-history.com/#hugohe3/ppt-master&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=hugohe3/ppt-master&type=Date" />
+ </picture>
+</a>
 
 ---
 
