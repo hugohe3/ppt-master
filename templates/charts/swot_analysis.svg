@@ -1,0 +1,277 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    SWOT Analysis Chart Template
+    Purpose: Strategic analysis, competitive assessment
+    Use cases: Business plans, strategic planning, competitor analysis, project evaluation
+    Supports: Four quadrant display (Strengths, Weaknesses, Opportunities, Threats)
+    -->
+    
+    <defs>
+        <linearGradient id="strengthsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E8F5E9;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#C8E6C9;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="weaknessesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFEBEE;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFCDD2;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="opportunitiesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="threatsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:1" />
+        </linearGradient>
+        
+        <filter id="cardShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <rect width="1280" height="720" fill="#FAFBFC"/>
+    
+    <text x="640" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>SWOT Strategic Analysis</tspan>
+    </text>
+    
+    <text x="640" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D" text-anchor="middle">
+        <tspan>ABC Tech Company - 2025 Market Competition Assessment</tspan>
+    </text>
+    
+    <!-- Axis labels -->
+    <text x="345" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#4CAF50" text-anchor="middle">
+        <tspan>Helpful</tspan>
+    </text>
+    <text x="935" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#E74C3C" text-anchor="middle">
+        <tspan>Harmful</tspan>
+    </text>
+    
+    <text x="30" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90, 30, 290)">
+        <tspan>Internal</tspan>
+    </text>
+    <text x="30" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90, 30, 530)">
+        <tspan>External</tspan>
+    </text>
+    
+    <!-- S - Strengths (Top Left) -->
+    <g id="strengths">
+        <rect x="60" y="130" width="570" height="240" rx="12" fill="url(#strengthsGrad)" 
+              stroke="#4CAF50" stroke-width="3" filter="url(#cardShadow)"/>
+        
+        <rect x="60" y="130" width="570" height="50" rx="12" fill="#4CAF50"/>
+        <rect x="60" y="168" width="570" height="12" fill="#4CAF50"/>
+        <text x="90" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="bold" fill="#FFFFFF">
+            <tspan>S</tspan>
+        </text>
+        <text x="125" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="22" font-weight="bold" fill="#FFFFFF">
+            <tspan>Strengths</tspan>
+        </text>
+        
+        <circle cx="85" cy="210" r="6" fill="#4CAF50"/>
+        <text x="100" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Strong R&amp;D team, 200+ tech patents</tspan>
+        </text>
+        
+        <circle cx="85" cy="245" r="6" fill="#4CAF50"/>
+        <text x="100" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>High brand recognition, 85% customer loyalty</tspan>
+        </text>
+        
+        <circle cx="85" cy="280" r="6" fill="#4CAF50"/>
+        <text x="100" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Complete supply chain, 15% cost advantage</tspan>
+        </text>
+        
+        <circle cx="85" cy="315" r="6" fill="#4CAF50"/>
+        <text x="100" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Strong cash flow, stable financials</tspan>
+        </text>
+        
+        <circle cx="85" cy="350" r="6" fill="#4CAF50"/>
+        <text x="100" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Efficient management team, strong execution</tspan>
+        </text>
+    </g>
+    
+    <!-- W - Weaknesses (Top Right) -->
+    <g id="weaknesses">
+        <rect x="650" y="130" width="570" height="240" rx="12" fill="url(#weaknessesGrad)" 
+              stroke="#E74C3C" stroke-width="3" filter="url(#cardShadow)"/>
+        
+        <rect x="650" y="130" width="570" height="50" rx="12" fill="#E74C3C"/>
+        <rect x="650" y="168" width="570" height="12" fill="#E74C3C"/>
+        <text x="680" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="bold" fill="#FFFFFF">
+            <tspan>W</tspan>
+        </text>
+        <text x="720" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="22" font-weight="bold" fill="#FFFFFF">
+            <tspan>Weaknesses</tspan>
+        </text>
+        
+        <circle cx="675" cy="210" r="6" fill="#E74C3C"/>
+        <text x="690" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Insufficient marketing investment</tspan>
+        </text>
+        
+        <circle cx="675" cy="245" r="6" fill="#E74C3C"/>
+        <text x="690" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Single product line, core product dependency</tspan>
+        </text>
+        
+        <circle cx="675" cy="280" r="6" fill="#E74C3C"/>
+        <text x="690" y="285" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Lack of overseas market experience</tspan>
+        </text>
+        
+        <circle cx="675" cy="315" r="6" fill="#E74C3C"/>
+        <text x="690" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>High talent turnover rate (12%)</tspan>
+        </text>
+        
+        <circle cx="675" cy="350" r="6" fill="#E74C3C"/>
+        <text x="690" y="355" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>After-sales response needs improvement</tspan>
+        </text>
+    </g>
+    
+    <!-- O - Opportunities (Bottom Left) -->
+    <g id="opportunities">
+        <rect x="60" y="390" width="570" height="240" rx="12" fill="url(#opportunitiesGrad)" 
+              stroke="#2196F3" stroke-width="3" filter="url(#cardShadow)"/>
+        
+        <rect x="60" y="390" width="570" height="50" rx="12" fill="#2196F3"/>
+        <rect x="60" y="428" width="570" height="12" fill="#2196F3"/>
+        <text x="90" y="423" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="bold" fill="#FFFFFF">
+            <tspan>O</tspan>
+        </text>
+        <text x="125" y="423" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="22" font-weight="bold" fill="#FFFFFF">
+            <tspan>Opportunities</tspan>
+        </text>
+        
+        <circle cx="85" cy="470" r="6" fill="#2196F3"/>
+        <text x="100" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>AI industry growing at 25% CAGR</tspan>
+        </text>
+        
+        <circle cx="85" cy="505" r="6" fill="#2196F3"/>
+        <text x="100" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Increased policy support and subsidies</tspan>
+        </text>
+        
+        <circle cx="85" cy="540" r="6" fill="#2196F3"/>
+        <text x="100" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Strong demand in emerging markets (SEA)</tspan>
+        </text>
+        
+        <circle cx="85" cy="575" r="6" fill="#2196F3"/>
+        <text x="100" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Competitors repositioning, market share available</tspan>
+        </text>
+        
+        <circle cx="85" cy="610" r="6" fill="#2196F3"/>
+        <text x="100" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Digital transformation driving enterprise demand</tspan>
+        </text>
+    </g>
+    
+    <!-- T - Threats (Bottom Right) -->
+    <g id="threats">
+        <rect x="650" y="390" width="570" height="240" rx="12" fill="url(#threatsGrad)" 
+              stroke="#FF9800" stroke-width="3" filter="url(#cardShadow)"/>
+        
+        <rect x="650" y="390" width="570" height="50" rx="12" fill="#FF9800"/>
+        <rect x="650" y="428" width="570" height="12" fill="#FF9800"/>
+        <text x="680" y="423" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="28" font-weight="bold" fill="#FFFFFF">
+            <tspan>T</tspan>
+        </text>
+        <text x="715" y="423" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="22" font-weight="bold" fill="#FFFFFF">
+            <tspan>Threats</tspan>
+        </text>
+        
+        <circle cx="675" cy="470" r="6" fill="#FF9800"/>
+        <text x="690" y="475" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Intensified competition, giants entering market</tspan>
+        </text>
+        
+        <circle cx="675" cy="505" r="6" fill="#FF9800"/>
+        <text x="690" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Rapid technology iterations, R&amp;D pressure</tspan>
+        </text>
+        
+        <circle cx="675" cy="540" r="6" fill="#FF9800"/>
+        <text x="690" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Rising raw material costs, margin squeeze</tspan>
+        </text>
+        
+        <circle cx="675" cy="575" r="6" fill="#FF9800"/>
+        <text x="690" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Stricter regulations, compliance costs rising</tspan>
+        </text>
+        
+        <circle cx="675" cy="610" r="6" fill="#FF9800"/>
+        <text x="690" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="16" fill="#2C3E50">
+            <tspan>Economic uncertainty, client budgets tightening</tspan>
+        </text>
+    </g>
+    
+    <!-- Center logo -->
+    <circle cx="640" cy="370" r="40" fill="#2C3E50" filter="url(#cardShadow)"/>
+    <text x="640" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>SWOT</tspan>
+    </text>
+    <text x="640" y="385" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Analysis</tspan>
+    </text>
+    
+    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="middle">
+        <tspan>Data Source: Strategic Planning Department - 2025 Annual Strategic Analysis Report</tspan>
+    </text>
+</svg>

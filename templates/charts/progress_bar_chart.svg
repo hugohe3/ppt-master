@@ -1,0 +1,295 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    进度条图模板
+    用途: 目标完成进度、多项指标对比
+    适用场景: OKR进度、项目完成度、KPI达成、预算执行
+    支持: 6个进度条，带目标线和状态标签
+    -->
+    
+    <defs>
+        <!-- 进度条渐变（蓝色-默认） -->
+        <linearGradient id="progressBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#42A5F5;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 进度条渐变（绿色-完成/超额） -->
+        <linearGradient id="progressGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#66BB6A;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 进度条渐变（橙色-进行中） -->
+        <linearGradient id="progressOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FFB74D;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 进度条渐变（红色-落后） -->
+        <linearGradient id="progressRed" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#f44336;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EF5350;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 进度条阴影 -->
+        <filter id="progressShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.2"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>2025年Q4 OKR进度追踪</tspan>
+    </text>
+    
+    <text x="60" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>截止日期: 2025年12月31日 · 剩余 20 天</tspan>
+    </text>
+    
+    <!-- 总体进度概览 -->
+    <g id="overallProgress" transform="translate(900, 50)">
+        <rect x="0" y="0" width="320" height="60" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+        <text x="20" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#7F8C8D">
+            <tspan>整体完成度</tspan>
+        </text>
+        <text x="20" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="24" font-weight="bold" fill="#2196F3">
+            <tspan>73.5%</tspan>
+        </text>
+        <text x="110" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#7F8C8D">
+            <tspan>/ 目标 100%</tspan>
+        </text>
+        
+        <!-- 迷你进度条 -->
+        <rect x="200" y="20" width="100" height="24" rx="12" fill="#E0E0E0"/>
+        <rect x="200" y="20" width="73.5" height="24" rx="12" fill="url(#progressBlue)"/>
+    </g>
+    
+    <!-- 进度条区域 -->
+    <g id="progressBars">
+        <!-- 
+        每个进度条：
+        - 总宽度: 700px (从x=360到x=1060)
+        - 高度: 32px
+        - 垂直间距: 85px
+        -->
+        
+        <!-- 进度条1: 营收目标 92% (超额完成) -->
+        <g transform="translate(60, 150)">
+            <!-- 标签区 -->
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>营收目标</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 5000万 | 实际: 4600万</tspan>
+            </text>
+            
+            <!-- 背景条 -->
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            
+            <!-- 进度条 92% -->
+            <rect x="300" y="8" width="644" height="32" rx="16" fill="url(#progressGreen)" filter="url(#progressShadow)"/>
+            
+            <!-- 目标线 (100% = 700px) -->
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            <text x="1000" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="12" fill="#7F8C8D" text-anchor="middle"><tspan>目标</tspan></text>
+            
+            <!-- 百分比 -->
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#4CAF50">
+                <tspan>92%</tspan>
+            </text>
+            
+            <!-- 状态标签 -->
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#E8F5E9"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#4CAF50" text-anchor="middle">
+                <tspan>超前</tspan>
+            </text>
+        </g>
+        
+        <!-- 进度条2: 新客户获取 85% -->
+        <g transform="translate(60, 235)">
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>新客户获取</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 200家 | 实际: 170家</tspan>
+            </text>
+            
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            <rect x="300" y="8" width="595" height="32" rx="16" fill="url(#progressGreen)" filter="url(#progressShadow)"/>
+            
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#4CAF50">
+                <tspan>85%</tspan>
+            </text>
+            
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#E8F5E9"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#4CAF50" text-anchor="middle">
+                <tspan>达标</tspan>
+            </text>
+        </g>
+        
+        <!-- 进度条3: 产品发布 75% -->
+        <g transform="translate(60, 320)">
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>产品发布</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 4个功能 | 实际: 3个功能</tspan>
+            </text>
+            
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            <rect x="300" y="8" width="525" height="32" rx="16" fill="url(#progressBlue)" filter="url(#progressShadow)"/>
+            
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#2196F3">
+                <tspan>75%</tspan>
+            </text>
+            
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#E3F2FD"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#2196F3" text-anchor="middle">
+                <tspan>进行中</tspan>
+            </text>
+        </g>
+        
+        <!-- 进度条4: 团队扩张 68% -->
+        <g transform="translate(60, 405)">
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>团队扩张</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 25人 | 实际: 17人</tspan>
+            </text>
+            
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            <rect x="300" y="8" width="476" height="32" rx="16" fill="url(#progressOrange)" filter="url(#progressShadow)"/>
+            
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#FF9800">
+                <tspan>68%</tspan>
+            </text>
+            
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#FFF3E0"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#FF9800" text-anchor="middle">
+                <tspan>滞后</tspan>
+            </text>
+        </g>
+        
+        <!-- 进度条5: 成本控制 55% -->
+        <g transform="translate(60, 490)">
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>成本控制</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 降低20% | 实际: 降低11%</tspan>
+            </text>
+            
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            <rect x="300" y="8" width="385" height="32" rx="16" fill="url(#progressRed)" filter="url(#progressShadow)"/>
+            
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#f44336">
+                <tspan>55%</tspan>
+            </text>
+            
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#FFEBEE"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#f44336" text-anchor="middle">
+                <tspan>风险</tspan>
+            </text>
+        </g>
+        
+        <!-- 进度条6: 品牌建设 66% -->
+        <g transform="translate(60, 575)">
+            <text x="0" y="20" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="18" font-weight="600" fill="#2C3E50">
+                <tspan>品牌建设</tspan>
+            </text>
+            <text x="0" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>目标: 知名度+30% | 实际: +20%</tspan>
+            </text>
+            
+            <rect x="300" y="8" width="700" height="32" rx="16" fill="#EEEEEE"/>
+            <rect x="300" y="8" width="462" height="32" rx="16" fill="url(#progressOrange)" filter="url(#progressShadow)"/>
+            
+            <line x1="1000" y1="2" x2="1000" y2="46" stroke="#2C3E50" stroke-width="2" stroke-dasharray="4,2"/>
+            
+            <text x="1050" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="20" font-weight="bold" fill="#FF9800">
+                <tspan>66%</tspan>
+            </text>
+            
+            <rect x="1110" y="8" width="70" height="32" rx="16" fill="#FFF3E0"/>
+            <text x="1145" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="13" fill="#FF9800" text-anchor="middle">
+                <tspan>滞后</tspan>
+            </text>
+        </g>
+    </g>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(60, 660)">
+        <rect x="0" y="0" width="16" height="16" rx="4" fill="url(#progressGreen)"/>
+        <text x="24" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>达标/超前 (≥80%)</tspan></text>
+        
+        <rect x="160" y="0" width="16" height="16" rx="4" fill="url(#progressBlue)"/>
+        <text x="184" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>进行中 (70-80%)</tspan></text>
+        
+        <rect x="320" y="0" width="16" height="16" rx="4" fill="url(#progressOrange)"/>
+        <text x="344" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>滞后 (60-70%)</tspan></text>
+        
+        <rect x="470" y="0" width="16" height="16" rx="4" fill="url(#progressRed)"/>
+        <text x="494" y="13" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E"><tspan>风险 (&lt;60%)</tspan></text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="end">
+        <tspan>数据来源: OKR管理系统</tspan>
+    </text>
+</svg>
+

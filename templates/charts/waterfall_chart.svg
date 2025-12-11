@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    瀑布图模板
+    用途: 增减变化分析、财务分解
+    适用场景: 利润分解、预算变化、成本分析、收入构成
+    支持: 起始值 + 6个变化项 + 结束值
+    -->
+    
+    <defs>
+        <!-- 增加项渐变（绿色） -->
+        <linearGradient id="increaseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 减少项渐变（红色） -->
+        <linearGradient id="decreaseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#EF5350;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#D32F2F;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 总计项渐变（蓝色） -->
+        <linearGradient id="totalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- 阴影 -->
+        <filter id="barShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="0" dy="1"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="32" font-weight="bold" fill="#2C3E50">
+        <tspan>年度利润变化分析</tspan>
+    </text>
+    
+    <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="18" fill="#7F8C8D">
+        <tspan>2024年 vs 2025年 · 单位：百万元</tspan>
+    </text>
+    
+    <!-- 图例 -->
+    <g id="legend" transform="translate(880, 70)">
+        <rect x="0" y="0" width="20" height="20" rx="3" fill="url(#totalGrad)"/>
+        <text x="28" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>起止值</tspan>
+        </text>
+        
+        <rect x="100" y="0" width="20" height="20" rx="3" fill="url(#increaseGrad)"/>
+        <text x="128" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>增加</tspan>
+        </text>
+        
+        <rect x="190" y="0" width="20" height="20" rx="3" fill="url(#decreaseGrad)"/>
+        <text x="218" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E">
+            <tspan>减少</tspan>
+        </text>
+    </g>
+    
+    <!-- 图表区域 -->
+    <g id="chartArea">
+        <!-- Y轴网格线 -->
+        <line x1="140" y1="560" x2="1200" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="480" x2="1200" y2="480" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="400" x2="1200" y2="400" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="320" x2="1200" y2="320" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="240" x2="1200" y2="240" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="160" x2="1200" y2="160" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
+        
+        <!-- Y轴刻度标签 -->
+        <text x="125" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>0</tspan></text>
+        <text x="125" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>100</tspan></text>
+        <text x="125" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>200</tspan></text>
+        <text x="125" y="325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>300</tspan></text>
+        <text x="125" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>400</tspan></text>
+        <text x="125" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" fill="#7F8C8D" text-anchor="end"><tspan>500</tspan></text>
+        
+        <!-- 坐标轴 -->
+        <line x1="140" y1="130" x2="140" y2="560" stroke="#95A5A6" stroke-width="2"/>
+        <line x1="140" y1="560" x2="1200" y2="560" stroke="#95A5A6" stroke-width="2"/>
+        
+        <!-- 
+        数据说明：
+        - 2024年利润: 280M (起始)
+        - 营收增长: +120M
+        - 新产品: +65M
+        - 原材料涨价: -45M
+        - 人力成本: -35M
+        - 营销投入: -25M
+        - 运营优化: +40M
+        - 2025年利润: 400M (结束)
+        
+        每100M = 80px
+        柱宽: 90px, 间距: 40px
+        -->
+        
+        <!-- 柱1: 2024年利润 280M（起始值，从0开始） -->
+        <rect x="175" y="336" width="90" height="224" rx="4" fill="url(#totalGrad)" filter="url(#barShadow)"/>
+        <text x="220" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>280</tspan>
+        </text>
+        <text x="220" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>2024年</tspan>
+        </text>
+        <text x="220" y="618" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>利润</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="265" y1="336" x2="305" y2="336" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱2: 营收增长 +120M（从280开始向上） -->
+        <rect x="305" y="240" width="90" height="96" rx="4" fill="url(#increaseGrad)" filter="url(#barShadow)"/>
+        <text x="350" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#4CAF50" text-anchor="middle">
+            <tspan>+120</tspan>
+        </text>
+        <text x="350" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>营收增长</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="395" y1="240" x2="435" y2="240" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱3: 新产品 +65M（从400开始向上） -->
+        <rect x="435" y="188" width="90" height="52" rx="4" fill="url(#increaseGrad)" filter="url(#barShadow)"/>
+        <text x="480" y="173" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#4CAF50" text-anchor="middle">
+            <tspan>+65</tspan>
+        </text>
+        <text x="480" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>新产品</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="525" y1="188" x2="565" y2="188" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱4: 原材料涨价 -45M（从465开始向下） -->
+        <rect x="565" y="188" width="90" height="36" rx="4" fill="url(#decreaseGrad)" filter="url(#barShadow)"/>
+        <text x="610" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#EF5350" text-anchor="middle">
+            <tspan>-45</tspan>
+        </text>
+        <text x="610" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>原材料</tspan>
+        </text>
+        <text x="610" y="618" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>涨价</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="655" y1="224" x2="695" y2="224" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱5: 人力成本 -35M（从420开始向下） -->
+        <rect x="695" y="224" width="90" height="28" rx="4" fill="url(#decreaseGrad)" filter="url(#barShadow)"/>
+        <text x="740" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#EF5350" text-anchor="middle">
+            <tspan>-35</tspan>
+        </text>
+        <text x="740" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>人力成本</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="785" y1="252" x2="825" y2="252" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱6: 营销投入 -25M（从385开始向下） -->
+        <rect x="825" y="252" width="90" height="20" rx="4" fill="url(#decreaseGrad)" filter="url(#barShadow)"/>
+        <text x="870" y="288" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#EF5350" text-anchor="middle">
+            <tspan>-25</tspan>
+        </text>
+        <text x="870" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>营销投入</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="915" y1="272" x2="955" y2="272" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱7: 运营优化 +40M（从360开始向上） -->
+        <rect x="955" y="240" width="90" height="32" rx="4" fill="url(#increaseGrad)" filter="url(#barShadow)"/>
+        <text x="1000" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="600" fill="#4CAF50" text-anchor="middle">
+            <tspan>+40</tspan>
+        </text>
+        <text x="1000" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>运营优化</tspan>
+        </text>
+        
+        <!-- 连接线 -->
+        <line x1="1045" y1="240" x2="1085" y2="240" stroke="#BDC3C7" stroke-width="1.5" stroke-dasharray="4,2"/>
+        
+        <!-- 柱8: 2025年利润 400M（结束值，从0开始） -->
+        <rect x="1085" y="240" width="90" height="320" rx="4" fill="url(#totalGrad)" filter="url(#barShadow)"/>
+        <text x="1130" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="600" fill="#2C3E50" text-anchor="middle">
+            <tspan>400</tspan>
+        </text>
+        <text x="1130" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>2025年</tspan>
+        </text>
+        <text x="1130" y="618" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#5D6D7E" text-anchor="middle">
+            <tspan>利润</tspan>
+        </text>
+    </g>
+    
+    <!-- 总结卡片 -->
+    <g id="summaryCard" transform="translate(60, 640)">
+        <rect x="0" y="0" width="500" height="50" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+        <text x="20" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="14" fill="#388E3C">
+            <tspan>📈 年度利润增长:</tspan>
+        </text>
+        <text x="150" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="bold" fill="#2E7D32">
+            <tspan>+120M (+42.9%)</tspan>
+        </text>
+        <text x="20" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+              font-size="13" fill="#5D6D7E">
+            <tspan>增加项合计: +225M | 减少项合计: -105M | 净增长: +120M</tspan>
+        </text>
+    </g>
+    
+    <!-- 数据来源 -->
+    <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+          font-size="14" fill="#95A5A6" text-anchor="end">
+        <tspan>数据来源: 财务部门</tspan>
+    </text>
+</svg>
+
