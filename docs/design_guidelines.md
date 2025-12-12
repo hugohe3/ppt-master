@@ -157,13 +157,11 @@ system-ui, -apple-system, BlinkMacSystemFont,
 ### 文本换行与扁平化
 
 - 生成阶段：禁止使用 `<foreignObject>`，采用 `<tspan>` 手动换行，并通过 `x`/`dy` 控制行起点与行距，保证与版式行高规范一致。
-- 发布/后处理：如需去除 `<tspan>` 以提升某些渲染器兼容性或便于文本抽取，使用 `tools/flatten_tspan.py` 将每个 `<tspan>` 扁平为独立的 `<text>` 节点。
-  - 交互模式：`python3 tools/flatten_tspan.py` 或 `python3 tools/flatten_tspan.py -i`
-  - 目录：`python3 tools/flatten_tspan.py examples/<project>/svg_output [output_dir]`
-  - 单文件：`python3 tools/flatten_tspan.py path/to/input.svg [path/to/output.svg]`
-  - 默认输出：目录输入若路径以 `svg_output` 结尾，输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`；文件输入输出为 `<文件名>_flattext.svg`
-- 校验要点：对比 `svg_output` 与 `svg_output_flattext`，核对行序、样式（如 `font-size`、`font-weight`、`fill`）与定位（`x`/`y`/`transform`）一致；目标文件中不应残留 `<tspan>`。
-  - 安全性：目录模式下工具会自动跳过输出子目录，避免递归处理。
+- 发布/后处理：推荐使用统一后处理工具 `tools/finalize_svg.py`，已包含文本扁平化功能：
+  ```bash
+  python3 tools/finalize_svg.py <项目路径>
+  ```
+- 校验要点：对比 `svg_output` 与 `svg_final`，核对行序、样式（如 `font-size`、`font-weight`、`fill`）与定位（`x`/`y`/`transform`）一致；目标文件中不应残留 `<tspan>`。
 
 ## 布局原则
 

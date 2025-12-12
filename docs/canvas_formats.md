@@ -151,7 +151,7 @@
 ### 所有格式通用规范
 - **格式**: SVG 矢量图
 - **viewBox**: 与实际尺寸一致
-- **文本**: 禁用 `<foreignObject>`；生成阶段使用 `<tspan>` 手动换行；如需发布去除 `<tspan>`，使用 `tools/flatten_tspan.py` 后处理（默认输出到 `svg_output_flattext`）
+- **文本**: 禁用 `<foreignObject>`；生成阶段使用 `<tspan>` 手动换行；后处理使用 `tools/finalize_svg.py`（输出到 `svg_final/`）
 - **颜色**: 使用 HEX 值
 - **字体**: 优先使用系统字体栈
 

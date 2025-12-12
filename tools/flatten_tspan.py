@@ -176,6 +176,24 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         if parent is None:
             continue
 
+        # 先检查是否有任何 tspan 需要扁平化（有 dy 且 dy != 0，或有独立的 y 属性）
+        needs_flatten = False
+        for child in list(text_el):
+            if not is_svg_tag(child, "tspan"):
+                continue
+            t_dy_attr = get_attr(child, "dy")
+            t_y_attr = get_attr(child, "y")
+            dy_val = parse_first_number(t_dy_attr) if t_dy_attr is not None else None
+            
+            # 如果有 y 属性，或者有非零的 dy，则需要扁平化
+            if t_y_attr is not None or (dy_val is not None and dy_val != 0):
+                needs_flatten = True
+                break
+        
+        # 如果没有任何 tspan 需要换行，跳过整个 text 元素
+        if not needs_flatten:
+            continue
+
         base_x = parse_first_number(get_attr(text_el, "x")) or 0.0
         base_y = parse_first_number(get_attr(text_el, "y")) or 0.0
         cur_x, cur_y = base_x, base_y
@@ -183,7 +201,7 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         new_texts = []
 
         # Leading text directly under <text>
-        lead_text = (text_el.text or "").strip("\n")
+        lead_text = (text_el.text or "").strip()
         if lead_text:
             ne = ET.Element(f"{{{SVG_NS}}}text")
             # Copy attrs from parent <text>

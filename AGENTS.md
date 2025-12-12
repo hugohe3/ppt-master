@@ -70,42 +70,30 @@ python3 tools/project_manager.py validate <路径>
 # SVG 质量检查
 python3 tools/svg_quality_checker.py <路径>
 
-# ⭐ 最终化处理（一键完成：复制 + 嵌入图标）
+# ⭐ 后处理（默认执行全部）
 python3 tools/finalize_svg.py <项目路径>
 
-# 最终化处理 + 嵌入图片（转 Base64）
-python3 tools/finalize_svg.py <项目路径> --embed-images
+# 只执行部分处理
+python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
 
 # 预览原始版本
-python3 -m http.server --directory <路径>/svg_output 8000
+python3 -m http.server -d <路径>/svg_output 8000
 
 # 预览最终版本
-python3 -m http.server --directory <路径>/svg_final 8000
-```
+python3 -m http.server -d <路径>/svg_final 8000
 
-### 后处理工具（可选）
-
-```bash
-# 文本扁平化（将 <tspan> 转为独立 <text>，用于特殊渲染器）
-python3 tools/flatten_tspan.py <项目路径>/svg_output
-
-# ⭐ 导出为 PPTX（原生 SVG 矢量嵌入）
-python3 tools/svg_to_pptx.py <项目路径>
-python3 tools/svg_to_pptx.py <项目路径> -s final      # 使用 svg_final
-python3 tools/svg_to_pptx.py <项目路径> -s flat       # 使用扁平化版本
-python3 tools/svg_to_pptx.py <项目路径> -s final_flat # 使用最终+扁平化版本
+# ⭐ 导出为 PPTX
+python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
 ### 项目目录结构
 
 ```
 project/
-├── svg_output/          # 原始版本（带占位符，作为模板参考）
-├── svg_final/           # 最终版本（嵌入图标/图片后）
-├── svg_output_flattext/ # 扁平化版本（可选）
-├── svg_final_flattext/  # 最终+扁平化版本（可选）
-├── images/              # 图片资源
-└── *.pptx               # 导出的 PPT 文件（可选）
+├── svg_output/    # 原始版本（带占位符，作为模板参考）
+├── svg_final/     # 最终版本（后处理完成）
+├── images/        # 图片资源
+└── *.pptx         # 导出的 PPT 文件
 ```
 
 ## 质量检查清单
@@ -148,10 +136,20 @@ project/
 
 ### 后处理提示
 
-SVG 生成完成后，用户可能需要进行后处理：
+SVG 生成完成后，用户需要进行后处理：
 
-- **最终化处理**: `python3 tools/finalize_svg.py <项目路径>` - 嵌入图标/图片
-- **文本扁平化**: `python3 tools/flatten_tspan.py <目录>` - 将 `<tspan>` 转为独立 `<text>`（用于特殊渲染器）
-- **导出 PPTX**: `python3 tools/svg_to_pptx.py <项目路径>` - 生成 PowerPoint 文件（原生 SVG 矢量嵌入）
+```bash
+# 交互式后处理（推荐）
+python3 tools/finalize_svg.py <项目路径>
+
+# 导出 PPTX
+python3 tools/svg_to_pptx.py <项目路径> -s final
+```
+
+后处理选项：
+- **嵌入图标** - 替换图标占位符为实际 SVG
+- **嵌入图片** - 将外部图片转为 Base64
+- **文本扁平化** - 将 `<tspan>` 转为独立 `<text>`（用于特殊渲染器）
+- **圆角转 Path** - 用于 PPT「转换为形状」时保留圆角
 
 这些工具由用户自行调用，AI 代理无需直接执行。

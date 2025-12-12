@@ -145,7 +145,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         替换的图标数量
     """
     if not svg_path.exists():
-        print(f"❌ 文件不存在: {svg_path}")
+        print(f"[ERROR] 文件不存在: {svg_path}")
         return 0
     
     content = svg_path.read_text(encoding='utf-8')
@@ -156,7 +156,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
     
     if not matches:
         if verbose:
-            print(f"⏭️  无图标占位符: {svg_path}")
+            print(f"[SKIP] 无图标占位符: {svg_path}")
         return 0
     
     replaced_count = 0
@@ -175,13 +175,13 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         paths = extract_paths_from_icon(icon_path)
         
         if not paths:
-            print(f"⚠️  图标不存在: {icon_name} (in {svg_path.name})")
+            print(f"[WARN] 图标不存在: {icon_name} (in {svg_path.name})")
             continue
         
         replacement = generate_icon_group(attrs, paths)
         
         if verbose or dry_run:
-            print(f"  📍 {icon_name}: x={attrs.get('x', 0)}, y={attrs.get('y', 0)}, "
+            print(f"  [*] {icon_name}: x={attrs.get('x', 0)}, y={attrs.get('y', 0)}, "
                   f"size={attrs.get('width', 16)}, fill={attrs.get('fill', '#000000')}")
         
         new_content = new_content[:match.start()] + replacement + new_content[match.end():]
@@ -190,8 +190,8 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
     if not dry_run and replaced_count > 0:
         svg_path.write_text(new_content, encoding='utf-8')
     
-    status = "🔍 预览" if dry_run else "✅ 已处理"
-    print(f"{status}: {svg_path.name} ({replaced_count} 个图标)")
+    status = "[PREVIEW]" if dry_run else "[OK]"
+    print(f"{status} {svg_path.name} ({replaced_count} icons)")
     
     return replaced_count
 
@@ -221,12 +221,12 @@ def main():
     
     # 验证图标目录
     if not args.icons_dir.exists():
-        print(f"❌ 图标目录不存在: {args.icons_dir}")
+        print(f"[ERROR] 图标目录不存在: {args.icons_dir}")
         sys.exit(1)
     
-    print(f"📁 图标目录: {args.icons_dir}")
+    print(f"[DIR] 图标目录: {args.icons_dir}")
     if args.dry_run:
-        print("🔍 预览模式（不修改文件）")
+        print("[PREVIEW] 预览模式（不修改文件）")
     print()
     
     total_replaced = 0

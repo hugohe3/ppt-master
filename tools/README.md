@@ -79,6 +79,8 @@ python3 tools/project_manager.py info projects/my_presentation_ppt169_20251116
 
 ### 3. flatten_tspan.py — 文本扁平化（去 `<tspan>`）
 
+> **推荐**: 使用 `finalize_svg.py` 作为统一入口，已集成文本扁平化功能。以下为独立使用的高级用法。
+
 将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取。
 
 **注意**: 生成端仍应使用 `<tspan>` 手动换行（禁止 `<foreignObject>`）。此工具仅用于后处理。
@@ -86,17 +88,10 @@ python3 tools/project_manager.py info projects/my_presentation_ppt169_20251116
 **用法**:
 
 ```bash
-# 交互模式
-python3 tools/flatten_tspan.py
-python3 tools/flatten_tspan.py -i
+# 扁平化整个输出目录
+python3 tools/flatten_tspan.py examples/<project>/svg_output
 
-# 扁平化整个输出目录（默认输出到同级 svg_output_flattext）
-python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
-
-# 指定输出目录
-python3 tools/flatten_tspan.py examples/<project>/svg_output examples/<project>/svg_output_flattext
-
-# 处理单个 SVG（自定义输出路径）
+# 处理单个 SVG
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 
@@ -105,13 +100,7 @@ python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 - 逐个 `<tspan>` 计算绝对位置（综合 `x`/`y` 与 `dx`/`dy`），合并父/子样式，输出为独立 `<text>`
 - 复制父 `<text>` 的通用文本属性和 `style`，子级覆盖优先
 - 保留或合并 `transform`
-- 输出采用 UTF-8 编码，无 XML 声明，保持与仓库示例风格一致
-
-**建议校验**:
-
-- 目标目录为 `svg_output_flattext`，不应含 `<tspan>`
-- 抽检字号、字重、颜色、对齐和坐标是否与原文件一致
-- 若发现偏差，优先在生成端修正 `<tspan>` 的 `x`/`dy` 或父 `<text>` 的样式后重跑
+- 输出采用 UTF-8 编码，无 XML 声明
 
 **已知限制**:
 
@@ -291,49 +280,33 @@ python3 tools/svg_quality_checker.py examples/project --export
 **用法**:
 
 ```bash
-# 基本用法（使用 svg_output 目录）
+# 推荐：使用后处理完成的版本
+python3 tools/svg_to_pptx.py <项目路径> -s final
+
+# 使用原始版本
 python3 tools/svg_to_pptx.py <项目路径>
 
-# 指定 SVG 来源目录（预定义别名）
-python3 tools/svg_to_pptx.py <项目路径> -s output      # svg_output（默认）
-python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
-python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
-python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
-
-# 直接指定任意子目录名
-python3 tools/svg_to_pptx.py <项目路径> -s my_custom_folder
-
 # 指定输出文件
-python3 tools/svg_to_pptx.py <项目路径> -o output.pptx
+python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
 
 # 静默模式
-python3 tools/svg_to_pptx.py <项目路径> -q
+python3 tools/svg_to_pptx.py <项目路径> -s final -q
 ```
 
 **SVG 来源目录 (`-s`)**:
 
 | 参数 | 目录 | 说明 |
 |------|------|------|
-| `-s output` | `svg_output/` | 原始版本（默认） |
-| `-s final` | `svg_final/` | 带嵌入图标/图片 |
-| `-s flat` | `svg_output_flattext/` | 扁平化文本 |
-| `-s final_flat` | `svg_final_flattext/` | 最终版+扁平化 |
+| `-s output` | `svg_output/` | 原始版本 |
+| `-s final` | `svg_final/` | 后处理完成（推荐） |
 | `-s <任意名>` | `<任意名>/` | 直接指定子目录 |
 
 **示例**:
 
 ```bash
-# 使用原始版本
-python3 tools/svg_to_pptx.py examples/ppt169_demo
-
-# 使用最终版本（带嵌入图标）
+# 推荐流程：先后处理，再导出
+python3 tools/finalize_svg.py examples/ppt169_demo
 python3 tools/svg_to_pptx.py examples/ppt169_demo -s final
-
-# 使用扁平化文本版本
-python3 tools/svg_to_pptx.py examples/ppt169_demo -s flat
-
-# 直接指定自定义子目录
-python3 tools/svg_to_pptx.py examples/ppt169_demo -s my_svg_folder
 ```
 
 **依赖**:
@@ -347,6 +320,56 @@ pip install python-pptx
 - SVG 以原生矢量格式嵌入，保持可编辑性
 - 需要 PowerPoint 2016+ 才能正确显示
 - 文件体积比 PNG 方案小很多
+
+---
+
+### 9. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
+
+解决 SVG 在 PowerPoint 中「转换为形状」时圆角丢失的问题。
+
+**问题**: PowerPoint 不能正确解析 `<rect>` 的 `rx`/`ry` 圆角属性
+
+**解决方案**: 将 `<rect rx="12" ry="12">` 转换为等效的 `<path d="...圆弧...">`
+
+**用法**:
+
+```bash
+# 处理项目中的 SVG（默认使用 svg_output）
+python3 tools/svg_rect_to_path.py <项目路径>
+
+# 指定 SVG 来源目录
+python3 tools/svg_rect_to_path.py <项目路径> -s final
+
+# 指定输出目录名
+python3 tools/svg_rect_to_path.py <项目路径> -o svg_for_ppt
+
+# 处理单个文件
+python3 tools/svg_rect_to_path.py path/to/file.svg
+
+# 详细输出
+python3 tools/svg_rect_to_path.py <项目路径> -v
+```
+
+**示例**:
+
+```bash
+# 处理项目
+python3 tools/svg_rect_to_path.py examples/ppt169_demo
+# 输出到: examples/ppt169_demo/svg_rounded/
+
+# 处理单个文件
+python3 tools/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
+# 输出到: examples/ppt169_demo/svg_output/01_cover_rounded.svg
+```
+
+**使用场景**:
+
+当你需要在 PowerPoint 中将 SVG「转换为形状」进行编辑时，先用此工具预处理 SVG，可以保留圆角效果。
+
+**注意**:
+
+- 如果只是嵌入 SVG 而不转换为形状，无需使用此工具
+- 透明度在「转换为形状」后仍会丢失（PowerPoint 限制）
 
 ---
 
@@ -366,35 +389,26 @@ pip install python-pptx
 3. **生成 SVG 文件**
    使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
 
-4. **质量检查**
+4. **后处理（默认执行全部）**
 
    ```bash
-   # 检查 SVG 质量
-   python3 tools/svg_quality_checker.py projects/my_project_ppt169_20251116
+   # 默认执行全部后处理
+   python3 tools/finalize_svg.py projects/my_project_ppt169_20251116
+   
+   # 只执行部分处理
+   python3 tools/finalize_svg.py projects/my_project_ppt169_20251116 --only embed-icons fix-rounded
    ```
 
-5. **验证项目**
+5. **导出为 PPTX**
+
+   ```bash
+   python3 tools/svg_to_pptx.py projects/my_project_ppt169_20251116 -s final
+   ```
+
+6. **（可选）验证项目**
 
    ```bash
    python3 tools/project_manager.py validate projects/my_project_ppt169_20251116
-   ```
-
-6. **（可选）扁平化文本**
-
-   ```bash
-   python3 tools/flatten_tspan.py projects/my_project_ppt169_20251116/svg_output
-   ```
-
-7. **更新索引**（如果是 examples 目录）
-
-   ```bash
-   python3 tools/generate_examples_index.py
-   ```
-
-8. **导出为 PPTX**
-
-   ```bash
-   python3 tools/svg_to_pptx.py projects/my_project_ppt169_20251116
    ```
 
 ### 批量操作

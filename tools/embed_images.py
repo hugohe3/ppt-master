@@ -75,7 +75,7 @@ def embed_images_in_svg(svg_path, dry_run=False):
             full_path = img_path
         
         if not os.path.exists(full_path):
-            print(f"  ⚠️  Warning: Image not found: {img_path}")
+            print(f"  [WARN] Image not found: {img_path}")
             images_found.append((img_path, "NOT FOUND", 0))
             return match.group(0)
         
@@ -100,17 +100,17 @@ def embed_images_in_svg(svg_path, dry_run=False):
     
     # 打印处理的图片
     if images_found:
-        print(f"\n📄 {os.path.basename(svg_path)}")
+        print(f"\n[FILE] {os.path.basename(svg_path)}")
         for img_path, status, size in images_found:
             size_str = get_file_size_str(size) if size > 0 else ""
             if status == "EMBEDDED":
-                print(f"   ✅ {img_path} ({size_str})")
+                print(f"   [OK] {img_path} ({size_str})")
             elif status == "WILL EMBED":
-                print(f"   📋 {img_path} ({size_str}) [dry-run]")
+                print(f"   [PREVIEW] {img_path} ({size_str}) [dry-run]")
             else:
-                print(f"   ❌ {img_path} ({status})")
+                print(f"   [FAIL] {img_path} ({status})")
         
-        print(f"   📊 Size: {get_file_size_str(original_size)} → {get_file_size_str(new_size)}")
+        print(f"   [SIZE] {get_file_size_str(original_size)} -> {get_file_size_str(new_size)}")
     
     if not dry_run and images_embedded > 0:
         with open(svg_path, 'w', encoding='utf-8') as f:
@@ -136,18 +136,18 @@ def main():
     args = parser.parse_args()
     
     if args.dry_run:
-        print("🔍 Dry-run mode: 只预览，不实际修改文件\n")
+        print("[INFO] Dry-run mode: only preview, no modification\n")
     
     total_images = 0
     total_files = 0
     
     for svg_file in args.files:
         if not os.path.exists(svg_file):
-            print(f"❌ File not found: {svg_file}")
+            print(f"[ERROR] File not found: {svg_file}")
             continue
         
         if not svg_file.endswith('.svg'):
-            print(f"⏭️  Skipping non-SVG file: {svg_file}")
+            print(f"[SKIP] Skipping non-SVG file: {svg_file}")
             continue
         
         images, _ = embed_images_in_svg(svg_file, dry_run=args.dry_run)
@@ -157,9 +157,9 @@ def main():
     
     print(f"\n{'=' * 50}")
     if args.dry_run:
-        print(f"📋 预览完成: 将处理 {total_files} 个文件中的 {total_images} 张图片")
+        print(f"[PREVIEW] Will process {total_images} images in {total_files} files")
     else:
-        print(f"✅ 处理完成: 已嵌入 {total_files} 个文件中的 {total_images} 张图片")
+        print(f"[DONE] Embedded {total_images} images in {total_files} files")
 
 if __name__ == '__main__':
     main()
