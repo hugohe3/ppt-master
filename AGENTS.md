@@ -83,13 +83,29 @@ python3 -m http.server --directory <路径>/svg_output 8000
 python3 -m http.server --directory <路径>/svg_final 8000
 ```
 
+### 后处理工具（可选）
+
+```bash
+# 文本扁平化（将 <tspan> 转为独立 <text>，用于特殊渲染器）
+python3 tools/flatten_tspan.py <项目路径>/svg_output
+
+# ⭐ 导出为 PPTX（原生 SVG 矢量嵌入）
+python3 tools/svg_to_pptx.py <项目路径>
+python3 tools/svg_to_pptx.py <项目路径> -s final      # 使用 svg_final
+python3 tools/svg_to_pptx.py <项目路径> -s flat       # 使用扁平化版本
+python3 tools/svg_to_pptx.py <项目路径> -s final_flat # 使用最终+扁平化版本
+```
+
 ### 项目目录结构
 
 ```
 project/
-├── svg_output/    # 原始版本（带占位符，作为模板参考）
-├── svg_final/     # 最终版本（嵌入图标/图片后）
-└── images/        # 图片资源
+├── svg_output/          # 原始版本（带占位符，作为模板参考）
+├── svg_final/           # 最终版本（嵌入图标/图片后）
+├── svg_output_flattext/ # 扁平化版本（可选）
+├── svg_final_flattext/  # 最终+扁平化版本（可选）
+├── images/              # 图片资源
+└── *.pptx               # 导出的 PPT 文件（可选）
 ```
 
 ## 质量检查清单
@@ -129,3 +145,13 @@ project/
 - 图标使用方式需在初次沟通中确认（Emoji / AI生成 / 内置库 / 自定义）
 - 图片使用方式需在初次沟通中确认（不使用 / 用户提供 / AI生成 / 占位符）
 - **SVG 生成不阻塞**：外部资源（AI 生成图片、用户提供图片）使用占位符或链接，生成完成后再处理
+
+### 后处理提示
+
+SVG 生成完成后，用户可能需要进行后处理：
+
+- **最终化处理**: `python3 tools/finalize_svg.py <项目路径>` - 嵌入图标/图片
+- **文本扁平化**: `python3 tools/flatten_tspan.py <目录>` - 将 `<tspan>` 转为独立 `<text>`（用于特殊渲染器）
+- **导出 PPTX**: `python3 tools/svg_to_pptx.py <项目路径>` - 生成 PowerPoint 文件（原生 SVG 矢量嵌入）
+
+这些工具由用户自行调用，AI 代理无需直接执行。

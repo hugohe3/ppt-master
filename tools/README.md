@@ -276,6 +276,80 @@ python3 tools/svg_quality_checker.py examples/project --export
 
 ---
 
+### 8. svg_to_pptx.py — SVG 转 PPTX 工具
+
+将项目中的 SVG 文件批量转换为 PowerPoint 演示文稿，保留矢量图形的可编辑性。
+
+**功能**:
+
+- 批量将 SVG 转换为 PPTX
+- 每个 SVG 对应一张幻灯片
+- 自动检测画布格式并设置幻灯片尺寸
+- 支持使用 svg_output 或 svg_final 目录
+- SVG 在 PowerPoint 中保持可编辑
+
+**用法**:
+
+```bash
+# 基本用法（使用 svg_output 目录）
+python3 tools/svg_to_pptx.py <项目路径>
+
+# 指定 SVG 来源目录（预定义别名）
+python3 tools/svg_to_pptx.py <项目路径> -s output      # svg_output（默认）
+python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
+python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
+python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
+
+# 直接指定任意子目录名
+python3 tools/svg_to_pptx.py <项目路径> -s my_custom_folder
+
+# 指定输出文件
+python3 tools/svg_to_pptx.py <项目路径> -o output.pptx
+
+# 静默模式
+python3 tools/svg_to_pptx.py <项目路径> -q
+```
+
+**SVG 来源目录 (`-s`)**:
+
+| 参数 | 目录 | 说明 |
+|------|------|------|
+| `-s output` | `svg_output/` | 原始版本（默认） |
+| `-s final` | `svg_final/` | 带嵌入图标/图片 |
+| `-s flat` | `svg_output_flattext/` | 扁平化文本 |
+| `-s final_flat` | `svg_final_flattext/` | 最终版+扁平化 |
+| `-s <任意名>` | `<任意名>/` | 直接指定子目录 |
+
+**示例**:
+
+```bash
+# 使用原始版本
+python3 tools/svg_to_pptx.py examples/ppt169_demo
+
+# 使用最终版本（带嵌入图标）
+python3 tools/svg_to_pptx.py examples/ppt169_demo -s final
+
+# 使用扁平化文本版本
+python3 tools/svg_to_pptx.py examples/ppt169_demo -s flat
+
+# 直接指定自定义子目录
+python3 tools/svg_to_pptx.py examples/ppt169_demo -s my_svg_folder
+```
+
+**依赖**:
+
+```bash
+pip install python-pptx
+```
+
+**注意**:
+
+- SVG 以原生矢量格式嵌入，保持可编辑性
+- 需要 PowerPoint 2016+ 才能正确显示
+- 文件体积比 PNG 方案小很多
+
+---
+
 ## 工作流集成
 
 ### 典型工作流程
@@ -312,8 +386,15 @@ python3 tools/svg_quality_checker.py examples/project --export
    ```
 
 7. **更新索引**（如果是 examples 目录）
+
    ```bash
    python3 tools/generate_examples_index.py
+   ```
+
+8. **导出为 PPTX**
+
+   ```bash
+   python3 tools/svg_to_pptx.py projects/my_project_ppt169_20251116
    ```
 
 ### 批量操作
@@ -340,9 +421,21 @@ python3 tools/svg_quality_checker.py --all examples --export
 
 ## 依赖要求
 
-所有工具均使用 Python 3 标准库，无需额外依赖。
+大部分工具使用 Python 3 标准库，无需额外依赖。
 
 **最低 Python 版本**: Python 3.6+
+
+**可选依赖**:
+
+- `python-pptx` — SVG 转 PPTX 功能需要
+
+安装依赖：
+
+```bash
+pip install -r requirements.txt
+# 或单独安装
+pip install python-pptx
+```
 
 ## 故障排除
 
@@ -370,4 +463,4 @@ python3 tools/svg_quality_checker.py --all examples --export
 
 ---
 
-_最后更新: 2025-11-16_
+_最后更新: 2025-12-12_

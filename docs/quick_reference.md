@@ -385,27 +385,48 @@ yh_slide_02_kpi_dashboard.svg
 3. **保存版本**: 重要迭代保存独立版本
 4. **团队共享**: 建立团队的设计规范库
 
-## 🔧 后处理：文本扁平化（去 tspan）
+## 🔧 后处理工具
+
+### 最终化处理（嵌入图标/图片）
 
 ```bash
-# 交互模式（等效）
-python3 tools/flatten_tspan.py
-python3 tools/flatten_tspan.py -i
+# 一键处理（复制 + 嵌入图标）
+python3 tools/finalize_svg.py <项目路径>
 
-# 目录级扁平化（默认输出到同级 svg_output_flattext）
-python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
-
-# 单文件扁平化（自定义输出路径）
-python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
+# 同时嵌入图片（转 Base64）
+python3 tools/finalize_svg.py <项目路径> --embed-images
 ```
 
-默认输出：
-- 目录输入：若路径以 `svg_output` 结尾，输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`
-- 文件输入：输出为 `<文件名>_flattext.svg`
+### 文本扁平化（去 tspan）
 
-安全性：目录模式下工具会自动跳过输出子目录，避免递归处理。
+```bash
+# 交互模式
+python3 tools/flatten_tspan.py
 
-要点：生成端使用 `<tspan>` 手动换行，发布/抽取文本时可运行本工具去除 `<tspan>`；输出应无 `<tspan>` 残留且样式/坐标一致。
+# 目录级扁平化（输出到 svg_output_flattext）
+python3 tools/flatten_tspan.py <项目路径>/svg_output
+
+# 单文件扁平化
+python3 tools/flatten_tspan.py input.svg output.svg
+```
+
+### 导出为 PPTX（推荐）
+
+```bash
+# 基本用法（使用 svg_output）
+python3 tools/svg_to_pptx.py <项目路径>
+
+# 指定 SVG 来源目录
+python3 tools/svg_to_pptx.py <项目路径> -s output      # svg_output（默认）
+python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
+python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
+python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
+
+# 指定输出文件
+python3 tools/svg_to_pptx.py <项目路径> -o presentation.pptx
+```
+
+**特点**：SVG 以原生矢量格式嵌入，需要 PowerPoint 2016+ 查看。
 
 ---
 
