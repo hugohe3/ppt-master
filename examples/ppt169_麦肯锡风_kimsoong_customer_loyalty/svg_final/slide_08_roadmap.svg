@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="70" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Phased Implementation &amp; Success Metrics</tspan>
+    </text>
+
+    
+    <text x="60" y="125" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>18-Month Rollout Timeline</tspan>
+    </text>
+
+    
+    <line x1="140" y1="195" x2="1180" y2="195" stroke="#005587" stroke-width="3" />
+
+    
+    <circle cx="140" cy="195" r="8" fill="#005587" />
+    <circle cx="400" cy="195" r="8" fill="#005587" />
+    <circle cx="660" cy="195" r="8" fill="#005587" />
+    <circle cx="920" cy="195" r="8" fill="#005587" />
+    <circle cx="1180" cy="195" r="8" fill="#005587" />
+
+    
+    <text x="140" y="220" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Q1 2025</tspan>
+    </text>
+    <text x="400" y="220" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Q2 2025</tspan>
+    </text>
+    <text x="660" y="220" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Q3 2025</tspan>
+    </text>
+    <text x="920" y="220" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Q4 2025</tspan>
+    </text>
+    <text x="1180" y="220" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Q1 2026</tspan>
+    </text>
+
+    
+    <rect x="140" y="240" width="240" height="75" fill="#7FB3C7" opacity="0.3" stroke="#7FB3C7" stroke-width="2" />
+    <text x="260" y="263" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>PHASE 1: Quick Wins</tspan>
+    </text>
+    <text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="160" y="284">• Launch Magazine</text><text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="160" y="302">• Questionnaire + Pen</text><rect x="400" y="240" width="240" height="75" fill="#0076A8" opacity="0.3" stroke="#0076A8" stroke-width="2" />
+    <text x="520" y="263" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>PHASE 2: Service</tspan>
+    </text>
+    <text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="420" y="284">• 3-Yr Free Service</text><text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="420" y="302">• Staff Training</text><rect x="660" y="240" width="240" height="75" fill="#005587" opacity="0.3" stroke="#005587" stroke-width="2" />
+    <text x="780" y="263" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>PHASE 3: Incentives</tspan>
+    </text>
+    <text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="680" y="284">• 20% Discount</text><text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="680" y="302">• Trade-in Program</text><rect x="920" y="240" width="240" height="75" fill="#F5A623" opacity="0.3" stroke="#F5A623" stroke-width="2" />
+    <text x="1040" y="263" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+        <tspan>PHASE 4: Optimize</tspan>
+    </text>
+    <text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="940" y="284">• Review Metrics</text><text font-size="13" fill="#2C3E50" font-family="Arial, sans-serif" x="940" y="302">• Adjust Strategy</text><text x="60" y="355" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>Key Performance Indicators (KPIs)</tspan>
+    </text>
+
+    
+    <rect x="60" y="375" width="1160" height="230" fill="#F8F9FA" stroke="#ECF0F1" stroke-width="2" />
+
+    
+    <rect x="90" y="405" width="340" height="150" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="260" y="430" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Repeat Purchase Rate</tspan>
+    </text>
+
+    <text x="120" y="462" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Baseline:</tspan>
+    </text>
+    <text x="280" y="462" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#E74C3C">
+        <tspan>15%</tspan>
+    </text>
+
+    <text x="120" y="495" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Target (Q4 2025):</tspan>
+    </text>
+    <text x="280" y="495" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F5A623">
+        <tspan>25%</tspan>
+    </text>
+
+    <text x="120" y="528" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Goal (Q1 2026):</tspan>
+    </text>
+    <text x="280" y="528" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
+        <tspan>30%+</tspan>
+    </text>
+
+    
+    <rect x="470" y="405" width="340" height="150" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="640" y="430" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Service Satisfaction (Good+)</tspan>
+    </text>
+
+    <text x="500" y="462" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Baseline:</tspan>
+    </text>
+    <text x="660" y="462" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#E74C3C">
+        <tspan>33%</tspan>
+    </text>
+
+    <text x="500" y="495" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Target (Q4 2025):</tspan>
+    </text>
+    <text x="660" y="495" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F5A623">
+        <tspan>50%</tspan>
+    </text>
+
+    <text x="500" y="528" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Goal (Q1 2026):</tspan>
+    </text>
+    <text x="660" y="528" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
+        <tspan>60%+</tspan>
+    </text>
+
+    
+    <rect x="850" y="405" width="340" height="150" fill="#FFFFFF" stroke="#005587" stroke-width="2" />
+    <text x="1020" y="430" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Questionnaire Response</tspan>
+    </text>
+
+    <text x="880" y="462" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Baseline:</tspan>
+    </text>
+    <text x="1040" y="462" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#E74C3C">
+        <tspan>40%</tspan>
+    </text>
+
+    <text x="880" y="495" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Target (Q2 2025):</tspan>
+    </text>
+    <text x="1040" y="495" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#F5A623">
+        <tspan>60%</tspan>
+    </text>
+
+    <text x="880" y="528" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E">
+        <tspan>Goal (Q4 2025):</tspan>
+    </text>
+    <text x="1040" y="528" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
+        <tspan>70%+</tspan>
+    </text>
+
+    
+    <rect x="60" y="625" width="1160" height="50" fill="#E8F4F8" />
+    <text x="80" y="654" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#005587">
+        <tspan>Success Definition: </tspan>
+    </text>
+    <text x="250" y="654" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50">
+        <tspan>Double retention rate + Transform service perception + Build data-driven culture</tspan>
+    </text>
+
+    
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>8</tspan>
+    </text>
+    <text x="1160" y="700" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Implementation Roadmap &amp; KPI Framework</tspan>
+    </text>
+</svg>

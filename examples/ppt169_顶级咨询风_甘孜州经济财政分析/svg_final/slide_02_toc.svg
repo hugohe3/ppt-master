@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    </defs>
+  
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  
+  
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
+    目录
+  </text>
+  <text x="150" y="70" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="18" fill="#8888A0">
+    CONTENTS
+  </text>
+  
+  
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,120 H308 A12,12 0 0 1 320,132 V358 A12,12 0 0 1 308,370 H52 A12,12 0 0 1 40,358 V132 A12,12 0 0 1 52,120 Z" />
+    <path fill="#1E3A5F" d="M43,120 H317 A3,3 0 0 1 320,123 V123 A3,3 0 0 1 317,126 H43 A3,3 0 0 1 40,123 V123 A3,3 0 0 1 43,120 Z" />
+    <text x="60" y="165" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#1E3A5F" opacity="0.2">01</text>
+    <text x="60" y="210" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">经济总体概况</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="245">GDP总量与增速</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="267">产业结构分析</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="289">人口规模与人均指标</text><circle cx="260" cy="310" r="30" fill="#1E3A5F" opacity="0.1" />
+    <text x="260" y="318" text-anchor="middle" font-size="24">📊</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M352,120 H608 A12,12 0 0 1 620,132 V358 A12,12 0 0 1 608,370 H352 A12,12 0 0 1 340,358 V132 A12,12 0 0 1 352,120 Z" />
+    <path fill="#2E5A8B" d="M343,120 H617 A3,3 0 0 1 620,123 V123 A3,3 0 0 1 617,126 H343 A3,3 0 0 1 340,123 V123 A3,3 0 0 1 343,120 Z" />
+    <text x="360" y="165" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#2E5A8B" opacity="0.2">02</text>
+    <text x="360" y="210" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">GDP与产业结构</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="245">全省排名与对比</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="267">三次产业深度分析</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="289">产业结构评价</text><circle cx="560" cy="310" r="30" fill="#2E5A8B" opacity="0.1" />
+    <text x="560" y="318" text-anchor="middle" font-size="24">🏭</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M652,120 H908 A12,12 0 0 1 920,132 V358 A12,12 0 0 1 908,370 H652 A12,12 0 0 1 640,358 V132 A12,12 0 0 1 652,120 Z" />
+    <path fill="#00A651" d="M643,120 H917 A3,3 0 0 1 920,123 V123 A3,3 0 0 1 917,126 H643 A3,3 0 0 1 640,123 V123 A3,3 0 0 1 643,120 Z" />
+    <text x="660" y="165" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#00A651" opacity="0.2">03</text>
+    <text x="660" y="210" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">人口分析</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="245">人口总量与结构</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="267">人均GDP分析</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="289">居民收入水平</text><circle cx="860" cy="310" r="30" fill="#00A651" opacity="0.1" />
+    <text x="860" y="318" text-anchor="middle" font-size="24">👥</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M952,120 H1208 A12,12 0 0 1 1220,132 V358 A12,12 0 0 1 1208,370 H952 A12,12 0 0 1 940,358 V132 A12,12 0 0 1 952,120 Z" />
+    <path fill="#D4AF37" d="M943,120 H1217 A3,3 0 0 1 1220,123 V123 A3,3 0 0 1 1217,126 H943 A3,3 0 0 1 940,123 V123 A3,3 0 0 1 943,120 Z" />
+    <text x="960" y="165" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#D4AF37" opacity="0.2">04</text>
+    <text x="960" y="210" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">财政收支分析</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="245">收入规模与增速</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="267">支出结构与占比</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="289">财政平衡与依赖度</text><circle cx="1160" cy="310" r="30" fill="#D4AF37" opacity="0.1" />
+    <text x="1160" y="318" text-anchor="middle" font-size="24">💰</text>
+  </g>
+  
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,390 H308 A12,12 0 0 1 320,402 V628 A12,12 0 0 1 308,640 H52 A12,12 0 0 1 40,628 V402 A12,12 0 0 1 52,390 Z" />
+    <path fill="#C41E3A" d="M43,390 H317 A3,3 0 0 1 320,393 V393 A3,3 0 0 1 317,396 H43 A3,3 0 0 1 40,393 V393 A3,3 0 0 1 43,390 Z" />
+    <text x="60" y="435" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#C41E3A" opacity="0.2">05</text>
+    <text x="60" y="480" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">政府性基金</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="515">基金收入规模</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="537">土地出让收入</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="60" y="559">国有资本经营</text><circle cx="260" cy="580" r="30" fill="#C41E3A" opacity="0.1" />
+    <text x="260" y="588" text-anchor="middle" font-size="24">🏛️</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M352,390 H608 A12,12 0 0 1 620,402 V628 A12,12 0 0 1 608,640 H352 A12,12 0 0 1 340,628 V402 A12,12 0 0 1 352,390 Z" />
+    <path fill="#FF6B35" d="M343,390 H617 A3,3 0 0 1 620,393 V393 A3,3 0 0 1 617,396 H343 A3,3 0 0 1 340,393 V393 A3,3 0 0 1 343,390 Z" />
+    <text x="360" y="435" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35" opacity="0.2">06</text>
+    <text x="360" y="480" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">政府债务分析</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="515">债务规模与结构</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="537">举债能力分析</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="360" y="559">风险指标评估</text><circle cx="560" cy="580" r="30" fill="#FF6B35" opacity="0.1" />
+    <text x="560" y="588" text-anchor="middle" font-size="24">📈</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M652,390 H908 A12,12 0 0 1 920,402 V628 A12,12 0 0 1 908,640 H652 A12,12 0 0 1 640,628 V402 A12,12 0 0 1 652,390 Z" />
+    <path fill="#4A90D9" d="M643,390 H917 A3,3 0 0 1 920,393 V393 A3,3 0 0 1 917,396 H643 A3,3 0 0 1 640,393 V393 A3,3 0 0 1 643,390 Z" />
+    <text x="660" y="435" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#4A90D9" opacity="0.2">07</text>
+    <text x="660" y="480" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">综合评价</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="515">核心发现汇总</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="537">优势与亮点</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="660" y="559">挑战与矛盾</text><circle cx="860" cy="580" r="30" fill="#4A90D9" opacity="0.1" />
+    <text x="860" y="588" text-anchor="middle" font-size="24">🎯</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M952,390 H1208 A12,12 0 0 1 1220,402 V628 A12,12 0 0 1 1208,640 H952 A12,12 0 0 1 940,628 V402 A12,12 0 0 1 952,390 Z" />
+    <path fill="#1E3A5F" d="M943,390 H1217 A3,3 0 0 1 1220,393 V393 A3,3 0 0 1 1217,396 H943 A3,3 0 0 1 940,393 V393 A3,3 0 0 1 943,390 Z" />
+    <text x="960" y="435" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="48" font-weight="bold" fill="#1E3A5F" opacity="0.2">08</text>
+    <text x="960" y="480" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="20" font-weight="600" fill="#1A1A2E">资金获取情况</text>
+    <text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="515">超长期特别国债</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="537">城乡社区支出</text><text font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" fill="#8888A0" font-size="14" x="960" y="559">专项转移支付</text><circle cx="1160" cy="580" r="30" fill="#1E3A5F" opacity="0.1" />
+    <text x="1160" y="588" text-anchor="middle" font-size="24">💵</text>
+  </g>
+  
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif" font-size="14" fill="#8888A0">02 / 17</text>
+</svg>

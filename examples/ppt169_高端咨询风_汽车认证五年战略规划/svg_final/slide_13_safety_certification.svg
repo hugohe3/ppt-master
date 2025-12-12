@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#F44336"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#F44336" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     安全性能认证
   </text>
@@ -19,168 +19,168 @@
     SAFETY PERFORMANCE CERTIFICATION
   </text>
   
-  <!-- 副标题 -->
+  
   <text x="60" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#003F6C">
     超越法规要求，打造安全技术领先的自愿性认证体系
   </text>
   
-  <!-- 三栏产品卡片 -->
-  <!-- 卡片1: 动力电池安全 -->
+  
+  
   <g transform="translate(60, 155)">
-    <rect width="370" height="500" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="12" rx="6" fill="#F44336"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V488 A12,12 0 0 1 358,500 H12 A12,12 0 0 1 0,488 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#F44336" d="M6,0 H364 A6,6 0 0 1 370,6 V6 A6,6 0 0 1 364,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标区域 -->
+    
     <g transform="translate(185, 70)">
-      <circle cx="0" cy="0" r="45" fill="#FFEBEE"/>
+      <circle cx="0" cy="0" r="45" fill="#FFEBEE" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" fill="#F44336" text-anchor="middle">🔋</text>
     </g>
     
-    <!-- 标题 -->
+    
     <text x="185" y="150" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">动力电池安全认证</text>
     <text x="185" y="175" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">BATTERY SAFETY CERTIFICATION</text>
     
-    <!-- 认证项目 -->
+    
     <g transform="translate(25, 200)">
-      <rect width="320" height="40" rx="6" fill="#FFEBEE"/>
-      <circle cx="20" cy="20" r="8" fill="#F44336"/>
+      <path fill="#FFEBEE" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#F44336" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">热失控防护与预警</text>
     </g>
     
     <g transform="translate(25, 250)">
-      <rect width="320" height="40" rx="6" fill="#FCE4EC"/>
-      <circle cx="20" cy="20" r="8" fill="#F44336"/>
+      <path fill="#FCE4EC" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#F44336" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">防水防尘（IP67+）</text>
     </g>
     
     <g transform="translate(25, 300)">
-      <rect width="320" height="40" rx="6" fill="#FFEBEE"/>
-      <circle cx="20" cy="20" r="8" fill="#F44336"/>
+      <path fill="#FFEBEE" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#F44336" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">机械冲击与振动</text>
     </g>
     
     <g transform="translate(25, 350)">
-      <rect width="320" height="40" rx="6" fill="#FCE4EC"/>
-      <circle cx="20" cy="20" r="8" fill="#F44336"/>
+      <path fill="#FCE4EC" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#F44336" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">充电安全与BMS可靠性</text>
     </g>
     
-    <!-- 标准对接 -->
+    
     <g transform="translate(25, 420)">
       <text x="160" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">对接标准</text>
-      <rect x="0" y="25" width="320" height="35" rx="6" fill="#F5F5F5"/>
+      <path fill="#F5F5F5" d="M6,25 H314 A6,6 0 0 1 320,31 V54 A6,6 0 0 1 314,60 H6 A6,6 0 0 1 0,54 V31 A6,6 0 0 1 6,25 Z" />
       <text x="160" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F44336" text-anchor="middle">GB 38031 | IEC 62660 | UN38.3</text>
     </g>
   </g>
   
-  <!-- 卡片2: 自动驾驶功能安全 -->
+  
   <g transform="translate(455, 155)">
-    <rect width="370" height="500" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="12" rx="6" fill="#FF9800"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V488 A12,12 0 0 1 358,500 H12 A12,12 0 0 1 0,488 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF9800" d="M6,0 H364 A6,6 0 0 1 370,6 V6 A6,6 0 0 1 364,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标区域 -->
+    
     <g transform="translate(185, 70)">
-      <circle cx="0" cy="0" r="45" fill="#FFF3E0"/>
+      <circle cx="0" cy="0" r="45" fill="#FFF3E0" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" fill="#FF9800" text-anchor="middle">🚗</text>
     </g>
     
-    <!-- 标题 -->
+    
     <text x="185" y="150" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">自动驾驶功能安全</text>
     <text x="185" y="175" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">ADAS FUNCTIONAL SAFETY</text>
     
-    <!-- 认证项目 -->
+    
     <g transform="translate(25, 200)">
-      <rect width="320" height="40" rx="6" fill="#FFF3E0"/>
-      <circle cx="20" cy="20" r="8" fill="#FF9800"/>
+      <path fill="#FFF3E0" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#FF9800" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">ISO 26262 ASIL等级评估</text>
     </g>
     
     <g transform="translate(25, 250)">
-      <rect width="320" height="40" rx="6" fill="#FFECB3"/>
-      <circle cx="20" cy="20" r="8" fill="#FF9800"/>
+      <path fill="#FFECB3" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#FF9800" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">L2/L3级场景安全评估</text>
     </g>
     
     <g transform="translate(25, 300)">
-      <rect width="320" height="40" rx="6" fill="#FFF3E0"/>
-      <circle cx="20" cy="20" r="8" fill="#FF9800"/>
+      <path fill="#FFF3E0" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#FF9800" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">感知系统可靠性验证</text>
     </g>
     
     <g transform="translate(25, 350)">
-      <rect width="320" height="40" rx="6" fill="#FFECB3"/>
-      <circle cx="20" cy="20" r="8" fill="#FF9800"/>
+      <path fill="#FFECB3" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#FF9800" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">人机交互安全性评估</text>
     </g>
     
-    <!-- 标准对接 -->
+    
     <g transform="translate(25, 420)">
       <text x="160" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">对接标准</text>
-      <rect x="0" y="25" width="320" height="35" rx="6" fill="#F5F5F5"/>
+      <path fill="#F5F5F5" d="M6,25 H314 A6,6 0 0 1 320,31 V54 A6,6 0 0 1 314,60 H6 A6,6 0 0 1 0,54 V31 A6,6 0 0 1 6,25 Z" />
       <text x="160" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF9800" text-anchor="middle">ISO 26262 | ISO/PAS 21448 (SOTIF)</text>
     </g>
   </g>
   
-  <!-- 卡片3: 车载网络安全 -->
+  
   <g transform="translate(850, 155)">
-    <rect width="370" height="500" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="12" rx="6" fill="#9C27B0"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V488 A12,12 0 0 1 358,500 H12 A12,12 0 0 1 0,488 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#9C27B0" d="M6,0 H364 A6,6 0 0 1 370,6 V6 A6,6 0 0 1 364,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标区域 -->
+    
     <g transform="translate(185, 70)">
-      <circle cx="0" cy="0" r="45" fill="#F3E5F5"/>
+      <circle cx="0" cy="0" r="45" fill="#F3E5F5" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="40" fill="#9C27B0" text-anchor="middle">🔒</text>
     </g>
     
-    <!-- 标题 -->
+    
     <text x="185" y="150" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">车载网络安全认证</text>
     <text x="185" y="175" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">AUTOMOTIVE CYBERSECURITY</text>
     
-    <!-- 认证项目 -->
+    
     <g transform="translate(25, 200)">
-      <rect width="320" height="40" rx="6" fill="#F3E5F5"/>
-      <circle cx="20" cy="20" r="8" fill="#9C27B0"/>
+      <path fill="#F3E5F5" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#9C27B0" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">CSMS网络安全管理体系</text>
     </g>
     
     <g transform="translate(25, 250)">
-      <rect width="320" height="40" rx="6" fill="#EDE7F6"/>
-      <circle cx="20" cy="20" r="8" fill="#9C27B0"/>
+      <path fill="#EDE7F6" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#9C27B0" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">车载系统渗透测试</text>
     </g>
     
     <g transform="translate(25, 300)">
-      <rect width="320" height="40" rx="6" fill="#F3E5F5"/>
-      <circle cx="20" cy="20" r="8" fill="#9C27B0"/>
+      <path fill="#F3E5F5" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#9C27B0" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">数据隐私保护评估</text>
     </g>
     
     <g transform="translate(25, 350)">
-      <rect width="320" height="40" rx="6" fill="#EDE7F6"/>
-      <circle cx="20" cy="20" r="8" fill="#9C27B0"/>
+      <path fill="#EDE7F6" d="M6,0 H314 A6,6 0 0 1 320,6 V34 A6,6 0 0 1 314,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+      <circle cx="20" cy="20" r="8" fill="#9C27B0" />
       <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
       <text x="45" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">TISAX信息安全评估</text>
     </g>
     
-    <!-- 标准对接 -->
+    
     <g transform="translate(25, 420)">
       <text x="160" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">对接标准</text>
-      <rect x="0" y="25" width="320" height="35" rx="6" fill="#F5F5F5"/>
+      <path fill="#F5F5F5" d="M6,25 H314 A6,6 0 0 1 320,31 V54 A6,6 0 0 1 314,60 H6 A6,6 0 0 1 0,54 V31 A6,6 0 0 1 6,25 Z" />
       <text x="160" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#9C27B0" text-anchor="middle">ISO/SAE 21434 | UN R155/R156</text>
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">13 / 20</text>
 </svg>

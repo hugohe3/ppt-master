@@ -1,34 +1,27 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <linearGradient id="conclusionBg" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#0D2B3E"/>
-      <stop offset="100%" style="stop-color:#1A4A5E"/>
+      <stop offset="0%" style="stop-color:#0D2B3E" />
+      <stop offset="100%" style="stop-color:#1A4A5E" />
     </linearGradient>
   </defs>
   
-  <rect width="1280" height="720" fill="url(#conclusionBg)"/>
+  <rect width="1280" height="720" fill="url(#conclusionBg)" />
   
   <text x="40" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">核心结论</text>
   <text x="1240" y="55" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">CORE CONCLUSIONS</text>
-  <line x1="40" y1="75" x2="1240" y2="75" stroke="#1A6B7C" stroke-width="1"/>
+  <line x1="40" y1="75" x2="1240" y2="75" stroke="#1A6B7C" stroke-width="1" />
   
-  <!-- 结论卡片1 -->
+  
   <g transform="translate(40, 100)">
-    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
-    <rect x="0" y="0" width="380" height="70" rx="16" fill="#1A6B7C"/>
-    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <path fill="#FFFFFF" opacity="0.1" d="M16,0 H364 A16,16 0 0 1 380,16 V384 A16,16 0 0 1 364,400 H16 A16,16 0 0 1 0,384 V16 A16,16 0 0 1 16,0 Z" />
+    <path fill="#1A6B7C" d="M16,0 H364 A16,16 0 0 1 380,16 V54 A16,16 0 0 1 364,70 H16 A16,16 0 0 1 0,54 V16 A16,16 0 0 1 16,0 Z" />
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF" />
     <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#1A6B7C" text-anchor="middle">1</text>
     <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">仲裁即重组序曲</text>
     
     <g transform="translate(25, 95)">
-      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
-        <tspan x="0" dy="0">$5.55亿索赔</tspan>
-        <tspan x="0" dy="25" font-weight="600" fill="#7ED4E6">并非终局对抗</tspan>
-        <tspan x="0" dy="25">而是迫使老挝政府</tspan>
-        <tspan x="0" dy="25">回到谈判桌的筹码</tspan>
-      </text>
-      
-      <line x1="0" y1="120" x2="330" y2="120" stroke="#1A6B7C" stroke-width="1" opacity="0.5"/>
+      <text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" x="0" y="0">$5.55亿索赔</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#7ED4E6" font-weight="600" x="0" y="25">并非终局对抗</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" x="0" y="50">而是迫使老挝政府</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" x="0" y="75">回到谈判桌的筹码</text><line x1="0" y1="120" x2="330" y2="120" stroke="#1A6B7C" stroke-width="1" opacity="0.5" />
       
       <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227">最可能的解决方案：</text>
       <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 债务重组/延期</text>
@@ -39,23 +32,16 @@
     </g>
   </g>
   
-  <!-- 结论卡片2 -->
+  
   <g transform="translate(450, 100)">
-    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
-    <rect x="0" y="0" width="380" height="70" rx="16" fill="#C9A227"/>
-    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <path fill="#FFFFFF" opacity="0.1" d="M16,0 H364 A16,16 0 0 1 380,16 V384 A16,16 0 0 1 364,400 H16 A16,16 0 0 1 0,384 V16 A16,16 0 0 1 16,0 Z" />
+    <path fill="#C9A227" d="M16,0 H364 A16,16 0 0 1 380,16 V54 A16,16 0 0 1 364,70 H16 A16,16 0 0 1 0,54 V16 A16,16 0 0 1 16,0 Z" />
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF" />
     <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#C9A227" text-anchor="middle">2</text>
     <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#0D2B3E">商业逻辑压倒外交</text>
     
     <g transform="translate(25, 95)">
-      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
-        <tspan x="0" dy="0">此案确立了一个先例：</tspan>
-        <tspan x="0" dy="28" font-weight="600" fill="#C9A227">"一带一路"项目中的</tspan>
-        <tspan x="0" dy="25" font-weight="600" fill="#C9A227">商业利益将受法律契约</tspan>
-        <tspan x="0" dy="25" font-weight="600" fill="#C9A227">严格保护</tspan>
-      </text>
-      
-      <line x1="0" y1="120" x2="330" y2="120" stroke="#C9A227" stroke-width="1" opacity="0.5"/>
+      <text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" x="0" y="0">此案确立了一个先例：</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#C9A227" font-weight="600" x="0" y="28">"一带一路"项目中的</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#C9A227" font-weight="600" x="0" y="53">商业利益将受法律契约</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#C9A227" font-weight="600" x="0" y="78">严格保护</text><line x1="0" y1="120" x2="330" y2="120" stroke="#C9A227" stroke-width="1" opacity="0.5" />
       
       <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">即便涉及友好国家：</text>
       <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 中国企业面临财务考核压力</text>
@@ -66,23 +52,16 @@
     </g>
   </g>
   
-  <!-- 结论卡片3 -->
+  
   <g transform="translate(860, 100)">
-    <rect width="380" height="400" rx="16" fill="#FFFFFF" opacity="0.1"/>
-    <rect x="0" y="0" width="380" height="70" rx="16" fill="#B8352B"/>
-    <circle cx="40" cy="35" r="25" fill="#FFFFFF"/>
+    <path fill="#FFFFFF" opacity="0.1" d="M16,0 H364 A16,16 0 0 1 380,16 V384 A16,16 0 0 1 364,400 H16 A16,16 0 0 1 0,384 V16 A16,16 0 0 1 16,0 Z" />
+    <path fill="#B8352B" d="M16,0 H364 A16,16 0 0 1 380,16 V54 A16,16 0 0 1 364,70 H16 A16,16 0 0 1 0,54 V16 A16,16 0 0 1 16,0 Z" />
+    <circle cx="40" cy="35" r="25" fill="#FFFFFF" />
     <text x="40" y="42" font-family="system-ui" font-size="22" font-weight="700" fill="#B8352B" text-anchor="middle">3</text>
     <text x="80" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">"蓄电池"模式破产</text>
     
     <g transform="translate(25, 95)">
-      <text x="0" y="0" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
-        <tspan x="0" dy="0">老挝模式的致命缺陷：</tspan>
-        <tspan x="0" dy="28" font-weight="600" fill="#B8352B">美元举债建设</tspan>
-        <tspan x="0" dy="25" font-weight="600" fill="#B8352B">本币回收成本</tspan>
-        <tspan x="0" dy="25" font-weight="600" fill="#B8352B">= 必然破产</tspan>
-      </text>
-      
-      <line x1="0" y1="120" x2="330" y2="120" stroke="#B8352B" stroke-width="1" opacity="0.5"/>
+      <text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" x="0" y="0">老挝模式的致命缺陷：</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#B8352B" font-weight="600" x="0" y="28">美元举债建设</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#B8352B" font-weight="600" x="0" y="53">本币回收成本</text><text font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#B8352B" font-weight="600" x="0" y="78">= 必然破产</text><line x1="0" y1="120" x2="330" y2="120" stroke="#B8352B" stroke-width="1" opacity="0.5" />
       
       <text x="0" y="150" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">后果：</text>
       <text x="0" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">• 能源主权加速"空心化"</text>
@@ -93,9 +72,9 @@
     </g>
   </g>
   
-  <!-- 底部一句话总结 -->
+  
   <g transform="translate(40, 530)">
-    <rect width="1200" height="100" rx="12" fill="#FFFFFF" opacity="0.08"/>
+    <path fill="#FFFFFF" opacity="0.08" d="M12,0 H1188 A12,12 0 0 1 1200,12 V88 A12,12 0 0 1 1188,100 H12 A12,12 0 0 1 0,88 V12 A12,12 0 0 1 12,0 Z" />
     <text x="600" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">战略定位一句话</text>
     <text x="600" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="15" fill="#7ED4E6" text-anchor="middle">
       <tspan>南欧江项目从</tspan>
@@ -109,7 +88,7 @@
     </text>
   </g>
   
-  <line x1="40" y1="660" x2="1240" y2="660" stroke="#1A6B7C" stroke-width="1"/>
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#1A6B7C" stroke-width="1" />
   <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#7ED4E6">南欧江梯级水电站项目战略评估报告</text>
   <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#7ED4E6" text-anchor="end">18 / 20</text>
 </svg>

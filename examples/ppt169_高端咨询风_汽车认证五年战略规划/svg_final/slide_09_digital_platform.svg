@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     数字化平台建设
   </text>
@@ -19,20 +19,20 @@
     DIGITAL PLATFORM DEVELOPMENT
   </text>
   
-  <!-- 副标题 -->
+  
   <text x="60" y="130" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#003F6C">
     认证全生命周期数字化管理
   </text>
   
-  <!-- 横向流程图 -->
+  
   <g transform="translate(60, 170)">
-    <!-- 流程背景 -->
-    <rect width="1160" height="240" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
     
-    <!-- 流程节点 1: 申请 -->
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H1148 A12,12 0 0 1 1160,12 V228 A12,12 0 0 1 1148,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+    
+    
     <g transform="translate(40, 40)">
-      <rect width="180" height="160" rx="10" fill="#003F6C"/>
-      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2"/>
+      <path fill="#003F6C" d="M10,0 H170 A10,10 0 0 1 180,10 V150 A10,10 0 0 1 170,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2" />
       <text x="90" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">📝</text>
       <text x="90" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">申请</text>
       <text x="90" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">在线提交</text>
@@ -40,14 +40,14 @@
       <text x="90" y="155" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">材料数字化</text>
     </g>
     
-    <!-- 箭头 1 -->
-    <line x1="235" y1="120" x2="270" y2="120" stroke="#003F6C" stroke-width="3"/>
-    <polygon points="268,113 282,120 268,127" fill="#003F6C"/>
     
-    <!-- 流程节点 2: 审核 -->
+    <line x1="235" y1="120" x2="270" y2="120" stroke="#003F6C" stroke-width="3" />
+    <polygon points="268,113 282,120 268,127" fill="#003F6C" />
+    
+    
     <g transform="translate(280, 40)">
-      <rect width="180" height="160" rx="10" fill="#0076A8"/>
-      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2"/>
+      <path fill="#0076A8" d="M10,0 H170 A10,10 0 0 1 180,10 V150 A10,10 0 0 1 170,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2" />
       <text x="90" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">🔍</text>
       <text x="90" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">审核</text>
       <text x="90" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">远程审核</text>
@@ -55,14 +55,14 @@
       <text x="90" y="155" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">实时数据采集</text>
     </g>
     
-    <!-- 箭头 2 -->
-    <line x1="475" y1="120" x2="510" y2="120" stroke="#0076A8" stroke-width="3"/>
-    <polygon points="508,113 522,120 508,127" fill="#0076A8"/>
     
-    <!-- 流程节点 3: 决议 -->
+    <line x1="475" y1="120" x2="510" y2="120" stroke="#0076A8" stroke-width="3" />
+    <polygon points="508,113 522,120 508,127" fill="#0076A8" />
+    
+    
     <g transform="translate(520, 40)">
-      <rect width="180" height="160" rx="10" fill="#00A651"/>
-      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2"/>
+      <path fill="#00A651" d="M10,0 H170 A10,10 0 0 1 180,10 V150 A10,10 0 0 1 170,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2" />
       <text x="90" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">⚖️</text>
       <text x="90" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">决议</text>
       <text x="90" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">智能评估</text>
@@ -70,14 +70,14 @@
       <text x="90" y="155" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">自动化报告</text>
     </g>
     
-    <!-- 箭头 3 -->
-    <line x1="715" y1="120" x2="750" y2="120" stroke="#00A651" stroke-width="3"/>
-    <polygon points="748,113 762,120 748,127" fill="#00A651"/>
     
-    <!-- 流程节点 4: 发证 -->
+    <line x1="715" y1="120" x2="750" y2="120" stroke="#00A651" stroke-width="3" />
+    <polygon points="748,113 762,120 748,127" fill="#00A651" />
+    
+    
     <g transform="translate(760, 40)">
-      <rect width="180" height="160" rx="10" fill="#FF6B35"/>
-      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2"/>
+      <path fill="#FF6B35" d="M10,0 H170 A10,10 0 0 1 180,10 V150 A10,10 0 0 1 170,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <circle cx="90" cy="45" r="28" fill="#FFFFFF" opacity="0.2" />
       <text x="90" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">📜</text>
       <text x="90" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">发证</text>
       <text x="90" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">电子证书</text>
@@ -85,14 +85,14 @@
       <text x="90" y="155" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">防伪验证</text>
     </g>
     
-    <!-- 箭头 4 -->
-    <line x1="955" y1="120" x2="990" y2="120" stroke="#FF6B35" stroke-width="3"/>
-    <polygon points="988,113 1002,120 988,127" fill="#FF6B35"/>
     
-    <!-- 流程节点 5: 监督 -->
+    <line x1="955" y1="120" x2="990" y2="120" stroke="#FF6B35" stroke-width="3" />
+    <polygon points="988,113 1002,120 988,127" fill="#FF6B35" />
+    
+    
     <g transform="translate(1000, 40)">
-      <rect width="140" height="160" rx="10" fill="#9C27B0"/>
-      <circle cx="70" cy="45" r="28" fill="#FFFFFF" opacity="0.2"/>
+      <path fill="#9C27B0" d="M10,0 H130 A10,10 0 0 1 140,10 V150 A10,10 0 0 1 130,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <circle cx="70" cy="45" r="28" fill="#FFFFFF" opacity="0.2" />
       <text x="70" y="52" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFFFFF" text-anchor="middle">👁️</text>
       <text x="70" y="90" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">监督</text>
       <text x="70" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.8" text-anchor="middle">持续监控</text>
@@ -101,54 +101,54 @@
     </g>
   </g>
   
-  <!-- 底部技术支撑 -->
+  
   <g transform="translate(60, 440)">
     <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">
       底层技术支撑
     </text>
     
-    <!-- 技术卡片 -->
+    
     <g transform="translate(0, 45)">
-      <!-- 云计算 -->
+      
       <g transform="translate(0, 0)">
-        <rect width="220" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <rect x="0" y="0" width="220" height="6" rx="3" fill="#0076A8"/>
+        <path fill="#FFFFFF" filter="url(#cardShadow)" d="M10,0 H210 A10,10 0 0 1 220,10 V90 A10,10 0 0 1 210,100 H10 A10,10 0 0 1 0,90 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#0076A8" d="M3,0 H217 A3,3 0 0 1 220,3 V3 A3,3 0 0 1 217,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
         <text x="110" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#0076A8" text-anchor="middle">☁️</text>
         <text x="110" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" text-anchor="middle">云计算</text>
         <text x="110" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">弹性扩展 · 高可用</text>
       </g>
       
-      <!-- 大数据 -->
+      
       <g transform="translate(240, 0)">
-        <rect width="220" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <rect x="0" y="0" width="220" height="6" rx="3" fill="#00A651"/>
+        <path fill="#FFFFFF" filter="url(#cardShadow)" d="M10,0 H210 A10,10 0 0 1 220,10 V90 A10,10 0 0 1 210,100 H10 A10,10 0 0 1 0,90 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#00A651" d="M3,0 H217 A3,3 0 0 1 220,3 V3 A3,3 0 0 1 217,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
         <text x="110" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#00A651" text-anchor="middle">📊</text>
         <text x="110" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" text-anchor="middle">大数据</text>
         <text x="110" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">数据洞察 · 决策支持</text>
       </g>
       
-      <!-- AI人工智能 -->
+      
       <g transform="translate(480, 0)">
-        <rect width="220" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <rect x="0" y="0" width="220" height="6" rx="3" fill="#FF6B35"/>
+        <path fill="#FFFFFF" filter="url(#cardShadow)" d="M10,0 H210 A10,10 0 0 1 220,10 V90 A10,10 0 0 1 210,100 H10 A10,10 0 0 1 0,90 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#FF6B35" d="M3,0 H217 A3,3 0 0 1 220,3 V3 A3,3 0 0 1 217,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
         <text x="110" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#FF6B35" text-anchor="middle">🤖</text>
         <text x="110" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" text-anchor="middle">AI人工智能</text>
         <text x="110" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">智能审核 · 报告生成</text>
       </g>
       
-      <!-- 区块链 -->
+      
       <g transform="translate(720, 0)">
-        <rect width="220" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <rect x="0" y="0" width="220" height="6" rx="3" fill="#9C27B0"/>
+        <path fill="#FFFFFF" filter="url(#cardShadow)" d="M10,0 H210 A10,10 0 0 1 220,10 V90 A10,10 0 0 1 210,100 H10 A10,10 0 0 1 0,90 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#9C27B0" d="M3,0 H217 A3,3 0 0 1 220,3 V3 A3,3 0 0 1 217,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
         <text x="110" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#9C27B0" text-anchor="middle">🔗</text>
         <text x="110" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" text-anchor="middle">区块链</text>
         <text x="110" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">可信存证 · 防伪溯源</text>
       </g>
       
-      <!-- IoT物联网 -->
+      
       <g transform="translate(960, 0)">
-        <rect width="200" height="100" rx="10" fill="#FFFFFF" filter="url(#cardShadow)"/>
-        <rect x="0" y="0" width="200" height="6" rx="3" fill="#2196F3"/>
+        <path fill="#FFFFFF" filter="url(#cardShadow)" d="M10,0 H190 A10,10 0 0 1 200,10 V90 A10,10 0 0 1 190,100 H10 A10,10 0 0 1 0,90 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#2196F3" d="M3,0 H197 A3,3 0 0 1 200,3 V3 A3,3 0 0 1 197,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
         <text x="100" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#2196F3" text-anchor="middle">📡</text>
         <text x="100" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" text-anchor="middle">IoT物联网</text>
         <text x="100" y="88" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">实时采集 · 远程监控</text>
@@ -156,14 +156,14 @@
     </g>
   </g>
   
-  <!-- 底部说明 -->
+  
   <g transform="translate(60, 610)">
-    <rect width="1160" height="50" rx="8" fill="#003F6C" opacity="0.1"/>
+    <path fill="#003F6C" opacity="0.1" d="M8,0 H1152 A8,8 0 0 1 1160,8 V42 A8,8 0 0 1 1152,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
     <text x="20" y="32" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#003F6C">
       💡 平台目标：实现认证业务100%线上化，关键环节自动化率达80%，客户等待时间减少50%
     </text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">09 / 20</text>
 </svg>

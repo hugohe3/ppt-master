@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFBFC"/>
-  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#FAFBFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)" />
+  
+  
   <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
     系统架构：四角色协作流程
   </text>
@@ -18,82 +18,82 @@
     清晰的职责划分，确保每个环节高质量输出
   </text>
   
-  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1" />
   
-  <!-- 流程图 -->
+  
   <g transform="translate(60, 160)">
-    <!-- 输入 -->
+    
     <g>
-      <rect width="140" height="90" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2" d="M12,0 H128 A12,12 0 0 1 140,12 V78 A12,12 0 0 1 128,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
       <text x="70" y="40" font-size="28" text-anchor="middle">📄</text>
       <text x="70" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#1F2937">用户文档</text>
       <text x="70" y="82" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#9CA3AF">内容输入</text>
     </g>
     
-    <!-- 箭头1 -->
+    
     <g transform="translate(150, 35)">
-      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="40,3 55,10 40,17" fill="#6366F1"/>
+      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2" />
+      <polygon points="40,3 55,10 40,17" fill="#6366F1" />
     </g>
     
-    <!-- Strategist -->
+    
     <g transform="translate(215, 0)">
-      <rect width="180" height="90" rx="12" fill="#6366F1"/>
+      <path fill="#6366F1" d="M12,0 H168 A12,12 0 0 1 180,12 V78 A12,12 0 0 1 168,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
       <text x="90" y="35" font-size="22" text-anchor="middle">🎯</text>
       <text x="90" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Strategist</text>
       <text x="90" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#FFFFFF" opacity="0.8">策略规划</text>
     </g>
     
-    <!-- 箭头2 -->
+    
     <g transform="translate(405, 35)">
-      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="40,3 55,10 40,17" fill="#6366F1"/>
+      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2" />
+      <polygon points="40,3 55,10 40,17" fill="#6366F1" />
     </g>
     
-    <!-- Executor -->
+    
     <g transform="translate(470, 0)">
-      <rect width="180" height="90" rx="12" fill="#06B6D4"/>
+      <path fill="#06B6D4" d="M12,0 H168 A12,12 0 0 1 180,12 V78 A12,12 0 0 1 168,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
       <text x="90" y="35" font-size="22" text-anchor="middle">⚙️</text>
       <text x="90" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Executor</text>
       <text x="90" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#FFFFFF" opacity="0.8">SVG 生成</text>
     </g>
     
-    <!-- 箭头3 -->
+    
     <g transform="translate(660, 35)">
-      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="40,3 55,10 40,17" fill="#6366F1"/>
+      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2" />
+      <polygon points="40,3 55,10 40,17" fill="#6366F1" />
     </g>
     
-    <!-- Optimizer -->
+    
     <g transform="translate(725, 0)">
-      <rect width="180" height="90" rx="12" fill="#10B981"/>
+      <path fill="#10B981" d="M12,0 H168 A12,12 0 0 1 180,12 V78 A12,12 0 0 1 168,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
       <text x="90" y="35" font-size="22" text-anchor="middle">✨</text>
       <text x="90" y="58" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#FFFFFF">Optimizer</text>
       <text x="90" y="78" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#FFFFFF" opacity="0.8">CRAP 优化</text>
     </g>
     
-    <!-- 箭头4 -->
+    
     <g transform="translate(915, 35)">
-      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="40,3 55,10 40,17" fill="#6366F1"/>
+      <line x1="0" y1="10" x2="40" y2="10" stroke="#6366F1" stroke-width="2" />
+      <polygon points="40,3 55,10 40,17" fill="#6366F1" />
     </g>
     
-    <!-- 输出 -->
+    
     <g transform="translate(970, 0)">
-      <rect width="140" height="90" rx="12" fill="#FFFFFF" stroke="#10B981" stroke-width="3"/>
+      <path fill="#FFFFFF" stroke="#10B981" stroke-width="3" d="M12,0 H128 A12,12 0 0 1 140,12 V78 A12,12 0 0 1 128,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
       <text x="70" y="40" font-size="28" text-anchor="middle">🎨</text>
       <text x="70" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#10B981">最终 SVG</text>
       <text x="70" y="82" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#9CA3AF">专业输出</text>
     </g>
   </g>
   
-  <!-- 角色详情 -->
+  
   <g transform="translate(60, 290)">
-    <!-- Strategist 详情 -->
+    
     <g>
-      <rect width="360" height="160" rx="12" fill="#FFFFFF" stroke="#6366F1" stroke-width="2"/>
-      <rect x="0" y="0" width="360" height="45" rx="12" fill="#6366F1"/>
-      <rect x="0" y="12" width="360" height="33" fill="#6366F1"/>
+      <path fill="#FFFFFF" stroke="#6366F1" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V148 A12,12 0 0 1 348,160 H12 A12,12 0 0 1 0,148 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#6366F1" d="M12,0 H348 A12,12 0 0 1 360,12 V33 A12,12 0 0 1 348,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="12" width="360" height="33" fill="#6366F1" />
       <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">🎯 Strategist 策略师</text>
       
       <g transform="translate(20, 60)" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#6B7280">
@@ -104,11 +104,11 @@
       </g>
     </g>
     
-    <!-- Executor 详情 -->
+    
     <g transform="translate(400, 0)">
-      <rect width="360" height="160" rx="12" fill="#FFFFFF" stroke="#06B6D4" stroke-width="2"/>
-      <rect x="0" y="0" width="360" height="45" rx="12" fill="#06B6D4"/>
-      <rect x="0" y="12" width="360" height="33" fill="#06B6D4"/>
+      <path fill="#FFFFFF" stroke="#06B6D4" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V148 A12,12 0 0 1 348,160 H12 A12,12 0 0 1 0,148 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#06B6D4" d="M12,0 H348 A12,12 0 0 1 360,12 V33 A12,12 0 0 1 348,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="12" width="360" height="33" fill="#06B6D4" />
       <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">⚙️ Executor 执行师</text>
       
       <g transform="translate(20, 60)" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#6B7280">
@@ -119,11 +119,11 @@
       </g>
     </g>
     
-    <!-- Optimizer 详情 -->
+    
     <g transform="translate(800, 0)">
-      <rect width="360" height="160" rx="12" fill="#FFFFFF" stroke="#10B981" stroke-width="2"/>
-      <rect x="0" y="0" width="360" height="45" rx="12" fill="#10B981"/>
-      <rect x="0" y="12" width="360" height="33" fill="#10B981"/>
+      <path fill="#FFFFFF" stroke="#10B981" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V148 A12,12 0 0 1 348,160 H12 A12,12 0 0 1 0,148 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#10B981" d="M12,0 H348 A12,12 0 0 1 360,12 V33 A12,12 0 0 1 348,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="12" width="360" height="33" fill="#10B981" />
       <text x="20" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">✨ Optimizer 优化师</text>
       
       <g transform="translate(20, 60)" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#6B7280">
@@ -135,14 +135,14 @@
     </g>
   </g>
   
-  <!-- 底部提示 -->
-  <rect x="60" y="480" width="1160" height="50" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M72,480 H1208 A12,12 0 0 1 1220,492 V518 A12,12 0 0 1 1208,530 H72 A12,12 0 0 1 60,518 V492 A12,12 0 0 1 72,480 Z" />
   <text x="640" y="512" font-family="system-ui, -apple-system, sans-serif" font-size="15" text-anchor="middle" fill="#6B7280">
     📌 专业分工 + 迭代优化 = 高质量输出保障
   </text>
   
-  <!-- 页脚 -->
-  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1" />
   <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 系统架构</text>
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">04 / 10</text>
   <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>

@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     关系精神分析对临床的贡献
   </text>
@@ -13,156 +13,156 @@
     The Relational Perspective: Redefining Core Concepts
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="480" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 核心理念 -->
+  <line x1="60" y1="125" x2="480" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="1160" height="60" rx="12" fill="#1E3A5F"/>
+    <path fill="#1E3A5F" d="M12,0 H1148 A12,12 0 0 1 1160,12 V48 A12,12 0 0 1 1148,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="38" font-size="16" fill="#FFFFFF">
       <tspan font-weight="bold">双人心理学视角：</tspan>
       <tspan dx="10">治疗是一个双向互惠影响的过程，治疗师的主观性是不可消除且至关重要的</tspan>
     </text>
   </g>
   
-  <!-- 四个核心概念重新定义 -->
+  
   <g transform="translate(60, 230)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 移情 -->
+    
     <g>
-      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H548 A12,12 0 0 1 560,12 V178 A12,12 0 0 1 548,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="50" rx="12" fill="#2E5C8E"/>
-      <rect x="0" y="38" width="560" height="12" fill="#2E5C8E"/>
+      
+      <path fill="#2E5C8E" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="560" height="12" fill="#2E5C8E" />
       <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">移情 Transference</text>
       
-      <!-- 传统定义 -->
+      
       <g transform="translate(20, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#FECACA"/>
+        <path fill="#FECACA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#B54545" text-anchor="middle">❌ 传统视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">单纯的"扭曲"</text>
       </g>
       
-      <!-- 箭头 -->
+      
       <text x="280" y="100" font-size="24" fill="#2E5C8E">→</text>
       
-      <!-- 关系定义 -->
+      
       <g transform="translate(300, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#D4EDDA"/>
+        <path fill="#D4EDDA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#3D8B7A" text-anchor="middle">✓ 关系视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">基于历史的可信建构</text>
       </g>
       
-      <!-- 说明 -->
+      
       <text x="20" y="160" font-size="14" fill="#6B7280">
         反映了患者组织人际体验的习惯性方式
       </text>
     </g>
     
-    <!-- 反移情 -->
+    
     <g transform="translate(600, 0)">
-      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H548 A12,12 0 0 1 560,12 V178 A12,12 0 0 1 548,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="50" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="38" width="560" height="12" fill="#3D8B7A"/>
+      
+      <path fill="#3D8B7A" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="560" height="12" fill="#3D8B7A" />
       <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">反移情 Countertransference</text>
       
-      <!-- 传统定义 -->
+      
       <g transform="translate(20, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#FECACA"/>
+        <path fill="#FECACA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#B54545" text-anchor="middle">❌ 传统视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">治疗的阻碍</text>
       </g>
       
-      <!-- 箭头 -->
+      
       <text x="280" y="100" font-size="24" fill="#3D8B7A">→</text>
       
-      <!-- 关系定义 -->
+      
       <g transform="translate(300, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#D4EDDA"/>
+        <path fill="#D4EDDA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#3D8B7A" text-anchor="middle">✓ 关系视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">理解患者的"皇家大道"</text>
       </g>
       
-      <!-- 说明 -->
+      
       <text x="20" y="160" font-size="14" fill="#6B7280">
         治疗师被唤起的体验是通往患者解离体验的重要信息
       </text>
     </g>
     
-    <!-- 阻抗 -->
+    
     <g transform="translate(0, 220)">
-      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H548 A12,12 0 0 1 560,12 V178 A12,12 0 0 1 548,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="50" rx="12" fill="#E07843"/>
-      <rect x="0" y="38" width="560" height="12" fill="#E07843"/>
+      
+      <path fill="#E07843" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="560" height="12" fill="#E07843" />
       <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">阻抗 Resistance</text>
       
-      <!-- 传统定义 -->
+      
       <g transform="translate(20, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#FECACA"/>
+        <path fill="#FECACA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#B54545" text-anchor="middle">❌ 传统视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">患者的对抗</text>
       </g>
       
-      <!-- 箭头 -->
+      
       <text x="280" y="100" font-size="24" fill="#E07843">→</text>
       
-      <!-- 关系定义 -->
+      
       <g transform="translate(300, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#D4EDDA"/>
+        <path fill="#D4EDDA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#3D8B7A" text-anchor="middle">✓ 关系视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">对安全需求的沟通</text>
       </g>
       
-      <!-- 说明 -->
+      
       <text x="20" y="160" font-size="14" fill="#6B7280">
         表达了患者对治疗师互动方式的反应
       </text>
     </g>
     
-    <!-- 中立 -->
+    
     <g transform="translate(600, 220)">
-      <rect x="0" y="0" width="560" height="190" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H548 A12,12 0 0 1 560,12 V178 A12,12 0 0 1 548,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="50" rx="12" fill="#64748B"/>
-      <rect x="0" y="38" width="560" height="12" fill="#64748B"/>
+      
+      <path fill="#64748B" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="560" height="12" fill="#64748B" />
       <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">中立 Neutrality</text>
       
-      <!-- 传统定义 -->
+      
       <g transform="translate(20, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#FECACA"/>
+        <path fill="#FECACA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#B54545" text-anchor="middle">❌ 传统视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">追求的理想</text>
       </g>
       
-      <!-- 箭头 -->
+      
       <text x="280" y="100" font-size="24" fill="#64748B">→</text>
       
-      <!-- 关系定义 -->
+      
       <g transform="translate(300, 65)">
-        <rect x="0" y="0" width="240" height="55" rx="8" fill="#D4EDDA"/>
+        <path fill="#D4EDDA" d="M8,0 H232 A8,8 0 0 1 240,8 V47 A8,8 0 0 1 232,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="20" font-size="13" fill="#3D8B7A" text-anchor="middle">✓ 关系视角</text>
         <text x="120" y="42" font-size="14" fill="#374151" text-anchor="middle">不可能的理想</text>
       </g>
       
-      <!-- 说明 -->
+      
       <text x="20" y="160" font-size="14" fill="#6B7280">
         承认影响比假装客观更具治疗意义
       </text>
     </g>
   </g>
   
-  <!-- 底部强调 -->
-  <rect x="60" y="660" width="1160" height="40" rx="8" fill="#FEF3C7"/>
+  
+  <path fill="#FEF3C7" d="M68,660 H1212 A8,8 0 0 1 1220,668 V692 A8,8 0 0 1 1212,700 H68 A8,8 0 0 1 60,692 V668 A8,8 0 0 1 68,660 Z" />
   <text x="640" y="685" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#92400E" text-anchor="middle">
     ⚡ 治疗发生在由患者和治疗师的主观性共同构成的"分析的第三方"中
   </text>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">19</text>
 </svg>

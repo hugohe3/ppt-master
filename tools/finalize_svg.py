@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 """
-SVG 最终化处理工具
+PPT Master - SVG 后处理工具（统一入口）
 
-将 svg_output/ 中的原始 SVG 复制到 svg_final/，并完成图标和图片的嵌入。
-原始版本保留在 svg_output/ 作为模板参考。
+将 svg_output/ 中的 SVG 文件处理后输出到 svg_final/。
+默认执行全部处理，也可通过参数指定部分处理。
 
 用法：
+    # 默认执行全部处理（推荐）
     python3 tools/finalize_svg.py <项目目录>
+    
+    # 只执行部分处理
+    python3 tools/finalize_svg.py <项目目录> --only embed-icons fix-rounded
 
 示例：
     python3 tools/finalize_svg.py projects/my_project
-    python3 tools/finalize_svg.py examples/ppt169_demo
+    python3 tools/finalize_svg.py examples/ppt169_demo --only embed-icons
 
-流程：
-    1. 复制 svg_output/ → svg_final/
-    2. 嵌入图标（替换 <use data-icon="..."/>）
-    3. 嵌入图片（转换为 Base64，可选）
+处理选项：
+    embed-icons   - 替换 <use data-icon="..."/> 为实际图标 SVG
+    embed-images  - 将外部图片转换为 Base64 嵌入
+    flatten-text  - 将 <tspan> 转为独立 <text>（用于特殊渲染器）
+    fix-rounded   - 将 <rect rx="..."/> 转为 <path>（用于 PPT 转形状）
 """
 
 import os
@@ -30,14 +35,67 @@ from embed_icons import process_svg_file as embed_icons_in_file
 from embed_images import embed_images_in_svg
 
 
-def finalize_project(project_dir: Path, embed_images: bool = False, dry_run: bool = False):
+def safe_print(text):
+    """安全打印，处理 Windows 终端编码问题"""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        text = text.replace('✅', '[OK]').replace('❌', '[ERROR]')
+        text = text.replace('📁', '[DIR]').replace('📄', '[FILE]')
+        print(text)
+
+
+def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
+    """对单个 SVG 文件进行文本扁平化处理（原地修改）"""
+    try:
+        from flatten_tspan import flatten_text_with_tspans
+        from xml.etree import ElementTree as ET
+        
+        tree = ET.parse(str(svg_file))
+        changed = flatten_text_with_tspans(tree)
+        
+        if changed:
+            tree.write(str(svg_file), encoding='unicode', xml_declaration=False)
+            if verbose:
+                safe_print(f"   [OK] {svg_file.name}: 文本已扁平化")
+        return changed
+    except Exception as e:
+        if verbose:
+            safe_print(f"   [ERROR] {svg_file.name}: {e}")
+        return False
+
+
+def process_rounded_rect(svg_file: Path, verbose: bool = False) -> int:
+    """对单个 SVG 文件进行圆角矩形转换（原地修改）"""
+    try:
+        from svg_rect_to_path import process_svg
+        
+        with open(svg_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        processed, count = process_svg(content, verbose=False)
+        
+        if count > 0:
+            with open(svg_file, 'w', encoding='utf-8') as f:
+                f.write(processed)
+            if verbose:
+                safe_print(f"   [OK] {svg_file.name}: {count} 个圆角矩形")
+        return count
+    except Exception as e:
+        if verbose:
+            safe_print(f"   [ERROR] {svg_file.name}: {e}")
+        return 0
+
+
+def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, quiet: bool = False):
     """
     最终化处理项目中的 SVG 文件
     
     Args:
         project_dir: 项目目录路径
-        embed_images: 是否嵌入图片（转为 Base64）
+        options: 处理选项字典
         dry_run: 是否仅预览不执行
+        quiet: 安静模式，减少输出
     """
     svg_output = project_dir / 'svg_output'
     svg_final = project_dir / 'svg_final'
@@ -45,114 +103,153 @@ def finalize_project(project_dir: Path, embed_images: bool = False, dry_run: boo
     
     # 检查 svg_output 是否存在
     if not svg_output.exists():
-        print(f"❌ 未找到 svg_output 目录: {svg_output}")
+        safe_print(f"[ERROR] 未找到 svg_output 目录: {svg_output}")
         return False
     
     # 获取 SVG 文件列表
     svg_files = list(svg_output.glob('*.svg'))
     if not svg_files:
-        print(f"❌ svg_output 中没有 SVG 文件")
+        safe_print(f"[ERROR] svg_output 中没有 SVG 文件")
         return False
     
-    print(f"📁 项目目录: {project_dir}")
-    print(f"📄 找到 {len(svg_files)} 个 SVG 文件")
-    print()
+    if not quiet:
+        print()
+        safe_print(f"[DIR] 项目: {project_dir.name}")
+        safe_print(f"[FILE] {len(svg_files)} 个 SVG 文件")
     
     if dry_run:
-        print("🔍 预览模式（不执行操作）")
-        print()
-        print("将执行以下操作：")
-        print(f"  1. 复制 svg_output/ → svg_final/")
-        print(f"  2. 在 svg_final/ 中嵌入图标")
-        if embed_images:
-            print(f"  3. 在 svg_final/ 中嵌入图片（Base64）")
-        print()
-        print("SVG 文件：")
-        for f in svg_files:
-            print(f"  - {f.name}")
+        safe_print("[PREVIEW] 预览模式，不执行操作")
         return True
     
     # 步骤 1: 复制目录
-    print("📋 步骤 1/3: 复制 svg_output → svg_final")
     if svg_final.exists():
         shutil.rmtree(svg_final)
     shutil.copytree(svg_output, svg_final)
-    print(f"   ✅ 已复制 {len(svg_files)} 个文件")
-    print()
+    
+    if not quiet:
+        print()
     
     # 步骤 2: 嵌入图标
-    print("🎨 步骤 2/3: 嵌入图标")
-    icons_count = 0
-    for svg_file in svg_final.glob('*.svg'):
-        count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False)
-        if count > 0:
-            print(f"   ✅ {svg_file.name}: {count} 个图标")
+    if options.get('embed_icons'):
+        if not quiet:
+            safe_print("[1/4] 嵌入图标...")
+        icons_count = 0
+        for svg_file in svg_final.glob('*.svg'):
+            count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False)
             icons_count += count
-    if icons_count == 0:
-        print("   ⏭️  无图标需要处理")
-    print()
+        if not quiet:
+            if icons_count > 0:
+                safe_print(f"      {icons_count} 个图标已嵌入")
+            else:
+                safe_print("      无图标")
     
-    # 步骤 3: 嵌入图片（可选）
-    print("🖼️  步骤 3/3: 嵌入图片")
-    if embed_images:
+    # 步骤 3: 嵌入图片
+    if options.get('embed_images'):
+        if not quiet:
+            safe_print("[2/4] 嵌入图片...")
         images_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count, _ = embed_images_in_svg(str(svg_file), dry_run=False)
-            if count > 0:
-                images_count += count
-        if images_count == 0:
-            print("   ⏭️  无图片需要处理")
-    else:
-        print("   ⏭️  跳过（使用 --embed-images 启用）")
-    print()
+            images_count += count
+        if not quiet:
+            if images_count > 0:
+                safe_print(f"      {images_count} 张图片已嵌入")
+            else:
+                safe_print("      无图片")
+    
+    # 步骤 4: 文本扁平化
+    if options.get('flatten_text'):
+        if not quiet:
+            safe_print("[3/4] 文本扁平化...")
+        flatten_count = 0
+        for svg_file in svg_final.glob('*.svg'):
+            if process_flatten_text(svg_file, verbose=False):
+                flatten_count += 1
+        if not quiet:
+            if flatten_count > 0:
+                safe_print(f"      {flatten_count} 个文件已处理")
+            else:
+                safe_print("      无需处理")
+    
+    # 步骤 5: 圆角转 Path
+    if options.get('fix_rounded'):
+        if not quiet:
+            safe_print("[4/4] 圆角转 Path...")
+        rounded_count = 0
+        for svg_file in svg_final.glob('*.svg'):
+            count = process_rounded_rect(svg_file, verbose=False)
+            rounded_count += count
+        if not quiet:
+            if rounded_count > 0:
+                safe_print(f"      {rounded_count} 个圆角矩形已转换")
+            else:
+                safe_print("      无圆角矩形")
     
     # 完成
-    print("=" * 50)
-    print("✅ 处理完成！")
-    print()
-    print(f"📂 原始版本: {svg_output}/")
-    print(f"📂 最终版本: {svg_final}/")
-    print()
-    print("预览最终版本：")
-    print(f"   cd {svg_final} && python3 -m http.server 8000")
+    if not quiet:
+        print()
+        safe_print("[OK] 完成!")
+        print()
+        print("后续操作：")
+        print(f"  python tools/svg_to_pptx.py \"{project_dir}\" -s final")
     
     return True
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='SVG 最终化处理：复制并嵌入图标/图片',
+        description='PPT Master - SVG 后处理工具',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 示例：
-  %(prog)s projects/my_project           # 处理项目
-  %(prog)s --dry-run projects/my_project # 预览操作
-  %(prog)s --embed-images projects/xxx   # 同时嵌入图片（Base64）
+  %(prog)s projects/my_project           # 执行全部处理（默认）
+  %(prog)s projects/my_project --only embed-icons fix-rounded
+  %(prog)s projects/my_project -q        # 安静模式
 
-目录结构：
-  project/
-  ├── svg_output/    # 原始版本（保留）
-  ├── svg_final/     # 最终版本（生成）
-  └── images/        # 图片资源
+处理选项（用于 --only）：
+  embed-icons   嵌入图标
+  embed-images  嵌入图片
+  flatten-text  文本扁平化
+  fix-rounded   圆角转 Path
         '''
     )
     
     parser.add_argument('project_dir', type=Path, help='项目目录路径')
-    parser.add_argument('--embed-images', action='store_true',
-                        help='同时将图片转换为 Base64 嵌入（默认保持外部引用）')
+    parser.add_argument('--only', nargs='+', metavar='OPTION',
+                        choices=['embed-icons', 'embed-images', 'flatten-text', 'fix-rounded'],
+                        help='只执行指定的处理（默认执行全部）')
     parser.add_argument('--dry-run', '-n', action='store_true',
                         help='仅预览操作，不实际执行')
+    parser.add_argument('--quiet', '-q', action='store_true',
+                        help='安静模式，减少输出')
     
     args = parser.parse_args()
     
     if not args.project_dir.exists():
-        print(f"❌ 项目目录不存在: {args.project_dir}")
+        safe_print(f"[ERROR] 项目目录不存在: {args.project_dir}")
         sys.exit(1)
     
-    success = finalize_project(args.project_dir, args.embed_images, args.dry_run)
+    # 确定处理选项
+    if args.only:
+        # 只执行指定的处理
+        options = {
+            'embed_icons': 'embed-icons' in args.only,
+            'embed_images': 'embed-images' in args.only,
+            'flatten_text': 'flatten-text' in args.only,
+            'fix_rounded': 'fix-rounded' in args.only,
+        }
+    else:
+        # 默认执行全部
+        options = {
+            'embed_icons': True,
+            'embed_images': True,
+            'flatten_text': True,
+            'fix_rounded': True,
+        }
+    
+    success = finalize_project(args.project_dir, options, args.dry_run, args.quiet)
     sys.exit(0 if success else 1)
 
 
 if __name__ == '__main__':
     main()
-

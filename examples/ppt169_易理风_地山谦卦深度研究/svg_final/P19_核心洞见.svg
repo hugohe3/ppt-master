@@ -1,81 +1,57 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 - 深色模式 -->
-  <rect width="1280" height="720" fill="#2C3E50"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#2C3E50" />
+  
+  
   <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">结论：通往「有终」的算法</text>
-  <line x1="60" y1="120" x2="420" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  <line x1="60" y1="120" x2="420" y2="120" stroke="#D4A84B" stroke-width="3" />
   
-  <!-- 四大洞见卡片 2×2 -->
-  <!-- 洞见1：高维能量控制 -->
+  
+  
   <g transform="translate(60, 160)">
-    <rect x="0" y="0" width="555" height="200" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="2"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#1ABC9C"/>
-    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C"/>
+    <path fill="#34495E" stroke="#1ABC9C" stroke-width="2" d="M12,0 H543 A12,12 0 0 1 555,12 V188 A12,12 0 0 1 543,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1ABC9C" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C" />
     <text x="40" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" font-weight="bold">洞见一</text>
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#E8E4DC" text-anchor="middle" font-weight="bold">高维度的能量控制技术</text>
     
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 违背动物性的炫耀本能</tspan>
-      <tspan x="40" dy="28">• 顺应宇宙性的平衡法则</tspan>
-      <tspan x="40" dy="28">• 放弃短期的、表面的「高位」</tspan>
-      <tspan x="40" dy="28">• 换取长期的、实质的「稳态」</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 违背动物性的炫耀本能</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 顺应宇宙性的平衡法则</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 放弃短期的、表面的「高位」</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 换取长期的、实质的「稳态」</text></g>
   
-  <!-- 洞见2：实力是前提 -->
+  
   <g transform="translate(665, 160)">
-    <rect x="0" y="0" width="555" height="200" rx="12" fill="#34495E" stroke="#C0392B" stroke-width="2"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#C0392B"/>
-    <rect x="0" y="40" width="555" height="10" fill="#C0392B"/>
+    <path fill="#34495E" stroke="#C0392B" stroke-width="2" d="M12,0 H543 A12,12 0 0 1 555,12 V188 A12,12 0 0 1 543,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#C0392B" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#C0392B" />
     <text x="40" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" font-weight="bold">洞见二</text>
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="bold">实力是谦的前提</text>
     
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 没有「艮」的笃实，就没有「谦」的资格</tspan>
-      <tspan x="40" dy="28">• 谦卦不仅教人低调，更教人务实</tspan>
-      <tspan x="40" dy="28">• 鼓励在地下默默积蓄力量</tspan>
-      <tspan x="40" dy="28">• 如山一般的力量</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 没有「艮」的笃实，就没有「谦」的资格</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 谦卦不仅教人低调，更教人务实</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 鼓励在地下默默积蓄力量</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 如山一般的力量</text></g>
   
-  <!-- 洞见3：动态权变 -->
+  
   <g transform="translate(60, 390)">
-    <rect x="0" y="0" width="555" height="200" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#D4A84B"/>
-    <rect x="0" y="40" width="555" height="10" fill="#D4A84B"/>
+    <path fill="#34495E" stroke="#D4A84B" stroke-width="2" d="M12,0 H543 A12,12 0 0 1 555,12 V188 A12,12 0 0 1 543,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#D4A84B" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#D4A84B" />
     <text x="40" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#2C3E50" font-weight="bold">洞见三</text>
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#2C3E50" text-anchor="middle" font-weight="bold">谦是动态的权变</text>
     
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 初六战战兢兢 → 六二名声初起</tspan>
-      <tspan x="40" dy="28">• 九三劳苦功高 → 六五恩威并施</tspan>
-      <tspan x="40" dy="28">• 谦的表现形式随位而移</tspan>
-      <tspan x="40" dy="28">• 为全局最优解而进行自我调节</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 初六战战兢兢 → 六二名声初起</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 九三劳苦功高 → 六五恩威并施</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 谦的表现形式随位而移</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 为全局最优解而进行自我调节</text></g>
   
-  <!-- 洞见4：文明延续 -->
+  
   <g transform="translate(665, 390)">
-    <rect x="0" y="0" width="555" height="200" rx="12" fill="#34495E" stroke="#4A5568" stroke-width="2"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#4A5568"/>
-    <rect x="0" y="40" width="555" height="10" fill="#4A5568"/>
+    <path fill="#34495E" stroke="#4A5568" stroke-width="2" d="M12,0 H543 A12,12 0 0 1 555,12 V188 A12,12 0 0 1 543,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#4A5568" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#4A5568" />
     <text x="40" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" font-weight="bold">洞见四</text>
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#E8E4DC" text-anchor="middle" font-weight="bold">文明延续的必由之路</text>
     
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 应对气候变化（天道）</tspan>
-      <tspan x="40" dy="28">• 解决贫富差距（地道）</tspan>
-      <tspan x="40" dy="28">• 重构国际秩序（人道）</tspan>
-      <tspan x="40" dy="28">• 「亏盈益谦」= 可持续发展的元算法</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 应对气候变化（天道）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 解决贫富差距（地道）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 重构国际秩序（人道）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 「亏盈益谦」= 可持续发展的元算法</text></g>
   
-  <!-- 底部总结 -->
-  <rect x="60" y="615" width="1160" height="50" rx="8" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+  
+  <path fill="#2C3E50" stroke="#D4A84B" stroke-width="2" d="M68,615 H1212 A8,8 0 0 1 1220,623 V657 A8,8 0 0 1 1212,665 H68 A8,8 0 0 1 60,657 V623 A8,8 0 0 1 68,615 Z" />
   <text x="640" y="648" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#D4A84B" text-anchor="middle" font-weight="bold">君子有终，不仅是个体的修养目标，更是人类文明延续的必由之路</text>
   
-  <!-- 页脚 -->
+  
   <text x="60" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第八部分：结论</text>
   <text x="1220" y="700" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">19 / 20</text>
 </svg>

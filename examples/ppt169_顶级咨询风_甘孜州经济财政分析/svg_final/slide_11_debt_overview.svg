@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 1280 720" width="1280" height="720" version="1.1" id="svg56" ns1:docname="slide_11_debt_overview.svg" ns2:version="1.4.2 (f4327f4, 2025-05-13)">
+  <ns1:namedview id="namedview56" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="1.1638889" ns2:cx="639.66587" ns2:cy="360" ns2:window-width="2048" ns2:window-height="1082" ns2:window-x="2451" ns2:window-y="-6" ns2:window-maximized="1" ns2:current-layer="g34" />
+  <defs id="defs1" />
+  <rect width="1280" height="720" fill="#F5F7FA" id="rect1" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" id="rect2" />
+  <path fill="#C41E3A" id="rect3" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E" id="text3">六、政府债务规模与结构</text>
+  
+  <g id="g8">
+    <path fill="#FFFFFF" id="rect4" d="M52,100 H318 A12,12 0 0 1 330,112 V208 A12,12 0 0 1 318,220 H52 A12,12 0 0 1 40,208 V112 A12,12 0 0 1 52,100 Z" />
+    <path fill="#1E3A5F" id="rect5" d="M43,100 H327 A3,3 0 0 1 330,103 V103 A3,3 0 0 1 327,106 H43 A3,3 0 0 1 40,103 V103 A3,3 0 0 1 43,100 Z" />
+    <text x="60" y="130" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text5">债务余额</text>
+    <text x="60" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#1E3A5F" id="text6">157.4</text>
+    <text x="185" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A" id="text7">亿元</text>
+    <text x="60" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" id="text8">全省占比 0.65%（低于基准线）</text>
+  </g>
+  <g id="g12">
+    <path fill="#FFFFFF" id="rect8" d="M357,100 H623 A12,12 0 0 1 635,112 V208 A12,12 0 0 1 623,220 H357 A12,12 0 0 1 345,208 V112 A12,12 0 0 1 357,100 Z" />
+    <path fill="#4A90D9" id="rect9" d="M348,100 H632 A3,3 0 0 1 635,103 V103 A3,3 0 0 1 632,106 H348 A3,3 0 0 1 345,103 V103 A3,3 0 0 1 348,100 Z" />
+    <text x="365" y="130" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text9">一般债余额</text>
+    <text x="365" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#4A90D9" id="text10">109.2</text>
+    <text x="495" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A" id="text11">亿元</text>
+    <text x="365" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text12">占比 69.3%</text>
+  </g>
+  <g id="g16">
+    <path fill="#FFFFFF" id="rect12" d="M662,100 H928 A12,12 0 0 1 940,112 V208 A12,12 0 0 1 928,220 H662 A12,12 0 0 1 650,208 V112 A12,12 0 0 1 662,100 Z" />
+    <path fill="#00A651" id="rect13" d="M653,100 H937 A3,3 0 0 1 940,103 V103 A3,3 0 0 1 937,106 H653 A3,3 0 0 1 650,103 V103 A3,3 0 0 1 653,100 Z" />
+    <text x="670" y="130" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text13">专项债余额</text>
+    <text x="670" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#00A651" id="text14">48.3</text>
+    <text x="780" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A" id="text15">亿元</text>
+    <text x="670" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text16">占比 30.7%</text>
+  </g>
+  <g id="g20">
+    <path fill="#FFFFFF" id="rect16" d="M967,100 H1228 A12,12 0 0 1 1240,112 V208 A12,12 0 0 1 1228,220 H967 A12,12 0 0 1 955,208 V112 A12,12 0 0 1 967,100 Z" />
+    <path fill="#D4AF37" id="rect17" d="M958,100 H1237 A3,3 0 0 1 1240,103 V103 A3,3 0 0 1 1237,106 H958 A3,3 0 0 1 955,103 V103 A3,3 0 0 1 958,100 Z" />
+    <text x="975" y="130" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text17">人均债务</text>
+    <text x="975" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#D4AF37" id="text18">14,167</text>
+    <text x="1145" y="168" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A" id="text19">元/人</text>
+    <text x="975" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" id="text20">仅为全省49.3%</text>
+  </g>
+  
+  <g id="g34">
+    <path fill="#FFFFFF" id="rect20" d="M52,240 H608 A12,12 0 0 1 620,252 V548 A12,12 0 0 1 608,560 H52 A12,12 0 0 1 40,548 V252 A12,12 0 0 1 52,240 Z" />
+    <text x="60" y="280" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E" id="text21">📊 债务结构分布</text>
+    
+    <g id="g26">
+      
+      <text x="170" y="302" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14px" font-weight="600" fill="#1e3a5f" id="text22">157.4亿元</text>
+      
+      <path fill="#4a90d9" id="rect22" style="stroke-width:0.832467" d="M124,338 H216 A4,4 0 0 1 220,342 V403.30 A4,4 0 0 1 216,407.30 H124 A4,4 0 0 1 120,403.30 V342 A4,4 0 0 1 124,338 Z" />
+      <text x="170" y="378" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16px" font-weight="bold" fill="#ffffff" id="text23">69.3%</text>
+      <text x="170" y="430" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FFFFFF" id="text24">109.2亿</text>
+      <path fill="#00a651" id="rect24" style="stroke-width:0.825967" d="M124.28,306.78 H216.28 A4,4 0 0 1 220.28,310.78 V333.48 A4,4 0 0 1 216.28,337.48 H124.28 A4,4 0 0 1 120.28,333.48 V310.78 A4,4 0 0 1 124.28,306.78 Z" />
+      <text x="170" y="329" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13px" font-weight="bold" fill="#ffffff" id="text25">30.7%</text>
+      <text x="170" y="422" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14px" fill="#4a4a6a" id="text26">甘孜州债务</text>
+    </g>
+    
+    <g id="g30">
+      <path fill="#F5F7FA" id="rect26" d="M288,310 H552 A8,8 0 0 1 560,318 V402 A8,8 0 0 1 552,410 H288 A8,8 0 0 1 280,402 V318 A8,8 0 0 1 288,310 Z" />
+      <path fill="#4A90D9" id="rect27" d="M304,330 H316 A4,4 0 0 1 320,334 V346 A4,4 0 0 1 316,350 H304 A4,4 0 0 1 300,346 V334 A4,4 0 0 1 304,330 Z" />
+      <text x="330" y="346" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E" id="text27">一般债</text>
+      <text x="400" y="346" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#4A90D9" id="text28">109.2亿 (69.3%)</text>
+      <path fill="#00A651" id="rect28" d="M304,365 H316 A4,4 0 0 1 320,369 V381 A4,4 0 0 1 316,385 H304 A4,4 0 0 1 300,381 V369 A4,4 0 0 1 304,365 Z" />
+      <text x="330" y="381" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E" id="text29">专项债</text>
+      <text x="400" y="381" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651" id="text30">48.3亿 (30.7%)</text>
+    </g>
+    
+    <line x1="60" y1="430" x2="600" y2="430" stroke="#E8E8F0" stroke-width="1" id="line30" />
+    <text x="60" y="460" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E" id="text31">结构特点</text>
+    <text x="60" y="488" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text32">• 一般债占比高，用于一般公共支出</text>
+    <text x="60" y="514" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text33">• 专项债占比低，项目融资能力受限</text>
+    <text x="60" y="540" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651" id="text34">• 债务效率高：以较低债务支撑经济运行</text>
+  </g>
+  
+  <g id="g54">
+    <path fill="#FFFFFF" id="rect34" d="M652,240 H1228 A12,12 0 0 1 1240,252 V548 A12,12 0 0 1 1228,560 H652 A12,12 0 0 1 640,548 V252 A12,12 0 0 1 652,240 Z" />
+    <text x="660" y="280" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E" id="text35">📈 债务占比 vs 基准线</text>
+    
+    <line x1="700" y1="470" x2="980" y2="470" stroke="#95A5A6" stroke-width="2" id="line35" />
+    <line x1="700" y1="320" x2="700" y2="470" stroke="#95A5A6" stroke-width="2" id="line36" />
+    <line x1="700" y1="432" x2="980" y2="432" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" id="line37" />
+    <line x1="700" y1="395" x2="980" y2="395" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" id="line38" />
+    <line x1="700" y1="357" x2="980" y2="357" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" id="line39" />
+    <line x1="700" y1="320" x2="980" y2="320" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" id="line40" />
+    <text x="690" y="475" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0" id="text40">0%</text>
+    <text x="690" y="437" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0" id="text41">0.5%</text>
+    <text x="690" y="400" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0" id="text42">1.0%</text>
+    <text x="690" y="362" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0" id="text43">1.5%</text>
+    <text x="690" y="325" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0" id="text44">2.0%</text>
+    
+    <path fill="#00A651" id="rect44" d="M724,421 H776 A4,4 0 0 1 780,425 V466 A4,4 0 0 1 776,470 H724 A4,4 0 0 1 720,466 V425 A4,4 0 0 1 724,421 Z" />
+    <text x="750" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" id="text45">0.65%</text>
+    <text x="750" y="490" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A" id="text46">债务占比</text>
+    <path fill="#1E3A5F" id="rect46" d="M804,402 H856 A4,4 0 0 1 860,406 V466 A4,4 0 0 1 856,470 H804 A4,4 0 0 1 800,466 V406 A4,4 0 0 1 804,402 Z" />
+    <text x="830" y="440" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" id="text47">0.90%</text>
+    <text x="830" y="490" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A" id="text48">GDP</text>
+    <path fill="#C41E3A" id="rect48" d="M884,370 H936 A4,4 0 0 1 940,374 V466 A4,4 0 0 1 936,470 H884 A4,4 0 0 1 880,466 V374 A4,4 0 0 1 884,370 Z" />
+    <text x="910" y="425" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" id="text49">1.33%</text>
+    <text x="910" y="490" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A" id="text50">人口</text>
+    
+    <path fill="#00A651" opacity="0.1" id="rect50" d="M998,320 H1212 A8,8 0 0 1 1220,328 V452 A8,8 0 0 1 1212,460 H998 A8,8 0 0 1 990,452 V328 A8,8 0 0 1 998,320 Z" />
+    <text x="1010" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651" id="text51">✓ 债务效率高</text>
+    <text x="1010" y="380" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text52">债务占比低于GDP和人口占比</text>
+    <text x="1010" y="410" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text53">人均债务仅为</text>
+    <text x="1010" y="440" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#00A651" id="text54">全省49.3%</text>
+  </g>
+  
+  <g id="g55">
+    <path fill="#1E3A5F" id="rect54" d="M52,580 H1228 A12,12 0 0 1 1240,592 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V592 A12,12 0 0 1 52,580 Z" />
+    <text x="640" y="630" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" id="text55">📌 债务规模结论：债务负担轻，以较低债务支撑经济运行，债务效率高</text>
+  </g>
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text56">11 / 17</text>
+</svg>

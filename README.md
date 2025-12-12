@@ -163,9 +163,8 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
     ↓
 SVG 文件 (svg_output/)
     ↓
-后处理工具（用户自行调用，可选）
-    ├── finalize_svg.py    → svg_final/（嵌入图标/图片）
-    ├── flatten_tspan.py   → svg_output_flattext/（文本扁平化）
+后处理工具（用户自行调用）
+    ├── finalize_svg.py    → svg_final/（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
     └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
 ```
 
@@ -317,19 +316,16 @@ SVG 文件 (svg_output/)
 5. **优化润色**（可选）
    使用 Optimizer_CRAP 进行 CRAP 原则优化
 
-6. **后处理**（可选）
+6. **后处理**（推荐）
    ```bash
-   python3 tools/finalize_svg.py <项目路径>     # 嵌入图标/图片
-   python3 tools/flatten_tspan.py <目录>        # 文本扁平化
+   python3 tools/finalize_svg.py <项目路径>     # 执行全部后处理
    ```
 
 7. **导出使用**
    ```bash
-   # 导出为 PPTX（四种来源可选）
-   python3 tools/svg_to_pptx.py <项目路径>              # svg_output（默认）
-   python3 tools/svg_to_pptx.py <项目路径> -s final      # svg_final（嵌入图标后）
-   python3 tools/svg_to_pptx.py <项目路径> -s flat       # svg_output_flattext（扁平化）
-   python3 tools/svg_to_pptx.py <项目路径> -s final_flat # svg_final_flattext（最终+扁平化）
+   # 导出为 PPTX
+   python3 tools/svg_to_pptx.py <项目路径> -s final      # 使用 svg_final（推荐）
+   python3 tools/svg_to_pptx.py <项目路径>               # 使用 svg_output（原始版本）
    ```
    或将 SVG 文件直接嵌入到其他演示环境中
 
@@ -746,39 +742,33 @@ python3 tools/batch_validate.py examples --export
 python3 tools/generate_examples_index.py
 ```
 
-### 文本扁平化工具 (`flatten_tspan.py`)
+### 后处理工具 (`finalize_svg.py`)
 
-将 `<tspan>` 转换为独立的 `<text>` 元素（用于特殊渲染器或文本抽取）：
+统一后处理入口，执行嵌入图标/图片、文本扁平化、圆角转 Path：
 
 ```bash
-# 交互模式
-python3 tools/flatten_tspan.py
+# 执行全部后处理（默认）
+python3 tools/finalize_svg.py <项目路径>
 
-# 扁平化整个目录
-python3 tools/flatten_tspan.py examples/<project>/svg_output
-
-# 处理单个文件
-python3 tools/flatten_tspan.py input.svg output.svg
+# 只执行部分处理
+python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
 ```
 
-**注意**：生成阶段仍应使用 `<tspan>` 手动换行，此工具仅用于后处理。
+**注意**：生成阶段仍应使用 `<tspan>` 手动换行，后处理会自动扁平化。
 
 ### SVG 转 PPTX 工具 (`svg_to_pptx.py`)
 
 将 SVG 文件批量转换为 PowerPoint 演示文稿（原生 SVG 矢量嵌入）：
 
 ```bash
-# 基本用法（使用 svg_output 目录）
+# 使用最终版本（推荐）
+python3 tools/svg_to_pptx.py <项目路径> -s final
+
+# 使用原始版本
 python3 tools/svg_to_pptx.py <项目路径>
 
-# 指定 SVG 来源目录
-python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
-python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
-python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
-python3 tools/svg_to_pptx.py <项目路径> -s <任意目录>  # 自定义子目录
-
 # 指定输出文件
-python3 tools/svg_to_pptx.py <项目路径> -o output.pptx
+python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
 ```
 
 **特点**：SVG 以原生矢量格式嵌入，保持可编辑性，需要 PowerPoint 2016+ 查看。

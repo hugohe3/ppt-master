@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Customer Priorities vs. Current Performance</tspan>
+    </text>
+
+    
+    <rect x="140" y="140" width="1000" height="480" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
+
+    
+    
+    <rect x="140" y="140" width="500" height="240" fill="#F0F9FF" opacity="0.4" />
+    
+    
+    <rect x="640" y="140" width="500" height="240" fill="#DBEAFE" opacity="0.5" />
+    
+    
+    <rect x="140" y="380" width="500" height="240" fill="#F9FAFB" opacity="0.4" />
+    
+    
+    <rect x="640" y="380" width="500" height="240" fill="#FEE2E2" opacity="0.3" />
+
+    
+    <line x1="640" y1="140" x2="640" y2="620" stroke="#94A3B8" stroke-width="2" />
+    <line x1="140" y1="380" x2="1140" y2="380" stroke="#94A3B8" stroke-width="2" />
+
+    
+    <line x1="140" y1="620" x2="1140" y2="620" stroke="#2C3E50" stroke-width="2" />
+    <line x1="140" y1="140" x2="140" y2="620" stroke="#2C3E50" stroke-width="2" />
+
+    
+    <text x="640" y="655" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587" text-anchor="middle">
+        <tspan>Importance to Customer →</tspan>
+    </text>
+    <text x="180" y="655" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>Low</tspan>
+    </text>
+    <text x="1080" y="655" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>High</tspan>
+    </text>
+
+    
+    <text x="100" y="385" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587" text-anchor="middle" transform="rotate(-90 100 385)">
+        <tspan>Current Satisfaction →</tspan>
+    </text>
+    <text x="100" y="600" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90 100 600)">
+        <tspan>Low</tspan>
+    </text>
+    <text x="100" y="170" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="middle" transform="rotate(-90 100 170)">
+        <tspan>High</tspan>
+    </text>
+
+    
+    
+    <path fill="#FFFFFF" stroke="#0076A8" stroke-width="1.5" opacity="0.95" d="M524,150 H626 A4,4 0 0 1 630,154 V178 A4,4 0 0 1 626,182 H524 A4,4 0 0 1 520,178 V154 A4,4 0 0 1 524,150 Z" />
+    <text x="575" y="172" font-family="Arial, sans-serif" font-size="15" fill="#0076A8" font-weight="bold" text-anchor="middle">
+        <tspan>Maintain</tspan>
+    </text>
+    
+    
+    <path fill="#FFFFFF" stroke="#005587" stroke-width="1.5" opacity="0.95" d="M654,150 H806 A4,4 0 0 1 810,154 V178 A4,4 0 0 1 806,182 H654 A4,4 0 0 1 650,178 V154 A4,4 0 0 1 654,150 Z" />
+    <text x="730" y="172" font-family="Arial, sans-serif" font-size="15" fill="#005587" font-weight="bold" text-anchor="middle">
+        <tspan>Leverage Strengths</tspan>
+    </text>
+    
+    
+    <path fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5" opacity="0.95" d="M514,585 H626 A4,4 0 0 1 630,589 V613 A4,4 0 0 1 626,617 H514 A4,4 0 0 1 510,613 V589 A4,4 0 0 1 514,585 Z" />
+    <text x="570" y="607" font-family="Arial, sans-serif" font-size="15" fill="#64748B" font-weight="bold" text-anchor="middle">
+        <tspan>Low Priority</tspan>
+    </text>
+    
+    
+    <path fill="#FEE2E2" stroke="#E74C3C" stroke-width="2" opacity="0.95" d="M654,585 H786 A4,4 0 0 1 790,589 V613 A4,4 0 0 1 786,617 H654 A4,4 0 0 1 650,613 V589 A4,4 0 0 1 654,585 Z" />
+    <text x="720" y="607" font-family="Arial, sans-serif" font-size="15" fill="#E74C3C" font-weight="bold" text-anchor="middle">
+        <tspan>CRITICAL GAP</tspan>
+    </text>
+
+    
+
+    
+    <circle cx="250" cy="260" r="38" fill="#7FB3C7" opacity="0.75" />
+    <text x="250" y="258" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Comfort</tspan>
+    </text>
+    <text x="250" y="273" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#7)</tspan>
+    </text>
+
+    
+    <circle cx="320" cy="330" r="42" fill="#4A90A4" opacity="0.75" />
+    <text x="320" y="325" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Performance</tspan>
+    </text>
+    <text x="320" y="342" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#6)</tspan>
+    </text>
+
+    
+    <circle cx="720" cy="290" r="46" fill="#0076A8" opacity="0.75" />
+    <text x="720" y="287" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Warranty</tspan>
+    </text>
+    <text x="720" y="303" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#5)</tspan>
+    </text>
+
+    
+    <circle cx="920" cy="210" r="52" fill="#005587" opacity="0.85" />
+    <text x="920" y="207" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Reliability</tspan>
+    </text>
+    <text x="920" y="223" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#3)</tspan>
+    </text>
+
+    
+    <circle cx="1020" cy="200" r="54" fill="#005587" opacity="0.85" />
+    <text x="1020" y="197" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Economy</tspan>
+    </text>
+    <text x="1020" y="213" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#1)</tspan>
+    </text>
+
+    
+    <circle cx="970" cy="270" r="52" fill="#005587" opacity="0.85" />
+    <text x="970" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Price</tspan>
+    </text>
+    <text x="970" y="285" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#2)</tspan>
+    </text>
+
+    
+    <circle cx="930" cy="520" r="62" fill="#E74C3C" opacity="0.9" />
+    <circle cx="930" cy="520" r="68" fill="none" stroke="#E74C3C" stroke-width="3" stroke-dasharray="5,3" />
+    <text x="930" y="512" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>After-sales</tspan>
+    </text>
+    <text x="930" y="530" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+        <tspan>Service</tspan>
+    </text>
+    <text x="930" y="546" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
+        <tspan>(#4 Priority)</tspan>
+    </text>
+
+    
+    <defs>
+        <marker id="arrow-alert" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
+        </marker>
+    </defs>
+    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" marker-end="url(#arrow-alert)" />
+
+    
+    <path fill="#FEE" stroke="#E74C3C" stroke-width="1" d="M1044,495 H1126 A4,4 0 0 1 1130,499 V541 A4,4 0 0 1 1126,545 H1044 A4,4 0 0 1 1040,541 V499 A4,4 0 0 1 1044,495 Z" />
+    <text x="1085" y="515" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C" text-anchor="middle">
+        <tspan>URGENT</tspan>
+    </text>
+    <text x="1085" y="532" font-family="Arial, sans-serif" font-size="11" fill="#E74C3C" text-anchor="middle">
+        <tspan>High priority</tspan>
+    </text>
+
+    
+    <text x="180" y="165" font-family="Arial, sans-serif" font-size="12" fill="#5D6D7E">
+        <tspan>Bubble size = relative weight | Number = priority rank</tspan>
+    </text>
+
+    
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>4</tspan>
+    </text>
+    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Priority-Performance Matrix Analysis</tspan>
+    </text>
+</svg>

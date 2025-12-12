@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowYellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="60" font-family="Consolas, Monaco, monospace" font-size="32" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    🎮 Git 就像游戏存档点
+  </text>
+  <text x="60" y="88" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="16" fill="#8B949E">
+    The Simplest Explanation - Video Game Save Points
+  </text>
+  
+  
+  <rect x="60" y="100" width="250" height="2" fill="#30363D" />
+  
+  
+  <g transform="translate(60, 120)">
+    
+    <rect x="0" y="0" width="1160" height="300" fill="#161B22" stroke="#FFD700" stroke-width="3" />
+    
+    
+    <rect x="0" y="0" width="1160" height="28" fill="#FFD700" opacity="0.15" />
+    <text x="15" y="19" font-family="Consolas, monospace" font-size="12" fill="#FFD700">🎮 GAME SCREEN</text>
+    <text x="1145" y="19" text-anchor="end" font-family="Consolas, monospace" font-size="11" fill="#8B949E">HP: ████████░░</text>
+    
+    
+    <line x1="50" y1="150" x2="1110" y2="150" stroke="#30363D" stroke-width="4" />
+    
+    
+    <g transform="translate(100, 150)">
+      
+      <circle cx="0" cy="-60" r="14" fill="#00D4FF" />
+      <text x="0" y="-55" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#0D1117" font-weight="bold">1</text>
+      
+      
+      <path fill="#39FF14" filter="url(#glowGreen)" d="M-18,-22 H18 A4,4 0 0 1 22,-18 V18 A4,4 0 0 1 18,22 H-18 A4,4 0 0 1 -22,18 V-18 A4,4 0 0 1 -18,-22 Z" />
+      <text x="0" y="8" text-anchor="middle" font-size="22">💾</text>
+      <text x="0" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#39FF14">SAVE 1</text>
+      <text x="0" y="50" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#8B949E">起点存档</text>
+    </g>
+    
+    
+    <line x1="145" y1="150" x2="295" y2="150" stroke="#39FF14" stroke-width="3" stroke-dasharray="8 4" />
+    <polygon points="295,150 280,143 280,157" fill="#39FF14" />
+    
+    
+    <g transform="translate(340, 150)">
+      
+      <circle cx="0" cy="-60" r="14" fill="#00D4FF" />
+      <text x="0" y="-55" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#0D1117" font-weight="bold">2</text>
+      
+      
+      <path fill="#FFD700" filter="url(#glowYellow)" d="M-21,-25 H21 A4,4 0 0 1 25,-21 V21 A4,4 0 0 1 21,25 H-21 A4,4 0 0 1 -25,21 V-21 A4,4 0 0 1 -21,-25 Z" />
+      <text x="0" y="10" text-anchor="middle" font-size="24">💾</text>
+      <text x="0" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#FFD700">SAVE 2</text>
+      <text x="0" y="55" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#FFD700" font-weight="bold">关键存档!</text>
+    </g>
+    
+    
+    <line x1="390" y1="150" x2="495" y2="150" stroke="#FFD700" stroke-width="3" stroke-dasharray="8 4" />
+    <polygon points="495,150 480,143 480,157" fill="#FFD700" />
+    
+    
+    <g transform="translate(560, 150)">
+      
+      <circle cx="0" cy="-60" r="14" fill="#00D4FF" />
+      <text x="0" y="-55" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#0D1117" font-weight="bold">3</text>
+      
+      
+      <path fill="#FF2E97" opacity="0.2" stroke="#FF2E97" stroke-width="2" d="M-31,-35 H31 A4,4 0 0 1 35,-31 V31 A4,4 0 0 1 31,35 H-31 A4,4 0 0 1 -35,31 V-31 A4,4 0 0 1 -31,-35 Z" />
+      <text x="0" y="12" text-anchor="middle" font-size="40">👹</text>
+      <text x="0" y="55" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#FF2E97" font-weight="bold">BOSS</text>
+      
+      
+      <text x="-55" y="8" text-anchor="middle" font-size="28">👾</text>
+      <text x="-55" y="30" text-anchor="middle" font-family="Consolas, monospace" font-size="9" fill="#00D4FF">YOU</text>
+    </g>
+    
+    
+    
+    
+    <g>
+      
+      <path d="M595,135 Q650,100 720,70" fill="none" stroke="#FF2E97" stroke-width="3" />
+      <polygon points="718,75 725,65 710,68" fill="#FF2E97" />
+      
+      
+      <g transform="translate(780, 70)">
+        <path fill="#FF2E97" opacity="0.15" stroke="#FF2E97" stroke-width="2" d="M-31,-25 H31 A4,4 0 0 1 35,-21 V21 A4,4 0 0 1 31,25 H-31 A4,4 0 0 1 -35,21 V-21 A4,4 0 0 1 -31,-25 Z" />
+        <text x="0" y="8" text-anchor="middle" font-size="26">💀</text>
+        <text x="0" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#FF2E97">GAME OVER</text>
+      </g>
+      
+      
+      <path d="M745,70 Q550,30 365,115" fill="none" stroke="#39FF14" stroke-width="2" stroke-dasharray="6 3" />
+      <polygon points="370,110 358,118 372,122" fill="#39FF14" />
+      <path fill="#0D1117" stroke="#39FF14" stroke-width="1" d="M493,20 H607 A3,3 0 0 1 610,23 V39 A3,3 0 0 1 607,42 H493 A3,3 0 0 1 490,39 V23 A3,3 0 0 1 493,20 Z" />
+      <text x="550" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#39FF14">⟲ LOAD SAVE 2</text>
+    </g>
+    
+    
+    <g>
+      
+      <line x1="595" y1="165" x2="850" y2="220" stroke="#39FF14" stroke-width="3" />
+      <polygon points="850,220 835,210 832,225" fill="#39FF14" />
+      
+      
+      <text x="720" y="210" font-family="Consolas, monospace" font-size="11" fill="#39FF14">成功击败!</text>
+      
+      
+      <g transform="translate(920, 220)">
+        <path fill="#39FF14" opacity="0.2" stroke="#39FF14" stroke-width="2" d="M-26,-25 H26 A4,4 0 0 1 30,-21 V21 A4,4 0 0 1 26,25 H-26 A4,4 0 0 1 -30,21 V-21 A4,4 0 0 1 -26,-25 Z" />
+        <text x="0" y="8" text-anchor="middle" font-size="26">🏆</text>
+        <text x="0" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#39FF14" font-weight="bold">WIN!</text>
+      </g>
+    </g>
+    
+    
+    <g transform="translate(1000, 55)">
+      <path fill="#0D1117" stroke="#30363D" stroke-width="1" d="M-6,-10 H136 A4,4 0 0 1 140,-6 V66 A4,4 0 0 1 136,70 H-6 A4,4 0 0 1 -10,66 V-6 A4,4 0 0 1 -6,-10 Z" />
+      <text x="0" y="8" font-family="Consolas, monospace" font-size="10" fill="#8B949E">路径说明:</text>
+      <line x1="0" y1="22" x2="40" y2="22" stroke="#FF2E97" stroke-width="2" />
+      <text x="50" y="26" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="10" fill="#FF2E97">失败 → 读档</text>
+      <line x1="0" y1="42" x2="40" y2="42" stroke="#39FF14" stroke-width="2" />
+      <text x="50" y="46" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="10" fill="#39FF14">成功 → 通关</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 450)">
+    
+    <rect x="0" y="0" width="560" height="130" fill="#161B22" stroke="#39FF14" stroke-width="2" />
+    <text x="20" y="32" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#39FF14">💾 存档 = Git Commit</text>
+    <rect x="20" y="45" width="520" height="1" fill="#30363D" />
+    <text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="72">• 每次存档 = 保存当前状态的快照</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="96">• 可以随时回到任何存档点</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="120">• 搞砸了？读档重来！</text><rect x="600" y="0" width="560" height="130" fill="#161B22" stroke="#FFD700" stroke-width="2" />
+    <text x="620" y="32" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FFD700">🎯 核心思想</text>
+    <rect x="620" y="45" width="520" height="1" fill="#30363D" />
+    <text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="72">• Git 就是你的「无限存档」工具</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="96">• 不怕犯错，因为可以回退</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="120">• 大胆实验，安心开发！</text></g>
+  
+  
+  <g transform="translate(60, 600)">
+    <rect x="0" y="0" width="400" height="35" fill="#39FF14" opacity="0.1" stroke="#39FF14" stroke-width="1" />
+    <text x="200" y="23" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#39FF14">
+      💡 关键：在重要节点前一定要「存档」！
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">05/10</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">Save Point</text>
+</svg>

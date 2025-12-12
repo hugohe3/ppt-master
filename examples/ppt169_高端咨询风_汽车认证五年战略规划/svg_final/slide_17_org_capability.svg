@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     组织能力建设
   </text>
@@ -19,183 +19,183 @@
     ORGANIZATIONAL CAPABILITY DEVELOPMENT
   </text>
   
-  <!-- 2×2 能力矩阵 -->
-  <!-- 能力1: 人才队伍 (左上) -->
+  
+  
   <g transform="translate(60, 120)">
-    <rect width="560" height="265" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="10" rx="5" fill="#0076A8"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V253 A12,12 0 0 1 548,265 H12 A12,12 0 0 1 0,253 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0076A8" d="M5,0 H555 A5,5 0 0 1 560,5 V5 A5,5 0 0 1 555,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="25" cy="20" r="22" fill="#E3F2FD"/>
+      <circle cx="25" cy="20" r="22" fill="#E3F2FD" />
       <text x="25" y="27" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" fill="#0076A8" text-anchor="middle">👥</text>
       <text x="65" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">人才队伍建设</text>
     </g>
     
-    <!-- 能力要点 -->
+    
     <g transform="translate(25, 80)">
-      <rect width="250" height="50" rx="6" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0076A8">复合型专家培养</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">三电+智能网联+安全</text>
     </g>
     
     <g transform="translate(285, 80)">
-      <rect width="250" height="50" rx="6" fill="#E1F5FE"/>
+      <path fill="#E1F5FE" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0076A8">国际化人才引进</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">海外标准/认证专家</text>
     </g>
     
     <g transform="translate(25, 140)">
-      <rect width="250" height="50" rx="6" fill="#E1F5FE"/>
+      <path fill="#E1F5FE" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0076A8">数字化技能培训</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">AI/区块链应用能力</text>
     </g>
     
     <g transform="translate(285, 140)">
-      <rect width="250" height="50" rx="6" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0076A8">审核员持续教育</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">新标准/新技术培训</text>
     </g>
     
-    <!-- 目标 -->
+    
     <g transform="translate(25, 205)">
-      <rect width="510" height="40" rx="6" fill="#0076A8" opacity="0.1"/>
+      <path fill="#0076A8" opacity="0.1" d="M6,0 H504 A6,6 0 0 1 510,6 V34 A6,6 0 0 1 504,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <text x="255" y="26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#0076A8" text-anchor="middle">🎯 目标：高级专家占比30% | 国际认证审核员50+</text>
     </g>
   </g>
   
-  <!-- 能力2: 检测能力 (右上) -->
+  
   <g transform="translate(655, 120)">
-    <rect width="560" height="265" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="10" rx="5" fill="#00A651"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V253 A12,12 0 0 1 548,265 H12 A12,12 0 0 1 0,253 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#00A651" d="M5,0 H555 A5,5 0 0 1 560,5 V5 A5,5 0 0 1 555,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="25" cy="20" r="22" fill="#E8F5E9"/>
+      <circle cx="25" cy="20" r="22" fill="#E8F5E9" />
       <text x="25" y="27" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" fill="#00A651" text-anchor="middle">🔬</text>
       <text x="65" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">检测能力提升</text>
     </g>
     
-    <!-- 能力要点 -->
+    
     <g transform="translate(25, 80)">
-      <rect width="250" height="50" rx="6" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">三电实验室升级</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">电池/电机/电控全覆盖</text>
     </g>
     
     <g transform="translate(285, 80)">
-      <rect width="250" height="50" rx="6" fill="#F1F8E9"/>
+      <path fill="#F1F8E9" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">网络安全实验室</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">渗透测试/漏洞检测</text>
     </g>
     
     <g transform="translate(25, 140)">
-      <rect width="250" height="50" rx="6" fill="#F1F8E9"/>
+      <path fill="#F1F8E9" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">EMC电磁兼容实验室</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">国际认可资质</text>
     </g>
     
     <g transform="translate(285, 140)">
-      <rect width="250" height="50" rx="6" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">环境可靠性实验室</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">高低温/湿热/盐雾</text>
     </g>
     
-    <!-- 目标 -->
+    
     <g transform="translate(25, 205)">
-      <rect width="510" height="40" rx="6" fill="#00A651" opacity="0.1"/>
+      <path fill="#00A651" opacity="0.1" d="M6,0 H504 A6,6 0 0 1 510,6 V34 A6,6 0 0 1 504,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <text x="255" y="26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651" text-anchor="middle">🎯 目标：CNAS认可项目扩展30% | 海外实验室3+</text>
     </g>
   </g>
   
-  <!-- 能力3: 合作生态 (左下) -->
+  
   <g transform="translate(60, 405)">
-    <rect width="560" height="265" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="10" rx="5" fill="#FF6B35"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V253 A12,12 0 0 1 548,265 H12 A12,12 0 0 1 0,253 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF6B35" d="M5,0 H555 A5,5 0 0 1 560,5 V5 A5,5 0 0 1 555,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="25" cy="20" r="22" fill="#FFF3E0"/>
+      <circle cx="25" cy="20" r="22" fill="#FFF3E0" />
       <text x="25" y="27" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" fill="#FF6B35" text-anchor="middle">🤝</text>
       <text x="65" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">合作生态构建</text>
     </g>
     
-    <!-- 能力要点 -->
+    
     <g transform="translate(25, 80)">
-      <rect width="250" height="50" rx="6" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">产学研用联盟</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">高校+研究院+企业</text>
     </g>
     
     <g transform="translate(285, 80)">
-      <rect width="250" height="50" rx="6" fill="#FFECB3"/>
+      <path fill="#FFECB3" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">国际认证联盟</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">TÜV/SGS等战略合作</text>
     </g>
     
     <g transform="translate(25, 140)">
-      <rect width="250" height="50" rx="6" fill="#FFECB3"/>
+      <path fill="#FFECB3" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">行业协会深度参与</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">标准制定/政策建议</text>
     </g>
     
     <g transform="translate(285, 140)">
-      <rect width="250" height="50" rx="6" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">车企战略伙伴关系</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">长期服务协议</text>
     </g>
     
-    <!-- 目标 -->
+    
     <g transform="translate(25, 205)">
-      <rect width="510" height="40" rx="6" fill="#FF6B35" opacity="0.1"/>
+      <path fill="#FF6B35" opacity="0.1" d="M6,0 H504 A6,6 0 0 1 510,6 V34 A6,6 0 0 1 504,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <text x="255" y="26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#FF6B35" text-anchor="middle">🎯 目标：战略合作伙伴20+ | 行业标准参与50+</text>
     </g>
   </g>
   
-  <!-- 能力4: 管理质保 (右下) -->
+  
   <g transform="translate(655, 405)">
-    <rect width="560" height="265" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="10" rx="5" fill="#9C27B0"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V253 A12,12 0 0 1 548,265 H12 A12,12 0 0 1 0,253 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#9C27B0" d="M5,0 H555 A5,5 0 0 1 560,5 V5 A5,5 0 0 1 555,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="25" cy="20" r="22" fill="#F3E5F5"/>
+      <circle cx="25" cy="20" r="22" fill="#F3E5F5" />
       <text x="25" y="27" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" fill="#9C27B0" text-anchor="middle">✅</text>
       <text x="65" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C">管理与质保体系</text>
     </g>
     
-    <!-- 能力要点 -->
+    
     <g transform="translate(25, 80)">
-      <rect width="250" height="50" rx="6" fill="#F3E5F5"/>
+      <path fill="#F3E5F5" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#9C27B0">ISO/IEC 17065合规</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">认证机构国际认可</text>
     </g>
     
     <g transform="translate(285, 80)">
-      <rect width="250" height="50" rx="6" fill="#EDE7F6"/>
+      <path fill="#EDE7F6" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#9C27B0">三级质量把关</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">审核/技术/决策分离</text>
     </g>
     
     <g transform="translate(25, 140)">
-      <rect width="250" height="50" rx="6" fill="#EDE7F6"/>
+      <path fill="#EDE7F6" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#9C27B0">风险管理体系</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">公正性/保密性保障</text>
     </g>
     
     <g transform="translate(285, 140)">
-      <rect width="250" height="50" rx="6" fill="#F3E5F5"/>
+      <path fill="#F3E5F5" d="M6,0 H244 A6,6 0 0 1 250,6 V44 A6,6 0 0 1 244,50 H6 A6,6 0 0 1 0,44 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#9C27B0">持续改进机制</text>
       <text x="15" y="40" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">客户满意度追踪</text>
     </g>
     
-    <!-- 目标 -->
+    
     <g transform="translate(25, 205)">
-      <rect width="510" height="40" rx="6" fill="#9C27B0" opacity="0.1"/>
+      <path fill="#9C27B0" opacity="0.1" d="M6,0 H504 A6,6 0 0 1 510,6 V34 A6,6 0 0 1 504,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <text x="255" y="26" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#9C27B0" text-anchor="middle">🎯 目标：客户满意度95%+ | 零重大质量事故</text>
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">17 / 20</text>
 </svg>

@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+            <feOffset dx="0" dy="4" result="offsetBlur" />
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color" />
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
+            <feMerge>
+                <feMergeNode in="shadow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    
+    <path fill="#10B981" d="M76,40 H124 A16,16 0 0 1 140,56 V56 A16,16 0 0 1 124,72 H76 A16,16 0 0 1 60,56 V56 A16,16 0 0 1 76,40 Z" />
+    <text x="100" y="62" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">ZCF</text>
+
+    
+    <text x="60" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#1E293B" font-weight="700">适合"先跑起来再说"的实用主义者</text>
+    <text x="60" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B">UfoMiao（社区）出品
+        · Zero-Config Code Flow · 原生中文支持</text>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#ECFDF5" d="M72,165 H608 A12,12 0 0 1 620,177 V233 A12,12 0 0 1 608,245 H72 A12,12 0 0 1 60,233 V177 A12,12 0 0 1 72,165 Z" />
+        <text x="85" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#047857" font-weight="600">💡 ZCF 的本质</text>
+        <text x="85" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#1E293B">它不是开发流程工具，而是</text>
+        <text x="290" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#047857" font-weight="700">环境配置工具</text>
+        <text x="400" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#1E293B">。</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M672,165 H1208 A12,12 0 0 1 1220,177 V233 A12,12 0 0 1 1208,245 H672 A12,12 0 0 1 660,233 V177 A12,12 0 0 1 672,165 Z" />
+        <text x="685" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#10B981" font-weight="600">📋 典型用户画像</text>
+
+        <text x="685" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B">• 刚接触 Claude Code / Codex 的新手</text>
+        <text x="685" y="243" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B">• 使用第三方 API 代理服务</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#1E293B" d="M72,265 H1208 A12,12 0 0 1 1220,277 V383 A12,12 0 0 1 1208,395 H72 A12,12 0 0 1 60,383 V277 A12,12 0 0 1 72,265 Z" />
+        <text x="90" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#10B981" font-weight="600">⚡ 一行命令搞定一切</text>
+
+        
+        <path fill="#0F172A" d="M98,320 H422 A8,8 0 0 1 430,328 V367 A8,8 0 0 1 422,375 H98 A8,8 0 0 1 90,367 V328 A8,8 0 0 1 98,320 Z" />
+        <text x="110" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#64748B">$</text>
+        <text x="130" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#10B981">npx zcf i</text>
+        <text x="110" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">完整初始化：安装+工作流+API配置+MCP</text>
+
+        <path fill="#0F172A" d="M468,320 H792 A8,8 0 0 1 800,328 V367 A8,8 0 0 1 792,375 H468 A8,8 0 0 1 460,367 V328 A8,8 0 0 1 468,320 Z" />
+        <text x="480" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#64748B">$</text>
+        <text x="500" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#10B981">npx zcf u</text>
+        <text x="480" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">仅更新工作流</text>
+
+        <path fill="#0F172A" d="M838,320 H1192 A8,8 0 0 1 1200,328 V367 A8,8 0 0 1 1192,375 H838 A8,8 0 0 1 830,367 V328 A8,8 0 0 1 838,320 Z" />
+        <text x="850" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#64748B">$</text>
+        <text x="870" y="345" font-family="'SF Mono', 'Consolas', monospace" font-size="14" fill="#10B981">npx zcf --lang zh-CN</text>
+        <text x="850" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">切换中文界面</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M72,415 H608 A12,12 0 0 1 620,427 V568 A12,12 0 0 1 608,580 H72 A12,12 0 0 1 60,568 V427 A12,12 0 0 1 72,415 Z" />
+        <text x="85" y="450" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#10B981" font-weight="600">🔌 支持的 API 代理服务</text>
+
+        
+        <path fill="#F1F5F9" d="M89,470 H591 A4,4 0 0 1 595,474 V496 A4,4 0 0 1 591,500 H89 A4,4 0 0 1 85,496 V474 A4,4 0 0 1 89,470 Z" />
+        <text x="150" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle" font-weight="600">服务商</text>
+        <text x="380" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle" font-weight="600">命令示例</text>
+
+        
+        <text x="150" y="520" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B" text-anchor="middle">302.AI</text>
+        <text x="380" y="520" font-family="'SF Mono', 'Consolas', monospace" font-size="11" fill="#10B981" text-anchor="middle">npx zcf i -s -p 302ai -k "sk-xxx"</text>
+
+        <line x1="85" y1="530" x2="595" y2="530" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="150" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B" text-anchor="middle">GLM</text>
+        <text x="380" y="550" font-family="'SF Mono', 'Consolas', monospace" font-size="11" fill="#10B981" text-anchor="middle">npx zcf i -s -p glm -k "xxx"</text>
+
+        <line x1="85" y1="560" x2="595" y2="560" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="150" y="575" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B" text-anchor="middle">PackyCode</text>
+        <text x="380" y="575" font-family="'SF Mono', 'Consolas', monospace" font-size="11" fill="#10B981" text-anchor="middle">npx zcf i -s -p packy -k "xxx"</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M672,415 H928 A12,12 0 0 1 940,427 V568 A12,12 0 0 1 928,580 H672 A12,12 0 0 1 660,568 V427 A12,12 0 0 1 672,415 Z" />
+        <text x="685" y="450" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#10B981" font-weight="600">🎯 解决的核心痛点</text>
+
+        <text x="685" y="475" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B">1. API 配置繁琐</text>
+        <text x="700" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">→ 一键配置代理服务</text>
+
+        <text x="685" y="510" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B">2. 工作流零散</text>
+        <text x="700" y="525" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">→ 自动安装常用工作流</text>
+
+        <text x="685" y="545" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B">3. MCP 配置复杂</text>
+        <text x="700" y="560" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B">→ 自动配置 MCP</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M972,415 H1208 A12,12 0 0 1 1220,427 V568 A12,12 0 0 1 1208,580 H972 A12,12 0 0 1 960,568 V427 A12,12 0 0 1 972,415 Z" />
+        <text x="985" y="450" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" font-weight="600">✅ 优点</text>
+        <text x="985" y="470" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E293B">• 零配置，5分钟上手</text>
+        <text x="985" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E293B">• 支持中英双语</text>
+        <text x="985" y="500" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E293B">• 集成主流 API 代理</text>
+
+        <line x1="985" y1="512" x2="1195" y2="512" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="985" y="530" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#EF4444" font-weight="600">❌ 缺点</text>
+        <text x="985" y="550" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E293B">• 非开发流程工具</text>
+        <text x="985" y="565" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#1E293B">• 面向 Claude/Codex</text>
+    </g>
+
+    
+    <path fill="#10B981" opacity="0.1" d="M72,600 H1208 A12,12 0 0 1 1220,612 V658 A12,12 0 0 1 1208,670 H72 A12,12 0 0 1 60,658 V612 A12,12 0 0 1 72,600 Z" />
+    <text x="640" y="635" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#047857" text-anchor="middle" font-weight="600">配置时间从 30 分钟降到 5 分钟，减少 90% 的配置错误</text>
+    <text x="640" y="658" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">但它解决的是"环境"问题，不是"开发"问题</text>
+
+    
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">05 / 11</text>
+</svg>

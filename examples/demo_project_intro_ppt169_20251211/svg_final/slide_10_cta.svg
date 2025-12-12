@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="50%" style="stop-color:#8B5CF6"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="50%" style="stop-color:#8B5CF6" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 渐变背景 -->
-  <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
-  <!-- 装饰圆 -->
-  <circle cx="150" cy="150" r="200" fill="#FFFFFF" opacity="0.05"/>
-  <circle cx="1130" cy="570" r="250" fill="#FFFFFF" opacity="0.05"/>
-  <circle cx="1050" cy="120" r="100" fill="#FFFFFF" opacity="0.03"/>
+  <rect width="1280" height="720" fill="url(#bgGradient)" />
   
-  <!-- 主标题 -->
+  
+  <circle cx="150" cy="150" r="200" fill="#FFFFFF" opacity="0.05" />
+  <circle cx="1130" cy="570" r="250" fill="#FFFFFF" opacity="0.05" />
+  <circle cx="1050" cy="120" r="100" fill="#FFFFFF" opacity="0.03" />
+  
+  
   <g transform="translate(640, 180)">
     <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="44" font-weight="bold" text-anchor="middle" fill="#FFFFFF">
       立即开始使用 PPT Master
@@ -29,37 +29,37 @@
     </text>
   </g>
   
-  <!-- 行动号召卡片 -->
+  
   <g transform="translate(140, 270)">
-    <!-- Star -->
+    
     <g>
-      <rect width="300" height="150" rx="16" fill="#FFFFFF"/>
+      <path fill="#FFFFFF" d="M16,0 H284 A16,16 0 0 1 300,16 V134 A16,16 0 0 1 284,150 H16 A16,16 0 0 1 0,134 V16 A16,16 0 0 1 16,0 Z" />
       <text x="150" y="50" font-size="36" text-anchor="middle">⭐</text>
       <text x="150" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1F2937">Star 支持</text>
       <text x="150" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#6B7280">github.com/hugohe3/ppt-master</text>
-      <rect x="100" y="125" width="100" height="4" rx="2" fill="#F59E0B"/>
+      <path fill="#F59E0B" d="M102,125 H198 A2,2 0 0 1 200,127 V127 A2,2 0 0 1 198,129 H102 A2,2 0 0 1 100,127 V127 A2,2 0 0 1 102,125 Z" />
     </g>
     
-    <!-- 在线示例 -->
+    
     <g transform="translate(340, 0)">
-      <rect width="300" height="150" rx="16" fill="#FFFFFF"/>
+      <path fill="#FFFFFF" d="M16,0 H284 A16,16 0 0 1 300,16 V134 A16,16 0 0 1 284,150 H16 A16,16 0 0 1 0,134 V16 A16,16 0 0 1 16,0 Z" />
       <text x="150" y="50" font-size="36" text-anchor="middle">🎴</text>
       <text x="150" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1F2937">在线示例</text>
       <text x="150" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#6B7280">notes.36sjs.com/pages/ppt</text>
-      <rect x="100" y="125" width="100" height="4" rx="2" fill="#06B6D4"/>
+      <path fill="#06B6D4" d="M102,125 H198 A2,2 0 0 1 200,127 V127 A2,2 0 0 1 198,129 H102 A2,2 0 0 1 100,127 V127 A2,2 0 0 1 102,125 Z" />
     </g>
     
-    <!-- 文档 -->
+    
     <g transform="translate(680, 0)">
-      <rect width="300" height="150" rx="16" fill="#FFFFFF"/>
+      <path fill="#FFFFFF" d="M16,0 H284 A16,16 0 0 1 300,16 V134 A16,16 0 0 1 284,150 H16 A16,16 0 0 1 0,134 V16 A16,16 0 0 1 16,0 Z" />
       <text x="150" y="50" font-size="36" text-anchor="middle">📖</text>
       <text x="150" y="85" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#1F2937">完善文档</text>
       <text x="150" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#6B7280">详细教程 · 设计指南 · 速查手册</text>
-      <rect x="100" y="125" width="100" height="4" rx="2" fill="#10B981"/>
+      <path fill="#10B981" d="M102,125 H198 A2,2 0 0 1 200,127 V127 A2,2 0 0 1 198,129 H102 A2,2 0 0 1 100,127 V127 A2,2 0 0 1 102,125 Z" />
     </g>
   </g>
   
-  <!-- 项目亮点 -->
+  
   <g transform="translate(640, 480)">
     <g font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
       <text x="-300" y="0">🚀 四角色 AI 协作</text>
@@ -74,7 +74,7 @@
     </g>
   </g>
   
-  <!-- 底部信息 -->
+  
   <g transform="translate(640, 580)">
     <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="15" text-anchor="middle" fill="#FFFFFF" opacity="0.8">
       MIT License · Made with ❤️ by Hugo He
@@ -84,12 +84,12 @@
     </text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF" opacity="0.5">10 / 10</text>
   
-  <!-- 角落装饰 -->
-  <polygon points="0,720 0,660 60,720" fill="#FFFFFF" opacity="0.1"/>
-  <polygon points="1280,720 1280,660 1220,720" fill="#FFFFFF" opacity="0.1"/>
-  <polygon points="0,0 0,60 60,0" fill="#FFFFFF" opacity="0.08"/>
-  <polygon points="1280,0 1280,60 1220,0" fill="#FFFFFF" opacity="0.08"/>
+  
+  <polygon points="0,720 0,660 60,720" fill="#FFFFFF" opacity="0.1" />
+  <polygon points="1280,720 1280,660 1220,720" fill="#FFFFFF" opacity="0.1" />
+  <polygon points="0,0 0,60 60,0" fill="#FFFFFF" opacity="0.08" />
+  <polygon points="1280,0 1280,60 1220,0" fill="#FFFFFF" opacity="0.08" />
 </svg>

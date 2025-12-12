@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    
+    <g transform="translate(60, 60)">
+        <path fill="url(#stepGradient)" opacity="0.2" d="M16,0 H84 A16,16 0 0 1 100,16 V84 A16,16 0 0 1 84,100 H16 A16,16 0 0 1 0,84 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold" fill="url(#stepGradient)">01</text>
+    </g>
+
+    
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold" fill="#e6edf3">⏸️ 厘清流程的合理性</text>
+
+    
+    <path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M72,180 H548 A12,12 0 0 1 560,192 V248 A12,12 0 0 1 548,260 H72 A12,12 0 0 1 60,248 V192 A12,12 0 0 1 72,180 Z" />
+    <text x="90" y="215" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" fill="#f0883e" font-weight="bold">核心动作</text>
+    <text x="90" y="245" font-family="SF Pro Text, -apple-system, sans-serif" font-size="22" fill="#e6edf3">遇到 Bug 第一步：
+        <tspan font-weight="bold" fill="#7ee787">暂停</tspan>，用白话描述流程</text>
+
+    
+    <path fill="#1f2428" d="M72,280 H748 A12,12 0 0 1 760,292 V388 A12,12 0 0 1 748,400 H72 A12,12 0 0 1 60,388 V292 A12,12 0 0 1 72,280 Z" />
+    <path fill="#58a6ff" d="M62,280 H62 A2,2 0 0 1 64,282 V398 A2,2 0 0 1 62,400 H62 A2,2 0 0 1 60,398 V282 A2,2 0 0 1 62,280 Z" />
+    <text x="90" y="315" font-family="SF Mono, monospace" font-size="16" fill="#8b949e">// 案例</text>
+    <text x="90" y="350" font-family="SF Pro Text, -apple-system, sans-serif" font-size="20" fill="#e6edf3">购物车结账失败 → 可能不是金流 API 的问题</text>
+    <text x="90" y="380" font-family="SF Pro Text, -apple-system, sans-serif" font-size="20" fill="#f0883e">→ 而是库存扣减逻辑本身就有漏洞</text>
+
+    
+    <g transform="translate(60, 440)">
+        <text x="0" y="0" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#f0883e">⚡ 为什么要先暂停？</text>
+        <g transform="translate(0, 25)">
+            <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H690 A10,10 0 0 1 700,10 V100 A10,10 0 0 1 690,110 H10 A10,10 0 0 1 0,100 V10 A10,10 0 0 1 10,0 Z" />
+            <text x="25" y="35" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">冲动修改往往制造更多问题</tspan>
+            </text>
+            <text x="25" y="65" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">表面现象可能误导你的判断</tspan>
+            </text>
+            <text x="25" y="95" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <tspan fill="#f85149">•</tspan>
+                <tspan dx="10">先理清思路，事半功倍</tspan>
+            </text>
+        </g>
+    </g>
+
+    
+    <text x="800" y="210" font-family="SF Pro Display, -apple-system, sans-serif" font-size="24" font-weight="bold" fill="#58a6ff">💡 灵魂三问</text>
+
+    <g transform="translate(800, 230)">
+        
+        <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H410 A10,10 0 0 1 420,10 V50 A10,10 0 0 1 410,60 H10 A10,10 0 0 1 0,50 V10 A10,10 0 0 1 10,0 Z" />
+        <circle cx="30" cy="30" r="16" fill="#58a6ff" opacity="0.3" />
+        <text x="30" y="36" text-anchor="middle" font-family="SF Mono, monospace" font-size="16" font-weight="bold" fill="#58a6ff">1</text>
+        <text x="60" y="38" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#e6edf3">流程本该如此运作吗？</text>
+
+        
+        <g transform="translate(0, 75)">
+            <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H410 A10,10 0 0 1 420,10 V50 A10,10 0 0 1 410,60 H10 A10,10 0 0 1 0,50 V10 A10,10 0 0 1 10,0 Z" />
+            <circle cx="30" cy="30" r="16" fill="#58a6ff" opacity="0.3" />
+            <text x="30" y="36" text-anchor="middle" font-family="SF Mono, monospace" font-size="16" font-weight="bold" fill="#58a6ff">2</text>
+            <text x="60" y="38" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#e6edf3">哪些行为符合预期？</text>
+        </g>
+
+        
+        <g transform="translate(0, 150)">
+            <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H410 A10,10 0 0 1 420,10 V50 A10,10 0 0 1 410,60 H10 A10,10 0 0 1 0,50 V10 A10,10 0 0 1 10,0 Z" />
+            <circle cx="30" cy="30" r="16" fill="#58a6ff" opacity="0.3" />
+            <text x="30" y="36" text-anchor="middle" font-family="SF Mono, monospace" font-size="16" font-weight="bold" fill="#58a6ff">3</text>
+            <text x="60" y="38" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#e6edf3">是流程矛盾还是代码写错？</text>
+        </g>
+    </g>
+
+    
+    <g transform="translate(800, 480)">
+        <text x="0" y="0" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#7ee787">✍️ 行动建议</text>
+        <g transform="translate(0, 25)">
+            <path fill="#161b22" stroke="#7ee787" stroke-width="1" d="M10,0 H410 A10,10 0 0 1 420,10 V65 A10,10 0 0 1 410,75 H10 A10,10 0 0 1 0,65 V10 A10,10 0 0 1 10,0 Z" />
+            <text x="25" y="30" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">
+                <tspan fill="#7ee787">1.</tspan>
+                <tspan dx="8">拿出纸笔或打开笔记</tspan>
+            </text>
+            <text x="25" y="55" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">
+                <tspan fill="#7ee787">2.</tspan>
+                <tspan dx="8">用「用户视角」描述预期流程</tspan>
+            </text>
+        </g>
+    </g>
+
+    
+    <path fill="#7ee787" opacity="0.1" d="M68,620 H1212 A8,8 0 0 1 1220,628 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V628 A8,8 0 0 1 68,620 Z" />
+    <text x="640" y="653" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#7ee787">
+        <tspan font-weight="bold">记住：</tspan>
+        <tspan>先确认设计是对的，再去查代码实现</tspan>
+    </text>
+
+    
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">03 /
+        10</text>
+</svg>

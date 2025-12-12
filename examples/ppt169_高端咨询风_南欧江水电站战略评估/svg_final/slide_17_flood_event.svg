@@ -1,12 +1,12 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">2025年洪水事件案例</text>
   <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">2025 FLOOD EVENT CASE</text>
   
-  <!-- 事件概述 -->
+  
   <g transform="translate(40, 100)">
-    <rect width="500" height="150" rx="12" fill="#B8352B"/>
+    <path fill="#B8352B" d="M12,0 H488 A12,12 0 0 1 500,12 V138 A12,12 0 0 1 488,150 H12 A12,12 0 0 1 0,138 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">⚠️ 事件概述</text>
     <text x="25" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF">
       <tspan font-weight="600">时间：</tspan>
@@ -26,101 +26,101 @@
     </text>
   </g>
   
-  <!-- 时间轴 -->
+  
   <g transform="translate(560, 100)">
-    <rect width="680" height="150" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H668 A12,12 0 0 1 680,12 V138 A12,12 0 0 1 668,150 H12 A12,12 0 0 1 0,138 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">事件时间轴</text>
     
-    <!-- 时间轴线 -->
-    <line x1="40" y1="85" x2="640" y2="85" stroke="#1A6B7C" stroke-width="3"/>
+    
+    <line x1="40" y1="85" x2="640" y2="85" stroke="#1A6B7C" stroke-width="3" />
     
     <g transform="translate(80, 85)">
-      <circle cx="0" cy="0" r="10" fill="#D97706"/>
+      <circle cx="0" cy="0" r="10" fill="#D97706" />
       <text x="0" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">暴雨来袭</text>
       <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#718096" text-anchor="middle">老挝北部</text>
     </g>
     
     <g transform="translate(220, 85)">
-      <circle cx="0" cy="0" r="10" fill="#B8352B"/>
+      <circle cx="0" cy="0" r="10" fill="#B8352B" />
       <text x="0" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">水库满载</text>
       <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#718096" text-anchor="middle">大坝安全预警</text>
     </g>
     
     <g transform="translate(360, 85)">
-      <circle cx="0" cy="0" r="12" fill="#B8352B" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="0" cy="0" r="12" fill="#B8352B" stroke="#FFFFFF" stroke-width="2" />
       <text x="0" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#B8352B" text-anchor="middle" font-weight="600">全孔泄洪</text>
       <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#718096" text-anchor="middle">4、5、6级电站</text>
     </g>
     
     <g transform="translate(500, 85)">
-      <circle cx="0" cy="0" r="10" fill="#8D6E63"/>
+      <circle cx="0" cy="0" r="10" fill="#8D6E63" />
       <text x="0" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">下游洪灾</text>
       <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#718096" text-anchor="middle">财产损失</text>
     </g>
     
     <g transform="translate(600, 85)">
-      <circle cx="0" cy="0" r="10" fill="#D97706"/>
+      <circle cx="0" cy="0" r="10" fill="#D97706" />
       <text x="0" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#4A5568" text-anchor="middle">预警不足</text>
       <text x="0" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="9" fill="#718096" text-anchor="middle">争议</text>
     </g>
   </g>
   
-  <!-- 问题分析 -->
+  
   <g transform="translate(40, 270)">
-    <rect width="600" height="280" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H588 A12,12 0 0 1 600,12 V268 A12,12 0 0 1 588,280 H12 A12,12 0 0 1 0,268 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">问题分析</text>
     
     <g transform="translate(25, 60)">
-      <rect width="550" height="65" rx="8" fill="#B8352B" opacity="0.1"/>
+      <path fill="#B8352B" opacity="0.1" d="M8,0 H542 A8,8 0 0 1 550,8 V57 A8,8 0 0 1 542,65 H8 A8,8 0 0 1 0,57 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">梯级联动风险</text>
       <text x="15" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">多级电站同时泄洪时，洪峰叠加效应显著</text>
       <text x="15" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">下游承受压力远超自然洪水</text>
     </g>
     
     <g transform="translate(25, 135)">
-      <rect width="550" height="65" rx="8" fill="#D97706" opacity="0.1"/>
+      <path fill="#D97706" opacity="0.1" d="M8,0 H542 A8,8 0 0 1 550,8 V57 A8,8 0 0 1 542,65 H8 A8,8 0 0 1 0,57 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">预警机制缺陷</text>
       <text x="15" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">紧急泄洪时，下游居民预警时间不足</text>
       <text x="15" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">跨境信息传递存在延迟</text>
     </g>
     
     <g transform="translate(25, 210)">
-      <rect width="550" height="55" rx="8" fill="#1A6B7C" opacity="0.1"/>
+      <path fill="#1A6B7C" opacity="0.1" d="M8,0 H542 A8,8 0 0 1 550,8 V47 A8,8 0 0 1 542,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#1A6B7C">极端气候脆弱性</text>
       <text x="15" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">气候变化加剧极端降雨事件频率，梯级水电站面临更大压力</text>
     </g>
   </g>
   
-  <!-- 系统性风险 -->
+  
   <g transform="translate(660, 270)">
-    <rect width="580" height="280" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
-    <rect x="0" y="0" width="580" height="50" rx="12" fill="#B8352B"/>
+    <path fill="#FFFFFF" stroke="#B8352B" stroke-width="2" d="M12,0 H568 A12,12 0 0 1 580,12 V268 A12,12 0 0 1 568,280 H12 A12,12 0 0 1 0,268 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#B8352B" d="M12,0 H568 A12,12 0 0 1 580,12 V38 A12,12 0 0 1 568,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="33" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">🔺 揭示的系统性风险</text>
     
     <g transform="translate(25, 70)">
       <g transform="translate(0, 0)">
-        <circle cx="12" cy="12" r="12" fill="#B8352B"/>
+        <circle cx="12" cy="12" r="12" fill="#B8352B" />
         <text x="12" y="17" font-family="system-ui" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
         <text x="35" y="17" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">大坝优先，下游次要</text>
         <text x="35" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">为保障大坝安全，泄洪决策优先于下游居民利益</text>
       </g>
       
       <g transform="translate(0, 60)">
-        <circle cx="12" cy="12" r="12" fill="#D97706"/>
+        <circle cx="12" cy="12" r="12" fill="#D97706" />
         <text x="12" y="17" font-family="system-ui" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
         <text x="35" y="17" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">责任归属模糊</text>
         <text x="35" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">由电站运营决策导致的灾害损失，赔偿机制不明确</text>
       </g>
       
       <g transform="translate(0, 120)">
-        <circle cx="12" cy="12" r="12" fill="#1A6B7C"/>
+        <circle cx="12" cy="12" r="12" fill="#1A6B7C" />
         <text x="12" y="17" font-family="system-ui" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
         <text x="35" y="17" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">跨境协调不足</text>
         <text x="35" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">南欧江汇入湄公河，泄洪影响扩展至下游国家</text>
       </g>
       
       <g transform="translate(0, 175)">
-        <rect width="530" height="40" rx="6" fill="#0D2B3E" opacity="0.08"/>
+        <path fill="#0D2B3E" opacity="0.08" d="M6,0 H524 A6,6 0 0 1 530,6 V34 A6,6 0 0 1 524,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
         <text x="15" y="27" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">
           <tspan font-weight="600">结论：</tspan>
           <tspan>此事件凸显梯级水电站在极端气候下对下游构成的系统性风险</tspan>
@@ -129,14 +129,14 @@
     </g>
   </g>
   
-  <!-- 底部强调 -->
+  
   <g transform="translate(40, 570)">
-    <rect width="1200" height="70" rx="12" fill="#D97706" opacity="0.15"/>
+    <path fill="#D97706" opacity="0.15" d="M12,0 H1188 A12,12 0 0 1 1200,12 V58 A12,12 0 0 1 1188,70 H12 A12,12 0 0 1 0,58 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">警示意义</text>
     <text x="25" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">南欧江2025年洪水事件表明，大型梯级水电站在带来经济效益的同时，也在将风险转移给下游社区。在气候变化加剧的背景下，这一矛盾将更加突出。</text>
   </g>
   
-  <line x1="40" y1="660" x2="1240" y2="660" stroke="#D4DEE4" stroke-width="1"/>
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#D4DEE4" stroke-width="1" />
   <text x="40" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
   <text x="1240" y="690" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">17 / 20</text>
 </svg>

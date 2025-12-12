@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">六、举债能力分析</text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,100 H618 A12,12 0 0 1 630,112 V368 A12,12 0 0 1 618,380 H52 A12,12 0 0 1 40,368 V112 A12,12 0 0 1 52,100 Z" />
+    <text x="60" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 债务限额与使用情况</text>
+    
+    
+    <path fill="#4A90D9" opacity="0.1" d="M68,165 H302 A8,8 0 0 1 310,173 V247 A8,8 0 0 1 302,255 H68 A8,8 0 0 1 60,247 V173 A8,8 0 0 1 68,165 Z" />
+    <text x="80" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#4A90D9">一般债</text>
+    <text x="80" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">限额：<tspan font-weight="bold" fill="#1E3A5F">112.5亿</tspan></text>
+    <text x="80" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">余额：<tspan font-weight="bold" fill="#4A90D9">109.2亿</tspan></text>
+    <text x="200" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0">占比 1.35%</text>
+    
+    
+    <path fill="#FF6B35" opacity="0.1" d="M338,165 H602 A8,8 0 0 1 610,173 V247 A8,8 0 0 1 602,255 H338 A8,8 0 0 1 330,247 V173 A8,8 0 0 1 338,165 Z" />
+    <text x="350" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">专项债</text>
+    <text x="350" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">限额：<tspan font-weight="bold" fill="#1E3A5F">51.5亿</tspan></text>
+    <text x="350" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">余额：<tspan font-weight="bold" fill="#FF6B35">48.3亿</tspan></text>
+    <text x="500" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#C41E3A">占比仅 0.28%</text>
+    
+    <line x1="60" y1="270" x2="610" y2="270" stroke="#E8E8F0" stroke-width="1" />
+    
+    
+    <text x="60" y="305" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">债务空间使用情况</text>
+    <path fill="#E8E8F0" d="M64,320 H556 A4,4 0 0 1 560,324 V336 A4,4 0 0 1 556,340 H64 A4,4 0 0 1 60,336 V324 A4,4 0 0 1 64,320 Z" />
+    <path fill="#FF6B35" d="M64,320 H536 A4,4 0 0 1 540,324 V336 A4,4 0 0 1 536,340 H64 A4,4 0 0 1 60,336 V324 A4,4 0 0 1 64,320 Z" />
+    <text x="570" y="336" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FF6B35">96.03%</text>
+    
+    <text x="60" y="365" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#C41E3A">⚠️ 新增空间仅 <tspan font-weight="bold">6.5亿元</tspan>（一般债3.3亿 + 专项债3.2亿）</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M662,100 H1228 A12,12 0 0 1 1240,112 V368 A12,12 0 0 1 1228,380 H662 A12,12 0 0 1 650,368 V112 A12,12 0 0 1 662,100 Z" />
+    <text x="670" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">⚠️ 专项债限额 vs 基准线（核心问题）</text>
+    
+    
+    <line x1="700" y1="330" x2="1050" y2="330" stroke="#95A5A6" stroke-width="2" />
+    <line x1="700" y1="160" x2="700" y2="330" stroke="#95A5A6" stroke-width="2" />
+    <line x1="700" y1="275" x2="1050" y2="275" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="700" y1="220" x2="1050" y2="220" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="700" y1="165" x2="1050" y2="165" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <text x="690" y="335" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0">0%</text>
+    <text x="690" y="280" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0">0.5%</text>
+    <text x="690" y="225" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0">1.0%</text>
+    <text x="690" y="170" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#8888A0">1.5%</text>
+    
+    
+    
+    <path fill="#C41E3A" d="M744,299 H806 A4,4 0 0 1 810,303 V326 A4,4 0 0 1 806,330 H744 A4,4 0 0 1 740,326 V303 A4,4 0 0 1 744,299 Z" />
+    <text x="775" y="293" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#C41E3A">0.28%</text>
+    <text x="775" y="350" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">专项债限额</text>
+    
+    
+    <path fill="#1E3A5F" d="M854,231 H916 A4,4 0 0 1 920,235 V326 A4,4 0 0 1 916,330 H854 A4,4 0 0 1 850,326 V235 A4,4 0 0 1 854,231 Z" />
+    <text x="885" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">0.90%</text>
+    <text x="885" y="350" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">GDP占比</text>
+    
+    
+    <path fill="#2E5A8B" d="M964,184 H1026 A4,4 0 0 1 1030,188 V326 A4,4 0 0 1 1026,330 H964 A4,4 0 0 1 960,326 V188 A4,4 0 0 1 964,184 Z" />
+    <text x="995" y="260" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1.33%</text>
+    <text x="995" y="350" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#4A4A6A">人口占比</text>
+    
+    
+    <path fill="#C41E3A" opacity="0.1" d="M1078,170 H1212 A8,8 0 0 1 1220,178 V307 A8,8 0 0 1 1212,315 H1078 A8,8 0 0 1 1070,307 V178 A8,8 0 0 1 1078,170 Z" />
+    <text x="1090" y="198" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#C41E3A">结构失衡</text>
+    <text x="1090" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">专项债:一般债</text>
+    <text x="1090" y="255" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#C41E3A">0.46:1</text>
+    <text x="1090" y="285" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">全省平均</text>
+    <text x="1090" y="305" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#1E3A5F">2.24:1</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,400 H1228 A12,12 0 0 1 1240,412 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V412 A12,12 0 0 1 52,400 Z" />
+    <text x="60" y="440" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">💡 融资策略建议</text>
+    
+    <path fill="#00A651" opacity="0.08" d="M68,465 H422 A8,8 0 0 1 430,473 V632 A8,8 0 0 1 422,640 H68 A8,8 0 0 1 60,632 V473 A8,8 0 0 1 68,465 Z" />
+    <text x="80" y="495" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#00A651">1️⃣ 争取专项债限额</text>
+    <text x="80" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 向省级和中央争取更多额度</text>
+    <text x="80" y="550" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 重点申报交通、生态、旅游项目</text>
+    <text x="80" y="575" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 利用民族地区政策优势</text>
+    <text x="80" y="600" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 对接国家重大战略项目</text>
+    
+    <path fill="#4A90D9" opacity="0.08" d="M458,465 H812 A8,8 0 0 1 820,473 V632 A8,8 0 0 1 812,640 H458 A8,8 0 0 1 450,632 V473 A8,8 0 0 1 458,465 Z" />
+    <text x="470" y="495" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#4A90D9">2️⃣ 优化债务结构</text>
+    <text x="470" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 优先使用专项债支持有收益项目</text>
+    <text x="470" y="550" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 加强项目储备和包装</text>
+    <text x="470" y="575" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 提高资金使用效率</text>
+    <text x="470" y="600" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 及时偿还到期债务释放空间</text>
+    
+    <path fill="#D4AF37" opacity="0.08" d="M848,465 H1212 A8,8 0 0 1 1220,473 V632 A8,8 0 0 1 1212,640 H848 A8,8 0 0 1 840,632 V473 A8,8 0 0 1 848,465 Z" />
+    <text x="860" y="495" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#D4AF37">3️⃣ 依托政策支持</text>
+    <text x="860" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 充分利用民族地区、生态功能区政策</text>
+    <text x="860" y="550" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 争取专项转移支付替代债务融资</text>
+    <text x="860" y="575" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 对接超长期特别国债</text>
+    <text x="860" y="600" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 探索生态补偿等创新资金来源</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">12 / 17</text>
+</svg>

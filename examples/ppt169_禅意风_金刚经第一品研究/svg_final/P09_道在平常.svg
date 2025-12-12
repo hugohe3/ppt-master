@@ -1,55 +1,55 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F9F6F1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F9F6F1" />
   
   <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">道在平常：般若智慧的前语言呈现</text>
-  <line x1="40" y1="105" x2="480" y2="105" stroke="#C9A962" stroke-width="3"/>
+  <line x1="40" y1="105" x2="480" y2="105" stroke="#C9A962" stroke-width="3" />
   
   <g transform="translate(200, 135)">
-    <rect x="0" y="0" width="880" height="100" rx="16" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+    <path fill="#FDF8E8" stroke="#C9A962" stroke-width="2" d="M16,0 H864 A16,16 0 0 1 880,16 V84 A16,16 0 0 1 864,100 H16 A16,16 0 0 1 0,84 V16 A16,16 0 0 1 16,0 Z" />
     <text x="440" y="40" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">"通往最高智慧的道路，并非始于超凡脱俗的异象，</text>
     <text x="440" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">而是植根于对当下每一个平凡瞬间的觉照与实践。"</text>
   </g>
   
   <text x="640" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62" text-anchor="middle">非二元的示范：最高真理在日常中</text>
   
-  <!-- 四卡片布局：总宽度1160px(40-1200)，卡片宽度280px，间距20px -->
+  
   <g transform="translate(40, 310)">
-    <rect x="0" y="0" width="280" height="140" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2" d="M12,0 H268 A12,12 0 0 1 280,12 V128 A12,12 0 0 1 268,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     <text x="140" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#5D8C6A" text-anchor="middle">世俗 ⟷ 神圣</text>
-    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1" />
     <text x="140" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">乞食即修行</text>
     <text x="140" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">日常行为本身即是道场</text>
   </g>
   
   <g transform="translate(340, 310)">
-    <rect x="0" y="0" width="280" height="140" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#C9A962" stroke-width="2" d="M12,0 H268 A12,12 0 0 1 280,12 V128 A12,12 0 0 1 268,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     <text x="140" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#C9A962" text-anchor="middle">动态 ⟷ 静态</text>
-    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1" />
     <text x="140" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">行走与禅坐</text>
     <text x="140" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">运动与静止中皆可安住</text>
   </g>
   
   <g transform="translate(640, 310)">
-    <rect x="0" y="0" width="280" height="140" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#2E4A62" stroke-width="2" d="M12,0 H268 A12,12 0 0 1 280,12 V128 A12,12 0 0 1 268,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     <text x="140" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62" text-anchor="middle">染 ⟷ 净</text>
-    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1" />
     <text x="140" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">尘世与洗足</text>
     <text x="140" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">世间行走后洗净归来</text>
   </g>
   
   <g transform="translate(940, 310)">
-    <rect x="0" y="0" width="280" height="140" rx="12" fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2" d="M12,0 H268 A12,12 0 0 1 280,12 V128 A12,12 0 0 1 268,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     <text x="140" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#6B7280" text-anchor="middle">有为 ⟷ 无为</text>
-    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="15" y1="55" x2="265" y2="55" stroke="#E5E7EB" stroke-width="1" />
     <text x="140" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">日用即道</text>
     <text x="140" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">作而无作，行而无行</text>
   </g>
   
   <g transform="translate(40, 480)">
-    <rect x="0" y="0" width="1180" height="150" rx="12" fill="#2E4A62"/>
-    <!-- icon: lightbulb -->
+    <path fill="#2E4A62" d="M12,0 H1168 A12,12 0 0 1 1180,12 V138 A12,12 0 0 1 1168,150 H12 A12,12 0 0 1 0,138 V12 A12,12 0 0 1 12,0 Z" />
+    
   <g transform="translate(40.0, 55.0) scale(2.5)" fill="#C9A962">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z" />
   </g>
     <text x="100" y="55" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">核心洞见</text>
     <text x="100" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8EBF0">佛陀的行为无缝融合了世俗与神圣、动态与静态、染与净。</text>

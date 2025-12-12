@@ -1,77 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <filter id="cardShadowSm" x="-15%" y="-15%" width="130%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
-      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
-      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
       <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757" />
+  
+  
   <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
     WHEN TO USE AGENTS
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="100" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A1A2E">
     Agent 适用于开放式问题，但需充分测试与防护
   </text>
   
-  <!-- 左侧：适用条件 -->
+  
   <g transform="translate(60, 140)">
-    <rect x="0" y="0" width="560" height="340" rx="16" fill="#F0FDF4" stroke="#10B981" stroke-width="2"/>
+    <path fill="#F0FDF4" stroke="#10B981" stroke-width="2" d="M16,0 H544 A16,16 0 0 1 560,16 V324 A16,16 0 0 1 544,340 H16 A16,16 0 0 1 0,324 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题 -->
-    <rect x="0" y="0" width="560" height="55" rx="16" fill="#10B981"/>
-    <rect x="0" y="28" width="560" height="27" fill="#10B981"/>
-    <!-- icon: circle-checkmark -->
+    
+    <path fill="#10B981" d="M16,0 H544 A16,16 0 0 1 560,16 V39 A16,16 0 0 1 544,55 H16 A16,16 0 0 1 0,39 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="28" width="560" height="27" fill="#10B981" />
+    
   <g transform="translate(20.0, 12.0) scale(2.0)" fill="#FFFFFF">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.7071 5.70711L11.2929 4.29289L6.5 9.08579L4.70711 7.29289L3.29289 8.70711L6.5 11.9142L12.7071 5.70711Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.7071 5.70711L11.2929 4.29289L6.5 9.08579L4.70711 7.29289L3.29289 8.70711L6.5 11.9142L12.7071 5.70711Z" />
   </g>
     <text x="65" y="35" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
       ✓ 适用条件
     </text>
     
-    <!-- 条件列表 -->
+    
     <g font-family="Arial, sans-serif" transform="translate(30, 85)">
       <g>
-        <rect x="0" y="0" width="500" height="55" rx="8" fill="#FFFFFF" filter="url(#cardShadowSm)"/>
-        <circle cx="25" cy="27" r="18" fill="#10B981"/>
+        <path fill="#FFFFFF" filter="url(#cardShadowSm)" d="M8,0 H492 A8,8 0 0 1 500,8 V47 A8,8 0 0 1 492,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="25" cy="27" r="18" fill="#10B981" />
         <text x="25" y="33" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
         <text x="55" y="23" font-size="16" font-weight="600" fill="#1A1A2E">无法预测所需步骤数</text>
         <text x="55" y="43" font-size="13" fill="#64748B">任务复杂度不确定，需动态调整</text>
       </g>
       
       <g transform="translate(0, 65)">
-        <rect x="0" y="0" width="500" height="55" rx="8" fill="#FFFFFF" filter="url(#cardShadowSm)"/>
-        <circle cx="25" cy="27" r="18" fill="#10B981"/>
+        <path fill="#FFFFFF" filter="url(#cardShadowSm)" d="M8,0 H492 A8,8 0 0 1 500,8 V47 A8,8 0 0 1 492,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="25" cy="27" r="18" fill="#10B981" />
         <text x="25" y="33" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
         <text x="55" y="23" font-size="16" font-weight="600" fill="#1A1A2E">无法硬编码固定路径</text>
         <text x="55" y="43" font-size="13" fill="#64748B">问题空间开放，解决方式多样</text>
       </g>
       
       <g transform="translate(0, 130)">
-        <rect x="0" y="0" width="500" height="55" rx="8" fill="#FFFFFF" filter="url(#cardShadowSm)"/>
-        <circle cx="25" cy="27" r="18" fill="#10B981"/>
+        <path fill="#FFFFFF" filter="url(#cardShadowSm)" d="M8,0 H492 A8,8 0 0 1 500,8 V47 A8,8 0 0 1 492,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="25" cy="27" r="18" fill="#10B981" />
         <text x="25" y="33" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
         <text x="55" y="23" font-size="16" font-weight="600" fill="#1A1A2E">需信任 LLM 决策能力</text>
         <text x="55" y="43" font-size="13" fill="#64748B">模型具备足够的推理与规划能力</text>
       </g>
       
       <g transform="translate(0, 195)">
-        <rect x="0" y="0" width="500" height="55" rx="8" fill="#FFFFFF" filter="url(#cardShadowSm)"/>
-        <circle cx="25" cy="27" r="18" fill="#10B981"/>
+        <path fill="#FFFFFF" filter="url(#cardShadowSm)" d="M8,0 H492 A8,8 0 0 1 500,8 V47 A8,8 0 0 1 492,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="25" cy="27" r="18" fill="#10B981" />
         <text x="25" y="33" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
         <text x="55" y="23" font-size="16" font-weight="600" fill="#1A1A2E">在受信环境中扩展任务</text>
         <text x="55" y="43" font-size="13" fill="#64748B">有适当的权限控制与监督机制</text>
@@ -79,22 +79,22 @@
     </g>
   </g>
   
-  <!-- 右侧：风险提示 -->
+  
   <g transform="translate(660, 140)">
-    <rect x="0" y="0" width="560" height="200" rx="16" fill="#FEF2F2" stroke="#EF4444" stroke-width="2"/>
+    <path fill="#FEF2F2" stroke="#EF4444" stroke-width="2" d="M16,0 H544 A16,16 0 0 1 560,16 V184 A16,16 0 0 1 544,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题 -->
-    <rect x="0" y="0" width="560" height="55" rx="16" fill="#EF4444"/>
-    <rect x="0" y="28" width="560" height="27" fill="#EF4444"/>
-    <!-- icon: triangle-exclamation -->
+    
+    <path fill="#EF4444" d="M16,0 H544 A16,16 0 0 1 560,16 V39 A16,16 0 0 1 544,55 H16 A16,16 0 0 1 0,39 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="28" width="560" height="27" fill="#EF4444" />
+    
   <g transform="translate(20.0, 12.0) scale(2.0)" fill="#FFFFFF">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15H0V12L7 0H9L16 12V15ZM7 4H9V9H7V4ZM7 11H9V13H7V11Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15H0V12L7 0H9L16 12V15ZM7 4H9V9H7V4ZM7 11H9V13H7V11Z" />
   </g>
     <text x="65" y="35" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
       ⚠️ 风险提示
     </text>
     
-    <!-- 风险列表 -->
+    
     <g font-family="Arial, sans-serif" transform="translate(30, 75)">
       <text x="0" y="0" font-size="16" fill="#1A1A2E">
         <tspan font-weight="600">• 更高成本</tspan>
@@ -110,59 +110,59 @@
       </text>
     </g>
     
-    <!-- 建议 -->
-    <rect x="20" y="150" width="520" height="35" rx="8" fill="#FFFFFF"/>
+    
+    <path fill="#FFFFFF" d="M28,150 H532 A8,8 0 0 1 540,158 V177 A8,8 0 0 1 532,185 H28 A8,8 0 0 1 20,177 V158 A8,8 0 0 1 28,150 Z" />
     <text x="35" y="173" font-family="Arial, sans-serif" font-size="14" fill="#EF4444" font-weight="600">
       💡 建议：沙盒环境广泛测试 + 适当防护措施 (Guardrails)
     </text>
   </g>
   
-  <!-- 右侧下方：Anthropic 案例 -->
+  
   <g transform="translate(660, 360)">
-    <rect x="0" y="0" width="560" height="120" rx="16" fill="#1A1A2E"/>
+    <path fill="#1A1A2E" d="M16,0 H544 A16,16 0 0 1 560,16 V104 A16,16 0 0 1 544,120 H16 A16,16 0 0 1 0,104 V16 A16,16 0 0 1 16,0 Z" />
     
     <text x="30" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97757">
       Anthropic 实践案例
     </text>
     
     <g font-family="Arial, sans-serif" transform="translate(30, 55)">
-      <rect x="0" y="0" width="240" height="45" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M8,0 H232 A8,8 0 0 1 240,8 V37 A8,8 0 0 1 232,45 H8 A8,8 0 0 1 0,37 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="28" font-size="14" fill="#FFFFFF">🔧 SWE-bench 编码代理</text>
       
-      <rect x="260" y="0" width="240" height="45" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M268,0 H492 A8,8 0 0 1 500,8 V37 A8,8 0 0 1 492,45 H268 A8,8 0 0 1 260,37 V8 A8,8 0 0 1 268,0 Z" />
       <text x="275" y="28" font-size="14" fill="#FFFFFF">🖥️ Computer Use 参考实现</text>
     </g>
   </g>
   
-  <!-- 底部总结条 -->
+  
   <g transform="translate(60, 510)">
-    <rect x="0" y="0" width="1160" height="130" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" d="M12,0 H1148 A12,12 0 0 1 1160,12 V118 A12,12 0 0 1 1148,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
     
     <text x="30" y="35" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">
       决策建议
     </text>
     
     <g font-family="Arial, sans-serif" transform="translate(30, 55)">
-      <!-- 推荐路径 -->
-      <rect x="0" y="0" width="350" height="55" rx="8" fill="#10B981" fill-opacity="0.1"/>
+      
+      <path fill="#10B981" fill-opacity="0.1" d="M8,0 H342 A8,8 0 0 1 350,8 V47 A8,8 0 0 1 342,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="20" y="25" font-size="14" fill="#10B981" font-weight="600">首选</text>
       <text x="20" y="45" font-size="14" fill="#1A1A2E">单一 LLM + Workflows</text>
       
-      <!-- 箭头 -->
+      
       <text x="380" y="35" font-size="20" fill="#64748B">→</text>
       
-      <!-- Agent -->
-      <rect x="420" y="0" width="350" height="55" rx="8" fill="#D97757" fill-opacity="0.1"/>
+      
+      <path fill="#D97757" fill-opacity="0.1" d="M428,0 H762 A8,8 0 0 1 770,8 V47 A8,8 0 0 1 762,55 H428 A8,8 0 0 1 420,47 V8 A8,8 0 0 1 428,0 Z" />
       <text x="440" y="25" font-size="14" fill="#D97757" font-weight="600">仅在必要时</text>
       <text x="440" y="45" font-size="14" fill="#1A1A2E">Autonomous Agents</text>
       
-      <!-- 条件 -->
-      <rect x="800" y="0" width="320" height="55" rx="8" fill="#F1F5F9"/>
+      
+      <path fill="#F1F5F9" d="M808,0 H1112 A8,8 0 0 1 1120,8 V47 A8,8 0 0 1 1112,55 H808 A8,8 0 0 1 800,47 V8 A8,8 0 0 1 808,0 Z" />
       <text x="820" y="35" font-size="13" fill="#64748B">当简单方案无法满足需求时升级</text>
     </g>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="690" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     12 / 15
   </text>

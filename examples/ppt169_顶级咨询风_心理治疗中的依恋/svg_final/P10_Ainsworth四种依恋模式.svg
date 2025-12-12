@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     Mary Ainsworth —— 从行为到模式
   </text>
@@ -13,55 +13,55 @@
     The Strange Situation and Attachment Patterns
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="500" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 上方：贡献要点 -->
+  <line x1="60" y1="125" x2="500" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="1160" height="90" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H1148 A12,12 0 0 1 1160,12 V78 A12,12 0 0 1 1148,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
     
     <g transform="translate(30, 25)">
-      <rect x="0" y="0" width="340" height="40" rx="8" fill="#E0F2FE"/>
-      <circle cx="20" cy="20" r="15" fill="#2E5C8E"/>
+      <path fill="#E0F2FE" d="M8,0 H332 A8,8 0 0 1 340,8 V32 A8,8 0 0 1 332,40 H8 A8,8 0 0 1 0,32 V8 A8,8 0 0 1 8,0 Z" />
+      <circle cx="20" cy="20" r="15" fill="#2E5C8E" />
       <text x="20" y="25" font-size="14" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="50" y="25" font-size="15" fill="#2E5C8E">发现依恋系统的可塑性</text>
     </g>
     
     <g transform="translate(400, 25)">
-      <rect x="0" y="0" width="340" height="40" rx="8" fill="#D4EDDA"/>
-      <circle cx="20" cy="20" r="15" fill="#3D8B7A"/>
+      <path fill="#D4EDDA" d="M8,0 H332 A8,8 0 0 1 340,8 V32 A8,8 0 0 1 332,40 H8 A8,8 0 0 1 0,32 V8 A8,8 0 0 1 8,0 Z" />
+      <circle cx="20" cy="20" r="15" fill="#3D8B7A" />
       <text x="20" y="25" font-size="14" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="50" y="25" font-size="15" fill="#3D8B7A">沟通品质决定依恋安全性</text>
     </g>
     
     <g transform="translate(770, 25)">
-      <rect x="0" y="0" width="360" height="40" rx="8" fill="#FED7AA"/>
-      <circle cx="20" cy="20" r="15" fill="#E07843"/>
+      <path fill="#FED7AA" d="M8,0 H352 A8,8 0 0 1 360,8 V32 A8,8 0 0 1 352,40 H8 A8,8 0 0 1 0,32 V8 A8,8 0 0 1 8,0 Z" />
+      <circle cx="20" cy="20" r="15" fill="#E07843" />
       <text x="20" y="25" font-size="14" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="50" y="25" font-size="15" fill="#E07843">创立陌生情境实验 (SSP)</text>
     </g>
   </g>
   
-  <!-- 四类型表格标题 -->
+  
   <text x="60" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E5C8E">
     婴儿依恋模式四分类
   </text>
-  <line x1="60" y1="290" x2="230" y2="290" stroke="#2E5C8E" stroke-width="2"/>
+  <line x1="60" y1="290" x2="230" y2="290" stroke="#2E5C8E" stroke-width="2" />
   
-  <!-- 四类型卡片：2×2 布局 -->
+  
   <g transform="translate(60, 310)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 安全型 -->
+    
     <g>
-      <rect x="0" y="0" width="560" height="170" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V158 A12,12 0 0 1 548,170 H12 A12,12 0 0 1 0,158 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题栏 -->
-      <rect x="0" y="0" width="560" height="45" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="33" width="560" height="12" fill="#3D8B7A"/>
+      
+      <path fill="#3D8B7A" d="M12,0 H548 A12,12 0 0 1 560,12 V33 A12,12 0 0 1 548,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="560" height="12" fill="#3D8B7A" />
       <text x="25" y="30" font-size="20" fill="#FFFFFF">🟢</text>
       <text x="55" y="30" font-size="18" font-weight="bold" fill="#FFFFFF">安全型依恋 Secure Attachment</text>
       
-      <!-- 内容 -->
+      
       <text x="25" y="75" font-size="14" font-weight="600" fill="#3D8B7A">婴儿表现</text>
       <text x="25" y="95" font-size="14" fill="#374151">分离时可能苦恼，重聚时能被母亲安抚并恢复探索</text>
       
@@ -69,17 +69,17 @@
       <text x="25" y="145" font-size="14" fill="#374151">对婴儿信号敏感且反应迅速，互动具有协作性和随机应变的沟通特质</text>
     </g>
     
-    <!-- 回避型 -->
+    
     <g transform="translate(600, 0)">
-      <rect x="0" y="0" width="560" height="170" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#64748B" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V158 A12,12 0 0 1 548,170 H12 A12,12 0 0 1 0,158 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题栏 -->
-      <rect x="0" y="0" width="560" height="45" rx="12" fill="#64748B"/>
-      <rect x="0" y="33" width="560" height="12" fill="#64748B"/>
+      
+      <path fill="#64748B" d="M12,0 H548 A12,12 0 0 1 560,12 V33 A12,12 0 0 1 548,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="560" height="12" fill="#64748B" />
       <text x="25" y="30" font-size="20" fill="#FFFFFF">🔵</text>
       <text x="55" y="30" font-size="18" font-weight="bold" fill="#FFFFFF">回避型依恋 Avoidant Attachment</text>
       
-      <!-- 内容 -->
+      
       <text x="25" y="75" font-size="14" font-weight="600" fill="#64748B">婴儿表现</text>
       <text x="25" y="95" font-size="14" fill="#374151">分离时极少苦恼，重聚时回避或忽视母亲，专注探索物体</text>
       
@@ -87,17 +87,17 @@
       <text x="25" y="145" font-size="14" fill="#374151">倾向于拒绝婴儿的亲近需求，情感上不可得，对身体接触不适</text>
     </g>
     
-    <!-- 矛盾型 -->
+    
     <g transform="translate(0, 190)">
-      <rect x="0" y="0" width="560" height="170" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V158 A12,12 0 0 1 548,170 H12 A12,12 0 0 1 0,158 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题栏 -->
-      <rect x="0" y="0" width="560" height="45" rx="12" fill="#E07843"/>
-      <rect x="0" y="33" width="560" height="12" fill="#E07843"/>
+      
+      <path fill="#E07843" d="M12,0 H548 A12,12 0 0 1 560,12 V33 A12,12 0 0 1 548,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="560" height="12" fill="#E07843" />
       <text x="25" y="30" font-size="20" fill="#FFFFFF">🟠</text>
       <text x="55" y="30" font-size="18" font-weight="bold" fill="#FFFFFF">矛盾型依恋 Ambivalent Attachment</text>
       
-      <!-- 内容 -->
+      
       <text x="25" y="75" font-size="14" font-weight="600" fill="#E07843">婴儿表现</text>
       <text x="25" y="95" font-size="14" fill="#374151">对母亲去向极度关注，分离时极度痛苦，重聚时难以安抚</text>
       
@@ -105,17 +105,17 @@
       <text x="25" y="145" font-size="14" fill="#374151">反应不可预测，时而可用时而不可用，婴儿学会放大依恋信号</text>
     </g>
     
-    <!-- 混乱型 -->
+    
     <g transform="translate(600, 190)">
-      <rect x="0" y="0" width="560" height="170" rx="12" fill="#FFFFFF" stroke="#B54545" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#B54545" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V158 A12,12 0 0 1 548,170 H12 A12,12 0 0 1 0,158 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题栏 -->
-      <rect x="0" y="0" width="560" height="45" rx="12" fill="#B54545"/>
-      <rect x="0" y="33" width="560" height="12" fill="#B54545"/>
+      
+      <path fill="#B54545" d="M12,0 H548 A12,12 0 0 1 560,12 V33 A12,12 0 0 1 548,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="560" height="12" fill="#B54545" />
       <text x="25" y="30" font-size="20" fill="#FFFFFF">🔴</text>
       <text x="55" y="30" font-size="18" font-weight="bold" fill="#FFFFFF">混乱型依恋 Disorganized Attachment</text>
       
-      <!-- 内容 -->
+      
       <text x="25" y="75" font-size="14" font-weight="600" fill="#B54545">婴儿表现</text>
       <text x="25" y="95" font-size="14" fill="#374151">表现出矛盾、混乱或冻结的行为（如在父母面前僵住）</text>
       
@@ -124,6 +124,6 @@
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">10</text>
 </svg>

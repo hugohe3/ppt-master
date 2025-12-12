@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#EA4335;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#FBBC04;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#34A853;stop-opacity:1" />
+        </linearGradient>
+
+        <filter id="dashboardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="46" font-weight="700" fill="#1A237E">
+        Impact Dashboard
+    </text>
+
+    
+    <path fill="#EA4335" d="M62,100 H188 A2,2 0 0 1 190,102 V102 A2,2 0 0 1 188,104 H62 A2,2 0 0 1 60,102 V102 A2,2 0 0 1 62,100 Z" />
+
+    
+
+    
+    
+    <g transform="translate(60, 140)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#4285F4" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            💰 Cost Savings
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#4285F4" text-anchor="middle">
+            $28M+
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Annual Infrastructure
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Cost Reduction
+        </text>
+    </g>
+
+    
+    <g transform="translate(455, 140)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#34A853" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            ⚡ Performance Boost
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#34A853" text-anchor="middle">
+            76%
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Resource Utilization
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            (up from 38%)
+        </text>
+    </g>
+
+    
+    <g transform="translate(850, 140)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#FBBC04" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            🛡️ System Reliability
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#FBBC04" text-anchor="middle">
+            99.99%
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            System Availability
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            (up from 99.95%)
+        </text>
+    </g>
+
+    
+    
+    <g transform="translate(60, 370)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#EA4335" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            📚 Knowledge Transfer
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#EA4335" text-anchor="middle">
+            15+
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Technical Presentations
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            and Training Sessions
+        </text>
+    </g>
+
+    
+    <g transform="translate(455, 370)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#4285F4" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            👨‍💻 Team Development
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#4285F4" text-anchor="middle">
+            8
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Engineers Mentored
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            (2 Promotions)
+        </text>
+    </g>
+
+    
+    
+    <g transform="translate(850, 370)" filter="url(#dashboardShadow)">
+        <path fill="#FFFFFF" stroke="#34A853" stroke-width="3" d="M16,0 H354 A16,16 0 0 1 370,16 V184 A16,16 0 0 1 354,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="185" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#1A237E" text-anchor="middle">
+            🌍 Community Impact
+        </text>
+        <text x="185" y="115" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="56" font-weight="700" fill="#34A853" text-anchor="middle">
+            50+
+        </text>
+        <text x="185" y="150" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Stack Overflow
+        </text>
+        <text x="185" y="175" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368" text-anchor="middle">
+            Contributions
+        </text>
+    </g>
+
+    
+    <path fill="#F1F3F4" d="M68,600 H1212 A8,8 0 0 1 1220,608 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V608 A8,8 0 0 1 68,600 Z" />
+    <text x="640" y="643" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E" text-anchor="middle">
+        Exceeding expectations across technical delivery, team impact, and community engagement
+    </text>
+
+    
+    <text x="1220" y="700" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="end">
+        08
+    </text>
+</svg>

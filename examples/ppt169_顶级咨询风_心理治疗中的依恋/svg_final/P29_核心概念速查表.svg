@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     核心概念速查表
   </text>
@@ -13,18 +13,18 @@
     Quick Reference: Key Concepts in Attachment-Oriented Psychotherapy
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="400" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 三栏布局 -->
+  <line x1="60" y1="125" x2="400" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 第一栏：依恋理论核心 -->
+    
     <g>
-      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="370" height="45" rx="12" fill="#2E5C8E"/>
-      <rect x="0" y="33" width="370" height="12" fill="#2E5C8E"/>
+      <path fill="#2E5C8E" d="M12,0 H358 A12,12 0 0 1 370,12 V33 A12,12 0 0 1 358,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="370" height="12" fill="#2E5C8E" />
       <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">依恋理论核心</text>
       
       <g transform="translate(15, 60)" font-size="13">
@@ -57,12 +57,12 @@
       </g>
     </g>
     
-    <!-- 第二栏：依恋模式与策略 -->
+    
     <g transform="translate(395, 0)">
-      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="370" height="45" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="33" width="370" height="12" fill="#3D8B7A"/>
+      <path fill="#3D8B7A" d="M12,0 H358 A12,12 0 0 1 370,12 V33 A12,12 0 0 1 358,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="370" height="12" fill="#3D8B7A" />
       <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">依恋模式与策略</text>
       
       <g transform="translate(15, 60)" font-size="13">
@@ -78,7 +78,7 @@
         <text x="0" y="150" font-weight="600" fill="#B54545">混乱型 Disorganized</text>
         <text x="0" y="168" fill="#6B7280">策略崩溃，解离</text>
         
-        <line x1="0" y1="195" x2="340" y2="195" stroke="#E5E7EB" stroke-width="1"/>
+        <line x1="0" y1="195" x2="340" y2="195" stroke="#E5E7EB" stroke-width="1" />
         
         <text x="0" y="220" font-weight="600" fill="#1E3A5F">成人AAI分类</text>
         
@@ -87,7 +87,7 @@
         <text x="0" y="310" fill="#E07843">迷恋型 → 混乱冗长，被过去纠缠</text>
         <text x="0" y="340" fill="#B54545">未解决型 → 推理/话语监控失误</text>
         
-        <line x1="0" y1="365" x2="340" y2="365" stroke="#E5E7EB" stroke-width="1"/>
+        <line x1="0" y1="365" x2="340" y2="365" stroke="#E5E7EB" stroke-width="1" />
         
         <text x="0" y="390" font-weight="600" fill="#1E3A5F">三种体验模式</text>
         <text x="0" y="415" fill="#B54545">心理等同：信念=事实</text>
@@ -96,12 +96,12 @@
       </g>
     </g>
     
-    <!-- 第三栏：临床干预要点 -->
+    
     <g transform="translate(790, 0)">
-      <rect x="0" y="0" width="370" height="530" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="370" height="45" rx="12" fill="#E07843"/>
-      <rect x="0" y="33" width="370" height="12" fill="#E07843"/>
+      <path fill="#E07843" d="M12,0 H358 A12,12 0 0 1 370,12 V33 A12,12 0 0 1 358,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="370" height="12" fill="#E07843" />
       <text x="185" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">临床干预要点</text>
       
       <g transform="translate(15, 60)" font-size="13">
@@ -114,13 +114,13 @@
         <text x="0" y="100" font-weight="600" fill="#E07843">具身化 Embodiment</text>
         <text x="0" y="118" fill="#6B7280">身体记录情感，躯体表达</text>
         
-        <line x1="0" y1="145" x2="340" y2="145" stroke="#E5E7EB" stroke-width="1"/>
+        <line x1="0" y1="145" x2="340" y2="145" stroke="#E5E7EB" stroke-width="1" />
         
         <text x="0" y="170" font-weight="600" fill="#1E3A5F">容纳之窗</text>
         <text x="0" y="195" fill="#6B7280">SNS过度激活：战斗/逃跑</text>
         <text x="0" y="218" fill="#6B7280">PNS过度激活：冻结/麻木</text>
         
-        <line x1="0" y1="245" x2="340" y2="245" stroke="#E5E7EB" stroke-width="1"/>
+        <line x1="0" y1="245" x2="340" y2="245" stroke="#E5E7EB" stroke-width="1" />
         
         <text x="0" y="270" font-weight="600" fill="#1E3A5F">身体干预四策略</text>
         <text x="0" y="295" fill="#374151">1. 谈论身体</text>
@@ -128,7 +128,7 @@
         <text x="0" y="341" fill="#374151">3. 去躯体化（未解决型）</text>
         <text x="0" y="364" fill="#374151">4. 再躯体化（冷漠型）</text>
         
-        <line x1="0" y1="390" x2="340" y2="390" stroke="#E5E7EB" stroke-width="1"/>
+        <line x1="0" y1="390" x2="340" y2="390" stroke="#E5E7EB" stroke-width="1" />
         
         <text x="0" y="415" font-weight="600" fill="#1E3A5F">发展的四要素</text>
         <text x="0" y="440" fill="#374151">合作性沟通 | 修复破裂</text>
@@ -137,6 +137,6 @@
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">29</text>
 </svg>

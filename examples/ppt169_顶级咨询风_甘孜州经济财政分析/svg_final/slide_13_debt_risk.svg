@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">六、债务风险评估</text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,100 H408 A12,12 0 0 1 420,112 V388 A12,12 0 0 1 408,400 H52 A12,12 0 0 1 40,388 V112 A12,12 0 0 1 52,100 Z" />
+    <text x="230" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">债务率</text>
+    
+    
+    <circle cx="230" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20" />
+    
+    
+    <path d="M 230 170 A 90 90 0 0 1 301.6 314.5" fill="none" stroke="#00A651" stroke-width="20" stroke-linecap="round" />
+    <text x="230" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#00A651">35.35%</text>
+    <text x="230" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">警戒线 100%</text>
+    
+    <path fill="#00A651" opacity="0.15" d="M106,360 H354 A6,6 0 0 1 360,366 V384 A6,6 0 0 1 354,390 H106 A6,6 0 0 1 100,384 V366 A6,6 0 0 1 106,360 Z" />
+    <text x="230" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 风险等级：低</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" d="M452,100 H808 A12,12 0 0 1 820,112 V388 A12,12 0 0 1 808,400 H452 A12,12 0 0 1 440,388 V112 A12,12 0 0 1 452,100 Z" />
+    <text x="630" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">负债率</text>
+    
+    
+    <circle cx="630" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20" />
+    
+    
+    <path d="M 630 170 A 90 90 0 0 1 719.2 271.9" fill="none" stroke="#00A651" stroke-width="20" stroke-linecap="round" />
+    <text x="630" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#00A651">27.11%</text>
+    <text x="630" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">债务余额/GDP</text>
+    
+    <path fill="#00A651" opacity="0.15" d="M506,360 H754 A6,6 0 0 1 760,366 V384 A6,6 0 0 1 754,390 H506 A6,6 0 0 1 500,384 V366 A6,6 0 0 1 506,360 Z" />
+    <text x="630" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 风险等级：低</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" d="M852,100 H1228 A12,12 0 0 1 1240,112 V388 A12,12 0 0 1 1228,400 H852 A12,12 0 0 1 840,388 V112 A12,12 0 0 1 852,100 Z" />
+    <text x="1040" y="145" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">限额使用率</text>
+    
+    
+    <circle cx="1040" cy="260" r="90" fill="none" stroke="#E8E8F0" stroke-width="20" />
+    
+    
+    <path d="M 1040 170 A 90 90 0 1 1 1017.7 172.8" fill="none" stroke="#FF6B35" stroke-width="20" stroke-linecap="round" />
+    <text x="1040" y="255" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#FF6B35">96.03%</text>
+    <text x="1040" y="285" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">余额/限额</text>
+    
+    <path fill="#FF6B35" opacity="0.15" d="M906,360 H1174 A6,6 0 0 1 1180,366 V384 A6,6 0 0 1 1174,390 H906 A6,6 0 0 1 900,384 V366 A6,6 0 0 1 906,360 Z" />
+    <text x="1040" y="382" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35">⚠️ 融资空间不足</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,420 H1228 A12,12 0 0 1 1240,432 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V432 A12,12 0 0 1 52,420 Z" />
+    <text x="60" y="460" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 债务风险综合评价</text>
+    
+    
+    <path fill="#1E3A5F" d="M64,480 H1216 A4,4 0 0 1 1220,484 V511 A4,4 0 0 1 1216,515 H64 A4,4 0 0 1 60,511 V484 A4,4 0 0 1 64,480 Z" />
+    <text x="180" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">指标</text>
+    <text x="400" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">数值</text>
+    <text x="600" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">警戒标准</text>
+    <text x="800" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">风险评级</text>
+    <text x="1050" y="503" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">说明</text>
+    
+    <rect x="60" y="515" width="1160" height="35" fill="#F5F7FA" />
+    <text x="180" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">债务率</text>
+    <text x="400" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">35.35%</text>
+    <text x="600" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">100%</text>
+    <text x="800" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">低风险</text>
+    <text x="1050" y="538" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">远低于警戒线</text>
+    
+    <rect x="60" y="550" width="1160" height="35" fill="#FFFFFF" />
+    <text x="180" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">负债率</text>
+    <text x="400" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">27.11%</text>
+    <text x="600" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">60%</text>
+    <text x="800" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#00A651">低风险</text>
+    <text x="1050" y="573" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">债务负担轻</text>
+    
+    <rect x="60" y="585" width="1160" height="35" fill="#F5F7FA" />
+    <text x="180" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">限额使用率</text>
+    <text x="400" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">96.03%</text>
+    <text x="600" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">-</text>
+    <text x="800" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FF6B35">空间紧张</text>
+    <text x="1050" y="608" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">新增融资受限</text>
+    
+    <path fill="#1E3A5F" opacity="0.1" d="M64,625 H1216 A4,4 0 0 1 1220,629 V651 A4,4 0 0 1 1216,655 H64 A4,4 0 0 1 60,651 V629 A4,4 0 0 1 64,625 Z" />
+    <text x="640" y="645" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">📌 综合结论：债务风险总体可控，但新增融资能力严重不足，需争取更多限额支持</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">13 / 17</text>
+</svg>

@@ -1,29 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <filter id="cardShadow5" x="-15%" y="-15%" width="130%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
-      <feOffset in="blur" dx="0" dy="3" result="offsetBlur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
-      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+      <feOffset in="blur" dx="0" dy="3" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
       <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757" />
+  
+  
   <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
     CASE STUDIES
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     Agent 实践领域：客户支持 &amp; 编程代理
   </text>
@@ -31,21 +31,21 @@
     两个已验证的高价值应用场景
   </text>
   
-  <!-- 左侧：客户支持 -->
+  
   <g transform="translate(60, 165)">
-    <rect x="0" y="0" width="560" height="480" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow5)"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow5)" d="M16,0 H544 A16,16 0 0 1 560,16 V464 A16,16 0 0 1 544,480 H16 A16,16 0 0 1 0,464 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题区 -->
-    <rect x="0" y="0" width="560" height="80" rx="16" fill="#4A90D9"/>
-    <rect x="0" y="40" width="560" height="40" fill="#4A90D9"/>
     
-    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
-    <!-- icon: users -->
+    <path fill="#4A90D9" d="M16,0 H544 A16,16 0 0 1 560,16 V64 A16,16 0 0 1 544,80 H16 A16,16 0 0 1 0,64 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="40" width="560" height="40" fill="#4A90D9" />
+    
+    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2" />
+    
   <g transform="translate(32.0, 22.0) scale(2.25)" fill="#FFFFFF">
-    <path d="M8 3.5C8 4.88071 6.88071 6 5.5 6C4.11929 6 3 4.88071 3 3.5C3 2.11929 4.11929 1 5.5 1C6.88071 1 8 2.11929 8 3.5Z"/>
-    <path d="M3 8C1.34315 8 0 9.34315 0 11V15H8V8H3Z"/>
-    <path d="M13 8H10V15H16V11C16 9.34315 14.6569 8 13 8Z"/>
-    <path d="M12 6C13.1046 6 14 5.10457 14 4C14 2.89543 13.1046 2 12 2C10.8954 2 10 2.89543 10 4C10 5.10457 10.8954 6 12 6Z"/>
+    <path d="M8 3.5C8 4.88071 6.88071 6 5.5 6C4.11929 6 3 4.88071 3 3.5C3 2.11929 4.11929 1 5.5 1C6.88071 1 8 2.11929 8 3.5Z" />
+    <path d="M3 8C1.34315 8 0 9.34315 0 11V15H8V8H3Z" />
+    <path d="M13 8H10V15H16V11C16 9.34315 14.6569 8 13 8Z" />
+    <path d="M12 6C13.1046 6 14 5.10457 14 4C14 2.89543 13.1046 2 12 2C10.8954 2 10 2.89543 10 4C10 5.10457 10.8954 6 12 6Z" />
   </g>
     
     <text x="95" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
@@ -55,14 +55,14 @@
       客户支持
     </text>
     
-    <!-- 为什么适合 -->
+    
     <text x="30" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4A90D9">
       为什么 Agent 适合？
     </text>
     
     <g font-family="Arial, sans-serif" transform="translate(30, 135)">
       <g>
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">🗣️ 自然对话流</tspan>
         </text>
@@ -70,7 +70,7 @@
       </g>
       
       <g transform="translate(0, 60)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">🔧 工具集成</tspan>
         </text>
@@ -78,7 +78,7 @@
       </g>
       
       <g transform="translate(0, 120)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">⚡ 执行操作</tspan>
         </text>
@@ -86,7 +86,7 @@
       </g>
       
       <g transform="translate(0, 180)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">📊 成功可量化</tspan>
         </text>
@@ -94,8 +94,8 @@
       </g>
     </g>
     
-    <!-- 商业验证 -->
-    <rect x="30" y="390" width="500" height="65" rx="10" fill="#10B981" fill-opacity="0.1" stroke="#10B981" stroke-width="1"/>
+    
+    <path fill="#10B981" fill-opacity="0.1" stroke="#10B981" stroke-width="1" d="M40,390 H520 A10,10 0 0 1 530,400 V445 A10,10 0 0 1 520,455 H40 A10,10 0 0 1 30,445 V400 A10,10 0 0 1 40,390 Z" />
     <text x="50" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#10B981">
       ✓ 商业验证
     </text>
@@ -104,20 +104,20 @@
     </text>
   </g>
   
-  <!-- 右侧：编程代理 -->
+  
   <g transform="translate(660, 165)">
-    <rect x="0" y="0" width="560" height="480" rx="16" fill="#FEF7F5" stroke="#D97757" stroke-width="1" filter="url(#cardShadow5)"/>
+    <path fill="#FEF7F5" stroke="#D97757" stroke-width="1" filter="url(#cardShadow5)" d="M16,0 H544 A16,16 0 0 1 560,16 V464 A16,16 0 0 1 544,480 H16 A16,16 0 0 1 0,464 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题区 -->
-    <rect x="0" y="0" width="560" height="80" rx="16" fill="#D97757"/>
-    <rect x="0" y="40" width="560" height="40" fill="#D97757"/>
     
-    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
-    <!-- icon: code -->
+    <path fill="#D97757" d="M16,0 H544 A16,16 0 0 1 560,16 V64 A16,16 0 0 1 544,80 H16 A16,16 0 0 1 0,64 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="40" width="560" height="40" fill="#D97757" />
+    
+    <circle cx="50" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2" />
+    
   <g transform="translate(32.0, 22.0) scale(2.25)" fill="#FFFFFF">
-    <path d="M8.01005 0.858582L6.01005 14.8586L7.98995 15.1414L9.98995 1.14142L8.01005 0.858582Z"/>
-    <path d="M12.5 11.5L11.0858 10.0858L13.1716 8L11.0858 5.91422L12.5 4.5L16 8L12.5 11.5Z"/>
-    <path d="M2.82843 8L4.91421 10.0858L3.5 11.5L0 8L3.5 4.5L4.91421 5.91422L2.82843 8Z"/>
+    <path d="M8.01005 0.858582L6.01005 14.8586L7.98995 15.1414L9.98995 1.14142L8.01005 0.858582Z" />
+    <path d="M12.5 11.5L11.0858 10.0858L13.1716 8L11.0858 5.91422L12.5 4.5L16 8L12.5 11.5Z" />
+    <path d="M2.82843 8L4.91421 10.0858L3.5 11.5L0 8L3.5 4.5L4.91421 5.91422L2.82843 8Z" />
   </g>
     
     <text x="95" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">
@@ -127,14 +127,14 @@
       编程代理
     </text>
     
-    <!-- 为什么适合 -->
+    
     <text x="30" y="115" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97757">
       为什么 Agent 适合？
     </text>
     
     <g font-family="Arial, sans-serif" transform="translate(30, 135)">
       <g>
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">✅ 可验证性</tspan>
         </text>
@@ -142,7 +142,7 @@
       </g>
       
       <g transform="translate(0, 60)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">🔄 迭代反馈</tspan>
         </text>
@@ -150,7 +150,7 @@
       </g>
       
       <g transform="translate(0, 120)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">📐 结构化问题</tspan>
         </text>
@@ -158,7 +158,7 @@
       </g>
       
       <g transform="translate(0, 180)">
-        <rect x="0" y="0" width="500" height="50" rx="8" fill="#FFFFFF"/>
+        <path fill="#FFFFFF" d="M8,0 H492 A8,8 0 0 1 500,8 V42 A8,8 0 0 1 492,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
         <text x="15" y="22" font-size="15" fill="#1A1A2E">
           <tspan font-weight="600">📊 可量化质量</tspan>
         </text>
@@ -166,8 +166,8 @@
       </g>
     </g>
     
-    <!-- 提醒 -->
-    <rect x="30" y="390" width="500" height="65" rx="10" fill="#F59E0B" fill-opacity="0.1" stroke="#F59E0B" stroke-width="1"/>
+    
+    <path fill="#F59E0B" fill-opacity="0.1" stroke="#F59E0B" stroke-width="1" d="M40,390 H520 A10,10 0 0 1 530,400 V445 A10,10 0 0 1 520,455 H40 A10,10 0 0 1 30,445 V400 A10,10 0 0 1 40,390 Z" />
     <text x="50" y="418" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#F59E0B">
       ⚠️ 仍需人工审查
     </text>
@@ -176,7 +176,7 @@
     </text>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="690" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     13 / 15
   </text>

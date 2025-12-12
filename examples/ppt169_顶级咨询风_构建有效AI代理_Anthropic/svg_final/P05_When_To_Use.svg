@@ -1,44 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="levelGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#10B981"/>
-      <stop offset="100%" style="stop-color:#34D399"/>
+      <stop offset="0%" style="stop-color:#10B981" />
+      <stop offset="100%" style="stop-color:#34D399" />
     </linearGradient>
     <linearGradient id="levelGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#4A90D9"/>
-      <stop offset="100%" style="stop-color:#60A5FA"/>
+      <stop offset="0%" style="stop-color:#4A90D9" />
+      <stop offset="100%" style="stop-color:#60A5FA" />
     </linearGradient>
     <linearGradient id="levelGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#D97757"/>
-      <stop offset="100%" style="stop-color:#F59E0B"/>
+      <stop offset="0%" style="stop-color:#D97757" />
+      <stop offset="100%" style="stop-color:#F59E0B" />
     </linearGradient>
     <marker id="arrowDown" markerWidth="10" markerHeight="10" refX="5" refY="10" orient="auto">
-      <path d="M0,0 L5,10 L10,0" fill="#64748B"/>
+      <path d="M0,0 L5,10 L10,0" fill="#64748B" />
     </marker>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757" />
+  
+  
   <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
     DECISION MATRIX
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="100" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     复杂度递增原则：从简单开始，按需升级
   </text>
   
-  <!-- 左侧：层级流程图 -->
+  
   <g transform="translate(60, 150)">
     
-    <!-- Level 1: 单一 LLM 调用 -->
-    <rect x="0" y="0" width="500" height="100" rx="12" fill="url(#levelGradient1)" fill-opacity="0.15" stroke="#10B981" stroke-width="2"/>
-    <circle cx="50" cy="50" r="30" fill="#10B981"/>
+    
+    <path fill="url(#levelGradient1)" fill-opacity="0.15" stroke="#10B981" stroke-width="2" d="M12,0 H488 A12,12 0 0 1 500,12 V88 A12,12 0 0 1 488,100 H12 A12,12 0 0 1 0,88 V12 A12,12 0 0 1 12,0 Z" />
+    <circle cx="50" cy="50" r="30" fill="#10B981" />
     <text x="50" y="57" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
     
     <text x="100" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A2E">
@@ -51,16 +51,16 @@
       ✓ 推荐起点 — 许多应用足以满足需求
     </text>
     
-    <!-- 箭头 1 -->
+    
     <g transform="translate(250, 105)">
-      <line x1="0" y1="0" x2="0" y2="35" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2"/>
-      <polygon points="0,45 -6,35 6,35" fill="#64748B"/>
+      <line x1="0" y1="0" x2="0" y2="35" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2" />
+      <polygon points="0,45 -6,35 6,35" fill="#64748B" />
       <text x="20" y="28" font-family="Arial, sans-serif" font-size="12" fill="#64748B">不足时</text>
     </g>
     
-    <!-- Level 2: Workflows -->
-    <rect x="0" y="160" width="500" height="100" rx="12" fill="url(#levelGradient2)" fill-opacity="0.15" stroke="#4A90D9" stroke-width="2"/>
-    <circle cx="50" cy="50" r="30" fill="#4A90D9" transform="translate(0, 160)"/>
+    
+    <path fill="url(#levelGradient2)" fill-opacity="0.15" stroke="#4A90D9" stroke-width="2" d="M12,160 H488 A12,12 0 0 1 500,172 V248 A12,12 0 0 1 488,260 H12 A12,12 0 0 1 0,248 V172 A12,12 0 0 1 12,160 Z" />
+    <circle cx="50" cy="50" r="30" fill="#4A90D9" transform="translate(0, 160)" />
     <text x="50" y="217" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
     
     <text x="100" y="200" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A2E">
@@ -73,16 +73,16 @@
       ◆ 可预测、一致性高、适合明确任务
     </text>
     
-    <!-- 箭头 2 -->
+    
     <g transform="translate(250, 265)">
-      <line x1="0" y1="0" x2="0" y2="35" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2"/>
-      <polygon points="0,45 -6,35 6,35" fill="#64748B"/>
+      <line x1="0" y1="0" x2="0" y2="35" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2" />
+      <polygon points="0,45 -6,35 6,35" fill="#64748B" />
       <text x="20" y="28" font-family="Arial, sans-serif" font-size="12" fill="#64748B">不足时</text>
     </g>
     
-    <!-- Level 3: Agents -->
-    <rect x="0" y="320" width="500" height="100" rx="12" fill="url(#levelGradient3)" fill-opacity="0.15" stroke="#D97757" stroke-width="2"/>
-    <circle cx="50" cy="370" r="30" fill="#D97757"/>
+    
+    <path fill="url(#levelGradient3)" fill-opacity="0.15" stroke="#D97757" stroke-width="2" d="M12,320 H488 A12,12 0 0 1 500,332 V408 A12,12 0 0 1 488,420 H12 A12,12 0 0 1 0,408 V332 A12,12 0 0 1 12,320 Z" />
+    <circle cx="50" cy="370" r="30" fill="#D97757" />
     <text x="50" y="377" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
     
     <text x="100" y="360" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A1A2E">
@@ -95,13 +95,13 @@
       ⚡ 灵活强大，但成本高、需防护
     </text>
     
-    <!-- 复杂度指示条 -->
+    
     <g transform="translate(520, 40)">
-      <rect x="0" y="0" width="30" height="340" rx="15" fill="#F1F5F9"/>
-      <rect x="0" y="280" width="30" height="60" rx="15" fill="#10B981"/>
-      <rect x="0" y="150" width="30" height="130" rx="0" fill="#4A90D9"/>
-      <rect x="0" y="0" width="30" height="150" rx="15" fill="#D97757"/>
-      <rect x="0" y="150" width="30" height="130" rx="0" fill="#4A90D9"/>
+      <path fill="#F1F5F9" d="M15,0 H15 A15,15 0 0 1 30,15 V325 A15,15 0 0 1 15,340 H15 A15,15 0 0 1 0,325 V15 A15,15 0 0 1 15,0 Z" />
+      <path fill="#10B981" d="M15,280 H15 A15,15 0 0 1 30,295 V325 A15,15 0 0 1 15,340 H15 A15,15 0 0 1 0,325 V295 A15,15 0 0 1 15,280 Z" />
+      <rect x="0" y="150" width="30" height="130" rx="0" fill="#4A90D9" />
+      <path fill="#D97757" d="M15,0 H15 A15,15 0 0 1 30,15 V135 A15,15 0 0 1 15,150 H15 A15,15 0 0 1 0,135 V15 A15,15 0 0 1 15,0 Z" />
+      <rect x="0" y="150" width="30" height="130" rx="0" fill="#4A90D9" />
       
       <text x="15" y="370" font-family="Arial, sans-serif" font-size="11" fill="#64748B" text-anchor="middle" transform="rotate(-90, 15, 370)">
         简单
@@ -112,15 +112,15 @@
     </g>
   </g>
   
-  <!-- 右侧：权衡提示卡片 -->
+  
   <g transform="translate(680, 150)">
-    <!-- Warning 卡片 -->
-    <rect x="0" y="0" width="540" height="180" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
     
-    <circle cx="40" cy="40" r="24" fill="#F59E0B"/>
-    <!-- icon: triangle-exclamation -->
+    <path fill="#FEF3C7" stroke="#F59E0B" stroke-width="1" d="M12,0 H528 A12,12 0 0 1 540,12 V168 A12,12 0 0 1 528,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+    
+    <circle cx="40" cy="40" r="24" fill="#F59E0B" />
+    
   <g transform="translate(22.0, 22.0) scale(2.25)" fill="#FFFFFF">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15H0V12L7 0H9L16 12V15ZM7 4H9V9H7V4ZM7 11H9V13H7V11Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15H0V12L7 0H9L16 12V15ZM7 4H9V9H7V4ZM7 11H9V13H7V11Z" />
   </g>
     
     <text x="80" y="38" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#92400E">
@@ -130,7 +130,7 @@
       Trade-offs to Consider
     </text>
     
-    <line x1="20" y1="80" x2="520" y2="80" stroke="#F59E0B" stroke-opacity="0.3" stroke-width="1"/>
+    <line x1="20" y1="80" x2="520" y2="80" stroke="#F59E0B" stroke-opacity="0.3" stroke-width="1" />
     
     <text x="30" y="110" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
       <tspan x="30" dy="0">• Agent 系统以</tspan>
@@ -148,13 +148,13 @@
       • 评估这种权衡何时有意义
     </text>
     
-    <!-- Success 卡片 -->
-    <rect x="0" y="210" width="540" height="160" rx="12" fill="#D1FAE5" stroke="#10B981" stroke-width="1"/>
     
-    <circle cx="40" cy="40" r="24" fill="#10B981" transform="translate(0, 210)"/>
-    <!-- icon: circle-checkmark -->
+    <path fill="#D1FAE5" stroke="#10B981" stroke-width="1" d="M12,210 H528 A12,12 0 0 1 540,222 V358 A12,12 0 0 1 528,370 H12 A12,12 0 0 1 0,358 V222 A12,12 0 0 1 12,210 Z" />
+    
+    <circle cx="40" cy="40" r="24" fill="#10B981" transform="translate(0, 210)" />
+    
   <g transform="translate(22.0, 232.0) scale(2.25)" fill="#FFFFFF">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.7071 5.70711L11.2929 4.29289L6.5 9.08579L4.70711 7.29289L3.29289 8.70711L6.5 11.9142L12.7071 5.70711Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM12.7071 5.70711L11.2929 4.29289L6.5 9.08579L4.70711 7.29289L3.29289 8.70711L6.5 11.9142L12.7071 5.70711Z" />
   </g>
     
     <text x="80" y="248" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#065F46">
@@ -164,7 +164,7 @@
       Best Practice
     </text>
     
-    <line x1="20" y1="290" x2="520" y2="290" stroke="#10B981" stroke-opacity="0.3" stroke-width="1"/>
+    <line x1="20" y1="290" x2="520" y2="290" stroke="#10B981" stroke-opacity="0.3" stroke-width="1" />
     
     <text x="30" y="320" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
       <tspan x="30" dy="0">✓ 从</tspan>
@@ -175,9 +175,9 @@
       ✓ 用全面评估优化
     </text>
     
-    <!-- 引用框 -->
-    <rect x="0" y="400" width="540" height="70" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
-    <rect x="0" y="400" width="6" height="70" rx="3" fill="#4A90D9"/>
+    
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" d="M12,400 H528 A12,12 0 0 1 540,412 V458 A12,12 0 0 1 528,470 H12 A12,12 0 0 1 0,458 V412 A12,12 0 0 1 12,400 Z" />
+    <path fill="#4A90D9" d="M3,400 H3 A3,3 0 0 1 6,403 V467 A3,3 0 0 1 3,470 H3 A3,3 0 0 1 0,467 V403 A3,3 0 0 1 3,400 Z" />
     
     <text x="25" y="430" font-family="Arial, sans-serif" font-size="15" fill="#64748B" font-style="italic">
       "许多应用只需优化单一 LLM 调用 + 检索
@@ -187,7 +187,7 @@
     </text>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     5 / 15
   </text>

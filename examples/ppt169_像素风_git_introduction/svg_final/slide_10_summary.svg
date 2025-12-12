@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="glowYellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.8" />
+  <rect x="0" y="4" width="1280" height="2" fill="#39FF14" opacity="0.4" />
+  
+  
+  <g opacity="0.05">
+    <line x1="0" y1="120" x2="1280" y2="120" stroke="#39FF14" stroke-width="1" />
+    <line x1="0" y1="240" x2="1280" y2="240" stroke="#39FF14" stroke-width="1" />
+    <line x1="0" y1="360" x2="1280" y2="360" stroke="#39FF14" stroke-width="1" />
+    <line x1="0" y1="480" x2="1280" y2="480" stroke="#39FF14" stroke-width="1" />
+    <line x1="0" y1="600" x2="1280" y2="600" stroke="#39FF14" stroke-width="1" />
+  </g>
+  
+  
+  <text x="640" y="80" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="48" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    🎯 关键要点回顾
+  </text>
+  <text x="640" y="115" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="20" fill="#8B949E">
+    Key Takeaways - What You Should Remember
+  </text>
+  
+  
+  
+  
+  <g transform="translate(60, 160)">
+    <rect x="0" y="0" width="380" height="280" fill="#161B22" stroke="#39FF14" stroke-width="3" />
+    
+    
+    <rect x="0" y="0" width="60" height="60" fill="#39FF14" />
+    <text x="30" y="42" text-anchor="middle" font-family="Consolas, monospace" font-size="32" font-weight="bold" fill="#0D1117">1</text>
+    
+    
+    <text x="80" y="40" font-family="Consolas, monospace" font-size="22" font-weight="bold" fill="#39FF14">Git 是什么？</text>
+    
+    <rect x="20" y="70" width="340" height="2" fill="#30363D" />
+    
+    
+    <text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="110">版本控制系统 (VCS)</text><text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="145">追踪和管理文件变更</text><text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="180">世界上最流行的 VCS</text><rect x="30" y="220" width="320" height="25" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+    <rect x="32" y="222" width="285" height="21" fill="#39FF14" opacity="0.8" />
+    <text x="295" y="239" font-family="Consolas, monospace" font-size="14" fill="#0D1117" font-weight="bold">90%+</text>
+    <text x="30" y="260" font-family="Consolas, monospace" font-size="12" fill="#8B949E">开发者使用率</text>
+  </g>
+  
+  
+  <g transform="translate(460, 160)">
+    <rect x="0" y="0" width="380" height="280" fill="#161B22" stroke="#00D4FF" stroke-width="3" />
+    
+    
+    <rect x="0" y="0" width="60" height="60" fill="#00D4FF" />
+    <text x="30" y="42" text-anchor="middle" font-family="Consolas, monospace" font-size="32" font-weight="bold" fill="#0D1117">2</text>
+    
+    
+    <text x="80" y="40" font-family="Consolas, monospace" font-size="22" font-weight="bold" fill="#00D4FF">Git 能做什么？</text>
+    
+    <rect x="20" y="70" width="340" height="2" fill="#30363D" />
+    
+    
+    <g transform="translate(30, 90)">
+      <rect x="0" y="0" width="320" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="24" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">⏪ 时光旅行 - 回到任何版本</text>
+      
+      <rect x="0" y="42" width="320" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="66" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">🔍 比较差异 - 看到什么变了</text>
+      
+      <rect x="0" y="84" width="320" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="108" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">↩️ 撤销修改 - 修复错误</text>
+      
+      <rect x="0" y="126" width="320" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="150" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">🤝 团队协作 - 多人一起工作</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(860, 160)">
+    <rect x="0" y="0" width="380" height="280" fill="#161B22" stroke="#FF2E97" stroke-width="3" />
+    
+    
+    <rect x="0" y="0" width="60" height="60" fill="#FF2E97" />
+    <text x="30" y="42" text-anchor="middle" font-family="Consolas, monospace" font-size="32" font-weight="bold" fill="#0D1117">3</text>
+    
+    
+    <text x="80" y="40" font-family="Consolas, monospace" font-size="22" font-weight="bold" fill="#FF2E97">Git vs GitHub</text>
+    
+    <rect x="20" y="70" width="340" height="2" fill="#30363D" />
+    
+    
+    <g transform="translate(30, 90)">
+      
+      <rect x="0" y="0" width="155" height="35" fill="#39FF14" opacity="0.2" />
+      <text x="77" y="24" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#39FF14" font-weight="bold">Git</text>
+      
+      <rect x="165" y="0" width="155" height="35" fill="#FF2E97" opacity="0.2" />
+      <text x="242" y="24" text-anchor="middle" font-family="Consolas, monospace" font-size="16" fill="#FF2E97" font-weight="bold">GitHub</text>
+      
+      
+      <rect x="0" y="42" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="77" y="66" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">软件</text>
+      
+      <rect x="165" y="42" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="242" y="66" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">网站服务</text>
+      
+      
+      <rect x="0" y="84" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="77" y="108" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">本地运行</text>
+      
+      <rect x="165" y="84" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="242" y="108" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">云端托管</text>
+      
+      
+      <rect x="0" y="126" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="77" y="150" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">离线可用</text>
+      
+      <rect x="165" y="126" width="155" height="35" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="242" y="150" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#E6EDF3">需要网络</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 480)">
+    <rect x="0" y="0" width="1160" height="120" fill="#161B22" stroke="#FFD700" stroke-width="3" />
+    
+    
+    <rect x="0" y="0" width="1160" height="50" fill="#FFD700" opacity="0.1" />
+    <text x="580" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="24" fill="#FFD700" filter="url(#glowYellow)">
+      🎮 READY TO START YOUR GIT JOURNEY?
+    </text>
+    
+    <text x="580" y="80" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="18" fill="#E6EDF3">
+      下一步：安装 Git，学习基础命令，开始你的版本控制之旅！
+    </text>
+    
+    
+    <g transform="translate(400, 90)">
+      <rect x="0" y="0" width="180" height="25" fill="#39FF14" stroke="#39FF14" stroke-width="2" />
+      <text x="90" y="18" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#0D1117" font-weight="bold">GAME SAVED ✓</text>
+    </g>
+    <g transform="translate(600, 90)">
+      <rect x="0" y="0" width="180" height="25" fill="#0D1117" stroke="#39FF14" stroke-width="2" />
+      <text x="90" y="18" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#39FF14">CONTINUE →</text>
+    </g>
+  </g>
+  
+  
+  <rect x="0" y="712" width="1280" height="4" fill="#39FF14" opacity="0.4" />
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.8" />
+  
+  
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">10/10</text>
+  
+  
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#39FF14">
+    THE END - Thank You! 🎉
+  </text>
+  
+  
+  <rect x="40" y="640" width="12" height="12" fill="#39FF14" />
+  <rect x="56" y="640" width="12" height="12" fill="#39FF14" opacity="0.6" />
+  <rect x="72" y="640" width="12" height="12" fill="#39FF14" opacity="0.3" />
+  
+  <rect x="1196" y="640" width="12" height="12" fill="#FF2E97" opacity="0.3" />
+  <rect x="1212" y="640" width="12" height="12" fill="#FF2E97" opacity="0.6" />
+  <rect x="1228" y="640" width="12" height="12" fill="#FF2E97" />
+</svg>

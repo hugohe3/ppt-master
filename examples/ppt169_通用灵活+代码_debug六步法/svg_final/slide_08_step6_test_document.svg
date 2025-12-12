@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    
+    <g transform="translate(60, 60)">
+        <path fill="url(#stepGradient)" opacity="0.2" d="M16,0 H84 A16,16 0 0 1 100,16 V84 A16,16 0 0 1 84,100 H16 A16,16 0 0 1 0,84 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold" fill="url(#stepGradient)">06</text>
+    </g>
+
+    
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold" fill="#e6edf3">🔄 全面测试与记录</text>
+
+    
+    <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M70,175 H1210 A10,10 0 0 1 1220,185 V220 A10,10 0 0 1 1210,230 H70 A10,10 0 0 1 60,220 V185 A10,10 0 0 1 70,175 Z" />
+    <text x="640" y="210" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="22" fill="#e6edf3">
+        <tspan>最后一步：确保系统</tspan>
+        <tspan fill="#7ee787" font-weight="bold">回归稳定</tspan>
+        <tspan>，并</tspan>
+        <tspan fill="#58a6ff" font-weight="bold">记录经验</tspan>
+    </text>
+
+    
+    <g transform="translate(60, 260)">
+        
+        <g>
+            <path fill="#161b22" stroke="#7ee787" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V278 A12,12 0 0 1 348,290 H12 A12,12 0 0 1 0,278 V12 A12,12 0 0 1 12,0 Z" />
+            <path fill="#7ee787" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#7ee787">🔁 重现与回归</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">确认原始问题消失</text>
+
+                
+                <g transform="translate(0, 30)">
+                    <path fill="#7ee787" opacity="0.1" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="27">
+                        <tspan fill="#7ee787">☑</tspan>
+                        <tspan dx="10">重现原始 Bug 步骤</tspan>
+                    </text>
+                </g>
+
+                <g transform="translate(0, 80)">
+                    <path fill="#7ee787" opacity="0.1" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="27">
+                        <tspan fill="#7ee787">☑</tspan>
+                        <tspan dx="10">确认问题已修复</tspan>
+                    </text>
+                </g>
+
+                <g transform="translate(0, 130)">
+                    <path fill="#7ee787" opacity="0.1" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="27">
+                        <tspan fill="#7ee787">☑</tspan>
+                        <tspan dx="10">无新 Bug 引入</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+
+        
+        <g transform="translate(400, 0)">
+            <path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V278 A12,12 0 0 1 348,290 H12 A12,12 0 0 1 0,278 V12 A12,12 0 0 1 12,0 Z" />
+            <path fill="#f0883e" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#f0883e">🎯 边界测试</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">Bug 往往藏在极端情况</text>
+
+                
+                <g transform="translate(0, 30)">
+                    <path fill="#1f2428" d="M6,0 H304 A6,6 0 0 1 310,6 V39 A6,6 0 0 1 304,45 H6 A6,6 0 0 1 0,39 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="20" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">null</text>
+                    <text x="55" y="20" font-size="15" fill="#8b949e">/ </text>
+                    <text x="65" y="20" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">undefined</text>
+                    <text x="15" y="38" font-size="14" fill="#8b949e">空值处理</text>
+                </g>
+
+                <g transform="translate(0, 85)">
+                    <path fill="#1f2428" d="M6,0 H304 A6,6 0 0 1 310,6 V39 A6,6 0 0 1 304,45 H6 A6,6 0 0 1 0,39 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="20" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">999999999</text>
+                    <text x="15" y="38" font-size="14" fill="#8b949e">极大值/极小值</text>
+                </g>
+
+                <g transform="translate(0, 140)">
+                    <path fill="#1f2428" d="M6,0 H304 A6,6 0 0 1 310,6 V39 A6,6 0 0 1 304,45 H6 A6,6 0 0 1 0,39 V6 A6,6 0 0 1 6,0 Z" />
+                    <text x="15" y="20" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">Network
+                        Error</text>
+                    <text x="15" y="38" font-size="14" fill="#8b949e">断网/超时/异常</text>
+                </g>
+            </g>
+        </g>
+
+        
+        <g transform="translate(800, 0)">
+            <path fill="#161b22" stroke="#58a6ff" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V278 A12,12 0 0 1 348,290 H12 A12,12 0 0 1 0,278 V12 A12,12 0 0 1 12,0 Z" />
+            <path fill="#58a6ff" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#58a6ff">📄 文档化</text>
+
+            <g transform="translate(25, 75)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">记录原因和解法，造福团队</text>
+
+                
+                <path fill="#1f2428" d="M8,25 H302 A8,8 0 0 1 310,33 V177 A8,8 0 0 1 302,185 H8 A8,8 0 0 1 0,177 V33 A8,8 0 0 1 8,25 Z" />
+                <g font-family="SF Mono, monospace" font-size="13">
+                    <text x="15" y="48" fill="#58a6ff">## Bug #1234</text>
+                    <text x="15" y="70" fill="#8b949e">**现象**: 结账失败</text>
+                    <text x="15" y="92" fill="#8b949e">**原因**: 库存校验漏洞</text>
+                    <text x="15" y="114" fill="#8b949e">**解法**: 添加库存锁</text>
+                    <text x="15" y="136" fill="#8b949e">**影响**: cart, order 模块</text>
+                    <text x="15" y="158" fill="#7ee787">**状态**: ✅ 已修复</text>
+                    <text x="15" y="176" fill="#f0883e">**日期**: 2025-11-28</text>
+                </g>
+            </g>
+        </g>
+    </g>
+
+    
+    <path fill="#7ee787" opacity="0.1" d="M68,580 H1212 A8,8 0 0 1 1220,588 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V588 A8,8 0 0 1 68,580 Z" />
+    <text x="640" y="615" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#7ee787">🎁 文档化的价值</text>
+    <text x="640" y="650" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#e6edf3">
+        <tspan>下次遇到类似问题 → 搜索文档 → 立即解决</tspan>
+        <tspan dx="20" fill="#8b949e">|</tspan>
+        <tspan dx="20">新人遇到问题 → 查阅记录 → 快速上手</tspan>
+    </text>
+
+    
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">08 /
+        10</text>
+</svg>

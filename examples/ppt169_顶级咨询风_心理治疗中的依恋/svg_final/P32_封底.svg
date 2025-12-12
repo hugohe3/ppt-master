@@ -1,117 +1,117 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   <defs>
     <linearGradient id="endGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1E3A5F"/>
-      <stop offset="50%" style="stop-color:#2E5C8E"/>
-      <stop offset="100%" style="stop-color:#3D8B7A"/>
+      <stop offset="0%" style="stop-color:#1E3A5F" />
+      <stop offset="50%" style="stop-color:#2E5C8E" />
+      <stop offset="100%" style="stop-color:#3D8B7A" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="url(#endGradient)"/>
   
-  <!-- 装饰性元素：连接网络 -->
+  <rect width="1280" height="720" fill="url(#endGradient)" />
+  
+  
   <g opacity="0.2">
-    <!-- 中央节点 -->
-    <circle cx="640" cy="360" r="8" fill="#FFFFFF"/>
     
-    <!-- 周围节点和连线 -->
-    <circle cx="350" cy="200" r="5" fill="#FFFFFF"/>
-    <circle cx="450" cy="150" r="4" fill="#FFFFFF"/>
-    <circle cx="550" cy="180" r="5" fill="#FFFFFF"/>
-    <circle cx="730" cy="160" r="4" fill="#FFFFFF"/>
-    <circle cx="830" cy="200" r="5" fill="#FFFFFF"/>
-    <circle cx="920" cy="250" r="4" fill="#FFFFFF"/>
+    <circle cx="640" cy="360" r="8" fill="#FFFFFF" />
     
-    <circle cx="280" cy="350" r="4" fill="#FFFFFF"/>
-    <circle cx="320" cy="480" r="5" fill="#FFFFFF"/>
-    <circle cx="450" cy="540" r="4" fill="#FFFFFF"/>
-    <circle cx="580" cy="580" r="5" fill="#FFFFFF"/>
-    <circle cx="700" cy="560" r="4" fill="#FFFFFF"/>
-    <circle cx="830" cy="520" r="5" fill="#FFFFFF"/>
-    <circle cx="950" cy="450" r="4" fill="#FFFFFF"/>
-    <circle cx="1000" cy="350" r="5" fill="#FFFFFF"/>
     
-    <!-- 连线 -->
-    <line x1="640" y1="360" x2="350" y2="200" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="450" y2="150" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="550" y2="180" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="730" y2="160" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="830" y2="200" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="920" y2="250" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="350" cy="200" r="5" fill="#FFFFFF" />
+    <circle cx="450" cy="150" r="4" fill="#FFFFFF" />
+    <circle cx="550" cy="180" r="5" fill="#FFFFFF" />
+    <circle cx="730" cy="160" r="4" fill="#FFFFFF" />
+    <circle cx="830" cy="200" r="5" fill="#FFFFFF" />
+    <circle cx="920" cy="250" r="4" fill="#FFFFFF" />
     
-    <line x1="640" y1="360" x2="280" y2="350" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="320" y2="480" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="450" y2="540" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="580" y2="580" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="700" y2="560" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="830" y2="520" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="950" y2="450" stroke="#FFFFFF" stroke-width="1"/>
-    <line x1="640" y1="360" x2="1000" y2="350" stroke="#FFFFFF" stroke-width="1"/>
+    <circle cx="280" cy="350" r="4" fill="#FFFFFF" />
+    <circle cx="320" cy="480" r="5" fill="#FFFFFF" />
+    <circle cx="450" cy="540" r="4" fill="#FFFFFF" />
+    <circle cx="580" cy="580" r="5" fill="#FFFFFF" />
+    <circle cx="700" cy="560" r="4" fill="#FFFFFF" />
+    <circle cx="830" cy="520" r="5" fill="#FFFFFF" />
+    <circle cx="950" cy="450" r="4" fill="#FFFFFF" />
+    <circle cx="1000" cy="350" r="5" fill="#FFFFFF" />
     
-    <!-- 次级连线 -->
-    <line x1="350" y1="200" x2="450" y2="150" stroke="#FFFFFF" stroke-width="0.5"/>
-    <line x1="450" y1="150" x2="550" y2="180" stroke="#FFFFFF" stroke-width="0.5"/>
-    <line x1="730" y1="160" x2="830" y2="200" stroke="#FFFFFF" stroke-width="0.5"/>
-    <line x1="320" y1="480" x2="450" y2="540" stroke="#FFFFFF" stroke-width="0.5"/>
-    <line x1="580" y1="580" x2="700" y2="560" stroke="#FFFFFF" stroke-width="0.5"/>
-    <line x1="830" y1="520" x2="950" y2="450" stroke="#FFFFFF" stroke-width="0.5"/>
+    
+    <line x1="640" y1="360" x2="350" y2="200" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="450" y2="150" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="550" y2="180" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="730" y2="160" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="830" y2="200" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="920" y2="250" stroke="#FFFFFF" stroke-width="1" />
+    
+    <line x1="640" y1="360" x2="280" y2="350" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="320" y2="480" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="450" y2="540" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="580" y2="580" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="700" y2="560" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="830" y2="520" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="950" y2="450" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="640" y1="360" x2="1000" y2="350" stroke="#FFFFFF" stroke-width="1" />
+    
+    
+    <line x1="350" y1="200" x2="450" y2="150" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="450" y1="150" x2="550" y2="180" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="730" y1="160" x2="830" y2="200" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="320" y1="480" x2="450" y2="540" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="580" y1="580" x2="700" y2="560" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="830" y1="520" x2="950" y2="450" stroke="#FFFFFF" stroke-width="0.5" />
   </g>
   
-  <!-- 主要内容 -->
+  
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 主标题 -->
+    
     <text x="640" y="260" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
       心理治疗中的依恋
     </text>
     
-    <!-- 副标题 -->
+    
     <text x="640" y="320" font-size="28" fill="#E5E7EB" text-anchor="middle">
       从养育到治愈，从理论到实践
     </text>
     
-    <!-- 英文副标题 -->
+    
     <text x="640" y="360" font-size="18" fill="#94A3B8" text-anchor="middle">
       Attachment in Psychotherapy: From Nurturing to Healing, From Theory to Practice
     </text>
     
-    <!-- 装饰线 -->
-    <rect x="490" y="400" width="300" height="4" rx="2" fill="#E07843"/>
     
-    <!-- 底部信息 -->
+    <path fill="#E07843" d="M492,400 H788 A2,2 0 0 1 790,402 V402 A2,2 0 0 1 788,404 H492 A2,2 0 0 1 490,402 V402 A2,2 0 0 1 492,400 Z" />
+    
+    
     <g transform="translate(640, 500)" text-anchor="middle">
       <text x="0" y="0" font-size="18" fill="#FFFFFF">基于 David J. Wallin 著作</text>
       <text x="0" y="35" font-size="16" fill="#CBD5E1" font-style="italic">Attachment in Psychotherapy (2007)</text>
       
-      <!-- 关键主题回顾 -->
+      
       <g transform="translate(-320, 80)">
-        <rect x="0" y="0" width="100" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M15,0 H85 A15,15 0 0 1 100,15 V15 A15,15 0 0 1 85,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
         <text x="50" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">安全基地</text>
         
-        <rect x="120" y="0" width="100" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M135,0 H205 A15,15 0 0 1 220,15 V15 A15,15 0 0 1 205,30 H135 A15,15 0 0 1 120,15 V15 A15,15 0 0 1 135,0 Z" />
         <text x="170" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">依恋模式</text>
         
-        <rect x="240" y="0" width="100" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M255,0 H325 A15,15 0 0 1 340,15 V15 A15,15 0 0 1 325,30 H255 A15,15 0 0 1 240,15 V15 A15,15 0 0 1 255,0 Z" />
         <text x="290" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">心智化</text>
         
-        <rect x="360" y="0" width="80" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M375,0 H425 A15,15 0 0 1 440,15 V15 A15,15 0 0 1 425,30 H375 A15,15 0 0 1 360,15 V15 A15,15 0 0 1 375,0 Z" />
         <text x="400" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">觉察</text>
         
-        <rect x="460" y="0" width="100" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M475,0 H545 A15,15 0 0 1 560,15 V15 A15,15 0 0 1 545,30 H475 A15,15 0 0 1 460,15 V15 A15,15 0 0 1 475,0 Z" />
         <text x="510" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">双螺旋</text>
         
-        <rect x="580" y="0" width="80" height="30" rx="15" fill="rgba(255,255,255,0.15)"/>
+        <path fill="rgba(255,255,255,0.15)" d="M595,0 H645 A15,15 0 0 1 660,15 V15 A15,15 0 0 1 645,30 H595 A15,15 0 0 1 580,15 V15 A15,15 0 0 1 595,0 Z" />
         <text x="620" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">治愈</text>
       </g>
     </g>
     
-    <!-- 版权信息 -->
+    
     <text x="640" y="680" font-size="12" fill="#64748B" text-anchor="middle">
       © 2025 · 仅供学习与交流使用
     </text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#64748B" text-anchor="end">32</text>
 </svg>

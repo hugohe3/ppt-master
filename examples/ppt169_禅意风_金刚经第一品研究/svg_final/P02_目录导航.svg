@@ -1,99 +1,90 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F9F6F1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#F9F6F1" />
+  
+  
   <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">内容概览</text>
-  <line x1="40" y1="105" x2="200" y2="105" stroke="#C9A962" stroke-width="3"/>
+  <line x1="40" y1="105" x2="200" y2="105" stroke="#C9A962" stroke-width="3" />
   
-  <!-- 左侧：目录模块 -->
-  <!-- 模块一 -->
+  
+  
   <g transform="translate(60, 140)">
-    <rect x="0" y="0" width="540" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <rect x="0" y="0" width="4" height="80" rx="2" fill="#2E4A62"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V72 A8,8 0 0 1 532,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#2E4A62" d="M2,0 H2 A2,2 0 0 1 4,2 V78 A2,2 0 0 1 2,80 H2 A2,2 0 0 1 0,78 V2 A2,2 0 0 1 2,0 Z" />
     <text x="24" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">一、引言</text>
     <text x="24" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">《金刚经》与第一品的定位</text>
-    <!-- icon: book -->
+    
   <g transform="translate(480.0, 24.0) scale(2.0)" fill="#C9A962">
-    <path d="M5 0C3.34315 0 2 1.34315 2 3V13C2 14.6569 3.34315 16 5 16H14V14H4V12H14V0H5Z"/>
+    <path d="M5 0C3.34315 0 2 1.34315 2 3V13C2 14.6569 3.34315 16 5 16H14V14H4V12H14V0H5Z" />
   </g>
   </g>
   
-  <!-- 模块二 -->
+  
   <g transform="translate(60, 235)">
-    <rect x="0" y="0" width="540" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <rect x="0" y="0" width="4" height="80" rx="2" fill="#5D8C6A"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V72 A8,8 0 0 1 532,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#5D8C6A" d="M2,0 H2 A2,2 0 0 1 4,2 V78 A2,2 0 0 1 2,80 H2 A2,2 0 0 1 0,78 V2 A2,2 0 0 1 2,0 Z" />
     <text x="24" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">二、叙事基础</text>
     <text x="24" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">文本、场景与佛陀的日常行动</text>
-    <!-- icon: map-pin -->
+    
   <g transform="translate(480.0, 24.0) scale(2.0)" fill="#5D8C6A">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.37892 10.2236L8 16L12.6211 10.2236C13.5137 9.10788 14 7.72154 14 6.29266V6C14 2.68629 11.3137 0 8 0C4.68629 0 2 2.68629 2 6V6.29266C2 7.72154 2.4863 9.10788 3.37892 10.2236ZM8 8C9.10457 8 10 7.10457 10 6C10 4.89543 9.10457 4 8 4C6.89543 4 6 4.89543 6 6C6 7.10457 6.89543 8 8 8Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.37892 10.2236L8 16L12.6211 10.2236C13.5137 9.10788 14 7.72154 14 6.29266V6C14 2.68629 11.3137 0 8 0C4.68629 0 2 2.68629 2 6V6.29266C2 7.72154 2.4863 9.10788 3.37892 10.2236ZM8 8C9.10457 8 10 7.10457 10 6C10 4.89543 9.10457 4 8 4C6.89543 4 6 4.89543 6 6C6 7.10457 6.89543 8 8 8Z" />
   </g>
   </g>
   
-  <!-- 模块三 -->
+  
   <g transform="translate(60, 330)">
-    <rect x="0" y="0" width="540" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <rect x="0" y="0" width="4" height="80" rx="2" fill="#C9A962"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V72 A8,8 0 0 1 532,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#C9A962" d="M2,0 H2 A2,2 0 0 1 4,2 V78 A2,2 0 0 1 2,80 H2 A2,2 0 0 1 0,78 V2 A2,2 0 0 1 2,0 Z" />
     <text x="24" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">三、序幕意义</text>
     <text x="24" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">功能与深层隐喻：道在平常</text>
-    <!-- icon: lightbulb -->
+    
   <g transform="translate(480.0, 24.0) scale(2.0)" fill="#C9A962">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z" />
   </g>
   </g>
   
-  <!-- 模块四 -->
+  
   <g transform="translate(60, 425)">
-    <rect x="0" y="0" width="540" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <rect x="0" y="0" width="4" height="80" rx="2" fill="#8B9A9A"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V72 A8,8 0 0 1 532,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#8B9A9A" d="M2,0 H2 A2,2 0 0 1 4,2 V78 A2,2 0 0 1 2,80 H2 A2,2 0 0 1 0,78 V2 A2,2 0 0 1 2,0 Z" />
     <text x="24" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">四、多元解读</text>
     <text x="24" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">译本比较与注疏流变</text>
-    <!-- icon: layers -->
+    
   <g transform="translate(480.0, 24.0) scale(2.0)" fill="#8B9A9A">
-    <path d="M1 5V3L8 0L15 3V5L8 8L1 5Z"/>
-    <path d="M8 16L1 13V11L8 14L15 11V13L8 16Z"/>
-    <path d="M1 9L8 12L15 9V7L8 10L1 7V9Z"/>
+    <path d="M1 5V3L8 0L15 3V5L8 8L1 5Z" />
+    <path d="M8 16L1 13V11L8 14L15 11V13L8 16Z" />
+    <path d="M1 9L8 12L15 9V7L8 10L1 7V9Z" />
   </g>
   </g>
   
-  <!-- 模块五 -->
+  
   <g transform="translate(60, 520)">
-    <rect x="0" y="0" width="540" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <rect x="0" y="0" width="4" height="80" rx="2" fill="#B54545"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V72 A8,8 0 0 1 532,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#B54545" d="M2,0 H2 A2,2 0 0 1 4,2 V78 A2,2 0 0 1 2,80 H2 A2,2 0 0 1 0,78 V2 A2,2 0 0 1 2,0 Z" />
     <text x="24" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2E4A62">五、结论</text>
     <text x="24" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#6B7280">平凡中的非凡智慧</text>
-    <!-- icon: sparkles -->
+    
   <g transform="translate(480.0, 24.0) scale(2.0)" fill="#B54545">
-    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z"/>
-    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z"/>
-    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z"/>
-    <path d="M15 14L13 12L11 14L13 16L15 14Z"/>
-    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z"/>
+    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z" />
+    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z" />
+    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z" />
+    <path d="M15 14L13 12L11 14L13 16L15 14Z" />
+    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z" />
   </g>
   </g>
   
-  <!-- 右侧：核心问题 -->
+  
   <g transform="translate(680, 140)">
-    <rect x="0" y="0" width="520" height="460" rx="12" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+    <path fill="#FDF8E8" stroke="#C9A962" stroke-width="2" d="M12,0 H508 A12,12 0 0 1 520,12 V448 A12,12 0 0 1 508,460 H12 A12,12 0 0 1 0,448 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="45" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#C9A962">核心研究问题</text>
-    <line x1="30" y1="65" x2="490" y2="65" stroke="#C9A962" stroke-width="1" opacity="0.5"/>
+    <line x1="30" y1="65" x2="490" y2="65" stroke="#C9A962" stroke-width="1" opacity="0.5" />
     
-    <text x="30" y="110" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151">
-      <tspan x="30" dy="0">• 第一品的文本结构有何特点？</tspan>
-      <tspan x="30" dy="45">• 佛陀的日常行为隐含什么教法？</tspan>
-      <tspan x="30" dy="45">• "法会因由"如何引出般若智慧？</tspan>
-      <tspan x="30" dy="45">• 不同译本的差异说明什么？</tspan>
-      <tspan x="30" dy="45">• 历代注疏如何解读此品？</tspan>
-      <tspan x="30" dy="45">• "道在平常"的深层意涵是什么？</tspan>
-    </text>
-    
-    <line x1="30" y1="350" x2="490" y2="350" stroke="#C9A962" stroke-width="1" opacity="0.5"/>
+    <text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="110">• 第一品的文本结构有何特点？</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="155">• 佛陀的日常行为隐含什么教法？</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="200">• "法会因由"如何引出般若智慧？</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="245">• 不同译本的差异说明什么？</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="290">• 历代注疏如何解读此品？</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" x="30" y="335">• "道在平常"的深层意涵是什么？</text><line x1="30" y1="350" x2="490" y2="350" stroke="#C9A962" stroke-width="1" opacity="0.5" />
     
     <text x="260" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle" font-style="italic">"应无所住而生其心"</text>
     <text x="260" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="middle">—— 《金刚经》核心教导</text>
   </g>
   
-  <!-- 页脚 -->
+  
   <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">2 / 15</text>
 </svg>

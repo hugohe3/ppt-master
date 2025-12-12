@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     自我的发展层级
   </text>
@@ -13,22 +13,22 @@
     The Domains of Self-Experience
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="280" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 垂直堆叠的四层卡片 -->
+  <line x1="60" y1="125" x2="280" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 第四层：反思性自我与觉察性自我（顶层） -->
+    
     <g>
-      <rect x="0" y="0" width="1160" height="115" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2" d="M12,0 H1148 A12,12 0 0 1 1160,12 V103 A12,12 0 0 1 1148,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 层级标识 -->
-      <rect x="0" y="0" width="60" height="115" rx="12" fill="#2E5C8E"/>
-      <rect x="48" y="0" width="12" height="115" fill="#2E5C8E"/>
+      
+      <path fill="#2E5C8E" d="M12,0 H48 A12,12 0 0 1 60,12 V103 A12,12 0 0 1 48,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="48" y="0" width="12" height="115" fill="#2E5C8E" />
       <text x="30" y="65" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
       
-      <!-- 左半部分：反思性自我 -->
+      
       <g transform="translate(80, 15)">
         <text x="0" y="20" font-size="18" font-weight="bold" fill="#2E5C8E">🧠 反思性自我</text>
         <text x="0" y="45" font-size="14" fill="#6B7280">Reflective Self</text>
@@ -36,10 +36,10 @@
         <text x="0" y="95" font-size="13" fill="#64748B">元认知 · 多视角思考 · 表征性重新描述</text>
       </g>
       
-      <!-- 竖线分隔 -->
-      <line x1="580" y1="15" x2="580" y2="100" stroke="#E5E7EB" stroke-width="1"/>
       
-      <!-- 右半部分：觉察性自我 -->
+      <line x1="580" y1="15" x2="580" y2="100" stroke="#E5E7EB" stroke-width="1" />
+      
+      
       <g transform="translate(600, 15)">
         <text x="0" y="20" font-size="18" font-weight="bold" fill="#3D8B7A">🧘 觉察性自我</text>
         <text x="0" y="45" font-size="14" fill="#6B7280">Mindful Self</text>
@@ -47,21 +47,21 @@
         <text x="0" y="95" font-size="13" fill="#64748B">去自动化 · 内在安全基地 · 促进整合</text>
       </g>
       
-      <!-- 顶层标签 -->
-      <rect x="1050" y="40" width="90" height="35" rx="17" fill="#E0F2FE"/>
+      
+      <path fill="#E0F2FE" d="M1067,40 H1123 A17,17 0 0 1 1140,57 V58 A17,17 0 0 1 1123,75 H1067 A17,17 0 0 1 1050,58 V57 A17,17 0 0 1 1067,40 Z" />
       <text x="1095" y="63" font-size="13" fill="#2E5C8E" text-anchor="middle">元认知</text>
     </g>
     
-    <!-- 第三层：表征性自我 -->
+    
     <g transform="translate(0, 130)">
-      <rect x="0" y="0" width="1160" height="115" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H1148 A12,12 0 0 1 1160,12 V103 A12,12 0 0 1 1148,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 层级标识 -->
-      <rect x="0" y="0" width="60" height="115" rx="12" fill="#E07843"/>
-      <rect x="48" y="0" width="12" height="115" fill="#E07843"/>
+      
+      <path fill="#E07843" d="M12,0 H48 A12,12 0 0 1 60,12 V103 A12,12 0 0 1 48,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="48" y="0" width="12" height="115" fill="#E07843" />
       <text x="30" y="65" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       
-      <!-- 内容 -->
+      
       <g transform="translate(80, 15)">
         <text x="0" y="20" font-size="18" font-weight="bold" fill="#E07843">📐 表征性自我</text>
         <text x="140" y="20" font-size="14" fill="#6B7280">Representational Self</text>
@@ -72,28 +72,28 @@
         </text>
         
         <g transform="translate(0, 70)">
-          <rect x="0" y="0" width="280" height="28" rx="6" fill="#D4EDDA"/>
+          <path fill="#D4EDDA" d="M6,0 H274 A6,6 0 0 1 280,6 V22 A6,6 0 0 1 274,28 H6 A6,6 0 0 1 0,22 V6 A6,6 0 0 1 6,0 Z" />
           <text x="140" y="19" font-size="13" fill="#3D8B7A" text-anchor="middle">安全依恋 → 灵活表征</text>
           
-          <rect x="300" y="0" width="280" height="28" rx="6" fill="#FECACA"/>
+          <path fill="#FECACA" d="M306,0 H574 A6,6 0 0 1 580,6 V22 A6,6 0 0 1 574,28 H306 A6,6 0 0 1 300,22 V6 A6,6 0 0 1 306,0 Z" />
           <text x="440" y="19" font-size="13" fill="#B54545" text-anchor="middle">不安全依恋 → 僵化表征</text>
           
-          <rect x="600" y="0" width="300" height="28" rx="6" fill="#F1F5F9"/>
+          <path fill="#F1F5F9" d="M606,0 H894 A6,6 0 0 1 900,6 V22 A6,6 0 0 1 894,28 H606 A6,6 0 0 1 600,22 V6 A6,6 0 0 1 606,0 Z" />
           <text x="750" y="19" font-size="13" fill="#64748B" text-anchor="middle">内隐关系知识 · 活现</text>
         </g>
       </g>
     </g>
     
-    <!-- 第二层：情绪自我 -->
+    
     <g transform="translate(0, 260)">
-      <rect x="0" y="0" width="1160" height="115" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H1148 A12,12 0 0 1 1160,12 V103 A12,12 0 0 1 1148,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 层级标识 -->
-      <rect x="0" y="0" width="60" height="115" rx="12" fill="#3D8B7A"/>
-      <rect x="48" y="0" width="12" height="115" fill="#3D8B7A"/>
+      
+      <path fill="#3D8B7A" d="M12,0 H48 A12,12 0 0 1 60,12 V103 A12,12 0 0 1 48,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="48" y="0" width="12" height="115" fill="#3D8B7A" />
       <text x="30" y="65" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       
-      <!-- 内容 -->
+      
       <g transform="translate(80, 15)">
         <text x="0" y="20" font-size="18" font-weight="bold" fill="#3D8B7A">💚 情绪自我</text>
         <text x="120" y="20" font-size="14" fill="#6B7280">Emotional Self</text>
@@ -104,28 +104,28 @@
         </text>
         
         <g transform="translate(0, 70)">
-          <circle cx="10" cy="8" r="6" fill="#3D8B7A"/>
+          <circle cx="10" cy="8" r="6" fill="#3D8B7A" />
           <text x="25" y="12" font-size="13" fill="#374151">情感是沟通的主要媒介</text>
           
-          <circle cx="250" cy="8" r="6" fill="#3D8B7A"/>
+          <circle cx="250" cy="8" r="6" fill="#3D8B7A" />
           <text x="265" y="12" font-size="13" fill="#374151">情绪驱动行动倾向</text>
           
-          <circle cx="470" cy="8" r="6" fill="#3D8B7A"/>
+          <circle cx="470" cy="8" r="6" fill="#3D8B7A" />
           <text x="485" y="12" font-size="13" fill="#374151">依恋关系是学习调节情感的主要背景</text>
         </g>
       </g>
     </g>
     
-    <!-- 第一层：躯体自我（基础） -->
+    
     <g transform="translate(0, 390)">
-      <rect x="0" y="0" width="1160" height="115" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#64748B" stroke-width="2" d="M12,0 H1148 A12,12 0 0 1 1160,12 V103 A12,12 0 0 1 1148,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 层级标识 -->
-      <rect x="0" y="0" width="60" height="115" rx="12" fill="#64748B"/>
-      <rect x="48" y="0" width="12" height="115" fill="#64748B"/>
+      
+      <path fill="#64748B" d="M12,0 H48 A12,12 0 0 1 60,12 V103 A12,12 0 0 1 48,115 H12 A12,12 0 0 1 0,103 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="48" y="0" width="12" height="115" fill="#64748B" />
       <text x="30" y="65" font-size="24" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       
-      <!-- 内容 -->
+      
       <g transform="translate(80, 15)">
         <text x="0" y="20" font-size="18" font-weight="bold" fill="#64748B">🧘 躯体自我</text>
         <text x="120" y="20" font-size="14" fill="#6B7280">Somatic Self — 身体基础</text>
@@ -135,30 +135,30 @@
         </text>
         
         <g transform="translate(0, 70)">
-          <circle cx="10" cy="8" r="6" fill="#64748B"/>
+          <circle cx="10" cy="8" r="6" fill="#64748B" />
           <text x="25" y="12" font-size="13" fill="#374151">依恋关系影响生理应激反应阈值</text>
           
-          <circle cx="310" cy="8" r="6" fill="#64748B"/>
+          <circle cx="310" cy="8" r="6" fill="#64748B" />
           <text x="325" y="12" font-size="13" fill="#374151">身体塑造最初的自我感</text>
           
-          <circle cx="540" cy="8" r="6" fill="#64748B"/>
+          <circle cx="540" cy="8" r="6" fill="#64748B" />
           <text x="555" y="12" font-size="13" fill="#374151">创伤以非言语躯体形式存储</text>
         </g>
       </g>
       
-      <!-- 基础标签 -->
-      <rect x="1050" y="40" width="90" height="35" rx="17" fill="#F1F5F9"/>
+      
+      <path fill="#F1F5F9" d="M1067,40 H1123 A17,17 0 0 1 1140,57 V58 A17,17 0 0 1 1123,75 H1067 A17,17 0 0 1 1050,58 V57 A17,17 0 0 1 1067,40 Z" />
       <text x="1095" y="63" font-size="13" fill="#64748B" text-anchor="middle">身体基础</text>
     </g>
   </g>
   
-  <!-- 右侧发展箭头 -->
+  
   <g transform="translate(1240, 280)">
-    <path d="M0,200 L0,0" stroke="#2E5C8E" stroke-width="3" fill="none"/>
-    <polygon points="0,0 -8,15 8,15" fill="#2E5C8E"/>
+    <path d="M0,200 L0,0" stroke="#2E5C8E" stroke-width="3" fill="none" />
+    <polygon points="0,0 -8,15 8,15" fill="#2E5C8E" />
     <text x="0" y="220" font-family="PingFang SC, sans-serif" font-size="12" fill="#64748B" text-anchor="middle" writing-mode="tb">发展方向</text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1200" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">14</text>
 </svg>

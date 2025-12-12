@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+            <feOffset dx="0" dy="4" result="offsetBlur" />
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color" />
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
+            <feMerge>
+                <feMergeNode in="shadow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    
+    <path fill="#8B5CF6" d="M76,40 H164 A16,16 0 0 1 180,56 V56 A16,16 0 0 1 164,72 H76 A16,16 0 0 1 60,56 V56 A16,16 0 0 1 76,40 Z" />
+    <text x="120" y="62" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">Spec Kit</text>
+
+    
+    <text x="60" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="#1E293B" font-weight="700">适合"产品+研发"都自己干的程序员</text>
+    <text x="60" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B">GitHub 官方出品 ·
+        规格驱动开发（Spec-Driven Development）</text>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M72,170 H388 A12,12 0 0 1 400,182 V358 A12,12 0 0 1 388,370 H72 A12,12 0 0 1 60,358 V182 A12,12 0 0 1 72,170 Z" />
+        <text x="85" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#8B5CF6" font-weight="600">📋 典型用户画像</text>
+
+        <circle cx="90" cy="240" r="4" fill="#8B5CF6" />
+        <text x="105" y="245" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">独立开发者 /
+            小团队负责人</text>
+
+        <circle cx="90" cy="270" r="4" fill="#8B5CF6" />
+        <text x="105" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">需求不明确，需要边想边做</text>
+
+        <circle cx="90" cy="300" r="4" fill="#8B5CF6" />
+        <text x="105" y="305" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">技术选型还没定，需要探索</text>
+
+        <circle cx="90" cy="330" r="4" fill="#8B5CF6" />
+        <text x="105" y="335" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">希望 AI
+            帮忙做产品设计和架构决策</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M432,170 H1208 A12,12 0 0 1 1220,182 V358 A12,12 0 0 1 1208,370 H432 A12,12 0 0 1 420,358 V182 A12,12 0 0 1 432,170 Z" />
+        <text x="445" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#8B5CF6" font-weight="600">🔄 7 步工作流程</text>
+
+        
+        <g>
+            
+            <path fill="#F5F3FF" d="M453,230 H527 A8,8 0 0 1 535,238 V272 A8,8 0 0 1 527,280 H453 A8,8 0 0 1 445,272 V238 A8,8 0 0 1 453,230 Z" />
+            <text x="490" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">1. 立宪</text>
+            <text x="490" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">constitution</text>
+            <path d="M540 255 L555 255" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrow)" />
+
+            
+            <path fill="#F5F3FF" d="M568,230 H642 A8,8 0 0 1 650,238 V272 A8,8 0 0 1 642,280 H568 A8,8 0 0 1 560,272 V238 A8,8 0 0 1 568,230 Z" />
+            <text x="605" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">2. 需求</text>
+            <text x="605" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">specify</text>
+            <path d="M655 255 L670 255" stroke="#8B5CF6" stroke-width="2" />
+
+            
+            <path fill="#F5F3FF" d="M683,230 H757 A8,8 0 0 1 765,238 V272 A8,8 0 0 1 757,280 H683 A8,8 0 0 1 675,272 V238 A8,8 0 0 1 683,230 Z" />
+            <text x="720" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">3. 澄清</text>
+            <text x="720" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">clarify</text>
+            <path d="M770 255 L785 255" stroke="#8B5CF6" stroke-width="2" />
+
+            
+            <path fill="#F5F3FF" d="M798,230 H872 A8,8 0 0 1 880,238 V272 A8,8 0 0 1 872,280 H798 A8,8 0 0 1 790,272 V238 A8,8 0 0 1 798,230 Z" />
+            <text x="835" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">4. 规划</text>
+            <text x="835" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">plan</text>
+            <path d="M885 255 L900 255" stroke="#8B5CF6" stroke-width="2" />
+
+            
+            <path fill="#F5F3FF" d="M913,230 H987 A8,8 0 0 1 995,238 V272 A8,8 0 0 1 987,280 H913 A8,8 0 0 1 905,272 V238 A8,8 0 0 1 913,230 Z" />
+            <text x="950" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">5. 分析</text>
+            <text x="950" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">analyze</text>
+            <path d="M1000 255 L1015 255" stroke="#8B5CF6" stroke-width="2" />
+
+            
+            <path fill="#F5F3FF" d="M1028,230 H1102 A8,8 0 0 1 1110,238 V272 A8,8 0 0 1 1102,280 H1028 A8,8 0 0 1 1020,272 V238 A8,8 0 0 1 1028,230 Z" />
+            <text x="1065" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">6. 拆解</text>
+            <text x="1065" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">tasks</text>
+            <path d="M1115 255 L1130 255" stroke="#8B5CF6" stroke-width="2" />
+
+            
+            <path fill="#8B5CF6" d="M1143,230 H1202 A8,8 0 0 1 1210,238 V272 A8,8 0 0 1 1202,280 H1143 A8,8 0 0 1 1135,272 V238 A8,8 0 0 1 1143,230 Z" />
+            <text x="1172" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600">7. 实施</text>
+            <text x="1172" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#E9D5FF" text-anchor="middle">implement</text>
+        </g>
+
+        
+        <text x="445" y="315" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B">📄
+            产出文件：constitution.md → spec.md → plan.md + research.md → tasks.md → 代码</text>
+        <text x="445" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B">💡
+            核心哲学：先把"做什么"和"为什么"想透，再考虑"怎么做"</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M72,390 H608 A12,12 0 0 1 620,402 V558 A12,12 0 0 1 608,570 H72 A12,12 0 0 1 60,558 V402 A12,12 0 0 1 72,390 Z" />
+        <text x="85" y="425" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#10B981" font-weight="600">✅ 优点</text>
+
+        <text x="85" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">• 从 0 到 1
+            全流程覆盖</text>
+        <text x="85" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">•
+            产出完整的技术文档</text>
+        <text x="85" y="510" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">• 支持 15+ 种
+            AI Agent</text>
+        <text x="85" y="535" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">•
+            适合需求模糊的探索性项目</text>
+    </g>
+
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M672,390 H1208 A12,12 0 0 1 1220,402 V558 A12,12 0 0 1 1208,570 H672 A12,12 0 0 1 660,558 V402 A12,12 0 0 1 672,390 Z" />
+        <text x="685" y="425" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#EF4444" font-weight="600">❌ 缺点</text>
+
+        <text x="685" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">•
+            流程较重，文档产出量大</text>
+        <text x="685" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">•
+            对于简单任务有"杀鸡用牛刀"之感</text>
+        <text x="685" y="510" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B">•
+            学习成本相对较高</text>
+    </g>
+
+    
+    <path fill="#1E293B" d="M72,590 H1208 A12,12 0 0 1 1220,602 V648 A12,12 0 0 1 1208,660 H72 A12,12 0 0 1 60,648 V602 A12,12 0 0 1 72,590 Z" />
+    <text x="90" y="620" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B">安装方式</text>
+    <text x="90" y="645" font-family="'SF Mono', 'Consolas', monospace" font-size="16" fill="#10B981">$ uv tool install
+        spec-kit</text>
+    <text x="500" y="632" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B">适合阶段：</text>
+    <path fill="#8B5CF6" d="M594,615 H646 A14,14 0 0 1 660,629 V629 A14,14 0 0 1 646,643 H594 A14,14 0 0 1 580,629 V629 A14,14 0 0 1 594,615 Z" />
+    <text x="620" y="634" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">0 → 1</text>
+
+    
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">03 / 11</text>
+</svg>

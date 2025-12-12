@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFBFC"/>
-  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#FAFBFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)" />
+  
+  
   <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
     传统 PPT 制作：效率瓶颈与挑战
   </text>
@@ -18,62 +18,62 @@
     平均每份演示文稿耗时 4-8 小时，80% 时间用于格式调整而非内容创作
   </text>
   
-  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1" />
   
-  <!-- 四大痛点卡片 -->
+  
   <g transform="translate(60, 145)">
-    <!-- 痛点1 -->
+    
     <g>
-      <rect width="265" height="210" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="265" height="6" rx="3" fill="#EF4444"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H249 A16,16 0 0 1 265,16 V194 A16,16 0 0 1 249,210 H16 A16,16 0 0 1 0,194 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#EF4444" d="M3,0 H262 A3,3 0 0 1 265,3 V3 A3,3 0 0 1 262,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
       <text x="132" y="55" font-size="36" text-anchor="middle">⏰</text>
       <text x="132" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">耗时耗力</text>
       <text x="132" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#EF4444">4-8h</text>
       <text x="132" y="165" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">平均制作时间</text>
-      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1" />
       <text x="132" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">效率低下，拖累进度</text>
     </g>
     
-    <!-- 痛点2 -->
+    
     <g transform="translate(290, 0)">
-      <rect width="265" height="210" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="265" height="6" rx="3" fill="#EF4444"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H249 A16,16 0 0 1 265,16 V194 A16,16 0 0 1 249,210 H16 A16,16 0 0 1 0,194 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#EF4444" d="M3,0 H262 A3,3 0 0 1 265,3 V3 A3,3 0 0 1 262,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
       <text x="132" y="55" font-size="36" text-anchor="middle">🎨</text>
       <text x="132" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">设计门槛高</text>
       <text x="132" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#EF4444">70%</text>
       <text x="132" y="165" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">用户缺乏设计能力</text>
-      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1" />
       <text x="132" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">效果参差不齐</text>
     </g>
     
-    <!-- 痛点3 -->
+    
     <g transform="translate(580, 0)">
-      <rect width="265" height="210" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="265" height="6" rx="3" fill="#EF4444"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H249 A16,16 0 0 1 265,16 V194 A16,16 0 0 1 249,210 H16 A16,16 0 0 1 0,194 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#EF4444" d="M3,0 H262 A3,3 0 0 1 265,3 V3 A3,3 0 0 1 262,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
       <text x="132" y="55" font-size="36" text-anchor="middle">🔄</text>
       <text x="132" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">重复劳动</text>
       <text x="132" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#EF4444">80%</text>
       <text x="132" y="165" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">时间用于格式调整</text>
-      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1" />
       <text x="132" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">每次从头开始</text>
     </g>
     
-    <!-- 痛点4 -->
+    
     <g transform="translate(870, 0)">
-      <rect width="265" height="210" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="265" height="6" rx="3" fill="#EF4444"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H249 A16,16 0 0 1 265,16 V194 A16,16 0 0 1 249,210 H16 A16,16 0 0 1 0,194 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#EF4444" d="M3,0 H262 A3,3 0 0 1 265,3 V3 A3,3 0 0 1 262,6 H3 A3,3 0 0 1 0,3 V3 A3,3 0 0 1 3,0 Z" />
       <text x="132" y="55" font-size="36" text-anchor="middle">📊</text>
       <text x="132" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">可视化复杂</text>
       <text x="132" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#EF4444">60%</text>
       <text x="132" y="165" font-family="system-ui, -apple-system, sans-serif" font-size="13" text-anchor="middle" fill="#6B7280">图表制作失误率</text>
-      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="80" y1="180" x2="185" y2="180" stroke="#E5E7EB" stroke-width="1" />
       <text x="132" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">一致性难保证</text>
     </g>
   </g>
   
-  <!-- 底部总结 -->
+  
   <g transform="translate(60, 385)">
-    <rect width="1160" height="90" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H1144 A16,16 0 0 1 1160,16 V74 A16,16 0 0 1 1144,90 H16 A16,16 0 0 1 0,74 V16 A16,16 0 0 1 16,0 Z" />
     <text x="30" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" fill="#1F2937">
       💡 核心问题：缺乏系统化的解决方案，导致效率低、质量不稳定
     </text>
@@ -82,7 +82,7 @@
     </text>
   </g>
   
-  <!-- 引导 -->
+  
   <g transform="translate(640, 510)">
     <text x="0" y="0" font-size="28" text-anchor="middle">⬇️</text>
     <text x="0" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#6366F1">
@@ -90,8 +90,8 @@
     </text>
   </g>
   
-  <!-- 页脚 -->
-  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1" />
   <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 痛点分析</text>
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">02 / 10</text>
   <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>

@@ -1,33 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <filter id="boxShadow4" x="-20%" y="-20%" width="140%" height="150%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
-      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor"/>
-      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
       <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
     <marker id="arrowCurve" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#D97757"/>
+      <path d="M0,0 L0,6 L9,3 z" fill="#D97757" />
     </marker>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#F59E0B"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
-  <rect x="60" y="40" width="140" height="28" rx="14" fill="#F59E0B" fill-opacity="0.1"/>
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#F59E0B" />
+  
+  
+  <path fill="#F59E0B" fill-opacity="0.1" d="M74,40 H186 A14,14 0 0 1 200,54 V54 A14,14 0 0 1 186,68 H74 A14,14 0 0 1 60,54 V54 A14,14 0 0 1 74,40 Z" />
   <text x="130" y="59" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#F59E0B" text-anchor="middle">
     WORKFLOW 4 &amp; 5
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="105" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A1A2E">
     Orchestrator-Workers &amp; Evaluator-Optimizer
   </text>
@@ -35,50 +35,50 @@
     动态编排与迭代优化 — 两种高级模式
   </text>
   
-  <!-- 左侧: Orchestrator-Workers -->
+  
   <g transform="translate(60, 160)">
-    <rect x="0" y="0" width="560" height="240" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" d="M16,0 H544 A16,16 0 0 1 560,16 V224 A16,16 0 0 1 544,240 H16 A16,16 0 0 1 0,224 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题区 -->
-    <rect x="0" y="0" width="560" height="45" rx="16" fill="#4A90D9"/>
-    <rect x="0" y="22" width="560" height="23" fill="#4A90D9"/>
+    
+    <path fill="#4A90D9" d="M16,0 H544 A16,16 0 0 1 560,16 V29 A16,16 0 0 1 544,45 H16 A16,16 0 0 1 0,29 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="22" width="560" height="23" fill="#4A90D9" />
     <text x="20" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
       Orchestrator-Workers 编排者-工作者
     </text>
     
-    <!-- 流程图 -->
+    
     <g transform="translate(130, 130)">
-      <!-- Orchestrator -->
-      <rect x="-55" y="-55" width="110" height="40" rx="8" fill="#4A90D9"/>
+      
+      <path fill="#4A90D9" d="M-47,-55 H47 A8,8 0 0 1 55,-47 V-23 A8,8 0 0 1 47,-15 H-47 A8,8 0 0 1 -55,-23 V-47 A8,8 0 0 1 -47,-55 Z" />
       <text x="0" y="-28" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Orchestrator
       </text>
       
-      <!-- 分支 -->
-      <line x1="0" y1="-15" x2="0" y2="0" stroke="#64748B" stroke-width="2"/>
-      <line x1="-80" y1="0" x2="80" y2="0" stroke="#64748B" stroke-width="2"/>
-      <line x1="-80" y1="0" x2="-80" y2="15" stroke="#64748B" stroke-width="2"/>
-      <line x1="0" y1="0" x2="0" y2="15" stroke="#64748B" stroke-width="2"/>
-      <line x1="80" y1="0" x2="80" y2="15" stroke="#64748B" stroke-width="2"/>
       
-      <!-- Workers -->
-      <rect x="-105" y="18" width="50" height="35" rx="5" fill="#10B981"/>
+      <line x1="0" y1="-15" x2="0" y2="0" stroke="#64748B" stroke-width="2" />
+      <line x1="-80" y1="0" x2="80" y2="0" stroke="#64748B" stroke-width="2" />
+      <line x1="-80" y1="0" x2="-80" y2="15" stroke="#64748B" stroke-width="2" />
+      <line x1="0" y1="0" x2="0" y2="15" stroke="#64748B" stroke-width="2" />
+      <line x1="80" y1="0" x2="80" y2="15" stroke="#64748B" stroke-width="2" />
+      
+      
+      <path fill="#10B981" d="M-100,18 H-60 A5,5 0 0 1 -55,23 V48 A5,5 0 0 1 -60,53 H-100 A5,5 0 0 1 -105,48 V23 A5,5 0 0 1 -100,18 Z" />
       <text x="-80" y="41" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Worker 1
       </text>
       
-      <rect x="-25" y="18" width="50" height="35" rx="5" fill="#10B981"/>
+      <path fill="#10B981" d="M-20,18 H20 A5,5 0 0 1 25,23 V48 A5,5 0 0 1 20,53 H-20 A5,5 0 0 1 -25,48 V23 A5,5 0 0 1 -20,18 Z" />
       <text x="0" y="41" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Worker 2
       </text>
       
-      <rect x="55" y="18" width="50" height="35" rx="5" fill="#10B981"/>
+      <path fill="#10B981" d="M60,18 H100 A5,5 0 0 1 105,23 V48 A5,5 0 0 1 100,53 H60 A5,5 0 0 1 55,48 V23 A5,5 0 0 1 60,18 Z" />
       <text x="80" y="41" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Worker N
       </text>
     </g>
     
-    <!-- 说明 - 右侧 -->
+    
     <g transform="translate(290, 70)">
       <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">
         动态分解任务
@@ -95,21 +95,21 @@
     </g>
   </g>
   
-  <!-- 右侧: Evaluator-Optimizer -->
+  
   <g transform="translate(660, 160)">
-    <rect x="0" y="0" width="560" height="240" rx="16" fill="#FEF7F5" stroke="#D97757" stroke-width="1"/>
+    <path fill="#FEF7F5" stroke="#D97757" stroke-width="1" d="M16,0 H544 A16,16 0 0 1 560,16 V224 A16,16 0 0 1 544,240 H16 A16,16 0 0 1 0,224 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题区 -->
-    <rect x="0" y="0" width="560" height="45" rx="16" fill="#D97757"/>
-    <rect x="0" y="22" width="560" height="23" fill="#D97757"/>
+    
+    <path fill="#D97757" d="M16,0 H544 A16,16 0 0 1 560,16 V29 A16,16 0 0 1 544,45 H16 A16,16 0 0 1 0,29 V16 A16,16 0 0 1 16,0 Z" />
+    <rect x="0" y="22" width="560" height="23" fill="#D97757" />
     <text x="20" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
       Evaluator-Optimizer 评估者-优化者
     </text>
     
-    <!-- 流程图 - 调整位置 -->
+    
     <g transform="translate(130, 140)">
-      <!-- Generator -->
-      <rect x="-90" y="-35" width="85" height="45" rx="8" fill="#D97757"/>
+      
+      <path fill="#D97757" d="M-82,-35 H-13 A8,8 0 0 1 -5,-27 V2 A8,8 0 0 1 -13,10 H-82 A8,8 0 0 1 -90,2 V-27 A8,8 0 0 1 -82,-35 Z" />
       <text x="-47" y="-12" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Generator
       </text>
@@ -117,12 +117,12 @@
         生成响应
       </text>
       
-      <!-- 箭头 Generator -> Evaluator -->
-      <line x1="-5" y1="-12" x2="20" y2="-12" stroke="#64748B" stroke-width="2"/>
-      <polygon points="28,-12 20,-16 20,-8" fill="#64748B"/>
       
-      <!-- Evaluator -->
-      <rect x="30" y="-35" width="85" height="45" rx="8" fill="#8B5CF6"/>
+      <line x1="-5" y1="-12" x2="20" y2="-12" stroke="#64748B" stroke-width="2" />
+      <polygon points="28,-12 20,-16 20,-8" fill="#64748B" />
+      
+      
+      <path fill="#8B5CF6" d="M38,-35 H107 A8,8 0 0 1 115,-27 V2 A8,8 0 0 1 107,10 H38 A8,8 0 0 1 30,2 V-27 A8,8 0 0 1 38,-35 Z" />
       <text x="72" y="-12" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Evaluator
       </text>
@@ -130,15 +130,15 @@
         提供反馈
       </text>
       
-      <!-- 循环箭头 -->
-      <path d="M30,15 Q-10,35 -47,15" stroke="#D97757" stroke-width="2" fill="none" stroke-dasharray="4,2"/>
-      <polygon points="-52,12 -45,18 -45,8" fill="#D97757"/>
+      
+      <path d="M30,15 Q-10,35 -47,15" stroke="#D97757" stroke-width="2" fill="none" stroke-dasharray="4,2" />
+      <polygon points="-52,12 -45,18 -45,8" fill="#D97757" />
       <text x="-10" y="50" font-family="Arial, sans-serif" font-size="10" fill="#D97757" text-anchor="middle">
         迭代循环
       </text>
     </g>
     
-    <!-- 说明 - 右侧 -->
+    
     <g transform="translate(290, 70)">
       <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#1A1A2E">
         迭代改进
@@ -155,15 +155,15 @@
     </g>
   </g>
   
-  <!-- 底部对比表格 -->
+  
   <g transform="translate(60, 430)">
-    <rect x="0" y="0" width="1160" height="180" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" d="M12,0 H1148 A12,12 0 0 1 1160,12 V168 A12,12 0 0 1 1148,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 表头 -->
-    <rect x="0" y="0" width="1160" height="45" rx="12" fill="#1A1A2E"/>
-    <rect x="0" y="22" width="1160" height="23" fill="#1A1A2E"/>
     
-    <!-- 列标题 -->
+    <path fill="#1A1A2E" d="M12,0 H1148 A12,12 0 0 1 1160,12 V33 A12,12 0 0 1 1148,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="22" width="1160" height="23" fill="#1A1A2E" />
+    
+    
     <text x="130" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
       模式
     </text>
@@ -174,11 +174,11 @@
       典型场景
     </text>
     
-    <!-- 列分隔线 -->
-    <line x1="260" y1="45" x2="260" y2="180" stroke="#E2E8F0" stroke-width="1"/>
-    <line x1="700" y1="45" x2="700" y2="180" stroke="#E2E8F0" stroke-width="1"/>
     
-    <!-- 行 1 -->
+    <line x1="260" y1="45" x2="260" y2="180" stroke="#E2E8F0" stroke-width="1" />
+    <line x1="700" y1="45" x2="700" y2="180" stroke="#E2E8F0" stroke-width="1" />
+    
+    
     <text x="130" y="85" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#4A90D9" text-anchor="middle">
       Orchestrator-Workers
     </text>
@@ -189,10 +189,10 @@
       多文件代码重构、多源搜索
     </text>
     
-    <!-- 行分隔线 -->
-    <line x1="20" y1="115" x2="1140" y2="115" stroke="#E2E8F0" stroke-width="1"/>
     
-    <!-- 行 2 -->
+    <line x1="20" y1="115" x2="1140" y2="115" stroke="#E2E8F0" stroke-width="1" />
+    
+    
     <text x="130" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#D97757" text-anchor="middle">
       Evaluator-Optimizer
     </text>
@@ -204,7 +204,7 @@
     </text>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     10 / 15
   </text>

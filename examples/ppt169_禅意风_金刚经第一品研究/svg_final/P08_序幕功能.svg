@@ -1,184 +1,184 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 定义 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
   <defs>
-    <!-- 水墨渐变背景 -->
+    
     <linearGradient id="inkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F9F6F1"/>
-      <stop offset="100%" stop-color="#F0EDE6"/>
+      <stop offset="0%" stop-color="#F9F6F1" />
+      <stop offset="100%" stop-color="#F0EDE6" />
     </linearGradient>
     
-    <!-- 统一箭头 -->
+    
     <marker id="arrowGold" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#C9A962"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#C9A962" />
     </marker>
     <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#8B9A9A"/>
+      <polygon points="0 0, 8 3, 0 6" fill="#8B9A9A" />
     </marker>
     
-    <!-- 卡片阴影 -->
+    
     <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#2E4A62" flood-opacity="0.08"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#2E4A62" flood-opacity="0.08" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="url(#inkGradient)"/>
   
-  <!-- 禅意装饰：右上角淡化圆相 -->
-  <circle cx="1180" cy="120" r="80" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.15"/>
-  <circle cx="1180" cy="120" r="50" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.1"/>
+  <rect width="1280" height="720" fill="url(#inkGradient)" />
   
-  <!-- 页面标题 -->
+  
+  <circle cx="1180" cy="120" r="80" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.15" />
+  <circle cx="1180" cy="120" r="50" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.1" />
+  
+  
   <text x="40" y="80" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">第一品作为序幕的意义</text>
-  <line x1="40" y1="100" x2="320" y2="100" stroke="#C9A962" stroke-width="2.5"/>
+  <line x1="40" y1="100" x2="320" y2="100" stroke="#C9A962" stroke-width="2.5" />
   <text x="340" y="98" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">三层递进结构</text>
   
-  <!-- 中轴装饰线 -->
-  <line x1="100" y1="130" x2="100" y2="620" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>
   
-  <!-- ==================== 第一层 ==================== -->
+  <line x1="100" y1="130" x2="100" y2="620" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,4" opacity="0.6" />
+  
+  
   <g transform="translate(60, 140)" filter="url(#cardShadow)">
-    <!-- 主卡片 -->
-    <rect x="0" y="0" width="1160" height="130" rx="10" fill="#FFFFFF"/>
     
-    <!-- 左侧层级标识 -->
-    <rect x="0" y="0" width="60" height="130" rx="10" fill="#2E4A62"/>
-    <rect x="50" y="0" width="12" height="130" fill="#2E4A62"/>
+    <path fill="#FFFFFF" d="M10,0 H1150 A10,10 0 0 1 1160,10 V120 A10,10 0 0 1 1150,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    
+    
+    <path fill="#2E4A62" d="M10,0 H50 A10,10 0 0 1 60,10 V120 A10,10 0 0 1 50,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    <rect x="50" y="0" width="12" height="130" fill="#2E4A62" />
     <text x="30" y="72" font-family="Songti SC, SimSun, serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">壹</text>
     
-    <!-- 内容区域 -->
+    
     <g transform="translate(90, 20)">
-      <!-- 标题 -->
+      
       <text x="0" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62">确立法会"因由"</text>
       
-      <!-- 流程卡片 -->
+      
       <g transform="translate(0, 42)">
-        <!-- 要素卡片 -->
-        <rect x="0" y="0" width="200" height="52" rx="6" fill="#E8EBF0"/>
+        
+        <path fill="#E8EBF0" d="M6,0 H194 A6,6 0 0 1 200,6 V46 A6,6 0 0 1 194,52 H6 A6,6 0 0 1 0,46 V6 A6,6 0 0 1 6,0 Z" />
         <text x="100" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#2E4A62" text-anchor="middle">时间 · 地点 · 人物 · 事件</text>
         
-        <!-- 箭头 -->
-        <path d="M210 26 L250 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 证信序卡片 -->
-        <rect x="260" y="0" width="140" height="52" rx="6" fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5"/>
+        <path d="M210 26 L250 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5" d="M266,0 H394 A6,6 0 0 1 400,6 V46 A6,6 0 0 1 394,52 H266 A6,6 0 0 1 260,46 V6 A6,6 0 0 1 266,0 Z" />
         <text x="330" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#C9A962" text-anchor="middle">证信序（通序）</text>
         
-        <!-- 箭头 -->
-        <path d="M410 26 L450 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 发起序卡片 -->
-        <rect x="460" y="0" width="140" height="52" rx="6" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1.5"/>
+        <path d="M410 26 L450 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1.5" d="M466,0 H594 A6,6 0 0 1 600,6 V46 A6,6 0 0 1 594,52 H466 A6,6 0 0 1 460,46 V6 A6,6 0 0 1 466,0 Z" />
         <text x="530" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#5D8C6A" text-anchor="middle">发起序（别序）</text>
         
-        <!-- 说明文字 -->
+        
         <text x="640" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">「如是我闻」</text>
         <text x="640" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">证明经典真实性</text>
       </g>
     </g>
   </g>
   
-  <!-- 层间连接：金色渐进箭头 -->
+  
   <g>
-    <path d="M640 275 L640 300" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)"/>
-    <circle cx="640" cy="290" r="3" fill="#C9A962" opacity="0.5"/>
+    <path d="M640 275 L640 300" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)" />
+    <circle cx="640" cy="290" r="3" fill="#C9A962" opacity="0.5" />
   </g>
   
-  <!-- ==================== 第二层 ==================== -->
+  
   <g transform="translate(60, 310)" filter="url(#cardShadow)">
-    <!-- 主卡片 -->
-    <rect x="0" y="0" width="1160" height="130" rx="10" fill="#FFFFFF"/>
     
-    <!-- 左侧层级标识 -->
-    <rect x="0" y="0" width="60" height="130" rx="10" fill="#5D8C6A"/>
-    <rect x="50" y="0" width="12" height="130" fill="#5D8C6A"/>
+    <path fill="#FFFFFF" d="M10,0 H1150 A10,10 0 0 1 1160,10 V120 A10,10 0 0 1 1150,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    
+    
+    <path fill="#5D8C6A" d="M10,0 H50 A10,10 0 0 1 60,10 V120 A10,10 0 0 1 50,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    <rect x="50" y="0" width="12" height="130" fill="#5D8C6A" />
     <text x="30" y="72" font-family="Songti SC, SimSun, serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">贰</text>
     
-    <!-- 内容区域 -->
+    
     <g transform="translate(90, 20)">
-      <!-- 标题 -->
+      
       <text x="0" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#5D8C6A">铺陈问答契机</text>
       
-      <!-- 流程卡片 -->
+      
       <g transform="translate(0, 42)">
-        <!-- 敷座而坐 -->
-        <rect x="0" y="0" width="130" height="52" rx="6" fill="#E8F0EA"/>
+        
+        <path fill="#E8F0EA" d="M6,0 H124 A6,6 0 0 1 130,6 V46 A6,6 0 0 1 124,52 H6 A6,6 0 0 1 0,46 V6 A6,6 0 0 1 6,0 Z" />
         <text x="65" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#5D8C6A" text-anchor="middle">"敷座而坐"</text>
         
-        <!-- 箭头 -->
-        <path d="M140 26 L175 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 须菩提发问 -->
-        <rect x="185" y="0" width="150" height="52" rx="6" fill="#E8F0EA"/>
+        <path d="M140 26 L175 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#E8F0EA" d="M191,0 H329 A6,6 0 0 1 335,6 V46 A6,6 0 0 1 329,52 H191 A6,6 0 0 1 185,46 V6 A6,6 0 0 1 191,0 Z" />
         <text x="260" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#5D8C6A" text-anchor="middle">须菩提起座发问</text>
         
-        <!-- 箭头 -->
-        <path d="M345 26 L380 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 核心问题卡片（强调） -->
-        <rect x="390" y="0" width="220" height="52" rx="6" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+        <path d="M345 26 L380 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#FDF8E8" stroke="#C9A962" stroke-width="2" d="M396,0 H604 A6,6 0 0 1 610,6 V46 A6,6 0 0 1 604,52 H396 A6,6 0 0 1 390,46 V6 A6,6 0 0 1 396,0 Z" />
         <text x="500" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#C9A962" text-anchor="middle">引出核心问题</text>
         
-        <!-- 问题引用 -->
+        
         <text x="640" y="10" font-family="Songti SC, SimSun, serif" font-size="15" fill="#C9A962" font-style="italic">"云何应住？"</text>
         <text x="640" y="32" font-family="Songti SC, SimSun, serif" font-size="15" fill="#C9A962" font-style="italic">"云何降伏其心？"</text>
       </g>
     </g>
   </g>
   
-  <!-- 层间连接：金色渐进箭头 -->
+  
   <g>
-    <path d="M640 445 L640 470" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)"/>
-    <circle cx="640" cy="460" r="3" fill="#C9A962" opacity="0.5"/>
+    <path d="M640 445 L640 470" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)" />
+    <circle cx="640" cy="460" r="3" fill="#C9A962" opacity="0.5" />
   </g>
   
-  <!-- ==================== 第三层 ==================== -->
+  
   <g transform="translate(60, 480)" filter="url(#cardShadow)">
-    <!-- 主卡片 -->
-    <rect x="0" y="0" width="1160" height="130" rx="10" fill="#FFFFFF"/>
     
-    <!-- 左侧层级标识 -->
-    <rect x="0" y="0" width="60" height="130" rx="10" fill="#C9A962"/>
-    <rect x="50" y="0" width="12" height="130" fill="#C9A962"/>
+    <path fill="#FFFFFF" d="M10,0 H1150 A10,10 0 0 1 1160,10 V120 A10,10 0 0 1 1150,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    
+    
+    <path fill="#C9A962" d="M10,0 H50 A10,10 0 0 1 60,10 V120 A10,10 0 0 1 50,130 H10 A10,10 0 0 1 0,120 V10 A10,10 0 0 1 10,0 Z" />
+    <rect x="50" y="0" width="12" height="130" fill="#C9A962" />
     <text x="30" y="72" font-family="Songti SC, SimSun, serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">叁</text>
     
-    <!-- 内容区域 -->
+    
     <g transform="translate(90, 20)">
-      <!-- 标题 -->
+      
       <text x="0" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#C9A962">隐含的教法示范</text>
       
-      <!-- 流程卡片 -->
+      
       <g transform="translate(0, 42)">
-        <!-- 平常心是道 -->
-        <rect x="0" y="0" width="150" height="52" rx="6" fill="#FDF8E8"/>
+        
+        <path fill="#FDF8E8" d="M6,0 H144 A6,6 0 0 1 150,6 V46 A6,6 0 0 1 144,52 H6 A6,6 0 0 1 0,46 V6 A6,6 0 0 1 6,0 Z" />
         <text x="75" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C9A962" text-anchor="middle">平常心是道</text>
         
-        <!-- 箭头 -->
-        <path d="M160 26 L200 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 核心教法（高亮） -->
-        <rect x="210" y="0" width="280" height="52" rx="6" fill="#2E4A62"/>
+        <path d="M160 26 L200 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#2E4A62" d="M216,0 H484 A6,6 0 0 1 490,6 V46 A6,6 0 0 1 484,52 H216 A6,6 0 0 1 210,46 V6 A6,6 0 0 1 216,0 Z" />
         <text x="350" y="32" font-family="Songti SC, SimSun, serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">"应无所住而生其心"</text>
         
-        <!-- 箭头 -->
-        <path d="M500 26 L540 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)"/>
         
-        <!-- 最终意涵 -->
-        <rect x="550" y="0" width="280" height="52" rx="6" fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5"/>
+        <path d="M500 26 L540 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        
+        
+        <path fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5" d="M556,0 H824 A6,6 0 0 1 830,6 V46 A6,6 0 0 1 824,52 H556 A6,6 0 0 1 550,46 V6 A6,6 0 0 1 556,0 Z" />
         <text x="690" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#C9A962" text-anchor="middle">般若智慧的前语言呈现</text>
         
-        <!-- 补充说明 -->
+        
         <text x="860" y="20" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">日常即修行</text>
         <text x="860" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280">身教重于言教</text>
       </g>
     </g>
   </g>
   
-  <!-- 左侧装饰：禅意竖线 -->
-  <line x1="45" y1="140" x2="45" y2="610" stroke="#C9A962" stroke-width="1" opacity="0.3"/>
   
-  <!-- 页脚 -->
-  <line x1="40" y1="670" x2="1240" y2="670" stroke="#E5E7EB" stroke-width="1" opacity="0.5"/>
+  <line x1="45" y1="140" x2="45" y2="610" stroke="#C9A962" stroke-width="1" opacity="0.3" />
+  
+  
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#E5E7EB" stroke-width="1" opacity="0.5" />
   <text x="40" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">第四部分 · 序幕意义</text>
   <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">8 / 15</text>
 </svg>

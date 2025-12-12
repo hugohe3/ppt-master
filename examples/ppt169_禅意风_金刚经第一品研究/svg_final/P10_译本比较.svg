@@ -1,62 +1,62 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F9F6F1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F9F6F1" />
   
   <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">汉译的多棱镜：六种译本概览</text>
-  <line x1="40" y1="105" x2="380" y2="105" stroke="#C9A962" stroke-width="3"/>
+  <line x1="40" y1="105" x2="380" y2="105" stroke="#C9A962" stroke-width="3" />
   
-  <!-- 表格 -->
+  
   <g transform="translate(40, 130)">
-    <!-- 表头 -->
-    <rect x="0" y="0" width="1200" height="55" rx="8" fill="#2E4A62"/>
+    
+    <path fill="#2E4A62" d="M8,0 H1192 A8,8 0 0 1 1200,8 V47 A8,8 0 0 1 1192,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
     <text x="120" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">译者</text>
     <text x="320" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">时代</text>
     <text x="750" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">翻译特点</text>
     
-    <!-- 鸠摩罗什（重点行） -->
-    <rect x="0" y="60" width="1200" height="70" fill="#FDF8E8" stroke="#C9A962" stroke-width="2"/>
+    
+    <rect x="0" y="60" width="1200" height="70" fill="#FDF8E8" stroke="#C9A962" stroke-width="2" />
     <text x="120" y="103" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#C9A962" text-anchor="middle">鸠摩罗什</text>
     <text x="320" y="103" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">后秦 (~404年)</text>
     <text x="750" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">文质兼备，意译流畅，流传最广、影响最大的版本</text>
     <text x="750" y="118" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">⭐ 本研究主要依据</text>
     
-    <!-- 菩提流支 -->
-    <rect x="0" y="135" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <rect x="0" y="135" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
     <text x="120" y="173" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">菩提流支</text>
     <text x="320" y="173" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">北魏 (~509年)</text>
     <text x="750" y="173" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">可能更贴近某种梵文古本，与鸠摩罗什版在结构上存在差异</text>
     
-    <!-- 真谛 -->
-    <rect x="0" y="200" width="1200" height="60" fill="#F9F6F1" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <rect x="0" y="200" width="1200" height="60" fill="#F9F6F1" stroke="#E5E7EB" stroke-width="1" />
     <text x="120" y="238" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">真谛</text>
     <text x="320" y="238" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">南朝陈</text>
     <text x="750" y="238" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">精准严谨，重视义理阐释</text>
     
-    <!-- 达磨笈多 -->
-    <rect x="0" y="265" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <rect x="0" y="265" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
     <text x="120" y="303" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">达磨笈多</text>
     <text x="320" y="303" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">隋代</text>
     <text x="750" y="303" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">极度直译，几乎逐字对应梵文，语言学研究价值高</text>
     
-    <!-- 玄奘（重点行） -->
-    <rect x="0" y="330" width="1200" height="70" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="2"/>
+    
+    <rect x="0" y="330" width="1200" height="70" fill="#E8F0EA" stroke="#5D8C6A" stroke-width="2" />
     <text x="120" y="373" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#5D8C6A" text-anchor="middle">玄奘</text>
     <text x="320" y="373" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">唐代 (~663年)</text>
     <text x="750" y="365" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">《大般若经》第九会"能断金刚分"，严谨精准</text>
     <text x="750" y="388" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#6B7280" text-anchor="middle">贴近笈多王朝时期梵本</text>
     
-    <!-- 义净 -->
-    <rect x="0" y="405" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <rect x="0" y="405" width="1200" height="60" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" />
     <text x="120" y="443" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">义净</text>
     <text x="320" y="443" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#374151" text-anchor="middle">唐代</text>
     <text x="750" y="443" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#374151" text-anchor="middle">后期译本，综合前人成果</text>
   </g>
   
-  <!-- 底部洞见 -->
+  
   <g transform="translate(40, 605)">
-    <rect x="0" y="0" width="1200" height="60" rx="10" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
-    <!-- icon: lightbulb -->
+    <path fill="#FFFFFF" stroke="#C9A962" stroke-width="2" d="M10,0 H1190 A10,10 0 0 1 1200,10 V50 A10,10 0 0 1 1190,60 H10 A10,10 0 0 1 0,50 V10 A10,10 0 0 1 10,0 Z" />
+    
   <g transform="translate(20.0, 12.0) scale(2.25)" fill="#C9A962">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z" />
   </g>
     <text x="70" y="28" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#C9A962">译本比较的意义：</text>
     <text x="220" y="28" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#374151">鸠摩罗什译本在东亚文化圈获得压倒性的接受与流传，说明文本的文学性和对核心义理的契合度，有时比严格的语言学对等更受重视。</text>

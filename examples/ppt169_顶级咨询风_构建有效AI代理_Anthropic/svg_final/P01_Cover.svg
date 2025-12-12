@@ -1,102 +1,102 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
-    <!-- 背景渐变 -->
+    
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1A1A2E"/>
-      <stop offset="50%" style="stop-color:#16213E"/>
-      <stop offset="100%" style="stop-color:#0F0F1A"/>
+      <stop offset="0%" style="stop-color:#1A1A2E" />
+      <stop offset="50%" style="stop-color:#16213E" />
+      <stop offset="100%" style="stop-color:#0F0F1A" />
     </linearGradient>
-    <!-- 装饰渐变 -->
+    
     <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#D97757"/>
-      <stop offset="100%" style="stop-color:#E8956F"/>
+      <stop offset="0%" style="stop-color:#D97757" />
+      <stop offset="100%" style="stop-color:#E8956F" />
     </linearGradient>
-    <!-- 光晕效果 -->
+    
     <radialGradient id="glowOrange" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#D97757; stop-opacity:0.3"/>
-      <stop offset="100%" style="stop-color:#D97757; stop-opacity:0"/>
+      <stop offset="0%" style="stop-color:#D97757; stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#D97757; stop-opacity:0" />
     </radialGradient>
     <radialGradient id="glowBlue" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#4A90D9; stop-opacity:0.2"/>
-      <stop offset="100%" style="stop-color:#4A90D9; stop-opacity:0"/>
+      <stop offset="0%" style="stop-color:#4A90D9; stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#4A90D9; stop-opacity:0" />
     </radialGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
-  <!-- 装饰性网格线 -->
+  <rect width="1280" height="720" fill="url(#bgGradient)" />
+  
+  
   <g stroke="#FFFFFF" stroke-opacity="0.03" stroke-width="1">
-    <line x1="0" y1="180" x2="1280" y2="180"/>
-    <line x1="0" y1="360" x2="1280" y2="360"/>
-    <line x1="0" y1="540" x2="1280" y2="540"/>
-    <line x1="320" y1="0" x2="320" y2="720"/>
-    <line x1="640" y1="0" x2="640" y2="720"/>
-    <line x1="960" y1="0" x2="960" y2="720"/>
+    <line x1="0" y1="180" x2="1280" y2="180" />
+    <line x1="0" y1="360" x2="1280" y2="360" />
+    <line x1="0" y1="540" x2="1280" y2="540" />
+    <line x1="320" y1="0" x2="320" y2="720" />
+    <line x1="640" y1="0" x2="640" y2="720" />
+    <line x1="960" y1="0" x2="960" y2="720" />
   </g>
   
-  <!-- 装饰性圆形光晕 -->
-  <ellipse cx="1100" cy="150" rx="300" ry="200" fill="url(#glowOrange)"/>
-  <ellipse cx="200" cy="550" rx="250" ry="180" fill="url(#glowBlue)"/>
   
-  <!-- 装饰性节点和连接线 (AI 网络感) -->
+  <ellipse cx="1100" cy="150" rx="300" ry="200" fill="url(#glowOrange)" />
+  <ellipse cx="200" cy="550" rx="250" ry="180" fill="url(#glowBlue)" />
+  
+  
   <g stroke="#4A90D9" stroke-opacity="0.4" stroke-width="1" fill="none">
-    <path d="M100,200 Q250,150 350,220"/>
-    <path d="M350,220 Q450,280 500,200"/>
-    <path d="M900,480 Q1000,420 1100,480"/>
-    <path d="M1100,480 Q1150,550 1200,500"/>
+    <path d="M100,200 Q250,150 350,220" />
+    <path d="M350,220 Q450,280 500,200" />
+    <path d="M900,480 Q1000,420 1100,480" />
+    <path d="M1100,480 Q1150,550 1200,500" />
   </g>
   
-  <!-- 节点圆点 -->
+  
   <g fill="#4A90D9" fill-opacity="0.6">
-    <circle cx="100" cy="200" r="4"/>
-    <circle cx="350" cy="220" r="6"/>
-    <circle cx="500" cy="200" r="4"/>
-    <circle cx="900" cy="480" r="5"/>
-    <circle cx="1100" cy="480" r="7"/>
-    <circle cx="1200" cy="500" r="4"/>
+    <circle cx="100" cy="200" r="4" />
+    <circle cx="350" cy="220" r="6" />
+    <circle cx="500" cy="200" r="4" />
+    <circle cx="900" cy="480" r="5" />
+    <circle cx="1100" cy="480" r="7" />
+    <circle cx="1200" cy="500" r="4" />
   </g>
   
-  <!-- 橙色装饰节点 -->
+  
   <g fill="#D97757" fill-opacity="0.7">
-    <circle cx="1050" cy="180" r="8"/>
-    <circle cx="1150" cy="120" r="5"/>
-    <circle cx="180" cy="520" r="6"/>
+    <circle cx="1050" cy="180" r="8" />
+    <circle cx="1150" cy="120" r="5" />
+    <circle cx="180" cy="520" r="6" />
   </g>
   
-  <!-- 顶部装饰线 -->
-  <rect x="60" y="60" width="80" height="4" rx="2" fill="url(#accentGradient)"/>
   
-  <!-- 来源标签 -->
+  <path fill="url(#accentGradient)" d="M62,60 H138 A2,2 0 0 1 140,62 V62 A2,2 0 0 1 138,64 H62 A2,2 0 0 1 60,62 V62 A2,2 0 0 1 62,60 Z" />
+  
+  
   <text x="60" y="100" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="2">
     ANTHROPIC ENGINEERING
   </text>
   
-  <!-- 主标题 -->
+  
   <text x="640" y="300" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
     Building Effective Agents
   </text>
   
-  <!-- 副标题 -->
+  
   <text x="640" y="365" font-family="Arial, sans-serif" font-size="26" fill="#FFFFFF" fill-opacity="0.85" text-anchor="middle">
     构建有效的 AI 代理：简单、可组合的模式
   </text>
   
-  <!-- 分隔线 -->
-  <rect x="540" y="400" width="200" height="3" rx="1.5" fill="url(#accentGradient)"/>
   
-  <!-- 核心观点 -->
+  <path fill="url(#accentGradient)" d="M541.50,400 H738.50 A1.50,1.50 0 0 1 740,401.50 V401.50 A1.50,1.50 0 0 1 738.50,403 H541.50 A1.50,1.50 0 0 1 540,401.50 V401.50 A1.50,1.50 0 0 1 541.50,400 Z" />
+  
+  
   <text x="640" y="465" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">
     "最成功的实现不依赖复杂框架，而是使用简单、可组合的模式"
   </text>
   
-  <!-- 底部信息 -->
+  
   <g font-family="Arial, sans-serif" font-size="14" fill="#64748B">
     <text x="60" y="680">Published: December 19, 2024</text>
     <text x="1220" y="680" text-anchor="end">anthropic.com/engineering</text>
   </g>
   
-  <!-- 底部装饰线 -->
-  <rect x="60" y="650" width="1160" height="1" fill="#FFFFFF" fill-opacity="0.1"/>
+  
+  <rect x="60" y="650" width="1160" height="1" fill="#FFFFFF" fill-opacity="0.1" />
   
 </svg>

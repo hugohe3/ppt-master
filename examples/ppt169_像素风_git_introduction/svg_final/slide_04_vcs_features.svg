@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="70" font-family="Consolas, Monaco, monospace" font-size="36" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    💾 版本控制能做什么？
+  </text>
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#8B949E">
+    What Does Version Control Do For Us
+  </text>
+  
+  
+  <rect x="60" y="120" width="300" height="2" fill="#30363D" />
+  
+  
+  
+  
+  <g transform="translate(60, 160)">
+    <rect x="0" y="0" width="560" height="200" fill="#161B22" stroke="#FFD700" stroke-width="3" />
+    
+    <rect x="0" y="0" width="80" height="200" fill="#FFD700" opacity="0.1" />
+    <text x="40" y="115" text-anchor="middle" font-size="48">⏪</text>
+    
+    
+    <text x="110" y="50" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#FFD700">回到过去的版本</text>
+    <text x="110" y="85" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      <tspan x="110" dy="0">Revisit earlier versions of files</tspan>
+    </text>
+    <rect x="110" y="100" width="420" height="1" fill="#30363D" />
+    <text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="130">• 随时查看任何历史时刻的项目状态</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="154">• 时光旅行到一年前、一天前、甚至一小时前</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="178">• YouTube、Netflix... 今天 vs 两天前</text></g>
+  
+  
+  <g transform="translate(660, 160)">
+    <rect x="0" y="0" width="560" height="200" fill="#161B22" stroke="#00D4FF" stroke-width="3" />
+    
+    <rect x="0" y="0" width="80" height="200" fill="#00D4FF" opacity="0.1" />
+    <text x="40" y="115" text-anchor="middle" font-size="48">🔍</text>
+    
+    
+    <text x="110" y="50" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#00D4FF">比较版本差异</text>
+    <text x="110" y="85" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      <tspan x="110" dy="0">Compare changes between versions</tspan>
+    </text>
+    <rect x="110" y="100" width="420" height="1" fill="#30363D" />
+    <text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="130">• 清晰看到「什么改变了」</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="154">• 对比不同版本之间的具体差异</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="178">• 追踪每一行代码的变化历史</text></g>
+  
+  
+  <g transform="translate(60, 390)">
+    <rect x="0" y="0" width="560" height="200" fill="#161B22" stroke="#FF2E97" stroke-width="3" />
+    
+    <rect x="0" y="0" width="80" height="200" fill="#FF2E97" opacity="0.1" />
+    <text x="40" y="115" text-anchor="middle" font-size="48">↩️</text>
+    
+    
+    <text x="110" y="50" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#FF2E97">撤销错误修改</text>
+    <text x="110" y="85" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      <tspan x="110" dy="0">Undo changes and fix mistakes</tspan>
+    </text>
+    <rect x="110" y="100" width="420" height="1" fill="#30363D" />
+    <text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="130">• 搞砸了？没关系，可以撤销</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="154">• 删错文件？恢复它</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="178">• 不怕犯错，大胆尝试</text></g>
+  
+  
+  <g transform="translate(660, 390)">
+    <rect x="0" y="0" width="560" height="200" fill="#161B22" stroke="#39FF14" stroke-width="3" />
+    
+    <rect x="0" y="0" width="80" height="200" fill="#39FF14" opacity="0.1" />
+    <text x="40" y="115" text-anchor="middle" font-size="48">🤝</text>
+    
+    
+    <text x="110" y="50" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#39FF14">与他人协作分享</text>
+    <text x="110" y="85" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">
+      <tspan x="110" dy="0">Share changes with other people</tspan>
+    </text>
+    <rect x="110" y="100" width="420" height="1" fill="#30363D" />
+    <text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="130">• 团队成员同时工作在同一项目</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="154">• 合并不同人的修改</text><text font-size="15" fill="#8B949E" font-family="-apple-system, Microsoft YaHei, sans-serif" x="110" y="178">• 这是 Git 最重要的功能！</text></g>
+  
+  
+  <g transform="translate(60, 620)">
+    <rect x="0" y="0" width="1160" height="50" fill="#39FF14" opacity="0.1" stroke="#39FF14" stroke-width="2" />
+    <text x="580" y="32" text-anchor="middle" font-family="Consolas, monospace" font-size="18" fill="#39FF14">
+      💡 核心价值：追踪变更 · 时光旅行 · 团队协作
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">04/10</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">VCS Features</text>
+</svg>

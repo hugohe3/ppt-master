@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     创新认证产品总览
   </text>
@@ -19,136 +19,136 @@
     INNOVATIVE CERTIFICATION PRODUCTS OVERVIEW
   </text>
   
-  <!-- 副标题 -->
+  
   <text x="60" y="125" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" fill="#003F6C">
     四大认证产品线布局，覆盖汽车产业链核心需求
   </text>
   
-  <!-- 2×2 矩阵图 -->
-  <!-- 象限1: 绿色低碳认证 (左上) -->
+  
+  
   <g transform="translate(60, 155)">
-    <rect width="560" height="245" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="12" rx="6" fill="#00A651"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V233 A12,12 0 0 1 548,245 H12 A12,12 0 0 1 0,233 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#00A651" d="M6,0 H554 A6,6 0 0 1 560,6 V6 A6,6 0 0 1 554,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="30" cy="25" r="28" fill="#00A651" opacity="0.15"/>
+      <circle cx="30" cy="25" r="28" fill="#00A651" opacity="0.15" />
       <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#00A651" text-anchor="middle">🌱</text>
       <text x="75" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C">绿色低碳认证</text>
       <text x="75" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">GREEN &amp; LOW-CARBON CERTIFICATION</text>
     </g>
     
-    <!-- 产品列表 -->
+    
     <g transform="translate(25, 105)">
-      <rect width="510" height="35" rx="6" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 碳足迹认证（全生命周期）</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651">对标 ISO 14067</text>
     </g>
     <g transform="translate(25, 148)">
-      <rect width="510" height="35" rx="6" fill="#F1F8E9"/>
+      <path fill="#F1F8E9" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 中国绿色产品认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651">国家统一绿色产品标识</text>
     </g>
     <g transform="translate(25, 191)">
-      <rect width="510" height="35" rx="6" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 动力电池回收利用认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651">闭环循环经济</text>
     </g>
   </g>
   
-  <!-- 象限2: 安全性能认证 (右上) -->
+  
   <g transform="translate(655, 155)">
-    <rect width="560" height="245" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="12" rx="6" fill="#F44336"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V233 A12,12 0 0 1 548,245 H12 A12,12 0 0 1 0,233 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#F44336" d="M6,0 H554 A6,6 0 0 1 560,6 V6 A6,6 0 0 1 554,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="30" cy="25" r="28" fill="#F44336" opacity="0.15"/>
+      <circle cx="30" cy="25" r="28" fill="#F44336" opacity="0.15" />
       <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#F44336" text-anchor="middle">🛡️</text>
       <text x="75" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C">安全性能认证</text>
       <text x="75" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">SAFETY PERFORMANCE CERTIFICATION</text>
     </g>
     
-    <!-- 产品列表 -->
+    
     <g transform="translate(25, 105)">
-      <rect width="510" height="35" rx="6" fill="#FFEBEE"/>
+      <path fill="#FFEBEE" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 动力电池安全认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F44336">热失控防护 · 防水防火</text>
     </g>
     <g transform="translate(25, 148)">
-      <rect width="510" height="35" rx="6" fill="#FCE4EC"/>
+      <path fill="#FCE4EC" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 自动驾驶功能安全认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F44336">ISO 26262 ASIL等级</text>
     </g>
     <g transform="translate(25, 191)">
-      <rect width="510" height="35" rx="6" fill="#FFEBEE"/>
+      <path fill="#FFEBEE" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 车载网络安全认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#F44336">ISO/SAE 21434 · TISAX</text>
     </g>
   </g>
   
-  <!-- 象限3: 功能智能认证 (左下) -->
+  
   <g transform="translate(60, 420)">
-    <rect width="560" height="245" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="12" rx="6" fill="#0076A8"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V233 A12,12 0 0 1 548,245 H12 A12,12 0 0 1 0,233 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0076A8" d="M6,0 H554 A6,6 0 0 1 560,6 V6 A6,6 0 0 1 554,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="30" cy="25" r="28" fill="#0076A8" opacity="0.15"/>
+      <circle cx="30" cy="25" r="28" fill="#0076A8" opacity="0.15" />
       <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#0076A8" text-anchor="middle">🔌</text>
       <text x="75" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C">功能智能认证</text>
       <text x="75" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">FUNCTIONAL INTELLIGENCE CERTIFICATION</text>
     </g>
     
-    <!-- 产品列表 -->
+    
     <g transform="translate(25, 105)">
-      <rect width="510" height="35" rx="6" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 智能座舱功能认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">HMI交互 · 语音识别</text>
     </g>
     <g transform="translate(25, 148)">
-      <rect width="510" height="35" rx="6" fill="#E1F5FE"/>
+      <path fill="#E1F5FE" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 车联网V2X认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">通信协议 · 互联互通</text>
     </g>
     <g transform="translate(25, 191)">
-      <rect width="510" height="35" rx="6" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 软件OTA升级认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#0076A8">UN R156合规</text>
     </g>
   </g>
   
-  <!-- 象限4: 高端品质认证 (右下) -->
+  
   <g transform="translate(655, 420)">
-    <rect width="560" height="245" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="560" height="12" rx="6" fill="#FF9800"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H548 A12,12 0 0 1 560,12 V233 A12,12 0 0 1 548,245 H12 A12,12 0 0 1 0,233 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF9800" d="M6,0 H554 A6,6 0 0 1 560,6 V6 A6,6 0 0 1 554,12 H6 A6,6 0 0 1 0,6 V6 A6,6 0 0 1 6,0 Z" />
     
-    <!-- 图标和标题 -->
+    
     <g transform="translate(25, 35)">
-      <circle cx="30" cy="25" r="28" fill="#FF9800" opacity="0.15"/>
+      <circle cx="30" cy="25" r="28" fill="#FF9800" opacity="0.15" />
       <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" fill="#FF9800" text-anchor="middle">⭐</text>
       <text x="75" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C">高端品质认证</text>
       <text x="75" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">PREMIUM QUALITY CERTIFICATION</text>
     </g>
     
-    <!-- 产品列表 -->
+    
     <g transform="translate(25, 105)">
-      <rect width="510" height="35" rx="6" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 整车NVH性能认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF9800">噪声振动舒适性</text>
     </g>
     <g transform="translate(25, 148)">
-      <rect width="510" height="35" rx="6" fill="#FFECB3"/>
+      <path fill="#FFECB3" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 车内空气质量认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF9800">VOC检测 · 健康座舱</text>
     </g>
     <g transform="translate(25, 191)">
-      <rect width="510" height="35" rx="6" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M6,0 H504 A6,6 0 0 1 510,6 V29 A6,6 0 0 1 504,35 H6 A6,6 0 0 1 0,29 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">✓ 耐久可靠性认证</text>
       <text x="280" y="24" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF9800">超越国标 · 品牌背书</text>
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">11 / 20</text>
 </svg>

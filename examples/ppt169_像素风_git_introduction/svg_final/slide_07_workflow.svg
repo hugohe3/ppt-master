@@ -1,0 +1,208 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="55" font-family="Consolas, Monaco, monospace" font-size="32" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    🔀 Git 工作流可视化
+  </text>
+  <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="16" fill="#8B949E">
+    Visualizing Git - Checkpoints, Branches, and Merges
+  </text>
+  
+  
+  <rect x="60" y="95" width="200" height="2" fill="#30363D" />
+  
+  
+  <g transform="translate(60, 115)">
+    <rect x="0" y="0" width="1160" height="280" fill="#161B22" stroke="#30363D" stroke-width="2" />
+    
+    
+    <line x1="50" y1="70" x2="1110" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <rect x="10" y="55" width="35" height="30" fill="#39FF14" />
+    <text x="28" y="75" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117" font-weight="bold">main</text>
+    
+    
+    <g transform="translate(120, 70)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">1</text>
+      <text x="0" y="-25" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#E6EDF3">初始化</text>
+    </g>
+    
+    
+    <line x1="134" y1="70" x2="206" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <g transform="translate(220, 70)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">2</text>
+      <text x="0" y="-25" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#E6EDF3">添加导航</text>
+    </g>
+    
+    
+    <line x1="234" y1="70" x2="306" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <g transform="translate(320, 70)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">3</text>
+      <text x="0" y="-25" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#E6EDF3">添加内容</text>
+    </g>
+    
+    
+    <line x1="334" y1="70" x2="416" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <path d="M380,70 Q400,70 410,100 L410,180" fill="none" stroke="#FF2E97" stroke-width="3" />
+    
+    
+    <rect x="360" y="185" width="100" height="24" fill="#FF2E97" />
+    <text x="410" y="202" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#FFFFFF">dark-theme</text>
+    
+    
+    <line x1="460" y1="197" x2="530" y2="197" stroke="#FF2E97" stroke-width="3" />
+    
+    
+    <g transform="translate(550, 197)">
+      <circle cx="0" cy="0" r="12" fill="#FF2E97" stroke="#0D1117" stroke-width="2" />
+      <text x="0" y="4" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#0D1117">A</text>
+      <text x="0" y="-22" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#FF2E97">深色主题</text>
+    </g>
+    
+    
+    <line x1="562" y1="197" x2="638" y2="197" stroke="#FF2E97" stroke-width="3" />
+    
+    
+    <g transform="translate(660, 197)">
+      <circle cx="0" cy="0" r="12" fill="#FF2E97" stroke="#0D1117" stroke-width="2" />
+      <text x="0" y="4" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#0D1117">B</text>
+      <text x="0" y="-22" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#FF2E97">调整颜色</text>
+    </g>
+    
+    
+    <g transform="translate(430, 70)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">4</text>
+      <text x="0" y="-25" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#E6EDF3">更多内容</text>
+    </g>
+    
+    <line x1="444" y1="70" x2="556" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <g transform="translate(570, 70)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">5</text>
+      <text x="0" y="-25" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#E6EDF3">添加页脚</text>
+    </g>
+    
+    <line x1="584" y1="70" x2="716" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <path d="M672,197 Q720,197 730,150 L730,85" fill="none" stroke="#FF2E97" stroke-width="3" />
+    
+    
+    <g transform="translate(730, 70)">
+      <circle cx="0" cy="0" r="16" fill="#FFD700" stroke="#0D1117" stroke-width="3" />
+      <text x="0" y="5" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#0D1117">M</text>
+      <text x="0" y="-28" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#FFD700">合并分支</text>
+      <text x="0" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#FFD700">MERGE</text>
+    </g>
+    
+    <line x1="746" y1="70" x2="864" y2="70" stroke="#39FF14" stroke-width="4" />
+    
+    
+    <g transform="translate(880, 70)">
+      <circle cx="0" cy="0" r="18" fill="#39FF14" stroke="#FFD700" stroke-width="4" />
+      <text x="0" y="6" text-anchor="middle" font-family="Consolas, monospace" font-size="14" fill="#0D1117">✓</text>
+      <text x="0" y="-30" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#39FF14" font-weight="bold">完成!</text>
+      <text x="0" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#39FF14">深色主题+内容</text>
+    </g>
+    
+    
+    <line x1="898" y1="70" x2="980" y2="70" stroke="#39FF14" stroke-width="4" />
+    <polygon points="980,70 965,62 965,78" fill="#39FF14" />
+    
+    
+    <g transform="translate(1000, 175)">
+      <path fill="#0D1117" stroke="#30363D" stroke-width="1" d="M-6,-15 H136 A4,4 0 0 1 140,-11 V76 A4,4 0 0 1 136,80 H-6 A4,4 0 0 1 -10,76 V-11 A4,4 0 0 1 -6,-15 Z" />
+      <text x="0" y="0" font-family="Consolas, monospace" font-size="12" fill="#8B949E">图例:</text>
+      <circle cx="10" cy="22" r="7" fill="#39FF14" />
+      <text x="25" y="26" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#E6EDF3">主分支</text>
+      <circle cx="10" cy="46" r="7" fill="#FF2E97" />
+      <text x="25" y="50" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#E6EDF3">功能分支</text>
+      <circle cx="10" cy="70" r="7" fill="#FFD700" />
+      <text x="25" y="74" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="11" fill="#E6EDF3">合并</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 420)">
+    
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="270" height="100" fill="#161B22" stroke="#39FF14" stroke-width="2" />
+      <circle cx="28" cy="30" r="14" fill="#39FF14" />
+      <text x="28" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#0D1117">1</text>
+      <text x="55" y="35" font-family="Consolas, monospace" font-size="16" font-weight="bold" fill="#39FF14">Commit</text>
+      <text x="15" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#E6EDF3">每个圆圈 = 一次「存档」</text>
+      <text x="15" y="82" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#8B949E">记录项目某时刻的状态</text>
+    </g>
+    
+    
+    <g transform="translate(290, 0)">
+      <rect x="0" y="0" width="270" height="100" fill="#161B22" stroke="#FF2E97" stroke-width="2" />
+      <rect x="15" y="18" width="55" height="22" fill="#FF2E97" />
+      <text x="42" y="34" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#FFFFFF">branch</text>
+      <text x="85" y="35" font-family="Consolas, monospace" font-size="16" font-weight="bold" fill="#FF2E97">Branch</text>
+      <text x="15" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#E6EDF3">分支 = 平行时间线</text>
+      <text x="15" y="82" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#8B949E">独立开发，互不干扰</text>
+    </g>
+    
+    
+    <g transform="translate(580, 0)">
+      <rect x="0" y="0" width="270" height="100" fill="#161B22" stroke="#FFD700" stroke-width="2" />
+      <circle cx="28" cy="30" r="14" fill="#FFD700" />
+      <text x="28" y="35" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#0D1117">M</text>
+      <text x="55" y="35" font-family="Consolas, monospace" font-size="16" font-weight="bold" fill="#FFD700">Merge</text>
+      <text x="15" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#E6EDF3">合并 = 整合多条时间线</text>
+      <text x="15" y="82" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="12" fill="#8B949E">将分支工作整合回主线</text>
+    </g>
+    
+    
+    <g transform="translate(870, 0)">
+      <rect x="0" y="0" width="290" height="100" fill="#39FF14" opacity="0.1" stroke="#39FF14" stroke-width="2" />
+      <text x="15" y="32" font-family="Consolas, monospace" font-size="16" font-weight="bold" fill="#39FF14">💡 核心思想</text>
+      <text x="15" y="58" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#E6EDF3">分支开发 → 合并整合</text>
+      <text x="15" y="82" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#E6EDF3">这是团队协作的基础！</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 545)">
+    <rect x="0" y="0" width="1160" height="40" fill="#161B22" stroke="#30363D" stroke-width="1" />
+    <text x="580" y="26" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">
+      💡 实际项目中，可能有多个分支同时开发不同功能，最终都会合并回主分支
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="620" font-family="Consolas, monospace" font-size="14" fill="#8B949E">07/10</text>
+  <text x="1220" y="620" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">Workflow</text>
+</svg>

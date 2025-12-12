@@ -1,21 +1,21 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 - 深色模式 -->
-  <rect width="1280" height="720" fill="#2C3E50"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#2C3E50" />
+  
+  
   <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">上六：鸣谦，利用行师，征邑国</text>
-  <line x1="60" y1="120" x2="560" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  <line x1="60" y1="120" x2="560" y2="120" stroke="#D4A84B" stroke-width="3" />
   
-  <!-- 回声效应 -->
+  
   <g transform="translate(60, 150)">
-    <rect x="0" y="0" width="555" height="220" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#1ABC9C"/>
-    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C"/>
+    <path fill="#34495E" stroke="#1ABC9C" stroke-width="1" d="M12,0 H543 A12,12 0 0 1 555,12 V208 A12,12 0 0 1 543,220 H12 A12,12 0 0 1 0,208 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1ABC9C" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C" />
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">回声效应：两个「鸣谦」</text>
     
-    <!-- 对比 -->
+    
     <g transform="translate(30, 70)">
-      <rect x="0" y="0" width="220" height="120" rx="6" fill="#2C3E50" stroke="#4A5568" stroke-width="1"/>
+      <path fill="#2C3E50" stroke="#4A5568" stroke-width="1" d="M6,0 H214 A6,6 0 0 1 220,6 V114 A6,6 0 0 1 214,120 H6 A6,6 0 0 1 0,114 V6 A6,6 0 0 1 6,0 Z" />
       <text x="110" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#4A5568" text-anchor="middle" font-weight="bold">六二 · 鸣谦</text>
       <text x="110" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">名声初起</text>
       <text x="110" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">共鸣扩散</text>
@@ -23,7 +23,7 @@
       
       <text x="248" y="70" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" fill="#4A5568">→</text>
       
-      <rect x="275" y="0" width="220" height="120" rx="6" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+      <path fill="#2C3E50" stroke="#D4A84B" stroke-width="2" d="M281,0 H489 A6,6 0 0 1 495,6 V114 A6,6 0 0 1 489,120 H281 A6,6 0 0 1 275,114 V6 A6,6 0 0 1 281,0 Z" />
       <text x="385" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#D4A84B" text-anchor="middle" font-weight="bold">上六 · 鸣谦</text>
       <text x="385" y="60" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" text-anchor="middle">名声远播后的回响</text>
       <text x="385" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">位置极高无实权</text>
@@ -31,45 +31,32 @@
     </g>
   </g>
   
-  <!-- 内向征伐 -->
+  
   <g transform="translate(665, 150)">
-    <rect x="0" y="0" width="555" height="220" rx="12" fill="#34495E" stroke="#C0392B" stroke-width="2"/>
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#C0392B"/>
-    <rect x="0" y="40" width="555" height="10" fill="#C0392B"/>
+    <path fill="#34495E" stroke="#C0392B" stroke-width="2" d="M12,0 H543 A12,12 0 0 1 555,12 V208 A12,12 0 0 1 543,220 H12 A12,12 0 0 1 0,208 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#C0392B" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#C0392B" />
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">内向征伐：征邑国而非天下</text>
     
-    <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0" font-weight="bold" fill="#C0392B">与六五「侵伐」的区别</tspan>
-      <tspan x="40" dy="30">• 六五侵伐：对外或对天下</tspan>
-      <tspan x="40" dy="26">• 上六征邑国：对内，对自己封地</tspan>
-      <tspan x="40" dy="40" font-weight="bold" fill="#C0392B">深度解读</tspan>
-      <tspan x="40" dy="28">• 极高虚位 + 名满天下 → 易滋生内部懈怠</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="40" y="85">与六五「侵伐」的区别</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="115">• 六五侵伐：对外或对天下</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="141">• 上六征邑国：对内，对自己封地</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="40" y="181">深度解读</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="209">• 极高虚位 + 名满天下 → 易滋生内部懈怠</text></g>
   
-  <!-- 心学视角 -->
+  
   <g transform="translate(60, 400)">
-    <rect x="0" y="0" width="1160" height="170" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
-    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#D4A84B"/>
-    <rect x="0" y="40" width="1160" height="10" fill="#D4A84B"/>
+    <path fill="#34495E" stroke="#D4A84B" stroke-width="2" d="M12,0 H1148 A12,12 0 0 1 1160,12 V158 A12,12 0 0 1 1148,170 H12 A12,12 0 0 1 0,158 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#D4A84B" d="M12,0 H1148 A12,12 0 0 1 1160,12 V38 A12,12 0 0 1 1148,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="1160" height="10" fill="#D4A84B" />
     <text x="580" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">心学视角：从社会性谦到本体论慎独</text>
     
-    <text x="80" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="80" dy="0">「征邑国」= 征伐内心的骄矜之气</tspan>
-      <tspan x="80" dy="30">在功德圆满之时，更要动用军队般的意志力（行师）来克制私欲</tspan>
-      <tspan x="80" dy="30">进行最后的自我净化</tspan>
-    </text>
-    
-    <rect x="850" y="75" width="280" height="70" rx="6" fill="#2C3E50" stroke="#D4A84B" stroke-width="1"/>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="90">「征邑国」= 征伐内心的骄矜之气</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="120">在功德圆满之时，更要动用军队般的意志力（行师）来克制私欲</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="150">进行最后的自我净化</text><path fill="#2C3E50" stroke="#D4A84B" stroke-width="1" d="M856,75 H1124 A6,6 0 0 1 1130,81 V139 A6,6 0 0 1 1124,145 H856 A6,6 0 0 1 850,139 V81 A6,6 0 0 1 856,75 Z" />
     <text x="990" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#D4A84B" text-anchor="middle" font-weight="bold">回归「慎独」</text>
     <text x="990" y="130" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">从社会修养回到个体本心</text>
   </g>
   
-  <!-- 底部 -->
-  <rect x="60" y="595" width="1160" height="50" rx="8" fill="#2C3E50" stroke="#4A5568" stroke-width="1"/>
+  
+  <path fill="#2C3E50" stroke="#4A5568" stroke-width="1" d="M68,595 H1212 A8,8 0 0 1 1220,603 V637 A8,8 0 0 1 1212,645 H68 A8,8 0 0 1 60,637 V603 A8,8 0 0 1 68,595 Z" />
   <text x="640" y="628" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#8B9A9A" text-anchor="middle">六爻演进完结：初六生存 → 九三担当 → 上六圆满净化</text>
   
-  <!-- 页脚 -->
+  
   <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第四部分：六爻微观动力学</text>
   <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">13 / 20</text>
 </svg>

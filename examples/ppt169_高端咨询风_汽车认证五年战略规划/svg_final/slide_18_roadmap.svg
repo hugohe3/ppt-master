@@ -1,22 +1,22 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
     <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#003F6C"/>
-      <stop offset="50%" style="stop-color:#0076A8"/>
-      <stop offset="100%" style="stop-color:#00A651"/>
+      <stop offset="0%" style="stop-color:#003F6C" />
+      <stop offset="50%" style="stop-color:#0076A8" />
+      <stop offset="100%" style="stop-color:#00A651" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     五年实施路线图
   </text>
@@ -24,64 +24,64 @@
     FIVE-YEAR IMPLEMENTATION ROADMAP (2026-2030)
   </text>
   
-  <!-- 横向时间轴 -->
+  
   <g transform="translate(60, 130)">
-    <rect width="1160" height="520" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H1148 A12,12 0 0 1 1160,12 V508 A12,12 0 0 1 1148,520 H12 A12,12 0 0 1 0,508 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 时间轴主线 -->
-    <rect x="80" y="60" width="1000" height="8" rx="4" fill="url(#timelineGrad)"/>
     
-    <!-- 时间节点 -->
-    <!-- 2026 -->
+    <path fill="url(#timelineGrad)" d="M84,60 H1076 A4,4 0 0 1 1080,64 V64 A4,4 0 0 1 1076,68 H84 A4,4 0 0 1 80,64 V64 A4,4 0 0 1 84,60 Z" />
+    
+    
+    
     <g transform="translate(80, 60)">
-      <circle cx="0" cy="4" r="18" fill="#003F6C" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="0" cy="4" r="18" fill="#003F6C" stroke="#FFFFFF" stroke-width="3" />
       <text x="0" y="9" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2026</text>
     </g>
     
-    <!-- 2027 -->
+    
     <g transform="translate(330, 60)">
-      <circle cx="0" cy="4" r="18" fill="#0076A8" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="0" cy="4" r="18" fill="#0076A8" stroke="#FFFFFF" stroke-width="3" />
       <text x="0" y="9" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2027</text>
     </g>
     
-    <!-- 2028 -->
+    
     <g transform="translate(580, 60)">
-      <circle cx="0" cy="4" r="18" fill="#0076A8" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="0" cy="4" r="18" fill="#0076A8" stroke="#FFFFFF" stroke-width="3" />
       <text x="0" y="9" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2028</text>
     </g>
     
-    <!-- 2029 -->
+    
     <g transform="translate(830, 60)">
-      <circle cx="0" cy="4" r="18" fill="#00A651" stroke="#FFFFFF" stroke-width="3"/>
+      <circle cx="0" cy="4" r="18" fill="#00A651" stroke="#FFFFFF" stroke-width="3" />
       <text x="0" y="9" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2029</text>
     </g>
     
-    <!-- 2030 -->
+    
     <g transform="translate(1080, 60)">
-      <circle cx="0" cy="4" r="22" fill="#00A651" stroke="#FFC107" stroke-width="4"/>
+      <circle cx="0" cy="4" r="22" fill="#00A651" stroke="#FFC107" stroke-width="4" />
       <text x="0" y="7" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2030</text>
     </g>
     
-    <!-- 阶段标签 -->
+    
     <g transform="translate(205, 100)">
-      <rect width="250" height="30" rx="15" fill="#003F6C"/>
+      <path fill="#003F6C" d="M15,0 H235 A15,15 0 0 1 250,15 V15 A15,15 0 0 1 235,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
       <text x="125" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">第一阶段：奠基与试点</text>
     </g>
     
     <g transform="translate(520, 100)">
-      <rect width="270" height="30" rx="15" fill="#0076A8"/>
+      <path fill="#0076A8" d="M15,0 H255 A15,15 0 0 1 270,15 V15 A15,15 0 0 1 255,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
       <text x="135" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">第二阶段：拓展与提升</text>
     </g>
     
     <g transform="translate(870, 100)">
-      <rect width="230" height="30" rx="15" fill="#00A651"/>
+      <path fill="#00A651" d="M15,0 H215 A15,15 0 0 1 230,15 V15 A15,15 0 0 1 215,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
       <text x="115" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">第三阶段：巩固与引领</text>
     </g>
     
-    <!-- 里程碑详情 - 第一阶段 -->
+    
     <g transform="translate(40, 155)">
-      <rect width="360" height="160" rx="10" fill="#E3F2FD"/>
-      <rect x="0" y="0" width="8" height="160" rx="4" fill="#003F6C"/>
+      <path fill="#E3F2FD" d="M10,0 H350 A10,10 0 0 1 360,10 V150 A10,10 0 0 1 350,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <path fill="#003F6C" d="M4,0 H4 A4,4 0 0 1 8,4 V156 A4,4 0 0 1 4,160 H4 A4,4 0 0 1 0,156 V4 A4,4 0 0 1 4,0 Z" />
       <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="bold" fill="#003F6C">数字化基础建设</text>
       <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 认证管理平台上线</text>
       <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 远程审核试点启动</text>
@@ -90,10 +90,10 @@
       <text x="25" y="145" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 碳足迹认证产品发布</text>
     </g>
     
-    <!-- 里程碑详情 - 第二阶段 -->
+    
     <g transform="translate(420, 155)">
-      <rect width="360" height="160" rx="10" fill="#E1F5FE"/>
-      <rect x="0" y="0" width="8" height="160" rx="4" fill="#0076A8"/>
+      <path fill="#E1F5FE" d="M10,0 H350 A10,10 0 0 1 360,10 V150 A10,10 0 0 1 350,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <path fill="#0076A8" d="M4,0 H4 A4,4 0 0 1 8,4 V156 A4,4 0 0 1 4,160 H4 A4,4 0 0 1 0,156 V4 A4,4 0 0 1 4,0 Z" />
       <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="bold" fill="#0076A8">数字化深度应用</text>
       <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• AI智能审核模型部署</text>
       <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 全流程在线化达80%</text>
@@ -102,10 +102,10 @@
       <text x="25" y="145" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 东盟/中东市场布局</text>
     </g>
     
-    <!-- 里程碑详情 - 第三阶段 -->
+    
     <g transform="translate(800, 155)">
-      <rect width="340" height="160" rx="10" fill="#E8F5E9"/>
-      <rect x="0" y="0" width="8" height="160" rx="4" fill="#00A651"/>
+      <path fill="#E8F5E9" d="M10,0 H330 A10,10 0 0 1 340,10 V150 A10,10 0 0 1 330,160 H10 A10,10 0 0 1 0,150 V10 A10,10 0 0 1 10,0 Z" />
+      <path fill="#00A651" d="M4,0 H4 A4,4 0 0 1 8,4 V156 A4,4 0 0 1 4,160 H4 A4,4 0 0 1 0,156 V4 A4,4 0 0 1 4,0 Z" />
       <text x="25" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="bold" fill="#00A651">智能化全面升级</text>
       <text x="25" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 认证效率提升40%</text>
       <text x="25" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 全球互联互通</text>
@@ -114,13 +114,13 @@
       <text x="25" y="145" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">• 国内领先、国际知名</text>
     </g>
     
-    <!-- 底部关键成果 -->
+    
     <g transform="translate(40, 340)">
       <text x="0" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C">🎯 关键里程碑成果</text>
       
-      <!-- 成果条目 -->
+      
       <g transform="translate(0, 45)">
-        <rect width="270" height="110" rx="8" fill="#003F6C"/>
+        <path fill="#003F6C" d="M8,0 H262 A8,8 0 0 1 270,8 V102 A8,8 0 0 1 262,110 H8 A8,8 0 0 1 0,102 V8 A8,8 0 0 1 8,0 Z" />
         <text x="135" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107" text-anchor="middle">数字化转型</text>
         <text x="135" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 认证周期缩短40%</text>
         <text x="135" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 100%线上化</text>
@@ -128,7 +128,7 @@
       </g>
       
       <g transform="translate(290, 45)">
-        <rect width="270" height="110" rx="8" fill="#0076A8"/>
+        <path fill="#0076A8" d="M8,0 H262 A8,8 0 0 1 270,8 V102 A8,8 0 0 1 262,110 H8 A8,8 0 0 1 0,102 V8 A8,8 0 0 1 8,0 Z" />
         <text x="135" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107" text-anchor="middle">创新产品</text>
         <text x="135" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 新产品占比30%+</text>
         <text x="135" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 绿色认证体系完善</text>
@@ -136,7 +136,7 @@
       </g>
       
       <g transform="translate(580, 45)">
-        <rect width="270" height="110" rx="8" fill="#00A651"/>
+        <path fill="#00A651" d="M8,0 H262 A8,8 0 0 1 270,8 V102 A8,8 0 0 1 262,110 H8 A8,8 0 0 1 0,102 V8 A8,8 0 0 1 8,0 Z" />
         <text x="135" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107" text-anchor="middle">国际化布局</text>
         <text x="135" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 海外业务占比20%+</text>
         <text x="135" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 互认协议10+</text>
@@ -144,7 +144,7 @@
       </g>
       
       <g transform="translate(870, 45)">
-        <rect width="270" height="110" rx="8" fill="#FF6B35"/>
+        <path fill="#FF6B35" d="M8,0 H262 A8,8 0 0 1 270,8 V102 A8,8 0 0 1 262,110 H8 A8,8 0 0 1 0,102 V8 A8,8 0 0 1 8,0 Z" />
         <text x="135" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">业务增长</text>
         <text x="135" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 年均增长15%+</text>
         <text x="135" y="75" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">• 客户满意度95%+</text>
@@ -153,6 +153,6 @@
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">18 / 20</text>
 </svg>

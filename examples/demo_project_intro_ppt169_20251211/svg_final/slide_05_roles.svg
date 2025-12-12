@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFBFC"/>
-  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#FAFBFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)" />
+  
+  
   <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
     四大角色：专业分工，各司其职
   </text>
@@ -18,15 +18,15 @@
     模拟顶级咨询公司的工作流程，确保专业品质输出
   </text>
   
-  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1" />
   
-  <!-- 2x2 角色卡片 -->
+  
   <g transform="translate(60, 145)">
-    <!-- Strategist -->
+    
     <g>
-      <rect width="555" height="200" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="555" height="50" rx="16" fill="#6366F1"/>
-      <rect x="0" y="16" width="555" height="34" fill="#6366F1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H539 A16,16 0 0 1 555,16 V184 A16,16 0 0 1 539,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#6366F1" d="M16,0 H539 A16,16 0 0 1 555,16 V34 A16,16 0 0 1 539,50 H16 A16,16 0 0 1 0,34 V16 A16,16 0 0 1 16,0 Z" />
+      <rect x="0" y="16" width="555" height="34" fill="#6366F1" />
       <text x="20" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">🎯 Strategist 策略师</text>
       <text x="535" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#FFFFFF" opacity="0.8">首要步骤</text>
       
@@ -36,45 +36,45 @@
         <text x="0" y="45" font-size="12" fill="#6B7280">• 智能内容解构：将文档重组为清晰页面序列</text>
         <text x="0" y="65" font-size="12" fill="#6B7280">• 生成《设计规范与内容大纲》</text>
         
-        <rect x="350" y="-10" width="180" height="75" rx="8" fill="#F5F3FF"/>
+        <path fill="#F5F3FF" d="M358,-10 H522 A8,8 0 0 1 530,-2 V57 A8,8 0 0 1 522,65 H358 A8,8 0 0 1 350,57 V-2 A8,8 0 0 1 358,-10 Z" />
         <text x="360" y="12" font-size="12" font-weight="bold" fill="#6366F1">📄 输出物</text>
         <text x="360" y="35" font-size="11" fill="#6B7280">design_specification.md</text>
         <text x="360" y="52" font-size="10" fill="#9CA3AF">设计规范与内容大纲</text>
       </g>
     </g>
     
-    <!-- Executor -->
+    
     <g transform="translate(580, 0)">
-      <rect width="555" height="200" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="555" height="50" rx="16" fill="#06B6D4"/>
-      <rect x="0" y="16" width="555" height="34" fill="#06B6D4"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H539 A16,16 0 0 1 555,16 V184 A16,16 0 0 1 539,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#06B6D4" d="M16,0 H539 A16,16 0 0 1 555,16 V34 A16,16 0 0 1 539,50 H16 A16,16 0 0 1 0,34 V16 A16,16 0 0 1 16,0 Z" />
+      <rect x="0" y="16" width="555" height="34" fill="#06B6D4" />
       <text x="20" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">⚙️ Executor 执行师</text>
       <text x="535" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#FFFFFF" opacity="0.8">三种风格</text>
       
       <g transform="translate(20, 70)" font-family="system-ui, -apple-system, sans-serif">
         <text x="0" y="0" font-size="13" font-weight="bold" fill="#1F2937">风格选项</text>
         <g font-size="11">
-          <rect x="0" y="12" width="80" height="24" rx="6" fill="#E0F2FE"/>
+          <path fill="#E0F2FE" d="M6,12 H74 A6,6 0 0 1 80,18 V30 A6,6 0 0 1 74,36 H6 A6,6 0 0 1 0,30 V18 A6,6 0 0 1 6,12 Z" />
           <text x="40" y="28" text-anchor="middle" fill="#06B6D4">通用灵活</text>
-          <rect x="90" y="12" width="80" height="24" rx="6" fill="#E0F2FE"/>
+          <path fill="#E0F2FE" d="M96,12 H164 A6,6 0 0 1 170,18 V30 A6,6 0 0 1 164,36 H96 A6,6 0 0 1 90,30 V18 A6,6 0 0 1 96,12 Z" />
           <text x="130" y="28" text-anchor="middle" fill="#06B6D4">一般咨询</text>
-          <rect x="180" y="12" width="80" height="24" rx="6" fill="#6366F1"/>
+          <path fill="#6366F1" d="M186,12 H254 A6,6 0 0 1 260,18 V30 A6,6 0 0 1 254,36 H186 A6,6 0 0 1 180,30 V18 A6,6 0 0 1 186,12 Z" />
           <text x="220" y="28" text-anchor="middle" fill="#FFFFFF">MBB 级</text>
         </g>
         <text x="0" y="60" font-size="12" fill="#6B7280">• 严格遵循设计规范 · 逐页生成 SVG</text>
         
-        <rect x="350" y="-10" width="180" height="75" rx="8" fill="#ECFDF5"/>
+        <path fill="#ECFDF5" d="M358,-10 H522 A8,8 0 0 1 530,-2 V57 A8,8 0 0 1 522,65 H358 A8,8 0 0 1 350,57 V-2 A8,8 0 0 1 358,-10 Z" />
         <text x="360" y="12" font-size="12" font-weight="bold" fill="#06B6D4">🎨 输出物</text>
         <text x="360" y="35" font-size="11" fill="#6B7280">slide_*.svg</text>
         <text x="360" y="52" font-size="10" fill="#9CA3AF">SVG 演示文稿页面</text>
       </g>
     </g>
     
-    <!-- Executor Top (MBB) -->
+    
     <g transform="translate(0, 220)">
-      <rect width="555" height="200" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="555" height="50" rx="16" fill="#F59E0B"/>
-      <rect x="0" y="16" width="555" height="34" fill="#F59E0B"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H539 A16,16 0 0 1 555,16 V184 A16,16 0 0 1 539,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#F59E0B" d="M16,0 H539 A16,16 0 0 1 555,16 V34 A16,16 0 0 1 539,50 H16 A16,16 0 0 1 0,34 V16 A16,16 0 0 1 16,0 Z" />
+      <rect x="0" y="16" width="555" height="34" fill="#F59E0B" />
       <text x="20" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">💼 Executor_Consultant_Top</text>
       <text x="535" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#FFFFFF" opacity="0.8">MBB 风格</text>
       
@@ -90,24 +90,24 @@
       </g>
     </g>
     
-    <!-- Optimizer -->
+    
     <g transform="translate(580, 220)">
-      <rect width="555" height="200" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="0" y="0" width="555" height="50" rx="16" fill="#10B981"/>
-      <rect x="0" y="16" width="555" height="34" fill="#10B981"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H539 A16,16 0 0 1 555,16 V184 A16,16 0 0 1 539,200 H16 A16,16 0 0 1 0,184 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#10B981" d="M16,0 H539 A16,16 0 0 1 555,16 V34 A16,16 0 0 1 539,50 H16 A16,16 0 0 1 0,34 V16 A16,16 0 0 1 16,0 Z" />
+      <rect x="0" y="16" width="555" height="34" fill="#10B981" />
       <text x="20" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">✨ Optimizer_CRAP 优化师</text>
       <text x="535" y="33" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#FFFFFF" opacity="0.8">可选步骤</text>
       
       <g transform="translate(20, 65)" font-family="system-ui, -apple-system, sans-serif">
         <text x="0" y="0" font-size="13" font-weight="bold" fill="#1F2937">CRAP 四大原则</text>
         <g font-size="12">
-          <rect x="0" y="15" width="100" height="30" rx="6" fill="#D1FAE5"/>
+          <path fill="#D1FAE5" d="M6,15 H94 A6,6 0 0 1 100,21 V39 A6,6 0 0 1 94,45 H6 A6,6 0 0 1 0,39 V21 A6,6 0 0 1 6,15 Z" />
           <text x="50" y="35" text-anchor="middle" fill="#10B981" font-weight="bold">C 对比</text>
-          <rect x="110" y="15" width="100" height="30" rx="6" fill="#D1FAE5"/>
+          <path fill="#D1FAE5" d="M116,15 H204 A6,6 0 0 1 210,21 V39 A6,6 0 0 1 204,45 H116 A6,6 0 0 1 110,39 V21 A6,6 0 0 1 116,15 Z" />
           <text x="160" y="35" text-anchor="middle" fill="#10B981" font-weight="bold">R 重复</text>
-          <rect x="220" y="15" width="100" height="30" rx="6" fill="#D1FAE5"/>
+          <path fill="#D1FAE5" d="M226,15 H314 A6,6 0 0 1 320,21 V39 A6,6 0 0 1 314,45 H226 A6,6 0 0 1 220,39 V21 A6,6 0 0 1 226,15 Z" />
           <text x="270" y="35" text-anchor="middle" fill="#10B981" font-weight="bold">A 对齐</text>
-          <rect x="330" y="15" width="100" height="30" rx="6" fill="#D1FAE5"/>
+          <path fill="#D1FAE5" d="M336,15 H424 A6,6 0 0 1 430,21 V39 A6,6 0 0 1 424,45 H336 A6,6 0 0 1 330,39 V21 A6,6 0 0 1 336,15 Z" />
           <text x="380" y="35" text-anchor="middle" fill="#10B981" font-weight="bold">P 亲密性</text>
         </g>
         <text x="0" y="75" font-size="12" fill="#6B7280">• 创建视觉层次，统一风格，增强专业感</text>
@@ -116,8 +116,8 @@
     </g>
   </g>
   
-  <!-- 页脚 -->
-  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1" />
   <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 四大角色</text>
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">05 / 10</text>
   <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>

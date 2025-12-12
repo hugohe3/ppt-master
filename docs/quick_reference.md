@@ -387,27 +387,17 @@ yh_slide_02_kpi_dashboard.svg
 
 ## 🔧 后处理工具
 
-### 最终化处理（嵌入图标/图片）
+### 最终化处理（默认执行全部）
 
 ```bash
-# 一键处理（复制 + 嵌入图标）
+# 执行全部后处理（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
 python3 tools/finalize_svg.py <项目路径>
 
-# 同时嵌入图片（转 Base64）
-python3 tools/finalize_svg.py <项目路径> --embed-images
-```
+# 只执行部分处理
+python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
 
-### 文本扁平化（去 tspan）
-
-```bash
-# 交互模式
-python3 tools/flatten_tspan.py
-
-# 目录级扁平化（输出到 svg_output_flattext）
-python3 tools/flatten_tspan.py <项目路径>/svg_output
-
-# 单文件扁平化
-python3 tools/flatten_tspan.py input.svg output.svg
+# 安静模式
+python3 tools/finalize_svg.py <项目路径> -q
 ```
 
 ### 导出为 PPTX（推荐）
@@ -417,10 +407,8 @@ python3 tools/flatten_tspan.py input.svg output.svg
 python3 tools/svg_to_pptx.py <项目路径>
 
 # 指定 SVG 来源目录
-python3 tools/svg_to_pptx.py <项目路径> -s output      # svg_output（默认）
-python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
-python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
-python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
+python3 tools/svg_to_pptx.py <项目路径> -s output      # svg_output（原始版本）
+python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final（推荐）
 
 # 指定输出文件
 python3 tools/svg_to_pptx.py <项目路径> -o presentation.pptx

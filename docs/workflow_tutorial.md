@@ -129,16 +129,17 @@
                         │  └──────────────────┘  │
                         └────────────┬───────────┘
                                      │
-                    ┌────────────────┴────────────────┐
-                    │        后处理（可选）            │
-                    ▼                                  ▼
-        ┌─────────────────────┐         ┌─────────────────────┐
-        │  finalize_svg.py    │         │  flatten_tspan.py   │
-        │  嵌入图标/图片       │         │  文本扁平化          │
-        │  → svg_final/       │         │  → svg_output_flat/ │
-        └─────────────────────┘         └─────────────────────┘
-                    │                                  │
-                    └────────────────┬─────────────────┘
+                                     ▼
+                        ┌────────────────────────┐
+                        │   后处理（推荐）        │
+                        │  ┌──────────────────┐  │
+                        │  │ finalize_svg.py  │  │
+                        │  │ • 嵌入图标/图片   │  │
+                        │  │ • 文本扁平化      │  │
+                        │  │ • 圆角转 Path    │  │
+                        │  │ → svg_final/     │  │
+                        │  └──────────────────┘  │
+                        └────────────┬───────────┘
                                      │
                                      ▼
                         ┌────────────────────────┐
@@ -500,27 +501,24 @@ Optimizer_CRAP:
    - 在浏览器中逐页查看
    - 检查一致性和质量
 
-3. **后处理（可选）**
+3. **后处理（推荐）**
 
    ```bash
-   # 最终化处理（嵌入图标/图片）
+   # 执行全部后处理（默认）
    python3 tools/finalize_svg.py <项目路径>
    
-   # 文本扁平化（用于特殊渲染器）
-   python3 tools/flatten_tspan.py <项目路径>/svg_output
+   # 只执行部分处理
+   python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
    ```
 
 4. **导出为 PPTX（推荐）**
 
    ```bash
-   # 基本用法
-   python3 tools/svg_to_pptx.py <项目路径>
-   
-   # 使用最终版本（带嵌入图标）
+   # 使用最终版本（推荐）
    python3 tools/svg_to_pptx.py <项目路径> -s final
    
-   # 使用扁平化版本
-   python3 tools/svg_to_pptx.py <项目路径> -s flat
+   # 使用原始版本
+   python3 tools/svg_to_pptx.py <项目路径>
    ```
 
    生成的 PPTX 文件中，SVG 以原生矢量格式嵌入，需要 PowerPoint 2016+ 查看。
@@ -804,25 +802,16 @@ Executor: 收到，我将从您指定的文件夹中引用图标。
 祝你创作顺利！如有任何问题，欢迎反馈。
 ## 文本扁平化（去 tspan）
 
-在生成阶段，按规范使用 `<tspan>` 进行手动换行。若发布链路或后续处理需要去除 `<tspan>`，可使用仓库自带工具进行后处理：
+在生成阶段，按规范使用 `<tspan>` 进行手动换行。若发布链路或后续处理需要去除 `<tspan>`，推荐使用统一后处理工具：
 
 ```bash
-# 交互模式（等效）
-python3 tools/flatten_tspan.py
-python3 tools/flatten_tspan.py -i
+# 推荐：使用 finalize_svg.py（已包含文本扁平化）
+python3 tools/finalize_svg.py <项目路径>
 
-# 扁平化整个 svg_output 目录（默认输出到同级 svg_output_flattext）
-python3 tools/flatten_tspan.py examples/<project_name>_<format>_<YYYYMMDD>/svg_output
-
-# 处理单个文件/自定义输出路径
+# 单独使用 flatten_tspan.py（高级用法）
+python3 tools/flatten_tspan.py <项目路径>/svg_output
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
-
-默认输出：
-- 目录输入：若路径以 `svg_output` 结尾，输出到同级 `svg_output_flattext`；否则为 `<目录>_flattext`
-- 文件输入：输出为 `<文件名>_flattext.svg`
-
-安全性：目录模式下工具会自动跳过输出子目录，避免递归处理。
 
 检查要点：
 - 输出中不应存在 `<tspan>`；

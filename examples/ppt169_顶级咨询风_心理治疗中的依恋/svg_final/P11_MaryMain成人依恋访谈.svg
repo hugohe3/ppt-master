@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     Mary Main —— 从行为到心理表征
   </text>
@@ -13,119 +13,104 @@
     Adult Attachment Interview (AAI) and Intergenerational Transmission
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="600" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 左侧：AAI简介 -->
+  <line x1="60" y1="125" x2="600" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="540" height="400" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H528 A12,12 0 0 1 540,12 V388 A12,12 0 0 1 528,400 H12 A12,12 0 0 1 0,388 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 标题栏 -->
-    <rect x="0" y="0" width="540" height="50" rx="12" fill="#2E5C8E"/>
-    <rect x="0" y="38" width="540" height="12" fill="#2E5C8E"/>
+    
+    <path fill="#2E5C8E" d="M12,0 H528 A12,12 0 0 1 540,12 V38 A12,12 0 0 1 528,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="38" width="540" height="12" fill="#2E5C8E" />
     <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">📝 成人依恋访谈 Adult Attachment Interview</text>
     
-    <!-- 核心目标 -->
+    
     <text x="25" y="85" font-size="16" font-weight="600" fill="#2E5C8E">核心目标</text>
-    <rect x="25" y="100" width="490" height="50" rx="8" fill="#F1F5F9"/>
+    <path fill="#F1F5F9" d="M33,100 H507 A8,8 0 0 1 515,108 V142 A8,8 0 0 1 507,150 H33 A8,8 0 0 1 25,142 V108 A8,8 0 0 1 33,100 Z" />
     <text x="45" y="130" font-size="16" fill="#374151" font-style="italic">"让潜意识感到惊讶"</text>
     
-    <!-- 评估重点 -->
-    <text x="25" y="180" font-size="16" font-weight="600" fill="#2E5C8E">评估重点</text>
-    <text x="25" y="205" font-size="15" fill="#374151">
-      <tspan x="25" dy="0">• 评估成人当前的"依恋心理状态"</tspan>
-      <tspan x="25" dy="26">• 关键不在于历史事实本身</tspan>
-      <tspan x="25" dy="26">• 而在于叙述的</tspan>
-      <tspan font-weight="600" fill="#2E5C8E">连贯性</tspan>
-      <tspan>和</tspan>
-      <tspan font-weight="600" fill="#2E5C8E">形式</tspan>
-    </text>
     
-    <!-- 方法 -->
-    <line x1="25" y1="290" x2="515" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+    <text x="25" y="180" font-size="16" font-weight="600" fill="#2E5C8E">评估重点</text>
+    <text fill="#374151" font-size="15" x="25" y="205">• 评估成人当前的"依恋心理状态"</text><text fill="#374151" font-size="15" x="25" y="231">• 关键不在于历史事实本身</text><text fill="#374151" font-size="15" x="25" y="257">• 而在于叙述的</text><text fill="#2E5C8E" font-size="15" font-weight="600" x="25" y="257">连贯性</text><text fill="#374151" font-size="15" x="25" y="257">和</text><text fill="#2E5C8E" font-size="15" font-weight="600" x="25" y="257">形式</text><line x1="25" y1="290" x2="515" y2="290" stroke="#E5E7EB" stroke-width="1" />
     
     <text x="25" y="320" font-size="16" font-weight="600" fill="#2E5C8E">访谈方法</text>
-    <text x="25" y="345" font-size="15" fill="#374151">
-      <tspan x="25" dy="0">• 询问童年依恋经历的半结构化访谈</tspan>
-      <tspan x="25" dy="26">• 要求用形容词描述与父母的关系</tspan>
-      <tspan x="25" dy="26">• 探索分离、丧失和创伤经历</tspan>
-    </text>
-  </g>
+    <text fill="#374151" font-size="15" x="25" y="345">• 询问童年依恋经历的半结构化访谈</text><text fill="#374151" font-size="15" x="25" y="371">• 要求用形容词描述与父母的关系</text><text fill="#374151" font-size="15" x="25" y="397">• 探索分离、丧失和创伤经历</text></g>
   
-  <!-- 右侧：代际传递预测表 -->
+  
   <g transform="translate(640, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="580" height="400" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H568 A12,12 0 0 1 580,12 V388 A12,12 0 0 1 568,400 H12 A12,12 0 0 1 0,388 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 标题栏 -->
-    <rect x="0" y="0" width="580" height="50" rx="12" fill="#3D8B7A"/>
-    <rect x="0" y="38" width="580" height="12" fill="#3D8B7A"/>
+    
+    <path fill="#3D8B7A" d="M12,0 H568 A12,12 0 0 1 580,12 V38 A12,12 0 0 1 568,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="38" width="580" height="12" fill="#3D8B7A" />
     <text x="25" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🔄 依恋模式的代际传递</text>
     
-    <!-- 表头 -->
-    <rect x="20" y="70" width="220" height="35" rx="6" fill="#F1F5F9"/>
+    
+    <path fill="#F1F5F9" d="M26,70 H234 A6,6 0 0 1 240,76 V99 A6,6 0 0 1 234,105 H26 A6,6 0 0 1 20,99 V76 A6,6 0 0 1 26,70 Z" />
     <text x="130" y="93" font-size="14" font-weight="600" fill="#374151" text-anchor="middle">父母 AAI 类型</text>
     
-    <rect x="260" y="70" width="60" height="35" rx="6" fill="#F1F5F9"/>
+    <path fill="#F1F5F9" d="M266,70 H314 A6,6 0 0 1 320,76 V99 A6,6 0 0 1 314,105 H266 A6,6 0 0 1 260,99 V76 A6,6 0 0 1 266,70 Z" />
     <text x="290" y="93" font-size="18" fill="#374151" text-anchor="middle">→</text>
     
-    <rect x="340" y="70" width="220" height="35" rx="6" fill="#F1F5F9"/>
+    <path fill="#F1F5F9" d="M346,70 H554 A6,6 0 0 1 560,76 V99 A6,6 0 0 1 554,105 H346 A6,6 0 0 1 340,99 V76 A6,6 0 0 1 346,70 Z" />
     <text x="450" y="93" font-size="14" font-weight="600" fill="#374151" text-anchor="middle">婴儿依恋类型</text>
     
-    <!-- 安全-自主型 → 安全型 -->
+    
     <g transform="translate(20, 120)">
-      <rect x="0" y="0" width="220" height="55" rx="8" fill="#D4EDDA" stroke="#3D8B7A" stroke-width="1"/>
+      <path fill="#D4EDDA" stroke="#3D8B7A" stroke-width="1" d="M8,0 H212 A8,8 0 0 1 220,8 V47 A8,8 0 0 1 212,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="110" y="25" font-size="15" font-weight="600" fill="#3D8B7A" text-anchor="middle">安全—自主型</text>
       <text x="110" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Secure-Autonomous</text>
       
       <text x="290" y="30" font-size="24" fill="#3D8B7A" text-anchor="middle">→</text>
       
-      <rect x="320" y="0" width="220" height="55" rx="8" fill="#D4EDDA" stroke="#3D8B7A" stroke-width="1"/>
+      <path fill="#D4EDDA" stroke="#3D8B7A" stroke-width="1" d="M328,0 H532 A8,8 0 0 1 540,8 V47 A8,8 0 0 1 532,55 H328 A8,8 0 0 1 320,47 V8 A8,8 0 0 1 328,0 Z" />
       <text x="430" y="25" font-size="15" font-weight="600" fill="#3D8B7A" text-anchor="middle">安全型</text>
       <text x="430" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Secure</text>
     </g>
     
-    <!-- 冷漠型 → 回避型 -->
+    
     <g transform="translate(20, 190)">
-      <rect x="0" y="0" width="220" height="55" rx="8" fill="#E2E8F0" stroke="#64748B" stroke-width="1"/>
+      <path fill="#E2E8F0" stroke="#64748B" stroke-width="1" d="M8,0 H212 A8,8 0 0 1 220,8 V47 A8,8 0 0 1 212,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="110" y="25" font-size="15" font-weight="600" fill="#64748B" text-anchor="middle">冷漠型</text>
       <text x="110" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Dismissing</text>
       
       <text x="290" y="30" font-size="24" fill="#64748B" text-anchor="middle">→</text>
       
-      <rect x="320" y="0" width="220" height="55" rx="8" fill="#E2E8F0" stroke="#64748B" stroke-width="1"/>
+      <path fill="#E2E8F0" stroke="#64748B" stroke-width="1" d="M328,0 H532 A8,8 0 0 1 540,8 V47 A8,8 0 0 1 532,55 H328 A8,8 0 0 1 320,47 V8 A8,8 0 0 1 328,0 Z" />
       <text x="430" y="25" font-size="15" font-weight="600" fill="#64748B" text-anchor="middle">回避型</text>
       <text x="430" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Avoidant</text>
     </g>
     
-    <!-- 迷恋型 → 矛盾型 -->
+    
     <g transform="translate(20, 260)">
-      <rect x="0" y="0" width="220" height="55" rx="8" fill="#FED7AA" stroke="#E07843" stroke-width="1"/>
+      <path fill="#FED7AA" stroke="#E07843" stroke-width="1" d="M8,0 H212 A8,8 0 0 1 220,8 V47 A8,8 0 0 1 212,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="110" y="25" font-size="15" font-weight="600" fill="#E07843" text-anchor="middle">迷恋型</text>
       <text x="110" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Preoccupied</text>
       
       <text x="290" y="30" font-size="24" fill="#E07843" text-anchor="middle">→</text>
       
-      <rect x="320" y="0" width="220" height="55" rx="8" fill="#FED7AA" stroke="#E07843" stroke-width="1"/>
+      <path fill="#FED7AA" stroke="#E07843" stroke-width="1" d="M328,0 H532 A8,8 0 0 1 540,8 V47 A8,8 0 0 1 532,55 H328 A8,8 0 0 1 320,47 V8 A8,8 0 0 1 328,0 Z" />
       <text x="430" y="25" font-size="15" font-weight="600" fill="#E07843" text-anchor="middle">矛盾型</text>
       <text x="430" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Ambivalent</text>
     </g>
     
-    <!-- 未解决型 → 混乱型 -->
+    
     <g transform="translate(20, 330)">
-      <rect x="0" y="0" width="220" height="55" rx="8" fill="#FECACA" stroke="#B54545" stroke-width="1"/>
+      <path fill="#FECACA" stroke="#B54545" stroke-width="1" d="M8,0 H212 A8,8 0 0 1 220,8 V47 A8,8 0 0 1 212,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="110" y="25" font-size="15" font-weight="600" fill="#B54545" text-anchor="middle">未解决型</text>
       <text x="110" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Unresolved</text>
       
       <text x="290" y="30" font-size="24" fill="#B54545" text-anchor="middle">→</text>
       
-      <rect x="320" y="0" width="220" height="55" rx="8" fill="#FECACA" stroke="#B54545" stroke-width="1"/>
+      <path fill="#FECACA" stroke="#B54545" stroke-width="1" d="M328,0 H532 A8,8 0 0 1 540,8 V47 A8,8 0 0 1 532,55 H328 A8,8 0 0 1 320,47 V8 A8,8 0 0 1 328,0 Z" />
       <text x="430" y="25" font-size="15" font-weight="600" fill="#B54545" text-anchor="middle">混乱型</text>
       <text x="430" y="45" font-size="12" fill="#6B7280" text-anchor="middle">Disorganized</text>
     </g>
   </g>
   
-  <!-- 底部强调 -->
-  <rect x="60" y="575" width="1160" height="80" rx="12" fill="#1E3A5F"/>
+  
+  <path fill="#1E3A5F" d="M72,575 H1208 A12,12 0 0 1 1220,587 V643 A12,12 0 0 1 1208,655 H72 A12,12 0 0 1 60,643 V587 A12,12 0 0 1 72,575 Z" />
   <text x="100" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF">
     <tspan font-weight="bold">💡 核心洞见：</tspan>
     <tspan dx="10">父母AAI分类能高度预测其子女的依恋分类。</tspan>
@@ -134,6 +119,6 @@
     研究焦点从婴儿的非言语行为转移到成人的心理表征，揭示了依恋模式代际传递的机制。
   </text>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">11</text>
 </svg>

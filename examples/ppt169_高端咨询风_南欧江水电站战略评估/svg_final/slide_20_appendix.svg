@@ -1,55 +1,55 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">附录：关键数据索引</text>
   <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">APPENDIX</text>
   
-  <!-- 表1：项目概览 -->
+  
   <g transform="translate(40, 100)">
-    <rect width="380" height="280" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="380" height="40" rx="12" fill="#1A6B7C"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H368 A12,12 0 0 1 380,12 V268 A12,12 0 0 1 368,280 H12 A12,12 0 0 1 0,268 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1A6B7C" d="M12,0 H368 A12,12 0 0 1 380,12 V28 A12,12 0 0 1 368,40 H12 A12,12 0 0 1 0,28 V12 A12,12 0 0 1 12,0 Z" />
     <text x="20" y="27" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">表1：项目概览</text>
     
     <g transform="translate(15, 50)">
       <text x="0" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">开发主体</text>
       <text x="120" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">南欧江发电有限公司</text>
       
-      <line x1="0" y1="30" x2="350" y2="30" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="30" x2="350" y2="30" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">股权结构</text>
       <text x="120" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">中国电建 85% : EDL-Gen 15%</text>
       
-      <line x1="0" y1="60" x2="350" y2="60" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="60" x2="350" y2="60" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">总装机容量</text>
       <text x="120" y="80" font-family="system-ui" font-size="13" fill="#1A6B7C" font-weight="600">1,272 MW</text>
       
-      <line x1="0" y1="90" x2="350" y2="90" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="90" x2="350" y2="90" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="110" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">总投资额</text>
       <text x="120" y="110" font-family="system-ui" font-size="13" fill="#C9A227" font-weight="600">$27.33亿</text>
       
-      <line x1="0" y1="120" x2="350" y2="120" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="120" x2="350" y2="120" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="140" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">商业模式</text>
       <text x="120" y="140" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">BOT（特许期29年）</text>
       
-      <line x1="0" y1="150" x2="350" y2="150" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="150" x2="350" y2="150" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="170" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">融资方</text>
       <text x="120" y="170" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">国开行、进出口银行、建行</text>
       
-      <line x1="0" y1="180" x2="350" y2="180" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="180" x2="350" y2="180" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="200" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">年发电量</text>
-      <text x="120" y="200" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">>50亿 kWh</text>
+      <text x="120" y="200" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">&gt;50亿 kWh</text>
     </g>
   </g>
   
-  <!-- 表2：仲裁索赔明细 -->
+  
   <g transform="translate(450, 100)">
-    <rect width="380" height="280" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
-    <rect x="0" y="0" width="380" height="40" rx="12" fill="#B8352B"/>
+    <path fill="#FFFFFF" stroke="#B8352B" stroke-width="2" d="M12,0 H368 A12,12 0 0 1 380,12 V268 A12,12 0 0 1 368,280 H12 A12,12 0 0 1 0,268 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#B8352B" d="M12,0 H368 A12,12 0 0 1 380,12 V28 A12,12 0 0 1 368,40 H12 A12,12 0 0 1 0,28 V12 A12,12 0 0 1 12,0 Z" />
     <text x="20" y="27" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">表2：2025年仲裁索赔明细</text>
     
     <g transform="translate(15, 50)">
@@ -57,74 +57,74 @@
       <text x="200" y="20" font-family="system-ui" font-size="13" fill="#B8352B" font-weight="600" text-anchor="end">$486,270,000</text>
       <text x="350" y="20" font-family="system-ui" font-size="11" fill="#718096" text-anchor="end">87.6%</text>
       
-      <line x1="0" y1="30" x2="350" y2="30" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="30" x2="350" y2="30" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">逾期利息</text>
       <text x="200" y="50" font-family="system-ui" font-size="13" fill="#D97706" font-weight="600" text-anchor="end">$65,790,000</text>
       <text x="350" y="50" font-family="system-ui" font-size="11" fill="#718096" text-anchor="end">11.9%</text>
       
-      <line x1="0" y1="60" x2="350" y2="60" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="60" x2="350" y2="60" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">汇率损失</text>
       <text x="200" y="80" font-family="system-ui" font-size="13" fill="#C9A227" font-weight="600" text-anchor="end">$3,020,000</text>
       <text x="350" y="80" font-family="system-ui" font-size="11" fill="#718096" text-anchor="end">0.5%</text>
       
-      <line x1="0" y1="90" x2="350" y2="90" stroke="#B8352B" stroke-width="2"/>
+      <line x1="0" y1="90" x2="350" y2="90" stroke="#B8352B" stroke-width="2" />
       
       <text x="0" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E" font-weight="600">合计索赔</text>
       <text x="350" y="115" font-family="system-ui" font-size="16" fill="#B8352B" font-weight="700" text-anchor="end">$555,080,000</text>
       
-      <line x1="0" y1="130" x2="350" y2="130" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="130" x2="350" y2="130" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="155" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">欠款时间</text>
       <text x="350" y="155" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="end">2020.01 - 2024.12</text>
       
-      <line x1="0" y1="165" x2="350" y2="165" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="165" x2="350" y2="165" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="185" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">仲裁机构</text>
       <text x="350" y="185" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="end">SIAC（新加坡）</text>
       
-      <line x1="0" y1="195" x2="350" y2="195" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="195" x2="350" y2="195" stroke="#E8E8F0" stroke-width="1" />
       
       <text x="0" y="215" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">占老挝GDP</text>
       <text x="350" y="215" font-family="system-ui" font-size="13" fill="#B8352B" font-weight="600" text-anchor="end">~4%</text>
     </g>
   </g>
   
-  <!-- 表3：建设分期 -->
+  
   <g transform="translate(860, 100)">
-    <rect width="380" height="280" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="380" height="40" rx="12" fill="#0D2B3E"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H368 A12,12 0 0 1 380,12 V268 A12,12 0 0 1 368,280 H12 A12,12 0 0 1 0,268 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0D2B3E" d="M12,0 H368 A12,12 0 0 1 380,12 V28 A12,12 0 0 1 368,40 H12 A12,12 0 0 1 0,28 V12 A12,12 0 0 1 12,0 Z" />
     <text x="20" y="27" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#FFFFFF">表3：项目分期建设详情</text>
     
-    <!-- 表头 -->
+    
     <g transform="translate(15, 50)">
       <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" font-weight="600">分期</text>
       <text x="80" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" font-weight="600">电站</text>
       <text x="180" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" font-weight="600">容量</text>
       <text x="250" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" font-weight="600">完工</text>
       
-      <line x1="0" y1="25" x2="350" y2="25" stroke="#E8E8F0" stroke-width="1"/>
+      <line x1="0" y1="25" x2="350" y2="25" stroke="#E8E8F0" stroke-width="1" />
       
-      <!-- 一期 -->
-      <rect x="0" y="35" width="350" height="50" rx="4" fill="#2E96B3" opacity="0.1"/>
+      
+      <path fill="#2E96B3" opacity="0.1" d="M4,35 H346 A4,4 0 0 1 350,39 V81 A4,4 0 0 1 346,85 H4 A4,4 0 0 1 0,81 V39 A4,4 0 0 1 4,35 Z" />
       <text x="10" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#1A6B7C" font-weight="600">一期</text>
       <text x="80" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#0D2B3E">2、5、6级</text>
       <text x="180" y="55" font-family="system-ui" font-size="12" fill="#1A6B7C" font-weight="600">540MW</text>
       <text x="250" y="55" font-family="system-ui" font-size="11" fill="#0D2B3E">2016.05</text>
       <text x="10" y="75" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#718096">融资：国开行 $6.6亿</text>
       
-      <!-- 二期 -->
-      <rect x="0" y="95" width="350" height="50" rx="4" fill="#C9A227" opacity="0.1"/>
+      
+      <path fill="#C9A227" opacity="0.1" d="M4,95 H346 A4,4 0 0 1 350,99 V141 A4,4 0 0 1 346,145 H4 A4,4 0 0 1 0,141 V99 A4,4 0 0 1 4,95 Z" />
       <text x="10" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#C9A227" font-weight="600">二期</text>
       <text x="80" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#0D2B3E">1、3、4、7级</text>
       <text x="180" y="115" font-family="system-ui" font-size="12" fill="#C9A227" font-weight="600">732MW</text>
       <text x="250" y="115" font-family="system-ui" font-size="11" fill="#0D2B3E">2021.09</text>
       <text x="10" y="135" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#718096">融资：银团 $13亿</text>
       
-      <line x1="0" y1="155" x2="350" y2="155" stroke="#0D2B3E" stroke-width="2"/>
+      <line x1="0" y1="155" x2="350" y2="155" stroke="#0D2B3E" stroke-width="2" />
       
-      <!-- 合计 -->
+      
       <text x="10" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E" font-weight="600">合计</text>
       <text x="80" y="180" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E">7级全流域</text>
       <text x="180" y="180" font-family="system-ui" font-size="14" fill="#1A6B7C" font-weight="700">1,272MW</text>
@@ -132,14 +132,14 @@
     </g>
   </g>
   
-  <!-- 数据来源说明 -->
+  
   <g transform="translate(40, 400)">
-    <rect width="1200" height="60" rx="12" fill="#0D2B3E" opacity="0.05"/>
+    <path fill="#0D2B3E" opacity="0.05" d="M12,0 H1188 A12,12 0 0 1 1200,12 V48 A12,12 0 0 1 1188,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
     <text x="20" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">数据来源：PowerChina官网、AidData、路透社、世界银行、IMF、国际河流组织等公开资料整理</text>
     <text x="20" y="45" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">报告编制日期：2025年12月 | 本报告仅供研究参考，不构成投资建议</text>
   </g>
   
-  <!-- 参考文献标题 -->
+  
   <g transform="translate(40, 480)">
     <text x="0" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">主要参考来源</text>
     <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">1. POWERCHINA - Nam Ou River Cascade Hydropower Project</text>
@@ -153,7 +153,7 @@
     <text x="800" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">9. Bangkok Post - China-Laos Legal Tussle</text>
   </g>
   
-  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1" />
   <text x="40" y="670" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
   <text x="640" y="690" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#0D2B3E" text-anchor="middle" font-weight="600">— 报告完 —</text>
   <text x="1240" y="670" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">20 / 20</text>

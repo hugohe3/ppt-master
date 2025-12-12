@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+            <feOffset dx="0" dy="4" result="offsetBlur" />
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color" />
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
+            <feMerge>
+                <feMergeNode in="shadow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    
+    <text x="640" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B" text-anchor="middle" font-weight="700">工具对照表</text>
+    <text x="640" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B" text-anchor="middle">7 维度完整对比，一表看懂</text>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M76,100 H1204 A16,16 0 0 1 1220,116 V644 A16,16 0 0 1 1204,660 H76 A16,16 0 0 1 60,644 V116 A16,16 0 0 1 76,100 Z" />
+
+        
+        <path fill="#1E293B" d="M76,100 H1204 A16,16 0 0 1 1220,116 V139 A16,16 0 0 1 1204,155 H76 A16,16 0 0 1 60,139 V116 A16,16 0 0 1 76,100 Z" />
+        <rect x="60" y="140" width="1160" height="15" fill="#1E293B" />
+
+        <text x="175" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" font-weight="600">维度</text>
+        <line x1="290" y1="100" x2="290" y2="660" stroke="#334155" stroke-width="1" />
+
+        <text x="435" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#C4B5FD" text-anchor="middle" font-weight="600">Spec Kit</text>
+        <line x1="580" y1="100" x2="580" y2="660" stroke="#334155" stroke-width="1" />
+
+        <text x="725" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#93C5FD" text-anchor="middle" font-weight="600">OpenSpec</text>
+        <line x1="870" y1="100" x2="870" y2="660" stroke="#334155" stroke-width="1" />
+
+        <text x="1045" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#6EE7B7" text-anchor="middle" font-weight="600">ZCF</text>
+
+        
+        <rect x="60" y="155" width="230" height="60" fill="#F8FAFC" />
+        <text x="175" y="192" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">出品方</text>
+        <text x="435" y="192" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle">GitHub 官方</text>
+        <text x="725" y="192" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle">Fission-AI</text>
+        <text x="1045" y="192" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#1E293B" text-anchor="middle">UfoMiao（社区）</text>
+        <line x1="60" y1="215" x2="1220" y2="215" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="215" width="230" height="60" fill="#FFFFFF" />
+        <text x="175" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">开源协议</text>
+        <text x="435" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" text-anchor="middle">MIT</text>
+        <text x="725" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" text-anchor="middle">MIT</text>
+        <text x="1045" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" text-anchor="middle">MIT</text>
+        <line x1="60" y1="275" x2="1220" y2="275" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="275" width="230" height="60" fill="#F8FAFC" />
+        <text x="175" y="312" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">安装方式</text>
+        <text x="435" y="312" font-family="'SF Mono', 'Consolas', monospace" font-size="12" fill="#8B5CF6" text-anchor="middle">uv tool install</text>
+        <text x="725" y="312" font-family="'SF Mono', 'Consolas', monospace" font-size="12" fill="#2563EB" text-anchor="middle">npm install -g</text>
+        <text x="1045" y="312" font-family="'SF Mono', 'Consolas', monospace" font-size="12" fill="#10B981" text-anchor="middle">npx zcf</text>
+        <line x1="60" y1="335" x2="1220" y2="335" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="335" width="230" height="60" fill="#FFFFFF" />
+        <text x="175" y="372" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">支持的 AI</text>
+        <text x="435" y="372" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle">15+ 种</text>
+        <text x="725" y="372" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle">15+ 种</text>
+        <text x="1045" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B" text-anchor="middle">Claude Code</text>
+        <text x="1045" y="382" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1E293B" text-anchor="middle">Codex</text>
+        <line x1="60" y1="395" x2="1220" y2="395" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="395" width="230" height="60" fill="#F8FAFC" />
+        <text x="175" y="432" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">核心定位</text>
+        <text x="435" y="432" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#8B5CF6" text-anchor="middle" font-weight="500">开发流程</text>
+        <text x="725" y="432" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB" text-anchor="middle" font-weight="500">变更管理</text>
+        <text x="1045" y="432" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" text-anchor="middle" font-weight="500">环境配置</text>
+        <line x1="60" y1="455" x2="1220" y2="455" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="455" width="230" height="60" fill="#FFFFFF" />
+        <text x="175" y="492" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">学习成本</text>
+        <path fill="#FEE2E2" d="M397,480 H473 A12,12 0 0 1 485,492 V492 A12,12 0 0 1 473,504 H397 A12,12 0 0 1 385,492 V492 A12,12 0 0 1 397,480 Z" />
+        <text x="435" y="497" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#DC2626" text-anchor="middle" font-weight="500">高</text>
+        <path fill="#FEF3C7" d="M687,480 H763 A12,12 0 0 1 775,492 V492 A12,12 0 0 1 763,504 H687 A12,12 0 0 1 675,492 V492 A12,12 0 0 1 687,480 Z" />
+        <text x="725" y="497" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#D97706" text-anchor="middle" font-weight="500">中</text>
+        <path fill="#D1FAE5" d="M1007,480 H1083 A12,12 0 0 1 1095,492 V492 A12,12 0 0 1 1083,504 H1007 A12,12 0 0 1 995,492 V492 A12,12 0 0 1 1007,480 Z" />
+        <text x="1045" y="497" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#059669" text-anchor="middle" font-weight="500">低</text>
+        <line x1="60" y1="515" x2="1220" y2="515" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="515" width="230" height="60" fill="#F8FAFC" />
+        <text x="175" y="552" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">适合阶段</text>
+        <path fill="#8B5CF6" d="M410,537 H460 A15,15 0 0 1 475,552 V552 A15,15 0 0 1 460,567 H410 A15,15 0 0 1 395,552 V552 A15,15 0 0 1 410,537 Z" />
+        <text x="435" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">0→1</text>
+        <path fill="#2563EB" d="M700,537 H750 A15,15 0 0 1 765,552 V552 A15,15 0 0 1 750,567 H700 A15,15 0 0 1 685,552 V552 A15,15 0 0 1 700,537 Z" />
+        <text x="725" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">1→N</text>
+        <path fill="#10B981" d="M1010,537 H1080 A15,15 0 0 1 1095,552 V552 A15,15 0 0 1 1080,567 H1010 A15,15 0 0 1 995,552 V552 A15,15 0 0 1 1010,537 Z" />
+        <text x="1045" y="558" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">任何阶段</text>
+        <line x1="60" y1="575" x2="1220" y2="575" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="575" width="230" height="55" fill="#FFFFFF" />
+        <text x="175" y="610" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">中文支持</text>
+        <text x="435" y="610" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="middle">无</text>
+        <text x="725" y="610" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="middle">无</text>
+        <text x="1045" y="610" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#10B981" text-anchor="middle" font-weight="600">✅ 原生支持</text>
+        <line x1="60" y1="630" x2="1220" y2="630" stroke="#E2E8F0" stroke-width="1" />
+
+        
+        <rect x="60" y="630" width="230" height="30" fill="#F8FAFC" />
+        <text x="175" y="652" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="600">文档产出</text>
+        <text x="435" y="652" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#F97316" text-anchor="middle">多</text>
+        <text x="725" y="652" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#10B981" text-anchor="middle">少</text>
+        <text x="1045" y="652" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">无</text>
+    </g>
+
+    
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">10 / 11</text>
+</svg>

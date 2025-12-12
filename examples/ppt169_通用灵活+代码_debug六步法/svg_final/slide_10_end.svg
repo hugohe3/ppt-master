@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    
+    <g fill="#161b22" font-family="SF Mono, Menlo, monospace" font-size="100" opacity="0.25">
+        <text x="80" y="130">{</text>
+        <text x="1100" y="180">}</text>
+        <text x="120" y="580">&lt;/&gt;</text>
+        <text x="1000" y="520">/*</text>
+        <text x="950" y="130">;</text>
+        <text x="180" y="320">=&gt;</text>
+    </g>
+
+    
+    <line x1="200" y1="300" x2="480" y2="300" stroke="url(#accentGradient)" stroke-width="2" opacity="0.5" />
+    <line x1="800" y1="300" x2="1080" y2="300" stroke="url(#accentGradient)" stroke-width="2" opacity="0.5" />
+
+    
+    <g transform="translate(640, 220)" filter="url(#glow)">
+        <circle cx="0" cy="0" r="60" fill="none" stroke="#7ee787" stroke-width="4" />
+        <path d="M-25,0 L-8,18 L28,-18" fill="none" stroke="#7ee787" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    
+    <text x="640" y="360" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="url(#accentGradient)">Thank You</text>
+
+    
+    <text x="640" y="430" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="36" fill="#e6edf3">Q &amp; A</text>
+
+    
+    <path fill="url(#accentGradient)" opacity="0.6" d="M541.50,470 H738.50 A1.50,1.50 0 0 1 740,471.50 V471.50 A1.50,1.50 0 0 1 738.50,473 H541.50 A1.50,1.50 0 0 1 540,471.50 V471.50 A1.50,1.50 0 0 1 541.50,470 Z" />
+
+    
+    <g transform="translate(280, 520)" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">
+        <text x="0" y="0">
+            <tspan fill="#58a6ff">01</tspan>
+            <tspan dx="8">厘清流程</tspan>
+        </text>
+        <text x="120" y="0">→</text>
+        <text x="140" y="0">
+            <tspan fill="#58a6ff">02</tspan>
+            <tspan dx="8">定位问题</tspan>
+        </text>
+        <text x="260" y="0">→</text>
+        <text x="280" y="0">
+            <tspan fill="#f0883e">03</tspan>
+            <tspan dx="8">排除法</tspan>
+        </text>
+        <text x="380" y="0">→</text>
+        <text x="400" y="0">
+            <tspan fill="#f0883e">04</tspan>
+            <tspan dx="8">验证假设</tspan>
+        </text>
+        <text x="520" y="0">→</text>
+        <text x="540" y="0">
+            <tspan fill="#7ee787">05</tspan>
+            <tspan dx="8">检查副作用</tspan>
+        </text>
+        <text x="680" y="0">→</text>
+        <text x="700" y="0">
+            <tspan fill="#7ee787">06</tspan>
+            <tspan dx="8">测试记录</tspan>
+        </text>
+    </g>
+
+    
+    <g font-family="SF Mono, Menlo, monospace" font-size="16" fill="#8b949e">
+        <text x="640" y="600" text-anchor="middle">
+            <tspan fill="#7ee787">return</tspan>
+            <tspan fill="#8b949e"> {</tspan>
+            <tspan fill="#58a6ff"> success</tspan>
+            <tspan fill="#8b949e">:</tspan>
+            <tspan fill="#7ee787"> true</tspan>
+            <tspan fill="#8b949e">,</tspan>
+            <tspan fill="#58a6ff"> bugs</tspan>
+            <tspan fill="#8b949e">:</tspan>
+            <tspan fill="#f0883e"> 0</tspan>
+            <tspan fill="#8b949e"> };</tspan>
+        </text>
+    </g>
+
+    
+    <text x="640" y="660" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#8b949e">技术分享 · Debug 六步法 · 2025</text>
+
+    
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">10 /
+        10</text>
+</svg>

@@ -1,80 +1,67 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 - 深色模式 -->
-  <rect width="1280" height="720" fill="#2C3E50"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#2C3E50" />
+  
+  
   <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">宇宙法则（下）：鬼神福谦，人道好谦</text>
-  <line x1="60" y1="120" x2="600" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  <line x1="60" y1="120" x2="600" y2="120" stroke="#D4A84B" stroke-width="3" />
   
-  <!-- 阴阳分栏 -->
-  <!-- 左栏 - 鬼神之维 -->
+  
+  
   <g transform="translate(60, 150)">
-    <rect x="0" y="0" width="555" height="400" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
+    <path fill="#34495E" stroke="#1ABC9C" stroke-width="1" d="M12,0 H543 A12,12 0 0 1 555,12 V388 A12,12 0 0 1 543,400 H12 A12,12 0 0 1 0,388 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 卡片标题 -->
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#1ABC9C"/>
-    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C"/>
+    
+    <path fill="#1ABC9C" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#1ABC9C" />
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">鬼神之维：运势与不确定性</text>
     
-    <!-- 原文引用 -->
-    <rect x="30" y="70" width="495" height="50" rx="8" fill="#2C3E50" stroke="#D4A84B" stroke-width="1"/>
+    
+    <path fill="#2C3E50" stroke="#D4A84B" stroke-width="1" d="M38,70 H517 A8,8 0 0 1 525,78 V112 A8,8 0 0 1 517,120 H38 A8,8 0 0 1 30,112 V78 A8,8 0 0 1 38,70 Z" />
     <text x="278" y="102" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#D4A84B" text-anchor="middle">「鬼神害盈而福谦」</text>
     
-    <!-- 解读内容 -->
+    
     <g transform="translate(30, 140)">
-      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-        <tspan x="0" dy="20" font-weight="bold" fill="#1ABC9C">现代诠释</tspan>
-        <tspan x="0" dy="30">鬼神 = 冥冥中的运势</tspan>
-        <tspan x="0" dy="26">或不可测的随机性风险（Black Swans）</tspan>
-      </text>
-      
-      <!-- 对比区 -->
-      <rect x="0" y="100" width="230" height="100" rx="6" fill="#2C3E50" stroke="#C0392B" stroke-width="1"/>
+      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1ABC9C" font-weight="bold" x="0" y="20">现代诠释</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="0" y="50">鬼神 = 冥冥中的运势</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="0" y="76">或不可测的随机性风险（Black Swans）</text><path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M6,100 H224 A6,6 0 0 1 230,106 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V106 A6,6 0 0 1 6,100 Z" />
       <text x="115" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#C0392B" text-anchor="middle">傲慢自大者</text>
       <text x="115" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">忽视潜在风险</text>
       <text x="115" y="168" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">过度透支运气</text>
       <text x="115" y="191" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#C0392B" text-anchor="middle">→ "害盈"天灾</text>
       
-      <rect x="260" y="100" width="230" height="100" rx="6" fill="#2C3E50" stroke="#1ABC9C" stroke-width="1"/>
+      <path fill="#2C3E50" stroke="#1ABC9C" stroke-width="1" d="M266,100 H484 A6,6 0 0 1 490,106 V194 A6,6 0 0 1 484,200 H266 A6,6 0 0 1 260,194 V106 A6,6 0 0 1 266,100 Z" />
       <text x="375" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#1ABC9C" text-anchor="middle">谦卑者</text>
       <text x="375" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">常怀敬畏</text>
       <text x="375" y="168" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">行事留有余地</text>
       <text x="375" y="191" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1ABC9C" text-anchor="middle">→ "福谦"幸存</text>
     </g>
     
-    <!-- 底部备注 -->
+    
     <text x="278" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#8B9A9A" text-anchor="middle">概率上的幸存者偏差</text>
   </g>
   
-  <!-- 右栏 - 人道之维 -->
+  
   <g transform="translate(665, 150)">
-    <rect x="0" y="0" width="555" height="400" rx="12" fill="#E8E4DC" stroke="#D4D4D4" stroke-width="1"/>
+    <path fill="#E8E4DC" stroke="#D4D4D4" stroke-width="1" d="M12,0 H543 A12,12 0 0 1 555,12 V388 A12,12 0 0 1 543,400 H12 A12,12 0 0 1 0,388 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 卡片标题 -->
-    <rect x="0" y="0" width="555" height="50" rx="12" fill="#C0392B"/>
-    <rect x="0" y="40" width="555" height="10" fill="#C0392B"/>
+    
+    <path fill="#C0392B" d="M12,0 H543 A12,12 0 0 1 555,12 V38 A12,12 0 0 1 543,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="555" height="10" fill="#C0392B" />
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">人道之维：社会交换理论</text>
     
-    <!-- 原文引用 -->
-    <rect x="30" y="70" width="495" height="50" rx="8" fill="#FFFFFF" stroke="#D4A84B" stroke-width="1"/>
+    
+    <path fill="#FFFFFF" stroke="#D4A84B" stroke-width="1" d="M38,70 H517 A8,8 0 0 1 525,78 V112 A8,8 0 0 1 517,120 H38 A8,8 0 0 1 30,112 V78 A8,8 0 0 1 38,70 Z" />
     <text x="278" y="102" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#D4A84B" text-anchor="middle">「人道恶盈而好谦」</text>
     
-    <!-- 解读内容 -->
+    
     <g transform="translate(30, 140)">
-      <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E">
-        <tspan x="0" dy="20" font-weight="bold" fill="#C0392B">人类心理机制</tspan>
-        <tspan x="0" dy="30">人类普遍具有嫉妒心与公平偏好</tspan>
-      </text>
-      
-      <!-- 对比区 -->
-      <rect x="0" y="70" width="230" height="130" rx="6" fill="#FFFFFF" stroke="#C0392B" stroke-width="1"/>
+      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="0" y="20">人类心理机制</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="50">人类普遍具有嫉妒心与公平偏好</text><path fill="#FFFFFF" stroke="#C0392B" stroke-width="1" d="M6,70 H224 A6,6 0 0 1 230,76 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V76 A6,6 0 0 1 6,70 Z" />
       <text x="115" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#C0392B" text-anchor="middle">炫耀者（盈）</text>
       <text x="115" y="122" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">激活他人防御本能</text>
       <text x="115" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">触发攻击欲望</text>
       <text x="115" y="168" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">社会协作成本剧增</text>
       <text x="115" y="191" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#C0392B" text-anchor="middle">→ "恶盈"排斥</text>
       
-      <rect x="260" y="70" width="230" height="130" rx="6" fill="#FFFFFF" stroke="#1ABC9C" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#1ABC9C" stroke-width="1" d="M266,70 H484 A6,6 0 0 1 490,76 V194 A6,6 0 0 1 484,200 H266 A6,6 0 0 1 260,194 V76 A6,6 0 0 1 266,70 Z" />
       <text x="375" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#1ABC9C" text-anchor="middle">谦卑者（谦）</text>
       <text x="375" y="122" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">降低他人防御机制</text>
       <text x="375" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">激发他人利他行为</text>
@@ -82,24 +69,24 @@
       <text x="375" y="191" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1ABC9C" text-anchor="middle">→ "好谦"亲近</text>
     </g>
     
-    <!-- 底部备注 -->
+    
     <text x="278" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#6B7280" text-anchor="middle">社会资本与协作成本的博弈</text>
   </g>
   
-  <!-- 底部总结 -->
-  <rect x="60" y="575" width="1160" height="70" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
-  <!-- icon: sparkles -->
+  
+  <path fill="#34495E" stroke="#D4A84B" stroke-width="2" d="M72,575 H1208 A12,12 0 0 1 1220,587 V633 A12,12 0 0 1 1208,645 H72 A12,12 0 0 1 60,633 V587 A12,12 0 0 1 72,575 Z" />
+  
   <g transform="translate(90.0, 595.0) scale(1.75)" fill="#D4A84B">
-    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z"/>
-    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z"/>
-    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z"/>
-    <path d="M15 14L13 12L11 14L13 16L15 14Z"/>
-    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z"/>
+    <path d="M8 3L10.5 2.5L11 0H12L12.5 2.5L15 3V4L12.5 4.5L12 7H11L10.5 4.5L8 4V3Z" />
+    <path d="M0 11V10L4 9L5 5H6L7 9L11 10V11L7 12L6 16H5L4 12L0 11Z" />
+    <path d="M1 2L2.5 0.5L4 2L2.5 3.5L1 2Z" />
+    <path d="M15 14L13 12L11 14L13 16L15 14Z" />
+    <path d="M15 10C15.5523 10 16 9.55229 16 9C16 8.44771 15.5523 8 15 8C14.4477 8 14 8.44771 14 9C14 9.55229 14.4477 10 15 10Z" />
   </g>
   <text x="140" y="600" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#D4A84B">四维综述</text>
   <text x="140" y="628" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">谦卦全吉，因为在天（自然法则）、地（物质规律）、神（运气）、人（社会关系）四维实现阻力最小化与收益最大化</text>
   
-  <!-- 页脚 -->
+  
   <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第三部分：宇宙四大法则</text>
   <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">7 / 20</text>
 </svg>

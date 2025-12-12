@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     冷漠型患者：从孤立到亲密
   </text>
@@ -13,62 +13,57 @@
     The Dismissing Patient: From Isolation to Intimacy
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="420" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 核心特征卡片 -->
+  <line x1="60" y1="125" x2="420" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="400" height="260" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#64748B" stroke-width="2" d="M12,0 H388 A12,12 0 0 1 400,12 V248 A12,12 0 0 1 388,260 H12 A12,12 0 0 1 0,248 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 标题 -->
-    <rect x="0" y="0" width="400" height="50" rx="12" fill="#64748B"/>
-    <rect x="0" y="38" width="400" height="12" fill="#64748B"/>
+    
+    <path fill="#64748B" d="M12,0 H388 A12,12 0 0 1 400,12 V38 A12,12 0 0 1 388,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="38" width="400" height="12" fill="#64748B" />
     <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🧊 核心特征</text>
     
-    <!-- 特征列表 -->
+    
     <g transform="translate(20, 70)">
-      <rect x="0" y="0" width="360" height="50" rx="8" fill="#E2E8F0"/>
+      <path fill="#E2E8F0" d="M8,0 H352 A8,8 0 0 1 360,8 V42 A8,8 0 0 1 352,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="20" font-size="15" font-weight="600" fill="#64748B" text-anchor="middle">强迫性自力更生</text>
       <text x="180" y="40" font-size="13" fill="#6B7280" text-anchor="middle">贬低依恋的重要性，过度强调自主</text>
     </g>
     
     <g transform="translate(20, 130)">
-      <rect x="0" y="0" width="360" height="50" rx="8" fill="#E2E8F0"/>
+      <path fill="#E2E8F0" d="M8,0 H352 A8,8 0 0 1 360,8 V42 A8,8 0 0 1 352,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="20" font-size="15" font-weight="600" fill="#64748B" text-anchor="middle">情感隔离</text>
       <text x="180" y="40" font-size="13" fill="#6B7280" text-anchor="middle">常显得像"会说话的脑袋"</text>
     </g>
     
     <g transform="translate(20, 190)">
-      <rect x="0" y="0" width="360" height="50" rx="8" fill="#E2E8F0"/>
+      <path fill="#E2E8F0" d="M8,0 H352 A8,8 0 0 1 360,8 V42 A8,8 0 0 1 352,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="20" font-size="15" font-weight="600" fill="#64748B" text-anchor="middle">左脑偏向</text>
       <text x="180" y="40" font-size="13" fill="#6B7280" text-anchor="middle">与负责社交-情感的右脑断连</text>
     </g>
   </g>
   
-  <!-- 治疗挑战 -->
+  
   <g transform="translate(60, 420)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="400" height="130" rx="12" fill="#FEF3C7" stroke="#E07843" stroke-width="1"/>
+    <path fill="#FEF3C7" stroke="#E07843" stroke-width="1" d="M12,0 H388 A12,12 0 0 1 400,12 V118 A12,12 0 0 1 388,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
     
     <text x="20" y="35" font-size="16" font-weight="bold" fill="#E07843">⚠️ 第22条军规</text>
     
-    <text x="20" y="65" font-size="14" fill="#374151">
-      <tspan x="20" dy="0">患者需要亲密关系来治愈，</tspan>
-      <tspan x="20" dy="22">但亲密正是他们防御的对象。</tspan>
-      <tspan x="20" dy="22" font-weight="600" fill="#E07843">治疗师变得重要本身就是威胁。</tspan>
-    </text>
-  </g>
+    <text fill="#374151" font-size="14" x="20" y="65">患者需要亲密关系来治愈，</text><text fill="#374151" font-size="14" x="20" y="87">但亲密正是他们防御的对象。</text><text fill="#E07843" font-size="14" font-weight="600" x="20" y="109">治疗师变得重要本身就是威胁。</text></g>
   
-  <!-- 三种移情-反移情模式 -->
+  
   <g transform="translate(500, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
     <text x="0" y="0" font-size="18" font-weight="600" fill="#64748B">三种移情-反移情模式</text>
-    <line x1="0" y1="15" x2="230" y2="15" stroke="#64748B" stroke-width="2"/>
+    <line x1="0" y1="15" x2="230" y2="15" stroke="#64748B" stroke-width="2" />
     
-    <!-- 贬低模式 -->
+    
     <g transform="translate(0, 35)">
-      <rect x="0" y="0" width="720" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H708 A12,12 0 0 1 720,12 V98 A12,12 0 0 1 708,110 H12 A12,12 0 0 1 0,98 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="8" height="110" rx="4" fill="#B54545"/>
+      <path fill="#B54545" d="M4,0 H4 A4,4 0 0 1 8,4 V106 A4,4 0 0 1 4,110 H4 A4,4 0 0 1 0,106 V4 A4,4 0 0 1 4,0 Z" />
       
       <text x="30" y="32" font-size="16" font-weight="bold" fill="#B54545">1. 贬低模式</text>
       <text x="130" y="32" font-size="13" fill="#6B7280">The Devaluing Pattern</text>
@@ -84,11 +79,11 @@
       </text>
     </g>
     
-    <!-- 理想化模式 -->
+    
     <g transform="translate(0, 155)">
-      <rect x="0" y="0" width="720" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H708 A12,12 0 0 1 720,12 V98 A12,12 0 0 1 708,110 H12 A12,12 0 0 1 0,98 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="8" height="110" rx="4" fill="#E07843"/>
+      <path fill="#E07843" d="M4,0 H4 A4,4 0 0 1 8,4 V106 A4,4 0 0 1 4,110 H4 A4,4 0 0 1 0,106 V4 A4,4 0 0 1 4,0 Z" />
       
       <text x="30" y="32" font-size="16" font-weight="bold" fill="#E07843">2. 理想化模式</text>
       <text x="150" y="32" font-size="13" fill="#6B7280">The Idealizing Pattern</text>
@@ -104,11 +99,11 @@
       </text>
     </g>
     
-    <!-- 控制模式 -->
+    
     <g transform="translate(0, 275)">
-      <rect x="0" y="0" width="720" height="110" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H708 A12,12 0 0 1 720,12 V98 A12,12 0 0 1 708,110 H12 A12,12 0 0 1 0,98 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="8" height="110" rx="4" fill="#2E5C8E"/>
+      <path fill="#2E5C8E" d="M4,0 H4 A4,4 0 0 1 8,4 V106 A4,4 0 0 1 4,110 H4 A4,4 0 0 1 0,106 V4 A4,4 0 0 1 4,0 Z" />
       
       <text x="30" y="32" font-size="16" font-weight="bold" fill="#2E5C8E">3. 控制模式</text>
       <text x="140" y="32" font-size="13" fill="#6B7280">The Pattern of Control</text>
@@ -125,30 +120,30 @@
     </g>
   </g>
   
-  <!-- 底部干预策略 -->
-  <rect x="60" y="570" width="1160" height="100" rx="12" fill="#1E3A5F"/>
+  
+  <path fill="#1E3A5F" d="M72,570 H1208 A12,12 0 0 1 1220,582 V658 A12,12 0 0 1 1208,670 H72 A12,12 0 0 1 60,658 V582 A12,12 0 0 1 72,570 Z" />
   
   <text x="100" y="605" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
     核心干预策略
   </text>
   
   <g transform="translate(100, 620)" font-family="PingFang SC, sans-serif" font-size="14">
-    <rect x="0" y="0" width="200" height="35" rx="8" fill="#3D8B7A"/>
+    <path fill="#3D8B7A" d="M8,0 H192 A8,8 0 0 1 200,8 V27 A8,8 0 0 1 192,35 H8 A8,8 0 0 1 0,27 V8 A8,8 0 0 1 8,0 Z" />
     <text x="100" y="23" fill="#FFFFFF" text-anchor="middle">
       <tspan font-weight="bold">跟随情感</tspan>
       <tspan dx="5" font-size="12">Follow the Affect</tspan>
     </text>
     
-    <rect x="230" y="0" width="280" height="35" rx="8" fill="#2E5C8E"/>
+    <path fill="#2E5C8E" d="M238,0 H502 A8,8 0 0 1 510,8 V27 A8,8 0 0 1 502,35 H238 A8,8 0 0 1 230,27 V8 A8,8 0 0 1 238,0 Z" />
     <text x="370" y="23" fill="#FFFFFF" text-anchor="middle">捕捉微小的非言语线索（眼神、张力）</text>
     
-    <rect x="540" y="0" width="250" height="35" rx="8" fill="#E07843"/>
+    <path fill="#E07843" d="M548,0 H782 A8,8 0 0 1 790,8 V27 A8,8 0 0 1 782,35 H548 A8,8 0 0 1 540,27 V8 A8,8 0 0 1 548,0 Z" />
     <text x="665" y="23" fill="#FFFFFF" text-anchor="middle">利用躯体反移情接触解离情感</text>
     
-    <rect x="820" y="0" width="280" height="35" rx="8" fill="#64748B"/>
+    <path fill="#64748B" d="M828,0 H1092 A8,8 0 0 1 1100,8 V27 A8,8 0 0 1 1092,35 H828 A8,8 0 0 1 820,27 V8 A8,8 0 0 1 828,0 Z" />
     <text x="960" y="23" fill="#FFFFFF" text-anchor="middle">共情 + 面质：成为真实存在的"他者"</text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">20</text>
 </svg>

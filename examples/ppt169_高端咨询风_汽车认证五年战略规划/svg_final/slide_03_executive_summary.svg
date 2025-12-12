@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     执行摘要
   </text>
@@ -19,62 +19,62 @@
     EXECUTIVE SUMMARY
   </text>
   
-  <!-- 四个KPI卡片 -->
-  <!-- KPI 1: 新能源车占比 -->
+  
+  
   <g transform="translate(60, 115)">
-    <rect width="270" height="130" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="6" height="130" rx="3" fill="#00A651"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V118 A12,12 0 0 1 258,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#00A651" d="M3,0 H3 A3,3 0 0 1 6,3 V127 A3,3 0 0 1 3,130 H3 A3,3 0 0 1 0,127 V3 A3,3 0 0 1 3,0 Z" />
     <text x="25" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">新能源车销量占比</text>
     <text x="25" y="85" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#003F6C">44%</text>
     <g transform="translate(140, 60)">
-      <polygon points="0,20 10,0 20,20" fill="#00A651"/>
+      <polygon points="0,20 10,0 20,20" fill="#00A651" />
       <text x="30" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651">↑ 快速增长</text>
     </g>
     <text x="25" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">2025年1-5月</text>
   </g>
   
-  <!-- KPI 2: L2/L3渗透率 -->
+  
   <g transform="translate(355, 115)">
-    <rect width="270" height="130" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="6" height="130" rx="3" fill="#0076A8"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V118 A12,12 0 0 1 258,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0076A8" d="M3,0 H3 A3,3 0 0 1 6,3 V127 A3,3 0 0 1 3,130 H3 A3,3 0 0 1 0,127 V3 A3,3 0 0 1 3,0 Z" />
     <text x="25" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">L2/L3自动驾驶渗透率</text>
     <text x="25" y="85" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#003F6C">50%</text>
     <g transform="translate(140, 60)">
-      <polygon points="0,20 10,0 20,20" fill="#0076A8"/>
+      <polygon points="0,20 10,0 20,20" fill="#0076A8" />
       <text x="30" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">↑ 2025预期</text>
     </g>
     <text x="25" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">智能网联汽车</text>
   </g>
   
-  <!-- KPI 3: 出口增速 -->
+  
   <g transform="translate(650, 115)">
-    <rect width="270" height="130" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="6" height="130" rx="3" fill="#FF6B35"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V118 A12,12 0 0 1 258,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF6B35" d="M3,0 H3 A3,3 0 0 1 6,3 V127 A3,3 0 0 1 3,130 H3 A3,3 0 0 1 0,127 V3 A3,3 0 0 1 3,0 Z" />
     <text x="25" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">新能源车出口增速</text>
     <text x="25" y="85" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#003F6C">64.6%</text>
     <g transform="translate(175, 60)">
-      <polygon points="0,20 10,0 20,20" fill="#FF6B35"/>
+      <polygon points="0,20 10,0 20,20" fill="#FF6B35" />
       <text x="25" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">同比</text>
     </g>
     <text x="25" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">85.5万辆出口</text>
   </g>
   
-  <!-- KPI 4: 数字化效率 -->
+  
   <g transform="translate(945, 115)">
-    <rect width="270" height="130" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="6" height="130" rx="3" fill="#9C27B0"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V118 A12,12 0 0 1 258,130 H12 A12,12 0 0 1 0,118 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#9C27B0" d="M3,0 H3 A3,3 0 0 1 6,3 V127 A3,3 0 0 1 3,130 H3 A3,3 0 0 1 0,127 V3 A3,3 0 0 1 3,0 Z" />
     <text x="25" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">数字化效率提升目标</text>
     <text x="25" y="85" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#003F6C">40%</text>
     <g transform="translate(140, 60)">
-      <polygon points="0,20 10,0 20,20" fill="#9C27B0"/>
+      <polygon points="0,20 10,0 20,20" fill="#9C27B0" />
       <text x="30" y="18" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#9C27B0">↑ AI+区块链</text>
     </g>
     <text x="25" y="115" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0">认证周期缩短</text>
   </g>
   
-  <!-- 战略定位 -->
+  
   <g transform="translate(60, 270)">
-    <rect width="1160" height="100" rx="12" fill="#003F6C"/>
+    <path fill="#003F6C" d="M12,0 H1148 A12,12 0 0 1 1160,12 V88 A12,12 0 0 1 1148,100 H12 A12,12 0 0 1 0,88 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="35" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFC107">战略定位</text>
     <text x="30" y="68" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="600" fill="#FFFFFF">
       以数字化驱动、绿色低碳和智能创新为双轮，
@@ -84,50 +84,32 @@
     </text>
   </g>
   
-  <!-- 三大战略支柱 -->
+  
   <text x="60" y="415" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#1A1A2E">
     三大战略支柱
   </text>
   
-  <!-- 支柱1 -->
+  
   <g transform="translate(60, 435)">
-    <rect width="370" height="200" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="8" rx="4" fill="#00A651"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#00A651" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🌱 绿色低碳创新</text>
-    <text x="20" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="20" dy="0">• 碳足迹认证体系</tspan>
-      <tspan x="20" dy="24">• 动力电池回收认证</tspan>
-      <tspan x="20" dy="24">• 绿色产品认证拓展</tspan>
-      <tspan x="20" dy="24">• 碳标签与绿色金融</tspan>
-    </text>
-  </g>
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 碳足迹认证体系</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 动力电池回收认证</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 绿色产品认证拓展</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 碳标签与绿色金融</text></g>
   
-  <!-- 支柱2 -->
+  
   <g transform="translate(455, 435)">
-    <rect width="370" height="200" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="8" rx="4" fill="#0076A8"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0076A8" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🔒 安全智能驱动</text>
-    <text x="20" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="20" dy="0">• 动力电池安全认证</tspan>
-      <tspan x="20" dy="24">• 自动驾驶功能安全</tspan>
-      <tspan x="20" dy="24">• 车载网络安全评估</tspan>
-      <tspan x="20" dy="24">• 智能座舱功能认证</tspan>
-    </text>
-  </g>
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 动力电池安全认证</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 自动驾驶功能安全</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 车载网络安全评估</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 智能座舱功能认证</text></g>
   
-  <!-- 支柱3 -->
+  
   <g transform="translate(850, 435)">
-    <rect width="370" height="200" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="8" rx="4" fill="#FF6B35"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF6B35" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🌍 国际化布局</text>
-    <text x="20" y="80" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="20" dy="0">• 国际标准对接互认</tspan>
-      <tspan x="20" dy="24">• 海外服务网络构建</tspan>
-      <tspan x="20" dy="24">• 差异化法规应对</tspan>
-      <tspan x="20" dy="24">• 国际合作联盟</tspan>
-    </text>
-  </g>
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 国际标准对接互认</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 海外服务网络构建</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 差异化法规应对</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 国际合作联盟</text></g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" text-anchor="end" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">03 / 20</text>
 </svg>

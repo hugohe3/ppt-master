@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4285F4;stop-opacity:1" />
+        </linearGradient>
+
+        <filter id="cardShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="3" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="46" font-weight="700" fill="#1A237E">
+        Smart Resource Scheduler
+    </text>
+
+    
+    <path fill="#4285F4" d="M62,100 H198 A2,2 0 0 1 200,102 V102 A2,2 0 0 1 198,104 H62 A2,2 0 0 1 60,102 V102 A2,2 0 0 1 62,100 Z" />
+
+    
+    <g transform="translate(60, 140)">
+        
+        <path fill="#F8F9FA" stroke="#4285F4" stroke-width="3" filter="url(#cardShadow)" d="M16,0 H464 A16,16 0 0 1 480,16 V504 A16,16 0 0 1 464,520 H16 A16,16 0 0 1 0,504 V16 A16,16 0 0 1 16,0 Z" />
+
+        
+        <text x="30" y="40" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#4285F4">
+            Background
+        </text>
+        <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" x="30" y="75">GCP data centers had significant compute</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" x="30" y="101">resource waste, with utilization below 40%</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" x="30" y="127">during off-peak hours.</text><line x1="30" y1="160" x2="450" y2="160" stroke="#E8EAED" stroke-width="1" />
+
+        
+        <text x="30" y="195" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#4285F4">
+            Technical Solution
+        </text>
+
+        
+        <g transform="translate(30, 220)">
+            <circle cx="0" cy="10" r="4" fill="#4285F4" />
+            <text x="15" y="15" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368">
+                ML-powered load prediction model
+            </text>
+        </g>
+
+        <g transform="translate(30, 260)">
+            <circle cx="0" cy="10" r="4" fill="#4285F4" />
+            <text x="15" y="15" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368">
+                Dynamic resource allocation algorithm
+            </text>
+        </g>
+
+        <g transform="translate(30, 300)">
+            <circle cx="0" cy="10" r="4" fill="#4285F4" />
+            <text x="15" y="15" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368">
+                Real-time monitoring and auto-scaling
+            </text>
+        </g>
+
+        <g transform="translate(30, 340)">
+            <circle cx="0" cy="10" r="4" fill="#4285F4" />
+            <text x="15" y="15" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368">
+                50K+ scheduling decisions per second
+            </text>
+        </g>
+
+        
+        <line x1="30" y1="400" x2="450" y2="400" stroke="#E8EAED" stroke-width="1" />
+
+        
+        <text x="30" y="435" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="600" fill="#4285F4">
+            Tech Stack
+        </text>
+        <text x="30" y="470" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#5F6368">
+            Go + Kubernetes + TensorFlow
+        </text>
+    </g>
+
+    
+    <g transform="translate(580, 140)">
+        
+        <text x="0" y="30" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="600" fill="#1A237E">
+            Key Results
+        </text>
+
+        
+        <text x="0" y="80" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#5F6368">
+            Resource Utilization Rate
+        </text>
+
+        
+        <path fill="#E8EAED" d="M4,110 H216 A4,4 0 0 1 220,114 V156 A4,4 0 0 1 216,160 H4 A4,4 0 0 1 0,156 V114 A4,4 0 0 1 4,110 Z" />
+        <text x="10" y="142" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#5F6368">
+            Before: 38%
+        </text>
+
+        
+        <path fill="#4285F4" d="M4,180 H436 A4,4 0 0 1 440,184 V226 A4,4 0 0 1 436,230 H4 A4,4 0 0 1 0,226 V184 A4,4 0 0 1 4,180 Z" />
+        <text x="10" y="212" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">
+            After: 76% (+100%)
+        </text>
+
+        
+        
+        <g transform="translate(0, 270)">
+            <path fill="#E8F0FE" stroke="#4285F4" stroke-width="2" d="M8,0 H312 A8,8 0 0 1 320,8 V92 A8,8 0 0 1 312,100 H8 A8,8 0 0 1 0,92 V8 A8,8 0 0 1 8,0 Z" />
+            <text x="160" y="45" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#4285F4" text-anchor="middle">
+                $28M
+            </text>
+            <text x="160" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Annual Cost Savings
+            </text>
+        </g>
+
+        
+        <g transform="translate(340, 270)">
+            <path fill="#E6F4EA" stroke="#34A853" stroke-width="2" d="M8,0 H292 A8,8 0 0 1 300,8 V92 A8,8 0 0 1 292,100 H8 A8,8 0 0 1 0,92 V8 A8,8 0 0 1 8,0 Z" />
+            <text x="150" y="45" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#34A853" text-anchor="middle">
+                -35%
+            </text>
+            <text x="150" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                Response Latency
+            </text>
+        </g>
+
+        
+        <g transform="translate(0, 390)">
+            <path fill="#FEF7E0" stroke="#FBBC04" stroke-width="2" d="M8,0 H312 A8,8 0 0 1 320,8 V92 A8,8 0 0 1 312,100 H8 A8,8 0 0 1 0,92 V8 A8,8 0 0 1 8,0 Z" />
+            <text x="160" y="45" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="700" fill="#FBBC04" text-anchor="middle">
+                120+
+            </text>
+            <text x="160" y="75" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#5F6368" text-anchor="middle">
+                GCP Regions Covered
+            </text>
+        </g>
+
+        
+        <g transform="translate(340, 390)">
+            <path fill="#FCE8E6" stroke="#EA4335" stroke-width="2" d="M8,0 H292 A8,8 0 0 1 300,8 V92 A8,8 0 0 1 292,100 H8 A8,8 0 0 1 0,92 V8 A8,8 0 0 1 8,0 Z" />
+            <text x="150" y="40" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="32" text-anchor="middle">🏆</text>
+            <text x="150" y="80" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#5F6368" text-anchor="middle">
+                VP Recognition
+            </text>
+        </g>
+    </g>
+
+    
+    <text x="1220" y="700" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="end">
+        04
+    </text>
+</svg>

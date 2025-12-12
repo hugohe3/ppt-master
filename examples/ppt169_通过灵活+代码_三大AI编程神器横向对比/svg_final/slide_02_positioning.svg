@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+            <feOffset dx="0" dy="4" result="offsetBlur" />
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color" />
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
+            <feMerge>
+                <feMergeNode in="shadow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    
+    <text x="640" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B" text-anchor="middle" font-weight="700">一句话定位</text>
+    <text x="640" y="105" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#64748B" text-anchor="middle">快速了解三款工具的核心差异</text>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M76,150 H404 A16,16 0 0 1 420,166 V474 A16,16 0 0 1 404,490 H76 A16,16 0 0 1 60,474 V166 A16,16 0 0 1 76,150 Z" />
+        <path fill="#8B5CF6" d="M64,150 H416 A4,4 0 0 1 420,154 V154 A4,4 0 0 1 416,158 H64 A4,4 0 0 1 60,154 V154 A4,4 0 0 1 64,150 Z" />
+
+        
+        <circle cx="240" cy="210" r="35" fill="#8B5CF6" opacity="0.15" />
+        <text x="240" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#8B5CF6" text-anchor="middle" font-weight="700">SK</text>
+
+        
+        <text x="240" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B" text-anchor="middle" font-weight="700">Spec Kit</text>
+        <text x="240" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#8B5CF6" text-anchor="middle">GitHub 官方出品</text>
+
+        
+        <path fill="#F5F3FF" d="M98,320 H382 A8,8 0 0 1 390,328 V372 A8,8 0 0 1 382,380 H98 A8,8 0 0 1 90,372 V328 A8,8 0 0 1 98,320 Z" />
+        <text font-size="15" text-anchor="middle" font-weight="600" fill="#5B21B6" font-family="system-ui, -apple-system, sans-serif" x="240" y="350">产品经理 + 架构师 + 程序员</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#5B21B6" font-family="system-ui, -apple-system, sans-serif" x="240" y="372">的三合一工作台</text><text x="240" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text x="240" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">规格驱动开发</text>
+        <text x="240" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Spec-Driven Development</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M476,150 H804 A16,16 0 0 1 820,166 V474 A16,16 0 0 1 804,490 H476 A16,16 0 0 1 460,474 V166 A16,16 0 0 1 476,150 Z" />
+        <path fill="#2563EB" d="M464,150 H816 A4,4 0 0 1 820,154 V154 A4,4 0 0 1 816,158 H464 A4,4 0 0 1 460,154 V154 A4,4 0 0 1 464,150 Z" />
+
+        
+        <circle cx="640" cy="210" r="35" fill="#2563EB" opacity="0.15" />
+        <text x="640" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#2563EB" text-anchor="middle" font-weight="700">OS</text>
+
+        
+        <text x="640" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B" text-anchor="middle" font-weight="700">OpenSpec</text>
+        <text x="640" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#2563EB" text-anchor="middle">Fission-AI</text>
+
+        
+        <path fill="#EFF6FF" d="M498,320 H782 A8,8 0 0 1 790,328 V372 A8,8 0 0 1 782,380 H498 A8,8 0 0 1 490,372 V328 A8,8 0 0 1 498,320 Z" />
+        <text font-size="15" text-anchor="middle" font-weight="600" fill="#1D4ED8" font-family="system-ui, -apple-system, sans-serif" x="640" y="350">存量项目的</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#1D4ED8" font-family="system-ui, -apple-system, sans-serif" x="640" y="372">需求管理专家</text><text x="640" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text x="640" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">变更驱动开发</text>
+        <text x="640" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Change-Driven Development</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M876,150 H1204 A16,16 0 0 1 1220,166 V474 A16,16 0 0 1 1204,490 H876 A16,16 0 0 1 860,474 V166 A16,16 0 0 1 876,150 Z" />
+        <path fill="#10B981" d="M864,150 H1216 A4,4 0 0 1 1220,154 V154 A4,4 0 0 1 1216,158 H864 A4,4 0 0 1 860,154 V154 A4,4 0 0 1 864,150 Z" />
+
+        
+        <circle cx="1040" cy="210" r="35" fill="#10B981" opacity="0.15" />
+        <text x="1040" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#10B981" text-anchor="middle" font-weight="700">ZCF</text>
+
+        
+        <text x="1040" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#1E293B" text-anchor="middle" font-weight="700">ZCF</text>
+        <text x="1040" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#10B981" text-anchor="middle">UfoMiao（社区）</text>
+
+        
+        <path fill="#ECFDF5" d="M898,320 H1182 A8,8 0 0 1 1190,328 V372 A8,8 0 0 1 1182,380 H898 A8,8 0 0 1 890,372 V328 A8,8 0 0 1 898,320 Z" />
+        <text font-size="15" text-anchor="middle" font-weight="600" fill="#047857" font-family="system-ui, -apple-system, sans-serif" x="1040" y="350">AI 编程环境的</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#047857" font-family="system-ui, -apple-system, sans-serif" x="1040" y="372">一键配置器</text><text x="1040" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text x="1040" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">零配置，开箱即用</text>
+        <text x="1040" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Zero-Config Code Flow</text>
+    </g>
+
+    
+    <path fill="#1E293B" d="M72,520 H1208 A12,12 0 0 1 1220,532 V648 A12,12 0 0 1 1208,660 H72 A12,12 0 0 1 60,648 V532 A12,12 0 0 1 72,520 Z" />
+
+    <text x="130" y="565" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8">简单来说</text>
+
+    
+    <circle cx="100" cy="600" r="6" fill="#8B5CF6" />
+    <text x="120" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#C4B5FD">Spec Kit</tspan>
+        <tspan fill="#94A3B8"> 帮你从 0 到 1 想清楚</tspan>
+        <tspan fill="#FFFFFF">"做什么"</tspan>
+        <tspan fill="#94A3B8">和</tspan>
+        <tspan fill="#FFFFFF">"怎么做"</tspan>
+    </text>
+
+    <circle cx="500" cy="600" r="6" fill="#2563EB" />
+    <text x="520" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#93C5FD">OpenSpec</tspan>
+        <tspan fill="#94A3B8"> 帮你管理</tspan>
+        <tspan fill="#FFFFFF">"改什么"</tspan>
+        <tspan fill="#94A3B8">和</tspan>
+        <tspan fill="#FFFFFF">"改了哪些"</tspan>
+    </text>
+
+    <circle cx="900" cy="600" r="6" fill="#10B981" />
+    <text x="920" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF">
+        <tspan font-weight="600" fill="#6EE7B7">ZCF</tspan>
+        <tspan fill="#94A3B8"> 帮你</tspan>
+        <tspan fill="#FFFFFF">"5 分钟配好环境就能干活"</tspan>
+    </text>
+
+    
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">02 / 11</text>
+</svg>

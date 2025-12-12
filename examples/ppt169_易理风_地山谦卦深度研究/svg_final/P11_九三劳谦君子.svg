@@ -1,61 +1,43 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 - 深色模式（强调唯一阳爻） -->
-  <rect width="1280" height="720" fill="#2C3E50"/>
-  <line x1="0" y1="5" x2="1280" y2="5" stroke="#C0392B" stroke-width="10" opacity="0.8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#2C3E50" />
+  <line x1="0" y1="5" x2="1280" y2="5" stroke="#C0392B" stroke-width="10" opacity="0.8" />
+  
+  
   <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#C0392B">九三：劳谦君子，有终，吉</text>
-  <line x1="60" y1="120" x2="480" y2="120" stroke="#C0392B" stroke-width="3"/>
+  <line x1="60" y1="120" x2="480" y2="120" stroke="#C0392B" stroke-width="3" />
   <text x="500" y="115" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#D4A84B">★ 唯一阳爻 · 卦主</text>
   
-  <!-- 核心地位 -->
+  
   <g transform="translate(60, 150)">
-    <rect x="0" y="0" width="560" height="200" rx="12" fill="#34495E" stroke="#C0392B" stroke-width="2"/>
-    <rect x="0" y="0" width="560" height="50" rx="12" fill="#C0392B"/>
-    <rect x="0" y="40" width="560" height="10" fill="#C0392B"/>
+    <path fill="#34495E" stroke="#C0392B" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V188 A12,12 0 0 1 548,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#C0392B" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="560" height="10" fill="#C0392B" />
     <text x="280" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">核心地位</text>
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 全卦唯一阳爻 = 谦卦主心骨</tspan>
-      <tspan x="40" dy="28">• 下卦艮顶端 = 藏于地中之山</tspan>
-      <tspan x="40" dy="28">• 互卦坎（劳）与震（动）交界</tspan>
-      <tspan x="40" dy="28">• 承担苦累（坎），做出功绩（震）</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 全卦唯一阳爻 = 谦卦主心骨</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 下卦艮顶端 = 藏于地中之山</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 互卦坎（劳）与震（动）交界</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 承担苦累（坎），做出功绩（震）</text></g>
   
-  <!-- 政治隐喻 -->
+  
   <g transform="translate(660, 150)">
-    <rect x="0" y="0" width="560" height="200" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
-    <rect x="0" y="0" width="560" height="50" rx="12" fill="#D4A84B"/>
-    <rect x="0" y="40" width="560" height="10" fill="#D4A84B"/>
+    <path fill="#34495E" stroke="#D4A84B" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V188 A12,12 0 0 1 548,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#D4A84B" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="560" height="10" fill="#D4A84B" />
     <text x="280" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">政治隐喻：实权派智慧</text>
-    <text x="40" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="40" dy="0">• 象征功勋卓著的实权派（如周公）</tspan>
-      <tspan x="40" dy="28">• 被众阴（小人或百姓）包围</tspan>
-      <tspan x="40" dy="28">• 按政治逻辑属「功高震主」危险位</tspan>
-      <tspan x="40" dy="28">• 化解之道：劳而不伐，有功而不德</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="90">• 象征功勋卓著的实权派（如周公）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="118">• 被众阴（小人或百姓）包围</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="146">• 按政治逻辑属「功高震主」危险位</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="174">• 化解之道：劳而不伐，有功而不德</text></g>
   
-  <!-- 数据化解读 -->
+  
   <g transform="translate(60, 380)">
-    <rect x="0" y="0" width="1160" height="180" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
-    <rect x="0" y="0" width="1160" height="50" rx="12" fill="#1ABC9C"/>
-    <rect x="0" y="40" width="1160" height="10" fill="#1ABC9C"/>
+    <path fill="#34495E" stroke="#1ABC9C" stroke-width="1" d="M12,0 H1148 A12,12 0 0 1 1160,12 V168 A12,12 0 0 1 1148,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1ABC9C" d="M12,0 H1148 A12,12 0 0 1 1160,12 V38 A12,12 0 0 1 1148,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="1160" height="10" fill="#1ABC9C" />
     <text x="60" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC">数据化解读：流量中心的避险策略</text>
     
-    <text x="60" y="90" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC">
-      <tspan x="60" dy="0">• 九三是真正的流量中心，但通过「谦」机制将流量导向六五（君王）和大众</tspan>
-      <tspan x="60" dy="28">• 避免流量过载导致系统崩溃（被清洗）</tspan>
-      <tspan x="60" dy="28">• 「万民服也」—— 非因权力，乃因「劳而不伐，有功不德」</tspan>
-      <tspan x="60" dy="28">• 儒家「内圣外王」的最高典范</tspan>
-    </text>
-  </g>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="60" y="90">• 九三是真正的流量中心，但通过「谦」机制将流量导向六五（君王）和大众</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="60" y="118">• 避免流量过载导致系统崩溃（被清洗）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="60" y="146">• 「万民服也」—— 非因权力，乃因「劳而不伐，有功不德」</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="60" y="174">• 儒家「内圣外王」的最高典范</text></g>
   
-  <!-- 底部引用 -->
-  <rect x="60" y="585" width="1160" height="55" rx="8" fill="#2C3E50" stroke="#C0392B" stroke-width="1"/>
+  
+  <path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M68,585 H1212 A8,8 0 0 1 1220,593 V632 A8,8 0 0 1 1212,640 H68 A8,8 0 0 1 60,632 V593 A8,8 0 0 1 68,585 Z" />
   <text x="640" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C0392B" text-anchor="middle">「劳谦君子，万民服也。」—— 象曰</text>
   
-  <!-- 页脚 -->
+  
   <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第四部分：六爻微观动力学</text>
   <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">11 / 20</text>
 </svg>

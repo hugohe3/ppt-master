@@ -1,70 +1,70 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   <defs>
     <linearGradient id="bgGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F9F6F1"/>
-      <stop offset="100%" stop-color="#E8EBF0"/>
+      <stop offset="0%" stop-color="#F9F6F1" />
+      <stop offset="100%" stop-color="#E8EBF0" />
     </linearGradient>
     <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#C9A962" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#C9A962"/>
-      <stop offset="100%" stop-color="#C9A962" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#C9A962" stop-opacity="0" />
+      <stop offset="50%" stop-color="#C9A962" />
+      <stop offset="100%" stop-color="#C9A962" stop-opacity="0" />
     </linearGradient>
   </defs>
   
-  <rect width="1280" height="720" fill="url(#bgGradient3)"/>
+  <rect width="1280" height="720" fill="url(#bgGradient3)" />
   
-  <!-- 装饰圆相 -->
-  <circle cx="640" cy="360" r="280" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.2"/>
-  <circle cx="640" cy="360" r="320" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.1"/>
-  <circle cx="640" cy="360" r="360" fill="none" stroke="#C9A962" stroke-width="0.5" opacity="0.05"/>
   
-  <!-- 顶部装饰线 -->
-  <line x1="340" y1="100" x2="940" y2="100" stroke="url(#goldLine)" stroke-width="2"/>
+  <circle cx="640" cy="360" r="280" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.2" />
+  <circle cx="640" cy="360" r="320" fill="none" stroke="#C9A962" stroke-width="1" opacity="0.1" />
+  <circle cx="640" cy="360" r="360" fill="none" stroke="#C9A962" stroke-width="0.5" opacity="0.05" />
   
-  <!-- 中央引用 -->
+  
+  <line x1="340" y1="100" x2="940" y2="100" stroke="url(#goldLine)" stroke-width="2" />
+  
+  
   <text x="640" y="180" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" fill="#C9A962" text-anchor="middle" font-style="italic">"围绕第一品产生的不同译本和历代注疏，</text>
   <text x="640" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" fill="#C9A962" text-anchor="middle" font-style="italic">本身就构成了佛教思想史和文化交流史的重要篇章。"</text>
   
-  <!-- 分隔线 -->
-  <line x1="440" y1="260" x2="840" y2="260" stroke="url(#goldLine)" stroke-width="1"/>
   
-  <!-- 三个带走洞见 -->
+  <line x1="440" y1="260" x2="840" y2="260" stroke="url(#goldLine)" stroke-width="1" />
+  
+  
   <text x="640" y="310" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="bold" fill="#2E4A62" text-anchor="middle">三个核心洞见</text>
   
   <g transform="translate(200, 340)">
-    <rect x="0" y="0" width="880" height="180" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H864 A16,16 0 0 1 880,16 V164 A16,16 0 0 1 864,180 H16 A16,16 0 0 1 0,164 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 洞见一 -->
+    
     <g transform="translate(30, 25)">
-      <circle cx="15" cy="15" r="18" fill="#5D8C6A"/>
+      <circle cx="15" cy="15" r="18" fill="#5D8C6A" />
       <text x="15" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="50" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" fill="#374151">第一品以平凡叙事承载深邃智慧</text>
     </g>
     
-    <!-- 洞见二 -->
+    
     <g transform="translate(30, 80)">
-      <circle cx="15" cy="15" r="18" fill="#C9A962"/>
+      <circle cx="15" cy="15" r="18" fill="#C9A962" />
       <text x="15" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="50" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" fill="#374151">诠释的多样性证明经典的生命力</text>
     </g>
     
-    <!-- 洞见三 -->
+    
     <g transform="translate(30, 135)">
-      <circle cx="15" cy="15" r="18" fill="#2E4A62"/>
+      <circle cx="15" cy="15" r="18" fill="#2E4A62" />
       <text x="15" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="50" y="22" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" fill="#374151">般若之旅的起点：洗净双足，安然坐下</text>
     </g>
   </g>
   
-  <!-- 分隔线 -->
-  <line x1="440" y1="550" x2="840" y2="550" stroke="url(#goldLine)" stroke-width="1"/>
   
-  <!-- 结语 -->
+  <line x1="440" y1="550" x2="840" y2="550" stroke="url(#goldLine)" stroke-width="1" />
+  
+  
   <text x="640" y="600" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62" text-anchor="middle">感谢聆听</text>
   <text x="640" y="640" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#C9A962" text-anchor="middle">愿吉祥 · 愿智慧增长</text>
   
-  <!-- 底部装饰线 -->
-  <line x1="340" y1="680" x2="940" y2="680" stroke="url(#goldLine)" stroke-width="2"/>
+  
+  <line x1="340" y1="680" x2="940" y2="680" stroke="url(#goldLine)" stroke-width="2" />
   
   <text x="1240" y="695" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="end">15 / 15</text>
 </svg>

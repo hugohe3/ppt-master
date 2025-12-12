@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFBFC"/>
-  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#FAFBFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)" />
+  
+  
   <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
     10+ 画布格式：覆盖全场景需求
   </text>
@@ -18,20 +18,20 @@
     从演示文稿到社交媒体，一套系统满足所有格式需求
   </text>
   
-  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1" />
   
-  <!-- 左侧格式展示 -->
+  
   <g transform="translate(60, 145)">
-    <!-- 演示文稿 -->
+    
     <g>
-      <rect width="380" height="190" rx="16" fill="#FFFFFF" stroke="#6366F1" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#6366F1" stroke-width="2" d="M16,0 H364 A16,16 0 0 1 380,16 V174 A16,16 0 0 1 364,190 H16 A16,16 0 0 1 0,174 V16 A16,16 0 0 1 16,0 Z" />
       <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#6366F1">📊 演示文稿</text>
-      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1" />
       
       <g transform="translate(20, 70)">
         <g>
-          <rect width="160" height="95" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="15" y="15" width="90" height="50" rx="4" fill="#6366F1"/>
+          <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M8,0 H152 A8,8 0 0 1 160,8 V87 A8,8 0 0 1 152,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
+          <path fill="#6366F1" d="M19,15 H101 A4,4 0 0 1 105,19 V61 A4,4 0 0 1 101,65 H19 A4,4 0 0 1 15,61 V19 A4,4 0 0 1 19,15 Z" />
           <text x="60" y="45" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#FFFFFF">16:9</text>
           <text x="80" y="82" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#1F2937">PPT 16:9</text>
           <text x="125" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#9CA3AF">1280</text>
@@ -39,8 +39,8 @@
         </g>
         
         <g transform="translate(180, 0)">
-          <rect width="160" height="95" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="20" y="15" width="60" height="45" rx="4" fill="#06B6D4"/>
+          <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M8,0 H152 A8,8 0 0 1 160,8 V87 A8,8 0 0 1 152,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
+          <path fill="#06B6D4" d="M24,15 H76 A4,4 0 0 1 80,19 V56 A4,4 0 0 1 76,60 H24 A4,4 0 0 1 20,56 V19 A4,4 0 0 1 24,15 Z" />
           <text x="50" y="42" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#FFFFFF">4:3</text>
           <text x="80" y="82" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#1F2937">PPT 4:3</text>
           <text x="120" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#9CA3AF">1024</text>
@@ -49,32 +49,32 @@
       </g>
     </g>
     
-    <!-- 社交媒体 -->
+    
     <g transform="translate(0, 210)">
-      <rect width="380" height="230" rx="16" fill="#FFFFFF" stroke="#06B6D4" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#06B6D4" stroke-width="2" d="M16,0 H364 A16,16 0 0 1 380,16 V214 A16,16 0 0 1 364,230 H16 A16,16 0 0 1 0,214 V16 A16,16 0 0 1 16,0 Z" />
       <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#06B6D4">📱 社交媒体</text>
-      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1" />
       
       <g transform="translate(20, 65)">
         <g>
-          <rect width="105" height="130" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="20" y="12" width="45" height="60" rx="4" fill="#EF4444"/>
+          <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M8,0 H97 A8,8 0 0 1 105,8 V122 A8,8 0 0 1 97,130 H8 A8,8 0 0 1 0,122 V8 A8,8 0 0 1 8,0 Z" />
+          <path fill="#EF4444" d="M24,12 H61 A4,4 0 0 1 65,16 V68 A4,4 0 0 1 61,72 H24 A4,4 0 0 1 20,68 V16 A4,4 0 0 1 24,12 Z" />
           <text x="42" y="48" font-family="system-ui, -apple-system, sans-serif" font-size="8" text-anchor="middle" fill="#FFFFFF">3:4</text>
           <text x="52" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#1F2937">小红书</text>
           <text x="52" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="8" text-anchor="middle" fill="#9CA3AF">1242×1660</text>
         </g>
         
         <g transform="translate(120, 0)">
-          <rect width="105" height="130" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="25" y="12" width="45" height="45" rx="4" fill="#10B981"/>
+          <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M8,0 H97 A8,8 0 0 1 105,8 V122 A8,8 0 0 1 97,130 H8 A8,8 0 0 1 0,122 V8 A8,8 0 0 1 8,0 Z" />
+          <path fill="#10B981" d="M29,12 H66 A4,4 0 0 1 70,16 V53 A4,4 0 0 1 66,57 H29 A4,4 0 0 1 25,53 V16 A4,4 0 0 1 29,12 Z" />
           <text x="47" y="40" font-family="system-ui, -apple-system, sans-serif" font-size="8" text-anchor="middle" fill="#FFFFFF">1:1</text>
           <text x="52" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#1F2937">朋友圈</text>
           <text x="52" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="8" text-anchor="middle" fill="#9CA3AF">1080×1080</text>
         </g>
         
         <g transform="translate(240, 0)">
-          <rect width="105" height="130" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-          <rect x="30" y="12" width="35" height="60" rx="4" fill="#8B5CF6"/>
+          <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M8,0 H97 A8,8 0 0 1 105,8 V122 A8,8 0 0 1 97,130 H8 A8,8 0 0 1 0,122 V8 A8,8 0 0 1 8,0 Z" />
+          <path fill="#8B5CF6" d="M34,12 H61 A4,4 0 0 1 65,16 V68 A4,4 0 0 1 61,72 H34 A4,4 0 0 1 30,68 V16 A4,4 0 0 1 34,12 Z" />
           <text x="47" y="48" font-family="system-ui, -apple-system, sans-serif" font-size="7" text-anchor="middle" fill="#FFFFFF">9:16</text>
           <text x="52" y="95" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#1F2937">Story</text>
           <text x="52" y="110" font-family="system-ui, -apple-system, sans-serif" font-size="8" text-anchor="middle" fill="#9CA3AF">1080×1920</text>
@@ -83,13 +83,13 @@
     </g>
   </g>
   
-  <!-- 右侧信息 -->
+  
   <g transform="translate(480, 145)">
-    <!-- 营销物料 -->
+    
     <g>
-      <rect width="380" height="155" rx="16" fill="#FFFFFF" stroke="#10B981" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#10B981" stroke-width="2" d="M16,0 H364 A16,16 0 0 1 380,16 V139 A16,16 0 0 1 364,155 H16 A16,16 0 0 1 0,139 V16 A16,16 0 0 1 16,0 Z" />
       <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold" fill="#10B981">🎯 营销物料</text>
-      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1" />
       
       <g transform="translate(20, 70)" font-family="system-ui, -apple-system, sans-serif" font-size="13">
         <text x="0" y="0" fill="#1F2937">• 公众号头图</text>
@@ -105,18 +105,18 @@
       </g>
     </g>
     
-    <!-- 统计 -->
+    
     <g transform="translate(0, 175)">
-      <rect width="380" height="120" rx="16" fill="url(#gradient1)"/>
+      <path fill="url(#gradient1)" d="M16,0 H364 A16,16 0 0 1 380,16 V104 A16,16 0 0 1 364,120 H16 A16,16 0 0 1 0,104 V16 A16,16 0 0 1 16,0 Z" />
       <text x="190" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="bold" text-anchor="middle" fill="#FFFFFF">10+</text>
       <text x="190" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="18" text-anchor="middle" fill="#FFFFFF" opacity="0.9">种画布格式</text>
     </g>
     
-    <!-- 特点 -->
+    
     <g transform="translate(0, 315)">
-      <rect width="380" height="130" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H364 A16,16 0 0 1 380,16 V114 A16,16 0 0 1 364,130 H16 A16,16 0 0 1 0,114 V16 A16,16 0 0 1 16,0 Z" />
       <text x="20" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">✨ 格式特点</text>
-      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="20" y1="50" x2="360" y2="50" stroke="#E5E7EB" stroke-width="1" />
       <g transform="translate(20, 68)" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#6B7280">
         <text x="0" y="0">✓ 自动适配不同比例的布局规范</text>
         <text x="0" y="25">✓ 内容区域智能调整</text>
@@ -125,11 +125,11 @@
     </g>
   </g>
   
-  <!-- 格式列表 -->
+  
   <g transform="translate(900, 145)">
-    <rect width="360" height="445" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H344 A16,16 0 0 1 360,16 V429 A16,16 0 0 1 344,445 H16 A16,16 0 0 1 0,429 V16 A16,16 0 0 1 16,0 Z" />
     <text x="180" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#1F2937">📋 完整格式列表</text>
-    <line x1="20" y1="50" x2="340" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="20" y1="50" x2="340" y2="50" stroke="#E5E7EB" stroke-width="1" />
     
     <g transform="translate(20, 75)" font-family="system-ui, -apple-system, sans-serif" font-size="12">
       <text x="0" y="0" fill="#6366F1" font-weight="bold">演示文稿</text>
@@ -162,8 +162,8 @@
     </g>
   </g>
   
-  <!-- 页脚 -->
-  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1" />
   <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 支持格式</text>
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">07 / 10</text>
   <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 1280 720" width="1280" height="720" version="1.1" id="svg46" ns1:docname="slide_04_economy_overview.svg" ns2:version="1.4.2 (f4327f4, 2025-05-13)">
+  <ns1:namedview id="namedview46" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="1.1638889" ns2:cx="639.66587" ns2:cy="360" ns2:window-width="2048" ns2:window-height="1082" ns2:window-x="2451" ns2:window-y="-6" ns2:window-maximized="1" ns2:current-layer="g31" />
+  <defs id="defs1" />
+  <rect width="1280" height="720" fill="#F5F7FA" id="rect1" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" id="rect2" />
+  <path fill="#C41E3A" id="rect3" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E" id="text3">一、经济总体概况</text>
+  <text x="400" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#8888A0" id="text4">核心经济指标一览</text>
+  
+  <g id="g9">
+    <path fill="#FFFFFF" id="rect4" d="M52,110 H308 A12,12 0 0 1 320,122 V278 A12,12 0 0 1 308,290 H52 A12,12 0 0 1 40,278 V122 A12,12 0 0 1 52,110 Z" />
+    <path fill="#1E3A5F" id="rect5" d="M43,110 H317 A3,3 0 0 1 320,113 V113 A3,3 0 0 1 317,116 H43 A3,3 0 0 1 40,113 V113 A3,3 0 0 1 43,110 Z" />
+    <text x="60" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text5">GDP总量</text>
+    <text x="60" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#1E3A5F" id="text6">580.52</text>
+    <text x="230" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A" id="text7">亿元</text>
+    <line x1="60" y1="220" x2="300" y2="220" stroke="#E8E8F0" stroke-width="1" id="line7" />
+    <text x="60" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text8">全省排名</text>
+    <text x="60" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#C41E3A" id="text9">第20位（倒数第2）</text>
+  </g>
+  <g id="g14">
+    <path fill="#FFFFFF" id="rect9" d="M352,110 H608 A12,12 0 0 1 620,122 V278 A12,12 0 0 1 608,290 H352 A12,12 0 0 1 340,278 V122 A12,12 0 0 1 352,110 Z" />
+    <path fill="#00A651" id="rect10" d="M343,110 H617 A3,3 0 0 1 620,113 V113 A3,3 0 0 1 617,116 H343 A3,3 0 0 1 340,113 V113 A3,3 0 0 1 343,110 Z" />
+    <text x="360" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text10">GDP增速</text>
+    <text x="360" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#00A651" id="text11">5.4</text>
+    <text x="445" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A" id="text12">%</text>
+    <line x1="360" y1="220" x2="600" y2="220" stroke="#E8E8F0" stroke-width="1" id="line12" />
+    <text x="360" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text13">vs 全省平均</text>
+    <text x="360" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35" id="text14">低0.3个百分点（5.7%）</text>
+  </g>
+  <g id="g19">
+    <path fill="#FFFFFF" id="rect14" d="M652,110 H908 A12,12 0 0 1 920,122 V278 A12,12 0 0 1 908,290 H652 A12,12 0 0 1 640,278 V122 A12,12 0 0 1 652,110 Z" />
+    <path fill="#C41E3A" id="rect15" d="M643,110 H917 A3,3 0 0 1 920,113 V113 A3,3 0 0 1 917,116 H643 A3,3 0 0 1 640,113 V113 A3,3 0 0 1 643,110 Z" />
+    <text x="660" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text15">人均GDP</text>
+    <text x="660" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#C41E3A" id="text16">52,370</text>
+    <text x="855" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A" id="text17">元</text>
+    <line x1="660" y1="220" x2="900" y2="220" stroke="#E8E8F0" stroke-width="1" id="line17" />
+    <text x="660" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text18">仅为全省平均</text>
+    <text x="660" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#C41E3A" id="text19">67.7%（77,333元）</text>
+  </g>
+  <g id="g24">
+    <path fill="#FFFFFF" id="rect19" d="M952,110 H1208 A12,12 0 0 1 1220,122 V278 A12,12 0 0 1 1208,290 H952 A12,12 0 0 1 940,278 V122 A12,12 0 0 1 952,110 Z" />
+    <path fill="#D4AF37" id="rect20" d="M943,110 H1217 A3,3 0 0 1 1220,113 V113 A3,3 0 0 1 1217,116 H943 A3,3 0 0 1 940,113 V113 A3,3 0 0 1 943,110 Z" />
+    <text x="960" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text20">全省GDP占比</text>
+    <text x="960" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="42" font-weight="bold" fill="#D4AF37" id="text21">0.90</text>
+    <text x="1070" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#4A4A6A" id="text22">%</text>
+    <line x1="960" y1="220" x2="1200" y2="220" stroke="#E8E8F0" stroke-width="1" id="line22" />
+    <text x="960" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text23">vs 人口占比1.33%</text>
+    <text x="960" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35" id="text24">负向差距0.43pp</text>
+  </g>
+  
+  <g id="g31">
+    <path fill="#FFFFFF" id="rect24" d="M52,310 H613 A12,12 0 0 1 625,322 V648 A12,12 0 0 1 613,660 H52 A12,12 0 0 1 40,648 V322 A12,12 0 0 1 52,310 Z" />
+    <text x="60" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E" id="text25">📊 产业结构：15.68 : 28.58 : 55.74</text>
+    
+    
+    
+    
+    
+    
+    <path d="M 200 500 L 200 400 A 100 100 0 1 1 164.6 593.5 Z" fill="#4A90D9" id="path25" />
+    
+    
+    <path d="M 200 500 L 164.6 593.5 A 100 100 0 0 1 116.6 444.7 Z" fill="#00A651" id="path26" />
+    
+    
+    <path d="M 200 500 L 116.6 444.7 A 100 100 0 0 1 200 400 Z" fill="#C41E3A" id="path27" />
+    
+    <path fill="#4A90D9" id="rect27" d="M324,420 H336 A4,4 0 0 1 340,424 V436 A4,4 0 0 1 336,440 H324 A4,4 0 0 1 320,436 V424 A4,4 0 0 1 324,420 Z" />
+    <text x="350" y="436" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A" id="text27">第三产业 55.74% (323.57亿)</text>
+    <path fill="#00A651" id="rect28" d="M324,450 H336 A4,4 0 0 1 340,454 V466 A4,4 0 0 1 336,470 H324 A4,4 0 0 1 320,466 V454 A4,4 0 0 1 324,450 Z" />
+    <text x="350" y="466" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A" id="text28">第二产业 28.58% (165.91亿)</text>
+    <path fill="#C41E3A" id="rect29" d="M324,480 H336 A4,4 0 0 1 340,484 V496 A4,4 0 0 1 336,500 H324 A4,4 0 0 1 320,496 V484 A4,4 0 0 1 324,480 Z" />
+    <text x="350" y="496" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A" id="text29">第一产业 15.68% (91.04亿)</text>
+    <line x1="60" y1="610" x2="605" y2="610" stroke="#e8e8f0" stroke-width="1" id="line29" />
+    <text x="60" y="626" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13px" fill="#4a4a6a" id="text30">⚠️ 一产占比高（农牧业基础） ⚠️ 二产占比低（工业化滞后）</text>
+    <text x="60" y="645" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13px" fill="#4a4a6a" id="text31">✓ 三产主导（旅游业+公共服务）</text>
+  </g>
+  
+  <g id="g45">
+    <path fill="#FFFFFF" id="rect31" d="M657,310 H1208 A12,12 0 0 1 1220,322 V648 A12,12 0 0 1 1208,660 H657 A12,12 0 0 1 645,648 V322 A12,12 0 0 1 657,310 Z" />
+    <text x="665" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E" id="text32">👥 人口规模与结构</text>
+    <path fill="#1E3A5F" opacity="0.05" id="rect32" d="M673,375 H1192 A8,8 0 0 1 1200,383 V447 A8,8 0 0 1 1192,455 H673 A8,8 0 0 1 665,447 V383 A8,8 0 0 1 673,375 Z" />
+    <text x="685" y="405" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text33">常住人口</text>
+    <text x="685" y="435" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1E3A5F" id="text34">111.1万人</text>
+    <text x="900" y="405" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text35">户籍人口</text>
+    <text x="900" y="435" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#2E5A8B" id="text36">110.64万人</text>
+    <text x="665" y="490" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A1A2E" id="text37">居民可支配收入</text>
+    <path fill="#F5F7FA" id="rect37" d="M673,505 H912 A8,8 0 0 1 920,513 V567 A8,8 0 0 1 912,575 H673 A8,8 0 0 1 665,567 V513 A8,8 0 0 1 673,505 Z" />
+    <text x="685" y="530" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text38">城镇居民</text>
+    <text x="685" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E3A5F" id="text39">41,959元</text>
+    <text x="830" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6B35" id="text40">↓11.4%</text>
+    <path fill="#F5F7FA" id="rect40" d="M943,505 H1182 A8,8 0 0 1 1190,513 V567 A8,8 0 0 1 1182,575 H943 A8,8 0 0 1 935,567 V513 A8,8 0 0 1 943,505 Z" />
+    <text x="955" y="530" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text41">农村居民</text>
+    <text x="955" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="600" fill="#1E3A5F" id="text42">18,044元</text>
+    <text x="1100" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6B35" id="text43">↓15.3%</text>
+    <line x1="665" y1="595" x2="1180" y2="595" stroke="#E8E8F0" stroke-width="1" id="line43" />
+    <text x="665" y="625" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text44">城乡收入差距 <tspan font-weight="bold" fill="#C41E3A" id="tspan43">2.33倍</tspan>（略高于全省2.22倍）</text>
+    <text x="665" y="650" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#8888A0" id="text45">全省占比1.33%，人口流动性较低</text>
+  </g>
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text46">04 / 17</text>
+</svg>

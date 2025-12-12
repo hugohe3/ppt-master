@@ -1,51 +1,51 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">宏观经济危机根源</text>
   <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">MACRO CRISIS ROOT CAUSES</text>
   
-  <!-- 双栏布局 -->
-  <!-- 左栏：结构性问题 -->
+  
+  
   <g transform="translate(40, 100)">
-    <rect width="580" height="500" rx="12" fill="#FFFFFF" stroke="#1A6B7C" stroke-width="2"/>
-    <rect x="0" y="0" width="580" height="50" rx="12" fill="#1A6B7C"/>
+    <path fill="#FFFFFF" stroke="#1A6B7C" stroke-width="2" d="M12,0 H568 A12,12 0 0 1 580,12 V488 A12,12 0 0 1 568,500 H12 A12,12 0 0 1 0,488 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1A6B7C" d="M12,0 H568 A12,12 0 0 1 580,12 V38 A12,12 0 0 1 568,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="33" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">📊 结构性问题（长期积累）</text>
     
     <g transform="translate(20, 70)">
-      <!-- 问题1 -->
+      
       <g transform="translate(0, 0)">
-        <rect width="540" height="90" rx="8" fill="#1A6B7C" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#1A6B7C"/>
+        <path fill="#1A6B7C" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#1A6B7C" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">"东南亚蓄电池"战略错配</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">水电产能大规模扩张，但出口渠道有限</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">电力主要并入国内电网，无法有效创汇</text>
       </g>
       
-      <!-- 问题2 -->
+      
       <g transform="translate(0, 100)">
-        <rect width="540" height="90" rx="8" fill="#1A6B7C" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#1A6B7C"/>
+        <path fill="#1A6B7C" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#1A6B7C" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">货币收支严重错配</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">收入端：国内售电收取基普（管制低价）</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#B8352B" font-weight="500">支出端：支付给外资IPP必须用美元</text>
       </g>
       
-      <!-- 问题3 -->
+      
       <g transform="translate(0, 200)">
-        <rect width="540" height="90" rx="8" fill="#1A6B7C" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#1A6B7C"/>
+        <path fill="#1A6B7C" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#1A6B7C" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">产能过剩与国内消纳困境</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">水电装机快速扩张至18GW</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">国内需求有限，出口电价谈判弱势</text>
       </g>
       
-      <!-- 问题4 -->
+      
       <g transform="translate(0, 300)">
-        <rect width="540" height="90" rx="8" fill="#B8352B" opacity="0.1"/>
-        <circle cx="22" cy="22" r="18" fill="#B8352B"/>
+        <path fill="#B8352B" opacity="0.1" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#B8352B" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">EDL准财政活动负担</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">承担国家补贴性供电任务，长期亏损</text>
@@ -54,47 +54,47 @@
     </g>
   </g>
   
-  <!-- 右栏：触发因素 -->
+  
   <g transform="translate(660, 100)">
-    <rect width="580" height="500" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
-    <rect x="0" y="0" width="580" height="50" rx="12" fill="#B8352B"/>
+    <path fill="#FFFFFF" stroke="#B8352B" stroke-width="2" d="M12,0 H568 A12,12 0 0 1 580,12 V488 A12,12 0 0 1 568,500 H12 A12,12 0 0 1 0,488 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#B8352B" d="M12,0 H568 A12,12 0 0 1 580,12 V38 A12,12 0 0 1 568,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="33" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#FFFFFF">🔥 触发因素（2020-2025）</text>
     
     <g transform="translate(20, 70)">
-      <!-- 触发1 -->
+      
       <g transform="translate(0, 0)">
-        <rect width="540" height="90" rx="8" fill="#B8352B" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#B8352B"/>
+        <path fill="#B8352B" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#B8352B" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">新冠疫情冲击</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">旅游业崩溃，外汇收入锐减</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">经济增长停滞，财政收入下降</text>
       </g>
       
-      <!-- 触发2 -->
+      
       <g transform="translate(0, 100)">
-        <rect width="540" height="90" rx="8" fill="#B8352B" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#B8352B"/>
+        <path fill="#B8352B" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#B8352B" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B">基普暴跌（-60%）</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">进口成本飙升，外债偿还成本翻倍</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">EDL美元支付能力瞬间崩溃</text>
       </g>
       
-      <!-- 触发3 -->
+      
       <g transform="translate(0, 200)">
-        <rect width="540" height="90" rx="8" fill="#B8352B" opacity="0.08"/>
-        <circle cx="22" cy="22" r="18" fill="#B8352B"/>
+        <path fill="#B8352B" opacity="0.08" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#B8352B" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">外汇储备枯竭</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#B8352B" font-weight="500">储备 &lt; 2个月进口覆盖（警戒线3个月）</text>
         <text x="50" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">有限美元优先用于燃油和主权债券</text>
       </g>
       
-      <!-- 触发4 -->
+      
       <g transform="translate(0, 300)">
-        <rect width="540" height="90" rx="8" fill="#D97706" opacity="0.15"/>
-        <circle cx="22" cy="22" r="18" fill="#D97706"/>
+        <path fill="#D97706" opacity="0.15" d="M8,0 H532 A8,8 0 0 1 540,8 V82 A8,8 0 0 1 532,90 H8 A8,8 0 0 1 0,82 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="22" cy="22" r="18" fill="#D97706" />
         <text x="22" y="27" font-family="system-ui" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
         <text x="50" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706">恶性通货膨胀</text>
         <text x="50" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568">进口依赖严重，物价飙升</text>
@@ -103,9 +103,9 @@
     </g>
   </g>
   
-  <!-- 底部连接线说明 -->
+  
   <g transform="translate(40, 620)">
-    <rect width="1200" height="40" rx="8" fill="#0D2B3E"/>
+    <path fill="#0D2B3E" d="M8,0 H1192 A8,8 0 0 1 1200,8 V32 A8,8 0 0 1 1192,40 H8 A8,8 0 0 1 0,32 V8 A8,8 0 0 1 8,0 Z" />
     <text x="600" y="27" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" text-anchor="middle">
       <tspan font-weight="600">因果链条：</tspan>
       <tspan>结构性错配（蓄电池战略）</tspan>

@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">四、财政收入分析</text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,100 H318 A12,12 0 0 1 330,112 V228 A12,12 0 0 1 318,240 H52 A12,12 0 0 1 40,228 V112 A12,12 0 0 1 52,100 Z" />
+    <path fill="#1E3A5F" d="M43,100 H327 A3,3 0 0 1 330,103 V103 A3,3 0 0 1 327,106 H43 A3,3 0 0 1 40,103 V103 A3,3 0 0 1 43,100 Z" />
+    <text x="60" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">一般公共预算收入</text>
+    <text x="60" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#1E3A5F">60.53</text>
+    <text x="200" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">亿元</text>
+    <text x="60" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">▲ 增速 10.67%（高于全省8.77pp）</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" d="M357,100 H623 A12,12 0 0 1 635,112 V228 A12,12 0 0 1 623,240 H357 A12,12 0 0 1 345,228 V112 A12,12 0 0 1 357,100 Z" />
+    <path fill="#00A651" d="M348,100 H632 A3,3 0 0 1 635,103 V103 A3,3 0 0 1 632,106 H348 A3,3 0 0 1 345,103 V103 A3,3 0 0 1 348,100 Z" />
+    <text x="365" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">税收收入</text>
+    <text x="365" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#00A651">40.22</text>
+    <text x="505" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">亿元</text>
+    <text x="365" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">▲ 增速 17.44%（全省 -2.7%）</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" d="M662,100 H928 A12,12 0 0 1 940,112 V228 A12,12 0 0 1 928,240 H662 A12,12 0 0 1 650,228 V112 A12,12 0 0 1 662,100 Z" />
+    <path fill="#D4AF37" d="M653,100 H937 A3,3 0 0 1 940,103 V103 A3,3 0 0 1 937,106 H653 A3,3 0 0 1 650,103 V103 A3,3 0 0 1 653,100 Z" />
+    <text x="670" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">税收占比</text>
+    <text x="670" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#D4AF37">66.45</text>
+    <text x="810" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">%</text>
+    <text x="670" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">高于全省平均 63.9%</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" d="M967,100 H1228 A12,12 0 0 1 1240,112 V228 A12,12 0 0 1 1228,240 H967 A12,12 0 0 1 955,228 V112 A12,12 0 0 1 967,100 Z" />
+    <path fill="#4A90D9" d="M958,100 H1237 A3,3 0 0 1 1240,103 V103 A3,3 0 0 1 1237,106 H958 A3,3 0 0 1 955,103 V103 A3,3 0 0 1 958,100 Z" />
+    <text x="975" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">全省占比</text>
+    <text x="975" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="38" font-weight="bold" fill="#4A90D9">1.03</text>
+    <text x="1080" y="180" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#4A4A6A">%</text>
+    <text x="975" y="215" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">接近GDP占比0.90%</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,260 H628 A12,12 0 0 1 640,272 V548 A12,12 0 0 1 628,560 H52 A12,12 0 0 1 40,548 V272 A12,12 0 0 1 52,260 Z" />
+    <text x="60" y="300" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 财政收入占比 vs 基准线</text>
+    
+    
+    <line x1="100" y1="490" x2="540" y2="490" stroke="#95A5A6" stroke-width="2" />
+    <line x1="100" y1="340" x2="100" y2="490" stroke="#95A5A6" stroke-width="2" />
+    <line x1="100" y1="420" x2="540" y2="420" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="100" y1="380" x2="540" y2="380" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <line x1="100" y1="340" x2="540" y2="340" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4" />
+    <text x="90" y="495" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">0%</text>
+    <text x="90" y="425" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">0.5%</text>
+    <text x="90" y="385" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">1.0%</text>
+    <text x="90" y="345" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">1.5%</text>
+    
+    
+    
+    <path fill="#4A90D9" d="M144,387 H206 A4,4 0 0 1 210,391 V486 A4,4 0 0 1 206,490 H144 A4,4 0 0 1 140,486 V391 A4,4 0 0 1 144,387 Z" />
+    <text x="175" y="435" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1.03%</text>
+    <text x="175" y="510" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">财政收入</text>
+    
+    
+    <path fill="#1E3A5F" d="M264,400 H326 A4,4 0 0 1 330,404 V486 A4,4 0 0 1 326,490 H264 A4,4 0 0 1 260,486 V404 A4,4 0 0 1 264,400 Z" />
+    <text x="295" y="445" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">0.90%</text>
+    <text x="295" y="510" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">GDP占比</text>
+    
+    
+    <path fill="#C41E3A" d="M384,357 H446 A4,4 0 0 1 450,361 V486 A4,4 0 0 1 446,490 H384 A4,4 0 0 1 380,486 V361 A4,4 0 0 1 384,357 Z" />
+    <text x="415" y="410" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1.33%</text>
+    <text x="415" y="510" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">人口占比</text>
+    
+    
+    <line x1="480" y1="400" x2="540" y2="400" stroke="#1E3A5F" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="550" y="405" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#1E3A5F">GDP基准</text>
+    <line x1="480" y1="357" x2="540" y2="357" stroke="#C41E3A" stroke-width="2" stroke-dasharray="6,3" />
+    <text x="550" y="362" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#C41E3A">人口基准</text>
+    
+    <text x="60" y="545" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">✓ 收入占比1.03%高于GDP占比，<tspan fill="#00A651">转化效率合理</tspan></text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M672,260 H1228 A12,12 0 0 1 1240,272 V548 A12,12 0 0 1 1228,560 H672 A12,12 0 0 1 660,548 V272 A12,12 0 0 1 672,260 Z" />
+    <text x="680" y="300" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">💎 收入质量评价</text>
+    
+    <path fill="#00A651" opacity="0.1" d="M688,320 H1212 A8,8 0 0 1 1220,328 V392 A8,8 0 0 1 1212,400 H688 A8,8 0 0 1 680,392 V328 A8,8 0 0 1 688,320 Z" />
+    <text x="700" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 亮点：收入增长强劲</text>
+    <text x="700" y="375" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 收入增速10.67%，显著高于全省1.9%</text>
+    <text x="700" y="395" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 税收增速17.44%，全省同期-2.7%，逆势增长</text>
+    
+    <path fill="#00A651" opacity="0.1" d="M688,410 H1212 A8,8 0 0 1 1220,418 V482 A8,8 0 0 1 1212,490 H688 A8,8 0 0 1 680,482 V418 A8,8 0 0 1 688,410 Z" />
+    <text x="700" y="440" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">✓ 亮点：收入质量优于全省</text>
+    <text x="700" y="465" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 税收占比66.45%，高于全省63.9%</text>
+    <text x="700" y="485" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 财政收入可持续性较好</text>
+    
+    <path fill="#FF6B35" opacity="0.1" d="M688,500 H1212 A8,8 0 0 1 1220,508 V542 A8,8 0 0 1 1212,550 H688 A8,8 0 0 1 680,542 V508 A8,8 0 0 1 688,500 Z" />
+    <text x="700" y="530" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#FF6B35">⚠️ 不足：人均财政收入偏低</text>
+    <text x="960" y="530" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">5,449元/人（全省6,738元），低19.1%</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#1E3A5F" d="M52,580 H1228 A12,12 0 0 1 1240,592 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V592 A12,12 0 0 1 52,580 Z" />
+    <text x="640" y="630" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#FFFFFF">📌 财政收入结论：增长强劲、质量优良、但总量规模受限于经济体量</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">07 / 17</text>
+</svg>

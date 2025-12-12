@@ -1,560 +1,96 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   width="1280"
-   height="720"
-   viewBox="0 0 1280 720"
-   version="1.1"
-   id="svg50"
-   sodipodi:docname="slide_19_outlook.svg"
-   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs50" />
-  <sodipodi:namedview
-     id="namedview50"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.1638889"
-     inkscape:cx="639.66587"
-     inkscape:cy="360"
-     inkscape:window-width="2048"
-     inkscape:window-height="1082"
-     inkscape:window-x="2451"
-     inkscape:window-y="-6"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg50" />
-  <rect
-     width="1280"
-     height="720"
-     fill="#F0F5F7"
-     id="rect1" />
-  <rect
-     x="0"
-     y="0"
-     width="1280"
-     height="80"
-     fill="#0D2B3E"
-     id="rect2" />
-  <text
-     x="40"
-     y="50"
-     font-family="system-ui, 'Microsoft YaHei'"
-     font-size="28"
-     font-weight="700"
-     fill="#FFFFFF"
-     id="text2">战略展望</text>
-  <text
-     x="1240"
-     y="50"
-     font-family="system-ui"
-     font-size="14"
-     fill="#7ED4E6"
-     text-anchor="end"
-     id="text3">STRATEGIC OUTLOOK</text>
-  <!-- 时间轴展望 -->
-  <g
-     transform="translate(40, 100)"
-     id="g17">
-    <rect
-       width="1200"
-       height="200"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#D4DEE4"
-       stroke-width="1"
-       id="rect3" />
-    <text
-       x="25"
-       y="35"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="16"
-       font-weight="600"
-       fill="#0D2B3E"
-       id="text4">未来走向预判</text>
-    <!-- 时间轴 -->
-    <line
-       x1="50"
-       y1="120"
-       x2="1150"
-       y2="120"
-       stroke="#1A6B7C"
-       stroke-width="4"
-       id="line4" />
-    <!-- 短期 -->
-    <g
-       transform="translate(150, 120)"
-       id="g8">
-      <circle
-         cx="0"
-         cy="0"
-         r="20"
-         fill="#D97706"
-         id="circle4" />
-      <text
-         x="0"
-         y="6"
-         font-family="system-ui"
-         font-size="11"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         font-weight="600"
-         id="text5">短期</text>
-      <text
-         x="0"
-         y="-35"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="14"
-         font-weight="600"
-         fill="#D97706"
-         text-anchor="middle"
-         id="text6">1-2年</text>
-      <text
-         x="0"
-         y="50"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text7">仲裁推进</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text8">谈判并行</text>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" width="1280" height="720" viewBox="0 0 1280 720" version="1.1" id="svg50" ns1:docname="slide_19_outlook.svg" ns2:version="1.4.2 (f4327f4, 2025-05-13)">
+  <defs id="defs50" />
+  <ns1:namedview id="namedview50" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="1.1638889" ns2:cx="639.66587" ns2:cy="360" ns2:window-width="2048" ns2:window-height="1082" ns2:window-x="2451" ns2:window-y="-6" ns2:window-maximized="1" ns2:current-layer="svg50" />
+  <rect width="1280" height="720" fill="#F0F5F7" id="rect1" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" id="rect2" />
+  <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF" id="text2">战略展望</text>
+  <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end" id="text3">STRATEGIC OUTLOOK</text>
+  
+  <g transform="translate(40, 100)" id="g17">
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" id="rect3" d="M12,0 H1188 A12,12 0 0 1 1200,12 V188 A12,12 0 0 1 1188,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
+    <text x="25" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E" id="text4">未来走向预判</text>
+    
+    <line x1="50" y1="120" x2="1150" y2="120" stroke="#1A6B7C" stroke-width="4" id="line4" />
+    
+    <g transform="translate(150, 120)" id="g8">
+      <circle cx="0" cy="0" r="20" fill="#D97706" id="circle4" />
+      <text x="0" y="6" font-family="system-ui" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600" id="text5">短期</text>
+      <text x="0" y="-35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#D97706" text-anchor="middle" id="text6">1-2年</text>
+      <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text7">仲裁推进</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text8">谈判并行</text>
     </g>
-    <!-- 中期 -->
-    <g
-       transform="translate(550, 120)"
-       id="g12">
-      <circle
-         cx="0"
-         cy="0"
-         r="20"
-         fill="#B8352B"
-         id="circle8" />
-      <text
-         x="0"
-         y="6"
-         font-family="system-ui"
-         font-size="11"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         font-weight="600"
-         id="text9">中期</text>
-      <text
-         x="0"
-         y="-35"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="14"
-         font-weight="600"
-         fill="#B8352B"
-         text-anchor="middle"
-         id="text10">3-5年</text>
-      <text
-         x="0"
-         y="50"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text11">资产重组加速</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text12">控制权转移</text>
+    
+    <g transform="translate(550, 120)" id="g12">
+      <circle cx="0" cy="0" r="20" fill="#B8352B" id="circle8" />
+      <text x="0" y="6" font-family="system-ui" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600" id="text9">中期</text>
+      <text x="0" y="-35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#B8352B" text-anchor="middle" id="text10">3-5年</text>
+      <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text11">资产重组加速</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text12">控制权转移</text>
     </g>
-    <!-- 长期 -->
-    <g
-       transform="translate(950, 120)"
-       id="g16">
-      <circle
-         cx="0"
-         cy="0"
-         r="20"
-         fill="#0D2B3E"
-         id="circle12" />
-      <text
-         x="0"
-         y="6"
-         font-family="system-ui"
-         font-size="11"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         font-weight="600"
-         id="text13">长期</text>
-      <text
-         x="0"
-         y="-35"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="14"
-         font-weight="600"
-         fill="#0D2B3E"
-         text-anchor="middle"
-         id="text14">5年+</text>
-      <text
-         x="0"
-         y="50"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text15">区域格局重塑</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="11"
-         fill="#4A5568"
-         text-anchor="middle"
-         id="text16">模式反思</text>
+    
+    <g transform="translate(950, 120)" id="g16">
+      <circle cx="0" cy="0" r="20" fill="#0D2B3E" id="circle12" />
+      <text x="0" y="6" font-family="system-ui" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600" id="text13">长期</text>
+      <text x="0" y="-35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E" text-anchor="middle" id="text14">5年+</text>
+      <text x="0" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text15">区域格局重塑</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle" id="text16">模式反思</text>
     </g>
   </g>
-  <!-- 情景分析 -->
-  <g
-     transform="translate(40, 320)"
-     id="g25">
-    <!-- 短期情景 -->
-    <rect
-       width="380"
-       height="220"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#D97706"
-       stroke-width="2"
-       id="rect17" />
-    <rect
-       x="0"
-       y="0"
-       width="380"
-       height="45"
-       rx="12"
-       fill="#D97706"
-       id="rect18" />
-    <text
-       x="25"
-       y="30"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="15"
-       font-weight="600"
-       fill="#FFFFFF"
-       id="text18">短期预期（1-2年）</text>
-    <g
-       transform="translate(20, 60)"
-       id="g24">
-      <text
-         x="0"
-         y="15"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text19">• SIAC仲裁程序持续推进</text>
-      <text
-         x="0"
-         y="40"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text20">• 双边政府层面并行谈判</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text21">• EDL可能进一步资产让渡</text>
-      <text
-         x="0"
-         y="90"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#B8352B"
-         font-weight="500"
-         id="text22">• 基普持续承压</text>
-      <text
-         x="0"
-         y="115"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text23">• 其他IPP可能效仿仲裁</text>
-      <rect
-         x="0"
-         y="125"
-         width="340"
-         height="30"
-         rx="6"
-         fill="#d97706"
-         opacity="0.1"
-         id="rect23" />
-      <text
-         x="170"
-         y="145"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="12px"
-         fill="#d97706"
-         text-anchor="middle"
-         font-weight="600"
-         id="text24">风险等级：高</text>
+  
+  <g transform="translate(40, 320)" id="g25">
+    
+    <path fill="#FFFFFF" stroke="#D97706" stroke-width="2" id="rect17" d="M12,0 H368 A12,12 0 0 1 380,12 V208 A12,12 0 0 1 368,220 H12 A12,12 0 0 1 0,208 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#D97706" id="rect18" d="M12,0 H368 A12,12 0 0 1 380,12 V33 A12,12 0 0 1 368,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="15" font-weight="600" fill="#FFFFFF" id="text18">短期预期（1-2年）</text>
+    <g transform="translate(20, 60)" id="g24">
+      <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text19">• SIAC仲裁程序持续推进</text>
+      <text x="0" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text20">• 双边政府层面并行谈判</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text21">• EDL可能进一步资产让渡</text>
+      <text x="0" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B" font-weight="500" id="text22">• 基普持续承压</text>
+      <text x="0" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text23">• 其他IPP可能效仿仲裁</text>
+      <path fill="#d97706" opacity="0.1" id="rect23" d="M6,125 H334 A6,6 0 0 1 340,131 V149 A6,6 0 0 1 334,155 H6 A6,6 0 0 1 0,149 V131 A6,6 0 0 1 6,125 Z" />
+      <text x="170" y="145" font-family="system-ui, 'Microsoft YaHei'" font-size="12px" fill="#d97706" text-anchor="middle" font-weight="600" id="text24">风险等级：高</text>
     </g>
   </g>
-  <!-- 中期情景 -->
-  <g
-     transform="translate(450, 320)"
-     id="g33">
-    <rect
-       width="380"
-       height="220"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#B8352B"
-       stroke-width="2"
-       id="rect25" />
-    <rect
-       x="0"
-       y="0"
-       width="380"
-       height="45"
-       rx="12"
-       fill="#B8352B"
-       id="rect26" />
-    <text
-       x="25"
-       y="30"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="15"
-       font-weight="600"
-       fill="#FFFFFF"
-       id="text26">中期预期（3-5年）</text>
-    <g
-       transform="translate(20, 60)"
-       id="g32">
-      <text
-         x="0"
-         y="15"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text27">• 老挝电力系统全面由中资运营</text>
-      <text
-         x="0"
-         y="40"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#B8352B"
-         font-weight="500"
-         id="text28">• 能源主权进一步&quot;空心化&quot;</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text29">• &quot;东南亚蓄电池&quot;→&quot;外资发电厂&quot;</text>
-      <text
-         x="0"
-         y="90"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text30">• 区域内效仿案例增加</text>
-      <text
-         x="0"
-         y="115"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text31">• 类似项目风险溢价上升</text>
-      <rect
-         x="0"
-         y="125"
-         width="340"
-         height="30"
-         rx="6"
-         fill="#b8352b"
-         opacity="0.1"
-         id="rect31" />
-      <text
-         x="170"
-         y="147"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="12px"
-         fill="#b8352b"
-         text-anchor="middle"
-         font-weight="600"
-         id="text32">风险等级：极高</text>
+  
+  <g transform="translate(450, 320)" id="g33">
+    <path fill="#FFFFFF" stroke="#B8352B" stroke-width="2" id="rect25" d="M12,0 H368 A12,12 0 0 1 380,12 V208 A12,12 0 0 1 368,220 H12 A12,12 0 0 1 0,208 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#B8352B" id="rect26" d="M12,0 H368 A12,12 0 0 1 380,12 V33 A12,12 0 0 1 368,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="15" font-weight="600" fill="#FFFFFF" id="text26">中期预期（3-5年）</text>
+    <g transform="translate(20, 60)" id="g32">
+      <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text27">• 老挝电力系统全面由中资运营</text>
+      <text x="0" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B" font-weight="500" id="text28">• 能源主权进一步"空心化"</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text29">• "东南亚蓄电池"→"外资发电厂"</text>
+      <text x="0" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text30">• 区域内效仿案例增加</text>
+      <text x="0" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text31">• 类似项目风险溢价上升</text>
+      <path fill="#b8352b" opacity="0.1" id="rect31" d="M6,125 H334 A6,6 0 0 1 340,131 V149 A6,6 0 0 1 334,155 H6 A6,6 0 0 1 0,149 V131 A6,6 0 0 1 6,125 Z" />
+      <text x="170" y="147" font-family="system-ui, 'Microsoft YaHei'" font-size="12px" fill="#b8352b" text-anchor="middle" font-weight="600" id="text32">风险等级：极高</text>
     </g>
   </g>
-  <!-- 长期情景 -->
-  <g
-     transform="translate(860, 320)"
-     id="g41">
-    <rect
-       width="380"
-       height="220"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#1A6B7C"
-       stroke-width="2"
-       id="rect33" />
-    <rect
-       x="0"
-       y="0"
-       width="380"
-       height="45"
-       rx="12"
-       fill="#1A6B7C"
-       id="rect34" />
-    <text
-       x="25"
-       y="30"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="15"
-       font-weight="600"
-       fill="#FFFFFF"
-       id="text34">长期影响（5年+）</text>
-    <g
-       transform="translate(20, 60)"
-       id="g40">
-      <text
-         x="0"
-         y="15"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text35">• 一带一路项目融资模式调整</text>
-      <text
-         x="0"
-         y="40"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text36">• 货币对冲机制成为标配</text>
-      <text
-         x="0"
-         y="65"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#1A6B7C"
-         font-weight="500"
-         id="text37">• 跨境直接出口换汇模式兴起</text>
-      <text
-         x="0"
-         y="90"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text38">• 东道国主权保护意识增强</text>
-      <text
-         x="0"
-         y="115"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="13"
-         fill="#4A5568"
-         id="text39">• 新型合作模式探索</text>
-      <rect
-         x="0"
-         y="125"
-         width="340"
-         height="30"
-         rx="6"
-         fill="#1a6b7c"
-         opacity="0.1"
-         id="rect39" />
-      <text
-         x="170"
-         y="147"
-         font-family="system-ui, 'Microsoft YaHei'"
-         font-size="12px"
-         fill="#1a6b7c"
-         text-anchor="middle"
-         font-weight="600"
-         id="text40">机遇与挑战并存</text>
+  
+  <g transform="translate(860, 320)" id="g41">
+    <path fill="#FFFFFF" stroke="#1A6B7C" stroke-width="2" id="rect33" d="M12,0 H368 A12,12 0 0 1 380,12 V208 A12,12 0 0 1 368,220 H12 A12,12 0 0 1 0,208 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1A6B7C" id="rect34" d="M12,0 H368 A12,12 0 0 1 380,12 V33 A12,12 0 0 1 368,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+    <text x="25" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="15" font-weight="600" fill="#FFFFFF" id="text34">长期影响（5年+）</text>
+    <g transform="translate(20, 60)" id="g40">
+      <text x="0" y="15" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text35">• 一带一路项目融资模式调整</text>
+      <text x="0" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text36">• 货币对冲机制成为标配</text>
+      <text x="0" y="65" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#1A6B7C" font-weight="500" id="text37">• 跨境直接出口换汇模式兴起</text>
+      <text x="0" y="90" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text38">• 东道国主权保护意识增强</text>
+      <text x="0" y="115" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568" id="text39">• 新型合作模式探索</text>
+      <path fill="#1a6b7c" opacity="0.1" id="rect39" d="M6,125 H334 A6,6 0 0 1 340,131 V149 A6,6 0 0 1 334,155 H6 A6,6 0 0 1 0,149 V131 A6,6 0 0 1 6,125 Z" />
+      <text x="170" y="147" font-family="system-ui, 'Microsoft YaHei'" font-size="12px" fill="#1a6b7c" text-anchor="middle" font-weight="600" id="text40">机遇与挑战并存</text>
     </g>
   </g>
-  <!-- 底部教训 -->
-  <g
-     transform="translate(40, 560)"
-     id="g48">
-    <rect
-       width="1200"
-       height="90"
-       rx="12"
-       fill="#0D2B3E"
-       id="rect41" />
-    <text
-       x="25"
-       y="32"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="14"
-       font-weight="600"
-       fill="#C9A227"
-       id="text41">对其他发展中国家的启示</text>
-    <text
-       x="25"
-       y="58"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="14"
-       fill="#FFFFFF"
-       id="text47"><tspan
-         fill="#D97706"
-         font-weight="600"
-         id="tspan41">基建狂热</tspan><tspan
-         id="tspan42"> + </tspan><tspan
-         fill="#B8352B"
-         font-weight="600"
-         id="tspan43">美元债务</tspan><tspan
-         id="tspan44"> + </tspan><tspan
-         fill="#B8352B"
-         font-weight="600"
-         id="tspan45">软货币收入</tspan><tspan
-         id="tspan46"> = </tspan><tspan
-         fill="#FFFFFF"
-         font-weight="600"
-         id="tspan47">主权风险</tspan></text>
-    <text
-       x="25"
-       y="80"
-       font-family="system-ui, 'Microsoft YaHei'"
-       font-size="13"
-       fill="#7ED4E6"
-       id="text48">南欧江项目将成为新兴市场基建融资的经典反面教材</text>
+  
+  <g transform="translate(40, 560)" id="g48">
+    <path fill="#0D2B3E" id="rect41" d="M12,0 H1188 A12,12 0 0 1 1200,12 V78 A12,12 0 0 1 1188,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
+    <text x="25" y="32" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227" id="text41">对其他发展中国家的启示</text>
+    <text x="25" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" id="text47"><tspan fill="#D97706" font-weight="600" id="tspan41">基建狂热</tspan><tspan id="tspan42"> + </tspan><tspan fill="#B8352B" font-weight="600" id="tspan43">美元债务</tspan><tspan id="tspan44"> + </tspan><tspan fill="#B8352B" font-weight="600" id="tspan45">软货币收入</tspan><tspan id="tspan46"> = </tspan><tspan fill="#FFFFFF" font-weight="600" id="tspan47">主权风险</tspan></text>
+    <text x="25" y="80" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#7ED4E6" id="text48">南欧江项目将成为新兴市场基建融资的经典反面教材</text>
   </g>
-  <line
-     x1="40"
-     y1="670"
-     x2="1240"
-     y2="670"
-     stroke="#D4DEE4"
-     stroke-width="1"
-     id="line48" />
-  <text
-     x="40"
-     y="700"
-     font-family="system-ui, 'Microsoft YaHei'"
-     font-size="11"
-     fill="#718096"
-     id="text49">南欧江梯级水电站项目战略评估报告</text>
-  <text
-     x="1240"
-     y="700"
-     font-family="system-ui"
-     font-size="12"
-     fill="#718096"
-     text-anchor="end"
-     id="text50">19 / 20</text>
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#D4DEE4" stroke-width="1" id="line48" />
+  <text x="40" y="700" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096" id="text49">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="700" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end" id="text50">19 / 20</text>
 </svg>

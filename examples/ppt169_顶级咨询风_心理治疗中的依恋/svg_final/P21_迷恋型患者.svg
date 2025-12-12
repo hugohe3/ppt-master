@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     迷恋型患者：为自己腾出空间
   </text>
@@ -13,39 +13,39 @@
     The Preoccupied Patient: Making Room for a Mind of One's Own
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 核心特征卡片 -->
+  <line x1="60" y1="125" x2="530" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="400" height="330" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+    <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H388 A12,12 0 0 1 400,12 V318 A12,12 0 0 1 388,330 H12 A12,12 0 0 1 0,318 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 标题 -->
-    <rect x="0" y="0" width="400" height="50" rx="12" fill="#E07843"/>
-    <rect x="0" y="38" width="400" height="12" fill="#E07843"/>
+    
+    <path fill="#E07843" d="M12,0 H388 A12,12 0 0 1 400,12 V38 A12,12 0 0 1 388,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="38" width="400" height="12" fill="#E07843" />
     <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🌪️ 核心特征</text>
     
-    <!-- 特征列表 -->
+    
     <g transform="translate(20, 70)">
-      <rect x="0" y="0" width="360" height="55" rx="8" fill="#FED7AA"/>
+      <path fill="#FED7AA" d="M8,0 H352 A8,8 0 0 1 360,8 V47 A8,8 0 0 1 352,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="22" font-size="15" font-weight="600" fill="#E07843" text-anchor="middle">过度激活的策略</text>
       <text x="180" y="44" font-size="13" fill="#6B7280" text-anchor="middle">通过放大痛苦和无助来确保关注</text>
     </g>
     
     <g transform="translate(20, 135)">
-      <rect x="0" y="0" width="360" height="55" rx="8" fill="#FED7AA"/>
+      <path fill="#FED7AA" d="M8,0 H352 A8,8 0 0 1 360,8 V47 A8,8 0 0 1 352,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="22" font-size="15" font-weight="600" fill="#E07843" text-anchor="middle">自我缺失</text>
       <text x="180" y="44" font-size="13" fill="#6B7280" text-anchor="middle">重心在他人身上，缺乏自我主体感</text>
     </g>
     
     <g transform="translate(20, 200)">
-      <rect x="0" y="0" width="360" height="55" rx="8" fill="#FED7AA"/>
+      <path fill="#FED7AA" d="M8,0 H352 A8,8 0 0 1 360,8 V47 A8,8 0 0 1 352,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
       <text x="180" y="22" font-size="15" font-weight="600" fill="#E07843" text-anchor="middle">混乱的叙述</text>
       <text x="180" y="44" font-size="13" fill="#6B7280" text-anchor="middle">被过去的情感淹没，难以反思</text>
     </g>
     
-    <!-- 亚型 -->
-    <line x1="20" y1="270" x2="380" y2="270" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <line x1="20" y1="270" x2="380" y2="270" stroke="#E5E7EB" stroke-width="1" />
     
     <text x="20" y="295" font-size="14" font-weight="600" fill="#E07843">常见亚型</text>
     <text x="20" y="318" font-size="14" fill="#374151">
@@ -56,86 +56,64 @@
     </text>
   </g>
   
-  <!-- 应对策略：双栏 -->
+  
   <g transform="translate(500, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
     <text x="0" y="0" font-size="18" font-weight="600" fill="#E07843">应对策略</text>
-    <line x1="0" y1="15" x2="120" y2="15" stroke="#E07843" stroke-width="2"/>
+    <line x1="0" y1="15" x2="120" y2="15" stroke="#E07843" stroke-width="2" />
     
-    <!-- 无助模式 -->
+    
     <g transform="translate(0, 35)">
-      <rect x="0" y="0" width="350" height="295" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H338 A12,12 0 0 1 350,12 V283 A12,12 0 0 1 338,295 H12 A12,12 0 0 1 0,283 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="350" height="45" rx="12" fill="#2E5C8E"/>
-      <rect x="0" y="33" width="350" height="12" fill="#2E5C8E"/>
+      <path fill="#2E5C8E" d="M12,0 H338 A12,12 0 0 1 350,12 V33 A12,12 0 0 1 338,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="350" height="12" fill="#2E5C8E" />
       <text x="175" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">无助模式</text>
       
       <text x="20" y="75" font-size="14" font-weight="600" fill="#B54545">⚠️ 陷阱</text>
-      <text x="20" y="100" font-size="13" fill="#374151">
-        <tspan x="20" dy="0">患者表现得无能为力，</tspan>
-        <tspan x="20" dy="20">诱使治疗师扮演"拯救者"</tspan>
-      </text>
-      
-      <line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1"/>
+      <text fill="#374151" font-size="13" x="20" y="100">患者表现得无能为力，</text><text fill="#374151" font-size="13" x="20" y="120">诱使治疗师扮演"拯救者"</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
       
       <text x="20" y="160" font-size="14" font-weight="600" fill="#3D8B7A">✓ 干预</text>
-      <text x="20" y="185" font-size="13" fill="#374151">
-        <tspan x="20" dy="0">• 发展性梯度：期望更多</tspan>
-        <tspan x="20" dy="22">• 搭脚手架：不替患者思考</tspan>
-        <tspan x="20" dy="22">• 容忍焦虑：允许沉默</tspan>
-        <tspan x="20" dy="22">• 让患者发现自己的资源</tspan>
-      </text>
-    </g>
+      <text fill="#374151" font-size="13" x="20" y="185">• 发展性梯度：期望更多</text><text fill="#374151" font-size="13" x="20" y="207">• 搭脚手架：不替患者思考</text><text fill="#374151" font-size="13" x="20" y="229">• 容忍焦虑：允许沉默</text><text fill="#374151" font-size="13" x="20" y="251">• 让患者发现自己的资源</text></g>
     
-    <!-- 愤怒与混乱模式 -->
+    
     <g transform="translate(370, 35)">
-      <rect x="0" y="0" width="350" height="295" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M12,0 H338 A12,12 0 0 1 350,12 V283 A12,12 0 0 1 338,295 H12 A12,12 0 0 1 0,283 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="350" height="45" rx="12" fill="#B54545"/>
-      <rect x="0" y="33" width="350" height="12" fill="#B54545"/>
+      <path fill="#B54545" d="M12,0 H338 A12,12 0 0 1 350,12 V33 A12,12 0 0 1 338,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="33" width="350" height="12" fill="#B54545" />
       <text x="175" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">愤怒与混乱模式</text>
       
       <text x="20" y="75" font-size="14" font-weight="600" fill="#B54545">⚠️ 特征</text>
-      <text x="20" y="100" font-size="13" fill="#374151">
-        <tspan x="20" dy="0">生活在危机中，情绪压倒一切</tspan>
-        <tspan x="20" dy="20">常投射出恶意的他者</tspan>
-      </text>
-      
-      <line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1"/>
+      <text fill="#374151" font-size="13" x="20" y="100">生活在危机中，情绪压倒一切</text><text fill="#374151" font-size="13" x="20" y="120">常投射出恶意的他者</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
       
       <text x="20" y="160" font-size="14" font-weight="600" fill="#3D8B7A">✓ 干预</text>
-      <text x="20" y="185" font-size="13" fill="#374151">
-        <tspan x="20" dy="0">• 共情：理解行为背后的绝望</tspan>
-        <tspan x="20" dy="22">• 设定界限：对破坏性行为</tspan>
-        <tspan x="20" dy="22">• 提供"被容纳"的安全感</tspan>
-        <tspan x="20" dy="22">• 这正是其童年所缺失的</tspan>
-      </text>
-    </g>
+      <text fill="#374151" font-size="13" x="20" y="185">• 共情：理解行为背后的绝望</text><text fill="#374151" font-size="13" x="20" y="207">• 设定界限：对破坏性行为</text><text fill="#374151" font-size="13" x="20" y="229">• 提供"被容纳"的安全感</text><text fill="#374151" font-size="13" x="20" y="251">• 这正是其童年所缺失的</text></g>
   </g>
   
-  <!-- 底部：移情与反移情管理 -->
-  <rect x="60" y="510" width="1160" height="150" rx="12" fill="#1E3A5F"/>
+  
+  <path fill="#1E3A5F" d="M72,510 H1208 A12,12 0 0 1 1220,522 V648 A12,12 0 0 1 1208,660 H72 A12,12 0 0 1 60,648 V522 A12,12 0 0 1 72,510 Z" />
   
   <text x="100" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
     移情与反移情管理
   </text>
   
   <g transform="translate(100, 565)" font-family="PingFang SC, sans-serif">
-    <!-- 色情移情 -->
-    <rect x="0" y="0" width="500" height="70" rx="8" fill="rgba(255,255,255,0.1)"/>
+    
+    <path fill="rgba(255,255,255,0.1)" d="M8,0 H492 A8,8 0 0 1 500,8 V62 A8,8 0 0 1 492,70 H8 A8,8 0 0 1 0,62 V8 A8,8 0 0 1 8,0 Z" />
     <text x="20" y="25" font-size="15" font-weight="600" fill="#E07843">色情移情 Erotic Transference</text>
     <text x="20" y="50" font-size="13" fill="#CBD5E1">
       通过性化关系寻求亲密或防御更深的依恋恐惧 → 接纳渴望而不付诸行动
     </text>
     
-    <!-- 反移情 -->
-    <rect x="530" y="0" width="500" height="70" rx="8" fill="rgba(255,255,255,0.1)"/>
+    
+    <path fill="rgba(255,255,255,0.1)" d="M538,0 H1022 A8,8 0 0 1 1030,8 V62 A8,8 0 0 1 1022,70 H538 A8,8 0 0 1 530,62 V8 A8,8 0 0 1 538,0 Z" />
     <text x="550" y="25" font-size="15" font-weight="600" fill="#3D8B7A">反移情管理</text>
     <text x="550" y="50" font-size="13" fill="#CBD5E1">
       治疗师可能感到被吞噬、愤怒或无助 → 觉察练习调节强烈反移情
     </text>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">21</text>
 </svg>

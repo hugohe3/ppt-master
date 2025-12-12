@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F7F9FC" />
+            <stop offset="100%" style="stop-color:#EDF2F7" />
+        </linearGradient>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="url(#bgGradient)" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#1A5F9E" />
+
+    
+    <text x="640" y="55" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="32" font-weight="bold" fill="#1A5F9E">
+        摘要与关键词规范
+    </text>
+    <text x="640" y="82" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" fill="#718096">
+        论文核心内容的高度凝练 · 检索利器
+    </text>
+
+    
+    <g transform="translate(60, 110)">
+        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H548 A12,12 0 0 1 560,12 V438 A12,12 0 0 1 548,450 H12 A12,12 0 0 1 0,438 V12 A12,12 0 0 1 12,0 Z" />
+
+        
+        <path fill="#1A5F9E" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+        <rect y="40" width="560" height="10" fill="#1A5F9E" />
+        <text x="280" y="33" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">中文摘要</text>
+
+        
+        <text x="30" y="85" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="16" font-weight="bold" fill="#2D3748">📝 内容要求</text>
+        <line x1="30" y1="95" x2="530" y2="95" stroke="#E2E8F0" stroke-width="1" />
+
+        <text x="30" y="120" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+            独立性和自含性：不阅读全文即可获得必要信息</text>
+        <text x="30" y="145" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+            包含：研究目的、过程、结果、结论（重点是结果和结论）</text>
+        <text x="30" y="170" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+            使用第三人称，避免主观性评价</text>
+        <text x="30" y="195" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+            采用规范名词术语，避免使用图表和非公知符号</text>
+
+        
+        <text x="30" y="235" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="16" font-weight="bold" fill="#2D3748">📏 字数要求</text>
+        <line x1="30" y1="245" x2="530" y2="245" stroke="#E2E8F0" stroke-width="1" />
+
+        <path fill="#EBF8FF" stroke="#1A5F9E" stroke-width="1" d="M38,260 H262 A8,8 0 0 1 270,268 V312 A8,8 0 0 1 262,320 H38 A8,8 0 0 1 30,312 V268 A8,8 0 0 1 38,260 Z" />
+        <text x="150" y="285" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#2D3748">硕士学位论文</text>
+        <text x="150" y="308" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A5F9E">600-800 字</text>
+
+        <path fill="#FFF5F5" stroke="#E53E3E" stroke-width="1" d="M298,260 H522 A8,8 0 0 1 530,268 V312 A8,8 0 0 1 522,320 H298 A8,8 0 0 1 290,312 V268 A8,8 0 0 1 298,260 Z" />
+        <text x="410" y="285" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#2D3748">博士学位论文</text>
+        <text x="410" y="308" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#E53E3E">1200-1500 字</text>
+
+        
+        <text x="30" y="355" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="16" font-weight="bold" fill="#2D3748">🎨 格式规范</text>
+        <line x1="30" y1="365" x2="530" y2="365" stroke="#E2E8F0" stroke-width="1" />
+
+        <path fill="#F7FAFC" d="M36,380 H524 A6,6 0 0 1 530,386 V444 A6,6 0 0 1 524,450 H36 A6,6 0 0 1 30,444 V386 A6,6 0 0 1 36,380 Z" />
+        <text x="45" y="405" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#4A5568">标题：
+            <tspan font-weight="bold" fill="#1A5F9E">三号黑体</tspan>，居中，行距固定值20磅，段前段后空一行</text>
+        <text x="45" y="430" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#4A5568">正文：
+            <tspan font-weight="bold" fill="#1A5F9E">小四号宋体</tspan>，首行缩进2字符，行距固定值20磅</text>
+    </g>
+
+    
+    <g transform="translate(660, 110)">
+        
+        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H548 A12,12 0 0 1 560,12 V228 A12,12 0 0 1 548,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+
+        <path fill="#2B7BC4" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+        <rect y="40" width="560" height="10" fill="#2B7BC4" />
+        <text x="280" y="33" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">English Abstract</text>
+
+        <text x="30" y="85" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">• 标题
+            "Abstract" <tspan font-weight="bold" fill="#E53E3E">不可省略</tspan></text>
+        <text x="30" y="115" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+            是中文摘要的英文译文，置于中文摘要页之后</text>
+
+        <path fill="#F7FAFC" d="M36,135 H524 A6,6 0 0 1 530,141 V219 A6,6 0 0 1 524,225 H36 A6,6 0 0 1 30,219 V141 A6,6 0 0 1 36,135 Z" />
+        <text x="45" y="160" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#4A5568">标题：
+            <tspan font-weight="bold" fill="#2B7BC4">三号 Times New Roman</tspan>，居中</text>
+        <text x="45" y="185" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#4A5568">正文：
+            <tspan font-weight="bold" fill="#2B7BC4">小四号 Times New Roman</tspan></text>
+        <text x="45" y="210" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="13" fill="#4A5568">行距：固定值20磅，首行缩进2字符</text>
+
+        
+        <g transform="translate(0, 260)">
+            <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H548 A12,12 0 0 1 560,12 V178 A12,12 0 0 1 548,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
+
+            <path fill="#38A169" d="M12,0 H548 A12,12 0 0 1 560,12 V38 A12,12 0 0 1 548,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+            <rect y="40" width="560" height="10" fill="#38A169" />
+            <text x="280" y="33" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">关键词 Key Words</text>
+
+            <text x="30" y="85" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+                从论文中选取，表示全文主题内容的单词或术语</text>
+            <text x="30" y="110" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+                一般选取 <tspan font-weight="bold" fill="#38A169">3-5个</tspan> 词作为关键词</text>
+            <text x="30" y="135" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14" fill="#4A5568">•
+                词间用 <tspan font-weight="bold" fill="#38A169">分号</tspan> 间隔，末尾不加标点</text>
+
+            <path fill="#F0FFF4" d="M34,150 H526 A4,4 0 0 1 530,154 V176 A4,4 0 0 1 526,180 H34 A4,4 0 0 1 30,176 V154 A4,4 0 0 1 34,150 Z" />
+            <text x="45" y="170" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12" fill="#38A169">引导词格式："关键词："小四号黑体 | "Key words："小四号 Times New Roman 加粗</text>
+        </g>
+    </g>
+
+    
+    <path fill="#FFFAF0" stroke="#E07C24" stroke-width="1" d="M68,580 H1212 A8,8 0 0 1 1220,588 V622 A8,8 0 0 1 1212,630 H68 A8,8 0 0 1 60,622 V588 A8,8 0 0 1 68,580 Z" />
+    <text x="640" y="612" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="15" fill="#C05621">
+        💡 提示：关键词与摘要内容之间空一行，尽量使用《汉语主题词表》或专业主题词表提供的规范词
+    </text>
+
+    
+    <rect x="60" y="650" width="1160" height="1" fill="#E2E8F0" />
+
+    
+    <text x="100" y="680" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="12" fill="#A0AEC0">
+        重庆大学硕士学位论文撰写格式标准
+    </text>
+
+    
+    <text x="640" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#A0AEC0">
+        5 / 11
+    </text>
+</svg>

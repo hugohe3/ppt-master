@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="glowGreen" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="70" font-family="Consolas, Monaco, monospace" font-size="36" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
+    📜 Git 的诞生
+  </text>
+  <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="18" fill="#8B949E">
+    A Quick History of Git - The Birth of a Legend
+  </text>
+  
+  
+  <rect x="60" y="120" width="200" height="2" fill="#30363D" />
+  
+  
+  <g transform="translate(60, 160)">
+    
+    <rect x="0" y="0" width="600" height="420" fill="#161B22" stroke="#FFD700" stroke-width="2" />
+    
+    
+    <rect x="0" y="0" width="600" height="45" fill="#FFD700" opacity="0.2" />
+    <text x="20" y="30" font-family="Consolas, monospace" font-size="20" font-weight="bold" fill="#FFD700">⏰ 2005年4月 时间线</text>
+    
+    
+    <line x1="80" y1="70" x2="80" y2="390" stroke="#FFD700" stroke-width="4" />
+    
+    
+    <g transform="translate(80, 90)">
+      <circle cx="0" cy="0" r="12" fill="#FF2E97" />
+      <text x="30" y="-10" font-family="Consolas, monospace" font-size="14" fill="#FF2E97">问题出现</text>
+      <text x="30" y="10" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">BitKeeper 开始收费</text>
+      <text x="30" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#8B949E">Linux 团队失去免费的版本控制工具</text>
+    </g>
+    
+    
+    <g transform="translate(80, 180)">
+      <circle cx="0" cy="0" r="12" fill="#FF2E97" />
+      <text x="30" y="-10" font-family="Consolas, monospace" font-size="14" fill="#FF2E97">决定行动</text>
+      <text x="30" y="10" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">Linus Torvalds: "我自己做一个!"</text>
+      <text x="30" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#8B949E">现有工具都不符合他的要求</text>
+    </g>
+    
+    
+    <g transform="translate(80, 270)">
+      <circle cx="0" cy="0" r="12" fill="#00D4FF" />
+      <text x="30" y="-10" font-family="Consolas, monospace" font-size="14" fill="#00D4FF">闭关开发</text>
+      <text x="30" y="10" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">花费大约两周时间</text>
+      <text x="30" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#8B949E">一个人写出 Git 的核心功能</text>
+    </g>
+    
+    
+    <g transform="translate(80, 360)">
+      <circle cx="0" cy="0" r="14" fill="#39FF14" />
+      <text x="30" y="-10" font-family="Consolas, monospace" font-size="14" fill="#39FF14">Git 诞生!</text>
+      <text x="30" y="10" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="16" fill="#E6EDF3">免费、开源、分布式</text>
+      <text x="30" y="30" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="13" fill="#39FF14">15年后，90%+ 开发者在使用</text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(700, 160)">
+    
+    <rect x="0" y="0" width="520" height="140" fill="#161B22" stroke="#00D4FF" stroke-width="2" />
+    <rect x="0" y="0" width="520" height="40" fill="#00D4FF" opacity="0.2" />
+    <text x="20" y="28" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#00D4FF">👤 Linus Torvalds</text>
+    
+    <text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="70">• Linux 操作系统的创始人</text><text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="96">• Git 的创造者</text><text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="122">• 传奇工程师，开源倡导者</text><rect x="0" y="160" width="520" height="260" fill="#161B22" stroke="#FF2E97" stroke-width="2" />
+    <rect x="0" y="160" width="520" height="40" fill="#FF2E97" opacity="0.2" />
+    <text x="20" y="188" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FF2E97">🎭 "Git" 名字的含义</text>
+    
+    <g transform="translate(20, 220)">
+      
+      <rect x="0" y="0" width="480" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="26" font-family="Consolas, monospace" font-size="14" fill="#8B949E">1.</text>
+      <text x="35" y="26" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="15" fill="#E6EDF3">"愚蠢的内容追踪器" (stupid content tracker)</text>
+      
+      
+      <rect x="0" y="50" width="480" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="76" font-family="Consolas, monospace" font-size="14" fill="#8B949E">2.</text>
+      <text x="35" y="76" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="15" fill="#E6EDF3">"全球信息追踪器" (Global Information Tracker)</text>
+      
+      
+      <rect x="0" y="100" width="480" height="40" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+      <text x="15" y="126" font-family="Consolas, monospace" font-size="14" fill="#8B949E">3.</text>
+      <text x="35" y="126" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="15" fill="#E6EDF3">英式俚语: 讨厌的人 / 蠢货</text>
+      
+      
+      <rect x="0" y="150" width="480" height="45" fill="#FF2E97" opacity="0.1" />
+      <text x="15" y="180" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#FF2E97" font-style="italic">
+        "我是个自大狂，我用自己的名字命名所有项目"
+      </text>
+    </g>
+  </g>
+  
+  
+  <g transform="translate(60, 610)">
+    <rect x="0" y="0" width="1160" height="60" fill="#39FF14" opacity="0.1" stroke="#39FF14" stroke-width="2" />
+    <text x="580" y="25" text-anchor="middle" font-family="Consolas, monospace" font-size="18" fill="#39FF14">
+      🚀 从一个人的愤怒 → 全球 90%+ 开发者的标配工具
+    </text>
+    <text x="580" y="48" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="14" fill="#8B949E">
+      开源的力量：一个人解决问题，全世界受益
+    </text>
+  </g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#39FF14" opacity="0.6" />
+  
+  
+  <text x="60" y="690" font-family="Consolas, monospace" font-size="14" fill="#8B949E">08/10</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Consolas, monospace" font-size="14" fill="#8B949E">History</text>
+</svg>

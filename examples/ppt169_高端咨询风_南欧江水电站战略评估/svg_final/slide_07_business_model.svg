@@ -1,108 +1,108 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">商业模式与股权结构</text>
   <text x="1240" y="50" font-family="system-ui, sans-serif" font-size="14" fill="#7ED4E6" text-anchor="end">BUSINESS MODEL</text>
   
-  <!-- 左侧股权结构 -->
+  
   <g transform="translate(40, 100)">
-    <rect width="400" height="400" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H388 A12,12 0 0 1 400,12 V388 A12,12 0 0 1 388,400 H12 A12,12 0 0 1 0,388 V12 A12,12 0 0 1 12,0 Z" />
     <text x="20" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">股权结构</text>
     
-    <!-- 环形图 - 使用path绘制圆弧确保PPT兼容性 -->
+    
     <g transform="translate(200, 200)">
-      <!-- 85% 中国电建: 从顶部顺时针306° -->
-      <!-- 306°坐标: x=R*sin(306°)=-0.809R, y=-R*cos(306°)=-0.588R -->
-      <!-- 外圈R=120: (-97.08, -70.56), 内圈r=80: (-64.72, -47.04) -->
-      <path d="M 0,-120 A 120,120 0 1,1 -97.08,-70.56 L -64.72,-47.04 A 80,80 0 1,0 0,-80 Z" fill="#1A6B7C"/>
-      <!-- 15% EDL-Gen: 从306°到360° (顺时针54°) -->
-      <path d="M -97.08,-70.56 A 120,120 0 0,1 0,-120 L 0,-80 A 80,80 0 0,0 -64.72,-47.04 Z" fill="#C9A227"/>
-      <!-- 中心文字 -->
+      
+      
+      
+      <path d="M 0,-120 A 120,120 0 1,1 -97.08,-70.56 L -64.72,-47.04 A 80,80 0 1,0 0,-80 Z" fill="#1A6B7C" />
+      
+      <path d="M -97.08,-70.56 A 120,120 0 0,1 0,-120 L 0,-80 A 80,80 0 0,0 -64.72,-47.04 Z" fill="#C9A227" />
+      
       <text x="0" y="-5" font-family="system-ui" font-size="24" font-weight="700" fill="#0D2B3E" text-anchor="middle">85:15</text>
       <text x="0" y="18" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096" text-anchor="middle">股权比例</text>
     </g>
     
-    <!-- 图例 -->
+    
     <g transform="translate(50, 330)">
-      <rect width="16" height="16" rx="4" fill="#1A6B7C"/>
+      <path fill="#1A6B7C" d="M4,0 H12 A4,4 0 0 1 16,4 V12 A4,4 0 0 1 12,16 H4 A4,4 0 0 1 0,12 V4 A4,4 0 0 1 4,0 Z" />
       <text x="25" y="13" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">中国电建 (PowerChina)</text>
       <text x="25" y="32" font-family="system-ui" font-size="20" font-weight="700" fill="#1A6B7C">85%</text>
       <text x="25" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">绝对控股 · 运营管理权</text>
     </g>
     <g transform="translate(220, 330)">
-      <rect width="16" height="16" rx="4" fill="#C9A227"/>
+      <path fill="#C9A227" d="M4,0 H12 A4,4 0 0 1 16,4 V12 A4,4 0 0 1 12,16 H4 A4,4 0 0 1 0,12 V4 A4,4 0 0 1 4,0 Z" />
       <text x="25" y="13" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#0D2B3E">EDL-Gen (老挝)</text>
       <text x="25" y="32" font-family="system-ui" font-size="20" font-weight="700" fill="#C9A227">15%</text>
       <text x="25" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">国有资产代表 · 分红权</text>
     </g>
   </g>
   
-  <!-- 右侧商业模式 -->
+  
   <g transform="translate(460, 100)">
-    <rect width="780" height="190" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="8" height="190" rx="4" fill="#1A6B7C"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H768 A12,12 0 0 1 780,12 V178 A12,12 0 0 1 768,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#1A6B7C" d="M4,0 H4 A4,4 0 0 1 8,4 V186 A4,4 0 0 1 4,190 H4 A4,4 0 0 1 0,186 V4 A4,4 0 0 1 4,0 Z" />
     <text x="28" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">BOT模式核心要素</text>
     
     <g transform="translate(28, 60)">
-      <rect width="170" height="80" rx="8" fill="#1A6B7C" opacity="0.1"/>
+      <path fill="#1A6B7C" opacity="0.1" d="M8,0 H162 A8,8 0 0 1 170,8 V72 A8,8 0 0 1 162,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
       <text x="85" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#1A6B7C" text-anchor="middle" font-weight="600">Build 建设</text>
       <text x="85" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle">中国电建负责</text>
       <text x="85" y="72" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle">全流域工程建设</text>
     </g>
     <text x="218" y="100" font-family="system-ui" font-size="20" fill="#1A6B7C">→</text>
     <g transform="translate(248, 60)">
-      <rect width="170" height="80" rx="8" fill="#C9A227" opacity="0.1"/>
+      <path fill="#C9A227" opacity="0.1" d="M8,0 H162 A8,8 0 0 1 170,8 V72 A8,8 0 0 1 162,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
       <text x="85" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#C9A227" text-anchor="middle" font-weight="600">Operate 运营</text>
       <text x="85" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle">特许经营期</text>
       <text x="85" y="72" font-family="system-ui" font-size="14" fill="#C9A227" text-anchor="middle" font-weight="700">29年</text>
     </g>
     <text x="438" y="100" font-family="system-ui" font-size="20" fill="#C9A227">→</text>
     <g transform="translate(468, 60)">
-      <rect width="170" height="80" rx="8" fill="#2E7D32" opacity="0.1"/>
+      <path fill="#2E7D32" opacity="0.1" d="M8,0 H162 A8,8 0 0 1 170,8 V72 A8,8 0 0 1 162,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
       <text x="85" y="30" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#2E7D32" text-anchor="middle" font-weight="600">Transfer 移交</text>
       <text x="85" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle">期满后资产</text>
       <text x="85" y="72" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#4A5568" text-anchor="middle">无偿移交老挝</text>
     </g>
     <g transform="translate(658, 60)">
-      <rect width="100" height="80" rx="8" fill="#0D2B3E"/>
+      <path fill="#0D2B3E" d="M8,0 H92 A8,8 0 0 1 100,8 V72 A8,8 0 0 1 92,80 H8 A8,8 0 0 1 0,72 V8 A8,8 0 0 1 8,0 Z" />
       <text x="50" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#7ED4E6" text-anchor="middle">项目公司</text>
       <text x="50" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#FFFFFF" text-anchor="middle">南欧江发电</text>
       <text x="50" y="72" font-family="system-ui, 'Microsoft YaHei'" font-size="10" fill="#FFFFFF" text-anchor="middle">有限公司</text>
     </g>
   </g>
   
-  <!-- PPA购电协议 -->
+  
   <g transform="translate(460, 310)">
-    <rect width="780" height="190" rx="12" fill="#FFFFFF" stroke="#B8352B" stroke-width="2"/>
-    <rect x="0" y="0" width="8" height="190" rx="4" fill="#B8352B"/>
+    <path fill="#FFFFFF" stroke="#B8352B" stroke-width="2" d="M12,0 H768 A12,12 0 0 1 780,12 V178 A12,12 0 0 1 768,190 H12 A12,12 0 0 1 0,178 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#B8352B" d="M4,0 H4 A4,4 0 0 1 8,4 V186 A4,4 0 0 1 4,190 H4 A4,4 0 0 1 0,186 V4 A4,4 0 0 1 4,0 Z" />
     <text x="28" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#B8352B">购电协议 (PPA) · 争议核心</text>
     
     <g transform="translate(28, 55)">
-      <rect width="240" height="55" rx="6" fill="#F0F5F7"/>
+      <path fill="#F0F5F7" d="M6,0 H234 A6,6 0 0 1 240,6 V49 A6,6 0 0 1 234,55 H6 A6,6 0 0 1 0,49 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">单一买方</text>
       <text x="15" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">老挝国家电力公司 (EDL)</text>
     </g>
     <g transform="translate(288, 55)">
-      <rect width="240" height="55" rx="6" fill="#F0F5F7"/>
+      <path fill="#F0F5F7" d="M6,0 H234 A6,6 0 0 1 240,6 V49 A6,6 0 0 1 234,55 H6 A6,6 0 0 1 0,49 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#718096">定价机制</text>
       <text x="15" y="42" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#0D2B3E">照付不议 (Take-or-Pay)</text>
     </g>
     <g transform="translate(548, 55)">
-      <rect width="200" height="55" rx="6" fill="#B8352B" opacity="0.1"/>
+      <path fill="#B8352B" opacity="0.1" d="M6,0 H194 A6,6 0 0 1 200,6 V49 A6,6 0 0 1 194,55 H6 A6,6 0 0 1 0,49 V6 A6,6 0 0 1 6,0 Z" />
       <text x="15" y="22" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#B8352B">⚠️ 货币条款</text>
       <text x="15" y="42" font-family="system-ui" font-size="16" font-weight="700" fill="#B8352B">85% 美元支付</text>
     </g>
     
-    <rect x="28" y="125" width="720" height="50" rx="6" fill="#B8352B" opacity="0.08"/>
+    <path fill="#B8352B" opacity="0.08" d="M34,125 H742 A6,6 0 0 1 748,131 V169 A6,6 0 0 1 742,175 H34 A6,6 0 0 1 28,169 V131 A6,6 0 0 1 34,125 Z" />
     <text x="48" y="155" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#B8352B">
       <tspan font-weight="600">争议导火索：</tspan>
       <tspan>EDL违反85%美元支付条款，使用严重贬值的基普支付 → 实际收入腰斩</tspan>
     </text>
   </g>
   
-  <!-- 风险提示 -->
+  
   <g transform="translate(40, 520)">
-    <rect width="1200" height="80" rx="12" fill="#0D2B3E"/>
+    <path fill="#0D2B3E" d="M12,0 H1188 A12,12 0 0 1 1200,12 V68 A12,12 0 0 1 1188,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="35" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#7ED4E6">⚠️ 风险结构分析</text>
     <text x="30" y="60" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF">
       <tspan>85%股权意味着中方承担</tspan>
@@ -111,7 +111,7 @@
     </text>
   </g>
   
-  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1" />
   <text x="40" y="670" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
   <text x="1240" y="670" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">07 / 20</text>
 </svg>

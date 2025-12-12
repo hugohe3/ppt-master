@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#7ee787" />
+        </marker>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    
+    <g transform="translate(60, 60)">
+        <path fill="url(#stepGradient)" opacity="0.2" d="M16,0 H84 A16,16 0 0 1 100,16 V84 A16,16 0 0 1 84,100 H16 A16,16 0 0 1 0,84 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold" fill="url(#stepGradient)">04</text>
+    </g>
+
+    
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold" fill="#e6edf3">🧪 验证假设</text>
+
+    
+    <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M70,175 H1210 A10,10 0 0 1 1220,185 V220 A10,10 0 0 1 1210,230 H70 A10,10 0 0 1 60,220 V185 A10,10 0 0 1 70,175 Z" />
+    <text x="640" y="210" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="22" fill="#e6edf3">
+        <tspan>当怀疑点只剩几个时，</tspan>
+        <tspan fill="#f85149">不要直接修</tspan>
+        <tspan>，先</tspan>
+        <tspan fill="#7ee787" font-weight="bold">像做实验一样</tspan>
+        <tspan>验证假设</tspan>
+    </text>
+
+    
+    <g transform="translate(60, 260)">
+        <path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M12,0 H538 A12,12 0 0 1 550,12 V168 A12,12 0 0 1 538,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+        <path fill="#f0883e" opacity="0.15" d="M12,0 H538 A12,12 0 0 1 550,12 V38 A12,12 0 0 1 538,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+        <text x="275" y="35" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#f0883e">🔬 控制变量法</text>
+
+        <g transform="translate(25, 70)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#e6edf3">
+            <text x="0" y="0">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">每次测试只改</tspan>
+                <tspan font-weight="bold" fill="#f0883e">一个</tspan>
+                <tspan>条件</tspan>
+            </text>
+            <text x="0" y="35">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">换个账号试试</tspan>
+            </text>
+            <text x="0" y="70">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">换个环境试试</tspan>
+            </text>
+            <text x="0" y="105">
+                <tspan fill="#7ee787">•</tspan>
+                <tspan dx="10">确认是什么导致了结果变化</tspan>
+            </text>
+        </g>
+    </g>
+
+    
+    <g transform="translate(670, 260)">
+        <path fill="#161b22" stroke="#58a6ff" stroke-width="2" d="M12,0 H538 A12,12 0 0 1 550,12 V168 A12,12 0 0 1 538,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+        <path fill="#58a6ff" opacity="0.15" d="M12,0 H538 A12,12 0 0 1 550,12 V38 A12,12 0 0 1 538,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+        <text x="275" y="35" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#58a6ff">📋 案例：画面没更新</text>
+
+        <g transform="translate(25, 70)" font-family="SF Pro Text, -apple-system, sans-serif">
+            <text x="0" y="0" font-size="16" fill="#8b949e">问题：用户点击后画面没反应</text>
+            <text x="0" y="30" font-size="18" fill="#e6edf3">假设 A：数据没变化</text>
+            <text x="0" y="55" font-size="18" fill="#e6edf3">假设 B：渲染逻辑没跑</text>
+
+            
+            <path fill="#1f2428" d="M6,70 H494 A6,6 0 0 1 500,76 V99 A6,6 0 0 1 494,105 H6 A6,6 0 0 1 0,99 V76 A6,6 0 0 1 6,70 Z" />
+            <text x="15" y="93" font-family="SF Mono, monospace" font-size="14">
+                <tspan fill="#7ee787">console.log</tspan>
+                <tspan fill="#8b949e">(</tspan>
+                <tspan fill="#f0883e">"data changed:"</tspan>
+                <tspan fill="#8b949e">, newData)</tspan>
+            </text>
+        </g>
+    </g>
+
+    
+    <g transform="translate(60, 470)">
+        <text x="0" y="0" font-family="SF Pro Display, -apple-system, sans-serif" font-size="20" font-weight="bold" fill="#7ee787">验证流程演示</text>
+
+        
+        <g transform="translate(0, 30)">
+            
+            <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H210 A10,10 0 0 1 220,10 V70 A10,10 0 0 1 210,80 H10 A10,10 0 0 1 0,70 V10 A10,10 0 0 1 10,0 Z" />
+            <text x="110" y="30" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">Step 1</text>
+            <text x="110" y="55" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">加 Log 监测数据</text>
+
+            
+            <line x1="230" y1="40" x2="290" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+
+            
+            <g transform="translate(300, 0)">
+                <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H210 A10,10 0 0 1 220,10 V70 A10,10 0 0 1 210,80 H10 A10,10 0 0 1 0,70 V10 A10,10 0 0 1 10,0 Z" />
+                <text x="110" y="30" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">Step 2</text>
+                <text x="110" y="55" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">发现数据有变化</text>
+            </g>
+
+            
+            <line x1="530" y1="40" x2="590" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+
+            
+            <g transform="translate(600, 0)">
+                <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M10,0 H210 A10,10 0 0 1 220,10 V70 A10,10 0 0 1 210,80 H10 A10,10 0 0 1 0,70 V10 A10,10 0 0 1 10,0 Z" />
+                <text x="110" y="30" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">Step 3</text>
+                <text x="110" y="55" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">画面却没动</text>
+            </g>
+
+            
+            <line x1="830" y1="40" x2="890" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+
+            
+            <g transform="translate(900, 0)">
+                <path fill="#7ee787" opacity="0.2" stroke="#7ee787" stroke-width="2" d="M10,0 H250 A10,10 0 0 1 260,10 V70 A10,10 0 0 1 250,80 H10 A10,10 0 0 1 0,70 V10 A10,10 0 0 1 10,0 Z" />
+                <text x="130" y="30" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#7ee787">结论</text>
+                <text x="130" y="55" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#7ee787">问题在渲染层！</text>
+            </g>
+        </g>
+    </g>
+
+    
+    <path fill="#f0883e" opacity="0.1" d="M68,625 H1212 A8,8 0 0 1 1220,633 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V633 A8,8 0 0 1 68,625 Z" />
+    <text x="640" y="655" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#f0883e">
+        <tspan font-weight="bold">科学方法：</tspan>
+        <tspan>假设 → 实验 → 观察 → 结论</tspan>
+    </text>
+
+    
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">06 /
+        10</text>
+</svg>

@@ -1,44 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <filter id="cardShadow6" x="-15%" y="-15%" width="130%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
-      <feOffset in="blur" dx="0" dy="2" result="offsetBlur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
-      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+      <feOffset in="blur" dx="0" dy="2" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
       <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#D97757"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#D97757" />
+  
+  
   <text x="60" y="50" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
     TOOL ENGINEERING
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="90" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#1A1A2E">
     Prompt Engineer Your Tools：工具设计与 HCI 同等重要
   </text>
   
-  <!-- 核心引言 + ACI 概念框 合并为一行 -->
+  
   <g transform="translate(60, 115)">
-    <!-- 引言框 -->
-    <rect x="0" y="0" width="750" height="55" rx="10" fill="#D97757" fill-opacity="0.1"/>
-    <rect x="0" y="0" width="5" height="55" rx="2" fill="#D97757"/>
+    
+    <path fill="#D97757" fill-opacity="0.1" d="M10,0 H740 A10,10 0 0 1 750,10 V45 A10,10 0 0 1 740,55 H10 A10,10 0 0 1 0,45 V10 A10,10 0 0 1 10,0 Z" />
+    <path fill="#D97757" d="M2,0 H3 A2,2 0 0 1 5,2 V53 A2,2 0 0 1 3,55 H2 A2,2 0 0 1 0,53 V2 A2,2 0 0 1 2,0 Z" />
     <text x="22" y="35" font-family="Arial, sans-serif" font-size="15" fill="#1A1A2E" font-style="italic">
       "我们在工具优化上花的时间比整体 prompt 更多。" — Anthropic SWE-bench 团队
     </text>
     
-    <!-- ACI 概念框 -->
-    <rect x="780" y="0" width="380" height="55" rx="10" fill="#1A1A2E"/>
+    
+    <path fill="#1A1A2E" d="M790,0 H1150 A10,10 0 0 1 1160,10 V45 A10,10 0 0 1 1150,55 H790 A10,10 0 0 1 780,45 V10 A10,10 0 0 1 790,0 Z" />
     <text x="805" y="28" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#D97757">
       ACI = Agent-Computer Interface
     </text>
@@ -47,123 +47,101 @@
     </text>
   </g>
   
-  <!-- 五大原则标题 -->
+  
   <text x="60" y="205" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A1A2E">
     工具设计五大原则
   </text>
   
-  <!-- 第一行：3个原则 -->
+  
   <g transform="translate(60, 225)">
-    <!-- 原则 1 -->
-    <rect x="0" y="0" width="370" height="145" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)"/>
-    <circle cx="30" cy="30" r="20" fill="#4A90D9"/>
+    
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)" d="M12,0 H358 A12,12 0 0 1 370,12 V133 A12,12 0 0 1 358,145 H12 A12,12 0 0 1 0,133 V12 A12,12 0 0 1 12,0 Z" />
+    <circle cx="30" cy="30" r="20" fill="#4A90D9" />
     <text x="30" y="37" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
     <text x="62" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       给 LLM 足够的 token "思考"
     </text>
-    <text x="20" y="62" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
-      <tspan x="20" dy="0">避免在写输出前陷入死角</tspan>
-      <tspan x="20" dy="20">让模型有空间规划再输出</tspan>
-    </text>
-    <rect x="20" y="108" width="90" height="24" rx="12" fill="#4A90D9" fill-opacity="0.1"/>
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="20" y="62">避免在写输出前陷入死角</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="20" y="82">让模型有空间规划再输出</text><path fill="#4A90D9" fill-opacity="0.1" d="M32,108 H98 A12,12 0 0 1 110,120 V120 A12,12 0 0 1 98,132 H32 A12,12 0 0 1 20,120 V120 A12,12 0 0 1 32,108 Z" />
     <text x="65" y="124" font-family="Arial, sans-serif" font-size="11" fill="#4A90D9" text-anchor="middle">
       设计原则
     </text>
     
-    <!-- 原则 2 -->
-    <rect x="395" y="0" width="370" height="145" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)"/>
-    <circle cx="425" cy="30" r="20" fill="#10B981"/>
+    
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)" d="M407,0 H753 A12,12 0 0 1 765,12 V133 A12,12 0 0 1 753,145 H407 A12,12 0 0 1 395,133 V12 A12,12 0 0 1 407,0 Z" />
+    <circle cx="425" cy="30" r="20" fill="#10B981" />
     <text x="425" y="37" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
     <text x="457" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       格式贴近自然文本
     </text>
-    <text x="415" y="62" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
-      <tspan x="415" dy="0">Markdown &gt; JSON（减少转义）</tspan>
-      <tspan x="415" dy="20">Diff 比重写更难（需预知行数）</tspan>
-    </text>
-    <rect x="415" y="108" width="80" height="24" rx="12" fill="#10B981" fill-opacity="0.1"/>
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="415" y="62">Markdown &gt; JSON（减少转义）</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="415" y="82">Diff 比重写更难（需预知行数）</text><path fill="#10B981" fill-opacity="0.1" d="M427,108 H483 A12,12 0 0 1 495,120 V120 A12,12 0 0 1 483,132 H427 A12,12 0 0 1 415,120 V120 A12,12 0 0 1 427,108 Z" />
     <text x="455" y="124" font-family="Arial, sans-serif" font-size="11" fill="#10B981" text-anchor="middle">
       格式选择
     </text>
     
-    <!-- 原则 3 -->
-    <rect x="790" y="0" width="370" height="145" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)"/>
-    <circle cx="820" cy="30" r="20" fill="#8B5CF6"/>
+    
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)" d="M802,0 H1148 A12,12 0 0 1 1160,12 V133 A12,12 0 0 1 1148,145 H802 A12,12 0 0 1 790,133 V12 A12,12 0 0 1 802,0 Z" />
+    <circle cx="820" cy="30" r="20" fill="#8B5CF6" />
     <text x="820" y="37" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
     <text x="852" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       无格式开销
     </text>
-    <text x="810" y="62" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
-      <tspan x="810" dy="0">不要求精确计数千行代码</tspan>
-      <tspan x="810" dy="20">不要求手动字符串转义</tspan>
-    </text>
-    <rect x="810" y="108" width="80" height="24" rx="12" fill="#8B5CF6" fill-opacity="0.1"/>
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="810" y="62">不要求精确计数千行代码</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="810" y="82">不要求手动字符串转义</text><path fill="#8B5CF6" fill-opacity="0.1" d="M822,108 H878 A12,12 0 0 1 890,120 V120 A12,12 0 0 1 878,132 H822 A12,12 0 0 1 810,120 V120 A12,12 0 0 1 822,108 Z" />
     <text x="850" y="124" font-family="Arial, sans-serif" font-size="11" fill="#8B5CF6" text-anchor="middle">
       降低负担
     </text>
   </g>
   
-  <!-- 第二行：2个原则 -->
+  
   <g transform="translate(60, 390)">
-    <!-- 原则 4 -->
-    <rect x="0" y="0" width="565" height="140" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)"/>
-    <circle cx="30" cy="30" r="20" fill="#D97757"/>
+    
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow6)" d="M12,0 H553 A12,12 0 0 1 565,12 V128 A12,12 0 0 1 553,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
+    <circle cx="30" cy="30" r="20" fill="#D97757" />
     <text x="30" y="37" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
     <text x="62" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       站在模型角度思考
     </text>
-    <text x="20" y="62" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
-      <tspan x="20" dy="0">• 工具定义是否够清晰？包含示例用法、边界情况、输入格式</tspan>
-      <tspan x="20" dy="20">• 如同为初级开发者写完善的 docstring</tspan>
-    </text>
-    <rect x="20" y="105" width="100" height="24" rx="12" fill="#D97757" fill-opacity="0.1"/>
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="20" y="62">• 工具定义是否够清晰？包含示例用法、边界情况、输入格式</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="20" y="82">• 如同为初级开发者写完善的 docstring</text><path fill="#D97757" fill-opacity="0.1" d="M32,105 H108 A12,12 0 0 1 120,117 V117 A12,12 0 0 1 108,129 H32 A12,12 0 0 1 20,117 V117 A12,12 0 0 1 32,105 Z" />
     <text x="70" y="121" font-family="Arial, sans-serif" font-size="11" fill="#D97757" text-anchor="middle">
       文档清晰度
     </text>
     
-    <!-- 原则 5 -->
-    <rect x="595" y="0" width="565" height="140" rx="12" fill="#FEF7F5" stroke="#D97757" stroke-width="1" filter="url(#cardShadow6)"/>
-    <circle cx="625" cy="30" r="20" fill="#F59E0B"/>
+    
+    <path fill="#FEF7F5" stroke="#D97757" stroke-width="1" filter="url(#cardShadow6)" d="M607,0 H1148 A12,12 0 0 1 1160,12 V128 A12,12 0 0 1 1148,140 H607 A12,12 0 0 1 595,128 V12 A12,12 0 0 1 607,0 Z" />
+    <circle cx="625" cy="30" r="20" fill="#F59E0B" />
     <text x="625" y="37" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
     <text x="657" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       Poka-yoke 防错设计
     </text>
-    <text x="615" y="62" font-family="Arial, sans-serif" font-size="13" fill="#64748B">
-      <tspan x="615" dy="0">• 改变参数设计，让错误难以发生</tspan>
-      <tspan x="615" dy="20">• 示例：使用</tspan>
-      <tspan font-weight="600" fill="#D97757">绝对路径</tspan>
-      <tspan>替代相对路径 → 错误率降为 0</tspan>
-    </text>
-    <rect x="615" y="105" width="100" height="24" rx="12" fill="#F59E0B" fill-opacity="0.1"/>
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="62">• 改变参数设计，让错误难以发生</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="82">• 示例：使用</text><text font-family="Arial, sans-serif" font-size="13" fill="#D97757" font-weight="600" x="615" y="82">绝对路径</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="82">替代相对路径 → 错误率降为 0</text><path fill="#F59E0B" fill-opacity="0.1" d="M627,105 H703 A12,12 0 0 1 715,117 V117 A12,12 0 0 1 703,129 H627 A12,12 0 0 1 615,117 V117 A12,12 0 0 1 627,105 Z" />
     <text x="665" y="121" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" text-anchor="middle">
       防错机制
     </text>
   </g>
   
-  <!-- 底部总结条 -->
+  
   <g transform="translate(60, 555)">
-    <rect x="0" y="0" width="1160" height="95" rx="12" fill="#1A1A2E"/>
+    <path fill="#1A1A2E" d="M12,0 H1148 A12,12 0 0 1 1160,12 V83 A12,12 0 0 1 1148,95 H12 A12,12 0 0 1 0,83 V12 A12,12 0 0 1 12,0 Z" />
     
     <text x="30" y="35" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97757">
       💡 核心要点
     </text>
     
     <g font-family="Arial, sans-serif" font-size="14" transform="translate(30, 55)">
-      <circle cx="8" cy="8" r="5" fill="#4A90D9"/>
+      <circle cx="8" cy="8" r="5" fill="#4A90D9" />
       <text x="22" y="13" fill="#FFFFFF">像设计用户界面一样设计工具接口</text>
       
-      <circle cx="320" cy="8" r="5" fill="#10B981"/>
+      <circle cx="320" cy="8" r="5" fill="#10B981" />
       <text x="334" y="13" fill="#FFFFFF">持续测试和迭代工具定义</text>
       
-      <circle cx="580" cy="8" r="5" fill="#8B5CF6"/>
+      <circle cx="580" cy="8" r="5" fill="#8B5CF6" />
       <text x="594" y="13" fill="#FFFFFF">收集模型使用工具时的错误日志</text>
       
-      <circle cx="880" cy="8" r="5" fill="#F59E0B"/>
+      <circle cx="880" cy="8" r="5" fill="#F59E0B" />
       <text x="894" y="13" fill="#FFFFFF">改进工具</text>
     </g>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="690" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     14 / 15
   </text>

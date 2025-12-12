@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     Peter Fonagy —— 心智化与反思功能
   </text>
@@ -13,147 +13,108 @@
     Mentalizing, Reflective Function and Modes of Experience
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="520" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 核心概念卡片（上半部分） -->
+  <line x1="60" y1="125" x2="520" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 心智化 -->
+    
     <g>
-      <rect x="0" y="0" width="370" height="180" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
-      <rect x="0" y="0" width="370" height="50" rx="12" fill="#2E5C8E"/>
-      <rect x="0" y="38" width="370" height="12" fill="#2E5C8E"/>
+      <path fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V168 A12,12 0 0 1 358,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#2E5C8E" d="M12,0 H358 A12,12 0 0 1 370,12 V38 A12,12 0 0 1 358,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="370" height="12" fill="#2E5C8E" />
       
       <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🧠 心智化 Mentalizing</text>
       
-      <text x="20" y="80" font-size="15" fill="#374151">
-        <tspan x="20" dy="0">通过推断心理状态（信念、愿望、</tspan>
-        <tspan x="20" dy="24">感受）来理解自己和他人行为的</tspan>
-        <tspan x="20" dy="24">心理过程</tspan>
-      </text>
-      
-      <rect x="20" y="145" width="330" height="26" rx="4" fill="#E0F2FE"/>
+      <text fill="#374151" font-size="15" x="20" y="80">通过推断心理状态（信念、愿望、</text><text fill="#374151" font-size="15" x="20" y="104">感受）来理解自己和他人行为的</text><text fill="#374151" font-size="15" x="20" y="128">心理过程</text><path fill="#E0F2FE" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
       <text x="185" y="163" font-size="13" fill="#2E5C8E" text-anchor="middle">💡 依恋关系的进化目的：发展心智化能力</text>
     </g>
     
-    <!-- 反思功能 -->
+    
     <g transform="translate(400, 0)">
-      <rect x="0" y="0" width="370" height="180" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
-      <rect x="0" y="0" width="370" height="50" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="38" width="370" height="12" fill="#3D8B7A"/>
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V168 A12,12 0 0 1 358,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#3D8B7A" d="M12,0 H358 A12,12 0 0 1 370,12 V38 A12,12 0 0 1 358,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="38" width="370" height="12" fill="#3D8B7A" />
       
       <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🔍 反思功能 Reflective Function</text>
       
-      <text x="20" y="80" font-size="15" fill="#374151">
-        <tspan x="20" dy="0">将自己和他人视为具有心理深度</tspan>
-        <tspan x="20" dy="24">的存在，能够理解行为背后的</tspan>
-        <tspan x="20" dy="24">心理动机和意图</tspan>
-      </text>
-      
-      <rect x="20" y="145" width="330" height="26" rx="4" fill="#D4EDDA"/>
+      <text fill="#374151" font-size="15" x="20" y="80">将自己和他人视为具有心理深度</text><text fill="#374151" font-size="15" x="20" y="104">的存在，能够理解行为背后的</text><text fill="#374151" font-size="15" x="20" y="128">心理动机和意图</text><path fill="#D4EDDA" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
       <text x="185" y="163" font-size="13" fill="#3D8B7A" text-anchor="middle">🛡️ 代际传递解药：高反思功能打破恶性循环</text>
     </g>
     
-    <!-- 核心洞见 -->
+    
     <g transform="translate(800, 0)">
-      <rect x="0" y="0" width="370" height="180" rx="12" fill="#1E3A5F"/>
+      <path fill="#1E3A5F" d="M12,0 H358 A12,12 0 0 1 370,12 V168 A12,12 0 0 1 358,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
       
       <text x="20" y="35" font-size="16" font-weight="bold" fill="#FFFFFF">🔑 Fonagy的核心洞见</text>
       
-      <text x="20" y="70" font-size="14" fill="#CBD5E1">
-        <tspan x="20" dy="0">即使父母童年不幸，如果他们</tspan>
-        <tspan x="20" dy="22">具备高反思功能，仍能抚养出</tspan>
-        <tspan x="20" dy="22">安全依恋的孩子。</tspan>
-      </text>
-      
-      <text x="20" y="150" font-size="14" fill="#E07843" font-weight="600">
+      <text fill="#CBD5E1" font-size="14" x="20" y="70">即使父母童年不幸，如果他们</text><text fill="#CBD5E1" font-size="14" x="20" y="92">具备高反思功能，仍能抚养出</text><text fill="#CBD5E1" font-size="14" x="20" y="114">安全依恋的孩子。</text><text x="20" y="150" font-size="14" fill="#E07843" font-weight="600">
         反思能力 &gt; 童年历史
       </text>
     </g>
   </g>
   
-  <!-- 三种体验模式（下半部分） -->
+  
   <text x="60" y="365" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#2E5C8E">
     三种体验主观世界的模式
   </text>
-  <line x1="60" y1="380" x2="300" y2="380" stroke="#2E5C8E" stroke-width="2"/>
+  <line x1="60" y1="380" x2="300" y2="380" stroke="#2E5C8E" stroke-width="2" />
   
   <g transform="translate(60, 400)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 心理等同 -->
+    
     <g>
-      <rect x="0" y="0" width="370" height="250" rx="12" fill="#FFFFFF" stroke="#B54545" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#B54545" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V238 A12,12 0 0 1 358,250 H12 A12,12 0 0 1 0,238 V12 A12,12 0 0 1 12,0 Z" />
       
-      <rect x="0" y="0" width="370" height="55" rx="12" fill="#B54545"/>
-      <rect x="0" y="43" width="370" height="12" fill="#B54545"/>
+      <path fill="#B54545" d="M12,0 H358 A12,12 0 0 1 370,12 V43 A12,12 0 0 1 358,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="43" width="370" height="12" fill="#B54545" />
       
       <text x="185" y="25" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">心理等同</text>
       <text x="185" y="45" font-size="12" fill="#FECACA" text-anchor="middle">Psychic Equivalence</text>
       
-      <!-- 状态标识 -->
-      <rect x="15" y="70" width="50" height="24" rx="12" fill="#FECACA"/>
+      
+      <path fill="#FECACA" d="M27,70 H53 A12,12 0 0 1 65,82 V82 A12,12 0 0 1 53,94 H27 A12,12 0 0 1 15,82 V82 A12,12 0 0 1 27,70 Z" />
       <text x="40" y="87" font-size="13" fill="#B54545" text-anchor="middle">困境</text>
       
-      <!-- 说明 -->
-      <text x="20" y="120" font-size="15" fill="#374151">
-        <tspan x="20" dy="0" font-weight="600">内心世界 = 外部现实</tspan>
-        <tspan x="20" dy="30">• 信念即事实</tspan>
-        <tspan x="20" dy="24">• 感到恐惧 = 环境必然危险</tspan>
-        <tspan x="20" dy="24">• 只有单一视角</tspan>
-        <tspan x="20" dy="24">• 情感调节困难</tspan>
-      </text>
-    </g>
-    
-    <!-- 假装模式 -->
-    <g transform="translate(400, 0)">
-      <rect x="0" y="0" width="370" height="250" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
       
-      <rect x="0" y="0" width="370" height="55" rx="12" fill="#E07843"/>
-      <rect x="0" y="43" width="370" height="12" fill="#E07843"/>
+      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心世界 = 外部现实</text><text fill="#374151" font-size="15" x="20" y="150">• 信念即事实</text><text fill="#374151" font-size="15" x="20" y="174">• 感到恐惧 = 环境必然危险</text><text fill="#374151" font-size="15" x="20" y="198">• 只有单一视角</text><text fill="#374151" font-size="15" x="20" y="222">• 情感调节困难</text></g>
+    
+    
+    <g transform="translate(400, 0)">
+      <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V238 A12,12 0 0 1 358,250 H12 A12,12 0 0 1 0,238 V12 A12,12 0 0 1 12,0 Z" />
+      
+      <path fill="#E07843" d="M12,0 H358 A12,12 0 0 1 370,12 V43 A12,12 0 0 1 358,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="43" width="370" height="12" fill="#E07843" />
       
       <text x="185" y="25" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">假装模式</text>
       <text x="185" y="45" font-size="12" fill="#FED7AA" text-anchor="middle">Pretend Mode</text>
       
-      <!-- 状态标识 -->
-      <rect x="15" y="70" width="50" height="24" rx="12" fill="#FED7AA"/>
+      
+      <path fill="#FED7AA" d="M27,70 H53 A12,12 0 0 1 65,82 V82 A12,12 0 0 1 53,94 H27 A12,12 0 0 1 15,82 V82 A12,12 0 0 1 27,70 Z" />
       <text x="40" y="87" font-size="13" fill="#E07843" text-anchor="middle">过渡</text>
       
-      <!-- 说明 -->
-      <text x="20" y="120" font-size="15" fill="#374151">
-        <tspan x="20" dy="0" font-weight="600">内心世界 ≠ 外部现实（脱钩）</tspan>
-        <tspan x="20" dy="30">• 想象被感觉为真实</tspan>
-        <tspan x="20" dy="24">• 但必须切断与现实的联系</tspan>
-        <tspan x="20" dy="24">• 游戏/幻想中的安全空间</tspan>
-        <tspan x="20" dy="24">• 智力化防御</tspan>
-      </text>
-    </g>
-    
-    <!-- 心智化模式 -->
-    <g transform="translate(800, 0)">
-      <rect x="0" y="0" width="370" height="250" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
       
-      <rect x="0" y="0" width="370" height="55" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="43" width="370" height="12" fill="#3D8B7A"/>
+      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心世界 ≠ 外部现实（脱钩）</text><text fill="#374151" font-size="15" x="20" y="150">• 想象被感觉为真实</text><text fill="#374151" font-size="15" x="20" y="174">• 但必须切断与现实的联系</text><text fill="#374151" font-size="15" x="20" y="198">• 游戏/幻想中的安全空间</text><text fill="#374151" font-size="15" x="20" y="222">• 智力化防御</text></g>
+    
+    
+    <g transform="translate(800, 0)">
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H358 A12,12 0 0 1 370,12 V238 A12,12 0 0 1 358,250 H12 A12,12 0 0 1 0,238 V12 A12,12 0 0 1 12,0 Z" />
+      
+      <path fill="#3D8B7A" d="M12,0 H358 A12,12 0 0 1 370,12 V43 A12,12 0 0 1 358,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="43" width="370" height="12" fill="#3D8B7A" />
       
       <text x="185" y="25" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">心智化模式</text>
       <text x="185" y="45" font-size="12" fill="#D4EDDA" text-anchor="middle">Mentalizing Mode</text>
       
-      <!-- 状态标识 -->
-      <rect x="15" y="70" width="50" height="24" rx="12" fill="#D4EDDA"/>
+      
+      <path fill="#D4EDDA" d="M27,70 H53 A12,12 0 0 1 65,82 V82 A12,12 0 0 1 53,94 H27 A12,12 0 0 1 15,82 V82 A12,12 0 0 1 27,70 Z" />
       <text x="40" y="87" font-size="13" fill="#3D8B7A" text-anchor="middle">目标</text>
       
-      <!-- 说明 -->
-      <text x="20" y="120" font-size="15" fill="#374151">
-        <tspan x="20" dy="0" font-weight="600">内心 ↔ 现实（分离但关联）</tspan>
-        <tspan x="20" dy="30">• 认识到思想≠事实</tspan>
-        <tspan x="20" dy="24">• 能反思表征的性质</tspan>
-        <tspan x="20" dy="24">• 多视角思考</tspan>
-        <tspan x="20" dy="24">• 情感可调节</tspan>
-      </text>
-    </g>
+      
+      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心 ↔ 现实（分离但关联）</text><text fill="#374151" font-size="15" x="20" y="150">• 认识到思想≠事实</text><text fill="#374151" font-size="15" x="20" y="174">• 能反思表征的性质</text><text fill="#374151" font-size="15" x="20" y="198">• 多视角思考</text><text fill="#374151" font-size="15" x="20" y="222">• 情感可调节</text></g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">12</text>
 </svg>

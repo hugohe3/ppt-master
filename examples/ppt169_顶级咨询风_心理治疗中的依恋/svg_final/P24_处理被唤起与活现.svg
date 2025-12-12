@@ -1,11 +1,11 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8FAFC"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E"/>
+  <rect width="1280" height="720" fill="#F8FAFC" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="#2E5C8E" />
+  
+  
   <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#1E293B">
     处理被唤起与活现的内容
   </text>
@@ -13,12 +13,12 @@
     Working with the Evoked and the Enacted
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="125" x2="420" y2="125" stroke="#E5E7EB" stroke-width="2"/>
   
-  <!-- 核心原则 -->
+  <line x1="60" y1="125" x2="420" y2="125" stroke="#E5E7EB" stroke-width="2" />
+  
+  
   <g transform="translate(60, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="1160" height="80" rx="12" fill="#1E3A5F"/>
+    <path fill="#1E3A5F" d="M12,0 H1148 A12,12 0 0 1 1160,12 V68 A12,12 0 0 1 1148,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
     
     <text x="30" y="35" font-size="16" fill="#FFFFFF">
       <tspan font-weight="bold">核心原则：</tspan>
@@ -36,79 +36,66 @@
     </text>
   </g>
   
-  <!-- 双栏布局 -->
+  
   <g transform="translate(60, 250)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
     
-    <!-- 处理被唤起的内容 -->
+    
     <g>
-      <rect x="0" y="0" width="560" height="350" rx="12" fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#3D8B7A" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V338 A12,12 0 0 1 548,350 H12 A12,12 0 0 1 0,338 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="55" rx="12" fill="#3D8B7A"/>
-      <rect x="0" y="43" width="560" height="12" fill="#3D8B7A"/>
+      
+      <path fill="#3D8B7A" d="M12,0 H548 A12,12 0 0 1 560,12 V43 A12,12 0 0 1 548,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="43" width="560" height="12" fill="#3D8B7A" />
       <text x="25" y="35" font-size="20" font-weight="bold" fill="#FFFFFF">🪞 处理被唤起的内容 The Evoked</text>
       
-      <!-- 机制说明 -->
+      
       <g transform="translate(25, 75)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#3D8B7A">情感传染机制</text>
-        <text x="0" y="25" font-size="14" fill="#374151">
-          <tspan x="0" dy="0">由于镜像神经元的作用，患者的体验会在</tspan>
-          <tspan x="0" dy="22">治疗师身上唤起相应的感受</tspan>
-        </text>
-      </g>
+        <text fill="#374151" font-size="14" x="0" y="25">由于镜像神经元的作用，患者的体验会在</text><text fill="#374151" font-size="14" x="0" y="47">治疗师身上唤起相应的感受</text></g>
       
-      <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1" />
       
-      <!-- 两种反移情 -->
+      
       <g transform="translate(25, 160)">
-        <rect x="0" y="0" width="240" height="70" rx="8" fill="#D4EDDA"/>
+        <path fill="#D4EDDA" d="M8,0 H232 A8,8 0 0 1 240,8 V62 A8,8 0 0 1 232,70 H8 A8,8 0 0 1 0,62 V8 A8,8 0 0 1 8,0 Z" />
         <text x="120" y="25" font-size="14" font-weight="600" fill="#3D8B7A" text-anchor="middle">一致性反移情</text>
         <text x="120" y="50" font-size="13" fill="#374151" text-anchor="middle">与患者体验相同的感受</text>
         
-        <rect x="270" y="0" width="240" height="70" rx="8" fill="#FED7AA"/>
+        <path fill="#FED7AA" d="M278,0 H502 A8,8 0 0 1 510,8 V62 A8,8 0 0 1 502,70 H278 A8,8 0 0 1 270,62 V8 A8,8 0 0 1 278,0 Z" />
         <text x="390" y="25" font-size="14" font-weight="600" fill="#E07843" text-anchor="middle">互补性反移情</text>
         <text x="390" y="50" font-size="13" fill="#374151" text-anchor="middle">与患者内部客体对应的感受</text>
       </g>
       
-      <line x1="25" y1="250" x2="535" y2="250" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="25" y1="250" x2="535" y2="250" stroke="#E5E7EB" stroke-width="1" />
       
-      <!-- 利用方式 -->
+      
       <g transform="translate(25, 270)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#3D8B7A">✓ 治疗性运用</text>
-        <text x="0" y="28" font-size="14" fill="#374151">
-          <tspan x="0" dy="0">• 治疗师的主观体验是了解患者解离情感的宝贵资源</tspan>
-          <tspan x="0" dy="22">• 识别并适当表达这些被唤起的感受</tspan>
-          <tspan x="0" dy="22">• 帮助患者接纳和整合这些体验</tspan>
-        </text>
-      </g>
+        <text fill="#374151" font-size="14" x="0" y="28">• 治疗师的主观体验是了解患者解离情感的宝贵资源</text><text fill="#374151" font-size="14" x="0" y="50">• 识别并适当表达这些被唤起的感受</text><text fill="#374151" font-size="14" x="0" y="72">• 帮助患者接纳和整合这些体验</text></g>
     </g>
     
-    <!-- 处理活现 -->
+    
     <g transform="translate(600, 0)">
-      <rect x="0" y="0" width="560" height="350" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H548 A12,12 0 0 1 560,12 V338 A12,12 0 0 1 548,350 H12 A12,12 0 0 1 0,338 V12 A12,12 0 0 1 12,0 Z" />
       
-      <!-- 标题 -->
-      <rect x="0" y="0" width="560" height="55" rx="12" fill="#E07843"/>
-      <rect x="0" y="43" width="560" height="12" fill="#E07843"/>
+      
+      <path fill="#E07843" d="M12,0 H548 A12,12 0 0 1 560,12 V43 A12,12 0 0 1 548,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <rect x="0" y="43" width="560" height="12" fill="#E07843" />
       <text x="25" y="35" font-size="20" font-weight="bold" fill="#FFFFFF">🎭 处理活现 The Enacted</text>
       
-      <!-- 定义 -->
+      
       <g transform="translate(25, 75)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#E07843">定义</text>
-        <text x="0" y="25" font-size="14" fill="#374151">
-          <tspan x="0" dy="0">活现是移情与反移情交织的产物，</tspan>
-          <tspan x="0" dy="22">是潜意识关系模式的重演</tspan>
-        </text>
-      </g>
+        <text fill="#374151" font-size="14" x="0" y="25">活现是移情与反移情交织的产物，</text><text fill="#374151" font-size="14" x="0" y="47">是潜意识关系模式的重演</text></g>
       
-      <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1" />
       
-      <!-- 干预步骤 -->
+      
       <g transform="translate(25, 160)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#E07843">干预三步骤</text>
         
         <g transform="translate(0, 25)">
-          <circle cx="15" cy="12" r="15" fill="#E07843"/>
+          <circle cx="15" cy="12" r="15" fill="#E07843" />
           <text x="15" y="17" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
           <text x="45" y="17" font-size="14" fill="#374151">
             <tspan font-weight="600">识别</tspan>
@@ -117,7 +104,7 @@
         </g>
         
         <g transform="translate(0, 60)">
-          <circle cx="15" cy="12" r="15" fill="#E07843"/>
+          <circle cx="15" cy="12" r="15" fill="#E07843" />
           <text x="15" y="17" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
           <text x="45" y="17" font-size="14" fill="#374151">
             <tspan font-weight="600">理解</tspan>
@@ -126,7 +113,7 @@
         </g>
         
         <g transform="translate(0, 95)">
-          <circle cx="15" cy="12" r="15" fill="#E07843"/>
+          <circle cx="15" cy="12" r="15" fill="#E07843" />
           <text x="15" y="17" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
           <text x="45" y="17" font-size="14" fill="#374151">
             <tspan font-weight="600">行动</tspan>
@@ -135,23 +122,23 @@
         </g>
       </g>
       
-      <line x1="25" y1="290" x2="535" y2="290" stroke="#E5E7EB" stroke-width="1"/>
+      <line x1="25" y1="290" x2="535" y2="290" stroke="#E5E7EB" stroke-width="1" />
       
-      <!-- 核心价值 -->
-      <rect x="25" y="305" width="510" height="32" rx="6" fill="#FEF3C7"/>
+      
+      <path fill="#FEF3C7" d="M31,305 H529 A6,6 0 0 1 535,311 V331 A6,6 0 0 1 529,337 H31 A6,6 0 0 1 25,331 V311 A6,6 0 0 1 31,305 Z" />
       <text x="280" y="326" font-size="14" fill="#92400E" text-anchor="middle">
         💡 活现既是阻碍也是契机：治疗师的改变示范了新的可能性
       </text>
     </g>
   </g>
   
-  <!-- 底部总结 -->
-  <rect x="60" y="620" width="1160" height="60" rx="12" fill="#2E5C8E"/>
+  
+  <path fill="#2E5C8E" d="M72,620 H1208 A12,12 0 0 1 1220,632 V668 A12,12 0 0 1 1208,680 H72 A12,12 0 0 1 60,668 V632 A12,12 0 0 1 72,620 Z" />
   <text x="640" y="656" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     <tspan font-weight="bold">双向关注原则：</tspan>
     <tspan dx="10">同时关注患者的非言语线索和治疗师自己被唤起的躯体/情感体验</tspan>
   </text>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="700" font-family="system-ui, sans-serif" font-size="14" fill="#9CA3AF" text-anchor="end">24</text>
 </svg>

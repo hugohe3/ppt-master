@@ -1,76 +1,76 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="sideAccent" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#D97757"/>
-      <stop offset="100%" style="stop-color:#E8956F"/>
+      <stop offset="0%" style="stop-color:#D97757" />
+      <stop offset="100%" style="stop-color:#E8956F" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 左侧装饰条 -->
-  <rect x="0" y="0" width="8" height="720" fill="url(#sideAccent)"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
+  
+  <rect x="0" y="0" width="8" height="720" fill="url(#sideAccent)" />
+  
+  
   <text x="60" y="55" font-family="Arial, sans-serif" font-size="14" font-weight="500" fill="#D97757" letter-spacing="1">
     AGENDA
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="100" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#1A1A2E">
     内容导航
   </text>
   
-  <!-- 分隔线 -->
-  <line x1="60" y1="130" x2="300" y2="130" stroke="#E2E8F0" stroke-width="2"/>
   
-  <!-- 目录项目 -->
+  <line x1="60" y1="130" x2="300" y2="130" stroke="#E2E8F0" stroke-width="2" />
+  
+  
   <g font-family="Arial, sans-serif">
     
-    <!-- 项目 1 -->
+    
     <g>
-      <circle cx="90" cy="200" r="24" fill="#D97757"/>
+      <circle cx="90" cy="200" r="24" fill="#D97757" />
       <text x="90" y="207" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
       <text x="130" y="195" font-size="20" font-weight="600" fill="#1A1A2E">什么是 Agent？</text>
       <text x="130" y="218" font-size="16" fill="#64748B">定义与分类：Workflows vs Agents</text>
     </g>
     
-    <!-- 项目 2 -->
+    
     <g>
-      <circle cx="90" cy="285" r="24" fill="#D97757"/>
+      <circle cx="90" cy="285" r="24" fill="#D97757" />
       <text x="90" y="292" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
       <text x="130" y="280" font-size="20" font-weight="600" fill="#1A1A2E">何时使用（及不使用）Agent</text>
       <text x="130" y="303" font-size="16" fill="#64748B">复杂度决策矩阵与权衡考量</text>
     </g>
     
-    <!-- 项目 3 -->
+    
     <g>
-      <circle cx="90" cy="370" r="24" fill="#D97757"/>
+      <circle cx="90" cy="370" r="24" fill="#D97757" />
       <text x="90" y="377" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
       <text x="130" y="365" font-size="20" font-weight="600" fill="#1A1A2E">构建模块：增强型 LLM</text>
       <text x="130" y="388" font-size="16" fill="#64748B">Retrieval + Tools + Memory</text>
     </g>
     
-    <!-- 项目 4 -->
+    
     <g>
-      <circle cx="90" cy="455" r="24" fill="#D97757"/>
+      <circle cx="90" cy="455" r="24" fill="#D97757" />
       <text x="90" y="462" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
       <text x="130" y="450" font-size="20" font-weight="600" fill="#1A1A2E">五种 Workflow 模式</text>
       <text x="130" y="473" font-size="16" fill="#64748B">Chaining, Routing, Parallelization, Orchestrator, Evaluator</text>
     </g>
     
-    <!-- 项目 5 -->
+    
     <g>
-      <circle cx="90" cy="540" r="24" fill="#D97757"/>
+      <circle cx="90" cy="540" r="24" fill="#D97757" />
       <text x="90" y="547" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
       <text x="130" y="535" font-size="20" font-weight="600" fill="#1A1A2E">自主 Agent 架构</text>
       <text x="130" y="558" font-size="16" fill="#64748B">循环反馈、人类监督与适用场景</text>
     </g>
     
-    <!-- 项目 6 -->
+    
     <g>
-      <circle cx="90" cy="625" r="24" fill="#D97757"/>
+      <circle cx="90" cy="625" r="24" fill="#D97757" />
       <text x="90" y="632" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
       <text x="130" y="620" font-size="20" font-weight="600" fill="#1A1A2E">实践案例与工具设计</text>
       <text x="130" y="643" font-size="16" fill="#64748B">客户支持、编程代理与 ACI 设计原则</text>
@@ -78,38 +78,32 @@
     
   </g>
   
-  <!-- 右侧装饰图形 -->
+  
   <g transform="translate(850, 200)">
-    <!-- 装饰性流程图示意 -->
-    <rect x="0" y="0" width="350" height="400" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
     
-    <!-- 简化的层级图 -->
-    <rect x="40" y="40" width="270" height="50" rx="8" fill="#4A90D9" fill-opacity="0.1" stroke="#4A90D9" stroke-width="2"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" d="M16,0 H334 A16,16 0 0 1 350,16 V384 A16,16 0 0 1 334,400 H16 A16,16 0 0 1 0,384 V16 A16,16 0 0 1 16,0 Z" />
+    
+    
+    <path fill="#4A90D9" fill-opacity="0.1" stroke="#4A90D9" stroke-width="2" d="M48,40 H302 A8,8 0 0 1 310,48 V82 A8,8 0 0 1 302,90 H48 A8,8 0 0 1 40,82 V48 A8,8 0 0 1 48,40 Z" />
     <text x="175" y="72" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#4A90D9" text-anchor="middle">Single LLM Call</text>
     
-    <path d="M175,90 L175,120" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2"/>
-    <polygon points="175,130 170,120 180,120" fill="#64748B"/>
+    <path d="M175,90 L175,120" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2" />
+    <polygon points="175,130 170,120 180,120" fill="#64748B" />
     
-    <rect x="40" y="135" width="270" height="50" rx="8" fill="#4A90D9" fill-opacity="0.2" stroke="#4A90D9" stroke-width="2"/>
+    <path fill="#4A90D9" fill-opacity="0.2" stroke="#4A90D9" stroke-width="2" d="M48,135 H302 A8,8 0 0 1 310,143 V177 A8,8 0 0 1 302,185 H48 A8,8 0 0 1 40,177 V143 A8,8 0 0 1 48,135 Z" />
     <text x="175" y="167" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#4A90D9" text-anchor="middle">Workflows</text>
     
-    <path d="M175,185 L175,215" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2"/>
-    <polygon points="175,225 170,215 180,215" fill="#64748B"/>
+    <path d="M175,185 L175,215" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2" />
+    <polygon points="175,225 170,215 180,215" fill="#64748B" />
     
-    <rect x="40" y="230" width="270" height="50" rx="8" fill="#D97757" fill-opacity="0.2" stroke="#D97757" stroke-width="2"/>
+    <path fill="#D97757" fill-opacity="0.2" stroke="#D97757" stroke-width="2" d="M48,230 H302 A8,8 0 0 1 310,238 V272 A8,8 0 0 1 302,280 H48 A8,8 0 0 1 40,272 V238 A8,8 0 0 1 48,230 Z" />
     <text x="175" y="262" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#D97757" text-anchor="middle">Autonomous Agents</text>
     
-    <!-- 标注 -->
-    <text x="175" y="320" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
-      <tspan x="175" dy="0">复杂度递增</tspan>
-      <tspan x="175" dy="22">按需升级</tspan>
-    </text>
     
-    <!-- 箭头装饰 -->
-    <path d="M320,140 L340,170 L320,200" stroke="#E2E8F0" stroke-width="2" fill="none"/>
+    <text font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748B" x="175" y="320">复杂度递增</text><text font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748B" x="175" y="342">按需升级</text><path d="M320,140 L340,170 L320,200" stroke="#E2E8F0" stroke-width="2" fill="none" />
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     3 / 15
   </text>

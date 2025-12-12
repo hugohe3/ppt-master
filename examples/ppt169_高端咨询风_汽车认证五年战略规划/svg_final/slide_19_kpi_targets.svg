@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     阶段性目标与KPI
   </text>
@@ -19,222 +19,222 @@
     MILESTONES &amp; KEY PERFORMANCE INDICATORS
   </text>
   
-  <!-- KPI仪表盘 - 第一行 -->
-  <!-- KPI 1: 认证周期缩短 -->
+  
+  
   <g transform="translate(60, 120)">
-    <rect width="270" height="260" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V248 A12,12 0 0 1 258,260 H12 A12,12 0 0 1 0,248 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 环形进度条 (40%) -->
+    
     <g transform="translate(135, 100)">
-      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12"/>
-      <!-- 40% = 144°, 从顶部(0,-55)到(32.33, 44.50) -->
-      <path d="M 0 -55 A 55 55 0 0 1 32.33 44.50" fill="none" stroke="#0076A8" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12" />
+      
+      <path d="M 0 -55 A 55 55 0 0 1 32.33 44.50" fill="none" stroke="#0076A8" stroke-width="12" stroke-linecap="round" />
       <text x="0" y="8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#003F6C" text-anchor="middle">40%</text>
       <text x="0" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">缩短</text>
     </g>
     
     <text x="135" y="185" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">认证周期缩短</text>
     
-    <!-- 阶段目标 -->
+    
     <g transform="translate(20, 210)">
-      <rect width="110" height="35" rx="4" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#0076A8" text-anchor="middle">2027</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#003F6C" text-anchor="middle">20%</text>
     </g>
     <g transform="translate(140, 210)">
-      <rect width="110" height="35" rx="4" fill="#0076A8"/>
+      <path fill="#0076A8" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">2030</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">40%</text>
     </g>
   </g>
   
-  <!-- KPI 2: 业务量年均增长 -->
+  
   <g transform="translate(355, 120)">
-    <rect width="270" height="260" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V248 A12,12 0 0 1 258,260 H12 A12,12 0 0 1 0,248 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 环形进度条 (15%) -->
+    
     <g transform="translate(135, 100)">
-      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12"/>
-      <!-- 15% = 54°, 从顶部(0,-55)到(44.51, -32.36) -->
-      <path d="M 0 -55 A 55 55 0 0 1 44.51 -32.36" fill="none" stroke="#00A651" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12" />
+      
+      <path d="M 0 -55 A 55 55 0 0 1 44.51 -32.36" fill="none" stroke="#00A651" stroke-width="12" stroke-linecap="round" />
       <text x="0" y="8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#003F6C" text-anchor="middle">15%</text>
       <text x="0" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">年均</text>
     </g>
     
     <text x="135" y="185" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">业务量年均增长</text>
     
-    <!-- 阶段目标 -->
+    
     <g transform="translate(20, 210)">
-      <rect width="110" height="35" rx="4" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#00A651" text-anchor="middle">2027</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#003F6C" text-anchor="middle">12%</text>
     </g>
     <g transform="translate(140, 210)">
-      <rect width="110" height="35" rx="4" fill="#00A651"/>
+      <path fill="#00A651" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">2030</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">15%+</text>
     </g>
   </g>
   
-  <!-- KPI 3: 新产品占比 -->
+  
   <g transform="translate(650, 120)">
-    <rect width="270" height="260" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V248 A12,12 0 0 1 258,260 H12 A12,12 0 0 1 0,248 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 环形进度条 (30%) -->
+    
     <g transform="translate(135, 100)">
-      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12"/>
-      <!-- 30% = 108°, 从顶部(0,-55)到(52.31, 17.0) -->
-      <path d="M 0 -55 A 55 55 0 0 1 52.31 17.0" fill="none" stroke="#FF6B35" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12" />
+      
+      <path d="M 0 -55 A 55 55 0 0 1 52.31 17.0" fill="none" stroke="#FF6B35" stroke-width="12" stroke-linecap="round" />
       <text x="0" y="8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#003F6C" text-anchor="middle">30%</text>
       <text x="0" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">占比</text>
     </g>
     
     <text x="135" y="185" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">新产品收入占比</text>
     
-    <!-- 阶段目标 -->
+    
     <g transform="translate(20, 210)">
-      <rect width="110" height="35" rx="4" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FF6B35" text-anchor="middle">2027</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#003F6C" text-anchor="middle">15%</text>
     </g>
     <g transform="translate(140, 210)">
-      <rect width="110" height="35" rx="4" fill="#FF6B35"/>
+      <path fill="#FF6B35" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">2030</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">30%+</text>
     </g>
   </g>
   
-  <!-- KPI 4: 国际互认覆盖 -->
+  
   <g transform="translate(945, 120)">
-    <rect width="270" height="260" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H258 A12,12 0 0 1 270,12 V248 A12,12 0 0 1 258,260 H12 A12,12 0 0 1 0,248 V12 A12,12 0 0 1 12,0 Z" />
     
-    <!-- 环形进度条 (95%) -->
+    
     <g transform="translate(135, 100)">
-      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12"/>
-      <!-- 95% = 342°, 从顶部绕大部分圈, large-arc-flag=1 -->
-      <path d="M 0 -55 A 55 55 0 1 1 -17.0 -52.31" fill="none" stroke="#9C27B0" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#E8E8F0" stroke-width="12" />
+      
+      <path d="M 0 -55 A 55 55 0 1 1 -17.0 -52.31" fill="none" stroke="#9C27B0" stroke-width="12" stroke-linecap="round" />
       <text x="0" y="8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#003F6C" text-anchor="middle">95%</text>
       <text x="0" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#8888A0" text-anchor="middle">覆盖</text>
     </g>
     
     <text x="135" y="185" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">国际互认覆盖率</text>
     
-    <!-- 阶段目标 -->
+    
     <g transform="translate(20, 210)">
-      <rect width="110" height="35" rx="4" fill="#F3E5F5"/>
+      <path fill="#F3E5F5" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#9C27B0" text-anchor="middle">2027</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#003F6C" text-anchor="middle">80%</text>
     </g>
     <g transform="translate(140, 210)">
-      <rect width="110" height="35" rx="4" fill="#9C27B0"/>
+      <path fill="#9C27B0" d="M4,0 H106 A4,4 0 0 1 110,4 V31 A4,4 0 0 1 106,35 H4 A4,4 0 0 1 0,31 V4 A4,4 0 0 1 4,0 Z" />
       <text x="55" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">2030</text>
       <text x="55" y="28" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">95%</text>
     </g>
   </g>
   
-  <!-- KPI仪表盘 - 第二行 -->
-  <!-- KPI 5: 客户满意度 -->
+  
+  
   <g transform="translate(60, 405)">
-    <rect width="370" height="230" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V218 A12,12 0 0 1 358,230 H12 A12,12 0 0 1 0,218 V12 A12,12 0 0 1 12,0 Z" />
     
     <g transform="translate(30, 30)">
       <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C">客户满意度</text>
       
-      <!-- 进度条 -->
+      
       <g transform="translate(0, 45)">
-        <rect width="310" height="20" rx="10" fill="#E8E8F0"/>
-        <rect width="295" height="20" rx="10" fill="#2196F3"/>
+        <path fill="#E8E8F0" d="M10,0 H300 A10,10 0 0 1 310,10 V10 A10,10 0 0 1 300,20 H10 A10,10 0 0 1 0,10 V10 A10,10 0 0 1 10,0 Z" />
+        <path fill="#2196F3" d="M10,0 H285 A10,10 0 0 1 295,10 V10 A10,10 0 0 1 285,20 H10 A10,10 0 0 1 0,10 V10 A10,10 0 0 1 10,0 Z" />
         <text x="250" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">95%</text>
       </g>
       
-      <!-- 星级 -->
+      
       <g transform="translate(0, 80)">
         <text x="0" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="24" fill="#FFC107">⭐⭐⭐⭐⭐</text>
         <text x="180" y="15" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">目标：行业领先</text>
       </g>
       
-      <!-- 细分指标 -->
+      
       <g transform="translate(0, 115)">
-        <rect width="145" height="55" rx="6" fill="#E3F2FD"/>
+        <path fill="#E3F2FD" d="M6,0 H139 A6,6 0 0 1 145,6 V49 A6,6 0 0 1 139,55 H6 A6,6 0 0 1 0,49 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#0076A8" text-anchor="middle">服务响应</text>
         <text x="72" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">≤24h</text>
       </g>
       <g transform="translate(165, 115)">
-        <rect width="145" height="55" rx="6" fill="#E8F5E9"/>
+        <path fill="#E8F5E9" d="M6,0 H139 A6,6 0 0 1 145,6 V49 A6,6 0 0 1 139,55 H6 A6,6 0 0 1 0,49 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#00A651" text-anchor="middle">投诉解决率</text>
         <text x="72" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C" text-anchor="middle">100%</text>
       </g>
     </g>
   </g>
   
-  <!-- KPI 6: 数字化指标 -->
+  
   <g transform="translate(455, 405)">
-    <rect width="370" height="230" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V218 A12,12 0 0 1 358,230 H12 A12,12 0 0 1 0,218 V12 A12,12 0 0 1 12,0 Z" />
     
     <g transform="translate(30, 30)">
       <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C">数字化转型指标</text>
       
-      <!-- 指标网格 -->
+      
       <g transform="translate(0, 45)">
-        <rect width="145" height="65" rx="6" fill="#E3F2FD"/>
+        <path fill="#E3F2FD" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#0076A8" text-anchor="middle">线上化率</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#0076A8" text-anchor="middle">100%</text>
       </g>
       
       <g transform="translate(165, 45)">
-        <rect width="145" height="65" rx="6" fill="#E8F5E9"/>
+        <path fill="#E8F5E9" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#00A651" text-anchor="middle">AI覆盖率</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#00A651" text-anchor="middle">80%</text>
       </g>
       
       <g transform="translate(0, 125)">
-        <rect width="145" height="65" rx="6" fill="#FFF3E0"/>
+        <path fill="#FFF3E0" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6B35" text-anchor="middle">自动化率</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FF6B35" text-anchor="middle">70%</text>
       </g>
       
       <g transform="translate(165, 125)">
-        <rect width="145" height="65" rx="6" fill="#F3E5F5"/>
+        <path fill="#F3E5F5" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#9C27B0" text-anchor="middle">区块链存证</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#9C27B0" text-anchor="middle">100%</text>
       </g>
     </g>
   </g>
   
-  <!-- KPI 7: 海外业务 -->
+  
   <g transform="translate(850, 405)">
-    <rect width="370" height="230" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V218 A12,12 0 0 1 358,230 H12 A12,12 0 0 1 0,218 V12 A12,12 0 0 1 12,0 Z" />
     
     <g transform="translate(30, 30)">
       <text x="0" y="20" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#003F6C">国际化业务指标</text>
       
-      <!-- 指标网格 -->
+      
       <g transform="translate(0, 45)">
-        <rect width="145" height="65" rx="6" fill="#E3F2FD"/>
+        <path fill="#E3F2FD" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#0076A8" text-anchor="middle">海外业务占比</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#0076A8" text-anchor="middle">20%+</text>
       </g>
       
       <g transform="translate(165, 45)">
-        <rect width="145" height="65" rx="6" fill="#E8F5E9"/>
+        <path fill="#E8F5E9" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#00A651" text-anchor="middle">海外机构</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#00A651" text-anchor="middle">5+</text>
       </g>
       
       <g transform="translate(0, 125)">
-        <rect width="145" height="65" rx="6" fill="#FFF3E0"/>
+        <path fill="#FFF3E0" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#FF6B35" text-anchor="middle">互认协议</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#FF6B35" text-anchor="middle">10+</text>
       </g>
       
       <g transform="translate(165, 125)">
-        <rect width="145" height="65" rx="6" fill="#F3E5F5"/>
+        <path fill="#F3E5F5" d="M6,0 H139 A6,6 0 0 1 145,6 V59 A6,6 0 0 1 139,65 H6 A6,6 0 0 1 0,59 V6 A6,6 0 0 1 6,0 Z" />
         <text x="72" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#9C27B0" text-anchor="middle">服务出海车企</text>
         <text x="72" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#9C27B0" text-anchor="middle">50+</text>
       </g>
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">19 / 20</text>
 </svg>

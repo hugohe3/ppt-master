@@ -1,119 +1,103 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 - 深色模式 -->
-  <rect width="1280" height="720" fill="#2C3E50"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#2C3E50" />
+  
+  
   <text x="60" y="100" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="30" font-weight="bold" fill="#D4A84B">交互卦与功能性洞察：雷水解</text>
-  <line x1="60" y1="120" x2="520" y2="120" stroke="#D4A84B" stroke-width="3"/>
+  <line x1="60" y1="120" x2="520" y2="120" stroke="#D4A84B" stroke-width="3" />
   
-  <!-- 图解区 -->
+  
   <g transform="translate(60, 150)">
-    <rect x="0" y="0" width="500" height="460" rx="12" fill="#34495E" stroke="#1ABC9C" stroke-width="1"/>
+    <path fill="#34495E" stroke="#1ABC9C" stroke-width="1" d="M12,0 H488 A12,12 0 0 1 500,12 V448 A12,12 0 0 1 488,460 H12 A12,12 0 0 1 0,448 V12 A12,12 0 0 1 12,0 Z" />
     <text x="250" y="40" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#E8E4DC" text-anchor="middle">交互卦推演</text>
     
-    <!-- 谦卦六爻 -->
+    
     <g transform="translate(80, 80)">
       <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A">谦卦六爻</text>
       
-      <!-- 上六 -->
-      <line x1="0" y1="25" x2="35" y2="25" stroke="#4A5568" stroke-width="4"/>
-      <line x1="55" y1="25" x2="90" y2="25" stroke="#4A5568" stroke-width="4"/>
+      
+      <line x1="0" y1="25" x2="35" y2="25" stroke="#4A5568" stroke-width="4" />
+      <line x1="55" y1="25" x2="90" y2="25" stroke="#4A5568" stroke-width="4" />
       <text x="105" y="30" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#6B7280">上六</text>
       
-      <!-- 六五 - 互卦 -->
-      <rect x="-10" y="40" width="165" height="22" rx="3" fill="#1ABC9C" opacity="0.3"/>
-      <line x1="0" y1="51" x2="35" y2="51" stroke="#1ABC9C" stroke-width="5"/>
-      <line x1="55" y1="51" x2="90" y2="51" stroke="#1ABC9C" stroke-width="5"/>
+      
+      <path fill="#1ABC9C" opacity="0.3" d="M-7,40 H152 A3,3 0 0 1 155,43 V59 A3,3 0 0 1 152,62 H-7 A3,3 0 0 1 -10,59 V43 A3,3 0 0 1 -7,40 Z" />
+      <line x1="0" y1="51" x2="35" y2="51" stroke="#1ABC9C" stroke-width="5" />
+      <line x1="55" y1="51" x2="90" y2="51" stroke="#1ABC9C" stroke-width="5" />
       <text x="105" y="56" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1ABC9C" font-weight="bold">六五 ◀</text>
       
-      <!-- 六四 - 互卦 -->
-      <rect x="-10" y="66" width="165" height="22" rx="3" fill="#1ABC9C" opacity="0.3"/>
-      <line x1="0" y1="77" x2="35" y2="77" stroke="#1ABC9C" stroke-width="5"/>
-      <line x1="55" y1="77" x2="90" y2="77" stroke="#1ABC9C" stroke-width="5"/>
+      
+      <path fill="#1ABC9C" opacity="0.3" d="M-7,66 H152 A3,3 0 0 1 155,69 V85 A3,3 0 0 1 152,88 H-7 A3,3 0 0 1 -10,85 V69 A3,3 0 0 1 -7,66 Z" />
+      <line x1="0" y1="77" x2="35" y2="77" stroke="#1ABC9C" stroke-width="5" />
+      <line x1="55" y1="77" x2="90" y2="77" stroke="#1ABC9C" stroke-width="5" />
       <text x="105" y="82" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1ABC9C" font-weight="bold">六四 ◀</text>
       
-      <!-- 九三 - 互卦 -->
-      <rect x="-10" y="92" width="165" height="22" rx="3" fill="#C0392B" opacity="0.3"/>
-      <line x1="0" y1="103" x2="90" y2="103" stroke="#C0392B" stroke-width="5"/>
+      
+      <path fill="#C0392B" opacity="0.3" d="M-7,92 H152 A3,3 0 0 1 155,95 V111 A3,3 0 0 1 152,114 H-7 A3,3 0 0 1 -10,111 V95 A3,3 0 0 1 -7,92 Z" />
+      <line x1="0" y1="103" x2="90" y2="103" stroke="#C0392B" stroke-width="5" />
       <text x="105" y="108" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#C0392B" font-weight="bold">九三 ◀</text>
       
-      <!-- 六二 - 互卦 -->
-      <rect x="-10" y="118" width="165" height="22" rx="3" fill="#1ABC9C" opacity="0.3"/>
-      <line x1="0" y1="129" x2="35" y2="129" stroke="#1ABC9C" stroke-width="5"/>
-      <line x1="55" y1="129" x2="90" y2="129" stroke="#1ABC9C" stroke-width="5"/>
+      
+      <path fill="#1ABC9C" opacity="0.3" d="M-7,118 H152 A3,3 0 0 1 155,121 V137 A3,3 0 0 1 152,140 H-7 A3,3 0 0 1 -10,137 V121 A3,3 0 0 1 -7,118 Z" />
+      <line x1="0" y1="129" x2="35" y2="129" stroke="#1ABC9C" stroke-width="5" />
+      <line x1="55" y1="129" x2="90" y2="129" stroke="#1ABC9C" stroke-width="5" />
       <text x="105" y="134" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1ABC9C" font-weight="bold">六二 ◀</text>
       
-      <!-- 初六 -->
-      <line x1="0" y1="155" x2="35" y2="155" stroke="#4A5568" stroke-width="4"/>
-      <line x1="55" y1="155" x2="90" y2="155" stroke="#4A5568" stroke-width="4"/>
+      
+      <line x1="0" y1="155" x2="35" y2="155" stroke="#4A5568" stroke-width="4" />
+      <line x1="55" y1="155" x2="90" y2="155" stroke="#4A5568" stroke-width="4" />
       <text x="105" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#6B7280">初六</text>
     </g>
     
-    <!-- 箭头 -->
+    
     <text x="250" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" fill="#D4A84B">→</text>
     
-    <!-- 解卦 -->
+    
     <g transform="translate(300, 80)">
       <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#D4A84B">二三四五爻 → 解卦</text>
       
-      <rect x="0" y="20" width="160" height="160" rx="8" fill="#2C3E50" stroke="#D4A84B" stroke-width="2"/>
+      <path fill="#2C3E50" stroke="#D4A84B" stroke-width="2" d="M8,20 H152 A8,8 0 0 1 160,28 V172 A8,8 0 0 1 152,180 H8 A8,8 0 0 1 0,172 V28 A8,8 0 0 1 8,20 Z" />
       
-      <!-- 解卦 ☳☵ -->
+      
       <g transform="translate(35, 45)">
-        <!-- 上卦 震 -->
-        <line x1="0" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="5"/>
-        <line x1="0" y1="22" x2="35" y2="22" stroke="#4A5568" stroke-width="5"/>
-        <line x1="55" y1="22" x2="90" y2="22" stroke="#4A5568" stroke-width="5"/>
-        <line x1="0" y1="44" x2="35" y2="44" stroke="#4A5568" stroke-width="5"/>
-        <line x1="55" y1="44" x2="90" y2="44" stroke="#4A5568" stroke-width="5"/>
         
-        <!-- 下卦 坎 -->
-        <line x1="0" y1="70" x2="35" y2="70" stroke="#4A5568" stroke-width="5"/>
-        <line x1="55" y1="70" x2="90" y2="70" stroke="#4A5568" stroke-width="5"/>
-        <line x1="0" y1="92" x2="90" y2="92" stroke="#C0392B" stroke-width="5"/>
-        <line x1="0" y1="114" x2="35" y2="114" stroke="#4A5568" stroke-width="5"/>
-        <line x1="55" y1="114" x2="90" y2="114" stroke="#4A5568" stroke-width="5"/>
+        <line x1="0" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="5" />
+        <line x1="0" y1="22" x2="35" y2="22" stroke="#4A5568" stroke-width="5" />
+        <line x1="55" y1="22" x2="90" y2="22" stroke="#4A5568" stroke-width="5" />
+        <line x1="0" y1="44" x2="35" y2="44" stroke="#4A5568" stroke-width="5" />
+        <line x1="55" y1="44" x2="90" y2="44" stroke="#4A5568" stroke-width="5" />
+        
+        
+        <line x1="0" y1="70" x2="35" y2="70" stroke="#4A5568" stroke-width="5" />
+        <line x1="55" y1="70" x2="90" y2="70" stroke="#4A5568" stroke-width="5" />
+        <line x1="0" y1="92" x2="90" y2="92" stroke="#C0392B" stroke-width="5" />
+        <line x1="0" y1="114" x2="35" y2="114" stroke="#4A5568" stroke-width="5" />
+        <line x1="55" y1="114" x2="90" y2="114" stroke="#4A5568" stroke-width="5" />
       </g>
     </g>
     
-    <!-- 解卦名称 -->
+    
     <text x="250" y="310" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#D4A84B" text-anchor="middle" font-weight="bold">雷水解 ☳☵</text>
     <text x="250" y="345" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" text-anchor="middle">解者，缓解、解除困难</text>
     <text x="250" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#8B9A9A" text-anchor="middle">第四十卦</text>
     
-    <!-- 补充说明 -->
-    <rect x="30" y="400" width="440" height="45" rx="6" fill="#2C3E50" stroke="#1ABC9C" stroke-width="1"/>
+    
+    <path fill="#2C3E50" stroke="#1ABC9C" stroke-width="1" d="M36,400 H464 A6,6 0 0 1 470,406 V439 A6,6 0 0 1 464,445 H36 A6,6 0 0 1 30,439 V406 A6,6 0 0 1 36,400 Z" />
     <text x="250" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1ABC9C" text-anchor="middle">取二三四五爻重新组合，揭示谦卦的内在功能</text>
   </g>
   
-  <!-- 功能洞察 -->
+  
   <g transform="translate(600, 150)">
-    <rect x="0" y="0" width="620" height="460" rx="12" fill="#34495E" stroke="#D4A84B" stroke-width="2"/>
-    <rect x="0" y="0" width="620" height="50" rx="12" fill="#D4A84B"/>
-    <rect x="0" y="40" width="620" height="10" fill="#D4A84B"/>
+    <path fill="#34495E" stroke="#D4A84B" stroke-width="2" d="M12,0 H608 A12,12 0 0 1 620,12 V448 A12,12 0 0 1 608,460 H12 A12,12 0 0 1 0,448 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#D4A84B" d="M12,0 H608 A12,12 0 0 1 620,12 V38 A12,12 0 0 1 608,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="620" height="10" fill="#D4A84B" />
     <text x="310" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">功能性洞察：谦卦核心功能 = 「解」</text>
     
-    <text x="40" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC">
-      <tspan x="40" dy="0" font-weight="bold" fill="#D4A84B">核心含义</tspan>
-      <tspan x="40" dy="35">• 谦虚是解决人际冲突的最佳溶剂</tspan>
-      <tspan x="40" dy="30">• 谦虚是化解社会矛盾的有效途径</tspan>
-      <tspan x="40" dy="30">• 谦虚是解除僵局的关键变量</tspan>
-    </text>
-    
-    <text x="40" y="240" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC">
-      <tspan x="40" dy="0" font-weight="bold" fill="#D4A84B">应用场景</tspan>
-      <tspan x="40" dy="35">• 当系统陷入死锁（困卦或蹇卦）时</tspan>
-      <tspan x="40" dy="30">• 引入「谦」的变量</tspan>
-      <tspan x="40" dy="30">• 往往能迅速软化刚硬的对立面</tspan>
-      <tspan x="40" dy="30">• 达成和解与突破</tspan>
-    </text>
-    
-    <!-- 底部引用 -->
-    <rect x="30" y="395" width="560" height="50" rx="6" fill="#2C3E50" stroke="#D4A84B" stroke-width="1"/>
+    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#D4A84B" font-weight="bold" x="40" y="95">核心含义</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="130">• 谦虚是解决人际冲突的最佳溶剂</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="160">• 谦虚是化解社会矛盾的有效途径</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="190">• 谦虚是解除僵局的关键变量</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#D4A84B" font-weight="bold" x="40" y="240">应用场景</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="275">• 当系统陷入死锁（困卦或蹇卦）时</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="305">• 引入「谦」的变量</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="335">• 往往能迅速软化刚硬的对立面</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E8E4DC" x="40" y="365">• 达成和解与突破</text><path fill="#2C3E50" stroke="#D4A84B" stroke-width="1" d="M36,395 H584 A6,6 0 0 1 590,401 V439 A6,6 0 0 1 584,445 H36 A6,6 0 0 1 30,439 V401 A6,6 0 0 1 36,395 Z" />
     <text x="310" y="428" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#D4A84B" text-anchor="middle">谦虚是解决冲突、化解矛盾、解除僵局的最佳溶剂</text>
   </g>
   
-  <!-- 页脚 -->
+  
   <text x="60" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568">第五部分：卦际关系</text>
   <text x="1220" y="690" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A5568" text-anchor="end">15 / 20</text>
 </svg>

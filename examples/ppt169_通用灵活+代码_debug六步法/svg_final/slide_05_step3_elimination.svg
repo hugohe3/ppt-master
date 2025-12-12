@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <defs>
+        <linearGradient id="stepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#58a6ff" />
+            <stop offset="100%" style="stop-color:#7ee787" />
+        </linearGradient>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#0d1117" />
+
+    
+    <g transform="translate(60, 60)">
+        <path fill="url(#stepGradient)" opacity="0.2" d="M16,0 H84 A16,16 0 0 1 100,16 V84 A16,16 0 0 1 84,100 H16 A16,16 0 0 1 0,84 V16 A16,16 0 0 1 16,0 Z" />
+        <text x="50" y="75" text-anchor="middle" font-family="SF Mono, monospace" font-size="56" font-weight="bold" fill="url(#stepGradient)">03</text>
+    </g>
+
+    
+    <text x="180" y="125" font-family="SF Pro Display, -apple-system, sans-serif" font-size="40" font-weight="bold" fill="#e6edf3">🔍 排除法缩小范围</text>
+
+    
+    <path fill="#161b22" stroke="#30363d" stroke-width="1" d="M70,175 H1210 A10,10 0 0 1 1220,185 V220 A10,10 0 0 1 1210,230 H70 A10,10 0 0 1 60,220 V185 A10,10 0 0 1 70,175 Z" />
+    <text x="640" y="210" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="20" fill="#e6edf3">
+        <tspan fill="#f85149">✗ 不要瞎猜</tspan>
+        <tspan>（改一行代码重启一下）</tspan>
+        <tspan dx="40" fill="#7ee787">✓ 系统化</tspan>
+        <tspan font-weight="bold" fill="#7ee787">二分法</tspan>
+        <tspan fill="#7ee787">排除</tspan>
+    </text>
+
+    
+    <g transform="translate(60, 260)">
+        
+        <g>
+            <path fill="#161b22" stroke="#58a6ff" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V328 A12,12 0 0 1 348,340 H12 A12,12 0 0 1 0,328 V12 A12,12 0 0 1 12,0 Z" />
+            
+            <path fill="#58a6ff" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#58a6ff">📡 确认通讯</text>
+
+            
+            <g transform="translate(25, 80)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">用 Postman 测 API</text>
+                <text x="0" y="35">排除前端代码问题</text>
+
+                
+                <path fill="#1f2428" d="M8,55 H302 A8,8 0 0 1 310,63 V137 A8,8 0 0 1 302,145 H8 A8,8 0 0 1 0,137 V63 A8,8 0 0 1 8,55 Z" />
+                <text x="15" y="80" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">POST
+                    /api/checkout</text>
+                <text x="15" y="105" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">→ Response: </text>
+                <text x="130" y="105" font-family="SF Mono, monospace" font-size="14" fill="#f85149">500 Error</text>
+                <text x="15" y="130" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">// 后端问题确认！</text>
+
+                <text x="0" y="175" fill="#f0883e" font-weight="bold">关键洞察：</text>
+                <text x="0" y="200" fill="#e6edf3">如果后端回传就错了，</text>
+                <text x="0" y="225" fill="#f85149">前端改死也没用！</text>
+            </g>
+        </g>
+
+        
+        <g transform="translate(400, 0)">
+            <path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V328 A12,12 0 0 1 348,340 H12 A12,12 0 0 1 0,328 V12 A12,12 0 0 1 12,0 Z" />
+            
+            <path fill="#f0883e" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#f0883e">🔄 检查转换</text>
+
+            
+            <g transform="translate(25, 80)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">在数据转换节点加 Log</text>
+                <text x="0" y="35">确认数据在哪里"变质"</text>
+
+                
+                <path fill="#1f2428" d="M8,55 H302 A8,8 0 0 1 310,63 V157 A8,8 0 0 1 302,165 H8 A8,8 0 0 1 0,157 V63 A8,8 0 0 1 8,55 Z" />
+                <text x="15" y="80" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">console.log</text>
+                <text x="125" y="80" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">(data)</text>
+                <text x="15" y="105" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">// 输入: {price:
+                    100}</text>
+                <text x="15" y="130" font-family="SF Mono, monospace" font-size="14" fill="#f85149">// 输出: {price:
+                    NaN}</text>
+                <text x="15" y="155" font-family="SF Mono, monospace" font-size="14" fill="#f0883e">// 问题在这里！</text>
+
+                <text x="0" y="195" fill="#f0883e" font-weight="bold">追踪数据流向</text>
+                <text x="0" y="220" fill="#e6edf3">定位到具体的转换函数</text>
+            </g>
+        </g>
+
+        
+        <g transform="translate(800, 0)">
+            <path fill="#161b22" stroke="#7ee787" stroke-width="2" d="M12,0 H348 A12,12 0 0 1 360,12 V328 A12,12 0 0 1 348,340 H12 A12,12 0 0 1 0,328 V12 A12,12 0 0 1 12,0 Z" />
+            
+            <path fill="#7ee787" opacity="0.15" d="M12,0 H348 A12,12 0 0 1 360,12 V43 A12,12 0 0 1 348,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+            <text x="180" y="38" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#7ee787">📤 检查输出</text>
+
+            
+            <g transform="translate(25, 80)" font-family="SF Pro Text, -apple-system, sans-serif" font-size="17" fill="#e6edf3">
+                <text x="0" y="0" fill="#8b949e">确认最终输出</text>
+                <text x="0" y="35">是逻辑错还是格式错？</text>
+
+                
+                <path fill="#1f2428" d="M8,55 H302 A8,8 0 0 1 310,63 V97 A8,8 0 0 1 302,105 H8 A8,8 0 0 1 0,97 V63 A8,8 0 0 1 8,55 Z" />
+                <text x="15" y="85" font-family="SF Mono, monospace" font-size="14" fill="#f85149">userId</text>
+                <text x="80" y="85" font-family="SF Mono, monospace" font-size="14" fill="#8b949e"> vs </text>
+                <text x="115" y="85" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">user_id</text>
+
+                <path fill="#1f2428" d="M8,115 H302 A8,8 0 0 1 310,123 V157 A8,8 0 0 1 302,165 H8 A8,8 0 0 1 0,157 V123 A8,8 0 0 1 8,115 Z" />
+                <text x="15" y="145" font-family="SF Mono, monospace" font-size="14" fill="#f85149">"100"</text>
+                <text x="65" y="145" font-family="SF Mono, monospace" font-size="14" fill="#8b949e"> vs </text>
+                <text x="100" y="145" font-family="SF Mono, monospace" font-size="14" fill="#7ee787">100</text>
+                <text x="140" y="145" font-family="SF Mono, monospace" font-size="14" fill="#8b949e">(类型不同)</text>
+
+                <text x="0" y="195" fill="#f0883e" font-weight="bold">常见问题：</text>
+                <text x="0" y="220" fill="#e6edf3">字段名拼错 / 格式不对</text>
+            </g>
+        </g>
+    </g>
+
+    
+    <path fill="#58a6ff" opacity="0.1" d="M68,625 H1212 A8,8 0 0 1 1220,633 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V633 A8,8 0 0 1 68,625 Z" />
+    <text x="640" y="655" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="18" fill="#58a6ff">
+        <tspan font-weight="bold">二分法核心：</tspan>
+        <tspan>每次排除一半可能性，快速缩小范围</tspan>
+    </text>
+
+    
+    <text x="1220" y="690" text-anchor="end" font-family="SF Mono, monospace" font-size="14" fill="#30363d">05 /
+        10</text>
+</svg>

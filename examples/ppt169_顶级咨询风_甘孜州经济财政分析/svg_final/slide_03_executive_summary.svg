@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 1280 720" width="1280" height="720" version="1.1" id="svg56" ns1:docname="slide_03_executive_summary.svg" ns2:version="1.4.2 (f4327f4, 2025-05-13)">
+  <ns1:namedview id="namedview56" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="1.1638889" ns2:cx="639.66587" ns2:cy="360" ns2:window-width="2048" ns2:window-height="1082" ns2:window-x="2451" ns2:window-y="-6" ns2:window-maximized="1" ns2:current-layer="g14" />
+  <defs id="defs1" />
+  
+  <rect width="1280" height="720" fill="#F5F7FA" id="rect1" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" id="rect2" />
+  
+  <path fill="#C41E3A" id="rect3" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E" id="text3">核心发现：双基准线分析框架</text>
+  
+  <g id="g14">
+    <path fill="#FFFFFF" id="rect4" d="M52,100 H1228 A12,12 0 0 1 1240,112 V188 A12,12 0 0 1 1228,200 H52 A12,12 0 0 1 40,188 V112 A12,12 0 0 1 52,100 Z" />
+    
+    <text x="60" y="135" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E" id="text4">📐 双基准线分析</text>
+    
+    <path fill="#1E3A5F" opacity="0.08" id="rect5" d="M208,115 H332 A8,8 0 0 1 340,123 V177 A8,8 0 0 1 332,185 H208 A8,8 0 0 1 200,177 V123 A8,8 0 0 1 208,115 Z" />
+    <circle cx="230" cy="150" r="20" fill="#1E3A5F" id="circle5" />
+    <text x="230" y="156" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" id="text5">GDP</text>
+    <text x="274" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13px" fill="#4a4a6a" id="text6">占全省</text>
+    <text x="272" y="165" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20px" font-weight="bold" fill="#1e3a5f" id="text7">0.90%</text>
+    
+    <path fill="#C41E3A" opacity="0.08" id="rect7" d="M388,115 H512 A8,8 0 0 1 520,123 V177 A8,8 0 0 1 512,185 H388 A8,8 0 0 1 380,177 V123 A8,8 0 0 1 388,115 Z" />
+    <circle cx="410" cy="150" r="20" fill="#C41E3A" id="circle7" />
+    <text x="410" y="156" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" id="text8">人口</text>
+    <text x="454" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13px" fill="#4a4a6a" id="text9">占全省</text>
+    <text x="450" y="165" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="20px" font-weight="bold" fill="#c41e3a" id="text10">1.33%</text>
+    
+    <line x1="540" y1="150" x2="600" y2="150" stroke="#8888A0" stroke-width="2" id="line10" />
+    <polygon points="600,145 610,150 600,155" fill="#8888A0" id="polygon10" />
+    
+    <path fill="#FF6B35" opacity="0.1" id="rect10" d="M638,115 H802 A8,8 0 0 1 810,123 V177 A8,8 0 0 1 802,185 H638 A8,8 0 0 1 630,177 V123 A8,8 0 0 1 638,115 Z" />
+    <text x="720" y="140" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text11">效率比值 (GDP/人口)</text>
+    <text x="720" y="175" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28px" font-weight="bold" fill="#ff6b35" id="text12">0.68%</text>
+    
+    <line x1="830" y1="150" x2="890" y2="150" stroke="#8888A0" stroke-width="2" id="line12" />
+    <polygon points="890,145 900,150 890,155" fill="#8888A0" id="polygon12" />
+    
+    <path fill="#C41E3A" opacity="0.08" id="rect12" d="M928,115 H1212 A8,8 0 0 1 1220,123 V177 A8,8 0 0 1 1212,185 H928 A8,8 0 0 1 920,177 V123 A8,8 0 0 1 928,115 Z" />
+    <text x="1070" y="140" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#C41E3A" id="text13">⚠️ 核心结论</text>
+    <text x="1070" y="168" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A" id="text14">经济产出效率低于全省平均 <tspan font-weight="bold" fill="#C41E3A" id="tspan13">32.3%</tspan></text>
+  </g>
+  
+  <g id="g19">
+    <path fill="#FFFFFF" id="rect14" d="M52,220 H308 A12,12 0 0 1 320,232 V408 A12,12 0 0 1 308,420 H52 A12,12 0 0 1 40,408 V232 A12,12 0 0 1 52,220 Z" />
+    <path fill="#C41E3A" id="rect15" d="M43,220 H317 A3,3 0 0 1 320,223 V223 A3,3 0 0 1 317,226 H43 A3,3 0 0 1 40,223 V223 A3,3 0 0 1 43,220 Z" />
+    <text x="60" y="260" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" id="text15">💡 高转移支付依赖</text>
+    <text x="60" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text16">财政支出占比 <tspan font-weight="bold" fill="#C41E3A" id="tspan15">3.38%</tspan></text>
+    <text x="60" y="320" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text17">是GDP占比的 <tspan font-weight="bold" fill="#C41E3A" id="tspan16">3.76倍</tspan></text>
+    <text x="60" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text18">财政自给率仅 <tspan font-weight="bold" fill="#C41E3A" id="tspan17">13.32%</tspan></text>
+    <text x="60" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text19">人均支出全省 <tspan font-weight="bold" fill="#00A651" id="tspan18">2.54倍</tspan></text>
+  </g>
+  <g id="g24">
+    <path fill="#FFFFFF" id="rect19" d="M352,220 H608 A12,12 0 0 1 620,232 V408 A12,12 0 0 1 608,420 H352 A12,12 0 0 1 340,408 V232 A12,12 0 0 1 352,220 Z" />
+    <path fill="#FF6B35" id="rect20" d="M343,220 H617 A3,3 0 0 1 620,223 V223 A3,3 0 0 1 617,226 H343 A3,3 0 0 1 340,223 V223 A3,3 0 0 1 343,220 Z" />
+    <text x="360" y="260" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" id="text20">💡 土地财政缺失</text>
+    <text x="360" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text21">基金收入占比仅 <tspan font-weight="bold" fill="#FF6B35" id="tspan20">0.18%</tspan></text>
+    <text x="360" y="320" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text22">土地出让收入 <tspan font-weight="bold" fill="#FF6B35" id="tspan21">3.44亿元</tspan></text>
+    <text x="360" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text23">同比下降 <tspan font-weight="bold" fill="#FF6B35" id="tspan22">-28.6%</tspan></text>
+    <text x="360" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text24">依赖税收和转移支付</text>
+  </g>
+  <g id="g29">
+    <path fill="#FFFFFF" id="rect24" d="M652,220 H908 A12,12 0 0 1 920,232 V408 A12,12 0 0 1 908,420 H652 A12,12 0 0 1 640,408 V232 A12,12 0 0 1 652,220 Z" />
+    <path fill="#00A651" id="rect25" d="M643,220 H917 A3,3 0 0 1 920,223 V223 A3,3 0 0 1 917,226 H643 A3,3 0 0 1 640,223 V223 A3,3 0 0 1 643,220 Z" />
+    <text x="660" y="260" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" id="text25">💡 债务效率高空间不足</text>
+    <text x="660" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text26">债务率仅 <tspan font-weight="bold" fill="#00A651" id="tspan25">35.35%</tspan></text>
+    <text x="660" y="320" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text27">余额占限额 <tspan font-weight="bold" fill="#FF6B35" id="tspan26">96.03%</tspan></text>
+    <text x="660" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text28">新增空间仅 <tspan font-weight="bold" fill="#FF6B35" id="tspan27">6.5亿元</tspan></text>
+    <text x="660" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text29">风险可控，融资受限</text>
+  </g>
+  <g id="g34">
+    <path fill="#FFFFFF" id="rect29" d="M952,220 H1208 A12,12 0 0 1 1220,232 V408 A12,12 0 0 1 1208,420 H952 A12,12 0 0 1 940,408 V232 A12,12 0 0 1 952,220 Z" />
+    <path fill="#1E3A5F" id="rect30" d="M943,220 H1217 A3,3 0 0 1 1220,223 V223 A3,3 0 0 1 1217,226 H943 A3,3 0 0 1 940,223 V223 A3,3 0 0 1 943,220 Z" />
+    <text x="960" y="260" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" id="text30">💡 专项债融资不足</text>
+    <text x="960" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text31">专项债限额占比 <tspan font-weight="bold" fill="#C41E3A" id="tspan30">0.28%</tspan></text>
+    <text x="960" y="320" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text32">远低于GDP占比0.90%</text>
+    <text x="960" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text33">专项债:一般债 <tspan font-weight="bold" fill="#C41E3A" id="tspan32">0.46:1</tspan></text>
+    <text x="960" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A" id="text34">全省平均 2.24:1</text>
+  </g>
+  
+  <g id="g55">
+    <path fill="#FFFFFF" id="rect34" d="M52,440 H1228 A12,12 0 0 1 1240,452 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V452 A12,12 0 0 1 52,440 Z" />
+    <text x="60" y="475" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E" id="text35">📊 关键指标对比表</text>
+    <path fill="#1E3A5F" id="rect35" d="M64,495 H1216 A4,4 0 0 1 1220,499 V526 A4,4 0 0 1 1216,530 H64 A4,4 0 0 1 60,526 V499 A4,4 0 0 1 64,495 Z" />
+    <text x="180" y="518" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" id="text36">指标</text>
+    <text x="400" y="518" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" id="text37">全省占比</text>
+    <text x="650" y="518" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" id="text38">vs 基准线</text>
+    <text x="950" y="518" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" id="text39">评价</text>
+    <rect x="60" y="530" width="1160" height="30" fill="#F5F7FA" id="rect39" />
+    <text x="180" y="550" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text40">财政支出</text>
+    <text x="400" y="550" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#C41E3A" id="text41">3.38%</text>
+    <text x="650" y="550" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#C41E3A" id="text42">▲ 显著高于GDP/人口占比</text>
+    <text x="950" y="550" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" id="text43">政策支持力度大</text>
+    <rect x="60" y="560" width="1160" height="30" fill="#FFFFFF" id="rect43" />
+    <text x="180" y="580" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text44">政府性基金</text>
+    <text x="400" y="580" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FF6B35" id="text45">0.18%</text>
+    <text x="650" y="580" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6B35" id="text46">▼ 严重低于基准线</text>
+    <text x="950" y="580" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FF6B35" id="text47">结构性弱点</text>
+    <rect x="60" y="590" width="1160" height="30" fill="#F5F7FA" id="rect47" />
+    <text x="180" y="610" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text48">债务余额</text>
+    <text x="400" y="610" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#00A651" id="text49">0.65%</text>
+    <text x="650" y="610" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" id="text50">▼ 低于基准线</text>
+    <text x="950" y="610" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#00A651" id="text51">债务效率高</text>
+    <rect x="60" y="620" width="1160" height="30" fill="#FFFFFF" id="rect51" />
+    <text x="180" y="640" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A" id="text52">专项债限额</text>
+    <text x="400" y="640" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#C41E3A" id="text53">0.28%</text>
+    <text x="650" y="640" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#C41E3A" id="text54">▼ 严重低于基准线</text>
+    <text x="950" y="640" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#C41E3A" id="text55">需争取额度</text>
+  </g>
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" id="text56">03 / 17</text>
+</svg>

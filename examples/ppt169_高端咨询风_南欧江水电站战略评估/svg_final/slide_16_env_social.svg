@@ -1,20 +1,20 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">环境与社会影响</text>
   <text x="1240" y="50" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">ENVIRONMENTAL &amp; SOCIAL IMPACTS</text>
   
-  <!-- 标签 -->
+  
   <g transform="translate(40, 100)">
-    <rect width="180" height="30" rx="6" fill="#8D6E63"/>
+    <path fill="#8D6E63" d="M6,0 H174 A6,6 0 0 1 180,6 V24 A6,6 0 0 1 174,30 H6 A6,6 0 0 1 0,24 V6 A6,6 0 0 1 6,0 Z" />
     <text x="90" y="20" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">被遗忘的代价</text>
   </g>
   
-  <!-- 三栏卡片 -->
-  <!-- 卡片1：移民安置 -->
+  
+  
   <g transform="translate(40, 150)">
-    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="380" height="60" rx="12" fill="#8D6E63"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H368 A12,12 0 0 1 380,12 V368 A12,12 0 0 1 368,380 H12 A12,12 0 0 1 0,368 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#8D6E63" d="M12,0 H368 A12,12 0 0 1 380,12 V48 A12,12 0 0 1 368,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="38" font-family="system-ui" font-size="28">🏠</text>
     <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">移民安置与生计断裂</text>
     
@@ -35,10 +35,10 @@
     </g>
   </g>
   
-  <!-- 卡片2：水文改变 -->
+  
   <g transform="translate(450, 150)">
-    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="380" height="60" rx="12" fill="#2E96B3"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H368 A12,12 0 0 1 380,12 V368 A12,12 0 0 1 368,380 H12 A12,12 0 0 1 0,368 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#2E96B3" d="M12,0 H368 A12,12 0 0 1 380,12 V48 A12,12 0 0 1 368,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="38" font-family="system-ui" font-size="28">🌊</text>
     <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">水文改变与灾害风险</text>
     
@@ -59,10 +59,10 @@
     </g>
   </g>
   
-  <!-- 卡片3：文化遗产 -->
+  
   <g transform="translate(860, 150)">
-    <rect width="380" height="380" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="380" height="60" rx="12" fill="#2E7D32"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H368 A12,12 0 0 1 380,12 V368 A12,12 0 0 1 368,380 H12 A12,12 0 0 1 0,368 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#2E7D32" d="M12,0 H368 A12,12 0 0 1 380,12 V48 A12,12 0 0 1 368,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="38" font-family="system-ui" font-size="28">🏛️</text>
     <text x="70" y="40" font-family="system-ui, 'Microsoft YaHei'" font-size="18" font-weight="600" fill="#FFFFFF">文化遗产影响</text>
     
@@ -82,14 +82,14 @@
     </g>
   </g>
   
-  <!-- 底部说明 -->
+  
   <g transform="translate(40, 550)">
-    <rect width="1200" height="80" rx="12" fill="#8D6E63" opacity="0.1"/>
+    <path fill="#8D6E63" opacity="0.1" d="M12,0 H1188 A12,12 0 0 1 1200,12 V68 A12,12 0 0 1 1188,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
     <text x="25" y="32" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#8D6E63">未计入成本</text>
     <text x="25" y="58" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">这些社会与环境成本往往未被计入PPA的电价中，而是由当地社区默默承担。在宏大的金融博弈背后，这些是"被遗忘的代价"。</text>
   </g>
   
-  <line x1="40" y1="650" x2="1240" y2="650" stroke="#D4DEE4" stroke-width="1"/>
+  <line x1="40" y1="650" x2="1240" y2="650" stroke="#D4DEE4" stroke-width="1" />
   <text x="40" y="680" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
   <text x="1240" y="680" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">16 / 20</text>
 </svg>

@@ -1,19 +1,19 @@
-<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F9F6F1"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F9F6F1" />
   
   <text x="40" y="85" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#2E4A62">研究发现：第一品的多重面向</text>
-  <line x1="40" y1="105" x2="420" y2="105" stroke="#C9A962" stroke-width="3"/>
+  <line x1="40" y1="105" x2="420" y2="105" stroke="#C9A962" stroke-width="3" />
   
-  <!-- 四卡片矩阵 2x2 -->
-  <!-- 叙事与认证 -->
+  
+  
   <g transform="translate(40, 130)">
-    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#2E4A62" stroke-width="2"/>
-    <rect x="0" y="0" width="590" height="50" rx="12" fill="#2E4A62"/>
-    <rect x="0" y="40" width="590" height="10" fill="#2E4A62"/>
-    <!-- icon: file -->
+    <path fill="#FFFFFF" stroke="#2E4A62" stroke-width="2" d="M12,0 H578 A12,12 0 0 1 590,12 V228 A12,12 0 0 1 578,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#2E4A62" d="M12,0 H578 A12,12 0 0 1 590,12 V38 A12,12 0 0 1 578,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="590" height="10" fill="#2E4A62" />
+    
   <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
-    <path d="M7 0H2V16H14V7H7V0Z"/>
-    <path d="M9 0V5H14L9 0Z"/>
+    <path d="M7 0H2V16H14V7H7V0Z" />
+    <path d="M9 0V5H14L9 0Z" />
   </g>
     <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">叙事与认证框架</text>
     
@@ -28,22 +28,22 @@
     </g>
   </g>
   
-  <!-- 日常的神圣化 -->
+  
   <g transform="translate(650, 130)">
-    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2"/>
-    <rect x="0" y="0" width="590" height="50" rx="12" fill="#5D8C6A"/>
-    <rect x="0" y="40" width="590" height="10" fill="#5D8C6A"/>
-    <!-- icon: sun -->
+    <path fill="#FFFFFF" stroke="#5D8C6A" stroke-width="2" d="M12,0 H578 A12,12 0 0 1 590,12 V228 A12,12 0 0 1 578,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#5D8C6A" d="M12,0 H578 A12,12 0 0 1 590,12 V38 A12,12 0 0 1 578,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="590" height="10" fill="#5D8C6A" />
+    
   <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
-    <path d="M7 3V0H9V3H7Z"/>
-    <path d="M9 13V16H7V13H9Z"/>
-    <path d="M11 8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8C5 6.34315 6.34315 5 8 5C9.65685 5 11 6.34315 11 8Z"/>
-    <path d="M0 9H3V7H0V9Z"/>
-    <path d="M16 7H13V9H16V7Z"/>
-    <path d="M3.75735 5.17157L1.63603 3.05025L3.05025 1.63603L5.17157 3.75735L3.75735 5.17157Z"/>
-    <path d="M12.2426 10.8284L14.364 12.9497L12.9497 14.364L10.8284 12.2426L12.2426 10.8284Z"/>
-    <path d="M3.05025 14.364L5.17157 12.2426L3.75735 10.8284L1.63603 12.9498L3.05025 14.364Z"/>
-    <path d="M12.9497 1.63604L10.8284 3.75736L12.2426 5.17158L14.364 3.05026L12.9497 1.63604Z"/>
+    <path d="M7 3V0H9V3H7Z" />
+    <path d="M9 13V16H7V13H9Z" />
+    <path d="M11 8C11 9.65685 9.65685 11 8 11C6.34315 11 5 9.65685 5 8C5 6.34315 6.34315 5 8 5C9.65685 5 11 6.34315 11 8Z" />
+    <path d="M0 9H3V7H0V9Z" />
+    <path d="M16 7H13V9H16V7Z" />
+    <path d="M3.75735 5.17157L1.63603 3.05025L3.05025 1.63603L5.17157 3.75735L3.75735 5.17157Z" />
+    <path d="M12.2426 10.8284L14.364 12.9497L12.9497 14.364L10.8284 12.2426L12.2426 10.8284Z" />
+    <path d="M3.05025 14.364L5.17157 12.2426L3.75735 10.8284L1.63603 12.9498L3.05025 14.364Z" />
+    <path d="M12.9497 1.63604L10.8284 3.75736L12.2426 5.17158L14.364 3.05026L12.9497 1.63604Z" />
   </g>
     <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">日常生活的神圣化</text>
     
@@ -58,15 +58,15 @@
     </g>
   </g>
   
-  <!-- 隐含的修行 -->
+  
   <g transform="translate(40, 390)">
-    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#C9A962" stroke-width="2"/>
-    <rect x="0" y="0" width="590" height="50" rx="12" fill="#C9A962"/>
-    <rect x="0" y="40" width="590" height="10" fill="#C9A962"/>
-    <!-- icon: target -->
+    <path fill="#FFFFFF" stroke="#C9A962" stroke-width="2" d="M12,0 H578 A12,12 0 0 1 590,12 V228 A12,12 0 0 1 578,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#C9A962" d="M12,0 H578 A12,12 0 0 1 590,12 V38 A12,12 0 0 1 578,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="590" height="10" fill="#C9A962" />
+    
   <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4ZM6 8C6 6.89543 6.89543 6 8 6C9.10457 6 10 6.89543 10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8Z"/>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8Z"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4ZM6 8C6 6.89543 6.89543 6 8 6C9.10457 6 10 6.89543 10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8Z" />
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8Z" />
   </g>
     <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">隐含的修行示范</text>
     
@@ -81,14 +81,14 @@
     </g>
   </g>
   
-  <!-- 关键的序幕 -->
+  
   <g transform="translate(650, 390)">
-    <rect x="0" y="0" width="590" height="240" rx="12" fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2"/>
-    <rect x="0" y="0" width="590" height="50" rx="12" fill="#8B9A9A"/>
-    <rect x="0" y="40" width="590" height="10" fill="#8B9A9A"/>
-    <!-- icon: flag -->
+    <path fill="#FFFFFF" stroke="#8B9A9A" stroke-width="2" d="M12,0 H578 A12,12 0 0 1 590,12 V228 A12,12 0 0 1 578,240 H12 A12,12 0 0 1 0,228 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#8B9A9A" d="M12,0 H578 A12,12 0 0 1 590,12 V38 A12,12 0 0 1 578,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
+    <rect x="0" y="40" width="590" height="10" fill="#8B9A9A" />
+    
   <g transform="translate(20.0, 12.0) scale(1.625)" fill="#FFFFFF">
-    <path d="M1 1V16H3V10H7L9 12H15V3H9L7 1H1Z"/>
+    <path d="M1 1V16H3V10H7L9 12H15V3H9L7 1H1Z" />
   </g>
     <text x="58" y="34" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">关键的序幕功能</text>
     

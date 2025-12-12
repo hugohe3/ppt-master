@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+            <feOffset dx="0" dy="4" result="offsetBlur" />
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color" />
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow" />
+            <feMerge>
+                <feMergeNode in="shadow" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    
+    <rect width="1280" height="720" fill="#F8FAFC" />
+
+    
+    <text x="640" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="#1E293B" text-anchor="middle" font-weight="700">选型决策树</text>
+    <text x="640" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B" text-anchor="middle">回答几个问题，快速找到最适合的工具</text>
+
+    
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#1E293B" d="M487,105 H793 A27,27 0 0 1 820,132 V133 A27,27 0 0 1 793,160 H487 A27,27 0 0 1 460,133 V132 A27,27 0 0 1 487,105 Z" />
+        <text x="640" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#FFFFFF" text-anchor="middle" font-weight="600">你的项目是什么阶段？</text>
+    </g>
+
+    
+    <line x1="540" y1="160" x2="220" y2="210" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="640" y1="160" x2="640" y2="210" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="740" y1="160" x2="1060" y2="210" stroke="#E2E8F0" stroke-width="2" />
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFF7ED" d="M70,210 H370 A10,10 0 0 1 380,220 V250 A10,10 0 0 1 370,260 H70 A10,10 0 0 1 60,250 V220 A10,10 0 0 1 70,210 Z" />
+        <text x="220" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#C2410C" text-anchor="middle" font-weight="500">刚开始，连需求都没想清楚</text>
+    </g>
+    <line x1="220" y1="260" x2="220" y2="295" stroke="#F97316" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <path fill="#8B5CF6" d="M135,295 H305 A25,25 0 0 1 330,320 V320 A25,25 0 0 1 305,345 H135 A25,25 0 0 1 110,320 V320 A25,25 0 0 1 135,295 Z" />
+        <text x="220" y="327" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" font-weight="600">✅ 用 Spec Kit</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#F1F5F9" d="M470,210 H810 A10,10 0 0 1 820,220 V250 A10,10 0 0 1 810,260 H470 A10,10 0 0 1 460,250 V220 A10,10 0 0 1 470,210 Z" />
+        <text x="640" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#475569" text-anchor="middle" font-weight="500">需求明确，有完整 PRD</text>
+    </g>
+    <line x1="640" y1="260" x2="640" y2="295" stroke="#64748B" stroke-width="2" />
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#E2E8F0" d="M470,295 H810 A10,10 0 0 1 820,305 V330 A10,10 0 0 1 810,340 H470 A10,10 0 0 1 460,330 V305 A10,10 0 0 1 470,295 Z" />
+        <text x="640" y="325" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#1E293B" text-anchor="middle" font-weight="500">新项目还是存量项目？</text>
+    </g>
+
+    
+    <line x1="540" y1="340" x2="460" y2="380" stroke="#E2E8F0" stroke-width="2" />
+    <line x1="740" y1="340" x2="820" y2="380" stroke="#E2E8F0" stroke-width="2" />
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#F5F3FF" d="M368,380 H552 A8,8 0 0 1 560,388 V412 A8,8 0 0 1 552,420 H368 A8,8 0 0 1 360,412 V388 A8,8 0 0 1 368,380 Z" />
+        <text x="460" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7C3AED" text-anchor="middle">新项目</text>
+    </g>
+    <line x1="460" y1="420" x2="460" y2="455" stroke="#8B5CF6" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <path fill="#8B5CF6" d="M372,455 H548 A22,22 0 0 1 570,477 V478 A22,22 0 0 1 548,500 H372 A22,22 0 0 1 350,478 V477 A22,22 0 0 1 372,455 Z" />
+        <text x="460" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">✅ 用 Spec Kit</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#EFF6FF" d="M728,380 H912 A8,8 0 0 1 920,388 V412 A8,8 0 0 1 912,420 H728 A8,8 0 0 1 720,412 V388 A8,8 0 0 1 728,380 Z" />
+        <text x="820" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB" text-anchor="middle">存量项目</text>
+    </g>
+    <line x1="820" y1="420" x2="820" y2="455" stroke="#2563EB" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <path fill="#2563EB" d="M732,455 H908 A22,22 0 0 1 930,477 V478 A22,22 0 0 1 908,500 H732 A22,22 0 0 1 710,478 V477 A22,22 0 0 1 732,455 Z" />
+        <text x="820" y="485" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">✅ 用 OpenSpec</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#ECFDF5" d="M910,210 H1210 A10,10 0 0 1 1220,220 V250 A10,10 0 0 1 1210,260 H910 A10,10 0 0 1 900,250 V220 A10,10 0 0 1 910,210 Z" />
+        <text x="1060" y="242" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#047857" text-anchor="middle" font-weight="500">只是想快速配置环境</text>
+    </g>
+    <line x1="1060" y1="260" x2="1060" y2="295" stroke="#10B981" stroke-width="2" />
+    <g filter="url(#cardShadow)">
+        <path fill="#10B981" d="M975,295 H1145 A25,25 0 0 1 1170,320 V320 A25,25 0 0 1 1145,345 H975 A25,25 0 0 1 950,320 V320 A25,25 0 0 1 975,295 Z" />
+        <text x="1060" y="327" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" font-weight="600">✅ 用 ZCF</text>
+    </g>
+
+    
+    <g filter="url(#cardShadow)">
+        <path fill="#FFFFFF" d="M76,530 H1204 A16,16 0 0 1 1220,546 V644 A16,16 0 0 1 1204,660 H76 A16,16 0 0 1 60,644 V546 A16,16 0 0 1 76,530 Z" />
+        <path fill="#F97316" d="M64,530 H1216 A4,4 0 0 1 1220,534 V534 A4,4 0 0 1 1216,538 H64 A4,4 0 0 1 60,534 V534 A4,4 0 0 1 64,530 Z" />
+
+        <text x="640" y="570" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#F97316" text-anchor="middle" font-weight="700">🎯 以上都需要？</text>
+
+        <text x="640" y="605" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle">
+            <tspan fill="#10B981" font-weight="600">ZCF</tspan>
+            <tspan fill="#64748B"> + </tspan>
+            <tspan fill="#8B5CF6" font-weight="600">Spec Kit</tspan>
+            <tspan fill="#64748B"> / </tspan>
+            <tspan fill="#2563EB" font-weight="600">OpenSpec</tspan>
+            <tspan fill="#64748B"> 组合使用</tspan>
+        </text>
+
+        <text x="640" y="640" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">如果你是全能选手，建议三个都装上，按场景灵活切换</text>
+    </g>
+
+    
+    <text x="1220" y="695" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8" text-anchor="end">09 / 11</text>
+</svg>

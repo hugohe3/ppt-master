@@ -132,10 +132,8 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     Args:
         project_path: 项目目录路径
         source: SVG 来源目录
-            - 'output': svg_output（默认，原始版本）
-            - 'final': svg_final（带嵌入图标/图片）
-            - 'flat': svg_output_flattext（扁平化文本）
-            - 'final_flat': svg_final_flattext（最终版+扁平化）
+            - 'output': svg_output（原始版本）
+            - 'final': svg_final（后处理完成，推荐）
             - 或任意子目录名称
     
     Returns:
@@ -145,8 +143,6 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     dir_map = {
         'output': 'svg_output',
         'final': 'svg_final',
-        'flat': 'svg_output_flattext',
-        'final_flat': 'svg_final_flattext',
     }
     
     # 获取目录名（支持预定义别名或直接指定目录名）
@@ -362,17 +358,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 示例:
-    %(prog)s examples/ppt169_demo
-    %(prog)s examples/ppt169_demo -s final
-    %(prog)s examples/ppt169_demo -s my_custom_folder
+    %(prog)s examples/ppt169_demo -s final    # 推荐：使用后处理完成的版本
+    %(prog)s examples/ppt169_demo             # 使用原始版本
     %(prog)s examples/ppt169_demo -o presentation.pptx
 
 SVG 来源目录 (-s):
-    output     - svg_output（默认，原始版本）
-    final      - svg_final（带嵌入图标/图片）
-    flat       - svg_output_flattext（扁平化文本）
-    final_flat - svg_final_flattext（最终版+扁平化）
-    <任意名>   - 直接指定项目下的子目录名
+    output   - svg_output（原始版本）
+    final    - svg_final（后处理完成，推荐）
+    <任意名> - 直接指定项目下的子目录名
 
 特点:
     - SVG 以原生矢量格式嵌入，保持可编辑性
@@ -383,7 +376,7 @@ SVG 来源目录 (-s):
     parser.add_argument('project_path', type=str, help='项目目录路径')
     parser.add_argument('-o', '--output', type=str, default=None, help='输出文件路径')
     parser.add_argument('-s', '--source', type=str, default='output', 
-                        help='SVG 来源: output/final/flat/final_flat 或任意子目录名')
+                        help='SVG 来源: output/final 或任意子目录名 (推荐 final)')
     parser.add_argument('-f', '--format', type=str, choices=list(CANVAS_FORMATS.keys()), default=None, help='指定画布格式')
     parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
     

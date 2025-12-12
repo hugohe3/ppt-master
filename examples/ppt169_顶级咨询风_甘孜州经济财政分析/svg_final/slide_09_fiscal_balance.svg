@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">四、财政平衡与依赖度</text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,100 H408 A12,12 0 0 1 420,112 V368 A12,12 0 0 1 408,380 H52 A12,12 0 0 1 40,368 V112 A12,12 0 0 1 52,100 Z" />
+    <text x="60" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">💰 财政自给率</text>
+    
+    
+    <circle cx="230" cy="250" r="80" fill="none" stroke="#E8E8F0" stroke-width="16" />
+    
+    
+    <path d="M 230 170 A 80 80 0 0 1 289.5 196.5" fill="none" stroke="#C41E3A" stroke-width="16" stroke-linecap="round" />
+    <text x="230" y="245" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="bold" fill="#C41E3A">13.32%</text>
+    <text x="230" y="275" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">全省倒数第2</text>
+    
+    <text x="60" y="355" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">全省平均：<tspan font-weight="bold" fill="#1E3A5F">41.91%</tspan></text>
+    <text x="60" y="375" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#C41E3A">差距：低于全省28.59个百分点</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M452,100 H808 A12,12 0 0 1 820,112 V368 A12,12 0 0 1 808,380 H452 A12,12 0 0 1 440,368 V112 A12,12 0 0 1 452,100 Z" />
+    <text x="460" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 转移性收入</text>
+    
+    <path fill="#1E3A5F" opacity="0.05" d="M468,160 H792 A8,8 0 0 1 800,168 V232 A8,8 0 0 1 792,240 H468 A8,8 0 0 1 460,232 V168 A8,8 0 0 1 468,160 Z" />
+    <text x="480" y="190" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">转移性收入规模</text>
+    <text x="480" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1E3A5F">376.56亿元</text>
+    
+    <text x="460" y="270" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 是本级收入的 <tspan font-weight="bold" fill="#C41E3A">6.22倍</tspan></text>
+    <text x="460" y="295" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 占公共预算支出的 <tspan font-weight="bold" fill="#C41E3A">82.85%</tspan></text>
+    
+    <line x1="460" y1="320" x2="800" y2="320" stroke="#E8E8F0" stroke-width="1" />
+    
+    <text x="460" y="350" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">✓ 享受民族地区政策红利</text>
+    <text x="460" y="375" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">✓ 中央和省级财政大力支持</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M852,100 H1228 A12,12 0 0 1 1240,112 V368 A12,12 0 0 1 1228,380 H852 A12,12 0 0 1 840,368 V112 A12,12 0 0 1 852,100 Z" />
+    <text x="860" y="140" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">⚠️ 财政赤字率</text>
+    
+    <text x="860" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="48" font-weight="bold" fill="#FF6B35">67.86%</text>
+    <text x="860" y="228" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">全省平均：12.07%</text>
+    
+    <path fill="#FF6B35" opacity="0.1" d="M868,245 H1212 A8,8 0 0 1 1220,253 V347 A8,8 0 0 1 1212,355 H868 A8,8 0 0 1 860,347 V253 A8,8 0 0 1 868,245 Z" />
+    <text x="880" y="272" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#FF6B35">结构性说明</text>
+    <text x="880" y="297" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 本级财力严重不足</text>
+    <text x="880" y="320" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 财政运行高度依赖上级支持</text>
+    <text x="880" y="343" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 体现国家对民族地区的政策倾斜</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,400 H1228 A12,12 0 0 1 1240,412 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V412 A12,12 0 0 1 52,400 Z" />
+    <text x="60" y="440" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📌 甘孜州一般公共预算支出规模对比（高于以下13个市州）</text>
+    
+    
+    <g>
+      <path fill="#C41E3A" d="M84,480 H141 A4,4 0 0 1 145,484 V596 A4,4 0 0 1 141,600 H84 A4,4 0 0 1 80,596 V484 A4,4 0 0 1 84,480 Z" />
+      <text x="112" y="570" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">454</text>
+      <text x="112" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="10" fill="#4A4A6A">甘孜州</text>
+      
+      <path fill="#4A90D9" d="M159,500 H206 A4,4 0 0 1 210,504 V596 A4,4 0 0 1 206,600 H159 A4,4 0 0 1 155,596 V504 A4,4 0 0 1 159,500 Z" />
+      <text x="182" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">德阳</text>
+      
+      <path fill="#4A90D9" d="M224,510 H271 A4,4 0 0 1 275,514 V596 A4,4 0 0 1 271,600 H224 A4,4 0 0 1 220,596 V514 A4,4 0 0 1 224,510 Z" />
+      <text x="247" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">巴中</text>
+      
+      <path fill="#4A90D9" d="M289,515 H336 A4,4 0 0 1 340,519 V596 A4,4 0 0 1 336,600 H289 A4,4 0 0 1 285,596 V519 A4,4 0 0 1 289,515 Z" />
+      <text x="312" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">广安</text>
+      
+      <path fill="#4A90D9" d="M354,518 H401 A4,4 0 0 1 405,522 V596 A4,4 0 0 1 401,600 H354 A4,4 0 0 1 350,596 V522 A4,4 0 0 1 354,518 Z" />
+      <text x="377" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">乐山</text>
+      
+      <path fill="#4A90D9" d="M419,520 H466 A4,4 0 0 1 470,524 V596 A4,4 0 0 1 466,600 H419 A4,4 0 0 1 415,596 V524 A4,4 0 0 1 419,520 Z" />
+      <text x="442" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">阿坝</text>
+      
+      <path fill="#4A90D9" d="M484,525 H531 A4,4 0 0 1 535,529 V596 A4,4 0 0 1 531,600 H484 A4,4 0 0 1 480,596 V529 A4,4 0 0 1 484,525 Z" />
+      <text x="507" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">广元</text>
+      
+      <path fill="#4A90D9" d="M549,530 H596 A4,4 0 0 1 600,534 V596 A4,4 0 0 1 596,600 H549 A4,4 0 0 1 545,596 V534 A4,4 0 0 1 549,530 Z" />
+      <text x="572" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">眉山</text>
+      
+      <path fill="#4A90D9" d="M614,532 H661 A4,4 0 0 1 665,536 V596 A4,4 0 0 1 661,600 H614 A4,4 0 0 1 610,596 V536 A4,4 0 0 1 614,532 Z" />
+      <text x="637" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">内江</text>
+      
+      <path fill="#4A90D9" d="M679,538 H726 A4,4 0 0 1 730,542 V596 A4,4 0 0 1 726,600 H679 A4,4 0 0 1 675,596 V542 A4,4 0 0 1 679,538 Z" />
+      <text x="702" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">遂宁</text>
+      
+      <path fill="#4A90D9" d="M744,545 H791 A4,4 0 0 1 795,549 V596 A4,4 0 0 1 791,600 H744 A4,4 0 0 1 740,596 V549 A4,4 0 0 1 744,545 Z" />
+      <text x="767" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">自贡</text>
+      
+      <path fill="#4A90D9" d="M809,555 H856 A4,4 0 0 1 860,559 V596 A4,4 0 0 1 856,600 H809 A4,4 0 0 1 805,596 V559 A4,4 0 0 1 809,555 Z" />
+      <text x="832" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">雅安</text>
+      
+      <path fill="#4A90D9" d="M874,560 H921 A4,4 0 0 1 925,564 V596 A4,4 0 0 1 921,600 H874 A4,4 0 0 1 870,596 V564 A4,4 0 0 1 874,560 Z" />
+      <text x="897" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">资阳</text>
+      
+      <path fill="#4A90D9" d="M939,570 H986 A4,4 0 0 1 990,574 V596 A4,4 0 0 1 986,600 H939 A4,4 0 0 1 935,596 V574 A4,4 0 0 1 939,570 Z" />
+      <text x="962" y="620" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="9" fill="#4A4A6A">攀枝花</text>
+    </g>
+    
+    <text x="1050" y="530" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">单位：亿元</text>
+    <text x="1050" y="560" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#C41E3A">甘孜州454亿</text>
+    <text x="1050" y="580" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A90D9">攀枝花192亿</text>
+    <text x="1050" y="600" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">差额262亿</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">09 / 17</text>
+</svg>

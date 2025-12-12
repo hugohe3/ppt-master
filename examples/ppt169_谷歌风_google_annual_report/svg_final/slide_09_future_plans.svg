@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <defs>
+        <linearGradient id="topGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#34A853;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#4285F4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#FBBC04;stop-opacity:1" />
+        </linearGradient>
+
+        <filter id="columnShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="4" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1280" height="6" fill="url(#topGradient)" />
+
+    
+    <text x="60" y="85" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="46" font-weight="700" fill="#1A237E">
+        Looking Forward to 2026
+    </text>
+
+    
+    <path fill="#34A853" d="M62,100 H198 A2,2 0 0 1 200,102 V102 A2,2 0 0 1 198,104 H62 A2,2 0 0 1 60,102 V102 A2,2 0 0 1 62,100 Z" />
+
+    
+
+    
+    <g transform="translate(60, 150)" filter="url(#columnShadow)">
+        <path fill="#FFFFFF" stroke="#4285F4" stroke-width="3" d="M16,0 H344 A16,16 0 0 1 360,16 V464 A16,16 0 0 1 344,480 H16 A16,16 0 0 1 0,464 V16 A16,16 0 0 1 16,0 Z" />
+
+        
+        <path fill="#4285F4" d="M12,0 H348 A12,12 0 0 1 360,12 V48 A12,12 0 0 1 348,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
+        <text x="180" y="42" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            🎯 Technical Direction
+        </text>
+
+        
+        <g transform="translate(30, 100)">
+            <circle cx="15" cy="15" r="10" fill="#4285F4" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🤖
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                AI/ML Deep Dive
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Apply Large Language Models</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">to infrastructure optimization</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">and intelligent automation</text></g>
+
+        <g transform="translate(30, 220)">
+            <circle cx="15" cy="15" r="10" fill="#4285F4" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🌐
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Edge Computing
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Explore edge architecture</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">patterns and distributed</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">computing at scale</text></g>
+
+        <g transform="translate(30, 340)">
+            <circle cx="15" cy="15" r="10" fill="#4285F4" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                📊
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Observability
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Build next-generation</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">monitoring and diagnostic</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">systems</text></g>
+    </g>
+
+    
+    <g transform="translate(460, 150)" filter="url(#columnShadow)">
+        <path fill="#FFFFFF" stroke="#34A853" stroke-width="3" d="M16,0 H344 A16,16 0 0 1 360,16 V464 A16,16 0 0 1 344,480 H16 A16,16 0 0 1 0,464 V16 A16,16 0 0 1 16,0 Z" />
+
+        
+        <path fill="#34A853" d="M12,0 H348 A12,12 0 0 1 360,12 V48 A12,12 0 0 1 348,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
+        <text x="180" y="42" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            📈 Career Growth
+        </text>
+
+        
+        <g transform="translate(30, 100)">
+            <circle cx="15" cy="15" r="10" fill="#34A853" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🎯
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Staff Engineer (L6)
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Target promotion to Staff</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">Engineer level with increased</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">scope and responsibility</text></g>
+
+        <g transform="translate(30, 220)">
+            <circle cx="15" cy="15" r="10" fill="#34A853" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🌟
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Technical Influence
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Expand technical leadership</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">across multiple teams and</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">establish domain expertise</text></g>
+
+        <g transform="translate(30, 340)">
+            <circle cx="15" cy="15" r="10" fill="#34A853" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                💡
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Thought Leadership
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Become recognized expert</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">in cloud infrastructure</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">optimization</text></g>
+    </g>
+
+    
+    <g transform="translate(860, 150)" filter="url(#columnShadow)">
+        <path fill="#FFFFFF" stroke="#FBBC04" stroke-width="3" d="M16,0 H344 A16,16 0 0 1 360,16 V464 A16,16 0 0 1 344,480 H16 A16,16 0 0 1 0,464 V16 A16,16 0 0 1 16,0 Z" />
+
+        
+        <path fill="#FBBC04" d="M12,0 H348 A12,12 0 0 1 360,12 V48 A12,12 0 0 1 348,60 H12 A12,12 0 0 1 0,48 V12 A12,12 0 0 1 12,0 Z" />
+        <text x="180" y="42" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+            🤝 Team Impact
+        </text>
+
+        
+        <g transform="translate(30, 100)">
+            <circle cx="15" cy="15" r="10" fill="#FBBC04" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🏆
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Technical Excellence
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Establish culture of</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">engineering excellence and</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">best practices</text></g>
+
+        <g transform="translate(30, 220)">
+            <circle cx="15" cy="15" r="10" fill="#FBBC04" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                💡
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Drive Innovation
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Push boundaries with</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">experimental projects and</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">breakthrough solutions</text></g>
+
+        <g transform="translate(30, 340)">
+            <circle cx="15" cy="15" r="10" fill="#FBBC04" />
+            <text x="15" y="21" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+                🤝
+            </text>
+            <text x="40" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="600" fill="#1A237E">
+                Team Synergy
+            </text>
+            <text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="50">Enhance collaboration and</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="74">cross-functional teamwork</text><text font-weight="400" fill="#5F6368" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="16" x="40" y="98">effectiveness</text></g>
+    </g>
+
+    
+    <text x="1220" y="700" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5F6368" text-anchor="end">
+        09
+    </text>
+</svg>

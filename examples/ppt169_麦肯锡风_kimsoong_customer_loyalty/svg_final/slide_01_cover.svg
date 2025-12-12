@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="8" height="720" fill="#005587" />
+
+    
+    <rect x="60" y="60" width="120" height="4" fill="#005587" />
+
+    
+    <text font-size="52" font-weight="bold" fill="#2C3E50" font-family="Arial, sans-serif" x="60" y="280">Kimsoong</text><text font-size="52" font-weight="bold" fill="#2C3E50" font-family="Arial, sans-serif" x="60" y="342">Customer Loyalty Programme</text><text x="60" y="440" font-family="Arial, sans-serif" font-size="28" fill="#5D6D7E">
+        <tspan x="60" dy="0">Strategic Framework for Customer Retention</tspan>
+    </text>
+
+    
+    <line x1="60" y1="500" x2="800" y2="500" stroke="#ECF0F1" stroke-width="2" />
+
+    
+    <text font-size="16" fill="#5D6D7E" font-family="Arial, sans-serif" x="60" y="620">Project Code: KIMEU-2025-CL01</text><text font-size="16" fill="#5D6D7E" font-family="Arial, sans-serif" x="60" y="644">Date: November 2025</text><rect x="900" y="200" width="320" height="320" fill="#005587" opacity="0.05" />
+    <path d="M 920,220 L 1180,220 L 1050,480 Z" fill="#005587" opacity="0.08" />
+
+    
+    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>CONFIDENTIAL</tspan>
+    </text>
+
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>1</tspan>
+    </text>
+</svg>

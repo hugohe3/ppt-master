@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366F1"/>
-      <stop offset="100%" style="stop-color:#06B6D4"/>
+      <stop offset="0%" style="stop-color:#6366F1" />
+      <stop offset="100%" style="stop-color:#06B6D4" />
     </linearGradient>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FAFBFC"/>
-  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)"/>
   
-  <!-- 页面标题 -->
+  <rect width="1280" height="720" fill="#FAFBFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="url(#gradient1)" />
+  
+  
   <text x="60" y="65" font-family="system-ui, -apple-system, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">
     快速开始：三步即可使用
   </text>
@@ -18,76 +18,76 @@
     无需复杂配置，克隆仓库后即可开始创作
   </text>
   
-  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+  <line x1="60" y1="120" x2="1220" y2="120" stroke="#E5E7EB" stroke-width="1" />
   
-  <!-- 三个步骤 - 调整后的布局 -->
+  
   <g transform="translate(60, 150)">
-    <!-- 步骤1 -->
+    
     <g>
-      <rect width="350" height="250" rx="16" fill="#FFFFFF" stroke="#6366F1" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#6366F1" stroke-width="2" d="M16,0 H334 A16,16 0 0 1 350,16 V234 A16,16 0 0 1 334,250 H16 A16,16 0 0 1 0,234 V16 A16,16 0 0 1 16,0 Z" />
       
-      <circle cx="175" cy="45" r="30" fill="#6366F1"/>
+      <circle cx="175" cy="45" r="30" fill="#6366F1" />
       <text x="175" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#FFFFFF">1</text>
       
       <text x="175" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">克隆仓库</text>
       
-      <rect x="20" y="120" width="310" height="50" rx="8" fill="#1F2937"/>
+      <path fill="#1F2937" d="M28,120 H322 A8,8 0 0 1 330,128 V162 A8,8 0 0 1 322,170 H28 A8,8 0 0 1 20,162 V128 A8,8 0 0 1 28,120 Z" />
       <text x="30" y="142" font-family="monospace" font-size="11" fill="#10B981">git clone</text>
       <text x="30" y="160" font-family="monospace" font-size="9" fill="#F59E0B">https://github.com/hugohe3/ppt-master</text>
       
       <text x="175" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#6B7280">或在编辑器中直接 Clone</text>
       
-      <rect x="20" y="215" width="310" height="24" rx="6" fill="#D1FAE5"/>
+      <path fill="#D1FAE5" d="M26,215 H324 A6,6 0 0 1 330,221 V233 A6,6 0 0 1 324,239 H26 A6,6 0 0 1 20,233 V221 A6,6 0 0 1 26,215 Z" />
       <text x="175" y="232" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#10B981">✨ 推荐: Antigravity / Cursor / VS Code</text>
     </g>
     
-    <!-- 连接线1 -->
+    
     <g transform="translate(358, 110)">
-      <line x1="0" y1="0" x2="35" y2="0" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="35,-5 48,0 35,5" fill="#6366F1"/>
+      <line x1="0" y1="0" x2="35" y2="0" stroke="#6366F1" stroke-width="2" />
+      <polygon points="35,-5 48,0 35,5" fill="#6366F1" />
     </g>
     
-    <!-- 步骤2 -->
+    
     <g transform="translate(405, 0)">
-      <rect width="350" height="250" rx="16" fill="#FFFFFF" stroke="#06B6D4" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#06B6D4" stroke-width="2" d="M16,0 H334 A16,16 0 0 1 350,16 V234 A16,16 0 0 1 334,250 H16 A16,16 0 0 1 0,234 V16 A16,16 0 0 1 16,0 Z" />
       
-      <circle cx="175" cy="45" r="30" fill="#06B6D4"/>
+      <circle cx="175" cy="45" r="30" fill="#06B6D4" />
       <text x="175" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#FFFFFF">2</text>
       
       <text x="175" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">打开 AI 聊天</text>
       
-      <rect x="20" y="120" width="310" height="85" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
-      <rect x="30" y="130" width="65" height="20" rx="4" fill="#06B6D4"/>
+      <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M28,120 H322 A8,8 0 0 1 330,128 V197 A8,8 0 0 1 322,205 H28 A8,8 0 0 1 20,197 V128 A8,8 0 0 1 28,120 Z" />
+      <path fill="#06B6D4" d="M34,130 H91 A4,4 0 0 1 95,134 V146 A4,4 0 0 1 91,150 H34 A4,4 0 0 1 30,146 V134 A4,4 0 0 1 34,130 Z" />
       <text x="62" y="144" font-family="system-ui, -apple-system, sans-serif" font-size="10" text-anchor="middle" fill="#FFFFFF">Chat</text>
       
       <text x="35" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#6B7280">打开 AI 聊天面板...</text>
-      <rect x="30" y="180" width="280" height="18" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M34,180 H306 A4,4 0 0 1 310,184 V194 A4,4 0 0 1 306,198 H34 A4,4 0 0 1 30,194 V184 A4,4 0 0 1 34,180 Z" />
       <text x="40" y="193" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#9CA3AF">输入你的需求...</text>
       
       <text x="175" y="235" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#6B7280">Antigravity 免费使用 Opus 4.5</text>
     </g>
     
-    <!-- 连接线2 -->
+    
     <g transform="translate(763, 110)">
-      <line x1="0" y1="0" x2="35" y2="0" stroke="#6366F1" stroke-width="2"/>
-      <polygon points="35,-5 48,0 35,5" fill="#6366F1"/>
+      <line x1="0" y1="0" x2="35" y2="0" stroke="#6366F1" stroke-width="2" />
+      <polygon points="35,-5 48,0 35,5" fill="#6366F1" />
     </g>
     
-    <!-- 步骤3 -->
+    
     <g transform="translate(810, 0)">
-      <rect width="350" height="250" rx="16" fill="#FFFFFF" stroke="#10B981" stroke-width="2"/>
+      <path fill="#FFFFFF" stroke="#10B981" stroke-width="2" d="M16,0 H334 A16,16 0 0 1 350,16 V234 A16,16 0 0 1 334,250 H16 A16,16 0 0 1 0,234 V16 A16,16 0 0 1 16,0 Z" />
       
-      <circle cx="175" cy="45" r="30" fill="#10B981"/>
+      <circle cx="175" cy="45" r="30" fill="#10B981" />
       <text x="175" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#FFFFFF">3</text>
       
       <text x="175" y="100" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="bold" text-anchor="middle" fill="#1F2937">开始对话</text>
       
-      <rect x="20" y="120" width="310" height="85" rx="8" fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1"/>
+      <path fill="#FAFBFC" stroke="#E5E7EB" stroke-width="1" d="M28,120 H322 A8,8 0 0 1 330,128 V197 A8,8 0 0 1 322,205 H28 A8,8 0 0 1 20,197 V128 A8,8 0 0 1 28,120 Z" />
       
-      <rect x="110" y="128" width="180" height="28" rx="6" fill="#EEF2FF"/>
+      <path fill="#EEF2FF" d="M116,128 H284 A6,6 0 0 1 290,134 V150 A6,6 0 0 1 284,156 H116 A6,6 0 0 1 110,150 V134 A6,6 0 0 1 116,128 Z" />
       <text x="120" y="146" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="#1F2937">我需要制作一份 Q3 报告 PPT</text>
       
-      <rect x="30" y="164" width="210" height="34" rx="6" fill="#F5F3FF"/>
+      <path fill="#F5F3FF" d="M36,164 H234 A6,6 0 0 1 240,170 V192 A6,6 0 0 1 234,198 H36 A6,6 0 0 1 30,192 V170 A6,6 0 0 1 36,164 Z" />
       <text x="40" y="178" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#6366F1">🎯 Strategist: 好的，让我先确认</text>
       <text x="40" y="191" font-family="system-ui, -apple-system, sans-serif" font-size="8" fill="#6366F1">七项设计参数...</text>
       
@@ -95,11 +95,11 @@
     </g>
   </g>
   
-  <!-- 示例对话 -->
+  
   <g transform="translate(60, 430)">
-    <rect width="1160" height="115" rx="16" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" d="M16,0 H1144 A16,16 0 0 1 1160,16 V99 A16,16 0 0 1 1144,115 H16 A16,16 0 0 1 0,99 V16 A16,16 0 0 1 16,0 Z" />
     <text x="20" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="bold" fill="#1F2937">💬 示例对话</text>
-    <line x1="20" y1="45" x2="1140" y2="45" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="20" y1="45" x2="1140" y2="45" stroke="#E5E7EB" stroke-width="1" />
     
     <g transform="translate(20, 62)" font-family="system-ui, -apple-system, sans-serif" font-size="13">
       <text x="0" y="0" fill="#06B6D4" font-weight="bold">用户:</text>
@@ -112,8 +112,8 @@
     </g>
   </g>
   
-  <!-- 页脚 -->
-  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#E5E7EB" stroke-width="1" />
   <text x="60" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#9CA3AF">PPT Master - 快速开始</text>
   <text x="640" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="middle" fill="#9CA3AF">09 / 10</text>
   <text x="1220" y="690" font-family="system-ui, -apple-system, sans-serif" font-size="12" text-anchor="end" fill="#9CA3AF">github.com/hugohe3/ppt-master</text>

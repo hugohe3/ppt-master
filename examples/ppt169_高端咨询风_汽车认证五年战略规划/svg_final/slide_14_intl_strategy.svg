@@ -1,17 +1,17 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
   <defs>
     <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.1" />
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#F8F9FA"/>
   
-  <!-- 顶部装饰条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="#003F6C"/>
+  <rect width="1280" height="720" fill="#F8F9FA" />
   
-  <!-- 页面标题 -->
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003F6C" />
+  
+  
   <text x="60" y="60" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">
     国际化发展战略
   </text>
@@ -19,145 +19,145 @@
     INTERNATIONALIZATION STRATEGY
   </text>
   
-  <!-- 三大战略支柱 -->
-  <!-- 支柱1: 对标国际标准与互认 -->
+  
+  
   <g transform="translate(60, 120)">
-    <rect width="370" height="530" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="10" rx="5" fill="#0076A8"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0076A8" d="M5,0 H365 A5,5 0 0 1 370,5 V5 A5,5 0 0 1 365,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标 -->
+    
     <g transform="translate(185, 65)">
-      <circle cx="0" cy="0" r="40" fill="#E3F2FD"/>
+      <circle cx="0" cy="0" r="40" fill="#E3F2FD" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" fill="#0076A8" text-anchor="middle">🌐</text>
     </g>
     
     <text x="185" y="135" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">对标国际标准与互认</text>
     
-    <!-- 战略要点 -->
+    
     <g transform="translate(25, 165)">
-      <rect width="320" height="60" rx="8" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">IECEE-CB互认</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">电池与电气安全国际互认</text>
     </g>
     
     <g transform="translate(25, 235)">
-      <rect width="320" height="60" rx="8" fill="#E1F5FE"/>
+      <path fill="#E1F5FE" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">ILAC-MRA互认</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">实验室检测结果国际互认</text>
     </g>
     
     <g transform="translate(25, 305)">
-      <rect width="320" height="60" rx="8" fill="#E3F2FD"/>
+      <path fill="#E3F2FD" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">1958协定</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">车辆法规型式批准互认</text>
     </g>
     
     <g transform="translate(25, 375)">
-      <rect width="320" height="60" rx="8" fill="#E1F5FE"/>
+      <path fill="#E1F5FE" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#0076A8">ISO/IEC认可</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">17065认证机构国际认可</text>
     </g>
     
-    <!-- 数据亮点 -->
+    
     <g transform="translate(25, 460)">
-      <rect width="320" height="50" rx="8" fill="#0076A8"/>
+      <path fill="#0076A8" d="M8,0 H312 A8,8 0 0 1 320,8 V42 A8,8 0 0 1 312,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="160" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">已获国际互认</text>
       <text x="160" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFC107" text-anchor="middle">21个国际组织 · 15份多边协议</text>
     </g>
   </g>
   
-  <!-- 支柱2: 海外市场准入服务布局 -->
+  
   <g transform="translate(455, 120)">
-    <rect width="370" height="530" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="10" rx="5" fill="#00A651"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#00A651" d="M5,0 H365 A5,5 0 0 1 370,5 V5 A5,5 0 0 1 365,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标 -->
+    
     <g transform="translate(185, 65)">
-      <circle cx="0" cy="0" r="40" fill="#E8F5E9"/>
+      <circle cx="0" cy="0" r="40" fill="#E8F5E9" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" fill="#00A651" text-anchor="middle">🗺️</text>
     </g>
     
     <text x="185" y="135" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">海外市场准入服务</text>
     
-    <!-- 战略要点 -->
+    
     <g transform="translate(25, 165)">
-      <rect width="320" height="60" rx="8" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651">欧盟市场</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">E-Mark · 电池法规 · CBAM应对</text>
     </g>
     
     <g transform="translate(25, 235)">
-      <rect width="320" height="60" rx="8" fill="#F1F8E9"/>
+      <path fill="#F1F8E9" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651">东盟市场</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">本地化认证 · 技术标准输出</text>
     </g>
     
     <g transform="translate(25, 305)">
-      <rect width="320" height="60" rx="8" fill="#E8F5E9"/>
+      <path fill="#E8F5E9" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651">中东/拉美</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">GCC · INMETRO合作认证</text>
     </g>
     
     <g transform="translate(25, 375)">
-      <rect width="320" height="60" rx="8" fill="#F1F8E9"/>
+      <path fill="#F1F8E9" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#00A651">俄罗斯/独联体</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">OTTC · EAEU技术法规</text>
     </g>
     
-    <!-- 数据亮点 -->
+    
     <g transform="translate(25, 460)">
-      <rect width="320" height="50" rx="8" fill="#00A651"/>
+      <path fill="#00A651" d="M8,0 H312 A8,8 0 0 1 320,8 V42 A8,8 0 0 1 312,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="160" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">覆盖经济总量</text>
       <text x="160" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFC107" text-anchor="middle">全球 95% · 128份双边安排</text>
     </g>
   </g>
   
-  <!-- 支柱3: 差异化法规应对策略 -->
+  
   <g transform="translate(850, 120)">
-    <rect width="370" height="530" rx="12" fill="#FFFFFF" filter="url(#cardShadow)"/>
-    <rect x="0" y="0" width="370" height="10" rx="5" fill="#FF6B35"/>
+    <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FF6B35" d="M5,0 H365 A5,5 0 0 1 370,5 V5 A5,5 0 0 1 365,10 H5 A5,5 0 0 1 0,5 V5 A5,5 0 0 1 5,0 Z" />
     
-    <!-- 图标 -->
+    
     <g transform="translate(185, 65)">
-      <circle cx="0" cy="0" r="40" fill="#FFF3E0"/>
+      <circle cx="0" cy="0" r="40" fill="#FFF3E0" />
       <text x="0" y="12" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" fill="#FF6B35" text-anchor="middle">⚖️</text>
     </g>
     
     <text x="185" y="135" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="20" font-weight="bold" fill="#003F6C" text-anchor="middle">差异化法规应对</text>
     
-    <!-- 战略要点 -->
+    
     <g transform="translate(25, 165)">
-      <rect width="320" height="60" rx="8" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">法规追踪预警</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">实时监测全球法规变化</text>
     </g>
     
     <g transform="translate(25, 235)">
-      <rect width="320" height="60" rx="8" fill="#FFECB3"/>
+      <path fill="#FFECB3" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">合规差距分析</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">中国标准与目标市场差异</text>
     </g>
     
     <g transform="translate(25, 305)">
-      <rect width="320" height="60" rx="8" fill="#FFF3E0"/>
+      <path fill="#FFF3E0" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">一站式解决方案</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">检测+认证+培训全链条</text>
     </g>
     
     <g transform="translate(25, 375)">
-      <rect width="320" height="60" rx="8" fill="#FFECB3"/>
+      <path fill="#FFECB3" d="M8,0 H312 A8,8 0 0 1 320,8 V52 A8,8 0 0 1 312,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
       <text x="15" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FF6B35">技术贸易壁垒应对</text>
       <text x="15" y="47" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A4A6A">TBT咨询 · 合规路径优化</text>
     </g>
     
-    <!-- 数据亮点 -->
+    
     <g transform="translate(25, 460)">
-      <rect width="320" height="50" rx="8" fill="#FF6B35"/>
+      <path fill="#FF6B35" d="M8,0 H312 A8,8 0 0 1 320,8 V42 A8,8 0 0 1 312,50 H8 A8,8 0 0 1 0,42 V8 A8,8 0 0 1 8,0 Z" />
       <text x="160" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle">服务目标</text>
       <text x="160" y="42" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="bold" fill="#FFC107" text-anchor="middle">助力中国车企"走出去"</text>
     </g>
   </g>
   
-  <!-- 页码 -->
+  
   <text x="1220" y="690" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0" text-anchor="end">14 / 20</text>
 </svg>

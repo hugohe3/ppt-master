@@ -35,9 +35,8 @@
     ↓
 SVG 文件 (svg_output/)
     ↓
-后处理工具 (可选，用户自行调用)
-    ├── finalize_svg.py → svg_final/ (嵌入图标/图片)
-    ├── flatten_tspan.py → svg_output_flattext/ (文本扁平化)
+后处理工具 (推荐，用户自行调用)
+    ├── finalize_svg.py → svg_final/ (嵌入图标/图片 + 文本扁平化 + 圆角转Path)
     └── svg_to_pptx.py → output.pptx (导出 PowerPoint)
 ```
 

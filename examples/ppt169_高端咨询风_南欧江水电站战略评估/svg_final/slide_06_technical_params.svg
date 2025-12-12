@@ -1,12 +1,12 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#F0F5F7"/>
-  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F0F5F7" />
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" />
   <text x="40" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">关键技术参数</text>
   <text x="1240" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7ED4E6" text-anchor="end">TECHNICAL SPECIFICATIONS</text>
   
   <g transform="translate(40, 100)">
-    <rect width="1200" height="340" rx="12" fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1"/>
-    <rect x="0" y="0" width="1200" height="45" rx="12" fill="#0D2B3E"/>
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H1188 A12,12 0 0 1 1200,12 V328 A12,12 0 0 1 1188,340 H12 A12,12 0 0 1 0,328 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#0D2B3E" d="M12,0 H1188 A12,12 0 0 1 1200,12 V33 A12,12 0 0 1 1188,45 H12 A12,12 0 0 1 0,33 V12 A12,12 0 0 1 12,0 Z" />
     <text x="80" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">梯级</text>
     <text x="200" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">装机容量</text>
     <text x="340" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">机组配置</text>
@@ -15,7 +15,7 @@
     <text x="880" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">分期</text>
     <text x="1020" y="28" font-family="system-ui, 'Microsoft YaHei'" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">完工</text>
     
-    <rect x="1" y="46" width="1198" height="36" fill="#F8FAFB"/>
+    <rect x="1" y="46" width="1198" height="36" fill="#F8FAFB" />
     <text x="80" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">一级</text>
     <text x="200" y="70" font-family="system-ui" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">180 MW</text>
     <text x="340" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">4台</text>
@@ -24,7 +24,7 @@
     <text x="880" y="70" font-family="system-ui" font-size="12" fill="#C9A227" text-anchor="middle">二期</text>
     <text x="1020" y="70" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2021</text>
     
-    <rect x="1" y="82" width="1198" height="36" fill="#FFFFFF"/>
+    <rect x="1" y="82" width="1198" height="36" fill="#FFFFFF" />
     <text x="80" y="106" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">二级</text>
     <text x="200" y="106" font-family="system-ui" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">120 MW</text>
     <text x="340" y="106" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">3×40MW</text>
@@ -33,7 +33,7 @@
     <text x="880" y="106" font-family="system-ui" font-size="12" fill="#1A6B7C" text-anchor="middle">一期</text>
     <text x="1020" y="106" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2016</text>
     
-    <rect x="1" y="118" width="1198" height="36" fill="#F8FAFB"/>
+    <rect x="1" y="118" width="1198" height="36" fill="#F8FAFB" />
     <text x="80" y="142" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">三级</text>
     <text x="200" y="142" font-family="system-ui" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">210 MW</text>
     <text x="340" y="142" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">3台</text>
@@ -42,7 +42,7 @@
     <text x="880" y="142" font-family="system-ui" font-size="12" fill="#C9A227" text-anchor="middle">二期</text>
     <text x="1020" y="142" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2021</text>
     
-    <rect x="1" y="154" width="1198" height="36" fill="#FFFFFF"/>
+    <rect x="1" y="154" width="1198" height="36" fill="#FFFFFF" />
     <text x="80" y="178" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">四级</text>
     <text x="200" y="178" font-family="system-ui" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">132 MW</text>
     <text x="340" y="178" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">3台</text>
@@ -51,7 +51,7 @@
     <text x="880" y="178" font-family="system-ui" font-size="12" fill="#C9A227" text-anchor="middle">二期</text>
     <text x="1020" y="178" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2021</text>
     
-    <rect x="1" y="190" width="1198" height="36" fill="#F8FAFB"/>
+    <rect x="1" y="190" width="1198" height="36" fill="#F8FAFB" />
     <text x="80" y="214" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">五级</text>
     <text x="200" y="214" font-family="system-ui" font-size="14" font-weight="700" fill="#1A6B7C" text-anchor="middle">240 MW</text>
     <text x="340" y="214" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">3×80MW</text>
@@ -60,7 +60,7 @@
     <text x="880" y="214" font-family="system-ui" font-size="12" fill="#1A6B7C" text-anchor="middle">一期</text>
     <text x="1020" y="214" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2016</text>
     
-    <rect x="1" y="226" width="1198" height="36" fill="#FFFFFF"/>
+    <rect x="1" y="226" width="1198" height="36" fill="#FFFFFF" />
     <text x="80" y="250" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#0D2B3E" text-anchor="middle">六级</text>
     <text x="200" y="250" font-family="system-ui" font-size="13" font-weight="600" fill="#1A6B7C" text-anchor="middle">180 MW</text>
     <text x="340" y="250" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">3×60MW</text>
@@ -69,7 +69,7 @@
     <text x="880" y="250" font-family="system-ui" font-size="12" fill="#1A6B7C" text-anchor="middle">一期</text>
     <text x="1020" y="250" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2016</text>
     
-    <rect x="1" y="262" width="1198" height="36" fill="#C9A227" opacity="0.1"/>
+    <rect x="1" y="262" width="1198" height="36" fill="#C9A227" opacity="0.1" />
     <text x="80" y="286" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#C9A227" text-anchor="middle" font-weight="700">七级★</text>
     <text x="200" y="286" font-family="system-ui" font-size="14" font-weight="700" fill="#C9A227" text-anchor="middle">210 MW</text>
     <text x="340" y="286" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#4A5568" text-anchor="middle">2台</text>
@@ -78,25 +78,25 @@
     <text x="880" y="286" font-family="system-ui" font-size="12" fill="#C9A227" text-anchor="middle">二期</text>
     <text x="1020" y="286" font-family="system-ui" font-size="12" fill="#4A5568" text-anchor="middle">2021</text>
     
-    <rect x="1" y="298" width="1198" height="40" fill="#0D2B3E"/>
+    <rect x="1" y="298" width="1198" height="40" fill="#0D2B3E" />
     <text x="80" y="324" font-family="system-ui, 'Microsoft YaHei'" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">合计</text>
     <text x="200" y="324" font-family="system-ui" font-size="16" font-weight="700" fill="#7ED4E6" text-anchor="middle">1,272 MW</text>
     <text x="500" y="324" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle">多种坝型</text>
-    <text x="700" y="324" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle">年发电>50亿kWh</text>
+    <text x="700" y="324" font-family="system-ui, 'Microsoft YaHei'" font-size="12" fill="#FFFFFF" text-anchor="middle">年发电&gt;50亿kWh</text>
     <text x="1020" y="324" font-family="system-ui" font-size="12" fill="#FFFFFF" text-anchor="middle">2021全面投产</text>
   </g>
   
   <g transform="translate(40, 460)">
     <text x="0" y="25" font-family="system-ui, 'Microsoft YaHei'" font-size="16" font-weight="600" fill="#0D2B3E">技术分析要点</text>
-    <rect x="0" y="45" width="580" height="70" rx="8" fill="#C9A227" opacity="0.1"/>
+    <path fill="#C9A227" opacity="0.1" d="M8,45 H572 A8,8 0 0 1 580,53 V107 A8,8 0 0 1 572,115 H8 A8,8 0 0 1 0,107 V53 A8,8 0 0 1 8,45 Z" />
     <text x="20" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#C9A227">🔑 龙头水库效应</text>
     <text x="20" y="95" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">七级电站具备调蓄洪水和枯水期补水功能，决定下游发电保证率</text>
-    <rect x="620" y="45" width="580" height="70" rx="8" fill="#1A6B7C" opacity="0.1"/>
+    <path fill="#1A6B7C" opacity="0.1" d="M628,45 H1192 A8,8 0 0 1 1200,53 V107 A8,8 0 0 1 1192,115 H628 A8,8 0 0 1 620,107 V53 A8,8 0 0 1 628,45 Z" />
     <text x="640" y="70" font-family="system-ui, 'Microsoft YaHei'" font-size="14" font-weight="600" fill="#1A6B7C">⚙️ 坝型多样性</text>
     <text x="640" y="95" font-family="system-ui, 'Microsoft YaHei'" font-size="13" fill="#4A5568">根据地质条件采用闸坝、重力坝、堆石坝，因地制宜但增加运维复杂性</text>
   </g>
   
-  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1"/>
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1" />
   <text x="40" y="670" font-family="system-ui, 'Microsoft YaHei'" font-size="11" fill="#718096">南欧江梯级水电站项目战略评估报告</text>
   <text x="1240" y="670" font-family="system-ui" font-size="12" fill="#718096" text-anchor="end">06 / 20</text>
 </svg>

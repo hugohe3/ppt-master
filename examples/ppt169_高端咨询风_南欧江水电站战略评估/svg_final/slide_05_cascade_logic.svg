@@ -1,619 +1,120 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   width="1280"
-   height="720"
-   viewBox="0 0 1280 720"
-   version="1.1"
-   id="svg44"
-   sodipodi:docname="slide_05_cascade_logic.svg"
-   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview44"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.1638889"
-     inkscape:cx="639.66587"
-     inkscape:cy="360"
-     inkscape:window-width="2048"
-     inkscape:window-height="1082"
-     inkscape:window-x="2451"
-     inkscape:window-y="-6"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg44" />
-  <defs
-     id="defs7">
-    <!-- 水流渐变 -->
-    <linearGradient
-       id="waterFlow"
-       x1="0%"
-       y1="0%"
-       x2="100%"
-       y2="0%">
-      <stop
-         offset="0%"
-         style="stop-color:#0D2B3E"
-         id="stop1" />
-      <stop
-         offset="50%"
-         style="stop-color:#1A6B7C"
-         id="stop2" />
-      <stop
-         offset="100%"
-         style="stop-color:#2E96B3"
-         id="stop3" />
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720" version="1.1" id="svg44" ns1:docname="slide_05_cascade_logic.svg" ns2:version="1.4.2 (f4327f4, 2025-05-13)">
+  <ns1:namedview id="namedview44" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" ns2:showpageshadow="2" ns2:pageopacity="0.0" ns2:pagecheckerboard="0" ns2:deskcolor="#d1d1d1" ns2:zoom="1.1638889" ns2:cx="639.66587" ns2:cy="360" ns2:window-width="2048" ns2:window-height="1082" ns2:window-x="2451" ns2:window-y="-6" ns2:window-maximized="1" ns2:current-layer="svg44" />
+  <defs id="defs7">
+    
+    <linearGradient id="waterFlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0D2B3E" id="stop1" />
+      <stop offset="50%" style="stop-color:#1A6B7C" id="stop2" />
+      <stop offset="100%" style="stop-color:#2E96B3" id="stop3" />
     </linearGradient>
-    <!-- 一期颜色 -->
-    <linearGradient
-       id="phase1"
-       x1="0%"
-       y1="0%"
-       x2="0%"
-       y2="100%">
-      <stop
-         offset="0%"
-         style="stop-color:#2E96B3"
-         id="stop4" />
-      <stop
-         offset="100%"
-         style="stop-color:#1A6B7C"
-         id="stop5" />
+    
+    <linearGradient id="phase1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E96B3" id="stop4" />
+      <stop offset="100%" style="stop-color:#1A6B7C" id="stop5" />
     </linearGradient>
-    <!-- 二期颜色 -->
-    <linearGradient
-       id="phase2"
-       x1="0%"
-       y1="0%"
-       x2="0%"
-       y2="100%">
-      <stop
-         offset="0%"
-         style="stop-color:#C9A227"
-         id="stop6" />
-      <stop
-         offset="100%"
-         style="stop-color:#A88620"
-         id="stop7" />
+    
+    <linearGradient id="phase2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C9A227" id="stop6" />
+      <stop offset="100%" style="stop-color:#A88620" id="stop7" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#phase1"
-       id="linearGradient44"
-       x1="-37.416574"
-       y1="-56.124861"
-       x2="-37.416574"
-       y2="18.708287"
-       gradientTransform="scale(0.93541435,1.069045)"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#phase1"
-       id="linearGradient45"
-       x1="-41.231056"
-       y1="-63.059263"
-       x2="-41.231056"
-       y2="19.40285"
-       gradientTransform="scale(0.9701425,1.0307764)"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#phase2"
-       id="linearGradient46"
-       x1="-48.936183"
-       y1="-33.150317"
-       x2="-48.936183"
-       y2="64.722048"
-       gradientTransform="scale(1.052391,0.95021714)"
-       gradientUnits="userSpaceOnUse" />
+    <linearGradient ns2:collect="always" xlink:href="#phase1" id="linearGradient44" x1="-37.416574" y1="-56.124861" x2="-37.416574" y2="18.708287" gradientTransform="scale(0.93541435,1.069045)" gradientUnits="userSpaceOnUse" />
+    <linearGradient ns2:collect="always" xlink:href="#phase1" id="linearGradient45" x1="-41.231056" y1="-63.059263" x2="-41.231056" y2="19.40285" gradientTransform="scale(0.9701425,1.0307764)" gradientUnits="userSpaceOnUse" />
+    <linearGradient ns2:collect="always" xlink:href="#phase2" id="linearGradient46" x1="-48.936183" y1="-33.150317" x2="-48.936183" y2="64.722048" gradientTransform="scale(1.052391,0.95021714)" gradientUnits="userSpaceOnUse" />
   </defs>
-  <!-- 背景 -->
-  <rect
-     width="1280"
-     height="720"
-     fill="#F0F5F7"
-     id="rect7" />
-  <!-- 顶部标题栏 -->
-  <rect
-     x="0"
-     y="0"
-     width="1280"
-     height="80"
-     fill="#0D2B3E"
-     id="rect8" />
-  <text
-     x="40"
-     y="50"
-     font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-     font-size="28"
-     font-weight="700"
-     fill="#FFFFFF"
-     id="text8">梯级开发逻辑</text>
-  <text
-     x="1240"
-     y="50"
-     font-family="system-ui, -apple-system, sans-serif"
-     font-size="14"
-     fill="#7ED4E6"
-     text-anchor="end"
-     id="text9">CASCADE DEVELOPMENT</text>
-  <!-- 核心概念说明 -->
-  <g
-     transform="translate(40, 100)"
-     id="g11">
-    <rect
-       width="400"
-       height="60"
-       rx="8"
-       fill="#1A6B7C"
-       opacity="0.1"
-       id="rect9" />
-    <text
-       x="20"
-       y="25"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="14"
-       font-weight="600"
-       fill="#1A6B7C"
-       id="text10">&quot;一库七级&quot;梯级开发方案</text>
-    <text
-       x="20"
-       y="48"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="12"
-       fill="#4A5568"
-       id="text11">上游大水库调节 → 下游径流式电站稳定供电</text>
+  
+  <rect width="1280" height="720" fill="#F0F5F7" id="rect7" />
+  
+  <rect x="0" y="0" width="1280" height="80" fill="#0D2B3E" id="rect8" />
+  <text x="40" y="50" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" id="text8">梯级开发逻辑</text>
+  <text x="1240" y="50" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#7ED4E6" text-anchor="end" id="text9">CASCADE DEVELOPMENT</text>
+  
+  <g transform="translate(40, 100)" id="g11">
+    <path fill="#1A6B7C" opacity="0.1" id="rect9" d="M8,0 H392 A8,8 0 0 1 400,8 V52 A8,8 0 0 1 392,60 H8 A8,8 0 0 1 0,52 V8 A8,8 0 0 1 8,0 Z" />
+    <text x="20" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#1A6B7C" id="text10">"一库七级"梯级开发方案</text>
+    <text x="20" y="48" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#4A5568" id="text11">上游大水库调节 → 下游径流式电站稳定供电</text>
   </g>
-  <!-- 河流剖面图 -->
-  <g
-     transform="translate(40, 180)"
-     id="g34">
-    <!-- 背景区域 -->
-    <rect
-       width="1200"
-       height="300"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#D4DEE4"
-       stroke-width="1"
-       id="rect11" />
-    <!-- 河流线 -->
-    <path
-       d="M50 250 Q200 240 300 200 Q400 160 500 140 Q600 120 700 100 Q800 80 900 70 Q1000 60 1100 50"
-       stroke="url(#waterFlow)"
-       stroke-width="6"
-       fill="none"
-       stroke-linecap="round"
-       id="path11" />
-    <!-- 水流方向箭头 -->
-    <polygon
-       points="50,250 70,245 70,255"
-       fill="#2E96B3"
-       id="polygon11" />
-    <text
-       x="30"
-       y="275"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="11"
-       fill="#718096"
-       id="text12">↓ 汇入湄公河</text>
-    <!-- 七级电站 (从下游到上游) -->
-    <!-- 一级 (下游) - 二期 -->
-    <g
-       transform="translate(150, 220)"
-       id="g15">
-      <rect
-         x="-35"
-         y="-60"
-         width="70"
-         height="60"
-         rx="6"
-         fill="url(#phase2)"
-         id="rect12" />
-      <text
-         x="0"
-         y="-70"
-         font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-         font-size="13"
-         font-weight="600"
-         fill="#0D2B3E"
-         text-anchor="middle"
-         id="text13">一级</text>
-      <text
-         x="0"
-         y="-20"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="14"
-         font-weight="700"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text14">180</text>
-      <text
-         x="0"
-         y="-5"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="10"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text15">MW</text>
+  
+  <g transform="translate(40, 180)" id="g34">
+    
+    <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" id="rect11" d="M12,0 H1188 A12,12 0 0 1 1200,12 V288 A12,12 0 0 1 1188,300 H12 A12,12 0 0 1 0,288 V12 A12,12 0 0 1 12,0 Z" />
+    
+    <path d="M50 250 Q200 240 300 200 Q400 160 500 140 Q600 120 700 100 Q800 80 900 70 Q1000 60 1100 50" stroke="url(#waterFlow)" stroke-width="6" fill="none" stroke-linecap="round" id="path11" />
+    
+    <polygon points="50,250 70,245 70,255" fill="#2E96B3" id="polygon11" />
+    <text x="30" y="275" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#718096" id="text12">↓ 汇入湄公河</text>
+    
+    
+    <g transform="translate(150, 220)" id="g15">
+      <path fill="url(#phase2)" id="rect12" d="M-29,-60 H29 A6,6 0 0 1 35,-54 V-6 A6,6 0 0 1 29,0 H-29 A6,6 0 0 1 -35,-6 V-54 A6,6 0 0 1 -29,-60 Z" />
+      <text x="0" y="-70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0D2B3E" text-anchor="middle" id="text13">一级</text>
+      <text x="0" y="-20" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle" id="text14">180</text>
+      <text x="0" y="-5" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle" id="text15">MW</text>
     </g>
-    <!-- 二级 - 一期 -->
-    <g
-       transform="translate(280, 180)"
-       id="g18">
-      <rect
-         x="-35"
-         y="-60"
-         width="70"
-         height="80"
-         rx="6"
-         fill="url(#phase1)"
-         id="rect15" />
-      <text
-         x="0"
-         y="-70"
-         font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-         font-size="13"
-         font-weight="600"
-         fill="#0D2B3E"
-         text-anchor="middle"
-         id="text16">二级</text>
-      <text
-         x="0"
-         y="-15"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="14"
-         font-weight="700"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text17">120</text>
-      <text
-         x="0"
-         y="0"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="10"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text18">MW</text>
+    
+    <g transform="translate(280, 180)" id="g18">
+      <path fill="url(#phase1)" id="rect15" d="M-29,-60 H29 A6,6 0 0 1 35,-54 V14 A6,6 0 0 1 29,20 H-29 A6,6 0 0 1 -35,14 V-54 A6,6 0 0 1 -29,-60 Z" />
+      <text x="0" y="-70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0D2B3E" text-anchor="middle" id="text16">二级</text>
+      <text x="0" y="-15" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle" id="text17">120</text>
+      <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle" id="text18">MW</text>
     </g>
-    <!-- 三级 - 二期 -->
-    <g
-       transform="translate(420, 145)"
-       id="g21">
-      <rect
-         x="-35"
-         y="-60"
-         width="70"
-         height="75"
-         rx="6"
-         fill="url(#phase2)"
-         id="rect18" />
-      <text
-         x="0"
-         y="-70"
-         font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-         font-size="13"
-         font-weight="600"
-         fill="#0D2B3E"
-         text-anchor="middle"
-         id="text19">三级</text>
-      <text
-         x="0"
-         y="-15"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="14"
-         font-weight="700"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text20">210</text>
-      <text
-         x="0"
-         y="0"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="10"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text21">MW</text>
+    
+    <g transform="translate(420, 145)" id="g21">
+      <path fill="url(#phase2)" id="rect18" d="M-29,-60 H29 A6,6 0 0 1 35,-54 V9 A6,6 0 0 1 29,15 H-29 A6,6 0 0 1 -35,9 V-54 A6,6 0 0 1 -29,-60 Z" />
+      <text x="0" y="-70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0D2B3E" text-anchor="middle" id="text19">三级</text>
+      <text x="0" y="-15" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle" id="text20">210</text>
+      <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle" id="text21">MW</text>
     </g>
-    <!-- 四级 - 二期 -->
-    <g
-       transform="translate(560, 120)"
-       id="g24">
-      <rect
-         x="-35"
-         y="-60"
-         width="70"
-         height="70"
-         rx="6"
-         fill="url(#phase2)"
-         id="rect21" />
-      <text
-         x="0"
-         y="-70"
-         font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-         font-size="13"
-         font-weight="600"
-         fill="#0D2B3E"
-         text-anchor="middle"
-         id="text22">四级</text>
-      <text
-         x="0"
-         y="-15"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="14"
-         font-weight="700"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text23">132</text>
-      <text
-         x="0"
-         y="0"
-         font-family="system-ui, -apple-system, sans-serif"
-         font-size="10"
-         fill="#FFFFFF"
-         text-anchor="middle"
-         id="text24">MW</text>
+    
+    <g transform="translate(560, 120)" id="g24">
+      <path fill="url(#phase2)" id="rect21" d="M-29,-60 H29 A6,6 0 0 1 35,-54 V4 A6,6 0 0 1 29,10 H-29 A6,6 0 0 1 -35,4 V-54 A6,6 0 0 1 -29,-60 Z" />
+      <text x="0" y="-70" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#0D2B3E" text-anchor="middle" id="text22">四级</text>
+      <text x="0" y="-15" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle" id="text23">132</text>
+      <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle" id="text24">MW</text>
     </g>
-    <!-- 五级 - 一期 -->
-    <g
-       transform="translate(700,105)"
-       id="g27">
-      <rect
-         x="-40"
-         y="-65"
-         width="80"
-         height="85"
-         rx="6"
-         fill="url(#phase1)"
-         id="rect24"
-         style="fill:url(#linearGradient45)" />
-      <text
-         x="0"
-         y="-75"
-         font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
-         font-size="13px"
-         font-weight="600"
-         fill="#0d2b3e"
-         text-anchor="middle"
-         id="text25">五级</text>
-      <text
-         x="0"
-         y="-15"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="16px"
-         font-weight="700"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text26">240</text>
-      <text
-         x="0"
-         y="2"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="10px"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text27">MW</text>
+    
+    <g transform="translate(700,105)" id="g27">
+      <path fill="url(#phase1)" id="rect24" style="fill:url(#linearGradient45)" d="M-34,-65 H34 A6,6 0 0 1 40,-59 V14 A6,6 0 0 1 34,20 H-34 A6,6 0 0 1 -40,14 V-59 A6,6 0 0 1 -34,-65 Z" />
+      <text x="0" y="-75" font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif" font-size="13px" font-weight="600" fill="#0d2b3e" text-anchor="middle" id="text25">五级</text>
+      <text x="0" y="-15" font-family="system-ui, '-apple-system', sans-serif" font-size="16px" font-weight="700" fill="#ffffff" text-anchor="middle" id="text26">240</text>
+      <text x="0" y="2" font-family="system-ui, '-apple-system', sans-serif" font-size="10px" fill="#ffffff" text-anchor="middle" id="text27">MW</text>
     </g>
-    <!-- 六级 - 一期 -->
-    <g
-       transform="translate(850,88)"
-       id="g30">
-      <rect
-         x="-35"
-         y="-60"
-         width="70"
-         height="80"
-         rx="6"
-         fill="url(#phase1)"
-         id="rect27"
-         style="fill:url(#linearGradient44)" />
-      <text
-         x="0"
-         y="-70"
-         font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
-         font-size="13px"
-         font-weight="600"
-         fill="#0d2b3e"
-         text-anchor="middle"
-         id="text28">六级</text>
-      <text
-         x="0"
-         y="-15"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="14px"
-         font-weight="700"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text29">180</text>
-      <text
-         x="0"
-         y="0"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="10px"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text30">MW</text>
+    
+    <g transform="translate(850,88)" id="g30">
+      <path fill="url(#phase1)" id="rect27" style="fill:url(#linearGradient44)" d="M-29,-60 H29 A6,6 0 0 1 35,-54 V14 A6,6 0 0 1 29,20 H-29 A6,6 0 0 1 -35,14 V-54 A6,6 0 0 1 -29,-60 Z" />
+      <text x="0" y="-70" font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif" font-size="13px" font-weight="600" fill="#0d2b3e" text-anchor="middle" id="text28">六级</text>
+      <text x="0" y="-15" font-family="system-ui, '-apple-system', sans-serif" font-size="14px" font-weight="700" fill="#ffffff" text-anchor="middle" id="text29">180</text>
+      <text x="0" y="0" font-family="system-ui, '-apple-system', sans-serif" font-size="10px" fill="#ffffff" text-anchor="middle" id="text30">MW</text>
     </g>
-    <!-- 七级 (龙头) - 二期 -->
-    <g
-       transform="translate(1020,54)"
-       id="g33">
-      <rect
-         x="-50"
-         y="-30"
-         width="100"
-         height="90"
-         rx="8"
-         fill="url(#phase2)"
-         stroke="#c9a227"
-         stroke-width="3"
-         id="rect30"
-         style="fill:url(#linearGradient46)" />
-      <text
-         x="0"
-         y="-40"
-         font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif"
-         font-size="13px"
-         font-weight="700"
-         fill="#c9a227"
-         text-anchor="middle"
-         id="text31">七级 · 龙头水库</text>
-      <text
-         x="0"
-         y="15"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="18px"
-         font-weight="700"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text32">210</text>
-      <text
-         x="0"
-         y="35"
-         font-family="system-ui, '-apple-system', sans-serif"
-         font-size="10px"
-         fill="#ffffff"
-         text-anchor="middle"
-         id="text33">MW · 多年调节</text>
+    
+    <g transform="translate(1020,54)" id="g33">
+      <path fill="url(#phase2)" stroke="#c9a227" stroke-width="3" id="rect30" style="fill:url(#linearGradient46)" d="M-42,-30 H42 A8,8 0 0 1 50,-22 V52 A8,8 0 0 1 42,60 H-42 A8,8 0 0 1 -50,52 V-22 A8,8 0 0 1 -42,-30 Z" />
+      <text x="0" y="-40" font-family="system-ui, '-apple-system', 'Microsoft YaHei', sans-serif" font-size="13px" font-weight="700" fill="#c9a227" text-anchor="middle" id="text31">七级 · 龙头水库</text>
+      <text x="0" y="15" font-family="system-ui, '-apple-system', sans-serif" font-size="18px" font-weight="700" fill="#ffffff" text-anchor="middle" id="text32">210</text>
+      <text x="0" y="35" font-family="system-ui, '-apple-system', sans-serif" font-size="10px" fill="#ffffff" text-anchor="middle" id="text33">MW · 多年调节</text>
     </g>
-    <!-- 上游标注 -->
-    <text
-       x="1150"
-       y="30"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="11"
-       fill="#718096"
-       id="text34">上游 ↑</text>
+    
+    <text x="1150" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#718096" id="text34">上游 ↑</text>
   </g>
-  <!-- 分期信息 -->
-  <g
-     transform="translate(40, 510)"
-     id="g38">
-    <!-- 一期 -->
-    <rect
-       width="580"
-       height="90"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#2E96B3"
-       stroke-width="2"
-       id="rect34" />
-    <rect
-       x="0"
-       y="0"
-       width="10"
-       height="90"
-       rx="5"
-       fill="#2E96B3"
-       id="rect35" />
-    <text
-       x="30"
-       y="30"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="16"
-       font-weight="600"
-       fill="#1A6B7C"
-       id="text35">一期工程（中游河段）</text>
-    <text
-       x="30"
-       y="55"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="13"
-       fill="#4A5568"
-       id="text37"><tspan
-         id="tspan35">电站：二级、五级、六级</tspan><tspan
-         dx="30"
-         id="tspan36">装机容量：</tspan><tspan
-         font-weight="600"
-         fill="#1A6B7C"
-         id="tspan37">540 MW</tspan></text>
-    <text
-       x="30"
-       y="78"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="12"
-       fill="#718096"
-       id="text38">2012年10月开工 → 2016年5月投产</text>
+  
+  <g transform="translate(40, 510)" id="g38">
+    
+    <path fill="#FFFFFF" stroke="#2E96B3" stroke-width="2" id="rect34" d="M12,0 H568 A12,12 0 0 1 580,12 V78 A12,12 0 0 1 568,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#2E96B3" id="rect35" d="M5,0 H5 A5,5 0 0 1 10,5 V85 A5,5 0 0 1 5,90 H5 A5,5 0 0 1 0,85 V5 A5,5 0 0 1 5,0 Z" />
+    <text x="30" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A6B7C" id="text35">一期工程（中游河段）</text>
+    <text x="30" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A5568" id="text37"><tspan id="tspan35">电站：二级、五级、六级</tspan><tspan dx="30" id="tspan36">装机容量：</tspan><tspan font-weight="600" fill="#1A6B7C" id="tspan37">540 MW</tspan></text>
+    <text x="30" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#718096" id="text38">2012年10月开工 → 2016年5月投产</text>
   </g>
-  <g
-     transform="translate(660, 510)"
-     id="g42">
-    <!-- 二期 -->
-    <rect
-       width="580"
-       height="90"
-       rx="12"
-       fill="#FFFFFF"
-       stroke="#C9A227"
-       stroke-width="2"
-       id="rect38" />
-    <rect
-       x="0"
-       y="0"
-       width="10"
-       height="90"
-       rx="5"
-       fill="#C9A227"
-       id="rect39" />
-    <text
-       x="30"
-       y="30"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="16"
-       font-weight="600"
-       fill="#C9A227"
-       id="text39">二期工程（上游与下游）</text>
-    <text
-       x="30"
-       y="55"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="13"
-       fill="#4A5568"
-       id="text41"><tspan
-         id="tspan39">电站：一级、三级、四级、七级</tspan><tspan
-         dx="30"
-         id="tspan40">装机容量：</tspan><tspan
-         font-weight="600"
-         fill="#C9A227"
-         id="tspan41">732 MW</tspan></text>
-    <text
-       x="30"
-       y="78"
-       font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-       font-size="12"
-       fill="#718096"
-       id="text42">2016年4月开工 → 2021年9月全部投产</text>
+  <g transform="translate(660, 510)" id="g42">
+    
+    <path fill="#FFFFFF" stroke="#C9A227" stroke-width="2" id="rect38" d="M12,0 H568 A12,12 0 0 1 580,12 V78 A12,12 0 0 1 568,90 H12 A12,12 0 0 1 0,78 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#C9A227" id="rect39" d="M5,0 H5 A5,5 0 0 1 10,5 V85 A5,5 0 0 1 5,90 H5 A5,5 0 0 1 0,85 V5 A5,5 0 0 1 5,0 Z" />
+    <text x="30" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#C9A227" id="text39">二期工程（上游与下游）</text>
+    <text x="30" y="55" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A5568" id="text41"><tspan id="tspan39">电站：一级、三级、四级、七级</tspan><tspan dx="30" id="tspan40">装机容量：</tspan><tspan font-weight="600" fill="#C9A227" id="tspan41">732 MW</tspan></text>
+    <text x="30" y="78" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="12" fill="#718096" id="text42">2016年4月开工 → 2021年9月全部投产</text>
   </g>
-  <!-- 页脚 -->
-  <line
-     x1="40"
-     y1="640"
-     x2="1240"
-     y2="640"
-     stroke="#D4DEE4"
-     stroke-width="1"
-     id="line42" />
-  <text
-     x="40"
-     y="670"
-     font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif"
-     font-size="11"
-     fill="#718096"
-     id="text43">南欧江梯级水电站项目战略评估报告</text>
-  <text
-     x="1240"
-     y="670"
-     font-family="system-ui, -apple-system, sans-serif"
-     font-size="12"
-     fill="#718096"
-     text-anchor="end"
-     id="text44">05 / 20</text>
+  
+  <line x1="40" y1="640" x2="1240" y2="640" stroke="#D4DEE4" stroke-width="1" id="line42" />
+  <text x="40" y="670" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="11" fill="#718096" id="text43">南欧江梯级水电站项目战略评估报告</text>
+  <text x="1240" y="670" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#718096" text-anchor="end" id="text44">05 / 20</text>
 </svg>

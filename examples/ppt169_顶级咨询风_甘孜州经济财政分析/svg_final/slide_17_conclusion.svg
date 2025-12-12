@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F" />
+      <stop offset="50%" style="stop-color:#152A45" />
+      <stop offset="100%" style="stop-color:#0A1628" />
+    </linearGradient>
+    
+    
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C41E3A;stop-opacity:0" />
+      <stop offset="30%" style="stop-color:#C41E3A" />
+      <stop offset="70%" style="stop-color:#C41E3A" />
+      <stop offset="100%" style="stop-color:#C41E3A;stop-opacity:0" />
+    </linearGradient>
+    
+    
+    <linearGradient id="redCardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D82848" />
+      <stop offset="100%" style="stop-color:#A01830" />
+    </linearGradient>
+    
+    
+    <linearGradient id="goldCardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E5C44A" />
+      <stop offset="100%" style="stop-color:#B8962A" />
+    </linearGradient>
+    
+    
+    <linearGradient id="greenCardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00C465" />
+      <stop offset="100%" style="stop-color:#008840" />
+    </linearGradient>
+    
+    
+    <filter id="cardGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    
+    
+    <filter id="titleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    
+    
+    <radialGradient id="glowEffect" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#C41E3A;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#C41E3A;stop-opacity:0" />
+    </radialGradient>
+    
+    
+    <pattern id="cloudPattern" x="0" y="0" width="120" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 30 Q45 15 30 30 Q15 30 15 45 Q15 55 30 55 Q45 55 60 45 Q75 55 90 55 Q105 55 105 45 Q105 30 90 30 Q75 15 60 30 Z" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.06" />
+    </pattern>
+  </defs>
+  
+  
+  <rect width="1280" height="720" fill="url(#bgGradient)" />
+  
+  
+  <rect width="1280" height="720" fill="url(#cloudPattern)" />
+  
+  
+  <ellipse cx="640" cy="300" rx="500" ry="250" fill="url(#glowEffect)" opacity="0.3" />
+  
+  
+  <g opacity="0.1">
+    <circle cx="80" cy="80" r="120" fill="none" stroke="#FFFFFF" stroke-width="1" />
+    <circle cx="80" cy="80" r="80" fill="none" stroke="#FFFFFF" stroke-width="0.5" />
+    <circle cx="1200" cy="640" r="150" fill="none" stroke="#FFFFFF" stroke-width="1" />
+    <circle cx="1200" cy="640" r="100" fill="none" stroke="#FFFFFF" stroke-width="0.5" />
+    <line x1="0" y1="200" x2="150" y2="200" stroke="#FFFFFF" stroke-width="1" />
+    <line x1="1130" y1="520" x2="1280" y2="520" stroke="#FFFFFF" stroke-width="1" />
+  </g>
+  
+  
+  <text x="640" y="100" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF" opacity="0.6" letter-spacing="4">
+    甘孜藏族自治州 · 经济财政分析
+  </text>
+  
+  
+  <path fill="url(#accentLine)" d="M401,120 H879 A1,1 0 0 1 880,121 V121 A1,1 0 0 1 879,122 H401 A1,1 0 0 1 400,121 V121 A1,1 0 0 1 401,120 Z" />
+  
+  
+  <text x="640" y="175" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF" filter="url(#titleGlow)">
+    核心定位
+  </text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" opacity="0.08" d="M156,205 H1124 A16,16 0 0 1 1140,221 V319 A16,16 0 0 1 1124,335 H156 A16,16 0 0 1 140,319 V221 A16,16 0 0 1 156,205 Z" />
+    <path fill="#C41E3A" d="M142,205 H142 A2,2 0 0 1 144,207 V333 A2,2 0 0 1 142,335 H142 A2,2 0 0 1 140,333 V207 A2,2 0 0 1 142,205 Z" />
+    
+    <text x="640" y="260" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="600" fill="#FFFFFF">
+      典型的高转移支付依赖型民族地区
+    </text>
+    
+    <g opacity="0.7">
+      <circle cx="480" cy="300" r="4" fill="#D4AF37" />
+      <text x="500" y="306" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF">债务风险可控</text>
+      
+      <line x1="620" y1="295" x2="620" y2="310" stroke="#FFFFFF" stroke-width="1" opacity="0.4" />
+      
+      <circle cx="650" cy="300" r="4" fill="#C41E3A" />
+      <text x="670" y="306" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" fill="#FFFFFF">融资空间有限</text>
+    </g>
+  </g>
+  
+  
+  <text x="640" y="385" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" fill="#FFFFFF" opacity="0.5" letter-spacing="3">
+    三大关键特征
+  </text>
+  
+  
+  
+  <g>
+    <path fill="url(#redCardGradient)" filter="url(#cardGlow)" d="M94,410 H426 A14,14 0 0 1 440,424 V561 A14,14 0 0 1 426,575 H94 A14,14 0 0 1 80,561 V424 A14,14 0 0 1 94,410 Z" />
+    <path fill="#FFFFFF" opacity="0.05" d="M94,410 H426 A14,14 0 0 1 440,424 V561 A14,14 0 0 1 426,575 H94 A14,14 0 0 1 80,561 V424 A14,14 0 0 1 94,410 Z" />
+    
+    
+    <circle cx="130" cy="460" r="22" fill="#FFFFFF" opacity="0.15" />
+    <text x="130" y="468" text-anchor="middle" font-family="system-ui" font-size="20" fill="#FFFFFF">📊</text>
+    
+    <text x="165" y="468" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">高依赖</text>
+    
+    <line x1="100" y1="490" x2="420" y2="490" stroke="#FFFFFF" stroke-width="1" opacity="0.2" />
+    
+    <g font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+      <text x="110" y="520" opacity="0.85">财政支出占全省</text>
+      <text x="380" y="520" text-anchor="end" font-weight="600" font-size="18">3.38%</text>
+      
+      <text x="110" y="550" opacity="0.85">财政自给率仅</text>
+      <text x="380" y="550" text-anchor="end" font-weight="600" font-size="18">13.32%</text>
+    </g>
+  </g>
+  
+  
+  <g>
+    <path fill="url(#goldCardGradient)" filter="url(#cardGlow)" d="M474,410 H806 A14,14 0 0 1 820,424 V561 A14,14 0 0 1 806,575 H474 A14,14 0 0 1 460,561 V424 A14,14 0 0 1 474,410 Z" />
+    <path fill="#FFFFFF" opacity="0.05" d="M474,410 H806 A14,14 0 0 1 820,424 V561 A14,14 0 0 1 806,575 H474 A14,14 0 0 1 460,561 V424 A14,14 0 0 1 474,410 Z" />
+    
+    
+    <circle cx="510" cy="460" r="22" fill="#FFFFFF" opacity="0.15" />
+    <text x="510" y="468" text-anchor="middle" font-family="system-ui" font-size="20" fill="#FFFFFF">📉</text>
+    
+    <text x="545" y="468" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">低效率</text>
+    
+    <line x1="480" y1="490" x2="800" y2="490" stroke="#FFFFFF" stroke-width="1" opacity="0.2" />
+    
+    <g font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+      <text x="490" y="520" opacity="0.85">GDP占全省比重</text>
+      <text x="760" y="520" text-anchor="end" font-weight="600" font-size="18">0.90%</text>
+      
+      <text x="490" y="550" opacity="0.85">人口占全省比重</text>
+      <text x="760" y="550" text-anchor="end" font-weight="600" font-size="18">1.33%</text>
+    </g>
+  </g>
+  
+  
+  <g>
+    <path fill="url(#greenCardGradient)" filter="url(#cardGlow)" d="M854,410 H1186 A14,14 0 0 1 1200,424 V561 A14,14 0 0 1 1186,575 H854 A14,14 0 0 1 840,561 V424 A14,14 0 0 1 854,410 Z" />
+    <path fill="#FFFFFF" opacity="0.05" d="M854,410 H1186 A14,14 0 0 1 1200,424 V561 A14,14 0 0 1 1186,575 H854 A14,14 0 0 1 840,561 V424 A14,14 0 0 1 854,410 Z" />
+    
+    
+    <circle cx="890" cy="460" r="22" fill="#FFFFFF" opacity="0.15" />
+    <text x="890" y="468" text-anchor="middle" font-family="system-ui" font-size="20" fill="#FFFFFF">🎯</text>
+    
+    <text x="925" y="468" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">强支持</text>
+    
+    <line x1="860" y1="490" x2="1180" y2="490" stroke="#FFFFFF" stroke-width="1" opacity="0.2" />
+    
+    <g font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="15" fill="#FFFFFF">
+      <text x="870" y="520" opacity="0.85">人均财政支出为</text>
+      <text x="1140" y="520" text-anchor="end" font-weight="600" font-size="18">全省 2.54 倍</text>
+      
+      <text x="870" y="550" opacity="0.85">享受民族地区</text>
+      <text x="1140" y="550" text-anchor="end" font-weight="600" font-size="18">政策倾斜</text>
+    </g>
+  </g>
+  
+  
+  <path fill="url(#accentLine)" d="M401,600 H879 A1,1 0 0 1 880,601 V601 A1,1 0 0 1 879,602 H401 A1,1 0 0 1 400,601 V601 A1,1 0 0 1 401,600 Z" />
+  
+  
+  <text x="640" y="645" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="22" fill="#FFFFFF" opacity="0.9" letter-spacing="2">
+    感谢阅读
+  </text>
+  
+  
+  <text x="640" y="685" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" fill="#FFFFFF" opacity="0.45">
+    数据来源：甘孜藏族自治州2024年决算及相关统计公报
+  </text>
+  
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#FFFFFF" opacity="0.5">17 / 17</text>
+  
+  
+  <g opacity="0.2">
+    <path d="M0 720 L0 600 Q60 600 60 660 L60 720 Z" fill="#C41E3A" />
+    <path d="M60 720 L60 640 Q100 640 100 680 L100 720 Z" fill="#D4AF37" />
+    <path d="M100 720 L100 670 Q125 670 125 695 L125 720 Z" fill="#C41E3A" opacity="0.5" />
+  </g>
+  
+  
+  <g opacity="0.2">
+    <path d="M1280 720 L1280 600 Q1220 600 1220 660 L1220 720 Z" fill="#C41E3A" />
+    <path d="M1220 720 L1220 640 Q1180 640 1180 680 L1180 720 Z" fill="#D4AF37" />
+    <path d="M1180 720 L1180 670 Q1155 670 1155 695 L1155 720 Z" fill="#C41E3A" opacity="0.5" />
+  </g>
+</svg>

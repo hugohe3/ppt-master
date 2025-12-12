@@ -1,0 +1,231 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    
+    <defs>
+        
+        <linearGradient id="pieGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#006BA8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#004A75;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0089C9;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0076A8;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#5AA3B8;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4A90A4;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="pieGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#8FC4D4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#7FB3C7;stop-opacity:1" />
+        </linearGradient>
+        
+        
+        <filter id="pieShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="2" dy="3" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.25" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    
+    
+    <rect width="1280" height="720" fill="#FFFFFF" />
+
+    
+    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
+
+    
+    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
+        <tspan>Understanding Our Customer Base</tspan>
+    </text>
+
+    
+
+    
+    <rect x="60" y="140" width="560" height="240" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
+    <text x="90" y="175" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>Age Distribution</tspan>
+    </text>
+
+    
+    <g filter="url(#pieShadow)">
+        
+        <circle cx="220" cy="280" r="70" fill="none" stroke="url(#pieGrad1)" stroke-width="34" stroke-dasharray="211.11 228.71" transform="rotate(-90 220 280)" opacity="0.95" />
+        
+        
+        <circle cx="220" cy="280" r="70" fill="none" stroke="url(#pieGrad2)" stroke-width="34" stroke-dasharray="118.75 321.07" stroke-dashoffset="-211.11" transform="rotate(-90 220 280)" opacity="0.95" />
+        
+        
+        <circle cx="220" cy="280" r="70" fill="none" stroke="url(#pieGrad3)" stroke-width="34" stroke-dasharray="65.97 373.85" stroke-dashoffset="-329.86" transform="rotate(-90 220 280)" opacity="0.95" />
+        
+        
+        <circle cx="220" cy="280" r="70" fill="none" stroke="url(#pieGrad4)" stroke-width="34" stroke-dasharray="43.98 395.84" stroke-dashoffset="-395.83" transform="rotate(-90 220 280)" opacity="0.95" />
+    </g>
+    
+    
+    <circle cx="220" cy="280" r="52" fill="#F8F9FA" stroke="#005587" stroke-width="2" />
+    <text x="220" y="275" font-family="Arial, sans-serif" font-size="13" fill="#5D6D7E" text-anchor="middle" font-weight="bold">
+        <tspan>Total</tspan>
+    </text>
+    <text x="220" y="293" font-family="Arial, sans-serif" font-size="18" fill="#005587" text-anchor="middle" font-weight="bold">
+        <tspan>100%</tspan>
+    </text>
+
+    
+    <g>
+        <path fill="url(#pieGrad1)" d="M342,215 H356 A2,2 0 0 1 358,217 V231 A2,2 0 0 1 356,233 H342 A2,2 0 0 1 340,231 V217 A2,2 0 0 1 342,215 Z" />
+        <text x="368" y="228" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+            <tspan>Under 30: </tspan>
+        </text>
+        <text x="475" y="228" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#005587">
+            <tspan>48%</tspan>
+        </text>
+    </g>
+
+    <g>
+        <path fill="url(#pieGrad2)" d="M342,245 H356 A2,2 0 0 1 358,247 V261 A2,2 0 0 1 356,263 H342 A2,2 0 0 1 340,261 V247 A2,2 0 0 1 342,245 Z" />
+        <text x="368" y="258" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+            <tspan>31-40: </tspan>
+        </text>
+        <text x="475" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0076A8">
+            <tspan>27%</tspan>
+        </text>
+    </g>
+
+    <g>
+        <path fill="url(#pieGrad3)" d="M342,275 H356 A2,2 0 0 1 358,277 V291 A2,2 0 0 1 356,293 H342 A2,2 0 0 1 340,291 V277 A2,2 0 0 1 342,275 Z" />
+        <text x="368" y="288" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+            <tspan>41-50: </tspan>
+        </text>
+        <text x="475" y="288" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#4A90A4">
+            <tspan>15%</tspan>
+        </text>
+    </g>
+
+    <g>
+        <path fill="url(#pieGrad4)" d="M342,305 H356 A2,2 0 0 1 358,307 V321 A2,2 0 0 1 356,323 H342 A2,2 0 0 1 340,321 V307 A2,2 0 0 1 342,305 Z" />
+        <text x="368" y="318" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+            <tspan>Over 50: </tspan>
+        </text>
+        <text x="475" y="318" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#7FB3C7">
+            <tspan>10%</tspan>
+        </text>
+    </g>
+    
+    
+    <line x1="262" y1="225" x2="300" y2="200" stroke="#005587" stroke-width="2" />
+    <circle cx="300" cy="200" r="3" fill="#005587" />
+    <text x="310" y="205" font-family="Arial, sans-serif" font-size="13" fill="#005587" font-weight="bold">
+        <tspan>Dominant 48%</tspan>
+    </text>
+
+    
+    <rect x="660" y="140" width="560" height="240" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
+    <text x="690" y="175" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>Income Structure</tspan>
+    </text>
+
+    
+    <text x="690" y="225" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Higher income</tspan>
+    </text>
+    <rect x="850" y="210" width="25" height="24" fill="#005587" />
+    <text x="885" y="225" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587">
+        <tspan>5%</tspan>
+    </text>
+
+    <text x="690" y="275" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Middle income</tspan>
+    </text>
+    <rect x="850" y="260" width="340" height="24" fill="#0076A8" />
+    <text x="1020" y="275" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
+        <tspan>82%</tspan>
+    </text>
+
+    <text x="690" y="325" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Lower income</tspan>
+    </text>
+    <rect x="850" y="310" width="80" height="24" fill="#4A90A4" />
+    <text x="940" y="325" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4A90A4">
+        <tspan>16%</tspan>
+    </text>
+
+    
+    <rect x="60" y="420" width="560" height="240" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
+    <text x="90" y="455" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>Occupation Profile</tspan>
+    </text>
+
+    
+    <text x="90" y="500" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Employed</tspan>
+    </text>
+    <rect x="220" y="485" width="375" height="24" fill="#005587" />
+    <text x="410" y="500" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">
+        <tspan>75%</tspan>
+    </text>
+
+    <text x="90" y="545" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Self-employed</tspan>
+    </text>
+    <rect x="220" y="530" width="75" height="24" fill="#0076A8" />
+    <text x="305" y="545" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0076A8">
+        <tspan>15%</tspan>
+    </text>
+
+    <text x="90" y="590" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Student</tspan>
+    </text>
+    <rect x="220" y="575" width="40" height="24" fill="#4A90A4" />
+    <text x="270" y="590" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4A90A4">
+        <tspan>8%</tspan>
+    </text>
+
+    <text x="90" y="635" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>Retired</tspan>
+    </text>
+    <rect x="220" y="620" width="10" height="24" fill="#7FB3C7" />
+    <text x="240" y="635" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#7FB3C7">
+        <tspan>2%</tspan>
+    </text>
+
+    
+    <rect x="660" y="420" width="560" height="240" fill="#F8F9FA" stroke="#005587" stroke-width="3" />
+    <text x="690" y="455" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#005587">
+        <tspan>Customer Profile Insights</tspan>
+    </text>
+
+    <circle cx="690" cy="495" r="6" fill="#F5A623" />
+    <text x="710" y="500" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+        <tspan>Young professionals dominate:</tspan>
+    </text>
+    <text x="710" y="522" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>48% under 30, 75% employed</tspan>
+    </text>
+
+    <circle cx="690" cy="555" r="6" fill="#F5A623" />
+    <text x="710" y="560" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+        <tspan>Middle-income segment core:</tspan>
+    </text>
+    <text x="710" y="582" font-family="Arial, sans-serif" font-size="16" fill="#5D6D7E">
+        <tspan>82% seeking value-for-money</tspan>
+    </text>
+
+    <circle cx="690" cy="615" r="6" fill="#F5A623" />
+    <text x="710" y="620" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50">
+        <tspan>Gender balanced: 52% M / 48% F</tspan>
+    </text>
+
+    
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
+        <tspan>3</tspan>
+    </text>
+    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
+        <tspan>Source: Kimsoong Customer Profile Study (N=2,847)</tspan>
+    </text>
+</svg>

@@ -1,41 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <defs>
     <linearGradient id="agentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#D97757"/>
-      <stop offset="100%" style="stop-color:#F59E0B"/>
+      <stop offset="0%" style="stop-color:#D97757" />
+      <stop offset="100%" style="stop-color:#F59E0B" />
     </linearGradient>
     <filter id="glowFilter" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="3" result="coloredBlur" />
       <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
     <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="140%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/>
-      <feOffset in="blur" dx="0" dy="3" result="offsetBlur"/>
-      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
-      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feOffset in="blur" dx="0" dy="3" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
       <feMerge>
-        <feMergeNode in="shadow"/>
-        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
   </defs>
   
-  <!-- 背景 -->
-  <rect width="1280" height="720" fill="#FFFFFF"/>
   
-  <!-- 顶部强调条 -->
-  <rect x="0" y="0" width="1280" height="6" fill="url(#agentGradient)"/>
+  <rect width="1280" height="720" fill="#FFFFFF" />
   
-  <!-- 页面标签 -->
-  <rect x="60" y="40" width="100" height="28" rx="14" fill="#D97757" fill-opacity="0.1"/>
+  
+  <rect x="0" y="0" width="1280" height="6" fill="url(#agentGradient)" />
+  
+  
+  <path fill="#D97757" fill-opacity="0.1" d="M74,40 H146 A14,14 0 0 1 160,54 V54 A14,14 0 0 1 146,68 H74 A14,14 0 0 1 60,54 V54 A14,14 0 0 1 74,40 Z" />
   <text x="110" y="59" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#D97757" text-anchor="middle">
     AGENTS
   </text>
   
-  <!-- 页面标题 -->
+  
   <text x="60" y="105" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A1A2E">
     Autonomous Agents：自主代理
   </text>
@@ -43,30 +43,30 @@
     LLM 在循环中基于环境反馈使用工具，动态完成任务
   </text>
   
-  <!-- 左侧：简洁的垂直流程图 -->
+  
   <g transform="translate(60, 170)">
-    <rect x="0" y="0" width="480" height="460" rx="16" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow)"/>
+    <path fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" filter="url(#cardShadow)" d="M16,0 H464 A16,16 0 0 1 480,16 V444 A16,16 0 0 1 464,460 H16 A16,16 0 0 1 0,444 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题 -->
+    
     <text x="25" y="35" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A1A2E">
       Agent 执行循环
     </text>
     
-    <!-- 简化的垂直流程图 -->
+    
     <g transform="translate(240, 70)">
       
-      <!-- Step 1: Human Input -->
-      <rect x="-75" y="0" width="150" height="38" rx="8" fill="#64748B"/>
+      
+      <path fill="#64748B" d="M-67,0 H67 A8,8 0 0 1 75,8 V30 A8,8 0 0 1 67,38 H-67 A8,8 0 0 1 -75,30 V8 A8,8 0 0 1 -67,0 Z" />
       <text x="0" y="24" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         👤 Human Input
       </text>
       
-      <!-- 箭头：Human → LLM -->
-      <line x1="0" y1="38" x2="0" y2="58" stroke="#64748B" stroke-width="2"/>
-      <polygon points="0,65 -5,55 5,55" fill="#64748B"/>
       
-      <!-- Step 2: LLM Core (中心) -->
-      <circle cx="0" cy="105" r="38" fill="#D97757" filter="url(#glowFilter)"/>
+      <line x1="0" y1="38" x2="0" y2="58" stroke="#64748B" stroke-width="2" />
+      <polygon points="0,65 -5,55 5,55" fill="#64748B" />
+      
+      
+      <circle cx="0" cy="105" r="38" fill="#D97757" filter="url(#glowFilter)" />
       <text x="0" y="100" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         LLM
       </text>
@@ -74,12 +74,12 @@
         规划决策
       </text>
       
-      <!-- ========== 顺时针循环流程 ========== -->
       
-      <!-- Step 3: LLM → Tool Use (向右) -->
-      <rect x="88" y="85" width="85" height="40" rx="6" fill="#4A90D9"/>
-      <line x1="38" y1="105" x2="72" y2="105" stroke="#4A90D9" stroke-width="2"/>
-      <polygon points="85,105 72,98 72,112" fill="#4A90D9"/>
+      
+      
+      <path fill="#4A90D9" d="M94,85 H167 A6,6 0 0 1 173,91 V119 A6,6 0 0 1 167,125 H94 A6,6 0 0 1 88,119 V91 A6,6 0 0 1 94,85 Z" />
+      <line x1="38" y1="105" x2="72" y2="105" stroke="#4A90D9" stroke-width="2" />
+      <polygon points="85,105 72,98 72,112" fill="#4A90D9" />
       <text x="130" y="102" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         Tool Use
       </text>
@@ -87,125 +87,124 @@
         工具调用
       </text>
       
-      <!-- Step 4: Tool → Environment (向下) -->
-      <rect x="57" y="190" width="130" height="38" rx="8" fill="#10B981"/>
-      <line x1="130" y1="125" x2="130" y2="175" stroke="#10B981" stroke-width="2"/>
-      <polygon points="130,187 124,174 136,174" fill="#10B981"/>
+      
+      <path fill="#10B981" d="M65,190 H179 A8,8 0 0 1 187,198 V220 A8,8 0 0 1 179,228 H65 A8,8 0 0 1 57,220 V198 A8,8 0 0 1 65,190 Z" />
+      <line x1="130" y1="125" x2="130" y2="175" stroke="#10B981" stroke-width="2" />
+      <polygon points="130,187 124,174 136,174" fill="#10B981" />
       <text x="122" y="214" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         🌐 Environment
       </text>
       
-      <!-- Step 5: Environment → Feedback (向左) -->
-      <rect x="-187" y="190" width="120" height="38" rx="8" fill="#8B5CF6"/>
-      <line x1="57" y1="209" x2="-52" y2="209" stroke="#8B5CF6" stroke-width="2"/>
-      <polygon points="-64,209 -52,203 -52,215" fill="#8B5CF6"/>
+      
+      <path fill="#8B5CF6" d="M-179,190 H-75 A8,8 0 0 1 -67,198 V220 A8,8 0 0 1 -75,228 H-179 A8,8 0 0 1 -187,220 V198 A8,8 0 0 1 -179,190 Z" />
+      <line x1="57" y1="209" x2="-52" y2="209" stroke="#8B5CF6" stroke-width="2" />
+      <polygon points="-64,209 -52,203 -52,215" fill="#8B5CF6" />
       <text x="-127" y="214" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         📨 Feedback
       </text>
       
-      <!-- Step 6: Feedback → LLM (向上回到 LLM) - 迭代循环 -->
-      <polyline points="-127,190 -127,145 -52,145" 
-                stroke="#D97757" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
-      <polygon points="-40,145 -52,138 -52,152" fill="#D97757"/>
       
-      <!-- 迭代标签 -->
-      <rect x="-108" y="152" width="55" height="20" rx="5" fill="#D97757" fill-opacity="0.15"/>
+      <polyline points="-127,190 -127,145 -52,145" stroke="#D97757" stroke-width="2.5" fill="none" stroke-linejoin="round" />
+      <polygon points="-40,145 -52,138 -52,152" fill="#D97757" />
+      
+      
+      <path fill="#D97757" fill-opacity="0.15" d="M-103,152 H-58 A5,5 0 0 1 -53,157 V167 A5,5 0 0 1 -58,172 H-103 A5,5 0 0 1 -108,167 V157 A5,5 0 0 1 -103,152 Z" />
       <text x="-80" y="167" font-family="Arial, sans-serif" font-size="10" font-weight="600" fill="#D97757" text-anchor="middle">
         🔄 迭代
       </text>
       
-      <!-- ========== 退出流程 ========== -->
       
-      <!-- 从 LLM 向下到 Checkpoint/End -->
-      <line x1="0" y1="143" x2="0" y2="255" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2"/>
-      <polygon points="0,262 -5,252 5,252" fill="#64748B"/>
       
-      <!-- 条件标注 -->
+      
+      <line x1="0" y1="143" x2="0" y2="255" stroke="#64748B" stroke-width="2" stroke-dasharray="4,2" />
+      <polygon points="0,262 -5,252 5,252" fill="#64748B" />
+      
+      
       <text x="15" y="200" font-family="Arial, sans-serif" font-size="9" fill="#64748B">
         完成?
       </text>
       
-      <!-- Step 7: End -->
-      <rect x="-75" y="268" width="150" height="38" rx="8" fill="#F59E0B"/>
+      
+      <path fill="#F59E0B" d="M-67,268 H67 A8,8 0 0 1 75,276 V298 A8,8 0 0 1 67,306 H-67 A8,8 0 0 1 -75,298 V276 A8,8 0 0 1 -67,268 Z" />
       <text x="0" y="292" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
         ✋ Checkpoint / End
       </text>
     </g>
     
-    <!-- 底部说明 -->
-    <rect x="20" y="410" width="440" height="35" rx="8" fill="#D97757" fill-opacity="0.1"/>
+    
+    <path fill="#D97757" fill-opacity="0.1" d="M28,410 H452 A8,8 0 0 1 460,418 V437 A8,8 0 0 1 452,445 H28 A8,8 0 0 1 20,437 V418 A8,8 0 0 1 28,410 Z" />
     <text x="40" y="433" font-family="Arial, sans-serif" font-size="12" fill="#D97757">
       💡 实现通常很简单：LLM + 工具 + 循环反馈
     </text>
   </g>
   
-  <!-- 右侧：核心特征列表 -->
+  
   <g transform="translate(580, 170)">
-    <rect x="0" y="0" width="640" height="460" rx="16" fill="#1A1A2E" filter="url(#cardShadow)"/>
+    <path fill="#1A1A2E" filter="url(#cardShadow)" d="M16,0 H624 A16,16 0 0 1 640,16 V444 A16,16 0 0 1 624,460 H16 A16,16 0 0 1 0,444 V16 A16,16 0 0 1 16,0 Z" />
     
-    <!-- 标题区域 -->
+    
     <text x="30" y="40" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF">
       Agent 核心特征
     </text>
-    <rect x="30" y="52" width="70" height="3" rx="1.5" fill="#D97757"/>
+    <path fill="#D97757" d="M31.50,52 H98.50 A1.50,1.50 0 0 1 100,53.50 V53.50 A1.50,1.50 0 0 1 98.50,55 H31.50 A1.50,1.50 0 0 1 30,53.50 V53.50 A1.50,1.50 0 0 1 31.50,52 Z" />
     
-    <!-- 特征列表 -->
+    
     <g font-family="Arial, sans-serif" transform="translate(30, 75)">
       
-      <!-- 特征 1 -->
+      
       <g>
-        <rect x="0" y="0" width="580" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.05"/>
-        <circle cx="28" cy="27" r="16" fill="#D97757"/>
+        <path fill="#FFFFFF" fill-opacity="0.05" d="M8,0 H572 A8,8 0 0 1 580,8 V47 A8,8 0 0 1 572,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="28" cy="27" r="16" fill="#D97757" />
         <text x="28" y="33" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
         <text x="58" y="22" font-size="14" font-weight="600" fill="#FFFFFF">任务来自人类</text>
         <text x="58" y="42" font-size="12" fill="#94A3B8">命令或交互讨论启动任务</text>
       </g>
       
-      <!-- 特征 2 -->
+      
       <g transform="translate(0, 65)">
-        <rect x="0" y="0" width="580" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.05"/>
-        <circle cx="28" cy="27" r="16" fill="#4A90D9"/>
+        <path fill="#FFFFFF" fill-opacity="0.05" d="M8,0 H572 A8,8 0 0 1 580,8 V47 A8,8 0 0 1 572,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="28" cy="27" r="16" fill="#4A90D9" />
         <text x="28" y="33" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
         <text x="58" y="22" font-size="14" font-weight="600" fill="#FFFFFF">自主规划与执行</text>
         <text x="58" y="42" font-size="12" fill="#94A3B8">独立操作，必要时返回人类请求帮助</text>
       </g>
       
-      <!-- 特征 3 -->
+      
       <g transform="translate(0, 130)">
-        <rect x="0" y="0" width="580" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.05"/>
-        <circle cx="28" cy="27" r="16" fill="#10B981"/>
+        <path fill="#FFFFFF" fill-opacity="0.05" d="M8,0 H572 A8,8 0 0 1 580,8 V47 A8,8 0 0 1 572,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="28" cy="27" r="16" fill="#10B981" />
         <text x="28" y="33" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
         <text x="58" y="22" font-size="14" font-weight="600" fill="#FFFFFF">环境反馈 (Ground Truth)</text>
         <text x="58" y="42" font-size="12" fill="#94A3B8">工具调用结果、代码执行结果作为校准依据</text>
       </g>
       
-      <!-- 特征 4 -->
+      
       <g transform="translate(0, 195)">
-        <rect x="0" y="0" width="580" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.05"/>
-        <circle cx="28" cy="27" r="16" fill="#8B5CF6"/>
+        <path fill="#FFFFFF" fill-opacity="0.05" d="M8,0 H572 A8,8 0 0 1 580,8 V47 A8,8 0 0 1 572,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="28" cy="27" r="16" fill="#8B5CF6" />
         <text x="28" y="33" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
         <text x="58" y="22" font-size="14" font-weight="600" fill="#FFFFFF">人类检查点</text>
         <text x="58" y="42" font-size="12" fill="#94A3B8">遇到阻塞或关键节点时暂停等待人工介入</text>
       </g>
       
-      <!-- 特征 5 -->
+      
       <g transform="translate(0, 260)">
-        <rect x="0" y="0" width="580" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.05"/>
-        <circle cx="28" cy="27" r="16" fill="#F59E0B"/>
+        <path fill="#FFFFFF" fill-opacity="0.05" d="M8,0 H572 A8,8 0 0 1 580,8 V47 A8,8 0 0 1 572,55 H8 A8,8 0 0 1 0,47 V8 A8,8 0 0 1 8,0 Z" />
+        <circle cx="28" cy="27" r="16" fill="#F59E0B" />
         <text x="28" y="33" font-size="13" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
         <text x="58" y="22" font-size="14" font-weight="600" fill="#FFFFFF">终止条件</text>
         <text x="58" y="42" font-size="12" fill="#94A3B8">完成任务或达到最大迭代次数时退出</text>
       </g>
     </g>
     
-    <!-- 底部提示框 -->
-    <rect x="30" y="400" width="580" height="40" rx="8" fill="#D97757" fill-opacity="0.15"/>
+    
+    <path fill="#D97757" fill-opacity="0.15" d="M38,400 H602 A8,8 0 0 1 610,408 V432 A8,8 0 0 1 602,440 H38 A8,8 0 0 1 30,432 V408 A8,8 0 0 1 38,400 Z" />
     <text x="50" y="426" font-family="Arial, sans-serif" font-size="13" fill="#D97757">
       Agent 的自主性使其非常适合在 受信环境 中扩展任务
     </text>
   </g>
   
-  <!-- 底部页码 -->
+  
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
     11 / 15
   </text>

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    </defs>
+  
+  <rect width="1280" height="720" fill="#F5F7FA" />
+  <rect x="0" y="0" width="8" height="720" fill="#1E3A5F" />
+  
+  <path fill="#C41E3A" d="M43,30 H43 A3,3 0 0 1 46,33 V77 A3,3 0 0 1 43,80 H43 A3,3 0 0 1 40,77 V33 A3,3 0 0 1 43,30 Z" />
+  <text x="60" y="70" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#1A1A2E">二、GDP与产业结构深度分析</text>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M52,110 H608 A12,12 0 0 1 620,122 V648 A12,12 0 0 1 608,660 H52 A12,12 0 0 1 40,648 V122 A12,12 0 0 1 52,110 Z" />
+    <text x="60" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">📊 GDP总量与全省排名</text>
+    
+    
+    <text x="80" y="200" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">巴中市</text>
+    <path fill="#4A90D9" d="M164,185 H436 A4,4 0 0 1 440,189 V206 A4,4 0 0 1 436,210 H164 A4,4 0 0 1 160,206 V189 A4,4 0 0 1 164,185 Z" />
+    <text x="450" y="203" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">870.51亿</text>
+    
+    <text x="80" y="245" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#C41E3A">甘孜州</text>
+    <path fill="#C41E3A" d="M164,230 H342 A4,4 0 0 1 346,234 V251 A4,4 0 0 1 342,255 H164 A4,4 0 0 1 160,251 V234 A4,4 0 0 1 164,230 Z" />
+    <text x="355" y="248" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" font-weight="600" fill="#C41E3A">580.52亿</text>
+    
+    <text x="80" y="290" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">阿坝州</text>
+    <path fill="#4A90D9" d="M164,275 H339 A4,4 0 0 1 343,279 V296 A4,4 0 0 1 339,300 H164 A4,4 0 0 1 160,296 V279 A4,4 0 0 1 164,275 Z" />
+    <text x="352" y="293" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">570.11亿</text>
+    
+    <line x1="60" y1="320" x2="600" y2="320" stroke="#E8E8F0" stroke-width="1" />
+    
+    
+    <text x="60" y="355" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E">基准线对比分析</text>
+    
+    <path fill="#F5F7FA" d="M68,375 H592 A8,8 0 0 1 600,383 V467 A8,8 0 0 1 592,475 H68 A8,8 0 0 1 60,467 V383 A8,8 0 0 1 68,375 Z" />
+    
+    
+    <line x1="100" y1="430" x2="560" y2="430" stroke="#B0B0C0" stroke-width="2" />
+    
+    <line x1="100" y1="425" x2="100" y2="435" stroke="#B0B0C0" stroke-width="2" />
+    <text x="100" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">0%</text>
+    <line x1="215" y1="425" x2="215" y2="435" stroke="#B0B0C0" stroke-width="2" />
+    <text x="215" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">0.5%</text>
+    <line x1="330" y1="425" x2="330" y2="435" stroke="#B0B0C0" stroke-width="2" />
+    <text x="330" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">1.0%</text>
+    <line x1="445" y1="425" x2="445" y2="435" stroke="#B0B0C0" stroke-width="2" />
+    <text x="445" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">1.5%</text>
+    <line x1="560" y1="425" x2="560" y2="435" stroke="#B0B0C0" stroke-width="2" />
+    <text x="560" y="450" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="11" fill="#8888A0">2.0%</text>
+    
+    
+    <circle cx="307" cy="430" r="10" fill="#1E3A5F" />
+    <line x1="307" y1="390" x2="307" y2="418" stroke="#1E3A5F" stroke-width="2" />
+    <path fill="#1E3A5F" d="M261,378 H353 A4,4 0 0 1 357,382 V394 A4,4 0 0 1 353,398 H261 A4,4 0 0 1 257,394 V382 A4,4 0 0 1 261,378 Z" />
+    <text x="307" y="392" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">GDP 0.90%</text>
+    
+    
+    <circle cx="406" cy="430" r="10" fill="#C41E3A" />
+    <line x1="406" y1="390" x2="406" y2="418" stroke="#C41E3A" stroke-width="2" />
+    <path fill="#C41E3A" d="M360,378 H452 A4,4 0 0 1 456,382 V394 A4,4 0 0 1 452,398 H360 A4,4 0 0 1 356,394 V382 A4,4 0 0 1 360,378 Z" />
+    <text x="406" y="392" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">人口 1.33%</text>
+    
+    
+    <line x1="317" y1="430" x2="396" y2="430" stroke="#FF6B35" stroke-width="3" />
+    <polygon points="394,425 406,430 394,435" fill="#FF6B35" />
+    
+    
+    <path fill="#FF6B35" d="M324,454 H392 A4,4 0 0 1 396,458 V472 A4,4 0 0 1 392,476 H324 A4,4 0 0 1 320,472 V458 A4,4 0 0 1 324,454 Z" />
+    <text x="358" y="469" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">-0.43pp</text>
+    
+    <line x1="60" y1="490" x2="600" y2="490" stroke="#E8E8F0" stroke-width="1" />
+    
+    
+    <text x="60" y="525" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#1A1A2E">🔍 结论</text>
+    <text x="60" y="555" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 全省排名倒数第2，仅高于阿坝州</text>
+    <text x="60" y="580" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 经济产出效率低于全省平均<tspan font-weight="bold" fill="#C41E3A">32.3%</tspan></text>
+    <text x="60" y="605" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 作为资源丰富的藏区，经济与人口不匹配</text>
+    <text x="60" y="630" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">• 增速5.4%低于全省0.3个百分点</text>
+  </g>
+  
+  
+  <g>
+    <path fill="#FFFFFF" d="M652,110 H1228 A12,12 0 0 1 1240,122 V648 A12,12 0 0 1 1228,660 H652 A12,12 0 0 1 640,648 V122 A12,12 0 0 1 652,110 Z" />
+    <text x="660" y="150" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1A2E">🏭 产业结构深度分析</text>
+    
+    
+    <path fill="#C41E3A" opacity="0.08" d="M668,170 H1212 A8,8 0 0 1 1220,178 V272 A8,8 0 0 1 1212,280 H668 A8,8 0 0 1 660,272 V178 A8,8 0 0 1 668,170 Z" />
+    <path fill="#C41E3A" d="M663,170 H663 A3,3 0 0 1 666,173 V277 A3,3 0 0 1 663,280 H663 A3,3 0 0 1 660,277 V173 A3,3 0 0 1 663,170 Z" />
+    <text x="680" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#C41E3A">第一产业</text>
+    <text x="800" y="195" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">增加值 91.04亿元 | 增速 2.6%</text>
+    <text x="680" y="225" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 占GDP <tspan font-weight="bold" fill="#C41E3A">15.68%</tspan>，远高于全省8.7%</text>
+    <text x="680" y="250" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 农牧业是基础产业，但附加值低</text>
+    <text x="680" y="275" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#FF6B35">⚠️ 结构性问题：一产占比偏高</text>
+    
+    
+    <path fill="#00A651" opacity="0.08" d="M668,290 H1212 A8,8 0 0 1 1220,298 V412 A8,8 0 0 1 1212,420 H668 A8,8 0 0 1 660,412 V298 A8,8 0 0 1 668,290 Z" />
+    <path fill="#00A651" d="M663,290 H663 A3,3 0 0 1 666,293 V417 A3,3 0 0 1 663,420 H663 A3,3 0 0 1 660,417 V293 A3,3 0 0 1 663,290 Z" />
+    <text x="680" y="315" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#00A651">第二产业</text>
+    <text x="800" y="315" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">增加值 165.91亿元 | 增速 4.8%</text>
+    <text x="680" y="345" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 占GDP <tspan font-weight="bold" fill="#00A651">28.58%</tspan>，低于全省35.3%</text>
+    <text x="680" y="370" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 工业增加值152.25亿元</text>
+    <text x="680" y="395" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 规上工业总产值仅253.01亿元</text>
+    <text x="680" y="415" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#FF6B35">⚠️ 工业化水平严重不足，制造业薄弱</text>
+    
+    
+    <path fill="#4A90D9" opacity="0.08" d="M668,430 H1212 A8,8 0 0 1 1220,438 V532 A8,8 0 0 1 1212,540 H668 A8,8 0 0 1 660,532 V438 A8,8 0 0 1 668,430 Z" />
+    <path fill="#4A90D9" d="M663,430 H663 A3,3 0 0 1 666,433 V537 A3,3 0 0 1 663,540 H663 A3,3 0 0 1 660,537 V433 A3,3 0 0 1 663,430 Z" />
+    <text x="680" y="455" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#4A90D9">第三产业</text>
+    <text x="800" y="455" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">增加值 323.57亿元 | 增速 6.6%</text>
+    <text x="680" y="485" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 占GDP <tspan font-weight="bold" fill="#4A90D9">55.74%</tspan>，略低于全省56%</text>
+    <text x="680" y="510" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#4A4A6A">• 主要依托旅游业、交通、公共服务</text>
+    <text x="680" y="535" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="13" fill="#00A651">✓ 增速6.6%高于全省6.3%，有发展潜力</text>
+    
+    
+    <path fill="#1E3A5F" d="M668,550 H1212 A8,8 0 0 1 1220,558 V592 A8,8 0 0 1 1212,600 H668 A8,8 0 0 1 660,592 V558 A8,8 0 0 1 668,550 Z" />
+    <text x="940" y="582" text-anchor="middle" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">📌 产业定位：一产偏高、二产不足、三产主导 | 需加快工业化进程</text>
+  </g>
+  
+  <text x="1240" y="690" text-anchor="end" font-family="system-ui, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">05 / 17</text>
+</svg>
