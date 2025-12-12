@@ -472,7 +472,8 @@ ppt-master/
 │   ├── finalize_svg.py        # 最终化处理（嵌入图标/图片）
 │   ├── embed_icons.py         # 图标嵌入工具
 │   ├── embed_images.py        # 图片嵌入工具
-│   └── flatten_tspan.py       # tspan扁平化工具
+│   ├── flatten_tspan.py       # tspan扁平化工具
+│   └── svg_to_pptx.py         # SVG转PPTX工具（原生矢量嵌入）
 │
 └── projects/                  # 用户项目工作区（进行中的项目）
     └── <your_project_name>_<YYYYMMDD>/
@@ -736,6 +737,26 @@ python3 tools/flatten_tspan.py input.svg output.svg
 ```
 
 **注意**：生成阶段仍应使用 `<tspan>` 手动换行，此工具仅用于后处理。
+
+### SVG 转 PPTX 工具 (`svg_to_pptx.py`)
+
+将 SVG 文件批量转换为 PowerPoint 演示文稿（原生 SVG 矢量嵌入）：
+
+```bash
+# 基本用法（使用 svg_output 目录）
+python3 tools/svg_to_pptx.py <项目路径>
+
+# 指定 SVG 来源目录
+python3 tools/svg_to_pptx.py <项目路径> -s final       # svg_final
+python3 tools/svg_to_pptx.py <项目路径> -s flat        # svg_output_flattext
+python3 tools/svg_to_pptx.py <项目路径> -s final_flat  # svg_final_flattext
+python3 tools/svg_to_pptx.py <项目路径> -s <任意目录>  # 自定义子目录
+
+# 指定输出文件
+python3 tools/svg_to_pptx.py <项目路径> -o output.pptx
+```
+
+**特点**：SVG 以原生矢量格式嵌入，保持可编辑性，需要 PowerPoint 2016+ 查看。
 
 ### 错误消息助手 (`error_helper.py`)
 

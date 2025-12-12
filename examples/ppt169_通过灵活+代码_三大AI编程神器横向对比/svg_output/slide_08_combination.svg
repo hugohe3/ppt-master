@@ -1,7 +1,14 @@
 <svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
     <defs>
         <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.1)" />
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+            <feOffset dx="0" dy="4" result="offsetBlur"/>
+            <feFlood flood-color="#000000" flood-opacity="0.1" result="color"/>
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
         </filter>
         <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
             markerUnits="strokeWidth">

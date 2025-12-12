@@ -5,7 +5,14 @@
             <stop offset="100%" style="stop-color:#0F172A" />
         </linearGradient>
         <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.3)" />
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+            <feOffset dx="0" dy="4" result="offsetBlur"/>
+            <feFlood flood-color="#000000" flood-opacity="0.3" result="color"/>
+            <feComposite in="color" in2="offsetBlur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
         </filter>
     </defs>
 
