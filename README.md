@@ -157,11 +157,16 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
     ↓
 [Strategist] 策略师 - 内容规划与设计规范
     ↓
-[Executor_General / Executor_Consultant] 执行师 - SVG代码生成
+[Executor_General / Executor_Consultant / Executor_Consultant_Top] 执行师 - SVG代码生成
     ↓
-[Optimizer_CRAP] 优化师 - 视觉优化
+[Optimizer_CRAP] 优化师 - 视觉优化（可选）
     ↓
-最终SVG演示文稿
+SVG 文件 (svg_output/)
+    ↓
+后处理工具（用户自行调用，可选）
+    ├── finalize_svg.py    → svg_final/（嵌入图标/图片）
+    ├── flatten_tspan.py   → svg_output_flattext/（文本扁平化）
+    └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
 ```
 
 ## 四大角色
@@ -303,10 +308,28 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
    Strategist 分析内容并生成《设计规范与内容大纲》
    - 通用风格：完整版规范（含详细卡片高度规划）
    - 咨询风格：精简版规范（重点在结构化框架）
-4. **逐页生成**使用相应的 Executor 角色生成每一页 SVG
-5. **优化润色**（可选）使用 Optimizer_CRAP 进行 CRAP 原则优化
-6. **导出使用**
-   将 SVG 文件导出或嵌入到你的演示环境中
+
+4. **逐页生成**
+   使用相应的 Executor 角色生成每一页 SVG
+
+5. **优化润色**（可选）
+   使用 Optimizer_CRAP 进行 CRAP 原则优化
+
+6. **后处理**（可选）
+   ```bash
+   python3 tools/finalize_svg.py <项目路径>     # 嵌入图标/图片
+   python3 tools/flatten_tspan.py <目录>        # 文本扁平化
+   ```
+
+7. **导出使用**
+   ```bash
+   # 导出为 PPTX（四种来源可选）
+   python3 tools/svg_to_pptx.py <项目路径>              # svg_output（默认）
+   python3 tools/svg_to_pptx.py <项目路径> -s final      # svg_final（嵌入图标后）
+   python3 tools/svg_to_pptx.py <项目路径> -s flat       # svg_output_flattext（扁平化）
+   python3 tools/svg_to_pptx.py <项目路径> -s final_flat # svg_final_flattext（最终+扁平化）
+   ```
+   或将 SVG 文件直接嵌入到其他演示环境中
 
 ### 示例对话流程
 
