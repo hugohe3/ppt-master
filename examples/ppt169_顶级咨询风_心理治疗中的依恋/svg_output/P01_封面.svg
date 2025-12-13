@@ -15,7 +15,9 @@
   
   <!-- 背景图片（半透明叠加） -->
   <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" 
-         clip-path="url(#coverClip)" preserveAspectRatio="xMidYMid slice" opacity="0.25"/>
+         clip-path="url(#coverClip)" preserveAspectRatio="xMidYMid slice"/>
+  <!-- 图片透明度遮罩层（原 opacity="0.25" → 遮罩 opacity="0.75"） -->
+  <rect x="0" y="0" width="1280" height="720" fill="#1E3A5F" opacity="0.75"/>
   
   <!-- 主标题 -->
   <text x="640" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
@@ -37,22 +39,22 @@
   
   <!-- 关键词标签 -->
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(320, 500)">
-    <rect x="0" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="0" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="50" y="21" text-anchor="middle">安全基地</text>
     
-    <rect x="120" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="120" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="170" y="21" text-anchor="middle">依恋模式</text>
     
-    <rect x="240" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="240" y="0" width="80" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="280" y="21" text-anchor="middle">心智化</text>
     
-    <rect x="340" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="340" y="0" width="80" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="380" y="21" text-anchor="middle">觉察</text>
     
-    <rect x="440" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="440" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="490" y="21" text-anchor="middle">情感调节</text>
     
-    <rect x="560" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.15)"/>
+    <rect x="560" y="0" width="80" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="600" y="21" text-anchor="middle">治愈</text>
   </g>
   

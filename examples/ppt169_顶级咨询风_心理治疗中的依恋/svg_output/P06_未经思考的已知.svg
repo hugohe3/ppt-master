@@ -21,7 +21,7 @@
     <rect x="0" y="0" width="1160" height="140" rx="12" fill="#1E3A5F"/>
     
     <!-- 引号装饰 -->
-    <text x="40" y="60" font-size="60" fill="rgba(255,255,255,0.2)" font-family="Georgia, serif">"</text>
+    <text x="40" y="60" font-size="60" fill="#FFFFFF" fill-opacity="0.2" font-family="Georgia, serif">"</text>
     
     <!-- 核心定义 -->
     <text x="80" y="55" font-size="20" fill="#E5E7EB">

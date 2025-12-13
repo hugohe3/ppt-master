@@ -10,7 +10,7 @@
   <g transform="translate(40, 130)">
     <path fill="#FDF8E8" stroke="#C9A962" stroke-width="2" d="M12,0 H1188 A12,12 0 0 1 1200,12 V128 A12,12 0 0 1 1188,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     <text x="30" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#C9A962" font-weight="bold">原典经文（鸠摩罗什译）</text>
-    <text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-style="italic" font-size="18" x="30" y="75">"如是我闻。一时，佛在舍卫国祇树给孤独园，与大比丘众千二百五十人俱。</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-style="italic" font-size="18" x="30" y="105">尔时，世尊食时，著衣持钵，入舍卫大城乞食。于其城中，次第乞已，还至本处。</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-style="italic" font-size="18" x="30" y="135">饭食讫，收衣钵，洗足已，敷座而坐。"</text></g>
+    <text font-size="18" font-style="italic" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="75">"如是我闻。一时，佛在舍卫国祇树给孤独园，与大比丘众千二百五十人俱。</text><text font-size="18" font-style="italic" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="105">尔时，世尊食时，著衣持钵，入舍卫大城乞食。于其城中，次第乞已，还至本处。</text><text font-size="18" font-style="italic" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="135">饭食讫，收衣钵，洗足已，敷座而坐。"</text></g>
   
   
   
@@ -25,7 +25,7 @@
   </g>
     <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">文本层面</text>
     
-    <text fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="90">• 鸠摩罗什译本</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="118">后秦弘始年间（约404年）</text><text fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="158">• 三十二分之首</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="186">相传为昭明太子所立</text><text fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="226">• 六种成就具足</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="254">信、闻、时、主、处、众</text></g>
+    <text font-size="16" fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="90">• 鸠摩罗什译本</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="118">后秦弘始年间（约404年）</text><text font-size="16" fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="158">• 三十二分之首</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="186">相传为昭明太子所立</text><text font-size="16" fill="#2E4A62" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="226">• 六种成就具足</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="254">信、闻、时、主、处、众</text></g>
   
   
   <g transform="translate(450, 295)">
@@ -40,7 +40,7 @@
   </g>
     <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">功能层面</text>
     
-    <text fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="90">• 叙事开端</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="118">交代时间、地点、人物</text><text fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="158">• 证信序（通序）</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="186">证明经典的真实性</text><text fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="226">• 发起序（别序）</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="254">引发说法的直接原因</text></g>
+    <text font-size="16" fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="90">• 叙事开端</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="118">交代时间、地点、人物</text><text font-size="16" fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="158">• 证信序（通序）</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="186">证明经典的真实性</text><text font-size="16" fill="#5D8C6A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="226">• 发起序（别序）</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="254">引发说法的直接原因</text></g>
   
   
   <g transform="translate(860, 295)">
@@ -53,7 +53,7 @@
   </g>
     <text x="55" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">思想层面</text>
     
-    <text fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="90">• 道在平常</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="118">最高真理体现于日常</text><text fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="158">• 般若智慧的隐含示范</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="186">佛陀行为即是无言的教法</text><text fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" x="25" y="226">• 日常即修行</text><text fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" x="35" y="254">行住坐卧皆可证道</text></g>
+    <text font-size="16" fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="90">• 道在平常</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="118">最高真理体现于日常</text><text font-size="16" fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="158">• 般若智慧的隐含示范</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="186">佛陀行为即是无言的教法</text><text font-size="16" fill="#C9A962" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="25" y="226">• 日常即修行</text><text font-size="14" fill="#6B7280" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="35" y="254">行住坐卧皆可证道</text></g>
   
   
   <g transform="translate(40, 615)">

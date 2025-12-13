@@ -63,7 +63,7 @@
     <g transform="translate(30, 70)">
       <path fill="#F5F3EF" stroke="#B8860B" stroke-width="1" d="M8,0 H487 A8,8 0 0 1 495,8 V117 A8,8 0 0 1 487,125 H8 A8,8 0 0 1 0,117 V8 A8,8 0 0 1 8,0 Z" />
       <text x="25" y="28" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#B8860B">「鸣」的机制</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="52">此处的「鸣」并非自我吹嘘</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="74">而是「鹤鸣在阴，其子和之」的共鸣</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="96">真诚的谦虚如声波般向外扩散，赢得社会的广泛赞誉</text></g>
+      <text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="52">此处的「鸣」并非自我吹嘘</text><text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="74">而是「鹤鸣在阴，其子和之」的共鸣</text><text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="96">真诚的谦虚如声波般向外扩散，赢得社会的广泛赞誉</text></g>
     
     
     <g transform="translate(30, 210)">
@@ -73,7 +73,7 @@
     <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15H0V12L7 0H9L16 12V15ZM7 4H9V9H7V4ZM7 11H9V13H7V11Z" />
   </g>
       <text x="55" y="35" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C94C4C">风险警示：「贞」字</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="60">名声是谦虚的副产品，也可能是杀手</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="82">一旦为了「鸣」而「谦」，就陷入伪善</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1A1A2E" x="25" y="104">「贞」警示：获得美名后必须保持初心，防止因名声而滋生傲慢</text></g>
+      <text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="60">名声是谦虚的副产品，也可能是杀手</text><text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="82">一旦为了「鸣」而「谦」，就陷入伪善</text><text font-size="14" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="25" y="104">「贞」警示：获得美名后必须保持初心，防止因名声而滋生傲慢</text></g>
     
     
     <path fill="#C94C4C" d="M36,355 H519 A6,6 0 0 1 525,361 V404 A6,6 0 0 1 519,410 H36 A6,6 0 0 1 30,404 V361 A6,6 0 0 1 36,355 Z" />

@@ -50,7 +50,7 @@
     <g transform="translate(30, 340)">
       <path fill="#F0F4F8" d="M10,0 H450 A10,10 0 0 1 460,10 V140 A10,10 0 0 1 450,150 H10 A10,10 0 0 1 0,140 V10 A10,10 0 0 1 10,0 Z" />
       <text x="20" y="30" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" font-weight="600" fill="#003F6C">发展趋势</text>
-      <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="60">• 智能驾驶从辅助向自动演进</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="86">• 车路云协同加速落地</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="112">• 软件定义汽车成为主流</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="138">• OTA升级带来持续迭代需求</text></g>
+      <text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="60">• 智能驾驶从辅助向自动演进</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="86">• 车路云协同加速落地</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="112">• 软件定义汽车成为主流</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="138">• OTA升级带来持续迭代需求</text></g>
   </g>
   
   

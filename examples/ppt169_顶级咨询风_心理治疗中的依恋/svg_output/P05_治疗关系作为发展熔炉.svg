@@ -28,7 +28,7 @@
            clip-path="url(#secureBaseClip)" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 图片标注 -->
-    <rect x="20" y="250" width="160" height="35" rx="8" fill="rgba(61,139,122,0.9)"/>
+    <rect x="20" y="250" width="160" height="35" rx="8" fill="#3D8B7A" fill-opacity="0.9"/>
     <text x="100" y="273" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">安全基地</text>
   </g>
   
@@ -81,28 +81,28 @@
     
     <!-- 流程步骤 -->
     <g transform="translate(60, 60)">
-      <rect x="0" y="0" width="200" height="100" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <rect x="0" y="0" width="200" height="100" rx="12" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="100" y="35" font-size="15" fill="#E07843" text-anchor="middle" font-weight="600">激活依恋系统</text>
       <text x="100" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">患者的依恋需求</text>
       <text x="100" y="80" font-size="13" fill="#CBD5E1" text-anchor="middle">在治疗中被激活</text>
       
       <text x="220" y="50" font-size="24" fill="#FFFFFF">→</text>
       
-      <rect x="260" y="0" width="200" height="100" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <rect x="260" y="0" width="200" height="100" rx="12" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="360" y="35" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">新的回应方式</text>
       <text x="360" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">治疗师提供不同于</text>
       <text x="360" y="80" font-size="13" fill="#CBD5E1" text-anchor="middle">过去的回应</text>
       
       <text x="480" y="50" font-size="24" fill="#FFFFFF">→</text>
       
-      <rect x="520" y="0" width="200" height="100" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <rect x="520" y="0" width="200" height="100" rx="12" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="620" y="35" font-size="15" fill="#2E5C8E" text-anchor="middle" font-weight="600">内化新模式</text>
       <text x="620" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">将新的关系体验</text>
       <text x="620" y="80" font-size="13" fill="#CBD5E1" text-anchor="middle">整合进工作模型</text>
       
       <text x="740" y="50" font-size="24" fill="#FFFFFF">→</text>
       
-      <rect x="780" y="0" width="200" height="100" rx="12" fill="rgba(255,255,255,0.1)"/>
+      <rect x="780" y="0" width="200" height="100" rx="12" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="880" y="35" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">持久改变</text>
       <text x="880" y="60" font-size="13" fill="#CBD5E1" text-anchor="middle">安全依恋的能力</text>
       <text x="880" y="80" font-size="13" fill="#CBD5E1" text-anchor="middle">从外部转向内在</text>

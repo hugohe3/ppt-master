@@ -94,21 +94,21 @@
     <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
     <path fill="#00A651" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🌱 绿色低碳创新</text>
-    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 碳足迹认证体系</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 动力电池回收认证</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 绿色产品认证拓展</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 碳标签与绿色金融</text></g>
+    <text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="80">• 碳足迹认证体系</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="104">• 动力电池回收认证</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="128">• 绿色产品认证拓展</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="152">• 碳标签与绿色金融</text></g>
   
   
   <g transform="translate(455, 435)">
     <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
     <path fill="#0076A8" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🔒 安全智能驱动</text>
-    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 动力电池安全认证</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 自动驾驶功能安全</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 车载网络安全评估</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 智能座舱功能认证</text></g>
+    <text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="80">• 动力电池安全认证</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="104">• 自动驾驶功能安全</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="128">• 车载网络安全评估</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="152">• 智能座舱功能认证</text></g>
   
   
   <g transform="translate(850, 435)">
     <path fill="#FFFFFF" filter="url(#cardShadow)" d="M12,0 H358 A12,12 0 0 1 370,12 V188 A12,12 0 0 1 358,200 H12 A12,12 0 0 1 0,188 V12 A12,12 0 0 1 12,0 Z" />
     <path fill="#FF6B35" d="M4,0 H366 A4,4 0 0 1 370,4 V4 A4,4 0 0 1 366,8 H4 A4,4 0 0 1 0,4 V4 A4,4 0 0 1 4,0 Z" />
     <text x="20" y="45" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="bold" fill="#003F6C">🌍 国际化布局</text>
-    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="80">• 国际标准对接互认</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="104">• 海外服务网络构建</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="128">• 差异化法规应对</text><text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="152">• 国际合作联盟</text></g>
+    <text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="80">• 国际标准对接互认</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="104">• 海外服务网络构建</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="128">• 差异化法规应对</text><text font-size="14" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="20" y="152">• 国际合作联盟</text></g>
   
   
   <text x="1220" y="690" text-anchor="end" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#8888A0">03 / 20</text>

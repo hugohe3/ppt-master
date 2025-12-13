@@ -21,7 +21,7 @@
     <path fill="#1E3A5F" d="M12,0 H1148 A12,12 0 0 1 1160,12 V128 A12,12 0 0 1 1148,140 H12 A12,12 0 0 1 0,128 V12 A12,12 0 0 1 12,0 Z" />
     
     
-    <text x="40" y="60" font-size="60" fill="rgba(255,255,255,0.2)" font-family="Georgia, serif">"</text>
+    <text x="40" y="60" font-size="60" fill="#FFFFFF" fill-opacity="0.2" font-family="Georgia, serif">"</text>
     
     
     <text x="80" y="55" font-size="20" fill="#E5E7EB">
@@ -62,7 +62,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🎭</text>
       
       
-      <text text-anchor="middle" fill="#374151" font-size="16" x="180" y="175">在与治疗师的关系中</text><text text-anchor="middle" fill="#E07843" font-size="16" font-weight="600" x="180" y="199">重演过去的模式</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">在与治疗师的关系中</text><text fill="#E07843" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">重演过去的模式</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 由患者与治疗师共同创造</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">
@@ -85,7 +85,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🪞</text>
       
       
-      <text text-anchor="middle" fill="#374151" font-size="16" x="180" y="175">通过投射性认同</text><text text-anchor="middle" fill="#3D8B7A" font-size="16" font-weight="600" x="180" y="199">在治疗师身上唤起体验</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">通过投射性认同</text><text fill="#3D8B7A" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">在治疗师身上唤起体验</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 患者无法容忍的恐惧、羞耻、愤怒</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">
@@ -108,7 +108,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🧘</text>
       
       
-      <text text-anchor="middle" fill="#374151" font-size="16" x="180" y="175">通过身体感觉、姿势</text><text text-anchor="middle" fill="#2E5C8E" font-size="16" font-weight="600" x="180" y="199">和运动来表达</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">通过身体感觉、姿势</text><text fill="#2E5C8E" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">和运动来表达</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 身体记录着分数</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">

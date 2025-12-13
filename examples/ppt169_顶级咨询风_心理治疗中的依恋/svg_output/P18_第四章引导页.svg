@@ -10,28 +10,26 @@
   <rect width="1280" height="720" fill="url(#chapterGradient4)"/>
   
   <!-- 装饰性四象限 -->
-  <g opacity="0.1">
-    <line x1="640" y1="100" x2="640" y2="620" stroke="#FFFFFF" stroke-width="2"/>
-    <line x1="200" y1="360" x2="1080" y2="360" stroke="#FFFFFF" stroke-width="2"/>
-    
-    <circle cx="400" cy="230" r="80" fill="none" stroke="#3D8B7A" stroke-width="3"/>
-    <circle cx="880" cy="230" r="80" fill="none" stroke="#64748B" stroke-width="3"/>
-    <circle cx="400" cy="490" r="80" fill="none" stroke="#E07843" stroke-width="3"/>
-    <circle cx="880" cy="490" r="80" fill="none" stroke="#B54545" stroke-width="3"/>
-    
-    <text x="400" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">安全型</text>
-    <text x="880" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">回避型</text>
-    <text x="400" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">矛盾型</text>
-    <text x="880" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">混乱型</text>
-  </g>
+  <line x1="640" y1="100" x2="640" y2="620" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1"/>
+  <line x1="200" y1="360" x2="1080" y2="360" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1"/>
+  
+  <circle cx="400" cy="230" r="80" fill="none" stroke="#3D8B7A" stroke-width="3" stroke-opacity="0.1"/>
+  <circle cx="880" cy="230" r="80" fill="none" stroke="#64748B" stroke-width="3" stroke-opacity="0.1"/>
+  <circle cx="400" cy="490" r="80" fill="none" stroke="#E07843" stroke-width="3" stroke-opacity="0.1"/>
+  <circle cx="880" cy="490" r="80" fill="none" stroke="#B54545" stroke-width="3" stroke-opacity="0.1"/>
+  
+  <text x="400" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.1" text-anchor="middle">安全型</text>
+  <text x="880" y="235" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.1" text-anchor="middle">回避型</text>
+  <text x="400" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.1" text-anchor="middle">矛盾型</text>
+  <text x="880" y="495" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.1" text-anchor="middle">混乱型</text>
   
   <!-- 章节编号 -->
-  <text x="640" y="300" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+  <text x="640" y="300" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" fill-opacity="0.15" text-anchor="middle">
     04
   </text>
   
   <!-- 章节标识 -->
-  <rect x="550" y="350" width="180" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <rect x="550" y="350" width="180" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.2"/>
   <text x="640" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     CHAPTER FOUR
   </text>
@@ -51,16 +49,16 @@
   
   <!-- 关键词 -->
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(280, 580)">
-    <rect x="0" y="0" width="120" height="30" rx="15" fill="rgba(61,139,122,0.4)"/>
+    <rect x="0" y="0" width="120" height="30" rx="15" fill="#3D8B7A" fill-opacity="0.4"/>
     <text x="60" y="20" text-anchor="middle">安全/自主型</text>
     
-    <rect x="140" y="0" width="120" height="30" rx="15" fill="rgba(100,116,139,0.4)"/>
+    <rect x="140" y="0" width="120" height="30" rx="15" fill="#64748B" fill-opacity="0.4"/>
     <text x="200" y="20" text-anchor="middle">回避/冷漠型</text>
     
-    <rect x="280" y="0" width="120" height="30" rx="15" fill="rgba(224,120,67,0.4)"/>
+    <rect x="280" y="0" width="120" height="30" rx="15" fill="#E07843" fill-opacity="0.4"/>
     <text x="340" y="20" text-anchor="middle">矛盾/迷恋型</text>
     
-    <rect x="420" y="0" width="140" height="30" rx="15" fill="rgba(181,69,69,0.4)"/>
+    <rect x="420" y="0" width="140" height="30" rx="15" fill="#B54545" fill-opacity="0.4"/>
     <text x="490" y="20" text-anchor="middle">混乱/未解决型</text>
   </g>
   

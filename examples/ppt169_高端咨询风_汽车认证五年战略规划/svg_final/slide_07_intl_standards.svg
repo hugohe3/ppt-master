@@ -69,28 +69,28 @@
       <rect width="500" height="55" rx="0" fill="#F8F9FA" />
       <rect x="0" y="0" width="6" height="55" fill="#0076A8" />
       <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇪🇺 欧盟</text>
-      <text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="22">E-Mark、电池法规、CBAM碳边境税</text><text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="42">UN R155/R156 网络安全</text></g>
+      <text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="22">E-Mark、电池法规、CBAM碳边境税</text><text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="42">UN R155/R156 网络安全</text></g>
     
     
     <g transform="translate(20, 160)">
       <rect width="500" height="55" rx="0" fill="#FFFFFF" />
       <rect x="0" y="0" width="6" height="55" fill="#FF6B35" />
       <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇺🇸 美国</text>
-      <text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="22">FMVSS联邦标准、DOT认证</text><text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="42">自动驾驶豁免程序</text></g>
+      <text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="22">FMVSS联邦标准、DOT认证</text><text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="42">自动驾驶豁免程序</text></g>
     
     
     <g transform="translate(20, 220)">
       <rect width="500" height="55" rx="0" fill="#F8F9FA" />
       <rect x="0" y="0" width="6" height="55" fill="#9C27B0" />
       <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🇷🇺 俄罗斯</text>
-      <text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="22">OTTC型式批准</text><text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="42">EAEU关税同盟技术法规</text></g>
+      <text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="22">OTTC型式批准</text><text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="42">EAEU关税同盟技术法规</text></g>
     
     
     <g transform="translate(20, 280)">
       <rect width="500" height="55" rx="0" fill="#FFFFFF" />
       <rect x="0" y="0" width="6" height="55" fill="#2196F3" />
       <text x="60" y="22" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600" fill="#1A1A2E">🌏 东南亚/中东</text>
-      <text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="22">本地标准体系完善中</text><text font-size="13" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="190" y="42">互认协议推进机遇期</text></g>
+      <text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="22">本地标准体系完善中</text><text font-size="13" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" fill="#4A4A6A" x="190" y="42">互认协议推进机遇期</text></g>
   </g>
   
   

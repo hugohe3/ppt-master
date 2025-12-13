@@ -22,7 +22,7 @@
   <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
   <!-- 背景图片 -->
-  <image href="../images/cover_dam.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.4"/>
+  <image href="../images/cover_dam.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
   
   <!-- 渐变遮罩 -->
   <rect width="1280" height="720" fill="url(#overlayGradient)"/>

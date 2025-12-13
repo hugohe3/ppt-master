@@ -122,14 +122,14 @@
   
   <g transform="translate(100, 565)" font-family="PingFang SC, sans-serif">
     <!-- 色情移情 -->
-    <rect x="0" y="0" width="500" height="70" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <rect x="0" y="0" width="500" height="70" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
     <text x="20" y="25" font-size="15" font-weight="600" fill="#E07843">色情移情 Erotic Transference</text>
     <text x="20" y="50" font-size="13" fill="#CBD5E1">
       通过性化关系寻求亲密或防御更深的依恋恐惧 → 接纳渴望而不付诸行动
     </text>
     
     <!-- 反移情 -->
-    <rect x="530" y="0" width="500" height="70" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <rect x="530" y="0" width="500" height="70" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
     <text x="550" y="25" font-size="15" font-weight="600" fill="#3D8B7A">反移情管理</text>
     <text x="550" y="50" font-size="13" fill="#CBD5E1">
       治疗师可能感到被吞噬、愤怒或无助 → 觉察练习调节强烈反移情

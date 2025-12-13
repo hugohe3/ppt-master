@@ -28,7 +28,7 @@
            clip-path="url(#therapyClip)" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 图片标注 -->
-    <rect x="120" y="255" width="160" height="35" rx="8" fill="rgba(46,92,142,0.9)"/>
+    <rect x="120" y="255" width="160" height="35" rx="8" fill="#2E5C8E" fill-opacity="0.9"/>
     <text x="200" y="278" font-family="PingFang SC, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">治疗二元关系</text>
   </g>
   

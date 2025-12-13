@@ -17,7 +17,9 @@
   <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
   <!-- 背景图片 -->
-  <image x="0" y="0" width="1280" height="720" href="../images/cover_background.png" preserveAspectRatio="xMidYMid slice" opacity="0.8"/>
+  <image x="0" y="0" width="1280" height="720" href="../images/cover_background.png" preserveAspectRatio="xMidYMid slice"/>
+  <!-- 图片透明度遮罩层（原 opacity="0.8" → 遮罩 opacity="0.2"） -->
+  <rect x="0" y="0" width="1280" height="720" fill="#003F6C" opacity="0.2"/>
   
   <!-- 科技装饰线条 -->
   <line x1="0" y1="200" x2="1280" y2="200" stroke="url(#lineGradient)" stroke-width="1"/>

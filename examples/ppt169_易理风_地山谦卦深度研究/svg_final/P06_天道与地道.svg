@@ -28,7 +28,7 @@
     
     
     <g transform="translate(560, 70)">
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#2D5A5A" font-weight="bold" x="0" y="20">天体物理学视角</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="48">太阳必须将光热向下辐射（下济），才能体现其光明</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="74">若能量只聚敛于自身，将走向热寂或坍塌</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#2D5A5A" font-weight="bold" x="0" y="114">负反馈调节机制</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="142">高压区 → 低压区 ｜ 高温 → 低温</text></g>
+      <text font-size="15" fill="#2D5A5A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="20">天体物理学视角</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="48">太阳必须将光热向下辐射（下济），才能体现其光明</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="74">若能量只聚敛于自身，将走向热寂或坍塌</text><text font-size="15" fill="#2D5A5A" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="114">负反馈调节机制</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="142">高压区 → 低压区 ｜ 高温 → 低温</text></g>
     
     
     <path fill="#2D5A5A" d="M36,175 H524 A6,6 0 0 1 530,181 V209 A6,6 0 0 1 524,215 H36 A6,6 0 0 1 30,209 V181 A6,6 0 0 1 36,175 Z" />
@@ -54,7 +54,7 @@
     
     
     <g transform="translate(560, 70)">
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C94C4C" font-weight="bold" x="0" y="20">地理演化规律</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="48">长期趋势：剥蚀高山（变盈）填平沟壑（流谦）</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="74">水流作为地道载体，永远遵循重力法则流向最低处</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C94C4C" font-weight="bold" x="0" y="114">社会学隐喻</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="142">高高在上的特权结构终将被底层力量侵蚀瓦解</text></g>
+      <text font-size="15" fill="#C94C4C" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="20">地理演化规律</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="48">长期趋势：剥蚀高山（变盈）填平沟壑（流谦）</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="74">水流作为地道载体，永远遵循重力法则流向最低处</text><text font-size="15" fill="#C94C4C" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="114">社会学隐喻</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="142">高高在上的特权结构终将被底层力量侵蚀瓦解</text></g>
     
     
     <path fill="#C94C4C" d="M36,175 H524 A6,6 0 0 1 530,181 V209 A6,6 0 0 1 524,215 H36 A6,6 0 0 1 30,209 V181 A6,6 0 0 1 36,175 Z" />

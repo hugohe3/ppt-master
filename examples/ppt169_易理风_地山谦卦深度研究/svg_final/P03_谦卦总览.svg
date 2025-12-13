@@ -42,7 +42,7 @@
     
     
     <text x="30" y="365" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1ABC9C">核心特质</text>
-    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#ECF0F1" x="30" y="395">• 内刚外柔：山藏于地，实力内敛</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#ECF0F1" x="30" y="423">• 蓄势待发：保留隆起的潜能</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#ECF0F1" x="30" y="451">• 阻力最小：消除摩擦与嫉妒</text></g>
+    <text font-size="15" fill="#ECF0F1" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="395">• 内刚外柔：山藏于地，实力内敛</text><text font-size="15" fill="#ECF0F1" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="423">• 蓄势待发：保留隆起的潜能</text><text font-size="15" fill="#ECF0F1" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="30" y="451">• 阻力最小：消除摩擦与嫉妒</text></g>
   
   
   <g transform="translate(660, 150)">

@@ -11,27 +11,25 @@
   <rect width="1280" height="720" fill="url(#conclusionGradient)"/>
   
   <!-- 装饰性连接网络 -->
-  <g opacity="0.15" stroke="#FFFFFF" stroke-width="1">
-    <circle cx="200" cy="200" r="5" fill="#FFFFFF"/>
-    <circle cx="280" cy="150" r="4" fill="#FFFFFF"/>
-    <circle cx="150" cy="280" r="3" fill="#FFFFFF"/>
-    <line x1="200" y1="200" x2="280" y2="150"/>
-    <line x1="200" y1="200" x2="150" y2="280"/>
-    
-    <circle cx="1080" cy="180" r="5" fill="#FFFFFF"/>
-    <circle cx="1150" cy="130" r="4" fill="#FFFFFF"/>
-    <circle cx="1000" cy="220" r="3" fill="#FFFFFF"/>
-    <line x1="1080" y1="180" x2="1150" y2="130"/>
-    <line x1="1080" y1="180" x2="1000" y2="220"/>
-    
-    <circle cx="100" cy="500" r="4" fill="#FFFFFF"/>
-    <circle cx="180" cy="560" r="3" fill="#FFFFFF"/>
-    <line x1="100" y1="500" x2="180" y2="560"/>
-    
-    <circle cx="1100" cy="520" r="5" fill="#FFFFFF"/>
-    <circle cx="1180" cy="480" r="3" fill="#FFFFFF"/>
-    <line x1="1100" y1="520" x2="1180" y2="480"/>
-  </g>
+  <circle cx="200" cy="200" r="5" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="280" cy="150" r="4" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="150" cy="280" r="3" fill="#FFFFFF" fill-opacity="0.15"/>
+  <line x1="200" y1="200" x2="280" y2="150" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
+  <line x1="200" y1="200" x2="150" y2="280" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
+  
+  <circle cx="1080" cy="180" r="5" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="1150" cy="130" r="4" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="1000" cy="220" r="3" fill="#FFFFFF" fill-opacity="0.15"/>
+  <line x1="1080" y1="180" x2="1150" y2="130" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
+  <line x1="1080" y1="180" x2="1000" y2="220" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
+  
+  <circle cx="100" cy="500" r="4" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="180" cy="560" r="3" fill="#FFFFFF" fill-opacity="0.15"/>
+  <line x1="100" y1="500" x2="180" y2="560" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
+  
+  <circle cx="1100" cy="520" r="5" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="1180" cy="480" r="3" fill="#FFFFFF" fill-opacity="0.15"/>
+  <line x1="1100" y1="520" x2="1180" y2="480" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15"/>
   
   <!-- 核心信息 -->
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
@@ -42,7 +40,7 @@
     </text>
     
     <!-- 引言 -->
-    <rect x="280" y="180" width="720" height="80" rx="16" fill="rgba(255,255,255,0.1)"/>
+    <rect x="280" y="180" width="720" height="80" rx="16" fill="#FFFFFF" fill-opacity="0.1"/>
     <rect x="284" y="180" width="4" height="80" rx="2" fill="#E07843"/>
     
     <text x="640" y="215" font-size="22" fill="#FFFFFF" text-anchor="middle" font-style="italic">
@@ -57,7 +55,7 @@
       
       <!-- 信息1 -->
       <g>
-        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
         
         <circle cx="40" cy="40" r="25" fill="#3D8B7A"/>
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
@@ -74,7 +72,7 @@
       
       <!-- 信息2 -->
       <g transform="translate(365, 0)">
-        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
         
         <circle cx="40" cy="40" r="25" fill="#E07843"/>
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
@@ -91,7 +89,7 @@
       
       <!-- 信息3 -->
       <g transform="translate(730, 0)">
-        <rect x="0" y="0" width="340" height="160" rx="16" fill="rgba(255,255,255,0.15)"/>
+        <rect x="0" y="0" width="340" height="160" rx="16" fill="#FFFFFF" fill-opacity="0.15"/>
         
         <circle cx="40" cy="40" r="25" fill="#2E5C8E"/>
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
@@ -118,22 +116,22 @@
     
     <!-- 关键词回顾 -->
     <g transform="translate(280, 610)">
-      <rect x="0" y="0" width="120" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="0" y="0" width="120" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="60" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">安全基地</text>
       
-      <rect x="140" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="140" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="190" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">心智化</text>
       
-      <rect x="260" y="0" width="80" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="260" y="0" width="80" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="300" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">觉察</text>
       
-      <rect x="360" y="0" width="120" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="360" y="0" width="120" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="420" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">情感调节</text>
       
-      <rect x="500" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="500" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="550" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">双螺旋</text>
       
-      <rect x="620" y="0" width="100" height="32" rx="16" fill="rgba(255,255,255,0.2)"/>
+      <rect x="620" y="0" width="100" height="32" rx="16" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="670" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">整合</text>
     </g>
     

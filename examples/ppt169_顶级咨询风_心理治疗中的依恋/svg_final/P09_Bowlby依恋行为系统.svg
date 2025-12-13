@@ -24,7 +24,7 @@
     <path fill="#2E5C8E" d="M12,0 H288 A12,12 0 0 1 300,12 V108 A12,12 0 0 1 288,120 H12 A12,12 0 0 1 0,108 V12 A12,12 0 0 1 12,0 Z" />
     <rect x="0" y="108" width="300" height="12" fill="#2E5C8E" />
     
-    <circle cx="150" cy="60" r="40" fill="rgba(255,255,255,0.2)" />
+    <circle cx="150" cy="60" r="40" fill="#FFFFFF" fill-opacity="0.2" />
     <text x="150" y="72" font-size="36" text-anchor="middle" fill="#FFFFFF">👤</text>
     <text x="150" y="110" font-size="14" fill="#E5E7EB" text-anchor="middle">1907 - 1990</text>
     
@@ -34,7 +34,7 @@
     <text fill="#374151" font-size="14" x="20" y="185">• 创立依恋理论</text><text fill="#374151" font-size="14" x="20" y="209">• 提出依恋行为系统概念</text><text fill="#374151" font-size="14" x="20" y="233">• 发展内部工作模型理论</text><text fill="#374151" font-size="14" x="20" y="257">• 强调真实关系体验的作用</text><line x1="20" y1="300" x2="280" y2="300" stroke="#E5E7EB" stroke-width="1" />
     
     <text x="20" y="325" font-size="16" font-weight="600" fill="#1E293B">核心观点</text>
-    <text font-style="italic" fill="#6B7280" font-size="14" x="20" y="355">"依恋是基于进化的</text><text font-style="italic" fill="#6B7280" font-size="14" x="20" y="375">生物学必要性"</text></g>
+    <text fill="#6B7280" font-size="14" font-style="italic" x="20" y="355">"依恋是基于进化的</text><text fill="#6B7280" font-size="14" font-style="italic" x="20" y="375">生物学必要性"</text></g>
   
   
   <g transform="translate(400, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
@@ -97,13 +97,13 @@
     </text>
     
     <g transform="translate(30, 80)">
-      <path fill="rgba(255,255,255,0.15)" d="M12,0 H148 A12,12 0 0 1 160,12 V12 A12,12 0 0 1 148,24 H12 A12,12 0 0 1 0,12 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M12,0 H148 A12,12 0 0 1 160,12 V12 A12,12 0 0 1 148,24 H12 A12,12 0 0 1 0,12 V12 A12,12 0 0 1 12,0 Z" />
       <text x="80" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">从外在到内在</text>
       
-      <path fill="rgba(255,255,255,0.15)" d="M192,0 H348 A12,12 0 0 1 360,12 V12 A12,12 0 0 1 348,24 H192 A12,12 0 0 1 180,12 V12 A12,12 0 0 1 192,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M192,0 H348 A12,12 0 0 1 360,12 V12 A12,12 0 0 1 348,24 H192 A12,12 0 0 1 180,12 V12 A12,12 0 0 1 192,0 Z" />
       <text x="270" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">现实事件的重要性</text>
       
-      <path fill="rgba(255,255,255,0.15)" d="M392,0 H568 A12,12 0 0 1 580,12 V12 A12,12 0 0 1 568,24 H392 A12,12 0 0 1 380,12 V12 A12,12 0 0 1 392,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M392,0 H568 A12,12 0 0 1 580,12 V12 A12,12 0 0 1 568,24 H392 A12,12 0 0 1 380,12 V12 A12,12 0 0 1 392,0 Z" />
       <text x="480" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">反对仅关注内在幻想</text>
     </g>
   </g>

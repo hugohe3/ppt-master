@@ -38,7 +38,7 @@
     <rect x="0" y="40" width="555" height="10" fill="#C0392B" />
     <text x="278" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">内向征伐：征邑国而非天下</text>
     
-    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="40" y="85">与六五「侵伐」的区别</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="115">• 六五侵伐：对外或对天下</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="141">• 上六征邑国：对内，对自己封地</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="40" y="181">深度解读</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="40" y="209">• 极高虚位 + 名满天下 → 易滋生内部懈怠</text></g>
+    <text font-size="15" fill="#C0392B" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="40" y="85">与六五「侵伐」的区别</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="40" y="115">• 六五侵伐：对外或对天下</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="40" y="141">• 上六征邑国：对内，对自己封地</text><text font-size="15" fill="#C0392B" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="40" y="181">深度解读</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="40" y="209">• 极高虚位 + 名满天下 → 易滋生内部懈怠</text></g>
   
   
   <g transform="translate(60, 400)">
@@ -47,7 +47,7 @@
     <rect x="0" y="40" width="1160" height="10" fill="#D4A84B" />
     <text x="580" y="33" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50" text-anchor="middle">心学视角：从社会性谦到本体论慎独</text>
     
-    <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="90">「征邑国」= 征伐内心的骄矜之气</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="120">在功德圆满之时，更要动用军队般的意志力（行师）来克制私欲</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="80" y="150">进行最后的自我净化</text><path fill="#2C3E50" stroke="#D4A84B" stroke-width="1" d="M856,75 H1124 A6,6 0 0 1 1130,81 V139 A6,6 0 0 1 1124,145 H856 A6,6 0 0 1 850,139 V81 A6,6 0 0 1 856,75 Z" />
+    <text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="80" y="90">「征邑国」= 征伐内心的骄矜之气</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="80" y="120">在功德圆满之时，更要动用军队般的意志力（行师）来克制私欲</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="80" y="150">进行最后的自我净化</text><path fill="#2C3E50" stroke="#D4A84B" stroke-width="1" d="M856,75 H1124 A6,6 0 0 1 1130,81 V139 A6,6 0 0 1 1124,145 H856 A6,6 0 0 1 850,139 V81 A6,6 0 0 1 856,75 Z" />
     <text x="990" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#D4A84B" text-anchor="middle" font-weight="bold">回归「慎独」</text>
     <text x="990" y="130" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">从社会修养回到个体本心</text>
   </g>

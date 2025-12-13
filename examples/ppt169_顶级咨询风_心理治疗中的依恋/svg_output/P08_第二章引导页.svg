@@ -10,32 +10,28 @@
   <rect width="1280" height="720" fill="url(#chapterGradient2)"/>
   
   <!-- 装饰性圆形 -->
-  <g opacity="0.1">
-    <circle cx="200" cy="200" r="250" fill="none" stroke="#FFFFFF" stroke-width="1"/>
-    <circle cx="200" cy="200" r="180" fill="none" stroke="#FFFFFF" stroke-width="1"/>
-    <circle cx="1080" cy="500" r="200" fill="none" stroke="#FFFFFF" stroke-width="1"/>
-    <circle cx="1080" cy="500" r="140" fill="none" stroke="#FFFFFF" stroke-width="1"/>
-  </g>
+  <circle cx="200" cy="200" r="250" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
+  <circle cx="200" cy="200" r="180" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
+  <circle cx="1080" cy="500" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
+  <circle cx="1080" cy="500" r="140" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
   
   <!-- 四位人物剪影装饰 -->
-  <g opacity="0.15" fill="#FFFFFF">
-    <circle cx="250" cy="620" r="25"/>
-    <circle cx="450" cy="620" r="25"/>
-    <circle cx="830" cy="620" r="25"/>
-    <circle cx="1030" cy="620" r="25"/>
-    <text x="250" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Bowlby</text>
-    <text x="450" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Ainsworth</text>
-    <text x="830" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Main</text>
-    <text x="1030" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Fonagy</text>
-  </g>
+  <circle cx="250" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="450" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="830" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15"/>
+  <circle cx="1030" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15"/>
+  <text x="250" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Bowlby</text>
+  <text x="450" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Ainsworth</text>
+  <text x="830" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Main</text>
+  <text x="1030" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Fonagy</text>
   
   <!-- 章节编号 -->
-  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" fill-opacity="0.15" text-anchor="middle">
     02
   </text>
   
   <!-- 章节标识 -->
-  <rect x="560" y="280" width="160" height="40" rx="20" fill="rgba(255,255,255,0.2)"/>
+  <rect x="560" y="280" width="160" height="40" rx="20" fill="#FFFFFF" fill-opacity="0.2"/>
   <text x="640" y="307" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     CHAPTER TWO
   </text>
@@ -55,25 +51,25 @@
   
   <!-- 人物介绍卡片 -->
   <g transform="translate(200, 510)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <rect x="0" y="0" width="880" height="70" rx="12" fill="rgba(255,255,255,0.1)"/>
+    <rect x="0" y="0" width="880" height="70" rx="12" fill="#FFFFFF" fill-opacity="0.1"/>
     
     <g transform="translate(40, 0)">
-      <rect x="0" y="20" width="160" height="30" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <rect x="0" y="20" width="160" height="30" rx="4" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="80" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">John Bowlby</text>
     </g>
     
     <g transform="translate(240, 0)">
-      <rect x="0" y="20" width="180" height="30" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <rect x="0" y="20" width="180" height="30" rx="4" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="90" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Mary Ainsworth</text>
     </g>
     
     <g transform="translate(460, 0)">
-      <rect x="0" y="20" width="160" height="30" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <rect x="0" y="20" width="160" height="30" rx="4" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="80" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Mary Main</text>
     </g>
     
     <g transform="translate(660, 0)">
-      <rect x="0" y="20" width="180" height="30" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <rect x="0" y="20" width="180" height="30" rx="4" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="90" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Peter Fonagy</text>
     </g>
   </g>

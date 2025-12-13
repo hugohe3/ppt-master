@@ -11,27 +11,25 @@
   <rect width="1280" height="720" fill="url(#conclusionGradient)" />
   
   
-  <g opacity="0.15" stroke="#FFFFFF" stroke-width="1">
-    <circle cx="200" cy="200" r="5" fill="#FFFFFF" />
-    <circle cx="280" cy="150" r="4" fill="#FFFFFF" />
-    <circle cx="150" cy="280" r="3" fill="#FFFFFF" />
-    <line x1="200" y1="200" x2="280" y2="150" />
-    <line x1="200" y1="200" x2="150" y2="280" />
-    
-    <circle cx="1080" cy="180" r="5" fill="#FFFFFF" />
-    <circle cx="1150" cy="130" r="4" fill="#FFFFFF" />
-    <circle cx="1000" cy="220" r="3" fill="#FFFFFF" />
-    <line x1="1080" y1="180" x2="1150" y2="130" />
-    <line x1="1080" y1="180" x2="1000" y2="220" />
-    
-    <circle cx="100" cy="500" r="4" fill="#FFFFFF" />
-    <circle cx="180" cy="560" r="3" fill="#FFFFFF" />
-    <line x1="100" y1="500" x2="180" y2="560" />
-    
-    <circle cx="1100" cy="520" r="5" fill="#FFFFFF" />
-    <circle cx="1180" cy="480" r="3" fill="#FFFFFF" />
-    <line x1="1100" y1="520" x2="1180" y2="480" />
-  </g>
+  <circle cx="200" cy="200" r="5" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="280" cy="150" r="4" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="150" cy="280" r="3" fill="#FFFFFF" fill-opacity="0.15" />
+  <line x1="200" y1="200" x2="280" y2="150" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+  <line x1="200" y1="200" x2="150" y2="280" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+  
+  <circle cx="1080" cy="180" r="5" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="1150" cy="130" r="4" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="1000" cy="220" r="3" fill="#FFFFFF" fill-opacity="0.15" />
+  <line x1="1080" y1="180" x2="1150" y2="130" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+  <line x1="1080" y1="180" x2="1000" y2="220" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+  
+  <circle cx="100" cy="500" r="4" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="180" cy="560" r="3" fill="#FFFFFF" fill-opacity="0.15" />
+  <line x1="100" y1="500" x2="180" y2="560" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+  
+  <circle cx="1100" cy="520" r="5" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="1180" cy="480" r="3" fill="#FFFFFF" fill-opacity="0.15" />
+  <line x1="1100" y1="520" x2="1180" y2="480" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
   
   
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
@@ -42,7 +40,7 @@
     </text>
     
     
-    <path fill="rgba(255,255,255,0.1)" d="M296,180 H984 A16,16 0 0 1 1000,196 V244 A16,16 0 0 1 984,260 H296 A16,16 0 0 1 280,244 V196 A16,16 0 0 1 296,180 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M296,180 H984 A16,16 0 0 1 1000,196 V244 A16,16 0 0 1 984,260 H296 A16,16 0 0 1 280,244 V196 A16,16 0 0 1 296,180 Z" />
     <path fill="#E07843" d="M286,180 H286 A2,2 0 0 1 288,182 V258 A2,2 0 0 1 286,260 H286 A2,2 0 0 1 284,258 V182 A2,2 0 0 1 286,180 Z" />
     
     <text x="640" y="215" font-size="22" fill="#FFFFFF" text-anchor="middle" font-style="italic">
@@ -57,7 +55,7 @@
       
       
       <g>
-        <path fill="rgba(255,255,255,0.15)" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
         
         <circle cx="40" cy="40" r="25" fill="#3D8B7A" />
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
@@ -69,7 +67,7 @@
       
       
       <g transform="translate(365, 0)">
-        <path fill="rgba(255,255,255,0.15)" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
         
         <circle cx="40" cy="40" r="25" fill="#E07843" />
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
@@ -81,7 +79,7 @@
       
       
       <g transform="translate(730, 0)">
-        <path fill="rgba(255,255,255,0.15)" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M16,0 H324 A16,16 0 0 1 340,16 V144 A16,16 0 0 1 324,160 H16 A16,16 0 0 1 0,144 V16 A16,16 0 0 1 16,0 Z" />
         
         <circle cx="40" cy="40" r="25" fill="#2E5C8E" />
         <text x="40" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
@@ -103,22 +101,22 @@
     
     
     <g transform="translate(280, 610)">
-      <path fill="rgba(255,255,255,0.2)" d="M16,0 H104 A16,16 0 0 1 120,16 V16 A16,16 0 0 1 104,32 H16 A16,16 0 0 1 0,16 V16 A16,16 0 0 1 16,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M16,0 H104 A16,16 0 0 1 120,16 V16 A16,16 0 0 1 104,32 H16 A16,16 0 0 1 0,16 V16 A16,16 0 0 1 16,0 Z" />
       <text x="60" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">安全基地</text>
       
-      <path fill="rgba(255,255,255,0.2)" d="M156,0 H224 A16,16 0 0 1 240,16 V16 A16,16 0 0 1 224,32 H156 A16,16 0 0 1 140,16 V16 A16,16 0 0 1 156,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M156,0 H224 A16,16 0 0 1 240,16 V16 A16,16 0 0 1 224,32 H156 A16,16 0 0 1 140,16 V16 A16,16 0 0 1 156,0 Z" />
       <text x="190" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">心智化</text>
       
-      <path fill="rgba(255,255,255,0.2)" d="M276,0 H324 A16,16 0 0 1 340,16 V16 A16,16 0 0 1 324,32 H276 A16,16 0 0 1 260,16 V16 A16,16 0 0 1 276,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M276,0 H324 A16,16 0 0 1 340,16 V16 A16,16 0 0 1 324,32 H276 A16,16 0 0 1 260,16 V16 A16,16 0 0 1 276,0 Z" />
       <text x="300" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">觉察</text>
       
-      <path fill="rgba(255,255,255,0.2)" d="M376,0 H464 A16,16 0 0 1 480,16 V16 A16,16 0 0 1 464,32 H376 A16,16 0 0 1 360,16 V16 A16,16 0 0 1 376,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M376,0 H464 A16,16 0 0 1 480,16 V16 A16,16 0 0 1 464,32 H376 A16,16 0 0 1 360,16 V16 A16,16 0 0 1 376,0 Z" />
       <text x="420" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">情感调节</text>
       
-      <path fill="rgba(255,255,255,0.2)" d="M516,0 H584 A16,16 0 0 1 600,16 V16 A16,16 0 0 1 584,32 H516 A16,16 0 0 1 500,16 V16 A16,16 0 0 1 516,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M516,0 H584 A16,16 0 0 1 600,16 V16 A16,16 0 0 1 584,32 H516 A16,16 0 0 1 500,16 V16 A16,16 0 0 1 516,0 Z" />
       <text x="550" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">双螺旋</text>
       
-      <path fill="rgba(255,255,255,0.2)" d="M636,0 H704 A16,16 0 0 1 720,16 V16 A16,16 0 0 1 704,32 H636 A16,16 0 0 1 620,16 V16 A16,16 0 0 1 636,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.2" d="M636,0 H704 A16,16 0 0 1 720,16 V16 A16,16 0 0 1 704,32 H636 A16,16 0 0 1 620,16 V16 A16,16 0 0 1 636,0 Z" />
       <text x="670" y="21" font-size="14" fill="#FFFFFF" text-anchor="middle">整合</text>
     </g>
     

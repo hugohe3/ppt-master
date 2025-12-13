@@ -75,7 +75,7 @@
     <text x="20" y="30" font-size="16" font-weight="bold" fill="#FFFFFF">🧠 右脑 vs 左脑</text>
     
     <g transform="translate(20, 50)">
-      <path fill="rgba(255,255,255,0.1)" d="M8,0 H192 A8,8 0 0 1 200,8 V87 A8,8 0 0 1 192,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M8,0 H192 A8,8 0 0 1 200,8 V87 A8,8 0 0 1 192,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
       <text x="100" y="25" font-size="14" font-weight="600" fill="#E07843" text-anchor="middle">右脑</text>
       <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">社交-情感大脑</text>
       <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">非言语沟通</text>
@@ -83,7 +83,7 @@
     </g>
     
     <g transform="translate(240, 50)">
-      <path fill="rgba(255,255,255,0.1)" d="M8,0 H192 A8,8 0 0 1 200,8 V87 A8,8 0 0 1 192,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M8,0 H192 A8,8 0 0 1 200,8 V87 A8,8 0 0 1 192,95 H8 A8,8 0 0 1 0,87 V8 A8,8 0 0 1 8,0 Z" />
       <text x="100" y="25" font-size="14" font-weight="600" fill="#3D8B7A" text-anchor="middle">左脑</text>
       <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">逻辑-语言大脑</text>
       <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">逻辑推理</text>
@@ -131,13 +131,13 @@
   </text>
   
   <g transform="translate(100, 625)" font-family="PingFang SC, sans-serif" font-size="13">
-    <path fill="rgba(255,255,255,0.15)" d="M13,0 H187 A13,13 0 0 1 200,13 V13 A13,13 0 0 1 187,26 H13 A13,13 0 0 1 0,13 V13 A13,13 0 0 1 13,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.15" d="M13,0 H187 A13,13 0 0 1 200,13 V13 A13,13 0 0 1 187,26 H13 A13,13 0 0 1 0,13 V13 A13,13 0 0 1 13,0 Z" />
     <text x="100" y="18" fill="#CBD5E1" text-anchor="middle">Schore: 社交-情感大脑</text>
     
-    <path fill="rgba(255,255,255,0.15)" d="M233,0 H427 A13,13 0 0 1 440,13 V13 A13,13 0 0 1 427,26 H233 A13,13 0 0 1 220,13 V13 A13,13 0 0 1 233,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.15" d="M233,0 H427 A13,13 0 0 1 440,13 V13 A13,13 0 0 1 427,26 H233 A13,13 0 0 1 220,13 V13 A13,13 0 0 1 233,0 Z" />
     <text x="330" y="18" fill="#CBD5E1" text-anchor="middle">发展在18个月前基本完成</text>
     
-    <path fill="rgba(255,255,255,0.15)" d="M473,0 H647 A13,13 0 0 1 660,13 V13 A13,13 0 0 1 647,26 H473 A13,13 0 0 1 460,13 V13 A13,13 0 0 1 473,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.15" d="M473,0 H647 A13,13 0 0 1 660,13 V13 A13,13 0 0 1 647,26 H473 A13,13 0 0 1 460,13 V13 A13,13 0 0 1 473,0 Z" />
     <text x="560" y="18" fill="#CBD5E1" text-anchor="middle">内隐关系知识</text>
   </g>
   

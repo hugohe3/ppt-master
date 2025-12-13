@@ -24,7 +24,7 @@
     <rect x="0" y="0" width="300" height="120" rx="12" fill="#2E5C8E"/>
     <rect x="0" y="108" width="300" height="12" fill="#2E5C8E"/>
     
-    <circle cx="150" cy="60" r="40" fill="rgba(255,255,255,0.2)"/>
+    <circle cx="150" cy="60" r="40" fill="#FFFFFF" fill-opacity="0.2"/>
     <text x="150" y="72" font-size="36" text-anchor="middle" fill="#FFFFFF">👤</text>
     <text x="150" y="110" font-size="14" fill="#E5E7EB" text-anchor="middle">1907 - 1990</text>
     
@@ -108,13 +108,13 @@
     </text>
     
     <g transform="translate(30, 80)">
-      <rect x="0" y="0" width="160" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <rect x="0" y="0" width="160" height="24" rx="12" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="80" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">从外在到内在</text>
       
-      <rect x="180" y="0" width="180" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <rect x="180" y="0" width="180" height="24" rx="12" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="270" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">现实事件的重要性</text>
       
-      <rect x="380" y="0" width="200" height="24" rx="12" fill="rgba(255,255,255,0.15)"/>
+      <rect x="380" y="0" width="200" height="24" rx="12" fill="#FFFFFF" fill-opacity="0.15"/>
       <text x="480" y="17" font-size="13" fill="#E5E7EB" text-anchor="middle">反对仅关注内在幻想</text>
     </g>
   </g>

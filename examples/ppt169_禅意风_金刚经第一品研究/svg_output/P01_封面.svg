@@ -14,7 +14,9 @@
   <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
   <!-- 背景图片 -->
-  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.35"/>
+  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <!-- 图片透明度遮罩层（原 opacity="0.35" → 遮罩 opacity="0.65"） -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F9F6F1" opacity="0.65"/>
   
   <!-- 装饰圆相 -->
   <circle cx="640" cy="360" r="260" fill="none" stroke="#C9A962" stroke-width="1.5" opacity="0.25"/>

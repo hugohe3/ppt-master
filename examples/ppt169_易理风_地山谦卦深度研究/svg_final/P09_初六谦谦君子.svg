@@ -39,17 +39,17 @@
     
     <g transform="translate(30, 25)">
       <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#1ABC9C">象数分析</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="30">• 极阴之位，居于最下方</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="54">• 阴爻处阴位</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="78">• 「卑微中的卑微」</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="102">• 故称「谦谦」</text></g>
+      <text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="30">• 极阴之位，居于最下方</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="54">• 阴爻处阴位</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="78">• 「卑微中的卑微」</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="102">• 故称「谦谦」</text></g>
     
     
     <g transform="translate(300, 25)">
       <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#D4A84B">义理阐发</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="30">• 初入社会或处于底层</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="54">• 谦非选择，乃生存必须</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="78">• 强调「君子」二字</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="102">• 源于内在修养，非怯懦</text></g>
+      <text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="30">• 初入社会或处于底层</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="54">• 谦非选择，乃生存必须</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="78">• 强调「君子」二字</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="102">• 源于内在修养，非怯懦</text></g>
     
     
     <g transform="translate(570, 25)">
       <text x="0" y="0" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#C0392B">涉大川的悖论</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="30">• 涉川通常需阳刚之气</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="54">• 极柔何以克难？</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="78">• 极度谦卑消除环境阻力</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="0" y="102">• 水流只能托举，不能冲击</text></g>
+      <text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="30">• 涉川通常需阳刚之气</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="54">• 极柔何以克难？</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="78">• 极度谦卑消除环境阻力</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="102">• 水流只能托举，不能冲击</text></g>
   </g>
   
   
@@ -75,14 +75,14 @@
     <path d="M14 12C14 10.3431 12.6569 9 11 9H5C3.34315 9 2 10.3431 2 12V15H14V12Z" />
   </g>
       <text x="55" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#1ABC9C">职场新人</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="20" y="65">缺乏资源（阳气）时，必须采取「谦谦」策略</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="20" y="89">通过极度的低姿态学习与服务，积累跨越险阻的势能</text><path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M558,0 H1072 A8,8 0 0 1 1080,8 V102 A8,8 0 0 1 1072,110 H558 A8,8 0 0 1 550,102 V8 A8,8 0 0 1 558,0 Z" />
+      <text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="65">缺乏资源（阳气）时，必须采取「谦谦」策略</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="89">通过极度的低姿态学习与服务，积累跨越险阻的势能</text><path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M558,0 H1072 A8,8 0 0 1 1080,8 V102 A8,8 0 0 1 1072,110 H558 A8,8 0 0 1 550,102 V8 A8,8 0 0 1 558,0 Z" />
       
   <g transform="translate(570.0, 20.0) scale(1.5)" fill="#C0392B">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M10 16L12 14V10L13.6569 8.34314C15.1571 6.84285 16 4.80802 16 2.68629V0H13.3137C11.192 0 9.15714 0.842855 7.65685 2.34315L6 4H2L0 6L10 16ZM10.5 7C11.3284 7 12 6.32843 12 5.5C12 4.67157 11.3284 4 10.5 4C9.67157 4 9 4.67157 9 5.5C9 6.32843 9.67157 7 10.5 7Z" />
     <path d="M4.9274 13.7558L2.24423 11.0726L0 15L1 16L4.9274 13.7558Z" />
   </g>
       <text x="605" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#C0392B">初创企业</text>
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="570" y="65">资源匮乏期的生存法则：低调积累</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E8E4DC" x="570" y="89">把自己放低到尘埃，反而获得托举之力</text></g>
+      <text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="570" y="65">资源匮乏期的生存法则：低调积累</text><text font-size="14" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="570" y="89">把自己放低到尘埃，反而获得托举之力</text></g>
   </g>
   
   

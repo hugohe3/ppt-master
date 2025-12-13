@@ -32,7 +32,7 @@
   </g>
     <text x="58" y="42" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="17" font-weight="bold" fill="#C9A962" id="text6">核心洞见</text>
     <line x1="20" y1="60" x2="300" y2="60" stroke="#C9A962" stroke-width="1" opacity="0.3" id="line6" />
-    <text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" x="20" y="95">这些看似平淡无奇的动作，</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" x="20" y="123">在佛教修行语境中</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" x="20" y="151">蕴含着深刻的意义，</text><text fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" x="20" y="179">是佛陀身体力行的教法示范。</text></g>
+    <text font-size="15" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="95">这些看似平淡无奇的动作，</text><text font-size="15" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="123">在佛教修行语境中</text><text font-size="15" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="151">蕴含着深刻的意义，</text><text font-size="15" fill="#374151" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="20" y="179">是佛陀身体力行的教法示范。</text></g>
   
   <g transform="translate(390, 125)" id="g44">
     <path fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" id="rect9" d="M12,0 H838 A12,12 0 0 1 850,12 V493 A12,12 0 0 1 838,505 H12 A12,12 0 0 1 0,493 V12 A12,12 0 0 1 12,0 Z" />

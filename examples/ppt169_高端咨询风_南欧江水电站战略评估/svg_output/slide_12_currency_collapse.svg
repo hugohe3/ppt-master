@@ -9,7 +9,9 @@
   <rect width="1280" height="720" fill="url(#darkBg2)"/>
   
   <!-- 背景图片 -->
-  <image href="../images/currency_crisis.png" x="800" y="0" width="480" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.25"/>
+  <image href="../images/currency_crisis.png" x="800" y="0" width="480" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <!-- 图片透明度遮罩层（原 opacity="0.25" → 遮罩 opacity="0.75"） -->
+  <rect x="800" y="0" width="480" height="720" fill="#0D2B3E" opacity="0.75"/>
   
   <text x="40" y="55" font-family="system-ui, 'Microsoft YaHei'" font-size="28" font-weight="700" fill="#FFFFFF">货币崩溃与债务危机</text>
   <text x="1240" y="55" font-family="system-ui" font-size="14" fill="#7ED4E6" text-anchor="end">CURRENCY COLLAPSE</text>

@@ -10,32 +10,28 @@
   <rect width="1280" height="720" fill="url(#chapterGradient2)" />
   
   
-  <g opacity="0.1">
-    <circle cx="200" cy="200" r="250" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="200" cy="200" r="180" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="1080" cy="500" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="1080" cy="500" r="140" fill="none" stroke="#FFFFFF" stroke-width="1" />
-  </g>
+  <circle cx="200" cy="200" r="250" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="200" cy="200" r="180" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="1080" cy="500" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="1080" cy="500" r="140" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
   
   
-  <g opacity="0.15" fill="#FFFFFF">
-    <circle cx="250" cy="620" r="25" />
-    <circle cx="450" cy="620" r="25" />
-    <circle cx="830" cy="620" r="25" />
-    <circle cx="1030" cy="620" r="25" />
-    <text x="250" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Bowlby</text>
-    <text x="450" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Ainsworth</text>
-    <text x="830" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Main</text>
-    <text x="1030" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" opacity="0.5">Fonagy</text>
-  </g>
+  <circle cx="250" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="450" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="830" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15" />
+  <circle cx="1030" cy="620" r="25" fill="#FFFFFF" fill-opacity="0.15" />
+  <text x="250" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Bowlby</text>
+  <text x="450" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Ainsworth</text>
+  <text x="830" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Main</text>
+  <text x="1030" y="665" font-family="system-ui, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.075" text-anchor="middle">Fonagy</text>
   
   
-  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" fill-opacity="0.15" text-anchor="middle">
     02
   </text>
   
   
-  <path fill="rgba(255,255,255,0.2)" d="M580,280 H700 A20,20 0 0 1 720,300 V300 A20,20 0 0 1 700,320 H580 A20,20 0 0 1 560,300 V300 A20,20 0 0 1 580,280 Z" />
+  <path fill="#FFFFFF" fill-opacity="0.2" d="M580,280 H700 A20,20 0 0 1 720,300 V300 A20,20 0 0 1 700,320 H580 A20,20 0 0 1 560,300 V300 A20,20 0 0 1 580,280 Z" />
   <text x="640" y="307" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     CHAPTER TWO
   </text>
@@ -55,25 +51,25 @@
   
   
   <g transform="translate(200, 510)" font-family="PingFang SC, Microsoft YaHei, sans-serif">
-    <path fill="rgba(255,255,255,0.1)" d="M12,0 H868 A12,12 0 0 1 880,12 V58 A12,12 0 0 1 868,70 H12 A12,12 0 0 1 0,58 V12 A12,12 0 0 1 12,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H868 A12,12 0 0 1 880,12 V58 A12,12 0 0 1 868,70 H12 A12,12 0 0 1 0,58 V12 A12,12 0 0 1 12,0 Z" />
     
     <g transform="translate(40, 0)">
-      <path fill="rgba(255,255,255,0.15)" d="M4,20 H156 A4,4 0 0 1 160,24 V46 A4,4 0 0 1 156,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M4,20 H156 A4,4 0 0 1 160,24 V46 A4,4 0 0 1 156,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
       <text x="80" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">John Bowlby</text>
     </g>
     
     <g transform="translate(240, 0)">
-      <path fill="rgba(255,255,255,0.15)" d="M4,20 H176 A4,4 0 0 1 180,24 V46 A4,4 0 0 1 176,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M4,20 H176 A4,4 0 0 1 180,24 V46 A4,4 0 0 1 176,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
       <text x="90" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Mary Ainsworth</text>
     </g>
     
     <g transform="translate(460, 0)">
-      <path fill="rgba(255,255,255,0.15)" d="M4,20 H156 A4,4 0 0 1 160,24 V46 A4,4 0 0 1 156,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M4,20 H156 A4,4 0 0 1 160,24 V46 A4,4 0 0 1 156,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
       <text x="80" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Mary Main</text>
     </g>
     
     <g transform="translate(660, 0)">
-      <path fill="rgba(255,255,255,0.15)" d="M4,20 H176 A4,4 0 0 1 180,24 V46 A4,4 0 0 1 176,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.15" d="M4,20 H176 A4,4 0 0 1 180,24 V46 A4,4 0 0 1 176,50 H4 A4,4 0 0 1 0,46 V24 A4,4 0 0 1 4,20 Z" />
       <text x="90" y="41" font-size="14" fill="#FFFFFF" text-anchor="middle">Peter Fonagy</text>
     </g>
   </g>

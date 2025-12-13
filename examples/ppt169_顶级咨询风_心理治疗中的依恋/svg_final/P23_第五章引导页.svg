@@ -10,27 +10,23 @@
   <rect width="1280" height="720" fill="url(#chapterGradient5)" />
   
   
-  <g opacity="0.1">
-    <ellipse cx="640" cy="300" rx="200" ry="250" fill="none" stroke="#FFFFFF" stroke-width="2" />
-    <circle cx="640" cy="180" r="60" fill="none" stroke="#FFFFFF" stroke-width="2" />
-    <line x1="480" y1="350" x2="380" y2="500" stroke="#FFFFFF" stroke-width="2" />
-    <line x1="800" y1="350" x2="900" y2="500" stroke="#FFFFFF" stroke-width="2" />
-  </g>
+  <ellipse cx="640" cy="300" rx="200" ry="250" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1" />
+  <circle cx="640" cy="180" r="60" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1" />
+  <line x1="480" y1="350" x2="380" y2="500" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1" />
+  <line x1="800" y1="350" x2="900" y2="500" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.1" />
   
   
-  <g opacity="0.2" font-size="48" fill="#FFFFFF">
-    <text x="350" y="300" text-anchor="middle">🎭</text>
-    <text x="640" y="250" text-anchor="middle">🪞</text>
-    <text x="930" y="300" text-anchor="middle">🧘</text>
-  </g>
+  <text x="350" y="300" font-size="48" fill="#FFFFFF" fill-opacity="0.2" text-anchor="middle">🎭</text>
+  <text x="640" y="250" font-size="48" fill="#FFFFFF" fill-opacity="0.2" text-anchor="middle">🪞</text>
+  <text x="930" y="300" font-size="48" fill="#FFFFFF" fill-opacity="0.2" text-anchor="middle">🧘</text>
   
   
-  <text x="640" y="380" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+  <text x="640" y="380" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" fill-opacity="0.15" text-anchor="middle">
     05
   </text>
   
   
-  <path fill="rgba(255,255,255,0.2)" d="M575,430 H705 A20,20 0 0 1 725,450 V450 A20,20 0 0 1 705,470 H575 A20,20 0 0 1 555,450 V450 A20,20 0 0 1 575,430 Z" />
+  <path fill="#FFFFFF" fill-opacity="0.2" d="M575,430 H705 A20,20 0 0 1 725,450 V450 A20,20 0 0 1 705,470 H575 A20,20 0 0 1 555,450 V450 A20,20 0 0 1 575,430 Z" />
   <text x="640" y="457" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     CHAPTER FIVE
   </text>
@@ -50,19 +46,19 @@
   
   
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" transform="translate(310, 640)">
-    <path fill="rgba(255,255,255,0.2)" d="M14,0 H86 A14,14 0 0 1 100,14 V14 A14,14 0 0 1 86,28 H14 A14,14 0 0 1 0,14 V14 A14,14 0 0 1 14,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.2" d="M14,0 H86 A14,14 0 0 1 100,14 V14 A14,14 0 0 1 86,28 H14 A14,14 0 0 1 0,14 V14 A14,14 0 0 1 14,0 Z" />
     <text x="50" y="19" text-anchor="middle">被唤起</text>
     
-    <path fill="rgba(255,255,255,0.2)" d="M134,0 H186 A14,14 0 0 1 200,14 V14 A14,14 0 0 1 186,28 H134 A14,14 0 0 1 120,14 V14 A14,14 0 0 1 134,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.2" d="M134,0 H186 A14,14 0 0 1 200,14 V14 A14,14 0 0 1 186,28 H134 A14,14 0 0 1 120,14 V14 A14,14 0 0 1 134,0 Z" />
     <text x="160" y="19" text-anchor="middle">活现</text>
     
-    <path fill="rgba(255,255,255,0.2)" d="M234,0 H306 A14,14 0 0 1 320,14 V14 A14,14 0 0 1 306,28 H234 A14,14 0 0 1 220,14 V14 A14,14 0 0 1 234,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.2" d="M234,0 H306 A14,14 0 0 1 320,14 V14 A14,14 0 0 1 306,28 H234 A14,14 0 0 1 220,14 V14 A14,14 0 0 1 234,0 Z" />
     <text x="270" y="19" text-anchor="middle">具身化</text>
     
-    <path fill="rgba(255,255,255,0.2)" d="M354,0 H446 A14,14 0 0 1 460,14 V14 A14,14 0 0 1 446,28 H354 A14,14 0 0 1 340,14 V14 A14,14 0 0 1 354,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.2" d="M354,0 H446 A14,14 0 0 1 460,14 V14 A14,14 0 0 1 446,28 H354 A14,14 0 0 1 340,14 V14 A14,14 0 0 1 354,0 Z" />
     <text x="400" y="19" text-anchor="middle">容纳之窗</text>
     
-    <path fill="rgba(255,255,255,0.2)" d="M494,0 H566 A14,14 0 0 1 580,14 V14 A14,14 0 0 1 566,28 H494 A14,14 0 0 1 480,14 V14 A14,14 0 0 1 494,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.2" d="M494,0 H566 A14,14 0 0 1 580,14 V14 A14,14 0 0 1 566,28 H494 A14,14 0 0 1 480,14 V14 A14,14 0 0 1 494,0 Z" />
     <text x="530" y="19" text-anchor="middle">双螺旋</text>
   </g>
   

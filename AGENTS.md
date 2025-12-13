@@ -45,7 +45,53 @@ Strategist → Executor (General/Consultant/Consultant_Top) → Optimizer_CRAP (
 - **背景**: 使用 `<rect>` 元素
 - **字体**: 优先使用系统 UI 字体栈
 
-### 3. 画布格式
+### 3. PPT 兼容性规则（必须遵守）
+
+为确保 SVG 导出到 PowerPoint 后效果一致，**必须遵守以下透明度规则**：
+
+#### 禁止使用的写法
+
+| ❌ 禁止 | ✅ 正确替代 |
+|--------|-----------|
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+| `stroke="rgba(0,0,0,0.5)"` | `stroke="#000000" stroke-opacity="0.5"` |
+| `<g opacity="0.2">...</g>` | 每个子元素单独设置 `opacity` / `fill-opacity` / `stroke-opacity` |
+| `<image ... opacity="0.3"/>` | 图片后添加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+
+#### 透明度正确写法示例
+
+```xml
+<!-- ✅ 填充透明度 -->
+<rect fill="#FFFFFF" fill-opacity="0.15"/>
+
+<!-- ✅ 描边透明度 -->
+<circle stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
+
+<!-- ✅ 整体透明度（简单元素可用） -->
+<rect fill="#2E5A8B" opacity="0.15"/>
+
+<!-- ❌ 禁止：组透明度 -->
+<g opacity="0.1">
+  <circle .../>
+  <line .../>
+</g>
+
+<!-- ✅ 正确：每个元素单独设置 -->
+<circle stroke="#FFF" stroke-opacity="0.1"/>
+<line stroke="#FFF" stroke-opacity="0.1"/>
+```
+
+#### 图片透明度遮罩方案
+
+```xml
+<!-- 图片原始透明度 0.35 → 遮罩层 opacity 0.65 -->
+<image href="bg.png" x="0" y="0" width="1280" height="720"/>
+<rect x="0" y="0" width="1280" height="720" fill="#背景色" opacity="0.65"/>
+```
+
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+
+### 4. 画布格式
 
 | 格式 | 尺寸 | viewBox |
 |------|------|---------|
@@ -70,11 +116,8 @@ python3 tools/project_manager.py validate <路径>
 # SVG 质量检查
 python3 tools/svg_quality_checker.py <路径>
 
-# ⭐ 后处理（默认执行全部）
+# ⭐ 后处理（直接运行，无需参数）
 python3 tools/finalize_svg.py <项目路径>
-
-# 只执行部分处理
-python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
 
 # 预览原始版本
 python3 -m http.server -d <路径>/svg_output 8000
@@ -104,6 +147,7 @@ project/
 - [ ] 无 `<foreignObject>` 元素
 - [ ] 使用 `<tspan>` 手动换行
 - [ ] 颜色符合设计规范
+- [ ] **PPT 兼容**: 无 `rgba()`、无 `<g opacity>`、图片用遮罩层
 - [ ] **对齐**: 元素沿网格线对齐
 - [ ] **对比**: 建立清晰的视觉层级
 - [ ] **重复**: 同类元素风格一致
@@ -136,20 +180,14 @@ project/
 
 ### 后处理提示
 
-SVG 生成完成后，用户需要进行后处理：
+SVG 生成完成后，**直接运行以下两条命令**，无需任何参数：
 
 ```bash
-# 交互式后处理（推荐）
+# 1. 后处理（直接运行）
 python3 tools/finalize_svg.py <项目路径>
 
-# 导出 PPTX
+# 2. 导出 PPTX
 python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
-后处理选项：
-- **嵌入图标** - 替换图标占位符为实际 SVG
-- **嵌入图片** - 将外部图片转为 Base64
-- **文本扁平化** - 将 `<tspan>` 转为独立 `<text>`（用于特殊渲染器）
-- **圆角转 Path** - 用于 PPT「转换为形状」时保留圆角
-
-这些工具由用户自行调用，AI 代理无需直接执行。
+> ⚠️ **注意**：不要添加 `--only` 等参数，直接运行即可完成全部处理。

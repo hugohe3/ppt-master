@@ -28,7 +28,7 @@
       <rect x="0" y="64" width="360" height="16" fill="#2E5C8E"/>
       
       <!-- 图标 -->
-      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <circle cx="180" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🔗</text>
       
       <!-- 编号 -->
@@ -70,7 +70,7 @@
       <rect x="0" y="64" width="360" height="16" fill="#3D8B7A"/>
       
       <!-- 图标 -->
-      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <circle cx="180" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🎭</text>
       
       <!-- 编号 -->
@@ -112,7 +112,7 @@
       <rect x="0" y="64" width="360" height="16" fill="#E07843"/>
       
       <!-- 图标 -->
-      <circle cx="180" cy="40" r="28" fill="rgba(255,255,255,0.2)"/>
+      <circle cx="180" cy="40" r="28" fill="#FFFFFF" fill-opacity="0.2"/>
       <text x="180" y="50" font-size="28" text-anchor="middle" fill="#FFFFFF">🧠</text>
       
       <!-- 编号 -->

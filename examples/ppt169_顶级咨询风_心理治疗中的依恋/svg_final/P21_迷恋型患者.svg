@@ -100,14 +100,14 @@
   
   <g transform="translate(100, 565)" font-family="PingFang SC, sans-serif">
     
-    <path fill="rgba(255,255,255,0.1)" d="M8,0 H492 A8,8 0 0 1 500,8 V62 A8,8 0 0 1 492,70 H8 A8,8 0 0 1 0,62 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M8,0 H492 A8,8 0 0 1 500,8 V62 A8,8 0 0 1 492,70 H8 A8,8 0 0 1 0,62 V8 A8,8 0 0 1 8,0 Z" />
     <text x="20" y="25" font-size="15" font-weight="600" fill="#E07843">色情移情 Erotic Transference</text>
     <text x="20" y="50" font-size="13" fill="#CBD5E1">
       通过性化关系寻求亲密或防御更深的依恋恐惧 → 接纳渴望而不付诸行动
     </text>
     
     
-    <path fill="rgba(255,255,255,0.1)" d="M538,0 H1022 A8,8 0 0 1 1030,8 V62 A8,8 0 0 1 1022,70 H538 A8,8 0 0 1 530,62 V8 A8,8 0 0 1 538,0 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M538,0 H1022 A8,8 0 0 1 1030,8 V62 A8,8 0 0 1 1022,70 H538 A8,8 0 0 1 530,62 V8 A8,8 0 0 1 538,0 Z" />
     <text x="550" y="25" font-size="15" font-weight="600" fill="#3D8B7A">反移情管理</text>
     <text x="550" y="50" font-size="13" fill="#CBD5E1">
       治疗师可能感到被吞噬、愤怒或无助 → 觉察练习调节强烈反移情

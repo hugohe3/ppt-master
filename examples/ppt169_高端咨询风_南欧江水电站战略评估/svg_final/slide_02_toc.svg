@@ -17,13 +17,13 @@
   
   
   <text x="40" y="200" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="16" fill="#7ED4E6" font-weight="500">CONTENTS</text>
-  <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" x="40" y="260">报告</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" x="40" y="310">目录</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" opacity="0.8" x="40" y="400">本报告涵盖六大核心</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" opacity="0.8" x="40" y="424">章节，从工程技术到</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" opacity="0.8" x="40" y="448">地缘政治全方位解析</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" opacity="0.8" x="40" y="472">南欧江项目的机遇与</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#7ED4E6" opacity="0.8" x="40" y="496">危机。</text><g transform="translate(400, 80)">
+  <text font-size="36" font-weight="700" fill="#FFFFFF" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="260">报告</text><text font-size="36" font-weight="700" fill="#FFFFFF" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="310">目录</text><text font-size="14" fill="#7ED4E6" opacity="0.8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="400">本报告涵盖六大核心</text><text font-size="14" fill="#7ED4E6" opacity="0.8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="424">章节，从工程技术到</text><text font-size="14" fill="#7ED4E6" opacity="0.8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="448">地缘政治全方位解析</text><text font-size="14" fill="#7ED4E6" opacity="0.8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="472">南欧江项目的机遇与</text><text font-size="14" fill="#7ED4E6" opacity="0.8" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="40" y="496">危机。</text><g transform="translate(400, 80)">
     <path fill="#FFFFFF" stroke="#D4DEE4" stroke-width="1" d="M12,0 H248 A12,12 0 0 1 260,12 V168 A12,12 0 0 1 248,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
     <path fill="url(#cardHover)" d="M12,0 H248 A12,12 0 0 1 260,12 V168 A12,12 0 0 1 248,180 H12 A12,12 0 0 1 0,168 V12 A12,12 0 0 1 12,0 Z" />
     <path fill="#1A6B7C" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">📊</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">项目概览与技术架构</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">全流域梯级开发逻辑</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">七级电站技术参数</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.04-06</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">全流域梯级开发逻辑</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">七级电站技术参数</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.04-06</text>
   </g>
   
   
@@ -33,7 +33,7 @@
     <path fill="#C9A227" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">💰</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">商业模式与融资结构</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">BOT模式与股权安排</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">27亿美元融资架构</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.07-08</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">BOT模式与股权安排</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">27亿美元融资架构</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.07-08</text>
   </g>
   
   
@@ -42,7 +42,7 @@
     <path fill="#B8352B" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">⚖️</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">仲裁案深度剖析</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">5.55亿美元索赔明细</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">SIAC仲裁时间轴</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#B8352B" text-anchor="end">P.09-10</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">5.55亿美元索赔明细</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">SIAC仲裁时间轴</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#B8352B" text-anchor="end">P.09-10</text>
   </g>
   
   
@@ -53,7 +53,7 @@
     <path fill="#D97706" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">📉</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">宏观经济危机根源</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">货币崩溃与债务困境</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">EDL财务黑洞分析</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.11-13</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">货币崩溃与债务困境</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">EDL财务黑洞分析</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.11-13</text>
   </g>
   
   
@@ -63,7 +63,7 @@
     <path fill="#1A6B7C" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">🌏</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">地缘政治影响</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">债转股与控制权转移</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">能源主权空心化</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.14-15</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">债转股与控制权转移</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">能源主权空心化</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.14-15</text>
   </g>
   
   
@@ -73,7 +73,7 @@
     <path fill="#2E7D32" opacity="0.15" d="M28,20 H60 A8,8 0 0 1 68,28 V60 A8,8 0 0 1 60,68 H28 A8,8 0 0 1 20,60 V28 A8,8 0 0 1 28,20 Z" />
     <text x="44" y="52" font-size="24" text-anchor="middle">🌿</text>
     <text x="20" y="95" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="18" font-weight="600" fill="#1A1F2E">环境与社会外部性</text>
-    <text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="120">移民安置与生态影响</text><text font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="13" fill="#718096" x="20" y="140">2025洪水事件案例</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.16-17</text>
+    <text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="120">移民安置与生态影响</text><text font-size="13" fill="#718096" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="20" y="140">2025洪水事件案例</text><text x="230" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#1A6B7C" text-anchor="end">P.16-17</text>
   </g>
   
   

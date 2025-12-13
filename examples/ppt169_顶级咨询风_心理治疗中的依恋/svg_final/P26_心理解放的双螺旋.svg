@@ -90,44 +90,44 @@
   <g transform="translate(80, 520)" font-family="PingFang SC, sans-serif">
     
     <g>
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">增强情感调节</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">容纳并转化痛苦情感</text>
     </g>
     
     <g transform="translate(280, 0)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#E07843" text-anchor="middle" font-weight="600">提升自我主体感</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">成为体验的作者和解释者</text>
     </g>
     
     <g transform="translate(560, 0)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#2E5C8E" text-anchor="middle" font-weight="600">整合解离体验</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">将碎片化记忆转化为连贯叙事</text>
     </g>
     
     <g transform="translate(840, 0)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#FFFFFF" text-anchor="middle" font-weight="600">建立内在安全基地</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">从外部依赖到内在力量</text>
     </g>
     
     
     <g transform="translate(140, 70)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#64748B" text-anchor="middle" font-weight="600">促进左右脑整合</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">语言与非语言的桥接</text>
     </g>
     
     <g transform="translate(420, 70)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#B54545" text-anchor="middle" font-weight="600">扩大容纳之窗</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">增强对强烈情绪的耐受</text>
     </g>
     
     <g transform="translate(700, 70)">
-      <path fill="rgba(255,255,255,0.1)" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
+      <path fill="#FFFFFF" fill-opacity="0.1" d="M12,0 H248 A12,12 0 0 1 260,12 V43 A12,12 0 0 1 248,55 H12 A12,12 0 0 1 0,43 V12 A12,12 0 0 1 12,0 Z" />
       <text x="130" y="25" font-size="15" fill="#3D8B7A" text-anchor="middle" font-weight="600">去自动化反应</text>
       <text x="130" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">从习惯性模式中解脱</text>
     </g>

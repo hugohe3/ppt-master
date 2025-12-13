@@ -22,7 +22,7 @@
     
     
     <g transform="translate(30, 140)">
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1ABC9C" font-weight="bold" x="0" y="20">现代诠释</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="0" y="50">鬼神 = 冥冥中的运势</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#E8E4DC" x="0" y="76">或不可测的随机性风险（Black Swans）</text><path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M6,100 H224 A6,6 0 0 1 230,106 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V106 A6,6 0 0 1 6,100 Z" />
+      <text font-size="15" fill="#1ABC9C" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="20">现代诠释</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="50">鬼神 = 冥冥中的运势</text><text font-size="15" fill="#E8E4DC" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="76">或不可测的随机性风险（Black Swans）</text><path fill="#2C3E50" stroke="#C0392B" stroke-width="1" d="M6,100 H224 A6,6 0 0 1 230,106 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V106 A6,6 0 0 1 6,100 Z" />
       <text x="115" y="120" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#C0392B" text-anchor="middle">傲慢自大者</text>
       <text x="115" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">忽视潜在风险</text>
       <text x="115" y="168" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E8E4DC" text-anchor="middle">过度透支运气</text>
@@ -54,7 +54,7 @@
     
     
     <g transform="translate(30, 140)">
-      <text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C0392B" font-weight="bold" x="0" y="20">人类心理机制</text><text font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1A1A2E" x="0" y="50">人类普遍具有嫉妒心与公平偏好</text><path fill="#FFFFFF" stroke="#C0392B" stroke-width="1" d="M6,70 H224 A6,6 0 0 1 230,76 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V76 A6,6 0 0 1 6,70 Z" />
+      <text font-size="15" fill="#C0392B" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="bold" x="0" y="20">人类心理机制</text><text font-size="15" fill="#1A1A2E" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="0" y="50">人类普遍具有嫉妒心与公平偏好</text><path fill="#FFFFFF" stroke="#C0392B" stroke-width="1" d="M6,70 H224 A6,6 0 0 1 230,76 V194 A6,6 0 0 1 224,200 H6 A6,6 0 0 1 0,194 V76 A6,6 0 0 1 6,70 Z" />
       <text x="115" y="95" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#C0392B" text-anchor="middle">炫耀者（盈）</text>
       <text x="115" y="122" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">激活他人防御本能</text>
       <text x="115" y="145" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1A1A2E" text-anchor="middle">触发攻击欲望</text>

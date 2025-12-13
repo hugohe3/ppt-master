@@ -10,30 +10,25 @@
   <rect width="1280" height="720" fill="url(#chapterGradient)" />
   
   
-  <g opacity="0.1">
-    <circle cx="1100" cy="150" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="1100" cy="150" r="150" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="1100" cy="150" r="100" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    
-    <circle cx="180" cy="600" r="120" fill="none" stroke="#FFFFFF" stroke-width="1" />
-    <circle cx="180" cy="600" r="80" fill="none" stroke="#FFFFFF" stroke-width="1" />
-  </g>
+  <circle cx="1100" cy="150" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="1100" cy="150" r="150" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="1100" cy="150" r="100" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="180" cy="600" r="120" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <circle cx="180" cy="600" r="80" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
   
   
-  <g opacity="0.2" stroke="#FFFFFF" stroke-width="1">
-    <line x1="0" y1="200" x2="300" y2="350" />
-    <line x1="0" y1="250" x2="250" y2="400" />
-    <line x1="980" y1="720" x2="1280" y2="520" />
-    <line x1="1030" y1="720" x2="1280" y2="570" />
-  </g>
+  <line x1="0" y1="200" x2="300" y2="350" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="0" y1="250" x2="250" y2="400" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="980" y1="720" x2="1280" y2="520" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="1030" y1="720" x2="1280" y2="570" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
   
   
-  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="rgba(255,255,255,0.15)" text-anchor="middle">
+  <text x="640" y="220" font-family="system-ui, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" fill-opacity="0.15" text-anchor="middle">
     01
   </text>
   
   
-  <path fill="rgba(255,255,255,0.2)" d="M580,280 H700 A20,20 0 0 1 720,300 V300 A20,20 0 0 1 700,320 H580 A20,20 0 0 1 560,300 V300 A20,20 0 0 1 580,280 Z" />
+  <path fill="#FFFFFF" fill-opacity="0.2" d="M580,280 H700 A20,20 0 0 1 720,300 V300 A20,20 0 0 1 700,320 H580 A20,20 0 0 1 560,300 V300 A20,20 0 0 1 580,280 Z" />
   <text x="640" y="307" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle">
     CHAPTER ONE
   </text>
@@ -52,7 +47,7 @@
   <path fill="#E07843" d="M541.50,470 H738.50 A1.50,1.50 0 0 1 740,471.50 V471.50 A1.50,1.50 0 0 1 738.50,473 H541.50 A1.50,1.50 0 0 1 540,471.50 V471.50 A1.50,1.50 0 0 1 541.50,470 Z" />
   
   
-  <path fill="rgba(255,255,255,0.1)" d="M252,510 H1028 A12,12 0 0 1 1040,522 V598 A12,12 0 0 1 1028,610 H252 A12,12 0 0 1 240,598 V522 A12,12 0 0 1 252,510 Z" />
+  <path fill="#FFFFFF" fill-opacity="0.1" d="M252,510 H1028 A12,12 0 0 1 1040,522 V598 A12,12 0 0 1 1028,610 H252 A12,12 0 0 1 240,598 V522 A12,12 0 0 1 252,510 Z" />
   <path fill="#3D8B7A" d="M242,510 H242 A2,2 0 0 1 244,512 V608 A2,2 0 0 1 242,610 H242 A2,2 0 0 1 240,608 V512 A2,2 0 0 1 242,510 Z" />
   
   <text x="270" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#E5E7EB" font-style="italic">
@@ -64,16 +59,16 @@
   
   
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#CBD5E1">
-    <path fill="rgba(255,255,255,0.1)" d="M404,640 H476 A14,14 0 0 1 490,654 V654 A14,14 0 0 1 476,668 H404 A14,14 0 0 1 390,654 V654 A14,14 0 0 1 404,640 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M404,640 H476 A14,14 0 0 1 490,654 V654 A14,14 0 0 1 476,668 H404 A14,14 0 0 1 390,654 V654 A14,14 0 0 1 404,640 Z" />
     <text x="440" y="659" text-anchor="middle">安全基地</text>
     
-    <path fill="rgba(255,255,255,0.1)" d="M524,640 H576 A14,14 0 0 1 590,654 V654 A14,14 0 0 1 576,668 H524 A14,14 0 0 1 510,654 V654 A14,14 0 0 1 524,640 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M524,640 H576 A14,14 0 0 1 590,654 V654 A14,14 0 0 1 576,668 H524 A14,14 0 0 1 510,654 V654 A14,14 0 0 1 524,640 Z" />
     <text x="550" y="659" text-anchor="middle">心智化</text>
     
-    <path fill="rgba(255,255,255,0.1)" d="M624,640 H716 A14,14 0 0 1 730,654 V654 A14,14 0 0 1 716,668 H624 A14,14 0 0 1 610,654 V654 A14,14 0 0 1 624,640 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M624,640 H716 A14,14 0 0 1 730,654 V654 A14,14 0 0 1 716,668 H624 A14,14 0 0 1 610,654 V654 A14,14 0 0 1 624,640 Z" />
     <text x="670" y="659" text-anchor="middle">治疗关系</text>
     
-    <path fill="rgba(255,255,255,0.1)" d="M764,640 H876 A14,14 0 0 1 890,654 V654 A14,14 0 0 1 876,668 H764 A14,14 0 0 1 750,654 V654 A14,14 0 0 1 764,640 Z" />
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M764,640 H876 A14,14 0 0 1 890,654 V654 A14,14 0 0 1 876,668 H764 A14,14 0 0 1 750,654 V654 A14,14 0 0 1 764,640 Z" />
     <text x="820" y="659" text-anchor="middle">未经思考的已知</text>
   </g>
   

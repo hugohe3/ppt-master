@@ -75,7 +75,7 @@
     <text x="20" y="30" font-size="16" font-weight="bold" fill="#FFFFFF">🧠 右脑 vs 左脑</text>
     
     <g transform="translate(20, 50)">
-      <rect x="0" y="0" width="200" height="95" rx="8" fill="rgba(255,255,255,0.1)"/>
+      <rect x="0" y="0" width="200" height="95" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="100" y="25" font-size="14" font-weight="600" fill="#E07843" text-anchor="middle">右脑</text>
       <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">社交-情感大脑</text>
       <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">非言语沟通</text>
@@ -83,7 +83,7 @@
     </g>
     
     <g transform="translate(240, 50)">
-      <rect x="0" y="0" width="200" height="95" rx="8" fill="rgba(255,255,255,0.1)"/>
+      <rect x="0" y="0" width="200" height="95" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
       <text x="100" y="25" font-size="14" font-weight="600" fill="#3D8B7A" text-anchor="middle">左脑</text>
       <text x="100" y="45" font-size="12" fill="#CBD5E1" text-anchor="middle">逻辑-语言大脑</text>
       <text x="100" y="65" font-size="11" fill="#94A3B8" text-anchor="middle">逻辑推理</text>
@@ -131,13 +131,13 @@
   </text>
   
   <g transform="translate(100, 625)" font-family="PingFang SC, sans-serif" font-size="13">
-    <rect x="0" y="0" width="200" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <rect x="0" y="0" width="200" height="26" rx="13" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="100" y="18" fill="#CBD5E1" text-anchor="middle">Schore: 社交-情感大脑</text>
     
-    <rect x="220" y="0" width="220" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <rect x="220" y="0" width="220" height="26" rx="13" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="330" y="18" fill="#CBD5E1" text-anchor="middle">发展在18个月前基本完成</text>
     
-    <rect x="460" y="0" width="200" height="26" rx="13" fill="rgba(255,255,255,0.15)"/>
+    <rect x="460" y="0" width="200" height="26" rx="13" fill="#FFFFFF" fill-opacity="0.15"/>
     <text x="560" y="18" fill="#CBD5E1" text-anchor="middle">内隐关系知识</text>
   </g>
   

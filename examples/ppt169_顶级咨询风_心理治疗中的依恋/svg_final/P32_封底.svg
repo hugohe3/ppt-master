@@ -11,52 +11,50 @@
   <rect width="1280" height="720" fill="url(#endGradient)" />
   
   
-  <g opacity="0.2">
-    
-    <circle cx="640" cy="360" r="8" fill="#FFFFFF" />
-    
-    
-    <circle cx="350" cy="200" r="5" fill="#FFFFFF" />
-    <circle cx="450" cy="150" r="4" fill="#FFFFFF" />
-    <circle cx="550" cy="180" r="5" fill="#FFFFFF" />
-    <circle cx="730" cy="160" r="4" fill="#FFFFFF" />
-    <circle cx="830" cy="200" r="5" fill="#FFFFFF" />
-    <circle cx="920" cy="250" r="4" fill="#FFFFFF" />
-    
-    <circle cx="280" cy="350" r="4" fill="#FFFFFF" />
-    <circle cx="320" cy="480" r="5" fill="#FFFFFF" />
-    <circle cx="450" cy="540" r="4" fill="#FFFFFF" />
-    <circle cx="580" cy="580" r="5" fill="#FFFFFF" />
-    <circle cx="700" cy="560" r="4" fill="#FFFFFF" />
-    <circle cx="830" cy="520" r="5" fill="#FFFFFF" />
-    <circle cx="950" cy="450" r="4" fill="#FFFFFF" />
-    <circle cx="1000" cy="350" r="5" fill="#FFFFFF" />
-    
-    
-    <line x1="640" y1="360" x2="350" y2="200" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="450" y2="150" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="550" y2="180" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="730" y2="160" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="830" y2="200" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="920" y2="250" stroke="#FFFFFF" stroke-width="1" />
-    
-    <line x1="640" y1="360" x2="280" y2="350" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="320" y2="480" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="450" y2="540" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="580" y2="580" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="700" y2="560" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="830" y2="520" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="950" y2="450" stroke="#FFFFFF" stroke-width="1" />
-    <line x1="640" y1="360" x2="1000" y2="350" stroke="#FFFFFF" stroke-width="1" />
-    
-    
-    <line x1="350" y1="200" x2="450" y2="150" stroke="#FFFFFF" stroke-width="0.5" />
-    <line x1="450" y1="150" x2="550" y2="180" stroke="#FFFFFF" stroke-width="0.5" />
-    <line x1="730" y1="160" x2="830" y2="200" stroke="#FFFFFF" stroke-width="0.5" />
-    <line x1="320" y1="480" x2="450" y2="540" stroke="#FFFFFF" stroke-width="0.5" />
-    <line x1="580" y1="580" x2="700" y2="560" stroke="#FFFFFF" stroke-width="0.5" />
-    <line x1="830" y1="520" x2="950" y2="450" stroke="#FFFFFF" stroke-width="0.5" />
-  </g>
+  
+  <circle cx="640" cy="360" r="8" fill="#FFFFFF" fill-opacity="0.2" />
+  
+  
+  <circle cx="350" cy="200" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="450" cy="150" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="550" cy="180" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="730" cy="160" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="830" cy="200" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="920" cy="250" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  
+  <circle cx="280" cy="350" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="320" cy="480" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="450" cy="540" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="580" cy="580" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="700" cy="560" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="830" cy="520" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="950" cy="450" r="4" fill="#FFFFFF" fill-opacity="0.2" />
+  <circle cx="1000" cy="350" r="5" fill="#FFFFFF" fill-opacity="0.2" />
+  
+  
+  <line x1="640" y1="360" x2="350" y2="200" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="450" y2="150" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="550" y2="180" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="730" y2="160" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="830" y2="200" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="920" y2="250" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  
+  <line x1="640" y1="360" x2="280" y2="350" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="320" y2="480" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="450" y2="540" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="580" y2="580" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="700" y2="560" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="830" y2="520" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="950" y2="450" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <line x1="640" y1="360" x2="1000" y2="350" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  
+  
+  <line x1="350" y1="200" x2="450" y2="150" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
+  <line x1="450" y1="150" x2="550" y2="180" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
+  <line x1="730" y1="160" x2="830" y2="200" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
+  <line x1="320" y1="480" x2="450" y2="540" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
+  <line x1="580" y1="580" x2="700" y2="560" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
+  <line x1="830" y1="520" x2="950" y2="450" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.2" />
   
   
   <g font-family="PingFang SC, Microsoft YaHei, sans-serif">
@@ -86,22 +84,22 @@
       
       
       <g transform="translate(-320, 80)">
-        <path fill="rgba(255,255,255,0.15)" d="M15,0 H85 A15,15 0 0 1 100,15 V15 A15,15 0 0 1 85,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M15,0 H85 A15,15 0 0 1 100,15 V15 A15,15 0 0 1 85,30 H15 A15,15 0 0 1 0,15 V15 A15,15 0 0 1 15,0 Z" />
         <text x="50" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">安全基地</text>
         
-        <path fill="rgba(255,255,255,0.15)" d="M135,0 H205 A15,15 0 0 1 220,15 V15 A15,15 0 0 1 205,30 H135 A15,15 0 0 1 120,15 V15 A15,15 0 0 1 135,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M135,0 H205 A15,15 0 0 1 220,15 V15 A15,15 0 0 1 205,30 H135 A15,15 0 0 1 120,15 V15 A15,15 0 0 1 135,0 Z" />
         <text x="170" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">依恋模式</text>
         
-        <path fill="rgba(255,255,255,0.15)" d="M255,0 H325 A15,15 0 0 1 340,15 V15 A15,15 0 0 1 325,30 H255 A15,15 0 0 1 240,15 V15 A15,15 0 0 1 255,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M255,0 H325 A15,15 0 0 1 340,15 V15 A15,15 0 0 1 325,30 H255 A15,15 0 0 1 240,15 V15 A15,15 0 0 1 255,0 Z" />
         <text x="290" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">心智化</text>
         
-        <path fill="rgba(255,255,255,0.15)" d="M375,0 H425 A15,15 0 0 1 440,15 V15 A15,15 0 0 1 425,30 H375 A15,15 0 0 1 360,15 V15 A15,15 0 0 1 375,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M375,0 H425 A15,15 0 0 1 440,15 V15 A15,15 0 0 1 425,30 H375 A15,15 0 0 1 360,15 V15 A15,15 0 0 1 375,0 Z" />
         <text x="400" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">觉察</text>
         
-        <path fill="rgba(255,255,255,0.15)" d="M475,0 H545 A15,15 0 0 1 560,15 V15 A15,15 0 0 1 545,30 H475 A15,15 0 0 1 460,15 V15 A15,15 0 0 1 475,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M475,0 H545 A15,15 0 0 1 560,15 V15 A15,15 0 0 1 545,30 H475 A15,15 0 0 1 460,15 V15 A15,15 0 0 1 475,0 Z" />
         <text x="510" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">双螺旋</text>
         
-        <path fill="rgba(255,255,255,0.15)" d="M595,0 H645 A15,15 0 0 1 660,15 V15 A15,15 0 0 1 645,30 H595 A15,15 0 0 1 580,15 V15 A15,15 0 0 1 595,0 Z" />
+        <path fill="#FFFFFF" fill-opacity="0.15" d="M595,0 H645 A15,15 0 0 1 660,15 V15 A15,15 0 0 1 645,30 H595 A15,15 0 0 1 580,15 V15 A15,15 0 0 1 595,0 Z" />
         <text x="620" y="20" font-size="13" fill="#FFFFFF" text-anchor="middle">治愈</text>
       </g>
     </g>
