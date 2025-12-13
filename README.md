@@ -1,11 +1,16 @@
 # PPT Master - AI 驱动的多格式 SVG 内容生成系统
 
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](./VERSION)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
+
+[English](./README_EN.md) | 中文
 
 一个基于 AI 的智能视觉内容生成系统，通过四个专业角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
 
 > 🎴 **在线示例**：[幻灯片展示库](https://notes.36sjs.com/pages/ppt/slides-library.html) - 查看实际生成效果
+
+> 🎬 **快速示例**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/) - 观看视频演示
 
 ---
 
