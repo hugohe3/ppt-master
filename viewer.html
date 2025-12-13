@@ -22,7 +22,7 @@
                             300: '#7dd3fc',
                             400: '#38bdf8',
                             500: '#0ea5e9',
-                600: '#0284c7',
+                            600: '#0284c7',
                             700: '#0369a1',
                             800: '#075985',
                             900: '#0c4a6e',
@@ -644,11 +644,28 @@
                 icon: '☯️',
                 color: '#78716c',
                 folder: 'ppt169_易理风_地山谦卦深度研究/svg_final',
-                slides: Array.from({length: 20}, (_, i) => ({
-                    file: `P${String(i+1).padStart(2,'0')}_${['封面','目录','卦象概述','爻辞解读','象传释义','彖传解析','卦德分析','时位研究','应用场景','现代启示','历史案例','修身要义','处世智慧','变卦分析','综卦研究','错卦探讨','互卦解读','总结提炼','参考文献','封底'][i] || '内容'}.svg`,
-                    title: ['封面','目录','卦象概述','爻辞解读','象传释义','彖传解析','卦德分析','时位研究','应用场景','现代启示','历史案例','修身要义','处世智慧','变卦分析','综卦研究','错卦探讨','互卦解读','总结提炼','参考文献','封底'][i] || `第${i+1}页`,
-                    desc: '谦卦研究'
-                }))
+                slides: [
+                    { file: 'P01_封面.svg', title: '封面', desc: '谦卦研究' },
+                    { file: 'P02_目录导航.svg', title: '目录导航', desc: '内容概览' },
+                    { file: 'P03_谦卦总览.svg', title: '谦卦总览', desc: '卦象概述' },
+                    { file: 'P04_字源解构.svg', title: '字源解构', desc: '文字分析' },
+                    { file: 'P05_卦画物理图景.svg', title: '卦画物理图景', desc: '卦画解读' },
+                    { file: 'P06_天道与地道.svg', title: '天道与地道', desc: '天地之道' },
+                    { file: 'P07_鬼神与人道.svg', title: '鬼神与人道', desc: '鬼神人道' },
+                    { file: 'P08_六爻总览.svg', title: '六爻总览', desc: '爻辞概述' },
+                    { file: 'P09_初六谦谦君子.svg', title: '初六谦谦君子', desc: '初爻' },
+                    { file: 'P10_六二鸣谦贞吉.svg', title: '六二鸣谦贞吉', desc: '二爻' },
+                    { file: 'P11_九三劳谦君子.svg', title: '九三劳谦君子', desc: '三爻' },
+                    { file: 'P12_六四与六五.svg', title: '六四与六五', desc: '四五爻' },
+                    { file: 'P13_上六鸣谦行师.svg', title: '上六鸣谦行师', desc: '上爻' },
+                    { file: 'P14_综卦与错卦.svg', title: '综卦与错卦', desc: '综错卦' },
+                    { file: 'P15_交互卦雷水解.svg', title: '交互卦雷水解', desc: '互卦' },
+                    { file: 'P16_第五级领导力.svg', title: '第五级领导力', desc: '现代应用' },
+                    { file: 'P17_达克效应与品牌管理.svg', title: '达克效应与品牌管理', desc: '商业应用' },
+                    { file: 'P18_真谦与伪谦.svg', title: '真谦与伪谦', desc: '辨析' },
+                    { file: 'P19_核心洞见.svg', title: '核心洞见', desc: '总结' },
+                    { file: 'P20_感谢页.svg', title: '感谢页', desc: '结束' }
+                ]
             },
             {
                 id: 'ppt169_禅意风_金刚经第一品研究',
@@ -657,11 +674,23 @@
                 icon: '🪷',
                 color: '#a78bfa',
                 folder: 'ppt169_禅意风_金刚经第一品研究/svg_final',
-                slides: Array.from({length: 15}, (_, i) => ({
-                    file: `P${String(i+1).padStart(2,'0')}_${['封面','目录','经文原文','法会因由','佛陀威仪','日常生活','次第乞食','敷座而坐','禅定示现','众生平等','六度万行','威仪细行','现代启示','修行要义','封底'][i] || '内容'}.svg`,
-                    title: ['封面','目录','经文原文','法会因由','','次第乞食','敷座而坐','禅定示现','众生平等','六度万行','威仪细行','现代启示','修行要义','封底'][i] || `第${i+1}页`,
-                    desc: '金刚经研究'
-                }))
+                slides: [
+                    { file: 'P01_封面.svg', title: '封面', desc: '金刚经研究' },
+                    { file: 'P02_目录导航.svg', title: '目录导航', desc: '内容概览' },
+                    { file: 'P03_金刚经概述.svg', title: '金刚经概述', desc: '经典介绍' },
+                    { file: 'P04_第一品研究意义.svg', title: '第一品研究意义', desc: '研究价值' },
+                    { file: 'P05_场景与人物.svg', title: '场景与人物', desc: '背景' },
+                    { file: 'P06_佛陀日常行为.svg', title: '佛陀日常行为', desc: '威仪' },
+                    { file: 'P07_隐含的教法.svg', title: '隐含的教法', desc: '深意' },
+                    { file: 'P08_序幕功能.svg', title: '序幕功能', desc: '结构分析' },
+                    { file: 'P09_道在平常.svg', title: '道在平常', desc: '禅意' },
+                    { file: 'P10_译本比较.svg', title: '译本比较', desc: '版本对比' },
+                    { file: 'P11_注疏流变.svg', title: '注疏流变', desc: '历史演变' },
+                    { file: 'P12_禅宗视角.svg', title: '禅宗视角', desc: '禅解' },
+                    { file: 'P13_研究发现.svg', title: '研究发现', desc: '洞见' },
+                    { file: 'P14_深层启示.svg', title: '深层启示', desc: '启发' },
+                    { file: 'P15_结语.svg', title: '结语', desc: '结束' }
+                ]
             },
             {
                 id: 'ppt169_像素风_git_introduction',
@@ -670,11 +699,18 @@
                 icon: '👾',
                 color: '#22c55e',
                 folder: 'ppt169_像素风_git_introduction/svg_final',
-                slides: Array.from({length: 10}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','what_is_git','why_git','basic_concepts','workflow','commands','branching','collaboration','best_practices','summary'][i] || 'content'}.svg`,
-                    title: ['封面','什么是Git','为什么用Git','基本概念','工作流程','常用命令','分支管理','协作开发','最佳实践','总结'][i] || `第${i+1}页`,
-                    desc: 'Git入门'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: 'Git入门' },
+                    { file: 'slide_02_navigation.svg', title: '导航', desc: '目录' },
+                    { file: 'slide_03_what_is_git.svg', title: '什么是Git', desc: '定义' },
+                    { file: 'slide_04_vcs_features.svg', title: 'VCS特性', desc: '版本控制' },
+                    { file: 'slide_05_save_point.svg', title: '存档点', desc: '快照' },
+                    { file: 'slide_06_version_hell.svg', title: '版本地狱', desc: '问题' },
+                    { file: 'slide_07_workflow.svg', title: '工作流程', desc: '流程' },
+                    { file: 'slide_08_history.svg', title: '历史', desc: 'Git历史' },
+                    { file: 'slide_09_git_vs_github.svg', title: 'Git vs GitHub', desc: '对比' },
+                    { file: 'slide_10_summary.svg', title: '总结', desc: '结束' }
+                ]
             },
             {
                 id: 'ppt169_谷歌风_google_annual_report',
@@ -683,11 +719,18 @@
                 icon: '🔍',
                 color: '#4285f4',
                 folder: 'ppt169_谷歌风_google_annual_report/svg_final',
-                slides: Array.from({length: 10}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','highlights','revenue','products','ai_ml','cloud','sustainability','diversity','outlook','closing'][i] || 'content'}.svg`,
-                    title: ['封面','亮点','收入','产品','AI/ML','云服务','可持续发展','多元化','展望','结束'][i] || `第${i+1}页`,
-                    desc: '年度报告'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '年度报告' },
+                    { file: 'slide_02_year_overview.svg', title: '年度概览', desc: '总览' },
+                    { file: 'slide_03_projects_summary.svg', title: '项目汇总', desc: '项目' },
+                    { file: 'slide_04_project_smart_scheduler.svg', title: '智能调度器', desc: '核心项目' },
+                    { file: 'slide_05_projects_other.svg', title: '其他项目', desc: '项目列表' },
+                    { file: 'slide_06_technical_growth.svg', title: '技术成长', desc: '技术' },
+                    { file: 'slide_07_team_collaboration.svg', title: '团队协作', desc: '协作' },
+                    { file: 'slide_08_impact_dashboard.svg', title: '影响仪表盘', desc: '成果' },
+                    { file: 'slide_09_future_plans.svg', title: '未来计划', desc: '规划' },
+                    { file: 'slide_10_thanks.svg', title: '感谢', desc: '结束' }
+                ]
             },
             {
                 id: 'ppt169_通用灵活+代码_debug六步法',
@@ -696,11 +739,18 @@
                 icon: '🐛',
                 color: '#ef4444',
                 folder: 'ppt169_通用灵活+代码_debug六步法/svg_final',
-                slides: Array.from({length: 10}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','overview','step1','step2','step3','step4','step5','step6','tips','summary'][i] || 'content'}.svg`,
-                    title: ['封面','概述','第一步','第二步','第三步','第四步','第五步','第六步','技巧','总结'][i] || `第${i+1}页`,
-                    desc: '调试方法'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '调试方法' },
+                    { file: 'slide_02_core_concept.svg', title: '核心概念', desc: '概述' },
+                    { file: 'slide_03_step1_clarify_flow.svg', title: '第一步：理清流程', desc: '流程分析' },
+                    { file: 'slide_04_step2_locate_bug.svg', title: '第二步：定位Bug', desc: '定位问题' },
+                    { file: 'slide_05_step3_elimination.svg', title: '第三步：排除法', desc: '排除' },
+                    { file: 'slide_06_step4_verify.svg', title: '第四步：验证', desc: '验证修复' },
+                    { file: 'slide_07_step5_side_effects.svg', title: '第五步：副作用', desc: '检查影响' },
+                    { file: 'slide_08_step6_test_document.svg', title: '第六步：测试文档', desc: '记录' },
+                    { file: 'slide_09_summary.svg', title: '总结', desc: '回顾' },
+                    { file: 'slide_10_end.svg', title: '结束', desc: '结束页' }
+                ]
             },
             {
                 id: 'ppt169_通用灵活+学术_重庆大学论文格式标准',
@@ -709,11 +759,19 @@
                 icon: '📝',
                 color: '#0891b2',
                 folder: 'ppt169_通用灵活+学术_重庆大学论文格式标准/svg_final',
-                slides: Array.from({length: 11}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','toc','overview','title_page','abstract','body','references','appendix','format','common_errors','summary'][i] || 'content'}.svg`,
-                    title: ['封面','目录','概述','封面页','摘要','正文','参考文献','附录','格式要求','常见错误','总结'][i] || `第${i+1}页`,
-                    desc: '论文格式'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '论文格式' },
+                    { file: 'slide_02_contents.svg', title: '目录', desc: '内容概览' },
+                    { file: 'slide_03_structure.svg', title: '结构', desc: '论文结构' },
+                    { file: 'slide_04_front_matter.svg', title: '前置部分', desc: '封面摘要' },
+                    { file: 'slide_05_abstract.svg', title: '摘要', desc: '摘要规范' },
+                    { file: 'slide_06_main_body.svg', title: '正文', desc: '正文格式' },
+                    { file: 'slide_07_figures_tables.svg', title: '图表', desc: '图表规范' },
+                    { file: 'slide_08_references.svg', title: '参考文献', desc: '引用格式' },
+                    { file: 'slide_09_appendix.svg', title: '附录', desc: '附录格式' },
+                    { file: 'slide_10_layout.svg', title: '排版', desc: '版面要求' },
+                    { file: 'slide_11_checklist.svg', title: '检查清单', desc: '提交检查' }
+                ]
             },
             {
                 id: 'ppt169_通过灵活+代码_三大AI编程神器横向对比',
@@ -722,11 +780,19 @@
                 icon: '⚡',
                 color: '#7c3aed',
                 folder: 'ppt169_通过灵活+代码_三大AI编程神器横向对比/svg_final',
-                slides: Array.from({length: 11}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','overview','tool1','tool2','tool3','features','performance','pricing','use_cases','comparison','conclusion'][i] || 'content'}.svg`,
-                    title: ['封面','概述','工具一','工具二','工具三','功能对比','性能对比','定价对比','使用场景','综合对比','结论'][i] || `第${i+1}页`,
-                    desc: 'AI工具对比'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: 'AI工具对比' },
+                    { file: 'slide_02_positioning.svg', title: '定位', desc: '工具定位' },
+                    { file: 'slide_03_speckit.svg', title: 'Speckit', desc: '工具介绍' },
+                    { file: 'slide_04_openspec.svg', title: 'OpenSpec', desc: '工具介绍' },
+                    { file: 'slide_05_zcf.svg', title: 'ZCF', desc: '工具介绍' },
+                    { file: 'slide_06_comparison.svg', title: '对比', desc: '横向对比' },
+                    { file: 'slide_07_efficiency.svg', title: '效率', desc: '效率分析' },
+                    { file: 'slide_08_combination.svg', title: '组合使用', desc: '最佳实践' },
+                    { file: 'slide_09_decision.svg', title: '决策', desc: '选择建议' },
+                    { file: 'slide_10_table.svg', title: '对比表', desc: '汇总表' },
+                    { file: 'slide_11_summary.svg', title: '总结', desc: '结束' }
+                ]
             },
             {
                 id: 'demo_project_intro_ppt169_20251211',
@@ -735,11 +801,18 @@
                 icon: '🎯',
                 color: '#f97316',
                 folder: 'demo_project_intro_ppt169_20251211/svg_final',
-                slides: Array.from({length: 10}, (_, i) => ({
-                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','intro','features','workflow','roles','tools','examples','roadmap','contact','closing'][i] || 'content'}.svg`,
-                    title: ['封面','介绍','功能','工作流','角色','工具','示例','路线图','联系','结束'][i] || `第${i+1}页`,
-                    desc: '项目介绍'
-                }))
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '项目介绍' },
+                    { file: 'slide_02_pain_points.svg', title: '痛点', desc: '问题背景' },
+                    { file: 'slide_03_solution.svg', title: '解决方案', desc: '方案介绍' },
+                    { file: 'slide_04_architecture.svg', title: '架构', desc: '系统架构' },
+                    { file: 'slide_05_roles.svg', title: '角色', desc: 'AI角色' },
+                    { file: 'slide_06_features.svg', title: '功能', desc: '核心功能' },
+                    { file: 'slide_07_formats.svg', title: '格式', desc: '支持格式' },
+                    { file: 'slide_08_tools.svg', title: '工具', desc: '配套工具' },
+                    { file: 'slide_09_quickstart.svg', title: '快速开始', desc: '入门指南' },
+                    { file: 'slide_10_cta.svg', title: '行动号召', desc: '结束' }
+                ]
             }
         ];
 
@@ -754,7 +827,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderCollections();
-            
+
             // Check URL for collection parameter
             const urlParams = new URLSearchParams(window.location.search);
             const collectionId = urlParams.get('project');
@@ -769,7 +842,7 @@
         // Render collection cards
         function renderCollections() {
             const grid = document.getElementById('collectionsGrid');
-            
+
             if (collections.length === 0) {
                 document.getElementById('emptyState').classList.remove('hidden');
                 return;
@@ -849,7 +922,7 @@
             document.getElementById('keyboardHints').classList.remove('hidden');
             document.getElementById('keyboardHints').classList.add('flex');
             document.getElementById('mainContent').classList.add('viewer-expanded');
-            
+
             setViewMode('normal');
 
             // Update header
@@ -882,7 +955,7 @@
         // Back to library
         function backToLibrary() {
             currentCollection = null;
-            
+
             const url = new URL(window.location);
             url.searchParams.delete('project');
             window.history.pushState({}, '', url);
@@ -905,7 +978,7 @@
             const container = document.getElementById('slideViewerContainer');
             const normalBtn = document.getElementById('normalModeBtn');
             const theaterBtn = document.getElementById('theaterModeBtn');
-            
+
             if (mode === 'theater') {
                 container.classList.add('theater-mode');
                 normalBtn.classList.remove('active');
@@ -924,10 +997,10 @@
         // Generate thumbnail sidebar
         function generateThumbnails() {
             if (!currentCollection) return;
-            
+
             const container = document.getElementById('thumbnailContainer');
             const basePath = `examples/${currentCollection.folder}/`;
-            
+
             container.innerHTML = currentCollection.slides.map((slide, index) => {
                 const slidePath = encodeURI(basePath + slide.file);
                 return `
@@ -947,10 +1020,10 @@
         // Generate overview grid
         function generateOverview() {
             if (!currentCollection) return;
-            
+
             const container = document.getElementById('overviewGrid');
             const basePath = `examples/${currentCollection.folder}/`;
-            
+
             container.innerHTML = currentCollection.slides.map((slide, index) => {
                 const slidePath = encodeURI(basePath + slide.file);
                 return `
@@ -970,11 +1043,11 @@
         // Update slide display
         function updateSlide() {
             if (!currentCollection) return;
-            
+
             const slide = currentCollection.slides[currentSlide];
             const basePath = `examples/${currentCollection.folder}/`;
             const slidePath = encodeURI(basePath + slide.file);
-            
+
             const mainSlide = document.getElementById('mainSlide');
             const fullscreenImage = document.getElementById('fullscreenImage');
 
@@ -1043,7 +1116,7 @@
         function toggleFullscreen() {
             const overlay = document.getElementById('fullscreenOverlay');
             isFullscreen = !isFullscreen;
-            
+
             if (isFullscreen) {
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
@@ -1056,8 +1129,8 @@
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (!currentCollection && e.key !== 'Escape') return;
-            
-            switch(e.key) {
+
+            switch (e.key) {
                 case 'ArrowLeft':
                     prevSlide();
                     break;
@@ -1086,7 +1159,7 @@
         window.addEventListener('popstate', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const collectionId = urlParams.get('project');
-            
+
             if (collectionId) {
                 const collection = collections.find(c => c.id === collectionId);
                 if (collection) {
@@ -1108,7 +1181,7 @@
         document.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
-            
+
             if (Math.abs(diff) > 50 && currentCollection) {
                 if (diff > 0) nextSlide();
                 else prevSlide();
