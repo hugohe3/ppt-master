@@ -1,823 +1,821 @@
-# PPT Master - AI 驱动的多格式 SVG 内容生成系统
+# PPT Master - AI-Driven Multi-Format SVG Content Generation System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
-一个基于 AI 的智能视觉内容生成系统，通过四个专业角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
+[简体中文](./README.zh-CN.md) | [Türkçe](./README.tr-TR.md)
 
-> 🎴 **在线示例**：[幻灯片展示库](https://notes.36sjs.com/pages/ppt/slides-library.html) - 查看实际生成效果
+An AI-based intelligent visual content generation system that collaborates through four professional roles to transform source documents into high-quality SVG content, **supporting presentations, social media, marketing posters, and many other formats**.
+
+> 🎴 **Online Demo**: [Slides Library](https://notes.36sjs.com/pages/ppt/slides-library.html) - View actual generated results
 
 ---
 
-## 🚀 快速使用指南
+## 🚀 Quick Usage Guide
 
-### 推荐工具
+### Recommended Tools
 
-| 工具 | 推荐度 | 说明 |
+| Tool | Rating | Description |
 |------|:------:|------|
-| **[Antigravity](https://antigravity.dev/)** | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.5，集成 Banana 生图功能，可直接在仓库里生成配图 |
-| [Cursor](https://cursor.sh/) | ⭐⭐ | 主流 AI 编辑器，支持多种模型 |
-| [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 微软官方方案 |
-| [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic 官方 CLI 工具 |
+| **[Antigravity](https://antigravity.dev/)** | ⭐⭐⭐ | **Highly Recommended**! Free access to Opus 4.5, integrated with Banana image generation, can generate images directly within the repository |
+| [Cursor](https://cursor.sh/) | ⭐⭐ | Mainstream AI editor, supports multiple models |
+| [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | Microsoft official solution |
+| [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic official CLI tool |
 
-### 三步开始
+### Three Steps to Start
 
 ```
-1️⃣ 克隆仓库
-   打开编辑器 → Clone Repository → 输入本仓库地址
+1️⃣ Clone Repository
+   Open editor → Clone Repository → Enter this repository address
    git clone https://github.com/hugohe3/ppt-master.git
 
-2️⃣ 打开聊天窗口
-   在编辑器中打开 AI 聊天面板（Antigravity/Cursor/Copilot Chat）
+2️⃣ Open Chat Window
+   Open AI chat panel in the editor (Antigravity/Cursor/Copilot Chat)
 
-3️⃣ 开始对话
-   直接告诉 AI 你想创建什么内容，AI 会自动按照仓库中的角色定义工作
+3️⃣ Start Conversation
+   Directly tell the AI what content you want to create, the AI will automatically work according to the role definitions in the repository
 ```
 
-### 使用示例
+### Usage Example
 
 ```
-用户：我有一份关于 Q3 季度业绩的报告，需要制作成 PPT
+User: I have a report on Q3 quarterly performance that needs to be made into a PPT
 
-AI（Strategist 角色）：好的，在开始之前我需要完成七项确认...
-   1. 画布格式：[建议] PPT 16:9
-   2. 页数范围：[建议] 8-10 页
+AI (Strategist Role): Okay, before we begin, I need to complete seven confirmations...
+   1. Canvas Format: [Suggestion] PPT 16:9
+   2. Page Range: [Suggestion] 8-10 pages
    ...
 ```
 
-💡 **模型推荐**：Opus 4.5 效果最佳，Antigravity 目前可免费使用
+💡 **Model Recommendation**: Opus 4.5 works best, currently free on Antigravity
 
 ---
 
-## 🎴 精选示例
+## 🎴 Featured Examples
 
-> 📁 **示例库**: [`examples/`](./examples/) · **14 个项目** · **209 页 SVG**
+> 📁 **Example Library**: [`examples/`](./examples/) · **14 Projects** · **209 Pages of SVG**
 
-### 示例项目总览
+### Example Projects Overview
 
-| 类别 | 项目 | 页数 | 特色 |
+| Category | Project | Pages | Features |
 |------|------|:----:|------|
-| 🏢 **咨询风格** | [心理治疗中的依恋](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) | 32 | 顶级咨询风格，最大规模示例 |
-| | [构建有效AI代理](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/) | 15 | Anthropic 工程博客，AI Agent 架构 🆕 |
-| | [甘孜州经济财政分析](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/) | 17 | 政务财政分析，藏区文化元素 |
-| | [南欧江水电站战略评估](./examples/ppt169_高端咨询风_南欧江水电站战略评估/) | 20 | "流域危机"设计语言 |
-| | [汽车认证五年战略规划](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) | 20 | McKinsey/BCG 风格 |
-| | [麦肯锡风客户忠诚度](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/) | 8 | 麦肯锡经典 MECE 原则 |
-| | [Google 年度工作汇报](./examples/ppt169_谷歌风_google_annual_report/) | 10 | Google 品牌设计语言 |
-| 🎨 **通用灵活** | [Debug 六步法](./examples/ppt169_通用灵活+代码_debug六步法/) | 10 | 深色科技风格 |
-| | [重庆大学论文格式](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/) | 11 | 学术规范指南 |
-| | [AI 编程工具对比](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/) | 11 | 技术评测风格 |
-| ✨ **创意风格** | [地山谦卦深度研究](./examples/ppt169_易理风_地山谦卦深度研究/) | 20 | 易经本体美学，阴阳爻变设计 |
-| | [金刚经第一品研究](./examples/ppt169_禅意风_金刚经第一品研究/) | 15 | 禅意学术，水墨留白 |
-| | [Git 入门指南](./examples/ppt169_像素风_git_introduction/) | 10 | 像素复古游戏风 |
-| | [PPT Master 介绍](./examples/demo_project_intro_ppt169_20251211/) | 10 | 清新科技风格 |
+| 🏢 **Consulting Style** | [Attachment in Psychotherapy](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) | 32 | Top-tier consulting style, largest scale example |
+| | [Building Effective AI Agents](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/) | 15 | Anthropic engineering blog, AI Agent architecture 🆕 |
+| | [Ganzi Prefecture Economic Analysis](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/) | 17 | Government financial analysis, Tibetan cultural elements |
+| | [Nam Ou River Hydropower Strategic Assessment](./examples/ppt169_高端咨询风_南欧江水电站战略评估/) | 20 | "River Crisis" design language |
+| | [Auto Certification 5-Year Strategic Plan](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) | 20 | McKinsey/BCG style |
+| | [McKinsey Style Customer Loyalty](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/) | 8 | McKinsey classic MECE principle |
+| | [Google Annual Work Report](./examples/ppt169_谷歌风_google_annual_report/) | 10 | Google brand design language |
+| 🎨 **General Flexible** | [Debug Six Steps](./examples/ppt169_通用灵活+代码_debug六步法/) | 10 | Dark tech style |
+| | [Chongqing University Thesis Format](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/) | 11 | Academic standard guide |
+| | [AI Programming Tools Comparison](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/) | 11 | Tech review style |
+| ✨ **Creative Style** | [Qian Hexagram Deep Research](./examples/ppt169_易理风_地山谦卦深度研究/) | 20 | I Ching ontology aesthetics, Yin-Yang Yao change design |
+| | [Diamond Sutra Chapter 1 Research](./examples/ppt169_禅意风_金刚经第一品研究/) | 15 | Zen academic, ink wash whitespace |
+| | [Git Introduction](./examples/ppt169_像素风_git_introduction/) | 10 | Pixel retro game style |
+| | [PPT Master Introduction](./examples/demo_project_intro_ppt169_20251211/) | 10 | Fresh tech style |
 
-📖 [查看完整示例文档](./examples/README.md)
+📖 [View Full Example Documentation](./examples/README.md)
 
-### 代表作品展示
+### Representative Works Showcase
 
-#### 顶级咨询风格 · 心理治疗中的依恋（32 页）
+#### Top Consulting Style · Attachment in Psychotherapy (32 Pages)
 
-> 最大规模示例项目，"安全基地"视觉隐喻
+> Largest scale example project, "Secure Base" visual metaphor
 
-📁 [查看项目](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) · 📄 [设计规范](./examples/ppt169_顶级咨询风_心理治疗中的依恋/设计规范与内容大纲.md)
+📁 [View Project](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) · 📄 [Design Specs](./examples/ppt169_顶级咨询风_心理治疗中的依恋/设计规范与内容大纲.md)
 
-#### 易理玄学风格 · 地山谦卦深度研究（20 页）
+#### I Ching Metaphysics Style · Qian Hexagram Deep Research (20 Pages)
 
-> 阴阳爻变设计语言，六爻层进结构
+> Yin-Yang Yao change design language, six-line progressive structure
 
-📁 [查看项目](./examples/ppt169_易理风_地山谦卦深度研究/) · 📄 [设计规范](./examples/ppt169_易理风_地山谦卦深度研究/设计规范与内容大纲.md)
+📁 [View Project](./examples/ppt169_易理风_地山谦卦深度研究/) · 📄 [Design Specs](./examples/ppt169_易理风_地山谦卦深度研究/设计规范与内容大纲.md)
 
-#### 像素复古风格 · Git 入门指南（10 页）
+#### Pixel Retro Style · Git Introduction (10 Pages)
 
-> 霓虹色系，"存档点"隐喻版本控制
+> Neon color scheme, "Save Point" metaphor for version control
 
-📁 [查看项目](./examples/ppt169_像素风_git_introduction/) · 📄 [设计规范](./examples/ppt169_像素风_git_introduction/设计规范与内容大纲.md)
+📁 [View Project](./examples/ppt169_像素风_git_introduction/) · 📄 [Design Specs](./examples/ppt169_像素风_git_introduction/设计规范与内容大纲.md)
 
 ---
 
 <details>
-<summary><b>📋 目录（点击展开）</b></summary>
+<summary><b>📋 Table of Contents (Click to Expand)</b></summary>
 
-| 章节 | 链接 |
+| Chapter | Link |
 |------|------|
-| 🚀 快速使用指南 | [跳转](#-快速使用指南) |
-| 🎴 精选示例 | [跳转](#-精选示例) |
-| 项目简介 | [跳转](#项目简介) |
-| 核心特性 | [跳转](#核心特性) |
-| 系统架构 | [跳转](#系统架构) |
-| 四大角色 | [跳转](#四大角色) |
-| 快速开始 | [跳转](#快速开始) |
-| 更多示例 | [跳转](#更多示例) |
-| 设计风格 | [跳转](#设计风格) |
-| 技术规范 | [跳转](#技术规范) |
-| 项目结构 | [跳转](#项目结构) |
-| 最佳实践 | [跳转](#最佳实践) |
-| 常见问题 | [跳转](#常见问题) |
-| 贡献指南 | [跳转](#贡献指南) |
-| 路线图 | [跳转](#路线图) |
-| 🛠️ 工具集 | [跳转](#️-工具集) |
-| 📄 开源协议 | [跳转](#-开源协议) |
-| 🙏 致谢 | [跳转](#-致谢) |
-| 📮 联系方式 | [跳转](#-联系方式) |
+| 🚀 Quick Usage Guide | [Jump](#-quick-usage-guide) |
+| 🎴 Featured Examples | [Jump](#-featured-examples) |
+| Project Introduction | [Jump](#project-introduction) |
+| Core Features | [Jump](#core-features) |
+| System Architecture | [Jump](#system-architecture) |
+| Four Roles | [Jump](#four-roles) |
+| Quick Start | [Jump](#quick-start) |
+| More Examples | [Jump](#more-examples) |
+| Design Styles | [Jump](#design-styles) |
+| Technical Specifications | [Jump](#technical-specifications) |
+| Project Structure | [Jump](#project-structure) |
+| Best Practices | [Jump](#best-practices) |
+| FAQ | [Jump](#faq) |
+| Contribution Guide | [Jump](#contribution-guide) |
+| Roadmap | [Jump](#roadmap) |
+| 🛠️ Toolset | [Jump](#️-toolset) |
+| 📄 Open Source License | [Jump](#-open-source-license) |
+| 🙏 Acknowledgements | [Jump](#-acknowledgements) |
+| 📮 Contact | [Jump](#-contact) |
 
 </details>
 
-## 📚 文档导航
+## 📚 Documentation Navigation
 
-- 🚀 **新手入门**: 阅读本 README
-- 📖 **详细教程**: [工作流教程](./docs/workflow_tutorial.md)
-- 🎨 **设计指南**: [设计规范详解](./docs/design_guidelines.md)
-- 📐 **画布格式**: [支持的所有格式](./docs/canvas_formats.md)
-- 🖼️ **图片嵌入**: [SVG 图片嵌入指南](./docs/svg_image_embedding.md)
-- 📊 **图表模板**: [标准化图表模板库](./templates/charts/) - 13种常用图表 · [在线预览](./templates/charts/preview.html)
-- ⚡ **快速查阅**: [快速参考指南](./docs/quick_reference.md)
-- 🔧 **角色定义**: [查看所有角色](./roles/README.md)
-- 🛠️ **工具集**: [工具使用指南](./tools/README.md)
-- 💼 **示例索引**: [查看所有示例](./examples/README.md)
+- 🚀 **Beginner's Guide**: Read this README
+- 📖 **Detailed Tutorial**: [Workflow Tutorial](./docs/workflow_tutorial.md)
+- 🎨 **Design Guidelines**: [Design Guidelines Detail](./docs/design_guidelines.md)
+- 📐 **Canvas Formats**: [All Supported Formats](./docs/canvas_formats.md)
+- 🖼️ **Image Embedding**: [SVG Image Embedding Guide](./docs/svg_image_embedding.md)
+- 📊 **Chart Templates**: [Standardized Chart Template Library](./templates/charts/) - 13 Common Charts · [Online Preview](./templates/charts/preview.html)
+- ⚡ **Quick Reference**: [Quick Reference Guide](./docs/quick_reference.md)
+- 🔧 **Role Definitions**: [View All Roles](./roles/README.md)
+- 🛠️ **Toolset**: [Tools Usage Guide](./tools/README.md)
+- 💼 **Example Index**: [View All Examples](./examples/README.md)
 
-## 项目简介
+## Project Introduction
 
-PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个专业 AI 角色的协作，实现从内容策划到视觉优化的完整工作流。系统不仅支持生成符合顶尖咨询公司（如麦肯锡、波士顿咨询）标准的商业演示文稿，还支持小红书帖子、朋友圈海报、Instagram 等多种社交媒体和营销物料格式。
+PPT Master is an innovative AI-assisted visual content creation system that realizes a complete workflow from content planning to visual optimization through the collaboration of four professional AI roles. The system supports generating commercial presentations meeting top consulting firm standards (like McKinsey, BCG), as well as various social media and marketing material formats such as XiaoHongShu posts, WeChat Moments posters, Instagram, etc.
 
-## 核心特性
+## Core Features
 
-✨ **智能内容解构** - 自动分析源文档并重组为清晰的页面序列
-🎨 **三重设计风格** - 支持"通用灵活"、"一般咨询"和"顶级咨询（MBB 级）"
-📐 **多格式支持** - 演示文稿 (16:9/4:3)、小红书 (3:4)、朋友圈 (1:1)、Story (9:16) 等 10+ 种格式
-📊 **数据可视化** - 内置图表、时间轴、KPI 展示等专业组件
-🎯 **CRAP 设计原则** - 遵循对比、重复、对齐、亲密性四大核心原则
-🖼️ **纯 SVG 输出** - 高质量矢量图形，自动适配不同尺寸，无需第三方依赖
-🔄 **迭代优化** - 支持逐页生成和反馈修改
+✨ **Intelligent Content Deconstruction** - Automatically analyze source documents and restructure them into clear page sequences
+🎨 **Triple Design Styles** - Supports "General Flexible", "General Consulting", and "Top Consulting (MBB Level)"
+📐 **Multi-Format Support** - Presentation (16:9/4:3), XiaoHongShu (3:4), WeChat Moments (1:1), Story (9:16), and 10+ other formats
+📊 **Data Visualization** - Built-in charts, timelines, KPI displays, and other professional components
+🎯 **CRAP Design Principles** - Follows the four core principles of Contrast, Repetition, Alignment, and Proximity
+🖼️ **Pure SVG Output** - High-quality vector graphics, automatically adapts to different sizes, no third-party dependencies required
+🔄 **Iterative Optimization** - Supports page-by-page generation and modification based on feedback
 
-## 系统架构
+## System Architecture
 
 ```
-用户输入文档
+User Input Document
     ↓
-[Strategist] 策略师 - 内容规划与设计规范
+[Strategist] Content Planning & Design Specifications
     ↓
-[Executor_General / Executor_Consultant / Executor_Consultant_Top] 执行师 - SVG代码生成
+[Executor_General / Executor_Consultant / Executor_Consultant_Top] SVG Code Generation
     ↓
-[Optimizer_CRAP] 优化师 - 视觉优化（可选）
+[Optimizer_CRAP] Visual Optimization (Optional)
     ↓
-SVG 文件 (svg_output/)
+SVG Files (svg_output/)
     ↓
-后处理工具（用户自行调用）
-    ├── finalize_svg.py    → svg_final/（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
-    └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
+Post-processing Tools (Called by User)
+    ├── finalize_svg.py    → svg_final/ (Embed Icons/Images + Flatten Text + Rounded Rect to Path)
+    └── svg_to_pptx.py     → output.pptx (Export PowerPoint)
 ```
 
-## 四大角色
+## Four Roles
 
-### 1️⃣ Strategist (策略师)
+### 1️⃣ Strategist
 
-**职责**: 内容分析与设计规划  
-**输出**: 《演示文稿设计规范与内容大纲》
+**Responsibilities**: Content Analysis and Design Planning
+**Output**: "Presentation Design Specifications and Content Outline"
 
-⚠️ **重要**: 工作流程的首要步骤是**初始沟通与范围确认**
+⚠️ **Important**: The primary step of the workflow is **Initial Communication and Scope Confirmation**
 
-**核心能力**:
+**Core Capabilities**:
 
-- **初始沟通（七项确认）**: 在分析内容前必须完成以下确认，并主动提供专业建议：
-  1. 📐 **画布格式**: 根据使用场景推荐最适合的格式（PPT/小红书/朋友圈等）
-  2. 📊 **页数范围**: 根据内容量和复杂度建议合理的页数范围
-  3. 🎯 **目标受众与场景**: 基于文档特征预判目标受众和使用场景
-  4. 🎨 **设计风格**: A) 通用灵活 B) 一般咨询 C) 顶级咨询（MBB级），给出推荐理由
-  5. 🎨 **配色方案**: 给出主导色、辅助色、强调色的具体 HEX 色值
-  6. 🔣 **图标方式**: A) Emoji B) AI生成 C) 内置图标库 D) 自定义路径
-  7. 🖼️ **图片使用**: A) 不使用 B) 用户提供 C) AI生成 D) 占位符预留
-- **智能解构**: 将源文档拆解并重组为清晰的页面序列
-- **色彩方案**: 提出完整的配色方案（主导色、辅助色、基础色调）
-- **布局规划**: 规划页面序列和推荐布局方案
-- **排版体系**: 定义字体组合和大小层级
-- **风格化规范输出**:
-  - 通用灵活风格：侧重视觉布局（画布适配、色彩方案、排版体系）
-  - 一般咨询风格：侧重结构化呈现（MECE 分解、KPI 仪表盘）
-  - 顶级咨询风格：侧重专业表达（SCQA 框架、金字塔原则、数据情境化）
+- **Initial Communication (Seven Confirmations)**: Must complete the following confirmations before analyzing content, and proactively offer professional suggestions:
+  1. 📐 **Canvas Format**: Recommend the most suitable format based on the usage scenario (PPT/XiaoHongShu/Moments, etc.)
+  2. 📊 **Page Range**: Suggest a reasonable page range based on content volume and complexity
+  3. 🎯 **Target Audience & Scenario**: Pre-judge target audience and usage scenario based on document characteristics
+  4. 🎨 **Design Style**: A) General Flexible B) General Consulting C) Top Consulting (MBB Level), provide reasons for recommendation
+  5. 🎨 **Color Scheme**: Provide specific HEX codes for dominant, secondary, and accent colors
+  6. 🔣 **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
+  7. 🖼️ **Image Usage**: A) No Images B) User Provided C) AI Generated D) Placeholder
+- **Intelligent Deconstruction**: Deconstruct source documents and reorganize them into clear page sequences
+- **Color Scheme**: Propose complete color schemes (dominant, secondary, base tones)
+- **Layout Planning**: Plan page sequences and recommend layout schemes
+- **Typography System**: Define font combinations and size hierarchy
+- **Stylized Specification Output**:
+  - General Flexible Style: Focuses on visual layout (canvas adaptation, color scheme, typography)
+  - General Consulting Style: Focuses on structured presentation (MECE decomposition, KPI dashboard)
+  - Top Consulting Style: Focuses on professional expression (SCQA framework, Pyramid Principle, Data Contextualization)
 
-📄 [查看完整角色定义](./roles/Strategist.md)
+📄 [View Full Role Definition](./roles/Strategist.md)
 
-### 2️⃣ Executor_General (通用执行师)
+### 2️⃣ Executor_General
 
-**职责**: 生成通用灵活风格的 SVG 代码  
-**输出**: 单页 SVG 代码
+**Responsibilities**: Generate General Flexible style SVG code
+**Output**: Single Page SVG Code
 
-**核心能力**:
+**Core Capabilities**:
 
-- **绝对遵循规范**: 严格按照 Strategist 确认的设计规范执行
-- **逐页生成**: 每次只生成一页，确保质量和可控性
-- **动态调整**: 在遵循强制尺寸前提下智能微调元素
-- **迭代修改**: 支持基于反馈重新生成
-- **技术要求**:
-  - 画布尺寸：根据选定格式自动适配（PPT: 1280×720，小红书: 1242×1660 等）
-  - viewBox 与画布尺寸一致
-  - 严禁使用 `<foreignObject>`
-  - 使用 `<tspan>` 手动换行
-  - 根据画布比例调整布局和卡片尺寸
+- **Strict Adherence**: Strictly follow the design specifications confirmed by the Strategist
+- **Page-by-Page Generation**: Generate only one page at a time to ensure quality and controllability
+- **Dynamic Adjustment**: Intuitively fine-tune elements while adhering to mandatory dimensions
+- **Iterative Modification**: Support regeneration based on feedback
+- **Technical Requirements**:
+  - Canvas Dimensions: Automatically adapt based on selected format (PPT: 1280×720, XiaoHongShu: 1242×1660, etc.)
+  - viewBox consistent with canvas dimensions
+  - Strict prohibition of `<foreignObject>`
+  - Use `<tspan>` for manual line breaking
+  - Adjust layout and card dimensions according to canvas aspect ratio
 
-📄 [查看完整角色定义](./roles/Executor_General.md)
+📄 [View Full Role Definition](./roles/Executor_General.md)
 
-### 3️⃣ Executor_Consultant (一般咨询执行师)
+### 3️⃣ Executor_Consultant
 
-**职责**: 生成一般咨询风格的 SVG 代码  
-**输出**: 商业级演示文稿页面
+**Responsibilities**: Generate General Consulting style SVG code
+**Output**: Commercial Grade Presentation Page
 
-**核心能力**:
+**Core Capabilities**:
 
-- **基础咨询风格**: 简洁、清晰、数据可视化
-- **数据驱动**: 使用图表、时间轴等可视化工具
-- **KPI 展示**: 专业的仪表盘和关键指标呈现
-- **结构清晰**: 将内容组织为最多 5 个逻辑板块
-- **配色专业**: 使用咨询行业标准配色
+- **Basic Consulting Style**: Concise, clear, data visualization
+- **Data Driven**: Use charts, timelines, and other visualization tools
+- **KPI Display**: Professional dashboards and key metric presentation
+- **Clear Structure**: Organize content into a maximum of 5 logical blocks
+- **Professional Colors**: Use consulting industry standard color schemes
 
-📄 [查看完整角色定义](./roles/Executor_Consultant.md)
+📄 [View Full Role Definition](./roles/Executor_Consultant.md)
 
-### 3️⃣+ Executor_Consultant_Top (顶级咨询执行师)
+### 3️⃣+ Executor_Consultant_Top
 
-**职责**: 生成顶级咨询风格（MBB 级）的 SVG 代码  
-**输出**: 战略级演示文稿页面
+**Responsibilities**: Generate Top Consulting style (MBB Level) SVG code
+**Output**: Strategy Grade Presentation Page
 
-**核心能力**:
+**Core Capabilities**:
 
-- **MBB 级风格**: 采用麦肯锡、贝恩、BCG 等顶尖咨询公司设计风格
-- **5 大核心技巧**:
-  1. **数据情境化**: 永不孤立呈现数据，必有对比参照
-  2. **SCQA 框架**: 情境→复杂性→问题→答案的叙事结构
-  3. **金字塔原则**: 结论先行，论据支撑
-  4. **颜色战略性使用**: 聚焦注意力、降低认知负荷
-  5. **图表 vs 表格选择**: 根据场景选择最佳可视化形式
-- **配色专业**: 使用麦肯锡蓝、BCG 深蓝等顶尖咨询配色
-- **布局合理**: 确保元素不重叠，留白充足
+- **MBB Level Style**: Adopt design styles of top consulting firms like McKinsey, Bain, BCG
+- **5 Core Skills**:
+  1. **Data Contextualization**: Never present data in isolation, always provide contrast/reference
+  2. **SCQA Framework**: Narrative structure of Situation → Complication → Question → Answer
+  3. **Pyramid Principle**: Conclusion first, supported by arguments
+  4. **Strategic Color Use**: Focus attention, reduce cognitive load
+  5. **Chart vs Table Selection**: Choose the best visualization form based on the scenario
+- **Professional Colors**: Use McKinsey Blue, BCG Dark Blue, and other top consulting colors
+- **Rational Layout**: Ensure no element overlap, sufficient whitespace
 
-📄 [查看完整角色定义](./roles/Executor_Consultant_Top.md)
+📄 [View Full Role Definition](./roles/Executor_Consultant_Top.md)
 
-### 4️⃣ Optimizer_CRAP (CRAP 优化师)
+### 4️⃣ Optimizer_CRAP
 
-**职责**: 基于 CRAP 原则优化设计  
-**输出**: 优化后的 SVG 代码（yh\_前缀）
+**Responsibilities**: Optimize design based on CRAP principles
+**Output**: Optimized SVG code (yh_ prefix)
 
-**四大核心原则**:
+**Four Core Principles**:
 
-1. **对齐 (Alignment)**:
+1. **Alignment**:
+   - Check and correct element alignment
+   - Create strong invisible visual connection lines
+   - Ensure every element has a clear alignment relationship with others
 
-   - 检查并修正元素对齐关系
-   - 创建强大的无形视觉连接线
-   - 确保每个元素都与其他元素有明确对齐关系
+2. **Contrast**:
+   - Enhance visual hierarchy, highlight key information
+   - Increase differences in size, weight, or color
+   - Create clear visual focal points
 
-2. **对比 (Contrast)**:
+3. **Repetition**:
+   - Unify visual style of similar elements
+   - Reuse colors, fonts, rounded corners, and other visual elements
+   - Create organization and unity
 
-   - 增强视觉层次，突出重点信息
-   - 加大尺寸、字重或颜色差异
-   - 创造清晰的视觉焦点
+4. **Proximity**:
+   - Group related content close together in space
+   - Increase distance between different logical blocks
+   - Form clear visual units
 
-3. **重复 (Repetition)**:
+📄 [View Full Role Definition](./roles/Optimizer_CRAP.md)
 
-   - 统一同类元素的视觉风格
-   - 重复使用颜色、字体、圆角等视觉元素
-   - 创造组织性和统一性
+## Quick Start
 
-4. **亲密性 (Proximity / 聚拢)**:
-   - 将相关内容在空间上靠近
-   - 加大不同逻辑组块间的距离
-   - 形成清晰的视觉单元
+### Basic Workflow
 
-📄 [查看完整角色定义](./roles/Optimizer_CRAP.md)
+1. **Prepare Source Document**
+   Prepare your content document (text, data, key points, etc.)
 
-## 快速开始
+2. **Initial Communication (Seven Confirmations)**
+   Confirm scope with Strategist, who will provide professional suggestions on the following seven items:
 
-### 基本工作流
+   1. **Canvas Format**: PPT/XiaoHongShu/Moments/Story etc. (recommended based on usage scenario)
+   2. **Page Range**: Reasonable page range suggested based on content analysis
+   3. **Target Audience & Scenario**: Pre-judged based on document features
+   4. **Design Style**: A) General Flexible B) General Consulting C) Top Consulting (MBB Level)
+   5. **Color Scheme**: Dominant, Secondary, Accent colors (provides specific HEX codes)
+   6. **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
+   7. **Image Usage**: A) No Images B) User Provided C) AI Generated D) Placeholder
 
-1. **准备源文档**  
-   准备好你的内容文档（文本、数据、要点等）
+   💡 Strategist ensures not only questions are asked but proactively provides professional advice for your reference or confirmation
 
-2. **初始沟通（七项确认）**
-   与 Strategist 进行范围确认，Strategist 会对以下七项给出专业建议：
+3. **Get Plan**
+   Strategist analyzes content and generates "Design Specifications and Content Outline", focusing differently based on selected style:
+   - General Flexible: Visual layout specifications (canvas adaptation, typography system)
+   - General Consulting: Structured layout (MECE decomposition, data visualization)
+   - Top Consulting: Professional expression methodology (SCQA, Pyramid Principle, 5 Core Skills)
 
-   1. **画布格式**: PPT/小红书/朋友圈/Story 等（基于使用场景推荐）
-   2. **页数范围**: 基于内容量分析建议合理页数
-   3. **目标受众与场景**: 基于文档特征预判
-   4. **设计风格**: A) 通用灵活 B) 一般咨询 C) 顶级咨询（MBB 级）
-   5. **配色方案**: 主导色、辅助色、强调色（提供具体 HEX 色值）
-   6. **图标方式**: A) Emoji B) AI生成 C) 内置图标库 D) 自定义路径
-   7. **图片使用**: A) 不使用 B) 用户提供 C) AI生成 D) 占位符预留
+4. **Page-by-Page Generation**
+   Use the corresponding Executor role to generate each SVG page
 
-   💡 Strategist 不仅会提出问题，还会主动提供专业建议供你参考或确认
+5. **Optimization Polish** (Optional)
+   Use Optimizer_CRAP for CRAP principle optimization
 
-3. **获取规划**  
-   Strategist 分析内容并生成《设计规范与内容大纲》，根据选定风格侧重不同：
-   - 通用灵活：视觉布局规范（画布适配、排版体系）
-   - 一般咨询：结构化布局（MECE 分解、数据可视化）
-   - 顶级咨询：专业表达方法论（SCQA、金字塔原则、5大核心技巧）
-
-4. **逐页生成**
-   使用相应的 Executor 角色生成每一页 SVG
-
-5. **优化润色**（可选）
-   使用 Optimizer_CRAP 进行 CRAP 原则优化
-
-6. **后处理**（推荐）
+6. **Post-processing** (Recommended)
    ```bash
-   python3 tools/finalize_svg.py <项目路径>     # 执行全部后处理
+   python3 tools/finalize_svg.py <project_path>     # Execute all post-processing
    ```
 
-7. **导出使用**
+7. **Export for Use**
    ```bash
-   # 导出为 PPTX
-   python3 tools/svg_to_pptx.py <项目路径> -s final      # 使用 svg_final（推荐）
-   python3 tools/svg_to_pptx.py <项目路径>               # 使用 svg_output（原始版本）
+   # Export as PPTX
+   python3 tools/svg_to_pptx.py <project_path> -s final      # Use svg_final (Recommended)
+   python3 tools/svg_to_pptx.py <project_path>               # Use svg_output (Original version)
    ```
-   或将 SVG 文件直接嵌入到其他演示环境中
+   Or embed SVG files directly into other presentation environments
 
-### 示例对话流程
+### Example Dialogue Flow
 
 ```
-用户: 我有一份市场分析报告需要制作成演示文稿
+User: I have a market analysis report that needs to be made into a presentation
 
-Strategist: 在开始分析您的内容之前，我需要先完成七项确认：
+Strategist: Before analyzing your content, I need to complete seven confirmations:
 
-1. 画布格式：[建议] PPT 16:9 (1280×720)，适合商业演示场景
+1. Canvas Format: [Suggestion] PPT 16:9 (1280×720), suitable for business presentation scenarios
 
-2. 页数范围：[建议] 8-10 页，确保每个核心议题有充分展示空间
+2. Page Range: [Suggestion] 8-10 pages, ensuring sufficient space for each core issue
 
-3. 目标受众与场景：[建议] 面向企业中高层管理者的战略分析材料，
-   适用于季度/年度战略会议
+3. Target Audience & Scenario: [Suggestion] Strategic analysis material for mid-to-senior management,
+   suitable for quarterly/annual strategy meetings
 
-4. 设计风格：[建议] C) 顶级咨询风格（MBB 级），
-   体现数据驱动和专业权威感
+4. Design Style: [Suggestion] C) Top Consulting Style (MBB Level),
+   reflecting data-driven and professional authority
 
-5. 配色方案：[建议]
-   - 主导色: #005587 (麦肯锡蓝) - 专业、可信
-   - 辅助色: #E8E8E8 (浅灰) - 背景、留白
-   - 强调色: #FF6B35 (活力橙) - 数据高亮、重点标注
+5. Color Scheme: [Suggestion]
+   - Dominant: #005587 (McKinsey Blue) - Professional, Credible
+   - Secondary: #E8E8E8 (Light Gray) - Background, Whitespace
+   - Accent: #FF6B35 (Vibrant Orange) - Data Highlight, Emphasis
 
-6. 图标方式：[建议] C) 内置图标库，专业简洁
+6. Icon Method: [Suggestion] C) Built-in Icon Library, professional and concise
 
-7. 图片使用：[建议] A) 不使用图片，数据报告以图表为主
+7. Image Usage: [Suggestion] A) No Images, data report primarily uses charts
 
-用户: 同意你的建议
+User: I agree with your suggestions
 
-Strategist: [分析内容，生成完整的设计规范与内容大纲...]
+Strategist: [Analyzes content, generates full Design Specifications and Content Outline...]
 
-用户: 规划很好！请生成第1页：封面
+User: The plan looks good! Please generate Page 1: Cover
 
-Executor_Consultant_Top: [生成第1页SVG代码...]
+Executor_Consultant_Top: [Generates Page 1 SVG code...]
 
-用户: 请继续生成第2页
+User: Please continue generating Page 2
 
-Executor_Consultant_Top: [生成第2页SVG代码...]
+Executor_Consultant_Top: [Generates Page 2 SVG code...]
 
-用户: 第2页很重要，请使用CRAP原则优化视觉效果
+User: Page 2 is very important, please use CRAP principles to optimize visual effects
 
 Optimizer_CRAP:
-我将分析第2页并应用CRAP原则：
-1. 对齐：确保所有元素严格对齐网格
-2. 对比：增大数字与标签的尺寸差异
-3. 重复：统一卡片样式
-4. 亲密性：将相关数据更紧密组合
-[输出优化后的yh_slide_02.svg...]
+I will analyze Page 2 and apply CRAP principles:
+1. Alignment: Ensure all elements strictly align with the grid
+2. Contrast: Increase size difference between numbers and labels
+3. Repetition: Unify card styles
+4. Proximity: Group related data more closely
+[Output optimized yh_slide_02.svg...]
 ```
 
-💡 **提示**: 查看 `examples/` 目录下的示例项目，了解完整的项目实施过程和最终效果。
+💡 **Tip**: Check example projects in `examples/` directory to understand the complete project implementation process and final results.
 
-## 设计风格
+## Design Styles
 
-### 通用灵活风格
+### General Flexible Style
 
-- 适用场景：一般商业演示、教育培训、团队汇报
-- 设计特点：灵活布局、色彩丰富、易于定制
-- 内容结构：清晰的逻辑层次和视觉引导
+- Applicable Scenarios: General business presentation, education & training, team reporting
+- Design Features: Flexible layout, rich colors, easy to customize
+- Content Structure: Clear logical hierarchy and visual guidance
 
-### 一般咨询风格
+### General Consulting Style
 
-- 适用场景：商务报告、项目汇报、客户演示
-- 设计特点：简洁清晰、数据可视化、专业感
-- 典型元素：KPI 仪表盘、数据图表、MECE 分解
+- Applicable Scenarios: Business reports, project reporting, client demonstrations
+- Design Features: Concise & clear, data visualization, professional feel
+- Typical Elements: KPI dashboards, data charts, MECE decomposition
 
-### 顶级咨询风格（MBB 级）
+### Top Consulting Style (MBB Level)
 
-- 适用场景：战略报告、董事会演示、高端客户提案
-- 设计特点：简洁专业、数据驱动、强调洞察
-- 参考标准：麦肯锡、贝恩、BCG 等顶尖咨询公司
-- **5 大核心技巧**：数据情境化、SCQA 框架、金字塔原则、颜色战略性使用、图表 vs 表格选择
-- 典型元素：矩阵图、时间轴、KPI 仪表盘、瀑布图、驱动因素树
+- Applicable Scenarios: Strategy reports, board presentations, high-end client proposals
+- Design Features: Concise & professional, data-driven, emphasizes insight
+- Reference Standards: McKinsey, Bain, BCG, etc.
+- **5 Core Skills**: Data Contextualization, SCQA Framework, Pyramid Principle, Strategic Color Use, Chart vs Table Selection
+- Typical Elements: Matrix charts, timelines, KPI dashboards, waterfall charts, driver trees
 
-## 技术规范
+## Technical Specifications
 
-### SVG 参数
+### SVG Parameters
 
-- **画布尺寸**: 根据选定格式自动适配（详见 [画布格式规范](./docs/canvas_formats.md)）
+- **Canvas Size**: Automatically adapts based on selected format (see [Canvas Format Specifications](./docs/canvas_formats.md))
   - PPT 16:9: 1280×720
   - PPT 4:3: 1024×768
-  - 小红书: 1242×1660
-  - 朋友圈: 1080×1080
+  - XiaoHongShu: 1242×1660
+  - Moments: 1080×1080
   - Story: 1080×1920
-  - 更多格式...
-- **ViewBox**: 与画布尺寸一致
-- **背景**: 使用 `<rect>`元素定义
-- **文本**: 禁用 `<foreignObject>`，使用 `<tspan>`手动换行
-- **字体**: 优先使用系统 UI 字体栈
+  - More formats...
+- **ViewBox**: Consistent with canvas dimensions
+- **Background**: Defined using `<rect>` element
+- **Text**: Disable `<foreignObject>`, use `<tspan>` for manual line breaking
+- **Fonts**: Prioritize system UI font stacks
 
-### 布局规范
+### Layout Specifications
 
-#### 通用灵活风格
+#### General Flexible Style
 
-- **边距**: 根据画布比例自动调整（横屏 40-60px，竖屏 60-120px）
-- **卡片尺寸**: 根据画布高度和布局方式动态计算
-- **间距**: 20-60px（根据画布大小调整）
+- **Margins**: Automatically adjusted based on canvas aspect ratio (Landscape 40-60px, Portrait 60-120px)
+- **Card Dimensions**: Dynamically calculated based on canvas height and layout method
+- **Spacing**: 20-60px (adjusted based on canvas size)
 
-#### 高端咨询风格
+#### High-End Consulting Style
 
-- 遵循咨询行业最佳实践
-- 强调留白和视觉呼吸感
-- 数据图表占据主要视觉区域
-- 自动适配不同画布比例
+- Follow consulting industry best practices
+- Emphasize whitespace and visual breathing room
+- Data charts occupy main visual area
+- Automatically adapts to different canvas ratios
 
-### 配色方案
+### Color Schemes
 
-#### 咨询风格主导色
+#### Consulting Style Dominant Colors
 
-- 德勤蓝: `#0076A8`
-- 麦肯锡蓝: `#005587`
-- BCG 深蓝: `#003F6C`
+- Deloitte Blue: `#0076A8`
+- McKinsey Blue: `#005587`
+- BCG Dark Blue: `#003F6C`
 
-#### 通用配色原则
+#### General Color Principles
 
-- 提供主导色、辅助色和基础色调
-- 支持亮色/深色主题
-- 使用 HEX 颜色值
+- Provide dominant, secondary, and base tone colors
+- Support Light/Dark themes
+- Use HEX color values
 
-## 项目结构
+## Project Structure
 
 ```
 ppt-master/
-├── README.md                   # 项目说明文档
-├── LICENSE                     # 许可证文件
-├── .gitignore                 # Git忽略规则
+├── README.md                   # Project documentation
+├── LICENSE                     # License file
+├── .gitignore                  # Git ignore rules
 │
-├── roles/                     # AI 角色定义（请勿在此目录测试/写入示例）
-│   ├── README.md              # 角色概览与工作流程
-│   ├── Strategist.md          # 策略师角色定义
-│   ├── Executor_General.md    # 通用执行师角色定义
-│   ├── Executor_Consultant.md # 一般咨询执行师角色定义
-│   ├── Executor_Consultant_Top.md # 顶级咨询执行师角色定义（MBB 级）
-│   └── Optimizer_CRAP.md      # CRAP优化师角色定义
+├── roles/                      # AI Role Definitions (Do not test/write examples here)
+│   ├── README.md               # Role Overview and Workflow
+│   ├── Strategist.md           # Strategist Role Definition
+│   ├── Executor_General.md     # General Executor Role Definition
+│   ├── Executor_Consultant.md  # General Consultant Executor Role Definition
+│   ├── Executor_Consultant_Top.md # Top Consultant Executor Role Definition (MBB Level)
+│   └── Optimizer_CRAP.md       # CRAP Optimizer Role Definition
 │
-├── examples/                  # 示例文件夹（每个示例一个独立目录）
+├── examples/                   # Example folder (Each example is an independent directory)
 │   └── <project_name>_<format>_<YYYYMMDD>/
 │       ├── README.md
-│       ├── 设计规范与内容大纲.md / design_specification.md
-│       ├── preview.html（可选）
+│       ├── design_specification.md / 设计规范与内容大纲.md
+│       ├── preview.html (Optional)
 │       └── svg_output/
 │
-├── docs/                      # 文档中心
-│   ├── canvas_formats.md      # 画布格式规范
-│   ├── design_guidelines.md   # 详细设计指南（颜色、排版、布局）
-│   ├── svg_image_embedding.md # SVG 图片嵌入指南
-│   ├── workflow_tutorial.md   # 工作流教程（实际案例演示）
-│   └── quick_reference.md     # 快速参考指南（速查手册）
+├── docs/                       # Documentation Center
+│   ├── canvas_formats.md       # Canvas Format Specifications
+│   ├── design_guidelines.md    # Detailed Design Guidelines (Color, Layout, Composition)
+│   ├── svg_image_embedding.md  # SVG Image Embedding Guide
+│   ├── workflow_tutorial.md    # Workflow Tutorial (Practical Case Study)
+│   └── quick_reference.md      # Quick Reference Guide
 │
-├── templates/                 # 标准化模板库
-│   ├── charts/                # 图表模板（13种：KPI、柱状图、折线图等）
-│   │   ├── README.md          # 图表模板使用说明
-│   │   ├── preview.html       # 在线预览所有模板
-│   │   └── *.svg              # 13个图表模板文件
-│   └── icons/                 # 图标库（640+ 矢量图标）
-│       └── README.md          # 图标库使用说明
+├── templates/                  # Standardized Template Library
+│   ├── charts/                 # Chart Templates (13 types: KPI, Bar, Line, etc.)
+│   │   ├── README.md           # Chart Template Usage Instructions
+│   │   ├── preview.html        # Online Preview of All Templates
+│   │   └── *.svg               # 13 Chart Template Files
+│   └── icons/                  # Icon Library (640+ Vector Icons)
+│       └── README.md           # Icon Library Usage Instructions
 │
-├── tools/                     # 实用工具
-│   ├── README.md              # 工具说明
-│   ├── project_manager.py     # 项目管理工具
-│   ├── svg_quality_checker.py # SVG 质量检查
-│   ├── batch_validate.py      # 批量验证工具
-│   ├── finalize_svg.py        # 最终化处理（嵌入图标/图片）
-│   ├── embed_icons.py         # 图标嵌入工具
-│   ├── embed_images.py        # 图片嵌入工具
-│   ├── flatten_tspan.py       # tspan扁平化工具
-│   └── svg_to_pptx.py         # SVG转PPTX工具（原生矢量嵌入）
+├── tools/                      # Utility Tools
+│   ├── README.md               # Tool Instructions
+│   ├── project_manager.py      # Project Management Tool
+│   ├── svg_quality_checker.py  # SVG Quality Checker
+│   ├── batch_validate.py       # Batch Validation Tool
+│   ├── finalize_svg.py         # Finalization Processing (Embed Icons/Images)
+│   ├── embed_icons.py          # Icon Embedding Tool
+│   ├── embed_images.py         # Image Embedding Tool
+│   ├── flatten_tspan.py        # Tspan Flattening Tool
+│   └── svg_to_pptx.py          # SVG to PPTX Tool (Native Vector Embedding)
 │
-└── projects/                  # 用户项目工作区（进行中的项目）
+└── projects/                   # User Project Workspace (Works in Progress)
     └── <your_project_name>_<YYYYMMDD>/
 
-**重要**: 所有项目文件夹必须以日期后缀结尾,格式为 `_YYYYMMDD` (例如: `_20251012`)
-
+**Important**: All project folders must end with a date suffix in the format `_YYYYMMDD` (e.g., `_20251012`)
 ```
 
-## 最佳实践
+## Best Practices
 
-### 内容准备
+### Content Preparation
 
-1. **清晰的逻辑结构** - 确保源文档有明确的章节和要点
-2. **数据准备充分** - 提供具体的数字和数据支持
-3. **视觉元素建议** - 预先考虑图表类型和布局需求
+1. **Clear Logical Structure** - Ensure source document has clear chapters and points
+2. **Sufficient Data Preparation** - Provide specific numbers and data support
+3. **Visual Element Suggestions** - Pre-consider chart types and layout needs
 
-### 设计过程
+### Design Process
 
-1. **充分沟通** - 与 Strategist 确认所有设计参数
-   - 💡 Strategist 会主动提供专业建议，认真考虑这些建议
-   - 📋 如有不同想法，可以与 Strategist 的建议进行讨论和调整
-2. **逐页验证** - 每生成一页都要检查效果
-3. **适时优化** - 关键页面使用 Optimizer_CRAP 提升质量
-4. **保持一致** - 确保全套幻灯片风格统一
+1. **Sufficient Communication** - Confirm all design parameters with Strategist
+   - 💡 Strategist will proactively offer professional advice, consider them seriously
+   - 📋 If you have different ideas, discuss and adjust with Strategist's suggestions
+2. **Page-by-Page Verification** - Check effect after generating each page
+3. **Timely Optimization** - Use Optimizer_CRAP to enhance quality of key pages
+4. **Maintain Consistency** - Ensure unified style across all slides
 
-### 输出管理
+### Output Management
 
-1. **文件命名** - 使用清晰的命名规则（如：`slide_01_cover.svg`）
-2. **版本控制** - 保存每次迭代的版本
-3. **格式转换** - 根据需要转换为 PNG 或 PDF
-4. **项目组织** - 将每个演示项目放在 `projects/` 目录下，包含设计规范和 SVG 输出
+1. **File Naming** - Use clear naming rules (e.g., `slide_01_cover.svg`)
+2. **Version Control** - Save versions of each iteration
+3. **Format Conversion** - Convert to PNG or PDF as needed
+4. **Project Organization** - Place each presentation project in `projects/` directory, including design specs and SVG output
 
-## 更多示例
+## More Examples
 
-本仓库是一个 **AI 工作流框架**，提供完整的角色定义、模板和工具集。
+This repository is an **AI Workflow Framework**, providing complete role definitions, templates, and toolsets.
 
-### 📂 项目结构
+### 📂 Project Structure
 
-示例项目应位于 `examples/` 目录下，采用以下结构：
+Example projects should be located in `examples/` directory, following this structure:
 
 ```
 examples/
 └── <project_name>_<format>_<YYYYMMDD>/
-    ├── 设计规范与内容大纲.md
-    ├── images/              # 图片资源
-    ├── svg_output/          # 原始 SVG（带占位符）
-    └── svg_final/           # 最终 SVG（嵌入图标/图片）
+    ├── 设计规范与内容大纲.md (Design Specifications)
+    ├── images/              # Image resources
+    ├── svg_output/          # Original SVG (With Placeholders)
+    └── svg_final/           # Final SVG (Embedded Icons/Images)
 ```
 
-### 🔍 预览 SVG
+### 🔍 Preview SVG
 
 ```bash
-# 使用本地服务器预览
+# Preview using local server
 python3 -m http.server --directory examples/<project>/svg_final 8000
-# 然后访问 http://localhost:8000
+# Then visit http://localhost:8000
 ```
 
-### 🚀 开始你的项目
+### 🚀 Start Your Project
 
-#### 使用项目管理工具（推荐）
+#### Use Project Management Tool (Recommended)
 
 ```bash
-# 1. 初始化新项目
+# 1. Initialize new project
 python3 tools/project_manager.py init my_project --format ppt169
 
-# 2. 编辑生成的设计规范文件
+# 2. Edit generated design specification file
 # projects/my_project_ppt169_20251116/设计规范与内容大纲.md
 
-# 3. 使用 AI 角色生成 SVG 文件到 svg_output/ 目录
+# 3. Use AI roles to generate SVG files to svg_output/ directory
 
-# 4. 验证项目结构
+# 4. Validate project structure
 python3 tools/project_manager.py validate projects/my_project_ppt169_20251116
 ```
 
-#### 手动创建项目
+#### Manually Create Project
 
-参考示例结构，在 `projects/` 目录下创建你自己的项目：
+Refer to example structure, create your own project in `projects/` directory:
 
 ```
 projects/
-└── your_project_name_format_YYYYMMDD/    # 必须添加格式和日期后缀
-    ├── README.md                         # 项目说明
-    ├── 设计规范与内容大纲.md              # Strategist生成的设计规范
-    ├── 来源文档.md                        # 源文档（可选）
-    ├── preview.html                      # 预览页面（自动生成）
-    └── svg_output/                       # 生成的SVG文件
+└── your_project_name_format_YYYYMMDD/    # Must add format and date suffix
+    ├── README.md                         # Project description
+    ├── 设计规范与内容大纲.md              # Design specs generated by Strategist
+    ├── 来源文档.md                        # Source document (Optional)
+    ├── preview.html                      # Preview page (Auto-generated)
+    └── svg_output/                       # Generated SVG files
         ├── slide_01_cover.svg
         ├── slide_02_xxx.svg
         └── ...
 ```
 
-**重要命名规则**:
-- 项目文件夹名称格式: `{项目名称}_{format}_{YYYYMMDD}`
-- format: `ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `story` 等
-- 日期使用8位数字格式，例如 `20251116` 代表 2025年11月16日
-- 示例: `my_presentation_ppt169_20251116`
+**Important Naming Rules**:
+- Project folder name format: `{project_name}_{format}_{YYYYMMDD}`
+- format: `ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `story`, etc.
+- Date uses 8-digit format, e.g., `20251116` represents November 16, 2025
+- Example: `my_presentation_ppt169_20251116`
 
-详细命名规范请参考上述示例
+Please refer to the above examples for detailed naming conventions.
 
-## 常见问题
+## FAQ
 
 <details>
-<summary><b>Q: 生成的SVG文件如何使用？</b></summary>
+<summary><b>Q: How to use the generated SVG files?</b></summary>
 
-A: SVG 文件可以：
+A: SVG files can be:
 
-- 直接在浏览器中打开查看
-- 嵌入到 HTML 页面中
-- 使用设计工具（如 Figma、Adobe Illustrator）编辑
-- 转换为 PNG/PDF 格式用于传统演示软件
+- Viewed directly in a browser
+- Embedded into HTML pages
+- Edited using design tools (like Figma, Adobe Illustrator)
+- Converted to PNG/PDF formats for traditional presentation software
 
 </details>
 
 <details>
-<summary><b>Q: 两种执行师有什么区别？</b></summary>
+<summary><b>Q: What is the difference between the two Executors?</b></summary>
 
 A:
 
-- **Executor_General**: 适用于通用场景，提供灵活的布局和丰富的视觉选择
-- **Executor_Consultant**: 适用于一般咨询场景，简洁清晰的数据可视化
-- **Executor_Consultant_Top**: 适用于顶级咨询场景（MBB 级），采用 5 大核心表达技巧
+- **Executor_General**: Suitable for general scenarios, providing flexible layouts and rich visual choices
+- **Executor_Consultant**: Suitable for general consulting scenarios, concise clear data visualization
+- **Executor_Consultant_Top**: Suitable for top consulting scenarios (MBB Level), adopting 5 core expression skills
 
 </details>
 
 <details>
-<summary><b>Q: 必须使用Optimizer_CRAP吗？</b></summary>
+<summary><b>Q: Must keep Optimizer_CRAP?</b></summary>
 
-A: 不是必须的。如果 Executor 生成的 SVG 已经满足需求，可以跳过优化步骤。Optimizer 主要用于进一步提升关键页面的视觉质量。
+A: It is not mandatory. If the SVG generated by Executor already meets requirements, you can skip the optimization step. Optimizer is mainly used to further improve visual quality of key pages.
 
 </details>
 
 <details>
-<summary><b>Q: 可以自定义配色方案吗？</b></summary>
+<summary><b>Q: Can I customize the color scheme?</b></summary>
 
-A: 可以！在与 Strategist 沟通时，明确提出你的品牌色或偏好配色，Strategist 会据此调整设计规范。
+A: Yes! When communicating with Strategist, explicitly state your brand colors or preferred color scheme, and Strategist will adjust the design specifications accordingly.
 
 </details>
 
-## 贡献指南
+## Contribution Guide
 
-我们欢迎各种形式的贡献！
+We welcome all forms of contribution!
 
-### 如何贡献
+### How to Contribute
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+1. Fork this repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
-### 贡献方向
+### Contribution Directions
 
-- 🎨 新增设计风格模板
-- 📊 扩展图表类型和可视化组件
-- 📝 完善文档和教程
-- 🐛 报告 bug 和问题
-- 💡 提出新功能建议
-- 🌍 多语言支持
-- 📁 分享你的项目案例到 `examples/` 目录
+- 🎨 Add new design style templates
+- 📊 Expand chart types and visualization components
+- 📝 Improve documentation and tutorials
+- 🐛 Report bugs and issues
+- 💡 Propose new feature suggestions
+- 🌍 Multi-language support
+- 📁 Share your project cases to `examples/` directory
 
-## 路线图
+## Roadmap
 
-### ✅ 已完成
+### ✅ Completed
 
-- [x] 建立完整的角色体系和工作流
-- [x] 实现通用和咨询两种设计风格
-- [x] 多格式画布支持（PPT 16:9/4:3、小红书、朋友圈、Story 等 10+ 格式）
-- [x] 项目管理工具集（初始化、验证、质量检查、批量处理）
-- [x] 标准化图表模板库（33 种图表类型）
-- [x] 640+ 矢量图标库（来源于 SVG Repo）
-- [x] Strategist 主动建议功能（从被动提问升级为主动顾问）
-- [x] **示例项目库**（14 个项目、209 页 SVG，涵盖咨询/通用/创意风格）
-- [x] 在线示例展示（[幻灯片展示库](https://notes.36sjs.com/pages/ppt/slides-library.html)）
+- [x] Establish complete role system and workflow
+- [x] Implement General and Consulting design styles
+- [x] Multi-format canvas support (PPT 16:9/4:3, XiaoHongShu, Moments, Story, etc., 10+ formats)
+- [x] Project management toolset (Initialization, Validation, Quality Check, Batch Processing)
+- [x] Standardized chart template library (33 chart types)
+- [x] 640+ vector icon library (Source: SVG Repo)
+- [x] Strategist proactive suggestion function (Upgraded from passive questioning to proactive consultant)
+- [x] **Example Project Library** (14 projects, 209 pages SVG, covering Consulting/General/Creative styles)
+- [x] Online Demo Display ([Slides Library](https://notes.36sjs.com/pages/ppt/slides-library.html))
 
-### 📋 计划中
+### 📋 Planned
 
-- [ ] 开发交互式配置工具
-- [ ] 支持动画效果和交互性
-- [ ] Web 界面开发
-- [ ] API 接口设计
-- [ ] GitHub Actions CI/CD 集成
+- [ ] Develop interactive configuration tools
+- [ ] Support animation effects and interactivity
+- [ ] Web interface development
+- [ ] API interface design
+- [ ] GitHub Actions CI/CD integration
 
-## 🛠️ 工具集
+## 🛠️ Toolset
 
-PPT Master 提供了一套完整的工具来简化项目管理和内容生成流程。
+PPT Master provides a complete set of tools to simplify project management and content generation.
 
-### 项目管理工具 (`project_manager.py`)
+### Project Management Tool (`project_manager.py`)
 
-创建、验证和管理项目的一站式工具：
+One-stop tool for creating, verifying, and managing projects:
 
 ```bash
-# 初始化新项目
+# Initialize new project
 python3 tools/project_manager.py init <project_name> --format ppt169
 
-# 验证项目结构
+# Validate project structure
 python3 tools/project_manager.py validate <project_path>
 
-# 查看项目信息
+# View project info
 python3 tools/project_manager.py info <project_path>
 ```
 
-支持的画布格式：`ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `moments`, `story`, `banner`, `a4`
+Supported formats: `ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `moments`, `story`, `banner`, `a4`
 
-### SVG 质量检查工具 (`svg_quality_checker.py`)
+### SVG Quality Checker (`svg_quality_checker.py`)
 
-检查 SVG 文件是否符合项目技术规范：
+Checks if SVG files comply with project technical specifications:
 
 ```bash
-# 检查单个文件或目录
+# Check single file or directory
 python3 tools/svg_quality_checker.py examples/project/svg_output
 
-# 检查所有项目
+# Check all projects
 python3 tools/svg_quality_checker.py --all examples
 
-# 指定期望格式
+# Specify expected format
 python3 tools/svg_quality_checker.py examples/project --format ppt169
 ```
 
-**检查项目**：viewBox 属性、禁用元素（foreignObject）、字体使用、width/height 一致性、文本换行方式、文件大小
+**Checks**: viewBox attributes, disabled elements (foreignObject), font usage, width/height consistency, text wrapping, file size
 
-### 批量验证工具 (`batch_validate.py`)
+### Batch Validation Tool (`batch_validate.py`)
 
-一次性检查多个项目的结构完整性：
+Checks structural integrity of multiple projects at once:
 
 ```bash
-# 验证单个目录
+# Validate single directory
 python3 tools/batch_validate.py examples
 
-# 验证所有项目
+# Validate all projects
 python3 tools/batch_validate.py --all
 
-# 导出报告
+# Export report
 python3 tools/batch_validate.py examples --export
 ```
 
-### Examples 索引生成工具 (`generate_examples_index.py`)
+### Examples Index Generator (`generate_examples_index.py`)
 
-自动扫描 examples 目录并生成 README.md 索引文件：
+Automatically scans examples directory and generates README.md index file:
 
 ```bash
 python3 tools/generate_examples_index.py
 ```
 
-### 后处理工具 (`finalize_svg.py`)
+### Post-Processing Tool (`finalize_svg.py`)
 
-统一后处理入口，执行嵌入图标/图片、文本扁平化、圆角转 Path：
+Unified post-processing entry point, executes icon/image embedding, text flattening, rounded rect to Path:
 
 ```bash
-# 执行全部后处理（默认）
-python3 tools/finalize_svg.py <项目路径>
+# Execute all post-processing (Default)
+python3 tools/finalize_svg.py <project_path>
 
-# 只执行部分处理
-python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
+# Execute only partial processing
+python3 tools/finalize_svg.py <project_path> --only embed-icons fix-rounded
 ```
 
-**注意**：生成阶段仍应使用 `<tspan>` 手动换行，后处理会自动扁平化。
+**Note**: Still use `<tspan>` for manual line breaking during generation phase; post-processing will automatically flatten.
 
-### SVG 转 PPTX 工具 (`svg_to_pptx.py`)
+### SVG to PPTX Tool (`svg_to_pptx.py`)
 
-将 SVG 文件批量转换为 PowerPoint 演示文稿（原生 SVG 矢量嵌入）：
+Batch convert SVG files to PowerPoint presentations (Native SVG Vector Embedding):
 
 ```bash
-# 使用最终版本（推荐）
-python3 tools/svg_to_pptx.py <项目路径> -s final
+# Use final version (Recommended)
+python3 tools/svg_to_pptx.py <project_path> -s final
 
-# 使用原始版本
-python3 tools/svg_to_pptx.py <项目路径>
+# Use original version
+python3 tools/svg_to_pptx.py <project_path>
 
-# 指定输出文件
-python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
+# Specify output file
+python3 tools/svg_to_pptx.py <project_path> -s final -o output.pptx
 ```
 
-**特点**：SVG 以原生矢量格式嵌入，保持可编辑性，需要 PowerPoint 2016+ 查看。
+**Features**: SVG embedded in native vector format, maintaining editability, requires PowerPoint 2016+ to view.
 
-### 错误消息助手 (`error_helper.py`)
+### Error Helper (`error_helper.py`)
 
-提供友好的错误消息和具体的修复建议：
+Provides friendly error messages and specific repair suggestions:
 
 ```bash
-# 查看所有错误类型
+# View all error types
 python3 tools/error_helper.py
 
-# 查看特定错误的解决方案
+# View solution for specific error
 python3 tools/error_helper.py missing_readme
 ```
 
 ---
 
-📖 **详细文档**: [工具使用指南](./tools/README.md)
+📖 **Detailed Documentation**: [Tools Usage Guide](./tools/README.md)
 
-## 📄 开源协议
+## 📄 Open Source License
 
-本项目采用 [MIT License](LICENSE) 开源协议。
+This project looks like it is licensed under the [MIT License](LICENSE).
 
-你可以自由地：
+You are free to:
 
-- ✅ 商业使用
-- ✅ 修改源代码
-- ✅ 分发和再授权
-- ✅ 私人使用
+- ✅ Use commercially
+- ✅ Modify source code
+- ✅ Distribute and sublicense
+- ✅ Use privately
 
-但需要：
+But you need to:
 
-- 📋 保留版权声明
-- 📋 保留许可证声明
+- 📋 Retain copyright notice
+- 📋 Retain license notice
 
-## 🙏 致谢
+## 🙏 Acknowledgements
 
-感谢以下开源项目：
+Thanks to the following open source projects:
 
-- [SVG Repo](https://www.svgrepo.com/) - 精美的开源图标库（本项目内置 640+ 图标）
-- [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) - CRAP 设计原则的提出者
-- 麦肯锡、波士顿咨询、贝恩等顶尖咨询公司 - 设计灵感来源
+- [SVG Repo](https://www.svgrepo.com/) - Beautiful open source icon library (640+ icons built-in)
+- [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) - Proposer of CRAP design principles
+- McKinsey, BCG, Bain and other top consulting firms - Design inspiration sources
 
-## 📮 联系方式
+## 📮 Contact
 
 - **Issue**: [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - **GitHub**: [@hugohe3](https://github.com/hugohe3)
-- **项目链接**: [https://github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
+- **Project Link**: [https://github.com/hugohe3/ppt-master](https://github.com/hugohe3/ppt-master)
 
 ## 🌟 Star History
 
-如果这个项目对你有帮助，请给一个 ⭐ Star 支持一下！
+If this project helps you, please give it a ⭐ Star!
 
 <a href="https://star-history.com/#hugohe3/ppt-master&Date">
  <picture>
@@ -831,4 +829,4 @@ python3 tools/error_helper.py missing_readme
 
 Made with ❤️ by Hugo He
 
-[⬆ 回到顶部](#ppt-master---ai-驱动的多格式-svg-内容生成系统)
+[⬆ Back to Top](#ppt-master---ai-driven-multi-format-svg-content-generation-system)
