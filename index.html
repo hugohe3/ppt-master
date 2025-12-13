@@ -451,7 +451,7 @@
                 desc: '老挝南欧江梯级水电站项目、主权债务危机与仲裁案全景分析。',
                 tags: ['战略评估', '湄公河色系', '流域危机'],
                 isNew: false,
-                cover: 'P01_cover.svg'
+                cover: 'slide_01_cover.svg'
             },
             {
                 id: 'ppt169_高端咨询风_汽车认证五年战略规划',
@@ -462,7 +462,7 @@
                 desc: '汽车及零部件领域自愿性产品认证 2026-2030 五年战略规划。',
                 tags: ['战略规划', '新能源', '绿色低碳'],
                 isNew: false,
-                cover: 'P01_cover.svg'
+                cover: 'slide_01_cover.svg'
             },
             {
                 id: 'ppt169_麦肯锡风_kimsoong_customer_loyalty',
@@ -585,11 +585,17 @@
                     : project.style === 'general' ? 'style-general'
                         : 'style-creative';
 
+                const coverUrl = encodeURI(`examples/${project.id}/svg_final/${project.cover}`);
+                const img = document.createElement('img');
+                img.src = coverUrl;
+                img.alt = project.title;
+                img.onerror = function () {
+                    this.onerror = null;
+                    this.parentElement.innerHTML = '<div class="placeholder">📊</div>';
+                };
+
                 card.innerHTML = `
                     <div class="card-preview">
-                        <img src="examples/${project.id}/svg_final/${project.cover}" 
-                             alt="${project.title}" 
-                             onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>📊</div>'" />
                         ${project.isNew ? '<span class="card-badge new">🆕 新增</span>' : ''}
                     </div>
                     <div class="card-content">
@@ -605,6 +611,10 @@
                         </div>
                     </div>
                 `;
+
+                // Insert image into card-preview
+                const preview = card.querySelector('.card-preview');
+                preview.insertBefore(img, preview.firstChild);
 
                 grid.appendChild(card);
             });
