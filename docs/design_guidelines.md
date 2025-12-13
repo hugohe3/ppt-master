@@ -496,6 +496,92 @@ system-ui, -apple-system, BlinkMacSystemFont,
 ✓ 空白使用合理
 ```
 
+## PPT 兼容性规范
+
+为确保 SVG 导出到 PowerPoint 后视觉效果一致，必须遵守以下规则。
+
+### 透明度写法规范
+
+PowerPoint 对 SVG 透明度的支持有限，以下是兼容性对照表：
+
+| 写法 | PPT 支持 | 说明 |
+|------|---------|------|
+| `fill="#FFF" fill-opacity="0.1"` | ✅ | 推荐：填充透明度 |
+| `stroke="#FFF" stroke-opacity="0.1"` | ✅ | 推荐：描边透明度 |
+| `opacity="0.1"` (在单个元素上) | ✅ | 支持：整体透明度 |
+| `fill="rgba(255,255,255,0.1)"` | ❌ | 禁止：rgba 格式 |
+| `<g opacity="0.1">` | ❌ | 禁止：组透明度 |
+| `<image opacity="0.3"/>` | ❌ | 不支持：图片透明度 |
+
+### 禁止：rgba() 颜色格式
+
+```xml
+<!-- ❌ 错误写法 -->
+<rect fill="rgba(255,255,255,0.15)"/>
+
+<!-- ✅ 正确写法 -->
+<rect fill="#FFFFFF" fill-opacity="0.15"/>
+```
+
+### 禁止：组元素透明度
+
+PPT 不支持 `<g>` 元素上的 `opacity` 属性，必须将透明度设置到每个子元素上：
+
+```xml
+<!-- ❌ 错误写法：组透明度 -->
+<g opacity="0.1">
+  <circle cx="100" cy="100" r="50" fill="none" stroke="#FFF" stroke-width="1"/>
+  <circle cx="100" cy="100" r="30" fill="none" stroke="#FFF" stroke-width="1"/>
+  <line x1="0" y1="100" x2="200" y2="100" stroke="#FFF" stroke-width="1"/>
+</g>
+
+<!-- ✅ 正确写法：每个元素单独设置 -->
+<circle cx="100" cy="100" r="50" fill="none" stroke="#FFF" stroke-width="1" stroke-opacity="0.1"/>
+<circle cx="100" cy="100" r="30" fill="none" stroke="#FFF" stroke-width="1" stroke-opacity="0.1"/>
+<line x1="0" y1="100" x2="200" y2="100" stroke="#FFF" stroke-width="1" stroke-opacity="0.1"/>
+```
+
+### 图片透明度：遮罩层方案
+
+PPT 不支持 `<image>` 元素的 `opacity` 属性。使用**遮罩层叠加**实现相同效果：
+
+```xml
+<!-- ❌ 错误写法：图片透明度会丢失 -->
+<rect width="1280" height="720" fill="#2C3E50"/>
+<image href="bg.png" width="1280" height="720" opacity="0.35"/>
+
+<!-- ✅ 正确写法：遮罩层方案 -->
+<rect width="1280" height="720" fill="#2C3E50"/>
+<image href="bg.png" width="1280" height="720"/>
+<rect width="1280" height="720" fill="#2C3E50" opacity="0.65"/>
+```
+
+**原理**：
+- 原图片 `opacity="0.35"` → 遮罩层 `opacity="0.65"` (1 - 0.35)
+- 遮罩层颜色使用背景渐变的起始色或主背景色
+
+### 渐变定义中的透明度
+
+渐变 `<stop>` 中使用 `stop-opacity` 是支持的：
+
+```xml
+<!-- ✅ 正确：渐变中使用 stop-opacity -->
+<linearGradient id="fadeGradient">
+  <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0"/>
+  <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1"/>
+  <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0"/>
+</linearGradient>
+```
+
+### 检查清单
+
+生成 SVG 后，确保以下内容：
+
+- [ ] 搜索 `rgba(` - 应无结果
+- [ ] 搜索 `<g opacity` 或 `<g.*opacity` - 应无结果
+- [ ] 搜索 `<image.*opacity` - 应无结果，改用遮罩层
+- [ ] 所有透明度使用 `fill-opacity`、`stroke-opacity` 或单元素 `opacity`
+
 ## 常见问题与解决方案
 
 ### Q: 内容太多放不下？
