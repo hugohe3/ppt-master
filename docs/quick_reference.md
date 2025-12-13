@@ -385,19 +385,25 @@ yh_slide_02_kpi_dashboard.svg
 3. **保存版本**: 重要迭代保存独立版本
 4. **团队共享**: 建立团队的设计规范库
 
+## ⚠️ PPT 兼容性规则
+
+为确保导出 PPT 后效果一致，**透明度必须使用标准写法**：
+
+| ❌ 禁止 | ✅ 正确 |
+|--------|--------|
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+| `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
+| `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+
 ## 🔧 后处理工具
 
-### 最终化处理（默认执行全部）
+### 最终化处理
 
 ```bash
-# 执行全部后处理（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
+# 直接运行，无需参数
 python3 tools/finalize_svg.py <项目路径>
-
-# 只执行部分处理
-python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
-
-# 安静模式
-python3 tools/finalize_svg.py <项目路径> -q
 ```
 
 ### 导出为 PPTX（推荐）
