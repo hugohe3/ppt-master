@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT Master - SVG 预览器</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --dark: #1e1e2e;
+            --darker: #11111b;
+            --text: #cdd6f4;
+            --text-muted: #9399b2;
+            --surface: #181825;
+            --surface-hover: #1e1e2e;
+            --border: #313244;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version-toggle {
+            display: flex;
+            background: var(--darker);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .version-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .version-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .fullscreen-btn {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Main Layout */
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .slide-list {
+            padding: 10px;
+        }
+
+        .slide-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 5px;
+        }
+
+        .slide-item:hover {
+            background: var(--surface-hover);
+        }
+
+        .slide-item.active {
+            background: var(--primary);
+        }
+
+        .slide-thumb {
+            width: 80px;
+            height: 45px;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .slide-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .slide-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .slide-num {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .slide-item.active .slide-num {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .slide-name {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Viewer */
+        .viewer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--darker);
+            overflow: hidden;
+        }
+
+        .viewer-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            overflow: auto;
+        }
+
+        .svg-frame {
+            max-width: 100%;
+            max-height: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .svg-frame img {
+            display: block;
+            max-width: 100%;
+            max-height: calc(100vh - 200px);
+            width: auto;
+            height: auto;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            font-size: 1rem;
+            color: var(--text);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error */
+        .error {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Fullscreen */
+        .fullscreen .header,
+        .fullscreen .sidebar,
+        .fullscreen .nav-controls {
+            display: none;
+        }
+
+        .fullscreen .viewer-container {
+            padding: 0;
+        }
+
+        .fullscreen .svg-frame {
+            border-radius: 0;
+            max-height: 100vh;
+        }
+
+        .fullscreen .svg-frame img {
+            max-height: 100vh;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .header {
+                padding: 10px 15px;
+            }
+
+            .project-title {
+                font-size: 1rem;
+            }
+
+            .viewer-container {
+                padding: 15px;
+            }
+        }
+
+        /* Keyboard hints */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .keyboard-hint.show {
+            opacity: 1;
+        }
+
+        kbd {
+            background: var(--darker);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="back-btn">← 返回</a>
+            <h1 class="project-title" id="project-title">加载中...</h1>
+        </div>
+        <div class="header-right">
+            <div class="version-toggle">
+                <button class="version-btn active" data-version="final">最终版本</button>
+                <button class="version-btn" data-version="output">原始版本</button>
+            </div>
+            <button class="fullscreen-btn" id="fullscreen-btn" title="全屏 (F)">⛶</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <div class="sidebar-header">📑 幻灯片列表</div>
+            <div class="slide-list" id="slide-list">
+                <!-- Slides will be inserted here -->
+            </div>
+        </aside>
+
+        <section class="viewer">
+            <div class="viewer-container" id="viewer-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>正在加载项目...</p>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <button class="nav-btn" id="prev-btn" disabled>← 上一页</button>
+                <span class="page-indicator" id="page-indicator">0 / 0</span>
+                <button class="nav-btn" id="next-btn" disabled>下一页 →</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="keyboard-hint" id="keyboard-hint">
+        <kbd>←</kbd> <kbd>→</kbd> 翻页 · <kbd>F</kbd> 全屏 · <kbd>ESC</kbd> 退出
+    </div>
+
+    <script>
+        // Project metadata (matches index.html)
+        const projectsMeta = {
+            'ppt169_顶级咨询风_心理治疗中的依恋': { title: '心理治疗中的依恋' },
+            'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213': { title: '重庆市区域报告' },
+            'ppt169_顶级咨询风_甘孜州经济财政分析': { title: '甘孜州经济财政分析' },
+            'ppt169_顶级咨询风_构建有效AI代理_Anthropic': { title: '构建有效 AI 代理' },
+            'ppt169_高端咨询风_南欧江水电站战略评估': { title: '南欧江水电站战略评估' },
+            'ppt169_高端咨询风_汽车认证五年战略规划': { title: '汽车认证五年战略规划' },
+            'ppt169_麦肯锡风_kimsoong_customer_loyalty': { title: '客户忠诚度计划分析' },
+            'ppt169_谷歌风_google_annual_report': { title: 'Google 年度工作汇报' },
+            'ppt169_通用灵活+代码_debug六步法': { title: 'Debug 六步法' },
+            'ppt169_通用灵活+学术_重庆大学论文格式标准': { title: '重庆大学论文格式标准' },
+            'ppt169_通过灵活+代码_三大AI编程神器横向对比': { title: '三大 AI 编程神器横向对比' },
+            'ppt169_易理风_地山谦卦深度研究': { title: '地山谦卦深度研究' },
+            'ppt169_禅意风_金刚经第一品研究': { title: '金刚经第一品研究' },
+            'ppt169_像素风_git_introduction': { title: 'Git 入门完全指南' },
+            'demo_project_intro_ppt169_20251211': { title: 'PPT Master 官方介绍' }
+        };
+
+        // State
+        let currentProject = '';
+        let currentVersion = 'final';
+        let slides = [];
+        let currentIndex = 0;
+
+        // DOM elements
+        const projectTitle = document.getElementById('project-title');
+        const slideList = document.getElementById('slide-list');
+        const viewerContainer = document.getElementById('viewer-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageIndicator = document.getElementById('page-indicator');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const keyboardHint = document.getElementById('keyboard-hint');
+
+        // Get project from URL
+        function getProjectFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('project');
+        }
+
+        // Fetch slide list
+        async function fetchSlides(project, version) {
+            const folder = version === 'final' ? 'svg_final' : 'svg_output';
+            const basePath = `examples/${project}/${folder}/`;
+
+            // Try to fetch directory listing or use known patterns
+            const possiblePatterns = [
+                // P01, P02, ... pattern
+                Array.from({ length: 50 }, (_, i) => `P${String(i + 1).padStart(2, '0')}`),
+                // slide_01, slide_02, ... pattern
+                Array.from({ length: 50 }, (_, i) => `slide_${String(i + 1).padStart(2, '0')}`)
+            ];
+
+            const foundSlides = [];
+
+            // Try each pattern
+            for (const pattern of possiblePatterns) {
+                for (const prefix of pattern) {
+                    // Try common suffixes
+                    const suffixes = ['_封面', '_cover', '_Cover', '', '_目录', '_navigation', '_Navigation'];
+                    let found = false;
+
+                    for (const suffix of suffixes) {
+                        const filename = `${prefix}${suffix}.svg`;
+                        try {
+                            const response = await fetch(`${basePath}${filename}`, { method: 'HEAD' });
+                            if (response.ok) {
+                                foundSlides.push({
+                                    filename,
+                                    path: `${basePath}${filename}`,
+                                    name: filename.replace('.svg', '').replace(/_/g, ' ')
+                                });
+                                found = true;
+                                break;
+                            }
+                        } catch (e) {
+                            // Continue trying
+                        }
+                    }
+
+                    // If we found one with this prefix, try to find the actual filename
+                    if (!found && foundSlides.length > 0) {
+                        // We've passed the last slide
+                        break;
+                    }
+                }
+
+                if (foundSlides.length > 0) break;
+            }
+
+            // If still empty, try brute force approach
+            if (foundSlides.length === 0) {
+                // Common slide naming patterns
+                const knownSlides = await discoverSlides(basePath);
+                foundSlides.push(...knownSlides);
+            }
+
+            return foundSlides;
+        }
+
+        // Discover slides by trying common names
+        async function discoverSlides(basePath) {
+            const discovered = [];
+            const maxSlides = 50;
+
+            // Try both naming conventions
+            for (let i = 1; i <= maxSlides; i++) {
+                const num = String(i).padStart(2, '0');
+
+                // Try P## pattern first
+                let found = false;
+                const pResponse = await tryFetchSvg(basePath, `P${num}`);
+                if (pResponse) {
+                    discovered.push(pResponse);
+                    found = true;
+                }
+
+                // Try slide_## pattern
+                if (!found) {
+                    const sResponse = await tryFetchSvg(basePath, `slide_${num}`);
+                    if (sResponse) {
+                        discovered.push(sResponse);
+                        found = true;
+                    }
+                }
+
+                // If we found slides before but not this one, we're done
+                if (!found && discovered.length > 0 && i > discovered.length + 2) {
+                    break;
+                }
+            }
+
+            return discovered;
+        }
+
+        // Try to fetch an SVG file with common suffixes
+        async function tryFetchSvg(basePath, prefix) {
+            // Common Chinese and English suffixes
+            const suffixes = [
+                '_封面', '_cover', '_Cover', '_目录', '_目录导航', '_navigation', '_Navigation',
+                '_what_is', '_features', '_workflow', '_history', '_summary', '_end',
+                '_core_concept', '_Executive_Summary', '_Agenda', '_What_Are',
+                // Add more common suffixes
+                ''
+            ];
+
+            // First, try to find any file starting with this prefix
+            // We'll use a wildcard approach by trying known suffixes
+            const commonWords = [
+                '封面', 'cover', 'Cover', '目录', '导航', 'navigation', 'intro', 'summary',
+                'what', 'how', 'why', 'step', 'concept', 'feature', 'end', 'thank', '感谢',
+                'Executive', 'Agenda', 'Case', 'Tool', 'Summary', 'When', 'Building',
+                'Workflow', 'Autonomous', 'Agent'
+            ];
+
+            for (const word of commonWords) {
+                const filename = `${prefix}_${word}`;
+                try {
+                    // Try exact match
+                    let response = await fetch(`${basePath}${filename}.svg`, { method: 'HEAD' });
+                    if (response.ok) {
+                        return {
+                            filename: `${filename}.svg`,
+                            path: `${basePath}${filename}.svg`,
+                            name: filename.replace(/_/g, ' ')
+                        };
+                    }
+                } catch (e) {
+                    // Continue
+                }
+            }
+
+            // Try just the prefix with no suffix
+            try {
+                const response = await fetch(`${basePath}${prefix}.svg`, { method: 'HEAD' });
+                if (response.ok) {
+                    return {
+                        filename: `${prefix}.svg`,
+                        path: `${basePath}${prefix}.svg`,
+                        name: prefix.replace(/_/g, ' ')
+                    };
+                }
+            } catch (e) {
+                // Continue
+            }
+
+            return null;
+        }
+
+        // Alternative: Scan common filenames from our project data
+        async function loadProjectSlides(project, version) {
+            const folder = version === 'final' ? 'svg_final' : 'svg_output';
+            const basePath = `examples/${project}/${folder}/`;
+
+            // Pre-defined slide lists for each project
+            const projectSlides = {
+                'ppt169_顶级咨询风_心理治疗中的依恋': generateSlideList(32, 'P', '封面'),
+                'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213': generateSlideList(20, 'P', '封面'),
+                'ppt169_顶级咨询风_甘孜州经济财政分析': generateSlideList(17, 'slide_', 'cover'),
+                'ppt169_顶级咨询风_构建有效AI代理_Anthropic': [
+                    'P01_Cover', 'P02_Executive_Summary', 'P03_Agenda', 'P04_What_Are_Agents',
+                    'P05_When_To_Use', 'P06_Building_Block', 'P07_Workflow_Chaining',
+                    'P08_Workflow_Routing', 'P09_Workflow_Parallelization', 'P10_Workflow_Advanced',
+                    'P11_Autonomous_Agents', 'P12_When_To_Use_Agents', 'P13_Case_Studies',
+                    'P14_Tool_Engineering', 'P15_Summary'
+                ],
+                'ppt169_高端咨询风_南欧江水电站战略评估': generateSlideList(20, 'P', 'cover'),
+                'ppt169_高端咨询风_汽车认证五年战略规划': generateSlideList(20, 'P', 'cover'),
+                'ppt169_麦肯锡风_kimsoong_customer_loyalty': generateSlideList(8, 'slide_', 'cover'),
+                'ppt169_谷歌风_google_annual_report': generateSlideList(10, 'slide_', 'cover'),
+                'ppt169_通用灵活+代码_debug六步法': generateSlideList(10, 'slide_', 'cover'),
+                'ppt169_通用灵活+学术_重庆大学论文格式标准': generateSlideList(11, 'slide_', 'cover'),
+                'ppt169_通过灵活+代码_三大AI编程神器横向对比': generateSlideList(11, 'slide_', 'cover'),
+                'ppt169_易理风_地山谦卦深度研究': generateSlideList(20, 'P', '封面'),
+                'ppt169_禅意风_金刚经第一品研究': generateSlideList(15, 'P', '封面'),
+                'ppt169_像素风_git_introduction': generateSlideList(10, 'slide_', 'cover'),
+                'demo_project_intro_ppt169_20251211': generateSlideList(10, 'slide_', 'cover')
+            };
+
+            // Get the slide names for this project or try to discover them
+            let slideNames = projectSlides[project];
+
+            if (!slideNames) {
+                // Try to discover slides
+                const discovered = await discoverSlides(basePath);
+                return discovered;
+            }
+
+            // For predefined slides, we'll verify they exist and get the actual filenames
+            const slides = [];
+            for (const name of slideNames) {
+                // The name might be just a base name, we need to find the actual file
+                const slide = await findSlideFile(basePath, name);
+                if (slide) {
+                    slides.push(slide);
+                }
+            }
+
+            return slides;
+        }
+
+        // Generate a simple slide list
+        function generateSlideList(count, prefix, firstSuffix) {
+            const list = [];
+            for (let i = 1; i <= count; i++) {
+                const num = String(i).padStart(2, '0');
+                list.push(`${prefix}${num}`);
+            }
+            return list;
+        }
+
+        // Find the actual slide file given a base name
+        async function findSlideFile(basePath, baseName) {
+            // If it already has .svg extension, use as is
+            if (baseName.endsWith('.svg')) {
+                try {
+                    const response = await fetch(`${basePath}${baseName}`, { method: 'HEAD' });
+                    if (response.ok) {
+                        return {
+                            filename: baseName,
+                            path: `${basePath}${baseName}`,
+                            name: baseName.replace('.svg', '').replace(/_/g, ' ')
+                        };
+                    }
+                } catch (e) { }
+                return null;
+            }
+
+            // Try with .svg extension first
+            try {
+                const response = await fetch(`${basePath}${baseName}.svg`, { method: 'HEAD' });
+                if (response.ok) {
+                    return {
+                        filename: `${baseName}.svg`,
+                        path: `${basePath}${baseName}.svg`,
+                        name: baseName.replace(/_/g, ' ')
+                    };
+                }
+            } catch (e) { }
+
+            // Try common suffixes
+            const commonSuffixes = [
+                '_封面', '_cover', '_Cover', '_目录', '_目录导航', '_navigation',
+                '_核心概念', '_core_concept', '_总结', '_summary', '_结语', '_end',
+                '_感谢', '_thank', '_what_is', '_features', '_workflow', '_history',
+                // More specific ones
+                '_谦卦总览', '_字源解构', '_卦画物理图景', '_天道与地道', '_鬼神与人道',
+                '_六爻总览', '_初六谦谦君子', '_六二鸣谦贞吉', '_九三劳谦君子',
+                '_六四与六五', '_上六鸣谦行师', '_综卦与错卦', '_交互卦雷水解',
+                '_第五级领导力', '_达克效应与品牌管理', '_真谦与伪谦', '_核心洞见', '_感谢页',
+                '_金刚经概述', '_第一品研究意义', '_场景与人物', '_佛陀日常行为',
+                '_隐含的教法', '_序幕功能', '_道在平常', '_译本比较', '_注疏流变',
+                '_禅宗视角', '_研究发现', '_深层启示',
+                '_positioning', '_speckit', '_openspec', '_zcf', '_comparison',
+                '_efficiency', '_combination', '_decision', '_table',
+                '_clarify_flow', '_locate_bug', '_elimination', '_verify',
+                '_side_effects', '_test_document',
+                '_vcs_features', '_save_point', '_version_hell', '_git_vs_github'
+            ];
+
+            for (const suffix of commonSuffixes) {
+                try {
+                    const filename = `${baseName}${suffix}.svg`;
+                    const response = await fetch(`${basePath}${filename}`, { method: 'HEAD' });
+                    if (response.ok) {
+                        return {
+                            filename,
+                            path: `${basePath}${filename}`,
+                            name: filename.replace('.svg', '').replace(/_/g, ' ')
+                        };
+                    }
+                } catch (e) { }
+            }
+
+            return null;
+        }
+
+        // Alternative approach: List files using directory index (if available)
+        async function listDirectory(path) {
+            try {
+                const response = await fetch(path);
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a');
+                const svgFiles = [];
+
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.endsWith('.svg')) {
+                        svgFiles.push(href);
+                    }
+                });
+
+                return svgFiles.sort();
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Main initialization
+        async function init() {
+            currentProject = getProjectFromUrl();
+
+            if (!currentProject) {
+                showError('未指定项目');
+                return;
+            }
+
+            // Set title
+            const meta = projectsMeta[currentProject];
+            if (meta) {
+                projectTitle.textContent = meta.title;
+                document.title = `${meta.title} - PPT Master`;
+            } else {
+                projectTitle.textContent = currentProject;
+            }
+
+            // Load slides
+            await loadSlides();
+
+            // Show keyboard hint briefly
+            keyboardHint.classList.add('show');
+            setTimeout(() => keyboardHint.classList.remove('show'), 3000);
+        }
+
+        // Load slides for current project and version
+        async function loadSlides() {
+            viewerContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>正在加载幻灯片...</p>
+                </div>
+            `;
+
+            const folder = currentVersion === 'final' ? 'svg_final' : 'svg_output';
+            const basePath = `examples/${currentProject}/${folder}/`;
+
+            // Try to list directory first (works with Python http.server)
+            let svgFiles = await listDirectory(basePath);
+
+            if (svgFiles.length > 0) {
+                slides = svgFiles.map(filename => ({
+                    filename,
+                    path: `${basePath}${filename}`,
+                    name: filename.replace('.svg', '').replace(/_/g, ' ')
+                }));
+            } else {
+                // Fall back to predefined lists
+                slides = await loadProjectSlides(currentProject, currentVersion);
+            }
+
+            if (slides.length === 0) {
+                showError('未找到幻灯片文件');
+                return;
+            }
+
+            // Sort slides
+            slides.sort((a, b) => a.filename.localeCompare(b.filename));
+
+            // Render slide list
+            renderSlideList();
+
+            // Show first slide
+            currentIndex = 0;
+            showSlide(currentIndex);
+        }
+
+        // Render slide list in sidebar
+        function renderSlideList() {
+            slideList.innerHTML = slides.map((slide, index) => `
+                <div class="slide-item ${index === currentIndex ? 'active' : ''}" data-index="${index}">
+                    <div class="slide-thumb">
+                        <img src="${slide.path}" alt="${slide.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 90\"><rect fill=\"%23f0f0f0\" width=\"160\" height=\"90\"/><text x=\"80\" y=\"50\" text-anchor=\"middle\" fill=\"%23999\" font-size=\"12\">加载失败</text></svg>'" />
+                    </div>
+                    <div class="slide-info">
+                        <div class="slide-num">第 ${index + 1} 页</div>
+                        <div class="slide-name">${slide.name}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            slideList.querySelectorAll('.slide-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.dataset.index);
+                    showSlide(index);
+                });
+            });
+        }
+
+        // Show a specific slide
+        function showSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+
+            currentIndex = index;
+            const slide = slides[index];
+
+            // Update viewer
+            viewerContainer.innerHTML = `
+                <div class="svg-frame">
+                    <img src="${slide.path}" alt="${slide.name}" onerror="this.parentElement.innerHTML='<div style=\"padding:40px;text-align:center\"><p style=\"font-size:4rem\">⚠️</p><p>加载失败</p></div>'" />
+                </div>
+            `;
+
+            // Update sidebar selection
+            slideList.querySelectorAll('.slide-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            // Scroll sidebar to show current slide
+            const activeItem = slideList.querySelector('.slide-item.active');
+            if (activeItem) {
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Update navigation
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === slides.length - 1;
+            pageIndicator.textContent = `${index + 1} / ${slides.length}`;
+        }
+
+        // Show error
+        function showError(message) {
+            viewerContainer.innerHTML = `
+                <div class="error">
+                    <div class="error-icon">😕</div>
+                    <h2>${message}</h2>
+                    <p><a href="index.html" style="color: var(--primary)">返回首页</a></p>
+                </div>
+            `;
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', () => showSlide(currentIndex - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentIndex + 1));
+
+        // Version toggle
+        document.querySelectorAll('.version-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.version-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentVersion = btn.dataset.version;
+                loadSlides();
+            });
+        });
+
+        // Fullscreen
+        fullscreenBtn.addEventListener('click', () => {
+            document.body.classList.toggle('fullscreen');
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowLeft':
+                    showSlide(currentIndex - 1);
+                    break;
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    showSlide(currentIndex + 1);
+                    break;
+                case 'f':
+                case 'F':
+                    document.body.classList.toggle('fullscreen');
+                    break;
+                case 'Escape':
+                    document.body.classList.remove('fullscreen');
+                    break;
+            }
+        });
+
+        // Click to exit fullscreen
+        viewerContainer.addEventListener('click', (e) => {
+            if (document.body.classList.contains('fullscreen')) {
+                // Click on left side = prev, right side = next
+                const rect = viewerContainer.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                if (clickX < rect.width / 3) {
+                    showSlide(currentIndex - 1);
+                } else if (clickX > rect.width * 2 / 3) {
+                    showSlide(currentIndex + 1);
+                }
+            }
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+
+</html>
