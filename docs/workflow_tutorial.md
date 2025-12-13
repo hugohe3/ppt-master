@@ -500,15 +500,13 @@ Optimizer_CRAP:
 
    - 在浏览器中逐页查看
    - 检查一致性和质量
+   - **检查 PPT 兼容性**（见下方规则）
 
 3. **后处理（推荐）**
 
    ```bash
-   # 执行全部后处理（默认）
+   # 直接运行，无需参数
    python3 tools/finalize_svg.py <项目路径>
-   
-   # 只执行部分处理
-   python3 tools/finalize_svg.py <项目路径> --only embed-icons fix-rounded
    ```
 
 4. **导出为 PPTX（推荐）**
@@ -589,6 +587,23 @@ Optimizer_CRAP:
 5. 完成交付
    导出所有SVG文件，可转为PNG后上传小红书
 ```
+
+## PPT 兼容性规则
+
+为确保 SVG 导出到 PowerPoint 后效果一致，**必须遵守以下透明度规则**：
+
+| ❌ 禁止 | ✅ 正确 |
+|--------|--------|
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+| `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
+| `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+
+**检查清单**：
+- [ ] 无 `rgba()` 颜色格式
+- [ ] 无 `<g opacity="...">` 组透明度
+- [ ] 图片透明度使用遮罩层实现
 
 ## 高级技巧
 
@@ -802,14 +817,11 @@ Executor: 收到，我将从您指定的文件夹中引用图标。
 祝你创作顺利！如有任何问题，欢迎反馈。
 ## 文本扁平化（去 tspan）
 
-在生成阶段，按规范使用 `<tspan>` 进行手动换行。若发布链路或后续处理需要去除 `<tspan>`，推荐使用统一后处理工具：
+在生成阶段，按规范使用 `<tspan>` 进行手动换行。后处理会自动扁平化：
 
 ```bash
-# 推荐：使用 finalize_svg.py（已包含文本扁平化）
+# 直接运行，无需参数
 python3 tools/finalize_svg.py <项目路径>
-
-# 单独使用 flatten_tspan.py（高级用法）
-python3 tools/flatten_tspan.py <项目路径>/svg_output
 python3 tools/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 

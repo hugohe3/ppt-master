@@ -265,6 +265,20 @@ python3 tools/svg_quality_checker.py examples/project --export
 
 ---
 
+### PPT 兼容性规则
+
+为确保导出 PPT 后效果一致，**透明度必须使用标准写法**：
+
+| ❌ 禁止 | ✅ 正确 |
+|--------|--------|
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
+| `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
+| `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+
+---
+
 ### 8. svg_to_pptx.py — SVG 转 PPTX 工具
 
 将项目中的 SVG 文件批量转换为 PowerPoint 演示文稿，保留矢量图形的可编辑性。
@@ -392,11 +406,8 @@ python3 tools/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 4. **后处理（默认执行全部）**
 
    ```bash
-   # 默认执行全部后处理
+   # 直接运行，无需参数
    python3 tools/finalize_svg.py projects/my_project_ppt169_20251116
-   
-   # 只执行部分处理
-   python3 tools/finalize_svg.py projects/my_project_ppt169_20251116 --only embed-icons fix-rounded
    ```
 
 5. **导出为 PPTX**
