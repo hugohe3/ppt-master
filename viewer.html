@@ -4,970 +4,1116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPT Master - SVG 预览器</title>
+    <meta name="description" content="PPT Master SVG 幻灯片库 - 浏览和查看各种主题的演示幻灯片">
+    <meta name="keywords" content="幻灯片, SVG, 演示文稿, PPT">
+    <title>幻灯片库 - PPT Master</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Microsoft YaHei', 'PingFang SC', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Favicon -->
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎴</text></svg>">
+
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --secondary: #06b6d4;
-            --dark: #1e1e2e;
-            --darker: #11111b;
-            --text: #cdd6f4;
-            --text-muted: #9399b2;
-            --surface: #181825;
-            --surface-hover: #1e1e2e;
-            --border: #313244;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-            background: var(--darker);
-            color: var(--text);
+            font-family: 'Microsoft YaHei', 'PingFang SC', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        /* Header */
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .back-btn {
-            background: var(--surface-hover);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 16px;
-            border-radius: 8px;
+        .collection-card {
+            transition: all 0.3s ease;
             cursor: pointer;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .back-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
+        .collection-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .project-title {
-            font-size: 1.2rem;
-            font-weight: 600;
+        .slide-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s ease;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .version-toggle {
-            display: flex;
-            background: var(--darker);
-            border-radius: 8px;
-            padding: 4px;
-        }
-
-        .version-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 6px;
+        .thumbnail {
+            transition: all 0.2s ease;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
         }
 
-        .version-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .fullscreen-btn {
-            background: var(--surface-hover);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        .fullscreen-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        /* Main Layout */
-        .main {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .sidebar-header {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .slide-list {
-            padding: 10px;
-        }
-
-        .slide-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 5px;
-        }
-
-        .slide-item:hover {
-            background: var(--surface-hover);
-        }
-
-        .slide-item.active {
-            background: var(--primary);
-        }
-
-        .slide-thumb {
-            width: 80px;
-            height: 45px;
-            background: white;
-            border-radius: 4px;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-        }
-
-        .slide-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .slide-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .slide-num {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-
-        .slide-item.active .slide-num {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .slide-name {
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Viewer */
-        .viewer {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--darker);
-            overflow: hidden;
-        }
-
-        .viewer-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            overflow: auto;
-        }
-
-        .svg-frame {
-            max-width: 100%;
-            max-height: 100%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-
-        .svg-frame img {
-            display: block;
-            max-width: 100%;
-            max-height: calc(100vh - 200px);
-            width: auto;
-            height: auto;
-        }
-
-        /* Navigation Controls */
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding: 15px;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
+        .thumbnail:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .nav-btn {
-            background: var(--surface-hover);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            transition: all 0.2s ease;
         }
 
         .nav-btn:hover:not(:disabled) {
-            background: var(--primary);
-            border-color: var(--primary);
+            transform: scale(1.1);
         }
 
         .nav-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
-        .page-indicator {
-            font-size: 1rem;
-            color: var(--text);
-            min-width: 100px;
-            text-align: center;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
 
-        /* Loading */
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            gap: 20px;
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
         }
 
-        @keyframes spin {
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
-        /* Error */
-        .error {
-            text-align: center;
-            padding: 40px;
+        .slide-enter {
+            animation: slideEnter 0.4s ease-out;
         }
 
-        .error-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+        @keyframes slideEnter {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Fullscreen */
-        .fullscreen .header,
-        .fullscreen .sidebar,
-        .fullscreen .nav-controls {
+        /* Fullscreen styles */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-overlay object,
+        .fullscreen-overlay img {
+            max-width: 95vw;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .progress-bar {
+            height: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .dropdown-menu {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Expanded view for slide viewer */
+        .viewer-expanded {
+            max-width: 95vw !important;
+        }
+
+        /* Theater mode - hide sidebar */
+        .theater-mode .sidebar-panel {
             display: none;
         }
 
-        .fullscreen .viewer-container {
-            padding: 0;
+        .theater-mode .main-slide-area {
+            flex: 1;
+            max-width: 100%;
         }
 
-        .fullscreen .svg-frame {
-            border-radius: 0;
-            max-height: 100vh;
+        .theater-mode .slide-container object {
+            max-height: 75vh;
+            width: auto;
+            margin: 0 auto;
         }
 
-        .fullscreen .svg-frame img {
-            max-height: 100vh;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
+        /* Better slide sizing for large screens */
+        @media (min-width: 1920px) {
+            .viewer-expanded {
+                max-width: 90vw !important;
             }
 
-            .header {
-                padding: 10px 15px;
-            }
-
-            .project-title {
-                font-size: 1rem;
-            }
-
-            .viewer-container {
-                padding: 15px;
+            .slide-container object {
+                max-height: 70vh;
             }
         }
 
-        /* Keyboard hints */
-        .keyboard-hint {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
+        @media (min-width: 2560px) {
+            .viewer-expanded {
+                max-width: 85vw !important;
+            }
         }
 
-        .keyboard-hint.show {
-            opacity: 1;
+        /* View mode toggle button */
+        .view-mode-btn {
+            transition: all 0.2s ease;
         }
 
-        kbd {
-            background: var(--darker);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin: 0 2px;
+        .view-mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* SVG object styling */
+        .slide-container object {
+            width: 100%;
+            height: auto;
+            min-height: 400px;
         }
     </style>
 </head>
 
-<body>
-    <header class="header">
-        <div class="header-left">
-            <a href="index.html" class="back-btn">← 返回</a>
-            <h1 class="project-title" id="project-title">加载中...</h1>
-        </div>
-        <div class="header-right">
-            <div class="version-toggle">
-                <button class="version-btn active" data-version="final">最终版本</button>
-                <button class="version-btn" data-version="output">原始版本</button>
+<body class="antialiased">
+    <!-- Header -->
+    <header class="glass shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 hover:text-brand-600 transition-colors">
+                        <i class="fas fa-arrow-left"></i>
+                        <span class="ml-2">返回项目列表</span>
+                    </a>
+                </div>
+
+                <!-- Collection Selector (shown when viewing slides) -->
+                <div id="collectionSelector" class="hidden relative">
+                    <button onclick="toggleDropdown()"
+                        class="flex items-center space-x-2 px-4 py-2 bg-white rounded-lg shadow border border-gray-200 hover:border-brand-400 transition-colors">
+                        <span id="currentCollectionIcon" class="text-xl">🎴</span>
+                        <span id="currentCollectionName" class="font-medium text-gray-700">选择幻灯片集</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </button>
+                    <div id="dropdownMenu"
+                        class="dropdown-menu hidden absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                        <!-- Dropdown items will be generated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="keyboardHints" class="hidden items-center space-x-2 text-sm">
+                    <!-- View Mode Toggle -->
+                    <div class="flex items-center space-x-1 mr-4 bg-gray-100 rounded-lg p-1">
+                        <button onclick="setViewMode('normal')" id="normalModeBtn"
+                            class="view-mode-btn px-3 py-1 rounded-md text-xs font-medium text-gray-600 hover:bg-white"
+                            title="标准视图">
+                            <i class="fas fa-columns"></i>
+                        </button>
+                        <button onclick="setViewMode('theater')" id="theaterModeBtn"
+                            class="view-mode-btn px-3 py-1 rounded-md text-xs font-medium text-gray-600 hover:bg-white"
+                            title="剧院模式 (T)">
+                            <i class="fas fa-tv"></i>
+                        </button>
+                    </div>
+                    <span class="text-gray-500">快捷键：</span>
+                    <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border">←</kbd>
+                    <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border">→</kbd>
+                    <span class="text-gray-500">翻页</span>
+                    <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">T</kbd>
+                    <span class="text-gray-500">剧院</span>
+                    <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">F</kbd>
+                    <span class="text-gray-500">全屏</span>
+                    <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">ESC</kbd>
+                    <span class="text-gray-500">返回</span>
+                </div>
             </div>
-            <button class="fullscreen-btn" id="fullscreen-btn" title="全屏 (F)">⛶</button>
         </div>
+        <!-- Progress bar -->
+        <div id="progressBar" class="progress-bar bg-brand-500" style="width: 0%"></div>
     </header>
 
-    <main class="main">
-        <aside class="sidebar">
-            <div class="sidebar-header">📑 幻灯片列表</div>
-            <div class="slide-list" id="slide-list">
-                <!-- Slides will be inserted here -->
+    <!-- Main Content -->
+    <main id="mainContent" class="max-w-7xl mx-auto px-4 py-8 transition-all duration-300">
+        <!-- Library View (Collection Selection) -->
+        <div id="libraryView">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                    🎴 幻灯片库
+                </h1>
+                <p class="text-white/80 text-lg">
+                    选择一个幻灯片集开始浏览
+                </p>
             </div>
-        </aside>
 
-        <section class="viewer">
-            <div class="viewer-container" id="viewer-container">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>正在加载项目...</p>
+            <!-- Collection Cards Grid -->
+            <div id="collectionsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be generated by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-20">
+                <div class="text-6xl mb-4">📭</div>
+                <h3 class="text-xl font-medium text-white/80">暂无幻灯片集合</h3>
+                <p class="text-white/60 mt-2">请添加幻灯片配置</p>
+            </div>
+        </div>
+
+        <!-- Slide Viewer (Hidden by default) -->
+        <div id="viewerView" class="hidden">
+            <!-- Title Section -->
+            <div class="text-center mb-8 slide-enter">
+                <button onclick="backToLibrary()"
+                    class="inline-flex items-center px-4 py-2 mb-4 text-white/80 hover:text-white transition-colors">
+                    <i class="fas fa-th-large mr-2"></i>
+                    返回幻灯片库
+                </button>
+                <h1 id="viewerTitle" class="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                    幻灯片标题
+                </h1>
+                <p id="viewerDescription" class="text-white/70">
+                    幻灯片描述
+                </p>
+            </div>
+
+            <!-- Slide Viewer -->
+            <div id="slideViewerContainer" class="flex flex-col lg:flex-row gap-6 slide-enter">
+                <!-- Main Slide -->
+                <div class="main-slide-area flex-1">
+                    <div class="glass rounded-2xl p-4 slide-container">
+                        <object id="mainSlide" data="" type="image/svg+xml"
+                            class="w-full rounded-lg fade-in cursor-pointer" onclick="toggleFullscreen()">
+                            <p class="text-center text-gray-500 py-10">SVG 加载中...</p>
+                        </object>
+                    </div>
+
+                    <!-- Navigation Controls -->
+                    <div class="flex items-center justify-center mt-6 space-x-4">
+                        <button id="prevBtn" onclick="prevSlide()"
+                            class="nav-btn w-12 h-12 rounded-full glass shadow-md flex items-center justify-center text-gray-600 border border-gray-200 hover:bg-brand-500 hover:text-white hover:border-brand-500">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+
+                        <div class="flex items-center space-x-2 px-6 py-2 glass rounded-full shadow-md">
+                            <span id="currentPage" class="text-brand-600 font-bold">1</span>
+                            <span class="text-gray-400">/</span>
+                            <span id="totalPages" class="text-gray-600">1</span>
+                        </div>
+
+                        <button id="nextBtn" onclick="nextSlide()"
+                            class="nav-btn w-12 h-12 rounded-full glass shadow-md flex items-center justify-center text-gray-600 border border-gray-200 hover:bg-brand-500 hover:text-white hover:border-brand-500">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <button onclick="toggleFullscreen()"
+                            class="nav-btn w-12 h-12 rounded-full glass shadow-md flex items-center justify-center text-gray-600 border border-gray-200 hover:bg-brand-500 hover:text-white hover:border-brand-500 ml-4">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Thumbnail Sidebar -->
+                <div class="sidebar-panel lg:w-64 xl:w-72">
+                    <div class="glass rounded-2xl p-4 shadow-lg">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                            <i class="fas fa-th-large mr-2 text-brand-600"></i>
+                            幻灯片目录
+                        </h3>
+                        <div id="thumbnailContainer" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                            <!-- Thumbnails will be generated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Slide Info -->
+                    <div class="glass rounded-2xl p-4 shadow-lg mt-4">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-brand-600"></i>
+                            当前幻灯片
+                        </h3>
+                        <p id="slideTitle" class="text-gray-800 font-medium">标题</p>
+                        <p id="slideDesc" class="text-sm text-gray-500 mt-1">描述</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="nav-controls">
-                <button class="nav-btn" id="prev-btn" disabled>← 上一页</button>
-                <span class="page-indicator" id="page-indicator">0 / 0</span>
-                <button class="nav-btn" id="next-btn" disabled>下一页 →</button>
+            <!-- Slide Overview -->
+            <div class="mt-12 slide-enter">
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center drop-shadow">
+                    <i class="fas fa-list-ul mr-3"></i>
+                    内容概览
+                </h2>
+                <div id="overviewGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                    <!-- Overview thumbnails will be generated by JavaScript -->
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <div class="keyboard-hint" id="keyboard-hint">
-        <kbd>←</kbd> <kbd>→</kbd> 翻页 · <kbd>F</kbd> 全屏 · <kbd>ESC</kbd> 退出
+    <!-- Footer -->
+    <footer class="mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-white/60 text-sm">
+                © 2024 PPT Master · 幻灯片库
+            </p>
+        </div>
+    </footer>
+
+    <!-- Fullscreen Overlay -->
+    <div id="fullscreenOverlay" class="fullscreen-overlay hidden" onclick="toggleFullscreen()">
+        <button class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 transition-colors">
+            <i class="fas fa-times"></i>
+        </button>
+        <button onclick="event.stopPropagation(); prevSlide()"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <object id="fullscreenImage" data="" type="image/svg+xml" class="fade-in">
+            <p>SVG 加载中...</p>
+        </object>
+        <button onclick="event.stopPropagation(); nextSlide()"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/50 rounded-full text-white text-sm">
+            <span id="fullscreenPage">1</span> / <span id="fullscreenTotal">1</span>
+        </div>
     </div>
 
     <script>
-        // Project metadata (matches index.html)
-        const projectsMeta = {
-            'ppt169_顶级咨询风_心理治疗中的依恋': { title: '心理治疗中的依恋' },
-            'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213': { title: '重庆市区域报告' },
-            'ppt169_顶级咨询风_甘孜州经济财政分析': { title: '甘孜州经济财政分析' },
-            'ppt169_顶级咨询风_构建有效AI代理_Anthropic': { title: '构建有效 AI 代理' },
-            'ppt169_高端咨询风_南欧江水电站战略评估': { title: '南欧江水电站战略评估' },
-            'ppt169_高端咨询风_汽车认证五年战略规划': { title: '汽车认证五年战略规划' },
-            'ppt169_麦肯锡风_kimsoong_customer_loyalty': { title: '客户忠诚度计划分析' },
-            'ppt169_谷歌风_google_annual_report': { title: 'Google 年度工作汇报' },
-            'ppt169_通用灵活+代码_debug六步法': { title: 'Debug 六步法' },
-            'ppt169_通用灵活+学术_重庆大学论文格式标准': { title: '重庆大学论文格式标准' },
-            'ppt169_通过灵活+代码_三大AI编程神器横向对比': { title: '三大 AI 编程神器横向对比' },
-            'ppt169_易理风_地山谦卦深度研究': { title: '地山谦卦深度研究' },
-            'ppt169_禅意风_金刚经第一品研究': { title: '金刚经第一品研究' },
-            'ppt169_像素风_git_introduction': { title: 'Git 入门完全指南' },
-            'demo_project_intro_ppt169_20251211': { title: 'PPT Master 官方介绍' }
-        };
+        // Collections data (inline for GitHub Pages compatibility)
+        const collectionsData = [
+            {
+                id: 'ppt169_顶级咨询风_心理治疗中的依恋',
+                title: '心理治疗中的依恋',
+                description: '探索依恋理论在心理治疗中的应用',
+                icon: '🧠',
+                color: '#6366f1',
+                folder: 'ppt169_顶级咨询风_心理治疗中的依恋/svg_final',
+                slides: [
+                    { file: 'P01_封面.svg', title: '封面', desc: '心理治疗中的依恋' },
+                    { file: 'P02_目录导航.svg', title: '目录导航', desc: '内容概览' },
+                    { file: 'P03_第一章引导页.svg', title: '第一章引导页', desc: '理论基础' },
+                    { file: 'P04_依恋研究三大发现.svg', title: '依恋研究三大发现', desc: '核心发现' },
+                    { file: 'P05_治疗关系作为发展熔炉.svg', title: '治疗关系作为发展熔炉', desc: '治疗关系' },
+                    { file: 'P06_未经思考的已知.svg', title: '未经思考的已知', desc: '潜意识' },
+                    { file: 'P07_心智化与觉察.svg', title: '心智化与觉察', desc: '心智化' },
+                    { file: 'P08_第二章引导页.svg', title: '第二章引导页', desc: '依恋模式' },
+                    { file: 'P09_Bowlby依恋行为系统.svg', title: 'Bowlby依恋行为系统', desc: 'Bowlby理论' },
+                    { file: 'P10_Ainsworth四种依恋模式.svg', title: 'Ainsworth四种依恋模式', desc: '依恋分类' },
+                    { file: 'P11_MaryMain成人依恋访谈.svg', title: 'MaryMain成人依恋访谈', desc: 'AAI' },
+                    { file: 'P12_Fonagy心智化与三种体验模式.svg', title: 'Fonagy心智化', desc: '体验模式' },
+                    { file: 'P13_第三章引导页.svg', title: '第三章引导页', desc: '神经生物学' },
+                    { file: 'P14_自我发展层级.svg', title: '自我发展层级', desc: '发展阶段' },
+                    { file: 'P15_依恋的神经生物学.svg', title: '依恋的神经生物学', desc: '神经科学' },
+                    { file: 'P16_情感调节与依恋策略.svg', title: '情感调节与依恋策略', desc: '情感调节' },
+                    { file: 'P17_发展的迫切需求物.svg', title: '发展的迫切需求物', desc: '发展需求' },
+                    { file: 'P18_第四章引导页.svg', title: '第四章引导页', desc: '治疗应用' },
+                    { file: 'P19_关系精神分析重新定义.svg', title: '关系精神分析重新定义', desc: '精神分析' },
+                    { file: 'P20_冷漠型患者.svg', title: '冷漠型患者', desc: '回避型' },
+                    { file: 'P21_迷恋型患者.svg', title: '迷恋型患者', desc: '焦虑型' },
+                    { file: 'P22_未解决型患者.svg', title: '未解决型患者', desc: '混乱型' },
+                    { file: 'P23_第五章引导页.svg', title: '第五章引导页', desc: '治疗技术' },
+                    { file: 'P24_处理被唤起与活现.svg', title: '处理被唤起与活现', desc: '移情' },
+                    { file: 'P25_与身体工作.svg', title: '与身体工作', desc: '躯体治疗' },
+                    { file: 'P26_心理解放的双螺旋.svg', title: '心理解放的双螺旋', desc: '整合' },
+                    { file: 'P27_培养觉察与心智化.svg', title: '培养觉察与心智化', desc: '技术' },
+                    { file: 'P28_治疗师的贡献.svg', title: '治疗师的贡献', desc: '治疗师角色' },
+                    { file: 'P29_核心概念速查表.svg', title: '核心概念速查表', desc: '概念总结' },
+                    { file: 'P30_结语.svg', title: '结语', desc: '总结' },
+                    { file: 'P31_推荐阅读.svg', title: '推荐阅读', desc: '参考文献' },
+                    { file: 'P32_封底.svg', title: '封底', desc: '结束页' }
+                ]
+            },
+            {
+                id: 'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213',
+                title: '重庆市区域报告',
+                description: '重庆市经济财政分析报告',
+                icon: '🏙️',
+                color: '#0ea5e9',
+                folder: 'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/svg_final',
+                slides: [
+                    { file: 'P01_封面.svg', title: '封面', desc: '重庆市区域报告' },
+                    { file: 'P02_目录.svg', title: '目录', desc: '内容概览' },
+                    { file: 'P03_章节_经济情况.svg', title: '经济情况', desc: '章节引导' },
+                    { file: 'P04_区域经济发展.svg', title: '区域经济发展', desc: '经济分析' },
+                    { file: 'P05_辖区经济对比.svg', title: '辖区经济对比', desc: '对比分析' },
+                    { file: 'P06_产业与人口.svg', title: '产业与人口', desc: '产业分析' },
+                    { file: 'P07_章节_财政债务.svg', title: '财政债务', desc: '章节引导' },
+                    { file: 'P08_财政实力.svg', title: '财政实力', desc: '财政分析' },
+                    { file: 'P09_债务负担.svg', title: '债务负担', desc: '债务分析' },
+                    { file: 'P10_章节_区域城投.svg', title: '区域城投', desc: '章节引导' },
+                    { file: 'P11_城投概览.svg', title: '城投概览', desc: '城投分析' },
+                    { file: 'P12_城投债分析.svg', title: '城投债分析', desc: '债券分析' },
+                    { file: 'P13_章节_银行业.svg', title: '银行业', desc: '章节引导' },
+                    { file: 'P14_银行业详情.svg', title: '银行业详情', desc: '银行分析' },
+                    { file: 'P15_区域融资.svg', title: '区域融资', desc: '融资分析' },
+                    { file: 'P16_区域风险.svg', title: '区域风险', desc: '风险评估' },
+                    { file: 'P17_重点企业.svg', title: '重点企业', desc: '企业分析' },
+                    { file: 'P18_报告总结.svg', title: '报告总结', desc: '总结' },
+                    { file: 'P19_指标说明.svg', title: '指标说明', desc: '附录' },
+                    { file: 'P20_封底.svg', title: '封底', desc: '结束页' }
+                ]
+            },
+            {
+                id: 'ppt169_顶级咨询风_构建有效AI代理_Anthropic',
+                title: '构建有效AI代理',
+                description: 'Anthropic AI 代理构建指南',
+                icon: '🤖',
+                color: '#8b5cf6',
+                folder: 'ppt169_顶级咨询风_构建有效AI代理_Anthropic/svg_final',
+                slides: [
+                    { file: 'P01_Cover.svg', title: '封面', desc: '构建有效AI代理' },
+                    { file: 'P02_Executive_Summary.svg', title: '执行摘要', desc: '概述' },
+                    { file: 'P03_Agenda.svg', title: '议程', desc: '内容概览' },
+                    { file: 'P04_What_Are_Agents.svg', title: '什么是代理', desc: '定义' },
+                    { file: 'P05_When_To_Use.svg', title: '何时使用', desc: '应用场景' },
+                    { file: 'P06_Building_Block.svg', title: '构建模块', desc: '基础组件' },
+                    { file: 'P07_Workflow_Chaining.svg', title: '工作流链接', desc: '链式调用' },
+                    { file: 'P08_Workflow_Routing.svg', title: '工作流路由', desc: '路由策略' },
+                    { file: 'P09_Workflow_Parallelization.svg', title: '工作流并行', desc: '并行处理' },
+                    { file: 'P10_Workflow_Advanced.svg', title: '高级工作流', desc: '进阶模式' },
+                    { file: 'P11_Autonomous_Agents.svg', title: '自主代理', desc: '自主运行' },
+                    { file: 'P12_When_To_Use_Agents.svg', title: '何时使用代理', desc: '决策指南' },
+                    { file: 'P13_Case_Studies.svg', title: '案例研究', desc: '实践案例' },
+                    { file: 'P14_Tool_Engineering.svg', title: '工具工程', desc: '工具设计' },
+                    { file: 'P15_Summary.svg', title: '总结', desc: '结束' }
+                ]
+            },
+            {
+                id: 'ppt169_顶级咨询风_甘孜州经济财政分析',
+                title: '甘孜州经济财政分析',
+                description: '甘孜藏族自治州经济财政研究报告',
+                icon: '🏔️',
+                color: '#10b981',
+                folder: 'ppt169_顶级咨询风_甘孜州经济财政分析/svg_final',
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '甘孜州分析' },
+                    { file: 'slide_02_toc.svg', title: '目录', desc: '内容概览' },
+                    { file: 'slide_03_executive_summary.svg', title: '执行摘要', desc: '概述' },
+                    { file: 'slide_04_economy_overview.svg', title: '经济概览', desc: '经济分析' },
+                    { file: 'slide_05_gdp_analysis.svg', title: 'GDP分析', desc: 'GDP' },
+                    { file: 'slide_06_population.svg', title: '人口', desc: '人口分析' },
+                    { file: 'slide_07_fiscal_revenue.svg', title: '财政收入', desc: '收入分析' },
+                    { file: 'slide_08_fiscal_expenditure.svg', title: '财政支出', desc: '支出分析' },
+                    { file: 'slide_09_fiscal_balance.svg', title: '财政平衡', desc: '平衡分析' },
+                    { file: 'slide_10_gov_fund.svg', title: '政府基金', desc: '基金分析' },
+                    { file: 'slide_11_debt_overview.svg', title: '债务概览', desc: '债务分析' },
+                    { file: 'slide_12_debt_capacity.svg', title: '债务能力', desc: '偿债能力' },
+                    { file: 'slide_13_debt_risk.svg', title: '债务风险', desc: '风险评估' },
+                    { file: 'slide_14_comprehensive.svg', title: '综合分析', desc: '综合评估' },
+                    { file: 'slide_15_fund_acquisition.svg', title: '资金获取', desc: '融资分析' },
+                    { file: 'slide_16_summary_table.svg', title: '汇总表', desc: '数据汇总' },
+                    { file: 'slide_17_conclusion.svg', title: '结论', desc: '结束' }
+                ]
+            },
+            {
+                id: 'ppt169_高端咨询风_南欧江水电站战略评估',
+                title: '南欧江水电站战略评估',
+                description: '水电站项目战略分析报告',
+                icon: '💧',
+                color: '#06b6d4',
+                folder: 'ppt169_高端咨询风_南欧江水电站战略评估/svg_final',
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '战略评估' },
+                    { file: 'slide_02_toc.svg', title: '目录', desc: '内容概览' },
+                    { file: 'slide_03_executive_summary.svg', title: '执行摘要', desc: '概述' },
+                    { file: 'slide_04_project_overview.svg', title: '项目概览', desc: '项目介绍' },
+                    { file: 'slide_05_cascade_logic.svg', title: '级联逻辑', desc: '技术分析' },
+                    { file: 'slide_06_technical_params.svg', title: '技术参数', desc: '参数详情' },
+                    { file: 'slide_07_business_model.svg', title: '商业模式', desc: '商业分析' },
+                    { file: 'slide_08_financing.svg', title: '融资', desc: '融资方案' },
+                    { file: 'slide_09_arbitration_overview.svg', title: '仲裁概览', desc: '法律分析' },
+                    { file: 'slide_10_claim_breakdown.svg', title: '索赔分解', desc: '索赔分析' },
+                    { file: 'slide_11_macro_crisis.svg', title: '宏观危机', desc: '宏观分析' },
+                    { file: 'slide_12_currency_collapse.svg', title: '货币崩溃', desc: '货币分析' },
+                    { file: 'slide_13_edl_black_hole.svg', title: 'EDL黑洞', desc: '风险分析' },
+                    { file: 'slide_14_debt_equity_swap.svg', title: '债转股', desc: '重组方案' },
+                    { file: 'slide_15_geopolitics.svg', title: '地缘政治', desc: '政治分析' },
+                    { file: 'slide_16_env_social.svg', title: '环境社会', desc: 'ESG' },
+                    { file: 'slide_17_flood_event.svg', title: '洪水事件', desc: '风险事件' },
+                    { file: 'slide_18_conclusions.svg', title: '结论', desc: '总结' },
+                    { file: 'slide_19_outlook.svg', title: '展望', desc: '未来展望' },
+                    { file: 'slide_20_appendix.svg', title: '附录', desc: '补充资料' }
+                ]
+            },
+            {
+                id: 'ppt169_高端咨询风_汽车认证五年战略规划',
+                title: '汽车认证五年战略规划',
+                description: '汽车认证行业战略规划报告',
+                icon: '🚗',
+                color: '#f59e0b',
+                folder: 'ppt169_高端咨询风_汽车认证五年战略规划/svg_final',
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '战略规划' },
+                    { file: 'slide_02_toc.svg', title: '目录', desc: '内容概览' },
+                    { file: 'slide_03_executive_summary.svg', title: '执行摘要', desc: '概述' },
+                    { file: 'slide_04_industry_overview.svg', title: '行业概览', desc: '行业分析' },
+                    { file: 'slide_05_nev_trends.svg', title: '新能源趋势', desc: 'NEV' },
+                    { file: 'slide_06_icv_trends.svg', title: '智能网联趋势', desc: 'ICV' },
+                    { file: 'slide_07_intl_standards.svg', title: '国际标准', desc: '标准分析' },
+                    { file: 'slide_08_digital_strategy.svg', title: '数字化战略', desc: '数字化' },
+                    { file: 'slide_09_digital_platform.svg', title: '数字平台', desc: '平台建设' },
+                    { file: 'slide_10_digital_tech.svg', title: '数字技术', desc: '技术应用' },
+                    { file: 'slide_11_innovation_overview.svg', title: '创新概览', desc: '创新分析' },
+                    { file: 'slide_12_green_certification.svg', title: '绿色认证', desc: '环保认证' },
+                    { file: 'slide_13_safety_certification.svg', title: '安全认证', desc: '安全标准' },
+                    { file: 'slide_14_intl_strategy.svg', title: '国际战略', desc: '国际化' },
+                    { file: 'slide_15_intl_layout.svg', title: '国际布局', desc: '全球布局' },
+                    { file: 'slide_16_policy_env.svg', title: '政策环境', desc: '政策分析' },
+                    { file: 'slide_17_org_capability.svg', title: '组织能力', desc: '能力建设' },
+                    { file: 'slide_18_roadmap.svg', title: '路线图', desc: '实施计划' },
+                    { file: 'slide_19_kpi_targets.svg', title: 'KPI目标', desc: '绩效指标' },
+                    { file: 'slide_20_conclusion.svg', title: '结论', desc: '总结' }
+                ]
+            },
+            {
+                id: 'ppt169_麦肯锡风_kimsoong_customer_loyalty',
+                title: '客户忠诚度计划分析',
+                description: '麦肯锡风格客户忠诚度战略分析',
+                icon: '💎',
+                color: '#ec4899',
+                folder: 'ppt169_麦肯锡风_kimsoong_customer_loyalty/svg_final',
+                slides: [
+                    { file: 'slide_01_cover.svg', title: '封面', desc: '客户忠诚度' },
+                    { file: 'slide_02_situation.svg', title: '现状分析', desc: '现状' },
+                    { file: 'slide_03_customer_profile.svg', title: '客户画像', desc: '客户分析' },
+                    { file: 'slide_04_priorities_matrix.svg', title: '优先级矩阵', desc: '优先级' },
+                    { file: 'slide_05_root_cause.svg', title: '根因分析', desc: '原因分析' },
+                    { file: 'slide_06_strategic_pillars.svg', title: '战略支柱', desc: '战略框架' },
+                    { file: 'slide_07_initiatives.svg', title: '行动计划', desc: '实施方案' },
+                    { file: 'slide_08_roadmap.svg', title: '路线图', desc: '时间规划' }
+                ]
+            },
+            {
+                id: 'ppt169_易理风_地山谦卦深度研究',
+                title: '地山谦卦深度研究',
+                description: '易经谦卦的深度解读与应用',
+                icon: '☯️',
+                color: '#78716c',
+                folder: 'ppt169_易理风_地山谦卦深度研究/svg_final',
+                slides: Array.from({length: 20}, (_, i) => ({
+                    file: `P${String(i+1).padStart(2,'0')}_${['封面','目录','卦象概述','爻辞解读','象传释义','彖传解析','卦德分析','时位研究','应用场景','现代启示','历史案例','修身要义','处世智慧','变卦分析','综卦研究','错卦探讨','互卦解读','总结提炼','参考文献','封底'][i] || '内容'}.svg`,
+                    title: ['封面','目录','卦象概述','爻辞解读','象传释义','彖传解析','卦德分析','时位研究','应用场景','现代启示','历史案例','修身要义','处世智慧','变卦分析','综卦研究','错卦探讨','互卦解读','总结提炼','参考文献','封底'][i] || `第${i+1}页`,
+                    desc: '谦卦研究'
+                }))
+            },
+            {
+                id: 'ppt169_禅意风_金刚经第一品研究',
+                title: '金刚经第一品研究',
+                description: '金刚般若波罗蜜经法会因由分',
+                icon: '🪷',
+                color: '#a78bfa',
+                folder: 'ppt169_禅意风_金刚经第一品研究/svg_final',
+                slides: Array.from({length: 15}, (_, i) => ({
+                    file: `P${String(i+1).padStart(2,'0')}_${['封面','目录','经文原文','法会因由','佛陀威仪','日常生活','次第乞食','敷座而坐','禅定示现','众生平等','六度万行','威仪细行','现代启示','修行要义','封底'][i] || '内容'}.svg`,
+                    title: ['封面','目录','经文原文','法会因由','','次第乞食','敷座而坐','禅定示现','众生平等','六度万行','威仪细行','现代启示','修行要义','封底'][i] || `第${i+1}页`,
+                    desc: '金刚经研究'
+                }))
+            },
+            {
+                id: 'ppt169_像素风_git_introduction',
+                title: 'Git 入门介绍',
+                description: '像素风格的 Git 版本控制入门',
+                icon: '👾',
+                color: '#22c55e',
+                folder: 'ppt169_像素风_git_introduction/svg_final',
+                slides: Array.from({length: 10}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','what_is_git','why_git','basic_concepts','workflow','commands','branching','collaboration','best_practices','summary'][i] || 'content'}.svg`,
+                    title: ['封面','什么是Git','为什么用Git','基本概念','工作流程','常用命令','分支管理','协作开发','最佳实践','总结'][i] || `第${i+1}页`,
+                    desc: 'Git入门'
+                }))
+            },
+            {
+                id: 'ppt169_谷歌风_google_annual_report',
+                title: 'Google 年度报告',
+                description: '谷歌风格年度报告模板',
+                icon: '🔍',
+                color: '#4285f4',
+                folder: 'ppt169_谷歌风_google_annual_report/svg_final',
+                slides: Array.from({length: 10}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','highlights','revenue','products','ai_ml','cloud','sustainability','diversity','outlook','closing'][i] || 'content'}.svg`,
+                    title: ['封面','亮点','收入','产品','AI/ML','云服务','可持续发展','多元化','展望','结束'][i] || `第${i+1}页`,
+                    desc: '年度报告'
+                }))
+            },
+            {
+                id: 'ppt169_通用灵活+代码_debug六步法',
+                title: 'Debug 六步法',
+                description: '代码调试的系统方法论',
+                icon: '🐛',
+                color: '#ef4444',
+                folder: 'ppt169_通用灵活+代码_debug六步法/svg_final',
+                slides: Array.from({length: 10}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','overview','step1','step2','step3','step4','step5','step6','tips','summary'][i] || 'content'}.svg`,
+                    title: ['封面','概述','第一步','第二步','第三步','第四步','第五步','第六步','技巧','总结'][i] || `第${i+1}页`,
+                    desc: '调试方法'
+                }))
+            },
+            {
+                id: 'ppt169_通用灵活+学术_重庆大学论文格式标准',
+                title: '重庆大学论文格式标准',
+                description: '学术论文格式规范指南',
+                icon: '📝',
+                color: '#0891b2',
+                folder: 'ppt169_通用灵活+学术_重庆大学论文格式标准/svg_final',
+                slides: Array.from({length: 11}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','toc','overview','title_page','abstract','body','references','appendix','format','common_errors','summary'][i] || 'content'}.svg`,
+                    title: ['封面','目录','概述','封面页','摘要','正文','参考文献','附录','格式要求','常见错误','总结'][i] || `第${i+1}页`,
+                    desc: '论文格式'
+                }))
+            },
+            {
+                id: 'ppt169_通过灵活+代码_三大AI编程神器横向对比',
+                title: '三大AI编程神器对比',
+                description: 'AI编程工具横向对比分析',
+                icon: '⚡',
+                color: '#7c3aed',
+                folder: 'ppt169_通过灵活+代码_三大AI编程神器横向对比/svg_final',
+                slides: Array.from({length: 11}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','overview','tool1','tool2','tool3','features','performance','pricing','use_cases','comparison','conclusion'][i] || 'content'}.svg`,
+                    title: ['封面','概述','工具一','工具二','工具三','功能对比','性能对比','定价对比','使用场景','综合对比','结论'][i] || `第${i+1}页`,
+                    desc: 'AI工具对比'
+                }))
+            },
+            {
+                id: 'demo_project_intro_ppt169_20251211',
+                title: 'PPT Master 项目介绍',
+                description: '项目演示与功能介绍',
+                icon: '🎯',
+                color: '#f97316',
+                folder: 'demo_project_intro_ppt169_20251211/svg_final',
+                slides: Array.from({length: 10}, (_, i) => ({
+                    file: `slide_${String(i+1).padStart(2,'0')}_${['cover','intro','features','workflow','roles','tools','examples','roadmap','contact','closing'][i] || 'content'}.svg`,
+                    title: ['封面','介绍','功能','工作流','角色','工具','示例','路线图','联系','结束'][i] || `第${i+1}页`,
+                    desc: '项目介绍'
+                }))
+            }
+        ];
 
         // State
-        let currentProject = '';
-        let currentVersion = 'final';
-        let slides = [];
-        let currentIndex = 0;
+        let collections = collectionsData;
+        let currentCollection = null;
+        let currentSlide = 0;
+        let isFullscreen = false;
+        let dropdownOpen = false;
+        let viewMode = 'normal';
 
-        // DOM elements
-        const projectTitle = document.getElementById('project-title');
-        const slideList = document.getElementById('slide-list');
-        const viewerContainer = document.getElementById('viewer-container');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const pageIndicator = document.getElementById('page-indicator');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const keyboardHint = document.getElementById('keyboard-hint');
-
-        // Get project from URL
-        function getProjectFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('project');
-        }
-
-        // Fetch slide list
-        async function fetchSlides(project, version) {
-            const folder = version === 'final' ? 'svg_final' : 'svg_output';
-            const basePath = `examples/${project}/${folder}/`;
-
-            // Try to fetch directory listing or use known patterns
-            const possiblePatterns = [
-                // P01, P02, ... pattern
-                Array.from({ length: 50 }, (_, i) => `P${String(i + 1).padStart(2, '0')}`),
-                // slide_01, slide_02, ... pattern
-                Array.from({ length: 50 }, (_, i) => `slide_${String(i + 1).padStart(2, '0')}`)
-            ];
-
-            const foundSlides = [];
-
-            // Try each pattern
-            for (const pattern of possiblePatterns) {
-                for (const prefix of pattern) {
-                    // Try common suffixes
-                    const suffixes = ['_封面', '_cover', '_Cover', '', '_目录', '_navigation', '_Navigation'];
-                    let found = false;
-
-                    for (const suffix of suffixes) {
-                        const filename = `${prefix}${suffix}.svg`;
-                        try {
-                            const response = await fetch(`${basePath}${filename}`, { method: 'HEAD' });
-                            if (response.ok) {
-                                foundSlides.push({
-                                    filename,
-                                    path: `${basePath}${filename}`,
-                                    name: filename.replace('.svg', '').replace(/_/g, ' ')
-                                });
-                                found = true;
-                                break;
-                            }
-                        } catch (e) {
-                            // Continue trying
-                        }
-                    }
-
-                    // If we found one with this prefix, try to find the actual filename
-                    if (!found && foundSlides.length > 0) {
-                        // We've passed the last slide
-                        break;
-                    }
-                }
-
-                if (foundSlides.length > 0) break;
-            }
-
-            // If still empty, try brute force approach
-            if (foundSlides.length === 0) {
-                // Common slide naming patterns
-                const knownSlides = await discoverSlides(basePath);
-                foundSlides.push(...knownSlides);
-            }
-
-            return foundSlides;
-        }
-
-        // Discover slides by trying common names
-        async function discoverSlides(basePath) {
-            const discovered = [];
-            const maxSlides = 50;
-
-            // Try both naming conventions
-            for (let i = 1; i <= maxSlides; i++) {
-                const num = String(i).padStart(2, '0');
-
-                // Try P## pattern first
-                let found = false;
-                const pResponse = await tryFetchSvg(basePath, `P${num}`);
-                if (pResponse) {
-                    discovered.push(pResponse);
-                    found = true;
-                }
-
-                // Try slide_## pattern
-                if (!found) {
-                    const sResponse = await tryFetchSvg(basePath, `slide_${num}`);
-                    if (sResponse) {
-                        discovered.push(sResponse);
-                        found = true;
-                    }
-                }
-
-                // If we found slides before but not this one, we're done
-                if (!found && discovered.length > 0 && i > discovered.length + 2) {
-                    break;
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCollections();
+            
+            // Check URL for collection parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const collectionId = urlParams.get('project');
+            if (collectionId) {
+                const collection = collections.find(c => c.id === collectionId);
+                if (collection) {
+                    openCollection(collection);
                 }
             }
+        });
 
-            return discovered;
-        }
-
-        // Try to fetch an SVG file with common suffixes
-        async function tryFetchSvg(basePath, prefix) {
-            // Common Chinese and English suffixes
-            const suffixes = [
-                '_封面', '_cover', '_Cover', '_目录', '_目录导航', '_navigation', '_Navigation',
-                '_what_is', '_features', '_workflow', '_history', '_summary', '_end',
-                '_core_concept', '_Executive_Summary', '_Agenda', '_What_Are',
-                // Add more common suffixes
-                ''
-            ];
-
-            // First, try to find any file starting with this prefix
-            // We'll use a wildcard approach by trying known suffixes
-            const commonWords = [
-                '封面', 'cover', 'Cover', '目录', '导航', 'navigation', 'intro', 'summary',
-                'what', 'how', 'why', 'step', 'concept', 'feature', 'end', 'thank', '感谢',
-                'Executive', 'Agenda', 'Case', 'Tool', 'Summary', 'When', 'Building',
-                'Workflow', 'Autonomous', 'Agent'
-            ];
-
-            for (const word of commonWords) {
-                const filename = `${prefix}_${word}`;
-                try {
-                    // Try exact match
-                    let response = await fetch(`${basePath}${filename}.svg`, { method: 'HEAD' });
-                    if (response.ok) {
-                        return {
-                            filename: `${filename}.svg`,
-                            path: `${basePath}${filename}.svg`,
-                            name: filename.replace(/_/g, ' ')
-                        };
-                    }
-                } catch (e) {
-                    // Continue
-                }
-            }
-
-            // Try just the prefix with no suffix
-            try {
-                const response = await fetch(`${basePath}${prefix}.svg`, { method: 'HEAD' });
-                if (response.ok) {
-                    return {
-                        filename: `${prefix}.svg`,
-                        path: `${basePath}${prefix}.svg`,
-                        name: prefix.replace(/_/g, ' ')
-                    };
-                }
-            } catch (e) {
-                // Continue
-            }
-
-            return null;
-        }
-
-        // Alternative: Scan common filenames from our project data
-        async function loadProjectSlides(project, version) {
-            const folder = version === 'final' ? 'svg_final' : 'svg_output';
-            const basePath = `examples/${project}/${folder}/`;
-
-            // Pre-defined slide lists for each project
-            const projectSlides = {
-                'ppt169_顶级咨询风_心理治疗中的依恋': generateSlideList(32, 'P', '封面'),
-                'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213': generateSlideList(20, 'P', '封面'),
-                'ppt169_顶级咨询风_甘孜州经济财政分析': generateSlideList(17, 'slide_', 'cover'),
-                'ppt169_顶级咨询风_构建有效AI代理_Anthropic': [
-                    'P01_Cover', 'P02_Executive_Summary', 'P03_Agenda', 'P04_What_Are_Agents',
-                    'P05_When_To_Use', 'P06_Building_Block', 'P07_Workflow_Chaining',
-                    'P08_Workflow_Routing', 'P09_Workflow_Parallelization', 'P10_Workflow_Advanced',
-                    'P11_Autonomous_Agents', 'P12_When_To_Use_Agents', 'P13_Case_Studies',
-                    'P14_Tool_Engineering', 'P15_Summary'
-                ],
-                'ppt169_高端咨询风_南欧江水电站战略评估': generateSlideList(20, 'P', 'cover'),
-                'ppt169_高端咨询风_汽车认证五年战略规划': generateSlideList(20, 'P', 'cover'),
-                'ppt169_麦肯锡风_kimsoong_customer_loyalty': generateSlideList(8, 'slide_', 'cover'),
-                'ppt169_谷歌风_google_annual_report': generateSlideList(10, 'slide_', 'cover'),
-                'ppt169_通用灵活+代码_debug六步法': generateSlideList(10, 'slide_', 'cover'),
-                'ppt169_通用灵活+学术_重庆大学论文格式标准': generateSlideList(11, 'slide_', 'cover'),
-                'ppt169_通过灵活+代码_三大AI编程神器横向对比': generateSlideList(11, 'slide_', 'cover'),
-                'ppt169_易理风_地山谦卦深度研究': generateSlideList(20, 'P', '封面'),
-                'ppt169_禅意风_金刚经第一品研究': generateSlideList(15, 'P', '封面'),
-                'ppt169_像素风_git_introduction': generateSlideList(10, 'slide_', 'cover'),
-                'demo_project_intro_ppt169_20251211': generateSlideList(10, 'slide_', 'cover')
-            };
-
-            // Get the slide names for this project or try to discover them
-            let slideNames = projectSlides[project];
-
-            if (!slideNames) {
-                // Try to discover slides
-                const discovered = await discoverSlides(basePath);
-                return discovered;
-            }
-
-            // For predefined slides, we'll verify they exist and get the actual filenames
-            const slides = [];
-            for (const name of slideNames) {
-                // The name might be just a base name, we need to find the actual file
-                const slide = await findSlideFile(basePath, name);
-                if (slide) {
-                    slides.push(slide);
-                }
-            }
-
-            return slides;
-        }
-
-        // Generate a simple slide list
-        function generateSlideList(count, prefix, firstSuffix) {
-            const list = [];
-            for (let i = 1; i <= count; i++) {
-                const num = String(i).padStart(2, '0');
-                list.push(`${prefix}${num}`);
-            }
-            return list;
-        }
-
-        // Find the actual slide file given a base name
-        async function findSlideFile(basePath, baseName) {
-            // If it already has .svg extension, use as is
-            if (baseName.endsWith('.svg')) {
-                try {
-                    const response = await fetch(`${basePath}${baseName}`, { method: 'HEAD' });
-                    if (response.ok) {
-                        return {
-                            filename: baseName,
-                            path: `${basePath}${baseName}`,
-                            name: baseName.replace('.svg', '').replace(/_/g, ' ')
-                        };
-                    }
-                } catch (e) { }
-                return null;
-            }
-
-            // Try with .svg extension first
-            try {
-                const response = await fetch(`${basePath}${baseName}.svg`, { method: 'HEAD' });
-                if (response.ok) {
-                    return {
-                        filename: `${baseName}.svg`,
-                        path: `${basePath}${baseName}.svg`,
-                        name: baseName.replace(/_/g, ' ')
-                    };
-                }
-            } catch (e) { }
-
-            // Try common suffixes
-            const commonSuffixes = [
-                '_封面', '_cover', '_Cover', '_目录', '_目录导航', '_navigation',
-                '_核心概念', '_core_concept', '_总结', '_summary', '_结语', '_end',
-                '_感谢', '_thank', '_what_is', '_features', '_workflow', '_history',
-                // More specific ones
-                '_谦卦总览', '_字源解构', '_卦画物理图景', '_天道与地道', '_鬼神与人道',
-                '_六爻总览', '_初六谦谦君子', '_六二鸣谦贞吉', '_九三劳谦君子',
-                '_六四与六五', '_上六鸣谦行师', '_综卦与错卦', '_交互卦雷水解',
-                '_第五级领导力', '_达克效应与品牌管理', '_真谦与伪谦', '_核心洞见', '_感谢页',
-                '_金刚经概述', '_第一品研究意义', '_场景与人物', '_佛陀日常行为',
-                '_隐含的教法', '_序幕功能', '_道在平常', '_译本比较', '_注疏流变',
-                '_禅宗视角', '_研究发现', '_深层启示',
-                '_positioning', '_speckit', '_openspec', '_zcf', '_comparison',
-                '_efficiency', '_combination', '_decision', '_table',
-                '_clarify_flow', '_locate_bug', '_elimination', '_verify',
-                '_side_effects', '_test_document',
-                '_vcs_features', '_save_point', '_version_hell', '_git_vs_github'
-            ];
-
-            for (const suffix of commonSuffixes) {
-                try {
-                    const filename = `${baseName}${suffix}.svg`;
-                    const response = await fetch(`${basePath}${filename}`, { method: 'HEAD' });
-                    if (response.ok) {
-                        return {
-                            filename,
-                            path: `${basePath}${filename}`,
-                            name: filename.replace('.svg', '').replace(/_/g, ' ')
-                        };
-                    }
-                } catch (e) { }
-            }
-
-            return null;
-        }
-
-        // Alternative approach: List files using directory index (if available)
-        async function listDirectory(path) {
-            try {
-                const response = await fetch(path);
-                const html = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const links = doc.querySelectorAll('a');
-                const svgFiles = [];
-
-                links.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href && href.endsWith('.svg')) {
-                        svgFiles.push(href);
-                    }
-                });
-
-                return svgFiles.sort();
-            } catch (e) {
-                return [];
-            }
-        }
-
-        // Main initialization
-        async function init() {
-            currentProject = getProjectFromUrl();
-
-            if (!currentProject) {
-                showError('未指定项目');
+        // Render collection cards
+        function renderCollections() {
+            const grid = document.getElementById('collectionsGrid');
+            
+            if (collections.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
                 return;
             }
 
-            // Set title
-            const meta = projectsMeta[currentProject];
-            if (meta) {
-                projectTitle.textContent = meta.title;
-                document.title = `${meta.title} - PPT Master`;
-            } else {
-                projectTitle.textContent = currentProject;
-            }
-
-            // Load slides
-            await loadSlides();
-
-            // Show keyboard hint briefly
-            keyboardHint.classList.add('show');
-            setTimeout(() => keyboardHint.classList.remove('show'), 3000);
-        }
-
-        // Load slides for current project and version
-        async function loadSlides() {
-            viewerContainer.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>正在加载幻灯片...</p>
+            grid.innerHTML = collections.map(collection => {
+                const coverPath = encodeURI(`examples/${collection.folder}/${collection.slides[0].file}`);
+                return `
+                <div class="collection-card glass rounded-2xl overflow-hidden" onclick='openCollection(${JSON.stringify(collection).replace(/'/g, "&#39;")})'>
+                    <div class="relative h-48 bg-gradient-to-br" style="background: linear-gradient(135deg, ${collection.color}22 0%, ${collection.color}44 100%)">
+                        <object data="${coverPath}" type="image/svg+xml" class="w-full h-full object-contain p-4" style="pointer-events:none">
+                            <div class="w-full h-full flex items-center justify-center text-4xl">${collection.icon}</div>
+                        </object>
+                        <div class="absolute top-4 left-4 w-12 h-12 rounded-xl flex items-center justify-center text-2xl" 
+                             style="background: ${collection.color}22">
+                            ${collection.icon}
+                        </div>
+                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium text-white"
+                             style="background: ${collection.color}">
+                            ${collection.slides.length} 页
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-bold text-gray-800 text-lg mb-2">${collection.title}</h3>
+                        <p class="text-gray-500 text-sm line-clamp-2">${collection.description}</p>
+                    </div>
                 </div>
-            `;
+            `}).join('');
 
-            const folder = currentVersion === 'final' ? 'svg_final' : 'svg_output';
-            const basePath = `examples/${currentProject}/${folder}/`;
-
-            // Try to list directory first (works with Python http.server)
-            let svgFiles = await listDirectory(basePath);
-
-            if (svgFiles.length > 0) {
-                slides = svgFiles.map(filename => ({
-                    filename,
-                    path: `${basePath}${filename}`,
-                    name: filename.replace('.svg', '').replace(/_/g, ' ')
-                }));
-            } else {
-                // Fall back to predefined lists
-                slides = await loadProjectSlides(currentProject, currentVersion);
-            }
-
-            if (slides.length === 0) {
-                showError('未找到幻灯片文件');
-                return;
-            }
-
-            // Sort slides
-            slides.sort((a, b) => a.filename.localeCompare(b.filename));
-
-            // Render slide list
-            renderSlideList();
-
-            // Show first slide
-            currentIndex = 0;
-            showSlide(currentIndex);
+            renderDropdown();
         }
 
-        // Render slide list in sidebar
-        function renderSlideList() {
-            slideList.innerHTML = slides.map((slide, index) => `
-                <div class="slide-item ${index === currentIndex ? 'active' : ''}" data-index="${index}">
-                    <div class="slide-thumb">
-                        <img src="${slide.path}" alt="${slide.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 90\"><rect fill=\"%23f0f0f0\" width=\"160\" height=\"90\"/><text x=\"80\" y=\"50\" text-anchor=\"middle\" fill=\"%23999\" font-size=\"12\">加载失败</text></svg>'" />
+        // Render dropdown menu
+        function renderDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            dropdown.innerHTML = collections.map(collection => `
+                <div class="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${currentCollection?.id === collection.id ? 'bg-brand-50' : ''}"
+                     onclick='switchCollection(${JSON.stringify(collection).replace(/'/g, "&#39;")})'>
+                    <span class="text-2xl mr-3">${collection.icon}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-800 truncate">${collection.title}</p>
+                        <p class="text-xs text-gray-500">${collection.slides.length} 页</p>
                     </div>
-                    <div class="slide-info">
-                        <div class="slide-num">第 ${index + 1} 页</div>
-                        <div class="slide-name">${slide.name}</div>
-                    </div>
+                    ${currentCollection?.id === collection.id ? '<i class="fas fa-check text-brand-500"></i>' : ''}
                 </div>
             `).join('');
-
-            // Add click handlers
-            slideList.querySelectorAll('.slide-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const index = parseInt(item.dataset.index);
-                    showSlide(index);
-                });
-            });
         }
 
-        // Show a specific slide
-        function showSlide(index) {
-            if (index < 0 || index >= slides.length) return;
+        // Toggle dropdown
+        function toggleDropdown() {
+            dropdownOpen = !dropdownOpen;
+            document.getElementById('dropdownMenu').classList.toggle('hidden', !dropdownOpen);
+        }
 
-            currentIndex = index;
-            const slide = slides[index];
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#collectionSelector')) {
+                dropdownOpen = false;
+                document.getElementById('dropdownMenu').classList.add('hidden');
+            }
+        });
+
+        // Open a collection
+        function openCollection(collection) {
+            currentCollection = collection;
+            currentSlide = 0;
+
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('project', collection.id);
+            window.history.pushState({}, '', url);
+
+            // Update UI
+            document.getElementById('libraryView').classList.add('hidden');
+            document.getElementById('viewerView').classList.remove('hidden');
+            document.getElementById('collectionSelector').classList.remove('hidden');
+            document.getElementById('keyboardHints').classList.remove('hidden');
+            document.getElementById('keyboardHints').classList.add('flex');
+            document.getElementById('mainContent').classList.add('viewer-expanded');
+            
+            setViewMode('normal');
+
+            // Update header
+            document.getElementById('currentCollectionIcon').textContent = collection.icon;
+            document.getElementById('currentCollectionName').textContent = collection.title;
 
             // Update viewer
-            viewerContainer.innerHTML = `
-                <div class="svg-frame">
-                    <img src="${slide.path}" alt="${slide.name}" onerror="this.parentElement.innerHTML='<div style=\"padding:40px;text-align:center\"><p style=\"font-size:4rem\">⚠️</p><p>加载失败</p></div>'" />
-                </div>
-            `;
+            document.getElementById('viewerTitle').innerHTML = `${collection.icon} ${collection.title}`;
+            document.getElementById('viewerDescription').textContent = collection.description;
+            document.getElementById('totalPages').textContent = collection.slides.length;
+            document.getElementById('fullscreenTotal').textContent = collection.slides.length;
 
-            // Update sidebar selection
-            slideList.querySelectorAll('.slide-item').forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
+            // Set theme color
+            document.getElementById('progressBar').style.background = `linear-gradient(90deg, ${collection.color} 0%, ${collection.color}cc 100%)`;
 
-            // Scroll sidebar to show current slide
-            const activeItem = slideList.querySelector('.slide-item.active');
-            if (activeItem) {
-                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            generateThumbnails();
+            generateOverview();
+            updateSlide();
+            renderDropdown();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Switch collection from dropdown
+        function switchCollection(collection) {
+            toggleDropdown();
+            openCollection(collection);
+        }
+
+        // Back to library
+        function backToLibrary() {
+            currentCollection = null;
+            
+            const url = new URL(window.location);
+            url.searchParams.delete('project');
+            window.history.pushState({}, '', url);
+
+            document.getElementById('libraryView').classList.remove('hidden');
+            document.getElementById('viewerView').classList.add('hidden');
+            document.getElementById('collectionSelector').classList.add('hidden');
+            document.getElementById('keyboardHints').classList.add('hidden');
+            document.getElementById('keyboardHints').classList.remove('flex');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('mainContent').classList.remove('viewer-expanded');
+            document.getElementById('slideViewerContainer').classList.remove('theater-mode');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set view mode
+        function setViewMode(mode) {
+            viewMode = mode;
+            const container = document.getElementById('slideViewerContainer');
+            const normalBtn = document.getElementById('normalModeBtn');
+            const theaterBtn = document.getElementById('theaterModeBtn');
+            
+            if (mode === 'theater') {
+                container.classList.add('theater-mode');
+                normalBtn.classList.remove('active');
+                theaterBtn.classList.add('active');
+            } else {
+                container.classList.remove('theater-mode');
+                normalBtn.classList.add('active');
+                theaterBtn.classList.remove('active');
             }
-
-            // Update navigation
-            prevBtn.disabled = index === 0;
-            nextBtn.disabled = index === slides.length - 1;
-            pageIndicator.textContent = `${index + 1} / ${slides.length}`;
         }
 
-        // Show error
-        function showError(message) {
-            viewerContainer.innerHTML = `
-                <div class="error">
-                    <div class="error-icon">😕</div>
-                    <h2>${message}</h2>
-                    <p><a href="index.html" style="color: var(--primary)">返回首页</a></p>
+        function toggleViewMode() {
+            setViewMode(viewMode === 'normal' ? 'theater' : 'normal');
+        }
+
+        // Generate thumbnail sidebar
+        function generateThumbnails() {
+            if (!currentCollection) return;
+            
+            const container = document.getElementById('thumbnailContainer');
+            const basePath = `examples/${currentCollection.folder}/`;
+            
+            container.innerHTML = currentCollection.slides.map((slide, index) => {
+                const slidePath = encodeURI(basePath + slide.file);
+                return `
+                <div class="thumbnail rounded-lg overflow-hidden border-2 ${index === 0 ? 'border-brand-500' : 'border-transparent'}" 
+                     onclick="goToSlide(${index})" 
+                     id="thumb-${index}">
+                    <object data="${slidePath}" type="image/svg+xml" class="w-full" style="pointer-events:none">
+                        <div class="w-full h-16 flex items-center justify-center bg-gray-100">📄</div>
+                    </object>
+                    <div class="px-2 py-1 bg-gray-50 text-xs text-gray-600 truncate">
+                        ${index + 1}. ${slide.title}
+                    </div>
                 </div>
-            `;
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
+            `}).join('');
         }
 
-        // Event listeners
-        prevBtn.addEventListener('click', () => showSlide(currentIndex - 1));
-        nextBtn.addEventListener('click', () => showSlide(currentIndex + 1));
+        // Generate overview grid
+        function generateOverview() {
+            if (!currentCollection) return;
+            
+            const container = document.getElementById('overviewGrid');
+            const basePath = `examples/${currentCollection.folder}/`;
+            
+            container.innerHTML = currentCollection.slides.map((slide, index) => {
+                const slidePath = encodeURI(basePath + slide.file);
+                return `
+                <div class="glass rounded-xl p-2 shadow-md hover:shadow-lg transition-shadow cursor-pointer" 
+                     onclick="goToSlide(${index}); window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <object data="${slidePath}" type="image/svg+xml" class="w-full rounded-lg" style="pointer-events:none">
+                        <div class="w-full h-24 flex items-center justify-center bg-gray-100">📄</div>
+                    </object>
+                    <div class="mt-2 px-1">
+                        <p class="text-sm font-medium text-gray-800 truncate">${index + 1}. ${slide.title}</p>
+                        <p class="text-xs text-gray-500 truncate">${slide.desc}</p>
+                    </div>
+                </div>
+            `}).join('');
+        }
 
-        // Version toggle
-        document.querySelectorAll('.version-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.version-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentVersion = btn.dataset.version;
-                loadSlides();
+        // Update slide display
+        function updateSlide() {
+            if (!currentCollection) return;
+            
+            const slide = currentCollection.slides[currentSlide];
+            const basePath = `examples/${currentCollection.folder}/`;
+            const slidePath = encodeURI(basePath + slide.file);
+            
+            const mainSlide = document.getElementById('mainSlide');
+            const fullscreenImage = document.getElementById('fullscreenImage');
+
+            // Update main slide
+            mainSlide.classList.remove('fade-in');
+            void mainSlide.offsetWidth;
+            mainSlide.classList.add('fade-in');
+            mainSlide.data = slidePath;
+
+            // Update fullscreen
+            fullscreenImage.data = slidePath;
+
+            // Update page numbers
+            document.getElementById('currentPage').textContent = currentSlide + 1;
+            document.getElementById('fullscreenPage').textContent = currentSlide + 1;
+
+            // Update slide info
+            document.getElementById('slideTitle').textContent = slide.title;
+            document.getElementById('slideDesc').textContent = slide.desc;
+
+            // Update progress bar
+            const progress = ((currentSlide + 1) / currentCollection.slides.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === currentCollection.slides.length - 1;
+
+            // Update thumbnail highlights
+            currentCollection.slides.forEach((_, i) => {
+                const thumb = document.getElementById(`thumb-${i}`);
+                if (thumb) {
+                    if (i === currentSlide) {
+                        thumb.classList.add('border-brand-500');
+                        thumb.classList.remove('border-transparent');
+                        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        thumb.classList.remove('border-brand-500');
+                        thumb.classList.add('border-transparent');
+                    }
+                }
             });
-        });
+        }
 
-        // Fullscreen
-        fullscreenBtn.addEventListener('click', () => {
-            document.body.classList.toggle('fullscreen');
-        });
+        // Navigation
+        function nextSlide() {
+            if (currentCollection && currentSlide < currentCollection.slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        // Fullscreen toggle
+        function toggleFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            isFullscreen = !isFullscreen;
+            
+            if (isFullscreen) {
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            switch (e.key) {
+            if (!currentCollection && e.key !== 'Escape') return;
+            
+            switch(e.key) {
                 case 'ArrowLeft':
-                    showSlide(currentIndex - 1);
+                    prevSlide();
                     break;
                 case 'ArrowRight':
-                case ' ':
-                    e.preventDefault();
-                    showSlide(currentIndex + 1);
+                    nextSlide();
+                    break;
+                case 'Escape':
+                    if (isFullscreen) {
+                        toggleFullscreen();
+                    } else if (currentCollection) {
+                        backToLibrary();
+                    }
                     break;
                 case 'f':
                 case 'F':
-                    document.body.classList.toggle('fullscreen');
+                    if (currentCollection) toggleFullscreen();
                     break;
-                case 'Escape':
-                    document.body.classList.remove('fullscreen');
+                case 't':
+                case 'T':
+                    if (currentCollection && !isFullscreen) toggleViewMode();
                     break;
             }
         });
 
-        // Click to exit fullscreen
-        viewerContainer.addEventListener('click', (e) => {
-            if (document.body.classList.contains('fullscreen')) {
-                // Click on left side = prev, right side = next
-                const rect = viewerContainer.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                if (clickX < rect.width / 3) {
-                    showSlide(currentIndex - 1);
-                } else if (clickX > rect.width * 2 / 3) {
-                    showSlide(currentIndex + 1);
+        // Handle browser back/forward
+        window.addEventListener('popstate', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const collectionId = urlParams.get('project');
+            
+            if (collectionId) {
+                const collection = collections.find(c => c.id === collectionId);
+                if (collection) {
+                    openCollection(collection);
                 }
+            } else {
+                backToLibrary();
             }
         });
 
-        // Initialize
-        init();
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > 50 && currentCollection) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        });
     </script>
 </body>
 
