@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0" />
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">03 区域城投</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">11 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">3.1 区域城投概览</text>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M68,130 H252 A8,8 0 0 1 260,138 V222 A8,8 0 0 1 252,230 H68 A8,8 0 0 1 60,222 V138 A8,8 0 0 1 68,130 Z" />
+    <text x="160" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">城投平台总数</text>
+    <text x="160" y="210" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" text-anchor="middle">375家</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#4A90D9" d="M288,130 H472 A8,8 0 0 1 480,138 V222 A8,8 0 0 1 472,230 H288 A8,8 0 0 1 280,222 V138 A8,8 0 0 1 288,130 Z" />
+    <text x="380" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">本级平台</text>
+    <text x="380" y="210" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF" text-anchor="middle">54家</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M508,130 H692 A8,8 0 0 1 700,138 V222 A8,8 0 0 1 692,230 H508 A8,8 0 0 1 500,222 V138 A8,8 0 0 1 508,130 Z" />
+    <text x="600" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">下属辖区</text>
+    <text x="600" y="210" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F" text-anchor="middle">38个</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,250 H412 A8,8 0 0 1 420,258 V522 A8,8 0 0 1 412,530 H68 A8,8 0 0 1 60,522 V258 A8,8 0 0 1 68,250 Z" />
+    <text x="90" y="285" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">主体评级分布</text>
+    <text x="340" y="285" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">仅统计已披露评级平台</text>
+    
+    
+    
+    <text x="90" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">AAA</text>
+    <path fill="#E2E8F0" d="M144,315 H336 A4,4 0 0 1 340,319 V335 A4,4 0 0 1 336,339 H144 A4,4 0 0 1 140,335 V319 A4,4 0 0 1 144,315 Z" />
+    <path fill="#1E3A5F" d="M144,315 H176 A4,4 0 0 1 180,319 V335 A4,4 0 0 1 176,339 H144 A4,4 0 0 1 140,335 V319 A4,4 0 0 1 144,315 Z" />
+    <text x="195" y="332" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">8家</text>
+    
+    
+    <text x="90" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">AA+</text>
+    <path fill="#E2E8F0" d="M144,360 H336 A4,4 0 0 1 340,364 V380 A4,4 0 0 1 336,384 H144 A4,4 0 0 1 140,380 V364 A4,4 0 0 1 144,360 Z" />
+    <path fill="#4A90D9" d="M144,360 H216 A4,4 0 0 1 220,364 V380 A4,4 0 0 1 216,384 H144 A4,4 0 0 1 140,380 V364 A4,4 0 0 1 144,360 Z" />
+    <text x="230" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">25家</text>
+    
+    
+    <text x="90" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">AA</text>
+    <path fill="#E2E8F0" d="M144,405 H336 A4,4 0 0 1 340,409 V425 A4,4 0 0 1 336,429 H144 A4,4 0 0 1 140,425 V409 A4,4 0 0 1 144,405 Z" />
+    <path fill="#2ECC71" d="M144,405 H306 A4,4 0 0 1 310,409 V425 A4,4 0 0 1 306,429 H144 A4,4 0 0 1 140,425 V409 A4,4 0 0 1 144,405 Z" />
+    <text x="320" y="422" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600">85家 (63.91%)</text>
+    
+    
+    <text x="90" y="465" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">AA-</text>
+    <path fill="#E2E8F0" d="M144,450 H336 A4,4 0 0 1 340,454 V470 A4,4 0 0 1 336,474 H144 A4,4 0 0 1 140,470 V454 A4,4 0 0 1 144,450 Z" />
+    <path fill="#F59E0B" d="M144,450 H166 A4,4 0 0 1 170,454 V470 A4,4 0 0 1 166,474 H144 A4,4 0 0 1 140,470 V454 A4,4 0 0 1 144,450 Z" />
+    <text x="180" y="467" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">15家</text>
+    
+    
+    <text x="90" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">其他</text>
+    <path fill="#E2E8F0" d="M144,495 H336 A4,4 0 0 1 340,499 V515 A4,4 0 0 1 336,519 H144 A4,4 0 0 1 140,515 V499 A4,4 0 0 1 144,495 Z" />
+    <path fill="#64748B" d="M144,495 H144 A4,4 0 0 1 148,499 V515 A4,4 0 0 1 144,519 H144 A4,4 0 0 1 140,515 V499 A4,4 0 0 1 144,495 Z" />
+    <text x="160" y="512" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">少量</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M448,250 H792 A8,8 0 0 1 800,258 V522 A8,8 0 0 1 792,530 H448 A8,8 0 0 1 440,522 V258 A8,8 0 0 1 448,250 Z" />
+    <text x="470" y="285" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">业务类型分布</text>
+    
+    
+    
+    <text x="470" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">基础设施建设</text>
+    <path fill="#E2E8F0" d="M474,340 H766 A4,4 0 0 1 770,344 V356 A4,4 0 0 1 766,360 H474 A4,4 0 0 1 470,356 V344 A4,4 0 0 1 474,340 Z" />
+    <path fill="#1E3A5F" d="M474,340 H578 A4,4 0 0 1 582,344 V356 A4,4 0 0 1 578,360 H474 A4,4 0 0 1 470,356 V344 A4,4 0 0 1 474,340 Z" />
+    <text x="595" y="355" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600">37.40%</text>
+    
+    
+    <text x="470" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">产投平台</text>
+    <path fill="#E2E8F0" d="M474,395 H766 A4,4 0 0 1 770,399 V411 A4,4 0 0 1 766,415 H474 A4,4 0 0 1 470,411 V399 A4,4 0 0 1 474,395 Z" />
+    <path fill="#4A90D9" d="M474,395 H541 A4,4 0 0 1 545,399 V411 A4,4 0 0 1 541,415 H474 A4,4 0 0 1 470,411 V399 A4,4 0 0 1 474,395 Z" />
+    <text x="560" y="410" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">25.0%</text>
+    
+    
+    <text x="470" y="440" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">土地开发整理</text>
+    <path fill="#E2E8F0" d="M474,450 H766 A4,4 0 0 1 770,454 V466 A4,4 0 0 1 766,470 H474 A4,4 0 0 1 470,466 V454 A4,4 0 0 1 474,450 Z" />
+    <path fill="#2ECC71" d="M474,450 H520 A4,4 0 0 1 524,454 V466 A4,4 0 0 1 520,470 H474 A4,4 0 0 1 470,466 V454 A4,4 0 0 1 474,450 Z" />
+    <text x="535" y="465" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">18.0%</text>
+    
+    
+    <text x="470" y="495" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">公用事业/综合性</text>
+    <path fill="#E2E8F0" d="M474,505 H766 A4,4 0 0 1 770,509 V521 A4,4 0 0 1 766,525 H474 A4,4 0 0 1 470,521 V509 A4,4 0 0 1 474,505 Z" />
+    <path fill="#F59E0B" d="M474,505 H526 A4,4 0 0 1 530,509 V521 A4,4 0 0 1 526,525 H474 A4,4 0 0 1 470,521 V509 A4,4 0 0 1 474,505 Z" />
+    <text x="545" y="520" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">19.6%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M828,130 H1212 A8,8 0 0 1 1220,138 V522 A8,8 0 0 1 1212,530 H828 A8,8 0 0 1 820,522 V138 A8,8 0 0 1 828,130 Z" />
+    <text x="850" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">本级TOP5城投平台</text>
+    
+    
+    <path fill="#1E3A5F" d="M854,185 H1186 A4,4 0 0 1 1190,189 V213 A4,4 0 0 1 1186,217 H854 A4,4 0 0 1 850,213 V189 A4,4 0 0 1 854,185 Z" />
+    <text x="870" y="207" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF">平台名称</text>
+    <text x="1060" y="207" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">评级</text>
+    <text x="1140" y="207" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">总资产(亿)</text>
+    
+    
+    <rect x="850" y="217" width="340" height="40" fill="#EBF4FF" />
+    <text x="870" y="235" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600">重庆城市交通开发投资</text>
+    <text x="870" y="250" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">(集团)有限公司</text>
+    <text x="1060" y="242" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" text-anchor="middle">AAA</text>
+    <text x="1140" y="242" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600" text-anchor="middle">3,846.33</text>
+    
+    <rect x="850" y="257" width="340" height="40" fill="#FFFFFF" />
+    <text x="870" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">重庆渝富控股集团</text>
+    <text x="870" y="290" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">有限公司</text>
+    <text x="1060" y="282" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" text-anchor="middle">AAA</text>
+    <text x="1140" y="282" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">3,548.39</text>
+    
+    <rect x="850" y="297" width="340" height="40" fill="#EBF4FF" />
+    <text x="870" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">重庆市轨道交通(集团)</text>
+    <text x="870" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">有限公司</text>
+    <text x="1060" y="322" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" text-anchor="middle">AAA</text>
+    <text x="1140" y="322" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">2,550.72</text>
+    
+    <rect x="850" y="337" width="340" height="40" fill="#FFFFFF" />
+    <text x="870" y="355" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">重庆市城市建设投资</text>
+    <text x="870" y="370" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">(集团)有限公司</text>
+    <text x="1060" y="362" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" text-anchor="middle">AAA</text>
+    <text x="1140" y="362" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">1,839.72</text>
+    
+    <rect x="850" y="377" width="340" height="40" fill="#EBF4FF" />
+    <text x="870" y="395" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">重庆高新开发建设投资</text>
+    <text x="870" y="410" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">集团有限公司</text>
+    <text x="1060" y="402" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" text-anchor="middle">AAA</text>
+    <text x="1140" y="402" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">1,654.95</text>
+    
+    
+    <text x="850" y="450" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#64748B">按总资产规模排序 | TOP5均为AAA级平台</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M68,550 H1212 A8,8 0 0 1 1220,558 V652 A8,8 0 0 1 1212,660 H68 A8,8 0 0 1 60,652 V558 A8,8 0 0 1 68,550 Z" />
+    <text x="90" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">城投平台特征分析</text>
+    <text x="90" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 评级结构：AA级占比超6成，高评级(AAA/AA+)平台集中于市本级</tspan>
+      <tspan x="560" dy="0">• 业务结构：基础设施建设为主，产投平台占比提升</tspan>
+    </text>
+    <text x="90" y="645" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 头部集中：TOP5平台总资产超1.3万亿，占市本级城投总资产50%以上</tspan>
+      <tspan x="560" dy="0">• 资产规模：城交投、渝富控股领衔，规模优势明显</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

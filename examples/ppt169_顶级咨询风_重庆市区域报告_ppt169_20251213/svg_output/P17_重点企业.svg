@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F"/>
+  
+  <!-- 页眉 -->
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF"/>
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0"/>
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">07 区域重点企业</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">17 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">七、区域重点企业</text>
+  
+  <!-- 科创企业板块 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="130" width="580" height="280" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">7.1 科创企业</text>
+    <text x="250" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9">科技创新主力军</text>
+    
+    <!-- 第一行指标 -->
+    <g>
+      <rect x="90" y="190" width="160" height="90" rx="6" fill="#EBF4FF"/>
+      <text x="170" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">高新技术企业</text>
+      <text x="170" y="258" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="700" fill="#1E3A5F" text-anchor="middle">9,109</text>
+      <text x="170" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+    
+    <g>
+      <rect x="270" y="190" width="160" height="90" rx="6" fill="#EBF4FF"/>
+      <text x="350" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">专精特新中小企业</text>
+      <text x="350" y="258" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="700" fill="#4A90D9" text-anchor="middle">5,591</text>
+      <text x="350" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+    
+    <g>
+      <rect x="450" y="190" width="160" height="90" rx="6" fill="#EBF4FF"/>
+      <text x="530" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">专精特新"小巨人"</text>
+      <text x="530" y="258" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" font-weight="700" fill="#2ECC71" text-anchor="middle">324</text>
+      <text x="530" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+    
+    <!-- 第二行指标 -->
+    <g>
+      <rect x="90" y="300" width="160" height="90" rx="6" fill="#F8FAFC"/>
+      <text x="170" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">科技部科技型中小企业</text>
+      <text x="170" y="360" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1E3A5F" text-anchor="middle">3,347</text>
+      <text x="170" y="383" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+    
+    <g>
+      <rect x="270" y="300" width="160" height="90" rx="6" fill="#F8FAFC"/>
+      <text x="350" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">创新型中小企业</text>
+      <text x="350" y="360" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1E3A5F" text-anchor="middle">8,236</text>
+      <text x="350" y="383" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+    
+    <g>
+      <rect x="450" y="300" width="160" height="90" rx="6" fill="#F8FAFC"/>
+      <text x="530" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">国家企业技术中心</text>
+      <text x="530" y="360" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1E3A5F" text-anchor="middle">54</text>
+      <text x="530" y="383" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">家</text>
+    </g>
+  </g>
+  
+  <!-- 国有企业板块 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="130" width="560" height="280" rx="8" fill="#FFFFFF"/>
+    <text x="690" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">7.2 国有企业</text>
+    <text x="850" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9">区域经济支柱</text>
+    
+    <!-- 核心指标 -->
+    <rect x="690" y="190" width="500" height="110" rx="8" fill="#1E3A5F"/>
+    <text x="940" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">国有企业总数</text>
+    <text x="940" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="700" fill="#FFFFFF" text-anchor="middle">8,094</text>
+    <text x="1050" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#FFFFFF" fill-opacity="0.8">家</text>
+    
+    <!-- 分类指标 -->
+    <g>
+      <rect x="690" y="320" width="155" height="70" rx="6" fill="#EBF4FF"/>
+      <text x="767" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">中央企业</text>
+      <text x="767" y="378" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1E3A5F" text-anchor="middle">1家</text>
+    </g>
+    
+    <g>
+      <rect x="860" y="320" width="155" height="70" rx="6" fill="#EBF4FF"/>
+      <text x="937" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">央企子公司</text>
+      <text x="937" y="378" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#4A90D9" text-anchor="middle">2,140家</text>
+    </g>
+    
+    <g>
+      <rect x="1030" y="320" width="160" height="70" rx="6" fill="#EBF4FF"/>
+      <text x="1110" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">省属国企(含子公司)</text>
+      <text x="1110" y="378" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#4A90D9" text-anchor="middle">1,230家</text>
+    </g>
+  </g>
+  
+  <!-- 科创亮点 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="430" width="580" height="130" rx="8" fill="#EBF4FF"/>
+    <text x="90" y="465" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">科创能力亮点</text>
+    
+    <rect x="90" y="485" width="130" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="155" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">R&amp;D投入强度</text>
+    <text x="155" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#2ECC71" text-anchor="middle">2.48%</text>
+    
+    <rect x="240" y="485" width="130" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="305" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">高企密度(家/万企)</text>
+    <text x="305" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">50.51</text>
+    
+    <rect x="390" y="485" width="130" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="455" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">技术创新示范企业</text>
+    <text x="455" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">国家13+市级87</text>
+  </g>
+  
+  <!-- 上市公司概况 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="430" width="560" height="130" rx="8" fill="#EBF4FF"/>
+    <text x="690" y="465" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">上市公司概况</text>
+    
+    <rect x="690" y="485" width="160" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="770" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">A股上市公司</text>
+    <text x="770" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">78家</text>
+    
+    <rect x="870" y="485" width="160" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="950" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">总市值</text>
+    <text x="950" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#4A90D9" text-anchor="middle">1.19万亿</text>
+    
+    <rect x="1050" y="485" width="140" height="55" rx="4" fill="#FFFFFF"/>
+    <text x="1120" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B" text-anchor="middle">资本化率</text>
+    <text x="1120" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#1E3A5F" text-anchor="middle">32.34%</text>
+  </g>
+  
+  <!-- 底部总结 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="580" width="1160" height="80" rx="8" fill="#1E3A5F"/>
+    <text x="90" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">企业生态评价</text>
+    <text x="90" y="645" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 科创基础扎实：高企近万家，专精特新超5,500家，形成良好创新生态</tspan>
+      <tspan x="600" dy="0">• 国企支撑有力：8,000+国企提供就业与税收，央企子公司2,000+家</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F"/>
+</svg>

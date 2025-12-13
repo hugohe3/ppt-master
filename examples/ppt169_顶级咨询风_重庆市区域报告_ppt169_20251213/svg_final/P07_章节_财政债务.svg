@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A5F" />
+      <stop offset="100%" stop-color="#2E5A8B" />
+    </linearGradient>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="url(#sectionGradient)" />
+  
+  
+  <text x="1100" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="400" font-weight="700" fill="#FFFFFF" fill-opacity="0.05" text-anchor="middle">02</text>
+  
+  
+  <rect x="80" y="300" width="6" height="120" fill="#4A90D9" />
+  
+  
+  <text x="120" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="72" font-weight="700" fill="#FFFFFF">02</text>
+  
+  
+  <text x="280" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">财政及债务</text>
+  
+  
+  <text font-size="18" fill-opacity="0.8" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="120" y="420">一般公共预算收入2,595.55亿元，全国第19位</text><text font-size="18" fill-opacity="0.8" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="120" y="450">财政自给率46.17%，债务率（宽口径）363.32%</text><g>
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M128,500 H312 A8,8 0 0 1 320,508 V572 A8,8 0 0 1 312,580 H128 A8,8 0 0 1 120,572 V508 A8,8 0 0 1 128,500 Z" />
+    <text x="220" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">一般预算收入</text>
+    <text x="220" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">2,595亿</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M348,500 H532 A8,8 0 0 1 540,508 V572 A8,8 0 0 1 532,580 H348 A8,8 0 0 1 340,572 V508 A8,8 0 0 1 348,500 Z" />
+    <text x="440" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">财政自给率</text>
+    <text x="440" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">46.17%</text>
+  </g>
+  
+  <g>
+    <path fill="#FFFFFF" fill-opacity="0.1" d="M568,500 H752 A8,8 0 0 1 760,508 V572 A8,8 0 0 1 752,580 H568 A8,8 0 0 1 560,572 V508 A8,8 0 0 1 568,500 Z" />
+    <text x="660" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">政府债务余额</text>
+    <text x="660" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#F59E0B" text-anchor="middle">1.44万亿</text>
+  </g>
+  
+  
+  <text x="640" y="680" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">7</text>
+</svg>

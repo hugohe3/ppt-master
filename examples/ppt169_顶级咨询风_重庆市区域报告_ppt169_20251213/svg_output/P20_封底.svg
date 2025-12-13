@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="endGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#2E5A8B"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景渐变 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#endGradient)"/>
+  
+  <!-- 顶部装饰线 -->
+  <rect x="0" y="0" width="1280" height="4" fill="#4A90D9"/>
+  
+  <!-- 装饰元素 - 大圆环 -->
+  <circle cx="640" cy="360" r="280" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
+  <circle cx="640" cy="360" r="220" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.05"/>
+  
+  <!-- Logo图片 -->
+  <image href="../images/logo.jpg" x="540" y="180" width="200" height="80" preserveAspectRatio="xMidYMid meet"/>
+  
+  <!-- 主标题 -->
+  <text x="640" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF" text-anchor="middle">感谢阅读</text>
+  
+  <!-- 分隔线 -->
+  <rect x="560" y="345" width="160" height="2" fill="#4A90D9"/>
+  
+  <!-- Slogan -->
+  <text x="640" y="395" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">企业风险智能监控专家</text>
+  
+  <!-- 产品介绍 -->
+  <text x="640" y="450" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">
+    <tspan x="640" dy="0">企业预警通深度融合金融、企业、舆情、信用、司法、区域经济等大数据资源</tspan>
+    <tspan x="640" dy="24">为金融机构提供企业多维度风险信息查询、监测与分析服务</tspan>
+  </text>
+  
+  <!-- 联系方式 -->
+  <rect x="440" y="520" width="400" height="60" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+  <text x="640" y="555" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#4A90D9" text-anchor="middle">https://www.qyyjt.cn</text>
+  
+  <!-- 免责声明 -->
+  <rect x="140" y="610" width="1000" height="80" rx="6" fill="#FFFFFF" fill-opacity="0.05"/>
+  <text x="640" y="640" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">
+    <tspan x="640" dy="0">【免责声明】本数据内容版权归企业预警通所有。任何人未获得书面授权，不得对本数据内容进行转载、发布；如需引用，应注明来源于"企业预警通"。</tspan>
+    <tspan x="640" dy="18">企业预警通的数据内容均基于公开信息或已取得授权的信息经编辑整理而成，本公司力求数据准确与完整，但不对其准确性及完整性作任何保证，</tspan>
+    <tspan x="640" dy="18">且不构成任何投资建议。市场有风险，投资需谨慎。</tspan>
+  </text>
+  
+  <!-- 页码 -->
+  <text x="640" y="710" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.4" text-anchor="middle">20 / 20</text>
+  
+  <!-- 底部装饰线 -->
+  <rect x="0" y="716" width="1280" height="4" fill="#4A90D9"/>
+</svg>

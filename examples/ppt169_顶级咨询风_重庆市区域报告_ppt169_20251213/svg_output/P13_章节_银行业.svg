@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#2E5A8B"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#sectionGradient)"/>
+  
+  <!-- 装饰元素 -->
+  <text x="1100" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="400" font-weight="700" fill="#FFFFFF" fill-opacity="0.05" text-anchor="middle">04</text>
+  
+  <!-- 左侧装饰线 -->
+  <rect x="80" y="300" width="6" height="120" fill="#2ECC71"/>
+  
+  <!-- 章节编号 -->
+  <text x="120" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="72" font-weight="700" fill="#FFFFFF">04</text>
+  
+  <!-- 章节标题 -->
+  <text x="280" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">银行业金融资源</text>
+  
+  <!-- 章节摘要 -->
+  <text x="120" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#FFFFFF" fill-opacity="0.8">
+    <tspan x="120" dy="0">银行业总资产8.12万亿，不良贷款率1.14%</tspan>
+    <tspan x="120" dy="30">37家银行法人机构，5,438个营业网点覆盖全域</tspan>
+  </text>
+  
+  <!-- 关键指标预览 -->
+  <g>
+    <rect x="120" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="220" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">银行业总资产</text>
+    <text x="220" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">8.12万亿</text>
+  </g>
+  
+  <g>
+    <rect x="340" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="440" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">不良贷款率</text>
+    <text x="440" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#2ECC71" text-anchor="middle">1.14%</text>
+  </g>
+  
+  <g>
+    <rect x="560" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="660" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">存款余额</text>
+    <text x="660" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">5.63万亿</text>
+  </g>
+  
+  <g>
+    <rect x="780" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="880" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">贷款余额</text>
+    <text x="880" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">6.01万亿</text>
+  </g>
+  
+  <!-- 页码 -->
+  <text x="640" y="680" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">13</text>
+</svg>

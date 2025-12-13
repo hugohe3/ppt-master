@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="endGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A5F" />
+      <stop offset="100%" stop-color="#2E5A8B" />
+    </linearGradient>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="url(#endGradient)" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#4A90D9" />
+  
+  
+  <circle cx="640" cy="360" r="280" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08" />
+  <circle cx="640" cy="360" r="220" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.05" />
+  
+  
+  <image href="data:image/jpeg;base64,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" x="540" y="180" width="200" height="80" preserveAspectRatio="xMidYMid meet" />
+  
+  
+  <text x="640" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF" text-anchor="middle">感谢阅读</text>
+  
+  
+  <rect x="560" y="345" width="160" height="2" fill="#4A90D9" />
+  
+  
+  <text x="640" y="395" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">企业风险智能监控专家</text>
+  
+  
+  <text text-anchor="middle" font-size="14" fill-opacity="0.7" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="640" y="450">企业预警通深度融合金融、企业、舆情、信用、司法、区域经济等大数据资源</text><text text-anchor="middle" font-size="14" fill-opacity="0.7" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="640" y="474">为金融机构提供企业多维度风险信息查询、监测与分析服务</text><path fill="#FFFFFF" fill-opacity="0.1" d="M448,520 H832 A8,8 0 0 1 840,528 V572 A8,8 0 0 1 832,580 H448 A8,8 0 0 1 440,572 V528 A8,8 0 0 1 448,520 Z" />
+  <text x="640" y="555" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#4A90D9" text-anchor="middle">https://www.qyyjt.cn</text>
+  
+  
+  <path fill="#FFFFFF" fill-opacity="0.05" d="M146,610 H1134 A6,6 0 0 1 1140,616 V684 A6,6 0 0 1 1134,690 H146 A6,6 0 0 1 140,684 V616 A6,6 0 0 1 146,610 Z" />
+  <text text-anchor="middle" font-size="11" fill-opacity="0.5" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="640" y="640">【免责声明】本数据内容版权归企业预警通所有。任何人未获得书面授权，不得对本数据内容进行转载、发布；如需引用，应注明来源于"企业预警通"。</text><text text-anchor="middle" font-size="11" fill-opacity="0.5" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="640" y="658">企业预警通的数据内容均基于公开信息或已取得授权的信息经编辑整理而成，本公司力求数据准确与完整，但不对其准确性及完整性作任何保证，</text><text text-anchor="middle" font-size="11" fill-opacity="0.5" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="640" y="676">且不构成任何投资建议。市场有风险，投资需谨慎。</text><text x="640" y="710" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.4" text-anchor="middle">20 / 20</text>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#4A90D9" />
+</svg>

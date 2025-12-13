@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F"/>
+  
+  <!-- 页眉 -->
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF"/>
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0"/>
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#E63946">06 区域风险</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">16 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">六、区域风险</text>
+  <text x="240" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">近一年数据</text>
+  
+  <!-- 风险概览卡片 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="130" width="280" height="130" rx="8" fill="#FFFFFF"/>
+    <rect x="60" y="130" width="4" height="130" rx="2" fill="#F59E0B"/>
+    <text x="90" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">6.1 非标风险事件</text>
+    <text x="90" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#F59E0B">3</text>
+    <text x="145" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">次</text>
+    <text x="90" y="245" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">城投非标：0次 ✓</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="360" y="130" width="280" height="130" rx="8" fill="#FFFFFF"/>
+    <rect x="360" y="130" width="4" height="130" rx="2" fill="#2ECC71"/>
+    <text x="390" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">6.2 债券违约</text>
+    <text x="390" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#2ECC71">0</text>
+    <text x="435" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">次</text>
+    <text x="390" y="245" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">暂无债券违约记录 ✓</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="130" width="280" height="130" rx="8" fill="#FEF3C7"/>
+    <rect x="660" y="130" width="4" height="130" rx="2" fill="#E63946"/>
+    <text x="690" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">6.3 票据逾期</text>
+    <text x="690" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#E63946">96</text>
+    <text x="775" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">次</text>
+    <text x="690" y="245" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">逾期余额：41,559.68万元</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="960" y="130" width="260" height="130" rx="8" fill="#FFFFFF"/>
+    <rect x="960" y="130" width="4" height="130" rx="2" fill="#F59E0B"/>
+    <text x="990" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">城投票据逾期</text>
+    <text x="990" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#F59E0B">2</text>
+    <text x="1035" y="215" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">次</text>
+    <text x="990" y="245" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#F59E0B">逾期余额：110万元（可控）</text>
+  </g>
+  
+  <!-- 非标风险事件详情 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="280" width="580" height="250" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">非标风险事件明细</text>
+    <text x="90" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">近一年披露 | 仅展示最新5条</text>
+    
+    <!-- 表头 -->
+    <rect x="90" y="355" width="520" height="28" rx="4" fill="#1E3A5F"/>
+    <text x="135" y="374" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">披露日期</text>
+    <text x="280" y="374" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">融资方</text>
+    <text x="450" y="374" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">产品类型</text>
+    <text x="540" y="374" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">风险类型</text>
+    
+    <!-- 事件1 -->
+    <rect x="90" y="383" width="520" height="36" fill="#FEF3C7"/>
+    <text x="135" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">2025-07-16</text>
+    <text x="280" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">重庆沁旭熊猫雷笋股份</text>
+    <text x="450" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">私募基金</text>
+    <text x="540" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#F59E0B" text-anchor="middle">风险提示</text>
+    
+    <!-- 事件2 -->
+    <rect x="90" y="419" width="520" height="36" fill="#FFFFFF"/>
+    <text x="135" y="441" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">2025-07-01</text>
+    <text x="280" y="441" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">三五美国摩(重庆)发展</text>
+    <text x="450" y="441" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">信托计划</text>
+    <text x="540" y="441" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#E63946" text-anchor="middle">已违约</text>
+    
+    <!-- 事件3 -->
+    <rect x="90" y="455" width="520" height="36" fill="#FEF3C7"/>
+    <text x="135" y="477" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">2025-04-25</text>
+    <text x="280" y="477" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">重庆金兆禧实业发展</text>
+    <text x="450" y="477" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#334155" text-anchor="middle">信托计划</text>
+    <text x="540" y="477" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#E63946" text-anchor="middle">已违约</text>
+    
+    <!-- 总结 -->
+    <rect x="90" y="500" width="520" height="25" rx="4" fill="#EBF4FF"/>
+    <text x="350" y="517" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9" text-anchor="middle">💡 非标风险主要集中于房地产相关企业，城投非标零违约</text>
+  </g>
+  
+  <!-- 票据逾期行业分布 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="280" width="560" height="250" rx="8" fill="#FFFFFF"/>
+    <text x="690" y="315" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">票据逾期行业分布</text>
+    <text x="690" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">截至2025年11月</text>
+    
+    <!-- 横向条形图 -->
+    <text x="690" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">房地产业</text>
+    <rect x="800" y="365" width="350" height="22" rx="4" fill="#E2E8F0"/>
+    <rect x="800" y="365" width="290" height="22" rx="4" fill="#E63946"/>
+    <text x="1105" y="381" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#E63946" font-weight="600">34,418.99万 (82.8%)</text>
+    
+    <text x="690" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">批发零售</text>
+    <rect x="800" y="405" width="350" height="22" rx="4" fill="#E2E8F0"/>
+    <rect x="800" y="405" width="35" height="22" rx="4" fill="#F59E0B"/>
+    <text x="845" y="421" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">3,500万</text>
+    
+    <text x="690" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">制造业</text>
+    <rect x="800" y="445" width="350" height="22" rx="4" fill="#E2E8F0"/>
+    <rect x="800" y="445" width="25" height="22" rx="4" fill="#4A90D9"/>
+    <text x="835" y="461" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">2,200万</text>
+    
+    <text x="690" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155">其他行业</text>
+    <rect x="800" y="485" width="350" height="22" rx="4" fill="#E2E8F0"/>
+    <rect x="800" y="485" width="12" height="22" rx="4" fill="#64748B"/>
+    <text x="825" y="501" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155">1,440万</text>
+  </g>
+  
+  <!-- 风险评估总结 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="550" width="1160" height="110" rx="8" fill="#1E3A5F"/>
+    <text x="90" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">区域风险评估</text>
+    
+    <!-- 风险等级指示 -->
+    <rect x="260" y="565" width="120" height="35" rx="6" fill="#2ECC71"/>
+    <text x="320" y="588" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">低风险</text>
+    
+    <text x="90" y="625" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">✓ 债券零违约，城投非标零风险事件</tspan>
+      <tspan x="400" dy="0">✓ 城投利差处于历史2.95%分位，市场信心充足</tspan>
+    </text>
+    <text x="90" y="648" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">⚠️ 票据逾期集中于房地产业（82.8%），需关注行业传导风险</tspan>
+      <tspan x="600" dy="0">⚠️ 宽口径债务率较高，长期偿债压力需持续监控</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F"/>
+</svg>

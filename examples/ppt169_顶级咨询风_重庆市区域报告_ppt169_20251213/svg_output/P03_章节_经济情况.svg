@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="sectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#2E5A8B"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#sectionGradient)"/>
+  
+  <!-- 装饰元素 - 右侧大数字 -->
+  <text x="1100" y="500" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="400" font-weight="700" fill="#FFFFFF" fill-opacity="0.05" text-anchor="middle">01</text>
+  
+  <!-- 左侧装饰线 -->
+  <rect x="80" y="300" width="6" height="120" fill="#4A90D9"/>
+  
+  <!-- 章节编号 -->
+  <text x="120" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="72" font-weight="700" fill="#FFFFFF">01</text>
+  
+  <!-- 章节标题 -->
+  <text x="280" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">经济情况</text>
+  
+  <!-- 章节摘要 -->
+  <text x="120" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#FFFFFF" fill-opacity="0.8">
+    <tspan x="120" dy="0">2024年GDP 32,193.15亿元，排全国第17位，增速5.70%</tspan>
+    <tspan x="120" dy="30">城镇居民人均可支配收入49,778元，产业以第三产业为主导</tspan>
+  </text>
+  
+  <!-- 关键指标预览 -->
+  <g>
+    <rect x="120" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="220" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">GDP规模</text>
+    <text x="220" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">32,193亿</text>
+  </g>
+  
+  <g>
+    <rect x="340" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="440" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">全国排名</text>
+    <text x="440" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">第17位</text>
+  </g>
+  
+  <g>
+    <rect x="560" y="500" width="200" height="80" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+    <text x="660" y="535" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">GDP增速</text>
+    <text x="660" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#2ECC71" text-anchor="middle">5.70%</text>
+  </g>
+  
+  <!-- 底部页码 -->
+  <text x="640" y="680" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">3</text>
+</svg>

@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0" />
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">01 经济情况</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">5 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">1.2 辖区经济</text>
+  <text x="280" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">下属辖区38个 | 2024年数据</text>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,125 H272 A8,8 0 0 1 280,133 V187 A8,8 0 0 1 272,195 H68 A8,8 0 0 1 60,187 V133 A8,8 0 0 1 68,125 Z" />
+    <path fill="#2ECC71" d="M62,125 H62 A2,2 0 0 1 64,127 V193 A2,2 0 0 1 62,195 H62 A2,2 0 0 1 60,193 V127 A2,2 0 0 1 62,125 Z" />
+    <text x="85" y="152" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">GDP总量第1</text>
+    <text x="85" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F">渝北区 2,769亿</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M308,125 H512 A8,8 0 0 1 520,133 V187 A8,8 0 0 1 512,195 H308 A8,8 0 0 1 300,187 V133 A8,8 0 0 1 308,125 Z" />
+    <path fill="#4A90D9" d="M302,125 H302 A2,2 0 0 1 304,127 V193 A2,2 0 0 1 302,195 H302 A2,2 0 0 1 300,193 V127 A2,2 0 0 1 302,125 Z" />
+    <text x="325" y="152" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">GDP增速第1</text>
+    <text x="325" y="178" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F">江北区 7.70%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,210 H1212 A8,8 0 0 1 1220,218 V662 A8,8 0 0 1 1212,670 H68 A8,8 0 0 1 60,662 V218 A8,8 0 0 1 68,210 Z" />
+    
+    
+    <path fill="#1E3A5F" d="M84,230 H1196 A4,4 0 0 1 1200,234 V264 A4,4 0 0 1 1196,268 H84 A4,4 0 0 1 80,264 V234 A4,4 0 0 1 84,230 Z" />
+    <text x="110" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">排名</text>
+    <text x="170" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">地区</text>
+    <text x="320" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">GDP(亿元)</text>
+    <text x="450" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">GDP增速(%)</text>
+    <text x="580" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">常住人口(万)</text>
+    <text x="720" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">一般预算收入(亿)</text>
+    <text x="870" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">财政自给率(%)</text>
+    <text x="1010" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">政府债务(亿)</text>
+    <text x="1140" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">宽口径债务率(%)</text>
+    
+    
+    <rect x="80" y="268" width="1120" height="36" fill="#EBF4FF" />
+    <text x="110" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A90D9" font-weight="600">1</text>
+    <text x="170" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600">渝北区</text>
+    <text x="320" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">2,769.13</text>
+    <text x="450" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">6.60</text>
+    <text x="580" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">228.92</text>
+    <text x="720" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">63.03</text>
+    <text x="870" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">52.21</text>
+    <text x="1010" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">257.62</text>
+    <text x="1140" y="292" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#F59E0B" text-anchor="middle">574.70</text>
+    
+    
+    <rect x="80" y="304" width="1120" height="36" fill="#FFFFFF" />
+    <text x="110" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A90D9" font-weight="600">2</text>
+    <text x="170" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600">九龙坡区</text>
+    <text x="320" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" text-anchor="middle">2,060.35</text>
+    <text x="450" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">6.00</text>
+    <text x="580" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">154.83</text>
+    <text x="720" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">69.18</text>
+    <text x="870" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">68.78</text>
+    <text x="1010" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">430.63</text>
+    <text x="1140" y="328" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">783.73</text>
+    
+    
+    <rect x="80" y="340" width="1120" height="36" fill="#EBF4FF" />
+    <text x="110" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#4A90D9" font-weight="600">3</text>
+    <text x="170" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600">江北区</text>
+    <text x="320" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" text-anchor="middle">1,924.26</text>
+    <text x="450" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" font-weight="600" text-anchor="middle">7.70</text>
+    <text x="580" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">95.66</text>
+    <text x="720" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">73.33</text>
+    <text x="870" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">62.62</text>
+    <text x="1010" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">264.88</text>
+    <text x="1140" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">214.83</text>
+    
+    
+    <rect x="80" y="376" width="1120" height="36" fill="#FFFFFF" />
+    <text x="110" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">4</text>
+    <text x="170" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">涪陵区</text>
+    <text x="320" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,710.71</text>
+    <text x="450" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">5.30</text>
+    <text x="580" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">110.01</text>
+    <text x="720" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">108.89</text>
+    <text x="870" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">61.32</text>
+    <text x="1010" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">400.16</text>
+    <text x="1140" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">396.12</text>
+    
+    
+    <rect x="80" y="412" width="1120" height="36" fill="#EBF4FF" />
+    <text x="110" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">5</text>
+    <text x="170" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">渝中区</text>
+    <text x="320" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,691.53</text>
+    <text x="450" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">5.50</text>
+    <text x="580" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">57.35</text>
+    <text x="720" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">52.28</text>
+    <text x="870" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">56.08</text>
+    <text x="1010" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">209.04</text>
+    <text x="1140" y="436" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">252.85</text>
+    
+    
+    <rect x="80" y="448" width="1120" height="36" fill="#FFFFFF" />
+    <text x="110" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">6</text>
+    <text x="170" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">江津区</text>
+    <text x="320" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,490.78</text>
+    <text x="450" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">4.10</text>
+    <text x="580" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">133.60</text>
+    <text x="720" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">68.29</text>
+    <text x="870" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">55.98</text>
+    <text x="1010" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">381.74</text>
+    <text x="1140" y="472" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#F59E0B" text-anchor="middle">585.97</text>
+    
+    <rect x="80" y="484" width="1120" height="36" fill="#EBF4FF" />
+    <text x="110" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">7</text>
+    <text x="170" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">万州区</text>
+    <text x="320" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,222.36</text>
+    <text x="450" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">6.80</text>
+    <text x="580" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">153.88</text>
+    <text x="720" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">82.89</text>
+    <text x="870" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">49.68</text>
+    <text x="1010" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">410.02</text>
+    <text x="1140" y="508" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">814.93</text>
+    
+    <rect x="80" y="520" width="1120" height="36" fill="#FFFFFF" />
+    <text x="110" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">8</text>
+    <text x="170" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">沙坪坝区</text>
+    <text x="320" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,220.89</text>
+    <text x="450" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" text-anchor="middle">6.50</text>
+    <text x="580" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">149.43</text>
+    <text x="720" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">36.82</text>
+    <text x="870" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">35.39</text>
+    <text x="1010" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">344.98</text>
+    <text x="1140" y="544" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">886.04</text>
+    
+    <rect x="80" y="556" width="1120" height="36" fill="#EBF4FF" />
+    <text x="110" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">9</text>
+    <text x="170" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">永川区</text>
+    <text x="320" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,196.23</text>
+    <text x="450" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">2.70</text>
+    <text x="580" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">114.58</text>
+    <text x="720" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">53.24</text>
+    <text x="870" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">46.95</text>
+    <text x="1010" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">278.39</text>
+    <text x="1140" y="580" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">471.72</text>
+    
+    <rect x="80" y="592" width="1120" height="36" fill="#FFFFFF" />
+    <text x="110" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">10</text>
+    <text x="170" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">巴南区</text>
+    <text x="320" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">1,188.75</text>
+    <text x="450" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">4.90</text>
+    <text x="580" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">121.52</text>
+    <text x="720" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">39.05</text>
+    <text x="870" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">43.74</text>
+    <text x="1010" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">333.85</text>
+    <text x="1140" y="616" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" text-anchor="middle">757.39</text>
+    
+    
+    <text x="80" y="655" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">
+      <tspan fill="#2ECC71">■</tspan> 表现优异  
+      <tspan fill="#E63946">■</tspan> 需关注  
+      <tspan fill="#F59E0B">■</tspan> 中等风险  |  宽口径债务率 = (地方政府债务+城投有息债务)/综合财力
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

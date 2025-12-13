@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">19 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="640" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F" text-anchor="middle">指标说明</text>
+  <rect x="590" y="118" width="100" height="3" fill="#4A90D9" />
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,140 H1212 A8,8 0 0 1 1220,148 V212 A8,8 0 0 1 1212,220 H68 A8,8 0 0 1 60,212 V148 A8,8 0 0 1 68,140 Z" />
+    <text x="90" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">数据来源</text>
+    <text x="90" y="202" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">
+      <tspan x="90" dy="0">地区经济主要指标来源于政府官网、统计公报、统计年鉴、政府经济运行报告和财政预决算等，</tspan>
+      <tspan x="90" dy="0" dx="755">覆盖全国所有省级、地级和县级行政区域的主要经济、财政及债务数据。</tspan>
+    </text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,240 H632 A8,8 0 0 1 640,248 V652 A8,8 0 0 1 632,660 H68 A8,8 0 0 1 60,652 V248 A8,8 0 0 1 68,240 Z" />
+    <text x="90" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">主要指标口径</text>
+    
+    <text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="90" y="310">1. 财政数据口径</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="332">一般公共预算收入、税收收入、政府性基金收入、土地出让收入、</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="352">地方政府债务余额等均采用全省、全市、全区县口径。</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="90" y="380">2. 计算指标公式</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="402">• 常住人口增长率 = (本年常住人口-去年同期) / 去年同期 × 100%</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="422">• 财政自给率 = 一般公共预算收入 / 一般公共预算支出 × 100%</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="442">• 负债率 = 地方政府债务余额 / 地区生产总值 × 100%</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="462">• 债务率(宽口径) = (政府债务+城投有息债务) / 综合财力 × 100%</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="90" y="505">3. 城投有息债务</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="527">= 各家融资平台(短期债务 + 长期债务)</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="547">其中：短期债务 = 短期借款 + 一年内到期非流动负债 + 应付短期</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="567">债券 + 拆入资金 + 交易性金融负债等</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="587">长期债务 = 长期借款 + 应付长期债券 + 长期应付款 + 租赁负债</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="90" y="620">4. 地方政府综合财力</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="642">= 一般公共预算收入 + 转移性收入 + 政府性基金收入 + 国有资本</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="662">经营预算收入（部分指标未披露时以0代替，可能低估）</text></g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M668,240 H1212 A8,8 0 0 1 1220,248 V652 A8,8 0 0 1 1212,660 H668 A8,8 0 0 1 660,652 V248 A8,8 0 0 1 668,240 Z" />
+    <text x="690" y="275" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">其他说明</text>
+    
+    <text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="690" y="310">5. 债券融资统计</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="332">• 债券偿还统计不考虑行权，根据公告确定偿还信息</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="352">• 非金融企业净融资：城投债+产业债+ABS+可转债+可交债</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="372">• 金融企业净融资：商业银行债+同业存单+非银金融债+ABS等</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="690" y="405">6. 城投平台统计</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="427">• 区域城投平台分布仅统计披露主体评级或业务类型的平台</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="447">• 城投利差基于全部存量债券按估值计算</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="690" y="475">7. 银行业数据</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="497">• 存贷款均为金融机构存贷款口径</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="517">• 总资产、总负债、不良贷款率均为银行业口径</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="690" y="545">8. 地方债统计</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="567">• 计划单列市和省、自治区、直辖市分别按地区统计</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="587">• 省级融资数据不包含计划单列市</text><text font-size="12" fill="#4A90D9" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-weight="600" x="690" y="615">9. 符号说明</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="637">• "-" 表示数据未披露</text><text font-size="12" fill="#334155" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="690" y="657">• "*" 表示采用过往数据或同级别均值替代</text></g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

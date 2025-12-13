@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F"/>
+  
+  <!-- 页眉 -->
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF"/>
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0"/>
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">02 财政及债务</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">8 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">2.1 财政实力</text>
+  
+  <!-- 左侧核心指标卡片 -->
+  <!-- 一般公共预算收入 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="135" width="280" height="140" rx="8" fill="#FFFFFF"/>
+    <rect x="60" y="135" width="4" height="140" rx="2" fill="#4A90D9"/>
+    <text x="85" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">一般公共预算收入</text>
+    <text x="85" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">2,595.55</text>
+    <text x="280" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <rect x="85" y="240" width="80" height="22" rx="4" fill="#EBF4FF"/>
+    <text x="125" y="256" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9" text-anchor="middle">全国第19位</text>
+    <text x="180" y="256" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▲ 6.30%</text>
+  </g>
+  
+  <!-- 政府性基金收入 -->
+  <g filter="url(#cardShadow)">
+    <rect x="360" y="135" width="280" height="140" rx="8" fill="#FFFFFF"/>
+    <rect x="360" y="135" width="4" height="140" rx="2" fill="#4A90D9"/>
+    <text x="385" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">政府性基金收入</text>
+    <text x="385" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">1,722.60</text>
+    <text x="580" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <rect x="385" y="240" width="80" height="22" rx="4" fill="#EBF4FF"/>
+    <text x="425" y="256" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9" text-anchor="middle">全国第16位</text>
+    <text x="480" y="256" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">▼ -8.30%</text>
+  </g>
+  
+  <!-- 财政自给率 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="295" width="280" height="140" rx="8" fill="#FFFFFF"/>
+    <rect x="60" y="295" width="4" height="140" rx="2" fill="#2ECC71"/>
+    <text x="85" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">财政自给率</text>
+    <text x="85" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#2ECC71">46.17</text>
+    <text x="195" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">%</text>
+    <rect x="85" y="400" width="80" height="22" rx="4" fill="#EBF4FF"/>
+    <text x="125" y="416" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9" text-anchor="middle">全国第11位</text>
+    <text x="180" y="416" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▲ +0.16pp</text>
+  </g>
+  
+  <!-- 一般公共预算支出 -->
+  <g filter="url(#cardShadow)">
+    <rect x="360" y="295" width="280" height="140" rx="8" fill="#FFFFFF"/>
+    <rect x="360" y="295" width="4" height="140" rx="2" fill="#4A90D9"/>
+    <text x="385" y="330" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">一般公共预算支出</text>
+    <text x="385" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">5,621.21</text>
+    <text x="590" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="385" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▲ 同比增长5.97%</text>
+  </g>
+  
+  <!-- 右侧趋势表格 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="135" width="560" height="300" rx="8" fill="#FFFFFF"/>
+    <text x="690" y="170" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">近10年财政收入趋势</text>
+    
+    <!-- 表头 -->
+    <rect x="690" y="190" width="500" height="32" rx="4" fill="#1E3A5F"/>
+    <text x="750" y="212" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">年份</text>
+    <text x="880" y="212" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">一般预算收入(亿)</text>
+    <text x="1040" y="212" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">政府性基金收入(亿)</text>
+    
+    <!-- 数据行 -->
+    <rect x="690" y="222" width="500" height="28" fill="#EBF4FF"/>
+    <text x="750" y="242" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">2024</text>
+    <text x="880" y="242" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">2,595.55</text>
+    <text x="1040" y="242" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">1,722.60</text>
+    
+    <rect x="690" y="250" width="500" height="28" fill="#FFFFFF"/>
+    <text x="750" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2023</text>
+    <text x="880" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,440.77</text>
+    <text x="1040" y="270" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">1,878.62</text>
+    
+    <rect x="690" y="278" width="500" height="28" fill="#EBF4FF"/>
+    <text x="750" y="298" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2022</text>
+    <text x="880" y="298" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,103.42</text>
+    <text x="1040" y="298" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">1,753.95</text>
+    
+    <rect x="690" y="306" width="500" height="28" fill="#FFFFFF"/>
+    <text x="750" y="326" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2021</text>
+    <text x="880" y="326" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,285.45</text>
+    <text x="1040" y="326" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,357.94</text>
+    
+    <rect x="690" y="334" width="500" height="28" fill="#EBF4FF"/>
+    <text x="750" y="354" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2020</text>
+    <text x="880" y="354" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,094.85</text>
+    <text x="1040" y="354" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,457.86</text>
+    
+    <rect x="690" y="362" width="500" height="28" fill="#FFFFFF"/>
+    <text x="750" y="382" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2019</text>
+    <text x="880" y="382" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,134.93</text>
+    <text x="1040" y="382" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,247.93</text>
+    
+    <rect x="690" y="390" width="500" height="28" fill="#EBF4FF"/>
+    <text x="750" y="410" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2015</text>
+    <text x="880" y="410" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2,080.62</text>
+    <text x="1040" y="410" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">1,664.20</text>
+  </g>
+  
+  <!-- 底部税收与土地财政 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="455" width="1160" height="205" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="490" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">2.2 税收情况 &amp; 2.3 土地财政依赖度</text>
+    
+    <!-- 税收收入 -->
+    <rect x="90" y="510" width="260" height="130" rx="6" fill="#F8FAFC"/>
+    <text x="110" y="540" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">税收收入</text>
+    <text x="110" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F">1,521.52</text>
+    <text x="260" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">亿元</text>
+    <text x="110" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▲ 同比+3.08%</text>
+    
+    <!-- 税收占比 -->
+    <rect x="370" y="510" width="260" height="130" rx="6" fill="#F8FAFC"/>
+    <text x="390" y="540" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">税收占比</text>
+    <text x="390" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#F59E0B">58.62</text>
+    <text x="490" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">%</text>
+    <text x="390" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">全国第28位（偏低）</text>
+    
+    <!-- 土地出让收入 -->
+    <rect x="650" y="510" width="260" height="130" rx="6" fill="#F8FAFC"/>
+    <text x="670" y="540" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">土地出让收入</text>
+    <text x="670" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F">1,527.75</text>
+    <text x="830" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">亿元</text>
+    <text x="670" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">▼ -9.86% | 全国13位</text>
+    
+    <!-- 土地依赖度 -->
+    <rect x="930" y="510" width="260" height="130" rx="6" fill="#FEF3C7"/>
+    <text x="950" y="540" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">土地出让/一般预算</text>
+    <text x="950" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#E63946">58.86</text>
+    <text x="1055" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">%</text>
+    <text x="950" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">⚠️ 全国第4位（高依赖）</text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F"/>
+</svg>

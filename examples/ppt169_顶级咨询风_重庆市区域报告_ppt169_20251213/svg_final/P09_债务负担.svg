@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0" />
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">02 财政及债务</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">9 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">2.4 债务负担</text>
+  
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,130 H332 A8,8 0 0 1 340,138 V272 A8,8 0 0 1 332,280 H68 A8,8 0 0 1 60,272 V138 A8,8 0 0 1 68,130 Z" />
+    <path fill="#E63946" d="M62,130 H62 A2,2 0 0 1 64,132 V278 A2,2 0 0 1 62,280 H62 A2,2 0 0 1 60,278 V132 A2,2 0 0 1 62,130 Z" />
+    <text x="85" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">地方政府债务余额</text>
+    <text x="85" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">14,425.36</text>
+    <text x="295" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">亿元</text>
+    <path fill="#EBF4FF" d="M89,245 H161 A4,4 0 0 1 165,249 V263 A4,4 0 0 1 161,267 H89 A4,4 0 0 1 85,263 V249 A4,4 0 0 1 89,245 Z" />
+    <text x="125" y="261" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9" text-anchor="middle">全国第15位</text>
+    <text x="180" y="261" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">▲ +17.69%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M368,130 H632 A8,8 0 0 1 640,138 V272 A8,8 0 0 1 632,280 H368 A8,8 0 0 1 360,272 V138 A8,8 0 0 1 368,130 Z" />
+    <path fill="#F59E0B" d="M362,130 H362 A2,2 0 0 1 364,132 V278 A2,2 0 0 1 362,280 H362 A2,2 0 0 1 360,278 V132 A2,2 0 0 1 362,130 Z" />
+    <text x="385" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">城投平台有息债务</text>
+    <text x="385" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">18,520.18</text>
+    <text x="595" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">亿元</text>
+    <text x="385" y="261" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▽ -0.21% | 小幅压降</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M668,130 H932 A8,8 0 0 1 940,138 V272 A8,8 0 0 1 932,280 H668 A8,8 0 0 1 660,272 V138 A8,8 0 0 1 668,130 Z" />
+    <path fill="#4A90D9" d="M662,130 H662 A2,2 0 0 1 664,132 V278 A2,2 0 0 1 662,280 H662 A2,2 0 0 1 660,278 V132 A2,2 0 0 1 662,130 Z" />
+    <text x="685" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">负债率（债务/GDP）</text>
+    <text x="685" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#F59E0B">44.81</text>
+    <text x="790" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">%</text>
+    <text x="685" y="261" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">低于60%警戒线</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FEF3C7" d="M968,130 H1212 A8,8 0 0 1 1220,138 V272 A8,8 0 0 1 1212,280 H968 A8,8 0 0 1 960,272 V138 A8,8 0 0 1 968,130 Z" />
+    <path fill="#E63946" d="M962,130 H962 A2,2 0 0 1 964,132 V278 A2,2 0 0 1 962,280 H962 A2,2 0 0 1 960,278 V132 A2,2 0 0 1 962,130 Z" />
+    <text x="985" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">债务率（宽口径）</text>
+    <text x="985" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#E63946">363.32</text>
+    <text x="1120" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">%</text>
+    <text x="985" y="261" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">⚠️ 需持续关注</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,300 H752 A8,8 0 0 1 760,308 V652 A8,8 0 0 1 752,660 H68 A8,8 0 0 1 60,652 V308 A8,8 0 0 1 68,300 Z" />
+    <text x="90" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">债务规模趋势（2015-2024年）</text>
+    
+    
+    <path fill="#1E3A5F" d="M94,355 H726 A4,4 0 0 1 730,359 V383 A4,4 0 0 1 726,387 H94 A4,4 0 0 1 90,383 V359 A4,4 0 0 1 94,355 Z" />
+    <text x="140" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">年份</text>
+    <text x="280" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">政府债务(亿)</text>
+    <text x="440" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">城投有息债务(亿)</text>
+    <text x="600" y="377" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">宽口径债务率(%)</text>
+    
+    
+    <rect x="90" y="387" width="640" height="28" fill="#EBF4FF" />
+    <text x="140" y="407" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">2024</text>
+    <text x="280" y="407" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">14,425.36</text>
+    <text x="440" y="407" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#1E3A5F" font-weight="600" text-anchor="middle">18,520.18</text>
+    <text x="600" y="407" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946" font-weight="600" text-anchor="middle">363.32</text>
+    
+    <rect x="90" y="415" width="640" height="28" fill="#FFFFFF" />
+    <text x="140" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2023</text>
+    <text x="280" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">12,258.00</text>
+    <text x="440" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">18,558.60</text>
+    <text x="600" y="435" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">329.90</text>
+    
+    <rect x="90" y="443" width="640" height="28" fill="#EBF4FF" />
+    <text x="140" y="463" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2022</text>
+    <text x="280" y="463" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">10,071.00</text>
+    <text x="440" y="463" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">16,254.80</text>
+    <text x="600" y="463" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">326.82</text>
+    
+    <rect x="90" y="471" width="640" height="28" fill="#FFFFFF" />
+    <text x="140" y="491" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2021</text>
+    <text x="280" y="491" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">8,610.00</text>
+    <text x="440" y="491" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">14,840.69</text>
+    <text x="600" y="491" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946" text-anchor="middle">493.97</text>
+    
+    <rect x="90" y="499" width="640" height="28" fill="#EBF4FF" />
+    <text x="140" y="519" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2020</text>
+    <text x="280" y="519" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">6,799.20</text>
+    <text x="440" y="519" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">13,339.05</text>
+    <text x="600" y="519" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">238.27</text>
+    
+    <rect x="90" y="527" width="640" height="28" fill="#FFFFFF" />
+    <text x="140" y="547" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2019</text>
+    <text x="280" y="547" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">5,603.70</text>
+    <text x="440" y="547" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">12,237.62</text>
+    <text x="600" y="547" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">227.09</text>
+    
+    <rect x="90" y="555" width="640" height="28" fill="#EBF4FF" />
+    <text x="140" y="575" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">2015</text>
+    <text x="280" y="575" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">3,379.20</text>
+    <text x="440" y="575" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#334155" text-anchor="middle">6,610.22</text>
+    <text x="600" y="575" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71" text-anchor="middle">155.62</text>
+    
+    
+    <text x="90" y="630" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">注：宽口径债务率 = (地方政府债务+城投有息债务) / 地方政府综合财力</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M788,300 H1212 A8,8 0 0 1 1220,308 V467 A8,8 0 0 1 1212,475 H788 A8,8 0 0 1 780,467 V308 A8,8 0 0 1 788,300 Z" />
+    <text x="810" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">债务分析洞见</text>
+    <text font-size="13" fill-opacity="0.9" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="810" y="370">📊 政府债务快速增长，10年增长3.3倍</text><text font-size="13" fill-opacity="0.9" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="810" y="398">📉 城投债务规模已现拐点，2024年小幅下降</text><text font-size="13" fill-opacity="0.9" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="810" y="426">⚠️ 宽口径债务率较高，但较2021年峰值回落</text><text font-size="13" fill-opacity="0.9" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="810" y="454">✅ 负债率44.81%，仍在安全区间内</text></g>
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M788,490 H1212 A8,8 0 0 1 1220,498 V652 A8,8 0 0 1 1212,660 H788 A8,8 0 0 1 780,652 V498 A8,8 0 0 1 788,490 Z" />
+    <text x="810" y="525" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">债务结构</text>
+    
+    
+    <path fill="#EBF4FF" d="M814,545 H986 A4,4 0 0 1 990,549 V591 A4,4 0 0 1 986,595 H814 A4,4 0 0 1 810,591 V549 A4,4 0 0 1 814,545 Z" />
+    <text x="900" y="568" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">一般债余额</text>
+    <text x="900" y="588" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F" text-anchor="middle">3,856.26亿</text>
+    
+    <path fill="#EBF4FF" d="M1014,545 H1186 A4,4 0 0 1 1190,549 V591 A4,4 0 0 1 1186,595 H1014 A4,4 0 0 1 1010,591 V549 A4,4 0 0 1 1014,545 Z" />
+    <text x="1100" y="568" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">专项债余额</text>
+    <text x="1100" y="588" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F" text-anchor="middle">10,569.10亿</text>
+    
+    
+    <path fill="#E2E8F0" d="M814,610 H1186 A4,4 0 0 1 1190,614 V626 A4,4 0 0 1 1186,630 H814 A4,4 0 0 1 810,626 V614 A4,4 0 0 1 814,610 Z" />
+    <path fill="#4A90D9" d="M814,610 H908 A4,4 0 0 1 912,614 V626 A4,4 0 0 1 908,630 H814 A4,4 0 0 1 810,626 V614 A4,4 0 0 1 814,610 Z" />
+    <path fill="#1E3A5F" d="M916,610 H1186 A4,4 0 0 1 1190,614 V626 A4,4 0 0 1 1186,630 H916 A4,4 0 0 1 912,626 V614 A4,4 0 0 1 916,610 Z" />
+    <text x="860" y="625" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">26.7%</text>
+    <text x="1050" y="625" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#FFFFFF" text-anchor="middle">73.3%</text>
+    
+    <text x="810" y="650" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">专项债占比较高，与基础设施投资需求相关</text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

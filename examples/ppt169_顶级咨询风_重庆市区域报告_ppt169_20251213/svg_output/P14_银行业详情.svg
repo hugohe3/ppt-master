@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F"/>
+  
+  <!-- 页眉 -->
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF"/>
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0"/>
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">04 银行业金融资源</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">14 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">4.1 存贷款规模 &amp; 4.2 银行分布</text>
+  
+  <!-- 核心指标卡片 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="130" width="190" height="110" rx="8" fill="#1E3A5F"/>
+    <text x="155" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">银行业总资产</text>
+    <text x="155" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#FFFFFF" text-anchor="middle">81,178</text>
+    <text x="155" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">亿元</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="270" y="130" width="190" height="110" rx="8" fill="#FFFFFF"/>
+    <text x="365" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">本外币存款余额</text>
+    <text x="365" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F" text-anchor="middle">56,328</text>
+    <text x="365" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">亿元</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="480" y="130" width="190" height="110" rx="8" fill="#FFFFFF"/>
+    <text x="575" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">本外币贷款余额</text>
+    <text x="575" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F" text-anchor="middle">60,119</text>
+    <text x="575" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">亿元</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="690" y="130" width="190" height="110" rx="8" fill="#FFFFFF"/>
+    <text x="785" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">不良贷款率</text>
+    <text x="785" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#2ECC71" text-anchor="middle">1.14%</text>
+    <text x="785" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71" text-anchor="middle">▼ 较上年降低</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <rect x="900" y="130" width="320" height="110" rx="8" fill="#EBF4FF"/>
+    <text x="1060" y="160" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">存贷比</text>
+    <text x="1060" y="200" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#4A90D9" text-anchor="middle">106.73%</text>
+    <text x="1060" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">贷款规模超存款，金融支持实体经济有力</text>
+  </g>
+  
+  <!-- 左侧：银行分布 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="260" width="580" height="290" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="295" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">银行机构分布</text>
+    
+    <!-- 表格 -->
+    <rect x="90" y="315" width="520" height="30" rx="4" fill="#1E3A5F"/>
+    <text x="180" y="336" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">银行类型</text>
+    <text x="320" y="336" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">法人机构</text>
+    <text x="410" y="336" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">一级分行</text>
+    <text x="500" y="336" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">营业网点</text>
+    
+    <rect x="90" y="345" width="520" height="28" fill="#EBF4FF"/>
+    <text x="180" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">大型商业银行</text>
+    <text x="320" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">-</text>
+    <text x="410" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">6</text>
+    <text x="500" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600" text-anchor="middle">2,869</text>
+    
+    <rect x="90" y="373" width="520" height="28" fill="#FFFFFF"/>
+    <text x="180" y="392" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">股份制商业银行</text>
+    <text x="320" y="392" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">-</text>
+    <text x="410" y="392" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">12</text>
+    <text x="500" y="392" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">388</text>
+    
+    <rect x="90" y="401" width="520" height="28" fill="#EBF4FF"/>
+    <text x="180" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">城市商业银行</text>
+    <text x="320" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9" font-weight="600" text-anchor="middle">2</text>
+    <text x="410" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">10</text>
+    <text x="500" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">338</text>
+    
+    <rect x="90" y="429" width="520" height="28" fill="#FFFFFF"/>
+    <text x="180" y="448" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">农村商业银行</text>
+    <text x="320" y="448" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9" font-weight="600" text-anchor="middle">1</text>
+    <text x="410" y="448" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">2</text>
+    <text x="500" y="448" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600" text-anchor="middle">1,720</text>
+    
+    <rect x="90" y="457" width="520" height="28" fill="#EBF4FF"/>
+    <text x="180" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">村镇银行</text>
+    <text x="320" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9" font-weight="600" text-anchor="middle">33</text>
+    <text x="410" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">-</text>
+    <text x="500" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">86</text>
+    
+    <rect x="90" y="485" width="520" height="28" fill="#FFFFFF"/>
+    <text x="180" y="504" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">外资/民营银行</text>
+    <text x="320" y="504" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">1</text>
+    <text x="410" y="504" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">15</text>
+    <text x="500" y="504" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">4</text>
+    
+    <rect x="90" y="513" width="520" height="28" rx="4" fill="#1E3A5F"/>
+    <text x="180" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">合计</text>
+    <text x="320" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">37</text>
+    <text x="410" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">48</text>
+    <text x="500" y="532" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">5,438</text>
+  </g>
+  
+  <!-- 右侧：属地银行主要财务指标 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="260" width="560" height="290" rx="8" fill="#FFFFFF"/>
+    <text x="690" y="295" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">属地主要银行财务指标（2024年）</text>
+    
+    <!-- 表格 -->
+    <rect x="690" y="315" width="500" height="28" rx="4" fill="#1E3A5F"/>
+    <text x="790" y="334" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">银行名称</text>
+    <text x="920" y="334" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">总资产(亿)</text>
+    <text x="1010" y="334" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">净利润(亿)</text>
+    <text x="1100" y="334" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="middle">不良率(%)</text>
+    
+    <!-- 重庆农商行 -->
+    <rect x="690" y="343" width="500" height="32" fill="#EBF4FF"/>
+    <text x="790" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600" text-anchor="middle">重庆农商行</text>
+    <text x="920" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#1E3A5F" font-weight="600" text-anchor="middle">15,149.42</text>
+    <text x="1010" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#2ECC71" font-weight="600" text-anchor="middle">115.13</text>
+    <text x="1100" y="364" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#2ECC71" text-anchor="middle">1.18</text>
+    
+    <!-- 重庆银行 -->
+    <rect x="690" y="375" width="500" height="32" fill="#FFFFFF"/>
+    <text x="790" y="396" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">重庆银行</text>
+    <text x="920" y="396" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">8,566.42</text>
+    <text x="1010" y="396" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">51.17</text>
+    <text x="1100" y="396" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">1.25</text>
+    
+    <!-- 重庆三峡银行 -->
+    <rect x="690" y="407" width="500" height="32" fill="#EBF4FF"/>
+    <text x="790" y="428" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">重庆三峡银行</text>
+    <text x="920" y="428" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">3,360.55</text>
+    <text x="1010" y="428" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">13.23</text>
+    <text x="1100" y="428" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#F59E0B" text-anchor="middle">1.66</text>
+    
+    <!-- 重庆富民银行 -->
+    <rect x="690" y="439" width="500" height="32" fill="#FFFFFF"/>
+    <text x="790" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">重庆富民银行（民营）</text>
+    <text x="920" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">622.94</text>
+    <text x="1010" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">4.16</text>
+    <text x="1100" y="460" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#334155" text-anchor="middle">1.44</text>
+    
+    <!-- 洞见 -->
+    <rect x="690" y="485" width="500" height="50" rx="4" fill="#EBF4FF"/>
+    <text x="710" y="510" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9">💡 重庆农商行为全国规模最大农商行之一，2家城商行经营稳健</text>
+    <text x="710" y="528" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">整体不良率可控，本地银行资源支撑区域经济发展</text>
+  </g>
+  
+  <!-- 底部总结 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="570" width="1160" height="90" rx="8" fill="#1E3A5F"/>
+    <text x="90" y="605" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">金融资源评价</text>
+    <text x="90" y="635" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 银行机构齐全：国有大行+股份行+城商行+农商行+村镇银行形成多层次体系</tspan>
+      <tspan x="650" dy="0">• 网点覆盖广泛：5,438个网点服务3,190万人口</tspan>
+    </text>
+    <text x="90" y="655" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 资产质量优良：不良率1.14%，低于全国平均水平</tspan>
+      <tspan x="650" dy="0">• 信贷投放积极：存贷比106.73%，金融支持实体有力</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F"/>
+</svg>

@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0" />
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">01 经济情况</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">4 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">1.1 区域经济发展</text>
+  
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,140 H332 A8,8 0 0 1 340,148 V262 A8,8 0 0 1 332,270 H68 A8,8 0 0 1 60,262 V148 A8,8 0 0 1 68,140 Z" />
+    <path fill="#4A90D9" d="M62,140 H62 A2,2 0 0 1 64,142 V268 A2,2 0 0 1 62,270 H62 A2,2 0 0 1 60,268 V142 A2,2 0 0 1 62,140 Z" />
+    <text x="85" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">2024年GDP</text>
+    <text x="85" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">32,193.15</text>
+    <text x="290" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <path fill="#EBF4FF" d="M89,240 H161 A4,4 0 0 1 165,244 V258 A4,4 0 0 1 161,262 H89 A4,4 0 0 1 85,258 V244 A4,4 0 0 1 89,240 Z" />
+    <text x="125" y="256" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9" text-anchor="middle">全国第17位</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M368,140 H632 A8,8 0 0 1 640,148 V262 A8,8 0 0 1 632,270 H368 A8,8 0 0 1 360,262 V148 A8,8 0 0 1 368,140 Z" />
+    <path fill="#2ECC71" d="M362,140 H362 A2,2 0 0 1 364,142 V268 A2,2 0 0 1 362,270 H362 A2,2 0 0 1 360,268 V142 A2,2 0 0 1 362,140 Z" />
+    <text x="385" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">GDP增速</text>
+    <text x="385" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#2ECC71">5.70</text>
+    <text x="490" y="225" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">%</text>
+    <text x="385" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71">▲ 较上年增长</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,290 H332 A8,8 0 0 1 340,298 V412 A8,8 0 0 1 332,420 H68 A8,8 0 0 1 60,412 V298 A8,8 0 0 1 68,290 Z" />
+    <path fill="#4A90D9" d="M62,290 H62 A2,2 0 0 1 64,292 V418 A2,2 0 0 1 62,420 H62 A2,2 0 0 1 60,418 V292 A2,2 0 0 1 62,290 Z" />
+    <text x="85" y="325" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">人均GDP</text>
+    <text x="85" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">100,903</text>
+    <text x="280" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">元</text>
+    <text x="85" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71">▲ 同比增长7.18%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M368,290 H632 A8,8 0 0 1 640,298 V412 A8,8 0 0 1 632,420 H368 A8,8 0 0 1 360,412 V298 A8,8 0 0 1 368,290 Z" />
+    <path fill="#4A90D9" d="M362,290 H362 A2,2 0 0 1 364,292 V418 A2,2 0 0 1 362,420 H362 A2,2 0 0 1 360,418 V292 A2,2 0 0 1 362,290 Z" />
+    <text x="385" y="325" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">城镇居民人均可支配收入</text>
+    <text x="385" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">49,778</text>
+    <text x="560" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">元</text>
+    <text x="385" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71">▲ 同比增长4.94%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M668,140 H1212 A8,8 0 0 1 1220,148 V552 A8,8 0 0 1 1212,560 H668 A8,8 0 0 1 660,552 V148 A8,8 0 0 1 668,140 Z" />
+    <text x="690" y="175" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" font-weight="600" fill="#1E3A5F">主要经济指标对比</text>
+    
+    
+    <path fill="#1E3A5F" d="M694,195 H1186 A4,4 0 0 1 1190,199 V226 A4,4 0 0 1 1186,230 H694 A4,4 0 0 1 690,226 V199 A4,4 0 0 1 694,195 Z" />
+    <text x="730" y="218" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF">指标</text>
+    <text x="910" y="218" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">2024年</text>
+    <text x="1020" y="218" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">2023年</text>
+    <text x="1130" y="218" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">2022年</text>
+    
+    
+    <rect x="690" y="230" width="500" height="32" fill="#EBF4FF" />
+    <text x="730" y="252" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">GDP(亿元)</text>
+    <text x="910" y="252" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">32,193.15</text>
+    <text x="1020" y="252" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">30,614.28</text>
+    <text x="1130" y="252" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">28,576.10</text>
+    
+    <rect x="690" y="262" width="500" height="32" fill="#FFFFFF" />
+    <text x="730" y="284" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">GDP增速(%)</text>
+    <text x="910" y="284" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#2ECC71" font-weight="600" text-anchor="middle">5.70</text>
+    <text x="1020" y="284" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">6.10</text>
+    <text x="1130" y="284" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">2.50</text>
+    
+    <rect x="690" y="294" width="500" height="32" fill="#EBF4FF" />
+    <text x="730" y="316" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">人均GDP(元)</text>
+    <text x="910" y="316" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">100,903</text>
+    <text x="1020" y="316" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">94,147</text>
+    <text x="1130" y="316" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">88,953</text>
+    
+    <rect x="690" y="326" width="500" height="32" fill="#FFFFFF" />
+    <text x="730" y="348" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">常住人口(万人)</text>
+    <text x="910" y="348" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">3,190.47</text>
+    <text x="1020" y="348" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">3,191.43</text>
+    <text x="1130" y="348" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">3,213.34</text>
+    
+    <rect x="690" y="358" width="500" height="32" fill="#EBF4FF" />
+    <text x="730" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">工业增加值(亿元)</text>
+    <text x="910" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">8,912.03</text>
+    <text x="1020" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">8,333.35</text>
+    <text x="1130" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">7,966.27</text>
+    
+    <rect x="690" y="390" width="500" height="32" fill="#FFFFFF" />
+    <text x="730" y="412" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">固定资产投资增速(%)</text>
+    <text x="910" y="412" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#E63946" font-weight="600" text-anchor="middle">0.10</text>
+    <text x="1020" y="412" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">4.30</text>
+    <text x="1130" y="412" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">0.70</text>
+    
+    <rect x="690" y="422" width="500" height="32" fill="#EBF4FF" />
+    <text x="730" y="444" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">社会消费品零售总额(亿元)</text>
+    <text x="910" y="444" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">16,190.41</text>
+    <text x="1020" y="444" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">15,130.25</text>
+    <text x="1130" y="444" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">13,926.08</text>
+    
+    <rect x="690" y="454" width="500" height="32" fill="#FFFFFF" />
+    <text x="730" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">城镇居民人均可支配收入(元)</text>
+    <text x="910" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#1E3A5F" font-weight="600" text-anchor="middle">49,778</text>
+    <text x="1020" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">47,435</text>
+    <text x="1130" y="476" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155" text-anchor="middle">45,509</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M68,440 H632 A8,8 0 0 1 640,448 V552 A8,8 0 0 1 632,560 H68 A8,8 0 0 1 60,552 V448 A8,8 0 0 1 68,440 Z" />
+    <text x="90" y="475" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">核心洞见</text>
+    <text font-size="13" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="505">• GDP突破3.2万亿，经济总量稳居全国前列</text><text font-size="13" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="527">• 人均GDP突破10万元，达到中等发达经济体水平</text><text font-size="13" fill="#FFFFFF" font-family="PingFang SC, Microsoft YaHei, sans-serif" x="90" y="549">• 消费市场活跃，社零总额同比增长7.00%</text></g>
+  
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

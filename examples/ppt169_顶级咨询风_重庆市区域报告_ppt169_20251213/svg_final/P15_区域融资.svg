@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC" />
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F" />
+  
+  
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF" />
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0" />
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">05 区域融资</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">15 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0" />
+  
+  
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">五、区域融资概览</text>
+  <text x="330" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">2024年数据</text>
+  
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M68,130 H332 A8,8 0 0 1 340,138 V272 A8,8 0 0 1 332,280 H68 A8,8 0 0 1 60,272 V138 A8,8 0 0 1 68,130 Z" />
+    <text x="90" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.8">5.1 区域社融增量</text>
+    <text x="90" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#FFFFFF">7,565</text>
+    <text x="225" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#FFFFFF" fill-opacity="0.8">亿元</text>
+    <text x="90" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">▼ -1.30% 同比</text>
+    <text x="200" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.6">央行统计口径</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M368,130 H632 A8,8 0 0 1 640,138 V272 A8,8 0 0 1 632,280 H368 A8,8 0 0 1 360,272 V138 A8,8 0 0 1 368,130 Z" />
+    <text x="390" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.2 A股融资</text>
+    <text x="390" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">64.25</text>
+    <text x="520" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="390" y="250" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">首发融资 6.64亿</text>
+    <text x="390" y="268" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9">上市公司78家 | 市值1.19万亿</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FEF3C7" d="M668,130 H932 A8,8 0 0 1 940,138 V272 A8,8 0 0 1 932,280 H668 A8,8 0 0 1 660,272 V138 A8,8 0 0 1 668,130 Z" />
+    <text x="690" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.3 非金融企业债券净融资</text>
+    <text x="690" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#E63946">-174.97</text>
+    <text x="875" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="690" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">⚠️ 净流出</text>
+    <text x="770" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">含城投债+产业债+ABS等</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M968,130 H1212 A8,8 0 0 1 1220,138 V272 A8,8 0 0 1 1212,280 H968 A8,8 0 0 1 960,272 V138 A8,8 0 0 1 968,130 Z" />
+    <text x="990" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">金融企业债券净融资</text>
+    <text x="990" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#2ECC71">995.96</text>
+    <text x="1160" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="990" y="255" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">▲ 净流入</text>
+  </g>
+  
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,300 H332 A8,8 0 0 1 340,308 V442 A8,8 0 0 1 332,450 H68 A8,8 0 0 1 60,442 V308 A8,8 0 0 1 68,300 Z" />
+    <text x="90" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.4 地方债净融资</text>
+    <text x="90" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#4A90D9">2,169.86</text>
+    <text x="280" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="90" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">发行3,318.78亿 | 偿还1,148.92亿</text>
+    <text x="90" y="438" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#4A90D9">重要的政府融资渠道</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M368,300 H632 A8,8 0 0 1 640,308 V442 A8,8 0 0 1 632,450 H368 A8,8 0 0 1 360,442 V308 A8,8 0 0 1 368,300 Z" />
+    <text x="390" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.5 租赁融资</text>
+    <text x="390" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">830.58</text>
+    <text x="545" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="390" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#E63946">▼ -17.47% 同比</text>
+    <text x="390" y="438" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">新增事件11,021次</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M668,300 H932 A8,8 0 0 1 940,308 V442 A8,8 0 0 1 932,450 H668 A8,8 0 0 1 660,442 V308 A8,8 0 0 1 668,300 Z" />
+    <text x="690" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.6 应收账款融资</text>
+    <text x="690" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F">58,841</text>
+    <text x="830" y="385" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="690" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#2ECC71">▲ 大幅增长（数据异常高）</text>
+    <text x="690" y="438" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">新增事件34,373次</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M968,300 H1212 A8,8 0 0 1 1220,308 V442 A8,8 0 0 1 1212,450 H968 A8,8 0 0 1 960,442 V308 A8,8 0 0 1 968,300 Z" />
+    <text x="990" y="335" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.8 PE/VC融资</text>
+    <text x="990" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="42" font-weight="700" fill="#1E3A5F">202.62</text>
+    <text x="1150" y="390" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#64748B">亿元</text>
+    <text x="990" y="420" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#2ECC71">▲ +67.12% 同比</text>
+    <text x="990" y="438" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">新增事件98次</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#FFFFFF" d="M68,470 H452 A8,8 0 0 1 460,478 V562 A8,8 0 0 1 452,570 H68 A8,8 0 0 1 60,562 V478 A8,8 0 0 1 68,470 Z" />
+    <text x="90" y="505" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">5.7 信托融资</text>
+    <text x="90" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#E63946">54.91</text>
+    <text x="195" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">亿元</text>
+    <text x="260" y="530" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#E63946">▼ -80.76% 同比大幅下降</text>
+    <text x="260" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">新增事件35次（监管趋严）</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#EBF4FF" d="M488,470 H832 A8,8 0 0 1 840,478 V562 A8,8 0 0 1 832,570 H488 A8,8 0 0 1 480,562 V478 A8,8 0 0 1 488,470 Z" />
+    <text x="510" y="505" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">非金融企业存量债</text>
+    <text x="510" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">8,734.37亿</text>
+    <text x="700" y="530" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">其中城投债5,679亿</text>
+    <text x="700" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">产业债+ABS占比35%</text>
+  </g>
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#EBF4FF" d="M868,470 H1212 A8,8 0 0 1 1220,478 V562 A8,8 0 0 1 1212,570 H868 A8,8 0 0 1 860,562 V478 A8,8 0 0 1 868,470 Z" />
+    <text x="890" y="505" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">金融企业存量债</text>
+    <text x="890" y="545" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">5,293.09亿</text>
+    <text x="1080" y="530" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">同业存单3,980亿</text>
+    <text x="1080" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#64748B">占比75.2%</text>
+  </g>
+  
+  
+  <g filter="url(#cardShadow)">
+    <path fill="#1E3A5F" d="M68,590 H1212 A8,8 0 0 1 1220,598 V652 A8,8 0 0 1 1212,660 H68 A8,8 0 0 1 60,652 V598 A8,8 0 0 1 68,590 Z" />
+    <text x="90" y="620" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#4A90D9">融资结构特征</text>
+    <text x="90" y="645" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF">
+      <tspan x="90" dy="0">• 债券融资：非金融企业净流出，金融企业净流入，地方债为主要增量渠道</tspan>
+      <tspan x="680" dy="0">• 股权/PE/VC：融资规模回升，创投活跃度提高</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F" />
+</svg>

@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.1"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1280" height="4" fill="#1E3A5F"/>
+  
+  <!-- 页眉 -->
+  <rect x="0" y="4" width="1280" height="56" fill="#FFFFFF"/>
+  <text x="60" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1E3A5F" font-weight="600">重庆市·2025年区域报告</text>
+  <rect x="200" y="22" width="1" height="20" fill="#E2E8F0"/>
+  <text x="220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">01 经济情况</text>
+  <text x="1220" y="38" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B" text-anchor="end">6 / 20</text>
+  <rect x="0" y="60" width="1280" height="1" fill="#E2E8F0"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="105" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="700" fill="#1E3A5F">1.3 产业发展 &amp; 1.4 人口与房地产</text>
+  
+  <!-- 左侧：产业结构 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="130" width="560" height="320" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">产业结构（2024年）</text>
+    
+    <!-- 产业结构环形图 - 使用 path 弧形绘制（PPT 兼容） -->
+    <!-- 外径70, 内径40, 中心(230,290) -->
+    <!-- 从 -90°(顶部) 顺时针: 第三产业57.1%, 第二产业36.3%, 第一产业6.6% -->
+    <g transform="translate(230, 290)">
+      <!-- 第三产业 57.10% - 蓝色 (-90° → 115.56°, 跨度205.56° > 180°) -->
+      <path d="M 0 -70 A 70 70 0 1 1 -30.2 63.15 L -17.26 36.09 A 40 40 0 1 0 0 -40 Z" fill="#4A90D9"/>
+      <!-- 第二产业 36.30% - 深蓝色 (115.56° → 246.24°, 跨度130.68° < 180°) -->
+      <path d="M -30.2 63.15 A 70 70 0 0 1 -28.2 -64.07 L -16.12 -36.61 A 40 40 0 0 0 -17.26 36.09 Z" fill="#1E3A5F"/>
+      <!-- 第一产业 6.60% - 绿色 (246.24° → 270°, 跨度23.76° < 180°) -->
+      <path d="M -28.2 -64.07 A 70 70 0 0 1 0 -70 L 0 -40 A 40 40 0 0 0 -16.12 -36.61 Z" fill="#2ECC71"/>
+      <!-- 中心文字 -->
+      <text x="0" y="-5" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">以第三产业</text>
+      <text x="0" y="12" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">为主导</text>
+    </g>
+    
+    <!-- 图例 -->
+    <rect x="380" y="220" width="16" height="16" rx="2" fill="#4A90D9"/>
+    <text x="405" y="233" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#334155">第三产业</text>
+    <text x="500" y="233" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#4A90D9">57.10%</text>
+    <text x="405" y="253" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">18,366.65亿 | 增速6.80%</text>
+    
+    <rect x="380" y="280" width="16" height="16" rx="2" fill="#1E3A5F"/>
+    <text x="405" y="293" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#334155">第二产业</text>
+    <text x="500" y="293" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1E3A5F">36.30%</text>
+    <text x="405" y="313" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">11,690.68亿 | 增速4.60%</text>
+    
+    <rect x="380" y="340" width="16" height="16" rx="2" fill="#2ECC71"/>
+    <text x="405" y="353" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#334155">第一产业</text>
+    <text x="500" y="353" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#2ECC71">6.60%</text>
+    <text x="405" y="373" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">2,135.82亿 | 增速2.40%</text>
+    
+    <!-- 核心洞见 -->
+    <rect x="90" y="410" width="500" height="30" rx="4" fill="#EBF4FF"/>
+    <text x="110" y="430" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9">💡 服务业主导，第三产业增速领先，制造业基础扎实</text>
+  </g>
+  
+  <!-- 右侧：人口与房地产 -->
+  <g filter="url(#cardShadow)">
+    <rect x="660" y="130" width="560" height="320" rx="8" fill="#FFFFFF"/>
+    <text x="690" y="165" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">人口与房地产</text>
+    
+    <!-- 人口指标 -->
+    <rect x="690" y="190" width="240" height="100" rx="6" fill="#F8FAFC"/>
+    <text x="710" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">常住人口</text>
+    <text x="710" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F">3,190.47</text>
+    <text x="870" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">万人</text>
+    <text x="710" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#E63946">▼ -0.03% | 全国第19位</text>
+    
+    <!-- 城镇化率 -->
+    <rect x="950" y="190" width="240" height="100" rx="6" fill="#F8FAFC"/>
+    <text x="970" y="220" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">城镇化率</text>
+    <text x="970" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#4A90D9">72.14</text>
+    <text x="1080" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">%</text>
+    <text x="970" y="280" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#2ECC71">高于全国平均水平</text>
+    
+    <!-- 房价指标 -->
+    <rect x="690" y="310" width="240" height="100" rx="6" fill="#F8FAFC"/>
+    <text x="710" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">二手房均价</text>
+    <text x="710" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#1E3A5F">9,286</text>
+    <text x="840" y="380" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#64748B">元/㎡</text>
+    <text x="710" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B">市场相对平稳</text>
+    
+    <!-- 房价最高区域 -->
+    <rect x="950" y="310" width="240" height="100" rx="6" fill="#F8FAFC"/>
+    <text x="970" y="340" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#64748B">最高区域</text>
+    <text x="970" y="375" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#1E3A5F">渝北区</text>
+    <text x="970" y="400" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#4A90D9">11,779 元/㎡</text>
+    
+    <!-- 洞见 -->
+    <rect x="690" y="420" width="500" height="30" rx="4" fill="#EBF4FF"/>
+    <text x="710" y="440" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#4A90D9">💡 人口规模大但增长放缓，房价相对可控，城镇化率较高</text>
+  </g>
+  
+  <!-- 底部：地区综合评分预告 -->
+  <g filter="url(#cardShadow)">
+    <rect x="60" y="470" width="1160" height="190" rx="8" fill="#FFFFFF"/>
+    <text x="90" y="505" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="600" fill="#1E3A5F">1.5 地区综合评分</text>
+    
+    <!-- 总分 -->
+    <rect x="90" y="525" width="180" height="120" rx="8" fill="#1E3A5F"/>
+    <text x="180" y="565" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">综合得分</text>
+    <text x="180" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF" text-anchor="middle">8.71</text>
+    
+    <!-- 六大维度 -->
+    <g>
+      <rect x="300" y="525" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="370" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">经济实力</text>
+      <text x="370" y="572" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F" text-anchor="middle">8.55</text>
+    </g>
+    <g>
+      <rect x="460" y="525" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="530" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">财政实力</text>
+      <text x="530" y="572" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F" text-anchor="middle">8.86</text>
+    </g>
+    <g>
+      <rect x="620" y="525" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="690" y="550" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">债务压力</text>
+      <text x="690" y="572" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#F59E0B" text-anchor="middle">8.24</text>
+    </g>
+    <g>
+      <rect x="300" y="590" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="370" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">金融资源</text>
+      <text x="370" y="637" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F" text-anchor="middle">9.15</text>
+    </g>
+    <g>
+      <rect x="460" y="590" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="530" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">信用风险</text>
+      <text x="530" y="637" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#2ECC71" text-anchor="middle">9.48</text>
+    </g>
+    <g>
+      <rect x="620" y="590" width="140" height="55" rx="4" fill="#EBF4FF"/>
+      <text x="690" y="615" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">科创能力</text>
+      <text x="690" y="637" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1E3A5F" text-anchor="middle">8.93</text>
+    </g>
+    
+    <!-- 右侧解读 -->
+    <rect x="800" y="525" width="400" height="120" rx="8" fill="#F8FAFC"/>
+    <text x="830" y="555" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1E3A5F">评分解读</text>
+    <text x="830" y="585" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#334155">
+      <tspan x="830" dy="0">• 综合实力处于全国领先水平</tspan>
+      <tspan x="830" dy="22">• 信用风险可控，城投利差处于历史低位</tspan>
+      <tspan x="830" dy="22">• 金融资源丰富，科创能力较强</tspan>
+    </text>
+  </g>
+  
+  <rect x="0" y="716" width="1280" height="4" fill="#1E3A5F"/>
+</svg>
