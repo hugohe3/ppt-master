@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPT Master - AI 驱动的 SVG 演示文稿生成系统</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --secondary: #06b6d4;
+            --dark: #1e1e2e;
+            --darker: #11111b;
+            --text: #cdd6f4;
+            --text-muted: #9399b2;
+            --surface: #181825;
+            --surface-hover: #1e1e2e;
+            --border: #313244;
+            --success: #a6e3a1;
+            --warning: #f9e2af;
+            --accent: #f5c2e7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--text);
+        }
+
+        .section-title .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .card-preview {
+            height: 200px;
+            background: var(--darker);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
+        }
+
+        .card-preview .placeholder {
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-badge.new {
+            background: linear-gradient(135deg, #f97316, #ef4444);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            background: var(--darker);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .tag.style-consulting {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+        }
+
+        .tag.style-general {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--secondary);
+        }
+
+        .tag.style-creative {
+            background: rgba(245, 194, 231, 0.2);
+            color: var(--accent);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Hidden class for filtering */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🎨</div>
+            <h1>PPT Master</h1>
+            <p>AI 驱动的多格式 SVG 内容生成系统，通过四角色协作将来源文档转化为高质量演示文稿</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">示例项目</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">229+</div>
+                    <div class="stat-label">SVG 页面</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">风格分类</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-content">
+            <button class="nav-btn active" data-filter="all">全部项目</button>
+            <button class="nav-btn" data-filter="consulting">🏢 咨询风格</button>
+            <button class="nav-btn" data-filter="general">🎨 通用灵活</button>
+            <button class="nav-btn" data-filter="creative">✨ 创意风格</button>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="projects-grid" id="projects-grid">
+            <!-- Projects will be inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://github.com/hugohe/ppt-master" target="_blank">📦 GitHub 仓库</a>
+            <a href="./README.md" target="_blank">📖 项目文档</a>
+            <a href="./docs/workflow_tutorial.md" target="_blank">📚 工作流教程</a>
+            <a href="./templates/icons/" target="_blank">🎯 图标库</a>
+        </div>
+        <p class="footer-copy">PPT Master © 2025 · AI 驱动的演示文稿生成系统</p>
+    </footer>
+
+    <script>
+        // Project data
+        const projects = [
+            {
+                id: 'ppt169_顶级咨询风_心理治疗中的依恋',
+                title: '心理治疗中的依恋',
+                pages: 32,
+                style: 'consulting',
+                styleName: '顶级咨询风格',
+                desc: '螺旋上升结构，从 Bowlby → Ainsworth → Main → Fonagy 的理论演进，到临床实践的应用深化。',
+                tags: ['MBB 级', '心理学', '专业蓝系'],
+                isNew: false,
+                cover: 'P01_封面.svg'
+            },
+            {
+                id: 'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213',
+                title: '重庆市区域报告',
+                pages: 20,
+                style: 'consulting',
+                styleName: '顶级咨询风格',
+                desc: '基于企业预警通数据，全面分析重庆市经济、财政债务、城投、银行业等七大模块。',
+                tags: ['MBB 级', '政务财政', '数据驱动'],
+                isNew: true,
+                cover: 'P01_封面.svg'
+            },
+            {
+                id: 'ppt169_顶级咨询风_甘孜州经济财政分析',
+                title: '甘孜州经济财政分析',
+                pages: 17,
+                style: 'consulting',
+                styleName: '顶级咨询风格',
+                desc: '基于 2024 年甘孜州决算数据，涵盖 GDP、财政收支、政府债务等多维分析。',
+                tags: ['MBB 级', '政务蓝', '藏区文化'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_顶级咨询风_构建有效AI代理_Anthropic',
+                title: '构建有效 AI 代理',
+                pages: 15,
+                style: 'consulting',
+                styleName: '顶级咨询风格',
+                desc: '基于 Anthropic 官方博客，涵盖 Workflows、Agents、工具设计原则等。',
+                tags: ['MBB 级', 'AI/LLM', 'Anthropic'],
+                isNew: false,
+                cover: 'P01_Cover.svg'
+            },
+            {
+                id: 'ppt169_高端咨询风_南欧江水电站战略评估',
+                title: '南欧江水电站战略评估',
+                pages: 20,
+                style: 'consulting',
+                styleName: '高端咨询风格',
+                desc: '老挝南欧江梯级水电站项目、主权债务危机与仲裁案全景分析。',
+                tags: ['战略评估', '湄公河色系', '流域危机'],
+                isNew: false,
+                cover: 'P01_cover.svg'
+            },
+            {
+                id: 'ppt169_高端咨询风_汽车认证五年战略规划',
+                title: '汽车认证五年战略规划',
+                pages: 20,
+                style: 'consulting',
+                styleName: '高端咨询风格',
+                desc: '汽车及零部件领域自愿性产品认证 2026-2030 五年战略规划。',
+                tags: ['战略规划', '新能源', '绿色低碳'],
+                isNew: false,
+                cover: 'P01_cover.svg'
+            },
+            {
+                id: 'ppt169_麦肯锡风_kimsoong_customer_loyalty',
+                title: '客户忠诚度计划分析',
+                pages: 8,
+                style: 'consulting',
+                styleName: '麦肯锡风格',
+                desc: '展示麦肯锡经典的结构化思维与图表矩阵设计。',
+                tags: ['McKinsey', 'MECE 原则', '数据驱动'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_谷歌风_google_annual_report',
+                title: 'Google 年度工作汇报',
+                pages: 10,
+                style: 'consulting',
+                styleName: 'Google 品牌风格',
+                desc: 'Google 2025 年度工作汇报模板，融合 Google 设计语言与咨询专业度。',
+                tags: ['Google 色系', '品牌一致', '数据驱动'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_通用灵活+代码_debug六步法',
+                title: 'Debug 六步法',
+                pages: 10,
+                style: 'general',
+                styleName: '通用灵活 + 代码',
+                desc: '深色科技风格，适合技术团队内部培训分享。',
+                tags: ['GitHub 暗色', '程序员', '技术培训'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_通用灵活+学术_重庆大学论文格式标准',
+                title: '重庆大学论文格式标准',
+                pages: 11,
+                style: 'general',
+                styleName: '通用灵活 + 学术',
+                desc: '基于重庆大学学位论文撰写格式标准，学术、规范、清晰、实用。',
+                tags: ['学术风格', '重大蓝', '研究生'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_通过灵活+代码_三大AI编程神器横向对比',
+                title: '三大 AI 编程神器横向对比',
+                pages: 11,
+                style: 'general',
+                styleName: '通用灵活',
+                desc: 'OpenSpec vs ZCF vs Spec Kit 三大 AI 编程工具横向对比分析。',
+                tags: ['技术评测', '科技蓝', 'AI 工具'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'ppt169_易理风_地山谦卦深度研究',
+                title: '地山谦卦深度研究',
+                pages: 20,
+                style: 'creative',
+                styleName: '易理玄学风格',
+                desc: '采用「阴阳爻变」设计语言，从象数理占到现代哲学的多维同构。',
+                tags: ['易经', '阴阳对立', '六爻结构'],
+                isNew: false,
+                cover: 'P01_封面.svg'
+            },
+            {
+                id: 'ppt169_禅意风_金刚经第一品研究',
+                title: '金刚经第一品研究',
+                pages: 15,
+                style: 'creative',
+                styleName: '禅意学术风格',
+                desc: '页面布局如同禅画，以留白营造意境，暗示「空」的智慧。',
+                tags: ['禅意', '水墨留白', '般若思想'],
+                isNew: false,
+                cover: 'P01_封面.svg'
+            },
+            {
+                id: 'ppt169_像素风_git_introduction',
+                title: 'Git 入门完全指南',
+                pages: 10,
+                style: 'creative',
+                styleName: '像素复古游戏风',
+                desc: '复古游戏像素风格，用「存档点」隐喻版本控制概念。',
+                tags: ['像素风', '霓虹系', '游戏感'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            },
+            {
+                id: 'demo_project_intro_ppt169_20251211',
+                title: 'PPT Master 官方介绍',
+                pages: 10,
+                style: 'creative',
+                styleName: '清新科技风格',
+                desc: 'PPT Master 项目官方介绍，展示系统架构与四大角色协作机制。',
+                tags: ['官方介绍', '靛蓝渐变', '系统架构'],
+                isNew: false,
+                cover: 'slide_01_cover.svg'
+            }
+        ];
+
+        // Render projects
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all'
+                ? projects
+                : projects.filter(p => p.style === filter);
+
+            filtered.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.onclick = () => {
+                    window.location.href = `viewer.html?project=${encodeURIComponent(project.id)}`;
+                };
+
+                const styleClass = project.style === 'consulting' ? 'style-consulting'
+                    : project.style === 'general' ? 'style-general'
+                        : 'style-creative';
+
+                card.innerHTML = `
+                    <div class="card-preview">
+                        <img src="examples/${project.id}/svg_final/${project.cover}" 
+                             alt="${project.title}" 
+                             onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>📊</div>'" />
+                        ${project.isNew ? '<span class="card-badge new">🆕 新增</span>' : ''}
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${project.title}</h3>
+                        <div class="card-meta">
+                            <span>📄 ${project.pages} 页</span>
+                            <span>🎨 ${project.styleName}</span>
+                        </div>
+                        <p class="card-desc">${project.desc}</p>
+                        <div class="card-tags">
+                            <span class="tag ${styleClass}">${project.styleName}</span>
+                            ${project.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderProjects(btn.dataset.filter);
+            });
+        });
+
+        // Initial render
+        renderProjects();
+    </script>
+</body>
+
+</html>
