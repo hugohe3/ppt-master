@@ -158,6 +158,8 @@ PPT Master is an innovative AI-assisted visual content creation system that achi
 
 ## System Architecture
 
+### Quick Overview
+
 ```
 User Input Document
     ↓
@@ -172,6 +174,90 @@ SVG Files (svg_output/)
 Post-processing Tools (User invoked)
     ├── finalize_svg.py    → svg_final/ (Embed icons/images + Text flattening + Round corners to Path)
     └── svg_to_pptx.py     → output.pptx (Export to PowerPoint)
+```
+
+### Complete Workflow Diagram
+
+```mermaid
+graph TD
+    %% Style Definitions
+    classDef role fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef tool fill:#e0f2f1,stroke:#00695c,stroke-width:2px;
+    classDef userAction fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef external fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5;
+
+    %% Entry Point
+    RawDoc([Raw Reference Materials PDF/Word]) --> Mineru
+
+    %% Preparation Stage
+    subgraph Preparation [Preparation Stage - Resources Prep]
+        Mineru[MinerU Intelligent Conversion Tool]:::tool
+        
+        Mineru -- Extract Text & Structure --> MD([Basic Markdown Document]):::artifact
+        
+        %% Image Processing Flow
+        subgraph ImageFlow [Image Resources]
+            LocalImgs(Required Image Files) --> ImgFolder[Store in images/ folder]:::userAction
+            ImgFolder -- Add image descriptions in MD --> MD
+        end
+
+        %% Icon Processing Flow
+        subgraph IconFlow [Icon Resources]
+            Repo[SVG Repo Website]:::external -- Search & Download --> UserIcon[Download Matching Icons]:::userAction
+            UserIcon -- Define reference requirements --> IconReq(Icon Reference Notes)
+        end
+    end
+
+    %% Connect to Planning Stage
+    MD --> Strategist
+    IconReq --> Strategist
+
+    %% Planning Stage
+    subgraph Planning [Planning Stage - Content & Design]
+        Strategist[Role 1 Strategist: Content & Specifications]:::role
+        
+        %% Interactive Confirmation
+        Strategist -.-> Confirm1[Interactive Confirmation: 7 Key Elements]:::userAction
+        Confirm1 -- Confirm Scope --> Strategist
+        
+        %% Notes
+        note1>Confirm: Image paths/Icon needs/Style] -.-> Confirm1
+        
+        Strategist --> SpecDoc([Design Specification & Content Outline]):::artifact
+    end
+
+    SpecDoc --> SelectStyle{Select Style}
+
+    %% Execution Stage
+    subgraph Execution [Execution Stage - SVG Generation]
+        SelectStyle -- General Flexible --> ExecGen[Role 2 General Executor]:::role
+        SelectStyle -- General Consulting --> ExecCon[Role 3 Consulting Executor]:::role
+        SelectStyle -- Top Consulting --> ExecTop[Role 3+ Top Consulting Executor]:::role
+        
+        ExecGen --> GenerateLoop
+        ExecCon --> GenerateLoop
+        ExecTop --> GenerateLoop
+        
+        GenerateLoop[Generate SVG Page by Page]:::userAction
+    end
+
+    GenerateLoop --> CheckQA{Need Optimization?}
+
+    %% Optimization & Output
+    subgraph Output [Optimization & Post-processing]
+        CheckQA -- Yes --> Optimizer[Role 4 CRAP Optimizer]:::role
+        Optimizer --> OptimizedSVG([Optimized SVG]):::artifact
+        OptimizedSVG --> CheckQA
+        
+        CheckQA -- No --> RawOutput[SVG Files svg_output/]:::artifact
+        
+        RawOutput --> ToolFinal[finalize_svg.py Finalization]:::tool
+        ToolFinal -- Embed images and icons --> FinalSVG[Final SVG svg_final/]:::artifact
+        FinalSVG --> ToolPPT[svg_to_pptx.py PPTX Conversion]:::tool
+    end
+
+    ToolPPT --> End([Output: .pptx Presentation]):::artifact
 ```
 
 ## Four Roles
@@ -295,7 +381,16 @@ Post-processing Tools (User invoked)
 ### Basic Workflow
 
 1. **Prepare Source Document**  
-   Prepare your content document (text, data, key points, etc.)
+   
+   Convert raw reference materials to AI-readable format:
+   
+   | Step | Description |
+   |------|------|
+   | 📄 **Document Conversion** | Use [MinerU](https://github.com/opendatalab/MinerU) to convert PDF/Word to Markdown. MinerU is an open-source intelligent document conversion tool that preserves document structure, extracts tables and formulas |
+   | 🖼️ **Image Resources** | Store required images in the project's `images/` folder and add image descriptions in the Markdown |
+   | 🔣 **Icon Resources** | For custom icons, download from [SVG Repo](https://www.svgrepo.com/), or use the built-in 640+ icon library (`templates/icons/`) |
+   
+   > 💡 **Tip**: MinerU supports CPU/GPU environments, compatible with Windows/Linux/Mac, can automatically recognize formulas and convert to LaTeX
 
 2. **Initial Communication (Seven Confirmations)**
    Conduct scope confirmation with Strategist, who will provide professional recommendations on these seven items:
