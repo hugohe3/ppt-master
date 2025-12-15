@@ -158,6 +158,8 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
 
 ## 系统架构
 
+### 快速概览
+
 ```
 用户输入文档
     ↓
@@ -172,6 +174,90 @@ SVG 文件 (svg_output/)
 后处理工具（用户自行调用）
     ├── finalize_svg.py    → svg_final/（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
     └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
+```
+
+### 完整工作流程图
+
+```mermaid
+graph TD
+    %% 样式定义
+    classDef role fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef artifact fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef tool fill:#e0f2f1,stroke:#00695c,stroke-width:2px;
+    classDef userAction fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef external fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5;
+
+    %% 流程入口
+    RawDoc([原始参考资料 PDF/Word]) --> Mineru
+
+    %% 准备阶段 (新增)
+    subgraph Preparation [准备阶段 Resources Prep]
+        Mineru[Mineru 智能转换工具]:::tool
+        
+        Mineru -- 提取文本与结构 --> MD([基础 Markdown 文档]):::artifact
+        
+        %% 图片处理流程
+        subgraph ImageFlow [图片资源]
+            LocalImgs(必须包含的图片文件) --> ImgFolder[存入 images/ 文件夹]:::userAction
+            ImgFolder -- 在 MD 中添加图片描述 --> MD
+        end
+
+        %% 图标处理流程
+        subgraph IconFlow [图标资源]
+            Repo[SVG Repo 网站]:::external -- 搜索下载 --> UserIcon[下载匹配图标]:::userAction
+            UserIcon -- 明确引用要求 --> IconReq(图标引用说明)
+        end
+    end
+
+    %% 连接到规划阶段
+    MD --> Strategist
+    IconReq --> Strategist
+
+    %% 规划阶段 (原有)
+    subgraph Planning [规划阶段 Content & Design]
+        Strategist[Role 1 策略师: 内容与规范]:::role
+        
+        %% 交互确认
+        Strategist -.-> Confirm1[交互确认: 七项关键要素]:::userAction
+        Confirm1 -- 确认范围 --> Strategist
+        
+        %% 提示
+        note1>确认: 图片路径/图标需求/风格] -.-> Confirm1
+        
+        Strategist --> SpecDoc([设计规范与内容大纲]):::artifact
+    end
+
+    SpecDoc --> SelectStyle{选择风格}
+
+    %% 执行阶段
+    subgraph Execution [执行阶段 SVG Generation]
+        SelectStyle -- 通用灵活 --> ExecGen[Role 2 通用执行师]:::role
+        SelectStyle -- 一般咨询 --> ExecCon[Role 3 咨询执行师]:::role
+        SelectStyle -- 顶级咨询 --> ExecTop[Role 3+ 顶级咨询执行师]:::role
+        
+        ExecGen --> GenerateLoop
+        ExecCon --> GenerateLoop
+        ExecTop --> GenerateLoop
+        
+        GenerateLoop[逐页生成 SVG]:::userAction
+    end
+
+    GenerateLoop --> CheckQA{是否需要优化?}
+
+    %% 优化与输出
+    subgraph Output [优化与后处理]
+        CheckQA -- 是 --> Optimizer[Role 4 CRAP 优化师]:::role
+        Optimizer --> OptimizedSVG([优化后的 SVG]):::artifact
+        OptimizedSVG --> CheckQA
+        
+        CheckQA -- 否 --> RawOutput[SVG 文件 svg_output/]:::artifact
+        
+        RawOutput --> ToolFinal[finalize_svg.py 最终化处理]:::tool
+        ToolFinal -- 嵌入 images 和 icons --> FinalSVG[最终 SVG svg_final/]:::artifact
+        FinalSVG --> ToolPPT[svg_to_pptx.py PPTX 转换]:::tool
+    end
+
+    ToolPPT --> End([输出: .pptx 演示文稿]):::artifact
 ```
 
 ## 四大角色
@@ -295,7 +381,16 @@ SVG 文件 (svg_output/)
 ### 基本工作流
 
 1. **准备源文档**  
-   准备好你的内容文档（文本、数据、要点等）
+   
+   将原始参考资料转换为 AI 可读格式：
+   
+   | 步骤 | 说明 |
+   |------|------|
+   | 📄 **文档转换** | 使用 [MinerU](https://github.com/opendatalab/MinerU) 将 PDF/Word 转换为 Markdown。MinerU 是一个开源的智能文档转换工具，可保留文档结构、提取表格和公式 |
+   | 🖼️ **图片资源** | 将必须包含的图片存入项目的 `images/` 文件夹，并在 Markdown 中添加图片描述说明 |
+   | 🔣 **图标资源** | 如需自定义图标，可从 [SVG Repo](https://www.svgrepo.com/) 下载，或使用项目内置的 640+ 图标库（`templates/icons/`） |
+   
+   > 💡 **提示**：MinerU 支持 CPU/GPU 环境，兼容 Windows/Linux/Mac，可自动识别公式并转换为 LaTeX
 
 2. **初始沟通（七项确认）**
    与 Strategist 进行范围确认，Strategist 会对以下七项给出专业建议：
