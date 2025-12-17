@@ -172,7 +172,7 @@ User Input Document
 SVG Files (svg_output/)
     ↓
 Post-processing Tools (User invoked)
-    ├── finalize_svg.py    → svg_final/ (Embed icons/images + Text flattening + Round corners to Path)
+    ├── finalize_svg.py    → svg_final/ (Embed icons + Fix image aspect ratio + Embed images + Text flattening + Round corners to Path)
     └── svg_to_pptx.py     → output.pptx (Export to PowerPoint)
 ```
 
@@ -603,9 +603,10 @@ ppt-master/
 │   ├── project_manager.py     # Project management tool
 │   ├── svg_quality_checker.py # SVG quality check
 │   ├── batch_validate.py      # Batch validation tool
-│   ├── finalize_svg.py        # Finalization processing (embed icons/images)
+│   ├── finalize_svg.py        # Finalization processing (embed icons + fix image aspect + embed images)
 │   ├── embed_icons.py         # Icon embedding tool
 │   ├── embed_images.py        # Image embedding tool
+│   ├── fix_image_aspect.py    # Image aspect ratio fix tool (prevent stretching in PPT)
 │   ├── flatten_tspan.py       # tspan flattening tool
 │   └── svg_to_pptx.py         # SVG to PPTX tool (native vector embedding)
 │
@@ -853,12 +854,19 @@ python3 tools/generate_examples_index.py
 
 ### Post-processing Tool (`finalize_svg.py`)
 
-Unified post-processing entry, performs icon/image embedding, text flattening, round corners to Path:
+Unified post-processing entry, performs icon embedding, image aspect ratio fixing, image embedding, text flattening, round corners to Path:
 
 ```bash
 # Run directly, no parameters needed
 python3 tools/finalize_svg.py <project_path>
 ```
+
+**Processing Steps**:
+1. Embed icons - Replace `<use data-icon="..."/>` with actual icons
+2. Fix image aspect ratio - Prevent image stretching when converting to shapes in PPT ✨
+3. Embed images - Convert external images to Base64
+4. Text flattening - Convert `<tspan>` to independent `<text>`
+5. Round corners to Path - Convert `<rect rx="..."/>` to `<path>`
 
 **Note**: Generation phase should still use `<tspan>` for manual line breaks, post-processing will auto-flatten.
 

@@ -172,7 +172,7 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
 SVG 文件 (svg_output/)
     ↓
 后处理工具（用户自行调用）
-    ├── finalize_svg.py    → svg_final/（嵌入图标/图片 + 文本扁平化 + 圆角转Path）
+    ├── finalize_svg.py    → svg_final/（嵌入图标 + 修复图片宽高比 + 嵌入图片 + 文本扁平化 + 圆角转Path）
     └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
 ```
 
@@ -603,9 +603,10 @@ ppt-master/
 │   ├── project_manager.py     # 项目管理工具
 │   ├── svg_quality_checker.py # SVG 质量检查
 │   ├── batch_validate.py      # 批量验证工具
-│   ├── finalize_svg.py        # 最终化处理（嵌入图标/图片）
+│   ├── finalize_svg.py        # 最终化处理（嵌入图标 + 修复图片宽高比 + 嵌入图片）
 │   ├── embed_icons.py         # 图标嵌入工具
 │   ├── embed_images.py        # 图片嵌入工具
+│   ├── fix_image_aspect.py    # 图片宽高比修复工具（防止 PPT 转形状时拉伸）
 │   ├── flatten_tspan.py       # tspan扁平化工具
 │   └── svg_to_pptx.py         # SVG转PPTX工具（原生矢量嵌入）
 │
@@ -853,12 +854,19 @@ python3 tools/generate_examples_index.py
 
 ### 后处理工具 (`finalize_svg.py`)
 
-统一后处理入口，执行嵌入图标/图片、文本扁平化、圆角转 Path：
+统一后处理入口，执行嵌入图标、修复图片宽高比、嵌入图片、文本扁平化、圆角转 Path：
 
 ```bash
 # 直接运行，无需参数
 python3 tools/finalize_svg.py <项目路径>
 ```
+
+**处理步骤**：
+1. 嵌入图标 - 替换 `<use data-icon="..."/>` 为实际图标
+2. 修复图片宽高比 - 防止 PPT 转形状时图片拉伸变形 ✨
+3. 嵌入图片 - 将外部图片转为 Base64
+4. 文本扁平化 - 将 `<tspan>` 转为独立 `<text>`
+5. 圆角转 Path - 将 `<rect rx="..."/>` 转为 `<path>`
 
 **注意**：生成阶段仍应使用 `<tspan>` 手动换行，后处理会自动扁平化。
 

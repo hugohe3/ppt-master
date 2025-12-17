@@ -691,6 +691,51 @@ python3 tools/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 
 ---
 
+### 11. fix_image_aspect.py — SVG 图片宽高比修复工具
+
+解决 SVG 中 `<image>` 元素在 PowerPoint「转换为形状」时图片拉伸变形的问题。
+
+**问题**: PowerPoint 在将 SVG 转换为可编辑形状时，会忽略 `preserveAspectRatio` 属性，导致图片被拉伸以填满指定的 width/height 区域。
+
+**解决方案**: 
+1. 读取图片的原始宽高比
+2. 根据 `preserveAspectRatio` 模式（meet/slice）计算正确的 x, y, width, height
+3. 移除 `preserveAspectRatio` 属性，用精确计算的尺寸替代
+
+**用法**:
+
+```bash
+# 处理单个 SVG 文件
+python3 tools/fix_image_aspect.py path/to/slide.svg
+
+# 处理多个文件
+python3 tools/fix_image_aspect.py slide_01.svg slide_02.svg slide_03.svg
+
+# 预览模式（不修改文件）
+python3 tools/fix_image_aspect.py --dry-run path/to/slide.svg
+
+# 通过 finalize_svg.py 自动处理（推荐）
+python3 tools/finalize_svg.py <项目路径>
+```
+
+**依赖**:
+
+```bash
+pip install Pillow  # 用于读取图片尺寸（推荐安装）
+```
+
+> **注意**: 如果没有安装 Pillow，工具会尝试用基本方法读取 PNG/JPEG 的头信息，但建议安装以获得更好的兼容性。
+
+**使用场景**:
+
+当你需要在 PowerPoint 中将 SVG「转换为形状」进行编辑，且 SVG 中包含图片时，使用此工具可以防止图片拉伸变形。
+
+**已集成到 finalize_svg.py**:
+
+此工具已作为 `finalize_svg.py` 的处理步骤之一（`fix-aspect`），默认自动执行。
+
+---
+
 ## 工作流集成
 
 ### 典型工作流程
