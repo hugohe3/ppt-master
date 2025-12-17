@@ -163,6 +163,22 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
     def is_svg_tag(el, name):
         return el.tag == f"{{{SVG_NS}}}{name}"
 
+    def is_new_line_tspan(tspan):
+        """判断 tspan 是否表示换行（有独立 y 或非零 dy）"""
+        t_dy_attr = get_attr(tspan, "dy")
+        t_y_attr = get_attr(tspan, "y")
+        t_x_attr = get_attr(tspan, "x")
+        dy_val = parse_first_number(t_dy_attr) if t_dy_attr is not None else None
+        # 有独立 y 属性，或有非零 dy，或有独立 x 属性（表示新行开始）
+        if t_y_attr is not None:
+            return True
+        if dy_val is not None and dy_val != 0:
+            return True
+        # 如果 tspan 有 x 属性且前面还有同级 tspan，也认为是新行
+        if t_x_attr is not None:
+            return True
+        return False
+
     # Collect candidates first to avoid modifying while iterating
     candidates = []
     for el in root.iter():
@@ -181,12 +197,7 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         for child in list(text_el):
             if not is_svg_tag(child, "tspan"):
                 continue
-            t_dy_attr = get_attr(child, "dy")
-            t_y_attr = get_attr(child, "y")
-            dy_val = parse_first_number(t_dy_attr) if t_dy_attr is not None else None
-            
-            # 如果有 y 属性，或者有非零的 dy，则需要扁平化
-            if t_y_attr is not None or (dy_val is not None and dy_val != 0):
+            if is_new_line_tspan(child):
                 needs_flatten = True
                 break
         
@@ -199,76 +210,53 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         cur_x, cur_y = base_x, base_y
 
         new_texts = []
-
+        
+        # 用于收集同一行的 tspan 元素
+        current_line_tspans = []
+        current_line_lead_text = None
+        
         # Leading text directly under <text>
         lead_text = (text_el.text or "").strip()
         if lead_text:
-            ne = ET.Element(f"{{{SVG_NS}}}text")
-            # Copy attrs from parent <text>
-            copy_text_attrs(text_el, ne, exclude={"x", "y"})
-            ne.set("x", format_number(cur_x))
-            ne.set("y", format_number(cur_y))
-            ne.text = lead_text
-            new_texts.append(ne)
+            current_line_lead_text = lead_text
 
-        for child in list(text_el):
+        for idx, child in enumerate(list(text_el)):
             if not is_svg_tag(child, "tspan"):
-                # We do not attempt to convert other child types
                 continue
 
             content = collect_text_content(child)
-            if content.strip() == "":
-                # skip empty lines but still update position if dy present
+            
+            # 检查这个 tspan 是否开始了新行
+            if is_new_line_tspan(child):
+                # 先保存之前积累的同一行 tspans
+                if current_line_tspans or current_line_lead_text:
+                    ne = _create_text_element_from_line(
+                        text_el, current_line_lead_text, current_line_tspans, cur_x, cur_y
+                    )
+                    new_texts.append(ne)
+                    current_line_tspans = []
+                    current_line_lead_text = None
+                
+                # 更新位置
                 nx, ny = compute_line_positions(text_el, child, cur_x, cur_y)
                 cur_x, cur_y = nx, ny
-                continue
-
-            nx, ny = compute_line_positions(text_el, child, cur_x, cur_y)
-
-            ne = ET.Element(f"{{{SVG_NS}}}text")
-
-            # Start by copying parent's attributes
-            copy_text_attrs(text_el, ne, exclude={"x", "y"})
-
-            # Merge style with tspan's style
-            merged_style = merge_styles(text_el.get("style"), child.get("style"))
-            if merged_style:
-                ne.set("style", merged_style)
-
-            # Override specific attributes from tspan if present
-            for attr in TEXT_STYLE_ATTRS:
-                cv = child.get(attr)
-                if cv is not None:
-                    ne.set(attr, cv)
-
-            # Positioning
-            if nx is not None:
-                ne.set("x", format_number(nx))
-            if ny is not None:
-                ne.set("y", format_number(ny))
-
-            # Transform: combine if child also has it
-            p_tf = text_el.get("transform")
-            c_tf = child.get("transform")
-            if p_tf and c_tf:
-                ne.set("transform", f"{p_tf} {c_tf}")
-            elif p_tf:
-                ne.set("transform", p_tf)
-            elif c_tf:
-                ne.set("transform", c_tf)
-
-            ne.text = content
+            
+            # 如果内容不为空，添加到当前行
+            if content.strip():
+                current_line_tspans.append(child)
+        
+        # 处理最后一行
+        if current_line_tspans or current_line_lead_text:
+            ne = _create_text_element_from_line(
+                text_el, current_line_lead_text, current_line_tspans, cur_x, cur_y
+            )
             new_texts.append(ne)
-
-            # Update current baseline for subsequent tspans
-            cur_x, cur_y = nx, ny
 
         if new_texts:
             # Replace original <text> with the list of new <text> nodes
             try:
                 idx = list(parent).index(text_el)
             except ValueError:
-                # Shouldn't happen, but guard anyway
                 idx = None
 
             # Insert in place to preserve drawing order
@@ -283,6 +271,77 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
             changed = True
 
     return changed
+
+
+def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
+    """
+    从一行的内容（可能包含前导文本和多个 tspan）创建一个 text 元素。
+    如果只有一个 tspan 且没有前导文本，直接创建简单的 text。
+    如果有多个 tspan 或前导文本，保留 tspan 结构。
+    """
+    ne = ET.Element(f"{{{SVG_NS}}}text")
+    
+    # Copy attrs from parent <text>
+    copy_text_attrs(text_el, ne, exclude={"x", "y"})
+    ne.set("x", format_number(x))
+    ne.set("y", format_number(y))
+    
+    # Transform
+    p_tf = text_el.get("transform")
+    if p_tf:
+        ne.set("transform", p_tf)
+    
+    # 如果只有一个 tspan 且没有前导文本，创建简单的 text
+    if not lead_text and len(tspans) == 1:
+        tspan = tspans[0]
+        content = collect_text_content(tspan)
+        
+        # Merge style
+        merged_style = merge_styles(text_el.get("style"), tspan.get("style"))
+        if merged_style:
+            ne.set("style", merged_style)
+        
+        # Override specific attributes from tspan
+        for attr in TEXT_STYLE_ATTRS:
+            cv = tspan.get(attr)
+            if cv is not None:
+                ne.set(attr, cv)
+        
+        # Combine transform
+        c_tf = tspan.get("transform")
+        if p_tf and c_tf:
+            ne.set("transform", f"{p_tf} {c_tf}")
+        elif c_tf:
+            ne.set("transform", c_tf)
+        
+        ne.text = content
+    else:
+        # 保留 tspan 结构
+        if lead_text:
+            ne.text = lead_text
+        
+        for tspan in tspans:
+            # 创建新的 tspan，但移除位置相关属性
+            new_tspan = ET.SubElement(ne, f"{{{SVG_NS}}}tspan")
+            
+            # 复制样式属性
+            for attr in TEXT_STYLE_ATTRS:
+                cv = tspan.get(attr)
+                if cv is not None:
+                    new_tspan.set(attr, cv)
+            
+            # 复制 style
+            if tspan.get("style"):
+                new_tspan.set("style", tspan.get("style"))
+            
+            # 复制文本内容
+            new_tspan.text = collect_text_content(tspan)
+            
+            # 复制 tail（tspan 后面的文本）
+            if tspan.tail:
+                new_tspan.tail = tspan.tail
+    
+    return ne
 
 
 def process_svg_file(src_path: str, dst_path: str) -> bool:
