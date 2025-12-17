@@ -7,6 +7,7 @@
 | 角色            | 文件                                               | 主要职责             | 输入     | 输出               | 支持格式 |
 | --------------- | -------------------------------------------------- | -------------------- | -------- | ------------------ | -------- |
 | **策略师**      | [Strategist.md](./Strategist.md)                   | 内容分析与设计规划   | 源文档   | 设计规范与内容大纲 | 所有格式 |
+| **图片生成师**  | [Image_Generator.md](./Image_Generator.md)         | AI 图片生成（条件触发） | 图片资源清单 | 图片文件 + 提示词 | 所有格式 |
 | **通用执行师**  | [Executor_General.md](./Executor_General.md)       | 生成通用灵活风格 SVG | 设计规范 | SVG 代码           | 所有格式 |
 | **咨询执行师**  | [Executor_Consultant.md](./Executor_Consultant.md) | 生成一般咨询风格 SVG | 设计规范 | SVG 代码           | 所有格式 |
 | **顶级咨询执行师** | [Executor_Consultant_Top.md](./Executor_Consultant_Top.md) | 生成顶级咨询风格 SVG（MBB 级） | 设计规范 | SVG 代码           | 所有格式 |
@@ -27,6 +28,14 @@
 [Strategist] 策略师
     ↓ 生成《设计规范与内容大纲》
     ↓
+    ├─ 图片方式 = "C) AI 生成"?
+    │       │
+    │       YES → [Image_Generator] 图片生成师
+    │              ↓ 生成图片到 images/
+    │       │
+    │       NO ─────────────────────────────────┐
+    │                                           │
+    ▼                                           ▼
 [Executor_General / Executor_Consultant / Executor_Consultant_Top] 执行师
     ↓ 逐页生成SVG代码
     ↓
@@ -39,6 +48,8 @@ SVG 文件 (svg_output/)
     ├── finalize_svg.py → svg_final/ (嵌入图标 + 修复图片宽高比 + 嵌入图片 + 文本扁平化 + 圆角转Path)
     └── svg_to_pptx.py → output.pptx (导出 PowerPoint)
 ```
+
+> **注意**: Image_Generator 是串行环节，仅当选择「AI 生成」图片时触发，图片归集完成后才进入 Executor 阶段。
 
 ## 角色详解
 
@@ -71,6 +82,38 @@ SVG 文件 (svg_output/)
 **关键输出**: 《演示文稿设计规范与内容大纲》
 
 📄 [查看完整定义](./Strategist.md)
+
+---
+
+### 1️⃣+ Image_Generator (图片生成师)
+
+**何时使用**: Strategist 初次沟通中用户选择「C) AI 生成」图片方式时
+
+**触发条件**: 仅当需要 AI 生成图片时调用，是 Strategist 和 Executor 之间的**串行环节**
+
+**核心能力**:
+
+- 分析「图片资源清单」中的待生成图片
+- 为每张图片生成优化的提示词
+- 提示词同时作为图片描述/alt 文本
+- 通过 AI 工具生成图片（自动或手动）
+- 将图片保存到 `项目/images/` 目录
+
+**输入**: 设计规范（含图片资源清单）
+
+**输出**:
+- 优化后的图片提示词
+- 生成的图片文件
+- 更新后的图片资源清单
+
+**工作流位置**:
+```
+Strategist → Image_Generator → Executor
+             ↑                  ↑
+         （本角色）         （图片已就绪）
+```
+
+📄 [查看完整定义](./Image_Generator.md)
 
 ---
 
@@ -172,9 +215,11 @@ SVG 文件 (svg_output/)
    - Strategist 会为每项主动提供专业建议
    - 用户可以接受建议或提出调整
 2. 让 Strategist 生成完整的设计规范与内容大纲
-3. 根据确认的风格选择 **Executor_General** / **Executor_Consultant** / **Executor_Consultant_Top**
-4. 逐页生成 SVG
-5. （可选）使用 **Optimizer_CRAP** 优化关键页面
+3. **如果选择「C) AI 生成」图片**，调用 **Image_Generator** 完成图片生成
+   - 图片归集到 `images/` 目录后，再进入下一步
+4. 根据确认的风格选择 **Executor_General** / **Executor_Consultant** / **Executor_Consultant_Top**
+5. 逐页生成 SVG
+6. （可选）使用 **Optimizer_CRAP** 优化关键页面
 
 ### 最佳实践
 
@@ -199,6 +244,9 @@ SVG 文件 (svg_output/)
 
 **场景 4: 快速迭代**
 → Strategist → Executor → 修改 → Executor (重新生成)
+
+**场景 5: 需要 AI 生成图片的演示**
+→ Strategist (选图片方式 C) → **Image_Generator** → Executor → Optimizer_CRAP
 
 ## 扩展与定制
 

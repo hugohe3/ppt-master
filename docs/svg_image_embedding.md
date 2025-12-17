@@ -39,8 +39,8 @@
    └── 已有：用户直接提供
    └── 放入 项目/images/ 目录
 
-3. Executor 生成 SVG
-   ├── 已有/待生成 → <image href="images/xxx.png" .../>
+3. Executor 生成 SVG（SVG 在 svg_output/ 目录中）
+   ├── 已有/待生成 → <image href="../images/xxx.png" .../>
    └── 占位符 → 虚线框 + 描述文本
 
 4. 预览
