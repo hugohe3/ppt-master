@@ -8,6 +8,9 @@
 
 1. 接收由 [Strategist] 生成并经用户确认的 **《设计规范与内容大纲》**
 2. 接收用户关于 **当前需要生成哪一页** 的具体指令
+3. **如果选择了「C) AI 生成」图片**，确认 [Image_Generator] 已完成图片生成，图片已归集到 `images/` 目录
+
+> **工作流位置**: Strategist → (Image_Generator) → **Executor** → Optimizer_CRAP
 
 ## 执行准则
 
@@ -56,13 +59,19 @@
 
 根据设计规范「图片资源清单」中的状态处理：
 
-**已有 / 待生成（图片已准备好）**：
+| 状态 | 来源 | 处理方式 |
+|------|------|----------|
+| **已有** | 用户提供 | 直接引用 `../images/` 目录中的图片 |
+| **AI 生成** | Image_Generator 生成 | 图片已在 `../images/` 目录，直接引用 |
+| **占位符** | 暂未准备 | 使用虚线框占位 |
+
+**引用图片**：
 ```xml
-<image href="images/cover_bg.png" x="0" y="0" width="1280" height="720" 
+<image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" 
        preserveAspectRatio="xMidYMid slice"/>
 ```
 
-**占位符（图片暂未准备）**：
+**占位符**：
 ```xml
 <rect x="100" y="200" width="400" height="300" fill="#F0F4F8" stroke="#CBD5E1" 
       stroke-width="2" stroke-dasharray="8,4" rx="8"/>

@@ -25,6 +25,8 @@
 | [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 微软官方方案 |
 | [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic 官方 CLI 工具 |
 
+> 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。
+
 ### 三步开始
 
 ```

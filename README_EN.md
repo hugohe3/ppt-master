@@ -6,7 +6,7 @@
 
 English | [中文](./README.md)
 
-An AI-powered intelligent visual content generation system that transforms source documents into high-quality SVG content through collaboration of four professional roles, **supporting presentations, social media, marketing posters, and various other formats**.
+An AI-powered intelligent visual content generation system that transforms source documents into high-quality SVG content through collaboration of multiple professional roles, **supporting presentations, social media, marketing posters, and various other formats**.
 
 > 🎴 **Online Examples**: [Slides Gallery](https://notes.36sjs.com/pages/ppt/slides-library.html) - View actual generated results
 
@@ -112,7 +112,7 @@ AI (Strategist role): Sure, before we begin I need to complete seven confirmatio
 | Project Introduction | [Jump](#project-introduction) |
 | Core Features | [Jump](#core-features) |
 | System Architecture | [Jump](#system-architecture) |
-| Four Roles | [Jump](#four-roles) |
+| Roles | [Jump](#roles) |
 | Getting Started | [Jump](#getting-started) |
 | More Examples | [Jump](#more-examples) |
 | Design Styles | [Jump](#design-styles) |
@@ -144,7 +144,7 @@ AI (Strategist role): Sure, before we begin I need to complete seven confirmatio
 
 ## Project Introduction
 
-PPT Master is an innovative AI-assisted visual content creation system that achieves a complete workflow from content planning to visual optimization through collaboration of four professional AI roles. The system not only supports generating business presentations that meet the standards of top consulting firms (such as McKinsey, Boston Consulting), but also supports various social media and marketing materials formats including Xiaohongshu posts, WeChat Moments posters, Instagram, and more.
+PPT Master is an innovative AI-assisted visual content creation system that achieves a complete workflow from content planning to visual optimization through collaboration of multiple professional AI roles. The system not only supports generating business presentations that meet the standards of top consulting firms (such as McKinsey, Boston Consulting), but also supports various social media and marketing materials formats including Xiaohongshu posts, WeChat Moments posters, Instagram, and more.
 
 ## Core Features
 
@@ -165,6 +165,13 @@ User Input Document
     ↓
 [Strategist] - Content Planning & Design Specifications
     ↓
+    ├─ Image Method = "C) AI Generated"?
+    │       │
+    │       YES → [Image_Generator] - Generate images to images/
+    │       │
+    │       NO ──────────────────────────────────────┐
+    │                                                │
+    ▼                                                ▼
 [Executor_General / Executor_Consultant / Executor_Consultant_Top] - SVG Code Generation
     ↓
 [Optimizer_CRAP] - Visual Optimization (Optional)
@@ -175,6 +182,8 @@ Post-processing Tools (User invoked)
     ├── finalize_svg.py    → svg_final/ (Embed icons + Fix image aspect ratio + Embed images + Text flattening + Round corners to Path)
     └── svg_to_pptx.py     → output.pptx (Export to PowerPoint)
 ```
+
+> **Note**: Image_Generator is a sequential step, only triggered when "AI Generated" images are selected. Images must be collected before entering Executor phase.
 
 ### Complete Workflow Diagram
 
@@ -227,7 +236,13 @@ graph TD
         Strategist --> SpecDoc([Design Specification & Content Outline]):::artifact
     end
 
-    SpecDoc --> SelectStyle{Select Style}
+    SpecDoc --> CheckImage{AI Generated Images?}
+    
+    %% Image Generation Stage
+    CheckImage -- Yes --> ImageGen[Role 1.5 Image Generator]:::role
+    ImageGen --> ImagesReady([Images in images/ folder]):::artifact
+    ImagesReady --> SelectStyle
+    CheckImage -- No --> SelectStyle{Select Style}
 
     %% Execution Stage
     subgraph Execution [Execution Stage - SVG Generation]
@@ -260,7 +275,7 @@ graph TD
     ToolPPT --> End([Output: .pptx Presentation]):::artifact
 ```
 
-## Four Roles
+## Roles
 
 ### 1️⃣ Strategist
 
@@ -289,6 +304,31 @@ graph TD
   - Top Consulting Style: Focus on professional expression (SCQA framework, Pyramid Principle, data contextualization)
 
 📄 [View Complete Role Definition](./roles/Strategist.md)
+
+### 1️⃣+ Image_Generator (Image Generator)
+
+**Responsibility**: AI image generation (conditionally triggered)  
+**Output**: Image files + optimized prompts
+
+**Trigger Condition**: Only called when user selects "C) AI Generated" for image method in Strategist's seven confirmations
+
+**Workflow Position**: After Strategist, before Executor (sequential, not parallel)
+
+**Core Capabilities**:
+
+- Analyze "Image Resource List" from design specifications
+- Generate optimized prompts for each image (also serves as image description/alt text)
+- Generate images through AI tools (automatic or manual)
+- Save images to project `images/` directory
+
+**Input**: Design specifications (with Image Resource List)
+
+**Output**:
+- Optimized image prompts
+- Generated image files
+- Updated Image Resource List
+
+📄 [View Complete Role Definition](./roles/Image_Generator.md)
 
 ### 2️⃣ Executor_General (General Executor)
 
@@ -571,6 +611,7 @@ ppt-master/
 ├── roles/                     # AI role definitions (Do not test/write examples in this directory)
 │   ├── README.md              # Role overview and workflow
 │   ├── Strategist.md          # Strategist role definition
+│   ├── Image_Generator.md     # Image Generator role definition (conditionally triggered)
 │   ├── Executor_General.md    # General Executor role definition
 │   ├── Executor_Consultant.md # General Consulting Executor role definition
 │   ├── Executor_Consultant_Top.md # Top Consulting Executor role definition (MBB Level)
@@ -723,13 +764,20 @@ A: SVG files can be:
 </details>
 
 <details>
-<summary><b>Q: What's the difference between the two executors?</b></summary>
+<summary><b>Q: What's the difference between the executors?</b></summary>
 
 A:
 
 - **Executor_General**: For general scenarios, provides flexible layout and rich visual choices
 - **Executor_Consultant**: For general consulting scenarios, clean and clear data visualization
 - **Executor_Consultant_Top**: For top consulting scenarios (MBB Level), uses 5 core expression techniques
+
+</details>
+
+<details>
+<summary><b>Q: When is Image_Generator used?</b></summary>
+
+A: Image_Generator is only triggered when you select "C) AI Generated" for the image method during Strategist's seven confirmations. It generates optimized prompts and images before the Executor phase, so Executor can directly reference the generated images.
 
 </details>
 
