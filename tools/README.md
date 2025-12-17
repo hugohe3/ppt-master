@@ -337,7 +337,311 @@ pip install python-pptx
 
 ---
 
-### 9. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
+### 9. svg_position_calculator.py — SVG 位置计算与验证工具
+
+图表坐标的**事前计算**和**事后验证**工具，帮助确保 SVG 元素位置准确无误。
+
+#### 核心功能
+
+| 功能 | 说明 |
+|------|------|
+| **analyze** | 分析 SVG 文件，提取所有图形元素的坐标信息 |
+| **calc** | 根据数据计算期望的图表坐标 |
+| **interactive** | 交互式引导计算（推荐新手使用） |
+| **from-json** | 从 JSON 配置文件批量计算 |
+| **validate** | 验证 SVG 坐标与期望值的偏差 |
+
+#### 支持的图表类型
+
+| 类型 | 计算内容 | 输出 |
+|------|----------|------|
+| **柱状图 (bar)** | 柱子 X/Y/宽/高、标签位置 | 坐标表格 |
+| **饼图 (pie)** | 扇区角度、弧线端点、标签位置 | 坐标表格 + Path d 属性 |
+| **雷达图 (radar)** | 多边形顶点、标签位置 | 坐标表格 + polygon points |
+| **折线图 (line)** | 数据点 SVG 坐标 | 坐标表格 + Path d 属性 |
+| **网格布局 (grid)** | 单元格位置和尺寸 | 坐标表格 |
+| **自定义折线** | 任意公式计算 | 坐标表格 + polyline points |
+
+---
+
+#### 命令详解
+
+##### 1. analyze — 分析 SVG 文件
+
+提取 SVG 中所有图形元素的位置信息，用于验证或调试。
+
+```bash
+python3 tools/svg_position_calculator.py analyze <svg文件>
+```
+
+**输出示例**:
+
+```
+======================================================================
+SVG 文件分析: slide_03_chart.svg
+======================================================================
+画布 viewBox: 0 0 1920 1200
+
+元素统计:
+  - rect 矩形: 18 个
+  - circle 圆形: 7 个
+  - polyline/polygon: 1 个
+  - path 路径: 2 个
+
+=== 矩形元素 (rect) ===
+序号    X         Y         宽度        高度
+1     0         0         1920      130
+2     190       285       200       530
+...
+
+=== 折线/多边形 (polyline/polygon) ===
+折线 1 (39 个点):
+  起始点: (210,431) → (250,425) → (290,433) → (330,377) → (370,517)
+  ... 共 39 个点
+```
+
+##### 2. calc — 快速计算坐标
+
+根据数据快速计算图表元素的期望坐标。
+
+**柱状图**:
+
+```bash
+python3 tools/svg_position_calculator.py calc bar \
+    --data "华东:185,华南:142,华北:128" \
+    --canvas ppt169 \
+    --bar-width 50
+```
+
+输出:
+```
+=== 柱状图坐标计算 ===
+画布: 1280×720
+图表区域: (140, 150) - (1160, 600)
+
+序号  标签          数值      X        Y        宽度     高度
+----  ----------  --------  -------  -------  -------  -------
+   1  华东             185.0    560.0    190.9     50.0    409.1
+   2  华南             142.0    625.0    286.0     50.0    314.0
+   3  华北             128.0    690.0    317.0     50.0    283.0
+```
+
+**饼图**:
+
+```bash
+python3 tools/svg_position_calculator.py calc pie \
+    --data "A:35,B:25,C:20,D:12,其他:8" \
+    --center 420,400 \
+    --radius 200 \
+    --start-angle -90
+```
+
+输出:
+```
+=== 饼图扇区计算 ===
+圆心: (420, 400) | 半径: 200
+
+序号  标签          百分比    起始角    终止角    标签X    标签Y
+----  ----------  --------  --------  --------  -------  -------
+   1  A              35.0%     -90.0     36.0     476.0    296.2
+   2  B              25.0%      36.0    126.0     508.3    443.8
+...
+
+=== Path d 属性 ===
+1. A: M 0,0 L 0.00,-200.00 A 200,200 0 0,1 161.80,-117.56 Z
+2. B: M 0,0 L 161.80,-117.56 A 200,200 0 0,1 117.56,161.80 Z
+...
+```
+
+**雷达图**:
+
+```bash
+python3 tools/svg_position_calculator.py calc radar \
+    --data "性能:90,安全:85,易用:75,价格:70,服务:80" \
+    --center 640,400 \
+    --radius 200
+```
+
+**折线图**:
+
+```bash
+python3 tools/svg_position_calculator.py calc line \
+    --data "0:50,10:80,20:120,30:95" \
+    --canvas ppt169 \
+    --y-range "0,150"
+```
+
+**网格布局**:
+
+```bash
+python3 tools/svg_position_calculator.py calc grid \
+    --rows 2 --cols 3 \
+    --canvas ppt169 \
+    --padding 20 --gap 20
+```
+
+##### 3. interactive — 交互式模式
+
+适合不熟悉命令行参数的用户，通过菜单引导完成计算。
+
+```bash
+python3 tools/svg_position_calculator.py interactive
+```
+
+菜单选项:
+```
+选择图表类型:
+  1. 柱状图 (bar)
+  2. 饼图 (pie)
+  3. 雷达图 (radar)
+  4. 折线图 (line)
+  5. 网格布局 (grid)
+  6. 自定义折线 (custom)    ← 支持自定义公式
+  0. 退出
+```
+
+**自定义折线（选项 6）** 特别适用于价格指数图等需要自定义坐标公式的场景:
+
+```
+=== 自定义折线计算 ===
+X起始值 [170]: 210
+X步长 [40]: 40
+Y基准值 [595]: 595
+Y缩放系数 [20]: 20
+参考基准值 [100]: 100
+
+公式: X = 210 + 序号 × 40
+      Y = 595 - (数值 - 100) × 20
+
+输入数据: 108.2,108.5,108.1,110.9,103.9,97.0
+
+序号    数值        X         Y
+----  ----------  --------  --------
+1     108.2       250       431
+2     108.5       290       425
+3     108.1       330       433
+4     110.9       370       377
+5     103.9       410       517
+6     97.0        450       655
+
+polyline points:
+250,431 290,425 330,433 370,377 410,517 450,655
+```
+
+##### 4. from-json — JSON 配置批量计算
+
+从 JSON 文件读取配置进行计算，适合批量处理或保存常用配置。
+
+```bash
+python3 tools/svg_position_calculator.py from-json config.json
+```
+
+**JSON 配置示例**:
+
+柱状图配置:
+```json
+{
+    "type": "bar",
+    "canvas": "ppt169",
+    "data": {
+        "华东": 185,
+        "华南": 142,
+        "华北": 128
+    }
+}
+```
+
+自定义折线配置:
+```json
+{
+    "type": "custom_line",
+    "base_x": 210,
+    "step_x": 40,
+    "base_y": 595,
+    "scale_y": 20,
+    "ref_value": 100,
+    "values": [108.2, 108.5, 108.1, 110.9, 103.9, 97.0]
+}
+```
+
+---
+
+#### 典型验证工作流
+
+当 AI 生成 SVG 图表后，可以使用此工具验证坐标准确性：
+
+1. **分析 SVG 文件**，提取实际坐标:
+   ```bash
+   python3 tools/svg_position_calculator.py analyze slide.svg
+   ```
+
+2. **根据原始数据计算期望坐标**（使用 calc 或 interactive）
+
+3. **对比期望坐标与实际坐标**，检查偏差
+
+4. **如有偏差，修正 SVG 文件**
+
+**示例：验证价格指数折线图**
+
+```bash
+# 1. 分析 SVG，查看 polyline points
+python3 tools/svg_position_calculator.py analyze slide_03_trend.svg
+
+# 2. 使用交互模式计算期望坐标（选择 6. 自定义折线）
+python3 tools/svg_position_calculator.py interactive
+
+# 3. 对比输出的 polyline points 与 SVG 中的实际值
+```
+
+---
+
+#### 坐标计算公式参考
+
+**柱状图**:
+```
+bar_x = chart_area.x_min + (chart_area.width - total_bars_width) / 2 + i * (bar_width + gap)
+bar_y = chart_area.y_max - (value / max_value) * chart_area.height
+bar_height = (value / max_value) * chart_area.height
+```
+
+**饼图弧线端点**:
+```
+angle_rad = angle_degrees × π / 180
+end_x = radius × cos(angle_rad)
+end_y = radius × sin(angle_rad)
+```
+
+**折线图（自定义公式）**:
+```
+X = base_x + index × step_x
+Y = base_y - (value - ref_value) × scale_y
+```
+
+---
+
+#### 常见问题
+
+**Q: 输出中文乱码怎么办？**
+
+A: 工具已自动处理 Windows 下的 UTF-8 编码问题。如仍有问题，请确保终端设置为 UTF-8:
+```bash
+chcp 65001
+```
+
+**Q: 如何验证复杂图表？**
+
+A: 对于复杂图表（如多系列柱状图），建议：
+1. 先用 `analyze` 提取所有元素
+2. 根据图表逻辑手动计算期望值
+3. 逐一对比验证
+
+**Q: 支持哪些画布格式？**
+
+A: 支持 `ppt169`、`ppt43`、`xiaohongshu`、`moments` 等，详见 `project_utils.py` 中的 `CANVAS_FORMATS`。
+
+---
+
+### 10. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
 
 解决 SVG 在 PowerPoint 中「转换为形状」时圆角丢失的问题。
 
@@ -488,4 +792,6 @@ pip install python-pptx
 
 ---
 
-_最后更新: 2025-12-12_
+_最后更新: 2025-12-17_
+
+_svg_position_calculator.py 文档更新: 2025-12-17_
