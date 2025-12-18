@@ -238,17 +238,20 @@ graph TD
 
     SpecDoc --> CheckImage{AI Generated Images?}
     
-    %% Image Generation Stage
-    CheckImage -- Yes --> ImageGen[Role 1.5 Image Generator]:::role
-    ImageGen --> ImagesReady([Images in images/ folder]):::artifact
-    ImagesReady --> SelectStyle
-    CheckImage -- No --> SelectStyle{Select Style}
+    %% Image Generation Stage (conditionally triggered)
+    subgraph ImageGenStage [Image Generation Stage - Conditionally Triggered]
+        CheckImage -- Yes --> ImageGen[Role 2 Image Generator]:::role
+        ImageGen -- Generate Images --> ImagesReady([Images in images/ folder]):::artifact
+    end
+
+    CheckImage -- No --> SelectStyle
+    ImagesReady --> SelectStyle{Select Style}
 
     %% Execution Stage
     subgraph Execution [Execution Stage - SVG Generation]
-        SelectStyle -- General Flexible --> ExecGen[Role 2 General Executor]:::role
-        SelectStyle -- General Consulting --> ExecCon[Role 3 Consulting Executor]:::role
-        SelectStyle -- Top Consulting --> ExecTop[Role 3+ Top Consulting Executor]:::role
+        SelectStyle -- General Flexible --> ExecGen[Role 3 General Executor]:::role
+        SelectStyle -- General Consulting --> ExecCon[Role 4 Consulting Executor]:::role
+        SelectStyle -- Top Consulting --> ExecTop[Role 4+ Top Consulting Executor]:::role
         
         ExecGen --> GenerateLoop
         ExecCon --> GenerateLoop
@@ -261,7 +264,7 @@ graph TD
 
     %% Optimization & Output
     subgraph Output [Optimization & Post-processing]
-        CheckQA -- Yes --> Optimizer[Role 4 CRAP Optimizer]:::role
+        CheckQA -- Yes --> Optimizer[Role 5 CRAP Optimizer]:::role
         Optimizer --> OptimizedSVG([Optimized SVG]):::artifact
         OptimizedSVG --> CheckQA
         
@@ -276,6 +279,8 @@ graph TD
 ```
 
 ## Roles
+
+> The system includes 6 professional roles: 1 Strategist + 1 Image Generator (conditionally triggered) + 3 Executor variants + 1 Optimizer
 
 ### 1️⃣ Strategist
 
@@ -305,7 +310,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Strategist.md)
 
-### 1️⃣+ Image_Generator (Image Generator)
+### 2️⃣ Image_Generator (Image Generator) - Conditionally Triggered
 
 **Responsibility**: AI image generation (conditionally triggered)  
 **Output**: Image files + optimized prompts
@@ -330,7 +335,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Image_Generator.md)
 
-### 2️⃣ Executor_General (General Executor)
+### 3️⃣ Executor_General (General Executor)
 
 **Responsibility**: Generate SVG code in general flexible style  
 **Output**: Single page SVG code
@@ -350,7 +355,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_General.md)
 
-### 3️⃣ Executor_Consultant (General Consulting Executor)
+### 4️⃣ Executor_Consultant (General Consulting Executor)
 
 **Responsibility**: Generate SVG code in general consulting style  
 **Output**: Business-level presentation pages
@@ -365,7 +370,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_Consultant.md)
 
-### 3️⃣+ Executor_Consultant_Top (Top Consulting Executor)
+### 5️⃣ Executor_Consultant_Top (Top Consulting Executor)
 
 **Responsibility**: Generate SVG code in top consulting style (MBB Level)  
 **Output**: Strategic-level presentation pages
@@ -384,7 +389,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_Consultant_Top.md)
 
-### 4️⃣ Optimizer_CRAP (CRAP Optimizer)
+### 6️⃣ Optimizer_CRAP (CRAP Optimizer)
 
 **Responsibility**: Optimize design based on CRAP principles  
 **Output**: Optimized SVG code (yh\_ prefix)
