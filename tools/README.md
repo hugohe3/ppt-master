@@ -258,7 +258,7 @@ python3 tools/svg_quality_checker.py examples/project --export
 
 - ✅ viewBox 属性存在且格式正确
 - ✅ 无 `<foreignObject>` 元素
-- ✅ 使用系统 UI 字体栈
+- ✅ 使用《设计规范》指定的字体
 - ✅ width/height 与 viewBox 一致
 - ✅ 文本使用 `<tspan>` 换行
 - ✅ 文件大小合理（< 500KB）
