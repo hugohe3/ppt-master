@@ -6,7 +6,7 @@
 
 [English](./README_EN.md) | 中文
 
-一个基于 AI 的智能视觉内容生成系统，通过四个专业角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
+一个基于 AI 的智能视觉内容生成系统，通过多角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
 
 > 🎴 **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) - 查看实际生成效果
 
@@ -114,7 +114,7 @@ AI（Strategist 角色）：好的，在开始之前我需要完成七项确认.
 | 项目简介 | [跳转](#项目简介) |
 | 核心特性 | [跳转](#核心特性) |
 | 系统架构 | [跳转](#系统架构) |
-| 四大角色 | [跳转](#四大角色) |
+| 核心角色 | [跳转](#核心角色) |
 | 快速开始 | [跳转](#快速开始) |
 | 更多示例 | [跳转](#更多示例) |
 | 设计风格 | [跳转](#设计风格) |
@@ -146,7 +146,7 @@ AI（Strategist 角色）：好的，在开始之前我需要完成七项确认.
 
 ## 项目简介
 
-PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个专业 AI 角色的协作，实现从内容策划到视觉优化的完整工作流。系统不仅支持生成符合顶尖咨询公司（如麦肯锡、波士顿咨询）标准的商业演示文稿，还支持小红书帖子、朋友圈海报、Instagram 等多种社交媒体和营销物料格式。
+PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过多角色协作（策略师、图片生成师、执行师、优化师），实现从内容策划到视觉优化的完整工作流。系统不仅支持生成符合顶尖咨询公司（如麦肯锡、波士顿咨询）标准的商业演示文稿，还支持小红书帖子、朋友圈海报、Instagram 等多种社交媒体和营销物料格式。
 
 ## 核心特性
 
@@ -166,7 +166,14 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过四个�
 用户输入文档
     ↓
 [Strategist] 策略师 - 内容规划与设计规范
-    ↓
+    │
+    ├─ 图片方式 = "AI 生成"?
+    │       │
+    │       YES → [Image_Generator] 图片生成师 - AI 图片生成 → 图片归集到 images/
+    │       │
+    │       NO ───────────────────────────────────────────────────┐
+    │                                                             │
+    ▼                                                             ▼
 [Executor_General / Executor_Consultant / Executor_Consultant_Top] 执行师 - SVG代码生成
     ↓
 [Optimizer_CRAP] 优化师 - 视觉优化（可选）
@@ -177,6 +184,8 @@ SVG 文件 (svg_output/)
     ├── finalize_svg.py    → svg_final/（嵌入图标 + 修复图片宽高比 + 嵌入图片 + 文本扁平化 + 圆角转Path）
     └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
 ```
+
+> **注意**: Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段。
 
 ### 完整工作流程图
 
@@ -192,7 +201,7 @@ graph TD
     %% 流程入口
     RawDoc([原始参考资料 PDF/Word]) --> Mineru
 
-    %% 准备阶段 (新增)
+    %% 准备阶段
     subgraph Preparation [准备阶段 Resources Prep]
         Mineru[Mineru 智能转换工具]:::tool
         
@@ -215,7 +224,7 @@ graph TD
     MD --> Strategist
     IconReq --> Strategist
 
-    %% 规划阶段 (原有)
+    %% 规划阶段
     subgraph Planning [规划阶段 Content & Design]
         Strategist[Role 1 策略师: 内容与规范]:::role
         
@@ -229,13 +238,22 @@ graph TD
         Strategist --> SpecDoc([设计规范与内容大纲]):::artifact
     end
 
-    SpecDoc --> SelectStyle{选择风格}
+    SpecDoc --> CheckImage{图片方式 = AI 生成?}
+
+    %% 图片生成阶段（条件触发）
+    subgraph ImageGen [图片生成阶段 - 条件触发]
+        CheckImage -- 是 --> ImageGenerator[Role 2 图片生成师]:::role
+        ImageGenerator -- 生成图片 --> ImagesReady([图片归集到 images/]):::artifact
+    end
+
+    CheckImage -- 否 --> SelectStyle
+    ImagesReady --> SelectStyle{选择风格}
 
     %% 执行阶段
     subgraph Execution [执行阶段 SVG Generation]
-        SelectStyle -- 通用灵活 --> ExecGen[Role 2 通用执行师]:::role
-        SelectStyle -- 一般咨询 --> ExecCon[Role 3 咨询执行师]:::role
-        SelectStyle -- 顶级咨询 --> ExecTop[Role 3+ 顶级咨询执行师]:::role
+        SelectStyle -- 通用灵活 --> ExecGen[Role 3 通用执行师]:::role
+        SelectStyle -- 一般咨询 --> ExecCon[Role 4 咨询执行师]:::role
+        SelectStyle -- 顶级咨询 --> ExecTop[Role 4+ 顶级咨询执行师]:::role
         
         ExecGen --> GenerateLoop
         ExecCon --> GenerateLoop
@@ -248,7 +266,7 @@ graph TD
 
     %% 优化与输出
     subgraph Output [优化与后处理]
-        CheckQA -- 是 --> Optimizer[Role 4 CRAP 优化师]:::role
+        CheckQA -- 是 --> Optimizer[Role 5 CRAP 优化师]:::role
         Optimizer --> OptimizedSVG([优化后的 SVG]):::artifact
         OptimizedSVG --> CheckQA
         
@@ -262,7 +280,9 @@ graph TD
     ToolPPT --> End([输出: .pptx 演示文稿]):::artifact
 ```
 
-## 四大角色
+## 核心角色
+
+> 系统包含 6 个专业角色：1 个策略师 + 1 个图片生成师（条件触发）+ 3 个执行师变体 + 1 个优化师
 
 ### 1️⃣ Strategist (策略师)
 
@@ -292,7 +312,24 @@ graph TD
 
 📄 [查看完整角色定义](./roles/Strategist.md)
 
-### 2️⃣ Executor_General (通用执行师)
+### 2️⃣ Image_Generator (图片生成师) - 条件触发
+
+**职责**: AI 图片生成（当用户选择「AI 生成」图片方式时触发）  
+**输出**: 生成的图片文件，归集到 `images/` 目录
+
+**核心能力**:
+
+- **触发条件**: 仅当 Strategist 阶段用户选择图片方式为「C) AI 生成」时激活
+- **提示词优化**: 为每张待生成图片创建优化的 AI 图片生成提示词
+- **图片生成**: 使用 AI 图片生成工具（如 Gemini、Banana 等）生成图片
+- **资源归集**: 将生成的图片保存到项目的 `images/` 目录
+- **串行流程**: 图片生成完成后才进入 Executor 阶段
+
+> ⚠️ **注意**: 这是一个串行环节，必须在图片归集完成后才能进入 Executor 阶段
+
+📄 [查看完整角色定义](./roles/Image_Generator.md)
+
+### 3️⃣ Executor_General (通用执行师)
 
 **职责**: 生成通用灵活风格的 SVG 代码  
 **输出**: 单页 SVG 代码
@@ -312,7 +349,7 @@ graph TD
 
 📄 [查看完整角色定义](./roles/Executor_General.md)
 
-### 3️⃣ Executor_Consultant (一般咨询执行师)
+### 4️⃣ Executor_Consultant (一般咨询执行师)
 
 **职责**: 生成一般咨询风格的 SVG 代码  
 **输出**: 商业级演示文稿页面
@@ -327,7 +364,7 @@ graph TD
 
 📄 [查看完整角色定义](./roles/Executor_Consultant.md)
 
-### 3️⃣+ Executor_Consultant_Top (顶级咨询执行师)
+### 5️⃣ Executor_Consultant_Top (顶级咨询执行师)
 
 **职责**: 生成顶级咨询风格（MBB 级）的 SVG 代码  
 **输出**: 战略级演示文稿页面
@@ -346,7 +383,7 @@ graph TD
 
 📄 [查看完整角色定义](./roles/Executor_Consultant_Top.md)
 
-### 4️⃣ Optimizer_CRAP (CRAP 优化师)
+### 6️⃣ Optimizer_CRAP (CRAP 优化师)
 
 **职责**: 基于 CRAP 原则优化设计  
 **输出**: 优化后的 SVG 代码（yh\_前缀）
@@ -573,6 +610,7 @@ ppt-master/
 ├── roles/                     # AI 角色定义（请勿在此目录测试/写入示例）
 │   ├── README.md              # 角色概览与工作流程
 │   ├── Strategist.md          # 策略师角色定义
+│   ├── Image_Generator.md     # 图片生成师角色定义（条件触发）
 │   ├── Executor_General.md    # 通用执行师角色定义
 │   ├── Executor_Consultant.md # 一般咨询执行师角色定义
 │   ├── Executor_Consultant_Top.md # 顶级咨询执行师角色定义（MBB 级）
@@ -725,13 +763,20 @@ A: SVG 文件可以：
 </details>
 
 <details>
-<summary><b>Q: 两种执行师有什么区别？</b></summary>
+<summary><b>Q: 三种执行师有什么区别？</b></summary>
 
 A:
 
 - **Executor_General**: 适用于通用场景，提供灵活的布局和丰富的视觉选择
 - **Executor_Consultant**: 适用于一般咨询场景，简洁清晰的数据可视化
 - **Executor_Consultant_Top**: 适用于顶级咨询场景（MBB 级），采用 5 大核心表达技巧
+
+</details>
+
+<details>
+<summary><b>Q: Image_Generator 什么时候使用？</b></summary>
+
+A: Image_Generator 仅在 Strategist 的七项确认中选择图片方式为「C) AI 生成」时触发。它会在 Executor 阶段之前生成优化的图片提示词和图片，然后 Executor 可以直接引用生成的图片。
 
 </details>
 
