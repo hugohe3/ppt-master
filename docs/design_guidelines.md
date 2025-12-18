@@ -129,21 +129,67 @@ H3 - 章节标题:     28-32px, SemiBold
 
 ### 字体选择
 
-#### 推荐字体栈
+#### 字体分类体系
+
+本系统支持中英文双语字体，按风格分为以下类别：
+
+**中文字体**
+
+| 类别 | 代号 | 可选字体 | 适用场景 |
+|------|:----:|---------|----------|
+| 无衬线黑体 | A | 微软雅黑、黑体、幼圆、华文细黑 | 现代商务、正文（默认） |
+| 衬线宋体 | B | 宋体、新宋体、仿宋、华文宋体 | 政务公文、正式报告 |
+| 书法楷体 | C | 楷体、华文楷体、华文行楷 | 文化艺术、人文类 |
+| 标题黑体 | D | 黑体、华文中宋、思源黑体 Bold | 大标题、强调 |
+| 手写艺术 | E | 华文行楷、华文新魏、隶书 | 创意、个性化 |
+
+**英文字体**
+
+| 类别 | 代号 | 可选字体 | 适用场景 |
+|------|:----:|---------|----------|
+| 无衬线现代 | F | Arial, Calibri, Segoe UI, Helvetica | 现代商务（默认） |
+| 衬线经典 | G | Times New Roman, Georgia, Cambria | 正式文档、学术 |
+| 标题展示 | H | Impact, Arial Black, Bebas Neue | 大标题、海报 |
+| 手写风格 | I | Comic Sans MS, Segoe Script, Ink Free | 轻松活泼 |
+| 等宽代码 | J | Consolas, Cascadia Code, Courier New | 数据、代码 |
+
+#### 推荐 font-family
 
 ```css
-/* 西文 */
-system-ui, -apple-system, BlinkMacSystemFont,
-"Segoe UI", Roboto, "Helvetica Neue", Arial
+/* 中文字体 */
+"Microsoft YaHei", "微软雅黑", sans-serif       /* A: 微软雅黑 */
+"SimHei", "黑体", sans-serif                    /* A/D: 黑体 */
+"SimSun", "宋体", serif                         /* B: 宋体 */
+"FangSong", "仿宋", serif                       /* B: 仿宋 */
+"KaiTi", "楷体", serif                          /* C: 楷体 */
+"STXingkai", "华文行楷", cursive                /* C/E: 华文行楷 */
 
-/* 中文 */
-"PingFang SC", "Microsoft YaHei",
-"Source Han Sans CN", "Noto Sans CJK SC"
-
-/* 数字（等宽） */
-"SF Mono", Monaco, "Cascadia Code",
-"Courier New", monospace
+/* 英文字体 */
+"Arial", sans-serif                             /* F: Arial */
+"Calibri", sans-serif                           /* F: Calibri */
+"Times New Roman", serif                        /* G: Times */
+"Georgia", serif                                /* G: Georgia */
+"Impact", sans-serif                            /* H: Impact */
+"Consolas", monospace                           /* J: 等宽 */
 ```
+
+#### 中英文混排推荐
+
+| 场景 | 中文字体 | 英文字体 |
+|------|---------|---------|
+| 现代商务 | 微软雅黑 (A) | Calibri / Arial (F) |
+| 政务公文 | 宋体 (B) | Times New Roman (G) |
+| 文化艺术 | 楷体 (C) | Georgia (G) |
+| 科技互联网 | 黑体 (D) | Segoe UI (F) |
+
+#### 字体角色
+
+| 角色 | 用途 | 中文推荐 | 英文推荐 |
+|------|------|----------|----------|
+| 标题字体 | H1/H2 大标题 | A/C/D/E | F/G/H |
+| 正文字体 | 段落、要点 | A/B | F/G |
+| 强调字体 | KPI、关键词 | D | H/J |
+| 注释字体 | 脚注、说明 | A/B | F/G |
 
 ### 行高和间距
 

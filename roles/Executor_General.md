@@ -20,7 +20,20 @@
   - viewBox 必须与画布尺寸一致
   - **严禁使用 `<foreignObject>`**，用 `<tspan>` 手动换行
   - 使用 `<rect>` 定义背景色
-  - 优先使用系统 UI 字体栈
+  - 使用《设计规范与内容大纲》中指定的字体方案
+
+### 字体使用
+
+根据规范中的字体方案，为不同文本角色应用对应字体：
+
+| 角色 | 中文推荐 | 英文推荐 |
+|------|----------|----------|
+| 标题字体 | 微软雅黑/楷体/黑体 | Arial/Georgia |
+| 正文字体 | 微软雅黑/宋体 | Calibri/Times |
+| 强调字体 | 黑体 | Arial Black/Consolas |
+| 注释字体 | 微软雅黑/宋体 | Arial/Times |
+
+详细字体分类参见 [design_guidelines.md](../docs/design_guidelines.md#字体选择)
 
 ## PPT 兼容性规则（必须遵守）
 
