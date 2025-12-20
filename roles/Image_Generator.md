@@ -185,6 +185,14 @@ clean white background, professional business illustration
 - 用户自行到 AI 平台（Midjourney、DALL-E、Stable Diffusion、文心一格、通义万相）生成
 - 用户将生成的图片放入 `项目/images/` 目录
 
+**方式三：使用 Gemini 生成**（推荐高分辨率）
+- 在 [Gemini](https://gemini.google.com/) 中生成图片
+- 选择 **Download full size** 下载高分辨率版本
+- ⚠️ **水印处理**: Gemini 生成的图片右下角有星星水印，使用以下工具去除：
+  - 本项目工具: `python3 tools/gemini_watermark_remover.py <图片路径>`
+  - 或使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover)
+- 将处理后的图片放入 `项目/images/` 目录
+
 ### 4.4 验证阶段
 
 - 确认所有图片已保存到 `images/` 目录

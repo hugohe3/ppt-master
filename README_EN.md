@@ -25,6 +25,8 @@ An AI-powered intelligent visual content generation system that transforms sourc
 | [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | Microsoft official solution |
 | [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic official CLI tool |
 
+> 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution than Antigravity's direct generation. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `tools/gemini_watermark_remover.py`.
+
 ### Three Steps to Start
 
 ```

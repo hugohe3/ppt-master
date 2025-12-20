@@ -25,7 +25,7 @@
 | [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 微软官方方案 |
 | [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic 官方 CLI 工具 |
 
-> 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。
+> 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `tools/gemini_watermark_remover.py` 去除。
 
 ### 三步开始
 
