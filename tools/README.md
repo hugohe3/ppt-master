@@ -736,6 +736,60 @@ pip install Pillow  # 用于读取图片尺寸（推荐安装）
 
 ---
 
+### 12. gemini_watermark_remover.py — Gemini 水印去除工具
+
+去除 Gemini 生成图片右下角的水印 Logo。使用逆向混合算法还原原始像素。
+
+**功能**:
+
+- 自动检测水印尺寸（大图 96px，小图 48px）
+- 支持 PNG、JPG、JPEG 格式
+- 使用逆向混合算法精确还原原始像素
+- 输出文件默认添加 `_unwatermarked` 后缀
+
+**用法**:
+
+```bash
+# 处理单张图片
+python3 tools/gemini_watermark_remover.py <图片路径>
+
+# 指定输出文件
+python3 tools/gemini_watermark_remover.py <图片路径> -o 输出路径.png
+
+# 静默模式
+python3 tools/gemini_watermark_remover.py <图片路径> -q
+```
+
+**示例**:
+
+```bash
+# 处理 Gemini 生成的图片
+python3 tools/gemini_watermark_remover.py projects/demo/images/bg_01.png
+
+# 指定输出路径
+python3 tools/gemini_watermark_remover.py image.jpg -o image_clean.jpg
+```
+
+**水印检测规则**:
+
+| 图片尺寸 | 水印尺寸 | 边距 |
+|----------|----------|------|
+| > 1024×1024 | 96×96 | 64px |
+| ≤ 1024×1024 | 48×48 | 32px |
+
+**依赖**:
+
+```bash
+pip install Pillow numpy
+```
+
+**注意**:
+
+- 此工具需要 `tools/assets/` 目录下的 `bg_48.png` 和 `bg_96.png` 水印背景图
+- 处理后的图片会在原位置生成，添加 `_unwatermarked` 后缀
+
+---
+
 ## 工作流集成
 
 ### 典型工作流程
@@ -802,6 +856,8 @@ python3 tools/svg_quality_checker.py --all examples --export
 **可选依赖**:
 
 - `python-pptx` — SVG 转 PPTX 功能需要
+- `Pillow` — 图片宽高比修复、水印去除功能需要
+- `numpy` — 水印去除功能需要
 
 安装依赖：
 
@@ -837,6 +893,7 @@ pip install python-pptx
 
 ---
 
-_最后更新: 2025-12-17_
+_最后更新: 2025-12-20_
 
-_svg_position_calculator.py 文档更新: 2025-12-17_
+_gemini_watermark_remover.py 文档更新: 2025-12-20_
+
