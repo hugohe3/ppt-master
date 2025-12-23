@@ -62,6 +62,14 @@ except ImportError:
     def get_project_info(path):
         return {'format': 'unknown', 'name': Path(path).name}
 
+# 导入动画模块
+try:
+    from pptx_animations import create_transition_xml, TRANSITIONS
+    ANIMATIONS_AVAILABLE = True
+except ImportError:
+    ANIMATIONS_AVAILABLE = False
+    TRANSITIONS = {}
+
 
 # EMU 转换常量
 EMU_PER_INCH = 914400
@@ -165,8 +173,36 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     return sorted(svg_dir.glob('*.svg')), dir_name
 
 
-def create_slide_xml_with_svg(slide_num: int, svg_rid: str, width_emu: int, height_emu: int) -> str:
-    """创建包含 SVG 图片的幻灯片 XML"""
+def create_slide_xml_with_svg(
+    slide_num: int, 
+    svg_rid: str, 
+    width_emu: int, 
+    height_emu: int,
+    transition: Optional[str] = None,
+    transition_duration: float = 0.5,
+    auto_advance: Optional[float] = None
+) -> str:
+    """
+    创建包含 SVG 图片的幻灯片 XML
+    
+    Args:
+        slide_num: 幻灯片序号
+        svg_rid: SVG 关系 ID
+        width_emu: 宽度（EMU）
+        height_emu: 高度（EMU）
+        transition: 切换效果名称
+        transition_duration: 切换持续时间（秒）
+        auto_advance: 自动翻页间隔（秒）
+    """
+    # 生成切换效果 XML
+    transition_xml = ''
+    if transition and ANIMATIONS_AVAILABLE:
+        transition_xml = '\n' + create_transition_xml(
+            effect=transition,
+            duration=transition_duration,
+            advance_after=auto_advance
+        )
+    
     return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
        xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -214,7 +250,7 @@ def create_slide_xml_with_svg(slide_num: int, svg_rid: str, width_emu: int, heig
   </p:cSld>
   <p:clrMapOvr>
     <a:masterClrMapping/>
-  </p:clrMapOvr>
+  </p:clrMapOvr>{transition_xml}
 </p:sld>'''
 
 
@@ -231,9 +267,23 @@ def create_pptx_with_native_svg(
     svg_files: List[Path],
     output_path: Path,
     canvas_format: Optional[str] = None,
-    verbose: bool = True
+    verbose: bool = True,
+    transition: Optional[str] = None,
+    transition_duration: float = 0.5,
+    auto_advance: Optional[float] = None
 ) -> bool:
-    """创建包含原生 SVG 的 PPTX 文件"""
+    """
+    创建包含原生 SVG 的 PPTX 文件
+    
+    Args:
+        svg_files: SVG 文件列表
+        output_path: 输出路径
+        canvas_format: 画布格式
+        verbose: 是否输出详细信息
+        transition: 切换效果 (fade/push/wipe/split/reveal/cover/random)
+        transition_duration: 切换持续时间（秒）
+        auto_advance: 自动翻页间隔（秒）
+    """
     if not svg_files:
         print("错误: 没有找到 SVG 文件")
         return False
@@ -256,6 +306,9 @@ def create_pptx_with_native_svg(
     if verbose:
         print(f"  幻灯片尺寸: {pixel_width} x {pixel_height} px")
         print(f"  SVG 文件数: {len(svg_files)}")
+        if transition:
+            trans_name = TRANSITIONS.get(transition, {}).get('name', transition) if TRANSITIONS else transition
+            print(f"  切换效果: {trans_name}")
         print()
     
     # 创建临时目录
@@ -298,7 +351,12 @@ def create_pptx_with_native_svg(
                 
                 # 更新幻灯片 XML
                 slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
-                slide_xml = create_slide_xml_with_svg(slide_num, svg_rid, width_emu, height_emu)
+                slide_xml = create_slide_xml_with_svg(
+                    slide_num, svg_rid, width_emu, height_emu,
+                    transition=transition,
+                    transition_duration=transition_duration,
+                    auto_advance=auto_advance
+                )
                 with open(slide_xml_path, 'w', encoding='utf-8') as f:
                     f.write(slide_xml)
                 
@@ -353,19 +411,29 @@ def create_pptx_with_native_svg(
 
 
 def main():
+    # 构建切换效果选项列表
+    transition_choices = list(TRANSITIONS.keys()) if TRANSITIONS else ['fade', 'push', 'wipe', 'split', 'reveal', 'cover', 'random']
+    
     parser = argparse.ArgumentParser(
         description='PPT Master - SVG 转 PPTX 工具（原生 SVG 嵌入）',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='''
+        epilog=f'''
 示例:
     %(prog)s examples/ppt169_demo -s final    # 推荐：使用后处理完成的版本
     %(prog)s examples/ppt169_demo             # 使用原始版本
     %(prog)s examples/ppt169_demo -o presentation.pptx
+    
+    # 添加页面切换效果
+    %(prog)s examples/ppt169_demo --transition fade
+    %(prog)s examples/ppt169_demo -t push --transition-duration 1.0
 
 SVG 来源目录 (-s):
     output   - svg_output（原始版本）
     final    - svg_final（后处理完成，推荐）
     <任意名> - 直接指定项目下的子目录名
+
+切换效果 (-t/--transition):
+    {', '.join(transition_choices)}
 
 特点:
     - SVG 以原生矢量格式嵌入，保持可编辑性
@@ -379,6 +447,14 @@ SVG 来源目录 (-s):
                         help='SVG 来源: output/final 或任意子目录名 (推荐 final)')
     parser.add_argument('-f', '--format', type=str, choices=list(CANVAS_FORMATS.keys()), default=None, help='指定画布格式')
     parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
+    
+    # 切换效果参数
+    parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
+                        help='页面切换效果 (默认: 无)')
+    parser.add_argument('--transition-duration', type=float, default=0.5,
+                        help='切换持续时间/秒 (默认: 0.5)')
+    parser.add_argument('--auto-advance', type=float, default=None,
+                        help='自动翻页间隔/秒 (默认: 手动翻页)')
     
     args = parser.parse_args()
     
@@ -425,7 +501,10 @@ SVG 来源目录 (-s):
         svg_files,
         output_path,
         canvas_format=canvas_format,
-        verbose=verbose
+        verbose=verbose,
+        transition=args.transition,
+        transition_duration=args.transition_duration,
+        auto_advance=args.auto_advance
     )
     
     sys.exit(0 if success else 1)

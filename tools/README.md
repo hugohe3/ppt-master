@@ -290,6 +290,7 @@ python3 tools/svg_quality_checker.py examples/project --export
 - 自动检测画布格式并设置幻灯片尺寸
 - 支持使用 svg_output 或 svg_final 目录
 - SVG 在 PowerPoint 中保持可编辑
+- **支持页面切换动画和入场动画**
 
 **用法**:
 
@@ -303,9 +304,32 @@ python3 tools/svg_to_pptx.py <项目路径>
 # 指定输出文件
 python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
 
+# 添加页面切换效果
+python3 tools/svg_to_pptx.py <项目路径> -t fade --transition-duration 1.0
+
 # 静默模式
 python3 tools/svg_to_pptx.py <项目路径> -s final -q
 ```
+
+**切换效果参数**:
+
+| 参数 | 说明 | 可选值 |
+|------|------|--------|
+| `-t`, `--transition` | 页面切换效果 | fade, push, wipe, split, reveal, cover, random |
+| `--transition-duration` | 切换持续时间（秒，默认 0.5） | 任意正数 |
+| `--auto-advance` | 自动翻页间隔（秒） | 任意正数 |
+
+**切换效果说明**:
+
+| 效果 | 说明 |
+|------|------|
+| fade | 淡入淡出 |
+| push | 推入 |
+| wipe | 擦除 |
+| split | 分割 |
+| reveal | 揭示 |
+| cover | 覆盖 |
+| random | 随机 |
 
 **SVG 来源目录 (`-s`)**:
 
@@ -318,9 +342,12 @@ python3 tools/svg_to_pptx.py <项目路径> -s final -q
 **示例**:
 
 ```bash
-# 推荐流程：先后处理，再导出
+# 推荐流程：先后处理，再导出（带切换效果）
 python3 tools/finalize_svg.py examples/ppt169_demo
-python3 tools/svg_to_pptx.py examples/ppt169_demo -s final
+python3 tools/svg_to_pptx.py examples/ppt169_demo -s final -t fade
+
+# 自动播放演示（3秒切换）
+python3 tools/svg_to_pptx.py examples/ppt169_demo -s final -t fade --auto-advance 3
 ```
 
 **依赖**:
@@ -334,6 +361,7 @@ pip install python-pptx
 - SVG 以原生矢量格式嵌入，保持可编辑性
 - 需要 PowerPoint 2016+ 才能正确显示
 - 文件体积比 PNG 方案小很多
+- 切换效果默认关闭，需要用户显式启用
 
 ---
 
