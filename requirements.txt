@@ -10,8 +10,19 @@
 # SVG 转 PPTX 工具 (tools/svg_to_pptx.py)
 # ─────────────────────────────────────────────────────────────
 # 用于将 SVG 文件批量转换为 PowerPoint 演示文稿
-# SVG 以原生矢量格式嵌入，需要 PowerPoint 2016+ 查看
+# 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
 python-pptx>=0.6.21
+
+# Office 兼容模式依赖（二选一，优先使用 cairosvg）
+# 用于将 SVG 转换为 PNG 后备图片，确保 Office LTSC 2021 等版本正常显示
+#
+# 方案 A: CairoSVG（推荐，渐变/滤镜完整，约 25MB）
+#   pip install cairosvg
+#   macOS 需先: brew install cairo
+#
+# 方案 B: svglib（轻量，约 5MB，部分渐变可能丢失）
+svglib>=1.5.0
+reportlab>=4.0.0
 
 # ─────────────────────────────────────────────────────────────
 # 图片处理工具
