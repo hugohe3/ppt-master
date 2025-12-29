@@ -70,6 +70,30 @@ except ImportError:
     ANIMATIONS_AVAILABLE = False
     TRANSITIONS = {}
 
+# SVG 转 PNG 库检测（用于 Office 兼容模式）
+# 优先使用 CairoSVG（渲染质量更好），降级到 svglib
+PNG_RENDERER = None  # 'cairosvg' | 'svglib' | None
+
+try:
+    import cairosvg
+    PNG_RENDERER = 'cairosvg'
+except ImportError:
+    try:
+        from svglib.svglib import svg2rlg
+        from reportlab.graphics import renderPM
+        PNG_RENDERER = 'svglib'
+    except ImportError:
+        pass
+
+def get_png_renderer_info() -> tuple:
+    """获取 PNG 渲染器信息"""
+    if PNG_RENDERER == 'cairosvg':
+        return ('cairosvg', '(渐变/滤镜完整)', None)
+    elif PNG_RENDERER == 'svglib':
+        return ('svglib', '(部分渐变可能丢失)', '安装 cairosvg 可获得更好效果: pip install cairosvg')
+    else:
+        return (None, '(未安装)', '安装方法: pip install cairosvg 或 pip install svglib reportlab')
+
 
 # EMU 转换常量
 EMU_PER_INCH = 914400
@@ -133,6 +157,56 @@ def detect_format_from_svg(svg_path: Path) -> Optional[str]:
     return None
 
 
+def convert_svg_to_png(svg_path: Path, png_path: Path, width: int = None, height: int = None) -> bool:
+    """
+    将 SVG 转换为 PNG
+    
+    Args:
+        svg_path: SVG 文件路径
+        png_path: 输出 PNG 文件路径
+        width: 输出宽度（像素）
+        height: 输出高度（像素）
+    
+    Returns:
+        是否成功转换
+    """
+    if PNG_RENDERER is None:
+        return False
+    
+    try:
+        if PNG_RENDERER == 'cairosvg':
+            # 使用 CairoSVG（渲染质量更好）
+            cairosvg.svg2png(
+                url=str(svg_path),
+                write_to=str(png_path),
+                output_width=width,
+                output_height=height
+            )
+            return True
+        
+        elif PNG_RENDERER == 'svglib':
+            # 使用 svglib（轻量级，但渐变支持有限）
+            drawing = svg2rlg(str(svg_path))
+            if drawing is None:
+                print(f"  警告: 无法解析 SVG ({svg_path.name})")
+                return False
+            
+            # 渲染为 PNG
+            renderPM.drawToFile(
+                drawing,
+                str(png_path),
+                fmt="PNG",
+                configPIL={'quality': 95}
+            )
+            return True
+        
+    except Exception as e:
+        print(f"  警告: SVG 转 PNG 失败 ({svg_path.name}): {e}")
+        return False
+    
+    return False
+
+
 def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Path], str]:
     """
     查找项目中的 SVG 文件
@@ -175,24 +249,28 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
 
 def create_slide_xml_with_svg(
     slide_num: int, 
+    png_rid: str,
     svg_rid: str, 
     width_emu: int, 
     height_emu: int,
     transition: Optional[str] = None,
     transition_duration: float = 0.5,
-    auto_advance: Optional[float] = None
+    auto_advance: Optional[float] = None,
+    use_compat_mode: bool = True
 ) -> str:
     """
     创建包含 SVG 图片的幻灯片 XML
     
     Args:
         slide_num: 幻灯片序号
+        png_rid: PNG 后备图片关系 ID
         svg_rid: SVG 关系 ID
         width_emu: 宽度（EMU）
         height_emu: 高度（EMU）
         transition: 切换效果名称
         transition_duration: 切换持续时间（秒）
         auto_advance: 自动翻页间隔（秒）
+        use_compat_mode: 是否使用兼容模式（PNG + SVG 双格式）
     """
     # 生成切换效果 XML
     transition_xml = ''
@@ -202,6 +280,19 @@ def create_slide_xml_with_svg(
             duration=transition_duration,
             advance_after=auto_advance
         )
+    
+    # 兼容模式：PNG 主图片 + SVG 扩展（Office 官方推荐）
+    if use_compat_mode:
+        blip_xml = f'''<a:blip r:embed="{png_rid}">
+            <a:extLst>
+              <a:ext uri="{{96DAC541-7B7A-43D3-8B79-37D633B846F1}}">
+                <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="{svg_rid}"/>
+              </a:ext>
+            </a:extLst>
+          </a:blip>'''
+    else:
+        # 纯 SVG 模式（仅新版 Office 支持）
+        blip_xml = f'<a:blip r:embed="{svg_rid}"/>'
     
     return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
@@ -231,7 +322,7 @@ def create_slide_xml_with_svg(
           <p:nvPr/>
         </p:nvPicPr>
         <p:blipFill>
-          <a:blip r:embed="{svg_rid}"/>
+          {blip_xml}
           <a:stretch>
             <a:fillRect/>
           </a:stretch>
@@ -254,9 +345,26 @@ def create_slide_xml_with_svg(
 </p:sld>'''
 
 
-def create_slide_rels_xml(svg_rid: str, svg_filename: str) -> str:
-    """创建幻灯片关系文件 XML"""
-    return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+def create_slide_rels_xml(png_rid: str, png_filename: str, svg_rid: str, svg_filename: str, use_compat_mode: bool = True) -> str:
+    """
+    创建幻灯片关系文件 XML
+    
+    Args:
+        png_rid: PNG 图片关系 ID
+        png_filename: PNG 文件名
+        svg_rid: SVG 关系 ID  
+        svg_filename: SVG 文件名
+        use_compat_mode: 是否使用兼容模式
+    """
+    if use_compat_mode:
+        return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+  <Relationship Id="{png_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{png_filename}"/>
+  <Relationship Id="{svg_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{svg_filename}"/>
+</Relationships>'''
+    else:
+        return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
   <Relationship Id="{svg_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{svg_filename}"/>
@@ -270,7 +378,8 @@ def create_pptx_with_native_svg(
     verbose: bool = True,
     transition: Optional[str] = None,
     transition_duration: float = 0.5,
-    auto_advance: Optional[float] = None
+    auto_advance: Optional[float] = None,
+    use_compat_mode: bool = True
 ) -> bool:
     """
     创建包含原生 SVG 的 PPTX 文件
@@ -283,10 +392,19 @@ def create_pptx_with_native_svg(
         transition: 切换效果 (fade/push/wipe/split/reveal/cover/random)
         transition_duration: 切换持续时间（秒）
         auto_advance: 自动翻页间隔（秒）
+        use_compat_mode: 使用 Office 兼容模式（PNG + SVG 双格式，默认开启）
     """
     if not svg_files:
         print("错误: 没有找到 SVG 文件")
         return False
+    
+    # 检查兼容模式依赖
+    renderer_name, renderer_status, renderer_hint = get_png_renderer_info()
+    if use_compat_mode and PNG_RENDERER is None:
+        print("警告: 未安装 PNG 渲染库，无法使用兼容模式")
+        print(f"  {renderer_hint}")
+        print("  将使用纯 SVG 模式（可能在 Office LTSC 2021 等版本中不显示）")
+        use_compat_mode = False
     
     # 自动检测画布格式
     if canvas_format is None:
@@ -306,6 +424,11 @@ def create_pptx_with_native_svg(
     if verbose:
         print(f"  幻灯片尺寸: {pixel_width} x {pixel_height} px")
         print(f"  SVG 文件数: {len(svg_files)}")
+        if use_compat_mode:
+            print(f"  兼容模式: 开启 (PNG + SVG 双格式)")
+            print(f"  PNG 渲染: {renderer_name} {renderer_status}")
+        else:
+            print(f"  兼容模式: 关闭 (纯 SVG)")
         if transition:
             trans_name = TRANSITIONS.get(transition, {}).get('name', transition) if TRANSITIONS else transition
             print(f"  切换效果: {trans_name}")
@@ -340,22 +463,48 @@ def create_pptx_with_native_svg(
         
         # 处理每个 SVG 文件
         success_count = 0
+        png_generated = False
+        
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
             svg_filename = f'image{i}.svg'
-            svg_rid = 'rId2'
+            png_filename = f'image{i}.png'
+            png_rid = 'rId2'
+            svg_rid = 'rId3' if use_compat_mode else 'rId2'
             
             try:
                 # 复制 SVG 到 media 目录
                 shutil.copy(svg_path, media_dir / svg_filename)
                 
+                # 兼容模式：生成 PNG 后备图片
+                if use_compat_mode:
+                    png_path = media_dir / png_filename
+                    png_success = convert_svg_to_png(
+                        svg_path, 
+                        png_path,
+                        width=pixel_width,
+                        height=pixel_height
+                    )
+                    if png_success:
+                        png_generated = True
+                    else:
+                        # PNG 生成失败，降级为纯 SVG
+                        if verbose:
+                            print(f"  [{i}/{len(svg_files)}] {svg_path.name} - PNG 生成失败，使用纯 SVG")
+                        svg_rid = 'rId2'
+                
                 # 更新幻灯片 XML
                 slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
                 slide_xml = create_slide_xml_with_svg(
-                    slide_num, svg_rid, width_emu, height_emu,
+                    slide_num, 
+                    png_rid=png_rid,
+                    svg_rid=svg_rid, 
+                    width_emu=width_emu, 
+                    height_emu=height_emu,
                     transition=transition,
                     transition_duration=transition_duration,
-                    auto_advance=auto_advance
+                    auto_advance=auto_advance,
+                    use_compat_mode=(use_compat_mode and png_generated)
                 )
                 with open(slide_xml_path, 'w', encoding='utf-8') as f:
                     f.write(slide_xml)
@@ -364,12 +513,19 @@ def create_pptx_with_native_svg(
                 rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
                 rels_dir.mkdir(exist_ok=True)
                 rels_path = rels_dir / f'slide{slide_num}.xml.rels'
-                rels_xml = create_slide_rels_xml(svg_rid, svg_filename)
+                rels_xml = create_slide_rels_xml(
+                    png_rid=png_rid,
+                    png_filename=png_filename,
+                    svg_rid=svg_rid, 
+                    svg_filename=svg_filename,
+                    use_compat_mode=(use_compat_mode and png_generated)
+                )
                 with open(rels_path, 'w', encoding='utf-8') as f:
                     f.write(rels_xml)
                 
                 if verbose:
-                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}")
+                    mode_str = " (PNG+SVG)" if (use_compat_mode and png_generated) else " (SVG)"
+                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}")
                 
                 success_count += 1
                 
@@ -377,16 +533,22 @@ def create_pptx_with_native_svg(
                 if verbose:
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name} - 错误: {e}")
         
-        # 更新 [Content_Types].xml 添加 SVG 类型
+        # 更新 [Content_Types].xml 添加 SVG 和 PNG 类型
         content_types_path = extract_dir / '[Content_Types].xml'
         with open(content_types_path, 'r', encoding='utf-8') as f:
             content_types = f.read()
         
         # 添加 SVG 扩展类型（如果不存在）
+        types_to_add = []
         if 'Extension="svg"' not in content_types:
+            types_to_add.append('  <Default Extension="svg" ContentType="image/svg+xml"/>')
+        if png_generated and 'Extension="png"' not in content_types:
+            types_to_add.append('  <Default Extension="png" ContentType="image/png"/>')
+        
+        if types_to_add:
             content_types = content_types.replace(
                 '</Types>',
-                '  <Default Extension="svg" ContentType="image/svg+xml"/>\n</Types>'
+                '\n'.join(types_to_add) + '\n</Types>'
             )
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
@@ -402,6 +564,11 @@ def create_pptx_with_native_svg(
             print()
             print(f"[完成] 已保存: {output_path}")
             print(f"  成功: {success_count}, 失败: {len(svg_files) - success_count}")
+            if use_compat_mode and png_generated:
+                print(f"  模式: Office 兼容模式 (支持所有 Office 版本)")
+                # 如果使用 svglib，给出升级提示
+                if PNG_RENDERER == 'svglib' and renderer_hint:
+                    print(f"  [提示] {renderer_hint}")
         
         return success_count == len(svg_files)
         
@@ -415,13 +582,14 @@ def main():
     transition_choices = list(TRANSITIONS.keys()) if TRANSITIONS else ['fade', 'push', 'wipe', 'split', 'reveal', 'cover', 'random']
     
     parser = argparse.ArgumentParser(
-        description='PPT Master - SVG 转 PPTX 工具（原生 SVG 嵌入）',
+        description='PPT Master - SVG 转 PPTX 工具（Office 兼容模式）',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 示例:
     %(prog)s examples/ppt169_demo -s final    # 推荐：使用后处理完成的版本
     %(prog)s examples/ppt169_demo             # 使用原始版本
     %(prog)s examples/ppt169_demo -o presentation.pptx
+    %(prog)s examples/ppt169_demo --no-compat # 禁用兼容模式（仅纯 SVG）
     
     # 添加页面切换效果
     %(prog)s examples/ppt169_demo --transition fade
@@ -435,9 +603,12 @@ SVG 来源目录 (-s):
 切换效果 (-t/--transition):
     {', '.join(transition_choices)}
 
-特点:
-    - SVG 以原生矢量格式嵌入，保持可编辑性
-    - 需要 PowerPoint 2016+ 查看
+兼容模式 (默认开启):
+    - 自动生成 PNG 后备图片，SVG 作为扩展嵌入
+    - 兼容所有 Office 版本（包括 Office LTSC 2021）
+    - 新版 Office 仍显示 SVG（可编辑），旧版显示 PNG
+    - 需要安装 svglib: pip install svglib reportlab
+    - 使用 --no-compat 可禁用（仅 Office 2019+ 支持）
 '''
     )
     
@@ -447,6 +618,10 @@ SVG 来源目录 (-s):
                         help='SVG 来源: output/final 或任意子目录名 (推荐 final)')
     parser.add_argument('-f', '--format', type=str, choices=list(CANVAS_FORMATS.keys()), default=None, help='指定画布格式')
     parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
+    
+    # 兼容模式参数
+    parser.add_argument('--no-compat', action='store_true',
+                        help='禁用 Office 兼容模式（仅使用纯 SVG，需要 Office 2019+）')
     
     # 切换效果参数
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
@@ -504,7 +679,8 @@ SVG 来源目录 (-s):
         verbose=verbose,
         transition=args.transition,
         transition_duration=args.transition_duration,
-        auto_advance=args.auto_advance
+        auto_advance=args.auto_advance,
+        use_compat_mode=not args.no_compat
     )
     
     sys.exit(0 if success else 1)
