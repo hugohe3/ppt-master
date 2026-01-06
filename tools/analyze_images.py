@@ -113,28 +113,51 @@ def print_results(results):
     
     for cat, imgs in categories.items():
         if imgs:
-            print(f"\n{cat}: {len(imgs)} images")
+            print(f"\\n{cat}: {len(imgs)} images")
             for img in imgs[:5]:  # 只显示前5个
                 print(f"  - {img['width']}x{img['height']} (ratio {img['aspect_ratio']:.2f}) - {img['filename'][:35]}...")
             if len(imgs) > 5:
                 print(f"  ... and {len(imgs) - 5} more")
 
     # 输出PPT适配建议
-    print("\n" + "="*100)
+    print("\\n" + "="*100)
     print("PPT Fit Suggestions (16:9 = 1280x720)")
     print("="*100)
     
     ppt_width, ppt_height = 1280, 720
     ppt_ratio = ppt_width / ppt_height
     
-    print(f"\nStandard PPT canvas: {ppt_width}x{ppt_height} (ratio {ppt_ratio:.2f})")
+    print(f"\\nStandard PPT canvas: {ppt_width}x{ppt_height} (ratio {ppt_ratio:.2f})")
     
     fit_count = 0
     for img in results:
         if 1.5 <= img['aspect_ratio'] <= 2.0:
             fit_count += 1
     
-    print(f"\nImages suitable for full-screen display: {fit_count}")
+    print(f"\\nImages suitable for full-screen display: {fit_count}")
+
+
+def generate_markdown(results):
+    """生成 Markdown 格式的图片资源清单"""
+    print("\\n" + "="*100)
+    print("Markdown Snippet for Strategist (Copy & Paste)")
+    print("="*100)
+    print("\\n## 图片资源清单（自动扫描结果）\\n")
+    print("| 文件名 | 尺寸 | 比例 | 布局建议 | 状态 |")
+    print("|--------|------|------|----------|------|")
+    
+    for img in results:
+        # 简化布局建议描述，使其更符合 Strategist 的习惯
+        layout_desc = img['layout_hint']
+        if img['aspect_ratio'] > 2.0:
+            layout_desc += " (适合通栏/分割)"
+        elif img['aspect_ratio'] > 1.2:
+            layout_desc += " (适合全屏/插图)"
+        elif img['aspect_ratio'] < 0.8:
+            layout_desc += " (适合左右分栏)"
+            
+        print(f"| {img['filename']} | {img['width']}x{img['height']} | {img['aspect_ratio']:.2f} | {layout_desc} | 已有 |")
+    print("\\n" + "="*100 + "\\n")
 
 
 def save_csv(results, csv_path):
@@ -172,6 +195,7 @@ def main():
     
     if results:
         print_results(results)
+        generate_markdown(results)
         
         # 保存到CSV文件（保存在图片目录的父目录）
         parent_dir = os.path.dirname(images_dir)
