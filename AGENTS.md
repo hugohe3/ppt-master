@@ -22,7 +22,7 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 ```
 Strategist
     │
-    ├─ 图片方式 = "C) AI 生成"?
+    ├─ 图片方式包含「C) AI 生成」?
     │       │
     │       YES → Image_Generator → 图片归集到 images/
     │       │
@@ -48,7 +48,7 @@ Optimizer_CRAP (可选)
 | 阶段 | 必须阅读的文件 | 触发条件 |
 |------|---------------|----------|
 | 策略规划 | `roles/Strategist.md` | 用户提出新的PPT/内容生成需求 |
-| 图片生成 | `roles/Image_Generator.md` | 用户选择「C) AI 生成」图片方式 |
+| 图片生成 | `roles/Image_Generator.md` | 图片方式包含「C) AI 生成」（如 C、B+C、C+D） |
 | 通用风格执行 | `roles/Executor_General.md` | 用户选择「A) 通用灵活」设计风格 |
 | 咨询风格执行 | `roles/Executor_Consultant.md` | 用户选择「B) 一般咨询」设计风格 |
 | 顶级咨询执行 | `roles/Executor_Consultant_Top.md` | 用户选择「C) 顶级咨询」设计风格 |
@@ -297,7 +297,7 @@ project/
 - 通用风格与咨询风格在规范格式上有本质区别
 - 图标使用方式需在初次沟通中确认（Emoji / AI生成 / 内置库 / 自定义）
 - 图片使用方式需在初次沟通中确认（不使用 / 用户提供 / AI生成 / 占位符）
-- **图片生成流程**：如果选择「C) AI 生成」，**必须**先切换到 Image_Generator 角色，阅读角色定义，完成图片生成后再进入 Executor 阶段
+- **图片生成流程**：如果图片方式**包含**「C) AI 生成」（如 C、B+C、C+D），**必须**先切换到 Image_Generator 角色，阅读角色定义，完成图片生成后再进入 Executor 阶段
 
 ### 后处理提示
 

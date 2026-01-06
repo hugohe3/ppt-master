@@ -28,7 +28,7 @@
 [Strategist] 策略师
     ↓ 生成《设计规范与内容大纲》
     ↓
-    ├─ 图片方式 = "C) AI 生成"?
+    ├─ 图片方式包含「C) AI 生成」?
     │       │
     │       YES → [Image_Generator] 图片生成师
     │              ↓ 生成图片到 images/
@@ -49,7 +49,7 @@ SVG 文件 (svg_output/)
     └── svg_to_pptx.py → output.pptx (导出 PowerPoint)
 ```
 
-> **注意**: Image_Generator 是串行环节，仅当选择「AI 生成」图片时触发，图片归集完成后才进入 Executor 阶段。
+> **注意**: Image_Generator 是串行环节，仅当图片方式**包含**「AI 生成」时触发，图片归集完成后才进入 Executor 阶段。
 
 ## 角色详解
 
@@ -88,7 +88,7 @@ SVG 文件 (svg_output/)
 
 ### 1️⃣+ Image_Generator (图片生成师)
 
-**何时使用**: Strategist 初次沟通中用户选择「C) AI 生成」图片方式时
+**何时使用**: Strategist 初次沟通中用户选择的图片方式**包含**「C) AI 生成」时（如 C、B+C、C+D）
 
 **触发条件**: 仅当需要 AI 生成图片时调用，是 Strategist 和 Executor 之间的**串行环节**
 
@@ -291,7 +291,7 @@ Executor_General 支持多种风格变体，通过 **Strategist 生成的《设�
    - Strategist 会为每项主动提供专业建议
    - 用户可以接受建议或提出调整
 2. 让 Strategist 生成完整的设计规范与内容大纲
-3. **如果选择「C) AI 生成」图片**，调用 **Image_Generator** 完成图片生成
+3. **如果图片方式包含「C) AI 生成」**（如 C、B+C、C+D），调用 **Image_Generator** 完成图片生成
    - 图片归集到 `images/` 目录后，再进入下一步
 4. 根据确认的风格选择 **Executor_General** / **Executor_Consultant** / **Executor_Consultant_Top**
 5. 逐页生成 SVG
@@ -322,7 +322,7 @@ Executor_General 支持多种风格变体，通过 **Strategist 生成的《设�
 → Strategist → Executor → 修改 → Executor (重新生成)
 
 **场景 5: 需要 AI 生成图片的演示**
-→ Strategist (选图片方式 C) → **Image_Generator** → Executor → Optimizer_CRAP
+→ Strategist (图片方式包含 C) → **Image_Generator** → Executor → Optimizer_CRAP
 
 ## 扩展与定制
 

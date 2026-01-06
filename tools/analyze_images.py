@@ -143,8 +143,8 @@ def generate_markdown(results):
     print("Markdown Snippet for Strategist (Copy & Paste)")
     print("="*100)
     print("\\n## 图片资源清单（自动扫描结果）\\n")
-    print("| 文件名 | 尺寸 | 比例 | 布局建议 | 状态 |")
-    print("|--------|------|------|----------|------|")
+    print("| 文件名 | 尺寸 | 比例 | 布局建议 | 用途 | 状态 | 生成描述 |")
+    print("|--------|------|------|----------|------|------|----------|")
     
     for img in results:
         # 简化布局建议描述，使其更符合 Strategist 的习惯
@@ -156,7 +156,8 @@ def generate_markdown(results):
         elif img['aspect_ratio'] < 0.8:
             layout_desc += " (适合左右分栏)"
             
-        print(f"| {img['filename']} | {img['width']}x{img['height']} | {img['aspect_ratio']:.2f} | {layout_desc} | 已有 |")
+        # 用途和生成描述需策略师手动填写，这里用占位符
+        print(f"| {img['filename']} | {img['width']}×{img['height']} | {img['aspect_ratio']:.2f} | {layout_desc} | （待填写） | 已有 | - |")
     print("\\n" + "="*100 + "\\n")
 
 
