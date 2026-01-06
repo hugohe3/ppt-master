@@ -167,7 +167,7 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过多角�
     ↓
 [Strategist] 策略师 - 内容规划与设计规范
     │
-    ├─ 图片方式 = "AI 生成"?
+    ├─ 图片方式包含「AI 生成」?
     │       │
     │       YES → [Image_Generator] 图片生成师 - AI 图片生成 → 图片归集到 images/
     │       │
@@ -238,7 +238,7 @@ graph TD
         Strategist --> SpecDoc([设计规范与内容大纲]):::artifact
     end
 
-    SpecDoc --> CheckImage{图片方式 = AI 生成?}
+    SpecDoc --> CheckImage{图片方式包含 AI 生成?}
 
     %% 图片生成阶段（条件触发）
     subgraph ImageGen [图片生成阶段 - 条件触发]
@@ -315,12 +315,12 @@ graph TD
 
 ### 2️⃣ Image_Generator (图片生成师) - 条件触发
 
-**职责**: AI 图片生成（当用户选择「AI 生成」图片方式时触发）  
+**职责**: AI 图片生成（当用户选择的图片方式包含「AI 生成」时触发）  
 **输出**: 生成的图片文件，归集到 `images/` 目录
 
 **核心能力**:
 
-- **触发条件**: 仅当 Strategist 阶段用户选择图片方式为「C) AI 生成」时激活
+- **触发条件**: 当 Strategist 阶段用户选择的图片方式**包含**「C) AI 生成」时激活（如 C、B+C、C+D）
 - **提示词优化**: 为每张待生成图片创建优化的 AI 图片生成提示词
 - **图片生成**: 使用 AI 图片生成工具（如 Gemini、Banana 等）生成图片
 - **资源归集**: 将生成的图片保存到项目的 `images/` 目录
@@ -778,7 +778,7 @@ A:
 <details>
 <summary><b>Q: Image_Generator 什么时候使用？</b></summary>
 
-A: Image_Generator 仅在 Strategist 的八项确认中选择图片方式为「C) AI 生成」时触发。它会在 Executor 阶段之前生成优化的图片提示词和图片，然后 Executor 可以直接引用生成的图片。
+A: Image_Generator 在 Strategist 的八项确认中，当图片方式**包含**「C) AI 生成」时触发（如 C、B+C、C+D 等组合）。它会在 Executor 阶段之前生成优化的图片提示词和图片，然后 Executor 可以直接引用生成的图片。
 
 </details>
 
