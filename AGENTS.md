@@ -206,6 +206,9 @@ Optimizer_CRAP (可选)
 ## 常用命令
 
 ```bash
+# PDF 转 Markdown（优先使用，本地快速）
+python3 tools/pdf_to_md.py <PDF文件>
+
 # 初始化项目
 python3 tools/project_manager.py init <名称> --format ppt169
 
@@ -251,6 +254,19 @@ project/
 - [ ] **对比**: 建立清晰的视觉层级
 - [ ] **重复**: 同类元素风格一致
 - [ ] **亲密性**: 相关内容空间聚合
+
+## PDF 转 Markdown 工具选择
+
+| 场景 | 推荐工具 | 命令 |
+|------|----------|------|
+| **原生 PDF**（Word/LaTeX 导出） | `pdf_to_md.py` | `python3 tools/pdf_to_md.py <文件>` |
+| **简单表格** | `pdf_to_md.py` | 同上 |
+| **隐私敏感文档** | `pdf_to_md.py` | 同上（数据不出本机） |
+| **扫描版/图片 PDF** | MinerU | 需要 OCR |
+| **复杂多栏排版** | MinerU | 版面分析更准 |
+| **数学公式** | MinerU | AI 识别能力强 |
+
+> **策略**: PyMuPDF 优先，MinerU 兜底。先运行 `pdf_to_md.py`，如结果乱码/空白再换 MinerU。
 
 ## 重要资源
 

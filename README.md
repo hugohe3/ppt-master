@@ -199,13 +199,15 @@ graph TD
     classDef external fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5;
 
     %% 流程入口
-    RawDoc([原始参考资料 PDF/Word]) --> Mineru
+    RawDoc([原始参考资料 PDF/Word]) --> PDFConvert{PDF 类型?}
 
     %% 准备阶段
     subgraph Preparation [准备阶段 Resources Prep]
-        Mineru[Mineru 智能转换工具]:::tool
+        PDFConvert -- 原生 PDF --> PyMuPDF[pdf_to_md.py 本地转换]:::tool
+        PDFConvert -- 扫描版/复杂排版 --> Mineru[MinerU 云端 AI 转换]:::tool
         
-        Mineru -- 提取文本与结构 --> MD([基础 Markdown 文档]):::artifact
+        PyMuPDF -- 提取文本与结构 --> MD([基础 Markdown 文档]):::artifact
+        Mineru -- 提取文本与结构 --> MD
         
         %% 图片处理流程
         subgraph ImageFlow [图片资源]
@@ -426,11 +428,11 @@ graph TD
    
    | 步骤 | 说明 |
    |------|------|
-   | 📄 **文档转换** | 使用 [MinerU](https://github.com/opendatalab/MinerU) 将 PDF/Word 转换为 Markdown。MinerU 是一个开源的智能文档转换工具，可保留文档结构、提取表格和公式 |
+   | 📄 **文档转换** | **优先使用** `python3 tools/pdf_to_md.py <PDF文件>` 进行本地转换（快速、免费、隐私安全）。如遇扫描版 PDF、复杂多栏排版或数学公式，改用 [MinerU](https://github.com/opendatalab/MinerU) 云端 AI 转换 |
    | 🖼️ **图片资源** | 将必须包含的图片存入项目的 `images/` 文件夹，并在 Markdown 中添加图片描述说明 |
    | 🔣 **图标资源** | 如需自定义图标，可从 [SVG Repo](https://www.svgrepo.com/) 下载，或使用项目内置的 640+ 图标库（`templates/icons/`） |
    
-   > 💡 **提示**：MinerU 支持 CPU/GPU 环境，兼容 Windows/Linux/Mac，可自动识别公式并转换为 LaTeX
+   > 💡 **PDF 转换策略**: PyMuPDF 优先（本地秒级），MinerU 兜底（云端 AI）。详见 [工具使用指南](./tools/README.md)
 
 2. **初始沟通（八项确认）**
    与 Strategist 进行范围确认，Strategist 会对以下八项给出专业建议：

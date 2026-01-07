@@ -8,7 +8,7 @@ English | [中文](./README.md)
 
 An AI-powered intelligent visual content generation system that transforms source documents into high-quality SVG content through collaboration of multiple professional roles, **supporting presentations, social media, marketing posters, and various other formats**.
 
-> 🎴 **Online Examples**: [Slides Gallery](https://notes.36sjs.com/pages/ppt/slides-library.html) - View actual generated results
+> 🎴 **Online Examples**: [GitHub Pages Online Preview](https://hugohe3.github.io/ppt-master/) - View actual generated results
 
 > 🎬 **Quick Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/) - Watch video demonstrations
 
@@ -46,7 +46,7 @@ An AI-powered intelligent visual content generation system that transforms sourc
 ```
 User: I have a Q3 quarterly report that needs to be made into a PPT
 
-AI (Strategist role): Sure, before we begin I need to complete seven confirmations...
+AI (Strategist role): Sure, before we begin I need to complete eight confirmations...
    1. Canvas format: [Recommended] PPT 16:9
    2. Page count: [Recommended] 8-10 pages
    ...
@@ -199,13 +199,15 @@ graph TD
     classDef external fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5;
 
     %% Entry Point
-    RawDoc([Raw Reference Materials PDF/Word]) --> Mineru
+    RawDoc([Raw Reference Materials PDF/Word]) --> PDFConvert{PDF Type?}
 
     %% Preparation Stage
     subgraph Preparation [Preparation Stage - Resources Prep]
-        Mineru[MinerU Intelligent Conversion Tool]:::tool
+        PDFConvert -- Native PDF --> PyMuPDF[pdf_to_md.py Local Conversion]:::tool
+        PDFConvert -- Scanned/Complex Layout --> Mineru[MinerU Cloud AI Conversion]:::tool
         
-        Mineru -- Extract Text & Structure --> MD([Basic Markdown Document]):::artifact
+        PyMuPDF -- Extract Text & Structure --> MD([Basic Markdown Document]):::artifact
+        Mineru -- Extract Text & Structure --> MD
         
         %% Image Processing Flow
         subgraph ImageFlow [Image Resources]
@@ -229,7 +231,7 @@ graph TD
         Strategist[Role 1 Strategist: Content & Specifications]:::role
         
         %% Interactive Confirmation
-        Strategist -.-> Confirm1[Interactive Confirmation: 7 Key Elements]:::userAction
+        Strategist -.-> Confirm1[Interactive Confirmation: 8 Key Elements]:::userAction
         Confirm1 -- Confirm Scope --> Strategist
         
         %% Notes
@@ -293,7 +295,7 @@ graph TD
 
 **Core Capabilities**:
 
-- **Initial Communication (Seven Confirmations)**: Must complete the following confirmations before analyzing content, providing professional recommendations:
+- **Initial Communication (Eight Confirmations)**: Must complete the following confirmations before analyzing content, providing professional recommendations:
   1. 📐 **Canvas Format**: Recommend the most suitable format based on usage scenario (PPT/Xiaohongshu/WeChat Moments, etc.)
   2. 📊 **Page Count**: Suggest reasonable page range based on content volume and complexity
   3. 🎯 **Target Audience & Scenario**: Pre-judge target audience and usage scenario based on document characteristics
@@ -301,6 +303,7 @@ graph TD
   5. 🎨 **Color Scheme**: Provide specific HEX values for primary, secondary, and accent colors
   6. 🔣 **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
   7. 🖼️ **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
+  8. 📝 **Font Scheme**: Recommend font combinations based on content characteristics (Title/Body/Emphasis)
 - **Intelligent Deconstruction**: Break down and reorganize source documents into clear page sequences
 - **Color Scheme**: Propose complete color scheme (primary, secondary, base tones)
 - **Layout Planning**: Plan page sequences and recommend layout solutions
@@ -317,7 +320,7 @@ graph TD
 **Responsibility**: AI image generation (conditionally triggered)  
 **Output**: Image files + optimized prompts
 
-**Trigger Condition**: Only called when user selects "C) AI Generated" for image method in Strategist's seven confirmations
+**Trigger Condition**: Only called when user selects "C) AI Generated" for image method in Strategist's eight confirmations
 
 **Workflow Position**: After Strategist, before Executor (sequential, not parallel)
 
@@ -433,14 +436,14 @@ graph TD
    
    | Step | Description |
    |------|------|
-   | 📄 **Document Conversion** | Use [MinerU](https://github.com/opendatalab/MinerU) to convert PDF/Word to Markdown. MinerU is an open-source intelligent document conversion tool that preserves document structure, extracts tables and formulas |
+   | 📄 **Document Conversion** | **Prefer** `python3 tools/pdf_to_md.py <PDF_file>` for local conversion (fast, free, privacy-safe). For scanned PDFs, complex multi-column layouts, or math formulas, use [MinerU](https://github.com/opendatalab/MinerU) cloud AI conversion |
    | 🖼️ **Image Resources** | Store required images in the project's `images/` folder and add image descriptions in the Markdown |
    | 🔣 **Icon Resources** | For custom icons, download from [SVG Repo](https://www.svgrepo.com/), or use the built-in 640+ icon library (`templates/icons/`) |
    
-   > 💡 **Tip**: MinerU supports CPU/GPU environments, compatible with Windows/Linux/Mac, can automatically recognize formulas and convert to LaTeX
+   > 💡 **PDF Conversion Strategy**: PyMuPDF first (local, instant), MinerU as fallback (cloud AI). See [Tools Usage Guide](./tools/README.md)
 
-2. **Initial Communication (Seven Confirmations)**
-   Conduct scope confirmation with Strategist, who will provide professional recommendations on these seven items:
+2. **Initial Communication (Eight Confirmations)**
+   Conduct scope confirmation with Strategist, who will provide professional recommendations on these eight items:
 
    1. **Canvas Format**: PPT/Xiaohongshu/WeChat Moments/Story, etc. (recommend based on usage scenario)
    2. **Page Count**: Suggest reasonable page count based on content volume analysis
@@ -449,6 +452,7 @@ graph TD
    5. **Color Scheme**: Primary, secondary, accent colors (provide specific HEX values)
    6. **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
    7. **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
+   8. **Font Scheme**: Recommend font combinations based on content characteristics (Title/Body/Emphasis)
 
    💡 Strategist will not only ask questions but also proactively provide professional recommendations for your reference or confirmation
 
@@ -482,7 +486,7 @@ graph TD
 ```
 User: I have a market analysis report that needs to be made into a presentation
 
-Strategist: Before I start analyzing your content, I need to complete seven confirmations:
+Strategist: Before I start analyzing your content, I need to complete eight confirmations:
 
 1. Canvas Format: [Recommended] PPT 16:9 (1280×720), suitable for business presentation scenarios
 
@@ -564,7 +568,7 @@ I will analyze page 2 and apply CRAP principles:
 - **ViewBox**: Matches canvas size
 - **Background**: Defined using `<rect>` element
 - **Text**: `<foreignObject>` disabled, use `<tspan>` for manual line breaks
-- **Fonts**: Prefer system UI font stack
+- **Fonts**: Use the font scheme specified in the Design Specification (see [Font Selection](./docs/design_guidelines.md#font-selection))
 
 ### PPT Compatibility Rules (Must Follow)
 
@@ -784,7 +788,7 @@ A:
 <details>
 <summary><b>Q: When is Image_Generator used?</b></summary>
 
-A: Image_Generator is only triggered when you select "C) AI Generated" for the image method during Strategist's seven confirmations. It generates optimized prompts and images before the Executor phase, so Executor can directly reference the generated images.
+A: Image_Generator is only triggered when you select "C) AI Generated" for the image method during Strategist's eight confirmations. It generates optimized prompts and images before the Executor phase, so Executor can directly reference the generated images.
 
 </details>
 
