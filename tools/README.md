@@ -4,6 +4,55 @@
 
 ## 工具列表
 
+### 0. pdf_to_md.py — PDF 转 Markdown 工具（推荐首选）
+
+使用 PyMuPDF 将 PDF 文档转换为 Markdown 格式，本地运行、快速、免费。
+
+**功能**:
+
+- 提取 PDF 文本内容并转换为 Markdown
+- 自动提取表格并转换为 Markdown 表格
+- 自动提取图片并保存到 `images/` 目录
+- 支持批量处理目录下的所有 PDF
+
+**用法**:
+
+```bash
+# 转换单个文件
+python3 tools/pdf_to_md.py book.pdf
+
+# 指定输出文件
+python3 tools/pdf_to_md.py book.pdf -o output.md
+
+# 转换目录下所有 PDF
+python3 tools/pdf_to_md.py ./pdfs
+
+# 指定输出目录
+python3 tools/pdf_to_md.py ./pdfs -o ./markdown
+```
+
+**何时使用 pdf_to_md.py vs MinerU**:
+
+| 场景 | 推荐工具 | 原因 |
+|------|----------|------|
+| **原生 PDF**（Word/LaTeX 导出） | `pdf_to_md.py` | 本地、秒级、免费 |
+| **简单表格** | `pdf_to_md.py` | 已支持表格提取 |
+| **隐私敏感文档** | `pdf_to_md.py` | 数据不出本机 |
+| **扫描版/图片 PDF** | MinerU | 需要 OCR |
+| **复杂多栏排版** | MinerU | 版面分析更准 |
+| **数学公式** | MinerU | AI 识别能力强 |
+| **乱码 PDF**（编码丢失） | MinerU | 视觉识别兜底 |
+
+> **策略**: PyMuPDF 优先，MinerU 兜底。先运行 `pdf_to_md.py`，如结果乱码/空白/排版错乱再换 MinerU。
+
+**依赖**:
+
+```bash
+pip install PyMuPDF
+```
+
+---
+
 ### 1. project_utils.py — 项目工具公共模块
 
 提供项目信息解析、验证等公共功能，供其他工具复用。
