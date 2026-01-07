@@ -275,6 +275,7 @@ project/
 | 图表模板 | `templates/charts/` |
 | **图标库** | `templates/icons/` (640+ 图标) |
 | 设计指南 | `docs/design_guidelines.md` |
+| **图片布局规范** | `docs/image_layout_spec.md` ⚠️ 强制执行 |
 | 画布格式 | `docs/canvas_formats.md` |
 | 图片嵌入 | `docs/svg_image_embedding.md` |
 | 工作流教程 | `docs/workflow_tutorial.md` |
