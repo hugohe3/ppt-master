@@ -345,7 +345,41 @@ LAYOUT_MARGINS = {
 # ============================================================
 
 SVG_CONSTRAINTS = {
-    'forbidden_elements': ['foreignObject', 'iframe', 'script'],
+    # 禁用元素 - PPT 不兼容
+    'forbidden_elements': [
+        # 裁剪 / 遮罩
+        'clipPath',
+        'mask',
+        # 特效
+        'filter',
+        # 样式系统
+        'style',
+        # 结构 / 嵌套
+        'foreignObject',
+        'symbol',  # 复杂用法不兼容
+        # 文本 / 字体
+        'textPath',
+        # 动画 / 交互
+        'animate',
+        'animateMotion',
+        'animateTransform',
+        'animateColor',
+        'set',
+        'script',
+        # 其他
+        'iframe',
+    ],
+    # 禁用属性
+    'forbidden_attributes': [
+        'class',
+        'onclick', 'onload', 'onmouseover', 'onmouseout',
+        'onfocus', 'onblur', 'onchange',
+    ],
+    # 禁用模式（正则匹配）
+    'forbidden_patterns': [
+        r'@font-face',  # Web 字体
+        r'rgba\s*\(',   # rgba 颜色（PPT 不兼容）
+    ],
     'max_file_size_kb': 500,
     'warning_file_size_kb': 200,
     'recommended_fonts': [
@@ -363,128 +397,128 @@ SVG_CONSTRAINTS = {
 
 class Config:
     """配置管理器"""
-    
+
     @staticmethod
     def get_canvas_format(format_key: str) -> Optional[Dict]:
         """
         获取画布格式配置
-        
+
         Args:
             format_key: 格式键名（如 'ppt169', 'xiaohongshu'）
-            
+
         Returns:
             格式配置字典，不存在则返回 None
         """
         return CANVAS_FORMATS.get(format_key)
-    
+
     @staticmethod
     def get_all_canvas_formats() -> Dict:
         """获取所有画布格式"""
         return CANVAS_FORMATS.copy()
-    
+
     @staticmethod
     def get_color_scheme(style: str) -> Optional[Dict]:
         """
         获取配色方案
-        
+
         Args:
             style: 风格名称（如 'consulting', 'general', 'tech'）
-            
+
         Returns:
             配色方案字典
         """
         return DESIGN_COLORS.get(style)
-    
+
     @staticmethod
     def get_industry_colors(industry: str) -> Optional[Dict]:
         """
         获取行业配色
-        
+
         Args:
             industry: 行业名称（如 'finance', 'healthcare'）
-            
+
         Returns:
             行业配色字典
         """
         return INDUSTRY_COLORS.get(industry)
-    
+
     @staticmethod
     def get_all_industries() -> List[str]:
         """获取所有行业列表"""
         return list(INDUSTRY_COLORS.keys())
-    
+
     @staticmethod
     def get_layout_margins(format_key: str) -> Optional[Dict]:
         """
         获取布局边距配置
-        
+
         Args:
             format_key: 格式键名
-            
+
         Returns:
             边距配置字典
         """
         return LAYOUT_MARGINS.get(format_key)
-    
+
     @staticmethod
     def get_font(font_type: str = 'system_ui') -> str:
         """
         获取字体声明
-        
+
         Args:
             font_type: 字体类型（'system_ui', 'sans_serif', 'monospace'）
-            
+
         Returns:
             字体声明字符串
         """
         return FONTS.get(font_type, FONTS['system_ui'])
-    
+
     @staticmethod
     def get_font_size(size_name: str) -> int:
         """
         获取字体大小
-        
+
         Args:
             size_name: 大小名称（如 'title', 'body', 'caption'）
-            
+
         Returns:
             字体大小（像素）
         """
         return FONT_SIZES.get(size_name, FONT_SIZES['body'])
-    
+
     @staticmethod
     def validate_svg_element(element_name: str) -> bool:
         """
         验证 SVG 元素是否允许使用
-        
+
         Args:
             element_name: 元素名称
-            
+
         Returns:
             是否允许使用
         """
         return element_name.lower() not in [e.lower() for e in SVG_CONSTRAINTS['forbidden_elements']]
-    
+
     @staticmethod
     def get_project_path(subdir: str = '') -> Path:
         """
         获取项目路径
-        
+
         Args:
             subdir: 子目录名称
-            
+
         Returns:
             完整路径
         """
         if subdir:
             return PROJECT_ROOT / subdir
         return PROJECT_ROOT
-    
+
     @staticmethod
     def export_config(output_file: str = 'config_export.json'):
         """
         导出配置为 JSON 文件
-        
+
         Args:
             output_file: 输出文件路径
         """
@@ -496,10 +530,10 @@ class Config:
             'font_sizes': FONT_SIZES,
             'svg_constraints': SVG_CONSTRAINTS
         }
-        
+
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(config_data, f, ensure_ascii=False, indent=2)
-        
+
         print(f"配置已导出到: {output_file}")
 
 
@@ -510,7 +544,7 @@ class Config:
 def main():
     """命令行入口"""
     import sys
-    
+
     if len(sys.argv) < 2:
         print("PPT Master - 配置管理工具\n")
         print("用法:")
@@ -520,28 +554,30 @@ def main():
         print("  python3 tools/config.py export           # 导出配置到 JSON")
         print("  python3 tools/config.py format <key>     # 查看指定画布格式")
         return
-    
+
     command = sys.argv[1]
-    
+
     if command == 'list-formats':
         print("\n📐 画布格式列表:\n")
         for key, info in CANVAS_FORMATS.items():
-            print(f"  {key:15} | {info['name']:15} | {info['dimensions']:12} | {info['use_case']}")
-    
+            print(
+                f"  {key:15} | {info['name']:15} | {info['dimensions']:12} | {info['use_case']}")
+
     elif command == 'list-colors':
         print("\n🎨 配色方案列表:\n")
         for key, info in DESIGN_COLORS.items():
             print(f"  {key:12} | {info['name']:15} | 主色: {info['primary']}")
-    
+
     elif command == 'list-industries':
         print("\n🏢 行业配色列表:\n")
         for key, info in INDUSTRY_COLORS.items():
             print(f"  {key:15} | {info['name']:15} | 主色: {info['primary']}")
-    
+
     elif command == 'export':
-        output_file = sys.argv[2] if len(sys.argv) > 2 else 'config_export.json'
+        output_file = sys.argv[2] if len(
+            sys.argv) > 2 else 'config_export.json'
         Config.export_config(output_file)
-    
+
     elif command == 'format' and len(sys.argv) > 2:
         format_key = sys.argv[2]
         info = Config.get_canvas_format(format_key)
@@ -552,11 +588,10 @@ def main():
         else:
             print(f"❌ 未找到格式: {format_key}")
             print(f"   可用格式: {', '.join(CANVAS_FORMATS.keys())}")
-    
+
     else:
         print(f"❌ 未知命令: {command}")
 
 
 if __name__ == '__main__':
     main()
-
