@@ -110,6 +110,87 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
+        'clippath_detected': {
+            'message': '检测到禁用的 <clipPath> 元素',
+            'solutions': [
+                '移除 <clipPath> 元素',
+                'PPT 不支持 SVG 裁剪路径',
+                '使用基础形状组合替代裁剪效果'
+            ],
+            'severity': 'error'
+        },
+        'mask_detected': {
+            'message': '检测到禁用的 <mask> 元素',
+            'solutions': [
+                '移除 <mask> 元素',
+                'PPT 不支持 SVG 遮罩',
+                '使用不透明度（opacity/fill-opacity）替代'
+            ],
+            'severity': 'error'
+        },
+        'filter_detected': {
+            'message': '检测到禁用的 <filter> 元素',
+            'solutions': [
+                '移除 <filter> 及所有 fe* 滤镜元素',
+                '滤镜效果无法导出到 PPT',
+                '阴影效果可用多个偏移的浅色形状模拟'
+            ],
+            'severity': 'error'
+        },
+        'style_element_detected': {
+            'message': '检测到禁用的 <style> 元素',
+            'solutions': [
+                '移除 <style> 元素',
+                '将 CSS 样式转换为内联属性',
+                '例如: fill="#000" 而非 class="text-black"'
+            ],
+            'severity': 'error'
+        },
+        'class_attribute_detected': {
+            'message': '检测到禁用的 class 属性',
+            'solutions': [
+                '移除所有 class 属性',
+                '使用内联样式替代',
+                '例如: fill="#000" stroke="#333" 直接写在元素上'
+            ],
+            'severity': 'error'
+        },
+        'textpath_detected': {
+            'message': '检测到禁用的 <textPath> 元素',
+            'solutions': [
+                '移除 <textPath> 元素',
+                '路径文本不兼容 PPT',
+                '使用普通 <text> 元素并手动调整位置'
+            ],
+            'severity': 'error'
+        },
+        'webfont_detected': {
+            'message': '检测到禁用的 Web 字体 (@font-face)',
+            'solutions': [
+                '移除 @font-face 声明',
+                '使用系统字体栈',
+                'font-family: system-ui, -apple-system, sans-serif'
+            ],
+            'severity': 'error'
+        },
+        'animation_detected': {
+            'message': '检测到禁用的 SMIL 动画元素',
+            'solutions': [
+                '移除所有 <animate>, <animateMotion>, <animateTransform> 等元素',
+                'SVG 动画不会导出到 PPT',
+                '如需动画效果，在 PPT 中使用 PPT 原生动画'
+            ],
+            'severity': 'error'
+        },
+        'script_detected': {
+            'message': '检测到禁用的 <script> 元素',
+            'solutions': [
+                '移除 <script> 元素',
+                '禁止脚本和事件处理',
+                'SVG 中的 JavaScript 不会在 PPT 中执行'
+            ],
+            'severity': 'error'
+        },
         'invalid_font': {
             'message': '使用了非标准字体',
             'solutions': [
