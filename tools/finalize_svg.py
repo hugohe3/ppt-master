@@ -18,6 +18,7 @@ PPT Master - SVG 后处理工具（统一入口）
 
 处理选项：
     embed-icons   - 替换 <use data-icon="..."/> 为实际图标 SVG
+    crop-images   - 根据 preserveAspectRatio="slice" 智能裁剪图片
     fix-aspect    - 修复图片宽高比（防止 PPT 转形状时拉伸）
     embed-images  - 将外部图片转换为 Base64 嵌入
     flatten-text  - 将 <tspan> 转为独立 <text>（用于特殊渲染器）
@@ -35,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from embed_icons import process_svg_file as embed_icons_in_file
 from embed_images import embed_images_in_svg
 from fix_image_aspect import fix_image_aspect_in_svg
+from crop_images import process_svg_images as crop_images_in_svg
 
 
 def safe_print(text):
@@ -134,7 +136,7 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
     # 步骤 2: 嵌入图标
     if options.get('embed_icons'):
         if not quiet:
-            safe_print("[1/5] 嵌入图标...")
+            safe_print("[1/6] 嵌入图标...")
         icons_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False)
@@ -145,10 +147,26 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
             else:
                 safe_print("      无图标")
     
-    # 步骤 3: 修复图片宽高比（防止 PPT 转形状时拉伸）
+    # 步骤 3: 智能裁剪图片（根据 preserveAspectRatio="slice"）
+    if options.get('crop_images'):
+        if not quiet:
+            safe_print("[2/6] 智能裁剪图片...")
+        crop_count = 0
+        crop_errors = 0
+        for svg_file in svg_final.glob('*.svg'):
+            count, errors = crop_images_in_svg(str(svg_file), dry_run=False, verbose=False)
+            crop_count += count
+            crop_errors += errors
+        if not quiet:
+            if crop_count > 0:
+                safe_print(f"      {crop_count} 张图片已裁剪")
+            else:
+                safe_print("      无需裁剪（无 slice 属性的图片）")
+    
+    # 步骤 4: 修复图片宽高比（防止 PPT 转形状时拉伸）
     if options.get('fix_aspect'):
         if not quiet:
-            safe_print("[2/5] 修复图片宽高比...")
+            safe_print("[3/6] 修复图片宽高比...")
         aspect_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = fix_image_aspect_in_svg(str(svg_file), dry_run=False, verbose=False)
@@ -159,10 +177,10 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
             else:
                 safe_print("      无图片")
     
-    # 步骤 4: 嵌入图片
+    # 步骤 5: 嵌入图片
     if options.get('embed_images'):
         if not quiet:
-            safe_print("[3/5] 嵌入图片...")
+            safe_print("[4/6] 嵌入图片...")
         images_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count, _ = embed_images_in_svg(str(svg_file), dry_run=False)
@@ -173,10 +191,10 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
             else:
                 safe_print("      无图片")
     
-    # 步骤 5: 文本扁平化
+    # 步骤 6: 文本扁平化
     if options.get('flatten_text'):
         if not quiet:
-            safe_print("[4/5] 文本扁平化...")
+            safe_print("[5/6] 文本扁平化...")
         flatten_count = 0
         for svg_file in svg_final.glob('*.svg'):
             if process_flatten_text(svg_file, verbose=False):
@@ -187,10 +205,10 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
             else:
                 safe_print("      无需处理")
     
-    # 步骤 6: 圆角转 Path
+    # 步骤 7: 圆角转 Path
     if options.get('fix_rounded'):
         if not quiet:
-            safe_print("[5/5] 圆角转 Path...")
+            safe_print("[6/6] 圆角转 Path...")
         rounded_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = process_rounded_rect(svg_file, verbose=False)
@@ -224,6 +242,7 @@ def main():
 
 处理选项（用于 --only）：
   embed-icons   嵌入图标
+  crop-images   智能裁剪图片（根据 preserveAspectRatio）
   fix-aspect    修复图片宽高比（防止 PPT 转形状时拉伸）
   embed-images  嵌入图片
   flatten-text  文本扁平化
@@ -233,7 +252,7 @@ def main():
     
     parser.add_argument('project_dir', type=Path, help='项目目录路径')
     parser.add_argument('--only', nargs='+', metavar='OPTION',
-                        choices=['embed-icons', 'fix-aspect', 'embed-images', 'flatten-text', 'fix-rounded'],
+                        choices=['embed-icons', 'crop-images', 'fix-aspect', 'embed-images', 'flatten-text', 'fix-rounded'],
                         help='只执行指定的处理（默认执行全部）')
     parser.add_argument('--dry-run', '-n', action='store_true',
                         help='仅预览操作，不实际执行')
@@ -251,6 +270,7 @@ def main():
         # 只执行指定的处理
         options = {
             'embed_icons': 'embed-icons' in args.only,
+            'crop_images': 'crop-images' in args.only,
             'fix_aspect': 'fix-aspect' in args.only,
             'embed_images': 'embed-images' in args.only,
             'flatten_text': 'flatten-text' in args.only,
@@ -260,6 +280,7 @@ def main():
         # 默认执行全部
         options = {
             'embed_icons': True,
+            'crop_images': True,
             'fix_aspect': True,
             'embed_images': True,
             'flatten_text': True,
