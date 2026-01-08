@@ -68,11 +68,15 @@ def embed_images_in_svg(svg_path, dry_run=False):
         nonlocal images_embedded
         img_path = match.group(1)
         
+        # 解码 XML/HTML 实体（如 &amp; -> &）
+        import html
+        img_path_decoded = html.unescape(img_path)
+        
         # 处理相对路径
-        if not os.path.isabs(img_path):
-            full_path = os.path.join(svg_dir, img_path)
+        if not os.path.isabs(img_path_decoded):
+            full_path = os.path.join(svg_dir, img_path_decoded)
         else:
-            full_path = img_path
+            full_path = img_path_decoded
         
         if not os.path.exists(full_path):
             print(f"  [WARN] Image not found: {img_path}")
