@@ -53,6 +53,65 @@ pip install PyMuPDF
 
 ---
 
+### 0.5. web_to_md.py — 网页转 Markdown 工具
+
+将网页内容抓取并转换为 Markdown 格式，自动下载图片到本地。
+
+**功能**:
+
+- 抓取网页内容并转换为 Markdown
+- 自动提取页面元数据（标题、日期、作者）
+- 自动下载图片并保存到 `_files/` 目录
+- 智能识别主要内容区域（支持中文新闻/政府网站）
+- 支持批量处理多个 URL
+
+**用法**:
+
+```bash
+# 转换单个网页
+python3 tools/web_to_md.py https://example.com/article
+
+# 转换多个网页
+python3 tools/web_to_md.py https://url1.com https://url2.com
+
+# 从文件批量读取 URL
+python3 tools/web_to_md.py -f urls.txt
+
+# 指定输出文件
+python3 tools/web_to_md.py https://example.com -o output.md
+```
+
+**输出结构**:
+
+```
+projects/
+├── 文章标题.md           # Markdown 内容
+└── 文章标题_files/       # 图片目录
+    ├── image_1.jpg
+    ├── image_2.png
+    └── ...
+```
+
+**何时使用 web_to_md.py**:
+
+| 场景 | 推荐工具 | 原因 |
+|------|----------|------|
+| **新闻/文章类网页** | `web_to_md.py` | 自动提取正文、下载图片 |
+| **图文内容**（游记、攻略等） | `web_to_md.py` | 保留图片资源 |
+| **政府/机构网站** | `web_to_md.py` | 支持中文站点元数据提取 |
+| **需要登录的页面** | 手动处理 | 工具不支持认证 |
+| **动态渲染页面（SPA）** | 手动处理 | 需要 headless browser |
+
+> **策略**: 静态网页用 `web_to_md.py`，动态渲染或需登录的页面需手动处理。
+
+**依赖**:
+
+```bash
+pip install requests beautifulsoup4
+```
+
+---
+
 ### 1. project_utils.py — 项目工具公共模块
 
 提供项目信息解析、验证等公共功能，供其他工具复用。

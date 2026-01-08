@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-web-to-md.py - Web Page to Markdown Converter (Python Version)
+web_to_md.py - Web Page to Markdown Converter (Python Version)
 
 Usage:
-  python tools/web-to-md.py <url>
-  python tools/web-to-md.py <url1> <url2> ...
-  python tools/web-to-md.py -f urls.txt
-  python tools/web-to-md.py <url> -o output.md
+    python tools/web_to_md.py <url>
+    python tools/web_to_md.py <url1> <url2> ...
+    python tools/web_to_md.py -f urls.txt
+    python tools/web_to_md.py <url> -o output.md
 
 Dependencies:
-  pip install requests beautifulsoup4
+    pip install requests beautifulsoup4
 """
 
 import argparse
@@ -57,10 +57,11 @@ CONFIG = {
         {"id": "content"},
         {"id": "article"},
         {"class_": "content"},
-        {"name": "article"}, # tag name
+        {"name": "article"},  # tag name
         {"name": "main"},    # tag name
     ]
 }
+
 
 def fetch_url(url):
     """
@@ -71,17 +72,19 @@ def fetch_url(url):
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
     }
-    
+
     try:
-        response = requests.get(url, headers=headers, timeout=CONFIG["timeout"], verify=False)
+        response = requests.get(url, headers=headers,
+                                timeout=CONFIG["timeout"], verify=False)
         response.raise_for_status()
-        
+
         # Enhanced encoding detection (requests handles this well usually, but we force apparent_encoding for Chinese)
         response.encoding = response.apparent_encoding
-        
+
         return response.text
     except Exception as e:
         raise Exception(f"Failed to fetch {url}: {str(e)}")
+
 
 def clean_title(title):
     """Removes common suffixes from titles."""
@@ -91,6 +94,7 @@ def clean_title(title):
     clean = re.sub(r"[-_|].*?(政府|门户|网站|委员会).*$", "", title)
     return clean.strip()
 
+
 def sanitize_filename(name):
     """Sanitizes the filename for file system."""
     # Remove invalid chars
@@ -98,15 +102,97 @@ def sanitize_filename(name):
     # Replace whitespace
     clean = re.sub(r'\s+', '_', clean)
     clean = re.sub(r'_+', '_', clean)
-    return clean[:80] # Truncate
+    return clean[:80]  # Truncate
+
+
+def build_image_filename(abs_url, seq, content_type=None):
+    """Builds a safe image filename using URL and optional content-type hint."""
+    parsed = urlparse(abs_url)
+    basename = os.path.basename(parsed.path).split('?')[0]
+    stem, ext = os.path.splitext(basename)
+    if not ext or len(ext) > 5 or '/' in ext:
+        ext = ""
+    if not ext and content_type:
+        ctype = content_type.split(';')[0].lower()
+        ext_map = {
+            "image/jpeg": ".jpg",
+            "image/jpg": ".jpg",
+            "image/png": ".png",
+            "image/gif": ".gif",
+            "image/webp": ".webp",
+        }
+        ext = ext_map.get(ctype, "")
+    if not ext:
+        ext = ".jpg"
+    stem = sanitize_filename(stem) if stem else f"image_{seq}"
+    return f"{stem}{ext}"
+
+
+def download_and_rewrite_images(content_element, page_url, image_dir, rel_prefix):
+    """Download images under content_element and rewrite src to local relative paths."""
+    if content_element is None:
+        return 0
+    images = list(content_element.find_all("img"))
+    if not images:
+        return 0
+
+    os.makedirs(image_dir, exist_ok=True)
+    downloaded = {}
+    saved = 0
+
+    for idx, img in enumerate(images):
+        src = img.get("src")
+        if not src or src.startswith("data:"):
+            continue
+
+        abs_url = urljoin(page_url, src)
+        if abs_url in downloaded:
+            saved_name = downloaded[abs_url]
+        else:
+            try:
+                resp = requests.get(
+                    abs_url,
+                    headers={"User-Agent": CONFIG["user_agent"]},
+                    timeout=CONFIG["timeout"],
+                    verify=False,
+                )
+                resp.raise_for_status()
+                filename = build_image_filename(
+                    abs_url, idx, resp.headers.get("Content-Type"))
+                local_path = os.path.join(image_dir, filename)
+
+                # Avoid accidental overwrites if filenames collide
+                counter = 1
+                stem, ext = os.path.splitext(filename)
+                while os.path.exists(local_path):
+                    local_path = os.path.join(
+                        image_dir, f"{stem}_{counter}{ext}")
+                    filename = os.path.basename(local_path)
+                    counter += 1
+
+                with open(local_path, "wb") as f:
+                    f.write(resp.content)
+                downloaded[abs_url] = filename
+                saved_name = filename
+                saved += 1
+            except Exception as e:
+                print(f"   [WARN] Skip image {abs_url}: {e}")
+                continue
+
+        rel_path = os.path.join(
+            rel_prefix, saved_name) if rel_prefix else saved_name
+        img["src"] = rel_path
+
+    return saved
+
 
 def extract_metadata(soup, url):
     """Extracts metadata like title, date, author from Soup."""
-    
+
     # 1. Title
     title_tag = soup.title
     title = clean_title(title_tag.string if title_tag else "")
-    
+
     # 2. Meta tags
     metas = {}
     for meta in soup.find_all("meta"):
@@ -114,16 +200,16 @@ def extract_metadata(soup, url):
         content = meta.get("content")
         if name and content:
             metas[name.lower()] = content.strip()
-            
+
     # 3. Date Extraction Strategies
     date = (
-        metas.get("article:published_time") or 
-        metas.get("og:published_time") or 
-        metas.get("pubdate") or 
-        metas.get("publishdate") or 
+        metas.get("article:published_time") or
+        metas.get("og:published_time") or
+        metas.get("pubdate") or
+        metas.get("publishdate") or
         metas.get("date")
     )
-    
+
     if not date:
         # Try matching date patterns in the text
         text_content = soup.get_text()
@@ -136,14 +222,15 @@ def extract_metadata(soup, url):
         for pattern in date_patterns:
             match = re.search(pattern, text_content)
             if match:
-                date = match.group(1).replace("年", "-").replace("月", "-").replace("日", "")
+                date = match.group(1).replace(
+                    "年", "-").replace("月", "-").replace("日", "")
                 break
 
     if not date:
         # Try URL matching
         match = re.search(r"(\d{4})(\d{2})[\/_](?:t\d+_)?", url)
         if match:
-             date = f"{match.group(1)}-{match.group(2)}"
+            date = f"{match.group(1)}-{match.group(2)}"
         else:
             match = re.search(r"(\d{4})[-\/](\d{2})[-\/](\d{2})", url)
             if match:
@@ -151,12 +238,12 @@ def extract_metadata(soup, url):
 
     # 4. Description
     description = (
-        metas.get("description") or 
-        metas.get("og:description") or 
-        metas.get("twitter:description") or 
+        metas.get("description") or
+        metas.get("og:description") or
+        metas.get("twitter:description") or
         ""
     )
-    
+
     # 5. Author/Source
     author = metas.get("author") or metas.get("article:author")
     if not author:
@@ -170,7 +257,7 @@ def extract_metadata(soup, url):
             if match:
                 author = match.group(1)
                 break
-                
+
     return {
         "title": title or metas.get("og:title") or "Untitled",
         "date": date or "",
@@ -179,6 +266,7 @@ def extract_metadata(soup, url):
         "source_url": url
     }
 
+
 def find_main_content(soup):
     """
     Tries to find the main content area using reliable heuristics for Chinese gov/news sites.
@@ -186,10 +274,10 @@ def find_main_content(soup):
     # 1. Clean up first (remove known clutter)
     for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript", "iframe"]):
         tag.decompose()
-        
+
     best_element = None
     max_score = 0
-    
+
     # 2. Strategy A: Check specific classes/ids
     for selector in CONFIG["content_selectors"]:
         if "name" in selector:
@@ -198,16 +286,17 @@ def find_main_content(soup):
         else:
             # Class or ID match
             elements = soup.find_all(attrs=selector)
-            
+
         for el in elements:
             # Score based on text length and chinese character count
             text = el.get_text(strip=True)
             length = len(text)
-            if length < 100: continue
-            
+            if length < 100:
+                continue
+
             chinese_count = len(re.findall(r'[\u4e00-\u9fa5]', text))
             score = length + (chinese_count * 2)
-            
+
             if score > max_score:
                 max_score = score
                 best_element = el
@@ -219,20 +308,21 @@ def find_main_content(soup):
             # recursive=False ensures we don't just pick the top-level body by accident
             # but sometimes content is nested deep
             if p_count == 0:
-                 # Check if it has lots of text even without p tags (br tags?)
-                 pass
-            
+                # Check if it has lots of text even without p tags (br tags?)
+                pass
+
             text = div.get_text(strip=True)
             if len(text) > 200 and p_count >= 1:
-                 # Recalculate deep score
-                 chinese_count = len(re.findall(r'[\u4e00-\u9fa5]', text))
-                 score = len(text) + (chinese_count * 2) + (p_count * 50)
-                 if score > max_score:
-                     max_score = score
-                     best_element = div
+                # Recalculate deep score
+                chinese_count = len(re.findall(r'[\u4e00-\u9fa5]', text))
+                score = len(text) + (chinese_count * 2) + (p_count * 50)
+                if score > max_score:
+                    max_score = score
+                    best_element = div
 
     # Fallback to body
     return best_element if best_element else soup.body
+
 
 def element_to_markdown(element):
     """
@@ -240,66 +330,66 @@ def element_to_markdown(element):
     """
     if element is None:
         return ""
-        
+
     if isinstance(element, NavigableString):
         text = str(element).strip()
         return text if text else ""
-    
+
     tag_name = element.name.lower()
-    
+
     # Skip hidden/unwanted tags
     if tag_name in ['script', 'style', 'meta', 'link', 'input', 'button', 'select']:
         return ""
-        
+
     content = ""
     for child in element.children:
         content += element_to_markdown(child)
         # Add spacing logic here if needed, but usually block elements handle it
-        
+
     # Block handlers
     if tag_name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
         level = int(tag_name[1])
         return f"\n{'#' * level} {content}\n\n"
-        
+
     elif tag_name == 'p':
         # Clean up internal whitespace
         content = re.sub(r'\s+', ' ', content).strip()
         return f"\n{content}\n\n" if content else ""
-        
+
     elif tag_name == 'br':
         return "  \n"
-        
+
     elif tag_name == 'hr':
         return "\n---\n"
-        
+
     elif tag_name == 'div':
         return f"\n{content}\n"
-        
+
     elif tag_name == 'blockquote':
         lines = content.strip().split('\n')
         quoted = '\n'.join([f"> {line}" for line in lines if line.strip()])
         return f"\n{quoted}\n\n"
-        
+
     elif tag_name in ['ul', 'ol']:
         # This is tricky without "state" (knowing we are in a list)
         # For simplicity in this recursive version, we rely on LI handling
         return f"\n{content}\n"
-        
+
     elif tag_name == 'li':
         # Simple list handling
         clean_content = content.strip()
         return f"- {clean_content}\n"
-        
+
     elif tag_name == 'pre':
         return f"\n```\n{content}\n```\n\n"
-        
+
     elif tag_name == 'code':
         # If parent is pre, handle in pre. If inline:
         parent = element.parent
         if parent and parent.name == 'pre':
             return content
         return f"`{content}`"
-        
+
     elif tag_name == 'a':
         href = element.get('href', '')
         if href and not href.startswith('javascript:'):
@@ -312,16 +402,16 @@ def element_to_markdown(element):
         if src:
             return f"![{alt}]({src})"
         return ""
-        
+
     elif tag_name == 'table':
         # Basic table text extraction, full markdown table support is complex
         # Leaving as raw text or simplistic conversion for now
         # Ideally, we'd parse TRs and TDs
         return f"\n{content}\n"
-    
+
     elif tag_name == 'tr':
         return f"{content}|\n"
-        
+
     elif tag_name in ['td', 'th']:
         return f"| {content.strip()} "
 
@@ -332,7 +422,7 @@ def element_to_markdown(element):
         return f"*{content}*"
     elif tag_name in ['del', 's', 'strike']:
         return f"~~{content}~~"
-        
+
     # Default for span, section, etc.
     return f"{content} "
 
@@ -343,7 +433,7 @@ def simple_html_to_markdown_traversal(soup):
     We handle block elements by adding newlines.
     """
     lines = []
-    
+
     def traverse(node):
         if isinstance(node, NavigableString):
             text = str(node)
@@ -352,17 +442,18 @@ def simple_html_to_markdown_traversal(soup):
             if text.strip():
                 return text
             return ""
-            
+
         if node.name in ['script', 'style', 'comment', 'meta', 'link']:
             return ""
-            
+
         # Handle Block Elements
-        is_block = node.name in ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'blockquote', 'pre', 'hr', 'table', 'tr']
-        
+        is_block = node.name in ['p', 'div', 'h1', 'h2', 'h3', 'h4',
+                                 'h5', 'h6', 'li', 'blockquote', 'pre', 'hr', 'table', 'tr']
+
         # Pre-processing
         prefix = ""
         suffix = ""
-        
+
         if node.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
             level = int(node.name[1])
             prefix = f"\n\n{'#' * level} "
@@ -382,7 +473,7 @@ def simple_html_to_markdown_traversal(soup):
         elif node.name == 'pre':
             # Extract raw text from pre to preserve formatting
             return f"\n\n```\n{node.get_text()}\n```\n\n"
-            
+
         # Inline formatting
         if node.name in ['strong', 'b']:
             prefix, suffix = "**", "**"
@@ -398,23 +489,24 @@ def simple_html_to_markdown_traversal(soup):
             else:
                 prefix, suffix = "", ""
         elif node.name == 'img':
-             src = node.get('src')
-             alt = node.get('alt', '')
-             if src:
-                 return f"![{alt}]({src})"
-             return ""
-             
+            src = node.get('src')
+            alt = node.get('alt', '')
+            if src:
+                return f"![{alt}]({src})"
+            return ""
+
         # Recurse
         inner_text = ""
         for child in node.children:
             res = traverse(child)
             if res:
                 inner_text += res
-                
+
         # Post-processing for tables (simplified)
         if node.name == 'tr':
             # count tds
-            cells = [c.get_text(strip=True) for c in node.find_all(['td', 'th'], recursive=False)]
+            cells = [c.get_text(strip=True) for c in node.find_all(
+                ['td', 'th'], recursive=False)]
             return f"| {' | '.join(cells)} |\n"
         if node.name == 'table':
             # Try to add a separator line after first row if it looks like a header
@@ -422,22 +514,23 @@ def simple_html_to_markdown_traversal(soup):
             if rows:
                 cols_count = rows[0].count('|') - 1
                 if cols_count > 0:
-                     sep = "| " + " | ".join(["---"] * int(cols_count/2)) + " |" # rough approx
-                     # Actually, the traverse of TR returns newline terminated strings.
-                     # Let's just return what we gathered.
-                     pass
+                    # rough approx
+                    sep = "| " + " | ".join(["---"] * int(cols_count/2)) + " |"
+                    # Actually, the traverse of TR returns newline terminated strings.
+                    # Let's just return what we gathered.
+                    pass
             return f"\n\n{inner_text}\n\n"
 
         return f"{prefix}{inner_text}{suffix}"
 
     # Actually, a simpler approach for this script is "just get string" but with markers?
     # Let's use a simplified approach: use get_text but with 'separator' logic?
-    # text = soup.get_text(separator='\n\n') 
+    # text = soup.get_text(separator='\n\n')
     # But that loses links and boldness.
-    
+
     # Recommendation: Let's stick to the traversal above which constructs a string.
     md = traverse(soup)
-    
+
     # Cleanup Markdown
     if md:
         # Remove excessive newlines
@@ -445,112 +538,131 @@ def simple_html_to_markdown_traversal(soup):
         md = md.strip()
     return md or ""
 
+
 def process_url(url, output_file=None):
     print(f"\n[Fetching] {url}")
     try:
         html = fetch_url(url)
         soup = BeautifulSoup(html, 'html.parser')
-        
+
         # Extract Metadata
         metadata = extract_metadata(soup, url)
         print(f"   [OK] Title: {metadata['title']}")
         if metadata['date']:
             print(f"   [OK] Date: {metadata['date']}")
-            
-        # Extract Content
-        content_div = find_main_content(soup)
-        
-        # Convert to MD
-        # Note: We pass the element to our traversal function
-        markdown_text = simple_html_to_markdown_traversal(content_div)
-        print(f"   [OK] Content: {len(markdown_text)} chars")
-        
-        # Construct content
-        final_output = []
-        final_output.append("<!--")
-        final_output.append(f"  Source: {url}")
-        final_output.append(f"  Crawled: {datetime.datetime.now().isoformat()}")
-        if metadata['date']: final_output.append(f"  Published: {metadata['date']}")
-        if metadata['author']: final_output.append(f"  Author: {metadata['author']}")
-        final_output.append("-->\n")
-        
-        if metadata['title']:
-            final_output.append(f"# {metadata['title']}\n")
-            
-        if metadata['description']:
-            final_output.append(f"> {metadata['description']}\n")
-            
-        final_output.append(markdown_text)
-        
-        full_content = "\n".join(final_output)
-        
-        # Determin Output Path
+
+        # Determine output path and image directory upfront
         if output_file:
             output_path = output_file
         else:
             filename = sanitize_filename(metadata['title']) + ".md"
             output_path = os.path.join(CONFIG["output_dir"], filename)
-            
-        # Ensure dir
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
+
+        output_dirname = os.path.dirname(output_path) or "."
+        os.makedirs(output_dirname, exist_ok=True)
+        base_name = os.path.splitext(os.path.basename(output_path))[0]
+        image_dir = os.path.join(output_dirname, f"{base_name}_files")
+        rel_image_prefix = os.path.relpath(image_dir, output_dirname)
+
+        # Extract Content
+        content_div = find_main_content(soup)
+
+        # Download images and rewrite src before markdown conversion
+        image_count = download_and_rewrite_images(
+            content_div, url, image_dir, rel_image_prefix)
+        if image_count:
+            print(f"   [OK] Images: {image_count} saved to {image_dir}")
+
+        # Convert to MD
+        # Note: We pass the element to our traversal function
+        markdown_text = simple_html_to_markdown_traversal(content_div)
+        print(f"   [OK] Content: {len(markdown_text)} chars")
+
+        # Construct content
+        final_output = []
+        final_output.append("<!--")
+        final_output.append(f"  Source: {url}")
+        final_output.append(
+            f"  Crawled: {datetime.datetime.now().isoformat()}")
+        if metadata['date']:
+            final_output.append(f"  Published: {metadata['date']}")
+        if metadata['author']:
+            final_output.append(f"  Author: {metadata['author']}")
+        final_output.append("-->\n")
+
+        if metadata['title']:
+            final_output.append(f"# {metadata['title']}\n")
+
+        if metadata['description']:
+            final_output.append(f"> {metadata['description']}\n")
+
+        final_output.append(markdown_text)
+
+        full_content = "\n".join(final_output)
+
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(full_content)
-            
+
         print(f"   [OK] Saved: {output_path}")
         return True, url, None
-        
+
     except Exception as e:
         print(f"   [ERROR] {str(e)}")
         return False, url, str(e)
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Web to Markdown Converter (Python)")
+    parser = argparse.ArgumentParser(
+        description="Web to Markdown Converter (Python)")
     parser.add_argument("urls", nargs="*", help="URLs to process")
-    parser.add_argument("-f", "--file", help="File containing URLs (one per line)")
+    parser.add_argument(
+        "-f", "--file", help="File containing URLs (one per line)")
     parser.add_argument("-o", "--output", help="Output file (single URL only)")
     parser.add_argument("-d", "--dir", help="Output directory")
-    
+
     args = parser.parse_args()
-    
+
     if args.dir:
         CONFIG["output_dir"] = args.dir
-        
+
     targets = []
     if args.urls:
         targets.extend(args.urls)
-        
+
     if args.file:
         if os.path.exists(args.file):
             with open(args.file, 'r', encoding='utf-8') as f:
-                lines = [l.strip() for l in f if l.strip() and not l.strip().startswith("#")]
+                lines = [l.strip() for l in f if l.strip()
+                         and not l.strip().startswith("#")]
                 targets.extend(lines)
         else:
             print(f"Error: File {args.file} not found")
-            
+
     if not targets:
         parser.print_help()
         sys.exit(0)
-        
+
     results = []
     for i, url in enumerate(targets):
         # Allow specific output file only if 1 URL
         out = args.output if (len(targets) == 1 and args.output) else None
         success, url, err = process_url(url, out)
         results.append((success, url, err))
-        
+
     # Summary
     success_count = sum(1 for r in results if r[0])
     fail_count = len(results) - success_count
-    
+
     print("\n" + "="*50)
-    print(f"[Done] Success: {success_count}/{len(results)}, Failed: {fail_count}")
-    
+    print(
+        f"[Done] Success: {success_count}/{len(results)}, Failed: {fail_count}")
+
     if fail_count > 0:
         print("\n[Failed URLs]:")
         for r in results:
             if not r[0]:
                 print(f"   - {r[1]}: {r[2]}")
+
 
 if __name__ == "__main__":
     # Disable warnings for verify=False if needed, though often useful to see

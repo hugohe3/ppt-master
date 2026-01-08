@@ -227,6 +227,9 @@ Optimizer_CRAP (可选)
 # PDF 转 Markdown（优先使用，本地快速）
 python3 tools/pdf_to_md.py <PDF文件>
 
+# 网页转 Markdown（抓取网页内容并保存图片）
+python3 tools/web_to_md.py <URL>
+
 # 初始化项目
 python3 tools/project_manager.py init <名称> --format ppt169
 
@@ -273,7 +276,9 @@ project/
 - [ ] **重复**: 同类元素风格一致
 - [ ] **亲密性**: 相关内容空间聚合
 
-## PDF 转 Markdown 工具选择
+## 源文档转换工具选择
+
+### PDF 转 Markdown
 
 | 场景                            | 推荐工具       | 命令                                |
 | ------------------------------- | -------------- | ----------------------------------- |
@@ -285,6 +290,19 @@ project/
 | **数学公式**                    | MinerU         | AI 识别能力强                       |
 
 > **策略**: PyMuPDF 优先，MinerU 兜底。先运行 `pdf_to_md.py`，如结果乱码/空白再换 MinerU。
+
+### 网页转 Markdown
+
+| 场景                            | 推荐工具        | 命令                                  |
+| ------------------------------- | --------------- | ------------------------------------- |
+| **新闻/文章类网页**             | `web_to_md.py`  | `python3 tools/web_to_md.py <URL>`    |
+| **图文内容**（游记、攻略等）    | `web_to_md.py`  | 同上（自动下载图片到 `_files/`）      |
+| **政府/机构网站**               | `web_to_md.py`  | 同上（支持中文站点元数据提取）        |
+| **批量处理多个 URL**            | `web_to_md.py`  | `python3 tools/web_to_md.py -f urls.txt` |
+| **需要登录的页面**              | 手动处理        | 浏览器登录后复制内容                  |
+| **动态渲染页面（SPA）**         | 手动处理        | 需要 headless browser                 |
+
+> **策略**: 静态网页用 `web_to_md.py`，动态渲染或需登录的页面需手动处理。
 
 ## 重要资源
 
