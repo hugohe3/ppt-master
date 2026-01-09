@@ -53,9 +53,11 @@ pip install PyMuPDF
 
 ---
 
-### 0.5. web_to_md.py — 网页转 Markdown 工具
+### 0.5. web_to_md.py / web_to_md.cjs — 网页转 Markdown 工具
 
 将网页内容抓取并转换为 Markdown 格式，自动下载图片到本地。
+
+**注意**: 提供 Python 和 Node.js 两个版本。对于微信公众号等有 TLS 指纹拦截的站点，**强烈推荐使用 Node.js 版本** (`web_to_md.cjs`)。
 
 **功能**:
 
@@ -65,7 +67,7 @@ pip install PyMuPDF
 - 智能识别主要内容区域（支持中文新闻/政府网站）
 - 支持批量处理多个 URL
 
-**用法**:
+**用法 (Python)**:
 
 ```bash
 # 转换单个网页
@@ -81,6 +83,19 @@ python3 tools/web_to_md.py -f urls.txt
 python3 tools/web_to_md.py https://example.com -o output.md
 ```
 
+**用法 (Node.js) — 推荐用于微信公众号**:
+
+```bash
+# 转换单个网页
+node tools/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
+
+# 转换多个网页
+node tools/web_to_md.cjs https://url1.com https://url2.com
+
+# 从文件批量读取 URL
+node tools/web_to_md.cjs -f urls.txt
+```
+
 **输出结构**:
 
 ```
@@ -92,23 +107,28 @@ projects/
     └── ...
 ```
 
-**何时使用 web_to_md.py**:
+**何时使用 web_to_md.py / .cjs**:
 
 | 场景 | 推荐工具 | 原因 |
 |------|----------|------|
-| **新闻/文章类网页** | `web_to_md.py` | 自动提取正文、下载图片 |
-| **图文内容**（游记、攻略等） | `web_to_md.py` | 保留图片资源 |
-| **政府/机构网站** | `web_to_md.py` | 支持中文站点元数据提取 |
+| **微信公众号/高防站点** | `web_to_md.cjs` | Node.js 对 TLS 指纹拦截不仅更友好，且能大大降低被 403 的概率 |
+| **普通新闻/文章类网页** | 任选其一 | 均可自动提取正文、下载图片 |
+| **图文内容**（游记、攻略等） | 任选其一 | 保留图片资源 |
+| **政府/机构网站** | `web_to_md.py` | Python 版对某些特定中文编码处理可能微优 |
 | **需要登录的页面** | 手动处理 | 工具不支持认证 |
 | **动态渲染页面（SPA）** | 手动处理 | 需要 headless browser |
 
-> **策略**: 静态网页用 `web_to_md.py`，动态渲染或需登录的页面需手动处理。
+> **策略**: 遇到 403 错误或微信文章时，请直接切换使用 `web_to_md.cjs`。
 
 **依赖**:
 
+Python:
 ```bash
 pip install requests beautifulsoup4
 ```
+
+Node.js:
+(脚本使用原生模块，无需额外 npm install，但需 Node.js 环境)
 
 ---
 
