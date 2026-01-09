@@ -77,38 +77,48 @@ def get_crop_anchor(align: str) -> tuple:
 def crop_image_to_size(img: Image.Image, target_width: int, target_height: int, 
                        x_anchor: float = 0.5, y_anchor: float = 0.5) -> Image.Image:
     """
-    按指定锚点裁剪图片到目标尺寸
+    按目标比例裁剪图片，保持原图分辨率（不缩放）
+    
+    新逻辑：只按目标宽高比裁剪原图，不进行任何缩放操作，
+    这样可以保持原图的分辨率和清晰度。
     
     Args:
         img: PIL Image 对象
-        target_width: 目标宽度
-        target_height: 目标高度
+        target_width: 目标宽度（用于计算比例）
+        target_height: 目标高度（用于计算比例）
         x_anchor: 水平锚点 (0=左, 0.5=中, 1=右)
         y_anchor: 垂直锚点 (0=上, 0.5=中, 1=下)
     
     Returns:
-        裁剪后的 PIL Image 对象
+        裁剪后的 PIL Image 对象（保持原图分辨率）
     """
     img_width, img_height = img.size
     
-    # 计算缩放比例（取较大值以覆盖目标区域）
-    scale = max(target_width / img_width, target_height / img_height)
+    # 计算目标宽高比
+    target_ratio = target_width / target_height
+    img_ratio = img_width / img_height
     
-    # 缩放图片
-    new_width = int(img_width * scale)
-    new_height = int(img_height * scale)
-    img_resized = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    # 根据比例计算裁剪区域（在原图上裁剪，不缩放）
+    if img_ratio > target_ratio:
+        # 原图更宽，需要裁剪左右两侧
+        crop_height = img_height
+        crop_width = int(img_height * target_ratio)
+    else:
+        # 原图更高，需要裁剪上下两侧
+        crop_width = img_width
+        crop_height = int(img_width / target_ratio)
     
     # 根据锚点计算裁剪位置
-    extra_width = new_width - target_width
-    extra_height = new_height - target_height
+    extra_width = img_width - crop_width
+    extra_height = img_height - crop_height
     
     left = int(extra_width * x_anchor)
     top = int(extra_height * y_anchor)
-    right = left + target_width
-    bottom = top + target_height
+    right = left + crop_width
+    bottom = top + crop_height
     
-    return img_resized.crop((left, top, right, bottom))
+    # 只裁剪，不缩放
+    return img.crop((left, top, right, bottom))
 
 
 def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = False, 
