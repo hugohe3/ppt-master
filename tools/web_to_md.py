@@ -11,6 +11,12 @@ Usage:
 
 Dependencies:
     pip install requests beautifulsoup4
+
+Note:
+    Some websites (e.g., WeChat mp.weixin.qq.com) block Python's 'requests' library 
+    based on TLS fingerprints (JA3). If you encounter 403 errors or connection issues 
+    with such sites, please use the Node.js version (tools/web_to_md.cjs) or 
+    modify this script to use 'curl_cffi'.
 """
 
 import argparse

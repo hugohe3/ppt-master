@@ -228,7 +228,7 @@ Optimizer_CRAP (可选)
 python3 tools/pdf_to_md.py <PDF文件>
 
 # 网页转 Markdown（抓取网页内容并保存图片）
-python3 tools/web_to_md.py <URL>
+python3 tools/web_to_md.py <URL> 或 node tools/web_to_md.cjs <URL>
 
 # 初始化项目
 python3 tools/project_manager.py init <名称> --format ppt169
@@ -295,7 +295,8 @@ project/
 
 | 场景                            | 推荐工具        | 命令                                  |
 | ------------------------------- | --------------- | ------------------------------------- |
-| **新闻/文章类网页**             | `web_to_md.py`  | `python3 tools/web_to_md.py <URL>`    |
+| **微信公众号/高防站点**         | `web_to_md.cjs` | `node tools/web_to_md.cjs <URL>` (绕过 TLS 拦截，推荐) |
+| **普通文章/新闻网页**           | `web_to_md.py`  | `python3 tools/web_to_md.py <URL>`    |
 | **图文内容**（游记、攻略等）    | `web_to_md.py`  | 同上（自动下载图片到 `_files/`）      |
 | **政府/机构网站**               | `web_to_md.py`  | 同上（支持中文站点元数据提取）        |
 | **批量处理多个 URL**            | `web_to_md.py`  | `python3 tools/web_to_md.py -f urls.txt` |
