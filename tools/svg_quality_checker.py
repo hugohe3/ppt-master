@@ -292,7 +292,7 @@ class SVGQualityChecker:
         dir_path = Path(directory)
 
         if not dir_path.exists():
-            print(f"❌ 目录不存在: {directory}")
+            print(f"[ERROR] 目录不存在: {directory}")
             return []
 
         # 查找所有 SVG 文件
@@ -305,10 +305,10 @@ class SVGQualityChecker:
             svg_files = sorted(svg_output.glob('*.svg'))
 
         if not svg_files:
-            print(f"⚠️  未找到 SVG 文件")
+            print(f"[WARN] 未找到 SVG 文件")
             return []
 
-        print(f"\n🔍 检查 {len(svg_files)} 个 SVG 文件...\n")
+        print(f"\n[SCAN] 检查 {len(svg_files)} 个 SVG 文件...\n")
 
         for svg_file in svg_files:
             result = self.check_file(str(svg_file), expected_format)
@@ -320,13 +320,13 @@ class SVGQualityChecker:
         """打印单个文件的检查结果"""
         if result['passed']:
             if result['warnings']:
-                icon = "⚠️ "
+                icon = "[WARN]"
                 status = "通过（有警告）"
             else:
-                icon = "✅"
+                icon = "[OK]"
                 status = "通过"
         else:
-            icon = "❌"
+            icon = "[ERROR]"
             status = "失败"
 
         print(f"{icon} {result['file']} - {status}")
@@ -344,12 +344,12 @@ class SVGQualityChecker:
         # 显示错误
         if result['errors']:
             for error in result['errors']:
-                print(f"   ❌ {error}")
+                print(f"   [ERROR] {error}")
 
         # 显示警告
         if result['warnings']:
             for warning in result['warnings'][:2]:  # 只显示前2个警告
-                print(f"   ⚠️  {warning}")
+                print(f"   [WARN] {warning}")
             if len(result['warnings']) > 2:
                 print(f"   ... 还有 {len(result['warnings']) - 2} 个警告")
 
@@ -358,16 +358,16 @@ class SVGQualityChecker:
     def print_summary(self):
         """打印检查摘要"""
         print("=" * 80)
-        print("📊 检查摘要")
+        print("[SUMMARY] 检查摘要")
         print("=" * 80)
 
         print(f"\n总文件数: {self.summary['total']}")
         print(
-            f"  ✅ 完全通过: {self.summary['passed']} ({self._percentage(self.summary['passed'])}%)")
+            f"  [OK] 完全通过: {self.summary['passed']} ({self._percentage(self.summary['passed'])}%)")
         print(
-            f"  ⚠️  有警告: {self.summary['warnings']} ({self._percentage(self.summary['warnings'])}%)")
+            f"  [WARN] 有警告: {self.summary['warnings']} ({self._percentage(self.summary['warnings'])}%)")
         print(
-            f"  ❌ 有错误: {self.summary['errors']} ({self._percentage(self.summary['errors'])}%)")
+            f"  [ERROR] 有错误: {self.summary['errors']} ({self._percentage(self.summary['errors'])}%)")
 
         if self.issue_types:
             print(f"\n问题分类:")
@@ -376,7 +376,7 @@ class SVGQualityChecker:
 
         # 修复建议
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
-            print(f"\n💡 常见修复方法:")
+            print(f"\n[TIP] 常见修复方法:")
             print(f"  1. viewBox 问题: 确保与画布格式一致（参考 docs/canvas_formats.md）")
             print(f"  2. foreignObject: 改用 <text> + <tspan> 进行手动换行")
             print(f"  3. 字体问题: 使用系统 UI 字体栈")
@@ -395,7 +395,7 @@ class SVGQualityChecker:
             f.write("=" * 80 + "\n\n")
 
             for result in self.results:
-                status = "✅ 通过" if result['passed'] else "❌ 失败"
+                status = "[OK] 通过" if result['passed'] else "[ERROR] 失败"
                 f.write(f"{status} - {result['file']}\n")
                 f.write(f"路径: {result.get('path', 'N/A')}\n")
 
@@ -423,7 +423,7 @@ class SVGQualityChecker:
             f.write(f"有警告: {self.summary['warnings']}\n")
             f.write(f"有错误: {self.summary['errors']}\n")
 
-        print(f"\n📄 检查报告已导出: {output_file}")
+        print(f"\n[REPORT] 检查报告已导出: {output_file}")
 
 
 def main():
