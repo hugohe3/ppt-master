@@ -64,6 +64,7 @@ pip install PyMuPDF
 - 抓取网页内容并转换为 Markdown
 - 自动提取页面元数据（标题、日期、作者）
 - 自动下载图片并保存到 `_files/` 目录
+- **自动清理文件名**（仅保留中英文数字下划线，兼容性极佳）
 - 智能识别主要内容区域（支持中文新闻/政府网站）
 - 支持批量处理多个 URL
 
@@ -129,6 +130,33 @@ pip install requests beautifulsoup4
 
 Node.js:
 (脚本使用原生模块，无需额外 npm install，但需 Node.js 环境)
+
+---
+
+### 0.6. rotate_images.py — 图片方向修正工具
+
+处理从网页下载的图片 EXIF 方向信息丢失或错误的专用工具。
+
+**功能**:
+
+- **自动 EXIF 修正**: 识别并修复带有 EXIF Orientation 标签的图片
+- **可视化旋转**: 生成 HTML 工具页面，点击即可旋转图片
+- **自然排序**: 确保图片按文件名自然顺序排列
+- **独立运行**: 不依赖爬虫脚本，可单独对任何目录使用
+
+**用法**:
+
+```bash
+# 1. 自动修正（静默模式，仅修复 EXIF）
+python3 tools/rotate_images.py auto projects/xxx_files
+
+# 2. 生成可视化工具（先修复 EXIF，再生成网页）
+python3 tools/rotate_images.py gen projects/xxx_files
+# -> 生成 projects/image_orientation_tool.html，浏览器打开即可操作
+
+# 3. 应用修正（根据网页生成的 JSON）
+python3 tools/rotate_images.py fix fixes.json
+```
 
 ---
 
@@ -943,6 +971,32 @@ pip install Pillow numpy
 
 - 此工具需要 `tools/assets/` 目录下的 `bg_48.png` 和 `bg_96.png` 水印背景图
 - 处理后的图片会在原位置生成，添加 `_unwatermarked` 后缀
+
+---
+
+### 13. embed_icons.py — SVG 图标嵌入工具
+
+将 SVG 文件中的图标占位符 (`<use ...>`) 替换为实际的图标路径数据，实现图标的“零依赖”嵌入。
+
+**功能**:
+
+- 扫描 `<use data-icon="...">` 占位符
+- 从图标库（默认 `templates/icons/`）读取对应 SVG 图标
+- 嵌入为 `<g>` 组并应用位置、大小和颜色
+- 支持批量处理
+
+**用法**:
+
+```bash
+# 处理单个文件
+python3 tools/embed_icons.py output.svg
+
+# 处理整个目录
+python3 tools/embed_icons.py svg_output/*.svg
+
+# 预览模式
+python3 tools/embed_icons.py --dry-run svg_output/*.svg
+```
 
 ---
 

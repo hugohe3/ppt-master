@@ -99,7 +99,7 @@ class ProjectManager:
         # 创建设计规范与内容大纲
         spec_content = f"""# {project_name} - 设计规范与内容大纲
 
-## 📋 项目信息
+## [INFO] 项目信息
 
 | 项目 | 内容 |
 |------|------|
@@ -113,7 +113,7 @@ class ProjectManager:
 
 ---
 
-## 🎨 设计规范
+## [DESIGN] 设计规范
 
 ### 1. 画布设置
 
@@ -158,14 +158,14 @@ class ProjectManager:
 
 ### 5. 技术约束
 
-- ✅ 使用 `<tspan>` 进行手动换行
-- ❌ 禁止使用 `<foreignObject>`
-- ✅ 背景使用 `<rect>` 元素
-- ✅ 遵循 CRAP 设计原则（对齐、对比、重复、亲密性）
+- [OK] 使用 `<tspan>` 进行手动换行
+- [NO] 禁止使用 `<foreignObject>`
+- [OK] 背景使用 `<rect>` 元素
+- [OK] 遵循 CRAP 设计原则（对齐、对比、重复、亲密性）
 
 ---
 
-## 📑 内容大纲
+## [CONTENT] 内容大纲
 
 ### Slide 01 - 封面
 **核心信息**: [主题]
@@ -189,15 +189,15 @@ class ProjectManager:
 
 ---
 
-## 📊 图片资源清单（如需要）
+## [RESOURCE] 图片资源清单（如需要）
 
 | 文件名 | 尺寸 | 用途 | 使用页面 | 状态 |
 |--------|------|------|----------|------|
-| cover_bg.png | {canvas_info['dimensions']} | 封面背景 | Slide 01 | ⏳ 待生成 |
+| cover_bg.png | {canvas_info['dimensions']} | 封面背景 | Slide 01 | [待生成] |
 
 ---
 
-## ✅ 设计检查清单
+## [CHECK] 设计检查清单
 
 ### 生成前
 - [ ] 内容符合页面容量
@@ -393,12 +393,12 @@ def main():
         try:
             project_path = manager.init_project(
                 project_name, canvas_format, base_dir=base_dir)
-            print(f"✅ 项目已创建: {project_path}")
+            print(f"[OK] 项目已创建: {project_path}")
             print("\n下一步:")
             print("1. 编辑 设计规范与内容大纲.md")
             print("2. 将 SVG 文件放入 svg_output/ 目录")
         except Exception as e:
-            print(f"❌ 创建失败: {e}")
+            print(f"[ERROR] 创建失败: {e}")
             sys.exit(1)
 
     elif command == 'validate':
@@ -414,21 +414,21 @@ def main():
         print("=" * 60)
 
         if errors:
-            print("\n❌ 错误:")
+            print("\n[ERROR] 错误:")
             for error in errors:
                 print(f"  - {error}")
 
         if warnings:
-            print("\n⚠️  警告:")
+            print("\n[WARN] 警告:")
             for warning in warnings:
                 print(f"  - {warning}")
 
         if is_valid and not warnings:
-            print("\n✅ 项目结构完整，没有问题")
+            print("\n[OK] 项目结构完整，没有问题")
         elif is_valid:
-            print("\n✅ 项目结构有效，但有一些建议")
+            print("\n[OK] 项目结构有效，但有一些建议")
         else:
-            print("\n❌ 项目结构无效，请修复错误")
+            print("\n[ERROR] 项目结构无效，请修复错误")
             sys.exit(1)
 
     elif command == 'info':

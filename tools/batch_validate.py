@@ -58,16 +58,16 @@ class BatchValidator:
         """
         dir_path = Path(directory)
         if not dir_path.exists():
-            print(f"❌ 目录不存在: {directory}")
+            print(f"[ERROR] 目录不存在: {directory}")
             return []
 
-        print(f"\n🔍 扫描目录: {directory}")
+        print(f"\n[SCAN] 扫描目录: {directory}")
         print("=" * 80)
 
         projects = find_all_projects(directory)
 
         if not projects:
-            print(f"⚠️  未找到任何项目")
+            print(f"[WARN] 未找到任何项目")
             return []
 
         print(f"找到 {len(projects)} 个项目\n")
@@ -122,13 +122,13 @@ class BatchValidator:
         # 更新统计
         if is_valid and not warnings and not svg_warnings:
             self.summary['valid'] += 1
-            status = "✅"
+            status = "[OK]"
         elif errors:
             self.summary['has_errors'] += 1
-            status = "❌"
+            status = "[ERROR]"
         else:
             self.summary['has_warnings'] += 1
-            status = "⚠️ "
+            status = "[WARN]"
 
         if not info['has_readme']:
             self.summary['missing_readme'] += 1
@@ -144,13 +144,13 @@ class BatchValidator:
             f"   格式: {info['format_name']} | SVG: {info['svg_count']} 个 | 日期: {info['date_formatted']}")
 
         if errors:
-            print(f"   ❌ 错误 ({len(errors)}):")
+            print(f"   [ERROR] 错误 ({len(errors)}):")
             for error in errors:
                 print(f"      - {error}")
 
         if warnings or svg_warnings:
             all_warnings = warnings + svg_warnings
-            print(f"   ⚠️  警告 ({len(all_warnings)}):")
+            print(f"   [WARN] 警告 ({len(all_warnings)}):")
             for warning in all_warnings[:3]:  # 只显示前3个警告
                 print(f"      - {warning}")
             if len(all_warnings) > 3:
@@ -163,16 +163,16 @@ class BatchValidator:
     def print_summary(self):
         """打印验证摘要"""
         print("\n" + "=" * 80)
-        print("📊 验证摘要")
+        print("[Summary] 验证摘要")
         print("=" * 80)
 
         print(f"\n总项目数: {self.summary['total']}")
         print(
-            f"  ✅ 完全合格: {self.summary['valid']} ({self._percentage(self.summary['valid'])}%)")
+            f"  [OK] 完全合格: {self.summary['valid']} ({self._percentage(self.summary['valid'])}%)")
         print(
-            f"  ⚠️  有警告: {self.summary['has_warnings']} ({self._percentage(self.summary['has_warnings'])}%)")
+            f"  [WARN] 有警告: {self.summary['has_warnings']} ({self._percentage(self.summary['has_warnings'])}%)")
         print(
-            f"  ❌ 有错误: {self.summary['has_errors']} ({self._percentage(self.summary['has_errors'])}%)")
+            f"  [ERROR] 有错误: {self.summary['has_errors']} ({self._percentage(self.summary['has_errors'])}%)")
 
         print(f"\n常见问题:")
         print(f"  缺少 README.md: {self.summary['missing_readme']} 个项目")
@@ -191,7 +191,7 @@ class BatchValidator:
 
         # 提供修复建议
         if self.summary['has_errors'] > 0 or self.summary['has_warnings'] > 0:
-            print(f"\n💡 修复建议:")
+            print(f"\n[TIP] 修复建议:")
 
             if self.summary['missing_readme'] > 0:
                 print(f"  1. 为缺少 README 的项目创建说明文档")
@@ -224,8 +224,8 @@ class BatchValidator:
             f.write("=" * 80 + "\n\n")
 
             for result in self.results:
-                status = "✅ 合格" if result['is_valid'] and not result['warnings'] else \
-                    "❌ 错误" if result['errors'] else "⚠️  警告"
+                status = "[OK] 合格" if result['is_valid'] and not result['warnings'] else \
+                    "[ERROR] 错误" if result['errors'] else "[WARN] 警告"
 
                 f.write(f"{status} - {result['name']}\n")
                 f.write(f"路径: {result['path']}\n")
@@ -253,7 +253,7 @@ class BatchValidator:
             f.write(f"有警告: {self.summary['has_warnings']}\n")
             f.write(f"有错误: {self.summary['has_errors']}\n")
 
-        print(f"\n📄 验证报告已导出: {output_file}")
+        print(f"\n[REPORT] 验证报告已导出: {output_file}")
 
 
 def main():
@@ -284,7 +284,7 @@ def main():
         if Path(directory).exists():
             validator.validate_directory(directory)
         else:
-            print(f"⚠️  跳过不存在的目录: {directory}\n")
+            print(f"[WARN] 跳过不存在的目录: {directory}\n")
 
     # 打印摘要
     validator.print_summary()

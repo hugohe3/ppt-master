@@ -241,7 +241,7 @@ def main():
                 total_files += 1
     
     print()
-    print(f"📊 总计: {total_files} 个文件, {total_replaced} 个图标" + 
+    print(f"[Summary] 总计: {total_files} 个文件, {total_replaced} 个图标" + 
           (" (预览)" if args.dry_run else " 已替换"))
 
 

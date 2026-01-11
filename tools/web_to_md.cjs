@@ -507,8 +507,8 @@ function extractMetadata(parsed, url) {
 // ============ Sanitize Filename ============
 function sanitizeFilename(name) {
   return name
-    .replace(/[<>:"/\\|?*]/g, "")
     .replace(/\s+/g, "_")
+    .replace(/[^\u4e00-\u9fa5a-zA-Z0-9_]/g, "")
     .replace(/_+/g, "_")
     .substring(0, 80);
 }
