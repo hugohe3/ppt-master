@@ -91,6 +91,7 @@ class ProjectManager:
         # 创建目录结构
         project_path.mkdir(parents=True, exist_ok=True)
         (project_path / 'svg_output').mkdir(exist_ok=True)
+        (project_path / 'images').mkdir(exist_ok=True)
 
         # 获取画布格式信息
         canvas_info = self.CANVAS_FORMATS.get(
