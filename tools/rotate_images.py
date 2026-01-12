@@ -90,8 +90,20 @@ class ImageRotator:
         for f in files:
             if f.is_file() and f.suffix.lower() in valid_exts:
                 try:
-                    rel_path = f.relative_to(project_root).as_posix()
-                    images.append(rel_path)
+                    # src 用于 HTML 显示，保持相对于 HTML 文件的路径 (e.g. "images/1.jpg")
+                    src_rel_path = f.relative_to(project_root).as_posix()
+                    
+                    # path 用于 JSON 数据，使用相对于运行目录(通常是仓库根目录)的路径
+                    # e.g. "projects/Name/images/1.jpg"
+                    # 我们假设脚本是从仓库根目录运行的，或者 target_path 本身就是绝对路径
+                    # 最稳妥的方式是计算相对于 CWD 的路径
+                    try:
+                        repo_rel_path = f.relative_to(Path.cwd()).as_posix()
+                    except ValueError:
+                        # 如果文件不在 CWD 下，退回使用绝对路径
+                        repo_rel_path = str(f.resolve())
+
+                    images.append({'src': src_rel_path, 'path': repo_rel_path})
                 except ValueError:
                     print(f"[WARN] 警告: {f.name} 无法计算相对路径，已跳过")
                     continue
@@ -130,8 +142,6 @@ class ImageRotator:
         print("=" * 60)
         
         cwd = Path(os.getcwd())
-        project_root = cwd / 'projects'
-        
         stats = {'total': len(tasks), 'success': 0}
         
         for task in tasks:
@@ -141,11 +151,13 @@ class ImageRotator:
             if not rel_path or rotation is None:
                 continue
                 
-            target_file = project_root / rel_path
+            target_file = cwd / rel_path
             
-            # 容错：如果在当前目录找到了（非 projects/ 开头的情况）
-            if not target_file.exists() and (cwd / rel_path).exists():
-                target_file = cwd / rel_path
+            # 兼容旧逻辑/单纯文件名的情况（尝试在 projects 目录下找）
+            if not target_file.exists():
+                 candidate = cwd / 'projects' / rel_path
+                 if candidate.exists():
+                     target_file = candidate
             
             if not target_file.exists():
                 print(f"[SKIP] 文件未找到: {rel_path}")
@@ -334,17 +346,18 @@ class ImageRotator:
     const images = __IMAGES__;
     const grid = document.getElementById('grid');
 
-    images.forEach(src => {
+    images.forEach(item => {
         const card = document.createElement('div');
         card.className = 'card';
         card.setAttribute('data-rotation', 0);
-        card.setAttribute('data-src', src);
+        // use absolute path for the data attribute
+        card.setAttribute('data-path', item.path);
         
-        const filename = src.split('/').pop();
+        const filename = item.src.split('/').pop();
         
         card.innerHTML = `
             <div class="img-wrapper">
-                <img src="${src}" alt="${filename}" loading="lazy">
+                <img src="${item.src}" alt="${filename}" loading="lazy">
                 <div class="badge">0°</div>
             </div>
             <div class="info">${filename}</div>
@@ -377,7 +390,7 @@ class ImageRotator:
             const rot = parseInt(card.getAttribute('data-rotation'));
             if (rot > 0) {
                 tasks.push({
-                    path: card.getAttribute('data-src'),
+                    path: card.getAttribute('data-path'),
                     rotation: rot
                 });
             }
