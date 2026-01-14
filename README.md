@@ -938,6 +938,36 @@ python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
 
 **特点**：SVG 以原生矢量格式嵌入，保持可编辑性，需要 PowerPoint 2016+ 查看。
 
+### 讲稿填充工具 (`add_speaker_notes.py`)
+
+向 PPTX 的指定页面添加或更新讲稿（Speaker Notes）：
+
+```bash
+# 生成讲稿模板
+python3 tools/add_speaker_notes.py <pptx文件> --generate-template notes.md
+
+# 从 Markdown 批量添加讲稿
+python3 tools/add_speaker_notes.py <pptx文件> --notes-md notes.md
+
+# 向单页添加讲稿
+python3 tools/add_speaker_notes.py <pptx文件> --slide 1 --text "讲稿内容"
+
+# 列出所有幻灯片及讲稿状态
+python3 tools/add_speaker_notes.py <pptx文件> --list
+```
+
+**Markdown 讲稿格式**（每页用 `---` 分隔）：
+
+```markdown
+# 第1页
+这是第一页的讲稿内容...
+
+---
+
+# 第2页
+这是第二页的讲稿内容...
+```
+
 ### 错误消息助手 (`error_helper.py`)
 
 提供友好的错误消息和具体的修复建议：

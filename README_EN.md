@@ -946,6 +946,36 @@ python3 tools/svg_to_pptx.py <project_path> -s final -o output.pptx
 
 **Features**: SVG embedded as native vector format, maintains editability, requires PowerPoint 2016+ to view.
 
+### Speaker Notes Tool (`add_speaker_notes.py`)
+
+Add or update speaker notes to specific PPTX slides:
+
+```bash
+# Generate notes template
+python3 tools/add_speaker_notes.py <pptx_file> --generate-template notes.md
+
+# Batch add notes from Markdown
+python3 tools/add_speaker_notes.py <pptx_file> --notes-md notes.md
+
+# Add notes to single slide
+python3 tools/add_speaker_notes.py <pptx_file> --slide 1 --text "Speaker notes content"
+
+# List all slides and notes status
+python3 tools/add_speaker_notes.py <pptx_file> --list
+```
+
+**Markdown Notes Format** (separate each page with `---`):
+
+```markdown
+# Page 1
+This is the speaker notes for page 1...
+
+---
+
+# Page 2
+This is the speaker notes for page 2...
+```
+
 ### Error Message Helper (`error_helper.py`)
 
 Provides friendly error messages and specific fix suggestions:

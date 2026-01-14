@@ -168,7 +168,7 @@ Optimizer_CRAP (可选)
 
 ### 1. 策略师初次沟通（强制）
 
-在任何内容分析之前，**必须先完成八项确认**：
+在任何内容分析之前，**必须先完成九项确认**：
 
 1. **画布格式** - 根据场景推荐（PPT/小红书/朋友圈等）
 2. **页数范围** - 基于内容量给出建议
@@ -178,6 +178,7 @@ Optimizer_CRAP (可选)
 6. **图标方式** - 四选一：A) Emoji B) AI 生成 C) 内置图标库 D) 自定义路径
 7. **图片使用** - 四选一：A) 不使用 B) 用户提供 C) AI 生成 D) 占位符预留
 8. **字体方案** - 根据内容特征推荐字体组合（标题/正文/强调）
+9. **讲稿添加** - 是否需要为每页 PPT 添加讲稿（Speaker Notes）：A) 不需要 B) 需要（用户提供） C) 需要（AI 生成）
 
 **策略师必须主动给出专业建议，而非仅提问。**
 
@@ -294,6 +295,14 @@ python3 -m http.server -d <路径>/svg_final 8000
 
 # ⭐ 导出为 PPTX
 python3 tools/svg_to_pptx.py <项目路径> -s final
+
+# ⭐ 添加讲稿（Speaker Notes）
+# 生成讲稿模板
+python3 tools/add_speaker_notes.py <pptx文件> --generate-template notes.md
+# 从 Markdown 批量添加讲稿
+python3 tools/add_speaker_notes.py <pptx文件> --notes-md notes.md
+# 向单页添加讲稿
+python3 tools/add_speaker_notes.py <pptx文件> --slide 1 --text "讲稿内容"
 ```
 
 ### 项目目录结构
@@ -393,11 +402,12 @@ project/
 ### 流程要点
 
 - 策略师的「初次沟通」是**强制要求**
-- 策略师必须对八项确认问题**均给出专业建议**
+- 策略师必须对九项确认问题**均给出专业建议**
 - 通用风格与咨询风格在规范格式上有本质区别
 - 图标使用方式需在初次沟通中确认（Emoji / AI 生成 / 内置库 / 自定义）
 - 图片使用方式需在初次沟通中确认（不使用 / 用户提供 / AI 生成 / 占位符）
 - **图片生成流程**：如果图片方式**包含**「C) AI 生成」（如 C、B+C、C+D），**必须**先切换到 Image_Generator 角色，阅读角色定义，完成图片生成后再进入 Executor 阶段
+- **讲稿添加流程**：如果讲稿方式选择「B) 需要（用户提供）」或「C) 需要（AI 生成）」，在 PPTX 导出后执行讲稿添加流程
 
 ### 后处理提示
 
@@ -412,3 +422,46 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
 > ⚠️ **注意**：不要添加 `--only` 等参数，直接运行即可完成全部处理。
+
+### 讲稿添加流程（可选）
+
+如果用户选择添加讲稿，在 PPTX 导出后执行以下流程：
+
+#### 选择 B) 需要（用户提供）
+
+1. 生成讲稿模板供用户填写：
+   ```bash
+   python3 tools/add_speaker_notes.py <pptx文件> --generate-template notes.md
+   ```
+2. 用户填写模板后，导入讲稿：
+   ```bash
+   python3 tools/add_speaker_notes.py <pptx文件> --notes-md notes.md
+   ```
+
+#### 选择 C) 需要（AI 生成）
+
+1. 根据《设计规范与内容大纲》为每页生成讲稿 Markdown 文件（每页用 `---` 分隔）
+2. 导入讲稿：
+   ```bash
+   python3 tools/add_speaker_notes.py <pptx文件> --notes-md notes.md
+   ```
+
+#### 讲稿文件格式
+
+```markdown
+# 第1页
+这是第一页的讲稿内容...
+开场白、引入主题...
+
+---
+
+# 第2页
+这是第二页的讲稿内容...
+主要论点、关键信息...
+
+---
+
+# 第3页
+...
+```
+
