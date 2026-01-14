@@ -38,7 +38,7 @@ An AI-powered intelligent visual content generation system that transforms sourc
    Open AI chat panel in your editor (Antigravity/Cursor/Copilot Chat)
 
 3️⃣ Start Conversation
-   Tell the AI what content you want to create, it will automatically follow the role definitions in the repository
+   Tell the AI the address of AGENTS.md, and tell the AI what content you want to create, it will automatically follow the role definitions in the repository
 ```
 
 ### Usage Example
