@@ -17,7 +17,7 @@ project_name_format_YYYYMMDD/
 ├── README.md
 ├── 设计规范与内容大纲.md
 ├── svg_output/
-│   ├── slide_01_cover.svg
+│   ├── 01_cover.svg
 │   └── ...
 └── images/ (可选)
 ```

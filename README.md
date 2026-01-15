@@ -680,7 +680,7 @@ ppt-master/
 
 ### 输出管理
 
-1. **文件命名** - 使用清晰的命名规则（如：`slide_01_cover.svg`）
+1. **文件命名** - 使用清晰的命名规则（如：`01_cover.svg`）
 2. **版本控制** - 保存每次迭代的版本
 3. **格式转换** - 根据需要转换为 PNG 或 PDF
 4. **项目组织** - 将每个演示项目放在 `projects/` 目录下，包含设计规范和 SVG 输出
@@ -739,8 +739,8 @@ projects/
     ├── 来源文档.md                        # 源文档（可选）
     ├── preview.html                      # 预览页面（自动生成）
     └── svg_output/                       # 生成的SVG文件
-        ├── slide_01_cover.svg
-        ├── slide_02_xxx.svg
+        ├── 01_cover.svg
+        ├── 02_xxx.svg
         └── ...
 ```
 

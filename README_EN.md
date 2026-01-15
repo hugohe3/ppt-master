@@ -688,7 +688,7 @@ ppt-master/
 
 ### Output Management
 
-1. **File Naming** - Use clear naming rules (e.g.: `slide_01_cover.svg`)
+1. **File Naming** - Use clear naming rules (e.g.: `01_cover.svg`)
 2. **Version Control** - Save versions of each iteration
 3. **Format Conversion** - Convert to PNG or PDF as needed
 4. **Project Organization** - Place each presentation project in `projects/` directory, including design specifications and SVG output
@@ -747,8 +747,8 @@ projects/
     ├── 来源文档.md                        # Source document (optional)
     ├── preview.html                      # Preview page (auto-generated)
     └── svg_output/                       # Generated SVG files
-        ├── slide_01_cover.svg
-        ├── slide_02_xxx.svg
+        ├── 01_cover.svg
+        ├── 02_xxx.svg
         └── ...
 ```
 
