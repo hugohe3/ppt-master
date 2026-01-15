@@ -392,7 +392,7 @@ python3 tools/error_helper.py missing_readme project_path=my_project
 
 ```bash
 # 检查单个文件
-python3 tools/svg_quality_checker.py examples/project/svg_output/slide_01.svg
+python3 tools/svg_quality_checker.py examples/project/svg_output/01_cover.svg
 
 # 检查整个目录
 python3 tools/svg_quality_checker.py examples/project/svg_output
@@ -911,7 +911,7 @@ python3 tools/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 python3 tools/fix_image_aspect.py path/to/slide.svg
 
 # 处理多个文件
-python3 tools/fix_image_aspect.py slide_01.svg slide_02.svg slide_03.svg
+python3 tools/fix_image_aspect.py 01_cover.svg 02_toc.svg 03_content.svg
 
 # 预览模式（不修改文件）
 python3 tools/fix_image_aspect.py --dry-run path/to/slide.svg

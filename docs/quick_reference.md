@@ -146,9 +146,9 @@
 
 ```
 请根据设计规范生成第[X]页：[页面主题]
-请将SVG保存到：projects/[项目名]_[YYYYMMDD]/svg_output/slide_[页码]_[主题].svg
+请将SVG保存到：projects/[项目名]_[YYYYMMDD]/svg_output/[页码]_[主题].svg
 
-例如: projects/company_report_20251012/svg_output/slide_01_cover.svg
+例如: projects/company_report_20251012/svg_output/01_cover.svg
 ```
 
 ### 请求修改
@@ -337,22 +337,22 @@ design_specification.md
 ### SVG 文件
 
 ```
-格式: slide_{页码}_{主题}.svg
+格式: {页码}_{主题}.svg
 
 示例:
-slide_01_cover.svg
-slide_02_kpi_dashboard.svg
-slide_03_market_analysis.svg
+01_cover.svg
+02_kpi_dashboard.svg
+03_market_analysis.svg
 ```
 
 ### 优化后的 SVG
 
 ```
-格式: yh_slide_{页码}_{主题}.svg
+格式: yh_{页码}_{主题}.svg
 
 示例:
-yh_slide_01_cover.svg
-yh_slide_02_kpi_dashboard.svg
+yh_01_cover.svg
+yh_02_kpi_dashboard.svg
 ```
 
 ## 🔗 快速链接
