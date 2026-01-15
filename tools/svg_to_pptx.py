@@ -247,15 +247,20 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     return sorted(svg_dir.glob('*.svg')), dir_name
 
 
-def find_notes_files(project_path: Path) -> dict:
+def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
     """
     查找项目中的备注文件
     
+    支持两种匹配模式：
+    1. 按文件名匹配（推荐）：notes/01_封面.md 对应 01_封面.svg
+    2. 按序号匹配（向后兼容）：notes/slide01.md 对应第1个 SVG
+    
     Args:
         project_path: 项目目录路径
+        svg_files: SVG 文件列表（用于按文件名匹配）
     
     Returns:
-        字典，key 为幻灯片编号（1-indexed），value 为备注内容
+        字典，key 为 SVG 文件名（不含扩展名）或幻灯片编号，value 为备注内容
     """
     notes_dir = project_path / 'notes'
     notes = {}
@@ -263,19 +268,40 @@ def find_notes_files(project_path: Path) -> dict:
     if not notes_dir.exists():
         return notes
     
-    # 支持 slide01.md, slide1.md, slide_01.md 等格式
-    for notes_file in notes_dir.glob('slide*.md'):
-        # 提取数字
-        match = re.search(r'slide[_]?(\d+)', notes_file.stem)
-        if match:
-            slide_num = int(match.group(1))
-            try:
-                with open(notes_file, 'r', encoding='utf-8') as f:
-                    content = f.read().strip()
-                if content:
-                    notes[slide_num] = content
-            except Exception:
-                pass
+    # 收集所有 notes 文件信息
+    notes_by_name = {}  # 按文件名
+    notes_by_num = {}   # 按序号（向后兼容）
+    
+    for notes_file in notes_dir.glob('*.md'):
+        try:
+            with open(notes_file, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+            if not content:
+                continue
+            
+            stem = notes_file.stem
+            notes_by_name[stem] = content
+            
+            # 尝试提取序号（向后兼容 slide01.md 格式）
+            match = re.search(r'slide[_]?(\d+)', stem)
+            if match:
+                notes_by_num[int(match.group(1))] = content
+        except Exception:
+            pass
+    
+    # 如果提供了 SVG 文件列表，优先按文件名匹配
+    if svg_files:
+        for i, svg_path in enumerate(svg_files, 1):
+            svg_stem = svg_path.stem
+            if svg_stem in notes_by_name:
+                # 按文件名匹配
+                notes[svg_stem] = notes_by_name[svg_stem]
+            elif i in notes_by_num:
+                # 回退到按序号匹配
+                notes[svg_stem] = notes_by_num[i]
+    else:
+        # 没有 SVG 文件列表时，返回序号索引（向后兼容）
+        notes = notes_by_num
     
     return notes
 
@@ -713,7 +739,9 @@ def create_pptx_with_native_svg(
                 
                 # 处理备注
                 if enable_notes:
-                    notes_content = notes.get(i, '') if notes else ''
+                    # 按文件名匹配（新逻辑）或按序号匹配（向后兼容）
+                    svg_stem = svg_path.stem
+                    notes_content = notes.get(svg_stem, notes.get(i, '')) if notes else ''
                     if notes_content:
                         notes_text = markdown_to_plain_text(notes_content)
                     else:
@@ -747,7 +775,8 @@ def create_pptx_with_native_svg(
                 
                 if verbose:
                     mode_str = " (PNG+SVG)" if (use_compat_mode and png_generated) else " (SVG)"
-                    notes_str = " +备注" if (enable_notes and notes and notes.get(i)) else ""
+                    has_notes = enable_notes and notes and (notes.get(svg_stem) or notes.get(i))
+                    notes_str = " +备注" if has_notes else ""
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
                 
                 success_count += 1
@@ -844,7 +873,9 @@ SVG 来源目录 (-s):
 
 演讲备注 (默认开启):
     - 自动读取 notes/ 目录中的 Markdown 备注文件
-    - 嵌入到 PPTX 的演讲者备注中
+    - 支持两种命名方式：
+      1. 按文件名匹配（推荐）：01_封面.md 对应 01_封面.svg
+      2. 按序号匹配：slide01.md 对应第1个 SVG（向后兼容）
     - 使用 --no-notes 可禁用
 '''
     )
@@ -910,7 +941,7 @@ SVG 来源目录 (-s):
     enable_notes = not args.no_notes
     notes = {}
     if enable_notes:
-        notes = find_notes_files(project_path)
+        notes = find_notes_files(project_path, svg_files)
     
     if verbose:
         print("PPT Master - SVG 转 PPTX 工具（原生 SVG）")

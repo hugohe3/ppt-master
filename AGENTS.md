@@ -304,11 +304,14 @@ python3 tools/svg_to_pptx.py <项目路径> -s final --no-notes
 ```
 project/
 ├── svg_output/    # 原始版本（带占位符，作为模板参考）
+│   ├── 01_封面.svg
+│   ├── 02_目录.svg
+│   └── ...
 ├── svg_final/     # 最终版本（后处理完成）
 ├── images/        # 图片资源
-├── notes/         # 演讲备注（Markdown 格式，可选）
-│   ├── slide01.md
-│   ├── slide02.md
+├── notes/         # 演讲备注（Markdown 格式，与 SVG 同名）
+│   ├── 01_封面.md
+│   ├── 02_目录.md
 │   └── ...
 └── *.pptx         # 导出的 PPT 文件
 ```
