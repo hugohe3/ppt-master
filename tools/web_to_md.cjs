@@ -139,6 +139,9 @@ function extractMainContent(html) {
 
   // Common content container patterns for Chinese government websites
   const contentPatterns = [
+    // WeChat Public Account
+    /<div[^>]*class=["'][^"']*rich_media_content[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+    /<div[^>]*id=["']js_content["'][^>]*>([\s\S]*?)<\/div>/i,
     // Hunan province gov sites
     /<div[^>]*class=["'][^"']*tys-main-zt-show[^"']*["'][^>]?>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/i,
     /<div[^>]*class=["'][^"']*tys-main-zt-show[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
