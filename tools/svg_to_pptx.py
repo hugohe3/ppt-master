@@ -247,6 +247,184 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     return sorted(svg_dir.glob('*.svg')), dir_name
 
 
+def find_notes_files(project_path: Path) -> dict:
+    """
+    查找项目中的备注文件
+    
+    Args:
+        project_path: 项目目录路径
+    
+    Returns:
+        字典，key 为幻灯片编号（1-indexed），value 为备注内容
+    """
+    notes_dir = project_path / 'notes'
+    notes = {}
+    
+    if not notes_dir.exists():
+        return notes
+    
+    # 支持 slide01.md, slide1.md, slide_01.md 等格式
+    for notes_file in notes_dir.glob('slide*.md'):
+        # 提取数字
+        match = re.search(r'slide[_]?(\d+)', notes_file.stem)
+        if match:
+            slide_num = int(match.group(1))
+            try:
+                with open(notes_file, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                if content:
+                    notes[slide_num] = content
+            except Exception:
+                pass
+    
+    return notes
+
+
+def markdown_to_plain_text(md_content: str) -> str:
+    """
+    将 Markdown 备注转换为纯文本（用于 PPTX 备注）
+    
+    Args:
+        md_content: Markdown 格式的备注内容
+    
+    Returns:
+        纯文本内容
+    """
+    lines = []
+    for line in md_content.split('\n'):
+        # 跳过标题行（# 开头）
+        if line.startswith('#'):
+            # 提取标题文本
+            text = re.sub(r'^#+\s*', '', line).strip()
+            if text:
+                lines.append(text)
+                lines.append('')  # 空行
+        # 处理列表项（- 开头）
+        elif line.strip().startswith('- '):
+            lines.append('• ' + line.strip()[2:])
+        # 普通行
+        elif line.strip():
+            lines.append(line.strip())
+        else:
+            lines.append('')
+    
+    # 合并连续空行
+    result = []
+    prev_empty = False
+    for line in lines:
+        if line == '':
+            if not prev_empty:
+                result.append(line)
+            prev_empty = True
+        else:
+            result.append(line)
+            prev_empty = False
+    
+    return '\n'.join(result).strip()
+
+
+def create_notes_slide_xml(slide_num: int, notes_text: str) -> str:
+    """
+    创建备注幻灯片 XML
+    
+    Args:
+        slide_num: 幻灯片序号
+        notes_text: 备注文本（纯文本格式）
+    
+    Returns:
+        备注幻灯片 XML 字符串
+    """
+    # 转义 XML 特殊字符
+    notes_text = notes_text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    
+    # 将换行转换为 <a:p> 段落
+    paragraphs = []
+    for para in notes_text.split('\n'):
+        if para.strip():
+            paragraphs.append(f'''<a:p>
+              <a:r>
+                <a:rPr lang="zh-CN" dirty="0"/>
+                <a:t>{para}</a:t>
+              </a:r>
+            </a:p>''')
+        else:
+            paragraphs.append('<a:p><a:endParaRPr lang="zh-CN" dirty="0"/></a:p>')
+    
+    paragraphs_xml = '\n            '.join(paragraphs) if paragraphs else '<a:p><a:endParaRPr lang="zh-CN" dirty="0"/></a:p>'
+    
+    return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+         xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+         xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+  <p:cSld>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="2" name="Slide Image Placeholder 1"/>
+          <p:cNvSpPr>
+            <a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/>
+          </p:cNvSpPr>
+          <p:nvPr>
+            <p:ph type="sldImg"/>
+          </p:nvPr>
+        </p:nvSpPr>
+        <p:spPr/>
+      </p:sp>
+      <p:sp>
+        <p:nvSpPr>
+          <p:cNvPr id="3" name="Notes Placeholder 2"/>
+          <p:cNvSpPr>
+            <a:spLocks noGrp="1"/>
+          </p:cNvSpPr>
+          <p:nvPr>
+            <p:ph type="body" idx="1"/>
+          </p:nvPr>
+        </p:nvSpPr>
+        <p:spPr/>
+        <p:txBody>
+          <a:bodyPr/>
+          <a:lstStyle/>
+          {paragraphs_xml}
+        </p:txBody>
+      </p:sp>
+    </p:spTree>
+  </p:cSld>
+  <p:clrMapOvr>
+    <a:masterClrMapping/>
+  </p:clrMapOvr>
+</p:notes>'''
+
+
+def create_notes_slide_rels_xml(slide_num: int) -> str:
+    """
+    创建备注幻灯片关系文件 XML
+    
+    Args:
+        slide_num: 幻灯片序号
+    
+    Returns:
+        关系文件 XML 字符串
+    """
+    return f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide{slide_num}.xml"/>
+</Relationships>'''
+
+
 def create_slide_xml_with_svg(
     slide_num: int, 
     png_rid: str,
@@ -379,7 +557,9 @@ def create_pptx_with_native_svg(
     transition: Optional[str] = None,
     transition_duration: float = 0.5,
     auto_advance: Optional[float] = None,
-    use_compat_mode: bool = True
+    use_compat_mode: bool = True,
+    notes: Optional[dict] = None,
+    enable_notes: bool = True
 ) -> bool:
     """
     创建包含原生 SVG 的 PPTX 文件
@@ -393,6 +573,8 @@ def create_pptx_with_native_svg(
         transition_duration: 切换持续时间（秒）
         auto_advance: 自动翻页间隔（秒）
         use_compat_mode: 使用 Office 兼容模式（PNG + SVG 双格式，默认开启）
+        notes: 备注字典，key 为幻灯片编号，value 为备注内容
+        enable_notes: 是否启用备注嵌入（默认开启）
     """
     if not svg_files:
         print("错误: 没有找到 SVG 文件")
@@ -432,6 +614,12 @@ def create_pptx_with_native_svg(
         if transition:
             trans_name = TRANSITIONS.get(transition, {}).get('name', transition) if TRANSITIONS else transition
             print(f"  切换效果: {trans_name}")
+        if enable_notes and notes:
+            print(f"  演讲备注: {len(notes)} 页")
+        elif enable_notes:
+            print(f"  演讲备注: 已启用（未找到备注文件）")
+        else:
+            print(f"  演讲备注: 已禁用")
         print()
     
     # 创建临时目录
@@ -523,9 +711,44 @@ def create_pptx_with_native_svg(
                 with open(rels_path, 'w', encoding='utf-8') as f:
                     f.write(rels_xml)
                 
+                # 处理备注
+                if enable_notes:
+                    notes_content = notes.get(i, '') if notes else ''
+                    if notes_content:
+                        notes_text = markdown_to_plain_text(notes_content)
+                    else:
+                        notes_text = ''  # 空备注
+                    
+                    # 创建 notesSlides 目录
+                    notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
+                    notes_slides_dir.mkdir(exist_ok=True)
+                    
+                    # 创建备注幻灯片 XML
+                    notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
+                    notes_xml = create_notes_slide_xml(slide_num, notes_text)
+                    with open(notes_xml_path, 'w', encoding='utf-8') as f:
+                        f.write(notes_xml)
+                    
+                    # 创建备注幻灯片关系文件
+                    notes_rels_dir = notes_slides_dir / '_rels'
+                    notes_rels_dir.mkdir(exist_ok=True)
+                    notes_rels_path = notes_rels_dir / f'notesSlide{slide_num}.xml.rels'
+                    notes_rels_xml = create_notes_slide_rels_xml(slide_num)
+                    with open(notes_rels_path, 'w', encoding='utf-8') as f:
+                        f.write(notes_rels_xml)
+                    
+                    # 更新 slide.xml.rels 添加备注关联
+                    with open(rels_path, 'r', encoding='utf-8') as f:
+                        slide_rels_content = f.read()
+                    notes_rel = f'  <Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide" Target="../notesSlides/notesSlide{slide_num}.xml"/>'
+                    slide_rels_content = slide_rels_content.replace('</Relationships>', notes_rel + '\n</Relationships>')
+                    with open(rels_path, 'w', encoding='utf-8') as f:
+                        f.write(slide_rels_content)
+                
                 if verbose:
                     mode_str = " (PNG+SVG)" if (use_compat_mode and png_generated) else " (SVG)"
-                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}")
+                    notes_str = " +备注" if (enable_notes and notes and notes.get(i)) else ""
+                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
                 
                 success_count += 1
                 
@@ -550,6 +773,15 @@ def create_pptx_with_native_svg(
                 '</Types>',
                 '\n'.join(types_to_add) + '\n</Types>'
             )
+            with open(content_types_path, 'w', encoding='utf-8') as f:
+                f.write(content_types)
+        
+        # 添加 notesSlides 内容类型
+        if enable_notes:
+            for i in range(1, len(svg_files) + 1):
+                override = f'  <Override PartName="/ppt/notesSlides/notesSlide{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>'
+                if override not in content_types:
+                    content_types = content_types.replace('</Types>', override + '\n</Types>')
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
         
@@ -609,6 +841,11 @@ SVG 来源目录 (-s):
     - 新版 Office 仍显示 SVG（可编辑），旧版显示 PNG
     - 需要安装 svglib: pip install svglib reportlab
     - 使用 --no-compat 可禁用（仅 Office 2019+ 支持）
+
+演讲备注 (默认开启):
+    - 自动读取 notes/ 目录中的 Markdown 备注文件
+    - 嵌入到 PPTX 的演讲者备注中
+    - 使用 --no-notes 可禁用
 '''
     )
     
@@ -630,6 +867,10 @@ SVG 来源目录 (-s):
                         help='切换持续时间/秒 (默认: 0.5)')
     parser.add_argument('--auto-advance', type=float, default=None,
                         help='自动翻页间隔/秒 (默认: 手动翻页)')
+    
+    # 备注参数
+    parser.add_argument('--no-notes', action='store_true',
+                        help='禁用演讲备注嵌入（默认启用）')
     
     args = parser.parse_args()
     
@@ -664,6 +905,13 @@ SVG 来源目录 (-s):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     verbose = not args.quiet
+    
+    # 读取备注文件
+    enable_notes = not args.no_notes
+    notes = {}
+    if enable_notes:
+        notes = find_notes_files(project_path)
+    
     if verbose:
         print("PPT Master - SVG 转 PPTX 工具（原生 SVG）")
         print("=" * 50)
@@ -680,7 +928,9 @@ SVG 来源目录 (-s):
         transition=args.transition,
         transition_duration=args.transition_duration,
         auto_advance=args.auto_advance,
-        use_compat_mode=not args.no_compat
+        use_compat_mode=not args.no_compat,
+        notes=notes,
+        enable_notes=enable_notes
     )
     
     sys.exit(0 if success else 1)
