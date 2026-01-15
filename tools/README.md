@@ -447,12 +447,16 @@ python3 tools/svg_quality_checker.py examples/project --export
 - 支持使用 svg_output 或 svg_final 目录
 - SVG 在 PowerPoint 中保持可编辑
 - **支持页面切换动画和入场动画**
+- **自动嵌入演讲备注**（从 notes/ 目录读取）
 
 **用法**:
 
 ```bash
-# 推荐：使用后处理完成的版本
+# 推荐：使用后处理完成的版本（默认嵌入备注）
 python3 tools/svg_to_pptx.py <项目路径> -s final
+
+# 禁用演讲备注
+python3 tools/svg_to_pptx.py <项目路径> -s final --no-notes
 
 # 使用原始版本
 python3 tools/svg_to_pptx.py <项目路径>
@@ -466,6 +470,15 @@ python3 tools/svg_to_pptx.py <项目路径> -t fade --transition-duration 1.0
 # 静默模式
 python3 tools/svg_to_pptx.py <项目路径> -s final -q
 ```
+
+**演讲备注**:
+
+工具默认读取 `notes/` 目录中的 Markdown 备注文件（如 `slide01.md`），并嵌入到 PPTX 的演讲者备注中。
+
+| 参数 | 说明 |
+|------|------|
+| 默认 | 自动嵌入备注（无备注文件则留空） |
+| `--no-notes` | 禁用备注嵌入 |
 
 **切换效果参数**:
 
@@ -518,6 +531,7 @@ pip install python-pptx
 - 需要 PowerPoint 2016+ 才能正确显示
 - 文件体积比 PNG 方案小很多
 - 切换效果默认关闭，需要用户显式启用
+- 演讲备注默认开启，使用 `--no-notes` 禁用
 
 ---
 

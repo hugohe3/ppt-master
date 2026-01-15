@@ -292,8 +292,11 @@ python3 -m http.server -d <路径>/svg_output 8000
 # 预览最终版本
 python3 -m http.server -d <路径>/svg_final 8000
 
-# ⭐ 导出为 PPTX
+# ⭐ 导出为 PPTX（默认嵌入演讲备注）
 python3 tools/svg_to_pptx.py <项目路径> -s final
+
+# 导出 PPTX 但不嵌入备注
+python3 tools/svg_to_pptx.py <项目路径> -s final --no-notes
 ```
 
 ### 项目目录结构
@@ -303,6 +306,10 @@ project/
 ├── svg_output/    # 原始版本（带占位符，作为模板参考）
 ├── svg_final/     # 最终版本（后处理完成）
 ├── images/        # 图片资源
+├── notes/         # 演讲备注（Markdown 格式，可选）
+│   ├── slide01.md
+│   ├── slide02.md
+│   └── ...
 └── *.pptx         # 导出的 PPT 文件
 ```
 
