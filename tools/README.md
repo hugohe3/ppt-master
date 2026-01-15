@@ -473,7 +473,11 @@ python3 tools/svg_to_pptx.py <项目路径> -s final -q
 
 **演讲备注**:
 
-工具默认读取 `notes/` 目录中的 Markdown 备注文件（如 `slide01.md`），并嵌入到 PPTX 的演讲者备注中。
+工具自动读取 `notes/` 目录中的 Markdown 备注文件，并嵌入到 PPTX 的演讲者备注中。
+
+**文件命名支持两种方式**：
+- **推荐**：与 SVG 同名（如 `01_封面.svg` 对应 `notes/01_封面.md`）
+- **兼容**：`slide01.md` 格式（向后兼容）
 
 | 参数 | 说明 |
 |------|------|
