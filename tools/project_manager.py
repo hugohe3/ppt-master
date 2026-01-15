@@ -90,8 +90,10 @@ class ProjectManager:
 
         # 创建目录结构
         project_path.mkdir(parents=True, exist_ok=True)
-        (project_path / 'svg_output').mkdir(exist_ok=True)
-        (project_path / 'images').mkdir(exist_ok=True)
+        (project_path / 'svg_output').mkdir(exist_ok=True)   # 原始版本（带占位符）
+        (project_path / 'svg_final').mkdir(exist_ok=True)    # 最终版本（后处理完成）
+        (project_path / 'images').mkdir(exist_ok=True)       # 图片资源
+        (project_path / 'notes').mkdir(exist_ok=True)        # 演讲备注
 
         # 获取画布格式信息
         canvas_info = self.CANVAS_FORMATS.get(
