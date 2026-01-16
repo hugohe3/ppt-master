@@ -1,6 +1,6 @@
 # PPT Master - AI 驱动的多格式 SVG 内容生成系统
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](./VERSION)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](./VERSION)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
@@ -156,6 +156,7 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过多角�
 📊 **数据可视化** - 内置图表、时间轴、KPI 展示等专业组件
 🎯 **CRAP 设计原则** - 遵循对比、重复、对齐、亲密性四大核心原则
 🖼️ **纯 SVG 输出** - 高质量矢量图形，自动适配不同尺寸，无需第三方依赖
+🎤 **演讲者备注** - 自动生成讲稿并嵌入 PPTX，支持演讲者视图 🆕
 🔄 **迭代优化** - 支持逐页生成和反馈修改
 
 ## 系统架构
@@ -182,7 +183,7 @@ SVG 文件 (svg_output/)
     ↓
 后处理工具（用户自行调用）
     ├── finalize_svg.py    → svg_final/（嵌入图标 + 修复图片宽高比 + 嵌入图片 + 文本扁平化 + 圆角转Path）
-    └── svg_to_pptx.py     → output.pptx（导出 PowerPoint）
+    └── svg_to_pptx.py     → output.pptx（导出 PowerPoint + 嵌入演讲者备注）
 ```
 
 > **注意**: Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段。
