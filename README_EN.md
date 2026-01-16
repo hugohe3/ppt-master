@@ -1,6 +1,6 @@
 # PPT Master - AI-Powered Multi-Format SVG Content Generation System
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg)](./VERSION)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](./VERSION)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
@@ -156,6 +156,7 @@ PPT Master is an innovative AI-assisted visual content creation system that achi
 📊 **Data Visualization** - Built-in charts, timelines, KPI displays and other professional components
 🎯 **CRAP Design Principles** - Follows four core principles: Contrast, Repetition, Alignment, Proximity
 🖼️ **Pure SVG Output** - High-quality vector graphics, automatically adapts to different sizes, no third-party dependencies
+🎤 **Speaker Notes** - Auto-generates scripts and embeds into PPTX, supports presenter view 🆕
 🔄 **Iterative Optimization** - Supports page-by-page generation and feedback modification
 
 ## System Architecture
@@ -182,7 +183,7 @@ SVG Files (svg_output/)
     ↓
 Post-processing Tools (User invoked)
     ├── finalize_svg.py    → svg_final/ (Embed icons + Fix image aspect ratio + Embed images + Text flattening + Round corners to Path)
-    └── svg_to_pptx.py     → output.pptx (Export to PowerPoint)
+    └── svg_to_pptx.py     → output.pptx (Export to PowerPoint + Embed speaker notes)
 ```
 
 > **Note**: Image_Generator is a sequential step, only triggered when "AI Generated" images are selected. Images must be collected before entering Executor phase.
