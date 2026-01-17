@@ -212,7 +212,12 @@
 | **十一、设计检查清单** | 生成前/生成后检查项 |
 | **十二、下一步** | 明确后续流程（Image_Generator 或 Executor） |
 
-> 💡 **提示**: 项目初始化命令 `python3 tools/project_manager.py init` 会生成符合此规范的模板文件，策略师需在模板基础上填充具体内容。
+> 💡 **重要**: 项目初始化命令 `python3 tools/project_manager.py init` **不再生成** 默认模板。
+>
+> **你必须执行以下步骤**:
+> 1. 使用 `view_file` 读取参考模板: `templates/design_spec_reference.md`
+> 2. 基于模板结构，结合你的分析内容，**从头生成** 完整的《设计规范与内容大纲》
+> 3. 将生成的内容保存到项目文件夹: `projects/<项目名>.../设计规范与内容大纲.md`
 
 ---
 
