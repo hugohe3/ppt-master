@@ -20,22 +20,58 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
 ### 工作流程
 
 ```
-Strategist
-    │
-    ├─ 图片方式包含「C) AI 生成」?
-    │       │
-    │       YES → Image_Generator → 图片归集到 images/
-    │       │
-    │       NO ──────────────────────────────────────┐
-    │                                                │
-    ▼                                                ▼
-Executor (General/Consultant/Consultant_Top) ← ← ← ┘
-    │
-    ▼
-Optimizer_CRAP (可选)
+用户提供源文档（PDF/URL/Markdown）
+          │
+          ▼
+源内容转换工具（如需要）
+          │
+          ▼
+┌─────────────────────────────────────────┐
+│ Strategist（策略规划）                   │
+│  • 八项确认                              │
+│  • 生成《设计规范与内容大纲》             │
+└─────────────────────────────────────────┘
+          │
+          ▼
+【创建项目文件夹】← ← ← ← ← 关键步骤
+  python3 tools/project_manager.py init
+          │
+          ▼
+保存设计规范到项目文件夹
+          │
+          ├─ 图片方式包含「C) AI 生成」?
+          │       │
+          │       YES → Image_Generator → 保存到 images/
+          │       │
+          │       NO ──────────────────────────────┐
+          │                                        │
+          ▼                                        ▼
+┌──────────────────────────────────────────────────┐
+│ Executor (General/Consultant/Consultant_Top)     │
+│  • 逐页生成 SVG                                   │
+│  • 保存到 svg_output/                            │
+└──────────────────────────────────────────────────┘
+          │
+          ▼
+【后处理】← ← ← ← ← 自动执行
+  python3 tools/finalize_svg.py
+          │
+          ▼
+SVG 文件保存到 svg_final/
+          │
+          ▼
+【导出 PPTX】← ← ← ← ← 自动执行
+  python3 tools/svg_to_pptx.py
+          │
+          ▼
+Optimizer_CRAP (可选优化)
 ```
 
-> **注意**: Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段。
+> **注意**:
+>
+> - Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段
+> - 项目文件夹必须在 Strategist 完成设计规范后立即创建
+> - 后处理和导出步骤由 AI 自动执行
 
 ---
 
@@ -91,6 +127,8 @@ Optimizer_CRAP (可选)
 
 - [x] 已完成八项确认（画布/页数/受众/风格/配色/图标/图片/字体）
 - [x] 已生成《设计规范与内容大纲》
+- [x] 已创建项目文件夹：projects/<项目名>_<格式>_<日期>/
+- [x] 设计规范已保存到项目文件夹
 - [x] 已确定图片资源清单（如需要）
 - [ ] **下一步**: [Image_Generator / Executor_xxx]
 ```
@@ -115,7 +153,17 @@ Optimizer_CRAP (可选)
 - [x] 已阅读对应的 Executor 角色定义
 - [x] 所有 SVG 页面已生成到 `svg_output/`
 - [x] 已通过质量检查
-- [ ] **下一步**: 运行后处理命令
+- [ ] **下一步**: 自动执行后处理与导出
+
+### 自动执行后处理
+
+# 1. 后处理（修正图片路径、优化代码）
+
+python3 tools/finalize_svg.py <项目路径>
+
+# 2. 导出为 PPTX（默认嵌入演讲备注）
+
+python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
 ---
@@ -126,11 +174,11 @@ Optimizer_CRAP (可选)
 
 当用户消息中出现以下内容时，**必须立即调用对应工具**，不得忽视或仅做文字回复：
 
-| 用户提供的内容 | 识别特征 | 必须调用的工具 | 示例命令 |
-| -------------- | -------- | -------------- | -------- |
-| **PDF 文件** | `.pdf` 扩展名或用户明确提及"PDF" | `pdf_to_md.py` | `python3 tools/pdf_to_md.py <文件路径>` |
-| **网页链接** | `http://` 或 `https://` 开头的 URL | `web_to_md.py` 或 `web_to_md.cjs` | `python3 tools/web_to_md.py <URL>` |
-| **已转换的 Markdown 文件** | `.md` 扩展名，在 `projects/` 目录下 | 直接使用 `view_file` 读取 | `view_file <路径>` |
+| 用户提供的内容             | 识别特征                            | 必须调用的工具                    | 示例命令                                |
+| -------------------------- | ----------------------------------- | --------------------------------- | --------------------------------------- |
+| **PDF 文件**               | `.pdf` 扩展名或用户明确提及"PDF"    | `pdf_to_md.py`                    | `python3 tools/pdf_to_md.py <文件路径>` |
+| **网页链接**               | `http://` 或 `https://` 开头的 URL  | `web_to_md.py` 或 `web_to_md.cjs` | `python3 tools/web_to_md.py <URL>`      |
+| **已转换的 Markdown 文件** | `.md` 扩展名，在 `projects/` 目录下 | 直接使用 `view_file` 读取         | `view_file <路径>`                      |
 
 ### 执行流程
 
@@ -203,6 +251,8 @@ Optimizer_CRAP (可选)
 |                 | ❌ Web 字体（`@font-face`）      | 使用系统字体栈          |
 | **动画 / 交互** | ❌ SMIL 动画（`<animate*>`）     | SVG 动画不导出          |
 |                 | ❌ JS / 事件                     | 禁止脚本和事件处理      |
+| **标记 / 箭头** | ❌ `marker` / `marker-end`       | PPT 不支持 SVG 标记     |
+|                 | ❌ `<marker>` + `<defs>`         | 使用 `<polygon>` 替代   |
 
 > 📌 **记忆口诀**：PPT 只认基础形状 + 内联样式 + 系统字体
 
@@ -250,7 +300,29 @@ Optimizer_CRAP (可选)
 <rect x="0" y="0" width="1280" height="720" fill="#背景色" opacity="0.65"/>
 ```
 
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+#### 箭头绘制方案
+
+PPT 不支持 SVG 的 `marker-end` 属性，需使用 `<polygon>` 三角形替代：
+
+```xml
+<!-- ❌ 禁止：使用 marker-end -->
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#6366F1"/>
+  </marker>
+</defs>
+<path d="M100 200 L200 200" marker-end="url(#arrow)"/>
+
+<!-- ✅ 正确：使用 line + polygon -->
+<line x1="100" y1="200" x2="195" y2="200" stroke="#6366F1" stroke-width="2"/>
+<polygon points="195,194 210,200 195,206" fill="#6366F1"/>
+
+<!-- ✅ 垂直箭头示例 -->
+<line x1="200" y1="100" x2="200" y2="145" stroke="#6366F1" stroke-width="2"/>
+<polygon points="194,145 200,160 206,145" fill="#6366F1"/>
+```
+
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 ### 4. 画布格式
 
@@ -347,15 +419,15 @@ project/
 
 ### 网页转 Markdown
 
-| 场景                            | 推荐工具        | 命令                                  |
-| ------------------------------- | --------------- | ------------------------------------- |
-| **微信公众号/高防站点**         | `web_to_md.cjs` | `node tools/web_to_md.cjs <URL>` (绕过 TLS 拦截，推荐) |
-| **普通文章/新闻网页**           | `web_to_md.py`  | `python3 tools/web_to_md.py <URL>`    |
-| **图文内容**（游记、攻略等）    | `web_to_md.py`  | 同上（自动下载图片到 `_files/`）      |
-| **政府/机构网站**               | `web_to_md.py`  | 同上（支持中文站点元数据提取）        |
-| **批量处理多个 URL**            | `web_to_md.py`  | `python3 tools/web_to_md.py -f urls.txt` |
-| **需要登录的页面**              | 手动处理        | 浏览器登录后复制内容                  |
-| **动态渲染页面（SPA）**         | 手动处理        | 需要 headless browser                 |
+| 场景                         | 推荐工具        | 命令                                                   |
+| ---------------------------- | --------------- | ------------------------------------------------------ |
+| **微信公众号/高防站点**      | `web_to_md.cjs` | `node tools/web_to_md.cjs <URL>` (绕过 TLS 拦截，推荐) |
+| **普通文章/新闻网页**        | `web_to_md.py`  | `python3 tools/web_to_md.py <URL>`                     |
+| **图文内容**（游记、攻略等） | `web_to_md.py`  | 同上（自动下载图片到 `_files/`）                       |
+| **政府/机构网站**            | `web_to_md.py`  | 同上（支持中文站点元数据提取）                         |
+| **批量处理多个 URL**         | `web_to_md.py`  | `python3 tools/web_to_md.py -f urls.txt`               |
+| **需要登录的页面**           | 手动处理        | 浏览器登录后复制内容                                   |
+| **动态渲染页面（SPA）**      | 手动处理        | 需要 headless browser                                  |
 
 > **策略**: 静态网页用 `web_to_md.py`，动态渲染或需登录的页面需手动处理。
 
@@ -387,12 +459,10 @@ project/
 > ⚠️ **严重警告**：以下规则必须严格遵守，违反将导致流程混乱和质量问题。
 
 1. **切换角色前必须阅读角色定义文件**
-
    - 使用 `view_file` 工具阅读 `roles/[角色名].md`
    - 不得在未阅读的情况下直接执行任务
 
 2. **必须输出显式角色切换标记**
-
    - 格式：`## 【角色切换：[角色名称]】`
    - 包含阅读的文件和当前任务说明
 
