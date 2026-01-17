@@ -164,15 +164,20 @@ PPT Master is an innovative AI-assisted visual content creation system that achi
 ### Quick Overview
 
 ```
-User Input Document
+User Input (PDF/URL/Markdown)
     ↓
-[Strategist] - Content Planning & Design Specifications
+[Source Content Conversion] Auto-triggered
+    ├─ PDF → pdf_to_md.py
+    ├─ URL → web_to_md.py / web_to_md.cjs
+    └─ MD  → Direct read
     ↓
+[Strategist] - Eight Confirmations & Design Specifications
+    │
     ├─ Image Method = "C) AI Generated"?
     │       │
     │       YES → [Image_Generator] - Generate images to images/
     │       │
-    │       NO ──────────────────────────────────────┐
+    │       NO ──────────────────────────────────────────┐
     │                                                │
     ▼                                                ▼
 [Executor_General / Executor_Consultant / Executor_Consultant_Top] - SVG Code Generation
@@ -181,12 +186,12 @@ User Input Document
     ↓
 SVG Files (svg_output/)
     ↓
-Post-processing Tools (User invoked)
+Post-processing Tools (Auto-executed)
     ├── finalize_svg.py    → svg_final/ (Embed icons + Fix image aspect ratio + Embed images + Text flattening + Round corners to Path)
     └── svg_to_pptx.py     → output.pptx (Export to PowerPoint + Embed speaker notes)
 ```
 
-> **Note**: Image_Generator is a sequential step, only triggered when "AI Generated" images are selected. Images must be collected before entering Executor phase.
+> **Note**: Source content conversion is mandatory - tools must be called immediately upon detecting PDF/URL. Image_Generator is a sequential step, images must be collected before entering Executor phase.
 
 ### Complete Workflow Diagram
 
@@ -304,7 +309,7 @@ graph TD
   5. 🎨 **Color Scheme**: Provide specific HEX values for primary, secondary, and accent colors
   6. 🔣 **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
   7. 🖼️ **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
-  8. 📝 **Font Scheme**: Recommend font combinations based on content characteristics (Title/Body/Emphasis)
+  8. 📝 **Typography**: Font combination (P1-P5 preset or custom) + body font size baseline (14-20pt)
 - **Intelligent Deconstruction**: Break down and reorganize source documents into clear page sequences
 - **Color Scheme**: Propose complete color scheme (primary, secondary, base tones)
 - **Layout Planning**: Plan page sequences and recommend layout solutions
@@ -453,7 +458,7 @@ graph TD
    5. **Color Scheme**: Primary, secondary, accent colors (provide specific HEX values)
    6. **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
    7. **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
-   8. **Font Scheme**: Recommend font combinations based on content characteristics (Title/Body/Emphasis)
+   8. **Typography**: Font combination (P1-P5 preset) + body font size baseline (14-20pt)
 
    💡 Strategist will not only ask questions but also proactively provide professional recommendations for your reference or confirmation
 
@@ -507,6 +512,8 @@ Strategist: Before I start analyzing your content, I need to complete eight conf
 6. Icon Method: [Recommended] C) Built-in Icon Library, professional and clean
 
 7. Image Usage: [Recommended] A) No images, data reports focus on charts
+
+8. Typography: [Recommended] P1 preset (Microsoft YaHei + Arial), body 18pt baseline
 
 User: I agree with your recommendations
 
