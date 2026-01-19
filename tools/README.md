@@ -2,6 +2,97 @@
 
 本目录包含用于项目管理、验证和文件处理的实用工具。
 
+## 工具架构总览
+
+```mermaid
+graph TB
+    subgraph Input["📥 输入转换"]
+        A1[pdf_to_md.py]
+        A2[web_to_md.py / .cjs]
+    end
+    
+    subgraph Project["📁 项目管理"]
+        B1[project_manager.py]
+        B2[project_utils.py]
+        B1 --> B2
+    end
+    
+    subgraph Finalize["⚙️ 后处理 (finalize_svg.py)"]
+        direction TB
+        C0[finalize_svg.py<br/>统一入口]
+        C1[embed_icons.py]
+        C2[crop_images.py]
+        C3[fix_image_aspect.py]
+        C4[embed_images.py]
+        C5[flatten_tspan.py]
+        C6[svg_rect_to_path.py]
+        
+        C0 --> C1
+        C0 --> C2
+        C0 --> C3
+        C0 --> C4
+        C0 --> C5
+        C0 --> C6
+    end
+    
+    subgraph Export["📤 导出"]
+        D1[svg_to_pptx.py]
+    end
+    
+    subgraph Quality["🔍 质量检查"]
+        E1[svg_quality_checker.py]
+        E2[batch_validate.py]
+    end
+    
+    subgraph Utils["🛠️ 辅助工具"]
+        F1[rotate_images.py]
+        F2[analyze_images.py]
+        F3[svg_position_calculator.py]
+        F4[config.py]
+    end
+    
+    A1 --> B1
+    A2 --> B1
+    B1 -->|svg_output/| C0
+    C0 -->|svg_final/| D1
+    D1 -->|.pptx| Output[📊 PowerPoint]
+```
+
+### 核心工作流
+
+```
+源文档 → [pdf_to_md / web_to_md] → Markdown
+                    ↓
+              [project_manager init]
+                    ↓
+              AI 生成 SVG → svg_output/
+                    ↓
+              [finalize_svg] ← 聚合 6 个子工具
+                    ↓
+              svg_final/
+                    ↓
+              [svg_to_pptx] → output.pptx
+```
+
+### 工具分类快速索引
+
+| 分类 | 工具 | 说明 |
+|------|------|------|
+| **输入转换** | `pdf_to_md.py`, `web_to_md.py/.cjs` | 将 PDF/网页转为 Markdown |
+| **项目管理** | `project_manager.py` | 创建、验证项目 |
+| **后处理** | `finalize_svg.py` ⭐ | 统一入口，调用下方 6 个工具 |
+| ↳ 子工具 | `embed_icons.py` | 嵌入图标占位符 |
+| ↳ 子工具 | `crop_images.py` | 智能裁剪图片 |
+| ↳ 子工具 | `fix_image_aspect.py` | 修复图片宽高比 |
+| ↳ 子工具 | `embed_images.py` | Base64 嵌入图片 |
+| ↳ 子工具 | `flatten_tspan.py` | 文本扁平化 |
+| ↳ 子工具 | `svg_rect_to_path.py` | 圆角矩形转 Path |
+| **导出** | `svg_to_pptx.py` | SVG 转 PowerPoint |
+| **质量检查** | `svg_quality_checker.py`, `batch_validate.py` | 验证 SVG 规范 |
+| **辅助** | `config.py`, `analyze_images.py`, `rotate_images.py` | 配置和图片处理 |
+
+---
+
 ## 工具列表
 
 ### 0. pdf_to_md.py — PDF 转 Markdown 工具（推荐首选）
