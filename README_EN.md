@@ -173,9 +173,9 @@ User Input (PDF/URL/Markdown)
     ↓
 [Create Project Folder] project_manager.py init
     ↓
-[Template Option] Ask user (workflow step, not Strategist's responsibility)
+[Template Option] Ask user (must confirm before Strategist)
     │
-    ├─ A) Use existing template → Copy to project templates/ → Proceed to Strategist
+    ├─ A) Use existing template → Copy to project templates/ → Strategist (reference template)
     ├─ B) No template → Proceed to Strategist
     └─ C) Generate new template → Proceed to Strategist (Template_Designer after outline)
     ↓
