@@ -8,15 +8,15 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角
 
 ## 角色与流程速查
 
-| 角色                        | 文件                               | 职责                             |
-| --------------------------- | ---------------------------------- | -------------------------------- |
-| **Strategist**              | `roles/Strategist.md`              | 初次沟通、内容分析、设计规范编制 |
-| **Template_Designer**       | `roles/Template_Designer.md`       | 页面模板生成（可选）             |
-| **Image_Generator**         | `roles/Image_Generator.md`         | AI 图片生成（条件触发）          |
-| **Executor_General**        | `roles/Executor_General.md`        | 通用灵活风格 SVG 生成            |
-| **Executor_Consultant**     | `roles/Executor_Consultant.md`     | 一般咨询风格 SVG 生成            |
-| **Executor_Consultant_Top** | `roles/Executor_Consultant_Top.md` | 顶级咨询风格 SVG 生成（MBB 级）  |
-| **Optimizer_CRAP**          | `roles/Optimizer_CRAP.md`          | CRAP 原则视觉优化（可选）        |
+| 角色                        | 文件                               | 职责                                      |
+| --------------------------- | ---------------------------------- | ----------------------------------------- |
+| **Strategist**              | `roles/Strategist.md`              | 初次沟通、内容分析、设计规范编制          |
+| **Template_Designer**       | `roles/Template_Designer.md`       | 页面模板生成（用户选择「B) 生成新模板」） |
+| **Image_Generator**         | `roles/Image_Generator.md`         | AI 图片生成（条件触发）                   |
+| **Executor_General**        | `roles/Executor_General.md`        | 通用灵活风格 SVG 生成                     |
+| **Executor_Consultant**     | `roles/Executor_Consultant.md`     | 一般咨询风格 SVG 生成                     |
+| **Executor_Consultant_Top** | `roles/Executor_Consultant_Top.md` | 顶级咨询风格 SVG 生成（MBB 级）           |
+| **Optimizer_CRAP**          | `roles/Optimizer_CRAP.md`          | CRAP 原则视觉优化（可选）                 |
 
 ### 工作流程
 
@@ -40,17 +40,25 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角
           ▼
 保存设计规范到项目文件夹
           │
-          ├─ 用户选择「生成模板」? ─────────────────┐
+          ├─ 模板选项（三选一）────────────────────┐
           │       │                                │
-          │       YES                              NO（跳过）
-          │       ▼                                │
+          │       A) 使用已有模板                  │
+          │       │   └→ 从 templates/layouts/ 选择│
+          │       │      复制到项目 templates/     │
+          │       │                                │
+          │       B) 生成新模板                    │
+          │       │   └→ Template_Designer 生成   │
+          │       ▼      保存到项目 templates/     │
           │  ┌──────────────────────────────────┐  │
-          │  │ Template_Designer（可选）        │  │
+          │  │ Template_Designer（选项 B）      │  │
           │  │  • 生成页面模板到 templates/     │  │
           │  │  • 用户确认后继续                │  │
           │  └──────────────────────────────────┘  │
           │       │                                │
-          └───────┴────────────────────────────────┘
+          │       C) 不使用模板 ───────────────────┤
+          │          └→ Executor 自由生成         │
+          │                                        │
+          └────────────────────────────────────────┘
           │
           ├─ 图片方式包含「C) AI 生成」?
           │       │
@@ -97,7 +105,7 @@ Optimizer_CRAP (可选优化)
 | 阶段         | 必须阅读的文件                     | 触发条件                                     |
 | ------------ | ---------------------------------- | -------------------------------------------- |
 | 策略规划     | `roles/Strategist.md`              | 用户提出新的 PPT/内容生成需求                |
-| 模板设计     | `roles/Template_Designer.md`       | 用户选择「生成模板」（可选）                 |
+| 模板设计     | `roles/Template_Designer.md`       | 用户选择「B) 生成新模板」                    |
 | 图片生成     | `roles/Image_Generator.md`         | 图片方式包含「C) AI 生成」（如 C、B+C、C+D） |
 | 通用风格执行 | `roles/Executor_General.md`        | 用户选择「A) 通用灵活」设计风格              |
 | 咨询风格执行 | `roles/Executor_Consultant.md`     | 用户选择「B) 一般咨询」设计风格              |
