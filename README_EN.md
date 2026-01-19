@@ -290,7 +290,7 @@ graph TD
 
 ## Roles
 
-> The system includes 6 professional roles: 1 Strategist + 1 Image Generator (conditionally triggered) + 3 Executor variants + 1 Optimizer
+> The system includes 7 professional roles: 1 Strategist + 1 Template Designer (optional) + 1 Image Generator (conditionally triggered) + 3 Executor variants + 1 Optimizer
 
 ### 1️⃣ Strategist
 
@@ -310,6 +310,7 @@ graph TD
   6. 🔣 **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
   7. 🖼️ **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
   8. 📝 **Typography**: Font combination (P1-P5 preset or custom) + body font size baseline (14-20pt)
+- **Template Options**: Provide three template strategies (use existing template / generate new template / no template)
 - **Intelligent Deconstruction**: Break down and reorganize source documents into clear page sequences
 - **Color Scheme**: Propose complete color scheme (primary, secondary, base tones)
 - **Layout Planning**: Plan page sequences and recommend layout solutions
@@ -321,7 +322,31 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Strategist.md)
 
-### 2️⃣ Image_Generator (Image Generator) - Conditionally Triggered
+### 2️⃣ Template_Designer (Template Designer) - Optional
+
+**Responsibility**: Page template generation  
+**Output**: Page template SVG files
+
+**Trigger Condition**: Only called when user selects "B) Generate New Template" in Strategist's template options
+
+**Core Capabilities**:
+
+- Generate 4 core templates based on design specifications (cover, chapter, content, ending)
+- Optional: Generate table of contents template
+- Use placeholder markers for replaceable content
+- Ensure templates follow design specification's colors, fonts, and layout
+- Templates define visual consistency and structural pages, content area maintains maximum flexibility
+
+**Input**: Design Specification and Content Outline
+
+**Output**:
+- 4 core template SVG files
+- Optional: Table of contents template
+- Saved to project `templates/` directory
+
+📄 [View Complete Role Definition](./roles/Template_Designer.md)
+
+### 3️⃣ Image_Generator (Image Generator) - Conditionally Triggered
 
 **Responsibility**: AI image generation (conditionally triggered)  
 **Output**: Image files + optimized prompts
@@ -346,7 +371,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Image_Generator.md)
 
-### 3️⃣ Executor_General (General Executor)
+### 4️⃣ Executor_General (General Executor)
 
 **Responsibility**: Generate SVG code in general flexible style  
 **Output**: Single page SVG code
@@ -366,7 +391,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_General.md)
 
-### 4️⃣ Executor_Consultant (General Consulting Executor)
+### 5️⃣ Executor_Consultant (General Consulting Executor)
 
 **Responsibility**: Generate SVG code in general consulting style  
 **Output**: Business-level presentation pages
@@ -381,7 +406,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_Consultant.md)
 
-### 5️⃣ Executor_Consultant_Top (Top Consulting Executor)
+### 6️⃣ Executor_Consultant_Top (Top Consulting Executor)
 
 **Responsibility**: Generate SVG code in top consulting style (MBB Level)  
 **Output**: Strategic-level presentation pages
@@ -400,7 +425,7 @@ graph TD
 
 📄 [View Complete Role Definition](./roles/Executor_Consultant_Top.md)
 
-### 6️⃣ Optimizer_CRAP (CRAP Optimizer)
+### 7️⃣ Optimizer_CRAP (CRAP Optimizer)
 
 **Responsibility**: Optimize design based on CRAP principles  
 **Output**: Optimized SVG code (yh\_ prefix)
