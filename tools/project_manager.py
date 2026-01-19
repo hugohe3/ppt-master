@@ -94,6 +94,7 @@ class ProjectManager:
         (project_path / 'svg_final').mkdir(exist_ok=True)    # 最终版本（后处理完成）
         (project_path / 'images').mkdir(exist_ok=True)       # 图片资源
         (project_path / 'notes').mkdir(exist_ok=True)        # 演讲备注
+        (project_path / 'templates').mkdir(exist_ok=True)    # 项目页面模板（可选）
 
         # 获取画布格式信息
         canvas_info = self.CANVAS_FORMATS.get(

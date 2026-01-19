@@ -4,13 +4,14 @@
 
 ## 项目概述
 
-PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角色协作将来源文档转化为高质量输出。这是一个「文档与工作流框架」项目，此处的"代码"特指由 AI 代理生成的 SVG 标记。
+PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角色协作将来源文档转化为高质量输出。这是一个「文档与工作流框架」项目，此处的"代码"特指由 AI 代理生成的 SVG 标记。
 
 ## 角色与流程速查
 
 | 角色                        | 文件                               | 职责                             |
 | --------------------------- | ---------------------------------- | -------------------------------- |
 | **Strategist**              | `roles/Strategist.md`              | 初次沟通、内容分析、设计规范编制 |
+| **Template_Designer**       | `roles/Template_Designer.md`       | 页面模板生成（可选）             |
 | **Image_Generator**         | `roles/Image_Generator.md`         | AI 图片生成（条件触发）          |
 | **Executor_General**        | `roles/Executor_General.md`        | 通用灵活风格 SVG 生成            |
 | **Executor_Consultant**     | `roles/Executor_Consultant.md`     | 一般咨询风格 SVG 生成            |
@@ -39,6 +40,18 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
           ▼
 保存设计规范到项目文件夹
           │
+          ├─ 用户选择「生成模板」? ─────────────────┐
+          │       │                                │
+          │       YES                              NO（跳过）
+          │       ▼                                │
+          │  ┌──────────────────────────────────┐  │
+          │  │ Template_Designer（可选）        │  │
+          │  │  • 生成页面模板到 templates/     │  │
+          │  │  • 用户确认后继续                │  │
+          │  └──────────────────────────────────┘  │
+          │       │                                │
+          └───────┴────────────────────────────────┘
+          │
           ├─ 图片方式包含「C) AI 生成」?
           │       │
           │       YES → Image_Generator → 保存到 images/
@@ -48,7 +61,7 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过四角
           ▼                                        ▼
 ┌──────────────────────────────────────────────────┐
 │ Executor (General/Consultant/Consultant_Top)     │
-│  • 逐页生成 SVG                                   │
+│  • 逐页生成 SVG（可基于模板）                     │
 │  • 保存到 svg_output/                            │
 └──────────────────────────────────────────────────┘
           │
@@ -84,6 +97,7 @@ Optimizer_CRAP (可选优化)
 | 阶段         | 必须阅读的文件                     | 触发条件                                     |
 | ------------ | ---------------------------------- | -------------------------------------------- |
 | 策略规划     | `roles/Strategist.md`              | 用户提出新的 PPT/内容生成需求                |
+| 模板设计     | `roles/Template_Designer.md`       | 用户选择「生成模板」（可选）                 |
 | 图片生成     | `roles/Image_Generator.md`         | 图片方式包含「C) AI 生成」（如 C、B+C、C+D） |
 | 通用风格执行 | `roles/Executor_General.md`        | 用户选择「A) 通用灵活」设计风格              |
 | 咨询风格执行 | `roles/Executor_Consultant.md`     | 用户选择「B) 一般咨询」设计风格              |

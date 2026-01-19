@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#0A1628"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#0066CC"/>
+  
+  <!-- 金色装饰线 -->
+  <line x1="80" y1="200" x2="400" y2="200" stroke="#D4AF37" stroke-width="3"/>
+  
+  <!-- 主标题 -->
+  <text x="80" y="300" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="52" font-weight="bold">
+    {{TITLE}}
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="360" fill="#94A3B8" font-family="Arial, sans-serif" font-size="24">
+    {{SUBTITLE}}
+  </text>
+  
+  <!-- 右侧几何装饰 -->
+  <rect x="850" y="150" width="350" height="350" fill="none" stroke="#0066CC" stroke-width="1" stroke-opacity="0.3"/>
+  <rect x="900" y="200" width="250" height="250" fill="none" stroke="#0066CC" stroke-width="1" stroke-opacity="0.2"/>
+  
+  <!-- 底部信息 -->
+  <line x1="80" y1="620" x2="1200" y2="620" stroke="#1E3A5F" stroke-width="1"/>
+  <text x="80" y="680" fill="#64748B" font-family="Arial, sans-serif" font-size="16">{{DATE}}</text>
+  <text x="640" y="680" text-anchor="middle" fill="#D4AF37" font-family="Arial, sans-serif" font-size="12">{{CONFIDENTIAL}}</text>
+  <text x="1200" y="680" text-anchor="end" fill="#64748B" font-family="Arial, sans-serif" font-size="16">{{AUTHOR}}</text>
+</svg>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  
+  <!-- 顶部渐变条 -->
+  <defs>
+    <linearGradient id="top-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E40AF"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#top-gradient)"/>
+  
+  <!-- 左侧金色装饰线 -->
+  <line x1="100" y1="280" x2="100" y2="440" stroke="#D4AF37" stroke-width="4"/>
+  
+  <!-- 章节编号（大号背景） -->
+  <text x="140" y="380" fill="#FFFFFF" fill-opacity="0.08" font-family="Arial, sans-serif" font-size="180" font-weight="bold">
+    {{CHAPTER_NUM}}
+  </text>
+  
+  <!-- 章节标题 -->
+  <text x="160" y="360" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="48" font-weight="bold" letter-spacing="2">
+    {{CHAPTER_TITLE}}
+  </text>
+  
+  <!-- 章节描述 -->
+  <text x="160" y="420" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="20">
+    {{CHAPTER_DESC}}
+  </text>
+  
+  <!-- 右侧网格装饰 -->
+  <g stroke="#1E40AF" stroke-width="0.5" stroke-opacity="0.2">
+    <line x1="850" y1="200" x2="850" y2="520"/>
+    <line x1="950" y1="200" x2="950" y2="520"/>
+    <line x1="1050" y1="200" x2="1050" y2="520"/>
+    <line x1="1150" y1="200" x2="1150" y2="520"/>
+    <line x1="800" y1="260" x2="1200" y2="260"/>
+    <line x1="800" y1="360" x2="1200" y2="360"/>
+    <line x1="800" y1="460" x2="1200" y2="460"/>
+  </g>
+</svg>

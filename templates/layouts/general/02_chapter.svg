@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1E3A5F"/>
+  
+  <!-- 装饰圆 -->
+  <circle cx="200" cy="600" r="300" fill="#6366F1" fill-opacity="0.1"/>
+  <circle cx="1100" cy="200" r="250" fill="#22D3EE" fill-opacity="0.08"/>
+  
+  <!-- 章节编号（大号背景） -->
+  <text x="640" y="280" text-anchor="middle" fill="#FFFFFF" fill-opacity="0.1" font-family="Arial, sans-serif" font-size="200" font-weight="bold">
+    {{CHAPTER_NUM}}
+  </text>
+  
+  <!-- 章节标题 -->
+  <text x="640" y="400" text-anchor="middle" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="48" font-weight="bold">
+    {{CHAPTER_TITLE}}
+  </text>
+  
+  <!-- 分隔线 -->
+  <line x1="520" y1="440" x2="760" y2="440" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.5"/>
+  
+  <!-- 章节描述（可选） -->
+  <text x="640" y="500" text-anchor="middle" fill="#94A3B8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20">
+    {{CHAPTER_DESC}}
+  </text>
+</svg>

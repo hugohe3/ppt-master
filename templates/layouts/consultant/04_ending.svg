@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#0A1628"/>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="0" width="8" height="720" fill="#0066CC"/>
+  
+  <!-- 右侧几何装饰 -->
+  <rect x="900" y="100" width="300" height="300" fill="none" stroke="#0066CC" stroke-width="1" stroke-opacity="0.2"/>
+  
+  <!-- 感谢语 -->
+  <text x="640" y="280" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="52" font-weight="bold">
+    {{THANK_YOU}}
+  </text>
+  
+  <!-- 金色分隔线 -->
+  <line x1="520" y1="320" x2="760" y2="320" stroke="#D4AF37" stroke-width="2"/>
+  
+  <!-- 口号 -->
+  <text x="640" y="380" text-anchor="middle" fill="#94A3B8" font-family="Arial, sans-serif" font-size="20">
+    {{TAGLINE}}
+  </text>
+  
+  <!-- 联系信息 -->
+  <text x="640" y="480" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="14">
+    {{CONTACT_INFO}}
+  </text>
+  
+  <!-- 机密标识 -->
+  <text x="640" y="600" text-anchor="middle" fill="#D4AF37" font-family="Arial, sans-serif" font-size="11">
+    {{CONFIDENTIAL}}
+  </text>
+  
+  <!-- 版权 -->
+  <text x="640" y="688" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="11">
+    {{COPYRIGHT}}
+  </text>
+</svg>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#F8FAFC"/>
+  
+  <!-- ==================== 页眉区域 ==================== -->
+  <rect x="0" y="0" width="1280" height="70" fill="#FFFFFF"/>
+  <line x1="0" y1="70" x2="1280" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+  
+  <!-- 页面标题 -->
+  <text x="60" y="46" fill="#1E3A5F" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="bold">
+    {{PAGE_TITLE}}
+  </text>
+  
+  <!-- ==================== 内容区域 ==================== -->
+  <!-- 
+    此区域为 AI 灵活布局区
+    可用空间: x=40, y=90, width=1200, height=550
+    AI 可在此区域自由创建：单栏、双栏、多栏、图文、图表等任何布局
+  -->
+  <rect x="40" y="90" width="1200" height="550" fill="#FFFFFF" rx="8"/>
+  <rect x="40" y="90" width="1200" height="550" fill="none" stroke="#E2E8F0" stroke-width="1" rx="8" stroke-dasharray="8,4"/>
+  <text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">
+    {{CONTENT_AREA}}
+  </text>
+  <text x="640" y="395" text-anchor="middle" fill="#E2E8F0" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">
+    AI 灵活布局区 · 1200×550
+  </text>
+  
+  <!-- ==================== 页脚区域 ==================== -->
+  <rect x="0" y="660" width="1280" height="60" fill="#FFFFFF"/>
+  <line x1="0" y1="660" x2="1280" y2="660" stroke="#E2E8F0" stroke-width="1"/>
+  
+  <!-- 章节标识 -->
+  <rect x="40" y="678" width="4" height="20" fill="#1E3A5F" rx="2"/>
+  <text x="56" y="694" fill="#64748B" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">
+    {{SECTION_NAME}}
+  </text>
+  
+  <!-- 页码 -->
+  <text x="1220" y="694" text-anchor="end" fill="#94A3B8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">
+    {{PAGE_NUM}}
+  </text>
+</svg>
