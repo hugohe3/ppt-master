@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  
+  <!-- ==================== 页眉区域 ==================== -->
+  <rect x="0" y="0" width="1280" height="60" fill="#0A1628"/>
+  <text x="60" y="40" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20" font-weight="bold">
+    {{PAGE_TITLE}}
+  </text>
+  
+  <!-- 左侧装饰条 -->
+  <rect x="0" y="60" width="8" height="660" fill="#0066CC"/>
+  
+  <!-- 核心观点区域 -->
+  <rect x="40" y="80" width="1200" height="50" fill="#F1F5F9"/>
+  <rect x="40" y="80" width="6" height="50" fill="#D4AF37"/>
+  <text x="60" y="112" fill="#0A1628" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+    {{KEY_MESSAGE}}
+  </text>
+  
+  <!-- ==================== 内容区域 ==================== -->
+  <!-- 
+    AI 灵活布局区
+    可用空间: x=40, y=150, width=1200, height=470
+  -->
+  <rect x="40" y="150" width="1200" height="470" fill="#FFFFFF" rx="4"/>
+  <rect x="40" y="150" width="1200" height="470" fill="none" stroke="#E2E8F0" stroke-width="1" rx="4" stroke-dasharray="8,4"/>
+  <text x="640" y="390" text-anchor="middle" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="14">
+    {{CONTENT_AREA}}
+  </text>
+  
+  <!-- ==================== 页脚区域 ==================== -->
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="40" y="695" fill="#94A3B8" font-family="Arial, sans-serif" font-size="10">Source: {{SOURCE}}</text>
+  <text x="1220" y="695" text-anchor="end" fill="#64748B" font-family="Arial, sans-serif" font-size="12">{{PAGE_NUM}}</text>
+</svg>

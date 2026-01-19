@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  
+  <!-- 顶部渐变条 -->
+  <defs>
+    <linearGradient id="top-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E40AF"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#top-gradient)"/>
+  
+  <!-- 左侧金色装饰线 -->
+  <line x1="120" y1="240" x2="120" y2="480" stroke="#D4AF37" stroke-width="4"/>
+  
+  <!-- 主标题 -->
+  <text x="160" y="320" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="56" font-weight="bold" letter-spacing="2">
+    {{TITLE}}
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="160" y="380" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="24" letter-spacing="1">
+    {{SUBTITLE}}
+  </text>
+  
+  <!-- 项目编号 -->
+  <text x="160" y="440" fill="#6366F1" font-family="Arial, sans-serif" font-size="16" letter-spacing="2">
+    {{PROJECT_ID}}
+  </text>
+  
+  <!-- 右侧网格装饰 -->
+  <g stroke="#1E40AF" stroke-width="0.5" stroke-opacity="0.3">
+    <line x1="800" y1="150" x2="800" y2="550"/>
+    <line x1="900" y1="150" x2="900" y2="550"/>
+    <line x1="1000" y1="150" x2="1000" y2="550"/>
+    <line x1="1100" y1="150" x2="1100" y2="550"/>
+    <line x1="750" y1="250" x2="1150" y2="250"/>
+    <line x1="750" y1="350" x2="1150" y2="350"/>
+    <line x1="750" y1="450" x2="1150" y2="450"/>
+  </g>
+  
+  <!-- 底部信息 -->
+  <line x1="120" y1="620" x2="1160" y2="620" stroke="#1F2937" stroke-width="1"/>
+  <text x="120" y="670" fill="#6B7280" font-family="Arial, sans-serif" font-size="14">{{DATE}}</text>
+  <text x="640" y="670" text-anchor="middle" fill="#D4AF37" font-family="Arial, sans-serif" font-size="12">CONFIDENTIAL</text>
+  <text x="1160" y="670" text-anchor="end" fill="#6B7280" font-family="Arial, sans-serif" font-size="14">{{AUTHOR}}</text>
+</svg>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F"/>
+      <stop offset="100%" style="stop-color:#0F1C2E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg-gradient)"/>
+  
+  <!-- 装饰元素 -->
+  <circle cx="1100" cy="150" r="200" fill="#6366F1" fill-opacity="0.15"/>
+  <circle cx="1150" cy="100" r="120" fill="#22D3EE" fill-opacity="0.1"/>
+  <line x1="80" y1="400" x2="280" y2="400" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.3"/>
+  
+  <!-- 主标题 -->
+  <text x="80" y="320" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="48" font-weight="bold">
+    {{TITLE}}
+  </text>
+  
+  <!-- 副标题 -->
+  <text x="80" y="380" fill="#94A3B8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
+    {{SUBTITLE}}
+  </text>
+  
+  <!-- 底部信息 -->
+  <rect x="0" y="640" width="1280" height="80" fill="#0F1C2E" fill-opacity="0.5"/>
+  <text x="80" y="688" fill="#64748B" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">
+    {{DATE}}
+  </text>
+  <text x="1200" y="688" text-anchor="end" fill="#64748B" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">
+    {{AUTHOR}}
+  </text>
+</svg>
