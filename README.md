@@ -18,12 +18,12 @@
 
 ### 推荐工具
 
-| 工具 | 推荐度 | 说明 |
-|------|:------:|------|
-| **[Antigravity](https://antigravity.dev/)** | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.5，集成 Banana 生图功能，可直接在仓库里生成配图 |
-| [Cursor](https://cursor.sh/) | ⭐⭐ | 主流 AI 编辑器，支持多种模型 |
-| [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 微软官方方案 |
-| [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic 官方 CLI 工具 |
+| 工具                                                | 推荐度 | 说明                                                                          |
+| --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
+| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.5，集成 Banana 生图功能，可直接在仓库里生成配图 |
+| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，支持多种模型                                                  |
+| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | 微软官方方案                                                                  |
+| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic 官方 CLI 工具                                                       |
 
 > 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `tools/gemini_watermark_remover.py` 去除。
 
@@ -62,23 +62,23 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 
 ### 示例项目总览
 
-| 类别 | 项目 | 页数 | 特色 |
-|------|------|:----:|------|
-| 🏢 **咨询风格** | [心理治疗中的依恋](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) | 32 | 顶级咨询风格，最大规模示例 |
-| | [构建有效AI代理](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/) | 15 | Anthropic 工程博客，AI Agent 架构 |
-| | [重庆市区域报告](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) | 20 | 区域财政分析，企业预警通数据 🆕 |
-| | [甘孜州经济财政分析](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/) | 17 | 政务财政分析，藏区文化元素 |
-| | [南欧江水电站战略评估](./examples/ppt169_高端咨询风_南欧江水电站战略评估/) | 20 | "流域危机"设计语言 |
-| | [汽车认证五年战略规划](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) | 20 | McKinsey/BCG 风格 |
-| | [麦肯锡风客户忠诚度](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/) | 8 | 麦肯锡经典 MECE 原则 |
-| | [Google 年度工作汇报](./examples/ppt169_谷歌风_google_annual_report/) | 10 | Google 品牌设计语言 |
-| 🎨 **通用灵活** | [Debug 六步法](./examples/ppt169_通用灵活+代码_debug六步法/) | 10 | 深色科技风格 |
-| | [重庆大学论文格式](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/) | 11 | 学术规范指南 |
-| | [AI 编程工具对比](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/) | 11 | 技术评测风格 |
-| ✨ **创意风格** | [地山谦卦深度研究](./examples/ppt169_易理风_地山谦卦深度研究/) | 20 | 易经本体美学，阴阳爻变设计 |
-| | [金刚经第一品研究](./examples/ppt169_禅意风_金刚经第一品研究/) | 15 | 禅意学术，水墨留白 |
-| | [Git 入门指南](./examples/ppt169_像素风_git_introduction/) | 10 | 像素复古游戏风 |
-| | [PPT Master 介绍](./examples/demo_project_intro_ppt169_20251211/) | 10 | 清新科技风格 |
+| 类别            | 项目                                                                           | 页数 | 特色                              |
+| --------------- | ------------------------------------------------------------------------------ | :--: | --------------------------------- |
+| 🏢 **咨询风格** | [心理治疗中的依恋](./examples/ppt169_顶级咨询风_心理治疗中的依恋/)             |  32  | 顶级咨询风格，最大规模示例        |
+|                 | [构建有效AI代理](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/)       |  15  | Anthropic 工程博客，AI Agent 架构 |
+|                 | [重庆市区域报告](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) |  20  | 区域财政分析，企业预警通数据 🆕   |
+|                 | [甘孜州经济财政分析](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/)         |  17  | 政务财政分析，藏区文化元素        |
+|                 | [南欧江水电站战略评估](./examples/ppt169_高端咨询风_南欧江水电站战略评估/)     |  20  | "流域危机"设计语言                |
+|                 | [汽车认证五年战略规划](./examples/ppt169_高端咨询风_汽车认证五年战略规划/)     |  20  | McKinsey/BCG 风格                 |
+|                 | [麦肯锡风客户忠诚度](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/)    |  8   | 麦肯锡经典 MECE 原则              |
+|                 | [Google 年度工作汇报](./examples/ppt169_谷歌风_google_annual_report/)          |  10  | Google 品牌设计语言               |
+| 🎨 **通用灵活** | [Debug 六步法](./examples/ppt169_通用灵活+代码_debug六步法/)                   |  10  | 深色科技风格                      |
+|                 | [重庆大学论文格式](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/)      |  11  | 学术规范指南                      |
+|                 | [AI 编程工具对比](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/)     |  11  | 技术评测风格                      |
+| ✨ **创意风格** | [地山谦卦深度研究](./examples/ppt169_易理风_地山谦卦深度研究/)                 |  20  | 易经本体美学，阴阳爻变设计        |
+|                 | [金刚经第一品研究](./examples/ppt169_禅意风_金刚经第一品研究/)                 |  15  | 禅意学术，水墨留白                |
+|                 | [Git 入门指南](./examples/ppt169_像素风_git_introduction/)                     |  10  | 像素复古游戏风                    |
+|                 | [PPT Master 介绍](./examples/demo_project_intro_ppt169_20251211/)              |  10  | 清新科技风格                      |
 
 📖 [查看完整示例文档](./examples/README.md)
 
@@ -107,27 +107,27 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 <details>
 <summary><b>📋 目录（点击展开）</b></summary>
 
-| 章节 | 链接 |
-|------|------|
+| 章节            | 链接                   |
+| --------------- | ---------------------- |
 | 🚀 快速使用指南 | [跳转](#-快速使用指南) |
-| 🎴 精选示例 | [跳转](#-精选示例) |
-| 项目简介 | [跳转](#项目简介) |
-| 核心特性 | [跳转](#核心特性) |
-| 系统架构 | [跳转](#系统架构) |
-| 核心角色 | [跳转](#核心角色) |
-| 快速开始 | [跳转](#快速开始) |
-| 更多示例 | [跳转](#更多示例) |
-| 设计风格 | [跳转](#设计风格) |
-| 技术规范 | [跳转](#技术规范) |
-| 项目结构 | [跳转](#项目结构) |
-| 最佳实践 | [跳转](#最佳实践) |
-| 常见问题 | [跳转](#常见问题) |
-| 贡献指南 | [跳转](#贡献指南) |
-| 路线图 | [跳转](#路线图) |
-| 🛠️ 工具集 | [跳转](#️-工具集) |
-| 📄 开源协议 | [跳转](#-开源协议) |
-| 🙏 致谢 | [跳转](#-致谢) |
-| 📮 联系方式 | [跳转](#-联系方式) |
+| 🎴 精选示例     | [跳转](#-精选示例)     |
+| 项目简介        | [跳转](#项目简介)      |
+| 核心特性        | [跳转](#核心特性)      |
+| 系统架构        | [跳转](#系统架构)      |
+| 核心角色        | [跳转](#核心角色)      |
+| 快速开始        | [跳转](#快速开始)      |
+| 更多示例        | [跳转](#更多示例)      |
+| 设计风格        | [跳转](#设计风格)      |
+| 技术规范        | [跳转](#技术规范)      |
+| 项目结构        | [跳转](#项目结构)      |
+| 最佳实践        | [跳转](#最佳实践)      |
+| 常见问题        | [跳转](#常见问题)      |
+| 贡献指南        | [跳转](#贡献指南)      |
+| 路线图          | [跳转](#路线图)        |
+| 🛠️ 工具集       | [跳转](#️-工具集)       |
+| 📄 开源协议     | [跳转](#-开源协议)     |
+| 🙏 致谢         | [跳转](#-致谢)         |
+| 📮 联系方式     | [跳转](#-联系方式)     |
 
 </details>
 
@@ -173,14 +173,22 @@ PPT Master 是一个创新的 AI 辅助视觉内容创作系统，通过多角�
     ↓
 [Strategist] 策略师 - 八项确认与设计规范
     │
-    ├─ 图片方式包含「AI 生成」?
+    ├─ 模板选项（三选一）
     │       │
-    │       YES → [Image_Generator] 图片生成师 - AI 图片生成 → 图片归集到 images/
-    │       │
-    │       NO ───────────────────────────────────────────────────┐
+    │       A) 使用已有模板 → 复制到项目 templates/
+    │       B) 生成新模板 → [Template_Designer] 模板设计师
+    │       C) 不使用模板 → 直接进入下一阶段
+    │                                                             │
+    ├─────────────────────────────────────────────────────────────┤
+    │                                                             │
+    ├─ 图片方式包含「AI 生成」?                                    │
+    │       │                                                     │
+    │       YES → [Image_Generator] 图片生成师 → 图片归集到 images/│
+    │       │                                                     │
+    │       NO ───────────────────────────────────────────────────┤
     │                                                             │
     ▼                                                             ▼
-[Executor_General / Executor_Consultant / Executor_Consultant_Top] 执行师 - SVG代码生成
+[Executor] 执行师（根据模板选项决定是否遵循模板）- SVG代码生成
     ↓
 [Optimizer_CRAP] 优化师 - 视觉优化（可选）
     ↓
@@ -191,7 +199,11 @@ SVG 文件 (svg_output/)
     └── svg_to_pptx.py     → output.pptx（导出 PowerPoint + 嵌入演讲者备注）
 ```
 
-> **注意**: 源内容转换是强制触发的，识别到 PDF/URL 后必须立即调用工具。Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段。
+> **注意**:
+>
+> - 源内容转换是强制触发的，识别到 PDF/URL 后必须立即调用工具
+> - 模板阶段是可选的，用户可选择使用已有模板、生成新模板或不使用模板
+> - Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段
 
 ### 完整工作流程图
 
@@ -211,10 +223,10 @@ graph TD
     subgraph Preparation [准备阶段 Resources Prep]
         PDFConvert -- 原生 PDF --> PyMuPDF[pdf_to_md.py 本地转换]:::tool
         PDFConvert -- 扫描版/复杂排版 --> Mineru[MinerU 云端 AI 转换]:::tool
-        
+
         PyMuPDF -- 提取文本与结构 --> MD([基础 Markdown 文档]):::artifact
         Mineru -- 提取文本与结构 --> MD
-        
+
         %% 图片处理流程
         subgraph ImageFlow [图片资源]
             LocalImgs(必须包含的图片文件) --> ImgFolder[存入 images/ 文件夹]:::userAction
@@ -235,14 +247,14 @@ graph TD
     %% 规划阶段
     subgraph Planning [规划阶段 Content & Design]
         Strategist[Role 1 策略师: 内容与规范]:::role
-        
+
         %% 交互确认
         Strategist -.-> Confirm1[交互确认: 七项关键要素]:::userAction
         Confirm1 -- 确认范围 --> Strategist
-        
+
         %% 提示
         note1>确认: 图片路径/图标需求/风格] -.-> Confirm1
-        
+
         Strategist --> SpecDoc([设计规范与内容大纲]):::artifact
     end
 
@@ -262,11 +274,11 @@ graph TD
         SelectStyle -- 通用灵活 --> ExecGen[Role 3 通用执行师]:::role
         SelectStyle -- 一般咨询 --> ExecCon[Role 4 咨询执行师]:::role
         SelectStyle -- 顶级咨询 --> ExecTop[Role 4+ 顶级咨询执行师]:::role
-        
+
         ExecGen --> GenerateLoop
         ExecCon --> GenerateLoop
         ExecTop --> GenerateLoop
-        
+
         GenerateLoop[逐页生成 SVG]:::userAction
     end
 
@@ -277,9 +289,9 @@ graph TD
         CheckQA -- 是 --> Optimizer[Role 5 CRAP 优化师]:::role
         Optimizer --> OptimizedSVG([优化后的 SVG]):::artifact
         OptimizedSVG --> CheckQA
-        
+
         CheckQA -- 否 --> RawOutput[SVG 文件 svg_output/]:::artifact
-        
+
         RawOutput --> ToolFinal[finalize_svg.py 最终化处理]:::tool
         ToolFinal -- 嵌入 images 和 icons --> FinalSVG[最终 SVG svg_final/]:::artifact
         FinalSVG --> ToolPPT[svg_to_pptx.py PPTX 转换]:::tool
@@ -400,19 +412,16 @@ graph TD
 **四大核心原则**:
 
 1. **对齐 (Alignment)**:
-
    - 检查并修正元素对齐关系
    - 创建强大的无形视觉连接线
    - 确保每个元素都与其他元素有明确对齐关系
 
 2. **对比 (Contrast)**:
-
    - 增强视觉层次，突出重点信息
    - 加大尺寸、字重或颜色差异
    - 创造清晰的视觉焦点
 
 3. **重复 (Repetition)**:
-
    - 统一同类元素的视觉风格
    - 重复使用颜色、字体、圆角等视觉元素
    - 创造组织性和统一性
@@ -428,21 +437,20 @@ graph TD
 
 ### 基本工作流
 
-1. **准备源文档**  
-   
+1. **准备源文档**
+
    将原始参考资料转换为 AI 可读格式：
-   
-   | 步骤 | 说明 |
-   |------|------|
+
+   | 步骤            | 说明                                                                                                                                                                                                |
+   | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 📄 **文档转换** | **优先使用** `python3 tools/pdf_to_md.py <PDF文件>` 进行本地转换（快速、免费、隐私安全）。如遇扫描版 PDF、复杂多栏排版或数学公式，改用 [MinerU](https://github.com/opendatalab/MinerU) 云端 AI 转换 |
-   | 🖼️ **图片资源** | 将必须包含的图片存入项目的 `images/` 文件夹，并在 Markdown 中添加图片描述说明 |
-   | 🔣 **图标资源** | 如需自定义图标，可从 [SVG Repo](https://www.svgrepo.com/) 下载，或使用项目内置的 640+ 图标库（`templates/icons/`） |
-   
+   | 🖼️ **图片资源** | 将必须包含的图片存入项目的 `images/` 文件夹，并在 Markdown 中添加图片描述说明                                                                                                                       |
+   | 🔣 **图标资源** | 如需自定义图标，可从 [SVG Repo](https://www.svgrepo.com/) 下载，或使用项目内置的 640+ 图标库（`templates/icons/`）                                                                                  |
+
    > 💡 **PDF 转换策略**: PyMuPDF 优先（本地秒级），MinerU 兜底（云端 AI）。详见 [工具使用指南](./tools/README.md)
 
 2. **初始沟通（八项确认）**
    与 Strategist 进行范围确认，Strategist 会对以下八项给出专业建议：
-
    1. **画布格式**: PPT/小红书/朋友圈/Story 等（基于使用场景推荐）
    2. **页数范围**: 基于内容量分析建议合理页数
    3. **目标受众与场景**: 基于文档特征预判
@@ -467,6 +475,7 @@ graph TD
    使用 Optimizer_CRAP 进行 CRAP 原则优化
 
 6. **后处理**（推荐）
+
    ```bash
    python3 tools/finalize_svg.py <项目路径>     # 执行全部后处理
    ```
@@ -574,11 +583,11 @@ Optimizer_CRAP:
 
 为确保导出 PPT 后效果一致，透明度必须使用标准写法：
 
-| ❌ 禁止 | ✅ 正确 |
-|--------|--------|
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
-| `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+| ❌ 禁止                        | ✅ 正确                                              |
+| ------------------------------ | ---------------------------------------------------- |
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"`                  |
+| `<g opacity="0.2">...</g>`     | 每个子元素单独设置透明度                             |
+| `<image opacity="0.3"/>`       | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
 > 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
 
@@ -753,6 +762,7 @@ projects/
 ```
 
 **重要命名规则**:
+
 - 项目文件夹名称格式: `{项目名称}_{format}_{YYYYMMDD}`
 - format: `ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `story` 等
 - 日期使用8位数字格式，例如 `20251116` 代表 2025年11月16日
@@ -921,6 +931,7 @@ python3 tools/finalize_svg.py <项目路径>
 ```
 
 **处理步骤**：
+
 1. 嵌入图标 - 替换 `<use data-icon="..."/>` 为实际图标
 2. 修复图片宽高比 - 防止 PPT 转形状时图片拉伸变形 ✨
 3. 嵌入图片 - 将外部图片转为 Base64
@@ -983,7 +994,7 @@ python3 tools/error_helper.py missing_readme
 感谢以下开源项目：
 
 - [SVG Repo](https://www.svgrepo.com/) - 精美的开源图标库（本项目内置 640+ 图标）
-- [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) - CRAP 设计原则的提出者
+- [Robin Williams](<https://en.wikipedia.org/wiki/Robin_Williams_(author)>) - CRAP 设计原则的提出者
 - 麦肯锡、波士顿咨询、贝恩等顶尖咨询公司 - 设计灵感来源
 
 ## 📮 联系方式
