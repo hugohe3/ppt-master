@@ -18,12 +18,12 @@ An AI-powered intelligent visual content generation system that transforms sourc
 
 ### Recommended Tools
 
-| Tool | Rating | Description |
-|------|:------:|------|
-| **[Antigravity](https://antigravity.dev/)** | ⭐⭐⭐ | **Highly Recommended**! Free Opus 4.5 access, integrated Banana image generation, can generate images directly in the repository |
-| [Cursor](https://cursor.sh/) | ⭐⭐ | Mainstream AI editor, supports multiple models |
-| [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | Microsoft official solution |
-| [Claude Code](https://claude.ai/) | ⭐⭐ | Anthropic official CLI tool |
+| Tool                                                | Rating | Description                                                                                                                      |
+| --------------------------------------------------- | :----: | -------------------------------------------------------------------------------------------------------------------------------- |
+| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **Highly Recommended**! Free Opus 4.5 access, integrated Banana image generation, can generate images directly in the repository |
+| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, supports multiple models                                                                                   |
+| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | Microsoft official solution                                                                                                      |
+| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                                                                      |
 
 > 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution than Antigravity's direct generation. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `tools/gemini_watermark_remover.py`.
 
@@ -62,23 +62,23 @@ AI (Strategist role): Sure, before we begin I need to complete eight confirmatio
 
 ### Example Projects Overview
 
-| Category | Project | Pages | Features |
-|------|------|:----:|------|
-| 🏢 **Consulting Style** | [Attachment in Psychotherapy](./examples/ppt169_顶级咨询风_心理治疗中的依恋/) | 32 | Top consulting style, largest scale example |
-| | [Building Effective AI Agents](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/) | 15 | Anthropic engineering blog, AI Agent architecture |
-| | [Chongqing Regional Report](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) | 20 | Regional fiscal analysis, Enterprise Alert data 🆕 |
-| | [Ganzi Prefecture Economic Analysis](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/) | 17 | Government fiscal analysis, Tibetan cultural elements |
-| | [Nam Ou River Hydropower Strategic Assessment](./examples/ppt169_高端咨询风_南欧江水电站战略评估/) | 20 | "Basin Crisis" design language |
-| | [Automotive Certification 5-Year Strategic Plan](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) | 20 | McKinsey/BCG style |
-| | [McKinsey Style Customer Loyalty](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/) | 8 | Classic McKinsey MECE principles |
-| | [Google Annual Work Report](./examples/ppt169_谷歌风_google_annual_report/) | 10 | Google brand design language |
-| 🎨 **General Flexible** | [Debug Six-Step Method](./examples/ppt169_通用灵活+代码_debug六步法/) | 10 | Dark tech style |
-| | [Chongqing University Thesis Format](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/) | 11 | Academic standards guide |
-| | [AI Programming Tools Comparison](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/) | 11 | Tech review style |
-| ✨ **Creative Style** | [I Ching Qian Hexagram Study](./examples/ppt169_易理风_地山谦卦深度研究/) | 20 | I Ching aesthetics, Yin-Yang design |
-| | [Diamond Sutra Chapter 1 Study](./examples/ppt169_禅意风_金刚经第一品研究/) | 15 | Zen academic, ink wash whitespace |
-| | [Git Introduction Guide](./examples/ppt169_像素风_git_introduction/) | 10 | Pixel retro game style |
-| | [PPT Master Introduction](./examples/demo_project_intro_ppt169_20251211/) | 10 | Fresh tech style |
+| Category                | Project                                                                                              | Pages | Features                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- | :---: | ----------------------------------------------------- |
+| 🏢 **Consulting Style** | [Attachment in Psychotherapy](./examples/ppt169_顶级咨询风_心理治疗中的依恋/)                        |  32   | Top consulting style, largest scale example           |
+|                         | [Building Effective AI Agents](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/)               |  15   | Anthropic engineering blog, AI Agent architecture     |
+|                         | [Chongqing Regional Report](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/)            |  20   | Regional fiscal analysis, Enterprise Alert data 🆕    |
+|                         | [Ganzi Prefecture Economic Analysis](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/)               |  17   | Government fiscal analysis, Tibetan cultural elements |
+|                         | [Nam Ou River Hydropower Strategic Assessment](./examples/ppt169_高端咨询风_南欧江水电站战略评估/)   |  20   | "Basin Crisis" design language                        |
+|                         | [Automotive Certification 5-Year Strategic Plan](./examples/ppt169_高端咨询风_汽车认证五年战略规划/) |  20   | McKinsey/BCG style                                    |
+|                         | [McKinsey Style Customer Loyalty](./examples/ppt169_麦肯锡风_kimsoong_customer_loyalty/)             |   8   | Classic McKinsey MECE principles                      |
+|                         | [Google Annual Work Report](./examples/ppt169_谷歌风_google_annual_report/)                          |  10   | Google brand design language                          |
+| 🎨 **General Flexible** | [Debug Six-Step Method](./examples/ppt169_通用灵活+代码_debug六步法/)                                |  10   | Dark tech style                                       |
+|                         | [Chongqing University Thesis Format](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/)          |  11   | Academic standards guide                              |
+|                         | [AI Programming Tools Comparison](./examples/ppt169_通过灵活+代码_三大AI编程神器横向对比/)           |  11   | Tech review style                                     |
+| ✨ **Creative Style**   | [I Ching Qian Hexagram Study](./examples/ppt169_易理风_地山谦卦深度研究/)                            |  20   | I Ching aesthetics, Yin-Yang design                   |
+|                         | [Diamond Sutra Chapter 1 Study](./examples/ppt169_禅意风_金刚经第一品研究/)                          |  15   | Zen academic, ink wash whitespace                     |
+|                         | [Git Introduction Guide](./examples/ppt169_像素风_git_introduction/)                                 |  10   | Pixel retro game style                                |
+|                         | [PPT Master Introduction](./examples/demo_project_intro_ppt169_20251211/)                            |  10   | Fresh tech style                                      |
 
 📖 [View Complete Examples Documentation](./examples/README.md)
 
@@ -107,27 +107,27 @@ AI (Strategist role): Sure, before we begin I need to complete eight confirmatio
 <details>
 <summary><b>📋 Table of Contents (Click to expand)</b></summary>
 
-| Section | Link |
-|------|------|
-| 🚀 Quick Start Guide | [Jump](#-quick-start-guide) |
-| 🎴 Featured Examples | [Jump](#-featured-examples) |
-| Project Introduction | [Jump](#project-introduction) |
-| Core Features | [Jump](#core-features) |
-| System Architecture | [Jump](#system-architecture) |
-| Roles | [Jump](#roles) |
-| Getting Started | [Jump](#getting-started) |
-| More Examples | [Jump](#more-examples) |
-| Design Styles | [Jump](#design-styles) |
+| Section                  | Link                              |
+| ------------------------ | --------------------------------- |
+| 🚀 Quick Start Guide     | [Jump](#-quick-start-guide)       |
+| 🎴 Featured Examples     | [Jump](#-featured-examples)       |
+| Project Introduction     | [Jump](#project-introduction)     |
+| Core Features            | [Jump](#core-features)            |
+| System Architecture      | [Jump](#system-architecture)      |
+| Roles                    | [Jump](#roles)                    |
+| Getting Started          | [Jump](#getting-started)          |
+| More Examples            | [Jump](#more-examples)            |
+| Design Styles            | [Jump](#design-styles)            |
 | Technical Specifications | [Jump](#technical-specifications) |
-| Project Structure | [Jump](#project-structure) |
-| Best Practices | [Jump](#best-practices) |
-| FAQ | [Jump](#faq) |
-| Contributing Guide | [Jump](#contributing-guide) |
-| Roadmap | [Jump](#roadmap) |
-| 🛠️ Toolset | [Jump](#️-toolset) |
-| 📄 License | [Jump](#-license) |
-| 🙏 Acknowledgments | [Jump](#-acknowledgments) |
-| 📮 Contact | [Jump](#-contact) |
+| Project Structure        | [Jump](#project-structure)        |
+| Best Practices           | [Jump](#best-practices)           |
+| FAQ                      | [Jump](#faq)                      |
+| Contributing Guide       | [Jump](#contributing-guide)       |
+| Roadmap                  | [Jump](#roadmap)                  |
+| 🛠️ Toolset               | [Jump](#️-toolset)                 |
+| 📄 License               | [Jump](#-license)                 |
+| 🙏 Acknowledgments       | [Jump](#-acknowledgments)         |
+| 📮 Contact               | [Jump](#-contact)                 |
 
 </details>
 
@@ -171,15 +171,29 @@ User Input (PDF/URL/Markdown)
     ├─ URL → web_to_md.py / web_to_md.cjs
     └─ MD  → Direct read
     ↓
-[Strategist] - Eight Confirmations & Design Specifications
+[Create Project Folder] project_manager.py init
+    ↓
+[Template Option] Ask user (workflow step, not Strategist's responsibility)
     │
-    ├─ Image Method = "C) AI Generated"?
+    ├─ A) Use existing template → Copy to project templates/ → Proceed to Strategist
+    ├─ B) No template → Proceed to Strategist
+    └─ C) Generate new template → Proceed to Strategist (Template_Designer after outline)
+    ↓
+[Strategist] - Eight Confirmations & Design Specifications (Required, cannot skip)
+    │
+    ├─ Template Option = C (Generate new)?
     │       │
-    │       YES → [Image_Generator] - Generate images to images/
+    │       YES → [Template_Designer] - Generate templates
     │       │
     │       NO ──────────────────────────────────────────┐
-    │                                                │
-    ▼                                                ▼
+    │                                                    │
+    ├─ Image Method = "C) AI Generated"?                 │
+    │       │                                            │
+    │       YES → [Image_Generator] - Generate to images/│
+    │       │                                            │
+    │       NO ──────────────────────────────────────────┤
+    │                                                    │
+    ▼                                                    ▼
 [Executor_General / Executor_Consultant / Executor_Consultant_Top] - SVG Code Generation
     ↓
 [Optimizer_CRAP] - Visual Optimization (Optional)
@@ -191,7 +205,7 @@ Post-processing Tools (Auto-executed)
     └── svg_to_pptx.py     → output.pptx (Export to PowerPoint + Embed speaker notes)
 ```
 
-> **Note**: Source content conversion is mandatory - tools must be called immediately upon detecting PDF/URL. Image_Generator is a sequential step, images must be collected before entering Executor phase.
+> **Note**: Source content conversion is mandatory - tools must be called immediately upon detecting PDF/URL. Template option is a workflow step, not Strategist's responsibility. Image_Generator is a sequential step, images must be collected before entering Executor phase.
 
 ### Complete Workflow Diagram
 
@@ -211,10 +225,10 @@ graph TD
     subgraph Preparation [Preparation Stage - Resources Prep]
         PDFConvert -- Native PDF --> PyMuPDF[pdf_to_md.py Local Conversion]:::tool
         PDFConvert -- Scanned/Complex Layout --> Mineru[MinerU Cloud AI Conversion]:::tool
-        
+
         PyMuPDF -- Extract Text & Structure --> MD([Basic Markdown Document]):::artifact
         Mineru -- Extract Text & Structure --> MD
-        
+
         %% Image Processing Flow
         subgraph ImageFlow [Image Resources]
             LocalImgs(Required Image Files) --> ImgFolder[Store in images/ folder]:::userAction
@@ -235,19 +249,19 @@ graph TD
     %% Planning Stage
     subgraph Planning [Planning Stage - Content & Design]
         Strategist[Role 1 Strategist: Content & Specifications]:::role
-        
+
         %% Interactive Confirmation
         Strategist -.-> Confirm1[Interactive Confirmation: 8 Key Elements]:::userAction
         Confirm1 -- Confirm Scope --> Strategist
-        
+
         %% Notes
         note1>Confirm: Image paths/Icon needs/Style] -.-> Confirm1
-        
+
         Strategist --> SpecDoc([Design Specification & Content Outline]):::artifact
     end
 
     SpecDoc --> CheckImage{AI Generated Images?}
-    
+
     %% Image Generation Stage (conditionally triggered)
     subgraph ImageGenStage [Image Generation Stage - Conditionally Triggered]
         CheckImage -- Yes --> ImageGen[Role 2 Image Generator]:::role
@@ -262,11 +276,11 @@ graph TD
         SelectStyle -- General Flexible --> ExecGen[Role 3 General Executor]:::role
         SelectStyle -- General Consulting --> ExecCon[Role 4 Consulting Executor]:::role
         SelectStyle -- Top Consulting --> ExecTop[Role 4+ Top Consulting Executor]:::role
-        
+
         ExecGen --> GenerateLoop
         ExecCon --> GenerateLoop
         ExecTop --> GenerateLoop
-        
+
         GenerateLoop[Generate SVG Page by Page]:::userAction
     end
 
@@ -277,9 +291,9 @@ graph TD
         CheckQA -- Yes --> Optimizer[Role 5 CRAP Optimizer]:::role
         Optimizer --> OptimizedSVG([Optimized SVG]):::artifact
         OptimizedSVG --> CheckQA
-        
+
         CheckQA -- No --> RawOutput[SVG Files svg_output/]:::artifact
-        
+
         RawOutput --> ToolFinal[finalize_svg.py Finalization]:::tool
         ToolFinal -- Embed images and icons --> FinalSVG[Final SVG svg_final/]:::artifact
         FinalSVG --> ToolPPT[svg_to_pptx.py PPTX Conversion]:::tool
@@ -310,7 +324,6 @@ graph TD
   6. 🔣 **Icon Method**: A) Emoji B) AI Generated C) Built-in Icon Library D) Custom Path
   7. 🖼️ **Image Usage**: A) No images B) User provided C) AI Generated D) Placeholder reserved
   8. 📝 **Typography**: Font combination (P1-P5 preset or custom) + body font size baseline (14-20pt)
-- **Template Options**: Provide three template strategies (use existing template / generate new template / no template)
 - **Intelligent Deconstruction**: Break down and reorganize source documents into clear page sequences
 - **Color Scheme**: Propose complete color scheme (primary, secondary, base tones)
 - **Layout Planning**: Plan page sequences and recommend layout solutions
@@ -340,6 +353,7 @@ graph TD
 **Input**: Design Specification and Content Outline
 
 **Output**:
+
 - 4 core template SVG files
 - Optional: Table of contents template
 - Saved to project `templates/` directory
@@ -365,6 +379,7 @@ graph TD
 **Input**: Design specifications (with Image Resource List)
 
 **Output**:
+
 - Optimized image prompts
 - Generated image files
 - Updated Image Resource List
@@ -433,19 +448,16 @@ graph TD
 **Four Core Principles**:
 
 1. **Alignment**:
-
    - Check and correct element alignment relationships
    - Create powerful invisible visual connection lines
    - Ensure every element has clear alignment relationship with others
 
 2. **Contrast**:
-
    - Enhance visual hierarchy, highlight key information
    - Increase size, font weight or color differences
    - Create clear visual focus
 
 3. **Repetition**:
-
    - Unify visual style of similar elements
    - Repeatedly use colors, fonts, rounded corners and other visual elements
    - Create organization and unity
@@ -461,21 +473,20 @@ graph TD
 
 ### Basic Workflow
 
-1. **Prepare Source Document**  
-   
+1. **Prepare Source Document**
+
    Convert raw reference materials to AI-readable format:
-   
-   | Step | Description |
-   |------|------|
+
+   | Step                       | Description                                                                                                                                                                                                                                   |
+   | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 📄 **Document Conversion** | **Prefer** `python3 tools/pdf_to_md.py <PDF_file>` for local conversion (fast, free, privacy-safe). For scanned PDFs, complex multi-column layouts, or math formulas, use [MinerU](https://github.com/opendatalab/MinerU) cloud AI conversion |
-   | 🖼️ **Image Resources** | Store required images in the project's `images/` folder and add image descriptions in the Markdown |
-   | 🔣 **Icon Resources** | For custom icons, download from [SVG Repo](https://www.svgrepo.com/), or use the built-in 640+ icon library (`templates/icons/`) |
-   
+   | 🖼️ **Image Resources**     | Store required images in the project's `images/` folder and add image descriptions in the Markdown                                                                                                                                            |
+   | 🔣 **Icon Resources**      | For custom icons, download from [SVG Repo](https://www.svgrepo.com/), or use the built-in 640+ icon library (`templates/icons/`)                                                                                                              |
+
    > 💡 **PDF Conversion Strategy**: PyMuPDF first (local, instant), MinerU as fallback (cloud AI). See [Tools Usage Guide](./tools/README.md)
 
 2. **Initial Communication (Eight Confirmations)**
    Conduct scope confirmation with Strategist, who will provide professional recommendations on these eight items:
-
    1. **Canvas Format**: PPT/Xiaohongshu/WeChat Moments/Story, etc. (recommend based on usage scenario)
    2. **Page Count**: Suggest reasonable page count based on content volume analysis
    3. **Target Audience & Scenario**: Pre-judge based on document characteristics
@@ -500,6 +511,7 @@ graph TD
    Use Optimizer_CRAP for CRAP principle optimization
 
 6. **Post-processing** (Recommended)
+
    ```bash
    python3 tools/finalize_svg.py <project_path>     # Execute all post-processing
    ```
@@ -607,11 +619,11 @@ I will analyze page 2 and apply CRAP principles:
 
 To ensure consistent results after PPT export, transparency must use standard notation:
 
-| ❌ Prohibited | ✅ Correct |
-|--------|--------|
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | Set transparency individually for each child element |
-| `<image opacity="0.3"/>` | Add mask layer after image `<rect fill="background-color" opacity="0.7"/>` |
+| ❌ Prohibited                  | ✅ Correct                                                                 |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"`                                        |
+| `<g opacity="0.2">...</g>`     | Set transparency individually for each child element                       |
+| `<image opacity="0.3"/>`       | Add mask layer after image `<rect fill="background-color" opacity="0.7"/>` |
 
 > 📌 **Remember**: PPT doesn't recognize rgba, group opacity, or image opacity
 
@@ -786,6 +798,7 @@ projects/
 ```
 
 **Important Naming Rules**:
+
 - Project folder name format: `{project_name}_{format}_{YYYYMMDD}`
 - format: `ppt169`, `ppt43`, `wechat`, `xiaohongshu`, `story`, etc.
 - Date uses 8-digit format, e.g., `20251116` for November 16, 2025
@@ -954,6 +967,7 @@ python3 tools/finalize_svg.py <project_path>
 ```
 
 **Processing Steps**:
+
 1. Embed icons - Replace `<use data-icon="..."/>` with actual icons
 2. Fix image aspect ratio - Prevent image stretching when converting to shapes in PPT ✨
 3. Embed images - Convert external images to Base64
@@ -1016,7 +1030,7 @@ But you must:
 Thanks to the following open source projects:
 
 - [SVG Repo](https://www.svgrepo.com/) - Beautiful open source icon library (640+ icons included in this project)
-- [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) - Creator of CRAP design principles
+- [Robin Williams](<https://en.wikipedia.org/wiki/Robin_Williams_(author)>) - Creator of CRAP design principles
 - McKinsey, Boston Consulting, Bain and other top consulting firms - Design inspiration sources
 
 ## 📮 Contact
