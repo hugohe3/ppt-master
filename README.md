@@ -210,6 +210,7 @@ SVG 文件 (svg_output/)
 > - 源内容转换是强制触发的，识别到 PDF/URL 后必须立即调用工具
 > - 模板阶段是可选的，用户可选择使用已有模板、生成新模板或不使用模板
 > - Image_Generator 是串行环节，图片归集完成后才进入 Executor 阶段
+> - Optimizer_CRAP 仅在质量不足时使用；若使用优化，需重新运行后处理与导出以保持产物一致
 
 ### 完整工作流程图
 
@@ -412,8 +413,8 @@ graph TD
 
 ### 6️⃣ Optimizer_CRAP (CRAP 优化师)
 
-**职责**: 基于 CRAP 原则优化设计  
-**输出**: 优化后的 SVG 代码（yh\_前缀）
+**职责**: 基于 CRAP 原则优化设计（仅在质量不足时使用）  
+**输出**: 优化后的 SVG 代码（yh\_前缀）；使用后需重新运行 `finalize_svg.py` 和 `svg_to_pptx.py`
 
 **四大核心原则**:
 
@@ -812,7 +813,7 @@ A: Image_Generator 在 Strategist 的八项确认中，当图片方式**包含**
 <details>
 <summary><b>Q: 必须使用Optimizer_CRAP吗？</b></summary>
 
-A: 不是必须的。如果 Executor 生成的 SVG 已经满足需求，可以跳过优化步骤。Optimizer 主要用于进一步提升关键页面的视觉质量。
+A: 不是必须的。如果 Executor 生成的 SVG 已经满足需求，可以跳过优化步骤。Optimizer 主要用于进一步提升关键页面的视觉质量；若使用优化，需重新运行 `finalize_svg.py` 和 `svg_to_pptx.py` 以保持产物一致。
 
 </details>
 
