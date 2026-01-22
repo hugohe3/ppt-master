@@ -63,13 +63,12 @@ class ProjectManager:
         self.base_dir = Path(base_dir)
 
     def init_project(self, project_name: str, canvas_format: str = 'ppt169',
-                     design_style: str = '通用灵活', base_dir: Optional[str] = None) -> str:
+                     base_dir: Optional[str] = None) -> str:
         """初始化新项目
 
         Args:
             project_name: 项目名称
             canvas_format: 画布格式 (ppt169, ppt43, wechat, 等)
-            design_style: 设计风格 (通用灵活, 一般咨询, 顶级咨询)
             base_dir: 项目基础目录，默认使用实例的 base_dir
 
         Returns:
@@ -95,10 +94,6 @@ class ProjectManager:
         (project_path / 'images').mkdir(exist_ok=True)       # 图片资源
         (project_path / 'notes').mkdir(exist_ok=True)        # 演讲备注
         (project_path / 'templates').mkdir(exist_ok=True)    # 项目页面模板（可选）
-
-        # 获取画布格式信息
-        canvas_info = self.CANVAS_FORMATS.get(
-            canvas_format, self.CANVAS_FORMATS['ppt169'])
 
         # 获取画布格式信息
         canvas_info = self.CANVAS_FORMATS.get(

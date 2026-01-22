@@ -112,6 +112,26 @@ def sanitize_filename(name):
     return clean[:80]  # Truncate
 
 
+def derive_base_name(title, url):
+    """Derive a safe, non-empty basename from title or URL."""
+    base = sanitize_filename(title or "")
+    if base:
+        return base
+
+    parsed = urlparse(url)
+    path = parsed.path.strip('/')
+    if path:
+        candidate = f"{parsed.netloc}_{path}"
+    else:
+        candidate = parsed.netloc or "untitled"
+    base = sanitize_filename(candidate)
+    if base:
+        return base
+
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    return f"untitled_{ts}"
+
+
 def build_image_filename(abs_url, seq, content_type=None):
     """Builds a safe image filename using URL and optional content-type hint."""
     parsed = urlparse(abs_url)
@@ -562,7 +582,8 @@ def process_url(url, output_file=None):
         if output_file:
             output_path = output_file
         else:
-            filename = sanitize_filename(metadata['title']) + ".md"
+            base_name = derive_base_name(metadata['title'], url)
+            filename = f"{base_name}.md"
             output_path = os.path.join(CONFIG["output_dir"], filename)
 
         output_dirname = os.path.dirname(output_path) or "."
