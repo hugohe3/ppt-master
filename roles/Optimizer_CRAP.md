@@ -117,6 +117,6 @@
 ## 技术约束
 
 - **保持画布尺寸**: 优化后的 SVG 必须保持与原始 SVG 相同的 `width`、`height` 和 `viewBox`
-- **禁用元素**: 不得引入 `<foreignObject>`、`<iframe>`、`<script>`
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 - **文本处理**: 保持使用 `<tspan>` 进行文本换行
 - **文件命名**: 优化后的文件名格式为 `yh_原文件名.svg`

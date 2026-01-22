@@ -287,7 +287,6 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 | --------------- | -------------------------------- | ----------------------- |
 | **裁剪 / 遮罩** | ❌ `clipPath`                    | PPT 不支持 SVG 裁剪路径 |
 |                 | ❌ `mask`                        | PPT 不支持 SVG 遮罩     |
-| **特效**        | ❌ `filter`（所有 `fe*`）        | 滤镜效果无法导出到 PPT  |
 | **样式系统**    | ❌ `<style>`                     | 内部样式表不兼容        |
 |                 | ❌ `class` / `id` 选择器         | 使用内联属性替代        |
 |                 | ❌ 外部 CSS                      | 禁止引用外部样式        |
@@ -295,10 +294,11 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 |                 | ❌ `<symbol>` + `<use>` 复杂用法 | 简单 `<use>` 引用可用   |
 | **文本 / 字体** | ❌ `textPath`                    | 路径文本不兼容          |
 |                 | ❌ Web 字体（`@font-face`）      | 使用系统字体栈          |
-| **动画 / 交互** | ❌ SMIL 动画（`<animate*>`）     | SVG 动画不导出          |
-|                 | ❌ JS / 事件                     | 禁止脚本和事件处理      |
+| **动画 / 交互** | ❌ SMIL 动画（`<animate*>` / `<set>`） | SVG 动画不导出      |
+|                 | ❌ `<script>` / 事件属性         | 禁止脚本和事件处理      |
 | **标记 / 箭头** | ❌ `marker` / `marker-end`       | PPT 不支持 SVG 标记     |
 |                 | ❌ `<marker>` + `<defs>`         | 使用 `<polygon>` 替代   |
+| **其他**        | ❌ `<iframe>`                    | 不应出现在 SVG 中       |
 
 > 📌 **记忆口诀**：PPT 只认基础形状 + 内联样式 + 系统字体
 
@@ -441,7 +441,7 @@ project/
 - [ ] viewBox 与画布尺寸一致
 - [ ] 使用 `<tspan>` 手动换行
 - [ ] 颜色符合设计规范
-- [ ] **黑名单检查**: 无 `clipPath` / `mask` / `filter` / `<style>` / `class` / `foreignObject` / `textPath` / `animate*` / `script`
+- [ ] **黑名单检查**: 无 `clipPath` / `mask` / `<style>` / `class` / `id` / 外部 CSS / `<foreignObject>` / `<symbol>+<use>` / `textPath` / `@font-face` / `animate*` / `set` / `script` / `on*` / `marker` / `marker-end` / `iframe`
 - [ ] **PPT 兼容**: 无 `rgba()`、无 `<g opacity>`、图片用遮罩层、仅内联样式
 - [ ] **对齐**: 元素沿网格线对齐
 - [ ] **对比**: 建立清晰的视觉层级

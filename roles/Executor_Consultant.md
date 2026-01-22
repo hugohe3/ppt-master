@@ -65,7 +65,8 @@
    2. **逻辑构建阶段**: SVG 全部定稿后，再批量生成演讲备注，确保叙事逻辑连贯（Narrative Continuity）
  - **技术规范**:
    - viewBox 必须与画布尺寸一致
-   - **严禁使用 `<foreignObject>`**，用 `<tspan>` 手动换行
+   - 使用 `<tspan>` 手动换行
+   - **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
    - 使用 `<rect>` 定义背景色
 
 
@@ -180,7 +181,8 @@
 ## 技术规范
 
 - viewBox 必须与画布尺寸一致
-- **严禁使用 `<foreignObject>`**，用 `<tspan>` 换行
+- 使用 `<tspan>` 换行
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 ### 字体使用
 
@@ -205,12 +207,12 @@
 | `<g opacity="0.2">...</g>`     | 每个子元素单独设置透明度                             |
 | `<image opacity="0.3"/>`       | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
-**记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+**记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 ## 生成后自检
 
 - [ ] viewBox 与画布尺寸一致
-- [ ] 无 `<foreignObject>`
+- [ ] 无禁用元素（见技术规范清单）
 - [ ] 数据与源数据一致
 - [ ] 简洁专业，留白充足
 - [ ] **PPT 兼容**: 无 `rgba()`、无 `<g opacity>`、图片用遮罩层

@@ -202,7 +202,7 @@ H3 - 章节标题:     28-32px, SemiBold
 
 ### 文本换行与扁平化
 
-- 生成阶段：禁止使用 `<foreignObject>`，采用 `<tspan>` 手动换行，并通过 `x`/`dy` 控制行起点与行距，保证与版式行高规范一致。
+- 生成阶段：采用 `<tspan>` 手动换行，并通过 `x`/`dy` 控制行起点与行距，保证与版式行高规范一致（禁用项详见 `AGENTS.md`）。
 - 发布/后处理：推荐使用统一后处理工具 `tools/finalize_svg.py`，已包含文本扁平化功能：
   ```bash
   python3 tools/finalize_svg.py <项目路径>

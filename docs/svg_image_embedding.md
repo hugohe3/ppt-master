@@ -287,21 +287,14 @@ project/
     └── 01_cover_embedded.svg # 导出版（Base64 内嵌）
 ```
 
-### 3. clipPath 裁剪圆角
+### 3. 圆角处理（禁止 clipPath）
 
-如果需要给图片添加圆角：
+由于 `clipPath` 在 PPT 中不兼容，**禁止**使用裁剪路径为图片加圆角。
 
-```xml
-<defs>
-  <clipPath id="roundedClip">
-    <rect x="60" y="110" width="540" height="380" rx="10" ry="10"/>
-  </clipPath>
-</defs>
+推荐替代方案：
 
-<image href="image.png" x="60" y="110" width="540" height="380" 
-       clip-path="url(#roundedClip)" 
-       preserveAspectRatio="xMidYMid slice"/>
-```
+- 在生成图片时直接处理圆角（如导出为带圆角的 PNG）
+- 或用同尺寸的圆角矩形覆盖边缘（视觉模拟）
 
 ---
 

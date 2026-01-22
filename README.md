@@ -370,7 +370,7 @@ graph TD
 - **技术要求**:
   - 画布尺寸：根据选定格式自动适配（PPT: 1280×720，小红书: 1242×1660 等）
   - viewBox 与画布尺寸一致
-  - 严禁使用 `<foreignObject>`
+  - 禁用项与 PPT 兼容规则遵循 `AGENTS.md`
   - 使用 `<tspan>` 手动换行
   - 根据画布比例调整布局和卡片尺寸
 
@@ -582,7 +582,8 @@ Optimizer_CRAP:
   - 更多格式...
 - **ViewBox**: 与画布尺寸一致
 - **背景**: 使用 `<rect>`元素定义
-- **文本**: 禁用 `<foreignObject>`，使用 `<tspan>`手动换行
+- **文本**: 使用 `<tspan>` 手动换行（禁用项详见 `AGENTS.md`）
+- **禁用项**: 遵循 `AGENTS.md` 中完整黑名单与 PPT 兼容规则
 - **字体**: 使用《设计规范与内容大纲》中指定的字体方案（详见 [字体选择](./docs/design_guidelines.md#字体选择)）
 
 ### PPT 兼容性规则（必须遵守）
@@ -595,7 +596,7 @@ Optimizer_CRAP:
 | `<g opacity="0.2">...</g>`     | 每个子元素单独设置透明度                             |
 | `<image opacity="0.3"/>`       | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 ### 布局规范
 
@@ -902,7 +903,7 @@ python3 tools/svg_quality_checker.py --all examples
 python3 tools/svg_quality_checker.py examples/project --format ppt169
 ```
 
-**检查项目**：viewBox 属性、禁用元素（foreignObject）、字体使用、width/height 一致性、文本换行方式、文件大小
+**检查项目**：viewBox 属性、禁用元素（见 `AGENTS.md`）、字体使用、width/height 一致性、文本换行方式
 
 ### 批量验证工具 (`batch_validate.py`)
 

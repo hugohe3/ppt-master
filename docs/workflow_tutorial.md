@@ -693,7 +693,7 @@ Optimizer_CRAP:
 | `<g opacity="0.2">...</g>`     | 每个子元素单独设置透明度                             |
 | `<image opacity="0.3"/>`       | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 **检查清单**：
 
