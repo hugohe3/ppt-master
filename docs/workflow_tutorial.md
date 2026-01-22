@@ -557,7 +557,7 @@ Executor: [生成三栏卡片SVG]
 
 ### 步骤 6: 优化关键页面（可选）
 
-对于重要的页面，可以请 Optimizer_CRAP 优化：
+对于重要的页面，可以请 Optimizer_CRAP 优化（仅在质量不足时使用；使用后需重新运行 `finalize_svg.py` 和 `svg_to_pptx.py` 以保持产物一致）：
 
 ```
 你: 请使用CRAP原则优化第2页的视觉效果
