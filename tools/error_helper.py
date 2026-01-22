@@ -128,15 +128,6 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'filter_detected': {
-            'message': '检测到禁用的 <filter> 元素',
-            'solutions': [
-                '移除 <filter> 及所有 fe* 滤镜元素',
-                '滤镜效果无法导出到 PPT',
-                '阴影效果可用多个偏移的浅色形状模拟'
-            ],
-            'severity': 'error'
-        },
         'style_element_detected': {
             'message': '检测到禁用的 <style> 元素',
             'solutions': [
@@ -152,6 +143,105 @@ class ErrorHelper:
                 '移除所有 class 属性',
                 '使用内联样式替代',
                 '例如: fill="#000" stroke="#333" 直接写在元素上'
+            ],
+            'severity': 'error'
+        },
+        'id_attribute_detected': {
+            'message': '检测到禁用的 id 属性',
+            'solutions': [
+                '移除所有 id 属性',
+                '使用内联样式替代',
+                '避免依赖选择器定位或样式复用'
+            ],
+            'severity': 'error'
+        },
+        'external_css_detected': {
+            'message': '检测到禁用的外部 CSS 引用',
+            'solutions': [
+                '移除 <?xml-stylesheet?> 声明',
+                '移除 <link rel="stylesheet"> 引用',
+                '移除 @import 外部样式',
+                '将样式改为内联属性'
+            ],
+            'severity': 'error'
+        },
+        'symbol_use_detected': {
+            'message': '检测到禁用的 <symbol> + <use> 复杂用法',
+            'solutions': [
+                '将 <symbol> 展开为实际 SVG 代码',
+                '避免 <symbol> + <use> 的复用结构',
+                '需要图标时可直接嵌入 SVG 路径'
+            ],
+            'severity': 'error'
+        },
+        'marker_detected': {
+            'message': '检测到禁用的 <marker> 元素',
+            'solutions': [
+                '移除 <marker> 定义',
+                '使用 line + polygon 绘制箭头',
+                '参考 AGENTS.md 的箭头绘制方案'
+            ],
+            'severity': 'error'
+        },
+        'marker_end_detected': {
+            'message': '检测到禁用的 marker-end 属性',
+            'solutions': [
+                '移除 marker-end 属性',
+                '使用 line + polygon 绘制箭头',
+                '确保箭头方向与线条一致'
+            ],
+            'severity': 'error'
+        },
+        'rgba_detected': {
+            'message': '检测到禁用的 rgba() 颜色',
+            'solutions': [
+                '将 rgba() 改为 hex + opacity 写法',
+                '示例: fill="#FFFFFF" fill-opacity="0.1"',
+                '描边使用 stroke-opacity'
+            ],
+            'severity': 'error'
+        },
+        'group_opacity_detected': {
+            'message': '检测到禁用的 <g opacity>',
+            'solutions': [
+                '移除组级 opacity',
+                '为每个子元素单独设置透明度',
+                '使用 fill-opacity / stroke-opacity 控制'
+            ],
+            'severity': 'error'
+        },
+        'image_opacity_detected': {
+            'message': '检测到禁用的 <image opacity>',
+            'solutions': [
+                '移除图片 opacity 属性',
+                '添加遮罩层 <rect> 控制透明度',
+                '确保遮罩颜色与背景一致'
+            ],
+            'severity': 'error'
+        },
+        'event_attribute_detected': {
+            'message': '检测到禁用的事件属性',
+            'solutions': [
+                '移除 onclick/onload 等事件属性',
+                'SVG 禁止脚本和事件处理',
+                '交互请在 PPT 中实现'
+            ],
+            'severity': 'error'
+        },
+        'set_detected': {
+            'message': '检测到禁用的 <set> 元素',
+            'solutions': [
+                '移除 <set> 元素',
+                'SVG 动画不会导出到 PPT',
+                '如需动画效果请在 PPT 中设置'
+            ],
+            'severity': 'error'
+        },
+        'iframe_detected': {
+            'message': '检测到禁用的 <iframe> 元素',
+            'solutions': [
+                '移除 <iframe> 元素',
+                'SVG 中不应嵌入外部页面'
             ],
             'severity': 'error'
         },

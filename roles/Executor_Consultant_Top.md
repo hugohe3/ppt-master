@@ -101,10 +101,11 @@
 - **分阶段批量生成**(推荐): 
   1. **视觉构建阶段**: 连续生成所有 SVG 页面，确保设计风格和布局坐标的高度一致性（Visual Consistency）
   2. **逻辑构建阶段**: SVG 全部定稿后，再批量生成演讲备注，确保叙事逻辑连贯（Narrative Continuity）
-- **技术规范**:
-  - viewBox 必须与画布尺寸一致
-  - **严禁使用 `<foreignObject>`**，用 `<tspan>` 手动换行
-  - 使用 `<rect>` 定义背景色
+ - **技术规范**:
+   - viewBox 必须与画布尺寸一致
+   - 使用 `<tspan>` 手动换行
+   - **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
+   - 使用 `<rect>` 定义背景色
 
 
 ## 咨询级表达核心技巧
@@ -276,7 +277,8 @@
 ## 技术规范
 
 - viewBox 必须与画布尺寸一致
-- **严禁使用 `<foreignObject>`**，用 `<tspan>` 换行
+- 使用 `<tspan>` 换行
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 ### 字体使用
 
@@ -301,7 +303,7 @@
 | `<g opacity="0.2">...</g>`     | 每个子元素单独设置透明度                             |
 | `<image opacity="0.3"/>`       | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
-**记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+**记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 ---
 
@@ -310,7 +312,7 @@
 ### 技术检查
 
 - [ ] viewBox 与画布尺寸一致
-- [ ] 无 `<foreignObject>`
+- [ ] 无禁用元素（见技术规范清单）
 - [ ] 数据与源数据一致
 - [ ] **PPT 兼容**: 无 `rgba()`、无 `<g opacity>`、图片用遮罩层
 

@@ -330,7 +330,7 @@ python3 tools/project_manager.py info projects/my_presentation_ppt169_20251116
 
 将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取。
 
-**注意**: 生成端仍应使用 `<tspan>` 手动换行（禁止 `<foreignObject>`）。此工具仅用于后处理。
+**注意**: 生成端仍应使用 `<tspan>` 手动换行（禁用项详见 `AGENTS.md`）。此工具仅用于后处理。
 
 **用法**:
 
@@ -461,7 +461,7 @@ python3 tools/error_helper.py missing_readme project_path=my_project
 - `missing_spec` - 缺少设计规范
 - `missing_svg_output` - 缺少 svg_output 目录
 - `viewbox_mismatch` - viewBox 不匹配
-- `foreignobject_detected` - 检测到禁用元素
+- `foreignobject_detected` - 检测到禁用元素（详见 AGENTS.md 黑名单）
 - 等等...
 
 ---
@@ -473,11 +473,10 @@ python3 tools/error_helper.py missing_readme project_path=my_project
 **功能**:
 
 - 验证 viewBox 属性
-- 检测禁用元素（foreignObject）
+- 检测禁用元素（详见 AGENTS.md）
 - 检查字体使用
 - 验证 width/height 与 viewBox 一致性
 - 检查文本换行方式
-- 分析文件大小
 
 **用法**:
 
@@ -504,11 +503,10 @@ python3 tools/svg_quality_checker.py examples/project --export
 **检查项目**:
 
 - ✅ viewBox 属性存在且格式正确
-- ✅ 无 `<foreignObject>` 元素
+- ✅ 无禁用元素（详见 AGENTS.md）
 - ✅ 使用《设计规范》指定的字体
 - ✅ width/height 与 viewBox 一致
 - ✅ 文本使用 `<tspan>` 换行
-- ✅ 文件大小合理（< 500KB）
 
 ---
 
@@ -522,7 +520,7 @@ python3 tools/svg_quality_checker.py examples/project --export
 | `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
 | `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
 
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明
+> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
 
 ---
 
@@ -1215,4 +1213,3 @@ pip install python-pptx
 _最后更新: 2025-12-20_
 
 _gemini_watermark_remover.py 文档更新: 2025-12-20_
-

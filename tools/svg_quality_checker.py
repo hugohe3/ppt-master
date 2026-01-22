@@ -89,9 +89,6 @@ class SVGQualityChecker:
             # 5. 检查文本换行方式
             self._check_text_elements(content, result)
 
-            # 6. 检查文件大小
-            self._check_file_size(svg_path, result)
-
             # 判断是否通过
             result['passed'] = len(result['errors']) == 0
 
@@ -153,22 +150,32 @@ class SVGQualityChecker:
         if '<mask' in content_lower and '<mask>' not in content_lower:  # 排除纯文本 "mask"
             result['errors'].append("检测到禁用的 <mask> 元素（PPT 不支持 SVG 遮罩）")
 
-        # 特效
-        if '<filter' in content_lower:
-            result['errors'].append("检测到禁用的 <filter> 元素（滤镜效果无法导出到 PPT）")
-
         # 样式系统
         if '<style' in content_lower:
             result['errors'].append("检测到禁用的 <style> 元素（使用内联属性替代）")
         if re.search(r'\bclass\s*=', content):
             result['errors'].append("检测到禁用的 class 属性（使用内联样式替代）")
+        if re.search(r'\bid\s*=', content):
+            result['errors'].append("检测到禁用的 id 属性（使用内联样式替代）")
+        if re.search(r'<\?xml-stylesheet\b', content_lower):
+            result['errors'].append("检测到禁用的 xml-stylesheet（禁止引用外部 CSS）")
+        if re.search(r'<link[^>]*rel\s*=\s*["\']stylesheet["\']', content_lower):
+            result['errors'].append("检测到禁用的 <link rel=\"stylesheet\">（禁止引用外部 CSS）")
+        if re.search(r'@import\s+', content_lower):
+            result['errors'].append("检测到禁用的 @import（禁止引用外部 CSS）")
 
         # 结构 / 嵌套
         if '<foreignobject' in content_lower:
             result['errors'].append(
                 "检测到禁用的 <foreignObject> 元素（使用 <tspan> 手动换行）")
-        if '<symbol' in content_lower:
-            result['warnings'].append("检测到 <symbol> 元素（复杂用法可能不兼容 PPT）")
+        has_symbol = '<symbol' in content_lower
+        has_use = re.search(r'<use\b', content_lower) is not None
+        if has_symbol and has_use:
+            result['errors'].append("检测到禁用的 <symbol> + <use> 复杂用法（请改用基础形状或简单 <use>）")
+        if '<marker' in content_lower:
+            result['errors'].append("检测到禁用的 <marker> 元素（PPT 不支持 SVG marker）")
+        if re.search(r'\bmarker-end\s*=', content_lower):
+            result['errors'].append("检测到禁用的 marker-end 属性（请用 line + polygon 代替）")
 
         # 文本 / 字体
         if '<textpath' in content_lower:
@@ -179,6 +186,8 @@ class SVGQualityChecker:
         # 动画 / 交互
         if re.search(r'<animate', content_lower):
             result['errors'].append("检测到禁用的 SMIL 动画元素 <animate*>（SVG 动画不导出）")
+        if re.search(r'<set\b', content_lower):
+            result['errors'].append("检测到禁用的 SMIL 动画元素 <set>（SVG 动画不导出）")
         if '<script' in content_lower:
             result['errors'].append("检测到禁用的 <script> 元素（禁止脚本和事件处理）")
         if re.search(r'\bon\w+\s*=', content):  # onclick, onload 等
@@ -187,6 +196,12 @@ class SVGQualityChecker:
         # 其他不推荐的元素
         if '<iframe' in content_lower:
             result['errors'].append("检测到 <iframe> 元素（不应出现在 SVG 中）")
+        if re.search(r'rgba\s*\(', content_lower):
+            result['errors'].append("检测到禁用的 rgba() 颜色（请用 fill-opacity/stroke-opacity）")
+        if re.search(r'<g[^>]*\sopacity\s*=', content_lower):
+            result['errors'].append("检测到禁用的 <g opacity>（请为子元素单独设置透明度）")
+        if re.search(r'<image[^>]*\sopacity\s*=', content_lower):
+            result['errors'].append("检测到禁用的 <image opacity>（请使用遮罩层方案）")
 
     def _check_fonts(self, content: str, result: Dict):
         """检查字体使用"""
@@ -248,23 +263,6 @@ class SVGQualityChecker:
                 f"检测到 {len(text_matches)} 个可能过长的单行文本（建议使用 tspan 换行）"
             )
 
-    def _check_file_size(self, svg_path: Path, result: Dict):
-        """检查文件大小"""
-        size_bytes = svg_path.stat().st_size
-        size_kb = size_bytes / 1024
-
-        result['info']['file_size'] = f"{size_kb:.1f} KB"
-
-        # 警告过大的文件
-        if size_kb > 500:
-            result['warnings'].append(
-                f"文件较大 ({size_kb:.1f} KB)，建议优化"
-            )
-        elif size_kb > 1000:
-            result['errors'].append(
-                f"文件过大 ({size_kb:.1f} KB)，必须优化"
-            )
-
     def _categorize_issue(self, error_msg: str) -> str:
         """分类问题类型"""
         if 'viewBox' in error_msg:
@@ -273,8 +271,6 @@ class SVGQualityChecker:
             return 'foreignObject'
         elif '字体' in error_msg or 'font' in error_msg:
             return '字体问题'
-        elif '文件' in error_msg and ('大' in error_msg or 'size' in error_msg):
-            return '文件大小'
         else:
             return '其他'
 
@@ -336,8 +332,6 @@ class SVGQualityChecker:
             info_items = []
             if 'viewbox' in result['info']:
                 info_items.append(f"viewBox: {result['info']['viewbox']}")
-            if 'file_size' in result['info']:
-                info_items.append(f"大小: {result['info']['file_size']}")
             if info_items:
                 print(f"   {' | '.join(info_items)}")
 
@@ -380,7 +374,6 @@ class SVGQualityChecker:
             print(f"  1. viewBox 问题: 确保与画布格式一致（参考 docs/canvas_formats.md）")
             print(f"  2. foreignObject: 改用 <text> + <tspan> 进行手动换行")
             print(f"  3. 字体问题: 使用系统 UI 字体栈")
-            print(f"  4. 文件过大: 移除不必要的元素，优化路径数据")
 
     def _percentage(self, count: int) -> int:
         """计算百分比"""

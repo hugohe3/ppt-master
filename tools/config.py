@@ -350,13 +350,11 @@ SVG_CONSTRAINTS = {
         # 裁剪 / 遮罩
         'clipPath',
         'mask',
-        # 特效
-        'filter',
         # 样式系统
         'style',
         # 结构 / 嵌套
         'foreignObject',
-        'symbol',  # 复杂用法不兼容
+        'marker',
         # 文本 / 字体
         'textPath',
         # 动画 / 交互
@@ -372,16 +370,23 @@ SVG_CONSTRAINTS = {
     # 禁用属性
     'forbidden_attributes': [
         'class',
+        'id',
         'onclick', 'onload', 'onmouseover', 'onmouseout',
         'onfocus', 'onblur', 'onchange',
+        'marker-end',
     ],
     # 禁用模式（正则匹配）
     'forbidden_patterns': [
         r'@font-face',  # Web 字体
         r'rgba\s*\(',   # rgba 颜色（PPT 不兼容）
+        r'<\?xml-stylesheet\b',  # 外部 CSS
+        r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
+        r'@import\s+',  # 外部 CSS
+        r'<g[^>]*\sopacity\s*=',  # 组透明度
+        r'<image[^>]*\sopacity\s*=',  # 图片透明度
+        r'\bon\w+\s*=',  # 事件属性
+        r'(?s)(?=.*<symbol)(?=.*<use\b)',  # <symbol> + <use> 复杂用法（顺序无关）
     ],
-    'max_file_size_kb': 500,
-    'warning_file_size_kb': 200,
     'recommended_fonts': [
         'system-ui',
         '-apple-system',

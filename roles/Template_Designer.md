@@ -167,7 +167,7 @@ templates/layouts/
 遵循与 Executor 相同的 SVG 技术约束：
 
 - **viewBox**: 与画布尺寸一致
-- **禁止**: `clipPath`, `mask`, `filter`, `<style>`, `class`, `foreignObject`
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 - **PPT 兼容**: 无 `rgba()`、无 `<g opacity>`、图片用遮罩层
 - **字体**: 使用系统字体栈
 

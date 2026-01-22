@@ -177,9 +177,9 @@ Strategist → Image_Generator → Executor
 **技术特点**:
 
 - 画布尺寸: 根据已选画布格式自动适配（详见 `docs/canvas_formats.md`）
-- 禁用 `<foreignObject>`
 - 使用 `<tspan>` 手动换行
 - 强制卡片高度规则
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 📄 [查看完整定义](./Executor_General.md)
 
@@ -200,6 +200,7 @@ Strategist → Image_Generator → Executor
 - 简洁、清晰、数据可视化
 - 使用图表呈现关键信息
 - 融入行业标准的设计元素
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 📄 [查看完整定义](./Executor_Consultant.md)
 
@@ -225,6 +226,7 @@ Strategist → Image_Generator → Executor
 - 每个数据点都有对比参照
 - 结论先行，核心信息在标题位置
 - 配色服务于信息传达
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 📄 [查看完整定义](./Executor_Consultant_Top.md)
 
@@ -240,6 +242,7 @@ Strategist → Image_Generator → Executor
 - 诊断视觉问题
 - 重构 SVG 代码
 - 提升专业度和清晰度
+- **禁止**: `clipPath`, `mask`, `<style>`, `class`, `id`, 外部 CSS, `<foreignObject>`, `<symbol>+<use>`, `textPath`, `@font-face`, `<animate*>` / `<set>`, `<script>` / 事件属性, `marker` / `marker-end`, `<iframe>`
 
 **四大原则**:
 
