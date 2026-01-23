@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 内容页 - 麦肯锡风格 (精装版) -->
+    
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587"/>
+            <stop offset="100%" style="stop-color:#0076A8"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- 白色背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 顶部渐变装饰条 -->
+    <rect x="0" y="0" width="1280" height="5" fill="url(#headerGrad)"/>
+
+    <!-- 页眉区域 -->
+    <rect x="0" y="5" width="1280" height="75" fill="#FAFBFC"/>
+    <line x1="0" y1="80" x2="1280" y2="80" stroke="#E5E7EB" stroke-width="1"/>
+
+    <!-- 章节编号标签 -->
+    <rect x="60" y="22" width="50" height="40" fill="#005587" rx="4"/>
+    <text x="85" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">{{SECTION_NUM}}</text>
+
+    <!-- 页面标题 -->
+    <text x="130" y="52" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2C3E50">
+        {{PAGE_TITLE}}
+    </text>
+
+    <!-- 右侧章节指示 -->
+    <text x="1160" y="52" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#7F8C8D">{{SECTION_NAME}}</text>
+
+    <!-- 核心观点条 (Key Insight Bar) -->
+    <rect x="60" y="100" width="1160" height="50" fill="#FFF8E1" stroke="#F5A623" stroke-width="1" rx="4"/>
+    <rect x="60" y="100" width="5" height="50" fill="#F5A623" rx="2"/>
+    <text x="85" y="132" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E89207">💡 KEY INSIGHT</text>
+    <text x="220" y="132" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">{{KEY_MESSAGE}}</text>
+
+    <!-- 内容区域 - 灵活布局 -->
+    <!-- 
+        AI 灵活布局区
+        可用空间: x=60, y=170, width=1160, height=450
+        
+        常用布局模式：
+        - 左右分栏 (520+520 或 400+640)
+        - 上下分栏 
+        - 2×2 矩阵 (280×210 每格)
+        - 数据卡片组合 (150×120 每个)
+        - 漏斗图/时间轴
+        - 表格 (带边框)
+    -->
+    <rect x="60" y="170" width="1160" height="450" fill="none" stroke="#E5E7EB" stroke-width="1.5" stroke-dasharray="8,6" rx="6"/>
+    <text x="640" y="385" text-anchor="middle" fill="#BDC3C7" font-family="Arial, sans-serif" font-size="18">
+        {{CONTENT_AREA}}
+    </text>
+    <text x="640" y="415" text-anchor="middle" fill="#D5DBDB" font-family="Arial, sans-serif" font-size="14">
+        Content Area: 1160 × 450 px
+    </text>
+
+    <!-- 常用设计元素指南 -->
+    <!-- 
+        数据卡片: 
+        <rect fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" rx="6"/>
+        <rect x="" y="" width="4" fill="#005587"/> (左侧装饰条)
+        
+        关键数据: 
+        <text fill="#F5A623" font-size="44" font-weight="bold"/> (正向)
+        <text fill="#E74C3C" font-size="44" font-weight="bold"/> (负向)
+        
+        问题标注圆点: 
+        <circle r="8" fill="#E74C3C"/>
+        
+        分隔线: 
+        <line stroke="#ECF0F1" stroke-width="1"/>
+    -->
+
+    <!-- 页脚区域 -->
+    <rect x="0" y="640" width="1280" height="80" fill="#FAFBFC"/>
+    <line x1="0" y1="640" x2="1280" y2="640" stroke="#E5E7EB" stroke-width="1"/>
+
+    <!-- 数据来源 -->
+    <text x="60" y="675" font-family="Arial, sans-serif" font-size="12" fill="#95A5A6">Source: {{SOURCE}}</text>
+    
+    <!-- 备注区 -->
+    <text x="60" y="700" font-family="Arial, sans-serif" font-size="11" fill="#BDC3C7">{{NOTE}}</text>
+
+    <!-- 页码 -->
+    <rect x="1140" y="655" width="80" height="30" fill="#005587" rx="4"/>
+    <text x="1180" y="676" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">{{PAGE_NUM}}</text>
+
+</svg>

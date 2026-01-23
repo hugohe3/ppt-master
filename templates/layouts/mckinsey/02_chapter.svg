@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 章节页 - 麦肯锡风格 (精装版) -->
+    
+    <defs>
+        <!-- 背景渐变 -->
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#005587"/>
+            <stop offset="50%" style="stop-color:#004A75"/>
+            <stop offset="100%" style="stop-color:#003A5C"/>
+        </linearGradient>
+        <!-- 光晕效果 -->
+        <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.08"/>
+            <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0"/>
+        </radialGradient>
+    </defs>
+    
+    <!-- 渐变背景 -->
+    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+
+    <!-- 装饰网格线 -->
+    <line x1="0" y1="180" x2="1280" y2="180" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+    <line x1="0" y1="360" x2="1280" y2="360" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+    <line x1="0" y1="540" x2="1280" y2="540" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+    <line x1="320" y1="0" x2="320" y2="720" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+    <line x1="640" y1="0" x2="640" y2="720" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+    <line x1="960" y1="0" x2="960" y2="720" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.03"/>
+
+    <!-- 装饰圆形 -->
+    <circle cx="1100" cy="120" r="180" fill="url(#glowGrad)"/>
+    <circle cx="180" cy="600" r="220" fill="url(#glowGrad)"/>
+    
+    <!-- 装饰几何 -->
+    <rect x="1050" y="450" width="150" height="150" fill="#FFFFFF" fill-opacity="0.02" rx="4"/>
+    <rect x="80" y="100" width="100" height="100" fill="#FFFFFF" fill-opacity="0.02" rx="4"/>
+
+    <!-- 左侧金色装饰线 -->
+    <rect x="60" y="280" width="5" height="160" fill="#F5A623"/>
+
+    <!-- 章节编号背景 -->
+    <text x="640" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="280" font-weight="bold" fill="#FFFFFF" fill-opacity="0.05">
+        {{CHAPTER_NUM}}
+    </text>
+
+    <!-- 章节编号前缀 -->
+    <text x="640" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#F5A623" letter-spacing="4">
+        SECTION {{CHAPTER_NUM}}
+    </text>
+
+    <!-- 装饰横线组 -->
+    <line x1="500" y1="340" x2="620" y2="340" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
+    <line x1="660" y1="340" x2="780" y2="340" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.4"/>
+    <circle cx="640" cy="340" r="6" fill="#F5A623"/>
+
+    <!-- 章节标题 -->
+    <text x="640" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF" letter-spacing="1">
+        {{CHAPTER_TITLE}}
+    </text>
+
+    <!-- 章节副标题 -->
+    <text x="640" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.65" letter-spacing="0.5">
+        {{CHAPTER_DESC}}
+    </text>
+
+    <!-- 底部装饰条 -->
+    <rect x="0" y="680" width="1280" height="40" fill="#FFFFFF" fill-opacity="0.05"/>
+    <line x1="0" y1="680" x2="1280" y2="680" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
+
+    <!-- 页码 -->
+    <text x="60" y="705" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.5">{{PAGE_NUM}}</text>
+    
+    <!-- 项目标识 -->
+    <text x="1220" y="705" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.4" letter-spacing="1">{{PROJECT_CODE}}</text>
+
+</svg>

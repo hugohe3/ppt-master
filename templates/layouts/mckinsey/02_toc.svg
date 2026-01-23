@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 目录页 - 麦肯锡风格 (精装版) -->
+    
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587"/>
+            <stop offset="100%" style="stop-color:#0076A8"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- 白色背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 顶部渐变装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="url(#headerGrad)"/>
+
+    <!-- 页面标题区 -->
+    <text x="60" y="75" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587" letter-spacing="3">CONTENTS</text>
+    <text x="60" y="115" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#2C3E50">Agenda</text>
+    <line x1="60" y1="135" x2="160" y2="135" stroke="#005587" stroke-width="4"/>
+    <line x1="165" y1="135" x2="220" y2="135" stroke="#F5A623" stroke-width="4"/>
+
+    <!-- 目录卡片区域 -->
+    <!-- 第1章 -->
+    <g>
+        <rect x="60" y="170" width="560" height="110" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" rx="6"/>
+        <rect x="60" y="170" width="6" height="110" fill="#005587" rx="3"/>
+        <rect x="80" y="190" width="60" height="60" fill="#005587" fill-opacity="0.08" rx="4"/>
+        <text x="110" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#005587">01</text>
+        <text x="165" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_01_TITLE}}</text>
+        <text x="165" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_01_DESC}}</text>
+    </g>
+
+    <!-- 第2章 -->
+    <g>
+        <rect x="660" y="170" width="560" height="110" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" rx="6"/>
+        <rect x="660" y="170" width="6" height="110" fill="#0076A8" rx="3"/>
+        <rect x="680" y="190" width="60" height="60" fill="#0076A8" fill-opacity="0.08" rx="4"/>
+        <text x="710" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0076A8">02</text>
+        <text x="765" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_02_TITLE}}</text>
+        <text x="765" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_02_DESC}}</text>
+    </g>
+
+    <!-- 第3章 -->
+    <g>
+        <rect x="60" y="300" width="560" height="110" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" rx="6"/>
+        <rect x="60" y="300" width="6" height="110" fill="#004D5C" rx="3"/>
+        <rect x="80" y="320" width="60" height="60" fill="#004D5C" fill-opacity="0.08" rx="4"/>
+        <text x="110" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#004D5C">03</text>
+        <text x="165" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_03_TITLE}}</text>
+        <text x="165" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_03_DESC}}</text>
+    </g>
+
+    <!-- 第4章 -->
+    <g>
+        <rect x="660" y="300" width="560" height="110" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" rx="6"/>
+        <rect x="660" y="300" width="6" height="110" fill="#F5A623" rx="3"/>
+        <rect x="680" y="320" width="60" height="60" fill="#F5A623" fill-opacity="0.08" rx="4"/>
+        <text x="710" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#F5A623">04</text>
+        <text x="765" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_04_TITLE}}</text>
+        <text x="765" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_04_DESC}}</text>
+    </g>
+
+    <!-- 第5章 (可选) -->
+    <g>
+        <rect x="60" y="430" width="560" height="110" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6,4" rx="6"/>
+        <rect x="80" y="450" width="60" height="60" fill="#E5E7EB" fill-opacity="0.5" rx="4"/>
+        <text x="110" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#BDC3C7">05</text>
+        <text x="165" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{CHAPTER_05}}</text>
+    </g>
+
+    <!-- 第6章 (可选) -->
+    <g>
+        <rect x="660" y="430" width="560" height="110" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6,4" rx="6"/>
+        <rect x="680" y="450" width="60" height="60" fill="#E5E7EB" fill-opacity="0.5" rx="4"/>
+        <text x="710" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#BDC3C7">06</text>
+        <text x="765" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{CHAPTER_06}}</text>
+    </g>
+
+    <!-- 底部装饰 -->
+    <rect x="60" y="580" width="1160" height="60" fill="#F8F9FA" rx="6"/>
+    <text x="100" y="618" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587">💡 KEY FOCUS</text>
+    <text x="230" y="618" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{KEY_FOCUS}}</text>
+
+    <!-- 页脚 -->
+    <line x1="60" y1="665" x2="1220" y2="665" stroke="#ECF0F1" stroke-width="1"/>
+    <text x="60" y="695" font-family="Arial, sans-serif" font-size="14" fill="#7F8C8D">{{PAGE_NUM}}</text>
+    <text x="1160" y="695" text-anchor="end" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#005587" letter-spacing="1">CONFIDENTIAL</text>
+
+</svg>

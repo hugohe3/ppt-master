@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 目录页 - 咨询顾问风格 -->
+  
+    <!-- 深色背景 -->
+    <rect x="0" y="0" width="1280" height="720" fill="#0A1628"/>
+  
+    <!-- 左侧装饰条 -->
+    <rect x="0" y="0" width="8" height="720" fill="#0066CC"/>
+  
+    <!-- 金色装饰线 -->
+    <line x1="80" y1="80" x2="300" y2="80" stroke="#D4AF37" stroke-width="3"/>
+  
+    <!-- 页面标题 -->
+    <text x="80" y="140" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#FFFFFF">CONTENTS</text>
+    <text x="80" y="175" font-family="Arial, sans-serif" font-size="18" fill="#64748B">目 录</text>
+  
+    <!-- 目录项 01 -->
+    <g>
+        <rect x="80" y="220" width="520" height="100" fill="#0F2840" rx="4"/>
+        <rect x="80" y="220" width="6" height="100" fill="#0066CC"/>
+        <text x="120" y="275" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#0066CC">01</text>
+        <text x="200" y="265" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{CHAPTER_01_TITLE}}</text>
+        <text x="200" y="295" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">{{CHAPTER_01_DESC}}</text>
+    </g>
+  
+    <!-- 目录项 02 -->
+    <g>
+        <rect x="80" y="340" width="520" height="100" fill="#0F2840" rx="4"/>
+        <rect x="80" y="340" width="6" height="100" fill="#D4AF37"/>
+        <text x="120" y="395" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#D4AF37">02</text>
+        <text x="200" y="385" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{CHAPTER_02_TITLE}}</text>
+        <text x="200" y="415" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">{{CHAPTER_02_DESC}}</text>
+    </g>
+  
+    <!-- 目录项 03 -->
+    <g>
+        <rect x="80" y="460" width="520" height="100" fill="#0F2840" rx="4"/>
+        <rect x="80" y="460" width="6" height="100" fill="#0066CC"/>
+        <text x="120" y="515" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#0066CC">03</text>
+        <text x="200" y="505" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{CHAPTER_03_TITLE}}</text>
+        <text x="200" y="535" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">{{CHAPTER_03_DESC}}</text>
+    </g>
+  
+    <!-- 目录项 04 -->
+    <g>
+        <rect x="80" y="580" width="520" height="100" fill="#0F2840" rx="4"/>
+        <rect x="80" y="580" width="6" height="100" fill="#D4AF37"/>
+        <text x="120" y="635" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#D4AF37">04</text>
+        <text x="200" y="625" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">{{CHAPTER_04_TITLE}}</text>
+        <text x="200" y="655" font-family="Arial, sans-serif" font-size="14" fill="#94A3B8">{{CHAPTER_04_DESC}}</text>
+    </g>
+  
+    <!-- 右侧几何装饰 -->
+    <rect x="700" y="200" width="480" height="420" fill="none" stroke="#0066CC" stroke-width="1" stroke-opacity="0.2"/>
+    <rect x="750" y="250" width="380" height="320" fill="none" stroke="#0066CC" stroke-width="1" stroke-opacity="0.15"/>
+    <rect x="800" y="300" width="280" height="220" fill="none" stroke="#D4AF37" stroke-width="1" stroke-opacity="0.1"/>
+  
+    <!-- 右下角 Logo 区域 -->
+    <text x="1200" y="680" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#64748B">{{LOGO}}</text>
+  
+</svg>
