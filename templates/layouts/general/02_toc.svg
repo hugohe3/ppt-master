@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 目录页 - 通用模板风格 -->
+  
+    <!-- 浅色背景 -->
+    <rect x="0" y="0" width="1280" height="720" fill="#F8FAFC"/>
+  
+    <!-- 页眉区域 -->
+    <rect x="0" y="0" width="1280" height="70" fill="#FFFFFF"/>
+    <line x1="0" y1="70" x2="1280" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+  
+    <!-- 页面标题 -->
+    <rect x="40" y="20" width="6" height="30" fill="#1E3A5F" rx="2"/>
+    <text x="60" y="46" font-family="Microsoft YaHei, Arial, sans-serif" font-size="28" font-weight="bold" fill="#1E3A5F">目 录</text>
+    <text x="160" y="46" font-family="Arial, sans-serif" font-size="16" fill="#94A3B8">CONTENTS</text>
+  
+    <!-- 装饰圆 -->
+    <circle cx="1150" cy="180" r="120" fill="#6366F1" fill-opacity="0.05"/>
+    <circle cx="100" cy="600" r="100" fill="#22D3EE" fill-opacity="0.05"/>
+  
+    <!-- 目录卡片区域 -->
+    <!-- 第1章 -->
+    <g>
+        <rect x="80" y="110" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="80" y="110" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" rx="8"/>
+        <circle cx="140" cy="170" r="30" fill="#1E3A5F"/>
+        <text x="140" y="178" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">01</text>
+        <text x="190" y="160" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1E3A5F">{{CHAPTER_01_TITLE}}</text>
+        <text x="190" y="190" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#64748B">{{CHAPTER_01_DESC}}</text>
+    </g>
+  
+    <!-- 第2章 -->
+    <g>
+        <rect x="660" y="110" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="660" y="110" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" rx="8"/>
+        <circle cx="720" cy="170" r="30" fill="#6366F1"/>
+        <text x="720" y="178" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">02</text>
+        <text x="770" y="160" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1E3A5F">{{CHAPTER_02_TITLE}}</text>
+        <text x="770" y="190" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#64748B">{{CHAPTER_02_DESC}}</text>
+    </g>
+  
+    <!-- 第3章 -->
+    <g>
+        <rect x="80" y="255" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="80" y="255" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" rx="8"/>
+        <circle cx="140" cy="315" r="30" fill="#22D3EE"/>
+        <text x="140" y="323" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">03</text>
+        <text x="190" y="305" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1E3A5F">{{CHAPTER_03_TITLE}}</text>
+        <text x="190" y="335" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#64748B">{{CHAPTER_03_DESC}}</text>
+    </g>
+  
+    <!-- 第4章 -->
+    <g>
+        <rect x="660" y="255" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="660" y="255" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" rx="8"/>
+        <circle cx="720" cy="315" r="30" fill="#1E3A5F"/>
+        <text x="720" y="323" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">04</text>
+        <text x="770" y="305" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1E3A5F">{{CHAPTER_04_TITLE}}</text>
+        <text x="770" y="335" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14" fill="#64748B">{{CHAPTER_04_DESC}}</text>
+    </g>
+  
+    <!-- 第5章 (可选) -->
+    <g>
+        <rect x="80" y="400" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="80" y="400" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
+        <circle cx="140" cy="460" r="30" fill="#E2E8F0"/>
+        <text x="140" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#94A3B8">05</text>
+        <text x="190" y="465" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" fill="#CBD5E1">{{CHAPTER_05}}</text>
+    </g>
+  
+    <!-- 第6章 (可选) -->
+    <g>
+        <rect x="660" y="400" width="540" height="120" fill="#FFFFFF" rx="8"/>
+        <rect x="660" y="400" width="540" height="120" fill="none" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
+        <circle cx="720" cy="460" r="30" fill="#E2E8F0"/>
+        <text x="720" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#94A3B8">06</text>
+        <text x="770" y="465" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" fill="#CBD5E1">{{CHAPTER_06}}</text>
+    </g>
+  
+    <!-- 页脚区域 -->
+    <rect x="0" y="660" width="1280" height="60" fill="#FFFFFF"/>
+    <line x1="0" y1="660" x2="1280" y2="660" stroke="#E2E8F0" stroke-width="1"/>
+  
+    <!-- 章节标识 -->
+    <rect x="40" y="678" width="4" height="20" fill="#1E3A5F" rx="2"/>
+    <text x="56" y="694" fill="#64748B" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">目录</text>
+  
+    <!-- 页码 -->
+    <text x="1220" y="694" text-anchor="end" fill="#94A3B8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{PAGE_NUM}}</text>
+  
+</svg>

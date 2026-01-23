@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 结束页 - 麦肯锡风格 (精装版) -->
+    
+    <defs>
+        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#005587"/>
+            <stop offset="100%" style="stop-color:#0076A8"/>
+        </linearGradient>
+        <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#FAFBFC"/>
+            <stop offset="100%" style="stop-color:#F1F3F4"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- 白色背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 顶部渐变装饰条 -->
+    <rect x="0" y="0" width="1280" height="6" fill="url(#headerGrad)"/>
+
+    <!-- 背景装饰 -->
+    <rect x="0" y="0" width="400" height="720" fill="#005587" fill-opacity="0.02"/>
+    <rect x="880" y="0" width="400" height="720" fill="#005587" fill-opacity="0.02"/>
+    
+    <!-- 几何装饰 -->
+    <rect x="80" y="100" width="180" height="180" fill="none" stroke="#005587" stroke-width="1" stroke-opacity="0.08"/>
+    <rect x="120" y="140" width="100" height="100" fill="#005587" fill-opacity="0.03"/>
+    
+    <rect x="1020" y="420" width="180" height="180" fill="none" stroke="#005587" stroke-width="1" stroke-opacity="0.08"/>
+    <rect x="1060" y="460" width="100" height="100" fill="#005587" fill-opacity="0.03"/>
+
+    <!-- 主感谢语 -->
+    <text x="640" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#005587" letter-spacing="4">
+        THANK YOU
+    </text>
+    
+    <text x="640" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="bold" fill="#2C3E50">
+        {{THANK_YOU}}
+    </text>
+
+    <!-- 装饰分隔线 -->
+    <line x1="480" y1="340" x2="600" y2="340" stroke="#005587" stroke-width="3"/>
+    <circle cx="640" cy="340" r="8" fill="#F5A623"/>
+    <line x1="680" y1="340" x2="800" y2="340" stroke="#005587" stroke-width="3"/>
+
+    <!-- 副标语 -->
+    <text x="640" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#5D6D7E">
+        {{TAGLINE}}
+    </text>
+
+    <!-- 联系信息卡片 -->
+    <rect x="390" y="440" width="500" height="150" fill="url(#cardGrad)" stroke="#E5E7EB" stroke-width="1.5" rx="8"/>
+    <rect x="390" y="440" width="6" height="150" fill="#005587" rx="3"/>
+    
+    <!-- 联系人信息 -->
+    <text x="640" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">
+        {{CONTACT_NAME}}
+    </text>
+    <text x="640" y="515" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#7F8C8D">
+        {{CONTACT_TITLE}}
+    </text>
+    
+    <line x1="480" y1="535" x2="800" y2="535" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <text x="560" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#005587">📧 {{CONTACT_EMAIL}}</text>
+    <text x="760" y="565" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#005587">📞 {{CONTACT_PHONE}}</text>
+
+    <!-- 底部信息区 -->
+    <rect x="0" y="640" width="1280" height="80" fill="#FAFBFC"/>
+    <line x1="0" y1="640" x2="1280" y2="640" stroke="#E5E7EB" stroke-width="1"/>
+    
+    <!-- 版权信息 -->
+    <text x="640" y="675" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#95A5A6">
+        {{COPYRIGHT}}
+    </text>
+
+    <!-- 机密标识 -->
+    <rect x="1080" y="655" width="140" height="28" fill="#005587" fill-opacity="0.08" rx="4"/>
+    <text x="1150" y="675" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#005587" letter-spacing="1">
+        CONFIDENTIAL
+    </text>
+
+    <!-- 页码 -->
+    <text x="60" y="705" font-family="Arial, sans-serif" font-size="14" fill="#7F8C8D">{{PAGE_NUM}}</text>
+
+</svg>

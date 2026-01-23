@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+    <!-- 模板: 目录页 - 顶级咨询风格 (Exhibit Style) -->
+  
+    <!-- 深色背景 -->
+    <rect x="0" y="0" width="1280" height="720" fill="#0D1117"/>
+  
+    <!-- 顶部渐变条 -->
+    <defs>
+        <linearGradient id="top-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1E40AF"/>
+            <stop offset="100%" style="stop-color:#7C3AED"/>
+        </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="1280" height="6" fill="url(#top-gradient)"/>
+  
+    <!-- Exhibit 标题条 -->
+    <rect x="40" y="30" width="1200" height="60" fill="#1F2937"/>
+    <rect x="40" y="30" width="6" height="60" fill="#D4AF37"/>
+    <text x="70" y="70" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" letter-spacing="2">AGENDA</text>
+    <text x="220" y="70" font-family="Arial, sans-serif" font-size="16" fill="#9CA3AF">汇报提纲</text>
+  
+    <!-- 目录网格 - 2x2 布局 -->
+    <!-- 目录项 01 -->
+    <g>
+        <rect x="60" y="120" width="560" height="130" fill="#1F2937" rx="8"/>
+        <text x="100" y="175" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#1E40AF" fill-opacity="0.3">01</text>
+        <text x="180" y="170" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" letter-spacing="1">{{CHAPTER_01_TITLE}}</text>
+        <text x="180" y="200" font-family="Arial, sans-serif" font-size="14" fill="#9CA3AF">{{CHAPTER_01_DESC}}</text>
+        <line x1="180" y1="220" x2="560" y2="220" stroke="#374151" stroke-width="1"/>
+    </g>
+  
+    <!-- 目录项 02 -->
+    <g>
+        <rect x="660" y="120" width="560" height="130" fill="#1F2937" rx="8"/>
+        <text x="700" y="175" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#7C3AED" fill-opacity="0.3">02</text>
+        <text x="780" y="170" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" letter-spacing="1">{{CHAPTER_02_TITLE}}</text>
+        <text x="780" y="200" font-family="Arial, sans-serif" font-size="14" fill="#9CA3AF">{{CHAPTER_02_DESC}}</text>
+        <line x1="780" y1="220" x2="1160" y2="220" stroke="#374151" stroke-width="1"/>
+    </g>
+  
+    <!-- 目录项 03 -->
+    <g>
+        <rect x="60" y="270" width="560" height="130" fill="#1F2937" rx="8"/>
+        <text x="100" y="325" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#1E40AF" fill-opacity="0.3">03</text>
+        <text x="180" y="320" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" letter-spacing="1">{{CHAPTER_03_TITLE}}</text>
+        <text x="180" y="350" font-family="Arial, sans-serif" font-size="14" fill="#9CA3AF">{{CHAPTER_03_DESC}}</text>
+        <line x1="180" y1="370" x2="560" y2="370" stroke="#374151" stroke-width="1"/>
+    </g>
+  
+    <!-- 目录项 04 -->
+    <g>
+        <rect x="660" y="270" width="560" height="130" fill="#1F2937" rx="8"/>
+        <text x="700" y="325" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#7C3AED" fill-opacity="0.3">04</text>
+        <text x="780" y="320" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" letter-spacing="1">{{CHAPTER_04_TITLE}}</text>
+        <text x="780" y="350" font-family="Arial, sans-serif" font-size="14" fill="#9CA3AF">{{CHAPTER_04_DESC}}</text>
+        <line x1="780" y1="370" x2="1160" y2="370" stroke="#374151" stroke-width="1"/>
+    </g>
+  
+    <!-- 目录项 05 (可选) -->
+    <g>
+        <rect x="60" y="420" width="560" height="130" fill="none" stroke="#374151" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
+        <text x="100" y="475" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#374151" fill-opacity="0.3">05</text>
+        <text x="180" y="490" font-family="Arial, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_05}}</text>
+    </g>
+  
+    <!-- 目录项 06 (可选) -->
+    <g>
+        <rect x="660" y="420" width="560" height="130" fill="none" stroke="#374151" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
+        <text x="700" y="475" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#374151" fill-opacity="0.3">06</text>
+        <text x="780" y="490" font-family="Arial, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_06}}</text>
+    </g>
+  
+    <!-- 底部分隔线 -->
+    <line x1="60" y1="600" x2="1220" y2="600" stroke="#374151" stroke-width="1"/>
+  
+    <!-- 底部信息 -->
+    <text x="60" y="680" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">{{DATE}}</text>
+    <text x="640" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#D4AF37">CONFIDENTIAL</text>
+    <text x="1220" y="680" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#6B7280">{{PAGE_NUM}}</text>
+  
+</svg>
