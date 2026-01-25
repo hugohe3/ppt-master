@@ -417,6 +417,9 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 
 # 导出 PPTX 但不嵌入备注
 python3 tools/svg_to_pptx.py <项目路径> -s final --no-notes
+
+# ⭐ 拆分讲稿文件（将 total.md 拆分为多个讲稿文件）
+python3 tools/total_md_split.py <项目路径>
 ```
 
 ### 项目目录结构

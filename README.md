@@ -38,7 +38,7 @@
    在编辑器中打开 AI 聊天面板（Antigravity/Cursor/Copilot Chat）
 
 3️⃣ 开始对话
-   告诉 AI AGENTS.md 的地址，并直接告诉 AI 你想创建什么内容，AI 会自动按照仓库中的角色定义工作
+   直接告诉 AI 你想创建什么内容（若 AI 迷失上下文，可提示其参考 AGENTS.md），AI 会自动按照仓库中的角色定义工作
 ```
 
 ### 使用示例
@@ -974,6 +974,87 @@ python3 tools/svg_to_pptx.py <项目路径> -s final -o output.pptx
 ```
 
 **特点**：SVG 以原生矢量格式嵌入，保持可编辑性，需要 PowerPoint 2016+ 查看。
+
+### 讲稿拆分工具 (`total_md_split.py`)
+
+将 `total.md` 讲稿文件拆分为多个独立的讲稿文件，每个文件对应一个 SVG 页面。
+
+**功能**：
+
+- 读取 `total.md` 文件，解析其中的一级标题和讲稿内容
+- 检查 `svg_output` 文件夹中的 SVG 文件是否都有对应的讲稿
+- 如果存在 SVG 没有对应的讲稿，会输出错误提示要求重新生成讲稿文件
+- 如果全部匹配，根据名称对文档进行拆分，分成多个文档
+- 拆分后的文档命名与 SVG 文件同名，后缀改为 `.md`
+- 拆分后的文档**不包含**一级标题
+
+**用法**：
+
+```bash
+# 基本用法
+python3 tools/total_md_split.py <项目路径>
+
+# 指定输出目录
+python3 tools/total_md_split.py <项目路径> -o <输出目录>
+
+# 静默模式
+python3 tools/total_md_split.py <项目路径> -q
+```
+
+**示例**：
+
+```bash
+# 基本用法
+python3 tools/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD
+
+# 指定输出目录
+python3 tools/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -o notes
+
+# 静默模式
+python3 tools/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -q
+```
+
+**讲稿格式要求**：
+
+`total.md` 文件需要使用以下格式：
+
+```markdown
+# 01_<页面标题>
+
+讲稿内容...
+
+---
+
+# 02_<页面标题>
+
+讲稿内容...
+
+---
+
+# 03_<页面名称>
+
+讲稿内容...
+```
+
+- 每个章节以 `# ` 开头的一级标题开始
+- 章节之间用 `---` 分隔
+- 讲稿内容在标题之后，直到下一个标题或文件结束
+
+**错误处理**：
+
+如果存在 SVG 文件没有对应的讲稿，工具会输出错误信息：
+
+```
+错误: SVG 文件与讲稿不匹配
+  缺失的讲稿: <N>_<页面标题>
+
+请重新生成讲稿文件，确保每个 SVG 都有对应的讲稿。
+```
+
+**依赖**：
+
+- Python 3.6+
+- 无外部依赖（仅使用标准库）
 
 ### 错误消息助手 (`error_helper.py`)
 
