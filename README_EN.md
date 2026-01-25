@@ -38,7 +38,7 @@ An AI-powered intelligent visual content generation system that transforms sourc
    Open AI chat panel in your editor (Antigravity/Cursor/Copilot Chat)
 
 3️⃣ Start Conversation
-   Tell the AI what content you want to create, it will automatically follow the role definitions in the repository
+   Tell the AI the address of AGENTS.md, and tell the AI what content you want to create, it will automatically follow the role definitions in the repository
 ```
 
 ### Usage Example
@@ -150,12 +150,12 @@ PPT Master is an innovative AI-assisted visual content creation system that achi
 
 ## Core Features
 
-✨ **Intelligent Content Deconstruction** - Automatically analyzes source documents and reorganizes them into clear page sequences
-🎨 **Three Design Styles** - Supports "General Flexible", "General Consulting" and "Top Consulting (MBB Level)"
-📐 **Multi-Format Support** - Presentations (16:9/4:3), Xiaohongshu (3:4), WeChat Moments (1:1), Story (9:16) and 10+ other formats
-📊 **Data Visualization** - Built-in charts, timelines, KPI displays and other professional components
-🎯 **CRAP Design Principles** - Follows four core principles: Contrast, Repetition, Alignment, Proximity
-🖼️ **Pure SVG Output** - High-quality vector graphics, automatically adapts to different sizes, no third-party dependencies
+✨ **Intelligent Content Deconstruction** - Automatically analyzes source documents and reorganizes them into clear page sequences  
+🎨 **Three Design Styles** - Supports "General Flexible", "General Consulting" and "Top Consulting (MBB Level)"  
+📐 **Multi-Format Support** - Presentations (16:9/4:3), Xiaohongshu (3:4), WeChat Moments (1:1), Story (9:16) and 10+ other formats  
+📊 **Data Visualization** - Built-in charts, timelines, KPI displays and other professional components  
+🎯 **CRAP Design Principles** - Follows four core principles: Contrast, Repetition, Alignment, Proximity  
+🖼️ **Pure SVG Output** - High-quality vector graphics, automatically adapts to different sizes, no third-party dependencies  
 🎤 **Speaker Notes** - Auto-generates scripts and embeds into PPTX, supports presenter view 🆕
 🔄 **Iterative Optimization** - Supports page-by-page generation and feedback modification
 
