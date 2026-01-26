@@ -251,8 +251,8 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
     """
     查找项目中的备注文件
     
-    支持两种匹配模式：
-    1. 按文件名匹配（推荐）：notes/01_封面.md 对应 01_封面.svg
+    支持两种匹配模式（支持混合匹配）：
+    1. 按文件名匹配（优先）：notes/01_封面.md 对应 01_封面.svg
     2. 按序号匹配（向后兼容）：notes/slide01.md 对应第1个 SVG
     
     Args:
@@ -268,10 +268,13 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
     if not notes_dir.exists():
         return notes
     
-    # 收集所有 notes 文件信息
-    notes_by_name = {}  # 按文件名
-    notes_by_num = {}   # 按序号（向后兼容）
+    svg_stems_mapping = {}
+
+    if svg_files:
+        for i, svg_path in enumerate(svg_files, 1):
+            svg_stems_mapping[svg_path.stem] = i
     
+    # 收集所有 notes 文件信息
     for notes_file in notes_dir.glob('*.md'):
         try:
             with open(notes_file, 'r', encoding='utf-8') as f:
@@ -280,28 +283,17 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
                 continue
             
             stem = notes_file.stem
-            notes_by_name[stem] = content
-            
+
             # 尝试提取序号（向后兼容 slide01.md 格式）
             match = re.search(r'slide[_]?(\d+)', stem)
             if match:
-                notes_by_num[int(match.group(1))] = content
+                notes[int(match.group(1))] = content
+
+            # 按文件名提取（覆盖向后兼容的格式）
+            if stem in svg_stems_mapping:
+                notes[svg_stems_mapping[stem]] = content
         except Exception:
             pass
-    
-    # 如果提供了 SVG 文件列表，优先按文件名匹配
-    if svg_files:
-        for i, svg_path in enumerate(svg_files, 1):
-            svg_stem = svg_path.stem
-            if svg_stem in notes_by_name:
-                # 按文件名匹配
-                notes[svg_stem] = notes_by_name[svg_stem]
-            elif i in notes_by_num:
-                # 回退到按序号匹配
-                notes[svg_stem] = notes_by_num[i]
-    else:
-        # 没有 SVG 文件列表时，返回序号索引（向后兼容）
-        notes = notes_by_num
     
     return notes
 
