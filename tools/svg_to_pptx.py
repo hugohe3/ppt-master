@@ -923,7 +923,10 @@ SVG 来源目录 (-s):
     if args.output:
         output_path = Path(args.output)
     else:
-        output_path = project_path / f"{project_name}.pptx"
+        # 默认带时间戳，避免覆盖之前的版本
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_path = project_path / f"{project_name}_{timestamp}.pptx"
     
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
