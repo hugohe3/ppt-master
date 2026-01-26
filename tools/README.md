@@ -712,7 +712,7 @@ python3 tools/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -q
 
 ---
 
-### 9. svg_position_calculator.py — SVG 位置计算与验证工具
+### 10. svg_position_calculator.py — SVG 位置计算与验证工具
 
 图表坐标的**事前计算**和**事后验证**工具，帮助确保 SVG 元素位置准确无误。
 
@@ -1016,7 +1016,7 @@ A: 支持 `ppt169`、`ppt43`、`xiaohongshu`、`moments` 等，详见 `project_u
 
 ---
 
-### 10. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
+### 11. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
 
 解决 SVG 在 PowerPoint 中「转换为形状」时圆角丢失的问题。
 
@@ -1066,7 +1066,7 @@ python3 tools/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 
 ---
 
-### 11. fix_image_aspect.py — SVG 图片宽高比修复工具
+### 12. fix_image_aspect.py — SVG 图片宽高比修复工具
 
 解决 SVG 中 `<image>` 元素在 PowerPoint「转换为形状」时图片拉伸变形的问题。
 
@@ -1111,7 +1111,7 @@ pip install Pillow  # 用于读取图片尺寸（推荐安装）
 
 ---
 
-### 12. gemini_watermark_remover.py — Gemini 水印去除工具
+### 13. gemini_watermark_remover.py — Gemini 水印去除工具
 
 去除 Gemini 生成图片右下角的水印 Logo。使用逆向混合算法还原原始像素。
 
@@ -1165,7 +1165,7 @@ pip install Pillow numpy
 
 ---
 
-### 13. embed_icons.py — SVG 图标嵌入工具
+### 14. embed_icons.py — SVG 图标嵌入工具
 
 将 SVG 文件中的图标占位符 (`<use ...>`) 替换为实际的图标路径数据，实现图标的“零依赖”嵌入。
 
