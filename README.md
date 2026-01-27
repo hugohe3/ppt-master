@@ -142,14 +142,14 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 [Image_Generator] 图片生成师（当选择 AI 生成时）
     ↓
 [Executor] 执行师 - 分阶段生成
-    ├── 视觉构建阶段：连续生成所有 SVG 页面
-    └── 逻辑构建阶段：批量生成演讲备注 → notes/
+    ├── 视觉构建阶段：连续生成所有 SVG 页面 → svg_output/
+    └── 逻辑构建阶段：生成完整讲稿 → notes/total.md
     ↓
 [Optimizer_CRAP] 优化师（可选）
     ↓
-[后处理] → finalize_svg.py → svg_to_pptx.py（自动嵌入讲稿）
+[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
     ↓
-输出: SVG + PPTX
+输出: SVG + PPTX（自动嵌入讲稿）
 ```
 
 > 📖 详细工作流程请参阅 [工作流教程](./docs/workflow_tutorial.md) 和 [角色定义](./roles/README.md)

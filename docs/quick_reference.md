@@ -55,13 +55,18 @@
 
 💡 **提示**: 图片生成是串行环节，必须完成后才能进入 Executor 阶段
 
-### ✅ 使用 Executor
+### ✅ 使用 Executor（两阶段）
 
+**视觉构建阶段**：
 - [ ] 明确告知需要生成哪一页
 - [ ] 提供设计规范引用
 - [ ] 检查生成的 SVG 效果
 - [ ] 如需修改，提供具体反馈
 - [ ] 保存 SVG 到项目的 svg_output 文件夹
+
+**逻辑构建阶段**（必须）：
+- [ ] 所有 SVG 页面完成后，生成完整演讲备注文稿 `notes/total.md`
+- [ ] 确保讲稿包含所有页面的过渡语和控场标记
 
 ### ✅ 使用 Optimizer（可选）
 
@@ -77,19 +82,21 @@
 
 **后处理和导出步骤由 AI 自动执行：**
 
+- [ ] AI 自动拆分讲稿：`python3 tools/total_md_split.py <项目路径>`
+  - 将 `notes/total.md` 拆分为各页独立文件
 - [ ] AI 自动运行后处理：`python3 tools/finalize_svg.py <项目路径>`
   - 修正图片路径
   - 优化代码结构
   - 生成最终版本到 `svg_final/`
 - [ ] AI 自动导出 PPTX：`python3 tools/svg_to_pptx.py <项目路径> -s final`
   - 生成可用的 PowerPoint 文件
-  - 自动嵌入演讲备注（如有）
+  - 自动嵌入演讲备注
 - [ ] 在 PowerPoint 中预览最终效果
 - [ ] 检查所有页面的一致性
 - [ ] 添加项目 README 文档（可选）
 - [ ] 备份重要文件（可选）
 
-💡 **提示**: 后处理和导出无需手动执行，AI 会在生成完所有 SVG 后自动完成
+💡 **提示**: 后处理和导出无需手动执行，AI 会在完成演讲备注后自动完成
 
 ## 🎨 设计风格选择指南
 
@@ -428,10 +435,17 @@ yh_02_kpi_dashboard.svg
 
 ## 🔧 后处理工具
 
+### 拆分讲稿
+
+```bash
+# 将 notes/total.md 拆分为各页独立文件
+python3 tools/total_md_split.py <项目路径>
+```
+
 ### 最终化处理
 
 ```bash
-# 直接运行，无需参数
+# 修正图片路径、嵌入图标
 python3 tools/finalize_svg.py <项目路径>
 ```
 
