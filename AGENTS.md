@@ -84,12 +84,18 @@ PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角
           ▼                                        ▼
 ┌──────────────────────────────────────────────────┐
 │ Executor (General/Consultant/Consultant_Top)     │
-│  • 逐页生成 SVG（可基于模板）                     │
-│  • 保存到 svg_output/                            │
+│                                                  │
+│  【视觉构建阶段】                                  │
+│   • 逐页生成 SVG（可基于模板）→ svg_output/       │
+│                                                  │
+│  【逻辑构建阶段】← ← ← ← 必须                      │
+│   • 生成完整讲稿 → notes/total.md                 │
+│                                                  │
 └──────────────────────────────────────────────────┘
           │
           ▼
 【后处理】← ← ← ← ← 自动执行
+  python3 tools/total_md_split.py  # 拆分讲稿
   python3 tools/finalize_svg.py
           │
           ▼
@@ -192,21 +198,27 @@ Optimizer_CRAP (可选优化)
 ```markdown
 ## ✅ Executor 阶段完成
 
+### 视觉构建阶段
 - [x] 已阅读对应的 Executor 角色定义
 - [x] 所有 SVG 页面已生成到 `svg_output/`
 - [x] 已通过质量检查
-- [ ] **下一步**: 自动执行后处理与导出
+
+### 逻辑构建阶段（必须）
+- [x] 已生成完整演讲备注文稿 `notes/total.md`
 
 ### 自动执行后处理
 
-# 1. 后处理（修正图片路径、优化代码）
+# 1. 拆分讲稿（将 total.md 拆分为各页独立文件）
+python3 tools/total_md_split.py <项目路径>
 
+# 2. 后处理（修正图片路径、嵌入图标）
 python3 tools/finalize_svg.py <项目路径>
 
-# 2. 导出为 PPTX（默认嵌入演讲备注）
-
+# 3. 导出为 PPTX（默认嵌入演讲备注）
 python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
+
+> ⚠️ **强制要求**：演讲备注是 Executor 阶段的必须产出，SVG 页面生成完毕后必须进入「逻辑构建阶段」生成 `notes/total.md`，然后再进行后处理。
 
 ---
 
@@ -535,16 +547,20 @@ project/
 - 图标使用方式需在八项确认中确认（Emoji / AI 生成 / 内置库 / 自定义）
 - 图片使用方式需在八项确认中确认（不使用 / 用户提供 / AI 生成 / 占位符）
 - **图片生成流程**：如果图片方式**包含**「C) AI 生成」（如 C、B+C、C+D），**必须**先切换到 Image_Generator 角色，阅读角色定义，完成图片生成后再进入 Executor 阶段
+- **Executor 两阶段**：SVG 页面生成（视觉构建）完成后，**必须**进入逻辑构建阶段生成演讲备注 `notes/total.md`，**禁止**跳过此步骤直接进入后处理
 
 ### 后处理提示
 
-SVG 生成完成后，**直接运行以下两条命令**，无需任何参数：
+**演讲备注和 SVG 都生成完成后**，运行以下命令：
 
 ```bash
-# 1. 后处理（直接运行）
+# 1. 拆分讲稿（将 total.md 拆分为各页独立文件）
+python3 tools/total_md_split.py <项目路径>
+
+# 2. 后处理（修正图片路径、嵌入图标）
 python3 tools/finalize_svg.py <项目路径>
 
-# 2. 导出 PPTX
+# 3. 导出 PPTX
 python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 

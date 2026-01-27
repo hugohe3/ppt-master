@@ -142,14 +142,14 @@ User Input (PDF/URL/Markdown)
 [Image_Generator] (When AI generation is selected)
     ↓
 [Executor] - Two-Phase Generation
-    ├── Visual Construction Phase: Generate all SVG pages consecutively
-    └── Logic Construction Phase: Batch generate speaker notes → notes/
+    ├── Visual Construction Phase: Generate all SVG pages → svg_output/
+    └── Logic Construction Phase: Generate complete script → notes/total.md
     ↓
 [Optimizer_CRAP] (Optional)
     ↓
-[Post-processing] → finalize_svg.py → svg_to_pptx.py (auto-embeds notes)
+[Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: SVG + PPTX
+Output: SVG + PPTX (auto-embeds notes)
 ```
 
 > 📖 For detailed workflow, see [Workflow Tutorial](./docs/workflow_tutorial.md) and [Role Definitions](./roles/README.md)
