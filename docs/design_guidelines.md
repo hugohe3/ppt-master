@@ -113,8 +113,8 @@ BCG深蓝:     #003F6C  - 稳重、信任
 H1 - 封面标题:     48-56px, Bold
 H2 - 页面标题:     32-36px, Bold
 H3 - 章节标题:     24-28px, SemiBold
-正文 - 主要内容:   18-20px, Regular
-小字 - 注释说明:   14-16px, Regular
+正文 - 主要内容:   20-24px, Regular  (默认基准: 18pt ≈ 24px)
+小字 - 注释说明:   16-18px, Regular
 ```
 
 #### 通用灵活风格
@@ -123,8 +123,8 @@ H3 - 章节标题:     24-28px, SemiBold
 H1 - 封面标题:     52-64px, Bold
 H2 - 页面标题:     36-42px, Bold
 H3 - 章节标题:     28-32px, SemiBold
-正文 - 主要内容:   20-24px, Regular
-小字 - 注释说明:   16-18px, Regular
+正文 - 主要内容:   24-28px, Regular  (默认基准: 18pt ≈ 24px)
+小字 - 注释说明:   18-20px, Regular
 ```
 
 ### 字体选择
