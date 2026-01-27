@@ -189,9 +189,15 @@ ls -la "templates/layouts/<新模板名称>"
 
 ### 使用方式
 
-复制模板到项目目录使用：
+复制模板到项目目录时，**图片和其他文件需分别复制**：
+
 \`\`\`bash
-cp templates/layouts/<新模板名称>/* projects/<项目>/templates/
+# 1. 复制图片资源到项目 images 目录（如有 images 子目录）
+cp -r templates/layouts/<新模板名称>/images/* projects/<项目>/images/
+
+# 2. 复制其他文件（SVG、design_spec 等）到项目 templates 目录
+cp templates/layouts/<新模板名称>/*.svg projects/<项目>/templates/
+cp templates/layouts/<新模板名称>/design_spec.md projects/<项目>/templates/
 \`\`\`
 ```
 
