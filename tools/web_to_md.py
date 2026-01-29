@@ -35,6 +35,15 @@ except ImportError:
     print("Please run: pip install requests beautifulsoup4")
     sys.exit(1)
 
+try:
+    from PIL import Image
+    import io
+    PILLOW_AVAILABLE = True
+except ImportError:
+    PILLOW_AVAILABLE = False
+    print("[WARN] Pillow not installed. WebP images will not be converted to PNG.")
+    print("       Run: pip install Pillow")
+
 # ============ Config ============
 CONFIG = {
     "output_dir": "./projects",
@@ -186,19 +195,61 @@ def download_and_rewrite_images(content_element, page_url, image_dir, rel_prefix
                 resp.raise_for_status()
                 filename = build_image_filename(
                     abs_url, idx, resp.headers.get("Content-Type"))
-                local_path = os.path.join(image_dir, filename)
 
-                # Avoid accidental overwrites if filenames collide
-                counter = 1
+                # Check if image is webp and convert to png
                 stem, ext = os.path.splitext(filename)
-                while os.path.exists(local_path):
-                    local_path = os.path.join(
-                        image_dir, f"{stem}_{counter}{ext}")
-                    filename = os.path.basename(local_path)
-                    counter += 1
+                content_type = resp.headers.get("Content-Type", "").lower()
+                is_webp = ext.lower() == ".webp" or "webp" in content_type
 
-                with open(local_path, "wb") as f:
-                    f.write(resp.content)
+                if is_webp and PILLOW_AVAILABLE:
+                    # Convert webp to png (optimized)
+                    try:
+                        img_data = io.BytesIO(resp.content)
+                        pil_image = Image.open(img_data)
+
+                        # Update filename to .png
+                        filename = f"{stem}.png"
+                        local_path = os.path.join(image_dir, filename)
+
+                        # Avoid accidental overwrites if filenames collide
+                        counter = 1
+                        while os.path.exists(local_path):
+                            local_path = os.path.join(
+                                image_dir, f"{stem}_{counter}.png")
+                            filename = os.path.basename(local_path)
+                            counter += 1
+
+                        # Save as PNG directly (Pillow auto-converts, no need for explicit mode conversion)
+                        pil_image.save(local_path, 'PNG', optimize=False)
+                        pil_image.close()
+                        print(f"   [INFO] Converted webp to png: {filename}")
+                    except Exception as convert_err:
+                        print(
+                            f"   [WARN] Failed to convert webp: {convert_err}, saving as-is")
+                        local_path = os.path.join(image_dir, filename)
+                        counter = 1
+                        stem, ext = os.path.splitext(filename)
+                        while os.path.exists(local_path):
+                            local_path = os.path.join(
+                                image_dir, f"{stem}_{counter}{ext}")
+                            filename = os.path.basename(local_path)
+                            counter += 1
+                        with open(local_path, "wb") as f:
+                            f.write(resp.content)
+                else:
+                    local_path = os.path.join(image_dir, filename)
+
+                    # Avoid accidental overwrites if filenames collide
+                    counter = 1
+                    stem, ext = os.path.splitext(filename)
+                    while os.path.exists(local_path):
+                        local_path = os.path.join(
+                            image_dir, f"{stem}_{counter}{ext}")
+                        filename = os.path.basename(local_path)
+                        counter += 1
+
+                    with open(local_path, "wb") as f:
+                        f.write(resp.content)
                 downloaded[abs_url] = filename
                 saved_name = filename
                 saved += 1
