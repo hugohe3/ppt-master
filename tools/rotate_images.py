@@ -9,6 +9,7 @@ PPT Master - 图片方向管理工具
     python3 tools/rotate_images.py fix <fixes.json>
 """
 
+
 import os
 import sys
 import json
@@ -16,6 +17,9 @@ import re
 from pathlib import Path
 from typing import List, Dict, Union, Any, Optional
 from PIL import Image, ExifTags
+
+
+ORIENTATION_TAG_ID = 274  # 0x0112
 
 class ImageRotator:
     """图片方向管理器"""
@@ -25,10 +29,61 @@ class ImageRotator:
         pass
 
     @staticmethod
+    def _repo_root() -> Path:
+        # tools/rotate_images.py -> repo root
+        return Path(__file__).resolve().parent.parent
+
+    @staticmethod
+    def _normalize_task_path(path_str: str) -> str:
+        p = (path_str or "").strip()
+        if not p:
+            return p
+
+        # common copy/paste artifacts
+        p = re.sub(r"^file:(?:///?)+", "", p, flags=re.IGNORECASE)
+        p = p.replace("\\", "/")
+        p = re.sub(r"^\\./", "", p)
+        return p
+
+    @staticmethod
     def _natural_sort_key(s: Union[str, Path]) -> List[Union[int, str]]:
         """自然排序键生成器"""
         return [int(text) if text.isdigit() else text.lower()
                 for text in re.split(r'(\d+)', str(s))]
+
+    def _save_in_place(
+        self,
+        img: Image.Image,
+        file_path: Path,
+        src_format: Optional[str],
+        *,
+        exif_bytes: Optional[bytes] = None,
+        icc_profile: Optional[bytes] = None,
+    ) -> None:
+        fmt = (src_format or "").upper()
+
+        save_kwargs: Dict[str, Any] = {}
+        if icc_profile:
+            save_kwargs["icc_profile"] = icc_profile
+        if exif_bytes:
+            save_kwargs["exif"] = exif_bytes
+
+        # Avoid passing unsupported params to formats (e.g. PNG doesn't take `quality`).
+        if fmt in {"JPEG", "JPG"}:
+            save_kwargs["quality"] = 95
+            # keep it simple; avoid Pillow-version-specific kwargs like optimize/subsampling
+            if img.mode not in {"RGB", "L"}:
+                img = img.convert("RGB")
+        elif fmt == "WEBP":
+            save_kwargs["quality"] = 95
+
+        try:
+            img.save(file_path, **save_kwargs)
+        except TypeError:
+            # Fallback: drop metadata kwargs that some formats/plugins may reject.
+            save_kwargs.pop("exif", None)
+            save_kwargs.pop("icc_profile", None)
+            img.save(file_path, **save_kwargs)
 
     def auto_fix_exif(self, target_dir: Union[str, Path]) -> int:
         """自动修正目录下所有图片的 EXIF 方向
@@ -67,6 +122,7 @@ class ImageRotator:
         生成前会自动执行 EXIF 修正。
         """
         target_path = Path(target_dir).resolve()
+        repo_root = self._repo_root()
         
         if not target_path.exists():
             raise FileNotFoundError(f"目录不存在: {target_path}")
@@ -96,9 +152,9 @@ class ImageRotator:
                     # path 用于 JSON 数据，使用相对于运行目录(通常是仓库根目录)的路径
                     # e.g. "projects/Name/images/1.jpg"
                     # 我们假设脚本是从仓库根目录运行的，或者 target_path 本身就是绝对路径
-                    # 最稳妥的方式是计算相对于 CWD 的路径
+                    # 最稳妥的方式是计算相对于仓库根目录的路径（避免 CWD 变化导致 fixes.json 不可用）
                     try:
-                        repo_rel_path = f.relative_to(Path.cwd()).as_posix()
+                        repo_rel_path = f.relative_to(repo_root).as_posix()
                     except ValueError:
                         # 如果文件不在 CWD 下，退回使用绝对路径
                         repo_rel_path = str(f.resolve())
@@ -124,10 +180,12 @@ class ImageRotator:
     def apply_fixes(self, json_source: Union[str, List[Dict]]) -> Dict[str, int]:
         """应用图片旋转修正"""
         tasks = []
+        json_file_dir: Optional[Path] = None
         
         # 解析输入
         if isinstance(json_source, str):
             if json_source.endswith('.json') or os.path.exists(json_source):
+                json_file_dir = Path(json_source).resolve().parent
                 with open(json_source, 'r', encoding='utf-8') as f:
                     tasks = json.load(f)
             else:
@@ -142,22 +200,34 @@ class ImageRotator:
         print("=" * 60)
         
         cwd = Path(os.getcwd())
+        repo_root = self._repo_root()
         stats = {'total': len(tasks), 'success': 0}
         
         for task in tasks:
-            rel_path = task.get('path')
+            rel_path = self._normalize_task_path(task.get('path', ''))
             rotation = task.get('rotation')
             
             if not rel_path or rotation is None:
                 continue
                 
-            target_file = cwd / rel_path
-            
-            # 兼容旧逻辑/单纯文件名的情况（尝试在 projects 目录下找）
-            if not target_file.exists():
-                 candidate = cwd / 'projects' / rel_path
-                 if candidate.exists():
-                     target_file = candidate
+            # Absolute paths should stay absolute; repo-relative paths should resolve from repo root.
+            target_file = Path(rel_path)
+            if not target_file.is_absolute():
+                # Prefer repo root (stable); also allow CWD and fixes.json location as fallbacks.
+                candidates = [
+                    repo_root / rel_path,
+                    cwd / rel_path,
+                ]
+                if json_file_dir:
+                    candidates.append(json_file_dir / rel_path)
+
+                # 兼容旧逻辑/单纯文件名的情况（尝试在 projects 目录下找）
+                candidates.append(repo_root / 'projects' / rel_path)
+                candidates.append(cwd / 'projects' / rel_path)
+                if json_file_dir:
+                    candidates.append(json_file_dir / 'projects' / rel_path)
+
+                target_file = next((c for c in candidates if c.exists()), candidates[0])
             
             if not target_file.exists():
                 print(f"[SKIP] 文件未找到: {rel_path}")
@@ -175,31 +245,44 @@ class ImageRotator:
     def _fix_single_exif(self, file_path: Path) -> bool:
         """检查并修正单张图片的 EXIF"""
         try:
-            # 使用上下文管理器确保文件被正确关闭
-            img = Image.open(file_path)
-            orientation = self._get_exif_orientation(img)
+            fixed_img: Optional[Image.Image] = None
+            exif_bytes: Optional[bytes] = None
+            icc_profile: Optional[bytes] = None
+            src_format: Optional[str] = None
+
+            with Image.open(file_path) as img:
+                exif = img.getexif()
+                orientation = exif.get(ORIENTATION_TAG_ID, 1) if exif else None
             
-            if orientation and orientation != 1:
+                if not orientation or orientation == 1:
+                    return False
+
                 print(f"  [EXIF] 修正: {file_path.name} (Orientation={orientation})")
                 
                 # 应用旋转
                 fixed_img = self._apply_exif_orientation(img, orientation)
+                fixed_img.load()
                 
                 # 移除具体的 Orientation tag，保留其他 EXIF
-                exif_dict = img.info.get('exif')
-                
-                # 必须先关闭原文件才能覆盖保存 (Windows 特性)
-                img.close()
-                
-                # 保存
-                if exif_dict:
-                    fixed_img.save(file_path, quality=95, exif=exif_dict)
-                else:
-                    fixed_img.save(file_path, quality=95)
-                return True
-            else:
-                img.close()
+                if exif:
+                    exif[ORIENTATION_TAG_ID] = 1
+                    exif_bytes = exif.tobytes()
+
+                icc_profile = img.info.get('icc_profile')
+                src_format = img.format
+
+            # 必须在原文件关闭后保存 (Windows 特性)
+            if fixed_img is None:
                 return False
+
+            self._save_in_place(
+                fixed_img,
+                file_path,
+                src_format,
+                exif_bytes=exif_bytes,
+                icc_profile=icc_profile,
+            )
+            return True
         except Exception as e:
             print(f"  [WARN] 读取EXIF失败 {file_path.name}: {e}")
             return False
@@ -218,32 +301,58 @@ class ImageRotator:
 
     def _apply_exif_orientation(self, img: Image.Image, orientation: int) -> Image.Image:
         """根据 Orientation 值旋转图片"""
+        T = getattr(Image, "Transpose", Image)
         if orientation == 2:
-            return img.transpose(Image.FLIP_LEFT_RIGHT)
-        elif orientation == 3:
-            return img.rotate(180, expand=True)
-        elif orientation == 4:
-            return img.transpose(Image.FLIP_TOP_BOTTOM)
-        elif orientation == 5:
-            return img.transpose(Image.FLIP_LEFT_RIGHT).rotate(270, expand=True)
-        elif orientation == 6:
-            return img.rotate(270, expand=True)
-        elif orientation == 7:
-            return img.transpose(Image.FLIP_LEFT_RIGHT).rotate(90, expand=True)
-        elif orientation == 8:
-            return img.rotate(90, expand=True)
+            return img.transpose(T.FLIP_LEFT_RIGHT)
+        if orientation == 3:
+            return img.transpose(T.ROTATE_180)
+        if orientation == 4:
+            return img.transpose(T.FLIP_TOP_BOTTOM)
+        if orientation == 5:
+            return img.transpose(T.TRANSPOSE)
+        if orientation == 6:
+            return img.transpose(T.ROTATE_270)
+        if orientation == 7:
+            return img.transpose(T.TRANSVERSE)
+        if orientation == 8:
+            return img.transpose(T.ROTATE_90)
         return img
 
     def _rotate_single_image(self, file_path: Path, rotation_deg: int):
         """人工旋转单张图片"""
+        T = getattr(Image, "Transpose", Image)
         with Image.open(file_path) as img:
-            pil_angle = (360 - rotation_deg) % 360
-            rotated = img.rotate(pil_angle, expand=True)
-            exif = img.info.get('exif')
-            if exif:
-                rotated.save(file_path, quality=95, exif=exif)
+            ccw_angle = (360 - int(rotation_deg)) % 360
+            if ccw_angle == 0:
+                return
+
+            if ccw_angle == 90:
+                rotated = img.transpose(T.ROTATE_90)
+            elif ccw_angle == 180:
+                rotated = img.transpose(T.ROTATE_180)
+            elif ccw_angle == 270:
+                rotated = img.transpose(T.ROTATE_270)
             else:
-                rotated.save(file_path, quality=95)
+                rotated = img.rotate(ccw_angle, expand=True)
+
+            rotated.load()
+
+            exif = img.getexif()
+            exif_bytes: Optional[bytes] = None
+            if exif:
+                exif[ORIENTATION_TAG_ID] = 1
+                exif_bytes = exif.tobytes()
+
+            icc_profile = img.info.get('icc_profile')
+            src_format = img.format
+
+        self._save_in_place(
+            rotated,
+            file_path,
+            src_format,
+            exif_bytes=exif_bytes,
+            icc_profile=icc_profile,
+        )
 
     def _get_html_template(self) -> str:
         """获取 HTML 模板内容"""
@@ -350,7 +459,7 @@ class ImageRotator:
         const card = document.createElement('div');
         card.className = 'card';
         card.setAttribute('data-rotation', 0);
-        // use absolute path for the data attribute
+        // use stable path for the data attribute
         card.setAttribute('data-path', item.path);
         
         const filename = item.src.split('/').pop();
