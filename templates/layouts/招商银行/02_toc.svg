@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <!-- ==================== 背景 ==================== -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    
+    <!-- 右侧极淡背景纹理，区分左右栏 -->
+    <path d="M500 0 L1280 0 L1280 720 L400 720 Z" fill="#FAFAFA" />
+    
+    <!-- ==================== 页眉区域 ==================== -->
+    <rect x="0" y="0" width="1280" height="75" fill="#C41230" />
+    <!-- 金色双线 -->
+    <rect x="0" y="71" width="1280" height="1" fill="#C9A962" />
+    <rect x="0" y="74" width="1280" height="3" fill="#C9A962" />
+    
+    <!-- 页面标题 -->
+    <text x="60" y="48" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="28" font-weight="bold">
+        目 录
+    </text>
+    <text x="150" y="48" fill="#FFFFFF" fill-opacity="0.6" font-family="Arial, sans-serif" font-size="14" letter-spacing="2">
+        CONTENTS
+    </text>
+    
+    <!-- 右上角 Logo -->
+    <text x="1220" y="45" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="bold">
+        {{LOGO}}
+    </text>
+
+    <!-- ==================== 左侧装饰（视觉重心） ==================== -->
+    <!-- 抽象的目录树/时间轴线条 -->
+    <rect x="100" y="160" width="2" height="400" fill="#C9A962" fill-opacity="0.3" />
+    <circle cx="101" cy="160" r="4" fill="#C9A962" />
+    <circle cx="101" cy="560" r="4" fill="#C9A962" />
+    
+    <!-- 装饰文字 -->
+    <text x="120" y="170" fill="#C41230" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill-opacity="0.1">
+        Index
+    </text>
+    
+    <!-- ==================== 目录列表（通用化设计） ==================== -->
+    <!-- 
+       改为清单式布局：数字 + 标题 + 下划线
+       不再使用背景色块，适应条目数量变化（少则清爽，多则不乱）
+    -->
+
+    <!-- Item 01 -->
+    <g transform="translate(200, 150)">
+        <text x="0" y="0" fill="#C41230" font-family="Arial, sans-serif" font-size="32" font-weight="bold">01</text>
+        <text x="60" y="0" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_1_TITLE}}</text>
+        <text x="60" y="25" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_1_DESC}}</text>
+        <!-- 精致下划线 -->
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" />
+        <rect x="60" y="40" width="30" height="1" fill="#C9A962" />
+    </g>
+
+    <!-- Item 02 -->
+    <g transform="translate(200, 240)">
+        <text x="0" y="0" fill="#C41230" font-family="Arial, sans-serif" font-size="32" font-weight="bold">02</text>
+        <text x="60" y="0" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_2_TITLE}}</text>
+        <text x="60" y="25" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_2_DESC}}</text>
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" />
+        <rect x="60" y="40" width="30" height="1" fill="#C9A962" />
+    </g>
+
+    <!-- Item 03 -->
+    <g transform="translate(200, 330)">
+        <text x="0" y="0" fill="#C41230" font-family="Arial, sans-serif" font-size="32" font-weight="bold">03</text>
+        <text x="60" y="0" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_3_TITLE}}</text>
+        <text x="60" y="25" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_3_DESC}}</text>
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" />
+        <rect x="60" y="40" width="30" height="1" fill="#C9A962" />
+    </g>
+
+    <!-- Item 04 -->
+    <g transform="translate(700, 150)">
+        <text x="0" y="0" fill="#C41230" font-family="Arial, sans-serif" font-size="32" font-weight="bold">04</text>
+        <text x="60" y="0" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_4_TITLE}}</text>
+        <text x="60" y="25" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_4_DESC}}</text>
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" />
+        <rect x="60" y="40" width="30" height="1" fill="#C9A962" />
+    </g>
+
+    <!-- Item 05 -->
+    <g transform="translate(700, 240)">
+        <text x="0" y="0" fill="#C41230" font-family="Arial, sans-serif" font-size="32" font-weight="bold">05</text>
+        <text x="60" y="0" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_5_TITLE}}</text>
+        <text x="60" y="25" fill="#888888" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_5_DESC}}</text>
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" />
+        <rect x="60" y="40" width="30" height="1" fill="#C9A962" />
+    </g>
+
+    <!-- Item 06 (可选) -->
+    <g transform="translate(700, 330)">
+        <text x="0" y="0" fill="#CCCCCC" font-family="Arial, sans-serif" font-size="32" font-weight="bold">06</text>
+        <text x="60" y="0" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_6}}</text>
+        <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" stroke-dasharray="4,2" />
+    </g>
+
+    <!-- ==================== 装饰元素 ==================== -->
+    <circle cx="1150" cy="550" r="120" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.1" />
+    <circle cx="1150" cy="550" r="80" fill="none" stroke="#C9A962" stroke-width="1" stroke-opacity="0.15" />
+
+    <!-- ==================== 页脚区域 ==================== -->
+    <line x1="40" y1="665" x2="1240" y2="665" stroke="#F0EDE8" stroke-width="1" />
+    <text x="40" y="695" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="12">
+        {{INSTITUTION}}
+    </text>
+    <text x="1220" y="695" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{PAGE_NUM}}</text>
+</svg>
