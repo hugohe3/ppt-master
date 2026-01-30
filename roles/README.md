@@ -26,7 +26,9 @@
 ```
 用户输入文档
     ↓
-[创建项目文件夹] project_manager.py init
+[源内容转换] pdf_to_md.py / web_to_md.py（如需要）
+    ↓
+[创建项目文件夹] project_manager.py init <名称> --format <格式>
     ↓
 [模板选项] 询问用户选择（必须在策略师之前确认）
     │
@@ -52,16 +54,14 @@
     │                                           │
     ▼                                           ▼
 [Executor] 执行师（根据模板选项决定是否遵循模板）
-    ↓ 逐页生成SVG代码
+    ↓ 逐页生成SVG代码 → svg_output/
     ↓
-[Optimizer_CRAP] 优化师 (可选)
-    ↓ CRAP原则优化
-    ↓
-SVG 文件 (svg_output/)
-    ↓
-后处理工具 (推荐，用户自行调用)
+后处理工具（默认由 AI 自动执行，必要时可手动调用）
     ├── finalize_svg.py → svg_final/ (嵌入图标 + 修复图片宽高比 + 嵌入图片 + 文本扁平化 + 圆角转Path)
     └── svg_to_pptx.py → output.pptx (导出 PowerPoint)
+    ↓
+[Optimizer_CRAP] 优化师 (可选，仅在完整初版后不满意时使用)
+    ↓ CRAP原则优化（优化后需重新运行后处理与导出）
 ```
 
 > **注意**:
