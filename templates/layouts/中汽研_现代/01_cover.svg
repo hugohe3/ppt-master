@@ -1,83 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
-    <!-- 模板: 封面页 (Premium Tech Style) -->
+    <!-- 模板: 封面页 (Future Tech Style v3) -->
 
     <defs>
-        <!-- 主背景渐变: 深蓝 -> 科技蓝 -->
-        <linearGradient id="gradMain" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#001F4D;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#004098;stop-opacity:1" />
+        <!-- 深邃夜空渐变 -->
+        <radialGradient id="gradSky" cx="20%" cy="20%" r="90%" fx="20%" fy="20%">
+            <stop offset="0%" style="stop-color:#002B52;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#001529;stop-opacity:1" />
+        </radialGradient>
+        
+        <!-- 霓虹流光渐变 -->
+        <linearGradient id="gradNeon" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1890FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#00E5FF;stop-opacity:1" />
         </linearGradient>
-        <!-- 装饰线渐变: 透明 -> 白 -> 透明 -->
-        <linearGradient id="gradLine" x1="0%" y1="0%" x2="100%" y2="0%">
+
+        <!-- 装饰线遮罩 -->
+        <linearGradient id="gradLineFade" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0" />
-            <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.5" />
+            <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:0.3" />
             <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
         </linearGradient>
     </defs>
 
-    <!-- 背景图片层 (全屏铺底) -->
-    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
-
-    <!-- 渐变遮罩层 (增强文字可读性，右下角加深) -->
-    <rect x="0" y="0" width="1280" height="720" fill="url(#gradMain)" fill-opacity="0.85" />
-
-    <!-- 装饰元素: 科技几何线条 (Tech Lines) -->
-    <!-- 左上角装饰圆环 -->
-    <circle cx="0" cy="0" r="300" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="2"/>
-    <circle cx="0" cy="0" r="280" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1"/>
+    <!-- 1. 背景层 -->
+    <rect width="1280" height="720" fill="url(#gradSky)" />
     
-    <!-- 右下角动态曲线 (模拟) -->
-    <path d="M800,720 Q1000,500 1280,450 L1280,720 Z" fill="#FFFFFF" fill-opacity="0.05"/>
-    <path d="M900,720 Q1100,550 1280,500 L1280,720 Z" fill="#FFFFFF" fill-opacity="0.03"/>
-
-    <!-- 顶部亮色条 -->
-    <rect x="0" y="0" width="1280" height="6" fill="#0050B3" />
-
-    <!-- 内容区域: 左对齐布局 -->
-    <g transform="translate(100, 0)">
+    <!-- 背部图片 (低透明度融合) -->
+    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.3"/>
+    
+    <!-- 2. 右侧几何装饰 (Tech Polymer) -->
+    <g transform="translate(640, 0)">
+        <!-- 抽象多边形/光束 -->
+        <path d="M200,0 L640,0 L640,720 L0,720 Z" fill="#000000" fill-opacity="0.2" />
+        <path d="M300,0 L640,0 L640,500 L100,720 Z" fill="#1890FF" fill-opacity="0.05" />
         
-        <!-- Logo (左上) -->
-        <image href="../images/{{LOGO_LARGE}}" x="0" y="80" width="200" height="80" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <!-- 定义一些浮动的科技线 -->
+        <line x1="100" y1="100" x2="640" y2="100" stroke="url(#gradLineFade)" stroke-width="1" />
+        <line x1="50" y1="200" x2="640" y2="200" stroke="url(#gradLineFade)" stroke-width="1" stroke-dasharray="4,4" />
+        <line x1="200" y1="600" x2="640" y2="600" stroke="url(#gradLineFade)" stroke-width="2" />
+    </g>
+
+    <!-- 3. 左侧内容区 -->
+    <g transform="translate(80, 0)">
         
-        <!-- 主标题 (大号加粗, 白色) -->
-        <text x="0" y="320" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF" letter-spacing="2">
+        <!-- 顶部装饰短条 -->
+        <rect x="0" y="80" width="60" height="6" fill="url(#gradNeon)" />
+
+        <!-- Logo -->
+        <image href="../images/{{LOGO_LARGE}}" x="0" y="120" width="220" height="80" preserveAspectRatio="xMidYMid meet" />
+
+        <!-- 主标题 -->
+        <text x="0" y="340" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="68" font-weight="bold" fill="#FFFFFF" letter-spacing="2">
             {{TITLE}}
         </text>
 
-        <!-- 装饰短横线 -->
-        <rect x="0" y="350" width="120" height="6" fill="#D32F2F" />
-
-        <!-- 副标题 (中号, 半透明白) -->
-        <text x="0" y="420" font-family="Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="normal" fill="#FFFFFF" fill-opacity="0.9">
+        <!-- 副标题 / 英文标题 -->
+        <text x="0" y="410" font-family="Roboto, Arial, sans-serif" font-size="28" font-weight="normal" fill="#00E5FF" letter-spacing="1" opacity="0.9">
             {{SUBTITLE}}
         </text>
 
-        <!-- 汇报信息区 (底部) -->
-        <g transform="translate(0, 580)">
-            <text x="0" y="0" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.7">
-                汇报人 / 部门
-            </text>
-            <text x="0" y="35" font-family="Microsoft YaHei, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
-                {{AUTHOR}}
-            </text>
-            
-            <text x="300" y="0" font-family="Microsoft YaHei, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.7">
-                日期
-            </text>
-            <text x="300" y="35" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
-                {{DATE}}
-            </text>
+        <!-- 装饰性数据点缀 -->
+        <g transform="translate(0, 460)" opacity="0.4">
+            <text x="0" y="0" font-family="Arial" font-size="12" fill="#FFFFFF">COORD: 39.90N, 116.40E</text>
+            <rect x="180" y="-8" width="40" height="8" fill="#FFFFFF" />
+            <rect x="230" y="-8" width="10" height="8" fill="#00E5FF" />
         </g>
-    </g>
 
-    <!-- 右侧装饰元素 (虚线网格) -->
-    <g transform="translate(800, 100)" opacity="0.1">
-        <line x1="0" y1="0" x2="400" y2="0" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="50" x2="400" y2="50" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="100" x2="400" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="0" x2="0" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="400" y1="0" x2="400" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
+        <!-- 底部信息卡片 -->
+        <g transform="translate(0, 580)">
+            <!-- 竖线装饰 -->
+            <rect x="0" y="0" width="4" height="60" fill="url(#gradNeon)" />
+            
+            <g transform="translate(24, 10)">
+                <text x="0" y="0" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#A0AEC0">汇报部门 / DEPT</text>
+                <text x="0" y="30" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">{{AUTHOR}}</text>
+            </g>
+            
+            <g transform="translate(300, 10)">
+                 <text x="0" y="0" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#A0AEC0">日期 / DATE</text>
+                <text x="0" y="30" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">{{DATE}}</text>
+            </g>
+        </g>
+        
     </g>
 
 </svg>

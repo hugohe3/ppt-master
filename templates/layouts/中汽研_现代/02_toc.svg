@@ -1,110 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
-    <!-- 模板: 目录页 (Premium Tech Style) -->
+    <!-- 模板: 目录页 (Future Tech Timeline Style) -->
 
     <defs>
-        <!-- 头部渐变 -->
-        <linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#003366;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#0050B3;stop-opacity:1" />
+        <linearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#001529;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#002140;stop-opacity:1" />
+        </linearGradient>
+        
+        <linearGradient id="gradNeon" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#1890FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#00E5FF;stop-opacity:1" />
         </linearGradient>
     </defs>
 
-    <!-- 背景: 浅灰 -->
-    <rect x="0" y="0" width="1280" height="720" fill="#F0F2F5" />
-    
-    <!-- 顶部装饰条 -->
-    <rect x="0" y="0" width="1280" height="6" fill="#003366" />
+    <!-- 背景分割: 左 1/3 深蓝, 右 2/3 极浅灰 -->
+    <rect x="0" y="0" width="450" height="720" fill="url(#gradLeft)" />
+    <rect x="450" y="0" width="830" height="720" fill="#F7F9FC" />
 
-    <!-- 页面标题区 -->
-    <text x="100" y="80" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#E0E0E0">02</text>
-    <text x="200" y="80" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="36" font-weight="bold" fill="#003366">目录 CONTENTS</text>
-    <line x1="100" y1="100" x2="1180" y2="100" stroke="#D1D5DB" stroke-width="1" />
+    <!-- 左侧内容 -->
+    <g transform="translate(60, 0)">
+        <!-- Logo -->
+        <image href="../images/{{LOGO_LARGE}}" x="0" y="60" width="200" height="80" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        
+        <!-- 大标题 -->
+        <text x="0" y="240" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" opacity="0.1">02</text>
+        <text x="10" y="300" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF">目录</text>
+        <text x="12" y="350" font-family="Arial, sans-serif" font-size="24" fill="#00E5FF" letter-spacing="4">CONTENTS</text>
+        
+        <!-- 装饰线 -->
+        <line x1="12" y1="380" x2="112" y2="380" stroke="#1890FF" stroke-width="4" />
+        
+        <!-- 底部标语 -->
+         <text x="12" y="650" font-family="Arial" font-size="14" fill="#FFFFFF" opacity="0.4">
+            CATARC TECHNOLOGY PRESENTATION
+        </text>
+    </g>
 
-    <!-- Logo (右上) -->
-    <image href="../images/{{LOGO_HEADER}}" x="1100" y="30" width="120" height="50" preserveAspectRatio="xMidYMid meet" opacity="0.8"/>
+    <!-- 右侧内容 (Timeline Style) -->
+    <!-- 垂直轴线 -->
+    <line x1="560" y1="100" x2="560" y2="620" stroke="#E5E7EB" stroke-width="2" />
 
-    <!-- 目录列表区域 (卡片式) -->
-    <g transform="translate(100, 140)">
+    <g transform="translate(560, 140)">
         
         <!-- Chapter 1 -->
         <g transform="translate(0, 0)">
-            <!-- 阴影模拟 -->
-            <rect x="4" y="4" width="520" height="100" fill="#000000" fill-opacity="0.05" rx="4"/>
-            <!-- 卡片主体 -->
-            <rect x="0" y="0" width="520" height="100" fill="#FFFFFF" rx="4"/>
-            <!-- 左侧色条 -->
-            <rect x="0" y="0" width="8" height="100" fill="#003366" rx="2"/>
-            <!-- 序号 -->
-            <text x="40" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E5E7EB">01</text>
-            <!-- 标题 -->
-            <text x="120" y="45" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">
-                {{CHAPTER_01_TITLE}}
-            </text>
-            <text x="120" y="75" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
-                {{CHAPTER_01_DESC}}
-            </text>
+            <!-- 节点 -->
+            <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
+            <!-- 内容 -->
+            <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">01</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_01_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_01_DESC}}</text>
         </g>
 
         <!-- Chapter 2 -->
-        <g transform="translate(560, 0)">
-             <rect x="4" y="4" width="520" height="100" fill="#000000" fill-opacity="0.05" rx="4"/>
-            <rect x="0" y="0" width="520" height="100" fill="#FFFFFF" rx="4"/>
-            <rect x="0" y="0" width="8" height="100" fill="#004098" rx="2"/>
-            <text x="40" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E5E7EB">02</text>
-            <text x="120" y="45" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">
-                {{CHAPTER_02_TITLE}}
-            </text>
-            <text x="120" y="75" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
-                {{CHAPTER_02_DESC}}
-            </text>
+        <g transform="translate(0, 110)">
+             <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
+            <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">02</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_02_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_02_DESC}}</text>
         </g>
 
         <!-- Chapter 3 -->
-        <g transform="translate(0, 140)">
-             <rect x="4" y="4" width="520" height="100" fill="#000000" fill-opacity="0.05" rx="4"/>
-            <rect x="0" y="0" width="520" height="100" fill="#FFFFFF" rx="4"/>
-            <rect x="0" y="0" width="8" height="100" fill="#0050B3" rx="2"/>
-            <text x="40" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E5E7EB">03</text>
-            <text x="120" y="45" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">
-                {{CHAPTER_03_TITLE}}
-            </text>
-             <text x="120" y="75" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
-                {{CHAPTER_03_DESC}}
-            </text>
+        <g transform="translate(0, 220)">
+             <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
+            <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">03</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_03_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_03_DESC}}</text>
         </g>
 
         <!-- Chapter 4 -->
-        <g transform="translate(560, 140)">
-             <rect x="4" y="4" width="520" height="100" fill="#000000" fill-opacity="0.05" rx="4"/>
-            <rect x="0" y="0" width="520" height="100" fill="#FFFFFF" rx="4"/>
-            <rect x="0" y="0" width="8" height="100" fill="#0066CC" rx="2"/>
-            <text x="40" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E5E7EB">04</text>
-            <text x="120" y="45" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">
-                {{CHAPTER_04_TITLE}}
-            </text>
-             <text x="120" y="75" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
-                {{CHAPTER_04_DESC}}
-            </text>
+        <g transform="translate(0, 330)">
+             <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
+            <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">04</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_04_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_04_DESC}}</text>
         </g>
-
-         <!-- Chapter 5 (Bottom Centered) -->
-        <g transform="translate(280, 280)">
-             <rect x="4" y="4" width="520" height="100" fill="#000000" fill-opacity="0.05" rx="4"/>
-            <rect x="0" y="0" width="520" height="100" fill="#FFFFFF" rx="4"/>
-            <rect x="0" y="0" width="8" height="100" fill="#007ACC" rx="2"/>
-            <text x="40" y="65" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#E5E7EB">05</text>
-            <text x="120" y="45" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">
-                {{CHAPTER_05_TITLE}}
-            </text>
-             <text x="120" y="75" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">
-                {{CHAPTER_05_DESC}}
-            </text>
+        
+        <!-- Chapter 5 -->
+        <g transform="translate(0, 440)">
+             <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
+            <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">05</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_05_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_05_DESC}}</text>
         </g>
-
     </g>
-
-    <!-- 底部装饰 -->
-    <rect x="0" y="710" width="1280" height="10" fill="#003366" />
+    
+    <!-- 右下角页码 -->
+    <text x="1200" y="680" text-anchor="end" font-family="Arial" font-size="14" fill="#9CA3AF">02</text>
 
 </svg>

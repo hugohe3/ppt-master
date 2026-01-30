@@ -68,6 +68,6 @@
     <rect x="0" y="716" width="1280" height="4" fill="#004098"/>
   
     <!-- 页码 -->
-    <text x="640" y="695" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#999999">{{PAGE_NUM}}</text>
+    <text x="1220" y="705" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#999999">{{PAGE_NUM}}</text>
   
 </svg>
