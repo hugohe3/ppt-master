@@ -154,6 +154,8 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 
 > 📖 详细工作流程请参阅 [工作流教程](./docs/workflow_tutorial.md) 和 [角色定义](./roles/README.md)
 
+> 💡 **PPT 编辑提示**：导出的 PPTX 页面为 SVG 格式。若需编辑内容，请在 PowerPoint 中选中页面，右键选择 **"转换为形状"** (Convert to Shape)。此功能需要 **Office 2016** 或更高版本。
+
 ---
 
 ## 🛠️ 常用命令
@@ -196,7 +198,7 @@ ppt-master/
 <summary><b>Q: 生成的 SVG 文件如何使用？</b></summary>
 
 - 直接在浏览器中打开查看
-- 使用 `svg_to_pptx.py` 导出为 PowerPoint
+- 使用 `svg_to_pptx.py` 导出为 PowerPoint（需在 PPT 中"转换为形状"以编辑，要求 Office 2016+）
 - 嵌入到 HTML 页面或使用设计工具编辑
 
 </details>

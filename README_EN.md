@@ -154,6 +154,8 @@ Output: SVG + PPTX (auto-embeds notes)
 
 > 📖 For detailed workflow, see [Workflow Tutorial](./docs/workflow_tutorial.md) and [Role Definitions](./roles/README.md)
 
+> 💡 **PPT Editing Tip**: The exported PPTX pages are in SVG format. To edit the content, select the page content in PowerPoint, right-click and choose **"Group" -> "Ungroup"** (or **"Convert to Shape"**). This feature requires **Office 2016** or later.
+
 ---
 
 ## 🛠️ Common Commands
@@ -196,7 +198,7 @@ ppt-master/
 <summary><b>Q: How to use generated SVG files?</b></summary>
 
 - Open directly in browser to view
-- Export to PowerPoint using `svg_to_pptx.py`
+- Export to PowerPoint using `svg_to_pptx.py` (Note: Requires "Convert to Shape" in PPT for editing, Office 2016+ required)
 - Embed in HTML pages or edit with design tools
 
 </details>
