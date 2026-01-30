@@ -136,7 +136,7 @@
 1. **渐变支持**: 使用 `<linearGradient>` 和 `<radialGradient>` 定义在 `<defs>` 中。
 2. **阴影模拟**: PPT不支持 SVG滤镜阴影，使用**半透明黑色矩形 (`fill="#000000" fill-opacity="0.1"`)** 错位叠加来模拟卡片阴影。
 3. **透明度**: 严格使用 `fill-opacity` / `stroke-opacity`。
-4. **禁区**: 无 `clipPath`, `mask`, `filter`。
+4. **禁区**: 无 `clipPath`, `mask`。
 
 ---
 
