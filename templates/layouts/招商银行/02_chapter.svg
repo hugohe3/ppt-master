@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <!-- ==================== 背景层 ==================== -->
+    <!-- 深红色主背景 -->
+    <rect width="1280" height="720" fill="#9A0E26" />
+    
+    <!-- ==================== 背景几何层次 ==================== -->
+    <!-- 右侧渐变色块 -->
+    <path d="M850 0 L1280 0 L1280 720 L650 720 Z" fill="#A81028" fill-opacity="0.6" />
+    <path d="M950 0 L1280 0 L1280 720 L750 720 Z" fill="#B31530" fill-opacity="0.4" />
+    <path d="M1050 0 L1280 0 L1280 720 L850 720 Z" fill="#C41230" fill-opacity="0.3" />
+    
+    <!-- 右侧边缘深色带 -->
+    <rect x="1220" y="0" width="60" height="720" fill="#7A0B1E" fill-opacity="0.4" />
+    <rect x="1260" y="0" width="20" height="720" fill="#5A081A" fill-opacity="0.3" />
+    
+    <!-- ==================== 左侧金色装饰条（主要视觉元素）==================== -->
+    <rect x="0" y="240" width="8" height="240" fill="#C9A962" />
+    <rect x="0" y="245" width="4" height="230" fill="#D4B876" />
+    <!-- 装饰点 -->
+    <circle cx="4" cy="235" r="4" fill="#C9A962" />
+    <circle cx="4" cy="485" r="4" fill="#C9A962" />
+    
+    <!-- ==================== 顶部装饰 ==================== -->
+    <!-- 顶部金色细线 -->
+    <rect x="0" y="60" width="300" height="1" fill="#C9A962" fill-opacity="0.3" />
+    <rect x="0" y="65" width="200" height="1" fill="#C9A962" fill-opacity="0.2" />
+    
+    <!-- ==================== 右侧精致装饰图案 ==================== -->
+    <!-- 金色横条组（阶梯渐淡效果）-->
+    <rect x="980" y="220" width="160" height="4" fill="#C9A962" fill-opacity="0.35" rx="2" />
+    <rect x="1000" y="240" width="140" height="4" fill="#C9A962" fill-opacity="0.28" rx="2" />
+    <rect x="1020" y="260" width="120" height="4" fill="#C9A962" fill-opacity="0.22" rx="2" />
+    <rect x="1040" y="280" width="100" height="4" fill="#C9A962" fill-opacity="0.16" rx="2" />
+    <rect x="1060" y="300" width="80" height="4" fill="#C9A962" fill-opacity="0.1" rx="2" />
+    
+    <!-- 对角线装饰组 -->
+    <line x1="950" y1="150" x2="1100" y2="200" stroke="#C9A962" stroke-width="1" stroke-opacity="0.12" />
+    <line x1="970" y1="150" x2="1120" y2="200" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.08" />
+    <line x1="990" y1="150" x2="1140" y2="200" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.06" />
+    
+    <!-- 右下角装饰圆环组合 -->
+    <circle cx="1140" cy="540" r="100" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.06" />
+    <circle cx="1140" cy="540" r="80" fill="none" stroke="#C9A962" stroke-width="1" stroke-opacity="0.1" />
+    <circle cx="1140" cy="540" r="60" fill="none" stroke="#C9A962" stroke-width="1.5" stroke-opacity="0.15" />
+    <circle cx="1140" cy="540" r="40" fill="none" stroke="#C9A962" stroke-width="1" stroke-opacity="0.12" />
+    <circle cx="1140" cy="540" r="20" fill="#C9A962" fill-opacity="0.08" />
+    <circle cx="1140" cy="540" r="8" fill="#C9A962" fill-opacity="0.15" />
+    
+    <!-- 点缀装饰点 -->
+    <circle cx="1050" cy="480" r="3" fill="#C9A962" fill-opacity="0.2" />
+    <circle cx="1080" cy="450" r="2" fill="#C9A962" fill-opacity="0.15" />
+    <circle cx="1180" cy="420" r="2.5" fill="#C9A962" fill-opacity="0.18" />
+    
+    <!-- ==================== 章节编号（大号半透明背景字）==================== -->
+    <text x="80" y="520" fill="#FFFFFF" fill-opacity="0.06" font-family="Arial, Microsoft YaHei, sans-serif" font-size="320" font-weight="bold">
+        {{CHAPTER_NUM}}
+    </text>
+    
+    <!-- ==================== 章节信息区域 ==================== -->
+    <!-- 金色装饰线组合 -->
+    <line x1="340" y1="280" x2="500" y2="280" stroke="#C9A962" stroke-width="3" />
+    <line x1="340" y1="287" x2="450" y2="287" stroke="#C9A962" stroke-width="1" stroke-opacity="0.5" />
+    <circle cx="510" cy="280" r="5" fill="#C9A962" />
+    <circle cx="510" cy="280" r="2" fill="#D4B876" />
+    
+    <!-- 章节标题 -->
+    <text x="340" y="370" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="52" font-weight="bold" letter-spacing="4">
+        {{CHAPTER_TITLE}}
+    </text>
+    
+    <!-- 章节描述 -->
+    <text x="340" y="430" fill="#F5F0EB" fill-opacity="0.9" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" letter-spacing="1">
+        {{CHAPTER_DESC}}
+    </text>
+    
+    <!-- 下划线装饰 -->
+    <rect x="340" y="455" width="200" height="1" fill="#C9A962" fill-opacity="0.3" />
+    
+    <!-- ==================== 底部信息 ==================== -->
+    <line x1="40" y1="665" x2="1240" y2="665" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.1" />
+    
+    <!-- 底部装饰点 -->
+    <circle cx="40" cy="665" r="2" fill="#C9A962" fill-opacity="0.3" />
+    <circle cx="1240" cy="665" r="2" fill="#C9A962" fill-opacity="0.3" />
+    
+    <text x="1240" y="695" text-anchor="end" fill="#FFFFFF" fill-opacity="0.5" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">
+        {{INSTITUTION}}
+    </text>
+</svg>

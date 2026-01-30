@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+    <!-- ==================== 背景层 ==================== -->
+    <rect width="1280" height="720" fill="#FFFFFF" />
+    
+    <!-- 底部暖灰装饰带 -->
+    <rect x="0" y="620" width="1280" height="100" fill="#F8F6F3" />
+    
+    <!-- ==================== 顶部红色主横条 ==================== -->
+    <rect x="0" y="0" width="1280" height="110" fill="#C41230" />
+    <!-- 金色精致装饰线（双线设计）-->
+    <rect x="0" y="106" width="1280" height="1" fill="#C9A962" />
+    <rect x="0" y="109" width="1280" height="3" fill="#C9A962" />
+    
+    <!-- ==================== 左上角精致装饰组合 ==================== -->
+    <circle cx="90" cy="55" r="42" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.2" />
+    <circle cx="90" cy="55" r="32" fill="none" stroke="#C9A962" stroke-width="1.5" stroke-opacity="0.4" />
+    <circle cx="90" cy="55" r="22" fill="none" stroke="#C9A962" stroke-width="0.8" stroke-opacity="0.3" />
+    <circle cx="90" cy="55" r="10" fill="#C9A962" fill-opacity="0.25" />
+    <circle cx="90" cy="55" r="4" fill="#C9A962" fill-opacity="0.5" />
+    <!-- 装饰点 -->
+    <circle cx="145" cy="30" r="2" fill="#C9A962" fill-opacity="0.3" />
+    <circle cx="155" cy="45" r="1.5" fill="#C9A962" fill-opacity="0.25" />
+    
+    <!-- ==================== 右上角 Logo ==================== -->
+    <text x="1200" y="60" text-anchor="end" fill="#FFFFFF" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16" font-weight="bold">
+        {{LOGO}}
+    </text>
+    
+    <!-- 右上角装饰三角 -->
+    <path d="M1280 0 L1280 90 L1190 0 Z" fill="#9A0E26" fill-opacity="0.3" />
+    <path d="M1280 0 L1280 50 L1230 0 Z" fill="#C9A962" fill-opacity="0.15" />
+    
+    <!-- ==================== 主内容区域 ==================== -->
+    <!-- 感谢语 -->
+    <text x="640" y="280" text-anchor="middle" fill="#C41230" font-family="Microsoft YaHei, Arial, sans-serif" font-size="56" font-weight="bold" letter-spacing="8">
+        {{THANK_YOU}}
+    </text>
+    
+    <!-- 副标语 -->
+    <text x="640" y="340" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" letter-spacing="3">
+        {{TAGLINE}}
+    </text>
+    
+    <!-- ==================== 精致分割线组合 ==================== -->
+    <line x1="400" y1="385" x2="580" y2="385" stroke="#C9A962" stroke-width="1" />
+    <line x1="700" y1="385" x2="880" y2="385" stroke="#C9A962" stroke-width="1" />
+    <!-- 中心菱形装饰 -->
+    <rect x="630" y="375" width="20" height="20" fill="#C41230" transform="rotate(45 640 385)" />
+    <rect x="635" y="380" width="10" height="10" fill="#C9A962" transform="rotate(45 640 385)" />
+    <!-- 端点装饰 -->
+    <circle cx="400" cy="385" r="4" fill="#C41230" />
+    <circle cx="400" cy="385" r="2" fill="#C9A962" />
+    <circle cx="880" cy="385" r="4" fill="#C41230" />
+    <circle cx="880" cy="385" r="2" fill="#C9A962" />
+    
+    <!-- ==================== 联系信息卡片 ==================== -->
+    <rect x="320" y="420" width="640" height="160" fill="#F8F6F3" rx="8" />
+    <!-- 左侧红色竖条 + 金色点缀 -->
+    <rect x="320" y="420" width="5" height="160" fill="#C41230" rx="2" />
+    <circle cx="322.5" cy="420" r="2.5" fill="#C9A962" />
+    <circle cx="322.5" cy="580" r="2.5" fill="#C9A962" />
+    <!-- 右下角装饰 -->
+    <rect x="920" y="575" width="40" height="2" fill="#C9A962" fill-opacity="0.3" rx="1" />
+    <rect x="955" y="545" width="2" height="32" fill="#C9A962" fill-opacity="0.3" rx="1" />
+    
+    <!-- 联系信息内容 -->
+    <text x="640" y="470" text-anchor="middle" fill="#C41230" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">
+        {{INSTITUTION}}
+    </text>
+    <text x="640" y="510" text-anchor="middle" fill="#333333" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">
+        {{DEPARTMENT}}
+    </text>
+    <text x="640" y="550" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">
+        {{CONTACT_INFO}}
+    </text>
+    
+    <!-- ==================== 装饰元素 ==================== -->
+    <!-- 左侧多层圆环装饰 -->
+    <circle cx="160" cy="400" r="80" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.1" />
+    <circle cx="160" cy="400" r="60" fill="none" stroke="#C9A962" stroke-width="1" stroke-opacity="0.18" />
+    <circle cx="160" cy="400" r="40" fill="none" stroke="#C9A962" stroke-width="0.8" stroke-opacity="0.15" />
+    <circle cx="160" cy="400" r="20" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.12" />
+    <circle cx="160" cy="400" r="8" fill="#C9A962" fill-opacity="0.1" />
+    
+    <!-- 右侧多层圆环装饰 -->
+    <circle cx="1120" cy="400" r="80" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.1" />
+    <circle cx="1120" cy="400" r="60" fill="none" stroke="#C9A962" stroke-width="1" stroke-opacity="0.18" />
+    <circle cx="1120" cy="400" r="40" fill="none" stroke="#C9A962" stroke-width="0.8" stroke-opacity="0.15" />
+    <circle cx="1120" cy="400" r="20" fill="none" stroke="#C9A962" stroke-width="0.5" stroke-opacity="0.12" />
+    <circle cx="1120" cy="400" r="8" fill="#C9A962" fill-opacity="0.1" />
+    
+    <!-- 装饰点阵 -->
+    <circle cx="240" cy="320" r="2" fill="#C9A962" fill-opacity="0.2" />
+    <circle cx="260" cy="340" r="1.5" fill="#C9A962" fill-opacity="0.15" />
+    <circle cx="1040" cy="320" r="2" fill="#C9A962" fill-opacity="0.2" />
+    <circle cx="1020" cy="340" r="1.5" fill="#C9A962" fill-opacity="0.15" />
+    
+    <!-- ==================== 底部信息区域 ==================== -->
+    <!-- 底部红色精致线条 -->
+    <rect x="0" y="620" width="1280" height="2" fill="#C41230" />
+    <rect x="0" y="623" width="1280" height="1" fill="#C9A962" fill-opacity="0.5" />
+    
+    <!-- 版权信息 -->
+    <text x="640" y="660" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">
+        {{COPYRIGHT}}
+    </text>
+    <text x="1220" y="695" text-anchor="end" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="13">
+        {{PAGE_NUM}}
+    </text>
+    
+    <!-- ==================== 底部角落装饰 ==================== -->
+    <!-- 左下角 -->
+    <path d="M0 720 L0 680 L40 720 Z" fill="#C41230" fill-opacity="0.1" />
+    <circle cx="25" cy="695" r="3" fill="#C9A962" fill-opacity="0.3" />
+    
+    <!-- 右下角 -->
+    <path d="M1280 720 L1280 680 L1240 720 Z" fill="#C41230" fill-opacity="0.1" />
+    <path d="M1280 720 L1280 700 L1260 720 Z" fill="#C9A962" fill-opacity="0.2" />
+</svg>
