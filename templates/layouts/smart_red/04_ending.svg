@@ -1,0 +1,44 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F5F5F7" />
+
+  <!-- 1. Top Left: Red Triangle -->
+  <path d="M0 0 L380 0 L0 380 Z" fill="#DE3545" />
+  
+  <!-- 1a. Top Left: Small accent triangle -->
+  <path d="M0 0 L180 0 L0 180 Z" fill="#E86A76" />
+
+  <!-- 2. Bottom Left: Dark Grey Triangle -->
+  <path d="M0 720 L320 720 L0 400 Z" fill="#333333" />
+  
+  <!-- 2a. Bottom Left: Small accent -->
+  <path d="M0 720 L120 720 L0 600 Z" fill="#555555" />
+
+  <!-- 3. Bottom Right: Red Triangle -->
+  <path d="M1280 720 L1280 300 L860 720 Z" fill="#DE3545" />
+  
+  <!-- 3a. Bottom Right: Small accent triangle -->
+  <path d="M1280 720 L1280 520 L1080 720 Z" fill="#E86A76" />
+  
+  <!-- 3b. Top Right: Small decorative triangle -->
+  <path d="M1280 0 L1200 0 L1280 80 Z" fill="#E97983" />
+
+  <!-- Content Group -->
+  <g transform="translate(640, 340)" text-anchor="middle">
+      
+      <!-- Thank You Text -->
+      <text x="0" y="0" font-family="'Microsoft YaHei', sans-serif" font-size="80" font-weight="bold" fill="#333333" letter-spacing="4">谢谢观看</text>
+      <text x="0" y="60" font-family="Arial, sans-serif" font-size="24" fill="#DE3545" letter-spacing="10">THANKS FOR WATCHING</text>
+      
+      <!-- Separator -->
+      <line x1="-150" y1="100" x2="150" y2="100" stroke="#CCCCCC" stroke-width="1" />
+      
+      <!-- Closing Message -->
+      <text x="0" y="150" font-family="'Microsoft YaHei', sans-serif" font-size="24" fill="#666666">{{CLOSING_MESSAGE}}</text>
+      
+      <!-- Contact Info Placeholder -->
+      <text x="0" y="200" font-family="Arial, sans-serif" font-size="16" fill="#999999">
+        http://www.yourcompany.com
+      </text>
+  </g>
+</svg>
