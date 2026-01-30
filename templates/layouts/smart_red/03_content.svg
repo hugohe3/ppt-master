@@ -1,0 +1,59 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F5F5F7" />
+
+  <!-- Header Background (White strip) -->
+  <rect x="0" y="0" width="1280" height="80" fill="#FFFFFF" />
+  <line x1="0" y1="80" x2="1280" y2="80" stroke="#E0E0E0" stroke-width="1" />
+
+  <!-- Header Accent: Red Shapes on Top Right - Enhanced -->
+  <path d="M1280 0 L1180 0 L1280 100 Z" fill="#DE3545" />
+  <path d="M1180 0 L1120 0 L1200 80 L1280 80 Z" fill="#EEEEEE"/>
+  <path d="M1280 0 L1240 0 L1280 40 Z" fill="#E97983"/>
+  
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="4" height="80" fill="#DE3545" />
+  
+  <!-- Page Title Group -->
+  <g transform="translate(60, 40)">
+      <!-- Symbol 1: Dark Hollow Triangle -->
+      <path d="M0 0 L14 10 L0 20 Z" fill="none" stroke="#333333" stroke-width="2" transform="translate(0, -10)" />
+      
+      <!-- Symbol 2: Solid Red Triangle -->
+      <path d="M18 0 L32 10 L18 20 Z" fill="#DE3545" transform="translate(0, -10)" />
+
+      <!-- Title Text -->
+      <text x="50" y="12" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{PAGE_TITLE}}</text>
+  </g>
+  
+  <!-- Content Area Placeholder -->
+  <!-- Main Content Card (White Background for content) -->
+  <g transform="translate(60, 110)">
+    <rect x="0" y="0" width="1160" height="540" rx="8" ry="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" />
+    
+    <!-- Red accent line on top of card -->
+    <rect x="0" y="0" width="1160" height="4" rx="8" ry="8" fill="#E97983" />
+    
+    <!-- Visual Guide for Content Area (Dotted Line) -->
+    <rect x="30" y="30" width="1100" height="480" rx="4" ry="4" fill="none" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="8,8" />
+    
+    <text x="580" y="270" text-anchor="middle" font-family="'Microsoft YaHei', sans-serif" font-size="24" fill="#CCCCCC">
+      {{CONTENT_AREA}}
+    </text>
+  </g>
+
+  <!-- Footer - Enhanced -->
+  <g transform="translate(0, 680)">
+    <!-- Footer background bar -->
+    <rect x="0" y="0" width="1280" height="40" fill="#FAFAFA"/>
+    
+    <!-- Red accent -->
+    <rect x="0" y="0" width="4" height="40" fill="#DE3545"/>
+    
+    <text x="70" y="25" font-family="Arial, sans-serif" font-size="14" fill="#999999">COMPANY INTRODUCTION</text>
+    
+    <!-- Page Number with circle background -->
+    <circle cx="1210" cy="20" r="16" fill="#FDE8E9"/>
+    <text x="1210" y="26" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#333333" font-weight="bold">{{PAGE_NUM}}</text>
+  </g>
+</svg>

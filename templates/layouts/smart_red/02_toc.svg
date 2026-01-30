@@ -1,0 +1,59 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="1280" height="720" fill="#F5F5F7" />
+
+    <!-- 1. Left Red Panel -->
+    <path d="M0 0 L400 0 L300 720 L0 720 Z" fill="#DE3545" />
+    
+    <!-- 2. Bottom Left Accent (Dark Grey) -->
+    <path d="M0 720 L180 720 L0 550 Z" fill="#4A4A4A" />
+    <path d="M0 720 L80 720 L0 640 Z" fill="#666666" />
+
+    <!-- 3. Bottom Right Red Triangle Accent -->
+    <path d="M1280 720 L1280 580 L1140 720 Z" fill="#DE3545" />
+    <path d="M1280 720 L1280 650 L1210 720 Z" fill="#E97983" />
+    
+    <!-- 4. Top Right small accent -->
+    <path d="M1280 0 L1220 0 L1280 60 Z" fill="#E97983" />
+
+    <!-- Title Area (Left, on Red Panel) -->
+    <g transform="translate(60, 200)">
+        <text x="0" y="0" font-family="'Microsoft YaHei', sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF">目录</text>
+        <text x="0" y="40" font-family="Arial, sans-serif" font-size="24" letter-spacing="4" fill="#FFC1C1">CATALOGUE</text>
+        <!-- Decorative line -->
+        <line x1="0" y1="70" x2="100" y2="70" stroke="#FFFFFF" stroke-width="4" />
+    </g>
+
+    <!-- TOC Items (Right) -->
+    <g transform="translate(480, 150)">
+        
+        <!-- Item 1 -->
+        <g transform="translate(0, 0)">
+            <circle cx="40" cy="40" r="32" fill="#FFFFFF" stroke="#DE3545" stroke-width="3" />
+            <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#DE3545">01</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_1}}</text>
+        </g>
+
+        <!-- Item 2 -->
+        <g transform="translate(0, 110)">
+            <circle cx="40" cy="40" r="32" fill="#DE3545" />
+            <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">02</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_2}}</text>
+        </g>
+
+        <!-- Item 3 -->
+        <g transform="translate(0, 220)">
+            <circle cx="40" cy="40" r="32" fill="#FFFFFF" stroke="#DE3545" stroke-width="3" />
+            <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#DE3545">03</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_3}}</text>
+        </g>
+
+        <!-- Item 4 -->
+        <g transform="translate(0, 330)">
+            <circle cx="40" cy="40" r="32" fill="#DE3545" />
+            <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">04</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_4}}</text>
+        </g>
+
+    </g>
+</svg>

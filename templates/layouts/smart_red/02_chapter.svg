@@ -1,0 +1,29 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F5F5F7" />
+
+  <!-- Top Left Accent -->
+  <path d="M0 0 L180 0 L0 180 Z" fill="#DE3545" />
+  <path d="M0 0 L80 0 L0 80 Z" fill="#F5A0A8" />
+  
+  <!-- Bottom Right Accent -->
+  <path d="M1280 720 L1100 720 L1280 540 Z" fill="#DE3545" />
+  <path d="M1280 720 L1180 720 L1280 620 Z" fill="#F5A0A8" />
+  
+  <!-- Content Group -->
+  <g transform="translate(640, 360)" text-anchor="middle">
+      
+      <!-- Chapter Number (watermark style) -->
+      <text x="0" y="-40" font-family="Arial, sans-serif" font-size="140" font-weight="bold" fill="none" stroke="#F8D0D3" stroke-width="3">{{CHAPTER_NUM}}</text>
+      <text x="0" y="-40" font-family="Arial, sans-serif" font-size="140" font-weight="bold" fill="#FADCDE">{{CHAPTER_NUM}}</text>
+      
+      <!-- Chapter Title -->
+      <text x="0" y="30" font-family="'Microsoft YaHei', sans-serif" font-size="64" font-weight="bold" fill="#333333">{{CHAPTER_TITLE}}</text>
+      
+      <!-- Decor Line -->
+      <line x1="-100" y1="70" x2="100" y2="70" stroke="#DE3545" stroke-width="4" />
+      
+      <!-- English Title -->
+      <text x="0" y="120" font-family="Arial, sans-serif" font-size="24" fill="#999999" letter-spacing="6">CHAPTER SUMMARY</text>
+  </g>
+</svg>
