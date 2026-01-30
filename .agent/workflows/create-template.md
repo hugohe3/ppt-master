@@ -264,8 +264,6 @@ cp templates/layouts/<新模板名称>/design_spec.md projects/<项目>/template
 |                 | `<script>` / 事件属性               | 禁止脚本和事件处理      |
 | **标记 / 箭头** | `marker` / `marker-end`             | PPT 不支持 SVG 标记     |
 |                 | `<marker>` + `<defs>`               | 使用 `<polygon>` 替代   |
-| **滤镜效果**    | `<filter>` 元素                     | PPT 不支持 SVG 滤镜     |
-|                 | `feGaussianBlur` 等滤镜原语         | 用阴影色块替代          |
 | **其他**        | `<iframe>`                          | 不应出现在 SVG 中       |
 
 > 📌 **记忆口诀**：PPT 只认基础形状 + 内联样式 + 系统字体（渐变可用，透明度需合规）
@@ -340,7 +338,6 @@ PPT 不支持 SVG 的 `marker-end` 属性，需使用 `<polygon>` 三角形替�
 - [ ] 无 `<animate>` / `<animateTransform>` / `<set>` 等动画元素
 - [ ] 无 `<script>` 或 `on*` 事件属性
 - [ ] 无 `marker` / `marker-end` / `<marker>` 定义
-- [ ] 无 `<filter>` 滤镜效果
 - [ ] 无 `<iframe>`
 
 ### PPT 兼容性检查
