@@ -29,6 +29,69 @@ import re
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
+HEADING_RE = re.compile(r'^(#{1,6})\s*(.+?)\s*$')
+HR_RE = re.compile(r'^\s*[-*]{3,}\s*$')
+
+
+def normalize_title(title: str) -> str:
+    """Normalize titles for fuzzy matching with SVG stems."""
+    if not title:
+        return ''
+    text = title.strip()
+    # Replace any non-alnum / non-CJK run with underscore
+    text = re.sub(r'[^0-9A-Za-z\u4e00-\u9fff]+', '_', text)
+    text = re.sub(r'_+', '_', text).strip('_')
+    return text.lower()
+
+
+def extract_leading_number(text: str) -> Optional[int]:
+    """Extract leading slide number if present."""
+    if not text:
+        return None
+    m = re.match(r'^(\d{1,3})', text.strip())
+    if not m:
+        return None
+    try:
+        return int(m.group(1))
+    except ValueError:
+        return None
+
+
+def build_match_maps(svg_stems: List[str]) -> Tuple[set, Dict[str, List[str]], Dict[int, List[str]]]:
+    exact = set(svg_stems)
+    norm_map: Dict[str, List[str]] = {}
+    num_map: Dict[int, List[str]] = {}
+    for stem in svg_stems:
+        norm = normalize_title(stem)
+        if norm:
+            norm_map.setdefault(norm, []).append(stem)
+        num = extract_leading_number(stem)
+        if num is not None:
+            num_map.setdefault(num, []).append(stem)
+    return exact, norm_map, num_map
+
+
+def match_title(
+    raw_title: str,
+    exact: set,
+    norm_map: Dict[str, List[str]],
+    num_map: Dict[int, List[str]],
+    svg_stems: Optional[List[str]] = None,
+) -> Optional[str]:
+    if raw_title in exact:
+        return raw_title
+    norm = normalize_title(raw_title)
+    if norm in norm_map and len(norm_map[norm]) == 1:
+        return norm_map[norm][0]
+    num = extract_leading_number(raw_title)
+    if num is not None and num in num_map and len(num_map[num]) == 1:
+        return num_map[num][0]
+    if norm and svg_stems:
+        candidates = [s for s in svg_stems if norm in normalize_title(s)]
+        if len(candidates) == 1:
+            return candidates[0]
+    return None
+
 
 def find_svg_files(project_path: Path) -> List[Path]:
     """
@@ -49,7 +112,7 @@ def find_svg_files(project_path: Path) -> List[Path]:
     return sorted(svg_dir.glob('*.svg'))
 
 
-def parse_total_md(md_path: Path) -> Dict[str, str]:
+def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose: bool = True) -> Dict[str, str]:
     """
     解析 total.md 文件，提取每个一级标题对应的讲稿内容
 
@@ -70,35 +133,51 @@ def parse_total_md(md_path: Path) -> Dict[str, str]:
         print(f"错误: 无法读取文件 {md_path}: {e}")
         return {}
 
-    # 按分隔符拆分内容
-    sections = re.split(r'\n---\n', content)
+    svg_stems = svg_stems or []
+    exact, norm_map, num_map = build_match_maps(svg_stems)
 
-    notes = {}
+    # 按标题解析（支持 # / ## / ###）
+    notes: Dict[str, str] = {}
+    current_key: Optional[str] = None
+    current_lines: List[str] = []
+    unmatched_headings: List[str] = []
 
-    for section in sections:
-        section = section.strip()
-        if not section:
+    lines = content.splitlines()
+    for line in lines:
+        m = HEADING_RE.match(line)
+        if m:
+            raw_title = m.group(2).strip()
+            matched = match_title(raw_title, exact, norm_map, num_map, svg_stems)
+            if matched:
+                if current_key is not None:
+                    text = '\n'.join(current_lines).strip()
+                    if current_key in notes and text:
+                        notes[current_key] = (notes[current_key].rstrip() + "\n\n" + text).strip()
+                    elif current_key not in notes:
+                        notes[current_key] = text
+                current_key = matched
+                current_lines = []
+                continue
+            unmatched_headings.append(raw_title)
+
+        if HR_RE.match(line):
             continue
+        if current_key is not None:
+            current_lines.append(line)
 
-        # 查找一级标题
-        lines = section.split('\n')
-        title_line = None
-        content_lines = []
+    if current_key is not None:
+        text = '\n'.join(current_lines).strip()
+        if current_key in notes and text:
+            notes[current_key] = (notes[current_key].rstrip() + "\n\n" + text).strip()
+        elif current_key not in notes:
+            notes[current_key] = text
 
-        for line in lines:
-            if line.startswith('# '):
-                title_line = line
-            elif title_line is not None:
-                content_lines.append(line)
-
-        if title_line:
-            # 提取标题文本（去掉 # 和空格）
-            title = re.sub(r'^#+\s*', '', title_line).strip()
-            # 提取讲稿内容（去掉空行）
-            content = '\n'.join(content_lines).strip()
-
-            if title and content:
-                notes[title] = content
+    if verbose and unmatched_headings:
+        print("\n[提示] 发现未匹配的标题（已忽略）：")
+        for t in unmatched_headings[:10]:
+            print(f"  - {t}")
+        if len(unmatched_headings) > 10:
+            print(f"  ... 以及另外 {len(unmatched_headings) - 10} 个")
 
     return notes
 
@@ -226,7 +305,8 @@ def main():
 
     # 解析 total.md
     total_md_path = project_path / 'notes' / 'total.md'
-    notes = parse_total_md(total_md_path)
+    svg_stems = [p.stem for p in svg_files]
+    notes = parse_total_md(total_md_path, svg_stems, verbose)
 
     if not notes:
         print("错误: 未找到讲稿内容")
