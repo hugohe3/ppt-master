@@ -135,7 +135,7 @@
 1. **渐变**: 使用 `<linearGradient>` 营造金属质感或光影感。
 2. **网格**: 使用 `<pattern>` 定义精细网格背景，Opacity 控制在 0.05-0.1。
 3. **透明度**: 严格使用 `fill-opacity` / `stroke-opacity`。
-4. **禁区**: 无 `clipPath`, `mask`, `filter`。
+4. **禁区**: 无 `clipPath`, `mask`。
 
 ### 禁用元素 (黑名单)
 
@@ -144,7 +144,7 @@
 - `foreignObject` (外部对象)
 - `textPath` (路径文本)
 - `animate`, `animateTransform`, `set` (动画)
-- `<filter>` (滤镜)
+
 - `rgba()` 颜色格式 (必须用 hex + opacity)
 - `<g opacity="...">` (组透明度，需单独设置)
 

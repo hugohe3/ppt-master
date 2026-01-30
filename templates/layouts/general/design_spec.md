@@ -177,7 +177,7 @@
 2. 背景使用 `<rect>` 元素
 3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
 4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`filter`、`<style>`、`class`、`foreignObject`
+5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
 6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
 7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
 8. 渐变使用 `<defs>` 定义 `<linearGradient>`

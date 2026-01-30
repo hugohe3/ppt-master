@@ -175,7 +175,7 @@
 - `foreignObject` (外部对象)
 - `textPath` (路径文本)
 - `animate`, `animateTransform`, `set` (动画)
-- `<filter>` (滤镜)
+
 - `rgba()` 颜色格式 (必须用 hex + opacity)
 - `<g opacity="...">` (组透明度，需单独设置)
 
