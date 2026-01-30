@@ -131,7 +131,7 @@ User Input (PDF/URL/Markdown)
     ↓
 [Source Content Conversion] → pdf_to_md.py / web_to_md.py
     ↓
-[Create Project] → project_manager.py init
+[Create Project] → project_manager.py init <project_name> --format <format>
     ↓
 [Template Option] A) Use existing template B) No template C) Generate new template
     ↓
@@ -145,11 +145,13 @@ User Input (PDF/URL/Markdown)
     ├── Visual Construction Phase: Generate all SVG pages → svg_output/
     └── Logic Construction Phase: Generate complete script → notes/total.md
     ↓
-[Optimizer_CRAP] (Optional)
-    ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
 Output: SVG + PPTX (auto-embeds notes)
+    ↓
+[Optimizer_CRAP] (Optional, only if the first full draft is unsatisfactory)
+    ↓
+If optimized: re-run post-processing and export
 ```
 
 > 📖 For detailed workflow, see [Workflow Tutorial](./docs/workflow_tutorial.md) and [Role Definitions](./roles/README.md)
