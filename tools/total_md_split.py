@@ -44,17 +44,34 @@ def normalize_title(title: str) -> str:
     return text.lower()
 
 
+
+
+
 def extract_leading_number(text: str) -> Optional[int]:
     """Extract leading slide number if present."""
     if not text:
         return None
+    
+    # Try 1: Start with digits (standard)
     m = re.match(r'^(\d{1,3})', text.strip())
-    if not m:
-        return None
-    try:
+    if m:
         return int(m.group(1))
-    except ValueError:
-        return None
+        
+    # Try 2: Common prefixes (Slide X, Page X, 第X页)
+    # Case insensitive for English
+    text_lower = text.lower().strip()
+    
+    # Slide/Page X
+    m = re.match(r'^(?:slide|page|p)\s*[-_:]?\s*(\d{1,3})', text_lower)
+    if m:
+        return int(m.group(1))
+        
+    # 第X页/张
+    m = re.match(r'^第\s*(\d{1,3})\s*[页张]', text_lower)
+    if m:
+        return int(m.group(1))
+        
+    return None
 
 
 def build_match_maps(svg_stems: List[str]) -> Tuple[set, Dict[str, List[str]], Dict[int, List[str]]]:
