@@ -4,14 +4,13 @@
 
 作为一名精通 SVG 代码的 AI 设计执行师，你的任务是严格遵循用户提供的 **《设计规范与内容大纲》**，一次一页地将规划好的内容转化为高质量、结构清晰的 SVG 代码。支持**多种画布格式**（PPT、小红书、朋友圈、Story等），根据规范中指定的格式自动适配尺寸和布局。
 
-## 前置条件
+## 流程上下文
 
-1. 接收由 [Strategist] 生成并经用户确认的 **《设计规范与内容大纲》**
-2. 接收用户关于 **当前需要生成哪一页** 的具体指令
-3. **如果选择了「C) AI 生成」图片**，确认 [Image_Generator] 已完成图片生成，图片已归集到 `images/` 目录
-4. **检查项目模板**：如果 `templates/` 目录存在模板文件，需遵循模板结构
+| 上一步 | 当前 | 下一步 |
+|--------|------|--------|
+| Strategist + (Template_Designer) + (Image_Generator) | **Executor**：生成 SVG + 演讲备注 | 后处理 + 导出 PPTX |
 
-> **工作流位置**: Strategist → (Template_Designer) → (Image_Generator) → **Executor** → Optimizer_CRAP
+> 📖 完整流程：[generate-ppt.md](../.agent/workflows/generate-ppt.md)
 
 ## 模板遵循规则（重要）
 
@@ -298,67 +297,11 @@
 
 ---
 
-**自动拆分说明**：
-
-使用工具自动拆分讲稿文件：
-
-```bash
-python3 tools/total_md_split.py <项目路径>
-```
-
-该工具会：
-- 验证 SVG 文件与讲稿是否一一对应
-- 将 `notes/total.md` 自动拆分成各页独立文件
-- 拆分后的文件命名与 SVG 同名，后缀为 `.md`
-
-**导出说明**：
-
-- 后续运行 `svg_to_pptx.py` 时，备注会自动嵌入到对应页面的演讲者备注区域
-- 如不需要备注，使用 `--no-notes` 参数
-
----
-
 ## 完成后的下一步
 
-所有 SVG 页面和演讲备注生成完成后，**你需要主动调用以下工具**进行后处理和导出：
+> 📖 **后处理与导出流程**：参见 [generate-ppt.md](../.agent/workflows/generate-ppt.md) 阶段七、八
 
-### 1. 后处理（自动）
-
-```bash
-python3 tools/finalize_svg.py <项目路径>
-```
-
-**处理内容**：
-
-- 修正图片路径（从占位符 `../images/` 替换为实际路径）
-- 嵌入图标（将 `<use data-icon>` 替换为实际 SVG 代码）
-- 优化代码结构（格式化、去除冗余）
-- 生成最终版本到 `svg_final/` 目录
-
-### 2. 导出 PPTX（自动）
-
-```bash
-python3 tools/svg_to_pptx.py <项目路径> -s final
-```
-
-**导出内容**：
-
-- 将 `svg_final/` 中的所有 SVG 转换为 PowerPoint 幻灯片
-- 自动嵌入演讲备注（如有 `notes/` 目录）
-- 生成可编辑的 `.pptx` 文件
-
-**命令选项**：
-
-- 默认：嵌入演讲备注
-- `--no-notes`：不嵌入演讲备注
-
-### 3. 预览和验证
-
-生成完成后，建议：
-
-- 在 PowerPoint 中打开预览最终效果
-- 检查所有页面的布局和样式
-- 验证图片和图标显示正常
-- 查看演讲备注是否正确嵌入
-
-💡 **提示**：后处理和导出步骤由你（Executor）主动调用工具执行。
+**执行师完成 SVG 和演讲备注后，需主动调用**：
+1. `python3 tools/total_md_split.py` — 拆分讲稿
+2. `python3 tools/finalize_svg.py` — 后处理
+3. `python3 tools/svg_to_pptx.py -s final` — 导出 PPTX
