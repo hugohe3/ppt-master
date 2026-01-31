@@ -75,6 +75,21 @@
 
 内置库包含 640+ 图标，详见 [templates/icons/README.md](../templates/icons/README.md)
 
+> ⚠️ **选择 C) 内置图标库时的强制规则**：
+> 
+> 在《设计规范》中推荐任何图标之前，**必须先验证图标存在**：
+> 
+> 1. **查阅图标索引**：使用 `view_file` 读取 `templates/icons/icons_index.json`
+> 2. **验证图标名称**：确认推荐的图标名称在 `categories` 或文件系统中确实存在
+> 3. **禁止凭空捏造**：不得使用索引中不存在的图标名称（如 `industry/factory`、`arrows/arrow-up-circle` 等带路径格式的名称均为无效格式）
+> 
+> **正确格式**：图标名称为**单一名称**（如 `factory`、`arrow-trend-up`），不含路径前缀。
+> 
+> **快速查找技巧**：
+> - 按分类查找：`icons_index.json` 的 `categories` 按场景分类
+> - 按语义查找：`quickLookup` 提供常用场景的推荐图标
+> - 完整列表：`templates/icons/FULL_INDEX.md`
+
 ### g. 图片使用确认
 
 | 选项  | 方式       | 适用场景           |
