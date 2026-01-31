@@ -1,10 +1,26 @@
 ---
-description: 从 Markdown 源文档生成 PPT 的完整流程
+description: 从 Markdown 源文档生成 PPT 的完整流程（主入口）
 ---
 
 # PPT 生成工作流
 
+> 📌 **这是 PPT Master 系统的主执行流程**。所有 PPT 生成任务都应从此工作流开始。
+
 本工作流用于从 Markdown 源文档生成 PowerPoint 演示文稿。
+
+**相关文档**：
+- [AGENTS.md](../../AGENTS.md) — 规则手册（角色切换协议、技术约束、AI 提示）
+- [roles/](../../roles/) — 各角色详细定义和知识库
+
+---
+
+## 工作流概览
+
+```
+源文档 → 创建项目 → 模板选项 → Strategist → [Template_Designer] → [Image_Generator] → Executor → 后处理 → 导出
+```
+
+---
 
 ## 前置条件
 
