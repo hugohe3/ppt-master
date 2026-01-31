@@ -297,98 +297,28 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 
 ### 2. SVG 技术约束（不可协商）
 
+> ⚠️ **详细规则**：各 Executor 角色文件中包含完整的代码示例和检查清单
+
+**基础规则**：
 - **viewBox**: 必须与画布尺寸一致
 - **背景**: 使用 `<rect>` 元素
-- **字体**: 使用《设计规范与内容大纲》中指定的字体方案（见 `docs/design_guidelines.md` 字体选择章节）
+- **字体**: 使用系统字体（见规范中的字体方案）
+- **换行**: 使用 `<tspan>` 手动换行
 
-#### 必须禁用的功能（黑名单）
+**禁用功能黑名单**（记忆口诀：PPT 只认基础形状 + 内联样式 + 系统字体）：
 
-| 分类            | 禁用项                                 | 说明                    |
-| --------------- | -------------------------------------- | ----------------------- |
-| **裁剪 / 遮罩** | ❌ `clipPath`                          | PPT 不支持 SVG 裁剪路径 |
-|                 | ❌ `mask`                              | PPT 不支持 SVG 遮罩     |
-| **样式系统**    | ❌ `<style>`                           | 内部样式表不兼容        |
-|                 | ❌ `class` / `id` 选择器               | 使用内联属性替代        |
-|                 | ❌ 外部 CSS                            | 禁止引用外部样式        |
-| **结构 / 嵌套** | ❌ `<foreignObject>`                   | 使用 `<tspan>` 手动换行 |
-|                 | ❌ `<symbol>` + `<use>` 复杂用法       | 简单 `<use>` 引用可用   |
-| **文本 / 字体** | ❌ `textPath`                          | 路径文本不兼容          |
-|                 | ❌ Web 字体（`@font-face`）            | 使用系统字体栈          |
-| **动画 / 交互** | ❌ SMIL 动画（`<animate*>` / `<set>`） | SVG 动画不导出          |
-|                 | ❌ `<script>` / 事件属性               | 禁止脚本和事件处理      |
-| **标记 / 箭头** | ❌ `marker` / `marker-end`             | PPT 不支持 SVG 标记     |
-|                 | ❌ `<marker>` + `<defs>`               | 使用 `<polygon>` 替代   |
-| **其他**        | ❌ `<iframe>`                          | 不应出现在 SVG 中       |
+`clipPath` | `mask` | `<style>` | `class/id` | 外部 CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>`
 
-> 📌 **记忆口诀**：PPT 只认基础形状 + 内联样式 + 系统字体
+**PPT 兼容性**（记忆口诀：不认 rgba、不认组透明、不认图片透明、不认 marker）：
 
-### 3. PPT 兼容性规则（必须遵守）
+| ❌ 禁止 | ✅ 替代方案 |
+|--------|-------------|
+| `rgba()` 颜色 | `fill-opacity` / `stroke-opacity` |
+| `<g opacity>` 组透明 | 每个子元素单独设置 |
+| `<image opacity>` | 遮罩层叠加 |
+| `marker-end` 箭头 | `<polygon>` 三角形 |
 
-为确保 SVG 导出到 PowerPoint 后效果一致，**必须遵守以下透明度规则**：
-
-#### 禁止使用的写法
-
-| ❌ 禁止                        | ✅ 正确替代                                                      |
-| ------------------------------ | ---------------------------------------------------------------- |
-| `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"`                              |
-| `stroke="rgba(0,0,0,0.5)"`     | `stroke="#000000" stroke-opacity="0.5"`                          |
-| `<g opacity="0.2">...</g>`     | 每个子元素单独设置 `opacity` / `fill-opacity` / `stroke-opacity` |
-| `<image ... opacity="0.3"/>`   | 图片后添加遮罩层 `<rect fill="背景色" opacity="0.7"/>`           |
-
-#### 透明度正确写法示例
-
-```xml
-<!-- ✅ 填充透明度 -->
-<rect fill="#FFFFFF" fill-opacity="0.15"/>
-
-<!-- ✅ 描边透明度 -->
-<circle stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1"/>
-
-<!-- ✅ 整体透明度（简单元素可用） -->
-<rect fill="#2E5A8B" opacity="0.15"/>
-
-<!-- ❌ 禁止：组透明度 -->
-<g opacity="0.1">
-  <circle .../>
-  <line .../>
-</g>
-
-<!-- ✅ 正确：每个元素单独设置 -->
-<circle stroke="#FFF" stroke-opacity="0.1"/>
-<line stroke="#FFF" stroke-opacity="0.1"/>
-```
-
-#### 图片透明度遮罩方案
-
-```xml
-<!-- 图片原始透明度 0.35 → 遮罩层 opacity 0.65 -->
-<image href="bg.png" x="0" y="0" width="1280" height="720"/>
-<rect x="0" y="0" width="1280" height="720" fill="#背景色" opacity="0.65"/>
-```
-
-#### 箭头绘制方案
-
-PPT 不支持 SVG 的 `marker-end` 属性，需使用 `<polygon>` 三角形替代：
-
-```xml
-<!-- ❌ 禁止：使用 marker-end -->
-<defs>
-  <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-    <polygon points="0 0, 10 3.5, 0 7" fill="#6366F1"/>
-  </marker>
-</defs>
-<path d="M100 200 L200 200" marker-end="url(#arrow)"/>
-
-<!-- ✅ 正确：使用 line + polygon -->
-<line x1="100" y1="200" x2="195" y2="200" stroke="#6366F1" stroke-width="2"/>
-<polygon points="195,194 210,200 195,206" fill="#6366F1"/>
-
-<!-- ✅ 垂直箭头示例 -->
-<line x1="200" y1="100" x2="200" y2="145" stroke="#6366F1" stroke-width="2"/>
-<polygon points="194,145 200,160 206,145" fill="#6366F1"/>
-```
-
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
+> 📖 **详细代码示例**：参见 `roles/Executor_*.md` 对应章节
 
 ### 4. 画布格式
 
