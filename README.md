@@ -133,11 +133,11 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
     ↓
 [创建项目] → project_manager.py init <项目名> --format <格式>
     ↓
-[模板选项] A) 使用已有模板 B) 不使用模板 C) 生成新模板
+[模板选项] A) 使用已有模板 B) 不使用模板
+    ↓
+[需要新模板？] → 使用 /create-template 工作流单独创建
     ↓
 [Strategist] 策略师 - 八项确认与设计规范
-    ↓
-[Template_Designer] 模板设计师（仅选项 C 触发）
     ↓
 [Image_Generator] 图片生成师（当选择 AI 生成时）
     ↓
