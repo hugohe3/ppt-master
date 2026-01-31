@@ -133,11 +133,11 @@ User Input (PDF/URL/Markdown)
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
-[Template Option] A) Use existing template B) No template C) Generate new template
+[Template Option] A) Use existing template B) No template
+    ↓
+[Need New Template?] → Use /create-template workflow separately
     ↓
 [Strategist] - Eight Confirmations & Design Specifications
-    ↓
-[Template_Designer] (Only triggered for option C)
     ↓
 [Image_Generator] (When AI generation is selected)
     ↓
