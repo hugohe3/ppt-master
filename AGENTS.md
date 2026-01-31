@@ -1,36 +1,20 @@
-# AGENTS.md
+# AGENTS.md — 规则手册
 
-本文件为 AI 代理协作指引。详细文档请参阅 [README.md](./README.md)。
+> 📋 **本文件定位**：AI 代理协作的**规则与约束**，不包含具体流程和角色详情。
+
+## 三层架构导航
+
+| 层级 | 文档 | 职责 |
+|------|------|------|
+| **流程** | [generate-ppt.md](.agent/workflows/generate-ppt.md) | "做什么"（步骤顺序） |
+| **角色** | [roles/README.md](roles/README.md) | "谁来做"（专业能力） |
+| **规则** | 本文件 | "怎么做"（约束边界） |
+
+---
 
 ## 项目概述
 
-PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角色协作将来源文档转化为高质量输出。这是一个「文档与工作流框架」项目，此处的"代码"特指由 AI 代理生成的 SVG 标记。
-
-## 角色与流程速查
-
-| 角色                        | 文件                               | 职责                                      |
-| --------------------------- | ---------------------------------- | ----------------------------------------- |
-| **Strategist**              | `roles/Strategist.md`              | 初次沟通、内容分析、设计规范编制          |
-| **Template_Designer**       | `roles/Template_Designer.md`       | 页面模板生成（用户选择「C) 生成新模板」） |
-| **Image_Generator**         | `roles/Image_Generator.md`         | AI 图片生成（条件触发）                   |
-| **Executor_General**        | `roles/Executor_General.md`        | 通用灵活风格 SVG 生成                     |
-| **Executor_Consultant**     | `roles/Executor_Consultant.md`     | 一般咨询风格 SVG 生成                     |
-| **Executor_Consultant_Top** | `roles/Executor_Consultant_Top.md` | 顶级咨询风格 SVG 生成（MBB 级）           |
-| **Optimizer_CRAP**          | `roles/Optimizer_CRAP.md`          | CRAP 原则视觉优化（可选）                 |
-
-### 主工作流程
-
-> 📖 **详细执行步骤**：请参阅 [generate-ppt.md](.agent/workflows/generate-ppt.md)
-
-```
-源文档 → 创建项目 → 模板选项 → Strategist → [Template_Designer] → [Image_Generator] → Executor → 后处理 → 导出
-```
-
-**关键节点**：
-1. **源内容处理**：PDF/URL 立即转换，不等待确认
-2. **模板选项**：必须在策略师之前确认（A 使用已有 / B 不使用 / C 生成新模板）
-3. **八项确认**：策略师必须完成，不可跳过
-4. **后处理与导出**：AI 自动执行
+PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统，通过多角色协作将来源文档转化为高质量输出。
 
 ---
 
