@@ -167,7 +167,7 @@
 <use data-icon="rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 ```
 
-生成后运行 `python3 tools/embed_icons.py` 一次性替换为实际代码。
+> ⚠️ **无需手动运行** `embed_icons.py`！`finalize_svg.py` 后处理工具会自动嵌入图标。
 
 **常用图标**：`chart-bar` `arrow-trend-up` `users` `cog` `circle-checkmark` `target` `clock` `file`
 
@@ -299,9 +299,32 @@
 
 ## 完成后的下一步
 
-> 📖 **后处理与导出流程**：参见 [generate-ppt.md](../.agent/workflows/generate-ppt.md) 阶段七、八
+> ⚠️ **强制检查点**：在进入后处理之前，**必须输出以下检查点**确认两个阶段都已完成：
 
-**执行师完成 SVG 和演讲备注后，需主动调用**：
-1. `python3 tools/total_md_split.py` — 拆分讲稿
-2. `python3 tools/finalize_svg.py` — 后处理
-3. `python3 tools/svg_to_pptx.py -s final` — 导出 PPTX
+```markdown
+## ✅ Executor 阶段完成
+
+### 视觉构建阶段
+- [x] 所有 SVG 页面已生成到 svg_output/
+- [x] 共 XX 页
+
+### 逻辑构建阶段
+- [x] 已生成完整演讲备注 notes/total.md
+- [x] 共 XX 页备注
+```
+
+> ❌ **禁止**：未输出检查点就进入后处理！如果"逻辑构建阶段"未完成，必须先生成备注。
+
+**后处理与导出**（参见 [generate-ppt.md](../.agent/workflows/generate-ppt.md) 阶段八）：
+
+```bash
+# 1. 拆分讲稿
+python3 tools/total_md_split.py <项目路径>
+
+# 2. SVG 后处理（自动嵌入图标、图片等）
+python3 tools/finalize_svg.py <项目路径>
+
+# 3. 导出 PPTX
+python3 tools/svg_to_pptx.py <项目路径> -s final
+```
+
