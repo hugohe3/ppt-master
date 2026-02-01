@@ -1,8 +1,20 @@
-# AGENTS.md — 规则手册
+# AGENTS.md — 规则手册（必读）
 
-> 📋 **本文件定位**：AI 代理协作的**规则与约束**，不包含具体流程和角色详情。
+> ⚠️ **AI 代理注意**：本文件是 PPT Master 系统的**规则总纲**，执行任何工作流之前必须先阅读本文件。
 >
-> 🚀 **执行入口**：开始生成 PPT 请使用 **[/generate-ppt 工作流](.agent/workflows/generate-ppt.md)**（主入口）
+> 如果你是通过 `/generate-ppt` 或 `/create-template` 进入的，请确认已阅读本文件后再继续。
+
+---
+
+## 🚀 快速入口
+
+| 任务 | 工作流 |
+|------|--------|
+| **生成 PPT** | [/generate-ppt](.agent/workflows/generate-ppt.md) |
+
+> 📋 **执行顺序**：阅读本文件 → 阅读工作流 → 开始执行
+
+---
 
 ## 三层架构导航
 
