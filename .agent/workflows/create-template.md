@@ -111,7 +111,7 @@ ls -la "templates/layouts/<新模板名称>"
 
 ## 注意事项
 
-1. **SVG 技术约束**：遵守 [AGENTS.md](../../AGENTS.md) 规则
+1. **SVG 技术约束**：参见 [Template_Designer.md](../roles/Template_Designer.md) 技术约束章节
 2. **配色一致性**：所有 SVG 文件使用相同配色
 3. **占位符规范**：使用 `{{}}` 格式
 
