@@ -15,7 +15,7 @@ Nano Banana Image Generator (Gemini Nano)
 """
 
 import os
-import json
+
 import base64
 import argparse
 import mimetypes
@@ -52,27 +52,11 @@ def generate(prompt: str, negative_prompt: str = None,
         filename: 指定输出文件名 (不含扩展名，可选)
     """
     # Load configuration
-    # Priority: Environment Variables > Config File
-    
     api_key = os.environ.get("GEMINI_API_KEY")
     base_url = os.environ.get("GEMINI_BASE_URL")
-    
-    config_path = os.path.join(os.path.dirname(__file__), "nano_banana_config.json")
-    
-    # If config file exists, load it directly to supplement missing env vars or as fallback
-    if os.path.exists(config_path):
-        try:
-            with open(config_path, "r") as f:
-                config = json.load(f)
-                if not api_key:
-                    api_key = config.get("api_key")
-                if not base_url:
-                    base_url = config.get("base_url")
-        except Exception as e:
-            print(f"Warning: Error reading configuration file: {e}")
 
     if not api_key:
-        print("Error: API Key not found. Please set GEMINI_API_KEY env var or valid config file.")
+        print("Error: API Key not found. Please set GEMINI_API_KEY environment variable.")
         return
 
     # Validate aspect_ratio
@@ -86,27 +70,36 @@ def generate(prompt: str, negative_prompt: str = None,
         print(f"Error: Invalid image size '{image_size}'. Valid options: {VALID_IMAGE_SIZES}")
         return
 
-    client = genai.Client(
-        api_key=api_key,
-        http_options={
-            'base_url': base_url
-        }
-    )
+    # Configure client options
+    client_options = {'api_key': api_key}
+    if base_url:
+        client_options['http_options'] = {'base_url': base_url}
+
+    client = genai.Client(**client_options)
 
     base_model = "gemini-3-pro-image-preview"
     model = base_model
 
-    # Handle image size model selection (2K or 4K adds suffix, 1K is default/no suffix)
-    if size_upper in ["2K", "4K"]:
-        model += f"-{size_upper.lower()}"
+    # Compatibility: Only append suffixes if using a custom Base URL (Proxy mode).
+    # Official Google GenAI API uses the cleaner model name and accepts config params via request body.
+    if base_url:
+        # Handle image size model selection (2K or 4K adds suffix, 1K is default/no suffix)
+        if size_upper in ["2K", "4K"]:
+            model += f"-{size_upper.lower()}"
 
-    # Handle Aspect Ratio in model name (e.g. -16x9)
-    # This assumes the backend routes specific model names to specific aspect ratio pipelines
-    if aspect_ratio:
-        ratio_suffix = aspect_ratio.replace(":", "x")
-        model += f"-{ratio_suffix}"
+        # Handle Aspect Ratio in model name (e.g. -16x9)
+        # This assumes the backend routes specific model names to specific aspect ratio pipelines
+        if aspect_ratio:
+            ratio_suffix = aspect_ratio.replace(":", "x")
+            model += f"-{ratio_suffix}"
 
-    prompt_with_config = f"{prompt} --ar {aspect_ratio}"
+    # Construct Prompt
+    if base_url:
+        # Proxy Mode: Append Midjourney-style flags which the proxy might parse
+        prompt_with_config = f"{prompt} --ar {aspect_ratio}"
+    else:
+        # Official Mode: Keep prompt clean, rely on GenerateContentConfig
+        prompt_with_config = prompt
     
     # Structure the prompt to include negative prompt if provided
     final_prompt_text = prompt_with_config
