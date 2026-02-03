@@ -129,6 +129,9 @@
 | 朋友圈   | 1:1          | 1080×1080              |
 | Story    | 9:16         | 1080×1920              |
 
+> ⚠️ **Nano Banana 工具支持的宽高比**（生成提示词时必须使用以下格式）：
+> `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
+
 ---
 
 ## 3. 图片类型分类与处理
@@ -360,18 +363,25 @@ subtle and elegant, suitable for presentation slide corners
 
 > ⚠️ **前置条件**: 必须先完成 4.2，确保 `images/image_prompts.md` 已创建
 
-**方式一：自动生成**（如果 AI 工具支持）
+**方式一：使用 Nano Banana 命令行工具** ⭐ 推荐
 
-- 直接调用图像生成 API
-- 下载并保存到 `项目/images/` 目录
+- 使用本项目工具 `tools/nano_banana_gen.py` 直接生成高分辨率图片
+- 首次使用需配置：复制 `tools/nano_banana_config.example.json` 为 `tools/nano_banana_config.json`，填入 API Key
+- 命令格式:
+  ```bash
+  python tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images
+  ```
+- 支持的宽高比: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
+- 支持的尺寸: `1K`, `2K`, `4K`（默认）
+- 使用 `--output` 或 `-o` 参数指定输出目录，图片将保存到与 `image_prompts.md` 相同的 `images/` 目录
 
-**方式二：手动生成**（常用方式）
+**方式二：手动生成**（使用其他 AI 平台）
 
 - 提示词已保存在 `images/image_prompts.md`，告知用户文件位置
 - 用户自行到 AI 平台（Midjourney、DALL-E、Stable Diffusion、文心一格、通义万相）生成
 - 用户将生成的图片放入 `项目/images/` 目录
 
-**方式三：使用 Gemini 生成**（推荐高分辨率）
+**方式三：使用 Gemini 网页版**
 
 - 在 [Gemini](https://gemini.google.com/) 中生成图片
 - 选择 **Download full size** 下载高分辨率版本
@@ -379,6 +389,11 @@ subtle and elegant, suitable for presentation slide corners
   - 本项目工具: `python3 tools/gemini_watermark_remover.py <图片路径>`
   - 或使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover)
 - 将处理后的图片放入 `项目/images/` 目录
+
+**方式四：自动生成**（如果 AI 工具支持）
+
+- 直接调用图像生成 API
+- 下载并保存到 `项目/images/` 目录
 
 ### 4.4 验证阶段
 
