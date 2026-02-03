@@ -1,6 +1,6 @@
 # PPT Master - AI 驱动的多格式 SVG 内容生成系统
 
-[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](./VERSION)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
