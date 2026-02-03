@@ -37,9 +37,9 @@ def save_binary_file(file_name: str, data: bytes):
     print(f"File saved to: {file_name}")
 
 
-def generate(prompt: str, negative_prompt: str = None, 
+def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "4K", 
-             output_dir: str = None):
+             output_dir: str = None, filename: str = None):
     """
     调用 Gemini API 生成图像
     
@@ -49,6 +49,7 @@ def generate(prompt: str, negative_prompt: str = None,
         aspect_ratio: 图片宽高比 (默认 1:1)
         image_size: 图片尺寸 (1K, 2K, 4K)
         output_dir: 输出目录 (可选，默认为当前目录)
+        filename: 指定输出文件名 (不含扩展名，可选)
     """
     # Load configuration
     # Priority: Environment Variables > Config File
@@ -105,16 +106,11 @@ def generate(prompt: str, negative_prompt: str = None,
         ratio_suffix = aspect_ratio.replace(":", "x")
         model += f"-{ratio_suffix}"
 
-    # Append aspect ratio to prompt for models that support prompt-based config
     prompt_with_config = f"{prompt} --ar {aspect_ratio}"
     
     # Structure the prompt to include negative prompt if provided
-    # Note: While some APIs have a dedicated negative_prompt field, putting it in the text 
-    # is a robust fallback for this specific client wrapper if the field isn't exposed.
-    # We will try to pass it clearly in the text.
     final_prompt_text = prompt_with_config
     if negative_prompt:
-        # Common convention for text-to-image prompts
         final_prompt_text += f"\n\nNegative prompt: {negative_prompt}"
     
     print(f"Generating image with prompt: '{final_prompt_text}'")
@@ -137,11 +133,13 @@ def generate(prompt: str, negative_prompt: str = None,
         image_config=types.ImageConfig(
             aspect_ratio=aspect_ratio,
             image_size=image_size,
-            output_mime_type="image/png",
         ),
     )
 
     file_index = 0
+    image_saved = False  # Track if we successfully saved an image
+    server_text_response = None  # Capture any text response from server
+    
     try:
         for chunk in client.models.generate_content_stream(
             model=model,
@@ -158,13 +156,23 @@ def generate(prompt: str, negative_prompt: str = None,
             part = chunk.candidates[0].content.parts[0]
             if part.inline_data and part.inline_data.data:
                 # Use a descriptive filename based on prompt (sanitized) or default
-                # We use the ORIGINAL prompt for naming, not the one with flags
-                safe_prompt = "".join([c for c in prompt if c.isalnum() or c in (' ', '_')]).rstrip()
-                safe_prompt = safe_prompt.replace(" ", "_").lower()[:30] # Increased length
-                if not safe_prompt:
-                    safe_prompt = "generated_image"
+                if filename:
+                   file_name = f"{filename}"
+                   # If multiple chunks (unlikely for single image request but loop suggests stream), 
+                   # handle indexing only if strictly necessary or for safety?
+                   # For this tool, we assume 1 image per request usually.
+                   # But if valid multiple images arrive, we append index for subsequent ones.
+                   if file_index > 0:
+                       file_name = f"{filename}_{file_index}"
+                else:
+                    # We use the ORIGINAL prompt for naming, not the one with flags
+                    safe_prompt = "".join([c for c in prompt if c.isalnum() or c in (' ', '_')]).rstrip()
+                    safe_prompt = safe_prompt.replace(" ", "_").lower()[:30] # Increased length
+                    if not safe_prompt:
+                        safe_prompt = "generated_image"
+                    
+                    file_name = f"{safe_prompt}_{file_index}"
                 
-                file_name = f"{safe_prompt}_{file_index}"
                 file_index += 1
                 inline_data = part.inline_data
                 data_buffer = inline_data.data
@@ -182,8 +190,18 @@ def generate(prompt: str, negative_prompt: str = None,
                 else:
                     full_path = file_name_with_ext
                 save_binary_file(full_path, data_buffer)
-            else:
-                pass # Text content or other non-image content
+                image_saved = True  # Mark that we saved an image
+            elif part.text:
+                # Capture text response (could be error message or additional info)
+                server_text_response = part.text
+            # Ignore empty chunks silently - they're just stream signals
+        
+        # After stream ends, report status
+        if server_text_response:
+            print(f"Server Response: {server_text_response}")
+        
+        if not image_saved:
+            print("Warning: No image was generated. The server may have refused the request.")
                 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -214,6 +232,12 @@ if __name__ == "__main__":
         help="Output directory for generated images. If not specified, saves to current directory."
     )
 
+    parser.add_argument(
+        "--filename", "-f",
+        default=None,
+        help="Specific filename for the generated image (without extension). Overrides auto-naming."
+    )
+
     args = parser.parse_args()
     
-    generate(args.prompt, args.negative_prompt, args.aspect_ratio, args.image_size, args.output)
+    generate(args.prompt, args.negative_prompt, args.aspect_ratio, args.image_size, args.output, args.filename)

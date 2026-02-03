@@ -198,6 +198,7 @@ clean negative space in center for text overlay,
 16:9 aspect ratio, high resolution, professional presentation background
 ```
 
+
 **负面提示词**: `text, letters, watermark, faces, busy patterns, high contrast details`
 
 ---
@@ -231,6 +232,7 @@ natural soft lighting, slightly blurred office background,
 color grading with cool blue tones (#1E3A5F),
 high quality, sharp focus, 8K resolution, diverse professional team
 ```
+
 
 **负面提示词**: `watermark, text overlay, artificial, CGI, illustration, cartoon, distorted faces`
 
@@ -267,6 +269,7 @@ color palette: blue (#4A90D9), coral (#FF6B6B), white,
 white background, professional business illustration
 ```
 
+
 **负面提示词**: `realistic, photography, 3D render, complex textures, gradients, watermark`
 
 ---
@@ -302,6 +305,7 @@ blue (#4A90D9) and gray (#6B7280) color scheme,
 white background, clear labels, suitable for academic publication
 ```
 
+
 **负面提示词**: `cluttered, messy, overlapping elements, dark background, realistic, photography`
 
 ---
@@ -334,6 +338,7 @@ Abstract geometric corner decoration with flowing lines,
 minimalist style, gold (#D4AF37) on transparent background,
 subtle and elegant, suitable for presentation slide corners
 ```
+
 
 **负面提示词**: `busy, cluttered, high contrast, distracting, photorealistic`
 
@@ -369,17 +374,27 @@ subtle and elegant, suitable for presentation slide corners
 - 首次使用需配置：复制 `tools/nano_banana_config.example.json` 为 `tools/nano_banana_config.json`，填入 API Key
 - 命令格式:
   ```bash
-  python tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images
+  python tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images --filename cover_bg
   ```
+- **完整参数列表**:
+
+  | 参数 | 简写 | 说明 | 默认值 |
+  |------|------|------|--------|
+  | `prompt` | - | 正向提示词（位置参数） | `Nano Banana` |
+  | `--negative_prompt` | `-n` | 负面提示词，指定需要排除的元素 | 无 |
+  | `--aspect_ratio` | - | 图片宽高比 | `1:1` |
+  | `--image_size` | - | 图片尺寸 (`1K`, `2K`, `4K`) | `4K` |
+  | `--output` | `-o` | 输出目录 | 当前目录 |
+  | `--filename` | `-f` | 指定输出文件名（不含扩展名） | 自动命名 |
+
 - 支持的宽高比: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
 - 支持的尺寸: `1K`, `2K`, `4K`（默认）
 - 使用 `--output` 或 `-o` 参数指定输出目录，图片将保存到与 `image_prompts.md` 相同的 `images/` 目录
 
-**方式二：手动生成**（使用其他 AI 平台）
+**方式二：自动生成**（如果 AI 工具支持）
 
-- 提示词已保存在 `images/image_prompts.md`，告知用户文件位置
-- 用户自行到 AI 平台（Midjourney、DALL-E、Stable Diffusion、文心一格、通义万相）生成
-- 用户将生成的图片放入 `项目/images/` 目录
+- 直接调用图像生成 API
+- 下载并保存到 `项目/images/` 目录
 
 **方式三：使用 Gemini 网页版**
 
@@ -390,10 +405,11 @@ subtle and elegant, suitable for presentation slide corners
   - 或使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover)
 - 将处理后的图片放入 `项目/images/` 目录
 
-**方式四：自动生成**（如果 AI 工具支持）
+**方式四：手动生成**（使用其他 AI 平台）
 
-- 直接调用图像生成 API
-- 下载并保存到 `项目/images/` 目录
+- 提示词已保存在 `images/image_prompts.md`，告知用户文件位置
+- 用户自行到 AI 平台（Midjourney、DALL-E、Stable Diffusion、文心一格、通义万相）生成
+- 用户将生成的图片放入 `项目/images/` 目录
 
 ### 4.4 验证阶段
 
@@ -449,13 +465,6 @@ high quality 4K, professional presentation background
 
 ```
 
-**负面提示词 (Negative Prompt)**:
-```
-
-text, letters, watermark, faces, busy patterns, high contrast details, low quality
-
-```
-
 **图片描述 (Alt Text)**:
 > 现代科技感抽象背景，深蓝色渐变配合数字波浪和粒子效果
 
@@ -496,6 +505,9 @@ text, letters, watermark, faces, busy patterns, high contrast details, low quali
 
 **下一步**: 切换到 Executor 角色开始生成 SVG
 ```
+
+---
+
 
 ---
 
