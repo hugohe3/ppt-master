@@ -46,19 +46,13 @@ except ImportError:
 # 导入项目工具模块
 sys.path.insert(0, str(Path(__file__).parent))
 try:
-    from project_utils import get_project_info, CANVAS_FORMATS
+    from project_utils import get_project_info
+    from config import CANVAS_FORMATS
 except ImportError:
     CANVAS_FORMATS = {
-        'ppt169': {'name': 'PPT 16:9', 'dimensions': '1280x720', 'viewbox': '0 0 1280 720'},
-        'ppt43': {'name': 'PPT 4:3', 'dimensions': '1024x768', 'viewbox': '0 0 1024 768'},
-        'wechat': {'name': '微信公众号头图', 'dimensions': '900x383', 'viewbox': '0 0 900 383'},
-        'xiaohongshu': {'name': '小红书', 'dimensions': '1242x1660', 'viewbox': '0 0 1242 1660'},
-        'moments': {'name': '朋友圈/Instagram', 'dimensions': '1080x1080', 'viewbox': '0 0 1080 1080'},
-        'story': {'name': 'Story/竖版', 'dimensions': '1080x1920', 'viewbox': '0 0 1080 1920'},
-        'banner': {'name': '横版 Banner', 'dimensions': '1920x1080', 'viewbox': '0 0 1920 1080'},
-        'a4': {'name': 'A4 打印', 'dimensions': '1240x1754', 'viewbox': '0 0 1240 1754'},
+        'ppt169': {'name': 'PPT 16:9', 'dimensions': '1280×720', 'viewbox': '0 0 1280 720'},
     }
-    
+
     def get_project_info(path):
         return {'format': 'unknown', 'name': Path(path).name}
 
@@ -112,24 +106,30 @@ for prefix, uri in NAMESPACES.items():
     ET.register_namespace(prefix, uri)
 
 
-def get_slide_dimensions(canvas_format: str) -> Tuple[int, int]:
+def get_slide_dimensions(canvas_format: str, custom_pixels: Optional[Tuple[int, int]] = None) -> Tuple[int, int]:
     """获取幻灯片尺寸（EMU 单位）"""
-    if canvas_format not in CANVAS_FORMATS:
-        canvas_format = 'ppt169'
-    
-    dimensions = CANVAS_FORMATS[canvas_format]['dimensions']
-    match = re.match(r'(\d+)[×x](\d+)', dimensions)
-    if match:
-        width_px = int(match.group(1))
-        height_px = int(match.group(2))
+    if custom_pixels:
+        width_px, height_px = custom_pixels
     else:
-        width_px, height_px = 1280, 720
+        if canvas_format not in CANVAS_FORMATS:
+            canvas_format = 'ppt169'
+        
+        dimensions = CANVAS_FORMATS[canvas_format]['dimensions']
+        match = re.match(r'(\d+)[×x](\d+)', dimensions)
+        if match:
+            width_px = int(match.group(1))
+            height_px = int(match.group(2))
+        else:
+            width_px, height_px = 1280, 720
     
     return int(width_px * EMU_PER_PIXEL), int(height_px * EMU_PER_PIXEL)
 
 
-def get_pixel_dimensions(canvas_format: str) -> Tuple[int, int]:
+def get_pixel_dimensions(canvas_format: str, custom_pixels: Optional[Tuple[int, int]] = None) -> Tuple[int, int]:
     """获取画布像素尺寸"""
+    if custom_pixels:
+        return custom_pixels
+    
     if canvas_format not in CANVAS_FORMATS:
         canvas_format = 'ppt169'
     
@@ -138,6 +138,30 @@ def get_pixel_dimensions(canvas_format: str) -> Tuple[int, int]:
     if match:
         return int(match.group(1)), int(match.group(2))
     return 1280, 720
+
+
+def get_viewbox_dimensions(svg_path: Path) -> Optional[Tuple[int, int]]:
+    """从 SVG 的 viewBox 提取像素尺寸（返回整数）"""
+    try:
+        with open(svg_path, 'r', encoding='utf-8') as f:
+            content = f.read(2000)
+        
+        match = re.search(r'viewBox="([^"]+)"', content)
+        if not match:
+            return None
+        
+        parts = re.split(r'[\s,]+', match.group(1).strip())
+        if len(parts) < 4:
+            return None
+        
+        width = float(parts[2])
+        height = float(parts[3])
+        if width <= 0 or height <= 0:
+            return None
+        
+        return int(round(width)), int(round(height))
+    except Exception:
+        return None
 
 
 def detect_format_from_svg(svg_path: Path) -> Optional[str]:
@@ -606,7 +630,8 @@ def create_pptx_with_native_svg(
         print("  将使用纯 SVG 模式（可能在 Office LTSC 2021 等版本中不显示）")
         use_compat_mode = False
     
-    # 自动检测画布格式
+    # 自动检测画布格式或从 viewBox 获取尺寸
+    custom_pixels: Optional[Tuple[int, int]] = None
     if canvas_format is None:
         canvas_format = detect_format_from_svg(svg_files[0])
         if canvas_format and verbose:
@@ -614,12 +639,17 @@ def create_pptx_with_native_svg(
             print(f"  检测到画布格式: {format_name}")
     
     if canvas_format is None:
+        custom_pixels = get_viewbox_dimensions(svg_files[0])
+        if custom_pixels and verbose:
+            print(f"  使用 SVG viewBox 尺寸: {custom_pixels[0]} x {custom_pixels[1]} px")
+    
+    if canvas_format is None and custom_pixels is None:
         canvas_format = 'ppt169'
         if verbose:
             print(f"  使用默认格式: PPT 16:9")
     
-    width_emu, height_emu = get_slide_dimensions(canvas_format)
-    pixel_width, pixel_height = get_pixel_dimensions(canvas_format)
+    width_emu, height_emu = get_slide_dimensions(canvas_format or 'ppt169', custom_pixels)
+    pixel_width, pixel_height = get_pixel_dimensions(canvas_format or 'ppt169', custom_pixels)
     
     if verbose:
         print(f"  幻灯片尺寸: {pixel_width} x {pixel_height} px")
