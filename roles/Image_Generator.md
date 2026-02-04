@@ -371,11 +371,18 @@ subtle and elegant, suitable for presentation slide corners
 **方式一：使用 Nano Banana 命令行工具** ⭐ 推荐
 
 - 使用本项目工具 `tools/nano_banana_gen.py` 直接生成高分辨率图片
-- 首次使用需配置：复制 `tools/nano_banana_config.example.json` 为 `tools/nano_banana_config.json`，填入 API Key
+- **首选调用方式**：始终优先使用 `tools/nano_banana_gen.py`
+- **配置方式**：仅使用环境变量（不使用 JSON 配置）
+- 必需环境变量：`GEMINI_API_KEY`
+- 可选环境变量：`GEMINI_BASE_URL`
 - 命令格式:
   ```bash
   python tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images --filename cover_bg
   ```
+- **生成节奏控制（强制）**：
+- 每次只执行一个生成命令，等待图片返回并确认文件落盘后，再执行下一条
+- 建议每张间隔 2-5 秒，避免并发或过快提交导致失败
+- 如出现失败/无输出，先停止队列，检查环境变量与输出目录，再继续
 - **完整参数列表**:
 
   | 参数 | 简写 | 说明 | 默认值 |

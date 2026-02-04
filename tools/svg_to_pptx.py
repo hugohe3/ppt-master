@@ -332,21 +332,31 @@ def markdown_to_plain_text(md_content: str) -> str:
     Returns:
         纯文本内容
     """
+    def strip_inline_bold(text: str) -> str:
+        # Remove Markdown bold markers while keeping content
+        text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+        text = re.sub(r'__(.+?)__', r'\1', text)
+        return text
+
     lines = []
     for line in md_content.split('\n'):
         # 跳过标题行（# 开头）
         if line.startswith('#'):
             # 提取标题文本
             text = re.sub(r'^#+\s*', '', line).strip()
+            text = strip_inline_bold(text)
             if text:
                 lines.append(text)
                 lines.append('')  # 空行
         # 处理列表项（- 开头）
         elif line.strip().startswith('- '):
-            lines.append('• ' + line.strip()[2:])
+            item_text = line.strip()[2:]
+            item_text = strip_inline_bold(item_text)
+            lines.append('• ' + item_text)
         # 普通行
         elif line.strip():
-            lines.append(line.strip())
+            text = strip_inline_bold(line.strip())
+            lines.append(text)
         else:
             lines.append('')
     

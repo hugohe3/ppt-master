@@ -82,6 +82,7 @@
 > 1. **查阅图标索引**：使用 `view_file` 读取 `templates/icons/icons_index.json`
 > 2. **验证图标名称**：确认推荐的图标名称在 `categories` 或文件系统中确实存在
 > 3. **禁止凭空捏造**：不得使用索引中不存在的图标名称（如 `industry/factory`、`arrows/arrow-up-circle` 等带路径格式的名称均为无效格式）
+> 4. **输出清单**：在《设计规范》中列出最终图标清单（名称必须来自 `icons_index.json`），Executor **只能**使用该清单内图标
 > 
 > **正确格式**：图标名称为**单一名称**（如 `factory`、`arrow-trend-up`），不含路径前缀。
 > 
