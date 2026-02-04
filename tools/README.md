@@ -1208,18 +1208,19 @@ python3 tools/nano_banana_gen.py "Beautiful landscape" -n "low quality, blurry, 
 | `--image_size` | - | `4K` | `1K`, `2K`, `4K` |
 | `--output` | `-o` | 当前工作目录 | 图片保存目录 |
 
-**配置**:
+**环境变量配置**:
 
-首次使用建议配置 `tools/nano_banana_config.json`：
+使用前需设置环境变量：
 
-```json
-{
-  "api_key": "YOUR_GEMINI_API_KEY",
-  "base_url": "YOUR_API_BASE_URL"
-}
+```bash
+# 必需：Gemini API Key
+export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+
+# 可选：自定义 API 端点（用于代理服务）
+export GEMINI_BASE_URL="YOUR_API_BASE_URL"
 ```
 
-或者设置环境变量 `GEMINI_API_KEY`。
+> 💡 **提示**: 可将环境变量添加到 `~/.zshrc` 或 `~/.bashrc` 中永久生效。
 
 **依赖**:
 

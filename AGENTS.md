@@ -186,22 +186,32 @@ cp templates/layouts/<模板名>/*.jpeg <项目路径>/images/ 2>/dev/null || tr
    - 保存到 `<项目路径>/images/image_prompts.md`
    - 格式：主体描述 + 风格指令 + 色彩指令 + 构图指令 + 负面提示词 + Alt Text
 
-4. **生成图片**（三种方式）：
+4. **生成图片**（四种方式）：
 
-   **方式一：直接生成**（如支持 generate_image 工具）
+   **方式一：命令行工具** ⭐ 推荐
+   - 使用 `nano_banana_gen.py` 调用 Gemini API 生成图片
+   - 支持 4K 分辨率、自定义宽高比、负面提示词
+   - 需先配置环境变量 `GEMINI_API_KEY`
+     // turbo
+     ```bash
+     python3 tools/nano_banana_gen.py "现代科技感背景" --aspect_ratio 16:9 --image_size 4K -o <项目路径>/images
+     ```
+   - 详细用法参见 `tools/README.md` 和 `roles/Image_Generator.md`
+
+   **方式二：直接生成**（如支持 generate_image 工具）
    - 使用 `generate_image` 工具生成图片
 
-   **方式二：用户自行生成**
-   - 告知用户提示词文件位置
-   - 推荐平台：Gemini、Midjourney、DALL-E 3、Stable Diffusion
-
-   **方式三：Gemini 生成**（推荐高分辨率）
-   - 下载 Full Size 版本
+   **方式三：Gemini 网页版**
+   - 在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载
    - 去除水印：
      // turbo
      ```bash
      python3 tools/gemini_watermark_remover.py <图片路径>
      ```
+
+   **方式四：手动生成**
+   - 告知用户提示词文件位置 `images/image_prompts.md`
+   - 推荐平台：Midjourney、DALL-E 3、Stable Diffusion
 
 5. **验证图片就绪**：确认所有图片已保存到 `images/` 目录
 
