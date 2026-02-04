@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="chapterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078D7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002E5D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#chapterGradient)" />
+
+  <!-- Decorative Circles -->
+  <circle cx="-150" cy="720" r="450" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="1400" cy="-50" r="350" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="200" cy="100" r="150" fill="#4CA1E7" fill-opacity="0.05" />
+  <circle cx="1100" cy="550" r="180" fill="#4CA1E7" fill-opacity="0.04" />
+
+  <!-- Hexagon Pattern (Background) -->
+  <polygon points="100,300 150,270 200,300 200,360 150,390 100,360" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <polygon points="1080,400 1130,370 1180,400 1180,460 1130,490 1080,460" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+
+  <!-- Center Content -->
+  <!-- Large Number Background -->
+  <text x="640" y="420" font-family="Arial" font-size="280" font-weight="bold" fill="#FFFFFF" fill-opacity="0.05" text-anchor="middle">{{SECTION_NUMBER}}</text>
+  
+  <!-- Part Label -->
+  <rect x="540" y="260" width="200" height="40" fill="#4CA1E7" fill-opacity="0.3" rx="20" />
+  <text x="640" y="288" font-family="Arial" font-size="18" fill="#FFFFFF" text-anchor="middle" letter-spacing="6">PART {{SECTION_NUMBER}}</text>
+  
+  <!-- Divider Line -->
+  <rect x="440" y="320" width="400" height="3" fill="#4CA1E7" rx="1" />
+
+  <!-- Main Title -->
+  <text x="640" y="420" font-family="Microsoft YaHei" font-size="64" font-weight="bold" fill="#FFFFFF" text-anchor="middle">{{SECTION_TITLE}}</text>
+
+  <!-- Subtitle/Description -->
+  <text x="640" y="480" font-family="Microsoft YaHei" font-size="20" fill="#A0C4E3" text-anchor="middle">{{SECTION_DESC}}</text>
+
+  <!-- Bottom Wave -->
+  <path d="M0,660 C320,620 640,700 960,640 C1120,610 1200,650 1280,640 L1280,720 L0,720 Z" fill="#FFFFFF" fill-opacity="0.05" />
+
+  <!-- Decorative Dots -->
+  <circle cx="500" y="550" r="4" fill="#4CA1E7" fill-opacity="0.6" />
+  <circle cx="530" y="550" r="4" fill="#4CA1E7" fill-opacity="0.4" />
+  <circle cx="560" y="550" r="4" fill="#4CA1E7" fill-opacity="0.2" />
+  <circle cx="720" cy="550" r="4" fill="#4CA1E7" fill-opacity="0.2" />
+  <circle cx="750" cy="550" r="4" fill="#4CA1E7" fill-opacity="0.4" />
+  <circle cx="780" cy="550" r="4" fill="#4CA1E7" fill-opacity="0.6" />
+
+</svg>

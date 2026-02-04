@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078D7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002E5D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#bgGradient)" />
+  
+  <!-- Decorative Circles -->
+  <circle cx="-100" cy="720" r="500" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="1400" cy="-100" r="400" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="1100" cy="600" r="200" fill="#FFFFFF" fill-opacity="0.02" />
+
+  <!-- Bottom Wave Decoration -->
+  <path d="M0,620 C200,580 400,660 640,600 C880,540 1100,640 1280,580 L1280,720 L0,720 Z" fill="#002E5D" fill-opacity="0.5" />
+  <path d="M0,660 C200,620 400,700 640,640 C880,580 1100,680 1280,620 L1280,720 L0,720 Z" fill="#4CA1E7" fill-opacity="0.4" />
+  <path d="M0,690 C200,670 400,720 640,680 C880,640 1100,710 1280,670 L1280,720 L0,720 Z" fill="#FFFFFF" fill-opacity="0.1" />
+
+  <!-- Left Side Content Area -->
+  <rect x="60" y="200" width="600" height="4" fill="#4CA1E7" />
+  
+  <!-- Main Title -->
+  <text x="60" y="300" font-family="Microsoft YaHei" font-size="56" font-weight="bold" fill="#FFFFFF">{{TITLE}}</text>
+  <text x="60" y="370" font-family="Microsoft YaHei" font-size="32" fill="#A0C4E3">{{SUBTITLE}}</text>
+
+  <!-- Divider Line -->
+  <rect x="60" y="420" width="200" height="2" fill="#FFFFFF" fill-opacity="0.5" />
+
+  <!-- Author and Date -->
+  <text x="60" y="480" font-family="Microsoft YaHei" font-size="20" fill="#FFFFFF" fill-opacity="0.9">{{AUTHOR}}</text>
+  <text x="60" y="520" font-family="Microsoft YaHei" font-size="18" fill="#A0C4E3">{{DATE}}</text>
+
+  <!-- Right Side Decorative Pattern -->
+  <rect x="750" y="180" width="400" height="350" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="8,8" stroke-opacity="0.2" rx="10" />
+  <rect x="780" y="210" width="340" height="290" fill="none" stroke="#4CA1E7" stroke-width="1" stroke-opacity="0.3" rx="8" />
+  
+  <!-- Hexagon Pattern (Tech Feel) -->
+  <polygon points="950,280 1000,310 1000,370 950,400 900,370 900,310" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.2" />
+  <polygon points="1020,340 1070,370 1070,430 1020,460 970,430 970,370" fill="none" stroke="#4CA1E7" stroke-width="1" stroke-opacity="0.3" />
+  <polygon points="880,340 930,370 930,430 880,460 830,430 830,370" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.15" />
+
+  <!-- Logo Area -->
+  <rect x="1120" y="50" width="120" height="40" fill="#FFFFFF" fill-opacity="0.1" rx="4" />
+  <text x="1180" y="77" font-family="Microsoft YaHei" font-size="14" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">{{LOGO}}</text>
+
+  <!-- Bottom Tagline -->
+  <text x="640" y="680" font-family="Microsoft YaHei" font-size="14" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">产品全生命周期管理 · 规范 · 高效 · 可追溯</text>
+
+</svg>

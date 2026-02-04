@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="endGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0078D7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#002E5D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#endGradient)" />
+
+  <!-- Decorative Circles -->
+  <circle cx="-100" cy="400" r="400" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="1380" cy="300" r="350" fill="#FFFFFF" fill-opacity="0.03" />
+  <circle cx="640" cy="800" r="300" fill="#4CA1E7" fill-opacity="0.05" />
+
+  <!-- Hexagon Pattern -->
+  <polygon points="150,200 200,170 250,200 250,260 200,290 150,260" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <polygon points="1030,450 1080,420 1130,450 1130,510 1080,540 1030,510" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />
+  <polygon points="200,500 250,470 300,500 300,560 250,590 200,560" fill="none" stroke="#4CA1E7" stroke-width="1" stroke-opacity="0.15" />
+
+  <!-- Top Decorative Line -->
+  <rect x="540" y="180" width="200" height="3" fill="#4CA1E7" rx="1" />
+
+  <!-- Main Content -->
+  <text x="640" y="300" font-family="Microsoft YaHei" font-size="72" font-weight="bold" fill="#FFFFFF" text-anchor="middle" letter-spacing="12">感谢聆听</text>
+  
+  <!-- English Subtitle -->
+  <text x="640" y="360" font-family="Arial" font-size="24" fill="#A0C4E3" text-anchor="middle" letter-spacing="4">THANK YOU FOR LISTENING</text>
+
+  <!-- Divider -->
+  <rect x="540" y="400" width="200" height="2" fill="#FFFFFF" fill-opacity="0.3" />
+
+  <!-- Q&A Section -->
+  <rect x="540" y="440" width="200" height="60" fill="#4CA1E7" fill-opacity="0.2" rx="30" />
+  <text x="640" y="480" font-family="Arial" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Q &amp; A</text>
+
+  <!-- Contact Info Area -->
+  <rect x="340" y="540" width="600" height="100" fill="#FFFFFF" fill-opacity="0.05" rx="10" />
+  
+  <text x="640" y="580" font-family="Microsoft YaHei" font-size="16" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">如有疑问，欢迎交流讨论</text>
+  <text x="640" y="615" font-family="Arial" font-size="14" fill="#A0C4E3" text-anchor="middle">{{CONTACT_EMAIL}} | {{CONTACT_PHONE}}</text>
+
+  <!-- Bottom Wave -->
+  <path d="M0,650 C200,610 400,680 640,630 C880,580 1100,670 1280,620 L1280,720 L0,720 Z" fill="#002E5D" fill-opacity="0.4" />
+  <path d="M0,680 C200,650 400,710 640,670 C880,630 1100,700 1280,660 L1280,720 L0,720 Z" fill="#4CA1E7" fill-opacity="0.3" />
+  <path d="M0,700 C200,680 400,720 640,695 C880,670 1100,715 1280,690 L1280,720 L0,720 Z" fill="#FFFFFF" fill-opacity="0.08" />
+
+  <!-- Website -->
+  <text x="640" y="705" font-family="Arial" font-size="12" fill="#FFFFFF" fill-opacity="0.5" text-anchor="middle">{{WEBSITE}}</text>
+
+</svg>
