@@ -377,7 +377,7 @@ subtle and elegant, suitable for presentation slide corners
 - 可选环境变量：`GEMINI_BASE_URL`
 - 命令格式:
   ```bash
-  python tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images --filename cover_bg
+  python3 tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images --filename cover_bg
   ```
 - **生成节奏控制（强制）**：
 - 每次只执行一个生成命令，等待图片返回并确认文件落盘后，再执行下一条
