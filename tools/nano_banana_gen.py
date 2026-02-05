@@ -15,8 +15,7 @@ Nano Banana Image Generator (Gemini Nano)
 """
 
 import os
-
-import base64
+import sys
 import argparse
 import mimetypes
 from google import genai
@@ -57,18 +56,18 @@ def generate(prompt: str, negative_prompt: str = None,
 
     if not api_key:
         print("Error: API Key not found. Please set GEMINI_API_KEY environment variable.")
-        return
+        sys.exit(1)
 
     # Validate aspect_ratio
     if aspect_ratio not in VALID_ASPECT_RATIOS:
         print(f"Error: Invalid aspect ratio '{aspect_ratio}'. Valid options: {VALID_ASPECT_RATIOS}")
-        return
+        sys.exit(1)
 
     # Validate image_size
     size_upper = str(image_size).upper()
     if size_upper not in VALID_IMAGE_SIZES:
         print(f"Error: Invalid image size '{image_size}'. Valid options: {VALID_IMAGE_SIZES}")
-        return
+        sys.exit(1)
 
     # Configure client options
     client_options = {'api_key': api_key}
