@@ -147,7 +147,7 @@ class SVGQualityChecker:
         # 裁剪 / 遮罩
         if '<clippath' in content_lower:
             result['errors'].append("检测到禁用的 <clipPath> 元素（PPT 不支持 SVG 裁剪路径）")
-        if '<mask' in content_lower and '<mask>' not in content_lower:  # 排除纯文本 "mask"
+        if '<mask' in content_lower:
             result['errors'].append("检测到禁用的 <mask> 元素（PPT 不支持 SVG 遮罩）")
 
         # 样式系统

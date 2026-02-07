@@ -66,6 +66,22 @@ except ImportError:
         }
     }
 
+CANVAS_FORMAT_ALIASES = {
+    'xhs': 'xiaohongshu',
+    'wechat_moment': 'moments',
+    'wechat-moment': 'moments',
+    '朋友圈': 'moments',
+    '小红书': 'xiaohongshu',
+}
+
+
+def normalize_canvas_format(format_key: str) -> str:
+    """标准化画布格式键名（支持常见别名）。"""
+    if not format_key:
+        return ''
+    key = format_key.strip().lower()
+    return CANVAS_FORMAT_ALIASES.get(key, key)
+
 
 def parse_project_name(dir_name: str) -> Dict[str, str]:
     """
@@ -85,12 +101,7 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
         'date_formatted': '未知日期'
     }
 
-    # 提取画布格式
-    for fmt_key, fmt_info in CANVAS_FORMATS.items():
-        if fmt_key in dir_name.lower():
-            result['format'] = fmt_key
-            result['format_name'] = fmt_info['name']
-            break
+    dir_name_lower = dir_name.lower()
 
     # 提取日期 (格式: _YYYYMMDD)
     date_match = re.search(r'_(\d{8})$', dir_name)
@@ -103,11 +114,29 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
         except ValueError:
             pass
 
-    # 提取项目名称（去除格式和日期后缀）
-    name = dir_name
-    for fmt_key in CANVAS_FORMATS.keys():
-        name = re.sub(f'_{fmt_key}', '', name, flags=re.IGNORECASE)
-    name = re.sub(r'_\d{8}$', '', name)
+    # 优先按标准格式解析: name_format_YYYYMMDD
+    full_match = re.match(r'^(?P<name>.+)_(?P<format>[a-z0-9_-]+)_(?P<date>\d{8})$', dir_name_lower)
+    if full_match:
+        raw_format = full_match.group('format')
+        normalized_format = normalize_canvas_format(raw_format)
+        if normalized_format in CANVAS_FORMATS:
+            result['format'] = normalized_format
+            result['format_name'] = CANVAS_FORMATS[normalized_format]['name']
+            result['name'] = dir_name[:len(full_match.group('name'))]
+            return result
+
+    # 兜底：只匹配末尾 `_format`，避免误删项目名内部片段
+    sorted_formats = sorted(CANVAS_FORMATS.keys(), key=len, reverse=True)
+    for fmt_key in sorted_formats:
+        if re.search(rf'_{re.escape(fmt_key)}(?:_\d{{8}})?$', dir_name_lower):
+            result['format'] = fmt_key
+            result['format_name'] = CANVAS_FORMATS[fmt_key]['name']
+            break
+
+    # 提取项目名称（仅移除末尾日期和格式后缀）
+    name = re.sub(r'_\d{8}$', '', dir_name)
+    if result['format'] != 'unknown':
+        name = re.sub(rf'_{re.escape(result["format"])}$', '', name, flags=re.IGNORECASE)
     result['name'] = name
 
     return result

@@ -284,7 +284,7 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
         svg_files: SVG 文件列表（用于按文件名匹配）
     
     Returns:
-        字典，key 为 SVG 文件名（不含扩展名）或幻灯片编号，value 为备注内容
+        字典，key 为 SVG 文件名（不含扩展名），value 为备注内容
     """
     notes_dir = project_path / 'notes'
     notes = {}
@@ -293,11 +293,12 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
         return notes
     
     svg_stems_mapping = {}
-
+    svg_index_mapping = {}
     if svg_files:
         for i, svg_path in enumerate(svg_files, 1):
             svg_stems_mapping[svg_path.stem] = i
-    
+            svg_index_mapping[i] = svg_path.stem
+
     # 收集所有 notes 文件信息
     for notes_file in notes_dir.glob('*.md'):
         try:
@@ -311,11 +312,14 @@ def find_notes_files(project_path: Path, svg_files: List[Path] = None) -> dict:
             # 尝试提取序号（向后兼容 slide01.md 格式）
             match = re.search(r'slide[_]?(\d+)', stem)
             if match:
-                notes[int(match.group(1))] = content
+                index = int(match.group(1))
+                mapped_stem = svg_index_mapping.get(index)
+                if mapped_stem:
+                    notes[mapped_stem] = content
 
             # 按文件名提取（覆盖向后兼容的格式）
             if stem in svg_stems_mapping:
-                notes[svg_stems_mapping[stem]] = content
+                notes[stem] = content
         except Exception:
             pass
     
@@ -709,7 +713,7 @@ def create_pptx_with_native_svg(
         
         # 处理每个 SVG 文件
         success_count = 0
-        png_generated = False
+        any_png_generated = False
         
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
@@ -723,6 +727,7 @@ def create_pptx_with_native_svg(
                 shutil.copy(svg_path, media_dir / svg_filename)
                 
                 # 兼容模式：生成 PNG 后备图片
+                slide_has_png = False
                 if use_compat_mode:
                     png_path = media_dir / png_filename
                     png_success = convert_svg_to_png(
@@ -732,7 +737,8 @@ def create_pptx_with_native_svg(
                         height=pixel_height
                     )
                     if png_success:
-                        png_generated = True
+                        slide_has_png = True
+                        any_png_generated = True
                     else:
                         # PNG 生成失败，降级为纯 SVG
                         if verbose:
@@ -750,7 +756,7 @@ def create_pptx_with_native_svg(
                     transition=transition,
                     transition_duration=transition_duration,
                     auto_advance=auto_advance,
-                    use_compat_mode=(use_compat_mode and png_generated)
+                    use_compat_mode=(use_compat_mode and slide_has_png)
                 )
                 with open(slide_xml_path, 'w', encoding='utf-8') as f:
                     f.write(slide_xml)
@@ -764,16 +770,17 @@ def create_pptx_with_native_svg(
                     png_filename=png_filename,
                     svg_rid=svg_rid, 
                     svg_filename=svg_filename,
-                    use_compat_mode=(use_compat_mode and png_generated)
+                    use_compat_mode=(use_compat_mode and slide_has_png)
                 )
                 with open(rels_path, 'w', encoding='utf-8') as f:
                     f.write(rels_xml)
                 
                 # 处理备注
+                notes_content = ''
                 if enable_notes:
                     # 按文件名匹配（新逻辑）或按序号匹配（向后兼容）
                     svg_stem = svg_path.stem
-                    notes_content = notes.get(svg_stem, notes.get(i, '')) if notes else ''
+                    notes_content = notes.get(svg_stem, '') if notes else ''
                     if notes_content:
                         notes_text = markdown_to_plain_text(notes_content)
                     else:
@@ -806,8 +813,8 @@ def create_pptx_with_native_svg(
                         f.write(slide_rels_content)
                 
                 if verbose:
-                    mode_str = " (PNG+SVG)" if (use_compat_mode and png_generated) else " (SVG)"
-                    has_notes = enable_notes and notes and (notes.get(svg_stem) or notes.get(i))
+                    mode_str = " (PNG+SVG)" if (use_compat_mode and slide_has_png) else " (SVG)"
+                    has_notes = enable_notes and bool(notes_content)
                     notes_str = " +备注" if has_notes else ""
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
                 
@@ -826,7 +833,7 @@ def create_pptx_with_native_svg(
         types_to_add = []
         if 'Extension="svg"' not in content_types:
             types_to_add.append('  <Default Extension="svg" ContentType="image/svg+xml"/>')
-        if png_generated and 'Extension="png"' not in content_types:
+        if any_png_generated and 'Extension="png"' not in content_types:
             types_to_add.append('  <Default Extension="png" ContentType="image/png"/>')
         
         if types_to_add:
@@ -857,7 +864,7 @@ def create_pptx_with_native_svg(
             print()
             print(f"[完成] 已保存: {output_path}")
             print(f"  成功: {success_count}, 失败: {len(svg_files) - success_count}")
-            if use_compat_mode and png_generated:
+            if use_compat_mode and any_png_generated:
                 print(f"  模式: Office 兼容模式 (支持所有 Office 版本)")
                 # 如果使用 svglib，给出升级提示
                 if PNG_RENDERER == 'svglib' and renderer_hint:
