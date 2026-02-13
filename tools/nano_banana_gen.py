@@ -128,9 +128,14 @@ def generate(prompt: str, negative_prompt: str = None,
         ),
     )
 
-    file_index = 0
     image_saved = False  # Track if we successfully saved an image
     server_text_response = None  # Capture any text response from server
+    
+    # Buffer to keep only the last (highest quality) image chunk.
+    # Some proxies stream a low-res preview first, then the full-res image.
+    # We only want the final one.
+    last_image_data = None  # (data_bytes, mime_type)
+    chunk_count = 0
     
     try:
         for chunk in client.models.generate_content_stream(
@@ -147,48 +152,45 @@ def generate(prompt: str, negative_prompt: str = None,
             
             part = chunk.candidates[0].content.parts[0]
             if part.inline_data and part.inline_data.data:
-                # Use a descriptive filename based on prompt (sanitized) or default
-                if filename:
-                   file_name = f"{filename}"
-                   # If multiple chunks (unlikely for single image request but loop suggests stream), 
-                   # handle indexing only if strictly necessary or for safety?
-                   # For this tool, we assume 1 image per request usually.
-                   # But if valid multiple images arrive, we append index for subsequent ones.
-                   if file_index > 0:
-                       file_name = f"{filename}_{file_index}"
-                else:
-                    # We use the ORIGINAL prompt for naming, not the one with flags
-                    safe_prompt = "".join([c for c in prompt if c.isalnum() or c in (' ', '_')]).rstrip()
-                    safe_prompt = safe_prompt.replace(" ", "_").lower()[:30] # Increased length
-                    if not safe_prompt:
-                        safe_prompt = "generated_image"
-                    
-                    file_name = f"{safe_prompt}_{file_index}"
-                
-                file_index += 1
-                inline_data = part.inline_data
-                data_buffer = inline_data.data
-                
-                # specific handling for requested mime type, though guess_extension is usually good
-                file_extension = mimetypes.guess_extension(inline_data.mime_type) or ".png"
-                # Clean up extension (mimetypes can return .jpe for jpeg)
-                if file_extension in ['.jpe', '.jpeg']:
-                     file_extension = '.jpg'
-                
-                file_name_with_ext = f"{file_name}{file_extension}"
-                if output_dir:
-                    os.makedirs(output_dir, exist_ok=True)
-                    full_path = os.path.join(output_dir, file_name_with_ext)
-                else:
-                    full_path = file_name_with_ext
-                save_binary_file(full_path, data_buffer)
-                image_saved = True  # Mark that we saved an image
+                chunk_count += 1
+                # Always overwrite with the latest chunk (the final one is full-res)
+                last_image_data = (part.inline_data.data, part.inline_data.mime_type)
             elif part.text:
                 # Capture text response (could be error message or additional info)
                 server_text_response = part.text
             # Ignore empty chunks silently - they're just stream signals
         
-        # After stream ends, report status
+        # After stream ends, save the final image
+        if last_image_data:
+            data_buffer, mime_type = last_image_data
+            
+            if chunk_count > 1:
+                print(f"Received {chunk_count} image chunks, keeping the final (highest quality) one.")
+            
+            # Determine filename
+            if filename:
+                file_name = filename
+            else:
+                safe_prompt = "".join([c for c in prompt if c.isalnum() or c in (' ', '_')]).rstrip()
+                safe_prompt = safe_prompt.replace(" ", "_").lower()[:30]
+                if not safe_prompt:
+                    safe_prompt = "generated_image"
+                file_name = safe_prompt
+            
+            # Determine file extension from server mime_type
+            file_extension = mimetypes.guess_extension(mime_type) or ".png"
+            if file_extension in ['.jpe', '.jpeg']:
+                file_extension = '.jpg'
+            
+            file_name_with_ext = f"{file_name}{file_extension}"
+            if output_dir:
+                os.makedirs(output_dir, exist_ok=True)
+                full_path = os.path.join(output_dir, file_name_with_ext)
+            else:
+                full_path = file_name_with_ext
+            save_binary_file(full_path, data_buffer)
+            image_saved = True
+        
         if server_text_response:
             print(f"Server Response: {server_text_response}")
         
