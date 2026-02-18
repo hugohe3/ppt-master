@@ -62,7 +62,7 @@ Recommended AI editors:
 
 | Tool                                                | Rating | Description                                                                                                          |
 | --------------------------------------------------- | :----: | -------------------------------------------------------------------------------------------------------------------- |
-| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **Highly Recommended**! Free Opus 4.5 access, integrated Banana image generation, can generate images directly in the repository |
+| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **Highly Recommended**! Free Opus 4.6 access, integrated Banana image generation, can generate images directly in the repository |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, supports multiple models                                                                        |
 | [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | Microsoft official solution                                                                                           |
 | [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                                                           |
@@ -80,7 +80,7 @@ AI (Strategist role): Sure, before we begin I need to complete eight confirmatio
    ...
 ```
 
-> 💡 **Model Recommendation**: Opus 4.5 works best, Antigravity currently offers free access
+> 💡 **Model Recommendation**: Opus 4.6 works best, Antigravity currently offers free access
 
 > 💡 **AI Lost Context?** You can prompt the AI to refer to the `AGENTS.md` file, and it will automatically follow the role definitions in the repository
 
