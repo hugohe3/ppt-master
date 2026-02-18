@@ -62,7 +62,7 @@ pip install -r requirements.txt
 
 | 工具                                                | 推荐度 | 说明                                                                          |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
-| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.5，集成 Banana 生图功能，可直接在仓库里生成配图 |
+| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.6，集成 Banana 生图功能，可直接在仓库里生成配图 |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，支持多种模型                                                  |
 | [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | 微软官方方案                                                                  |
 | [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic 官方 CLI 工具                                                       |
@@ -80,7 +80,7 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
    ...
 ```
 
-> 💡 **模型推荐**：Opus 4.5 效果最佳，Antigravity 目前可免费使用
+> 💡 **模型推荐**：Opus 4.6 效果最佳，Antigravity 目前可免费使用
 
 > 💡 **AI 迷失上下文？** 可提示 AI 参考 `AGENTS.md` 文件，它会自动按照仓库中的角色定义工作
 
