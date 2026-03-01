@@ -117,7 +117,12 @@ def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
                        output_dir: str = None, filename: str = None,
                        model: str = DEFAULT_MODEL) -> str:
     """
-    Official Mode: 使用 Google 官方 GenAI API (非流式)。
+    Official Mode: 使用 Google 官方 GenAI API (流式)。
+
+    使用 generate_content_stream 实现流式接收，提供实时进度反馈：
+      - 显示已等待时长
+      - 收到 chunk 时显示编号和数据大小
+      - 保留最后一个 image chunk（最高质量）
 
     Returns:
         保存的图片文件路径
@@ -153,22 +158,65 @@ def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
     print(f"  Image Size:   {image_size}")
     print()
 
-    response = client.models.generate_content(
+    # Stream response for real-time progress feedback
+    start_time = time.time()
+    print(f"  ⏳ Generating...", end="", flush=True)
+
+    # Heartbeat thread: print elapsed time every 5s while waiting
+    import threading
+    heartbeat_stop = threading.Event()
+
+    def _heartbeat():
+        while not heartbeat_stop.is_set():
+            heartbeat_stop.wait(5)
+            if not heartbeat_stop.is_set():
+                elapsed = time.time() - start_time
+                print(f" {elapsed:.0f}s...", end="", flush=True)
+
+    hb_thread = threading.Thread(target=_heartbeat, daemon=True)
+    hb_thread.start()
+
+    last_image_data = None  # (PIL.Image or bytes, mime_type)
+    chunk_count = 0
+    total_bytes = 0
+
+    for chunk in client.models.generate_content_stream(
         model=model,
         contents=[final_prompt],
         config=config,
-    )
+    ):
+        elapsed = time.time() - start_time
 
-    for part in response.parts:
-        if part.text is not None:
-            print(f"  Model says: {part.text}")
-        elif part.inline_data is not None:
-            image = part.as_image()
-            path = _resolve_output_path(prompt, output_dir, filename, ".png")
-            image.save(path)
-            print(f"File saved to: {path}")
-            _report_resolution(path)
-            return path
+        if chunk.parts is None:
+            continue
+
+        for part in chunk.parts:
+            if part.text is not None:
+                print(f"\n  Model says: {part.text}", end="", flush=True)
+            elif part.inline_data is not None:
+                chunk_count += 1
+                data_size = len(part.inline_data.data) if part.inline_data.data else 0
+                total_bytes += data_size
+                size_str = f"{data_size / 1024:.0f}KB" if data_size < 1048576 else f"{data_size / 1048576:.1f}MB"
+                print(f"\n  📦 Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
+                last_image_data = part
+
+    # Stop heartbeat
+    heartbeat_stop.set()
+    hb_thread.join(timeout=1)
+
+    elapsed = time.time() - start_time
+    print(f"\n  ✅ Stream complete ({elapsed:.1f}s, {chunk_count} chunk(s), {total_bytes / 1024:.0f}KB total)")
+
+    if last_image_data is not None and last_image_data.inline_data is not None:
+        if chunk_count > 1:
+            print(f"  Keeping the final chunk (highest quality).")
+        image = last_image_data.as_image()
+        path = _resolve_output_path(prompt, output_dir, filename, ".png")
+        image.save(path)
+        print(f"File saved to: {path}")
+        _report_resolution(path)
+        return path
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
 
@@ -280,7 +328,7 @@ def generate(prompt: str, negative_prompt: str = None,
 
     根据环境变量 GEMINI_BASE_URL 是否存在，自动选择:
       - 有 GEMINI_BASE_URL → Proxy Mode  (流式)
-      - 无 GEMINI_BASE_URL → Official Mode (非流式)
+      - 无 GEMINI_BASE_URL → Official Mode (流式)
 
     遇到 429 Rate Limit 错误时自动指数退避重试。
 
