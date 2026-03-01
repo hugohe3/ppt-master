@@ -42,7 +42,7 @@ VALID_ASPECT_RATIOS = [
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 # 默认模型
-DEFAULT_MODEL = "gemini-3-pro-image-preview"
+DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
 
 # 重试配置
 MAX_RETRIES = 3          # 最大重试次数
