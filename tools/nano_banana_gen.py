@@ -3,31 +3,56 @@
 Nano Banana Image Generator (Gemini Nano)
 通过 Google GenAI API (Gemini Nano) 生成高质量图片的工具。
 
-支持功能:
-- 高达 4K 分辨率的图像生成
-- 自定义宽高比 (16:9, 4:3, 1:1, 9:16 等)
-- 负面提示词支持 (通过 Prompt 工程实现)
-- 自动保存为 PNG 格式
-- 环境变量配置 (安全优先)
+支持两种模式:
+  - Official Mode: 直连 Google 官方 API (无 GEMINI_BASE_URL)
+  - Proxy Mode:    通过第三方代理 API (设置了 GEMINI_BASE_URL)
 
 依赖:
-  pip install google-genai
+  pip install google-genai Pillow
 """
 
 import os
 import sys
+import time
 import argparse
 import mimetypes
 from google import genai
 from google.genai import types
 
-# Predefined configuration presets
-VALID_ASPECT_RATIOS = [
-    "1:1", "2:3", "3:2", "3:4", "4:3", 
-    "4:5", "5:4", "9:16", "16:9", "21:9"
-]
-VALID_IMAGE_SIZES = ["1K", "2K", "4K"]
+# 可选依赖: PIL (用于报告图片分辨率)
+try:
+    from PIL import Image as PILImage
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
 
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Constants                                                      ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# Gemini 3.1 Flash Image 支持的全部宽高比 (含新增的 1:4, 4:1, 1:8, 8:1)
+VALID_ASPECT_RATIOS = [
+    "1:1", "1:4", "1:8",
+    "2:3", "3:2", "3:4", "4:1", "4:3",
+    "4:5", "5:4", "8:1", "9:16", "16:9", "21:9"
+]
+
+# 官方文档: "512px", "1K", "2K", "4K" (必须大写 K)
+VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
+
+# 默认模型
+DEFAULT_MODEL = "gemini-3-pro-image-preview"
+
+# 重试配置
+MAX_RETRIES = 3          # 最大重试次数
+RETRY_BASE_DELAY = 10    # 首次重试等待 (秒)
+RETRY_BACKOFF = 2        # 指数退避倍数
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Utilities                                                      ║
+# ╚══════════════════════════════════════════════════════════════════╝
 
 def save_binary_file(file_name: str, data: bytes):
     """保存二进制数据到文件"""
@@ -36,202 +61,334 @@ def save_binary_file(file_name: str, data: bytes):
     print(f"File saved to: {file_name}")
 
 
-def generate(prompt: str, negative_prompt: str = None,
-             aspect_ratio: str = "1:1", image_size: str = "4K", 
-             output_dir: str = None, filename: str = None):
+def _resolve_output_path(prompt: str, output_dir: str = None,
+                         filename: str = None, ext: str = ".png") -> str:
+    """根据参数计算最终的输出文件路径"""
+    if filename:
+        file_name = os.path.splitext(filename)[0]
+    else:
+        safe = "".join(c for c in prompt if c.isalnum() or c in (' ', '_')).rstrip()
+        safe = safe.replace(" ", "_").lower()[:30]
+        file_name = safe or "generated_image"
+
+    full_name = f"{file_name}{ext}"
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+        return os.path.join(output_dir, full_name)
+    return full_name
+
+
+def _normalize_image_size(image_size: str) -> str:
     """
-    调用 Gemini API 生成图像
-    
+    大小写容错: 将用户输入规范化为 API 接受的格式。
+    例: "2k" → "2K", "4k" → "4K", "512PX" → "512px"
+    """
+    s = image_size.strip()
+    upper = s.upper()
+    if upper in ("1K", "2K", "4K"):
+        return upper
+    if upper in ("512PX", "512"):
+        return "512px"
+    return s
+
+
+def _report_resolution(path: str):
+    """尝试用 PIL 报告图片分辨率"""
+    if HAS_PIL:
+        try:
+            img = PILImage.open(path)
+            print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
+        except Exception:
+            pass
+
+
+def _is_rate_limit_error(e: Exception) -> bool:
+    """判断异常是否为速率限制 (429) 错误"""
+    err_str = str(e).lower()
+    return "429" in err_str or "rate" in err_str or "quota" in err_str or "resource_exhausted" in err_str
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Official Mode — 直连 Google 官方 API                            ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
+                       aspect_ratio: str = "1:1", image_size: str = "2K",
+                       output_dir: str = None, filename: str = None,
+                       model: str = DEFAULT_MODEL) -> str:
+    """
+    Official Mode: 使用 Google 官方 GenAI API (非流式)。
+
+    Returns:
+        保存的图片文件路径
+
+    Raises:
+        RuntimeError: 生成失败时
+    """
+    client = genai.Client(api_key=api_key)
+
+    # Build prompt
+    final_prompt = prompt
+    if negative_prompt:
+        final_prompt += f"\n\nNegative prompt: {negative_prompt}"
+
+    config_kwargs = {
+        "response_modalities": ["IMAGE"],
+        "image_config": types.ImageConfig(
+            aspect_ratio=aspect_ratio,
+            image_size=image_size,
+        ),
+    }
+    # ThinkingConfig 仅 flash 系列模型支持
+    if "flash" in model.lower():
+        config_kwargs["thinking_config"] = types.ThinkingConfig(
+            thinking_level="MINIMAL",
+        )
+    config = types.GenerateContentConfig(**config_kwargs)
+
+    print(f"[Official Mode]")
+    print(f"  Model:        {model}")
+    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Aspect Ratio: {aspect_ratio}")
+    print(f"  Image Size:   {image_size}")
+    print()
+
+    response = client.models.generate_content(
+        model=model,
+        contents=[final_prompt],
+        config=config,
+    )
+
+    for part in response.parts:
+        if part.text is not None:
+            print(f"  Model says: {part.text}")
+        elif part.inline_data is not None:
+            image = part.as_image()
+            path = _resolve_output_path(prompt, output_dir, filename, ".png")
+            image.save(path)
+            print(f"File saved to: {path}")
+            _report_resolution(path)
+            return path
+
+    raise RuntimeError("No image was generated. The server may have refused the request.")
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Proxy Mode — 通过第三方代理 API                                  ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+def _generate_proxy(api_key: str, base_url: str, prompt: str,
+                    negative_prompt: str = None,
+                    aspect_ratio: str = "1:1", image_size: str = "4K",
+                    output_dir: str = None, filename: str = None,
+                    model: str = DEFAULT_MODEL) -> str:
+    """
+    Proxy Mode: 通过第三方代理访问图像生成能力 (流式)。
+    特点:
+      - 基于传入的 model 名追加尺寸后缀 + 宽高比后缀
+      - 提示词末尾追加 --ar 标记 (类似 Midjourney 风格)
+      - 仅请求 IMAGE 模态
+      - 始终保留最后一个 chunk (最高质量)
+
+    Returns:
+        保存的图片文件路径
+
+    Raises:
+        RuntimeError: 生成失败时
+    """
+    client = genai.Client(
+        api_key=api_key,
+        http_options={'base_url': base_url},
+    )
+
+    # Build model name: <model>[-2k|-4k][-WxH]
+    size_upper = image_size.upper()
+    if size_upper in ("2K", "4K"):
+        model += f"-{size_upper.lower()}"
+    if aspect_ratio:
+        model += f"-{aspect_ratio.replace(':', 'x')}"
+
+    # Build prompt with Midjourney-style flags
+    final_prompt = f"{prompt} --ar {aspect_ratio}"
+    if negative_prompt:
+        final_prompt += f"\n\nNegative prompt: {negative_prompt}"
+
+    config = types.GenerateContentConfig(
+        response_modalities=["IMAGE"],
+    )
+
+    contents = [
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text=final_prompt)],
+        ),
+    ]
+
+    print(f"[Proxy Mode]")
+    print(f"  Base URL:     {base_url}")
+    print(f"  Model:        {model}")
+    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Aspect Ratio: {aspect_ratio}")
+    print(f"  Image Size:   {image_size}")
+    print()
+
+    # Stream response — keep the LAST image chunk (highest quality)
+    last_image_data = None  # (bytes, mime_type)
+    chunk_count = 0
+
+    for chunk in client.models.generate_content_stream(
+        model=model, contents=contents, config=config,
+    ):
+        if chunk.parts is None:
+            continue
+
+        part = chunk.parts[0]
+        if part.inline_data and part.inline_data.data:
+            chunk_count += 1
+            last_image_data = (part.inline_data.data, part.inline_data.mime_type)
+        elif chunk.text:
+            print(f"  Server says: {chunk.text}")
+
+    if last_image_data:
+        data_buffer, mime_type = last_image_data
+        if chunk_count > 1:
+            print(f"  Received {chunk_count} image chunks, keeping the final (highest quality) one.")
+
+        ext = mimetypes.guess_extension(mime_type) or ".png"
+        if ext in ('.jpe', '.jpeg'):
+            ext = '.jpg'
+
+        path = _resolve_output_path(prompt, output_dir, filename, ext)
+        save_binary_file(path, data_buffer)
+        _report_resolution(path)
+        return path
+
+    raise RuntimeError("No image was generated. The server may have refused the request.")
+
+
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Entry Point                                                    ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+def generate(prompt: str, negative_prompt: str = None,
+             aspect_ratio: str = "1:1", image_size: str = "2K",
+             output_dir: str = None, filename: str = None,
+             model: str = DEFAULT_MODEL,
+             max_retries: int = MAX_RETRIES) -> str:
+    """
+    图像生成入口函数（带自动重试）。
+
+    根据环境变量 GEMINI_BASE_URL 是否存在，自动选择:
+      - 有 GEMINI_BASE_URL → Proxy Mode  (流式)
+      - 无 GEMINI_BASE_URL → Official Mode (非流式)
+
+    遇到 429 Rate Limit 错误时自动指数退避重试。
+
     Args:
         prompt: 正向提示词
-        negative_prompt: 负面提示词 (可选)
-        aspect_ratio: 图片宽高比 (默认 1:1)
-        image_size: 图片尺寸 (1K, 2K, 4K)
-        output_dir: 输出目录 (可选，默认为当前目录)
-        filename: 指定输出文件名 (不含扩展名，可选)
+        negative_prompt: 负面提示词
+        aspect_ratio: 宽高比
+        image_size: 图片尺寸 ("512px", "1K", "2K", "4K", 大小写不敏感)
+        output_dir: 输出目录
+        filename: 输出文件名 (不含扩展名)
+        model: 模型名称 (默认 gemini-3-pro-image-preview)
+        max_retries: 最大重试次数
+
+    Returns:
+        保存的图片文件路径
+
+    Raises:
+        ValueError: 参数不合法时
+        RuntimeError: 生成失败且重试耗尽时
     """
-    # Load configuration
     api_key = os.environ.get("GEMINI_API_KEY")
     base_url = os.environ.get("GEMINI_BASE_URL")
 
     if not api_key:
-        print("Error: API Key not found. Please set GEMINI_API_KEY environment variable.")
-        sys.exit(1)
+        raise ValueError("GEMINI_API_KEY environment variable is not set.")
 
-    # Validate aspect_ratio
+    # 大小写容错
+    image_size = _normalize_image_size(image_size)
+
+    # Validate inputs
     if aspect_ratio not in VALID_ASPECT_RATIOS:
-        print(f"Error: Invalid aspect ratio '{aspect_ratio}'. Valid options: {VALID_ASPECT_RATIOS}")
-        sys.exit(1)
+        raise ValueError(f"Invalid aspect ratio '{aspect_ratio}'. Valid: {VALID_ASPECT_RATIOS}")
 
-    # Validate image_size
-    size_upper = str(image_size).upper()
-    if size_upper not in VALID_IMAGE_SIZES:
-        print(f"Error: Invalid image size '{image_size}'. Valid options: {VALID_IMAGE_SIZES}")
-        sys.exit(1)
+    if image_size not in VALID_IMAGE_SIZES:
+        raise ValueError(f"Invalid image size '{image_size}'. Valid: {VALID_IMAGE_SIZES}")
 
-    # Configure client options
-    client_options = {'api_key': api_key}
-    if base_url:
-        client_options['http_options'] = {'base_url': base_url}
-
-    client = genai.Client(**client_options)
-
-    base_model = "gemini-3-pro-image-preview"
-    model = base_model
-
-    # Compatibility: Only append suffixes if using a custom Base URL (Proxy mode).
-    # Official Google GenAI API uses the cleaner model name and accepts config params via request body.
-    if base_url:
-        # Handle image size model selection (2K or 4K adds suffix, 1K is default/no suffix)
-        if size_upper in ["2K", "4K"]:
-            model += f"-{size_upper.lower()}"
-
-        # Handle Aspect Ratio in model name (e.g. -16x9)
-        # This assumes the backend routes specific model names to specific aspect ratio pipelines
-        if aspect_ratio:
-            ratio_suffix = aspect_ratio.replace(":", "x")
-            model += f"-{ratio_suffix}"
-
-    # Construct Prompt
-    if base_url:
-        # Proxy Mode: Append Midjourney-style flags which the proxy might parse
-        prompt_with_config = f"{prompt} --ar {aspect_ratio}"
-    else:
-        # Official Mode: Keep prompt clean, rely on GenerateContentConfig
-        prompt_with_config = prompt
-    
-    # Structure the prompt to include negative prompt if provided
-    final_prompt_text = prompt_with_config
-    if negative_prompt:
-        final_prompt_text += f"\n\nNegative prompt: {negative_prompt}"
-    
-    print(f"Generating image with prompt: '{final_prompt_text}'")
-    print(f"Using Model: {model}")
-    print(f"Configuration: Aspect Ratio={aspect_ratio}, Size={image_size}")
-    
-    parts = [types.Part.from_text(text=final_prompt_text)]
-    
-    contents = [
-        types.Content(
-            role="user",
-            parts=parts,
-        ),
-    ]
-    
-    generate_content_config = types.GenerateContentConfig(
-        response_modalities=[
-            "IMAGE",
-        ],
-        image_config=types.ImageConfig(
-            aspect_ratio=aspect_ratio,
-            image_size=image_size,
-        ),
-    )
-
-    image_saved = False  # Track if we successfully saved an image
-    server_text_response = None  # Capture any text response from server
-    
-    # Buffer to keep only the last (highest quality) image chunk.
-    # Some proxies stream a low-res preview first, then the full-res image.
-    # We only want the final one.
-    last_image_data = None  # (data_bytes, mime_type)
-    chunk_count = 0
-    
-    try:
-        for chunk in client.models.generate_content_stream(
-            model=model,
-            contents=contents,
-            config=generate_content_config,
-        ):
-            if (
-                chunk.candidates is None
-                or chunk.candidates[0].content is None
-                or chunk.candidates[0].content.parts is None
-            ):
-                continue
-            
-            part = chunk.candidates[0].content.parts[0]
-            if part.inline_data and part.inline_data.data:
-                chunk_count += 1
-                # Always overwrite with the latest chunk (the final one is full-res)
-                last_image_data = (part.inline_data.data, part.inline_data.mime_type)
-            elif part.text:
-                # Capture text response (could be error message or additional info)
-                server_text_response = part.text
-            # Ignore empty chunks silently - they're just stream signals
-        
-        # After stream ends, save the final image
-        if last_image_data:
-            data_buffer, mime_type = last_image_data
-            
-            if chunk_count > 1:
-                print(f"Received {chunk_count} image chunks, keeping the final (highest quality) one.")
-            
-            # Determine filename
-            if filename:
-                file_name = filename
+    # ── Retry loop ──
+    last_error = None
+    for attempt in range(max_retries + 1):
+        try:
+            if base_url:
+                return _generate_proxy(api_key, base_url, prompt, negative_prompt,
+                                       aspect_ratio, image_size, output_dir, filename, model)
             else:
-                safe_prompt = "".join([c for c in prompt if c.isalnum() or c in (' ', '_')]).rstrip()
-                safe_prompt = safe_prompt.replace(" ", "_").lower()[:30]
-                if not safe_prompt:
-                    safe_prompt = "generated_image"
-                file_name = safe_prompt
-            
-            # Determine file extension from server mime_type
-            file_extension = mimetypes.guess_extension(mime_type) or ".png"
-            if file_extension in ['.jpe', '.jpeg']:
-                file_extension = '.jpg'
-            
-            file_name_with_ext = f"{file_name}{file_extension}"
-            if output_dir:
-                os.makedirs(output_dir, exist_ok=True)
-                full_path = os.path.join(output_dir, file_name_with_ext)
+                return _generate_official(api_key, prompt, negative_prompt,
+                                          aspect_ratio, image_size, output_dir, filename, model)
+        except Exception as e:
+            last_error = e
+            if attempt < max_retries and _is_rate_limit_error(e):
+                delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
+                print(f"\n  ⚠️  Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
+                      f"Waiting {delay}s before retry...")
+                time.sleep(delay)
+            elif attempt < max_retries:
+                delay = 5
+                print(f"\n  ⚠️  Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                      f"Retrying in {delay}s...")
+                time.sleep(delay)
             else:
-                full_path = file_name_with_ext
-            save_binary_file(full_path, data_buffer)
-            image_saved = True
-        
-        if server_text_response:
-            print(f"Server Response: {server_text_response}")
-        
-        if not image_saved:
-            print("Warning: No image was generated. The server may have refused the request.")
-                
-    except Exception as e:
-        print(f"An error occurred: {e}")
+                break
+
+    raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate images using Gemini Nano Banana.")
-    parser.add_argument("prompt", nargs="?", default="Nano Banana", help="The text prompt for image generation.")
-    parser.add_argument(
-        "--negative_prompt", "-n",
-        default=None,
-        help="Negative prompt to specify what to avoid in the image."
+    parser = argparse.ArgumentParser(
+        description="Generate images using Gemini Nano Banana."
     )
     parser.add_argument(
-        "--aspect_ratio", 
-        default="1:1", 
-        choices=VALID_ASPECT_RATIOS,
-        help=f"Aspect ratio of the generated image. Choices: {VALID_ASPECT_RATIOS}. Default is '1:1'."
+        "prompt", nargs="?", default="Nano Banana",
+        help="The text prompt for image generation."
     )
     parser.add_argument(
-        "--image_size", 
-        default="4K", 
-        choices=VALID_IMAGE_SIZES,
-        help=f"Size of the generated image. Choices: {VALID_IMAGE_SIZES}. Default is '4K'."
+        "--negative_prompt", "-n", default=None,
+        help="Negative prompt to specify what to avoid."
     )
     parser.add_argument(
-        "--output", "-o",
-        default=None,
-        help="Output directory for generated images. If not specified, saves to current directory."
+        "--aspect_ratio", default="1:1", choices=VALID_ASPECT_RATIOS,
+        help=f"Aspect ratio. Choices: {VALID_ASPECT_RATIOS}. Default: 1:1."
     )
-
     parser.add_argument(
-        "--filename", "-f",
-        default=None,
-        help="Specific filename for the generated image (without extension). Overrides auto-naming."
+        "--image_size", default="2K",
+        help=f"Image size. Choices: {VALID_IMAGE_SIZES}. Default: 2K. (case-insensitive)"
+    )
+    parser.add_argument(
+        "--output", "-o", default=None,
+        help="Output directory. Default: current directory."
+    )
+    parser.add_argument(
+        "--filename", "-f", default=None,
+        help="Output filename (without extension). Overrides auto-naming."
+    )
+    parser.add_argument(
+        "--model", "-m", default=DEFAULT_MODEL,
+        help=f"Model name. Default: {DEFAULT_MODEL}."
     )
 
     args = parser.parse_args()
-    
-    generate(args.prompt, args.negative_prompt, args.aspect_ratio, args.image_size, args.output, args.filename)
+
+    try:
+        generate(args.prompt, args.negative_prompt, args.aspect_ratio,
+                 args.image_size, args.output, args.filename, args.model)
+    except (ValueError, FileNotFoundError) as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\n\nInterrupted by user.")
+        sys.exit(130)
