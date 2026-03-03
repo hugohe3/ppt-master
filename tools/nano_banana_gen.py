@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
 Nano Banana Image Generator (Gemini Nano)
-通过 Google GenAI API (Gemini Nano) 生成高质量图片的工具。
+通过 Google GenAI API (Gemini) 生成高质量图片的工具。
 
-支持两种模式:
-  - Official Mode: 直连 Google 官方 API (无 GEMINI_BASE_URL)
-  - Proxy Mode:    通过第三方代理 API (设置了 GEMINI_BASE_URL)
+连接方式:
+  - 无 GEMINI_BASE_URL → 直连 Google 官方 API
+  - 有 GEMINI_BASE_URL → 通过代理 API (使用相同的 Official 协议)
 
 依赖:
   pip install google-genai Pillow
@@ -15,7 +15,6 @@ import os
 import sys
 import time
 import argparse
-import mimetypes
 from google import genai
 from google.genai import types
 
@@ -109,15 +108,19 @@ def _is_rate_limit_error(e: Exception) -> bool:
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  Official Mode — 直连 Google 官方 API                            ║
+# ║  Image Generation — 统一生成逻辑 (Official / Proxy)              ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
-                       aspect_ratio: str = "1:1", image_size: str = "2K",
-                       output_dir: str = None, filename: str = None,
-                       model: str = DEFAULT_MODEL) -> str:
+def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+                    aspect_ratio: str = "1:1", image_size: str = "2K",
+                    output_dir: str = None, filename: str = None,
+                    model: str = DEFAULT_MODEL, base_url: str = None) -> str:
     """
-    Official Mode: 使用 Google 官方 GenAI API (流式)。
+    统一图像生成函数 (流式)。
+
+    根据 base_url 是否存在自动选择连接方式:
+      - 无 base_url → 直连 Google 官方 API
+      - 有 base_url → 通过代理 API (使用相同的 Official 协议)
 
     使用 generate_content_stream 实现流式接收，提供实时进度反馈：
       - 显示已等待时长
@@ -130,7 +133,11 @@ def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
     Raises:
         RuntimeError: 生成失败时
     """
-    client = genai.Client(api_key=api_key)
+    # 根据是否有 base_url 创建 client
+    if base_url:
+        client = genai.Client(api_key=api_key, http_options={'base_url': base_url})
+    else:
+        client = genai.Client(api_key=api_key)
 
     # Build prompt
     final_prompt = prompt
@@ -151,7 +158,10 @@ def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
         )
     config = types.GenerateContentConfig(**config_kwargs)
 
-    print(f"[Official Mode]")
+    mode_label = "Proxy Mode" if base_url else "Official Mode"
+    print(f"[{mode_label}]")
+    if base_url:
+        print(f"  Base URL:     {base_url}")
     print(f"  Model:        {model}")
     print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
@@ -222,99 +232,6 @@ def _generate_official(api_key: str, prompt: str, negative_prompt: str = None,
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  Proxy Mode — 通过第三方代理 API                                  ║
-# ╚══════════════════════════════════════════════════════════════════╝
-
-def _generate_proxy(api_key: str, base_url: str, prompt: str,
-                    negative_prompt: str = None,
-                    aspect_ratio: str = "1:1", image_size: str = "4K",
-                    output_dir: str = None, filename: str = None,
-                    model: str = DEFAULT_MODEL) -> str:
-    """
-    Proxy Mode: 通过第三方代理访问图像生成能力 (流式)。
-    特点:
-      - 基于传入的 model 名追加尺寸后缀 + 宽高比后缀
-      - 提示词末尾追加 --ar 标记 (类似 Midjourney 风格)
-      - 仅请求 IMAGE 模态
-      - 始终保留最后一个 chunk (最高质量)
-
-    Returns:
-        保存的图片文件路径
-
-    Raises:
-        RuntimeError: 生成失败时
-    """
-    client = genai.Client(
-        api_key=api_key,
-        http_options={'base_url': base_url},
-    )
-
-    # Build model name: <model>[-2k|-4k][-WxH]
-    size_upper = image_size.upper()
-    if size_upper in ("2K", "4K"):
-        model += f"-{size_upper.lower()}"
-    if aspect_ratio:
-        model += f"-{aspect_ratio.replace(':', 'x')}"
-
-    # Build prompt with Midjourney-style flags
-    final_prompt = f"{prompt} --ar {aspect_ratio}"
-    if negative_prompt:
-        final_prompt += f"\n\nNegative prompt: {negative_prompt}"
-
-    config = types.GenerateContentConfig(
-        response_modalities=["IMAGE"],
-    )
-
-    contents = [
-        types.Content(
-            role="user",
-            parts=[types.Part.from_text(text=final_prompt)],
-        ),
-    ]
-
-    print(f"[Proxy Mode]")
-    print(f"  Base URL:     {base_url}")
-    print(f"  Model:        {model}")
-    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
-    print(f"  Aspect Ratio: {aspect_ratio}")
-    print(f"  Image Size:   {image_size}")
-    print()
-
-    # Stream response — keep the LAST image chunk (highest quality)
-    last_image_data = None  # (bytes, mime_type)
-    chunk_count = 0
-
-    for chunk in client.models.generate_content_stream(
-        model=model, contents=contents, config=config,
-    ):
-        if chunk.parts is None:
-            continue
-
-        part = chunk.parts[0]
-        if part.inline_data and part.inline_data.data:
-            chunk_count += 1
-            last_image_data = (part.inline_data.data, part.inline_data.mime_type)
-        elif chunk.text:
-            print(f"  Server says: {chunk.text}")
-
-    if last_image_data:
-        data_buffer, mime_type = last_image_data
-        if chunk_count > 1:
-            print(f"  Received {chunk_count} image chunks, keeping the final (highest quality) one.")
-
-        ext = mimetypes.guess_extension(mime_type) or ".png"
-        if ext in ('.jpe', '.jpeg'):
-            ext = '.jpg'
-
-        path = _resolve_output_path(prompt, output_dir, filename, ext)
-        save_binary_file(path, data_buffer)
-        _report_resolution(path)
-        return path
-
-    raise RuntimeError("No image was generated. The server may have refused the request.")
-
-
-# ╔══════════════════════════════════════════════════════════════════╗
 # ║  Entry Point                                                    ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
@@ -326,9 +243,9 @@ def generate(prompt: str, negative_prompt: str = None,
     """
     图像生成入口函数（带自动重试）。
 
-    根据环境变量 GEMINI_BASE_URL 是否存在，自动选择:
-      - 有 GEMINI_BASE_URL → Proxy Mode  (流式)
-      - 无 GEMINI_BASE_URL → Official Mode (流式)
+    根据环境变量 GEMINI_BASE_URL 是否存在，自动选择连接方式:
+      - 无 GEMINI_BASE_URL → 直连 Google 官方 API
+      - 有 GEMINI_BASE_URL → 通过代理 API (使用相同的 Official 协议)
 
     遇到 429 Rate Limit 错误时自动指数退避重试。
 
@@ -339,7 +256,7 @@ def generate(prompt: str, negative_prompt: str = None,
         image_size: 图片尺寸 ("512px", "1K", "2K", "4K", 大小写不敏感)
         output_dir: 输出目录
         filename: 输出文件名 (不含扩展名)
-        model: 模型名称 (默认 gemini-3-pro-image-preview)
+        model: 模型名称 (默认 gemini-3.1-flash-image-preview)
         max_retries: 最大重试次数
 
     Returns:
@@ -369,12 +286,9 @@ def generate(prompt: str, negative_prompt: str = None,
     last_error = None
     for attempt in range(max_retries + 1):
         try:
-            if base_url:
-                return _generate_proxy(api_key, base_url, prompt, negative_prompt,
-                                       aspect_ratio, image_size, output_dir, filename, model)
-            else:
-                return _generate_official(api_key, prompt, negative_prompt,
-                                          aspect_ratio, image_size, output_dir, filename, model)
+            return _generate_image(api_key, prompt, negative_prompt,
+                                   aspect_ratio, image_size, output_dir,
+                                   filename, model, base_url)
         except Exception as e:
             last_error = e
             if attempt < max_retries and _is_rate_limit_error(e):
