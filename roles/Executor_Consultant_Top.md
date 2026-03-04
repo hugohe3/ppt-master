@@ -259,6 +259,10 @@
 | 战略定位 | `matrix_2x2.svg`  | 双维度分析   |
 | 发展历程 | `timeline.svg`    | 里程碑展示   |
 
+完整图表目录和选择指南：[templates/charts/README.md](../templates/charts/README.md)
+
+> 📖 **建议**：当页面涉及图表时，建议先阅读对应的模板 SVG 文件（如 `templates/charts/bar_chart.svg`），了解其结构和布局，以便绘制出更高质量的图表。
+
 ---
 
 ## 布局模式
