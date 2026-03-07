@@ -1,0 +1,980 @@
+{
+  "meta": {
+    "total": 33,
+    "defaultViewBox": "0 0 1280 720",
+    "formats": [
+      "ppt169"
+    ],
+    "updated": "2026-03-07"
+  },
+  "categories": {
+    "comparison": {
+      "label": "对比类",
+      "charts": [
+        "bar_chart",
+        "horizontal_bar_chart",
+        "grouped_bar_chart",
+        "stacked_bar_chart",
+        "butterfly_chart",
+        "bullet_chart",
+        "dumbbell_chart",
+        "waterfall_chart"
+      ]
+    },
+    "trend": {
+      "label": "趋势类",
+      "charts": [
+        "line_chart",
+        "area_chart",
+        "stacked_area_chart",
+        "dual_axis_line_chart"
+      ]
+    },
+    "composition": {
+      "label": "占比类",
+      "charts": [
+        "pie_chart",
+        "donut_chart",
+        "treemap_chart"
+      ]
+    },
+    "metrics": {
+      "label": "指标类",
+      "charts": [
+        "kpi_cards",
+        "gauge_chart",
+        "progress_bar_chart"
+      ]
+    },
+    "analysis": {
+      "label": "分析类",
+      "charts": [
+        "radar_chart",
+        "scatter_chart",
+        "funnel_chart",
+        "matrix_2x2",
+        "bubble_chart",
+        "heatmap_chart",
+        "pareto_chart",
+        "box_plot_chart"
+      ]
+    },
+    "process": {
+      "label": "项目管理 / 关系类",
+      "charts": [
+        "gantt_chart",
+        "timeline",
+        "process_flow",
+        "org_chart",
+        "sankey_chart"
+      ]
+    },
+    "strategy": {
+      "label": "战略框架类",
+      "charts": [
+        "swot_analysis",
+        "porter_five_forces"
+      ]
+    }
+  },
+  "quickLookup": {
+    "ranking": [
+      "horizontal_bar_chart",
+      "bar_chart",
+      "pareto_chart"
+    ],
+    "comparison": [
+      "bar_chart",
+      "grouped_bar_chart",
+      "butterfly_chart",
+      "dumbbell_chart"
+    ],
+    "trend": [
+      "line_chart",
+      "area_chart",
+      "stacked_area_chart",
+      "dual_axis_line_chart"
+    ],
+    "composition": [
+      "donut_chart",
+      "pie_chart",
+      "treemap_chart"
+    ],
+    "kpi": [
+      "kpi_cards",
+      "bullet_chart",
+      "gauge_chart",
+      "progress_bar_chart"
+    ],
+    "conversion": [
+      "funnel_chart",
+      "sankey_chart",
+      "waterfall_chart"
+    ],
+    "distribution": [
+      "box_plot_chart",
+      "heatmap_chart",
+      "scatter_chart",
+      "bubble_chart"
+    ],
+    "correlation": [
+      "scatter_chart",
+      "bubble_chart",
+      "radar_chart"
+    ],
+    "roadmap": [
+      "gantt_chart",
+      "timeline",
+      "process_flow"
+    ],
+    "relationship": [
+      "org_chart",
+      "sankey_chart",
+      "matrix_2x2"
+    ],
+    "flow": [
+      "process_flow",
+      "sankey_chart",
+      "waterfall_chart"
+    ],
+    "strategy": [
+      "swot_analysis",
+      "porter_five_forces",
+      "matrix_2x2"
+    ]
+  },
+  "charts": {
+    "area_chart": {
+      "file": "area_chart.svg",
+      "label": "面积图",
+      "category": "trend",
+      "summary": "趋势变化与累积数据展示",
+      "useCases": [
+        "流量趋势",
+        "销售累积",
+        "库存变化",
+        "用户增长"
+      ],
+      "bestFor": [
+        "强调总量变化",
+        "1-2 个系列的累积趋势",
+        "连续时间序列"
+      ],
+      "avoidFor": [
+        "精确类别排名",
+        "超过 2 个系列叠加"
+      ],
+      "keywords": [
+        "趋势",
+        "累积",
+        "面积图",
+        "时间序列"
+      ]
+    },
+    "bar_chart": {
+      "file": "bar_chart.svg",
+      "label": "柱状图",
+      "category": "comparison",
+      "summary": "类别数值对比",
+      "useCases": [
+        "销售额对比",
+        "区域排名",
+        "年度数据对比"
+      ],
+      "bestFor": [
+        "3-8 个类别",
+        "单系列对比",
+        "直观展示高低差异"
+      ],
+      "avoidFor": [
+        "时间趋势",
+        "超过 12 个长标签"
+      ],
+      "keywords": [
+        "对比",
+        "排名",
+        "类别",
+        "柱状图"
+      ]
+    },
+    "box_plot_chart": {
+      "file": "box_plot_chart.svg",
+      "label": "箱线图",
+      "category": "analysis",
+      "summary": "数据分布与异常值分析",
+      "useCases": [
+        "薪资分布",
+        "成绩分析",
+        "质量控制",
+        "异常值检测"
+      ],
+      "bestFor": [
+        "多组分布对比",
+        "展示中位数与离散程度",
+        "统计分析页面"
+      ],
+      "avoidFor": [
+        "普通业务汇报的单值对比",
+        "读者不熟悉统计图形时的首页展示"
+      ],
+      "keywords": [
+        "分布",
+        "统计",
+        "异常值",
+        "箱线图"
+      ]
+    },
+    "bubble_chart": {
+      "file": "bubble_chart.svg",
+      "label": "气泡图",
+      "category": "analysis",
+      "summary": "三维数据展示",
+      "useCases": [
+        "市场规模 vs 增长率 vs 份额",
+        "风险评估",
+        "竞品分析"
+      ],
+      "bestFor": [
+        "同时展示 3 个维度",
+        "样本数中等的散点分布"
+      ],
+      "avoidFor": [
+        "精确读数要求高的场景",
+        "样本点过多导致重叠"
+      ],
+      "keywords": [
+        "相关性",
+        "三维",
+        "气泡图",
+        "竞品"
+      ]
+    },
+    "bullet_chart": {
+      "file": "bullet_chart.svg",
+      "label": "子弹图",
+      "category": "comparison",
+      "summary": "目标值与实际值对比",
+      "useCases": [
+        "KPI 达成",
+        "销售目标",
+        "预算执行",
+        "绩效评估"
+      ],
+      "bestFor": [
+        "目标 vs 实际",
+        "多指标并行展示",
+        "空间有限的仪表盘"
+      ],
+      "avoidFor": [
+        "构成占比分析",
+        "复杂时间序列"
+      ],
+      "keywords": [
+        "目标",
+        "实际",
+        "绩效",
+        "子弹图"
+      ]
+    },
+    "butterfly_chart": {
+      "file": "butterfly_chart.svg",
+      "label": "蝴蝶图",
+      "category": "comparison",
+      "summary": "左右双向对比",
+      "useCases": [
+        "人口金字塔",
+        "AB 测试",
+        "男女对比",
+        "收支对比"
+      ],
+      "bestFor": [
+        "双侧镜像对比",
+        "同一类别的两组数据"
+      ],
+      "avoidFor": [
+        "单侧排名",
+        "超过 2 组数据比较"
+      ],
+      "keywords": [
+        "双向对比",
+        "蝴蝶图",
+        "镜像",
+        "人口结构"
+      ]
+    },
+    "donut_chart": {
+      "file": "donut_chart.svg",
+      "label": "环形图",
+      "category": "composition",
+      "summary": "占比和构成分析",
+      "useCases": [
+        "市场份额",
+        "预算分配",
+        "结构分析"
+      ],
+      "bestFor": [
+        "3-6 个部分构成",
+        "需要中心强调核心数字"
+      ],
+      "avoidFor": [
+        "类别过多的细分占比",
+        "需要精确排序"
+      ],
+      "keywords": [
+        "占比",
+        "构成",
+        "环形图",
+        "份额"
+      ]
+    },
+    "dual_axis_line_chart": {
+      "file": "dual_axis_line_chart.svg",
+      "label": "双轴折线图",
+      "category": "trend",
+      "summary": "双 Y 轴不同量纲趋势对比",
+      "useCases": [
+        "销量与利润率",
+        "流量与转化率"
+      ],
+      "bestFor": [
+        "两个量纲差异较大的趋势",
+        "同时间轴下的双指标分析"
+      ],
+      "avoidFor": [
+        "超过 2 个核心指标",
+        "读者容易误读双轴时"
+      ],
+      "keywords": [
+        "双轴",
+        "折线图",
+        "趋势",
+        "量纲"
+      ]
+    },
+    "dumbbell_chart": {
+      "file": "dumbbell_chart.svg",
+      "label": "哑铃图",
+      "category": "comparison",
+      "summary": "多维度得分或前后状态对比",
+      "useCases": [
+        "竞品评估",
+        "综合指数",
+        "前后测比较"
+      ],
+      "bestFor": [
+        "两组数值差异展示",
+        "指标前后变化"
+      ],
+      "avoidFor": [
+        "三组以上并列对比",
+        "精细时间序列"
+      ],
+      "keywords": [
+        "差异",
+        "前后对比",
+        "哑铃图",
+        "评估"
+      ]
+    },
+    "funnel_chart": {
+      "file": "funnel_chart.svg",
+      "label": "漏斗图",
+      "category": "analysis",
+      "summary": "阶段转化与流失分析",
+      "useCases": [
+        "销售漏斗",
+        "用户转化",
+        "流程筛选"
+      ],
+      "bestFor": [
+        "3-5 个阶段的转化过程",
+        "强调流失点"
+      ],
+      "avoidFor": [
+        "非顺序型类别比较",
+        "阶段特别多的长流程"
+      ],
+      "keywords": [
+        "转化",
+        "漏斗",
+        "流失",
+        "阶段"
+      ]
+    },
+    "gantt_chart": {
+      "file": "gantt_chart.svg",
+      "label": "甘特图",
+      "category": "process",
+      "summary": "项目排期与任务管理",
+      "useCases": [
+        "项目管理",
+        "产品路线图",
+        "交付排期"
+      ],
+      "bestFor": [
+        "6-12 个任务的排期",
+        "展示时间跨度与依赖关系"
+      ],
+      "avoidFor": [
+        "纯里程碑展示",
+        "任务数量过多"
+      ],
+      "keywords": [
+        "排期",
+        "甘特图",
+        "项目",
+        "路线图"
+      ]
+    },
+    "gauge_chart": {
+      "file": "gauge_chart.svg",
+      "label": "仪表盘",
+      "category": "metrics",
+      "summary": "目标达成度展示",
+      "useCases": [
+        "KPI 完成率",
+        "性能监控",
+        "进度看板"
+      ],
+      "bestFor": [
+        "单指标达成度",
+        "强调目标完成状态"
+      ],
+      "avoidFor": [
+        "多类别比较",
+        "精确排名分析"
+      ],
+      "keywords": [
+        "达成度",
+        "仪表盘",
+        "KPI",
+        "进度"
+      ]
+    },
+    "grouped_bar_chart": {
+      "file": "grouped_bar_chart.svg",
+      "label": "分组柱状图",
+      "category": "comparison",
+      "summary": "多系列分组对比",
+      "useCases": [
+        "季度产品线对比",
+        "同比环比",
+        "多区域多指标对比"
+      ],
+      "bestFor": [
+        "2-4 个系列对比",
+        "类别与系列同时存在"
+      ],
+      "avoidFor": [
+        "系列过多",
+        "标签过长且类别过多"
+      ],
+      "keywords": [
+        "分组",
+        "多系列",
+        "柱状图",
+        "同比"
+      ]
+    },
+    "heatmap_chart": {
+      "file": "heatmap_chart.svg",
+      "label": "热力图",
+      "category": "analysis",
+      "summary": "矩阵强度与模式识别",
+      "useCases": [
+        "用户活跃时段",
+        "相关性矩阵",
+        "区域密度分析"
+      ],
+      "bestFor": [
+        "二维矩阵数据",
+        "强弱模式识别"
+      ],
+      "avoidFor": [
+        "需要精确单元格数值时",
+        "维度标签过多难以阅读"
+      ],
+      "keywords": [
+        "热力图",
+        "矩阵",
+        "相关性",
+        "强度"
+      ]
+    },
+    "horizontal_bar_chart": {
+      "file": "horizontal_bar_chart.svg",
+      "label": "水平条形图",
+      "category": "comparison",
+      "summary": "长标签排名与类别对比",
+      "useCases": [
+        "品牌排行",
+        "满意度评分",
+        "长名称列表比较"
+      ],
+      "bestFor": [
+        "5-12 条排名",
+        "长标签类别"
+      ],
+      "avoidFor": [
+        "时间趋势",
+        "双量纲分析"
+      ],
+      "keywords": [
+        "排名",
+        "水平条形图",
+        "长标签",
+        "对比"
+      ]
+    },
+    "kpi_cards": {
+      "file": "kpi_cards.svg",
+      "label": "KPI 卡片",
+      "category": "metrics",
+      "summary": "关键数字指标总览",
+      "useCases": [
+        "财务总览",
+        "业务看板",
+        "高管摘要"
+      ],
+      "bestFor": [
+        "2x2 或 1x4 指标总览",
+        "首页摘要页"
+      ],
+      "avoidFor": [
+        "趋势变化展示",
+        "复杂维度关联分析"
+      ],
+      "keywords": [
+        "KPI",
+        "指标卡",
+        "总览",
+        "仪表盘"
+      ]
+    },
+    "line_chart": {
+      "file": "line_chart.svg",
+      "label": "折线图",
+      "category": "trend",
+      "summary": "时间趋势展示",
+      "useCases": [
+        "时间序列",
+        "增长趋势",
+        "月度变化"
+      ],
+      "bestFor": [
+        "连续时间轴",
+        "1-3 个系列趋势对比"
+      ],
+      "avoidFor": [
+        "离散类别排名",
+        "单页过多系列"
+      ],
+      "keywords": [
+        "趋势",
+        "折线图",
+        "增长",
+        "时间序列"
+      ]
+    },
+    "matrix_2x2": {
+      "file": "matrix_2x2.svg",
+      "label": "四象限矩阵",
+      "category": "analysis",
+      "summary": "双维度定位与优先级分析",
+      "useCases": [
+        "波士顿矩阵",
+        "优先级分析",
+        "战略定位"
+      ],
+      "bestFor": [
+        "两个核心维度",
+        "战略取舍或分类定位"
+      ],
+      "avoidFor": [
+        "单维度排序",
+        "需要精确数值读数的页面"
+      ],
+      "keywords": [
+        "矩阵",
+        "四象限",
+        "优先级",
+        "定位"
+      ]
+    },
+    "org_chart": {
+      "file": "org_chart.svg",
+      "label": "组织结构图",
+      "category": "process",
+      "summary": "组织层级与汇报关系展示",
+      "useCases": [
+        "公司架构",
+        "部门分工",
+        "汇报关系"
+      ],
+      "bestFor": [
+        "2-4 层组织结构",
+        "关系链清晰展示"
+      ],
+      "avoidFor": [
+        "流程步骤说明",
+        "大量节点的复杂网络图"
+      ],
+      "keywords": [
+        "组织",
+        "结构图",
+        "层级",
+        "汇报关系"
+      ]
+    },
+    "pareto_chart": {
+      "file": "pareto_chart.svg",
+      "label": "帕累托图",
+      "category": "analysis",
+      "summary": "80/20 贡献分析",
+      "useCases": [
+        "质量归因",
+        "销售贡献",
+        "问题优先级"
+      ],
+      "bestFor": [
+        "排序后找关键少数",
+        "柱线结合展示累计贡献"
+      ],
+      "avoidFor": [
+        "无明显头部集中的数据",
+        "纯时间趋势"
+      ],
+      "keywords": [
+        "帕累托",
+        "80/20",
+        "累计贡献",
+        "优先级"
+      ]
+    },
+    "pie_chart": {
+      "file": "pie_chart.svg",
+      "label": "饼图",
+      "category": "composition",
+      "summary": "基础占比构成",
+      "useCases": [
+        "市场份额",
+        "预算分配",
+        "类别构成"
+      ],
+      "bestFor": [
+        "3-6 个部分占比",
+        "单层构成分析"
+      ],
+      "avoidFor": [
+        "部分太多或差异很小",
+        "需要精确比较细微差距"
+      ],
+      "keywords": [
+        "占比",
+        "饼图",
+        "构成",
+        "份额"
+      ]
+    },
+    "porter_five_forces": {
+      "file": "porter_five_forces.svg",
+      "label": "波特五力模型",
+      "category": "strategy",
+      "summary": "行业竞争结构分析",
+      "useCases": [
+        "行业分析",
+        "市场进入评估",
+        "竞争策略"
+      ],
+      "bestFor": [
+        "战略报告",
+        "行业进入与竞争格局分析"
+      ],
+      "avoidFor": [
+        "运营层面的细节流程",
+        "纯数据排名页"
+      ],
+      "keywords": [
+        "战略",
+        "五力模型",
+        "行业分析",
+        "竞争"
+      ]
+    },
+    "process_flow": {
+      "file": "process_flow.svg",
+      "label": "流程图",
+      "category": "process",
+      "summary": "流程步骤与阶段关系展示",
+      "useCases": [
+        "业务流程",
+        "操作指南",
+        "方法论步骤"
+      ],
+      "bestFor": [
+        "3-8 个步骤",
+        "顺序型流程说明"
+      ],
+      "avoidFor": [
+        "复杂网状关系",
+        "精细排期"
+      ],
+      "keywords": [
+        "流程",
+        "步骤",
+        "流程图",
+        "方法论"
+      ]
+    },
+    "progress_bar_chart": {
+      "file": "progress_bar_chart.svg",
+      "label": "进度条图",
+      "category": "metrics",
+      "summary": "多项进度与完成度对比",
+      "useCases": [
+        "OKR 进度",
+        "项目完成度",
+        "任务状态"
+      ],
+      "bestFor": [
+        "多项任务并排比较",
+        "完成率展示"
+      ],
+      "avoidFor": [
+        "精细时间趋势",
+        "复杂构成分析"
+      ],
+      "keywords": [
+        "进度",
+        "完成率",
+        "进度条",
+        "OKR"
+      ]
+    },
+    "radar_chart": {
+      "file": "radar_chart.svg",
+      "label": "雷达图",
+      "category": "analysis",
+      "summary": "多维能力评估",
+      "useCases": [
+        "能力评估",
+        "竞品对比",
+        "综合指数"
+      ],
+      "bestFor": [
+        "4-8 个维度",
+        "轮廓型综合对比"
+      ],
+      "avoidFor": [
+        "维度特别多",
+        "需要精确排序"
+      ],
+      "keywords": [
+        "雷达图",
+        "多维评估",
+        "能力",
+        "竞品"
+      ]
+    },
+    "sankey_chart": {
+      "file": "sankey_chart.svg",
+      "label": "桑基图",
+      "category": "process",
+      "summary": "流量或资源流向展示",
+      "useCases": [
+        "预算流向",
+        "用户转化路径",
+        "资源分配"
+      ],
+      "bestFor": [
+        "三层级流向",
+        "强调流量去向与损耗"
+      ],
+      "avoidFor": [
+        "节点特别多的复杂网络",
+        "精确排名页"
+      ],
+      "keywords": [
+        "流向",
+        "桑基图",
+        "转化路径",
+        "资源分配"
+      ]
+    },
+    "scatter_chart": {
+      "file": "scatter_chart.svg",
+      "label": "散点图",
+      "category": "analysis",
+      "summary": "相关性与分布分析",
+      "useCases": [
+        "投入产出",
+        "价格需求",
+        "样本分布"
+      ],
+      "bestFor": [
+        "X/Y 双维度关系",
+        "寻找聚类与离群点"
+      ],
+      "avoidFor": [
+        "顺序型流程",
+        "简单单维排名"
+      ],
+      "keywords": [
+        "散点图",
+        "相关性",
+        "分布",
+        "离群点"
+      ]
+    },
+    "stacked_area_chart": {
+      "file": "stacked_area_chart.svg",
+      "label": "堆叠面积图",
+      "category": "trend",
+      "summary": "多系列堆叠趋势",
+      "useCases": [
+        "营收来源",
+        "流量来源变化",
+        "构成随时间变化"
+      ],
+      "bestFor": [
+        "总量与构成同时变化",
+        "2-4 个系列趋势"
+      ],
+      "avoidFor": [
+        "系列过多导致难读",
+        "精确比较中间层细微变化"
+      ],
+      "keywords": [
+        "堆叠",
+        "面积图",
+        "趋势",
+        "构成变化"
+      ]
+    },
+    "stacked_bar_chart": {
+      "file": "stacked_bar_chart.svg",
+      "label": "堆叠柱状图",
+      "category": "comparison",
+      "summary": "构成与总量并行对比",
+      "useCases": [
+        "收入构成",
+        "市场份额变化",
+        "分项贡献比较"
+      ],
+      "bestFor": [
+        "类别总量 + 构成展示",
+        "2-4 个构成部分"
+      ],
+      "avoidFor": [
+        "需要比较中间段微小差异",
+        "类别和部分都过多"
+      ],
+      "keywords": [
+        "堆叠柱状图",
+        "构成",
+        "贡献",
+        "总量"
+      ]
+    },
+    "swot_analysis": {
+      "file": "swot_analysis.svg",
+      "label": "SWOT 分析",
+      "category": "strategy",
+      "summary": "优势劣势机会威胁分析",
+      "useCases": [
+        "战略规划",
+        "竞品分析",
+        "业务诊断"
+      ],
+      "bestFor": [
+        "四象限战略分析",
+        "高层沟通与策略讨论"
+      ],
+      "avoidFor": [
+        "纯定量数据排名",
+        "细化到执行排期"
+      ],
+      "keywords": [
+        "SWOT",
+        "战略",
+        "优势劣势",
+        "机会威胁"
+      ]
+    },
+    "timeline": {
+      "file": "timeline.svg",
+      "label": "时间轴",
+      "category": "process",
+      "summary": "里程碑与历史演进展示",
+      "useCases": [
+        "里程碑",
+        "历史演进",
+        "发展阶段"
+      ],
+      "bestFor": [
+        "3-8 个关键节点",
+        "按时间顺序讲故事"
+      ],
+      "avoidFor": [
+        "详细任务排期",
+        "复杂关系网络"
+      ],
+      "keywords": [
+        "时间轴",
+        "里程碑",
+        "历史",
+        "演进"
+      ]
+    },
+    "treemap_chart": {
+      "file": "treemap_chart.svg",
+      "label": "矩形树图",
+      "category": "composition",
+      "summary": "层级面积占比展示",
+      "useCases": [
+        "预算分配",
+        "市场份额构成",
+        "层级资源占比"
+      ],
+      "bestFor": [
+        "层级型占比数据",
+        "同时比较大小与分组"
+      ],
+      "avoidFor": [
+        "时间趋势",
+        "需要严格排序的类别"
+      ],
+      "keywords": [
+        "矩形树图",
+        "面积占比",
+        "层级",
+        "构成"
+      ]
+    },
+    "waterfall_chart": {
+      "file": "waterfall_chart.svg",
+      "label": "瀑布图",
+      "category": "comparison",
+      "summary": "增减变化分解",
+      "useCases": [
+        "利润分解",
+        "预算变化",
+        "业绩桥分析"
+      ],
+      "bestFor": [
+        "起点到终点的变化拆解",
+        "展示正负向贡献"
+      ],
+      "avoidFor": [
+        "时间趋势折线分析",
+        "纯占比构成页"
+      ],
+      "keywords": [
+        "瀑布图",
+        "变化分解",
+        "贡献",
+        "桥分析"
+      ]
+    }
+  }
+}

@@ -1,7 +1,5 @@
 # 模板资源
 
-
-
 ## 📝 设计规范与大纲参考
 
 `design_spec_reference.md` 是一个全能型的参考模板，用于定义项目的：
@@ -20,11 +18,12 @@
 - **Consultant Top**: 顶级咨询风格（MBB级）
 - **Academic Defense**: 学术答辩风格，专业科研（新增 ✨）
 
-[查看布局模板说明](./layouts/README.md)
+- **人工浏览**：[layouts/README.md](./layouts/README.md)
+- **AI / 程序查询**：[layouts/layouts_index.json](./layouts/layouts_index.json)
 
 ## 📊 图表模板
 
-`charts/` 目录包含 13 种常用图表模板：
+`charts/` 目录包含 33 种常用图表模板：
 
 - KPI 卡片
 - 柱状图 / 堆叠柱状图
@@ -38,10 +37,12 @@
 - 流程图
 - 组织结构图
 
-[查看图表模板说明](./charts/README.md)
+- **人工浏览**：[charts/README.md](./charts/README.md)
+- **AI / 程序查询**：[charts/charts_index.json](./charts/charts_index.json)
 
 ## 🎨 图标库
 
 `icons/` 目录包含 640+ 矢量图标，来源于 [SVG Repo](https://www.svgrepo.com/)。
 
-[查看图标库说明](./icons/README.md)
+- **人工浏览**：[icons/README.md](./icons/README.md)
+- **AI / 程序查询**：[icons/icons_index.json](./icons/icons_index.json)

@@ -1,6 +1,11 @@
-# 页面布局模板库
+# 页面布局模板库（21 套）
 
 预置的 PPT 页面布局模板，支持多种风格和使用场景。
+
+- **完整索引**：[README.md](./README.md)（人工浏览）
+- **JSON 索引**：[layouts_index.json](./layouts_index.json)（AI / 程序优先读取）
+
+> 🤖 **AI / 程序选型建议**：优先读取 `layouts_index.json`；人工浏览和快速比对时使用本 README。
 
 ---
 
@@ -247,4 +252,3 @@ cp templates/layouts/government_red/* projects/<项目>/templates/
 | `<g opacity="...">` | 每个子元素单独设置透明度 |
 
 ---
-

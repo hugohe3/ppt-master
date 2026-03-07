@@ -171,7 +171,7 @@
 | 战略定位 | `matrix_2x2.svg`  |
 | 发展历程 | `timeline.svg`    |
 
-完整图表目录和选择指南：[templates/charts/README.md](../templates/charts/README.md)
+完整图表目录和选择指南：[templates/charts/charts_index.json](../templates/charts/charts_index.json)
 
 > 📖 **建议**：当页面涉及图表时，建议先阅读对应的模板 SVG 文件（如 `templates/charts/bar_chart.svg`），了解其结构和布局，以便绘制出更高质量的图表。
 
@@ -334,4 +334,3 @@ python3 tools/finalize_svg.py <项目路径>
 # 3. 导出 PPTX
 python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
-

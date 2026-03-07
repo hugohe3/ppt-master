@@ -174,7 +174,7 @@ templates/layouts/<模板名称>/
 1. **用户自备模板**: 已有的模板文件
 2. **其他项目模板**: 从现有项目复制
 3. **外部来源模板**: 网络下载、设计师提供等
-4. **示例库参考**: `templates/layouts/` 目录下的预置模板
+4. **示例库参考**: 优先查询 `templates/layouts/layouts_index.json`
 
 **使用步骤**：
 
