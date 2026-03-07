@@ -1,0 +1,739 @@
+{
+  "meta": {
+    "total": 21,
+    "defaultViewBox": "0 0 1280 720",
+    "formats": [
+      "ppt169"
+    ],
+    "standardFiles": [
+      "design_spec.md",
+      "01_cover.svg",
+      "02_toc.svg",
+      "02_chapter.svg",
+      "03_content.svg",
+      "04_ending.svg"
+    ],
+    "updated": "2026-03-07"
+  },
+  "categories": {
+    "brand": {
+      "label": "品牌风格模板",
+      "layouts": [
+        "google_style",
+        "mckinsey",
+        "anthropic",
+        "中汽研_常规",
+        "中汽研_商务",
+        "中汽研_现代",
+        "中国电建_常规",
+        "中国电建_现代",
+        "招商银行"
+      ]
+    },
+    "general": {
+      "label": "通用风格模板",
+      "layouts": [
+        "consultant",
+        "consultant_top",
+        "general",
+        "科技蓝商务",
+        "smart_red"
+      ]
+    },
+    "scenario": {
+      "label": "场景专用模板",
+      "layouts": [
+        "academic_defense",
+        "psychology_attachment",
+        "medical_university",
+        "重庆大学"
+      ]
+    },
+    "government": {
+      "label": "政企风格模板",
+      "layouts": [
+        "government_red",
+        "government_blue"
+      ]
+    },
+    "special": {
+      "label": "特殊风格模板",
+      "layouts": [
+        "pixel_retro"
+      ]
+    }
+  },
+  "quickLookup": {
+    "strategy": [
+      "consultant_top",
+      "mckinsey",
+      "consultant"
+    ],
+    "board": [
+      "consultant_top",
+      "mckinsey",
+      "招商银行"
+    ],
+    "general_business": [
+      "general",
+      "科技蓝商务",
+      "consultant"
+    ],
+    "technology": [
+      "anthropic",
+      "google_style",
+      "smart_red",
+      "general"
+    ],
+    "government": [
+      "government_red",
+      "government_blue"
+    ],
+    "academic": [
+      "academic_defense",
+      "重庆大学"
+    ],
+    "medical": [
+      "medical_university"
+    ],
+    "psychology": [
+      "psychology_attachment"
+    ],
+    "finance": [
+      "招商银行",
+      "consultant_top",
+      "mckinsey"
+    ],
+    "certification": [
+      "中汽研_常规",
+      "中汽研_商务",
+      "中汽研_现代"
+    ],
+    "energy": [
+      "中国电建_常规",
+      "中国电建_现代"
+    ],
+    "creative": [
+      "pixel_retro",
+      "smart_red"
+    ]
+  },
+  "layouts": {
+    "academic_defense": {
+      "dir": "academic_defense",
+      "label": "学术答辩模板",
+      "category": "scenario",
+      "summary": "适用于学术答辩、研究汇报与课题申请的规范型模板",
+      "useCases": [
+        "毕业答辩",
+        "学术汇报",
+        "研究进展报告",
+        "课题申请"
+      ],
+      "tone": "专业、严谨、科研感、清晰层次",
+      "themeMode": "亮色主题（白色背景 + 深蓝标题条）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "学术",
+        "答辩",
+        "科研",
+        "规范"
+      ]
+    },
+    "anthropic": {
+      "dir": "anthropic",
+      "label": "Anthropic 风格模板",
+      "category": "brand",
+      "summary": "适用于 AI / LLM 技术分享与产品发布的科技感模板",
+      "useCases": [
+        "AI 技术分享",
+        "开发者大会",
+        "技术培训",
+        "产品发布"
+      ],
+      "tone": "科技感、专业、现代、结论先行",
+      "themeMode": "混合主题（深色封面/章节 + 亮色内容页）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "AI",
+        "LLM",
+        "开发者",
+        "科技"
+      ]
+    },
+    "consultant": {
+      "dir": "consultant",
+      "label": "咨询顾问模板",
+      "category": "general",
+      "summary": "适用于商业咨询、战略分析和项目汇报的专业模板",
+      "useCases": [
+        "商业咨询",
+        "战略分析",
+        "项目汇报",
+        "企业培训"
+      ],
+      "tone": "专业、简约、商务、现代",
+      "themeMode": "深色主题（深蓝背景 + 蓝色强调色 + 金色点缀）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "咨询",
+        "商务",
+        "战略",
+        "汇报"
+      ]
+    },
+    "consultant_top": {
+      "dir": "consultant_top",
+      "label": "顶级咨询模板",
+      "category": "general",
+      "summary": "适用于董事会和高管级战略汇报的 MBB 风格模板",
+      "useCases": [
+        "战略规划",
+        "高管汇报",
+        "投资分析",
+        "董事会演示"
+      ],
+      "tone": "高端、精致、权威、数据驱动",
+      "themeMode": "深色主题（暗黑背景 + 渐变强调 + 金色点缀）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "MBB",
+        "董事会",
+        "高管",
+        "战略"
+      ]
+    },
+    "general": {
+      "dir": "general",
+      "label": "通用模板",
+      "category": "general",
+      "summary": "适用于多数工作汇报和项目介绍的通用模板",
+      "useCases": [
+        "工作汇报",
+        "项目介绍",
+        "产品展示",
+        "培训演示"
+      ],
+      "tone": "现代、清新、专业、通用",
+      "themeMode": "混合主题（深色封面/章节页 + 浅色内容页）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "通用",
+        "商业演示",
+        "工作汇报",
+        "项目介绍"
+      ]
+    },
+    "google_style": {
+      "dir": "google_style",
+      "label": "Google 风格模板",
+      "category": "brand",
+      "summary": "适用于年度汇报和技术分享的 Google 品牌风格模板",
+      "useCases": [
+        "年度工作汇报",
+        "技术分享",
+        "项目成果展示",
+        "数据驱动型演示"
+      ],
+      "tone": "专业、现代、简洁克制、数据驱动、充足留白",
+      "themeMode": "亮色主题（白色/浅灰背景 + Google 品牌色强调）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "Google",
+        "品牌风格",
+        "技术分享",
+        "年度报告"
+      ]
+    },
+    "government_blue": {
+      "dir": "government_blue",
+      "label": "政府蓝模板",
+      "category": "government",
+      "summary": "适用于智慧政务与数字化转型汇报的蓝色政务模板",
+      "useCases": [
+        "重点项目汇报",
+        "十四五规划",
+        "工作总结",
+        "招商引资",
+        "政策解读"
+      ],
+      "tone": "大气、科技感、现代化、专业政务风格",
+      "themeMode": "亮色主题（白色背景 + 蓝色渐变装饰）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "政务",
+        "政府蓝",
+        "智慧城市",
+        "数字化"
+      ]
+    },
+    "government_red": {
+      "dir": "government_red",
+      "label": "政府红模板",
+      "category": "government",
+      "summary": "适用于政务汇报与党建场景的红色政务模板",
+      "useCases": [
+        "政务汇报",
+        "政策解读",
+        "工作总结",
+        "项目推介",
+        "招商引资"
+      ],
+      "tone": "权威、庄重、专业、现代化政务风格",
+      "themeMode": "亮色主题（白色背景 + 政府红/蓝强调色）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "政务",
+        "党建",
+        "政府红",
+        "权威"
+      ]
+    },
+    "mckinsey": {
+      "dir": "mckinsey",
+      "label": "麦肯锡风格模板",
+      "category": "brand",
+      "summary": "适用于战略咨询和投资分析的麦肯锡风格模板",
+      "useCases": [
+        "战略咨询",
+        "高管汇报",
+        "投资分析",
+        "商业提案"
+      ],
+      "tone": "数据驱动、结构化思维、专业留白、极简高端",
+      "themeMode": "亮色主题（白色背景 + McKinsey Blue 强调）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "麦肯锡",
+        "咨询",
+        "结构化",
+        "高管汇报"
+      ]
+    },
+    "medical_university": {
+      "dir": "medical_university",
+      "label": "医院/医科大学模板",
+      "category": "scenario",
+      "summary": "适用于医学报告、病例讨论与科研汇报的专业模板",
+      "useCases": [
+        "医学学术报告",
+        "病例讨论",
+        "科研汇报",
+        "医院工作汇报",
+        "医学教育培训"
+      ],
+      "tone": "专业、严谨、生命感、科技感、可信赖",
+      "themeMode": "亮色主题（白色背景 + 医学蓝标题条 + 生命绿点缀）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "医学",
+        "医院",
+        "病例",
+        "科研"
+      ]
+    },
+    "pixel_retro": {
+      "dir": "pixel_retro",
+      "label": "像素复古模板",
+      "category": "special",
+      "summary": "适用于技术分享和游戏主题内容的像素风模板",
+      "useCases": [
+        "技术分享",
+        "编程教学",
+        "游戏介绍",
+        "极客风格展示"
+      ],
+      "tone": "复古游戏、霓虹赛博、极客科技、8-bit 风格",
+      "themeMode": "暗色主题（深空黑背景 + 霓虹强调色）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "像素风",
+        "复古游戏",
+        "赛博朋克",
+        "技术"
+      ]
+    },
+    "psychology_attachment": {
+      "dir": "psychology_attachment",
+      "label": "心理疗愈模板",
+      "category": "scenario",
+      "summary": "适用于心理治疗培训和咨询讲座的温暖专业模板",
+      "useCases": [
+        "心理治疗培训",
+        "学术讲座",
+        "咨询案例分析",
+        "专业分享"
+      ],
+      "tone": "专业、温暖、疗愈、信任感",
+      "themeMode": "浅色主题（云白背景 + 蓝绿渐变强调 + 多彩语义色）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "心理学",
+        "疗愈",
+        "咨询",
+        "温暖"
+      ]
+    },
+    "smart_red": {
+      "dir": "smart_red",
+      "label": "智慧红橙商务模板",
+      "category": "general",
+      "summary": "适用于科技企业介绍和教育解决方案的活力商务模板",
+      "useCases": [
+        "企业介绍",
+        "产品发布",
+        "解决方案演示",
+        "教育行业课件"
+      ],
+      "tone": "现代、活力、专业、几何感",
+      "themeMode": "混合主题（深色/彩色封面 + 浅色内容页）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "红橙商务",
+        "科技企业",
+        "教育",
+        "活力"
+      ]
+    },
+    "中国电建_常规": {
+      "dir": "中国电建_常规",
+      "label": "中国电建常规模板",
+      "category": "brand",
+      "summary": "适用于工程建设和央企汇报的稳健品牌模板",
+      "useCases": [
+        "工程项目汇报",
+        "技术方案展示",
+        "商务洽谈",
+        "企业宣传",
+        "年度总结"
+      ],
+      "tone": "专业、稳重、国际化、央企风范",
+      "themeMode": "亮色主题（白色背景 + 电建蓝强调色）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "中国水务logo.png",
+        "华东院logo.png",
+        "水电三局logo.png",
+        "电建logo.png"
+      ],
+      "keywords": [
+        "中国电建",
+        "央企",
+        "工程",
+        "能源"
+      ]
+    },
+    "中国电建_现代": {
+      "dir": "中国电建_现代",
+      "label": "中国电建现代模板",
+      "category": "brand",
+      "summary": "适用于重大工程和国际业务展示的现代工程模板",
+      "useCases": [
+        "重大工程汇报",
+        "国际市场推介",
+        "科技成果展示",
+        "高端商务洽谈"
+      ],
+      "tone": "宏大叙事、现代精工、数字科技、国际视野",
+      "themeMode": "深蓝科技渐变 + 精密网格纹理",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "中国水务logo.png",
+        "华东院logo.png",
+        "水电三局logo.png",
+        "电建logo.png"
+      ],
+      "keywords": [
+        "中国电建",
+        "国际工程",
+        "现代工程",
+        "科技"
+      ]
+    },
+    "中汽研_商务": {
+      "dir": "中汽研_商务",
+      "label": "中汽研商务模板",
+      "category": "brand",
+      "summary": "适用于认证展示和高端商务汇报的中汽研品牌模板",
+      "useCases": [
+        "产品认证展示",
+        "测评认证介绍",
+        "技术推介",
+        "高端商务汇报"
+      ],
+      "tone": "现代科技、权威专业、沉稳大气",
+      "themeMode": "深蓝科技渐变 + 清爽白底内容页",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "右上角 logo.png",
+        "大型 logo.png"
+      ],
+      "keywords": [
+        "中汽研",
+        "认证",
+        "商务",
+        "科技"
+      ]
+    },
+    "中汽研_常规": {
+      "dir": "中汽研_常规",
+      "label": "中汽研常规模板",
+      "category": "brand",
+      "summary": "适用于认证和测评场景的中汽研常规模板",
+      "useCases": [
+        "产品认证展示",
+        "测评认证介绍",
+        "技术推介",
+        "商务拜访"
+      ],
+      "tone": "专业、权威、可信赖、咨询风格",
+      "themeMode": "亮色主题（白色背景 + 深蓝强调色）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "右上角 logo.png",
+        "大型 logo.png"
+      ],
+      "keywords": [
+        "中汽研",
+        "认证",
+        "测评",
+        "权威"
+      ]
+    },
+    "中汽研_现代": {
+      "dir": "中汽研_现代",
+      "label": "中汽研现代模板",
+      "category": "brand",
+      "summary": "适用于前瞻技术展示和高端发布的未来科技模板",
+      "useCases": [
+        "前瞻技术展示",
+        "战略发布",
+        "高端商务汇报"
+      ],
+      "tone": "未来感、科技、深邃、精致",
+      "themeMode": "沉浸式深色封面/过渡页 + 清爽微灰内容页",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "右上角 logo.png",
+        "大型 logo.png"
+      ],
+      "keywords": [
+        "中汽研",
+        "未来科技",
+        "前瞻技术",
+        "发布会"
+      ]
+    },
+    "招商银行": {
+      "dir": "招商银行",
+      "label": "招商银行模板",
+      "category": "brand",
+      "summary": "适用于金融机构高端汇报和年度报告的品牌模板",
+      "useCases": [
+        "高端工作汇报",
+        "业务展示",
+        "年度报告",
+        "产品推介"
+      ],
+      "tone": "极简轻奢、精致、多层次、现代金融",
+      "themeMode": "亮色主题（微纹理背景 + 招行红/金精细装饰）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "招商银行公司金融.png"
+      ],
+      "keywords": [
+        "招商银行",
+        "金融",
+        "高端汇报",
+        "年度报告"
+      ]
+    },
+    "科技蓝商务": {
+      "dir": "科技蓝商务",
+      "label": "科技蓝商务模板",
+      "category": "general",
+      "summary": "适用于企业汇报与方案提案的科技商务模板",
+      "useCases": [
+        "企业汇报",
+        "产品发布",
+        "方案提案",
+        "流程规范",
+        "培训材料"
+      ],
+      "tone": "科技、商务、专业、简洁",
+      "themeMode": "混合主题（深蓝/科技蓝封面 + 浅色内容页）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [],
+      "keywords": [
+        "科技蓝",
+        "商务",
+        "方案提案",
+        "企业汇报"
+      ]
+    },
+    "重庆大学": {
+      "dir": "重庆大学",
+      "label": "重庆大学模板",
+      "category": "scenario",
+      "summary": "适用于学术答辩与科研汇报的高校专属模板",
+      "useCases": [
+        "学术答辩",
+        "科研汇报",
+        "教学展示",
+        "学术交流"
+      ],
+      "tone": "学术稳重、山城气韵、现代简约",
+      "themeMode": "学术蓝主色 + 山城层叠意象",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "重庆大学logo.png",
+        "重庆大学logo2.png"
+      ],
+      "keywords": [
+        "重庆大学",
+        "学术",
+        "答辩",
+        "高校"
+      ]
+    }
+  }
+}
