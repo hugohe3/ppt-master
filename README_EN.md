@@ -62,10 +62,10 @@ Recommended AI editors:
 
 | Tool                                                | Rating | Description                                                                                                          |
 | --------------------------------------------------- | :----: | -------------------------------------------------------------------------------------------------------------------- |
-| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **Highly Recommended**! Free Opus 4.6 access, integrated Banana image generation, can generate images directly in the repository |
-| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, supports multiple models                                                                        |
-| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | Microsoft official solution                                                                                           |
+| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **Highly Recommended**! High cost-effectiveness, stable, Microsoft official solution                                  |
+| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, great experience but relatively expensive                                                       |
 | [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                                                           |
+| [Antigravity](https://antigravity.dev/)             |   ⭐   | Free Opus 4.6 access, but currently highly unstable. Recommended only as an alternative.                             |
 
 ### 4. Start Creating
 
@@ -80,7 +80,9 @@ AI (Strategist role): Sure, before we begin I need to complete eight confirmatio
    ...
 ```
 
-> 💡 **Model Recommendation**: Opus 4.6 works best, Antigravity currently offers free access
+> 💡 **Model Recommendation**: Opus 4.6 works best. However, due to the current instability of Opus on some IDEs (like Antigravity), using other stable AI clients is recommended.
+
+> 💡 **Image Generation Integration**: We suggest configuring Google AI environment variables (`GEMINI_API_KEY`, and optionally `GEMINI_BASE_URL` for proxy) to integrate the powerful image generation capabilities of nano banana 2 via this project's `tools/nano_banana_gen.py`. If using the Antigravity proxy, please be aware to pass the model parameter (`-m gemini-3.1-flash-image`) when calling.
 
 > 💡 **AI Lost Context?** You can prompt the AI to refer to the `AGENTS.md` file, and it will automatically follow the role definitions in the repository
 
