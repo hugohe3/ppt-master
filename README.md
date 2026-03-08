@@ -62,10 +62,10 @@ pip install -r requirements.txt
 
 | 工具                                                | 推荐度 | 说明                                                                          |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
-| **[Antigravity](https://antigravity.dev/)**         | ⭐⭐⭐ | **强烈推荐**！免费使用 Opus 4.6，集成 Banana 生图功能，可直接在仓库里生成配图 |
-| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，支持多种模型                                                  |
-| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | 微软官方方案                                                                  |
+| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **强烈推荐**！性价比高，运行稳定，微软官方方案                                |
+| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，体验好但价格较高                                              |
 | [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic 官方 CLI 工具                                                       |
+| [Antigravity](https://antigravity.dev/)             |   ⭐   | 免费使用 Opus 4.6 接口，但目前模型极不稳定，仅作备选                          |
 
 ### 4. 开始创作
 
@@ -80,7 +80,9 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
    ...
 ```
 
-> 💡 **模型推荐**：Opus 4.6 效果最佳，Antigravity 目前可免费使用
+> 💡 **模型推荐**：Opus 4.6 效果最佳，但因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端。
+
+> 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `tools/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
 
 > 💡 **AI 迷失上下文？** 可提示 AI 参考 `AGENTS.md` 文件，它会自动按照仓库中的角色定义工作
 
