@@ -112,7 +112,7 @@ def _is_rate_limit_error(e: Exception) -> bool:
 # ╚══════════════════════════════════════════════════════════════════╝
 
 def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
-                    aspect_ratio: str = "1:1", image_size: str = "2K",
+                    aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = None) -> str:
     """
@@ -236,7 +236,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 # ╚══════════════════════════════════════════════════════════════════╝
 
 def generate(prompt: str, negative_prompt: str = None,
-             aspect_ratio: str = "1:1", image_size: str = "2K",
+             aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = DEFAULT_MODEL,
              max_retries: int = MAX_RETRIES) -> str:
@@ -324,8 +324,8 @@ if __name__ == "__main__":
         help=f"Aspect ratio. Choices: {VALID_ASPECT_RATIOS}. Default: 1:1."
     )
     parser.add_argument(
-        "--image_size", default="2K",
-        help=f"Image size. Choices: {VALID_IMAGE_SIZES}. Default: 2K. (case-insensitive)"
+        "--image_size", default="1K",
+        help=f"Image size. Choices: {VALID_IMAGE_SIZES}. Default: 1K. (case-insensitive)"
     )
     parser.add_argument(
         "--output", "-o", default=None,
