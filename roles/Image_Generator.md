@@ -377,7 +377,7 @@ subtle and elegant, suitable for presentation slide corners
 - 可选环境变量：`GEMINI_BASE_URL`
 - 命令格式:
   ```bash
-  python3 tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 4K --output 项目/images --filename cover_bg
+  python3 tools/nano_banana_gen.py "你的提示词" --aspect_ratio 16:9 --image_size 1K --output 项目/images --filename cover_bg
   ```
 - **生成节奏控制（强制）**：
 - 每次只执行一个生成命令，等待图片返回并确认文件落盘后，再执行下一条
@@ -390,12 +390,12 @@ subtle and elegant, suitable for presentation slide corners
   | `prompt` | - | 正向提示词（位置参数） | `Nano Banana` |
   | `--negative_prompt` | `-n` | 负面提示词，指定需要排除的元素 | 无 |
   | `--aspect_ratio` | - | 图片宽高比 | `1:1` |
-  | `--image_size` | - | 图片尺寸 (`1K`, `2K`, `4K`) | `4K` |
+  | `--image_size` | - | 图片尺寸 (`1K`, `2K`, `4K`) | `1K` |
   | `--output` | `-o` | 输出目录 | 当前目录 |
   | `--filename` | `-f` | 指定输出文件名（不含扩展名） | 自动命名 |
 
 - 支持的宽高比: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
-- 支持的尺寸: `1K`, `2K`, `4K`（默认）
+- 支持的尺寸: `1K`（默认）, `2K`, `4K`
 - 使用 `--output` 或 `-o` 参数指定输出目录，图片将保存到与 `image_prompts.md` 相同的 `images/` 目录
 
 **方式二：自动生成**（如果 AI 工具支持）
