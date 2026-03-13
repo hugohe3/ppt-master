@@ -74,6 +74,15 @@ python3 tools/project_manager.py init <项目名称> --format <格式>
 
 格式选项：`ppt169`（默认）、`ppt43`、`xhs`、`story` 等
 
+如需把原始 PDF、Markdown、TXT 或 URL 一并收进项目目录，立即执行：
+
+```bash
+python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
+```
+
+- 所有源材料统一归档到 `<项目路径>/sources/`
+- 如需直接移动原文件而不是复制，可追加 `--move`
+
 ---
 
 ## 阶段三：模板选项确认
@@ -117,6 +126,7 @@ cp templates/layouts/<模板名>/*.jpeg <项目路径>/images/ 2>/dev/null || tr
 **模板内容检查**：
 ```
 <项目路径>/
+├── sources/                  # 源材料归档（原件、URL 记录、转换后的 Markdown）
 ├── templates/                # 模板文件
 │   ├── design_spec.md        # 设计规范（必须）
 │   ├── 01_cover.svg          # 封面模板
@@ -543,6 +553,9 @@ python3 tools/web_to_md.py <URL> 或 node tools/web_to_md.cjs <URL>
 # 初始化项目
 python3 tools/project_manager.py init <名称> --format ppt169
 
+# 归档源材料到项目目录
+python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
+
 # 验证项目
 python3 tools/project_manager.py validate <路径>
 
@@ -572,6 +585,7 @@ python3 tools/total_md_split.py <项目路径>
 
 ```
 project/
+├── sources/       # 源材料（原件与转换后的 Markdown）
 ├── svg_output/    # 原始版本（带占位符，作为模板参考）
 │   ├── 01_封面.svg
 │   ├── 02_目录.svg

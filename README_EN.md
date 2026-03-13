@@ -168,6 +168,9 @@ If optimized: re-run post-processing and export
 # Initialize project
 python3 tools/project_manager.py init <project_name> --format ppt169
 
+# Archive source materials into the project folder
+python3 tools/project_manager.py import-sources <project_path> <source_file_or_url...>
+
 # PDF to Markdown
 python3 tools/pdf_to_md.py <PDF_file>
 
@@ -191,7 +194,7 @@ ppt-master/
 ├── templates/      # Template library (chart templates + 640+ icons)
 ├── tools/          # Toolset (project management, conversion, processing)
 ├── examples/       # Example projects (15 complete cases)
-└── projects/       # User project workspace
+└── projects/       # User project workspace (with sources/)
 ```
 
 ---

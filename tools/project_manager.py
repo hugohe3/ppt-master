@@ -1,271 +1,460 @@
 #!/usr/bin/env python3
-"""
-PPT Master - 项目管理工具
+"""PPT Master project management helpers.
 
-提供项目初始化、验证等功能。
-
-用法:
-    python3 tools/project_manager.py init <project_name> [--format ppt169|ppt43|wechat|...]
+Usage:
+    python3 tools/project_manager.py init <project_name> [--format ppt169] [--dir projects]
+    python3 tools/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move]
     python3 tools/project_manager.py validate <project_path>
     python3 tools/project_manager.py info <project_path>
 """
 
+from __future__ import annotations
+
+import shutil
+import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
-# 导入公共工具模块（必须成功）
 try:
     from project_utils import (
         CANVAS_FORMATS,
-        normalize_canvas_format,
         get_project_info as get_project_info_common,
+        normalize_canvas_format,
         validate_project_structure,
-        validate_svg_viewbox
+        validate_svg_viewbox,
     )
 except ImportError:
-    # 如果直接运行，尝试从当前目录导入
-    import os
-    import sys
-    # 将 tools 目录添加到路径
-    tools_dir = os.path.dirname(os.path.abspath(__file__))
-    if tools_dir not in sys.path:
-        sys.path.insert(0, tools_dir)
-    try:
-        from project_utils import (
-            CANVAS_FORMATS,
-            normalize_canvas_format,
-            get_project_info as get_project_info_common,
-            validate_project_structure,
-            validate_svg_viewbox
-        )
-    except ImportError as e:
-        print(f"错误: 无法导入 project_utils 模块")
-        print(f"请确保在 tools/ 目录下运行，或将 tools/ 添加到 PYTHONPATH")
-        print(f"详细信息: {e}")
-        sys.exit(1)
+    tools_dir = Path(__file__).resolve().parent
+    if str(tools_dir) not in sys.path:
+        sys.path.insert(0, str(tools_dir))
+    from project_utils import (  # type: ignore
+        CANVAS_FORMATS,
+        get_project_info as get_project_info_common,
+        normalize_canvas_format,
+        validate_project_structure,
+        validate_svg_viewbox,
+    )
+
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+TOOLS_DIR = Path(__file__).resolve().parent
+SOURCE_DIRNAME = "sources"
+TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
+PDF_SUFFIXES = {".pdf"}
+WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
+
+
+def is_url(value: str) -> bool:
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+
+
+def sanitize_name(value: str) -> str:
+    safe = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in value.strip())
+    safe = safe.strip("._")
+    while "__" in safe:
+        safe = safe.replace("__", "_")
+    return safe[:120] or "source"
+
+
+def derive_url_basename(url: str) -> str:
+    parsed = urlparse(url)
+    parts = [sanitize_name(parsed.netloc)]
+    if parsed.path and parsed.path != "/":
+        path_part = sanitize_name(parsed.path.strip("/").replace("/", "_"))
+        if path_part:
+            parts.append(path_part)
+    return "_".join(part for part in parts if part) or "web_source"
 
 
 class ProjectManager:
-    """项目管理器"""
+    """Create, inspect, validate, and populate project folders."""
 
-    # 使用公共模块的画布格式定义（统一来源）
     CANVAS_FORMATS = CANVAS_FORMATS
 
-    def __init__(self, base_dir: str = 'projects'):
-        """初始化项目管理器
-
-        Args:
-            base_dir: 项目基础目录，默认为 projects
-        """
+    def __init__(self, base_dir: str = "projects") -> None:
         self.base_dir = Path(base_dir)
 
-    def init_project(self, project_name: str, canvas_format: str = 'ppt169',
-                     base_dir: Optional[str] = None) -> str:
-        """初始化新项目
-
-        Args:
-            project_name: 项目名称
-            canvas_format: 画布格式 (ppt169, ppt43, wechat, 等)
-            base_dir: 项目基础目录，默认使用实例的 base_dir
-
-        Returns:
-            创建的项目路径
-        """
-        if base_dir:
-            base_path = Path(base_dir)
-        else:
-            base_path = self.base_dir
+    def init_project(
+        self,
+        project_name: str,
+        canvas_format: str = "ppt169",
+        base_dir: Optional[str] = None,
+    ) -> str:
+        base_path = Path(base_dir) if base_dir else self.base_dir
 
         normalized_format = normalize_canvas_format(canvas_format)
         if normalized_format not in self.CANVAS_FORMATS:
-            available = ', '.join(sorted(self.CANVAS_FORMATS.keys()))
+            available = ", ".join(sorted(self.CANVAS_FORMATS.keys()))
             raise ValueError(
-                f"不支持的画布格式: {canvas_format} "
-                f"(可用: {available}; 常用别名: xhs -> xiaohongshu)"
+                f"Unsupported canvas format: {canvas_format} "
+                f"(available: {available}; common alias: xhs -> xiaohongshu)"
             )
 
-        # 创建项目目录名: {project_name}_{format}_{YYYYMMDD}
-        from datetime import datetime
-        date_str = datetime.now().strftime('%Y%m%d')
+        date_str = datetime.now().strftime("%Y%m%d")
         project_dir_name = f"{project_name}_{normalized_format}_{date_str}"
         project_path = base_path / project_dir_name
 
         if project_path.exists():
-            raise FileExistsError(f"项目目录已存在: {project_path}")
+            raise FileExistsError(f"Project directory already exists: {project_path}")
 
-        # 创建目录结构
-        project_path.mkdir(parents=True, exist_ok=True)
-        (project_path / 'svg_output').mkdir(exist_ok=True)   # 原始版本（带占位符）
-        (project_path / 'svg_final').mkdir(exist_ok=True)    # 最终版本（后处理完成）
-        (project_path / 'images').mkdir(exist_ok=True)       # 图片资源
-        (project_path / 'notes').mkdir(exist_ok=True)        # 演讲备注
-        (project_path / 'templates').mkdir(exist_ok=True)    # 项目页面模板（可选）
-        readme_path = project_path / 'README.md'
+        for rel_path in (
+            "svg_output",
+            "svg_final",
+            "images",
+            "notes",
+            "templates",
+            SOURCE_DIRNAME,
+        ):
+            (project_path / rel_path).mkdir(parents=True, exist_ok=True)
+
+        canvas_info = self.CANVAS_FORMATS[normalized_format]
+        readme_path = project_path / "README.md"
         readme_path.write_text(
             (
                 f"# {project_name}\n\n"
-                f"- 画布格式: {normalized_format}\n"
-                f"- 创建日期: {date_str}\n\n"
-                "## 目录\n\n"
-                "- `svg_output/`: 原始 SVG 输出\n"
-                "- `svg_final/`: 后处理后的 SVG\n"
-                "- `images/`: 图片资源\n"
-                "- `notes/`: 演讲备注\n"
-                "- `templates/`: 项目模板\n"
+                f"- Canvas format: {normalized_format}\n"
+                f"- Created: {date_str}\n\n"
+                "## Directories\n\n"
+                "- `svg_output/`: raw SVG output\n"
+                "- `svg_final/`: finalized SVG output\n"
+                "- `images/`: presentation assets\n"
+                "- `notes/`: speaker notes\n"
+                "- `templates/`: project templates\n"
+                "- `sources/`: source materials and normalized markdown\n"
             ),
-            encoding='utf-8'
+            encoding="utf-8",
         )
 
-        # 获取画布格式信息
-        canvas_info = self.CANVAS_FORMATS[normalized_format]
-
-        # 提示用户下一步操作 (不再自动创建空的设计规范文件)
-        print(f"项目目录已创建: {project_path}")
-        print(f"画布格式: {canvas_info['name']} ({canvas_info['dimensions']})")
-        
+        print(f"Project created: {project_path}")
+        print(f"Canvas: {canvas_info['name']} ({canvas_info['dimensions']})")
         return str(project_path)
 
+    def _source_dir(self, project_path: Path) -> Path:
+        sources_dir = project_path / SOURCE_DIRNAME
+        sources_dir.mkdir(parents=True, exist_ok=True)
+        return sources_dir
+
+    def _ensure_unique_path(self, path: Path) -> Path:
+        if not path.exists():
+            return path
+
+        suffix = path.suffix
+        stem = path.stem
+        counter = 2
+        while True:
+            candidate = path.with_name(f"{stem}_{counter}{suffix}")
+            if not candidate.exists():
+                return candidate
+            counter += 1
+
+    def _copy_or_move_file(self, source: Path, destination: Path, move: bool) -> Path:
+        destination = self._ensure_unique_path(destination)
+        if move:
+            shutil.move(str(source), str(destination))
+        else:
+            shutil.copy2(source, destination)
+        return destination
+
+    def _run_tool(self, args: List[str]) -> None:
+        try:
+            result = subprocess.run(
+                args,
+                cwd=REPO_ROOT,
+                check=True,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+        except FileNotFoundError as exc:
+            raise RuntimeError(f"Missing executable: {args[0]}") from exc
+        except subprocess.CalledProcessError as exc:
+            details = (exc.stderr or exc.stdout or "").strip()
+            raise RuntimeError(details or "tool execution failed") from exc
+
+        if result.stdout.strip():
+            print(result.stdout.strip())
+
+    def _import_pdf(self, pdf_path: Path, markdown_path: Path) -> None:
+        self._run_tool(
+            [
+                sys.executable,
+                str(TOOLS_DIR / "pdf_to_md.py"),
+                str(pdf_path),
+                "-o",
+                str(markdown_path),
+            ]
+        )
+
+    def _import_url(self, url: str, markdown_path: Path) -> None:
+        host = urlparse(url).netloc.lower()
+        if any(keyword in host for keyword in WECHAT_HOST_KEYWORDS):
+            command = ["node", str(TOOLS_DIR / "web_to_md.cjs"), url, "-o", str(markdown_path)]
+        else:
+            command = [
+                sys.executable,
+                str(TOOLS_DIR / "web_to_md.py"),
+                url,
+                "-o",
+                str(markdown_path),
+            ]
+        self._run_tool(command)
+
+    def _archive_url_record(self, sources_dir: Path, url: str) -> Path:
+        file_path = self._ensure_unique_path(sources_dir / f"{derive_url_basename(url)}.url.txt")
+        file_path.write_text(
+            f"URL: {url}\nImported: {datetime.now().isoformat(timespec='seconds')}\n",
+            encoding="utf-8",
+        )
+        return file_path
+
+    def _normalize_text_source(self, source_path: Path, sources_dir: Path) -> Path:
+        target = self._ensure_unique_path(sources_dir / f"{source_path.stem}.md")
+        content = source_path.read_text(encoding="utf-8", errors="replace")
+        target.write_text(content, encoding="utf-8")
+        return target
+
+    def import_sources(
+        self,
+        project_path: str,
+        source_items: List[str],
+        move: bool = False,
+    ) -> Dict[str, List[str]]:
+        project_dir = Path(project_path)
+        if not project_dir.exists() or not project_dir.is_dir():
+            raise FileNotFoundError(f"Project directory not found: {project_dir}")
+        if not source_items:
+            raise ValueError("At least one source path or URL is required")
+
+        sources_dir = self._source_dir(project_dir)
+        summary: Dict[str, List[str]] = {
+            "archived": [],
+            "markdown": [],
+            "notes": [],
+            "skipped": [],
+        }
+
+        for item in source_items:
+            if is_url(item):
+                archived = self._archive_url_record(sources_dir, item)
+                markdown_path = self._ensure_unique_path(
+                    sources_dir / f"{derive_url_basename(item)}.md"
+                )
+                try:
+                    self._import_url(item, markdown_path)
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["skipped"].append(f"{item}: {exc}")
+                    continue
+
+                summary["archived"].append(str(archived))
+                summary["markdown"].append(str(markdown_path))
+                continue
+
+            source_path = Path(item)
+            if not source_path.exists():
+                summary["skipped"].append(f"{item}: path not found")
+                continue
+            if source_path.is_dir():
+                summary["skipped"].append(f"{item}: directories are not supported")
+                continue
+
+            archived_path = self._copy_or_move_file(
+                source_path,
+                sources_dir / source_path.name,
+                move=move,
+            )
+            summary["archived"].append(str(archived_path))
+
+            suffix = source_path.suffix.lower()
+            if suffix in PDF_SUFFIXES:
+                markdown_path = self._ensure_unique_path(sources_dir / f"{archived_path.stem}.md")
+                try:
+                    self._import_pdf(archived_path, markdown_path)
+                    summary["markdown"].append(str(markdown_path))
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
+            elif suffix == ".txt":
+                markdown_path = self._normalize_text_source(archived_path, sources_dir)
+                summary["markdown"].append(str(markdown_path))
+            elif suffix in {".md", ".markdown"}:
+                summary["markdown"].append(str(archived_path))
+            else:
+                summary["notes"].append(f"{item}: archived only, no automatic conversion")
+
+        return summary
+
     def validate_project(self, project_path: str) -> Tuple[bool, List[str], List[str]]:
-        """验证项目完整性
-
-        Args:
-            project_path: 项目目录路径
-
-        Returns:
-            (是否有效, 错误列表, 警告列表)
-        """
         project_path_obj = Path(project_path)
         is_valid, errors, warnings = validate_project_structure(str(project_path_obj))
 
         if project_path_obj.exists() and project_path_obj.is_dir():
             info = get_project_info_common(str(project_path_obj))
-            if info.get('svg_files'):
-                svg_files = [project_path_obj / 'svg_output' / f for f in info['svg_files']]
-                expected_format = info.get('format')
-                if expected_format == 'unknown':
+            if info.get("svg_files"):
+                svg_files = [project_path_obj / "svg_output" / name for name in info["svg_files"]]
+                expected_format = info.get("format")
+                if expected_format == "unknown":
                     expected_format = None
                 warnings.extend(validate_svg_viewbox(svg_files, expected_format))
 
         return is_valid, errors, warnings
 
     def get_project_info(self, project_path: str) -> Dict:
-        """获取项目信息
-
-        Args:
-            project_path: 项目目录路径
-
-        Returns:
-            项目信息字典
-        """
         shared = get_project_info_common(project_path)
         return {
-            'name': shared.get('name', Path(project_path).name),
-            'path': shared.get('path', str(project_path)),
-            'exists': shared.get('exists', False),
-            'svg_count': shared.get('svg_count', 0),
-            'has_spec': shared.get('has_spec', False),
-            'canvas_format': shared.get('format_name', '未知格式'),
-            'create_date': shared.get('date_formatted', '未知日期')
+            "name": shared.get("name", Path(project_path).name),
+            "path": shared.get("path", str(project_path)),
+            "exists": shared.get("exists", False),
+            "svg_count": shared.get("svg_count", 0),
+            "has_spec": shared.get("has_spec", False),
+            "has_source": shared.get("has_source", False),
+            "source_count": shared.get("source_count", 0),
+            "canvas_format": shared.get("format_name", "Unknown"),
+            "create_date": shared.get("date_formatted", "Unknown"),
         }
 
 
-def main():
-    """主函数"""
+def print_usage() -> None:
+    print(__doc__)
+
+
+def parse_init_args(argv: List[str]) -> Tuple[str, str, str]:
+    if len(argv) < 3:
+        raise ValueError("Project name is required")
+
+    project_name = argv[2]
+    canvas_format = "ppt169"
+    base_dir = "projects"
+
+    i = 3
+    while i < len(argv):
+        if argv[i] == "--format" and i + 1 < len(argv):
+            canvas_format = argv[i + 1]
+            i += 2
+        elif argv[i] == "--dir" and i + 1 < len(argv):
+            base_dir = argv[i + 1]
+            i += 2
+        else:
+            i += 1
+
+    return project_name, canvas_format, base_dir
+
+
+def parse_import_args(argv: List[str]) -> Tuple[str, List[str], bool]:
+    if len(argv) < 4:
+        raise ValueError("Project path and at least one source are required")
+
+    project_path = argv[2]
+    move = False
+    sources: List[str] = []
+
+    for arg in argv[3:]:
+        if arg == "--move":
+            move = True
+        else:
+            sources.append(arg)
+
+    return project_path, sources, move
+
+
+def main() -> None:
     if len(sys.argv) < 2:
-        print(__doc__)
+        print_usage()
         sys.exit(1)
 
     command = sys.argv[1]
     manager = ProjectManager()
 
-    if command == 'init':
-        if len(sys.argv) < 3:
-            print("错误: 需要提供项目名称")
-            print(
-                "用法: python3 tools/project_manager.py init <project_name> [--format ppt169]")
-            sys.exit(1)
+    try:
+        if command == "init":
+            project_name, canvas_format, base_dir = parse_init_args(sys.argv)
+            project_path = manager.init_project(project_name, canvas_format, base_dir=base_dir)
+            print(f"[OK] Project initialized: {project_path}")
+            print("Next:")
+            print("1. Put source files into sources/ (or use import-sources)")
+            print("2. Save your design spec to the project root")
+            print("3. Generate SVG files into svg_output/")
+            return
 
-        project_name = sys.argv[2]
-        canvas_format = 'ppt169'
-        base_dir = 'projects'
+        if command == "import-sources":
+            project_path, sources, move = parse_import_args(sys.argv)
+            summary = manager.import_sources(project_path, sources, move=move)
+            print(f"[OK] Imported sources into: {project_path}")
+            if summary["archived"]:
+                print("\nArchived originals / URL records:")
+                for item in summary["archived"]:
+                    print(f"  - {item}")
+            if summary["markdown"]:
+                print("\nNormalized markdown:")
+                for item in summary["markdown"]:
+                    print(f"  - {item}")
+            if summary["notes"]:
+                print("\nNotes:")
+                for item in summary["notes"]:
+                    print(f"  - {item}")
+            if summary["skipped"]:
+                print("\nSkipped:")
+                for item in summary["skipped"]:
+                    print(f"  - {item}")
+            return
 
-        # 解析可选参数
-        i = 3
-        while i < len(sys.argv):
-            if sys.argv[i] == '--format' and i + 1 < len(sys.argv):
-                canvas_format = sys.argv[i + 1]
-                i += 2
-            elif sys.argv[i] == '--dir' and i + 1 < len(sys.argv):
-                base_dir = sys.argv[i + 1]
-                i += 2
+        if command == "validate":
+            if len(sys.argv) < 3:
+                raise ValueError("Project path is required")
+
+            project_path = sys.argv[2]
+            is_valid, errors, warnings = manager.validate_project(project_path)
+
+            print(f"\nProject validation: {project_path}")
+            print("=" * 60)
+
+            if errors:
+                print("\n[ERROR]")
+                for error in errors:
+                    print(f"  - {error}")
+
+            if warnings:
+                print("\n[WARN]")
+                for warning in warnings:
+                    print(f"  - {warning}")
+
+            if is_valid and not warnings:
+                print("\n[OK] Project structure is complete.")
+            elif is_valid:
+                print("\n[OK] Project structure is valid, with warnings.")
             else:
-                i += 1
+                print("\n[ERROR] Project structure is invalid.")
+                sys.exit(1)
+            return
 
-        try:
-            project_path = manager.init_project(
-                project_name, canvas_format, base_dir=base_dir)
-            print(f"[OK] 项目已创建: {project_path}")
-            print("\n下一步:")
-            print("1. 生成并保存 设计规范与内容大纲.md (请参考 templates/design_spec_reference.md)")
-            print("2. 将 SVG 文件放入 svg_output/ 目录")
-        except Exception as e:
-            print(f"[ERROR] 创建失败: {e}")
-            sys.exit(1)
+        if command == "info":
+            if len(sys.argv) < 3:
+                raise ValueError("Project path is required")
 
-    elif command == 'validate':
-        if len(sys.argv) < 3:
-            print("错误: 需要提供项目路径")
-            print("用法: python3 tools/project_manager.py validate <project_path>")
-            sys.exit(1)
+            project_path = sys.argv[2]
+            info = manager.get_project_info(project_path)
 
-        project_path = sys.argv[2]
-        is_valid, errors, warnings = manager.validate_project(project_path)
+            print(f"\nProject info: {info['name']}")
+            print("=" * 60)
+            print(f"Path: {info['path']}")
+            print(f"Exists: {'Yes' if info['exists'] else 'No'}")
+            print(f"SVG files: {info['svg_count']}")
+            print(f"Design spec: {'Yes' if info['has_spec'] else 'No'}")
+            print(f"Source materials: {'Yes' if info['has_source'] else 'No'}")
+            print(f"Source count: {info['source_count']}")
+            print(f"Canvas format: {info['canvas_format']}")
+            print(f"Created: {info['create_date']}")
+            return
 
-        print(f"\n项目验证: {project_path}")
-        print("=" * 60)
-
-        if errors:
-            print("\n[ERROR] 错误:")
-            for error in errors:
-                print(f"  - {error}")
-
-        if warnings:
-            print("\n[WARN] 警告:")
-            for warning in warnings:
-                print(f"  - {warning}")
-
-        if is_valid and not warnings:
-            print("\n[OK] 项目结构完整，没有问题")
-        elif is_valid:
-            print("\n[OK] 项目结构有效，但有一些建议")
-        else:
-            print("\n[ERROR] 项目结构无效，请修复错误")
-            sys.exit(1)
-
-    elif command == 'info':
-        if len(sys.argv) < 3:
-            print("错误: 需要提供项目路径")
-            print("用法: python3 tools/project_manager.py info <project_path>")
-            sys.exit(1)
-
-        project_path = sys.argv[2]
-        info = manager.get_project_info(project_path)
-
-        print(f"\n项目信息: {info['name']}")
-        print("=" * 60)
-        print(f"路径: {info['path']}")
-        print(f"存在: {'是' if info['exists'] else '否'}")
-        print(f"SVG 文件数: {info['svg_count']}")
-        print(f"设计规范: {'存在' if info['has_spec'] else '缺失'}")
-        print(f"画布格式: {info['canvas_format']}")
-        print(f"创建日期: {info['create_date']}")
-
-    else:
-        print(f"错误: 未知命令 '{command}'")
-        print(__doc__)
+        raise ValueError(f"Unknown command: {command}")
+    except Exception as exc:
+        print(f"[ERROR] {exc}")
+        print_usage()
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
