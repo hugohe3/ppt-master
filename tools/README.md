@@ -1277,10 +1277,16 @@ python3 tools/embed_icons.py --dry-run svg_output/*.svg
 2. **编辑设计规范**
    编辑生成的 `设计规范与内容大纲.md` 文件
 
-3. **生成 SVG 文件**
+3. **检查大纲完整性**
+   ```bash
+   python3 tools/outline_quality_checker.py <project_path>
+   ```
+   未通过前不要进入 Executor。大纲需要包含完整的页面执行卡，确保执行阶段以大纲为主，并可按需查证已选 sources。
+
+4. **生成 SVG 文件**
    使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
 
-4. **后处理（默认执行全部）**
+5. **后处理（默认执行全部）**
 
    ```bash
    # 直接运行，无需参数

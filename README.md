@@ -141,9 +141,13 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
     ↓
 [Strategist] 策略师 - 八项确认与设计规范
     ↓
+[Outline Check] 大纲完整性检查 - 校验页面执行卡是否齐全
+    ↓
 [Image_Generator] 图片生成师（当选择 AI 生成时）
     ↓
 [Executor] 执行师 - 分阶段生成
+    ├── 以《设计规范与内容大纲》为主执行依据
+    ├── 按页面执行卡生成页面，按需查证已选 sources
     ├── 视觉构建阶段：连续生成所有 SVG 页面 → svg_output/
     └── 逻辑构建阶段：生成完整讲稿 → notes/total.md
     ↓

@@ -171,12 +171,21 @@ cp templates/layouts/<模板名>/*.jpeg <项目路径>/images/ 2>/dev/null || tr
    - 参考模板：`templates/design_spec_reference.md`
    - 保存到：`<项目路径>/设计规范与内容大纲.md`
 
-5. **阶段检查点**：
+5. **执行大纲完整性检查**：
+   // turbo
+   ```bash
+   python3 tools/outline_quality_checker.py <项目路径>
+   ```
+   - 未通过检查前，禁止进入 Executor 阶段
+   - 大纲必须包含完整的「页面执行卡」，确保 Executor 以大纲为主执行，并能按需查证已选 sources
+
+6. **阶段检查点**：
    ```markdown
    ## ✅ Strategist 阶段完成
    - [x] 已完成八项确认
    - [x] 已生成《设计规范与内容大纲》
    - [x] 设计规范已保存到项目文件夹
+   - [x] 已通过 `outline_quality_checker.py` 检查
    - [ ] **下一步**: [Image_Generator / Executor_xxx]
    ```
 
@@ -248,6 +257,8 @@ cp templates/layouts/<模板名>/*.jpeg <项目路径>/images/ 2>/dev/null || tr
    ```
 
 2. **【视觉构建阶段】**：
+   - 以《设计规范与内容大纲》为主执行依据，不直接全量扫描 `sources/`
+   - 严格按照每页「页面执行卡」生成页面；如需查证，仅回查该页已标记来源
    - 批量生成 SVG 页面
    - 保存到 `<项目路径>/svg_output/`
 
@@ -556,6 +567,9 @@ python3 tools/project_manager.py init <名称> --format ppt169
 
 # 归档源材料到项目目录
 python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
+
+# 检查《设计规范与内容大纲》是否可直接执行
+python3 tools/outline_quality_checker.py <项目路径>
 
 # 验证项目
 python3 tools/project_manager.py validate <路径>

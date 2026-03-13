@@ -141,9 +141,13 @@ User Input (PDF/URL/Markdown)
     ↓
 [Strategist] - Eight Confirmations & Design Specifications
     ↓
+[Outline Check] - Validate execution cards and outline completeness
+    ↓
 [Image_Generator] (When AI generation is selected)
     ↓
 [Executor] - Two-Phase Generation
+    ├── Uses the outline as the primary execution anchor
+    ├── Works from execution cards and consults selected sources only when needed
     ├── Visual Construction Phase: Generate all SVG pages → svg_output/
     └── Logic Construction Phase: Generate complete script → notes/total.md
     ↓
