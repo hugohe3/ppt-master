@@ -251,6 +251,14 @@ class ProjectManager:
             "notes": [],
             "skipped": [],
         }
+        explicit_markdown_stems = {
+            Path(item).stem
+            for item in source_items
+            if not is_url(item)
+            and Path(item).exists()
+            and Path(item).is_file()
+            and Path(item).suffix.lower() in {".md", ".markdown"}
+        }
 
         for item in source_items:
             if is_url(item):
@@ -286,7 +294,19 @@ class ProjectManager:
 
             suffix = source_path.suffix.lower()
             if suffix in PDF_SUFFIXES:
-                markdown_path = self._ensure_unique_path(sources_dir / f"{archived_path.stem}.md")
+                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
+                if archived_path.stem in explicit_markdown_stems:
+                    summary["notes"].append(
+                        f"{item}: skipped PDF auto-conversion because a same-stem Markdown source was provided"
+                    )
+                    continue
+                if canonical_markdown_path.exists():
+                    summary["markdown"].append(str(canonical_markdown_path))
+                    summary["notes"].append(
+                        f"{item}: skipped PDF auto-conversion because {canonical_markdown_path.name} already exists"
+                    )
+                    continue
+                markdown_path = canonical_markdown_path
                 try:
                     self._import_pdf(archived_path, markdown_path)
                     summary["markdown"].append(str(markdown_path))
