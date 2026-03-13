@@ -4,6 +4,12 @@
 
 > 📖 **完整工作流程和使用指南**：请参阅 [AGENTS.md](../AGENTS.md)
 
+## 推荐入口
+
+- `/generate-outline`：生成并确认《设计规范与内容大纲》，并完成图片素材准备
+- `/render-from-outline`：基于既有大纲和素材生成 SVG、讲稿与 PPT
+- `/generate-ppt`：串联完整流程的包装入口
+
 ## 角色速查表
 
 | 角色 | 文件 | 职责 | 触发条件 |

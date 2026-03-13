@@ -135,6 +135,8 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
     ↓
 [创建项目] → project_manager.py init <项目名> --format <格式>
     ↓
+[推荐入口] A) /generate-outline（大纲+素材）  B) /render-from-outline（渲染）  C) /generate-ppt（串联）
+    ↓
 [模板选项] A) 使用已有模板 B) 不使用模板
     ↓
 [需要新模板？] → 使用 /create-template 工作流单独创建
@@ -179,6 +181,15 @@ python3 tools/project_manager.py import-sources <项目路径> <源文件或URL.
 
 # PDF 转 Markdown
 python3 tools/pdf_to_md.py <PDF文件>
+
+# 校验大纲阶段
+python3 tools/project_manager.py validate <项目路径> --stage outline
+
+# 校验渲染阶段
+python3 tools/project_manager.py validate <项目路径> --stage render
+
+# 校验最终交付阶段
+python3 tools/project_manager.py validate <项目路径> --stage final
 
 # 后处理 SVG
 python3 tools/finalize_svg.py <项目路径>

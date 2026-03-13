@@ -33,7 +33,7 @@
 |--------|------|--------|
 | 项目创建 + 模板选项确认 | **策略师**：八项确认 + 设计规范 | Image_Generator 或 Executor |
 
-> 📖 完整流程：[generate-ppt.md](../.agent/workflows/generate-ppt.md)
+> 📖 对应工作流：[generate-outline.md](../.agent/workflows/generate-outline.md)
 ## 1. 初始沟通与范围确认 (首要步骤)
 
 在开始分析前，依次确认以下问题，**并提供专业建议**：

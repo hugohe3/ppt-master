@@ -5,6 +5,7 @@ PPT Master - 项目工具公共模块
 提供项目信息解析、验证等公共功能，供其他工具复用。
 """
 
+import json
 import re
 from pathlib import Path
 from datetime import datetime
@@ -73,6 +74,64 @@ CANVAS_FORMAT_ALIASES = {
     '朋友圈': 'moments',
     '小红书': 'xiaohongshu',
 }
+
+PROJECT_STATE_FILENAME = "project_state.json"
+VALIDATION_STAGES = {"auto", "outline", "render", "final"}
+STAGE_ORDER = {
+    "init": 0,
+    "outline": 1,
+    "render": 2,
+    "final": 3,
+}
+
+
+def stage_rank(stage: str) -> int:
+    """返回阶段排序值，未知阶段按最低优先级处理。"""
+    return STAGE_ORDER.get(stage, -1)
+
+
+def project_state_path(project_path: Path) -> Path:
+    """返回项目状态文件路径。"""
+    return project_path / PROJECT_STATE_FILENAME
+
+
+def save_project_state(
+    project_path: Path,
+    current_stage: str,
+    phase_status: str,
+) -> None:
+    """写入项目阶段状态。"""
+    state_path = project_state_path(project_path)
+    payload = {
+        "current_stage": current_stage,
+        "phase_status": phase_status,
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+    }
+    state_path.write_text(
+        json.dumps(payload, ensure_ascii=True, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def load_project_state(project_path: Path) -> Dict[str, str]:
+    """读取项目阶段状态，读取失败时返回空字典。"""
+    state_path = project_state_path(project_path)
+    if not state_path.exists():
+        return {}
+
+    try:
+        payload = json.loads(state_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+    if not isinstance(payload, dict):
+        return {}
+
+    return {
+        "current_stage": str(payload.get("current_stage", "")).strip(),
+        "phase_status": str(payload.get("phase_status", "")).strip(),
+        "updated_at": str(payload.get("updated_at", "")).strip(),
+    }
 
 
 def normalize_canvas_format(format_key: str) -> str:
@@ -172,7 +231,20 @@ def get_project_info(project_path: str) -> Dict:
         'has_source': False,
         'source_count': 0,
         'spec_file': None,
-        'svg_files': []
+        'svg_files': [],
+        'svg_final_count': 0,
+        'svg_final_files': [],
+        'has_total_notes': False,
+        'pptx_count': 0,
+        'pptx_files': [],
+        'state_file_exists': False,
+        'declared_stage': 'unknown',
+        'declared_status': 'unknown',
+        'declared_updated_at': '',
+        'inferred_stage': 'init',
+        'inferred_status': 'initialized',
+        'current_stage': 'init',
+        'current_status': 'initialized',
     }
 
     if not project_path.exists():
@@ -204,6 +276,62 @@ def get_project_info(project_path: str) -> Dict:
         info['svg_count'] = len(svg_files)
         info['svg_files'] = [f.name for f in svg_files]
 
+    svg_final = project_path / 'svg_final'
+    if svg_final.exists():
+        svg_final_files = sorted(svg_final.glob('*.svg'))
+        info['svg_final_count'] = len(svg_final_files)
+        info['svg_final_files'] = [f.name for f in svg_final_files]
+
+    notes_total = project_path / 'notes' / 'total.md'
+    info['has_total_notes'] = notes_total.exists()
+
+    pptx_files = sorted(project_path.glob('*.pptx'))
+    info['pptx_count'] = len(pptx_files)
+    info['pptx_files'] = [f.name for f in pptx_files]
+
+    state = load_project_state(project_path)
+    if state:
+        info['state_file_exists'] = True
+        info['declared_stage'] = state.get('current_stage') or 'unknown'
+        info['declared_status'] = state.get('phase_status') or 'unknown'
+        info['declared_updated_at'] = state.get('updated_at', '')
+
+    if info['pptx_count'] > 0:
+        info['inferred_stage'] = 'final'
+        info['inferred_status'] = 'exported'
+    elif info['svg_final_count'] > 0:
+        info['inferred_stage'] = 'final'
+        info['inferred_status'] = 'finalized'
+    elif info['svg_count'] > 0 and info['has_total_notes']:
+        info['inferred_stage'] = 'render'
+        info['inferred_status'] = 'render_complete'
+    elif info['svg_count'] > 0 or info['has_total_notes']:
+        info['inferred_stage'] = 'render'
+        info['inferred_status'] = 'render_in_progress'
+    elif info['has_spec']:
+        info['inferred_stage'] = 'outline'
+        info['inferred_status'] = 'outline_ready'
+    else:
+        info['inferred_stage'] = 'outline'
+        info['inferred_status'] = 'initialized'
+
+    declared_stage = info['declared_stage']
+    inferred_stage = info['inferred_stage']
+    if stage_rank(declared_stage) > stage_rank(inferred_stage):
+        info['current_stage'] = declared_stage
+        info['current_status'] = info['declared_status']
+    elif (
+        stage_rank(declared_stage) == stage_rank(inferred_stage)
+        and declared_stage != 'unknown'
+        and info['declared_status'] not in {'', 'unknown'}
+        and info['inferred_status'] == 'initialized'
+    ):
+        info['current_stage'] = declared_stage
+        info['current_status'] = info['declared_status']
+    else:
+        info['current_stage'] = inferred_stage
+        info['current_status'] = info['inferred_status']
+
     # 获取画布格式详细信息
     if info['format'] in CANVAS_FORMATS:
         info['canvas_info'] = CANVAS_FORMATS[info['format']]
@@ -211,7 +339,11 @@ def get_project_info(project_path: str) -> Dict:
     return info
 
 
-def validate_project_structure(project_path: str, verbose: bool = False) -> Tuple[bool, List[str], List[str]]:
+def validate_project_structure(
+    project_path: str,
+    verbose: bool = False,
+    stage: str = "auto",
+) -> Tuple[bool, List[str], List[str]]:
     """
     验证项目结构的完整性
 
@@ -225,6 +357,12 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
     project_path = Path(project_path)
     errors = []
     warnings = []
+
+    if stage not in VALIDATION_STAGES:
+        raise ValueError(
+            f"Unsupported validation stage: {stage} "
+            f"(available: {', '.join(sorted(VALIDATION_STAGES))})"
+        )
 
     # 尝试导入错误助手
     try:
@@ -254,43 +392,76 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
                                                            {'project_path': str(project_path)})
         errors.append(msg)
 
+    info = get_project_info(str(project_path))
+    target_stage = info['current_stage'] if stage == "auto" else stage
+
     # 检查设计规范文件
-    spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
-    has_spec = any((project_path / f).exists() for f in spec_files)
-    if not has_spec:
+    if not info['has_spec']:
         msg = "缺少设计规范文件（建议文件名: 设计规范与内容大纲.md）"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
-        warnings.append(msg)
-
-    # 检查 svg_output 目录
-    svg_output = project_path / 'svg_output'
-    if not svg_output.exists():
-        msg = "缺少 svg_output 目录"
-        if use_helper and verbose:
-            msg += "\n" + \
-                ErrorHelper.format_error_message('missing_svg_output')
         errors.append(msg)
-    elif not svg_output.is_dir():
-        errors.append("svg_output 不是目录")
-    else:
-        # 检查是否有 SVG 文件
-        svg_files = list(svg_output.glob('*.svg'))
-        if not svg_files:
-            msg = "svg_output 目录为空，没有 SVG 文件"
+
+    if not info['has_source'] and target_stage == 'outline':
+        warnings.append("未检测到源材料（sources/ 或 legacy 来源文件），请确认是否已完成材料归档")
+
+    # 检查渲染阶段产物
+    if target_stage in {'render', 'final'}:
+        svg_output = project_path / 'svg_output'
+        if not svg_output.exists():
+            msg = "缺少 svg_output 目录"
             if use_helper and verbose:
-                msg += "\n" + \
-                    ErrorHelper.format_error_message('empty_svg_output')
-            warnings.append(msg)
+                msg += "\n" + ErrorHelper.format_error_message('missing_svg_output')
+            errors.append(msg)
+        elif not svg_output.is_dir():
+            errors.append("svg_output 不是目录")
         else:
-            # 验证 SVG 文件命名（与 project_manager.py 保持一致）
-            for svg_file in svg_files:
-                if not re.match(r'^(slide_\d+_\w+|P?\d+_.+)\.svg$', svg_file.name):
-                    msg = f"SVG 文件命名不规范: {svg_file.name}"
-                    if use_helper and verbose:
-                        msg += "\n" + ErrorHelper.format_error_message('invalid_svg_naming',
-                                                                       {'file_name': svg_file.name})
-                    warnings.append(msg)
+            svg_files = list(svg_output.glob('*.svg'))
+            if not svg_files:
+                msg = "svg_output 目录为空，没有 SVG 文件"
+                if use_helper and verbose:
+                    msg += "\n" + ErrorHelper.format_error_message('empty_svg_output')
+                errors.append(msg)
+            else:
+                for svg_file in svg_files:
+                    if not re.match(r'^(slide_\d+_\w+|P?\d+_.+)\.svg$', svg_file.name):
+                        msg = f"SVG 文件命名不规范: {svg_file.name}"
+                        if use_helper and verbose:
+                            msg += "\n" + ErrorHelper.format_error_message(
+                                'invalid_svg_naming',
+                                {'file_name': svg_file.name},
+                            )
+                        warnings.append(msg)
+
+        if not info['has_total_notes']:
+            msg = "未检测到 notes/total.md，当前渲染阶段缺少完整讲稿"
+            if use_helper and verbose:
+                msg += "\n" + ErrorHelper.format_error_message('missing_total_notes')
+            warnings.append(msg)
+
+    # 检查最终阶段产物
+    if target_stage == 'final':
+        svg_final = project_path / 'svg_final'
+        if not svg_final.exists():
+            msg = "缺少 svg_final 目录"
+            if use_helper and verbose:
+                msg += "\n" + ErrorHelper.format_error_message('missing_svg_final')
+            errors.append(msg)
+        elif not svg_final.is_dir():
+            errors.append("svg_final 不是目录")
+        else:
+            svg_final_files = list(svg_final.glob('*.svg'))
+            if not svg_final_files:
+                msg = "svg_final 目录为空，没有最终 SVG 文件"
+                if use_helper and verbose:
+                    msg += "\n" + ErrorHelper.format_error_message('empty_svg_final')
+                errors.append(msg)
+
+        if info['pptx_count'] == 0:
+            msg = "未检测到导出的 PPTX 文件"
+            if use_helper and verbose:
+                msg += "\n" + ErrorHelper.format_error_message('missing_pptx')
+            warnings.append(msg)
 
     # 检查目录命名格式
     dir_name = project_path.name
@@ -300,6 +471,9 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
             msg += "\n" + \
                 ErrorHelper.format_error_message('missing_date_suffix')
         warnings.append(msg)
+
+    if not info['state_file_exists']:
+        warnings.append(f"缺少 {PROJECT_STATE_FILENAME}，建议通过 project_manager 维护项目阶段状态")
 
     is_valid = len(errors) == 0
     return is_valid, errors, warnings

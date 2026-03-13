@@ -4,7 +4,7 @@
 Usage:
     python3 tools/project_manager.py init <project_name> [--format ppt169] [--dir projects]
     python3 tools/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move]
-    python3 tools/project_manager.py validate <project_path>
+    python3 tools/project_manager.py validate <project_path> [--stage auto|outline|render|final]
     python3 tools/project_manager.py info <project_path>
 """
 
@@ -23,6 +23,7 @@ try:
         CANVAS_FORMATS,
         get_project_info as get_project_info_common,
         normalize_canvas_format,
+        save_project_state,
         validate_project_structure,
         validate_svg_viewbox,
     )
@@ -34,6 +35,7 @@ except ImportError:
         CANVAS_FORMATS,
         get_project_info as get_project_info_common,
         normalize_canvas_format,
+        save_project_state,
         validate_project_structure,
         validate_svg_viewbox,
     )
@@ -127,6 +129,7 @@ class ProjectManager:
                 f"- Canvas format: {normalized_format}\n"
                 f"- Created: {date_str}\n\n"
                 "## Directories\n\n"
+                "- `project_state.json`: current project phase metadata\n"
                 "- `svg_output/`: raw SVG output\n"
                 "- `svg_final/`: finalized SVG output\n"
                 "- `images/`: presentation assets\n"
@@ -141,6 +144,7 @@ class ProjectManager:
             ),
             encoding="utf-8",
         )
+        save_project_state(project_path, current_stage="outline", phase_status="initialized")
 
         print(f"Project created: {project_path}")
         print(f"Canvas: {canvas_info['name']} ({canvas_info['dimensions']})")
@@ -325,15 +329,23 @@ class ProjectManager:
             else:
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
 
+        save_project_state(project_dir, current_stage="outline", phase_status="sources_imported")
         return summary
 
-    def validate_project(self, project_path: str) -> Tuple[bool, List[str], List[str]]:
+    def validate_project(
+        self,
+        project_path: str,
+        stage: str = "auto",
+    ) -> Tuple[bool, List[str], List[str]]:
         project_path_obj = Path(project_path)
-        is_valid, errors, warnings = validate_project_structure(str(project_path_obj))
+        is_valid, errors, warnings = validate_project_structure(
+            str(project_path_obj),
+            stage=stage,
+        )
 
         if project_path_obj.exists() and project_path_obj.is_dir():
             info = get_project_info_common(str(project_path_obj))
-            if info.get("svg_files"):
+            if stage in {"auto", "render", "final"} and info.get("svg_files"):
                 svg_files = [project_path_obj / "svg_output" / name for name in info["svg_files"]]
                 expected_format = info.get("format")
                 if expected_format == "unknown":
@@ -354,6 +366,15 @@ class ProjectManager:
             "source_count": shared.get("source_count", 0),
             "canvas_format": shared.get("format_name", "Unknown"),
             "create_date": shared.get("date_formatted", "Unknown"),
+            "current_stage": shared.get("current_stage", "unknown"),
+            "current_status": shared.get("current_status", "unknown"),
+            "declared_stage": shared.get("declared_stage", "unknown"),
+            "declared_status": shared.get("declared_status", "unknown"),
+            "inferred_stage": shared.get("inferred_stage", "unknown"),
+            "inferred_status": shared.get("inferred_status", "unknown"),
+            "has_total_notes": shared.get("has_total_notes", False),
+            "svg_final_count": shared.get("svg_final_count", 0),
+            "pptx_count": shared.get("pptx_count", 0),
         }
 
 
@@ -400,6 +421,24 @@ def parse_import_args(argv: List[str]) -> Tuple[str, List[str], bool]:
     return project_path, sources, move
 
 
+def parse_validate_args(argv: List[str]) -> Tuple[str, str]:
+    if len(argv) < 3:
+        raise ValueError("Project path is required")
+
+    project_path = argv[2]
+    stage = "auto"
+
+    i = 3
+    while i < len(argv):
+        if argv[i] == "--stage" and i + 1 < len(argv):
+            stage = argv[i + 1]
+            i += 2
+        else:
+            i += 1
+
+    return project_path, stage
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print_usage()
@@ -443,14 +482,14 @@ def main() -> None:
             return
 
         if command == "validate":
-            if len(sys.argv) < 3:
-                raise ValueError("Project path is required")
-
-            project_path = sys.argv[2]
-            is_valid, errors, warnings = manager.validate_project(project_path)
+            project_path, stage = parse_validate_args(sys.argv)
+            is_valid, errors, warnings = manager.validate_project(project_path, stage=stage)
+            info = manager.get_project_info(project_path)
+            target_stage = info["current_stage"] if stage == "auto" else stage
 
             print(f"\nProject validation: {project_path}")
             print("=" * 60)
+            print(f"Stage: {target_stage}")
 
             if errors:
                 print("\n[ERROR]")
@@ -488,6 +527,12 @@ def main() -> None:
             print(f"Source count: {info['source_count']}")
             print(f"Canvas format: {info['canvas_format']}")
             print(f"Created: {info['create_date']}")
+            print(f"Current stage: {info['current_stage']} ({info['current_status']})")
+            print(f"Declared stage: {info['declared_stage']} ({info['declared_status']})")
+            print(f"Inferred stage: {info['inferred_stage']} ({info['inferred_status']})")
+            print(f"Final SVG files: {info['svg_final_count']}")
+            print(f"PPTX files: {info['pptx_count']}")
+            print(f"Has total notes: {'Yes' if info['has_total_notes'] else 'No'}")
             return
 
         raise ValueError(f"Unknown command: {command}")

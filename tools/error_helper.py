@@ -49,6 +49,42 @@ class ErrorHelper:
             ],
             'severity': 'warning'
         },
+        'missing_total_notes': {
+            'message': '缺少 notes/total.md',
+            'solutions': [
+                '在 Executor 的逻辑构建阶段生成完整讲稿',
+                '保存到 notes/total.md',
+                '讲稿应覆盖所有页面，供后续拆分与导出使用'
+            ],
+            'severity': 'warning'
+        },
+        'missing_svg_final': {
+            'message': '缺少 svg_final 目录',
+            'solutions': [
+                '运行 python3 tools/finalize_svg.py <项目路径>',
+                '确认 svg_output/ 中已有 SVG 文件',
+                '后处理完成后应生成 svg_final/'
+            ],
+            'severity': 'error'
+        },
+        'empty_svg_final': {
+            'message': 'svg_final 目录为空',
+            'solutions': [
+                '重新运行 python3 tools/finalize_svg.py <项目路径>',
+                '检查 svg_output/ 是否为空或存在后处理失败',
+                '确认最终版本 SVG 已写入 svg_final/'
+            ],
+            'severity': 'error'
+        },
+        'missing_pptx': {
+            'message': '缺少导出的 PPTX 文件',
+            'solutions': [
+                '运行 python3 tools/svg_to_pptx.py <项目路径> -s final',
+                '确认 svg_final/ 中已有最终 SVG',
+                '如不需要导出 PPTX，可忽略此警告'
+            ],
+            'severity': 'warning'
+        },
         'invalid_svg_naming': {
             'message': 'SVG 文件命名不规范',
             'solutions': [

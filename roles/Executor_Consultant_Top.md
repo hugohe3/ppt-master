@@ -18,7 +18,7 @@
 |--------|------|--------|
 | Strategist + (Template_Designer) + (Image_Generator) | **Executor**：生成 SVG + 演讲备注 | 后处理 + 导出 PPTX |
 
-> 📖 完整流程：[generate-ppt.md](../.agent/workflows/generate-ppt.md)
+> 📖 对应工作流：[render-from-outline.md](../.agent/workflows/render-from-outline.md)
 
 ## 模板遵循规则（重要）
 
@@ -448,7 +448,7 @@
 
 > ❌ **禁止**：未输出检查点就进入后处理！如果"逻辑构建阶段"未完成，必须先生成备注。
 
-**后处理与导出**（参见 [generate-ppt.md](../.agent/workflows/generate-ppt.md) 阶段八）：
+**后处理与导出**（参见 [render-from-outline.md](../.agent/workflows/render-from-outline.md)）：
 
 ```bash
 # 1. 拆分讲稿

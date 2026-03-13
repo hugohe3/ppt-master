@@ -15,6 +15,7 @@ python tools/project_manager.py init my_project --format ppt169
 ```
 project_name_format_YYYYMMDD/
 ├── README.md
+├── project_state.json
 ├── 设计规范与内容大纲.md
 ├── sources/
 │   └── ...
@@ -34,4 +35,5 @@ project_name_format_YYYYMMDD/
 
 - 此目录下的内容已被 `.gitignore` 排除
 - 合法项目状态包括：仅完成大纲、已完成图片归集、已生成 SVG、已导出 PPTX
+- `project_state.json` 用于记录当前项目所处阶段（outline / render / final）
 - 完成的项目可以移动到 `examples/` 目录分享
