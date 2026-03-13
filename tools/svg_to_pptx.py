@@ -71,12 +71,12 @@ PNG_RENDERER = None  # 'cairosvg' | 'svglib' | None
 try:
     import cairosvg
     PNG_RENDERER = 'cairosvg'
-except ImportError:
+except (ImportError, OSError):
     try:
         from svglib.svglib import svg2rlg
         from reportlab.graphics import renderPM
         PNG_RENDERER = 'svglib'
-    except ImportError:
+    except (ImportError, OSError):
         pass
 
 def get_png_renderer_info() -> tuple:
