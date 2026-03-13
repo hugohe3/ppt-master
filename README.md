@@ -168,6 +168,9 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 # 初始化项目
 python3 tools/project_manager.py init <项目名> --format ppt169
 
+# 将源材料归档到项目目录
+python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
+
 # PDF 转 Markdown
 python3 tools/pdf_to_md.py <PDF文件>
 
@@ -191,7 +194,7 @@ ppt-master/
 ├── templates/      # 模板库（图表模板 + 640+ 图标）
 ├── tools/          # 工具集（项目管理、转换、处理）
 ├── examples/       # 示例项目（15 个完整案例）
-└── projects/       # 用户项目工作区
+└── projects/       # 用户项目工作区（含 sources/）
 ```
 
 ---

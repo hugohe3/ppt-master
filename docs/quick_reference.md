@@ -39,6 +39,7 @@
 - [ ] 等待 Strategist 生成设计规范
 - [ ] 仔细检查并确认设计规范
 - [ ] **创建项目文件夹**：`python3 tools/project_manager.py init <名称> --format <格式>`
+- [ ] **归档源材料到项目目录**：`python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>`
 - [ ] 保存设计规范到项目文件夹
 
 💡 **提示**: Strategist 不仅会提问，还会主动提供专业建议供你参考
@@ -363,7 +364,8 @@ projects/shichang_fenxi_ppt169_20251012/
 ### 源文档
 
 ```
-source_document.md
+sources/
+└── source_document.md
 ```
 
 ### 设计规范

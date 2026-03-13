@@ -170,6 +170,7 @@ def get_project_info(project_path: str) -> Dict:
         'has_spec': False,
         'has_readme': False,
         'has_source': False,
+        'source_count': 0,
         'spec_file': None,
         'svg_files': []
     }
@@ -189,7 +190,12 @@ def get_project_info(project_path: str) -> Dict:
             break
 
     # 检查来源文档
-    info['has_source'] = (project_path / '来源文档.md').exists()
+    legacy_source_file = project_path / '来源文档.md'
+    sources_dir = project_path / 'sources'
+    info['has_source'] = legacy_source_file.exists() or sources_dir.exists()
+
+    if sources_dir.exists():
+        info['source_count'] = len([p for p in sources_dir.iterdir() if p.is_file()])
 
     # 统计 SVG 文件
     svg_output = project_path / 'svg_output'
