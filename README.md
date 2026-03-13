@@ -171,6 +171,8 @@ python3 tools/project_manager.py init <项目名> --format ppt169
 # 将源材料归档到项目目录
 python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
 
+# 说明：工作空间外文件默认复制；工作空间内文件会直接移动到 sources/
+
 # PDF 转 Markdown
 python3 tools/pdf_to_md.py <PDF文件>
 

@@ -171,6 +171,8 @@ python3 tools/project_manager.py init <project_name> --format ppt169
 # Archive source materials into the project folder
 python3 tools/project_manager.py import-sources <project_path> <source_file_or_url...>
 
+# Note: files outside the workspace are copied by default; files already in the workspace are moved into sources/
+
 # PDF to Markdown
 python3 tools/pdf_to_md.py <PDF_file>
 

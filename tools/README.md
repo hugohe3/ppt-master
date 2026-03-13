@@ -304,6 +304,11 @@ python3 tools/project_manager.py validate <project_path>
 python3 tools/project_manager.py info <project_path>
 ```
 
+说明：
+- 工作空间外文件默认复制到 `sources/`
+- 使用 `--move` 时，工作空间外文件改为移动到 `sources/`
+- 如果文件已位于当前工作空间内，会直接移动到 `sources/`
+
 **支持的画布格式**:
 
 - `ppt169` - PPT 16:9 (1280×720)

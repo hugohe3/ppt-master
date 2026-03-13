@@ -70,6 +70,14 @@ def derive_url_basename(url: str) -> str:
     return "_".join(part for part in parts if part) or "web_source"
 
 
+def is_within_path(path: Path, parent: Path) -> bool:
+    try:
+        path.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
+
+
 class ProjectManager:
     """Create, inspect, validate, and populate project folders."""
 
@@ -152,6 +160,12 @@ class ProjectManager:
             counter += 1
 
     def _copy_or_move_file(self, source: Path, destination: Path, move: bool) -> Path:
+        try:
+            if source.resolve() == destination.resolve():
+                return destination
+        except FileNotFoundError:
+            pass
+
         destination = self._ensure_unique_path(destination)
         if move:
             shutil.move(str(source), str(destination))
@@ -262,10 +276,11 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
+            effective_move = move or is_within_path(source_path, REPO_ROOT)
             archived_path = self._copy_or_move_file(
                 source_path,
                 sources_dir / source_path.name,
-                move=move,
+                move=effective_move,
             )
             summary["archived"].append(str(archived_path))
 
