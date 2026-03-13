@@ -82,6 +82,7 @@ python3 tools/project_manager.py import-sources <项目路径> <源文件或URL.
 
 - 所有源材料统一归档到 `<项目路径>/sources/`
 - 如需直接移动原文件而不是复制，可追加 `--move`
+- 若源文件本来就在当前工作空间内，工具会直接移动到 `sources/`，不会再额外复制一份
 
 ---
 
