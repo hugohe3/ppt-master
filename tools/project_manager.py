@@ -182,6 +182,20 @@ class ProjectManager:
             shutil.copy2(source, destination)
         return destination
 
+    def _copy_or_move_tree(self, source: Path, destination: Path, move: bool) -> Path:
+        try:
+            if source.resolve() == destination.resolve():
+                return destination
+        except FileNotFoundError:
+            pass
+
+        destination = self._ensure_unique_path(destination)
+        if move:
+            shutil.move(str(source), str(destination))
+        else:
+            shutil.copytree(source, destination)
+        return destination
+
     def _run_tool(self, args: List[str]) -> None:
         try:
             result = subprocess.run(
@@ -241,6 +255,61 @@ class ProjectManager:
         target.write_text(content, encoding="utf-8")
         return target
 
+    def _companion_asset_dir(self, source_path: Path) -> Optional[Path]:
+        candidate = source_path.with_name(f"{source_path.stem}_files")
+        if candidate.exists() and candidate.is_dir():
+            return candidate
+        return None
+
+    def _rewrite_markdown_asset_refs(
+        self,
+        markdown_path: Path,
+        original_asset_dirname: str,
+        imported_asset_dirname: str,
+    ) -> None:
+        if original_asset_dirname == imported_asset_dirname:
+            return
+
+        content = markdown_path.read_text(encoding="utf-8", errors="replace")
+        updated = content.replace(f"{original_asset_dirname}/", f"{imported_asset_dirname}/")
+        if updated != content:
+            markdown_path.write_text(updated, encoding="utf-8")
+
+    def _import_markdown_with_assets(
+        self,
+        source_path: Path,
+        sources_dir: Path,
+        move: bool,
+    ) -> Tuple[Path, Optional[Path], Optional[str]]:
+        archived_markdown = self._copy_or_move_file(
+            source_path,
+            sources_dir / source_path.name,
+            move=move,
+        )
+
+        asset_dir = self._companion_asset_dir(source_path)
+        if asset_dir is None:
+            return archived_markdown, None, None
+
+        imported_asset_dir = self._copy_or_move_tree(
+            asset_dir,
+            sources_dir / f"{archived_markdown.stem}_files",
+            move=move,
+        )
+        self._rewrite_markdown_asset_refs(
+            archived_markdown,
+            original_asset_dirname=asset_dir.name,
+            imported_asset_dirname=imported_asset_dir.name,
+        )
+
+        note = None
+        if archived_markdown.stem != source_path.stem:
+            note = (
+                f"{source_path}: renamed imported markdown to {archived_markdown.name} "
+                f"and rewrote asset references to {imported_asset_dir.name}/"
+            )
+        return archived_markdown, imported_asset_dir, note
+
     def import_sources(
         self,
         project_path: str,
@@ -257,6 +326,7 @@ class ProjectManager:
         summary: Dict[str, List[str]] = {
             "archived": [],
             "markdown": [],
+            "assets": [],
             "notes": [],
             "skipped": [],
         }
@@ -294,15 +364,14 @@ class ProjectManager:
                 continue
 
             effective_move = move or is_within_path(source_path, REPO_ROOT)
-            archived_path = self._copy_or_move_file(
-                source_path,
-                sources_dir / source_path.name,
-                move=effective_move,
-            )
-            summary["archived"].append(str(archived_path))
-
             suffix = source_path.suffix.lower()
             if suffix in PDF_SUFFIXES:
+                archived_path = self._copy_or_move_file(
+                    source_path,
+                    sources_dir / source_path.name,
+                    move=effective_move,
+                )
+                summary["archived"].append(str(archived_path))
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 if archived_path.stem in explicit_markdown_stems:
                     summary["notes"].append(
@@ -322,11 +391,33 @@ class ProjectManager:
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
             elif suffix == ".txt":
+                archived_path = self._copy_or_move_file(
+                    source_path,
+                    sources_dir / source_path.name,
+                    move=effective_move,
+                )
+                summary["archived"].append(str(archived_path))
                 markdown_path = self._normalize_text_source(archived_path, sources_dir)
                 summary["markdown"].append(str(markdown_path))
             elif suffix in {".md", ".markdown"}:
+                archived_path, asset_dir, note = self._import_markdown_with_assets(
+                    source_path,
+                    sources_dir,
+                    move=effective_move,
+                )
+                summary["archived"].append(str(archived_path))
                 summary["markdown"].append(str(archived_path))
+                if asset_dir is not None:
+                    summary["assets"].append(str(asset_dir))
+                if note:
+                    summary["notes"].append(note)
             else:
+                archived_path = self._copy_or_move_file(
+                    source_path,
+                    sources_dir / source_path.name,
+                    move=effective_move,
+                )
+                summary["archived"].append(str(archived_path))
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
 
         save_project_state(project_dir, current_stage="outline", phase_status="sources_imported")
@@ -470,6 +561,10 @@ def main() -> None:
             if summary["markdown"]:
                 print("\nNormalized markdown:")
                 for item in summary["markdown"]:
+                    print(f"  - {item}")
+            if summary["assets"]:
+                print("\nImported asset directories:")
+                for item in summary["assets"]:
                     print(f"  - {item}")
             if summary["notes"]:
                 print("\nNotes:")

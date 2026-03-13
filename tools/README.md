@@ -110,7 +110,7 @@ graph TB
 
 - 提取 PDF 文本内容并转换为 Markdown
 - 自动提取表格并转换为 Markdown 表格
-- 自动提取图片并保存到 `images/` 目录
+- 自动提取图片并保存到与 Markdown 同名的 `_files/` 目录
 - 支持批量处理目录下的所有 PDF
 
 **用法**:
@@ -127,6 +127,17 @@ python3 tools/pdf_to_md.py ./pdfs
 
 # 指定输出目录
 python3 tools/pdf_to_md.py ./pdfs -o ./markdown
+```
+
+**输出结构**:
+
+```
+projects/
+├── book.md
+└── book_files/
+    ├── book_p1_0.png
+    ├── book_p2_0.jpg
+    └── ...
 ```
 
 **何时使用 pdf_to_md.py vs MinerU**:
