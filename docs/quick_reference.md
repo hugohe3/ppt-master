@@ -25,6 +25,8 @@
 
 ### ✅ 使用 Strategist
 
+- [ ] **先创建项目文件夹**：`python3 tools/project_manager.py init <名称> --format <格式>`
+- [ ] **归档源材料到项目目录**：`python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>`
 - [ ] 完成八项确认（Strategist 会为每个问题提供专业建议）
   - [ ] 画布格式（PPT 16:9 / 小红书 / 朋友圈等）
   - [ ] 页数范围（参考 Strategist 基于内容量的建议）
@@ -37,10 +39,10 @@
         在输出设计规范前填充图片资源清单
   - [ ] **排版方案**（字体组合 P1-P5 + 正文字号基准 18-24px）
 - [ ] 等待 Strategist 生成设计规范
-- [ ] 仔细检查并确认设计规范
-- [ ] **创建项目文件夹**：`python3 tools/project_manager.py init <名称> --format <格式>`
-- [ ] **归档源材料到项目目录**：`python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>`
 - [ ] 保存设计规范到项目文件夹
+- [ ] 仔细检查并确认设计规范
+- [ ] 运行大纲检查：`python3 tools/outline_quality_checker.py <项目路径>`
+- [ ] 大纲可先独立交付；确认后再进入 Image_Generator / Executor
 
 💡 **提示**: Strategist 不仅会提问，还会主动提供专业建议供你参考
 
@@ -61,6 +63,7 @@
 ### ✅ 使用 Executor（两阶段）
 
 **视觉构建阶段**：
+- [ ] 进入前确认大纲已通过 `outline_quality_checker.py`
 - [ ] 明确告知需要生成哪一页
 - [ ] 提供设计规范引用
 - [ ] 检查生成的 SVG 效果

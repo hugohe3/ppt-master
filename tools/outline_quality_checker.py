@@ -33,10 +33,9 @@ REQUIRED_SECTIONS = [
     "## 十二、下一步",
 ]
 
-REQUIRED_EXECUTION_MARKERS = [
-    "### 执行补充（新增）",
-    "#### 页面执行卡（新增，必须追加）",
-    "### Executor 进入前补充检查（新增）",
+REQUIRED_EXECUTION_MARKER_GROUPS = [
+    ("页面执行卡", ["#### 页面执行卡", "#### 页面执行卡（新增，必须追加）"]),
+    ("执行就绪检查", ["### 执行就绪检查", "### Executor 进入前补充检查（新增）"]),
 ]
 
 REQUIRED_CARD_FIELDS = [
@@ -69,12 +68,16 @@ def find_missing_sections(content: str) -> list[str]:
 
 
 def find_missing_markers(content: str) -> list[str]:
-    return [marker for marker in REQUIRED_EXECUTION_MARKERS if marker not in content]
+    missing: list[str] = []
+    for label, options in REQUIRED_EXECUTION_MARKER_GROUPS:
+        if not any(option in content for option in options):
+            missing.append(label)
+    return missing
 
 
 def extract_slide_cards(content: str) -> list[tuple[str, str]]:
     pattern = re.compile(
-        r"(^#### 页面执行卡（新增，必须追加）\n.*?)(?=^#### Slide\s+\d+\s*-|^\[由 Strategist|\Z)",
+        r"(^#### 页面执行卡(?:（新增，必须追加）)?\n.*?)(?=^#### Slide\s+\d+\s*-|^\[由 Strategist|\Z)",
         re.MULTILINE | re.DOTALL,
     )
     cards: list[tuple[str, str]] = []
@@ -93,7 +96,7 @@ def validate_cards(cards: list[tuple[str, str]]) -> tuple[list[str], list[str]]:
     warnings: list[str] = []
 
     if not cards:
-        errors.append("未找到任何页面执行卡（#### 页面执行卡（新增，必须追加））")
+        errors.append("未找到任何页面执行卡（#### 页面执行卡）")
         return errors, warnings
 
     for title, block in cards:
@@ -132,7 +135,7 @@ def main() -> None:
     warnings: list[str] = []
 
     errors.extend([f"缺少章节: {section}" for section in find_missing_sections(content)])
-    errors.extend([f"缺少执行增强块: {marker}" for marker in find_missing_markers(content)])
+    errors.extend([f"缺少执行结构: {marker}" for marker in find_missing_markers(content)])
 
     if contains_placeholder(content):
         warnings.append("文档仍包含模板占位符，请确认是否已全部替换")

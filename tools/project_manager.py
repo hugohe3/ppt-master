@@ -132,7 +132,12 @@ class ProjectManager:
                 "- `images/`: presentation assets\n"
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
-                "- `sources/`: source materials and normalized markdown\n"
+                "- `sources/`: source materials and normalized markdown\n\n"
+                "## Suggested Phase Order\n\n"
+                "1. Archive source files into `sources/` (or use `import-sources`)\n"
+                "2. Save `设计规范与内容大纲.md` to the project root\n"
+                "3. Run `python3 tools/outline_quality_checker.py <project_path>`\n"
+                "4. Pause for outline review, or continue to Image_Generator / Executor\n"
             ),
             encoding="utf-8",
         )
@@ -391,7 +396,8 @@ def main() -> None:
             print("Next:")
             print("1. Put source files into sources/ (or use import-sources)")
             print("2. Save your design spec to the project root")
-            print("3. Generate SVG files into svg_output/")
+            print("3. Run outline_quality_checker.py before entering Executor")
+            print("4. Review the outline, then continue to Image_Generator / Executor")
             return
 
         if command == "import-sources":

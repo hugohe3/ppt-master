@@ -66,7 +66,11 @@ graph TB
                     ↓
               [project_manager init]
                     ↓
-              AI 生成 SVG → svg_output/
+        Strategist 生成《设计规范与内容大纲》
+                    ↓
+          [outline_quality_checker]
+                    ↓
+      [Image_Generator，可选] → Executor → svg_output/
                     ↓
               [finalize_svg] ← 聚合 6 个子工具
                     ↓
@@ -1283,23 +1287,26 @@ python3 tools/embed_icons.py --dry-run svg_output/*.svg
    ```
    未通过前不要进入 Executor。大纲需要包含完整的页面执行卡，确保执行阶段以大纲为主，并可按需查证已选 sources。
 
-4. **生成 SVG 文件**
-   使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
+4. **确认大纲阶段完成**
+   大纲可以作为独立交付物先审阅、修改、确认；确认后再进入图片生成或 Executor 阶段。
 
-5. **后处理（默认执行全部）**
+5. **生成 SVG 文件**
+   使用 AI 角色（Image_Generator，可选 → Executor → Optimizer，可选）生成 SVG 并保存到 `svg_output/`
+
+6. **后处理（默认执行全部）**
 
    ```bash
    # 直接运行，无需参数
    python3 tools/finalize_svg.py projects/my_project_ppt169_20251116
    ```
 
-5. **导出为 PPTX**
+7. **导出为 PPTX**
 
    ```bash
    python3 tools/svg_to_pptx.py projects/my_project_ppt169_20251116 -s final
    ```
 
-6. **（可选）验证项目**
+8. **（可选）验证项目**
 
    ```bash
    python3 tools/project_manager.py validate projects/my_project_ppt169_20251116
