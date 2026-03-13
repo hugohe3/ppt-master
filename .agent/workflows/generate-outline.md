@@ -108,7 +108,6 @@ python3 tools/nano_banana_gen.py "现代科技感背景" --aspect_ratio 16:9 --i
 - `设计规范与内容大纲.md`
 - `images/` 中已准备完成的图片资源（如需要）
 - `sources/` 中归档后的源材料
-- `project_state.json` 中的阶段状态
 
 ## 关键原则
 

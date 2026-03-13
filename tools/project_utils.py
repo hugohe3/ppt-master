@@ -5,7 +5,6 @@ PPT Master - 项目工具公共模块
 提供项目信息解析、验证等公共功能，供其他工具复用。
 """
 
-import json
 import re
 from pathlib import Path
 from datetime import datetime
@@ -75,63 +74,7 @@ CANVAS_FORMAT_ALIASES = {
     '小红书': 'xiaohongshu',
 }
 
-PROJECT_STATE_FILENAME = "project_state.json"
 VALIDATION_STAGES = {"auto", "outline", "render", "final"}
-STAGE_ORDER = {
-    "init": 0,
-    "outline": 1,
-    "render": 2,
-    "final": 3,
-}
-
-
-def stage_rank(stage: str) -> int:
-    """返回阶段排序值，未知阶段按最低优先级处理。"""
-    return STAGE_ORDER.get(stage, -1)
-
-
-def project_state_path(project_path: Path) -> Path:
-    """返回项目状态文件路径。"""
-    return project_path / PROJECT_STATE_FILENAME
-
-
-def save_project_state(
-    project_path: Path,
-    current_stage: str,
-    phase_status: str,
-) -> None:
-    """写入项目阶段状态。"""
-    state_path = project_state_path(project_path)
-    payload = {
-        "current_stage": current_stage,
-        "phase_status": phase_status,
-        "updated_at": datetime.now().isoformat(timespec="seconds"),
-    }
-    state_path.write_text(
-        json.dumps(payload, ensure_ascii=True, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-
-def load_project_state(project_path: Path) -> Dict[str, str]:
-    """读取项目阶段状态，读取失败时返回空字典。"""
-    state_path = project_state_path(project_path)
-    if not state_path.exists():
-        return {}
-
-    try:
-        payload = json.loads(state_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
-
-    if not isinstance(payload, dict):
-        return {}
-
-    return {
-        "current_stage": str(payload.get("current_stage", "")).strip(),
-        "phase_status": str(payload.get("phase_status", "")).strip(),
-        "updated_at": str(payload.get("updated_at", "")).strip(),
-    }
 
 
 def normalize_canvas_format(format_key: str) -> str:
@@ -237,10 +180,6 @@ def get_project_info(project_path: str) -> Dict:
         'has_total_notes': False,
         'pptx_count': 0,
         'pptx_files': [],
-        'state_file_exists': False,
-        'declared_stage': 'unknown',
-        'declared_status': 'unknown',
-        'declared_updated_at': '',
         'inferred_stage': 'init',
         'inferred_status': 'initialized',
         'current_stage': 'init',
@@ -289,13 +228,6 @@ def get_project_info(project_path: str) -> Dict:
     info['pptx_count'] = len(pptx_files)
     info['pptx_files'] = [f.name for f in pptx_files]
 
-    state = load_project_state(project_path)
-    if state:
-        info['state_file_exists'] = True
-        info['declared_stage'] = state.get('current_stage') or 'unknown'
-        info['declared_status'] = state.get('phase_status') or 'unknown'
-        info['declared_updated_at'] = state.get('updated_at', '')
-
     if info['pptx_count'] > 0:
         info['inferred_stage'] = 'final'
         info['inferred_status'] = 'exported'
@@ -315,22 +247,8 @@ def get_project_info(project_path: str) -> Dict:
         info['inferred_stage'] = 'outline'
         info['inferred_status'] = 'initialized'
 
-    declared_stage = info['declared_stage']
-    inferred_stage = info['inferred_stage']
-    if stage_rank(declared_stage) > stage_rank(inferred_stage):
-        info['current_stage'] = declared_stage
-        info['current_status'] = info['declared_status']
-    elif (
-        stage_rank(declared_stage) == stage_rank(inferred_stage)
-        and declared_stage != 'unknown'
-        and info['declared_status'] not in {'', 'unknown'}
-        and info['inferred_status'] == 'initialized'
-    ):
-        info['current_stage'] = declared_stage
-        info['current_status'] = info['declared_status']
-    else:
-        info['current_stage'] = inferred_stage
-        info['current_status'] = info['inferred_status']
+    info['current_stage'] = info['inferred_stage']
+    info['current_status'] = info['inferred_status']
 
     # 获取画布格式详细信息
     if info['format'] in CANVAS_FORMATS:
@@ -471,9 +389,6 @@ def validate_project_structure(
             msg += "\n" + \
                 ErrorHelper.format_error_message('missing_date_suffix')
         warnings.append(msg)
-
-    if not info['state_file_exists']:
-        warnings.append(f"缺少 {PROJECT_STATE_FILENAME}，建议通过 project_manager 维护项目阶段状态")
 
     is_valid = len(errors) == 0
     return is_valid, errors, warnings

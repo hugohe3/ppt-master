@@ -44,8 +44,9 @@ roles/Executor_Consultant_Top.md
 Executor 必须完成两部分产物：
 
 1. 视觉构建阶段
-   - 按页面执行卡生成 SVG
+   - 按页面执行卡逐页生成 SVG
    - 输出到 `<项目路径>/svg_output/`
+   - 全部 SVG 页面生成完成后，统一执行正式质量检查
 2. 逻辑构建阶段
    - 生成完整讲稿
    - 输出到 `<项目路径>/notes/total.md`

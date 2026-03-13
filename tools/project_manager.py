@@ -23,7 +23,6 @@ try:
         CANVAS_FORMATS,
         get_project_info as get_project_info_common,
         normalize_canvas_format,
-        save_project_state,
         validate_project_structure,
         validate_svg_viewbox,
     )
@@ -35,7 +34,6 @@ except ImportError:
         CANVAS_FORMATS,
         get_project_info as get_project_info_common,
         normalize_canvas_format,
-        save_project_state,
         validate_project_structure,
         validate_svg_viewbox,
     )
@@ -129,7 +127,6 @@ class ProjectManager:
                 f"- Canvas format: {normalized_format}\n"
                 f"- Created: {date_str}\n\n"
                 "## Directories\n\n"
-                "- `project_state.json`: current project phase metadata\n"
                 "- `svg_output/`: raw SVG output\n"
                 "- `svg_final/`: finalized SVG output\n"
                 "- `images/`: presentation assets\n"
@@ -144,7 +141,6 @@ class ProjectManager:
             ),
             encoding="utf-8",
         )
-        save_project_state(project_path, current_stage="outline", phase_status="initialized")
 
         print(f"Project created: {project_path}")
         print(f"Canvas: {canvas_info['name']} ({canvas_info['dimensions']})")
@@ -420,7 +416,6 @@ class ProjectManager:
                 summary["archived"].append(str(archived_path))
                 summary["notes"].append(f"{item}: archived only, no automatic conversion")
 
-        save_project_state(project_dir, current_stage="outline", phase_status="sources_imported")
         return summary
 
     def validate_project(
@@ -459,8 +454,6 @@ class ProjectManager:
             "create_date": shared.get("date_formatted", "Unknown"),
             "current_stage": shared.get("current_stage", "unknown"),
             "current_status": shared.get("current_status", "unknown"),
-            "declared_stage": shared.get("declared_stage", "unknown"),
-            "declared_status": shared.get("declared_status", "unknown"),
             "inferred_stage": shared.get("inferred_stage", "unknown"),
             "inferred_status": shared.get("inferred_status", "unknown"),
             "has_total_notes": shared.get("has_total_notes", False),
@@ -623,7 +616,6 @@ def main() -> None:
             print(f"Canvas format: {info['canvas_format']}")
             print(f"Created: {info['create_date']}")
             print(f"Current stage: {info['current_stage']} ({info['current_status']})")
-            print(f"Declared stage: {info['declared_stage']} ({info['declared_status']})")
             print(f"Inferred stage: {info['inferred_stage']} ({info['inferred_status']})")
             print(f"Final SVG files: {info['svg_final_count']}")
             print(f"PPTX files: {info['pptx_count']}")
