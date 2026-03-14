@@ -368,9 +368,10 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None) -> str:
     markdown_content = f"# {title}\n\n"
     
     img_dir = None
-    rel_img_dir = "images"
+    rel_img_dir = None
     if output_path:
         output_path = Path(output_path)
+        rel_img_dir = f"{output_path.stem}_files"
         img_dir = output_path.parent / rel_img_dir
         if not img_dir.exists():
             img_dir.mkdir(parents=True, exist_ok=True)
