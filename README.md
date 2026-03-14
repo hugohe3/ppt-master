@@ -74,9 +74,10 @@ pip install -r requirements.txt
 ```
 用户：我有一份关于 Q3 季度业绩的报告，需要制作成 PPT
 
-AI（Strategist 角色）：好的，在开始之前我需要完成八项确认...
-   1. 画布格式：[建议] PPT 16:9
-   2. 页数范围：[建议] 8-10 页
+AI：好的，先确认是否使用模板；确认后我会继续八项确认并生成设计规范。
+   [模板选项] [建议] B) 不使用模板；如需使用模板，我会先参考 templates/layouts/layouts_index.json 给出推荐
+   [Strategist] 1. 画布格式：[建议] PPT 16:9
+   [Strategist] 2. 页数范围：[建议] 8-10 页
    ...
 ```
 
@@ -98,9 +99,9 @@ AI（Strategist 角色）：好的，在开始之前我需要完成八项确认.
 | 🎨 [设计指南](./docs/design_guidelines.md) | 配色、排版、布局规范详解 |
 | 📐 [画布格式](./docs/canvas_formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
 | 🖼️ [图片嵌入指南](./docs/svg_image_embedding.md) | SVG 图片嵌入最佳实践 |
-| 📊 [图表模板库](./templates/charts/) | 13 种标准化图表模板 · [在线预览](./templates/charts/preview.html) |
+| 📊 [图表模板库](./templates/charts/) | 33 种标准化图表模板 · [索引说明](./templates/charts/README.md) |
 | ⚡ [快速参考](./docs/quick_reference.md) | 常用命令和参数速查 |
-| 🔧 [角色定义](./roles/README.md) | 6 个 AI 角色的完整定义 |
+| 🔧 [角色定义](./roles/README.md) | 7 个 AI 角色的完整定义 |
 | 🛠️ [工具集](./tools/README.md) | 所有工具的使用说明 |
 | 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
@@ -191,12 +192,14 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 
 ```
 ppt-master/
-├── roles/          # AI 角色定义（6 个专业角色）
+├── .agent/         # AI 工作流与辅助配置
+├── .github/        # CI / GitHub Actions
+├── roles/          # AI 角色定义（7 个角色，含 Template_Designer）
 ├── docs/           # 文档中心（教程、设计指南、格式规范等）
-├── templates/      # 模板库（图表模板 + 640+ 图标）
+├── templates/      # 模板库（33 个图表模板 + 640+ 图标 + 布局模板）
 ├── tools/          # 工具集（项目管理、转换、处理）
 ├── examples/       # 示例项目（15 个完整案例）
-└── projects/       # 用户项目工作区（含 sources/）
+└── projects/       # 用户项目工作区（README / 设计规范 / sources / images / notes / svg_output / svg_final / templates / *.pptx）
 ```
 
 ---

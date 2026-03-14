@@ -7,6 +7,7 @@
 | 角色                        | 何时使用                       | 输入         | 输出               |
 | --------------------------- | ------------------------------ | ------------ | ------------------ |
 | **Strategist**              | 项目开始时                     | 源文档       | 设计规范与内容大纲 |
+| **Template_Designer**       | 需要创建新模板时               | 设计规范     | 页面模板 SVG       |
 | **Image_Generator**         | 选择 AI 生成图片时             | 图片资源清单 | 图片文件 + 提示词  |
 | **Executor_General**        | 生成通用风格页面               | 设计规范     | SVG 代码           |
 | **Executor_Consultant**     | 生成一般咨询风格页面           | 设计规范     | SVG 代码           |
@@ -22,6 +23,10 @@
 - [ ] 确定期望的页面数量
 - [ ] 选择设计风格（通用 / 一般咨询 / 顶级咨询）
 - [ ] 准备相关数据和素材
+- [ ] 创建项目文件夹：`python3 tools/project_manager.py init <名称> --format <格式>`
+- [ ] 归档源材料到项目目录：`python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>`
+- [ ] 确认模板选项（A 使用已有模板 / B 不使用模板）
+- [ ] 若选择 A，先根据 `templates/layouts/layouts_index.json` 推荐并复制模板
 
 ### ✅ 使用 Strategist
 
@@ -38,8 +43,6 @@
   - [ ] **排版方案**（字体组合 P1-P5 + 正文字号基准 18-24px）
 - [ ] 等待 Strategist 生成设计规范
 - [ ] 仔细检查并确认设计规范
-- [ ] **创建项目文件夹**：`python3 tools/project_manager.py init <名称> --format <格式>`
-- [ ] **归档源材料到项目目录**：`python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>`
 - [ ] 保存设计规范到项目文件夹
 
 💡 **提示**: Strategist 不仅会提问，还会主动提供专业建议供你参考
@@ -58,7 +61,7 @@
 
 💡 **提示**: 图片生成是串行环节，必须完成后才能进入 Executor 阶段
 
-### ✅ 使用 Executor（两阶段）
+### ✅ 使用 Executor（SVG + 讲稿）
 
 **视觉构建阶段**：
 - [ ] 明确告知需要生成哪一页
@@ -185,7 +188,7 @@
 请根据设计规范生成第[X]页：[页面主题]
 请将SVG保存到：projects/[项目名]_[格式]_[YYYYMMDD]/svg_output/[页码]_[主题].svg
 
-例如: projects/company_report_20251012/svg_output/01_cover.svg
+例如: projects/company_report_ppt169_20251012/svg_output/01_cover.svg
 ```
 
 ### 请求修改
@@ -371,7 +374,7 @@ sources/
 ### 设计规范
 
 ```
-design_specification.md
+设计规范与内容大纲.md
 ```
 
 ### SVG 文件
