@@ -74,9 +74,10 @@ Open the AI chat panel in your editor and describe what content you want to crea
 ```
 User: I have a Q3 quarterly report that needs to be made into a PPT
 
-AI (Strategist role): Sure, before we begin I need to complete eight confirmations...
-   1. Canvas format: [Recommended] PPT 16:9
-   2. Page count: [Recommended] 8-10 pages
+AI: Sure. First we'll confirm whether to use a template; after that Strategist will continue with the eight confirmations and generate the design spec.
+   [Template Option] [Recommended] B) No template; if a template is needed, I will first consult templates/layouts/layouts_index.json and recommend one
+   [Strategist] 1. Canvas format: [Recommended] PPT 16:9
+   [Strategist] 2. Page count: [Recommended] 8-10 pages
    ...
 ```
 
@@ -98,9 +99,9 @@ AI (Strategist role): Sure, before we begin I need to complete eight confirmatio
 | 🎨 [Design Guidelines](./docs/design_guidelines.md) | Colors, typography, layout specifications |
 | 📐 [Canvas Formats](./docs/canvas_formats.md) | PPT, Xiaohongshu, WeChat Moments, and 10+ formats |
 | 🖼️ [Image Embedding Guide](./docs/svg_image_embedding.md) | SVG image embedding best practices |
-| 📊 [Chart Template Library](./templates/charts/) | 13 standardized chart templates · [Online Preview](./templates/charts/preview.html) |
+| 📊 [Chart Template Library](./templates/charts/) | 33 standardized chart templates · [Index Guide](./templates/charts/README.md) |
 | ⚡ [Quick Reference](./docs/quick_reference.md) | Common commands and parameters cheat sheet |
-| 🔧 [Role Definitions](./roles/README.md) | Complete definitions of 6 AI roles |
+| 🔧 [Role Definitions](./roles/README.md) | Complete definitions of 7 AI roles |
 | 🛠️ [Toolset](./tools/README.md) | Usage instructions for all tools |
 | 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
@@ -191,12 +192,14 @@ python3 tools/svg_to_pptx.py <project_path> -s final
 
 ```
 ppt-master/
-├── roles/          # AI role definitions (6 professional roles)
+├── .agent/         # AI workflows and helper configs
+├── .github/        # CI / GitHub Actions
+├── roles/          # AI role definitions (7 roles including Template_Designer)
 ├── docs/           # Documentation center (tutorials, design guides, format specs)
-├── templates/      # Template library (chart templates + 640+ icons)
+├── templates/      # Template library (33 chart templates + 640+ icons + layouts)
 ├── tools/          # Toolset (project management, conversion, processing)
 ├── examples/       # Example projects (15 complete cases)
-└── projects/       # User project workspace (with sources/)
+└── projects/       # User project workspace (README / design spec / sources / images / notes / svg_output / svg_final / templates / *.pptx)
 ```
 
 ---

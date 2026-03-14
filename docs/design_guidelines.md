@@ -297,8 +297,10 @@ H3 - 章节标题:     22-27px, SemiBold (1.2-1.5×)
 
 **快速规则**：
 - 比例 > 2.0 (超宽) → 上下布局
-- 比例 1.2-2.0 → 上下或左右，需计算验证
-- 比例 < 1.5 (标准/竖图) → 左右布局
+- 比例 1.5-2.0 (宽幅) → 优先上下布局，若文字区不足则改左右布局
+- 比例 1.2-1.5 (标准横图) → 左右布局
+- 比例 0.8-1.2 (方形) → 左右布局
+- 比例 < 0.8 (竖图) → 左右布局
 
 ## 图表设计
 
@@ -393,10 +395,11 @@ H3 - 章节标题:     22-27px, SemiBold (1.2-1.5×)
 
 ### 项目内置图标库（推荐）
 
-本项目提供 **预置图标库**，位于 `templates/icons/`，包含 40+ 常用图标，风格统一，可直接复制使用。
+本项目提供 **预置图标库**，位于 `templates/icons/`，包含 **640+ 个 SVG 图标**，可直接复制或通过占位符方式嵌入。
 
 ```
-查看图标: 浏览器打开 templates/icons/preview.html
+查看完整索引: templates/icons/FULL_INDEX.md
+程序化查询: templates/icons/icons_index.json
 使用方式: 详见 templates/icons/README.md
 ```
 
@@ -430,7 +433,7 @@ H3 - 章节标题:     22-27px, SemiBold (1.2-1.5×)
    - 识别度高
    - 多种样式
 
-3. **Feather Icons** (https://feathericons.com/)
+4. **Feather Icons** (https://feathericons.com/)
    - 极简风格
    - 线条清晰
    - 轻量级

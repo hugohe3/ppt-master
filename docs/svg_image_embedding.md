@@ -1,6 +1,6 @@
 # SVG 图片嵌入指南
 
-本文档介绍如何在 SVG 文件中添加图片。
+本文档介绍如何在 SVG 文件中添加图片，并说明当前项目中的推荐工作流。
 
 ---
 
@@ -43,12 +43,16 @@
    ├── 已有/待生成 → <image href="../images/xxx.png" .../>
    └── 占位符 → 虚线框 + 描述文本
 
-4. 预览
-   └── python3 -m http.server 8000
+4. 预览原始版本
+   └── python3 -m http.server -d <项目路径> 8000
+      然后访问 /svg_output/<文件名>.svg
 
-5. 导出（可选）
-   └── python3 tools/embed_images.py *.svg
+5. 后处理与导出（推荐）
+   ├── python3 tools/finalize_svg.py <项目路径>
+   └── python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
+
+> 推荐做法：生成阶段在 `svg_output/` 中保留外部引用，后处理阶段通过 `finalize_svg.py` 自动把图片嵌入到 `svg_final/`，再从 `svg_final/` 导出 PPTX。
 
 ---
 
@@ -58,17 +62,17 @@
 
 | 方式 | 优点 | 缺点 | 适用场景 |
 |------|------|------|----------|
-| **外部引用** | 文件小、图片可单独更新 | 需要HTTP服务器 | 开发调试阶段 |
-| **Base64 内嵌** | 完全独立、可离线查看 | 文件体积大 | 分享导出阶段 |
+| **外部引用** | 文件小、迭代快、便于替换素材 | 预览时需从项目根目录起 HTTP 服务 | `svg_output/` 开发调试阶段 |
+| **Base64 内嵌** | 文件独立、导出稳定、适合 PPTX | 文件体积更大 | `svg_final/` 导出与交付阶段 |
 
 ---
 
-## 方式一：外部引用（开发阶段推荐）
+## 方式一：外部引用（生成阶段推荐）
 
 ### 语法
 
 ```xml
-<image href="image.png" x="0" y="0" width="1280" height="720" 
+<image href="../images/image.png" x="0" y="0" width="1280" height="720"
        preserveAspectRatio="xMidYMid slice"/>
 ```
 
@@ -76,7 +80,7 @@
 
 | 属性 | 说明 | 示例 |
 |------|------|------|
-| `href` | 图片路径（相对或绝对） | `"cover.png"` 或 `"./images/cover.png"` |
+| `href` | 图片路径（相对或绝对） | `"../images/cover.png"` 或 `"../sources/article_files/image_1.png"` |
 | `x`, `y` | 图片左上角位置 | `x="0" y="0"` |
 | `width`, `height` | 图片显示尺寸 | `width="1280" height="720"` |
 | `preserveAspectRatio` | 缩放方式 | `"xMidYMid slice"` 居中裁剪 |
@@ -91,19 +95,19 @@
 
 ### 预览方式
 
-由于浏览器安全限制，直接双击打开 SVG 无法加载外部图片。需要通过 HTTP 服务器访问：
+由于浏览器安全限制，直接双击打开 SVG 无法加载外部图片。项目中的图片通常位于 `images/` 或 `sources/*_files/`，因此应从**项目根目录**启动 HTTP 服务器：
 
 ```bash
 # 启动本地服务器
-python3 -m http.server --directory <svg目录> 8000
+python3 -m http.server -d <项目路径> 8000
 
 # 访问
-http://localhost:8000/your_file.svg
+http://localhost:8000/svg_output/your_file.svg
 ```
 
 ---
 
-## 方式二：Base64 内嵌（分享导出推荐）
+## 方式二：Base64 内嵌（交付阶段推荐）
 
 ### 语法
 
@@ -129,111 +133,29 @@ data:<MIME类型>;base64,<Base64编码数据>
 
 ## 转换流程
 
-### 步骤 1：生成 Base64 编码
-
-**macOS / Linux:**
+### 推荐方式：统一走 `finalize_svg.py`
 
 ```bash
-# 将图片转换为 Base64 并保存到文件
-base64 -i image.png -o image.b64
+# 从 svg_output 复制到 svg_final，并自动处理图标、图片、文本与圆角
+python3 tools/finalize_svg.py <项目路径>
 
-# 或直接输出到终端
-base64 -i image.png
+# 从最终版本导出 PPTX
+python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
-**Windows (PowerShell):**
+### 独立使用 `embed_images.py`（高级用法）
 
-```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("image.png")) > image.b64
-```
-
-### 步骤 2：嵌入 SVG
-
-**手动方式：**
-
-1. 打开 `.b64` 文件，复制全部内容
-2. 在 SVG 中替换 `href="image.png"` 为 `href="data:image/png;base64,<粘贴内容>"`
-
-**自动化脚本（推荐）：**
-
-```python
-#!/usr/bin/env python3
-"""
-SVG 图片嵌入工具
-将 SVG 中引用的外部图片转换为 Base64 内嵌格式
-"""
-
-import os
-import base64
-import re
-import sys
-
-def get_mime_type(filename):
-    """根据文件扩展名返回 MIME 类型"""
-    ext = filename.lower().split('.')[-1]
-    mime_map = {
-        'png': 'image/png',
-        'jpg': 'image/jpeg',
-        'jpeg': 'image/jpeg',
-        'gif': 'image/gif',
-        'webp': 'image/webp',
-        'svg': 'image/svg+xml',
-    }
-    return mime_map.get(ext, 'application/octet-stream')
-
-def embed_images_in_svg(svg_path):
-    """将 SVG 文件中的外部图片转换为 Base64 内嵌"""
-    svg_dir = os.path.dirname(svg_path)
-    
-    with open(svg_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # 匹配 href="xxx.png" 或 href="xxx.jpg" 等
-    pattern = r'href="([^"]+\.(png|jpg|jpeg|gif|webp))"'
-    
-    def replace_with_base64(match):
-        img_path = match.group(1)
-        full_path = os.path.join(svg_dir, img_path)
-        
-        if not os.path.exists(full_path):
-            print(f"Warning: Image not found: {full_path}")
-            return match.group(0)
-        
-        with open(full_path, 'rb') as img_file:
-            b64_data = base64.b64encode(img_file.read()).decode('utf-8')
-        
-        mime_type = get_mime_type(img_path)
-        print(f"Embedded: {img_path} ({len(b64_data)} chars)")
-        
-        return f'href="data:{mime_type};base64,{b64_data}"'
-    
-    new_content = re.sub(pattern, replace_with_base64, content)
-    
-    with open(svg_path, 'w', encoding='utf-8') as f:
-        f.write(new_content)
-    
-    print(f"Updated: {svg_path}")
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: python embed_images.py <svg_file> [svg_file2] ...")
-        sys.exit(1)
-    
-    for svg_file in sys.argv[1:]:
-        if os.path.exists(svg_file):
-            embed_images_in_svg(svg_file)
-        else:
-            print(f"File not found: {svg_file}")
-```
-
-### 步骤 3：使用脚本
+当你只想单独处理某几个 SVG，而不想跑完整个后处理流程时，可直接使用：
 
 ```bash
-# 保存上述脚本为 embed_images.py，然后运行：
-python3 embed_images.py path/to/your_file.svg
+# 处理单个 SVG
+python3 tools/embed_images.py <svg文件>
 
-# 批量处理多个文件
-python3 embed_images.py *.svg
+# 批量处理多个 SVG
+python3 tools/embed_images.py <项目路径>/svg_output/*.svg
+
+# 仅预览，不实际写回
+python3 tools/embed_images.py --dry-run <项目路径>/svg_output/*.svg
 ```
 
 ---
@@ -245,18 +167,19 @@ python3 embed_images.py *.svg
 ```
 1. 开发阶段
    ├── 创建 SVG 文件，使用外部引用
-   │   <image href="cover.png" .../>
+   │   <image href="../images/cover.png" .../>
    │
    ├── 启动本地服务器预览
-   │   python3 -m http.server 8000
+   │   python3 -m http.server -d <项目路径> 8000
    │
    └── 调试修改，快速迭代
 
 2. 导出阶段
-   ├── 运行嵌入脚本
-   │   python3 embed_images.py *.svg
+   ├── 运行后处理
+   │   python3 tools/finalize_svg.py <项目路径>
    │
-   └── 得到独立的 SVG 文件，可直接分享
+   └── 从 svg_final/ 导出 PPTX
+       python3 tools/svg_to_pptx.py <项目路径> -s final
 ```
 
 ---
@@ -279,12 +202,19 @@ pngquant --quality=65-80 input.png -o output.png
 
 ```
 project/
-├── svg_output/
-│   ├── 01_cover.svg          # 开发版（外部引用）
-│   ├── cover_bg.png          # 图片资源
+├── images/
+│   ├── cover_bg.png
 │   └── ...
-└── svg_export/
-    └── 01_cover_embedded.svg # 导出版（Base64 内嵌）
+├── sources/
+│   ├── article.md
+│   └── article_files/
+│       └── image_1.png
+├── svg_output/
+│   ├── 01_cover.svg          # 原始版本（外部引用）
+│   └── ...
+└── svg_final/
+    ├── 01_cover.svg          # 最终版本（已嵌入图片）
+    └── ...
 ```
 
 ### 3. 圆角处理（禁止 clipPath）
@@ -302,9 +232,9 @@ project/
 
 ### Q: 直接打开 SVG 看不到图片？
 
-A: 浏览器安全策略阻止了本地文件的跨域请求。解决方案：
-- 使用 HTTP 服务器访问
-- 或将图片转换为 Base64 内嵌
+A: 浏览器安全策略阻止了本地文件的跨目录请求。解决方案：
+- 从项目根目录启动 HTTP 服务器，再访问 `/svg_output/*.svg`
+- 或先运行 `python3 tools/finalize_svg.py <项目路径>`，再查看 `svg_final/`
 
 ### Q: Base64 文件太大怎么办？
 
