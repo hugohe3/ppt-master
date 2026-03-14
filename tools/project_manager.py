@@ -10,6 +10,7 @@ Usage:
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import sys
@@ -246,6 +247,32 @@ class ProjectManager:
         target.write_text(content, encoding="utf-8")
         return target
 
+    def _canonicalize_markdown_content(self, content: str) -> str:
+        canonical = content.replace("\r\n", "\n")
+        canonical = re.sub(r"(?m)^(\s*Crawled:\s+).*$", r"\1__IGNORED__", canonical)
+        canonical = re.sub(r"(?m)^(\s*Imported:\s+).*$", r"\1__IGNORED__", canonical)
+        canonical = re.sub(r"([^\s\]()/]+_files)/", "__ASSET_DIR__/", canonical)
+        return canonical.strip()
+
+    def _find_equivalent_markdown(self, source_path: Path, sources_dir: Path) -> Optional[Path]:
+        source_content = source_path.read_text(encoding="utf-8", errors="replace")
+        canonical_source = self._canonicalize_markdown_content(source_content)
+
+        for existing in sorted(sources_dir.iterdir()):
+            if existing.suffix.lower() not in {".md", ".markdown"}:
+                continue
+            try:
+                if existing.resolve() == source_path.resolve():
+                    continue
+            except FileNotFoundError:
+                pass
+
+            existing_content = existing.read_text(encoding="utf-8", errors="replace")
+            if self._canonicalize_markdown_content(existing_content) == canonical_source:
+                return existing
+
+        return None
+
     def _companion_asset_dir(self, source_path: Path) -> Optional[Path]:
         candidate = source_path.with_name(f"{source_path.stem}_files")
         if candidate.exists() and candidate.is_dir():
@@ -358,6 +385,14 @@ class ProjectManager:
             suffix = source_path.suffix.lower()
 
             if suffix in {".md", ".markdown"}:
+                duplicate_markdown = self._find_equivalent_markdown(source_path, sources_dir)
+                if duplicate_markdown is not None:
+                    summary["markdown"].append(str(duplicate_markdown))
+                    summary["notes"].append(
+                        f"{item}: skipped duplicate markdown import because equivalent content already exists as {duplicate_markdown.name}"
+                    )
+                    continue
+
                 archived_markdown, asset_dir, note = self._import_markdown_with_assets(
                     source_path,
                     sources_dir,
