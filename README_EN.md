@@ -78,10 +78,10 @@ Recommended AI editors:
 
 | Tool                                                | Rating | Description                                                                   |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
-| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **Highly Recommended**! Cost-effective, stable, Microsoft official solution    |
+| **[Claude Code](https://claude.ai/)**               | ⭐⭐⭐ | **Highly Recommended**! Anthropic official CLI, native Opus support, largest context window |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, great experience but relatively expensive                |
-| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                    |
-| [Antigravity](https://antigravity.dev/)             |   ⭐   | Free Opus 4.6 access, but currently highly unstable. Alternative only.         |
+| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | Microsoft official solution, cost-effective, but limited context window (200k, 35% reserved for output) |
+| [Antigravity](https://antigravity.dev/)             |   ⭐   | Free but very limited quota and unstable. Alternative only.                    |
 
 ### 4. Start Creating
 
