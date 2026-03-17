@@ -1,4 +1,4 @@
-# PPT Master - AI 驱动的多格式 SVG 内容生成系统
+# PPT Master — AI 生成可编辑的精美演示文稿，支持任意文档输入
 
 [![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -6,11 +6,31 @@
 
 [English](./README_EN.md) | 中文
 
-一个基于 AI 的智能视觉内容生成系统，通过多角色协作，将源文档转化为高质量的 SVG 内容，**支持演示文稿、社交媒体、营销海报等多种格式**。
+丢进一份 PDF、网址或 Markdown，AI 自动生成**可在 PowerPoint 中直接编辑**的精美演示文稿。支持 PPT 16:9、小红书、朋友圈等 10+ 种格式。
 
-> 🎴 **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) - 查看实际生成效果
+> **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) — 查看实际生成效果
 
-> 🎬 **快速示例**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/) - 观看视频演示
+> **视频演示**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
+
+---
+
+## 🎴 精选示例
+
+> **示例库**: [`examples/`](./examples/) · **15 个项目** · **229 页**
+
+| 类别            | 项目 | 页数 | 特色 |
+| --------------- | ---- | :--: | ---- |
+| 🏢 **咨询风格** | [心理治疗中的依恋](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E5%BF%83%E7%90%86%E6%B2%BB%E7%96%97%E4%B8%AD%E7%9A%84%E4%BE%9D%E6%81%8B) |  32  | 顶级咨询风格，最大规模示例 |
+|                 | [构建有效AI代理](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E6%9E%84%E5%BB%BA%E6%9C%89%E6%95%88AI%E4%BB%A3%E7%90%86_Anthropic) |  15  | Anthropic 工程博客，AI Agent 架构 |
+|                 | [重庆市区域报告](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E9%87%8D%E5%BA%86%E5%B8%82%E5%8C%BA%E5%9F%9F%E6%8A%A5%E5%91%8A_ppt169_20251213) |  20  | 区域财政分析，企业预警通数据 |
+|                 | [甘孜州经济财政分析](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E7%94%98%E5%AD%9C%E5%B7%9E%E7%BB%8F%E6%B5%8E%E8%B4%A2%E6%94%BF%E5%88%86%E6%9E%90) |  17  | 政务财政分析，藏区文化元素 |
+| 🎨 **通用灵活** | [Debug 六步法](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%80%9A%E7%94%A8%E7%81%B5%E6%B4%BB%2B%E4%BB%A3%E7%A0%81_debug%E5%85%AD%E6%AD%A5%E6%B3%95) |  10  | 深色科技风格 |
+|                 | [重庆大学论文格式](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%80%9A%E7%94%A8%E7%81%B5%E6%B4%BB%2B%E5%AD%A6%E6%9C%AF_%E9%87%8D%E5%BA%86%E5%A4%A7%E5%AD%A6%E8%AE%BA%E6%96%87%E6%A0%BC%E5%BC%8F%E6%A0%87%E5%87%86) |  11  | 学术规范指南 |
+| ✨ **创意风格** | [地山谦卦深度研究](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E6%98%93%E7%90%86%E9%A3%8E_%E5%9C%B0%E5%B1%B1%E8%B0%A6%E5%8D%A6%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6) |  20  | 易经本体美学，阴阳爻变设计 |
+|                 | [金刚经第一品研究](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E7%A6%85%E6%84%8F%E9%A3%8E_%E9%87%91%E5%88%9A%E7%BB%8F%E7%AC%AC%E4%B8%80%E5%93%81%E7%A0%94%E7%A9%B6) |  15  | 禅意学术，水墨留白 |
+|                 | [Git 入门指南](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E5%83%8F%E7%B4%A0%E9%A3%8E_git_introduction) |  10  | 像素复古游戏风 |
+
+📖 [查看完整示例文档](./examples/README.md)
 
 ---
 
@@ -21,8 +41,6 @@
 #### Python 环境（必需）
 
 本项目需要 **Python 3.8+**，用于运行 PDF 转换、SVG 后处理、PPTX 导出等工具。
-
-**安装 Python：**
 
 | 平台 | 推荐安装方式 |
 |------|------------|
@@ -35,8 +53,6 @@
 #### Node.js 环境（可选）
 
 如需使用 `web_to_md.cjs` 工具（用于微信公众号等高防站点的网页转换），需安装 Node.js。
-
-**安装 Node.js：**
 
 | 平台 | 推荐安装方式 |
 |------|------------|
@@ -91,42 +107,6 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 ---
 
-## 📚 文档导航
-
-| 文档 | 说明 |
-|------|------|
-| 📖 [工作流教程](./docs/workflow_tutorial.md) | 详细的工作流程和案例演示 |
-| 🎨 [设计指南](./docs/design_guidelines.md) | 配色、排版、布局规范详解 |
-| 📐 [画布格式](./docs/canvas_formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
-| 🖼️ [图片嵌入指南](./docs/svg_image_embedding.md) | SVG 图片嵌入最佳实践 |
-| 📊 [图表模板库](./templates/charts/) | 33 种标准化图表模板 · [索引说明](./templates/charts/README.md) |
-| ⚡ [快速参考](./docs/quick_reference.md) | 常用命令和参数速查 |
-| 🔧 [角色定义](./roles/README.md) | 7 个 AI 角色的完整定义 |
-| 🛠️ [工具集](./tools/README.md) | 所有工具的使用说明 |
-| 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
-
----
-
-## 🎴 精选示例
-
-> 📁 **示例库**: [`examples/`](./examples/) · **15 个项目** · **229 页 SVG**
-
-| 类别            | 项目                                                                           | 页数 | 特色                              |
-| --------------- | ------------------------------------------------------------------------------ | :--: | --------------------------------- |
-| 🏢 **咨询风格** | [心理治疗中的依恋](./examples/ppt169_顶级咨询风_心理治疗中的依恋/)             |  32  | 顶级咨询风格，最大规模示例        |
-|                 | [构建有效AI代理](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/)       |  15  | Anthropic 工程博客，AI Agent 架构 |
-|                 | [重庆市区域报告](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) |  20  | 区域财政分析，企业预警通数据 🆕   |
-|                 | [甘孜州经济财政分析](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/)         |  17  | 政务财政分析，藏区文化元素        |
-| 🎨 **通用灵活** | [Debug 六步法](./examples/ppt169_通用灵活+代码_debug六步法/)                   |  10  | 深色科技风格                      |
-|                 | [重庆大学论文格式](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/)      |  11  | 学术规范指南                      |
-| ✨ **创意风格** | [地山谦卦深度研究](./examples/ppt169_易理风_地山谦卦深度研究/)                 |  20  | 易经本体美学，阴阳爻变设计        |
-|                 | [金刚经第一品研究](./examples/ppt169_禅意风_金刚经第一品研究/)                 |  15  | 禅意学术，水墨留白                |
-|                 | [Git 入门指南](./examples/ppt169_像素风_git_introduction/)                     |  10  | 像素复古游戏风                    |
-
-📖 [查看完整示例文档](./examples/README.md)
-
----
-
 ## 🏗️ 系统架构
 
 ```
@@ -150,7 +130,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
     ↓
 [后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
     ↓
-输出: SVG + PPTX（自动嵌入讲稿）
+输出: 可编辑的 PPTX（自动嵌入讲稿）
     ↓
 [Optimizer_CRAP] 优化师（可选，初版后不满意再用）
     ↓
@@ -159,7 +139,23 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 📖 详细工作流程请参阅 [工作流教程](./docs/workflow_tutorial.md) 和 [角色定义](./roles/README.md)
 
-> 💡 **PPT 编辑提示**：导出的 PPTX 页面为 SVG 格式。若需编辑内容，请在 PowerPoint 中选中页面，右键选择 **"转换为形状"** (Convert to Shape)。此功能需要 **Office 2016** 或更高版本。
+> 💡 **PPT 编辑提示**：导出的 PPTX 中每页为 SVG 格式。选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 即可自由编辑所有元素。需要 **Office 2016** 或更高版本。
+
+---
+
+## 📚 文档导航
+
+| 文档 | 说明 |
+|------|------|
+| 📖 [工作流教程](./docs/workflow_tutorial.md) | 详细的工作流程和案例演示 |
+| 🎨 [设计指南](./docs/design_guidelines.md) | 配色、排版、布局规范详解 |
+| 📐 [画布格式](./docs/canvas_formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
+| 🖼️ [图片嵌入指南](./docs/svg_image_embedding.md) | SVG 图片嵌入最佳实践 |
+| 📊 [图表模板库](./templates/charts/) | 33 种标准化图表模板 · [索引说明](./templates/charts/README.md) |
+| ⚡ [快速参考](./docs/quick_reference.md) | 常用命令和参数速查 |
+| 🔧 [角色定义](./roles/README.md) | 7 个 AI 角色的完整定义 |
+| 🛠️ [工具集](./tools/README.md) | 所有工具的使用说明 |
+| 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
 ---
 
@@ -199,7 +195,7 @@ ppt-master/
 ├── templates/      # 模板库（33 个图表模板 + 640+ 图标 + 布局模板）
 ├── tools/          # 工具集（项目管理、转换、处理）
 ├── examples/       # 示例项目（15 个完整案例）
-└── projects/       # 用户项目工作区（README / 设计规范 / sources / images / notes / svg_output / svg_final / templates / *.pptx）
+└── projects/       # 用户项目工作区
 ```
 
 ---
@@ -207,11 +203,9 @@ ppt-master/
 ## ❓ 常见问题
 
 <details>
-<summary><b>Q: 生成的 SVG 文件如何使用？</b></summary>
+<summary><b>Q: 生成的 PPT 可以编辑吗？</b></summary>
 
-- 直接在浏览器中打开查看
-- 使用 `svg_to_pptx.py` 导出为 PowerPoint（需在 PPT 中"转换为形状"以编辑，要求 Office 2016+）
-- 嵌入到 HTML 页面或使用设计工具编辑
+可以。导出的 PPTX 中每页为 SVG 格式，在 PowerPoint 中选中内容，右键选择 **"转换为形状"** (Convert to Shape) 后，所有文字、图形、颜色都可以自由编辑。需要 **Office 2016** 或更高版本。
 
 </details>
 
@@ -282,4 +276,4 @@ ppt-master/
 
 Made with ❤️ by Hugo He
 
-[⬆ 回到顶部](#ppt-master---ai-驱动的多格式-svg-内容生成系统)
+[⬆ 回到顶部](#ppt-master--ai-生成可编辑的精美演示文稿支持任意文档输入)
