@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 21,
+    "total": 22,
     "defaultViewBox": "0 0 1280 720",
     "formats": [
       "ppt169"
@@ -13,7 +13,7 @@
       "03_content.svg",
       "04_ending.svg"
     ],
-    "updated": "2026-03-07"
+    "updated": "2026-03-18"
   },
   "categories": {
     "brand": {
@@ -53,7 +53,8 @@
       "label": "政企风格模板",
       "layouts": [
         "government_red",
-        "government_blue"
+        "government_blue",
+        "ai_ops"
       ]
     },
     "special": {
@@ -83,11 +84,13 @@
       "anthropic",
       "google_style",
       "smart_red",
-      "general"
+      "general",
+      "ai_ops"
     ],
     "government": [
       "government_red",
-      "government_blue"
+      "government_blue",
+      "ai_ops"
     ],
     "academic": [
       "academic_defense",
@@ -145,6 +148,38 @@
         "答辩",
         "科研",
         "规范"
+      ]
+    },
+    "ai_ops": {
+      "dir": "ai_ops",
+      "label": "企业数智化模板",
+      "category": "government",
+      "summary": "适用于运营商 AI 运维架构、IT 系统总体视图、数字化转型方案等高信息密度场景",
+      "useCases": [
+        "运营商 AI 运维架构",
+        "IT 系统总体视图",
+        "数字化转型方案",
+        "智能化建设汇报",
+        "企业技术规划"
+      ],
+      "tone": "信息密集、结构化、模块分区、运营商政企风格",
+      "themeMode": "亮色主题（白色背景 + 红蓝双色点缀 + 暖灰面板）",
+      "pageTypes": [
+        "cover",
+        "toc",
+        "chapter",
+        "content",
+        "ending"
+      ],
+      "assets": [
+        "reference_style.svg"
+      ],
+      "keywords": [
+        "运营商",
+        "AI运维",
+        "数智化",
+        "高密度",
+        "架构视图"
       ]
     },
     "anthropic": {
