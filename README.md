@@ -78,10 +78,10 @@ pip install -r requirements.txt
 
 | 工具                                                | 推荐度 | 说明                                                                          |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
-| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **强烈推荐**！性价比高，运行稳定，微软官方方案                                |
+| **[Claude Code](https://claude.ai/)**               | ⭐⭐⭐ | **强烈推荐**！Anthropic 官方 CLI，原生 Opus 支持，上下文最充裕                |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，体验好但价格较高                                              |
-| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic 官方 CLI 工具                                                       |
-| [Antigravity](https://antigravity.dev/)             |   ⭐   | 免费使用 Opus 4.6 接口，但目前模型极不稳定，仅作备选                          |
+| [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | 微软官方方案，性价比高，但上下文窗口受限（200k，预留 35% 给输出）             |
+| [Antigravity](https://antigravity.dev/)             |   ⭐   | 免费但额度极少且不稳定，仅作备选                                              |
 
 ### 4. 开始创作
 
