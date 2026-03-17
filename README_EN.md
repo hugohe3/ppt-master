@@ -1,16 +1,36 @@
-# PPT Master - AI-Powered Multi-Format SVG Content Generation System
+# PPT Master — AI generates editable, beautifully designed presentations from any document
 
-[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](./VERSION)
+[![Version](https://img.shields.io/badge/version-v1.1.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
 English | [中文](./README.md)
 
-An AI-powered intelligent visual content generation system that transforms source documents into high-quality SVG content through multi-role collaboration, **supporting presentations, social media, marketing posters, and various other formats**.
+Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed presentations that you can edit directly in PowerPoint**. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
 
-> 🎴 **Online Examples**: [GitHub Pages Online Preview](https://hugohe3.github.io/ppt-master/) - View actual generated results
+> **Online Examples**: [GitHub Pages Preview](https://hugohe3.github.io/ppt-master/) — See actual generated results
 
-> 🎬 **Quick Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/) - Watch video demonstrations
+> **Video Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
+
+---
+
+## 🎴 Featured Examples
+
+> **Example Library**: [`examples/`](./examples/) · **15 projects** · **229 pages**
+
+| Category | Project | Pages | Features |
+| -------- | ------- | :---: | -------- |
+| 🏢 **Consulting Style** | [Attachment in Psychotherapy](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E5%BF%83%E7%90%86%E6%B2%BB%E7%96%97%E4%B8%AD%E7%9A%84%E4%BE%9D%E6%81%8B) |  32   | Top consulting style, largest scale example |
+|                         | [Building Effective AI Agents](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E6%9E%84%E5%BB%BA%E6%9C%89%E6%95%88AI%E4%BB%A3%E7%90%86_Anthropic) |  15   | Anthropic engineering blog, AI Agent architecture |
+|                         | [Chongqing Regional Report](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E9%87%8D%E5%BA%86%E5%B8%82%E5%8C%BA%E5%9F%9F%E6%8A%A5%E5%91%8A_ppt169_20251213) |  20   | Regional fiscal analysis |
+|                         | [Ganzi Prefecture Economic Analysis](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%A1%B6%E7%BA%A7%E5%92%A8%E8%AF%A2%E9%A3%8E_%E7%94%98%E5%AD%9C%E5%B7%9E%E7%BB%8F%E6%B5%8E%E8%B4%A2%E6%94%BF%E5%88%86%E6%9E%90) |  17   | Government fiscal analysis, Tibetan cultural elements |
+| 🎨 **General Flexible** | [Debug Six-Step Method](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%80%9A%E7%94%A8%E7%81%B5%E6%B4%BB%2B%E4%BB%A3%E7%A0%81_debug%E5%85%AD%E6%AD%A5%E6%B3%95) |  10   | Dark tech style |
+|                         | [Chongqing University Thesis Format](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E9%80%9A%E7%94%A8%E7%81%B5%E6%B4%BB%2B%E5%AD%A6%E6%9C%AF_%E9%87%8D%E5%BA%86%E5%A4%A7%E5%AD%A6%E8%AE%BA%E6%96%87%E6%A0%BC%E5%BC%8F%E6%A0%87%E5%87%86) |  11   | Academic standards guide |
+| ✨ **Creative Style**   | [I Ching Qian Hexagram Study](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E6%98%93%E7%90%86%E9%A3%8E_%E5%9C%B0%E5%B1%B1%E8%B0%A6%E5%8D%A6%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6) |  20   | I Ching aesthetics, Yin-Yang design |
+|                         | [Diamond Sutra Chapter 1 Study](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E7%A6%85%E6%84%8F%E9%A3%8E_%E9%87%91%E5%88%9A%E7%BB%8F%E7%AC%AC%E4%B8%80%E5%93%81%E7%A0%94%E7%A9%B6) |  15   | Zen academic, ink wash whitespace |
+|                         | [Git Introduction Guide](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E5%83%8F%E7%B4%A0%E9%A3%8E_git_introduction) |  10   | Pixel retro game style |
+
+📖 [View Complete Examples Documentation](./examples/README.md)
 
 ---
 
@@ -21,8 +41,6 @@ An AI-powered intelligent visual content generation system that transforms sourc
 #### Python Environment (Required)
 
 This project requires **Python 3.8+** for running PDF conversion, SVG post-processing, PPTX export, and other tools.
-
-**Install Python:**
 
 | Platform | Recommended Installation |
 |----------|-------------------------|
@@ -35,8 +53,6 @@ This project requires **Python 3.8+** for running PDF conversion, SVG post-proce
 #### Node.js Environment (Optional)
 
 If you need to use the `web_to_md.cjs` tool (for converting web pages from WeChat and other high-security sites), install Node.js.
-
-**Install Node.js:**
 
 | Platform | Recommended Installation |
 |----------|-------------------------|
@@ -60,12 +76,12 @@ pip install -r requirements.txt
 
 Recommended AI editors:
 
-| Tool                                                | Rating | Description                                                                                                          |
-| --------------------------------------------------- | :----: | -------------------------------------------------------------------------------------------------------------------- |
-| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **Highly Recommended**! High cost-effectiveness, stable, Microsoft official solution                                  |
-| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, great experience but relatively expensive                                                       |
-| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                                                           |
-| [Antigravity](https://antigravity.dev/)             |   ⭐   | Free Opus 4.6 access, but currently highly unstable. Recommended only as an alternative.                             |
+| Tool                                                | Rating | Description                                                                   |
+| --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
+| **[VS Code + Copilot](https://code.visualstudio.com/)**| ⭐⭐⭐ | **Highly Recommended**! Cost-effective, stable, Microsoft official solution    |
+| [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, great experience but relatively expensive                |
+| [Claude Code](https://claude.ai/)                   |  ⭐⭐  | Anthropic official CLI tool                                                    |
+| [Antigravity](https://antigravity.dev/)             |   ⭐   | Free Opus 4.6 access, but currently highly unstable. Alternative only.         |
 
 ### 4. Start Creating
 
@@ -74,8 +90,9 @@ Open the AI chat panel in your editor and describe what content you want to crea
 ```
 User: I have a Q3 quarterly report that needs to be made into a PPT
 
-AI: Sure. First we'll confirm whether to use a template; after that Strategist will continue with the eight confirmations and generate the design spec.
-   [Template Option] [Recommended] B) No template; if a template is needed, I will first consult templates/layouts/layouts_index.json and recommend one
+AI: Sure. First we'll confirm whether to use a template; after that Strategist will
+   continue with the eight confirmations and generate the design spec.
+   [Template Option] [Recommended] B) No template
    [Strategist] 1. Canvas format: [Recommended] PPT 16:9
    [Strategist] 2. Page count: [Recommended] 8-10 pages
    ...
@@ -83,47 +100,11 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **Model Recommendation**: Opus 4.6 works best. However, due to the current instability of Opus on some IDEs (like Antigravity), using other stable AI clients is recommended.
 
-> 💡 **Image Generation Integration**: We suggest configuring Google AI environment variables (`GEMINI_API_KEY`, and optionally `GEMINI_BASE_URL` for proxy) to integrate the powerful image generation capabilities of nano banana 2 via this project's `tools/nano_banana_gen.py`. If using the Antigravity proxy, please be aware to pass the model parameter (`-m gemini-3.1-flash-image`) when calling.
+> 💡 **Image Generation Integration**: Configure Google AI environment variables (`GEMINI_API_KEY`, optionally `GEMINI_BASE_URL` for proxy) to integrate nano banana 2 image generation via `tools/nano_banana_gen.py`. If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
 
-> 💡 **AI Lost Context?** You can prompt the AI to refer to the `AGENTS.md` file, and it will automatically follow the role definitions in the repository
+> 💡 **AI Lost Context?** Prompt the AI to refer to `AGENTS.md` — it will automatically follow the role definitions in the repository.
 
-> 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution than Antigravity's direct generation. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `tools/gemini_watermark_remover.py`.
-
----
-
-## 📚 Documentation Navigation
-
-| Document | Description |
-|----------|-------------|
-| 📖 [Workflow Tutorial](./docs/workflow_tutorial.md) | Detailed workflow and case demonstrations |
-| 🎨 [Design Guidelines](./docs/design_guidelines.md) | Colors, typography, layout specifications |
-| 📐 [Canvas Formats](./docs/canvas_formats.md) | PPT, Xiaohongshu, WeChat Moments, and 10+ formats |
-| 🖼️ [Image Embedding Guide](./docs/svg_image_embedding.md) | SVG image embedding best practices |
-| 📊 [Chart Template Library](./templates/charts/) | 33 standardized chart templates · [Index Guide](./templates/charts/README.md) |
-| ⚡ [Quick Reference](./docs/quick_reference.md) | Common commands and parameters cheat sheet |
-| 🔧 [Role Definitions](./roles/README.md) | Complete definitions of 7 AI roles |
-| 🛠️ [Toolset](./tools/README.md) | Usage instructions for all tools |
-| 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
-
----
-
-## 🎴 Featured Examples
-
-> 📁 **Example Library**: [`examples/`](./examples/) · **15 projects** · **229 SVG pages**
-
-| Category                | Project                                                                                              | Pages | Features                                              |
-| ----------------------- | ---------------------------------------------------------------------------------------------------- | :---: | ----------------------------------------------------- |
-| 🏢 **Consulting Style** | [Attachment in Psychotherapy](./examples/ppt169_顶级咨询风_心理治疗中的依恋/)                        |  32   | Top consulting style, largest scale example           |
-|                         | [Building Effective AI Agents](./examples/ppt169_顶级咨询风_构建有效AI代理_Anthropic/)               |  15   | Anthropic engineering blog, AI Agent architecture     |
-|                         | [Chongqing Regional Report](./examples/ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/)            |  20   | Regional fiscal analysis, Enterprise Alert data 🆕    |
-|                         | [Ganzi Prefecture Economic Analysis](./examples/ppt169_顶级咨询风_甘孜州经济财政分析/)               |  17   | Government fiscal analysis, Tibetan cultural elements |
-| 🎨 **General Flexible** | [Debug Six-Step Method](./examples/ppt169_通用灵活+代码_debug六步法/)                                |  10   | Dark tech style                                       |
-|                         | [Chongqing University Thesis Format](./examples/ppt169_通用灵活+学术_重庆大学论文格式标准/)          |  11   | Academic standards guide                              |
-| ✨ **Creative Style**   | [I Ching Qian Hexagram Study](./examples/ppt169_易理风_地山谦卦深度研究/)                            |  20   | I Ching aesthetics, Yin-Yang design                   |
-|                         | [Diamond Sutra Chapter 1 Study](./examples/ppt169_禅意风_金刚经第一品研究/)                          |  15   | Zen academic, ink wash whitespace                     |
-|                         | [Git Introduction Guide](./examples/ppt169_像素风_git_introduction/)                                 |  10   | Pixel retro game style                                |
-
-📖 [View Complete Examples Documentation](./examples/README.md)
+> 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `tools/gemini_watermark_remover.py`.
 
 ---
 
@@ -146,20 +127,36 @@ User Input (PDF/URL/Markdown)
     ↓
 [Executor] - Two-Phase Generation
     ├── Visual Construction Phase: Generate all SVG pages → svg_output/
-    └── Logic Construction Phase: Generate complete script → notes/total.md
+    └── Logic Construction Phase: Generate complete speaker notes → notes/total.md
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: SVG + PPTX (auto-embeds notes)
+Output: Editable PPTX (auto-embeds speaker notes)
     ↓
-[Optimizer_CRAP] (Optional, only if the first full draft is unsatisfactory)
+[Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
     ↓
 If optimized: re-run post-processing and export
 ```
 
 > 📖 For detailed workflow, see [Workflow Tutorial](./docs/workflow_tutorial.md) and [Role Definitions](./roles/README.md)
 
-> 💡 **PPT Editing Tip**: The exported PPTX pages are in SVG format. To edit the content, select the page content in PowerPoint, right-click and choose **"Group" -> "Ungroup"** (or **"Convert to Shape"**). This feature requires **Office 2016** or later.
+> 💡 **PPT Editing Tip**: Each page in the exported PPTX is in SVG format. Select the page content in PowerPoint, right-click and choose **"Convert to Shape"** to freely edit all elements. Requires **Office 2016** or later.
+
+---
+
+## 📚 Documentation Navigation
+
+| Document | Description |
+|----------|-------------|
+| 📖 [Workflow Tutorial](./docs/workflow_tutorial.md) | Detailed workflow and case demonstrations |
+| 🎨 [Design Guidelines](./docs/design_guidelines.md) | Colors, typography, layout specifications |
+| 📐 [Canvas Formats](./docs/canvas_formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
+| 🖼️ [Image Embedding Guide](./docs/svg_image_embedding.md) | SVG image embedding best practices |
+| 📊 [Chart Template Library](./templates/charts/) | 33 standardized chart templates · [Index Guide](./templates/charts/README.md) |
+| ⚡ [Quick Reference](./docs/quick_reference.md) | Common commands and parameters cheat sheet |
+| 🔧 [Role Definitions](./roles/README.md) | Complete definitions of 7 AI roles |
+| 🛠️ [Toolset](./tools/README.md) | Usage instructions for all tools |
+| 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
 ---
 
@@ -199,7 +196,7 @@ ppt-master/
 ├── templates/      # Template library (33 chart templates + 640+ icons + layouts)
 ├── tools/          # Toolset (project management, conversion, processing)
 ├── examples/       # Example projects (15 complete cases)
-└── projects/       # User project workspace (README / design spec / sources / images / notes / svg_output / svg_final / templates / *.pptx)
+└── projects/       # User project workspace
 ```
 
 ---
@@ -207,11 +204,9 @@ ppt-master/
 ## ❓ FAQ
 
 <details>
-<summary><b>Q: How to use generated SVG files?</b></summary>
+<summary><b>Q: Can I edit the generated presentations?</b></summary>
 
-- Open directly in browser to view
-- Export to PowerPoint using `svg_to_pptx.py` (Note: Requires "Convert to Shape" in PPT for editing, Office 2016+ required)
-- Embed in HTML pages or edit with design tools
+Yes! Each page in the exported PPTX is in SVG format. In PowerPoint, select the content, right-click and choose **"Convert to Shape"** — then all text, shapes, and colors become fully editable. Requires **Office 2016** or later.
 
 </details>
 
@@ -282,4 +277,4 @@ If this project helps you, please give it a ⭐ Star!
 
 Made with ❤️ by Hugo He
 
-[⬆ Back to Top](#ppt-master---ai-powered-multi-format-svg-content-generation-system)
+[⬆ Back to Top](#ppt-master--ai-generates-editable-beautifully-designed-presentations-from-any-document)
