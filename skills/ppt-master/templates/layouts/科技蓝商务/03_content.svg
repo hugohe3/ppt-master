@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+
+  <!-- Decor Header -->
+  <rect x="40" y="40" width="10" height="40" fill="#0078D7" />
+  
+  <!-- Title -->
+  <text x="70" y="70" font-family="Microsoft YaHei" font-size="36" font-weight="bold" fill="#002E5D">{{PAGE_TITLE}}</text>
+
+  <!-- Top Right Logo/Context -->
+  <text x="1240" y="60" font-family="Microsoft YaHei" font-size="16" fill="#999999" text-anchor="end">维链医疗云</text>
+  <line x1="40" y1="100" x2="1240" y2="100" stroke="#E0E0E0" stroke-width="1" />
+
+  <!-- Main Content Area (Layout guide) -->
+  <!-- This is a flexible area. We use a dashed rect to indicate the safe zone for dynamic content -->
+  <rect x="60" y="140" width="1160" height="500" fill="none" stroke="#A0C4E3" stroke-width="2" stroke-dasharray="8,8" rx="10" opacity="0.3" />
+  
+  <!-- Placeholder Text for guidance (will be replaced by actual content) -->
+  <text x="640" y="390" font-family="Microsoft YaHei" font-size="24" fill="#CCCCCC" text-anchor="middle">{{CONTENT_PLACEHOLDER}}</text>
+
+  <!-- Footer -->
+  <rect x="0" y="690" width="1280" height="30" fill="#F5F5F5" />
+  <text x="1240" y="710" font-family="Arial" font-size="14" fill="#666666" text-anchor="end">{{PAGE_NUMBER}}</text>
+  <text x="40" y="710" font-family="Microsoft YaHei" font-size="14" fill="#999999">CONFIDENTIAL - INTERNAL USE ONLY</text>
+
+</svg>
