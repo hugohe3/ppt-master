@@ -99,11 +99,11 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **模型推荐**：Opus 4.6 效果最佳，但因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端。
 
-> 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `tools/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
+> 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `skills/ppt-master/scripts/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
 
 > 💡 **AI 迷失上下文？** 可提示 AI 参考 `AGENTS.md` 文件，它会自动按照仓库中的角色定义工作
 
-> 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `tools/gemini_watermark_remover.py` 去除。
+> 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `skills/ppt-master/scripts/gemini_watermark_remover.py` 去除。
 
 ---
 
@@ -137,7 +137,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 如有优化：重新运行后处理与导出
 ```
 
-> 📖 详细工作流程请参阅 [工作流教程](./docs/workflow_tutorial.md) 和 [角色定义](./roles/README.md)
+> 📖 详细工作流程请参阅 [AGENTS.md](./AGENTS.md)（完整工作流指南）
 
 > 💡 **PPT 编辑提示**：导出的 PPTX 中每页为 SVG 格式。选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 即可自由编辑所有元素。需要 **Office 2016** 或更高版本。
 
@@ -147,14 +147,12 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 | 文档 | 说明 |
 |------|------|
-| 📖 [工作流教程](./docs/workflow_tutorial.md) | 详细的工作流程和案例演示 |
-| 🎨 [设计指南](./docs/design_guidelines.md) | 配色、排版、布局规范详解 |
-| 📐 [画布格式](./docs/canvas_formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
-| 🖼️ [图片嵌入指南](./docs/svg_image_embedding.md) | SVG 图片嵌入最佳实践 |
-| 📊 [图表模板库](./templates/charts/) | 33 种标准化图表模板 · [索引说明](./templates/charts/README.md) |
-| ⚡ [快速参考](./docs/quick_reference.md) | 常用命令和参数速查 |
-| 🔧 [角色定义](./roles/README.md) | 7 个 AI 角色的完整定义 |
-| 🛠️ [工具集](./tools/README.md) | 所有工具的使用说明 |
+| 📖 [AGENTS.md](./AGENTS.md) | 完整工作流指南（适用于所有 AI 工具） |
+| 🎨 [设计指南](./skills/ppt-master/references/design-guidelines.md) | 配色、排版、布局规范详解 |
+| 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
+| 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
+| 📊 [图表模板库](./skills/ppt-master/templates/charts/) | 13 种标准化图表模板 |
+| 🛠️ [工具集](./skills/ppt-master/scripts/README.md) | 所有工具的使用说明 |
 | 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
 ---
@@ -163,24 +161,24 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 ```bash
 # 初始化项目
-python3 tools/project_manager.py init <项目名> --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py init <项目名> --format ppt169
 
 # 将源材料归档到项目目录
-python3 tools/project_manager.py import-sources <项目路径> <源文件或URL...>
-
-# 说明：工作空间外文件默认复制；工作空间内文件会直接移动到 sources/
+python3 skills/ppt-master/scripts/project_manager.py import-sources <项目路径> <源文件或URL...>
 
 # PDF 转 Markdown
-python3 tools/pdf_to_md.py <PDF文件>
+python3 skills/ppt-master/scripts/pdf_to_md.py <PDF文件>
 
-# 后处理 SVG
-python3 tools/finalize_svg.py <项目路径>
+# 后处理三步（必须按顺序执行）
+python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
+python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
+python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
-# 导出 PPTX
-python3 tools/svg_to_pptx.py <项目路径> -s final
+# 重新生成平台适配文件
+python3 build_adapters.py
 ```
 
-> 📖 完整工具说明请参阅 [工具使用指南](./tools/README.md)
+> 📖 完整工具说明请参阅 [脚本使用指南](./skills/ppt-master/scripts/README.md)
 
 ---
 
@@ -188,15 +186,25 @@ python3 tools/svg_to_pptx.py <项目路径> -s final
 
 ```
 ppt-master/
-├── .agent/         # AI 工作流与辅助配置
-├── .github/        # CI / GitHub Actions
-├── roles/          # AI 角色定义（7 个角色，含 Template_Designer）
-├── docs/           # 文档中心（教程、设计指南、格式规范等）
-├── templates/      # 模板库（33 个图表模板 + 640+ 图标 + 布局模板）
-├── tools/          # 工具集（项目管理、转换、处理）
-├── examples/       # 示例项目（15 个完整案例）
-└── projects/       # 用户项目工作区
+├── skills/ppt-master/          # 规范源（完全自包含的 Skill）
+│   ├── SKILL.md                #   主入口：工作流定义
+│   ├── references/             #   AI 角色定义 + 技术文档（13 个文件）
+│   ├── scripts/                #   工具脚本（24 个）
+│   └── templates/              #   模板库（布局 + 图表 + 640+ 图标）
+├── build_adapters.py           # 一键生成各 AI 工具的适配文件
+├── examples/                   # 示例项目（15 个完整案例）
+├── projects/                   # 用户项目工作区
+│
+│   ── 以下由 build_adapters.py 自动生成 ──
+├── AGENTS.md                   # 通用完整指南（适用于任何 AI 工具）
+├── CLAUDE.md                   # Claude Code 项目指南
+├── GEMINI.md                   # Gemini 指南
+├── .claude/skills/ppt-master/  # Claude Code Skill 适配
+├── .cursor/rules/              # Cursor 适配
+└── .windsurf/rules/            # Windsurf 适配
 ```
+
+> 💡 **单一源多平台**：所有 AI 指令的规范源在 `skills/ppt-master/`，修改后运行 `python3 build_adapters.py` 即可同步到所有平台适配文件。
 
 ---
 
@@ -225,7 +233,7 @@ ppt-master/
 
 </details>
 
-> 📖 更多问题请查看 [工作流教程](./docs/workflow_tutorial.md#常见问题)
+> 📖 更多问题请查看 [AGENTS.md](./AGENTS.md)
 
 ---
 
