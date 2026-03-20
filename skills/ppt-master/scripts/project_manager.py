@@ -39,9 +39,9 @@ except ImportError:
         validate_svg_viewbox,
     )
 
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = Path(__file__).resolve().parent
+SKILL_DIR = TOOLS_DIR.parent
+REPO_ROOT = SKILL_DIR.parent.parent
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 PDF_SUFFIXES = {".pdf"}
