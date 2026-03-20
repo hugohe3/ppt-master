@@ -8,6 +8,11 @@ English | [中文](./README.md)
 
 Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed presentations that you can edit directly in PowerPoint**. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
 
+> 💡 **Major Update**: The project architecture has undergone a massive upgrade (Skill-based architecture):
+> 1. **Lower Token Consumption & Model Dependency**: Significantly reduced token consumption. Now, even non-Opus models can generate decent results.
+> 2. **High Extensibility**: The `skills` folder is organized according to the Agent Skills standard, with each subdirectory being a fully self-contained Skill. It can be natively invoked by dropping it into the skills directory of compatible AI clients (e.g., `.claude/skills/` or `~/.claude/skills/` for Claude Code; global skills directory referenced via `.agent/workflows/` for Antigravity; `.github/skills/` or `~/.copilot/skills/` for GitHub Copilot).
+> 3. **Stable Fallback**：Although the previous multi-platform architecture consumes more tokens, it has been more extensively tested. If you experience instability with the current version, you can always fall back to the last release of the old architecture: [v1.3.0](https://github.com/hugohe3/ppt-master/tree/v1.3.0).
+
 > **Online Examples**: [GitHub Pages Preview](https://hugohe3.github.io/ppt-master/) — See actual generated results
 
 > **Video Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
@@ -190,13 +195,15 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ppt-master/
 ├── skills/
 │   └── ppt-master/                 # Main skill source
-│       ├── SKILL.md
-│       ├── workflows/              # Workflow entry files
-│       ├── references/             # Role definitions and specs
-│       ├── scripts/                # Tool scripts
-│       └── templates/              # Layouts, charts, icons
+│       ├── SKILL.md                #   Main entry: workflow definition
+│       ├── workflows/              #   Workflow entry files
+│       ├── references/             #   Role definitions and specs
+│       ├── scripts/                #   Tool scripts
+│       └── templates/              #   Layouts, charts, icons
 ├── examples/                       # Example projects
-└── projects/                       # User project workspace
+├── projects/                       # User project workspace
+├── AGENTS.md                       # General AI agent entry
+└── CLAUDE.md                       # Dedicated Claude Code CLI entry
 ```
 
 ---

@@ -8,6 +8,11 @@
 
 丢进一份 PDF、网址或 Markdown，AI 自动生成**可在 PowerPoint 中直接编辑**的精美演示文稿。支持 PPT 16:9、小红书、朋友圈等 10+ 种格式。
 
+> 💡 **架构大更新**：目前项目架构已进行重大升级（Skill-based architecture）：
+> 1. **大幅减少 Token 消耗与模型依赖**：现在即使不使用 Opus 模型，其他模型也能生成质量尚可的结果。
+> 2. **更强的系统扩展性**：整个 `skills` 文件夹按 Agent Skills 标准组织，每个子目录都是一个完全自包含的 Skill。您可以将其直接放入支持该标准的 AI 客户端的 skills 目录中作为本地技能原生调用（例如：Claude Code 的 `.claude/skills/` 或 `~/.claude/skills/`；Antigravity 置于全局 skills 目录后经由 `.agent/workflows/` 引用；GitHub Copilot 的 `.github/skills/` 或 `~/.copilot/skills/`）。
+> 3. **稳定版降级选择**：旧版多平台适配架构虽然 Token 消耗较多，但经受了更长时间的检验。如果您在使用当前新版本时遇到不稳定情况，可以随时尝试退回至老架构的最终版本：[v1.3.0](https://github.com/hugohe3/ppt-master/tree/v1.3.0)。
+
 > **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) — 查看实际生成效果
 
 > **视频演示**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
@@ -183,20 +188,19 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 ## 📁 项目结构
 
-```
+```text
 ppt-master/
-├── skills/ppt-master/          # 规范源（完全自包含的 Skill）
-│   ├── SKILL.md                #   主入口：工作流定义
-│   ├── references/             #   AI 角色定义 + 技术文档（13 个文件）
-│   ├── scripts/                #   工具脚本（24 个）
-│   └── templates/              #   模板库（布局 + 图表 + 640+ 图标）
-├── examples/                   # 示例项目（15 个完整案例）
-├── projects/                   # 用户项目工作区
-├── AGENTS.md                   # 通用 AI 代理入口概览
-├── CLAUDE.md                   # Claude Code 入口概览
-├── .claude/skills/ppt-master/  # Claude Code Skill 适配
-├── .cursor/rules/              # Cursor 适配
-└── .windsurf/rules/            # Windsurf 适配
+├── skills/
+│   └── ppt-master/                 # 规范源（完全自包含的单一 Skill 源）
+│       ├── SKILL.md                #   主入口：工作流定义与执行边界
+│       ├── workflows/              #   工作流引擎脚本与独立任务
+│       ├── references/             #   AI 角色定义 + 技术文档规范
+│       ├── scripts/                #   工具脚本集成
+│       └── templates/              #   模板库（布局 + 图表 + 图标）
+├── examples/                       # 示例项目（包含多种生成案例）
+├── projects/                       # 用户项目默认工作区
+├── AGENTS.md                       # 通用 AI 代理入口概览
+└── CLAUDE.md                       # Claude Code CLI 专属入口概览
 ```
 
 ---
