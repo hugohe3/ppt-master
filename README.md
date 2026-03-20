@@ -101,7 +101,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `skills/ppt-master/scripts/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
 
-> 💡 **AI 迷失上下文？** 可提示 AI 参考 `AGENTS.md` 文件，它会自动按照仓库中的角色定义工作
+> 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
 
 > 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `skills/ppt-master/scripts/gemini_watermark_remover.py` 去除。
 
@@ -137,7 +137,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 如有优化：重新运行后处理与导出
 ```
 
-> 📖 详细工作流程请参阅 [AGENTS.md](./AGENTS.md)（完整工作流指南）
+> 📖 详细工作流程请优先参阅 [skills/ppt-master/SKILL.md](./skills/ppt-master/SKILL.md)，仓库级入口概览见 [AGENTS.md](./AGENTS.md)
 
 > 💡 **PPT 编辑提示**：导出的 PPTX 中每页为 SVG 格式。选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 即可自由编辑所有元素。需要 **Office 2016** 或更高版本。
 
@@ -147,7 +147,8 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 | 文档 | 说明 |
 |------|------|
-| 📖 [AGENTS.md](./AGENTS.md) | 完整工作流指南（适用于所有 AI 工具） |
+| 🧭 [AGENTS.md](./AGENTS.md) | 仓库级入口概览（适用于通用 AI 代理） |
+| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | `ppt-master` 核心流程与规则源 |
 | 🎨 [设计指南](./skills/ppt-master/references/design-guidelines.md) | 配色、排版、布局规范详解 |
 | 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
 | 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
@@ -174,8 +175,6 @@ python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
 python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
-# 重新生成平台适配文件
-python3 build_adapters.py
 ```
 
 > 📖 完整工具说明请参阅 [脚本使用指南](./skills/ppt-master/scripts/README.md)
@@ -191,20 +190,14 @@ ppt-master/
 │   ├── references/             #   AI 角色定义 + 技术文档（13 个文件）
 │   ├── scripts/                #   工具脚本（24 个）
 │   └── templates/              #   模板库（布局 + 图表 + 640+ 图标）
-├── build_adapters.py           # 一键生成各 AI 工具的适配文件
 ├── examples/                   # 示例项目（15 个完整案例）
 ├── projects/                   # 用户项目工作区
-│
-│   ── 以下由 build_adapters.py 自动生成 ──
-├── AGENTS.md                   # 通用完整指南（适用于任何 AI 工具）
-├── CLAUDE.md                   # Claude Code 项目指南
-├── GEMINI.md                   # Gemini 指南
+├── AGENTS.md                   # 通用 AI 代理入口概览
+├── CLAUDE.md                   # Claude Code 入口概览
 ├── .claude/skills/ppt-master/  # Claude Code Skill 适配
 ├── .cursor/rules/              # Cursor 适配
 └── .windsurf/rules/            # Windsurf 适配
 ```
-
-> 💡 **单一源多平台**：所有 AI 指令的规范源在 `skills/ppt-master/`，修改后运行 `python3 build_adapters.py` 即可同步到所有平台适配文件。
 
 ---
 
@@ -233,7 +226,7 @@ ppt-master/
 
 </details>
 
-> 📖 更多问题请查看 [AGENTS.md](./AGENTS.md)
+> 📖 更多问题可先查看 [skills/ppt-master/SKILL.md](./skills/ppt-master/SKILL.md) 与 [AGENTS.md](./AGENTS.md)
 
 ---
 

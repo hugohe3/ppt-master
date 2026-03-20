@@ -100,11 +100,11 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **Model Recommendation**: Opus 4.6 works best. However, due to the current instability of Opus on some IDEs (like Antigravity), using other stable AI clients is recommended.
 
-> 💡 **Image Generation Integration**: Configure Google AI environment variables (`GEMINI_API_KEY`, optionally `GEMINI_BASE_URL` for proxy) to integrate nano banana 2 image generation via `tools/nano_banana_gen.py`. If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
+> 💡 **Image Generation Integration**: Configure Google AI environment variables (`GEMINI_API_KEY`, optionally `GEMINI_BASE_URL` for proxy) to integrate nano banana 2 image generation via `skills/ppt-master/scripts/nano_banana_gen.py`. If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
 
-> 💡 **AI Lost Context?** Prompt the AI to refer to `AGENTS.md` — it will automatically follow the role definitions in the repository.
+> 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
 
-> 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `tools/gemini_watermark_remover.py`.
+> 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `skills/ppt-master/scripts/gemini_watermark_remover.py`.
 
 ---
 
@@ -138,7 +138,7 @@ Output: Editable PPTX (auto-embeds speaker notes)
 If optimized: re-run post-processing and export
 ```
 
-> 📖 For detailed workflow, see [Workflow Tutorial](./docs/workflow_tutorial.md) and [Role Definitions](./roles/README.md)
+> 📖 For the full workflow, start with [SKILL.md](./skills/ppt-master/SKILL.md). For a repository-level overview, see [AGENTS.md](./AGENTS.md).
 
 > 💡 **PPT Editing Tip**: Each page in the exported PPTX is in SVG format. Select the page content in PowerPoint, right-click and choose **"Convert to Shape"** to freely edit all elements. Requires **Office 2016** or later.
 
@@ -148,14 +148,14 @@ If optimized: re-run post-processing and export
 
 | Document | Description |
 |----------|-------------|
-| 📖 [Workflow Tutorial](./docs/workflow_tutorial.md) | Detailed workflow and case demonstrations |
-| 🎨 [Design Guidelines](./docs/design_guidelines.md) | Colors, typography, layout specifications |
-| 📐 [Canvas Formats](./docs/canvas_formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
-| 🖼️ [Image Embedding Guide](./docs/svg_image_embedding.md) | SVG image embedding best practices |
-| 📊 [Chart Template Library](./templates/charts/) | 33 standardized chart templates · [Index Guide](./templates/charts/README.md) |
-| ⚡ [Quick Reference](./docs/quick_reference.md) | Common commands and parameters cheat sheet |
-| 🔧 [Role Definitions](./roles/README.md) | Complete definitions of 7 AI roles |
-| 🛠️ [Toolset](./tools/README.md) | Usage instructions for all tools |
+| 🧭 [AGENTS.md](./AGENTS.md) | Repository-level entry overview for general AI agents |
+| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | Canonical `ppt-master` workflow and rules |
+| 🎨 [Design Guidelines](./skills/ppt-master/references/design-guidelines.md) | Colors, typography, and layout specifications |
+| 📐 [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
+| 🖼️ [Image Embedding Guide](./skills/ppt-master/references/svg-image-embedding.md) | SVG image embedding best practices |
+| 📊 [Chart Template Library](./skills/ppt-master/templates/charts/) | Standardized chart templates |
+| 🔧 [Role Definitions](./skills/ppt-master/references/) | Role definitions and technical references |
+| 🛠️ [Toolset](./skills/ppt-master/scripts/README.md) | Usage instructions for all tools |
 | 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
 ---
@@ -164,39 +164,39 @@ If optimized: re-run post-processing and export
 
 ```bash
 # Initialize project
-python3 tools/project_manager.py init <project_name> --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
 
 # Archive source materials into the project folder
-python3 tools/project_manager.py import-sources <project_path> <source_file_or_url...>
+python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_file_or_url...>
 
 # Note: files outside the workspace are copied by default; files already in the workspace are moved into sources/
 
 # PDF to Markdown
-python3 tools/pdf_to_md.py <PDF_file>
+python3 skills/ppt-master/scripts/pdf_to_md.py <PDF_file>
 
-# Post-process SVG
-python3 tools/finalize_svg.py <project_path>
-
-# Export PPTX
-python3 tools/svg_to_pptx.py <project_path> -s final
+# Post-processing (run in order)
+python3 skills/ppt-master/scripts/total_md_split.py <project_path>
+python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ```
 
-> 📖 For complete tool documentation, see [Tools Usage Guide](./tools/README.md)
+> 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 ppt-master/
-├── .agent/         # AI workflows and helper configs
-├── .github/        # CI / GitHub Actions
-├── roles/          # AI role definitions (7 roles including Template_Designer)
-├── docs/           # Documentation center (tutorials, design guides, format specs)
-├── templates/      # Template library (33 chart templates + 640+ icons + layouts)
-├── tools/          # Toolset (project management, conversion, processing)
-├── examples/       # Example projects (15 complete cases)
-└── projects/       # User project workspace
+├── skills/
+│   └── ppt-master/                 # Main skill source
+│       ├── SKILL.md
+│       ├── workflows/              # Workflow entry files
+│       ├── references/             # Role definitions and specs
+│       ├── scripts/                # Tool scripts
+│       └── templates/              # Layouts, charts, icons
+├── examples/                       # Example projects
+└── projects/                       # User project workspace
 ```
 
 ---
@@ -226,7 +226,7 @@ No. Only use it when you need to optimize the visual effects of key pages.
 
 </details>
 
-> 📖 For more questions, see [Workflow Tutorial](./docs/workflow_tutorial.md#faq)
+> 📖 For more questions, see [SKILL.md](./skills/ppt-master/SKILL.md) and [AGENTS.md](./AGENTS.md)
 
 ---
 
