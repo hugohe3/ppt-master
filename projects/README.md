@@ -1,25 +1,25 @@
-# 用户项目工作区
+# User Project Workspace
 
-此目录用于存放进行中的项目。
+This directory is used for storing in-progress projects.
 
-## 创建新项目
+## Create a New Project
 
 ```bash
 python3 skills/ppt-master/scripts/project_manager.py init my_project --format ppt169
 ```
 
-## 目录结构
+## Directory Structure
 
-一个典型项目通常包含以下内容：
+A typical project usually contains the following:
 
 ```
 project_name_format_YYYYMMDD/
 ├── README.md
-├── 设计规范与内容大纲.md
+├── design_spec.md
 ├── sources/
-│   ├── 原始文件 / URL 归档 / 转换后的 Markdown
-│   └── *_files/                  # Markdown 配套资源目录（如图片）
-├── images/                       # 项目使用的图片资源
+│   ├── Raw files / URL archives / Converted Markdown
+│   └── *_files/                  # Markdown companion resource directory (e.g., images)
+├── images/                       # Image assets used by the project
 ├── notes/
 │   ├── 01_xxx.md
 │   ├── 02_xxx.md
@@ -30,19 +30,19 @@ project_name_format_YYYYMMDD/
 ├── svg_final/
 │   ├── 01_xxx.svg
 │   └── ...
-├── templates/                    # 项目级模板（如有）
+├── templates/                    # Project-level templates (if any)
 ├── *.pptx
-└── image_analysis.csv            # 可选，图片扫描分析结果
+└── image_analysis.csv            # Optional, image scan analysis results
 ```
 
-项目可以停留在不同阶段，不一定一次性具备全部产物。例如：
+Projects can remain at different stages and do not necessarily have all artifacts at once. For example:
 
-- 仅完成 `sources/` 归档和《设计规范与内容大纲》
-- 已生成 `svg_output/`，但尚未执行后处理
-- 已完成 `svg_final/`、`notes/` 和 `*.pptx`
+- Only `sources/` archiving and the Design Specification & Content Outline (design_spec) are complete
+- `svg_output/` has been generated, but post-processing has not yet been executed
+- `svg_final/`, `notes/`, and `*.pptx` are all complete
 
-## 注意事项
+## Notes
 
-- 此目录下的内容已被 `.gitignore` 排除
-- 完成的项目可以移动到 `examples/` 目录分享
-- 工作空间外文件默认复制；工作空间内文件会直接移动到项目 `sources/`
+- Contents under this directory are excluded by `.gitignore`
+- Completed projects can be moved to the `examples/` directory for sharing
+- Files outside the workspace are copied by default; files within the workspace are moved directly to the project's `sources/`

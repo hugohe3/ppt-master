@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 """
-SVG 图片宽高比修复工具
+SVG Image Aspect Ratio Fix Tool
 
-修复 SVG 中 <image> 元素的尺寸，使其与图片原始宽高比一致。
-这样在 PowerPoint 将 SVG 转换为形状时，图片不会被拉伸变形。
+Fixes the dimensions of <image> elements in SVG to match the original image aspect ratio.
+This prevents images from being stretched when PowerPoint converts SVG to editable shapes.
 
-原理：
-    PowerPoint 在将 SVG 转换为可编辑形状时，会忽略 preserveAspectRatio 属性，
-    直接将图片拉伸以填满 width/height 指定的区域。
-    
-    此工具会读取实际图片的宽高比，重新计算 <image> 元素的 x, y, width, height，
-    使图片居中显示且保持原始宽高比。
+Principle:
+    When PowerPoint converts SVG to editable shapes, it ignores the preserveAspectRatio attribute
+    and directly stretches the image to fill the area specified by width/height.
 
-用法:
+    This tool reads the actual image aspect ratio and recalculates the x, y, width, height of
+    <image> elements so that images are centered and maintain their original aspect ratio.
+
+Usage:
     python3 scripts/fix_image_aspect.py <svg_file> [svg_file2] ...
     python3 scripts/fix_image_aspect.py projects/xxx/svg_output/*.svg
-    
-    # 预览模式
+
+    # Preview mode
     python3 scripts/fix_image_aspect.py --dry-run projects/xxx/svg_output/*.svg
 
-示例:
-    python3 scripts/fix_image_aspect.py projects/应急避难场所专项规划/svg_output/slide_06_current_overview.svg
+Examples:
+    python3 scripts/fix_image_aspect.py projects/demo/svg_output/slide_06_current_overview.svg
 """
 
 import os
@@ -31,7 +31,7 @@ import argparse
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-# 尝试导入 PIL，用于获取图片尺寸
+# Try to import PIL for getting image dimensions
 try:
     from PIL import Image
     HAS_PIL = True
@@ -42,7 +42,7 @@ except ImportError:
 
 
 def get_image_dimensions_pil(image_path):
-    """使用 PIL 获取图片尺寸"""
+    """Get image dimensions using PIL."""
     try:
         with Image.open(image_path) as img:
             return img.width, img.height
@@ -52,10 +52,10 @@ def get_image_dimensions_pil(image_path):
 
 
 def get_image_dimensions_basic(image_path):
-    """基本方法获取图片尺寸（不依赖 PIL）"""
+    """Get image dimensions using basic method (no PIL dependency)."""
     try:
         with open(image_path, 'rb') as f:
-            data = f.read(64)  # 读取头部信息
+            data = f.read(64)  # Read header information
         
         # PNG
         if data[:8] == b'\x89PNG\r\n\x1a\n':
@@ -65,7 +65,7 @@ def get_image_dimensions_basic(image_path):
         
         # JPEG
         if data[:2] == b'\xff\xd8':
-            # 需要完整读取文件来解析 JPEG
+            # Need to read full file to parse JPEG
             with open(image_path, 'rb') as f:
                 f.seek(2)
                 while True:
@@ -98,10 +98,10 @@ def get_image_dimensions_basic(image_path):
 
 
 def get_image_dimensions_from_base64(data_uri):
-    """从 Base64 数据 URI 获取图片尺寸"""
+    """Get image dimensions from a Base64 data URI."""
     import io
     try:
-        # 解析 data URI
+        # Parse data URI
         match = re.match(r'data:image/(\w+);base64,(.+)', data_uri)
         if not match:
             return None, None
@@ -114,7 +114,7 @@ def get_image_dimensions_from_base64(data_uri):
             with Image.open(io.BytesIO(img_bytes)) as img:
                 return img.width, img.height
         else:
-            # 使用基本方法
+            # Use basic method
             if img_bytes[:8] == b'\x89PNG\r\n\x1a\n':
                 w = int.from_bytes(img_bytes[16:20], 'big')
                 h = int.from_bytes(img_bytes[20:24], 'big')
@@ -127,12 +127,12 @@ def get_image_dimensions_from_base64(data_uri):
 
 
 def get_image_dimensions(href, svg_dir):
-    """获取图片尺寸"""
-    # 处理 data URI
+    """Get image dimensions."""
+    # Handle data URI
     if href.startswith('data:'):
         return get_image_dimensions_from_base64(href)
     
-    # 处理外部文件
+    # Handle external files
     if not os.path.isabs(href):
         full_path = os.path.join(svg_dir, href)
     else:
@@ -150,14 +150,14 @@ def get_image_dimensions(href, svg_dir):
 
 def calculate_fitted_dimensions(img_width, img_height, box_width, box_height, mode='meet'):
     """
-    计算图片在框内的适合尺寸
-    
+    Calculate the fitted dimensions for an image within a bounding box.
+
     Args:
-        img_width, img_height: 图片原始尺寸
-        box_width, box_height: 容器框尺寸
-        mode: 'meet' 保持宽高比，完全显示图片（可能有留白）
-              'slice' 保持宽高比，完全填充容器（可能裁剪）
-    
+        img_width, img_height: Original image dimensions
+        box_width, box_height: Container box dimensions
+        mode: 'meet' preserves aspect ratio and fully displays image (may have whitespace)
+              'slice' preserves aspect ratio and fully fills container (may crop)
+
     Returns:
         (new_width, new_height, offset_x, offset_y)
     """
@@ -165,27 +165,27 @@ def calculate_fitted_dimensions(img_width, img_height, box_width, box_height, mo
     box_ratio = box_width / box_height
     
     if mode == 'meet':
-        # 完全显示图片，可能有留白
+        # Fully display image, may have whitespace
         if img_ratio > box_ratio:
-            # 图片更宽，以宽度为准
+            # Image is wider, fit by width
             new_width = box_width
             new_height = box_width / img_ratio
         else:
-            # 图片更高，以高度为准
+            # Image is taller, fit by height
             new_height = box_height
             new_width = box_height * img_ratio
     else:  # slice
-        # 完全填充容器，可能裁剪
+        # Fully fill container, may crop
         if img_ratio > box_ratio:
-            # 图片更宽，以高度为准
+            # Image is wider, fit by height
             new_height = box_height
             new_width = box_height * img_ratio
         else:
-            # 图片更高，以宽度为准
+            # Image is taller, fit by width
             new_width = box_width
             new_height = box_width / img_ratio
-    
-    # 居中偏移
+
+    # Center offset
     offset_x = (box_width - new_width) / 2
     offset_y = (box_height - new_height) / 2
     
@@ -194,22 +194,22 @@ def calculate_fitted_dimensions(img_width, img_height, box_width, box_height, mo
 
 def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
     """
-    修复 SVG 中图片的宽高比
-    
+    Fix image aspect ratios in an SVG file.
+
     Args:
-        svg_path: SVG 文件路径
-        dry_run: 是否只预览不修改
-        verbose: 是否输出详细信息
-    
+        svg_path: SVG file path
+        dry_run: Whether to only preview without modifying
+        verbose: Whether to output detailed information
+
     Returns:
-        修复的图片数量
+        Number of images fixed
     """
     svg_dir = os.path.dirname(os.path.abspath(svg_path))
     
     with open(svg_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # 注册 SVG 命名空间
+    # Register SVG namespaces
     namespaces = {
         '': 'http://www.w3.org/2000/svg',
         'xlink': 'http://www.w3.org/1999/xlink',
@@ -231,20 +231,20 @@ def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
         print(f"  [ERROR] Cannot parse SVG: {e}")
         return 0
     
-    # 查找所有 image 元素
+    # Find all image elements
     fixed_count = 0
     
-    # 检查带命名空间和不带命名空间的 image 元素
+    # Check image elements with and without namespace
     for ns_prefix in ['', '{http://www.w3.org/2000/svg}']:
         for image_elem in root.iter(f'{ns_prefix}image'):
-            # 获取 href 属性（支持 xlink:href 和 href）
+            # Get href attribute (supports xlink:href and href)
             href = image_elem.get('{http://www.w3.org/1999/xlink}href')
             if href is None:
                 href = image_elem.get('href')
             if href is None:
                 continue
             
-            # 获取当前尺寸和位置
+            # Get current dimensions and position
             try:
                 x = float(image_elem.get('x', 0))
                 y = float(image_elem.get('y', 0))
@@ -256,59 +256,59 @@ def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
             if width <= 0 or height <= 0:
                 continue
             
-            # 获取 preserveAspectRatio
+            # Get preserveAspectRatio
             par = image_elem.get('preserveAspectRatio', 'xMidYMid meet')
             
-            # 解析 preserveAspectRatio
-            # 格式: <align> [<meetOrSlice>]
-            # 例如: xMidYMid meet, xMidYMid slice, none
+            # Parse preserveAspectRatio
+            # Format: <align> [<meetOrSlice>]
+            # e.g.: xMidYMid meet, xMidYMid slice, none
             par_parts = par.split()
             align = par_parts[0] if par_parts else 'xMidYMid'
             meet_or_slice = par_parts[1] if len(par_parts) > 1 else 'meet'
             
             if align == 'none':
-                # 如果是 none，不需要修复
+                # If none, no fix needed
                 continue
             
-            # 获取图片原始尺寸
+            # Get original image dimensions
             img_width, img_height = get_image_dimensions(href, svg_dir)
             if img_width is None or img_height is None:
                 continue
             
-            # 计算适合的尺寸
+            # Calculate fitted dimensions
             mode = 'slice' if meet_or_slice == 'slice' else 'meet'
             new_width, new_height, offset_x, offset_y = calculate_fitted_dimensions(
                 img_width, img_height, width, height, mode
             )
             
-            # 检查是否需要修改
-            tolerance = 0.5  # 允许的误差
+            # Check if modification is needed
+            tolerance = 0.5  # Allowed tolerance
             if (abs(new_width - width) < tolerance and 
                 abs(new_height - height) < tolerance):
-                # 尺寸已经正确，无需修改
+                # Dimensions are already correct, no modification needed
                 continue
             
             if verbose:
                 img_name = os.path.basename(href.split('?')[0][:50] if not href.startswith('data:') else '[base64]')
                 print(f"  [FIX] {img_name}")
-                print(f"        原图尺寸: {img_width}x{img_height} (ratio: {img_width/img_height:.3f})")
-                print(f"        原框尺寸: {width}x{height} @ ({x}, {y})")
-                print(f"        新框尺寸: {new_width:.1f}x{new_height:.1f} @ ({x + offset_x:.1f}, {y + offset_y:.1f})")
+                print(f"        Original image: {img_width}x{img_height} (ratio: {img_width/img_height:.3f})")
+                print(f"        Original box: {width}x{height} @ ({x}, {y})")
+                print(f"        New box: {new_width:.1f}x{new_height:.1f} @ ({x + offset_x:.1f}, {y + offset_y:.1f})")
             
             if not dry_run:
-                # 更新属性
+                # Update attributes
                 image_elem.set('x', f'{x + offset_x:.1f}')
                 image_elem.set('y', f'{y + offset_y:.1f}')
                 image_elem.set('width', f'{new_width:.1f}')
                 image_elem.set('height', f'{new_height:.1f}')
-                # 移除 preserveAspectRatio，因为现在尺寸已经正确
+                # Remove preserveAspectRatio since dimensions are now correct
                 if 'preserveAspectRatio' in image_elem.attrib:
                     del image_elem.attrib['preserveAspectRatio']
             
             fixed_count += 1
     
     if not dry_run and fixed_count > 0:
-        # 保存修改
+        # Save modifications
         tree.write(svg_path, encoding='unicode', xml_declaration=True)
     
     return fixed_count
@@ -316,26 +316,26 @@ def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='修复 SVG 中图片的宽高比，防止 PowerPoint 转换时拉伸变形',
+        description='Fix image aspect ratios in SVG to prevent stretching when PowerPoint converts to shapes',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
-  %(prog)s slide_01.svg                    # 处理单个文件
-  %(prog)s *.svg                           # 处理当前目录所有 SVG
-  %(prog)s --dry-run *.svg                 # 预览将处理的文件
-  %(prog)s projects/xxx/svg_output/*.svg   # 处理项目目录
+Examples:
+  %(prog)s slide_01.svg                    # Process a single file
+  %(prog)s *.svg                           # Process all SVGs in current directory
+  %(prog)s --dry-run *.svg                 # Preview files to be processed
+  %(prog)s projects/xxx/svg_output/*.svg   # Process project directory
         '''
     )
-    parser.add_argument('files', nargs='+', help='要处理的 SVG 文件')
+    parser.add_argument('files', nargs='+', help='SVG files to process')
     parser.add_argument('--dry-run', '-n', action='store_true',
-                        help='只显示将要修复的图片，不实际修改文件')
+                        help='Only show which images would be fixed, without modifying files')
     parser.add_argument('--quiet', '-q', action='store_true',
-                        help='安静模式，减少输出')
+                        help='Quiet mode, reduce output')
     
     args = parser.parse_args()
     
     if args.dry_run:
-        print("[INFO] 预览模式：只显示将要修改的内容，不实际修改文件\n")
+        print("[INFO] Preview mode: only showing what would be modified, no files will be changed\n")
     
     total_fixed = 0
     total_files = 0
@@ -343,12 +343,12 @@ def main():
     for svg_file in args.files:
         if not os.path.exists(svg_file):
             if not args.quiet:
-                print(f"[ERROR] 文件不存在: {svg_file}")
+                print(f"[ERROR] File not found: {svg_file}")
             continue
         
         if not svg_file.endswith('.svg'):
             if not args.quiet:
-                print(f"[SKIP] 跳过非 SVG 文件: {svg_file}")
+                print(f"[SKIP] Skipping non-SVG file: {svg_file}")
             continue
         
         if not args.quiet:
@@ -360,13 +360,13 @@ def main():
             total_fixed += fixed
             total_files += 1
         elif not args.quiet:
-            print("       无需修复")
+            print("       No fix needed")
     
     print(f"\n{'=' * 50}")
     if args.dry_run:
-        print(f"[预览] 将修复 {total_fixed} 张图片 (共 {total_files} 个文件)")
+        print(f"[PREVIEW] Will fix {total_fixed} image(s) in {total_files} file(s)")
     else:
-        print(f"[完成] 已修复 {total_fixed} 张图片 (共 {total_files} 个文件)")
+        print(f"[DONE] Fixed {total_fixed} image(s) in {total_files} file(s)")
 
 
 if __name__ == '__main__':

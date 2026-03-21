@@ -1,115 +1,115 @@
 ---
-description: 根据已有项目文件或参考模板生成一份新的 PPT 布局模板
+description: Generate a new PPT layout template based on existing project files or reference templates
 ---
 
-# 创建新模板 Workflow
+# Create New Template Workflow
 
-> 📖 **调用角色**：[Template_Designer](../references/template-designer.md)
+> **Role invoked**: [Template_Designer](../references/template-designer.md)
 
-为**全局模板库**生成一套完整的 PPT 布局模板。
+Generate a complete set of PPT layout templates for the **global template library**.
 
-## 流程概览
+## Process Overview
 
 ```
-收集信息 → 创建目录 → 调用 Template_Designer → 验证完整性
+Gather Info -> Create Directory -> Invoke Template_Designer -> Validate Completeness
 ```
 
 ---
 
-## 步骤 1：收集模板信息
+## Step 1: Gather Template Information
 
-向用户确认以下信息：
+Confirm the following with the user:
 
-| 信息项 | 必填 | 说明 |
-|--------|------|------|
-| 新模板名称 | ✅ | 英文标识符，如 `my_company` |
-| 模板中文名称 | ✅ | 用于文档描述 |
-| 参考来源 | ⬜ | 现有项目或模板路径（可选） |
-| 主题色 | ⬜ | 主导色 HEX 值（如有参考可自动提取） |
-| 设计风格 | ⬜ | 简短描述适用场景和设计调性 |
+| Item | Required | Description |
+|------|----------|-------------|
+| New template name | Yes | English identifier, e.g., `my_company` |
+| Template display name | Yes | Human-readable name for documentation |
+| Reference source | Optional | Existing project or template path |
+| Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
+| Design style | Optional | Brief description of use cases and design tone |
 
-**如有参考来源**，先分析其结构：
+**If a reference source is provided**, analyze its structure first:
 
 ```bash
-ls -la "<参考来源路径>"
+ls -la "<reference_source_path>"
 ```
 
 ---
 
-## 步骤 2：创建模板目录
+## Step 2: Create Template Directory
 
 ```bash
-mkdir -p "skills/ppt-master/templates/layouts/<新模板名称>"
+mkdir -p "skills/ppt-master/templates/layouts/<new_template_name>"
 ```
 
-> ⚠️ **输出位置**：全局模板输出到 `skills/ppt-master/templates/layouts/`，项目模板输出到 `projects/<项目>/templates/`
+> **Output location**: Global templates go to `skills/ppt-master/templates/layouts/`; project templates go to `projects/<project>/templates/`
 
 ---
 
-## 步骤 3：调用 Template_Designer 角色
+## Step 3: Invoke Template_Designer Role
 
-**切换到 Template_Designer 角色**，按照角色定义生成：
+**Switch to the Template_Designer role** and generate per role definition:
 
-1. **design_spec.md** — 设计规范文档
-2. **4 个核心模板** — 封面、章节、内容、结束页
-3. **目录页（可选）** — `02_toc.svg`
+1. **design_spec.md** — Design specification document
+2. **4 core templates** — Cover, chapter, content, ending pages
+3. **TOC page (optional)** — `02_toc.svg`
 
-> 📖 **角色详情**：参见 [template-designer.md](../references/template-designer.md)
+> **Role details**: See [template-designer.md](../references/template-designer.md)
 
 ---
 
-## 步骤 4：验证模板完整性
+## Step 4: Validate Template Completeness
 
 ```bash
-ls -la "skills/ppt-master/templates/layouts/<新模板名称>"
+ls -la "skills/ppt-master/templates/layouts/<new_template_name>"
 ```
 
-**检查清单**：
+**Checklist**:
 
-- [ ] `design_spec.md` 包含完整设计规范
-- [ ] 4 个核心模板齐全
-- [ ] SVG viewBox 正确（`0 0 1280 720`）
-- [ ] 占位符格式一致（`{{PLACEHOLDER}}`）
+- [ ] `design_spec.md` contains complete design specification
+- [ ] All 4 core templates present
+- [ ] SVG viewBox correct (`0 0 1280 720`)
+- [ ] Placeholder format consistent (`{{PLACEHOLDER}}`)
 
 ---
 
-## 步骤 5：输出确认
+## Step 5: Output Confirmation
 
 ```markdown
-## ✅ 模板创建完成
+## Template Creation Complete
 
-**模板名称**: <新模板名称>（<中文名称>）
-**模板路径**: `skills/ppt-master/templates/layouts/<新模板名称>/`
+**Template Name**: <new_template_name> (<display_name>)
+**Template Path**: `skills/ppt-master/templates/layouts/<new_template_name>/`
 
-### 包含文件
+### Files Included
 
-| 文件 | 状态 |
-|------|------|
-| `design_spec.md` | ✅ 完成 |
-| `01_cover.svg` | ✅ 完成 |
-| `02_chapter.svg` | ✅ 完成 |
-| `03_content.svg` | ✅ 完成 |
-| `04_ending.svg` | ✅ 完成 |
-| `02_toc.svg` | ⬜ 可选 |
+| File | Status |
+|------|--------|
+| `design_spec.md` | Done |
+| `01_cover.svg` | Done |
+| `02_chapter.svg` | Done |
+| `03_content.svg` | Done |
+| `04_ending.svg` | Done |
+| `02_toc.svg` | Optional |
 ```
 
 ---
 
-## 配色方案快速参考
+## Color Scheme Quick Reference
 
-| 风格 | 主导色 | 适用场景 |
-|------|--------|----------|
-| 科技蓝 | `#004098` | 认证、测评 |
-| 麦肯锡 | `#005587` | 战略咨询 |
-| 政府蓝 | `#003366` | 政府项目 |
-| 商务灰 | `#2C3E50` | 通用商务 |
+| Style | Primary Color | Use Cases |
+|-------|---------------|-----------|
+| Tech Blue | `#004098` | Certification, evaluation |
+| McKinsey | `#005587` | Strategic consulting |
+| Government Blue | `#003366` | Government projects |
+| Business Gray | `#2C3E50` | General business |
 
 ---
 
-## 注意事项
+## Notes
 
-1. **SVG 技术约束**：参见 [template-designer.md](../references/template-designer.md) 技术约束章节
-2. **配色一致性**：所有 SVG 文件使用相同配色
-3. **占位符规范**：使用 `{{}}` 格式
+1. **SVG technical constraints**: See the technical constraints section in [template-designer.md](../references/template-designer.md)
+2. **Color consistency**: All SVG files must use the same color scheme
+3. **Placeholder convention**: Use `{{}}` format
 
-> 📖 **详细规范**：参见 [template-designer.md](../references/template-designer.md)
+> **Detailed specification**: See [template-designer.md](../references/template-designer.md)

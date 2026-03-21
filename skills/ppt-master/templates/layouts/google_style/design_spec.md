@@ -1,299 +1,299 @@
-# Google 风格模板 (Google Style) - 设计规范
+# Google Style Template - Design Specification
 
-> 适用于科技公司年度报告、工作汇报、技术分享、数据展示等场景。
+> Suitable for tech company annual reports, work summaries, technical sharing, data presentations, and similar scenarios.
 
 ---
 
-## 一、模板概述
+## I. Template Overview
 
-| 属性           | 描述                                                       |
+| Property       | Description                                                |
 | -------------- | ---------------------------------------------------------- |
-| **模板名称**   | google_style（谷歌风格模板）                               |
-| **适用场景**   | 年度工作汇报、技术分享、项目成果展示、数据驱动型演示       |
-| **设计调性**   | 专业、现代、简洁克制、数据驱动、充足留白                   |
-| **主题模式**   | 亮色主题（白色/浅灰背景 + Google 品牌色强调）              |
+| **Template Name** | google_style (Google Style Template)                    |
+| **Use Cases**  | Annual work reports, technical sharing, project showcases, data-driven presentations |
+| **Design Tone** | Professional, modern, clean and restrained, data-driven, generous whitespace |
+| **Theme Mode** | Light theme (white/light gray background + Google brand color accents) |
 
 ---
 
-## 二、画布规范
+## II. Canvas Specification
 
-| 属性           | 值                            |
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 60px，上 50px，下 50px   |
-| **内容安全区** | x: 60-1220, y: 50-670         |
+| **Page Margins** | Left/Right 60px, Top 50px, Bottom 50px |
+| **Safe Area**  | x: 60-1220, y: 50-670        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### Google 品牌四色
+### Google Brand Colors
 
-| 角色             | 色值        | 备注                                 |
+| Role             | Value       | Notes                                |
 | ---------------- | ----------- | ------------------------------------ |
-| **Google Blue**  | `#4285F4`   | 主要标题、关键数据、主按钮           |
-| **Google Red**   | `#EA4335`   | 重要强调、警示信息                   |
-| **Google Yellow**| `#FBBC04`   | 辅助图标、次要强调                   |
-| **Google Green** | `#34A853`   | 成功指标、正向数据                   |
+| **Google Blue**  | `#4285F4`   | Primary titles, key data, main buttons |
+| **Google Red**   | `#EA4335`   | Important emphasis, warning info     |
+| **Google Yellow**| `#FBBC04`   | Auxiliary icons, secondary emphasis   |
+| **Google Green** | `#34A853`   | Success indicators, positive data    |
 
-### 专业配色
+### Professional Colors
 
-| 角色           | 色值        | 用途                                 |
+| Role           | Value       | Usage                                |
 | -------------- | ----------- | ------------------------------------ |
-| **深蓝色**     | `#1A237E`   | 标题、核心文本、深色强调             |
-| **深蓝渐变起** | `#1A73E8`   | 渐变标题起点                         |
-| **深蓝渐变止** | `#0D47A1`   | 渐变标题终点                         |
-| **主背景白**   | `#FFFFFF`   | 页面主背景                           |
-| **浅灰背景**   | `#F8F9FA`   | 卡片内背景、辅助区域                 |
-| **边框浅灰**   | `#E8EAED`   | 分割线、边框、网格线                 |
+| **Deep Blue**  | `#1A237E`   | Titles, core text, dark emphasis     |
+| **Deep Blue Gradient Start** | `#1A73E8` | Gradient title start point  |
+| **Deep Blue Gradient End** | `#0D47A1` | Gradient title end point      |
+| **Main Background White** | `#FFFFFF` | Page main background           |
+| **Light Gray Background** | `#F8F9FA` | Card inner background, auxiliary areas |
+| **Light Gray Border** | `#E8EAED` | Dividers, borders, grid lines     |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                                 |
+| Role           | Value       | Usage                                |
 | -------------- | ----------- | ------------------------------------ |
-| **主文字**     | `#1A237E`   | 标题、重点文字                       |
-| **正文文字**   | `#5F6368`   | 正文、说明文字                       |
-| **辅助文字**   | `#9AA0A6`   | 注释、页码、提示                     |
-| **白色文字**   | `#FFFFFF`   | 深色背景上的文字                     |
+| **Primary Text** | `#1A237E` | Titles, important text               |
+| **Body Text**  | `#5F6368`   | Body content, descriptions           |
+| **Secondary Text** | `#9AA0A6` | Annotations, page numbers, tips    |
+| **White Text** | `#FFFFFF`   | Text on dark backgrounds             |
 
-### 图表配色（按顺序使用）
+### Chart Colors (use in order)
 
-| 序号 | 色值        | 备注           |
-| ---- | ----------- | -------------- |
-| 1    | `#4285F4`   | Google Blue    |
-| 2    | `#34A853`   | Google Green   |
-| 3    | `#FBBC04`   | Google Yellow  |
-| 4    | `#EA4335`   | Google Red     |
+| Order | Value       | Notes          |
+| ----- | ----------- | -------------- |
+| 1     | `#4285F4`   | Google Blue    |
+| 2     | `#34A853`   | Google Green   |
+| 3     | `#FBBC04`   | Google Yellow  |
+| 4     | `#EA4335`   | Google Red     |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
+**Font Stack**: `system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
 
-> 使用系统 UI 字体栈确保跨平台一致性和最佳渲染效果。
+> Uses system UI font stack to ensure cross-platform consistency and optimal rendering.
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级   | 用途                 | 字号   | 字重        |
+| Level  | Usage                | Size   | Weight      |
 | ------ | -------------------- | ------ | ----------- |
-| H1     | 封面主标题           | 52px   | 700 (Bold)  |
-| H2     | 页面大标题           | 46px   | 700 (Bold)  |
-| H3     | 模块标题/章节标题    | 28px   | 600         |
-| H4     | 卡片标题/小标题      | 24px   | 600         |
-| P      | 正文内容             | 20px   | 400         |
-| Data   | 大号数据数字         | 56px   | 700 (Bold)  |
-| Label  | 数据标签/说明        | 16px   | 500         |
-| Sub    | 辅助说明/页码        | 14px   | 400         |
+| H1     | Cover main title     | 52px   | 700 (Bold)  |
+| H2     | Page main title      | 46px   | 700 (Bold)  |
+| H3     | Module/section title | 28px   | 600         |
+| H4     | Card title/subtitle  | 24px   | 600         |
+| P      | Body content         | 20px   | 400         |
+| Data   | Large data numbers   | 56px   | 700 (Bold)  |
+| Label  | Data labels/descriptions | 16px | 500        |
+| Sub    | Auxiliary text/page number | 14px | 400       |
 
 ---
 
-## 五、页面结构
+## V. Page Structure
 
-### 通用布局
+### General Layout
 
-| 区域           | 位置/高度       | 内容说明                               |
-| -------------- | --------------- | -------------------------------------- |
-| **顶部装饰条** | y=0, h=6px      | 四色渐变横条，贯穿整页                 |
-| **标题区域**   | y=50, h=60px    | 页面标题 + 标题下划线                  |
-| **内容区**     | y=130, h=500px  | 主要内容区域                           |
-| **页脚**       | y=660, h=60px   | 四色圆点装饰 + 可选页码                |
+| Area               | Position/Height | Description                            |
+| ------------------ | --------------- | -------------------------------------- |
+| **Top Decorative Bar** | y=0, h=6px  | Four-color gradient bar, spanning full width |
+| **Title Area**     | y=50, h=60px    | Page title + title underline           |
+| **Content Area**   | y=130, h=500px  | Main content area                      |
+| **Footer**         | y=660, h=60px   | Four-color dot decoration + optional page number |
 
-### 特色设计元素
+### Signature Design Elements
 
-#### 1. 四色渐变顶部条
+#### 1. Four-Color Gradient Top Bar
 ```
 linearGradient: #4285F4 → #EA4335 → #FBBC04 → #34A853
 height: 6px, width: 100%
 ```
 
-#### 2. 标题下划线（四色分段）
+#### 2. Title Underline (Four-Color Segments)
 ```
 Blue: 150px → Red: 70px → Yellow: 70px → Green: 170px
-stroke-width: 4px, y: 标题下方20px
+stroke-width: 4px, y: 20px below title
 ```
 
-#### 3. KPI 数据卡片
+#### 3. KPI Data Card
 ```
-尺寸: 280×140px
-圆角: 16px
-边框: 3px, 使用对应品牌色
-阴影: 微阴影增加层次感
-```
-
-#### 4. 四色圆点装饰
-```
-用于页脚或分隔
-radius: 6-14px (变化)
-间距: 30-50px
+Size: 280×140px
+Border radius: 16px
+Border: 3px, using corresponding brand color
+Shadow: Subtle shadow for depth
 ```
 
-#### 5. 左侧四色竖条
+#### 4. Four-Color Dot Decoration
 ```
-封面页专用
-width: 10px, 分4段, 各180px高
-颜色顺序: Blue → Red → Yellow → Green
+Used in footer or as dividers
+radius: 6-14px (varies)
+spacing: 30-50px
+```
+
+#### 5. Left Four-Color Vertical Bar
+```
+Cover page exclusive
+width: 10px, 4 segments, 180px each
+Color order: Blue → Red → Yellow → Green
 ```
 
 ---
 
-## 六、页面类型
+## VI. Page Types
 
-### 1. 封面页 (01_cover.svg)
+### 1. Cover Page (01_cover.svg)
 
-- 浅色渐变背景（白色到淡蓝/淡绿）
-- 左侧四色竖条装饰
-- 中央圆角白色内容卡片（带微阴影）
-- 渐变主标题 + 副标题
-- 四色分段分隔线
-- 演讲者信息（姓名、职位、日期）
-- 底部四色圆点装饰
+- Light gradient background (white to light blue/light green)
+- Left four-color vertical bar decoration
+- Centered rounded white content card (with subtle shadow)
+- Gradient main title + subtitle
+- Four-color segmented divider line
+- Speaker info (name, title, date)
+- Bottom four-color dot decoration
 
-### 2. 目录页 (02_toc.svg)
+### 2. Table of Contents Page (02_toc.svg)
 
-- 白色背景 + 顶部四色渐变条
-- 页面标题 + 蓝色下划线
-- 章节列表（左侧品牌色圆点 + 编号 + 标题）
-- 可选：右侧装饰图形或数据统计
+- White background + top four-color gradient bar
+- Page title + blue underline
+- Chapter list (left brand-color dots + numbers + titles)
+- Optional: right-side decorative graphics or data stats
 
-### 3. 章节页 (02_chapter.svg)
+### 3. Chapter Page (02_chapter.svg)
 
-- 深色渐变背景（深蓝到更深蓝）
-- 大号章节编号（渐变色或白色）
-- 章节标题（白色，大字号）
-- 英文副标题（白色半透明）
-- 四色装饰元素
+- Dark gradient background (deep blue to darker blue)
+- Large chapter number (gradient or white)
+- Chapter title (white, large font)
+- English subtitle (white, semi-transparent)
+- Four-color decorative elements
 
-### 4. 内容页 (03_content.svg)
+### 4. Content Page (03_content.svg)
 
-- 白色背景
-- 顶部四色渐变条
-- 页面标题 + 蓝色下划线
-- 灵活内容区域（支持多种布局）
-- 底部四色圆点装饰
+- White background
+- Top four-color gradient bar
+- Page title + blue underline
+- Flexible content area (supports multiple layouts)
+- Bottom four-color dot decoration
 
-### 5. 结束页 (04_ending.svg)
+### 5. Ending Page (04_ending.svg)
 
-- 浅色渐变背景
-- 中央圆角白色内容卡片
-- 渐变 "Thank You!" 标题
-- 四色分隔线
-- 感谢列表（品牌色圆点 + 人员/事项）
-- 结语 + 底部四色圆点
+- Light gradient background
+- Centered rounded white content card
+- Gradient "Thank You!" title
+- Four-color divider line
+- Acknowledgment list (brand-color dots + names/items)
+- Closing remarks + bottom four-color dots
 
 ---
 
-## 七、布局模式
+## VII. Layout Patterns
 
-| 模式                   | 适用场景                           |
+| Pattern                | Use Cases                          |
 | ---------------------- | ---------------------------------- |
-| **居中卡片式**         | 封面页、结束页、重要观点           |
-| **左文右图**           | 文字描述 + 图表/KPI区              |
-| **KPI 网格 (2×2/2×3)** | 数据概览、关键指标展示             |
-| **三栏卡片**           | 项目列表、功能介绍                 |
-| **四象限**             | 分类展示、SWOT分析                 |
-| **上下分区**           | 两个相关主题并列展示               |
-| **时间轴**             | 发展历程、规划展示                 |
-| **Dashboard 风格**     | 多指标数据看板                     |
+| **Centered Card**      | Cover, ending, key points          |
+| **Left Text Right Image** | Text description + chart/KPI area |
+| **KPI Grid (2×2/2×3)** | Data overview, key metrics display |
+| **Three-Column Cards** | Project lists, feature introductions |
+| **Four Quadrants**     | Category display, SWOT analysis    |
+| **Top-Bottom Split**   | Two related topics side by side    |
+| **Timeline**           | Development history, roadmap       |
+| **Dashboard Style**    | Multi-metric data dashboard        |
 
 ---
 
-## 八、间距规范
+## VIII. Spacing Guidelines
 
-| 元素               | 数值     |
-| ------------------ | -------- |
-| 页面边距           | 60px     |
-| 标题与内容间距     | 30-40px  |
-| 模块间距           | 60-80px  |
-| 卡片间距           | 20-24px  |
-| 卡片内边距         | 20px     |
-| 卡片圆角           | 16px     |
-| 图标与文字间距     | 15px     |
+| Element              | Value    |
+| -------------------- | -------- |
+| Page margins         | 60px     |
+| Title-to-content gap | 30-40px  |
+| Module gap           | 60-80px  |
+| Card gap             | 20-24px  |
+| Card padding         | 20px     |
+| Card border radius   | 16px     |
+| Icon-to-text gap     | 15px     |
 
 ---
 
-## 九、SVG 技术约束
+## IX. SVG Technical Constraints
 
-### 必须遵守
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`
-5. 渐变使用 `<linearGradient>` 定义在 `<defs>` 中
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency
+5. Define gradients using `<linearGradient>` within `<defs>`
 
-### 禁用元素
+### Prohibited Elements
 
-禁止使用以下 SVG 特性（PPT 不兼容）：
+The following SVG features are prohibited (not PPT-compatible):
 
-- `clipPath`、`mask`
-- `<style>` 标签、`class` 属性
+- `clipPath`, `mask`
+- `<style>` tag, `class` attribute
 - `foreignObject`
 - `textPath`
-- `animate*` 动画元素
+- `animate*` animation elements
 - `script`
-- `marker`、`marker-end`
-- `rgba()` 颜色格式（使用 HEX + opacity 替代）
+- `marker`, `marker-end`
+- `rgba()` color format (use HEX + opacity instead)
 
-### 阴影实现
+### Shadow Implementation
 
-由于 `filter` 可能影响 PPT 兼容性，建议：
-- 使用微妙的边框颜色变化模拟阴影
-- 或接受 `filter` 在某些旧版 PPT 中可能会被忽略，但在新版中支持良好
-
----
-
-## 十、占位符规范
-
-模板使用 `{{PLACEHOLDER}}` 格式的占位符：
-
-| 占位符               | 说明                     |
-| -------------------- | ------------------------ |
-| `{{TITLE}}`          | 主标题                   |
-| `{{SUBTITLE}}`       | 副标题/部门信息          |
-| `{{SPEAKER_NAME}}`   | 演讲者姓名               |
-| `{{SPEAKER_TITLE}}`  | 演讲者职位               |
-| `{{DATE}}`           | 日期                     |
-| `{{PAGE_TITLE}}`     | 页面标题                 |
-| `{{CHAPTER_NUM}}`    | 章节编号                 |
-| `{{CHAPTER_TITLE}}`  | 章节标题                 |
-| `{{CHAPTER_TITLE_EN}}`| 章节英文副标题          |
-| `{{PAGE_NUM}}`       | 页码                     |
-| `{{CONTENT_AREA}}`   | 内容区域占位             |
+Since `filter` may affect PPT compatibility:
+- Use subtle border color variations to simulate shadows
+- Or accept that `filter` may be ignored in older PPT versions, though it works well in newer versions
 
 ---
 
-## 十一、示例配色应用
+## X. Placeholder Specification
 
-### KPI 卡片配色规则
+Templates use `{{PLACEHOLDER}}` format placeholders:
 
-| 卡片顺序 | 边框色     | 数字色     | 适用内容       |
-| -------- | ---------- | ---------- | -------------- |
-| 第1个    | `#4285F4`  | `#4285F4`  | 核心项目/主指标|
-| 第2个    | `#34A853`  | `#34A853`  | 成本/效率指标  |
-| 第3个    | `#EA4335`  | `#EA4335`  | 可靠性/风险    |
-| 第4个    | `#FBBC04`  | `#FBBC04`  | 性能/增长      |
-
-### 列表项配色
-
-- 使用品牌四色循环作为列表圆点颜色
-- 保持文字为统一的深蓝色 `#1A237E`
-
----
-
-## 十二、使用说明
-
-1. 复制模板到项目目录 `templates/`
-2. 根据内容需求选择合适的页面类型
-3. 使用占位符标记需要替换的内容
-4. 配色严格遵循 Google 品牌四色规范
-5. 保持充足留白，突出核心信息
-6. 数据驱动：用大号数字 + 小号标签展示 KPI
+| Placeholder            | Description              |
+| ---------------------- | ------------------------ |
+| `{{TITLE}}`            | Main title               |
+| `{{SUBTITLE}}`         | Subtitle/department info |
+| `{{SPEAKER_NAME}}`     | Speaker name             |
+| `{{SPEAKER_TITLE}}`    | Speaker title/position   |
+| `{{DATE}}`             | Date                     |
+| `{{PAGE_TITLE}}`       | Page title               |
+| `{{CHAPTER_NUM}}`      | Chapter number           |
+| `{{CHAPTER_TITLE}}`    | Chapter title            |
+| `{{CHAPTER_TITLE_EN}}` | Chapter English subtitle |
+| `{{PAGE_NUM}}`         | Page number              |
+| `{{CONTENT_AREA}}`     | Content area placeholder |
 
 ---
 
-_本规范基于 Google Material Design 理念，适配 PPT Master 项目要求_
+## XI. Color Application Examples
+
+### KPI Card Color Rules
+
+| Card Order | Border Color | Number Color | Applicable Content |
+| ---------- | ------------ | ------------ | ------------------ |
+| 1st        | `#4285F4`    | `#4285F4`    | Core projects/main metrics |
+| 2nd        | `#34A853`    | `#34A853`    | Cost/efficiency metrics |
+| 3rd        | `#EA4335`    | `#EA4335`    | Reliability/risk   |
+| 4th        | `#FBBC04`    | `#FBBC04`    | Performance/growth |
+
+### List Item Colors
+
+- Use the four brand colors in rotation for list bullet colors
+- Keep text in a consistent deep blue `#1A237E`
+
+---
+
+## XII. Usage Instructions
+
+1. Copy the template to the project directory `templates/`
+2. Select the appropriate page type based on content needs
+3. Use placeholders to mark content that needs replacement
+4. Strictly follow the Google brand four-color scheme
+5. Maintain generous whitespace to highlight key information
+6. Data-driven: use large numbers + small labels to display KPIs
+
+---
+
+_This specification is based on Google Material Design principles, adapted for PPT Master project requirements_

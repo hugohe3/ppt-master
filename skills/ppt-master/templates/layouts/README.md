@@ -1,256 +1,256 @@
-# 页面布局模板库（22 套）
+# Page Layout Template Library (22 Templates)
 
-预置的 PPT 页面布局模板，支持多种风格和使用场景。
+Pre-built PPT page layout templates supporting multiple styles and use cases.
 
-- **完整索引**：[README.md](./README.md)（人工浏览）
-- **JSON 索引**：[layouts_index.json](./layouts_index.json)（AI / 程序优先读取）
+- **Full Index**: [README.md](./README.md) (human browsing)
+- **JSON Index**: [layouts_index.json](./layouts_index.json) (AI / programmatic lookup — preferred)
 
-> 🤖 **AI / 程序选型建议**：优先读取 `layouts_index.json`；人工浏览和快速比对时使用本 README。
-
----
-
-## 模板快速索引
-
-| 模板名称 | 类别 | 适用场景 | 主色调 | 设计调性 |
-|----------|------|----------|--------|----------|
-| `google_style` | 品牌风格 | 年度汇报、技术分享、数据展示 | Google 四色 `#4285F4` `#EA4335` `#FBBC04` `#34A853` | 现代简洁、数据驱动、充足留白 |
-| `mckinsey` | 品牌风格 | 战略咨询、高管汇报、投资分析 | McKinsey Blue `#005587` | 结构化思维、极简高端、MECE原则 |
-| `anthropic` | 品牌风格 | AI技术分享、开发者大会、产品发布 | Anthropic 橙 `#D97757` | 科技感、结论先行、深色封面 |
-| `中汽研_常规` | 品牌风格 | 产品认证、测评认证 | 深蓝 `#004098` | [常规] 专业权威、咨询风格 |
-| `中汽研_商务` | 品牌风格 | 商务拜访、技术交流 | 深蓝渐变 `#003366` | [商务] 现代科技、沉稳大气 |
-| `中汽研_现代` | 品牌风格 | 战略发布、未来科技 | 深邃蓝 `#001529` | [未来] Future Tech、霓虹流光 |
-| `中国电建_常规` | 品牌风格 | 电力能源、工程建设、央企汇报 | 电建蓝 `#00418D` | 大国工匠、常规稳健 |
-| `中国电建_现代` | 品牌风格 | 国际工程、高端路演、科技创新 | 深海蓝 `#001F45` | [现代] 宏大叙事、数字科技 |
-| `招商银行` | 品牌风格 | 高端汇报、VIP服务、年度报告 | 招行红 `#C41230` | 极简轻奢、金融质感、去框化 |
-| `consultant` | 通用风格 | 咨询报告、商业演示 | 深蓝 + 金色 | 专业严谨、左侧装饰条 |
-| `consultant_top` | 通用风格 | MBB级咨询报告、董事会汇报 | 渐变顶条 + 金色点缀 | 核心观点区、机密标识 |
-| `general` | 通用风格 | 通用商业演示 | 深蓝渐变 + 靛蓝紫 | 现代简洁、灵活适用 |
-| `academic_defense` | 场景专用 | 毕业答辩、学术汇报、课题申请 | 深蓝 + 红色装饰 | 清晰层次、学术规范 |
-| `psychology_attachment` | 场景专用 | 心理治疗培训、咨询讲座 | 蓝绿渐变 + 多彩语义色 | 温暖专业、疗愈感 |
-| `medical_university` | 场景专用 | 医学报告、病例讨论、科研汇报 | 医学蓝 `#0066B3` | 专业严谨、生命感 |
-| `government_red` | 政企风格 | 政府工作报告、党建汇报 | 政府红 `#8B0000` | 庄重权威、大气磅礴 |
-| `government_blue` | 政企风格 | 智慧城市、政务公开、数字化转型 | 科技蓝 `#0050B3` | 现代科技、严谨理性 |
-| `ai_ops` | 政企风格 | 运营商AI运维、IT系统总体视图、数智化方案 | 运营商红 `#C00000` + 蓝 `#2E75B6` | 信息密集、模块分区、运营商风格 |
-| `pixel_retro` | 特殊风格 | Git/技术介绍、复古游戏主题 | 霓虹色系 `#00FF41` `#FF0080` | 像素风、赛博朋克 |
-| `科技蓝商务` | 通用风格 | 企业汇报、产品发布、方案提案 | 科技蓝 `#0078D7` | 科技、商务、专业、简洁 |
-| `smart_red` | 通用风格 | 科技企业介绍、教育行业解决方案 | 智慧红橙 `#DE3545` | 现代、活力、几何感 |
-| `重庆大学` | 场景专用 | 学术答辩、科研汇报 | 重大蓝 `#006BB7` | 学术稳重、山城气韵 |
----
-
-## 模板分类
-
-### 1️⃣ 品牌风格模板
-
-模仿 **特定知名品牌/机构** 的专属设计风格。
-> **特点**：具有排他性的品牌识别度（特定Logo、配色、VI规范），适用于该机构内部或对外展示。如：Google、麦肯锡、中国电建。
-
-| 模板 | 说明 |
-|------|------|
-| `google_style` | Google Material Design 风格，四色品牌识别 |
-| `mckinsey` | 麦肯锡咨询风格，数据驱动、结构化 |
-| `anthropic` | Anthropic AI 风格，深色科技感 |
-| `中汽研_常规` | 中汽研常规风格 (v1 标准版)，适合认证、测评场景 |
-| `中汽研_商务` | 中汽研商务风格 (v2 商务版)，现代科技商务，沉稳大气 |
-| `中汽研_现代` | 中汽研现代风格 (v3 未来版)，Future Tech 风格，深邃蓝+霓虹青 |
-| `中国电建_常规` | 中国电建常规风格 (v1 标准版)，适用于电力、能源、工程类央企 |
-| `中国电建_现代` | 中国电建现代风格 (v2 现代版)，强调宏大叙事与数字科技 |
-| `招商银行` | 招商银行 v2.0 风格，极简轻奢，去框化开放布局 |
-
-### 2️⃣ 通用风格模板
-
-通用商务风格，不模仿特定品牌，适用范围广。
-
-| 模板 | 说明 |
-|------|------|
-| `consultant` | 咨询报告风格，专业严谨 |
-| `consultant_top` | 顶级咨询风格（MBB级），核心观点区 |
-| `general` | 通用灵活风格，适合多数商业演示 |
-| `科技蓝商务` | 科技商务风格，严谨专业，六边形纹理装饰 |
-| `smart_red` | 智慧红橙商务风格，现代活力，几何切角设计 |
-
-### 3️⃣ 场景专用模板
-
-针对 **特定使用场景** 设计，内容结构更匹配场景需求。
-
-| 模板 | 说明 |
-|------|------|
-| `academic_defense` | 学术答辩，清晰的研究内容层次 |
-| `psychology_attachment` | 心理疗愈主题，温暖专业的配色 |
-| `medical_university` | 医院/医科大学模板，适合医学报告 |
-| `重庆大学` | 重庆大学专用模板，融合山城层叠意象与现代学术气质 |
-
-### 4️⃣ 政企风格模板
-
-针对 **政府部门和通用国企** 需求的行业通用设计。
-> **区别**：与品牌风格不同，此处不针对特定单位，而是提供符合"党政机关/国企"审美共性的通用模板（如红头文件风、智慧政务风）。
-
-| 模板 | 说明 |
-|------|------|
-| `government_red` | 红色政务风格，适用于政府工作报告、党建活动 |
-| `government_blue` | 蓝色政务风格，适用于智慧城市、数字化汇报 |
-| `ai_ops` | 企业数智化风格，运营商AI运维架构、高信息密度汇报（含 `reference_style.svg` 风格参考） |
-
-### 5️⃣ 特殊风格模板
-
-非常规视觉风格，适用于特定创意场景。
-
-| 模板 | 说明 |
-|------|------|
-| `pixel_retro` | 像素复古风格，赛博朋克/游戏主题 |
-
-> **设计理念**：风格与场景是 **正交** 的概念。场景模板定义内容结构，风格定义视觉表现。理论上，场景模板可以搭配不同的风格使用。
+> **AI / Programmatic recommendation**: Prefer reading `layouts_index.json`; use this README for human browsing and quick comparison.
 
 ---
 
-## 模板文件结构
+## Quick Template Index
 
-模板建议包含以下标准文件（目录页可选）：
+| Template Name | Category | Use Cases | Primary Color | Design Tone |
+|---------------|----------|-----------|---------------|-------------|
+| `google_style` | Brand | Annual reports, tech sharing, data presentation | Google Four Colors `#4285F4` `#EA4335` `#FBBC04` `#34A853` | Modern clean, data-driven, ample whitespace |
+| `mckinsey` | Brand | Strategic consulting, executive reports, investment analysis | McKinsey Blue `#005587` | Structured thinking, minimalist premium, MECE principle |
+| `anthropic` | Brand | AI tech sharing, developer conferences, product launches | Anthropic Orange `#D97757` | Tech-forward, conclusion-first, dark cover |
+| `中汽研_常规` | Brand | Product certification, evaluation & testing | Deep Blue `#004098` | [Standard] Professional authority, consulting style |
+| `中汽研_商务` | Brand | Business visits, technical exchanges | Blue Gradient `#003366` | [Business] Modern tech, composed and sophisticated |
+| `中汽研_现代` | Brand | Strategic launches, future tech | Deep Blue `#001529` | [Future] Future Tech, neon glow |
+| `中国电建_常规` | Brand | Power & energy, engineering, state-owned enterprise reports | PowerChina Blue `#00418D` | Craftsmanship, steady and reliable |
+| `中国电建_现代` | Brand | International engineering, premium roadshows, tech innovation | Deep Sea Blue `#001F45` | [Modern] Grand narrative, digital tech |
+| `招商银行` | Brand | Premium reports, VIP services, annual reports | CMB Red `#C41230` | Minimalist luxury, financial texture, borderless |
+| `consultant` | General | Consulting reports, business presentations | Deep Blue + Gold | Professional and rigorous, left sidebar accent |
+| `consultant_top` | General | MBB-level consulting reports, board presentations | Gradient top bar + Gold accents | Key insight area, confidentiality markings |
+| `general` | General | General business presentations | Deep Blue gradient + Indigo Purple | Modern clean, versatile |
+| `academic_defense` | Scenario | Thesis defense, academic reports, grant proposals | Deep Blue + Red accents | Clear hierarchy, academic standards |
+| `psychology_attachment` | Scenario | Psychotherapy training, counseling lectures | Blue-green gradient + Colorful semantic colors | Warm professional, therapeutic feel |
+| `medical_university` | Scenario | Medical reports, case discussions, research presentations | Medical Blue `#0066B3` | Professional rigorous, life-affirming |
+| `government_red` | Government/Enterprise | Government work reports, party-building presentations | Government Red `#8B0000` | Solemn authority, grand and imposing |
+| `government_blue` | Government/Enterprise | Smart cities, open governance, digital transformation | Tech Blue `#0050B3` | Modern tech, rigorous and rational |
+| `ai_ops` | Government/Enterprise | Telecom AI ops, IT system overview, digital intelligence solutions | Telecom Red `#C00000` + Blue `#2E75B6` | High information density, modular layout, telecom style |
+| `pixel_retro` | Special | Git/tech introductions, retro gaming themes | Neon colors `#00FF41` `#FF0080` | Pixel art, cyberpunk |
+| `科技蓝商务` | General | Corporate reports, product launches, proposals | Tech Blue `#0078D7` | Tech, business, professional, clean |
+| `smart_red` | General | Tech company profiles, education solutions | Smart Red-Orange `#DE3545` | Modern, vibrant, geometric |
+| `重庆大学` | Scenario | Academic defense, research presentations | CQU Blue `#006BB7` | Academic solidity, mountain-city character |
+---
 
-| 文件名 | 必须 | 用途 | 说明 |
-|--------|------|------|------|
-| `design_spec.md` | ✅ | 设计规范 | 完整的配色、排版、布局规范 |
-| `01_cover.svg` | ✅ | 封面页 | 标题、副标题、日期、机构 |
-| `02_toc.svg` | ⬜ 可选 | 目录页 | 章节列表、导航 |
-| `02_chapter.svg` | ✅ | 章节页 | 章节编号、章节标题 |
-| `03_content.svg` | ✅ | 内容页 | 页眉页脚固定，内容区灵活 |
-| `04_ending.svg` | ✅ | 结束页 | 感谢语、联系方式 |
+## Template Categories
 
-> **设计理念**：模板定义视觉一致性和结构性页面，内容页保持最大灵活性，让 AI 根据实际内容决定布局。
+### 1. Brand Style Templates
+
+Templates mimicking **specific well-known brands/institutions** with their exclusive design style.
+> **Characteristics**: Distinctive brand identity (specific logos, color schemes, VI standards), suitable for internal or external presentations of that organization. Examples: Google, McKinsey, PowerChina.
+
+| Template | Description |
+|----------|-------------|
+| `google_style` | Google Material Design style, four-color brand identity |
+| `mckinsey` | McKinsey consulting style, data-driven and structured |
+| `anthropic` | Anthropic AI style, dark tech-forward aesthetic |
+| `中汽研_常规` | CATARC standard style (v1), suitable for certification and evaluation |
+| `中汽研_商务` | CATARC business style (v2), modern tech business, composed and sophisticated |
+| `中汽研_现代` | CATARC modern style (v3 Future), Future Tech style, deep blue + neon cyan |
+| `中国电建_常规` | PowerChina standard style (v1), suitable for power, energy, and engineering SOEs |
+| `中国电建_现代` | PowerChina modern style (v2), emphasis on grand narrative and digital tech |
+| `招商银行` | China Merchants Bank v2.0, minimalist luxury, borderless open layout |
+
+### 2. General Style Templates
+
+Universal business styles not tied to any specific brand, broadly applicable.
+
+| Template | Description |
+|----------|-------------|
+| `consultant` | Consulting report style, professional and rigorous |
+| `consultant_top` | Top-tier consulting style (MBB-level), key insight area |
+| `general` | Versatile flexible style, suitable for most business presentations |
+| `科技蓝商务` | Tech business style, rigorous and professional, hexagonal texture |
+| `smart_red` | Smart red-orange business style, modern and vibrant, geometric cutaway design |
+
+### 3. Scenario-Specific Templates
+
+Designed for **specific use cases**, with content structures tailored to scenario requirements.
+
+| Template | Description |
+|----------|-------------|
+| `academic_defense` | Academic defense, clear research content hierarchy |
+| `psychology_attachment` | Psychotherapy theme, warm and professional color palette |
+| `medical_university` | Hospital / medical university template, suitable for medical reports |
+| `重庆大学` | Chongqing University template, blending mountain-city layered imagery with modern academic style |
+
+### 4. Government & Enterprise Templates
+
+Industry-standard designs for **government agencies and general state-owned enterprises**.
+> **Distinction**: Unlike brand styles, these are not targeted at specific organizations but provide templates matching the common aesthetic preferences of government/SOE contexts (e.g., official document red, smart governance blue).
+
+| Template | Description |
+|----------|-------------|
+| `government_red` | Red government style, suitable for government work reports, party-building events |
+| `government_blue` | Blue government style, suitable for smart cities, digital governance reports |
+| `ai_ops` | Enterprise digital intelligence style, telecom AI ops architecture, high-density reports (includes `reference_style.svg` style reference) |
+
+### 5. Special Style Templates
+
+Unconventional visual styles for specific creative scenarios.
+
+| Template | Description |
+|----------|-------------|
+| `pixel_retro` | Pixel retro style, cyberpunk / gaming themes |
+
+> **Design philosophy**: Style and scenario are **orthogonal** concepts. Scenario templates define content structure; style templates define visual presentation. In theory, scenario templates can be combined with different styles.
 
 ---
 
-## design_spec.md 标准结构
+## Template File Structure
 
-所有模板的设计规范文档应遵循以下章节结构：
+Each template should contain the following standard files (TOC page is optional):
+
+| Filename | Required | Purpose | Description |
+|----------|----------|---------|-------------|
+| `design_spec.md` | Yes | Design specification | Complete color, typography, and layout specs |
+| `01_cover.svg` | Yes | Cover page | Title, subtitle, date, organization |
+| `02_toc.svg` | Optional | Table of contents | Chapter list, navigation |
+| `02_chapter.svg` | Yes | Chapter page | Chapter number, chapter title |
+| `03_content.svg` | Yes | Content page | Fixed header/footer, flexible content area |
+| `04_ending.svg` | Yes | Ending page | Thank-you message, contact info |
+
+> **Design philosophy**: Templates define visual consistency and structural pages; content pages maintain maximum flexibility, letting AI determine layout based on actual content.
+
+---
+
+## design_spec.md Standard Structure
+
+All template design specification documents should follow this chapter structure:
 
 ```markdown
-# [模板名称] - 设计规范
+# [Template Name] - Design Specification
 
-> 一句话描述适用场景
+> One-line description of applicable scenarios
 
-## 一、模板概述
-## 二、画布规范
-## 三、配色方案
-## 四、排版体系
-## 五、页面结构
-## 六、页面类型
-## 七、布局模式（推荐）
-## 八、间距规范
-## 九、SVG 技术约束
-## 十、占位符规范
-## 十一、使用说明（推荐）
+## I. Template Overview
+## II. Canvas Specification
+## III. Color Scheme
+## IV. Typography System
+## V. Page Structure
+## VI. Page Types
+## VII. Layout Modes (Recommended)
+## VIII. Spacing Specification
+## IX. SVG Technical Constraints
+## X. Placeholder Specification
+## XI. Usage Guide (Recommended)
 ```
 
 ---
 
-## 占位符规范
+## Placeholder Specification
 
-模板中使用 `{{PLACEHOLDER}}` 格式标记可替换内容：
+Templates use `{{PLACEHOLDER}}` format to mark replaceable content:
 
-### 通用占位符
+### General Placeholders
 
-| 占位符 | 用途 | 适用页面 |
-|--------|------|----------|
-| `{{TITLE}}` | 主标题 | 封面 |
-| `{{SUBTITLE}}` | 副标题 | 封面 |
-| `{{DATE}}` | 日期 | 封面、结束页 |
-| `{{AUTHOR}}` | 作者/机构（中文） | 封面 |
-| `{{AUTHOR_EN}}` | 作者/机构（英文） | 封面 |
+| Placeholder | Purpose | Applicable Pages |
+|-------------|---------|-----------------|
+| `{{TITLE}}` | Main title | Cover |
+| `{{SUBTITLE}}` | Subtitle | Cover |
+| `{{DATE}}` | Date | Cover, Ending |
+| `{{AUTHOR}}` | Author / Organization (Chinese) | Cover |
+| `{{AUTHOR_EN}}` | Author / Organization (English) | Cover |
 
-### 章节相关
+### Chapter-Related
 
-| 占位符 | 用途 | 适用页面 |
-|--------|------|----------|
-| `{{CHAPTER_NUM}}` | 章节编号 | 章节页、内容页 |
-| `{{CHAPTER_TITLE}}` | 章节标题 | 章节页 |
-| `{{CHAPTER_TITLE_EN}}` | 章节英文副标题 | 章节页 |
+| Placeholder | Purpose | Applicable Pages |
+|-------------|---------|-----------------|
+| `{{CHAPTER_NUM}}` | Chapter number | Chapter, Content |
+| `{{CHAPTER_TITLE}}` | Chapter title | Chapter |
+| `{{CHAPTER_TITLE_EN}}` | Chapter English subtitle | Chapter |
 
-### 内容页
+### Content Page
 
-| 占位符 | 用途 | 适用页面 |
-|--------|------|----------|
-| `{{PAGE_TITLE}}` | 页面标题 | 内容页 |
-| `{{CONTENT_AREA}}` | 内容区域占位 | 内容页 |
-| `{{PAGE_NUM}}` | 页码 | 内容页、结束页 |
-| `{{SOURCE}}` | 数据来源 | 内容页页脚 |
+| Placeholder | Purpose | Applicable Pages |
+|-------------|---------|-----------------|
+| `{{PAGE_TITLE}}` | Page title | Content |
+| `{{CONTENT_AREA}}` | Content area placeholder | Content |
+| `{{PAGE_NUM}}` | Page number | Content, Ending |
+| `{{SOURCE}}` | Data source | Content footer |
 
-### 目录页
+### Table of Contents
 
-| 占位符 | 用途 |
-|--------|------|
-| `{{TOC_ITEM_1}}` ~ `{{TOC_ITEM_5}}` | 目录项 1-5 |
+| Placeholder | Purpose |
+|-------------|---------|
+| `{{TOC_ITEM_1}}` ~ `{{TOC_ITEM_5}}` | TOC items 1-5 |
 
-### 结束页
+### Ending Page
 
-| 占位符 | 用途 |
-|--------|------|
-| `{{THANK_YOU}}` | 感谢语 |
-| `{{ENDING_SUBTITLE}}` | 结束页副标题 |
-| `{{CLOSING_MESSAGE}}` | 结语 |
-| `{{CONTACT_INFO}}` | 联系信息 |
+| Placeholder | Purpose |
+|-------------|---------|
+| `{{THANK_YOU}}` | Thank-you message |
+| `{{ENDING_SUBTITLE}}` | Ending page subtitle |
+| `{{CLOSING_MESSAGE}}` | Closing message |
+| `{{CONTACT_INFO}}` | Contact information |
 
 ---
 
-## 使用方式
+## Usage
 
-### 从模板库复制到项目
+### Copy from Template Library to Project
 
 ```bash
-# 复制通用风格模板到项目
-cp templates/layouts/general/* projects/<项目>/templates/
+# Copy general style template to project
+cp templates/layouts/general/* projects/<project>/templates/
 
-# 复制咨询风格模板到项目
-cp templates/layouts/consultant/* projects/<项目>/templates/
+# Copy consulting style template to project
+cp templates/layouts/consultant/* projects/<project>/templates/
 
-# 复制 Google 风格模板到项目
-cp templates/layouts/google_style/* projects/<项目>/templates/
+# Copy Google style template to project
+cp templates/layouts/google_style/* projects/<project>/templates/
 
-# 复制政企风格模板到项目（例：政府红）
-cp templates/layouts/government_red/* projects/<项目>/templates/
+# Copy government style template to project (e.g., government red)
+cp templates/layouts/government_red/* projects/<project>/templates/
 ```
 
-### 复制后操作
+### After Copying
 
-1. 阅读 `design_spec.md` 了解设计规范
-2. 根据项目需求调整配色（如需要）
-3. 将 Logo 文件放入 `images/` 目录
-4. 使用 Executor 角色根据模板生成 SVG 页面
+1. Read `design_spec.md` to understand the design specification
+2. Adjust colors based on project requirements (if needed)
+3. Place logo files in the `images/` directory
+4. Use the Executor role to generate SVG pages based on templates
 
 ---
 
-## 模板开发指南
+## Template Development Guide
 
-### 创建新模板
+### Creating New Templates
 
-1. 在 `templates/layouts/` 下创建新目录
-2. 参考现有模板结构创建必需文件
-3. 确保 `design_spec.md` 遵循标准章节结构
-4. 所有 SVG 使用 `viewBox="0 0 1280 720"`
-5. 遵循 SVG 技术约束（见下方）
+1. Create a new directory under `templates/layouts/`
+2. Create required files following the existing template structure
+3. Ensure `design_spec.md` follows the standard chapter structure
+4. All SVGs use `viewBox="0 0 1280 720"`
+5. Follow SVG technical constraints (see below)
 
-### SVG 技术约束（所有模板必须遵守）
+### SVG Technical Constraints (All Templates Must Comply)
 
-#### 必须满足
+#### Required
 
 - viewBox: `0 0 1280 720`
-- 背景使用 `<rect>` 元素
-- 文本换行使用 `<tspan>`
-- 透明度使用 `fill-opacity` / `stroke-opacity`
-- 渐变使用 `<defs>` 定义 `<linearGradient>`
+- Backgrounds use `<rect>` elements
+- Text wrapping uses `<tspan>`
+- Transparency uses `fill-opacity` / `stroke-opacity`
+- Gradients use `<defs>` with `<linearGradient>`
 
-#### 禁止使用（PPT 不兼容）
+#### Forbidden (PPT Incompatible)
 
-| 禁用元素 | 替代方案 |
-|----------|----------|
-| `<foreignObject>` | 使用 `<text>` + `<tspan>` |
-| `clipPath` | 重新设计布局 |
-| `mask` | 使用 `fill-opacity` |
-| `<style>` / `class` | 使用内联样式 |
-| `textPath` | 使用普通 `<text>` |
-| `animate*` | 静态设计 |
-| `script` | 不支持交互 |
-| `marker` / `marker-end` | 使用 `<polygon>` 三角形 |
-| `rgba()` | 使用 HEX + `fill-opacity` |
-| `<g opacity="...">` | 每个子元素单独设置透明度 |
+| Banned Element | Alternative |
+|----------------|-------------|
+| `<foreignObject>` | Use `<text>` + `<tspan>` |
+| `clipPath` | Redesign layout |
+| `mask` | Use `fill-opacity` |
+| `<style>` / `class` | Use inline styles |
+| `textPath` | Use plain `<text>` |
+| `animate*` | Static design |
+| `script` | No interactivity supported |
+| `marker` / `marker-end` | Use `<polygon>` triangles |
+| `rgba()` | Use HEX + `fill-opacity` |
+| `<g opacity="...">` | Set opacity on each child element individually |
 
 ---

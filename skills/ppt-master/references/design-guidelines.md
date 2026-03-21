@@ -1,356 +1,356 @@
-> 📎 公共技术约束见 shared-standards.md
+> See shared-standards.md for common technical constraints.
 
-# 设计指南
+# Design Guidelines
 
-PPT Master 系统的详细设计指南和最佳实践。
-
----
-
-## 颜色系统
-
-### 主色调选择
-
-#### 咨询风格
-
-```
-德勤蓝:      #0076A8  - 专业、可靠
-麦肯锡蓝:    #005587  - 权威、深度
-BCG深蓝:     #003F6C  - 稳重、信任
-普华永道橙:  #D04A02  - 活力、创新
-安永黄:      #FFE600  - 乐观、清晰
-```
-
-#### 通用灵活风格
-
-```
-科技蓝:      #2196F3  - 现代、创新
-活力橙:      #FF9800  - 热情、积极
-成长绿:      #4CAF50  - 健康、增长
-专业紫:      #9C27B0  - 创意、高端
-警示红:      #F44336  - 紧急、重要
-```
-
-### 辅助色系
-
-#### 数据可视化配色
-
-```
-积极趋势（绿色系）:
-  深绿: #2E7D32 | 中绿: #4CAF50 | 浅绿: #81C784
-
-警示趋势（黄色系）:
-  深黄: #F57C00 | 中黄: #FFA726 | 浅黄: #FFD54F
-
-负面趋势（红色系）:
-  深红: #C62828 | 中红: #EF5350 | 浅红: #E57373
-```
-
-#### 中性色系
-
-```
-文本层级:
-  主文本:   #212121  (黑色, 87% opacity)
-  副文本:   #757575  (灰色, 60% opacity)
-  辅助文本: #9E9E9E  (浅灰, 38% opacity)
-
-背景层级:
-  主背景:   #FFFFFF
-  次背景:   #F5F5F5
-  卡片背景: #FAFAFA
-  边框:     #E0E0E0
-```
-
-### 对比度要求
-
-遵循 WCAG 2.1 AA 级标准：
-- 正文文本：至少 4.5:1
-- 大号文本（24px+）：至少 3:1
-- 重要数据：至少 7:1（AAA 级）
+Detailed design guidelines and best practices for the PPT Master system.
 
 ---
 
-## 排版规范
+## Color System
 
-### 字体层级
+### Primary Color Selection
 
-> 以正文字号为 1x 基准，其他层级按比例推导。字号选择取决于内容密度，而非设计风格。
-
-#### 内容宽松（正文基准 24px）
-
-适用：演讲型 PPT、培训课件、每页要点少（3-5 条）
+#### Consulting Style
 
 ```
-H1 - 封面标题:     60-72px, Bold     (2.5-3x)
-H2 - 页面标题:     42-48px, Bold     (1.75-2x)
-H3 - 章节标题:     32-36px, SemiBold (1.3-1.5x)
-正文 - 主要内容:   24px, Regular     (1x 基准)
-小字 - 注释说明:   18-20px, Regular  (0.75-0.85x)
+Deloitte Blue:   #0076A8  - Professional, reliable
+McKinsey Blue:   #005587  - Authoritative, deep
+BCG Dark Blue:   #003F6C  - Stable, trustworthy
+PwC Orange:      #D04A02  - Energetic, innovative
+EY Yellow:       #FFE600  - Optimistic, clear
 ```
 
-#### 内容密集（正文基准 18px）
-
-适用：数据报告、咨询分析、每页要点多（6+ 条）
+#### General Versatile Style
 
 ```
-H1 - 封面标题:     45-54px, Bold     (2.5-3x)
-H2 - 页面标题:     27-36px, Bold     (1.5-2x)
-H3 - 章节标题:     22-27px, SemiBold (1.2-1.5x)
-正文 - 主要内容:   18px, Regular     (1x 基准)
-小字 - 注释说明:   14-15px, Regular  (0.75-0.85x)
+Tech Blue:       #2196F3  - Modern, innovative
+Vibrant Orange:  #FF9800  - Passionate, positive
+Growth Green:    #4CAF50  - Healthy, growth
+Professional Purple: #9C27B0  - Creative, premium
+Alert Red:       #F44336  - Urgent, important
 ```
 
-### 字体选择
+### Secondary Colors
 
-#### 中文字体
+#### Data Visualization Colors
 
-| 类别 | 代号 | 可选字体 | 适用场景 |
-|------|:----:|---------|----------|
-| 无衬线黑体 | A | 微软雅黑、黑体、幼圆、华文细黑 | 现代商务、正文（默认） |
-| 衬线宋体 | B | 宋体、新宋体、仿宋、华文宋体 | 政务公文、正式报告 |
-| 书法楷体 | C | 楷体、华文楷体、华文行楷 | 文化艺术、人文类 |
-| 标题黑体 | D | 黑体、华文中宋、思源黑体 Bold | 大标题、强调 |
-| 手写艺术 | E | 华文行楷、华文新魏、隶书 | 创意、个性化 |
+```
+Positive trend (green):
+  Dark: #2E7D32 | Medium: #4CAF50 | Light: #81C784
 
-#### 英文字体
+Warning trend (yellow):
+  Dark: #F57C00 | Medium: #FFA726 | Light: #FFD54F
 
-| 类别 | 代号 | 可选字体 | 适用场景 |
-|------|:----:|---------|----------|
-| 无衬线现代 | F | Arial, Calibri, Segoe UI, Helvetica | 现代商务（默认） |
-| 衬线经典 | G | Times New Roman, Georgia, Cambria | 正式文档、学术 |
-| 标题展示 | H | Impact, Arial Black, Bebas Neue | 大标题、海报 |
-| 手写风格 | I | Comic Sans MS, Segoe Script, Ink Free | 轻松活泼 |
-| 等宽代码 | J | Consolas, Cascadia Code, Courier New | 数据、代码 |
+Negative trend (red):
+  Dark: #C62828 | Medium: #EF5350 | Light: #E57373
+```
 
-#### 推荐 font-family
+#### Neutral Colors
+
+```
+Text hierarchy:
+  Primary text:   #212121  (black, 87% opacity)
+  Secondary text: #757575  (gray, 60% opacity)
+  Tertiary text:  #9E9E9E  (light gray, 38% opacity)
+
+Background hierarchy:
+  Primary bg:     #FFFFFF
+  Secondary bg:   #F5F5F5
+  Card bg:        #FAFAFA
+  Border:         #E0E0E0
+```
+
+### Contrast Requirements
+
+Following WCAG 2.1 AA standards:
+- Body text: at least 4.5:1
+- Large text (24px+): at least 3:1
+- Important data: at least 7:1 (AAA level)
+
+---
+
+## Typography Specification
+
+### Font Hierarchy
+
+> Use body font size as 1x baseline; derive other levels proportionally. Font size selection depends on content density, not design style.
+
+#### Relaxed Content (body baseline 24px)
+
+Suitable for: Keynote-style PPTs, training materials, few points per page (3-5)
+
+```
+H1 - Cover title:      60-72px, Bold     (2.5-3x)
+H2 - Page title:       42-48px, Bold     (1.75-2x)
+H3 - Section title:    32-36px, SemiBold (1.3-1.5x)
+Body - Main content:   24px, Regular     (1x baseline)
+Small - Annotations:   18-20px, Regular  (0.75-0.85x)
+```
+
+#### Dense Content (body baseline 18px)
+
+Suitable for: Data reports, consulting analysis, many points per page (6+)
+
+```
+H1 - Cover title:      45-54px, Bold     (2.5-3x)
+H2 - Page title:       27-36px, Bold     (1.5-2x)
+H3 - Section title:    22-27px, SemiBold (1.2-1.5x)
+Body - Main content:   18px, Regular     (1x baseline)
+Small - Annotations:   14-15px, Regular  (0.75-0.85x)
+```
+
+### Font Selection
+
+#### Chinese Fonts
+
+| Category | Code | Options | Suitable Scenarios |
+|----------|:----:|---------|-------------------|
+| Sans-serif | A | Microsoft YaHei, SimHei, YouYuan, STXihei | Modern business, body text (default) |
+| Serif | B | SimSun, NSimSun, FangSong, STSong | Government docs, formal reports |
+| Calligraphic | C | KaiTi, STKaiti, STXingkai | Culture, arts, humanities |
+| Display | D | SimHei, STZhongsong, Source Han Sans Bold | Large titles, emphasis |
+| Handwritten | E | STXingkai, STXinwei, LiSu | Creative, personalized |
+
+#### English Fonts
+
+| Category | Code | Options | Suitable Scenarios |
+|----------|:----:|---------|-------------------|
+| Sans-serif modern | F | Arial, Calibri, Segoe UI, Helvetica | Modern business (default) |
+| Serif classic | G | Times New Roman, Georgia, Cambria | Formal documents, academic |
+| Display | H | Impact, Arial Black, Bebas Neue | Large titles, posters |
+| Handwritten | I | Comic Sans MS, Segoe Script, Ink Free | Casual, playful |
+| Monospace | J | Consolas, Cascadia Code, Courier New | Data, code |
+
+#### Recommended font-family
 
 ```css
-/* 中文字体 */
-"Microsoft YaHei", "微软雅黑", sans-serif       /* A: 微软雅黑 */
-"SimHei", "黑体", sans-serif                    /* A/D: 黑体 */
-"SimSun", "宋体", serif                         /* B: 宋体 */
-"FangSong", "仿宋", serif                       /* B: 仿宋 */
-"KaiTi", "楷体", serif                          /* C: 楷体 */
-"STXingkai", "华文行楷", cursive                /* C/E: 华文行楷 */
+/* Chinese fonts */
+"Microsoft YaHei", sans-serif               /* A: Microsoft YaHei */
+"SimHei", sans-serif                        /* A/D: SimHei */
+"SimSun", serif                             /* B: SimSun */
+"FangSong", serif                           /* B: FangSong */
+"KaiTi", serif                              /* C: KaiTi */
+"STXingkai", cursive                        /* C/E: STXingkai */
 
-/* 英文字体 */
-"Arial", sans-serif                             /* F: Arial */
-"Calibri", sans-serif                           /* F: Calibri */
-"Times New Roman", serif                        /* G: Times */
-"Georgia", serif                                /* G: Georgia */
-"Impact", sans-serif                            /* H: Impact */
-"Consolas", monospace                           /* J: 等宽 */
+/* English fonts */
+"Arial", sans-serif                         /* F: Arial */
+"Calibri", sans-serif                       /* F: Calibri */
+"Times New Roman", serif                    /* G: Times */
+"Georgia", serif                            /* G: Georgia */
+"Impact", sans-serif                        /* H: Impact */
+"Consolas", monospace                       /* J: Monospace */
 ```
 
-#### 中英文混排推荐
+#### Chinese-English Mixed Typesetting Recommendations
 
-| 场景 | 中文字体 | 英文字体 |
-|------|---------|---------|
-| 现代商务 | 微软雅黑 (A) | Calibri / Arial (F) |
-| 政务公文 | 宋体 (B) | Times New Roman (G) |
-| 文化艺术 | 楷体 (C) | Georgia (G) |
-| 科技互联网 | 黑体 (D) | Segoe UI (F) |
+| Scenario | Chinese Font | English Font |
+|----------|-------------|-------------|
+| Modern business | Microsoft YaHei (A) | Calibri / Arial (F) |
+| Government docs | SimSun (B) | Times New Roman (G) |
+| Culture & arts | KaiTi (C) | Georgia (G) |
+| Tech / Internet | SimHei (D) | Segoe UI (F) |
 
-#### 字体角色
+#### Font Roles
 
-| 角色 | 用途 | 中文推荐 | 英文推荐 |
-|------|------|----------|----------|
-| 标题字体 | H1/H2 大标题 | A/C/D/E | F/G/H |
-| 正文字体 | 段落、要点 | A/B | F/G |
-| 强调字体 | KPI、关键词 | D | H/J |
-| 注释字体 | 脚注、说明 | A/B | F/G |
+| Role | Purpose | Chinese Recommended | English Recommended |
+|------|---------|--------------------|--------------------|
+| Title font | H1/H2 large titles | A/C/D/E | F/G/H |
+| Body font | Paragraphs, bullet points | A/B | F/G |
+| Emphasis font | KPIs, keywords | D | H/J |
+| Annotation font | Footnotes, captions | A/B | F/G |
 
-### 行高和间距
+### Line Height and Spacing
 
 ```
-标题行高: 1.2-1.3
-正文行高: 1.5-1.6
-段落间距: 1.5-2em
-列表间距: 0.5-1em
+Title line height: 1.2-1.3
+Body line height: 1.5-1.6
+Paragraph spacing: 1.5-2em
+List spacing: 0.5-1em
 ```
 
-### 文本换行与扁平化
+### Text Wrapping & Flattening
 
-- 生成阶段：采用 `<tspan>` 手动换行，通过 `x`/`dy` 控制行起点与行距
-- 后处理：使用 `python3 scripts/finalize_svg.py <项目路径>`，包含文本扁平化功能
-- 校验：对比 `svg_output` 与 `svg_final`，核对行序、样式与定位一致；目标文件中不应残留 `<tspan>`
+- Generation phase: Use `<tspan>` for manual line breaks, control line start and spacing via `x`/`dy`
+- Post-processing: Use `python3 scripts/finalize_svg.py <project_path>`, includes text flattening
+- Verification: Compare `svg_output` with `svg_final`; check line order, styles, and positioning match; target files should not contain residual `<tspan>`
 
 ---
 
-## 布局原则
+## Layout Principles
 
-### 16:9 画布规范
-
-```
-画布尺寸: 1280x720px
-安全区域: 1200x640px (留40px边距)
-标题区:    1200x100px
-内容区:    1200x500px
-页脚区:    1200x40px
-```
-
-### 网格系统
-
-#### 单栏布局
-```
-适用: 封面、结束页、单一主题
-内容宽度: 800-1000px，水平居中
-```
-
-#### 双栏布局
-```
-适用: 对比分析、左图右文
-栏宽比例: 1:1 或 3:2，栏间距: 40-60px
-```
-
-#### 三栏布局
-```
-适用: 并列要点、流程步骤
-栏宽比例: 1:1:1，栏间距: 30-40px
-```
-
-#### 四象限布局
-```
-适用: 矩阵分析、分类展示
-象限尺寸: 560x250px (含间距)，间距: 20-30px
-```
-
-### 卡片设计
-
-#### 尺寸规范（强制）
+### 16:9 Canvas Specification
 
 ```
-单行卡片: 高度 530-600px
-双行卡片: 每行 265-295px
-三栏卡片: 每栏宽度 360-380px
+Canvas size: 1280x720px
+Safe area: 1200x640px (40px margins)
+Title area:    1200x100px
+Content area:  1200x500px
+Footer area:   1200x40px
 ```
 
-#### 内边距
+### Grid System
 
+#### Single Column Layout
 ```
-标题区: 20-30px
-内容区: 30-40px
-图表区: 20-30px
-```
-
-#### 圆角半径
-
-```
-小卡片: 8-12px
-大卡片: 12-16px
-图表: 8px
-按钮: 6-8px
+Suitable for: Covers, ending pages, single topics
+Content width: 800-1000px, horizontally centered
 ```
 
----
-
-## 图片布局规范
-
-含图片页面的布局需根据图片比例动态计算。详细规范见 image-layout-spec.md。
-
-**快速规则**：
-- 比例 > 2.0 (超宽) → 上下布局
-- 比例 1.5-2.0 (宽幅) → 优先上下，文字区不足则改左右
-- 比例 1.2-1.5 (标准横图) → 左右布局
-- 比例 0.8-1.2 (方形) → 左右布局
-- 比例 < 0.8 (竖图) → 左右布局
-
----
-
-## 图表设计
-
-### 常用图表类型
-
-#### KPI 卡片
+#### Two-Column Layout
 ```
-布局: 2x2 或 1x4
-元素: 大号数字 (48-56px) + 指标名称 (18-20px) + 趋势图标/百分比 + 同比/环比说明
+Suitable for: Comparative analysis, left-image right-text
+Column ratio: 1:1 or 3:2, column gap: 40-60px
 ```
 
-#### 柱状图
+#### Three-Column Layout
 ```
-柱子数量: 3-8个，柱宽: 40-60px，间距: 柱宽的50-80%，显示数值标签
-```
-
-#### 折线图
-```
-线条: 2-3px，数据点: 圆形 半径 4-6px，网格线: 1px 浅灰色，图例: 右上角或底部
+Suitable for: Parallel points, process steps
+Column ratio: 1:1:1, column gap: 30-40px
 ```
 
-#### 饼图/环形图
+#### Four-Quadrant Layout
 ```
-分块: 3-6个，起始角度: -90度 (12点方向)，环形宽度: 40-60px，显示百分比标签
-```
-
-#### 矩阵图
-```
-2x2布局，轴线: 2px实线，象限标签清晰，数据点大小统一
+Suitable for: Matrix analysis, classification display
+Quadrant size: 560x250px (including gap), gap: 20-30px
 ```
 
-### 图表配色
+### Card Design
 
-| 方案 | 适用场景 | 示例 |
-|------|---------|------|
-| 单色渐变 | 同类数据比较 | #1976D2 → #42A5F5 → #90CAF9 |
-| 对比色组 | 不同类别数据 | #2196F3 / #FF9800 / #4CAF50 |
-| 顺序色 | 等级/强度展示 | #4CAF50 → #FFC107 → #F44336 |
-
----
-
-## 图标使用
-
-### 项目内置图标库（推荐）
-
-位于 `templates/icons/`，包含 640+ 个 SVG 图标。
+#### Dimension Specifications (Mandatory)
 
 ```
-完整索引: templates/icons/FULL_INDEX.md
-程序化查询: templates/icons/icons_index.json
-使用方式: templates/icons/README.md
+Single-row card: height 530-600px
+Double-row card: each row 265-295px
+Three-column card: each column width 360-380px
 ```
 
-**分类概览**：
-- 通用：home, settings, search, user, calendar, mail...
-- 数据：trending-up, chart-bar, database, file-text...
-- 业务：rocket, target, lightbulb, trophy, star...
-- 箭头：arrow-right/left/up/down, chevron-right...
-- 状态：check, check-circle, x-circle, alert-circle...
-- 工具：edit, trash, download, upload, share...
-
-### 图标规范
+#### Internal Padding
 
 ```
-尺寸: 小 16-20px | 常规 24-32px | 大 40-48px
-线宽: 2px (统一)
-颜色: 与主色调协调
-间距: 图标大小的 50%
+Title area: 20-30px
+Content area: 30-40px
+Chart area: 20-30px
+```
+
+#### Border Radius
+
+```
+Small cards: 8-12px
+Large cards: 12-16px
+Charts: 8px
+Buttons: 6-8px
 ```
 
 ---
 
-## 常见模式
+## Image Layout Specification
 
-### 封面页
-- 顶部：公司Logo（可选），中部：演示标题 (H1)，副标题，底部：日期、演讲人
-- 简洁大气，主色调背景或图片，文字居中或偏左
+Pages with images need dynamic layout calculation based on image ratio. See image-layout-spec.md for details.
 
-### 内容页
-- 标准结构：页面标题 (H2) → 主要内容 → 页码/注释
-- 变体：左标题右内容、上下分割、多栏布局
-
-### 数据页
-- 数据可视化为主，关键数字突出，提供数据来源，添加趋势说明
-- 布局：大图表+要点、多小图表组合、KPI仪表盘
-
-### 总结页
-- 3-5个核心要点 + 行动号召 (CTA) + 下一步计划
-- 列表或编号，图标辅助，简洁明了
+**Quick rules**:
+- Ratio > 2.0 (ultra-wide) → Top-bottom layout
+- Ratio 1.5-2.0 (wide) → Prefer top-bottom; switch to left-right if text area insufficient
+- Ratio 1.2-1.5 (standard landscape) → Left-right layout
+- Ratio 0.8-1.2 (square) → Left-right layout
+- Ratio < 0.8 (portrait) → Left-right layout
 
 ---
 
-## 常见问题
+## Chart Design
 
-| 问题 | 解决方案 |
-|------|---------|
-| 内容太多放不下 | 分多页、用更小字号（>=16px）、精简文字、用图表代替 |
-| 颜色搭配不协调 | 限制主色<=3种、增加中性色占比、参考成功案例 |
-| 布局不平衡 | 检查对齐、调整间距、使用网格系统、平衡视觉重量 |
+### Common Chart Types
+
+#### KPI Cards
+```
+Layout: 2x2 or 1x4
+Elements: Large number (48-56px) + metric name (18-20px) + trend icon/percentage + YoY/MoM note
+```
+
+#### Bar Charts
+```
+Bar count: 3-8, bar width: 40-60px, gap: 50-80% of bar width, show data labels
+```
+
+#### Line Charts
+```
+Line: 2-3px, data points: circle radius 4-6px, grid lines: 1px light gray, legend: top-right or bottom
+```
+
+#### Pie/Donut Charts
+```
+Segments: 3-6, start angle: -90° (12 o'clock), ring width: 40-60px, show percentage labels
+```
+
+#### Matrix Charts
+```
+2x2 layout, axis lines: 2px solid, quadrant labels clear, data point sizes uniform
+```
+
+### Chart Colors
+
+| Scheme | Suitable Scenarios | Example |
+|--------|-------------------|---------|
+| Monochromatic gradient | Same-category data comparison | #1976D2 → #42A5F5 → #90CAF9 |
+| Contrasting set | Different category data | #2196F3 / #FF9800 / #4CAF50 |
+| Sequential | Level/intensity display | #4CAF50 → #FFC107 → #F44336 |
+
+---
+
+## Icon Usage
+
+### Built-in Icon Library (Recommended)
+
+Located in `templates/icons/`, containing 640+ SVG icons.
+
+```
+Full index: templates/icons/FULL_INDEX.md
+Programmatic query: templates/icons/icons_index.json
+Usage guide: templates/icons/README.md
+```
+
+**Category overview**:
+- General: home, settings, search, user, calendar, mail...
+- Data: trending-up, chart-bar, database, file-text...
+- Business: rocket, target, lightbulb, trophy, star...
+- Arrows: arrow-right/left/up/down, chevron-right...
+- Status: check, check-circle, x-circle, alert-circle...
+- Tools: edit, trash, download, upload, share...
+
+### Icon Specifications
+
+```
+Size: Small 16-20px | Regular 24-32px | Large 40-48px
+Stroke width: 2px (uniform)
+Color: Coordinate with primary color
+Spacing: 50% of icon size
+```
+
+---
+
+## Common Patterns
+
+### Cover Page
+- Top: Company logo (optional), Center: Presentation title (H1), subtitle, Bottom: Date, presenter
+- Clean and impressive; primary color background or image; text centered or left-aligned
+
+### Content Page
+- Standard structure: Page title (H2) → Main content → Page number / notes
+- Variants: Left-title right-content, top-bottom split, multi-column layout
+
+### Data Page
+- Data visualization as primary; highlight key numbers; provide data sources; add trend notes
+- Layouts: Large chart + key points, multiple small chart combinations, KPI dashboard
+
+### Summary Page
+- 3-5 core takeaways + Call to Action (CTA) + Next steps
+- Lists or numbering, icon-assisted, clean and clear
+
+---
+
+## Common Issues
+
+| Problem | Solution |
+|---------|----------|
+| Too much content to fit | Split across pages, use smaller font (>=16px), condense text, use charts instead |
+| Colors don't match | Limit primary colors to <=3, increase neutral color proportion, reference successful cases |
+| Unbalanced layout | Check alignment, adjust spacing, use grid system, balance visual weight |

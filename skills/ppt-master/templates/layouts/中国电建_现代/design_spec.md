@@ -1,173 +1,173 @@
-# 中国电建模板 v2 (POWERCHINA Modern) - 设计规范
+# POWERCHINA (中国电建) Modern Template v2 - Design Specification
 
-> 适用于中国电建重大项目汇报、国际业务展示、高端峰会路演、科技创新成果发布等场景。
-> **v2.0 特性**: 融合现代工程美学与国际化视野，强调结构感、通透性与数字化表达。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                         |
-| -------------- | ------------------------------------------------------------ |
-| **模板名称**   | 中国电建_现代（原 powerchina_v2）                 |
-| **适用场景**   | 重大工程汇报、国际市场推介、科技成果展示、高端商务洽谈       |
-| **设计调性**   | **宏大叙事、现代精工、数字科技、国际视野**                   |
-| **主题模式**   | 深蓝科技渐变 + 精密网格纹理                                  |
+> Suitable for POWERCHINA major project reports, international business showcases, high-end summit roadshows, technology innovation releases, and similar scenarios.
+> **v2.0 Features**: Blends modern engineering aesthetics with an international perspective, emphasizing structural form, transparency, and digital expression.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| **Template Name** | 中国电建_现代 (formerly powerchina_v2)                        |
+| **Use Cases**  | Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations |
+| **Design Tone** | **Grand narrative, modern precision, digital tech, international vision** |
+| **Theme Mode** | Deep blue tech gradient + precision grid texture                 |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 80px，上 100px，下 60px  |
-| **内容安全区** | x: 80-1200, y: 100-660        |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
+| **viewBox**    | `0 0 1280 720`               |
+| **Page Margins** | Left/Right 80px, Top 100px, Bottom 60px |
+| **Safe Area**  | x: 80-1200, y: 100-660       |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系（升级版）
+### Primary Colors (Upgraded)
 
-| 角色           | 色值        | 渐变方案 (SVG defs)              | 备注                               |
-| -------------- | ----------- | -------------------------------- | ---------------------------------- |
-| **电建蓝**     | `#00418D`   | `#00418D` -> `#072C61`           | 品牌核心色，用于主背景、标题栏     |
-| **科技蓝**     | `#0066CC`   | `#0066CC` -> `#0088FF`           | 提亮色，用于图表、强调边框         |
-| **深海蓝**     | `#001F45`   | N/A                              | 页面底色，营造深邃感               |
-| **工程白**     | `#FFFFFF`   | N/A                              | 标题文字、反白图标                 |
+| Role           | Color Value | Gradient (SVG defs)            | Notes                              |
+| -------------- | ----------- | ------------------------------ | ---------------------------------- |
+| **POWERCHINA Blue** | `#00418D` | `#00418D` -> `#072C61`       | Brand core color for main backgrounds, title bars |
+| **Tech Blue**  | `#0066CC`  | `#0066CC` -> `#0088FF`         | Highlight color for charts, accent borders |
+| **Deep Sea Blue** | `#001F45` | N/A                           | Page base color for a deep, immersive feel |
+| **Engineering White** | `#FFFFFF` | N/A                        | Title text, inverted icons         |
 
-### 辅助色（国之重器）
+### Auxiliary Colors (National Strength)
 
-| 角色           | 色值        | 用途                               |
+| Role           | Color Value | Usage                              |
 | -------------- | ----------- | ---------------------------------- |
-| **中国红**     | `#C41E3A`   | 关键数据点睛、进度条指示           |
-| **建筑灰**     | `#E2E8F0`   | 网格线、次级文字                   |
-| **光辉金**     | `#FFD700`   | 荣誉勋章、高光时刻 (Opacity 20%)   |
+| **China Red**  | `#C41E3A`  | Key data emphasis, progress bar indicators |
+| **Architectural Gray** | `#E2E8F0` | Grid lines, secondary text      |
+| **Glorious Gold** | `#FFD700` | Honors, milestone highlights (Opacity 20%) |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**优先字体栈**: `"Microsoft YaHei", "PingFang SC", "Heiti SC", "Segoe UI", Arial, sans-serif`
+**Primary Font Stack**: `"Microsoft YaHei", "PingFang SC", "Heiti SC", "Segoe UI", Arial, sans-serif`
 
-### 字号层级 (强化对比)
+### Font Size Hierarchy (Enhanced Contrast)
 
-| 层级 | 用途             | 字号 | 字重    | 颜色       |
-| ---- | ---------------- | ---- | ------- | ---------- |
-| H1   | 封面主标题       | 60px | Bold    | #FFFFFF    |
-| H2   | 页面大标题       | 36px | Bold    | #00418D    |
-| H3   | 模块标题         | 24px | Bold    | #1A202C    |
-| P    | 正文内容         | 18px | Regular | #4A5568    |
-| Num  | 巨型装饰数字     | 120px| Bold    | Opacity 5% |
-
----
-
-## 五、页面结构
-
-### 通用导航栏 (y=0 to 100)
-
-- **顶部蓝条**: 高度 8px，深蓝渐变。
-- **Logo区域**: 右上角固定，配合白色底板。
-- **标题组合**: 左上角，采用 **"标签式" (Tag Style)** 设计，模拟工程图纸标签。
+| Level | Usage              | Size  | Weight  | Color      |
+| ----- | ------------------ | ----- | ------- | ---------- |
+| H1    | Cover main title   | 60px  | Bold    | #FFFFFF    |
+| H2    | Page heading       | 36px  | Bold    | #00418D    |
+| H3    | Section title      | 24px  | Bold    | #1A202C    |
+| P     | Body content       | 18px  | Regular | #4A5568    |
+| Num   | Giant decorative numbers | 120px | Bold | Opacity 5% |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
-- **视觉重心**: **"基石" (Foundation)** 概念。底部厚重深蓝支撑，顶部通透。
-- **背景**: 叠加精密 **"经纬网格" (Geo Grid)**，象征全球布局。
-- **排版**: 居中对称布局，彰显央企稳重感。
+### Common Navigation Bar (y=0 to 100)
 
-### 2. 目录页 (02_toc.svg)
-- **布局**: **"工程里程碑" (Milestones)**。横向时间轴或卡片连接，寓意项目推进。
-- **元素**: 使用连接线和节点圆点，模拟电路或管网。
-
-### 3. 章节页 (02_chapter.svg)
-- **背景**: 深蓝科技感渐变，右侧大面积留白给透视网格。
-- **数字**: 巨大的轮廓字 (Stroke Only)，不仅是编号，更是建筑结构的一部分。
-
-### 4. 内容页 (03_content.svg)
-- **布局**: **"控制台" (Console)** 风格。顶部导航栏规整，内容区最大化。
-- **细节**: 四角添加 **"瞄准框" (Corner Marks)**，增强精密感。
-
-### 5. 结束页 (04_ending.svg)
-- **背景**: 呼应封面的"基石"结构。
-- **元素**: 强化"合作共赢"概念，二维码/联系方式区域化展示。
+- **Top Blue Bar**: 8px height, deep blue gradient.
+- **Logo Area**: Fixed at upper-right corner with a white backing plate.
+- **Title Group**: Upper-left corner using **"Tag Style"** design, simulating engineering drawing labels.
 
 ---
 
-## 七、布局模式（推荐）
+## VI. Page Types
 
-### 1. 科技卡片 (Tech Cards)
-- 带有微弱边框和 glowing 效果的卡片。
-- 适合展示关键技术指标或创新成果。
+### 1. Cover Page (01_cover.svg)
+- **Visual Focus**: **"Foundation"** concept. Heavy deep blue supporting the bottom, transparent top.
+- **Background**: Overlaid with precision **"Geo Grid"** (latitude-longitude grid), symbolizing global presence.
+- **Layout**: Center-symmetric layout, projecting state-owned enterprise gravitas.
 
-### 2. 数据仪表盘 (Dashboard)
-- 结合图表和关键数据的组合布局。
-- 使用科技蓝作为图表主色。
+### 2. Table of Contents (02_toc.svg)
+- **Layout**: **"Milestones"** style. Horizontal timeline or connected cards, representing project progression.
+- **Elements**: Connection lines and node dots, simulating circuits or pipeline networks.
 
-### 3. 工程图解 (Blueprint)
-- 利用经纬网格背景，通过线条和标注解释复杂结构。
+### 3. Chapter Page (02_chapter.svg)
+- **Background**: Deep blue tech gradient; large whitespace on the right for perspective grid.
+- **Numbers**: Giant outlined numbers (Stroke Only) — not just chapter numbers, but part of the architectural structure.
 
----
+### 4. Content Page (03_content.svg)
+- **Layout**: **"Console"** style. Orderly top navigation bar, maximized content area.
+- **Details**: **"Corner Marks"** added at all four corners for a precision engineering feel.
 
-## 八、间距规范
-
-| 属性         | 值    | 说明                     |
-| ------------ | ----- | ------------------------ |
-| **基础单位** | 4px   | 精密设计使用 4px 网格    |
-| **模块间距** | 40px  | 宽大间距，增加呼吸感     |
-| **卡片间距** | 20px  | 紧凑但清晰的间距         |
-| **内部留白** | 32px  | 内容与边框的距离         |
-
----
-
-## 九、SVG 技术约束
-
-### 必须遵守
-
-1. **渐变**: 使用 `<linearGradient>` 营造金属质感或光影感。
-2. **网格**: 使用 `<pattern>` 定义精细网格背景，Opacity 控制在 0.05-0.1。
-3. **透明度**: 严格使用 `fill-opacity` / `stroke-opacity`。
-4. **禁区**: 无 `clipPath`, `mask`。
-
-### 禁用元素 (黑名单)
-
-- `clipPath`, `mask` (裁剪/遮罩)
-- `<style>`, `class` (样式表；`<defs>` 内 `id` 合法)
-- `foreignObject` (外部对象)
-- `textPath` (路径文本)
-- `animate`, `animateTransform`, `set` (动画)
-
-- `rgba()` 颜色格式 (必须用 hex + opacity)
-- `<g opacity="...">` (组透明度，需单独设置)
+### 5. Ending Page (04_ending.svg)
+- **Background**: Echoes the cover's "Foundation" structure.
+- **Elements**: Reinforces "win-win cooperation" concept with QR code / contact information displayed in zones.
 
 ---
 
-## 十、占位符规范
+## VII. Layout Patterns (Recommended)
 
-| 占位符             | 描述               |
-| ------------------ | ------------------ |
-| `{{TITLE}}`        | 演示文稿主标题     |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 汇报单位           |
-| `{{PRESENTER}}`    | 汇报人             |
-| `{{DATE}}`         | 日期               |
-| `{{CHAPTER_NUM}}`  | 章节编号 (01, 02)  |
-| `{{PAGE_TITLE}}`   | 内容页标题         |
-| `{{STAT_1}}`       | 统计数据1          |
-| `{{CONTENT_AREA}}` | 内容区域标识       |
+### 1. Tech Cards
+- Cards with subtle borders and a glowing effect.
+- Ideal for showcasing key technical indicators or innovation achievements.
+
+### 2. Dashboard
+- Combined layout of charts and key data.
+- Uses Tech Blue as the primary chart color.
+
+### 3. Blueprint
+- Leverages the Geo Grid background to explain complex structures through lines and annotations.
 
 ---
 
-## 十一、使用说明（推荐）
+## VIII. Spacing Guidelines
 
-1. **Logo**: 推荐使用白色 PNG Logo 以适应深色背景。
-2. **背景图**: 封面背景网格已嵌入 SVG，无需外部图片。
-3. **字体**: 优先使用无衬线字体，英文推荐 Roboto 或 Arial。
+| Property       | Value | Description              |
+| -------------- | ----- | ------------------------ |
+| **Base Unit**  | 4px   | Precision design uses a 4px grid |
+| **Module Gap** | 40px  | Generous spacing for breathing room |
+| **Card Gap**   | 20px  | Compact yet clear spacing |
+| **Inner Padding** | 32px | Distance between content and border |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+1. **Gradients**: Use `<linearGradient>` to create metallic or light/shadow effects.
+2. **Grid**: Use `<pattern>` to define precision grid backgrounds with opacity controlled at 0.05-0.1.
+3. **Opacity**: Strictly use `fill-opacity` / `stroke-opacity`.
+4. **Forbidden**: No `clipPath`, `mask`.
+
+### Forbidden Elements (Blacklist)
+
+- `clipPath`, `mask` (clipping/masking)
+- `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
+- `foreignObject` (foreign objects)
+- `textPath` (text on path)
+- `animate`, `animateTransform`, `set` (animations)
+
+- `rgba()` color format (must use hex + opacity)
+- `<g opacity="...">` (group opacity — set individually on each element)
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder        | Description           |
+| ------------------ | --------------------- |
+| `{{TITLE}}`        | Presentation main title |
+| `{{SUBTITLE}}`     | Subtitle              |
+| `{{AUTHOR}}`       | Presenting organization |
+| `{{PRESENTER}}`    | Presenter             |
+| `{{DATE}}`         | Date                  |
+| `{{CHAPTER_NUM}}`  | Chapter number (01, 02) |
+| `{{PAGE_TITLE}}`   | Content page title    |
+| `{{STAT_1}}`       | Statistical data 1    |
+| `{{CONTENT_AREA}}` | Content area identifier |
+
+---
+
+## XI. Usage Notes (Recommended)
+
+1. **Logo**: Recommend using white PNG Logo to suit dark backgrounds.
+2. **Background Images**: Cover background grid is embedded in SVG; no external images needed.
+3. **Fonts**: Prefer sans-serif fonts; Roboto or Arial recommended for English text.

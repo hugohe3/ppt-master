@@ -1,72 +1,72 @@
 #!/usr/bin/env python3
 """
-PPT Master - PPTX 动画模块
+PPT Master - PPTX Animation Module
 
-提供幻灯片切换效果和入场动画的 XML 生成功能。
+Provides XML generation for slide transition effects and entrance animations.
 
-支持的切换效果:
-    - fade: 淡入淡出
-    - push: 推入
-    - wipe: 擦除
-    - split: 分割
-    - reveal: 揭示
-    - random: 随机
+Supported transition effects:
+    - fade: Fade in/out
+    - push: Push
+    - wipe: Wipe
+    - split: Split
+    - reveal: Reveal
+    - random: Random
 
-支持的入场动画:
-    - fade: 淡入
-    - fly: 飞入
-    - zoom: 缩放
-    - appear: 出现
+Supported entrance animations:
+    - fade: Fade in
+    - fly: Fly in
+    - zoom: Zoom
+    - appear: Appear
 
-依赖: 无（纯 XML 生成）
+Dependencies: None (pure XML generation)
 """
 
 from typing import Optional, Dict, Any
 
 
 # ============================================================================
-# 切换效果定义
+# Transition effect definitions
 # ============================================================================
 
 TRANSITIONS: Dict[str, Dict[str, Any]] = {
     'fade': {
-        'name': '淡入淡出',
+        'name': 'Fade',
         'element': 'fade',
         'attrs': {},
     },
     'push': {
-        'name': '推入',
+        'name': 'Push',
         'element': 'push',
-        'attrs': {'dir': 'r'},  # 从右侧推入
+        'attrs': {'dir': 'r'},  # Push from right
     },
     'wipe': {
-        'name': '擦除',
+        'name': 'Wipe',
         'element': 'wipe',
-        'attrs': {'dir': 'r'},  # 从右侧擦除
+        'attrs': {'dir': 'r'},  # Wipe from right
     },
     'split': {
-        'name': '分割',
+        'name': 'Split',
         'element': 'split',
         'attrs': {'orient': 'horz', 'dir': 'out'},
     },
     'reveal': {
-        'name': '揭示',
+        'name': 'Reveal',
         'element': 'strips',
-        'attrs': {'dir': 'rd'},  # 右下角揭示
+        'attrs': {'dir': 'rd'},  # Reveal from bottom-right
     },
     'cover': {
-        'name': '覆盖',
+        'name': 'Cover',
         'element': 'cover',
         'attrs': {'dir': 'r'},
     },
     'random': {
-        'name': '随机',
+        'name': 'Random',
         'element': 'random',
         'attrs': {},
     },
 }
 
-# 速度映射 (秒 -> OOXML 速度值)
+# Speed mapping (seconds -> OOXML speed values)
 SPEED_MAP = {
     'slow': 1.0,
     'med': 0.5,
@@ -75,7 +75,7 @@ SPEED_MAP = {
 
 
 def duration_to_speed(duration: float) -> str:
-    """将持续时间（秒）转换为 OOXML 速度值"""
+    """Convert duration (seconds) to an OOXML speed value"""
     if duration >= 0.75:
         return 'slow'
     elif duration >= 0.35:
@@ -90,65 +90,65 @@ def create_transition_xml(
     advance_after: Optional[float] = None
 ) -> str:
     """
-    生成幻灯片切换效果 XML 片段
-    
+    Generate a slide transition effect XML fragment
+
     Args:
-        effect: 切换效果名称 (fade/push/wipe/split/reveal/cover/random)
-        duration: 切换持续时间（秒）
-        advance_after: 自动翻页间隔（秒），None 表示手动翻页
-    
+        effect: Transition effect name (fade/push/wipe/split/reveal/cover/random)
+        duration: Transition duration (seconds)
+        advance_after: Auto-advance interval (seconds); None means manual advance
+
     Returns:
-        可插入 slide XML 的 <p:transition> 元素字符串
+        A <p:transition> element string insertable into slide XML
     """
     if effect not in TRANSITIONS:
         effect = 'fade'
-    
+
     trans_info = TRANSITIONS[effect]
     element_name = trans_info['element']
     attrs = trans_info['attrs']
-    
-    # 构建速度属性
+
+    # Build speed attribute
     speed = duration_to_speed(duration)
-    
-    # 构建自动翻页属性
+
+    # Build auto-advance attribute
     adv_attr = ''
     if advance_after is not None:
-        adv_tm = int(advance_after * 1000)  # 转换为毫秒
+        adv_tm = int(advance_after * 1000)  # Convert to milliseconds
         adv_attr = f' advTm="{adv_tm}"'
-    
-    # 构建效果元素属性
+
+    # Build effect element attributes
     effect_attrs = ' '.join(f'{k}="{v}"' for k, v in attrs.items())
     if effect_attrs:
         effect_attrs = ' ' + effect_attrs
-    
-    # 生成 XML
+
+    # Generate XML
     return f'''  <p:transition spd="{speed}"{adv_attr}>
     <p:{element_name}{effect_attrs}/>
   </p:transition>'''
 
 
 # ============================================================================
-# 入场动画定义
+# Entrance animation definitions
 # ============================================================================
 
 ANIMATIONS: Dict[str, Dict[str, Any]] = {
     'fade': {
-        'name': '淡入',
+        'name': 'Fade In',
         'filter': 'fade',
     },
     'fly': {
-        'name': '飞入',
+        'name': 'Fly In',
         'filter': 'fly',
-        'prLst': 'from(b)',  # 从底部飞入
+        'prLst': 'from(b)',  # Fly in from bottom
     },
     'zoom': {
-        'name': '缩放',
+        'name': 'Zoom',
         'filter': 'zoom',
         'prLst': 'in',
     },
     'appear': {
-        'name': '出现',
-        'filter': None,  # 无滤镜，仅设置可见性
+        'name': 'Appear',
+        'filter': None,  # No filter, only sets visibility
     },
 }
 
@@ -160,27 +160,27 @@ def create_timing_xml(
     shape_id: int = 2
 ) -> str:
     """
-    生成入场动画 timing XML 片段
-    
+    Generate an entrance animation timing XML fragment
+
     Args:
-        animation: 动画效果名称 (fade/fly/zoom/appear)
-        duration: 动画持续时间（秒）
-        delay: 动画延迟（秒）
-        shape_id: 目标形状 ID（SVG 图片通常为 2）
-    
+        animation: Animation effect name (fade/fly/zoom/appear)
+        duration: Animation duration (seconds)
+        delay: Animation delay (seconds)
+        shape_id: Target shape ID (SVG image is typically 2)
+
     Returns:
-        可插入 slide XML 的 <p:timing> 元素字符串
+        A <p:timing> element string insertable into slide XML
     """
     if animation not in ANIMATIONS:
         animation = 'fade'
-    
+
     anim_info = ANIMATIONS[animation]
     dur_ms = int(duration * 1000)
     delay_ms = int(delay * 1000)
-    
-    # 根据动画类型生成不同的效果 XML
+
+    # Generate different effect XML depending on animation type
     if anim_info['filter'] is None:
-        # appear 动画：仅设置可见性
+        # appear animation: only sets visibility
         effect_xml = f'''                            <p:set>
                               <p:cBhvr>
                                 <p:cTn id="5" dur="1" fill="hold">
@@ -192,12 +192,12 @@ def create_timing_xml(
                               <p:to><p:strVal val="visible"/></p:to>
                             </p:set>'''
     else:
-        # 其他动画：设置可见性 + 动画效果
+        # Other animations: set visibility + animation effect
         filter_name = anim_info['filter']
         pr_attr = ''
         if 'prLst' in anim_info:
             pr_attr = f' prLst="{anim_info["prLst"]}"'
-        
+
         effect_xml = f'''                            <p:set>
                               <p:cBhvr>
                                 <p:cTn id="5" dur="1" fill="hold">
@@ -214,7 +214,7 @@ def create_timing_xml(
                                 <p:tgtEl><p:spTgt spid="{shape_id}"/></p:tgtEl>
                               </p:cBhvr>
                             </p:animEffect>'''
-    
+
     return f'''  <p:timing>
     <p:tnLst>
       <p:par>
@@ -250,35 +250,35 @@ def create_timing_xml(
 
 
 def get_available_transitions() -> list:
-    """获取所有可用的切换效果列表"""
+    """Get a list of all available transition effects"""
     return list(TRANSITIONS.keys())
 
 
 def get_available_animations() -> list:
-    """获取所有可用的入场动画列表"""
+    """Get a list of all available entrance animations"""
     return list(ANIMATIONS.keys())
 
 
 def get_transition_help() -> str:
-    """获取切换效果帮助文本"""
-    lines = ["可用的切换效果:"]
+    """Get help text for transition effects"""
+    lines = ["Available transition effects:"]
     for key, info in TRANSITIONS.items():
         lines.append(f"  {key}: {info['name']}")
     return '\n'.join(lines)
 
 
 def get_animation_help() -> str:
-    """获取入场动画帮助文本"""
-    lines = ["可用的入场动画:"]
+    """Get help text for entrance animations"""
+    lines = ["Available entrance animations:"]
     for key, info in ANIMATIONS.items():
         lines.append(f"  {key}: {info['name']}")
     return '\n'.join(lines)
 
 
 if __name__ == '__main__':
-    # 测试输出
-    print("=== 切换效果 XML 示例 (fade) ===")
+    # Test output
+    print("=== Transition Effect XML Example (fade) ===")
     print(create_transition_xml('fade', 0.5))
     print()
-    print("=== 入场动画 XML 示例 (fade) ===")
+    print("=== Entrance Animation XML Example (fade) ===")
     print(create_timing_xml('fade', 1.0))

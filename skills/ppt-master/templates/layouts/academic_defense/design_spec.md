@@ -1,262 +1,262 @@
-# 学术答辩模板 (Academic Defense Style) - 设计规范
+# Academic Defense Template - Design Specification
 
-> 适用于学术论文答辩、研究汇报、毕业设计展示等场景。
+> Suitable for academic thesis defense, research presentations, graduation project showcases, and similar scenarios.
 
 ---
 
-## 一、模板概述
+## I. Template Overview
 
-| 属性           | 描述                                                   |
+| Property       | Description                                            |
 | -------------- | ------------------------------------------------------ |
-| **模板名称**   | academic_defense（学术答辩模板）                       |
-| **适用场景**   | 毕业答辩、学术汇报、研究进展报告、课题申请             |
-| **设计调性**   | 专业、严谨、科研感、清晰层次                           |
-| **主题模式**   | 亮色主题（白色背景 + 深蓝标题条）                      |
+| **Template Name** | academic_defense                                    |
+| **Use Cases**  | Thesis defense, academic presentations, research progress reports, grant applications |
+| **Design Tone** | Professional, rigorous, research-oriented, clear hierarchy |
+| **Theme Mode** | Light theme (white background + dark blue title bar)   |
 
 ---
 
-## 二、画布规范
+## II. Canvas Specification
 
-| 属性           | 值                            |
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 40px，上 0px，下 35px    |
-| **内容安全区** | x: 40-1240, y: 70-665         |
+| **Page Margins** | Left/Right 40px, Top 0px, Bottom 35px |
+| **Safe Area**  | x: 40-1240, y: 70-665        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色           | 色值        | 备注                             |
+| Role           | Value       | Notes                            |
 | -------------- | ----------- | -------------------------------- |
-| **主导深蓝**   | `#003366`   | 页眉背景、章节标题、主要标题     |
-| **辅助蓝**     | `#0066CC`   | 卡片边框、图标、次级装饰         |
-| **强调红**     | `#CC0000`   | 重点高亮、关键词强调、左侧装饰条 |
-| **浅蓝灰**     | `#E8F4FC`   | 核心观点背景条、卡片内区块       |
-| **背景白**     | `#FFFFFF`   | 页面主背景                       |
+| **Primary Dark Blue** | `#003366` | Header background, section titles, main headings |
+| **Accent Blue** | `#0066CC` | Card borders, icons, secondary decorations |
+| **Accent Red** | `#CC0000`  | Key highlights, keyword emphasis, left decorative bar |
+| **Light Blue-Gray** | `#E8F4FC` | Key message bar background, card inner sections |
+| **Background White** | `#FFFFFF` | Page main background           |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **白色文字**   | `#FFFFFF`   | 深色背景上的文字       |
-| **主文字**     | `#333333`   | 正文内容               |
-| **辅助文字**   | `#666666`   | 说明文字、标注         |
-| **弱灰**       | `#999999`   | 页脚、辅助信息         |
+| **White Text** | `#FFFFFF`   | Text on dark backgrounds |
+| **Primary Text** | `#333333` | Body content           |
+| **Secondary Text** | `#666666` | Descriptions, annotations |
+| **Muted Gray** | `#999999`  | Footer, auxiliary info |
 
-### 中性色
+### Neutral Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **卡片灰**     | `#F5F7FA`   | 卡片内背景、信息区块   |
-| **边框灰**     | `#D0D7E0`   | 卡片边框、分割线       |
+| **Card Gray**  | `#F5F7FA`   | Card inner background, info blocks |
+| **Border Gray** | `#D0D7E0`  | Card borders, dividers |
 
-### 功能色
+### Functional Colors
 
-| 用途     | 色值        | 说明           |
-| -------- | ----------- | -------------- |
-| **成功** | `#28A745`   | 正向指标       |
-| **警示** | `#FFA500`   | 提醒           |
-| **信息** | `#17A2B8`   | 信息提示       |
-
----
-
-## 四、排版体系
-
-### 字体方案
-
-**字体栈**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
-
-### 字号层级
-
-| 层级 | 用途             | 字号 | 字重    |
-| ---- | ---------------- | ---- | ------- |
-| H1   | 封面主标题       | 56px | Bold    |
-| H2   | 页面标题         | 28px | Bold    |
-| H3   | 章节标题         | 56px | Bold    |
-| H4   | 卡片标题         | 24px | Bold    |
-| P    | 正文内容         | 18px | Regular |
-| High | 强调数据         | 36px | Bold    |
-| Sub  | 注释/来源        | 14px | Regular |
-| XS   | 页码/版权        | 12px | Regular |
+| Usage      | Value       | Description    |
+| ---------- | ----------- | -------------- |
+| **Success** | `#28A745`  | Positive indicators |
+| **Warning** | `#FFA500`  | Alerts         |
+| **Info**   | `#17A2B8`   | Information tips |
 
 ---
 
-## 五、页面结构
+## IV. Typography System
 
-### 通用布局
+### Font Stack
 
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **页眉**   | y=0, h=70px   | 深蓝色背景 + 红色左侧竖条 + 页面标题   |
-| **观点条** | y=70, h=50px  | 核心观点/摘要区域（浅蓝灰背景）        |
-| **内容区** | y=135, h=515px| 主要内容区域                           |
-| **页脚**   | y=665, h=55px | 数据来源、章节名称、页码               |
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
 
-### 装饰设计
+### Font Size Hierarchy
 
-- **左侧红色竖条**: 红色 (`#CC0000`)，宽度 6px，用于页眉和卡片装饰
-- **蓝色边框**: 辅助蓝 (`#0066CC`)，用于卡片边框
-- **装饰分割线**: 蓝色 (`#0066CC`)，配合装饰圆点
-
----
-
-## 六、页面类型
-
-### 1. 封面页 (01_cover.svg)
-
-- 白色背景
-- 深蓝色顶部横条 + 红色左侧竖条装饰
-- 右上角 Logo 占位区域
-- 居中主标题 + 副标题
-- 装饰分隔线（蓝色 + 圆点）
-- 答辩人信息区域（姓名、导师、机构）
-- 底部灰色信息区（日期）
-
-### 2. 目录页 (02_toc.svg)
-
-- 白色背景
-- 标准页眉（深蓝色 + 红色竖条）
-- 卡片式目录项布局（2列）
-- 浅蓝灰背景卡片 + 左侧彩色竖条
-- 可选项使用虚线边框
-
-### 3. 章节页 (02_chapter.svg)
-
-- 深蓝色全屏背景 (`#003366`)
-- 右侧几何图形装饰
-- 左侧红色竖条装饰
-- 大号半透明背景编号
-- 醒目白色章节标题
-- 浅蓝灰章节描述
-- 红色装饰横线
-
-### 4. 内容页 (03_content.svg)
-
-- 白色背景
-- 标准页眉（深蓝色 + 红色竖条）
-- 核心观点条（浅蓝灰背景 + 蓝色左侧竖条）
-- 灵活内容区域
-- 页脚：数据来源、章节名称、页码
-
-### 5. 结束页 (04_ending.svg)
-
-- 白色背景
-- 深蓝色顶部横条
-- 居中感谢语
-- 副标语
-- 装饰分隔线
-- 联系信息卡片（灰色背景）
-- 底部灰色区域（版权、页码）
+| Level | Usage            | Size | Weight  |
+| ----- | ---------------- | ---- | ------- |
+| H1    | Cover main title | 56px | Bold    |
+| H2    | Page title       | 28px | Bold    |
+| H3    | Section title    | 56px | Bold    |
+| H4    | Card title       | 24px | Bold    |
+| P     | Body content     | 18px | Regular |
+| High  | Highlighted data | 36px | Bold    |
+| Sub   | Notes/sources    | 14px | Regular |
+| XS    | Page number/copyright | 12px | Regular |
 
 ---
 
-## 七、布局模式
+## V. Page Structure
 
-| 模式               | 适用场景                   |
-| ------------------ | -------------------------- |
-| **单栏居中**       | 封面、结语、重要观点       |
-| **卡片式双列**     | 目录页                     |
-| **左右分栏 (5:5)** | 对比展示                   |
-| **左右分栏 (4:6)** | 图文混排                   |
-| **卡片网格**       | 研究内容列表               |
-| **时间线**         | 研究进程                   |
-| **表格**           | 数据对比、实验结果         |
+### General Layout
 
----
+| Area           | Position/Height | Description                            |
+| -------------- | --------------- | -------------------------------------- |
+| **Header**     | y=0, h=70px     | Dark blue background + red left bar + page title |
+| **Key Message Bar** | y=70, h=50px | Core message/summary area (light blue-gray background) |
+| **Content Area** | y=135, h=515px | Main content area                    |
+| **Footer**     | y=665, h=55px   | Data source, section name, page number |
 
-## 八、间距规范
+### Decorative Elements
 
-| 元素         | 数值   |
-| ------------ | ------ |
-| 卡片间距     | 20px   |
-| 内容块间距   | 24px   |
-| 卡片内边距   | 20px   |
-| 卡片圆角     | 8px    |
-| 图标与文字   | 12px   |
+- **Left Red Bar**: Red (`#CC0000`), width 6px, used for header and card decoration
+- **Blue Border**: Accent blue (`#0066CC`), used for card borders
+- **Decorative Divider**: Blue (`#0066CC`), paired with decorative dots
 
 ---
 
-## 九、SVG 技术约束
+## VI. Page Types
 
-### 必须遵守
+### 1. Cover Page (01_cover.svg)
+
+- White background
+- Dark blue top bar + red left vertical bar decoration
+- Top-right Logo placeholder area
+- Centered main title + subtitle
+- Decorative divider line (blue + dots)
+- Presenter info area (name, advisor, institution)
+- Bottom gray info area (date)
+
+### 2. Table of Contents Page (02_toc.svg)
+
+- White background
+- Standard header (dark blue + red vertical bar)
+- Card-style TOC item layout (2 columns)
+- Light blue-gray background cards + left colored vertical bar
+- Optional items use dashed borders
+
+### 3. Chapter Page (02_chapter.svg)
+
+- Dark blue full-screen background (`#003366`)
+- Right-side geometric decorations
+- Left red vertical bar decoration
+- Large semi-transparent background number
+- Prominent white chapter title
+- Light blue-gray chapter description
+- Red decorative horizontal line
+
+### 4. Content Page (03_content.svg)
+
+- White background
+- Standard header (dark blue + red vertical bar)
+- Key message bar (light blue-gray background + blue left vertical bar)
+- Flexible content area
+- Footer: data source, section name, page number
+
+### 5. Ending Page (04_ending.svg)
+
+- White background
+- Dark blue top bar
+- Centered thank-you message
+- Tagline
+- Decorative divider line
+- Contact info card (gray background)
+- Bottom gray area (copyright, page number)
+
+---
+
+## VII. Layout Patterns
+
+| Pattern            | Use Cases                      |
+| ------------------ | ------------------------------ |
+| **Single Column Centered** | Cover, ending, key points |
+| **Two-Column Cards** | Table of contents            |
+| **Left-Right Split (5:5)** | Comparison display      |
+| **Left-Right Split (4:6)** | Image-text mixed layout |
+| **Card Grid**      | Research content list           |
+| **Timeline**       | Research progress               |
+| **Table**          | Data comparison, experiment results |
+
+---
+
+## VIII. Spacing Guidelines
+
+| Element            | Value  |
+| ------------------ | ------ |
+| Card gap           | 20px   |
+| Content block gap  | 24px   |
+| Card padding       | 20px   |
+| Card border radius | 8px    |
+| Icon-to-text gap   | 12px   |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; no `rgba()`
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Use `<polygon>` triangles for arrows instead of `<marker>`
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-- 图片透明度使用遮罩层替代
-- 仅使用内联样式，禁止外部 CSS 和 `@font-face`
+- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- Use overlay layers for image transparency
+- Inline styles only; no external CSS or `@font-face`
 
 ---
 
-## 十、占位符规范
+## X. Placeholder Specification
 
-模板使用 `{{PLACEHOLDER}}` 格式的占位符，常用占位符：
+Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 论文/项目主标题    |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 答辩人姓名         |
-| `{{ADVISOR}}`      | 指导老师           |
-| `{{INSTITUTION}}`  | 学校/机构          |
-| `{{DATE}}`         | 答辩日期           |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{SECTION_NUM}}`  | 章节编号           |
-| `{{CHAPTER_NUM}}`  | 章节编号（大号）   |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{CHAPTER_DESC}}` | 章节描述           |
-| `{{KEY_MESSAGE}}`  | 核心观点           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{SOURCE}}`       | 数据来源           |
-| `{{SECTION_NAME}}` | 章节名称（页脚）   |
-| `{{THANK_YOU}}`    | 感谢语             |
-| `{{TAGLINE}}`      | 口号/副标语        |
-| `{{CONTACT_INFO}}` | 联系方式           |
-| `{{EMAIL}}`        | 电子邮箱           |
-| `{{COPYRIGHT}}`    | 版权信息           |
-| `{{LOGO}}`         | Logo文字           |
+| `{{TITLE}}`        | Thesis/project main title |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{AUTHOR}}`       | Presenter name     |
+| `{{ADVISOR}}`      | Advisor            |
+| `{{INSTITUTION}}`  | University/institution |
+| `{{DATE}}`         | Defense date       |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{SECTION_NUM}}`  | Section number     |
+| `{{CHAPTER_NUM}}`  | Chapter number (large) |
+| `{{CHAPTER_TITLE}}`| Chapter title      |
+| `{{CHAPTER_DESC}}` | Chapter description |
+| `{{KEY_MESSAGE}}`  | Key message        |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{SOURCE}}`       | Data source        |
+| `{{SECTION_NAME}}` | Section name (footer) |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{TAGLINE}}`      | Tagline/slogan     |
+| `{{CONTACT_INFO}}` | Contact information |
+| `{{EMAIL}}`        | Email address      |
+| `{{COPYRIGHT}}`    | Copyright info     |
+| `{{LOGO}}`         | Logo text          |
 
 ---
 
-## 十一、组件规范
+## XI. Component Specifications
 
-### 1. 标签 (Tag)
+### 1. Tag
 
 ```xml
-<!-- 蓝底白字标签 -->
+<!-- Blue background white text tag -->
 <rect x="40" y="150" width="80" height="28" fill="#0066CC" rx="4"/>
 <text x="80" y="170" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold">内容详解</text>
 
-<!-- 红底白字标签（强调） -->
+<!-- Red background white text tag (emphasis) -->
 <rect x="40" y="150" width="80" height="28" fill="#CC0000" rx="4"/>
 <text x="80" y="170" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="bold">核心目标</text>
 ```
 
-### 2. 流程箭头
+### 2. Flow Arrow
 
 ```xml
-<!-- 水平流程箭头 -->
+<!-- Horizontal flow arrow -->
 <line x1="200" y1="300" x2="350" y2="300" stroke="#0066CC" stroke-width="2"/>
 <polygon points="350,295 360,300 350,305" fill="#0066CC"/>
 ```
 
-### 3. 数据高亮框
+### 3. Data Highlight Box
 
 ```xml
-<!-- 重要数据区块 -->
+<!-- Key data block -->
 <rect x="40" y="400" width="200" height="80" fill="#FFFFFF" stroke="#CC0000" stroke-width="2" rx="8"/>
 <text x="140" y="445" text-anchor="middle" fill="#CC0000" font-size="24" font-weight="bold">30%</text>
 <text x="140" y="470" text-anchor="middle" fill="#666666" font-size="12">关键指标</text>
@@ -264,29 +264,29 @@
 
 ---
 
-## 十二、使用说明
+## XII. Usage Instructions
 
-1. 复制模板到项目目录
-2. 根据答辩内容需求选择合适的页面模板
-3. 使用占位符标记需要替换的内容
-4. 确保答辩人信息、导师信息完整
-5. 通过 Executor 角色生成最终 SVG
+1. Copy the template to the project directory
+2. Select the appropriate page template based on defense content needs
+3. Use placeholders to mark content that needs replacement
+4. Ensure presenter info and advisor info are complete
+5. Generate the final SVG through the Executor role
 
 ---
 
-## 十三、设计检查清单
+## XIII. Design Checklist
 
-### 生成前
+### Before Generation
 
-- [ ] 内容是否适合当前页布局
-- [ ] 配色是否符合规范
-- [ ] 字号层级是否正确
+- [ ] Is the content suitable for the current page layout
+- [ ] Does the color scheme follow the specification
+- [ ] Is the font size hierarchy correct
 
-### 生成后
+### After Generation
 
 - [ ] viewBox = `0 0 1280 720`
-- [ ] 无禁止元素
-- [ ] 文本可读（≥12px）
-- [ ] 内容在安全区域内
-- [ ] 元素对齐整齐
-- [ ] 样式一致性检查通过
+- [ ] No prohibited elements
+- [ ] Text is readable (≥12px)
+- [ ] Content is within the safe area
+- [ ] Elements are properly aligned
+- [ ] Style consistency check passed

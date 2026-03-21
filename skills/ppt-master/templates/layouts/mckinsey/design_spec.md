@@ -1,261 +1,261 @@
-# 麦肯锡风格模板 (McKinsey Style) - 设计规范
+# McKinsey Style Template - Design Specification
 
-> 适用于战略咨询、高管汇报、投资分析、商业提案等高端商务场景。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | mckinsey（麦肯锡风格模板）                             |
-| **适用场景**   | 战略咨询、高管汇报、投资分析、商业提案                 |
-| **设计调性**   | 数据驱动、结构化思维、专业留白、极简高端               |
-| **主题模式**   | 亮色主题（白色背景 + McKinsey Blue 强调）              |
+> Suitable for strategic consulting, executive briefings, investment analysis, business proposals, and other high-end business scenarios.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| **Template Name** | mckinsey (McKinsey Style Template)                      |
+| **Use Cases**  | Strategic consulting, executive briefings, investment analysis, business proposals |
+| **Design Tone** | Data-driven, structured thinking, professional whitespace, minimalist premium |
+| **Theme Mode** | Light theme (white background + McKinsey Blue accent)      |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 60px，上 60px，下 40px   |
-| **内容安全区** | x: 60-1220, y: 60-680         |
-| **网格基准**   | 40px                          |
+| **Page Margins** | Left/Right 60px, Top 60px, Bottom 40px |
+| **Safe Area**  | x: 60-1220, y: 60-680         |
+| **Grid Baseline** | 40px                       |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色             | 色值        | 备注                             |
+| Role             | Value       | Notes                            |
 | ---------------- | ----------- | -------------------------------- |
-| **McKinsey Blue**| `#005587`   | 主色调，标题栏、强调元素         |
-| **Deep Teal**    | `#004D5C`   | 辅助蓝色，渐变终点               |
-| **背景白**       | `#FFFFFF`   | 页面主背景                       |
-| **浅灰背景**     | `#ECF0F1`   | 分隔、次级背景                   |
+| **McKinsey Blue**| `#005587`   | Primary color, title bar, accent elements |
+| **Deep Teal**    | `#004D5C`   | Secondary blue, gradient endpoint |
+| **Background White** | `#FFFFFF` | Main page background            |
+| **Light Gray Background** | `#ECF0F1` | Separators, secondary backgrounds |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **标题深灰**   | `#2C3E50`   | 主标题、卡片标题       |
-| **正文灰**     | `#5D6D7E`   | 正文内容、说明文字     |
-| **辅助灰**     | `#7F8C8D`   | 注释、来源、页脚       |
-| **白色文字**   | `#FFFFFF`   | 蓝色背景上的文字       |
+| **Title Dark Gray** | `#2C3E50` | Main titles, card titles |
+| **Body Gray**  | `#5D6D7E`   | Body content, descriptive text |
+| **Auxiliary Gray** | `#7F8C8D` | Annotations, sources, footer |
+| **White Text** | `#FFFFFF`   | Text on blue backgrounds |
 
-### 强调色
+### Accent Colors
 
-| 用途             | 色值        | 说明                   |
+| Usage            | Value       | Description            |
 | ---------------- | ----------- | ---------------------- |
-| **数据强调**     | `#F5A623`   | Amber，关键数据高亮    |
-| **警示/问题**    | `#E74C3C`   | Coral，问题点、负向指标|
-| **成功/正向**    | `#27AE60`   | 绿色，正向指标         |
-| **信息蓝**       | `#0076A8`   | 辅助信息、图表渐变     |
+| **Data Highlight** | `#F5A623` | Amber, key data emphasis |
+| **Warning/Issue** | `#E74C3C`  | Coral, problem areas, negative indicators |
+| **Success/Positive** | `#27AE60` | Green, positive indicators |
+| **Info Blue**    | `#0076A8`   | Supplementary info, chart gradients |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `Arial, "Helvetica Neue", "Segoe UI", sans-serif`
+**Font Stack**: `Arial, "Helvetica Neue", "Segoe UI", sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级     | 用途             | 字号   | 字重    |
-| -------- | ---------------- | ------ | ------- |
-| H1       | 封面主标题       | 52px   | Bold    |
-| H2       | 页面标题         | 36px   | Bold    |
-| H3       | 模块标题         | 22-24px| Bold    |
-| H4       | 卡片标题         | 16-18px| Bold    |
-| P        | 正文内容         | 14-16px| Regular |
-| Data     | 数据强调         | 44px   | Bold    |
-| Sub      | 图表标签/注释    | 12-14px| Regular |
-
----
-
-## 五、核心设计原则
-
-### 麦肯锡风格特色
-
-1. **数据驱动**: 以关键数据与洞察为核心，强化论据支撑
-2. **结构化思维**: MECE 原则，清晰的逻辑框架
-3. **信息可视化**: 图表、矩阵、漏斗模型优先
-4. **专业留白**: 充足的呼吸感，内容占比 < 65%
-5. **网格对齐**: 40px 基准网格，精确对齐
-6. **极简图标**: 几何形状，避免花哨装饰
-7. **专业配色**: 避免花哨渐变，保持克制
+| Level    | Usage              | Size    | Weight  |
+| -------- | ------------------ | ------- | ------- |
+| H1       | Cover main title   | 52px    | Bold    |
+| H2       | Page title         | 36px    | Bold    |
+| H3       | Section title      | 22-24px | Bold    |
+| H4       | Card title         | 16-18px | Bold    |
+| P        | Body content       | 14-16px | Regular |
+| Data     | Data highlight     | 44px    | Bold    |
+| Sub      | Chart labels/Annotations | 12-14px | Regular |
 
 ---
 
-## 六、页面结构
+## V. Core Design Principles
 
-### 通用布局
+### McKinsey Style Characteristics
 
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0, h=4px    | McKinsey Blue 横条装饰                 |
-| **标题区** | y=40, h=60px  | 页面标题（左对齐，大号粗体）           |
-| **内容区** | y=120, h=520px| 主要内容区域                          |
-| **页脚**   | y=680, h=40px | 页码（左）、数据来源/机密标识（右）    |
-
-### 装饰设计
-
-- **左侧装饰条**: McKinsey Blue (`#005587`)，宽度 8px（封面页）
-- **顶部装饰线**: McKinsey Blue (`#005587`)，高度 4px
-- **卡片边框**: 浅灰 (`#ECF0F1`)，宽度 2px
-- **几何装饰**: 低透明度蓝色几何图案（封面页右侧）
+1. **Data-Driven**: Key data and insights at the core, strengthening argument support
+2. **Structured Thinking**: MECE principle, clear logical frameworks
+3. **Information Visualization**: Charts, matrices, and funnel models take priority
+4. **Professional Whitespace**: Ample breathing room, content coverage < 65%
+5. **Grid Alignment**: 40px baseline grid, precise alignment
+6. **Minimalist Icons**: Geometric shapes, avoiding ornate decoration
+7. **Professional Color Palette**: Avoiding flashy gradients, maintaining restraint
 
 ---
 
-## 七、页面类型
+## VI. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### General Layout
 
-- 白色背景
-- 左侧蓝色装饰窄条 (8px)
-- 左上角短横线装饰
-- 主标题 + 副标题（左对齐）
-- 底部项目代码、日期
-- 右侧低透明度几何装饰
-- 右下角机密标识
+| Area       | Position/Height | Description                            |
+| ---------- | --------------- | -------------------------------------- |
+| **Top**    | y=0, h=4px      | McKinsey Blue horizontal bar           |
+| **Title Area** | y=40, h=60px | Page title (left-aligned, large bold)  |
+| **Content Area** | y=120, h=520px | Main content area                  |
+| **Footer** | y=680, h=40px   | Page number (left), data source/confidential label (right) |
 
-### 2. 目录页 (02_toc.svg)
+### Decorative Design
 
-- 白色背景
-- 顶部蓝色装饰条
-- 标题区 "Agenda" / "Contents"
-- 章节列表（编号 + 标题）
-- 简洁线条分隔
-
-### 3. 章节页 (02_chapter.svg)
-
-- McKinsey Blue 全屏背景
-- 居中大号章节标题
-- 白色文字
-- 极简设计
-
-### 4. 内容页 (03_content.svg)
-
-- 白色背景
-- 顶部蓝色装饰条
-- 左对齐页面标题
-- 灵活内容区域
-- 页脚：页码、数据来源
-
-### 5. 结束页 (04_ending.svg)
-
-- 白色背景
-- 居中感谢语
-- 联系信息
-- 机密标识
+- **Left Accent Bar**: McKinsey Blue (`#005587`), width 8px (cover page)
+- **Top Decoration Line**: McKinsey Blue (`#005587`), height 4px
+- **Card Borders**: Light gray (`#ECF0F1`), width 2px
+- **Geometric Decoration**: Low-opacity blue geometric patterns (cover page right side)
 
 ---
 
-## 八、常用图表规范
+## VII. Page Types
 
-### 图表尺寸建议
+### 1. Cover Page (01_cover.svg)
 
-| 图表类型     | 建议尺寸           |
-| ------------ | ------------------ |
-| 条形图       | 500-700 × 400-500px|
-| 饼图         | 直径 300-400px     |
-| 数据卡片     | 150 × 120px        |
-| 矩阵         | 240-280px / 单元格 |
-| 漏斗图       | 500 × 400px        |
+- White background
+- Left-side blue narrow accent bar (8px)
+- Top-left short horizontal line decoration
+- Main title + subtitle (left-aligned)
+- Bottom project code, date
+- Right-side low-opacity geometric decoration
+- Bottom-right confidential label
 
-### 图表配色
+### 2. Table of Contents (02_toc.svg)
 
-- 主系列: `#005587`, `#0076A8`, `#4A90A4`
-- 强调: `#F5A623`
-- 警示: `#E74C3C`
+- White background
+- Top blue decoration bar
+- Title area "Agenda" / "Contents"
+- Chapter list (number + title)
+- Clean line separators
+
+### 3. Chapter Page (02_chapter.svg)
+
+- McKinsey Blue full-screen background
+- Centered large chapter title
+- White text
+- Minimalist design
+
+### 4. Content Page (03_content.svg)
+
+- White background
+- Top blue decoration bar
+- Left-aligned page title
+- Flexible content area
+- Footer: page number, data source
+
+### 5. Ending Page (04_ending.svg)
+
+- White background
+- Centered thank-you message
+- Contact information
+- Confidential label
 
 ---
 
-## 九、间距规范
+## VIII. Chart Specifications
 
-| 元素         | 数值   |
-| ------------ | ------ |
-| 页面边距     | 60px   |
-| 标题区高度   | 80-100px |
-| 图表间距     | 40-60px  |
-| 卡片内边距   | 20-24px  |
-| 文字行距     | 1.6      |
-| 网格基准     | 40px     |
+### Recommended Chart Dimensions
+
+| Chart Type       | Recommended Size   |
+| ---------------- | ------------------ |
+| Bar chart        | 500-700 × 400-500px |
+| Pie chart        | Diameter 300-400px |
+| Data card        | 150 × 120px       |
+| Matrix           | 240-280px / cell   |
+| Funnel chart     | 500 × 400px       |
+
+### Chart Color Palette
+
+- Primary series: `#005587`, `#0076A8`, `#4A90A4`
+- Accent: `#F5A623`
+- Warning: `#E74C3C`
 
 ---
 
-## 十、SVG 技术约束
+## IX. Spacing Guidelines
 
-### 必须遵守
+| Element          | Value    |
+| ---------------- | -------- |
+| Page margins     | 60px     |
+| Title area height | 80-100px |
+| Chart spacing    | 40-60px  |
+| Card padding     | 20-24px  |
+| Text line height | 1.6      |
+| Grid baseline    | 40px     |
+
+---
+
+## X. SVG Technical Constraints
+
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
-8. 渐变使用 `<defs>` 定义 `<linearGradient>`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Use `<polygon>` triangles instead of `<marker>` for arrows
+8. Define gradients using `<linearGradient>` within `<defs>`
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-- 图片透明度使用遮罩层替代
-- 仅使用内联样式，禁止外部 CSS 和 `@font-face`
+- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- Use overlay layers instead of image opacity
+- Use inline styles only; external CSS and `@font-face` are prohibited
 
 ---
 
-## 十一、占位符规范
+## XI. Placeholder Specification
 
-模板使用 `{{PLACEHOLDER}}` 格式的占位符，常用占位符：
+Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{PROJECT_CODE}}` | 项目代码           |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{SOURCE}}`       | 数据来源           |
-| `{{CONFIDENTIAL}}` | 机密标识           |
+| `{{TITLE}}`        | Main title         |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{PROJECT_CODE}}` | Project code       |
+| `{{DATE}}`         | Date               |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{CHAPTER_NUM}}`  | Chapter number     |
+| `{{CHAPTER_TITLE}}`| Chapter title      |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{SOURCE}}`       | Data source        |
+| `{{CONFIDENTIAL}}` | Confidential label |
 
 ---
 
-## 十二、质量核对清单
+## XII. Quality Checklist
 
-### 生成前
+### Pre-Generation
 
-- [ ] 每页核心观点明确
-- [ ] 数据支撑充分
-- [ ] 逻辑结构清晰
+- [ ] Each page has a clear core message
+- [ ] Sufficient data support
+- [ ] Clear logical structure
 
-### 生成后
+### Post-Generation
 
 - [ ] viewBox = `0 0 1280 720`
-- [ ] McKinsey Blue 一致应用
-- [ ] 关键数据突出显示（Amber/Coral）
-- [ ] 图表坐标轴完整标注
-- [ ] 文字可读性良好（对比度 > 4.5:1）
-- [ ] 元素对齐精准（网格对齐）
-- [ ] 页码/页脚信息完整
-- [ ] 无 `<foreignObject>`
-- [ ] 所有文本使用 `<tspan>` 换行
+- [ ] McKinsey Blue consistently applied
+- [ ] Key data prominently highlighted (Amber/Coral)
+- [ ] Chart axes fully labeled
+- [ ] Text readability is good (contrast ratio > 4.5:1)
+- [ ] Elements precisely aligned (grid alignment)
+- [ ] Page numbers/footer information complete
+- [ ] No `<foreignObject>`
+- [ ] All text uses `<tspan>` for line breaks
 
 ---
 
-## 十三、使用说明
+## XIII. Usage Instructions
 
-1. 复制模板到项目目录
-2. 根据汇报内容需求选择合适的页面模板
-3. 使用占位符标记需要替换的内容
-4. 数据图表优先，文字简洁
-5. 通过 Executor 角色生成最终 SVG
+1. Copy the template to the project directory
+2. Select the appropriate page template based on briefing content requirements
+3. Mark content to be replaced using placeholders
+4. Prioritize data charts; keep text concise
+5. Generate the final SVG through the Executor role

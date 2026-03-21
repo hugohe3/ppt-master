@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-PPT Master - SVG 圆角矩形转 Path 工具
+PPT Master - SVG Rounded Rectangle to Path Tool
 
-解决 SVG 在 PowerPoint 中「转换为形状」时圆角丢失的问题：
-将带 rx/ry 的 <rect> 转换为等效的 <path>
+Solves the issue of rounded corners being lost when using "Convert to Shape" in PowerPoint:
+Converts <rect> elements with rx/ry to equivalent <path> elements.
 
-用法:
-    python3 scripts/svg_rect_to_path.py <SVG文件或目录>
-    python3 scripts/svg_rect_to_path.py <项目路径> -s output
-    python3 scripts/svg_rect_to_path.py <项目路径> -s final -o svg_rounded
+Usage:
+    python3 scripts/svg_rect_to_path.py <SVG file or directory>
+    python3 scripts/svg_rect_to_path.py <project_path> -s output
+    python3 scripts/svg_rect_to_path.py <project_path> -s final -o svg_rounded
 
-示例:
+Examples:
     python3 scripts/svg_rect_to_path.py examples/ppt169_demo
     python3 scripts/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
 
-输出:
-    - 目录模式：输出到 svg_rounded/ 子目录
-    - 文件模式：输出到 <文件名>_rounded.svg
+Output:
+    - Directory mode: outputs to svg_rounded/ subdirectory
+    - File mode: outputs to <filename>_rounded.svg
 """
 
 import sys
@@ -30,20 +30,20 @@ from xml.etree import ElementTree as ET
 def rect_to_rounded_path(x: float, y: float, width: float, height: float, 
                           rx: float, ry: float) -> str:
     """
-    将圆角矩形转换为 SVG path 字符串
-    使用椭圆弧命令绘制圆角
+    Convert a rounded rectangle to an SVG path string.
+    Uses elliptical arc commands to draw rounded corners.
     """
-    # 限制圆角半径不超过宽高的一半
+    # Limit corner radius to half of width/height
     rx = min(rx, width / 2)
     ry = min(ry, height / 2)
     
-    # 计算关键点
+    # Calculate key points
     x1 = x + rx
     x2 = x + width - rx
     y1 = y + ry
     y2 = y + height - ry
     
-    # 构建 path
+    # Build path
     path = (
         f"M{x1:.2f},{y:.2f} "
         f"H{x2:.2f} "
@@ -57,18 +57,18 @@ def rect_to_rounded_path(x: float, y: float, width: float, height: float,
         f"Z"
     )
     
-    # 清理多余的小数
+    # Clean up excess decimals
     path = re.sub(r'\.00(?=\s|,|[A-Za-z]|$)', '', path)
     
     return path
 
 
 def parse_float(val: str, default: float = 0.0) -> float:
-    """安全解析浮点数"""
+    """Safely parse a float value."""
     if not val:
         return default
     try:
-        # 移除单位
+        # Remove units
         val = re.sub(r'(px|pt|em|%|rem)$', '', val.strip())
         return float(val)
     except ValueError:
@@ -77,19 +77,19 @@ def parse_float(val: str, default: float = 0.0) -> float:
 
 def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
     """
-    处理 SVG 内容，将圆角矩形转换为 path
-    返回 (处理后的内容, 转换数量)
+    Process SVG content, converting rounded rectangles to paths.
+    Returns (processed content, conversion count).
     """
     converted_count = 0
     
-    # 保存原始 XML 声明
+    # Save original XML declaration
     xml_declaration = ''
     if content.strip().startswith('<?xml'):
         match = re.match(r'(<\?xml[^?]*\?>)', content)
         if match:
             xml_declaration = match.group(1) + '\n'
     
-    # 注册 SVG 命名空间
+    # Register SVG namespaces
     ET.register_namespace('', 'http://www.w3.org/2000/svg')
     ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
     
@@ -97,31 +97,31 @@ def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
         root = ET.fromstring(content)
     except ET.ParseError as e:
         if verbose:
-            print(f"    XML 解析错误: {e}")
+            print(f"    XML parse error: {e}")
         return content, 0
     
-    # 获取默认命名空间
+    # Get default namespace
     ns = ''
     if root.tag.startswith('{'):
         ns = root.tag.split('}')[0] + '}'
     
     def get_tag_name(tag):
-        """获取不带命名空间的标签名"""
+        """Get tag name without namespace."""
         if tag.startswith('{'):
             return tag.split('}')[1]
         return tag
     
     def process_element(elem):
-        """处理单个元素"""
+        """Process a single element."""
         nonlocal converted_count
         tag_name = get_tag_name(elem.tag)
         
-        # 处理圆角矩形
+        # Process rounded rectangles
         if tag_name == 'rect':
             rx = parse_float(elem.get('rx', '0'))
             ry = parse_float(elem.get('ry', '0'))
             
-            # 如果只指定了一个，另一个取相同值
+            # If only one is specified, the other takes the same value
             if rx == 0 and ry > 0:
                 rx = ry
             elif ry == 0 and rx > 0:
@@ -134,36 +134,36 @@ def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
                 height = parse_float(elem.get('height', '0'))
                 
                 if width > 0 and height > 0:
-                    # 生成 path
+                    # Generate path
                     path_d = rect_to_rounded_path(x, y, width, height, rx, ry)
                     
-                    # rect 特有属性
+                    # rect-specific attributes
                     rect_attrs = {'x', 'y', 'width', 'height', 'rx', 'ry'}
                     
-                    # 修改元素为 path
+                    # Change element to path
                     elem.tag = ns + 'path' if ns else 'path'
                     elem.set('d', path_d)
                     
-                    # 移除 rect 特有属性
+                    # Remove rect-specific attributes
                     for attr in rect_attrs:
                         if attr in elem.attrib:
                             del elem.attrib[attr]
                     
                     converted_count += 1
                     if verbose:
-                        print(f"    转换圆角矩形: rx={rx}, ry={ry}")
+                        print(f"    Converted rounded rect: rx={rx}, ry={ry}")
         
-        # 递归处理子元素
+        # Recursively process child elements
         for child in elem:
             process_element(child)
     
-    # 处理所有元素
+    # Process all elements
     process_element(root)
     
-    # 转换回字符串
+    # Convert back to string
     result = ET.tostring(root, encoding='unicode')
     
-    # 添加 XML 声明（如果原来有的话）
+    # Add XML declaration (if originally present)
     if xml_declaration:
         result = xml_declaration + result
     
@@ -171,14 +171,14 @@ def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
 
 
 def process_svg_file(input_path: Path, output_path: Path, verbose: bool = False) -> Tuple[bool, int]:
-    """处理单个 SVG 文件"""
+    """Process a single SVG file."""
     try:
         with open(input_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
         processed, count = process_svg(content, verbose)
         
-        # 确保输出目录存在
+        # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -188,12 +188,12 @@ def process_svg_file(input_path: Path, output_path: Path, verbose: bool = False)
         
     except Exception as e:
         if verbose:
-            print(f"  错误: {e}")
+            print(f"  Error: {e}")
         return False, 0
 
 
 def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Path], str]:
-    """查找项目中的 SVG 文件"""
+    """Find SVG files in a project."""
     dir_map = {
         'output': 'svg_output',
         'final': 'svg_final',
@@ -220,52 +220,52 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
 
 def main():
     parser = argparse.ArgumentParser(
-        description='PPT Master - SVG 圆角矩形转 Path 工具',
+        description='PPT Master - SVG Rounded Rectangle to Path Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
+Examples:
     %(prog)s examples/ppt169_demo
     %(prog)s examples/ppt169_demo -s final
     %(prog)s examples/ppt169_demo/svg_output/01_cover.svg
 
-处理内容:
-    将带 rx/ry 的 <rect> 转换为等效的 <path>
-    处理后的 SVG 在 PowerPoint 中「转换为形状」时能保留圆角
+What it does:
+    Converts <rect> elements with rx/ry to equivalent <path> elements.
+    Processed SVGs preserve rounded corners when using "Convert to Shape" in PowerPoint.
 '''
     )
     
-    parser.add_argument('path', type=str, help='SVG 文件或项目目录路径')
+    parser.add_argument('path', type=str, help='SVG file or project directory path')
     parser.add_argument('-s', '--source', type=str, default='output',
-                        help='SVG 来源: output/final/flat/final_flat 或子目录名 (默认: output)')
+                        help='SVG source: output/final/flat/final_flat or subdirectory name (default: output)')
     parser.add_argument('-o', '--output', type=str, default='svg_rounded',
-                        help='输出目录名 (默认: svg_rounded)')
-    parser.add_argument('-v', '--verbose', action='store_true', help='详细输出')
-    parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
+                        help='Output directory name (default: svg_rounded)')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
     
     args = parser.parse_args()
     
     input_path = Path(args.path)
     
     if not input_path.exists():
-        print(f"错误: 路径不存在: {input_path}")
+        print(f"Error: Path not found: {input_path}")
         sys.exit(1)
     
     verbose = args.verbose and not args.quiet
     quiet = args.quiet
     
     if not quiet:
-        print("PPT Master - SVG 圆角矩形转 Path 工具")
+        print("PPT Master - SVG Rounded Rectangle to Path Tool")
         print("=" * 50)
     
     total_converted = 0
     
     if input_path.is_file() and input_path.suffix.lower() == '.svg':
-        # 单文件模式
+        # Single file mode
         output_path = input_path.with_stem(input_path.stem + '_rounded')
-        
+
         if not quiet:
-            print(f"  输入: {input_path}")
-            print(f"  输出: {output_path}")
+            print(f"  Input: {input_path}")
+            print(f"  Output: {output_path}")
             print()
         
         success, count = process_svg_file(input_path, output_path, verbose)
@@ -273,26 +273,26 @@ def main():
         
         if success:
             if not quiet:
-                print(f"[完成] 已保存: {output_path}")
+                print(f"[DONE] Saved: {output_path}")
         else:
-            print(f"[失败] 处理失败")
+            print(f"[FAIL] Processing failed")
             sys.exit(1)
     
     else:
-        # 目录/项目模式
+        # Directory/project mode
         svg_files, source_dir = find_svg_files(input_path, args.source)
         
         if not svg_files:
-            print("错误: 未找到 SVG 文件")
+            print("Error: No SVG files found")
             sys.exit(1)
         
         output_dir = input_path / args.output
         
         if not quiet:
-            print(f"  项目路径: {input_path}")
-            print(f"  SVG 来源: {source_dir}")
-            print(f"  输出目录: {args.output}")
-            print(f"  文件数量: {len(svg_files)}")
+            print(f"  Project path: {input_path}")
+            print(f"  SVG source: {source_dir}")
+            print(f"  Output directory: {args.output}")
+            print(f"  File count: {len(svg_files)}")
             print()
         
         success_count = 0
@@ -315,13 +315,13 @@ def main():
         
         if not quiet:
             print()
-            print(f"[完成] 成功: {success_count}/{len(svg_files)}")
-            print(f"  输出目录: {output_dir}")
+            print(f"[DONE] Succeeded: {success_count}/{len(svg_files)}")
+            print(f"  Output directory: {output_dir}")
     
-    # 显示统计
+    # Show statistics
     if not quiet:
         print()
-        print(f"转换统计: 圆角矩形 -> path: {total_converted} 个")
+        print(f"Conversion stats: rounded rect -> path: {total_converted}")
     
     sys.exit(0)
 

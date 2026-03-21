@@ -1,289 +1,289 @@
-# 医院/医科大学模板 (Medical University Style) - 设计规范
+# Hospital / Medical University Template (Medical University Style) - Design Specification
 
-> 适用于医院、医科大学、附属医院、医学研究机构的学术报告、病例汇报、科研成果展示等场景。
-
----
-
-## 一、模板概述
-
-| 属性         | 描述                                                         |
-| ------------ | ------------------------------------------------------------ |
-| **模板名称** | medical_university（医院/医科大学模板）                      |
-| **适用场景** | 医学学术报告、病例讨论、科研汇报、医院工作汇报、医学教育培训 |
-| **设计调性** | 专业、严谨、生命感、科技感、可信赖                           |
-| **主题模式** | 亮色主题（白色背景 + 医学蓝标题条 + 生命绿点缀）             |
-| **适用机构** | 各类医疗机构（医院、医科大学、附属医院、医学研究机构）       |
+> Suitable for hospitals, medical universities, affiliated hospitals, and medical research institutions for academic reports, case presentations, research results, and related scenarios.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                         |
-| -------------- | -------------------------- |
-| **格式**       | 标准 16:9                  |
-| **尺寸**       | 1280 × 720 px              |
-| **viewBox**    | `0 0 1280 720`             |
-| **页面边距**   | 左右 40px，上 0px，下 35px |
-| **内容安全区** | x: 40-1240, y: 70-665      |
-
----
-
-## 三、配色方案
-
-### 主色系
-
-| 角色           | 色值      | 备注                              |
-| -------------- | --------- | --------------------------------- |
-| **主导医学蓝** | `#0066B3` | 页眉背景、章节标题、主要标题      |
-| **深医学蓝**   | `#004080` | 章节页背景、重点强调              |
-| **辅助绿**     | `#00A86B` | 卡片边框、生命/健康相关内容、图标 |
-| **强调橙**     | `#FF6B35` | 重点高亮、关键数据、左侧装饰条    |
-| **浅蓝背景**   | `#E6F3FA` | 核心观点背景条、卡片内区块        |
-| **浅绿背景**   | `#E8F5EE` | 医疗相关卡片、健康数据区块        |
-| **背景白**     | `#FFFFFF` | 页面主背景                        |
-
-### 文字色系
-
-| 角色         | 色值      | 用途             |
-| ------------ | --------- | ---------------- |
-| **白色文字** | `#FFFFFF` | 深色背景上的文字 |
-| **主文字**   | `#333333` | 正文内容         |
-| **辅助文字** | `#666666` | 说明文字、标注   |
-| **弱灰**     | `#999999` | 页脚、辅助信息   |
-
-### 中性色
-
-| 角色       | 色值      | 用途                 |
-| ---------- | --------- | -------------------- |
-| **卡片灰** | `#F5F7FA` | 卡片内背景、信息区块 |
-| **边框灰** | `#D0D7E0` | 卡片边框、分割线     |
-
-### 功能色
-
-| 用途     | 色值      | 说明               |
-| -------- | --------- | ------------------ |
-| **成功** | `#28A745` | 正向指标、康复数据 |
-| **警示** | `#FFC107` | 注意事项、提醒     |
-| **危险** | `#DC3545` | 危急值、风险提示   |
-| **信息** | `#17A2B8` | 信息提示、参考数据 |
-
-### 配色变体方案
-
-如需调整为其他医疗机构配色，可替换主色系中的对应色值：
-
-| 机构类型   | 主导色    | 辅助色    | 强调色    | 适用场景               |
-| ---------- | --------- | --------- | --------- | ---------------------- |
-| 默认医学蓝 | `#0066B3` | `#00A86B` | `#FF6B35` | 综合医院、医科大学     |
-| 儿童医院   | `#0099CC` | `#66CC99` | `#FF9933` | 儿童医院、儿科专科     |
-| 中医院     | `#8B4513` | `#228B22` | `#DAA520` | 中医院、中医药研究机构 |
-| 妇幼保健院 | `#E91E8C` | `#9C27B0` | `#FF5722` | 妇幼保健院、妇产科     |
-
-> **使用方法**：在所有 SVG 模板文件中全局替换主色系色值即可快速切换配色方案。
+| Property         | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| **Template Name**| medical_university (Hospital / Medical University Template)          |
+| **Use Cases**    | Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training |
+| **Design Tone**  | Professional, rigorous, life-affirming, tech-forward, trustworthy   |
+| **Theme Mode**   | Light theme (white background + medical blue title bar + life green accents) |
+| **Target Institutions** | All types of medical institutions (hospitals, medical universities, affiliated hospitals, medical research institutes) |
 
 ---
 
-## 四、排版体系
+## II. Canvas Specification
 
-### 字体方案
-
-**字体栈**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
-
-### 字号层级
-
-| 层级 | 用途       | 字号 | 字重    |
-| ---- | ---------- | ---- | ------- |
-| H1   | 封面主标题 | 52px | Bold    |
-| H2   | 页面标题   | 28px | Bold    |
-| H3   | 章节标题   | 52px | Bold    |
-| H4   | 卡片标题   | 24px | Bold    |
-| P    | 正文内容   | 18px | Regular |
-| High | 强调数据   | 36px | Bold    |
-| Sub  | 注释/来源  | 14px | Regular |
-| XS   | 页码/版权  | 12px | Regular |
+| Property           | Value                        |
+| ------------------ | ---------------------------- |
+| **Format**         | Standard 16:9                |
+| **Dimensions**     | 1280 × 720 px               |
+| **viewBox**        | `0 0 1280 720`              |
+| **Page Margins**   | Left/right 40px, top 0px, bottom 35px |
+| **Content Safe Area** | x: 40-1240, y: 70-665    |
 
 ---
 
-## 五、页面结构
+## III. Color Scheme
 
-### 通用布局
+### Primary Colors
 
-| 区域       | 位置/高度      | 内容说明                             |
-| ---------- | -------------- | ------------------------------------ |
-| **页眉**   | y=0, h=70px    | 医学蓝背景 + 橙色左侧竖条 + 页面标题 |
-| **观点条** | y=70, h=50px   | 核心观点/摘要区域（浅蓝背景）        |
-| **内容区** | y=135, h=515px | 主要内容区域                         |
-| **页脚**   | y=665, h=55px  | 数据来源、机构名称、页码             |
+| Role               | Value     | Notes                                    |
+| ------------------ | --------- | ---------------------------------------- |
+| **Primary Medical Blue** | `#0066B3` | Header background, chapter titles, main titles |
+| **Deep Medical Blue** | `#004080` | Chapter page background, key emphasis   |
+| **Accent Green**   | `#00A86B` | Card borders, life/health-related content, icons |
+| **Emphasis Orange** | `#FF6B35` | Key highlights, critical data, left accent bars |
+| **Light Blue BG**  | `#E6F3FA` | Key message background bar, card inner blocks |
+| **Light Green BG** | `#E8F5EE` | Medical-related cards, health data blocks |
+| **Background White** | `#FFFFFF` | Main page background                   |
 
-### 装饰设计
+### Text Colors
 
-- **左侧橙色竖条**: 强调橙 (`#FF6B35`)，宽度 6px，用于页眉和卡片装饰
-- **医学蓝边框**: 主导蓝 (`#0066B3`)，用于卡片边框
-- **绿色点缀**: 辅助绿 (`#00A86B`)，用于健康/生命相关元素
-- **十字/心电图装饰**: 医疗主题几何装饰元素
+| Role             | Value     | Usage                      |
+| ---------------- | --------- | -------------------------- |
+| **White Text**   | `#FFFFFF` | Text on dark backgrounds   |
+| **Primary Text** | `#333333` | Body content               |
+| **Secondary Text** | `#666666` | Captions, annotations    |
+| **Muted Gray**   | `#999999` | Footer, supplementary info |
 
----
+### Neutral Colors
 
-## 六、页面类型
+| Role           | Value     | Usage                        |
+| -------------- | --------- | ---------------------------- |
+| **Card Gray**  | `#F5F7FA` | Card inner background, info blocks |
+| **Border Gray**| `#D0D7E0` | Card borders, divider lines  |
 
-### 1. 封面页 (01_cover.svg)
+### Functional Colors
 
-- 白色背景
-- 医学蓝顶部横条 + 橙色左侧竖条装饰
-- 右上角 Logo/校徽占位区域
-- 居中主标题 + 副标题
-- 装饰分隔线（蓝色 + 绿色圆点）
-- 汇报人信息区域（姓名、科室/导师、机构）
-- 底部灰色信息区（日期）
+| Usage        | Value     | Description                    |
+| ------------ | --------- | ------------------------------ |
+| **Success**  | `#28A745` | Positive indicators, recovery data |
+| **Warning**  | `#FFC107` | Precautions, reminders         |
+| **Danger**   | `#DC3545` | Critical values, risk alerts   |
+| **Info**     | `#17A2B8` | Info tips, reference data      |
 
-### 2. 目录页 (02_toc.svg)
+### Color Variant Schemes
 
-- 白色背景
-- 标准页眉（医学蓝 + 橙色竖条）
-- 卡片式目录项布局（2列）
-- 浅蓝/浅绿背景卡片 + 左侧彩色竖条
-- 可选项使用虚线边框
+To adapt to other medical institution branding, replace the corresponding values in the primary color system:
 
-### 3. 章节页 (02_chapter.svg)
+| Institution Type    | Primary   | Accent    | Emphasis  | Applicable Scenarios          |
+| ------------------- | --------- | --------- | --------- | ----------------------------- |
+| Default Medical Blue | `#0066B3` | `#00A86B` | `#FF6B35` | General hospitals, medical universities |
+| Children's Hospital | `#0099CC` | `#66CC99` | `#FF9933` | Children's hospitals, pediatric specialties |
+| TCM Hospital        | `#8B4513` | `#228B22` | `#DAA520` | TCM hospitals, TCM research institutes |
+| Maternal & Child Health | `#E91E8C` | `#9C27B0` | `#FF5722` | Maternal & child health centers, OB/GYN |
 
-- 深医学蓝全屏背景 (`#004080`)
-- 右侧几何图形装饰（医疗主题）
-- 左侧橙色竖条装饰
-- 大号半透明背景编号
-- 醒目白色章节标题
-- 浅蓝章节描述
-
-### 4. 内容页 (03_content.svg)
-
-- 白色背景
-- 标准页眉（医学蓝 + 橙色竖条）
-- 核心观点条（浅蓝背景 + 蓝色左侧竖条）
-- 灵活内容区域
-- 页脚：数据来源、机构名称、页码
-
-### 5. 结束页 (04_ending.svg)
-
-- 白色背景
-- 医学蓝顶部横条
-- 居中感谢语
-- 科室/联系信息
-- 机构 Logo 区域
+> **Usage**: Perform a global find-and-replace of the primary color values across all SVG template files to quickly switch color schemes.
 
 ---
 
-## 七、布局模式（推荐）
+## IV. Typography System
 
-### 适用于医学报告的常见布局
+### Font Stack
 
-| 布局名称     | 适用场景               | 特点               |
-| ------------ | ---------------------- | ------------------ |
-| **单栏居中** | 病例概述、主要结论     | 突出重点、层次清晰 |
-| **双栏对比** | 治疗前后对比、方案比较 | 左右对称、便于比较 |
-| **图文混排** | 影像资料展示、病理图片 | 图片配文字说明     |
-| **数据卡片** | 检验结果、生命体征     | 多指标并列展示     |
-| **时间线**   | 病程记录、治疗过程     | 时间顺序清晰       |
-| **流程图**   | 诊疗流程、操作规范     | 步骤明确、逻辑清晰 |
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
 
----
+### Font Size Hierarchy
 
-## 八、间距规范
-
-| 间距类型     | 值   | 用途                 |
-| ------------ | ---- | -------------------- |
-| **页面边距** | 40px | 内容到页面边缘的距离 |
-| **卡片间距** | 24px | 卡片之间的间距       |
-| **元素间距** | 16px | 卡片内元素间的间距   |
-| **文字行距** | 1.5  | 正文行高倍数         |
-| **段落间距** | 20px | 段落之间的间距       |
+| Level | Usage            | Size | Weight  |
+| ----- | ---------------- | ---- | ------- |
+| H1    | Cover main title | 52px | Bold    |
+| H2    | Page title       | 28px | Bold    |
+| H3    | Chapter title    | 52px | Bold    |
+| H4    | Card title       | 24px | Bold    |
+| P     | Body content     | 18px | Regular |
+| High  | Emphasized data  | 36px | Bold    |
+| Sub   | Notes/sources    | 14px | Regular |
+| XS    | Page number/copyright | 12px | Regular |
 
 ---
 
-## 九、SVG 技术约束
+## V. Page Structure
 
-### 必须遵守
+### General Layout
 
-- viewBox 固定为 `0 0 1280 720`
-- 背景使用 `<rect>` 元素
-- 使用 `<tspan>` 进行文本换行
-- 所有颜色使用 HEX 格式（不使用 rgba）
-- 透明度使用 `fill-opacity` / `stroke-opacity`
+| Area              | Position/Height  | Description                                  |
+| ----------------- | ---------------- | -------------------------------------------- |
+| **Header**        | y=0, h=70px      | Medical blue background + orange left vertical bar + page title |
+| **Key Message Bar** | y=70, h=50px   | Core message/summary area (light blue background) |
+| **Content Area**  | y=135, h=515px   | Main content area                            |
+| **Footer**        | y=665, h=55px    | Data source, institution name, page number   |
 
-### 禁用元素（PPT 不兼容）
+### Decorative Design
 
-| 禁用项             | 替代方案               |
-| ------------------ | ---------------------- |
-| `clipPath`         | 不使用裁剪             |
-| `mask`             | 不使用遮罩             |
-| `<style>`          | 使用内联样式           |
-| `class`            | 使用内联属性（`<defs>` 内 `id` 合法） |
-| `foreignObject`    | 使用 `<tspan>` 换行    |
-| `textPath`         | 使用普通 `<text>`      |
-| `animate*` / `set` | 不使用动画             |
-| `marker-end`       | 使用 `<polygon>` 箭头  |
-| `<g opacity>`      | 每个元素单独设置透明度 |
+- **Left Orange Vertical Bar**: Emphasis orange (`#FF6B35`), width 6px, used for header and card decoration
+- **Medical Blue Border**: Primary blue (`#0066B3`), used for card borders
+- **Green Accents**: Accent green (`#00A86B`), used for health/life-related elements
+- **Cross/ECG Decorations**: Medical-themed geometric decorative elements
 
 ---
 
-## 十、占位符规范
+## VI. Page Types
 
-| 占位符              | 用途                 |
-| ------------------- | -------------------- |
-| `{{LOGO}}`          | 校徽/院徽            |
-| `{{TITLE}}`         | 主标题               |
-| `{{SUBTITLE}}`      | 副标题               |
-| `{{AUTHOR}}`        | 汇报人姓名           |
-| `{{DEPARTMENT}}`    | 科室/院系            |
-| `{{ADVISOR}}`       | 指导老师             |
-| `{{INSTITUTION}}`   | 机构名称             |
-| `{{DATE}}`          | 日期                 |
-| `{{CHAPTER_NUM}}`   | 章节编号             |
-| `{{CHAPTER_TITLE}}` | 章节标题             |
-| `{{CHAPTER_DESC}}`  | 章节描述             |
-| `{{PAGE_TITLE}}`    | 页面标题             |
-| `{{KEY_MESSAGE}}`   | 核心观点             |
-| `{{CONTENT_AREA}}`  | 内容区域             |
-| `{{SOURCE}}`        | 数据来源             |
-| `{{PAGE_NUM}}`      | 页码                 |
-| `{{SECTION_NAME}}`  | 章节名称（页脚）     |
-| `{{TOC_ITEM_N}}`    | 目录项（N=1,2,3...） |
+### 1. Cover Page (01_cover.svg)
+
+- White background
+- Medical blue top horizontal bar + orange left vertical bar decoration
+- Upper-right logo/emblem placeholder area
+- Centered main title + subtitle
+- Decorative divider line (blue + green dots)
+- Presenter information area (name, department/advisor, institution)
+- Bottom gray info area (date)
+
+### 2. Table of Contents (02_toc.svg)
+
+- White background
+- Standard header (medical blue + orange vertical bar)
+- Card-style TOC layout (2 columns)
+- Light blue/light green background cards + left colored vertical bar
+- Optional items use dashed borders
+
+### 3. Chapter Page (02_chapter.svg)
+
+- Deep medical blue full-screen background (`#004080`)
+- Right-side geometric decorations (medical theme)
+- Left orange vertical bar decoration
+- Large semi-transparent background chapter number
+- Prominent white chapter title
+- Light blue chapter description
+
+### 4. Content Page (03_content.svg)
+
+- White background
+- Standard header (medical blue + orange vertical bar)
+- Key message bar (light blue background + blue left vertical bar)
+- Flexible content area
+- Footer: data source, institution name, page number
+
+### 5. Ending Page (04_ending.svg)
+
+- White background
+- Medical blue top horizontal bar
+- Centered thank-you message
+- Department/contact information
+- Institution logo area
 
 ---
 
-## 十一、使用说明
+## VII. Layout Patterns (Recommended)
 
-### 1. 复制模板到项目
+### Common Layouts for Medical Reports
+
+| Layout Name           | Applicable Scenarios             | Features                       |
+| --------------------- | -------------------------------- | ------------------------------ |
+| **Single Column Center** | Case overview, main conclusions | Highlights key points, clear hierarchy |
+| **Dual Column Comparison** | Before/after treatment, plan comparison | Symmetrical, easy to compare |
+| **Image-Text Mixed**  | Imaging materials, pathology images | Images with text descriptions |
+| **Data Cards**        | Lab results, vital signs         | Multiple metrics side by side  |
+| **Timeline**          | Disease progression, treatment course | Clear chronological order    |
+| **Flowchart**         | Clinical pathways, procedure standards | Clear steps, logical flow   |
+
+---
+
+## VIII. Spacing Specification
+
+| Spacing Type       | Value | Usage                            |
+| ------------------ | ----- | -------------------------------- |
+| **Page Margins**   | 40px  | Distance from content to page edge |
+| **Card Spacing**   | 24px  | Spacing between cards            |
+| **Element Spacing** | 16px | Spacing between elements within cards |
+| **Line Height**    | 1.5   | Body text line height multiplier |
+| **Paragraph Spacing** | 20px | Spacing between paragraphs     |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+- viewBox fixed at `0 0 1280 720`
+- Use `<rect>` elements for backgrounds
+- Use `<tspan>` for text wrapping
+- All colors in HEX format (no rgba)
+- Use `fill-opacity` / `stroke-opacity` for transparency
+
+### Prohibited Elements (PPT Incompatible)
+
+| Prohibited Item      | Alternative                    |
+| -------------------- | ------------------------------ |
+| `clipPath`           | Do not use clipping            |
+| `mask`               | Do not use masking             |
+| `<style>`            | Use inline styles              |
+| `class`              | Use inline attributes (`id` inside `<defs>` is allowed) |
+| `foreignObject`      | Use `<tspan>` for wrapping     |
+| `textPath`           | Use standard `<text>`          |
+| `animate*` / `set`   | Do not use animations          |
+| `marker-end`         | Use `<polygon>` for arrows     |
+| `<g opacity>`        | Set opacity on each element individually |
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder         | Usage                        |
+| ------------------- | ---------------------------- |
+| `{{LOGO}}`          | Emblem/institution logo      |
+| `{{TITLE}}`         | Main title                   |
+| `{{SUBTITLE}}`      | Subtitle                     |
+| `{{AUTHOR}}`        | Presenter name               |
+| `{{DEPARTMENT}}`    | Department/school            |
+| `{{ADVISOR}}`       | Thesis advisor               |
+| `{{INSTITUTION}}`   | Institution name             |
+| `{{DATE}}`          | Date                         |
+| `{{CHAPTER_NUM}}`   | Chapter number               |
+| `{{CHAPTER_TITLE}}` | Chapter title                |
+| `{{CHAPTER_DESC}}`  | Chapter description          |
+| `{{PAGE_TITLE}}`    | Page title                   |
+| `{{KEY_MESSAGE}}`   | Key message                  |
+| `{{CONTENT_AREA}}`  | Content area                 |
+| `{{SOURCE}}`        | Data source                  |
+| `{{PAGE_NUM}}`      | Page number                  |
+| `{{SECTION_NAME}}`  | Section name (footer)        |
+| `{{TOC_ITEM_N}}`    | TOC item (N=1,2,3...)        |
+
+---
+
+## XI. Usage Notes
+
+### 1. Copy Template to Project
 
 ```bash
-cp templates/layouts/medical_university/* projects/<项目>/templates/
+cp templates/layouts/medical_university/* projects/<project>/templates/
 ```
 
-### 2. Logo 放置建议
+### 2. Logo Placement Guidelines
 
-- 封面页：右上角，尺寸约 160×50px
-- 内容页：右上角页眉内，尺寸约 120×35px
-- 结束页：可放大展示，居中或配合联系信息
+- Cover page: Upper-right corner, approx. 160×50px
+- Content page: Upper-right within header, approx. 120×35px
+- Ending page: Can be enlarged, centered or paired with contact info
 
 ---
 
-## 十二、医学内容专用组件
+## XII. Medical Content-Specific Components
 
-### 数据卡片（生命体征）
+### Data Card (Vital Signs)
 
 ```xml
 <rect x="x" y="y" width="180" height="100" fill="#E8F5EE" rx="8"/>
-<text x="x+90" y="y+35" text-anchor="middle" fill="#333333" font-size="14">体温</text>
+<text x="x+90" y="y+35" text-anchor="middle" fill="#333333" font-size="14">Temperature</text>
 <text x="x+90" y="y+70" text-anchor="middle" fill="#00A86B" font-size="28" font-weight="bold">36.5°C</text>
 ```
 
-### 警示标签
+### Warning Label
 
 ```xml
 <rect x="x" y="y" width="80" height="28" fill="#FFC107" rx="4"/>
-<text x="x+40" y="y+19" text-anchor="middle" fill="#333333" font-size="14">注意</text>
+<text x="x+40" y="y+19" text-anchor="middle" fill="#333333" font-size="14">Caution</text>
 ```
 
-### 危急值标签
+### Critical Value Label
 
 ```xml
 <rect x="x" y="y" width="80" height="28" fill="#DC3545" rx="4"/>
-<text x="x+40" y="y+19" text-anchor="middle" fill="#FFFFFF" font-size="14">危急值</text>
+<text x="x+40" y="y+19" text-anchor="middle" fill="#FFFFFF" font-size="14">Critical</text>
 ```

@@ -1,162 +1,162 @@
-# smart_red - 智慧红橙商务风格设计规范
+# smart_red - Smart Red-Orange Business Style Design Specification
 
-> 适用于科技企业介绍、教育行业解决方案、智慧校园建设方案等场景，风格现代、活力。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | smart_red (智慧红橙商务风格)                           |
-| **适用场景**   | 企业介绍、产品发布、解决方案演示、教育行业课件         |
-| **设计调性**   | 现代、活力、专业、几何感                               |
-| **主题模式**   | 混合主题（深色/彩色封面 + 浅色内容页）                 |
+> Suitable for tech company introductions, education industry solutions, smart campus proposals, and similar scenarios. Modern and energetic style.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| **Template Name** | smart_red (Smart Red-Orange Business Style)              |
+| **Use Cases**  | Company introductions, product launches, solution presentations, education industry courseware |
+| **Design Tone** | Modern, energetic, professional, geometric                |
+| **Theme Mode** | Hybrid theme (dark/colorful cover + light content pages)   |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **安全边距**   | 60px (左右), 50px (上下)      |
-| **内容区域**   | x: 60-1220, y: 100-670        |
-| **标题区域**   | y: 50-100                     |
-| **网格基准**   | 40px                          |
+| **Safe Margins** | 60px (left/right), 50px (top/bottom) |
+| **Content Area** | x: 60-1220, y: 100-670      |
+| **Title Area** | y: 50-100                     |
+| **Grid Baseline** | 40px                       |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色             | 色值        | 备注                             |
+| Role             | Value       | Notes                            |
 | ---------------- | ----------- | -------------------------------- |
-| **主色 Red**     | `#DE3545`   | 品牌识别、标题装饰、几何切角     |
-| **辅助色 Orange**| `#F0964D`   | 几何点缀、渐变搭配               |
-| **深色背景 Dark**| `#333333`   | 封面背景、几何切角、深色页脚     |
+| **Primary Red**  | `#DE3545`   | Brand identity, title decoration, geometric cutouts |
+| **Auxiliary Orange** | `#F0964D` | Geometric accents, gradient pairing |
+| **Dark Background** | `#333333` | Cover background, geometric cutouts, dark footer |
 
-### 中性色
+### Neutral Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **浅灰背景**   | `#F5F5F7`   | 页面背景               |
-| **边框灰**     | `#E0E0E0`   | 模块分割线、卡片边框   |
-| **正文黑**     | `#333333`   | 标题及正文标准色       |
-| **说明灰**     | `#666666`   | 副标题、注释文字       |
-| **纯白**       | `#FFFFFF`   | 卡片背景               |
+| **Light Gray Background** | `#F5F5F7` | Page background  |
+| **Border Gray** | `#E0E0E0`  | Section dividers, card borders |
+| **Body Black** | `#333333`   | Standard color for titles and body text |
+| **Description Gray** | `#666666` | Subtitles, annotation text |
+| **Pure White** | `#FFFFFF`   | Card background        |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `Arial, "Helvetica Neue", "Microsoft YaHei", sans-serif`
+**Font Stack**: `Arial, "Helvetica Neue", "Microsoft YaHei", sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级     | 用途             | 字号   | 字重    |
-| -------- | ---------------- | ------ | ------- |
-| H1       | 封面主标题       | 60-80px| Bold    |
-| H2       | 页面标题         | 32-40px| Bold    |
-| H3       | 小节/卡片标题    | 24-28px| Bold    |
-| P        | 正文内容         | 18-20px| Regular |
-| Caption  | 辅助说明         | 14-16px| Regular |
-
----
-
-## 五、核心设计原则
-
-### 几何商务风格
-
-1.  **几何切角**: 封面、目录、过渡页使用大面积三角形切角设计。
-2.  **红黑对比**: 红色主色搭配深灰色块，营造专业且有冲击力的视觉效果。
-3.  **卡片式布局**: 内容页采用白色卡片承载内容，背景使用浅灰，增加层次感。
-4.  **留白**: 保持适度留白，避免信息过载。
-
-### 高级美化特性 (v2.0)
-
-1.  **多层几何叠加**: 主要三角形配合半透明小型三角形，增加视觉深度。
-2.  **阴影效果**: 文字阴影、卡片阴影、圆形阴影，提升立体感。
-3.  **双线装饰**: 装饰线采用双线样式（粗+细），更具设计感。
-4.  **微妙光晕**: 在内容区域后添加极淡的色彩光晕，增加高端感。
-5.  **纹理点缀**: 面板添加极淡的斜线纹理，增加质感。
-6.  **圆形阴影**: 目录编号圆形带阴影，暗示交互性。
+| Level    | Usage              | Size    | Weight  |
+| -------- | ------------------ | ------- | ------- |
+| H1       | Cover main title   | 60-80px | Bold    |
+| H2       | Page title         | 32-40px | Bold    |
+| H3       | Subsection/Card title | 24-28px | Bold |
+| P        | Body content       | 18-20px | Regular |
+| Caption  | Supplementary text | 14-16px | Regular |
 
 ---
 
-## 六、页面结构
+## V. Core Design Principles
 
-### 通用布局
+### Geometric Business Style
 
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0-80        | 导航栏/标题区                          |
-| **内容区** | y=100-660     | 主要内容区域（卡片/图示）              |
-| **页脚**   | y=680         | 页码及版权信息                         |
+1. **Geometric Cutouts**: Cover, table of contents, and transition pages use large triangular cutout designs.
+2. **Red-Black Contrast**: Red primary color paired with dark gray blocks creates a professional and impactful visual.
+3. **Card-Based Layout**: Content pages use white cards to hold content, with light gray backgrounds for added depth.
+4. **Whitespace**: Maintain adequate whitespace to avoid information overload.
 
-### 装饰设计
+### Advanced Refinement Features (v2.0)
 
--   **三角形切角**: 封面和封底的核心视觉元素。
--   **侧边栏**: 目录页特有的左侧红色多边形面板。
--   **顶部装饰条**: 内容页顶部的红色切角装饰。
-
----
-
-## 七、页面类型
-
-### 1. 封面页 (01_cover.svg)
-
--   **背景**: 浅灰背景 `#F5F5F7`
--   **左上角**: 红色大三角切角 (0,0 -> 350,0 -> 0,350)
--   **左下角**: 深灰色三角切角 (0,720 -> 300,720 -> 0,420)
--   **右下角**: 红色大三角切角 (1280,720 -> 1280,320 -> 880,720)
--   **标题区**: 居中偏右显示主标题 `{{TITLE}}` 和副标题 `{{SUBTITLE}}`
--   **信息区**: 底部显示汇报人 `{{AUTHOR}}` 和日期 `{{DATE}}`
-
-### 2. 目录页 (02_toc.svg)
-
--   **背景**: 浅灰背景 `#F5F5F7`
--   **左侧**: 全高红色多边形面板 + "目录"大字
--   **右侧**: 内容列表区域
--   **目录项**: 垂直排列，使用圆形数字索引 (01, 02...)
-
-### 3. 章节页 (02_chapter.svg)
-
--   **装饰**: 红色三角形呼应封面 (左上/右下)
--   **中心**: 大号章节编号 `{{CHAPTER_NUM}}` + 章节标题 `{{CHAPTER_TITLE}}`
--   **风格**: 简洁有力，色彩鲜明
-
-### 4. 内容页 (03_content.svg)
-
--   **顶部**: 白色导航栏 + 右上角红色切角装饰 + 标题双三角装饰
--   **背景**: 浅灰背景 `#F5F5F7`
--   **标题**: 居左显示页面标题 `{{PAGE_TITLE}}`
--   **内容**: `{{CONTENT_AREA}}` 使用白色卡片样式（圆角+描边）
--   **页脚**: 包含版权信息和页码
-
-### 5. 结束页 (04_ending.svg)
-
--   **布局**: 与封面完全呼应的三角布局（左上红、左下灰、右下红）
--   **居中**: 显示感谢语 "谢谢观看"
--   **底部**: 留白用于联系信息
+1. **Multi-Layer Geometric Overlay**: Main triangles paired with semi-transparent smaller triangles for visual depth.
+2. **Shadow Effects**: Text shadows, card shadows, and circle shadows for a 3D feel.
+3. **Dual-Line Decoration**: Decorative lines use dual-line styles (thick + thin) for enhanced design appeal.
+4. **Subtle Glow**: Ultra-faint color glow behind content areas for a premium feel.
+5. **Texture Accents**: Panels with very faint diagonal line textures for added tactile quality.
+6. **Circle Shadows**: Table of contents numbering circles with shadows to suggest interactivity.
 
 ---
 
-## 八、常用组件
+## VI. Page Structure
 
-### 卡片样式
+### General Layout
+
+| Area       | Position/Height | Description                            |
+| ---------- | --------------- | -------------------------------------- |
+| **Top**    | y=0-80          | Navigation bar / Title area            |
+| **Content Area** | y=100-660 | Main content area (cards/diagrams)     |
+| **Footer** | y=680           | Page number and copyright information  |
+
+### Decorative Design
+
+- **Triangular Cutouts**: Core visual element of cover and back pages.
+- **Sidebar**: Left-side red polygonal panel unique to the table of contents page.
+- **Top Decoration Bar**: Red cutout decoration at the top of content pages.
+
+---
+
+## VII. Page Types
+
+### 1. Cover Page (01_cover.svg)
+
+- **Background**: Light gray background `#F5F5F7`
+- **Top-Left**: Red large triangular cutout (0,0 -> 350,0 -> 0,350)
+- **Bottom-Left**: Dark gray triangular cutout (0,720 -> 300,720 -> 0,420)
+- **Bottom-Right**: Red large triangular cutout (1280,720 -> 1280,320 -> 880,720)
+- **Title Area**: Main title `{{TITLE}}` and subtitle `{{SUBTITLE}}` displayed center-right
+- **Info Area**: Presenter `{{AUTHOR}}` and date `{{DATE}}` displayed at bottom
+
+### 2. Table of Contents (02_toc.svg)
+
+- **Background**: Light gray background `#F5F5F7`
+- **Left Side**: Full-height red polygonal panel + large "Contents" text
+- **Right Side**: Content list area
+- **TOC Items**: Vertically arranged with circular number indices (01, 02...)
+
+### 3. Chapter Page (02_chapter.svg)
+
+- **Decoration**: Red triangles echoing the cover (top-left / bottom-right)
+- **Center**: Large chapter number `{{CHAPTER_NUM}}` + chapter title `{{CHAPTER_TITLE}}`
+- **Style**: Clean and impactful, vivid colors
+
+### 4. Content Page (03_content.svg)
+
+- **Top**: White navigation bar + top-right red cutout decoration + title dual-triangle decoration
+- **Background**: Light gray background `#F5F5F7`
+- **Title**: Page title `{{PAGE_TITLE}}` displayed left-aligned
+- **Content**: `{{CONTENT_AREA}}` uses white card style (rounded corners + border)
+- **Footer**: Includes copyright information and page number
+
+### 5. Ending Page (04_ending.svg)
+
+- **Layout**: Triangular layout fully echoing the cover (top-left red, bottom-left gray, bottom-right red)
+- **Center**: Thank-you message displayed
+- **Bottom**: Whitespace reserved for contact information
+
+---
+
+## VIII. Common Components
+
+### Card Style
 
 ```xml
-<!-- 白色内容卡片 -->
+<!-- White content card -->
 <rect x="60" y="110" width="1160" height="540" rx="4" ry="4" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" />
 ```
 
-### 目录圆形编号
+### TOC Circular Numbering
 
 ```xml
 <circle cx="40" cy="40" r="30" fill="#FFFFFF" stroke="#DE3545" stroke-width="2" />
@@ -165,41 +165,41 @@
 
 ---
 
-## 九、SVG 技术约束
+## IX. SVG Technical Constraints
 
-### 必须遵守
+### Mandatory Rules
 
-1.  viewBox: `0 0 1280 720`
-2.  背景使用 `<rect>` 元素
-3.  文本换行使用 `<tspan>`（**严禁** `<foreignObject>`）
-4.  透明度使用 `fill-opacity` / `stroke-opacity`
-5.  禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6.  禁止使用：`textPath`、`animate*`、`script`
-7.  渐变使用 `<defs>` 定义
+1. viewBox: `0 0 1280 720`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (**strictly no** `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`
+7. Define gradients using `<defs>`
 
 ---
 
-## 十、占位符规范
+## X. Placeholder Specification
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 演讲者/作者        |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CONTENT_AREA}}` | 内容区域标识       |
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{TOC_ITEM_1}}`   | 目录项 1           |
-| `{{CLOSING_MESSAGE}}`| 结束语           |
+| `{{TITLE}}`        | Main title         |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{AUTHOR}}`       | Presenter/Author   |
+| `{{DATE}}`         | Date               |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{CONTENT_AREA}}` | Content area identifier |
+| `{{CHAPTER_NUM}}`  | Chapter number     |
+| `{{CHAPTER_TITLE}}`| Chapter title      |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{TOC_ITEM_1}}`   | TOC item 1         |
+| `{{CLOSING_MESSAGE}}`| Closing message  |
 
 ---
 
-## 十一、使用说明
+## XI. Usage Instructions
 
-1.  复制本目录到项目目录。
-2.  根据内容需求选择页面模板。
-3.  修改 SVG 中的文本内容或替换图片。
-4.  使用 `ppt-master` 工具生成 PPTX 文件。
+1. Copy this directory to the project directory.
+2. Select the appropriate page template based on content requirements.
+3. Modify the text content in the SVG files or replace images.
+4. Use the `ppt-master` tool to generate the PPTX file.

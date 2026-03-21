@@ -1,201 +1,201 @@
-# 科技蓝商务 - 通用商务风格设计规范
+# Tech Blue Business (科技蓝商务) - Universal Business Style Design Specification
 
-> 适用于企业汇报、产品发布、方案提案、流程规范等商务场景，风格专业、科技、简洁。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | 科技蓝商务 (tech_blue_business)                         |
-| **适用场景**   | 企业汇报、产品发布、方案提案、流程规范、培训材料         |
-| **设计调性**   | 科技、商务、专业、简洁                                 |
-| **主题模式**   | 混合主题（深蓝/科技蓝封面 + 浅色内容页）                 |
+> Suitable for corporate reports, product launches, proposals, process standards, and other business scenarios. Style: professional, tech-oriented, and clean.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
-| -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **安全边距**   | 60px (左右), 50px (上下)      |
-| **内容区域**   | x: 60-1220, y: 140-640        |
-| **标题区域**   | y: 40-100                     |
-| **网格基准**   | 40px                          |
+| Property         | Description                                                      |
+| ---------------- | ---------------------------------------------------------------- |
+| **Template Name**| Tech Blue Business (科技蓝商务 / tech_blue_business)             |
+| **Use Cases**    | Corporate reports, product launches, proposals, process standards, training materials |
+| **Design Tone**  | Tech, business, professional, clean                              |
+| **Theme Mode**   | Mixed theme (dark blue/tech blue cover + light content pages)    |
 
 ---
 
-## 三、配色方案
+## II. Canvas Specification
 
-### 主色系
-
-| 角色             | 色值        | 备注                             |
-| ---------------- | ----------- | -------------------------------- |
-| **主色 Blue**    | `#0078D7`   | 品牌识别、标题装饰、核心元素     |
-| **深色 Dark**    | `#002E5D`   | 深色背景、页脚、重要节点         |
-| **辅助色 Cyan**  | `#4CA1E7`   | 渐变搭配、次级装饰               |
-| **警示色 Red**   | `#E60012`   | 重点强调、警示信息               |
-
-### 中性色
-
-| 角色           | 色值        | 用途                   |
-| -------------- | ----------- | ---------------------- |
-| **背景白**     | `#FFFFFF`   | 页面主体背景           |
-| **浅灰背景**   | `#F5F5F7`   | 每个页面的底色         |
-| **边框灰**     | `#A0C4E3`   | 虚线框、模块分割线     |
-| **正文黑**     | `#333333`   | 标题及正文标准色       |
-| **说明灰**     | `#666666`   | 副标题、页码、注释     |
+| Property           | Value                         |
+| ------------------ | ----------------------------- |
+| **Format**         | Standard 16:9                 |
+| **Dimensions**     | 1280 × 720 px                |
+| **viewBox**        | `0 0 1280 720`               |
+| **Safe Margins**   | 60px (left/right), 50px (top/bottom) |
+| **Content Area**   | x: 60-1220, y: 140-640       |
+| **Title Area**     | y: 40-100                    |
+| **Grid Baseline**  | 40px                         |
 
 ---
 
-## 四、排版体系
+## III. Color Scheme
 
-### 字体方案
+### Primary Colors
 
-**字体栈**: `"Microsoft YaHei", "PingFang SC", sans-serif`
+| Role               | Value       | Notes                                    |
+| ------------------ | ----------- | ---------------------------------------- |
+| **Primary Blue**   | `#0078D7`   | Brand identity, title accents, key elements |
+| **Dark Blue**      | `#002E5D`   | Dark backgrounds, footer, important nodes |
+| **Accent Cyan**    | `#4CA1E7`   | Gradient pairing, secondary accents      |
+| **Alert Red**      | `#E60012`   | Key emphasis, warning information        |
 
-### 字号层级
+### Neutral Colors
 
-| 层级     | 用途             | 字号   | 字重    |
-| -------- | ---------------- | ------ | ------- |
-| H1       | 封面主标题       | 64px   | Bold    |
-| H2       | 页面标题         | 36-40px| Bold    |
-| H3       | 小节/卡片标题    | 24-28px| Bold    |
-| P        | 正文内容         | 20-24px| Regular |
-| Caption  | 辅助说明         | 14-16px| Regular |
-
----
-
-## 五、核心设计原则
-
-### 科技商务风格
-
-1.  **波浪曲线**: 封面和过渡页底部使用多层波浪曲线（Wave），增加动感与层次。
-2.  **虚线容器**: 内容区域使用虚线边框 (`stroke-dasharray`)，体现严谨的数据化特征。
-3.  **蓝白简洁**: 大面积留白配合科技蓝，营造专业、清爽的视觉感受。
-4.  **六边形纹理**: 封面和章节页使用六边形图案，体现科技感与创新。
-
-### 高级美化特性
-
-1.  **渐变应用**: 蓝色到深蓝的线性渐变，用于背景和重要图形。
-2.  **透明度叠加**: 波浪使用不同透明度叠加，增加呼吸感。
-3.  **圆角处理**: 内容容器使用 `rx="10"` 圆角，中和科技的冰冷感，更具亲和力。
-4.  **装饰三角**: 标题前缀使用小三角形，引导视线。
+| Role               | Value       | Usage                          |
+| ------------------ | ----------- | ------------------------------ |
+| **Background White**| `#FFFFFF`  | Main page background           |
+| **Light Gray BG**  | `#F5F5F7`   | Base color for each page       |
+| **Border Gray**    | `#A0C4E3`   | Dashed borders, module dividers |
+| **Body Text Black**| `#333333`   | Standard color for titles and body text |
+| **Caption Gray**   | `#666666`   | Subtitles, page numbers, annotations |
 
 ---
 
-## 六、页面结构
+## IV. Typography System
 
-### 通用布局
+### Font Stack
 
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0-120       | 标题区、Logo及装饰线                   |
-| **内容区** | y=140-640     | 主要内容区域（虚线框容器）             |
-| **页脚**   | y=680-720     | 页码及版权信息                         |
+**Font Stack**: `"Microsoft YaHei", "PingFang SC", sans-serif`
 
-### 装饰设计
+### Font Size Hierarchy
 
--   **底部波浪**: 封面、结束页的核心视觉元素。
--   **顶部装饰条**: 左上角蓝色色块标题前缀。
--   **虚线框**: 规范内容排版的标准容器。
-
----
-
-## 七、页面类型
-
-### 1. 封面页 (01_cover.svg)
-
--   **布局**: 左右非对称布局或叠加布局。
--   **背景**: 左侧/顶部大面积蓝色渐变，右侧图片容器。
--   **装饰**: 底部双层波浪曲线，增加动感。
--   **标题**: 左侧对齐，白色大字，带副标题背景装饰。
--   **图片**: 右侧全屏裁切，展示医疗/科技场景。
-
-### 2. 目录页 (02_toc.svg)
-
--   **布局**: 左右分栏。
--   **左侧**: 深蓝/科技蓝侧边栏，包含“目录”大字。
--   **右侧**: 清单式列表，使用圆点+线条引导。
--   **装饰**: 简洁线条分割，保持呼吸感。
-
-### 3. 章节页 (02_chapter.svg)
-
--   **背景**: 全屏深蓝渐变 (`#0078D7` -> `#002E5D`)。
--   **中心**: 居中对齐，大号数字编号 + 粗体标题。
--   **装饰**: 极简几何圆环或线条装饰，聚焦主题。
-
-### 4. 内容页 (03_content.svg)
-
--   **顶部**: 极简标题栏，左上角蓝色矩形装饰。
--   **背景**: 纯白底色。
--   **内容**: 默认包含一个圆角虚线框容器 (`stroke-dasharray="8,8"`).
--   **页脚**: 灰色小字页码与保密标识。
-
-### 5. 结束页 (04_ending.svg)
-
--   **背景**: 呼应章节页的深蓝渐变。
--   **中心**: “感谢聆听”与 Q&A。
--   **装饰**: 底部保留波浪曲线，首尾呼应。
+| Level    | Usage              | Size    | Weight  |
+| -------- | ------------------ | ------- | ------- |
+| H1       | Cover main title   | 64px    | Bold    |
+| H2       | Page title         | 36-40px | Bold    |
+| H3       | Section/card title | 24-28px | Bold    |
+| P        | Body content       | 20-24px | Regular |
+| Caption  | Supplementary text | 14-16px | Regular |
 
 ---
 
-## 八、常用组件
+## V. Core Design Principles
 
-### 虚线内容容器
+### Tech Business Style
+
+1. **Wave Curves**: Multi-layered wave curves at the bottom of cover and transition pages add dynamism and depth.
+2. **Dashed Containers**: Content areas use dashed borders (`stroke-dasharray`) to convey a data-driven, rigorous aesthetic.
+3. **Blue-White Simplicity**: Generous white space paired with tech blue creates a professional, crisp visual feel.
+4. **Hexagonal Patterns**: Cover and chapter pages use hexagonal patterns to evoke a sense of technology and innovation.
+
+### Advanced Styling Features
+
+1. **Gradient Application**: Blue-to-dark-blue linear gradients for backgrounds and important graphics.
+2. **Opacity Layering**: Waves use varying opacity levels to create a breathing effect.
+3. **Rounded Corners**: Content containers use `rx="10"` rounded corners to soften the tech coldness and add warmth.
+4. **Decorative Triangles**: Small triangle prefixes before titles guide the reader's eye.
+
+---
+
+## VI. Page Structure
+
+### General Layout
+
+| Area         | Position/Height | Description                            |
+| ------------ | --------------- | -------------------------------------- |
+| **Top**      | y=0-120         | Title area, logo, and decorative lines |
+| **Content**  | y=140-640       | Main content area (dashed containers)  |
+| **Footer**   | y=680-720       | Page number and copyright info         |
+
+### Decorative Design
+
+- **Bottom Waves**: Core visual element of cover and ending pages.
+- **Top Accent Bar**: Blue color block as title prefix in the upper-left corner.
+- **Dashed Frames**: Standard containers for structured content layout.
+
+---
+
+## VII. Page Types
+
+### 1. Cover Page (01_cover.svg)
+
+- **Layout**: Asymmetric left-right or overlay layout.
+- **Background**: Large blue gradient on the left/top; image container on the right.
+- **Decoration**: Dual-layer wave curves at the bottom for dynamism.
+- **Title**: Left-aligned, large white text with subtitle background accent.
+- **Image**: Full-bleed right-side crop showcasing medical/tech scenes.
+
+### 2. Table of Contents (02_toc.svg)
+
+- **Layout**: Left-right split.
+- **Left Side**: Dark blue/tech blue sidebar with large "Contents" text.
+- **Right Side**: List-style entries with bullet points and line guides.
+- **Decoration**: Clean line dividers maintaining visual breathing room.
+
+### 3. Chapter Page (02_chapter.svg)
+
+- **Background**: Full-screen dark blue gradient (`#0078D7` -> `#002E5D`).
+- **Center**: Center-aligned large chapter number + bold title.
+- **Decoration**: Minimalist geometric rings or line accents focusing on the theme.
+
+### 4. Content Page (03_content.svg)
+
+- **Top**: Minimalist title bar with blue rectangle accent in the upper-left.
+- **Background**: Pure white.
+- **Content**: Default includes a rounded dashed container (`stroke-dasharray="8,8"`).
+- **Footer**: Small gray text for page number and confidentiality label.
+
+### 5. Ending Page (04_ending.svg)
+
+- **Background**: Dark blue gradient echoing the chapter page.
+- **Center**: "Thank You" message and Q&A.
+- **Decoration**: Bottom wave curves for visual bookending.
+
+---
+
+## VIII. Common Components
+
+### Dashed Content Container
 
 ```xml
-<!-- 圆角虚线内容框 -->
+<!-- Rounded dashed content frame -->
 <rect x="60" y="140" width="1160" height="500" fill="none" stroke="#A0C4E3" stroke-width="2" stroke-dasharray="8,8" rx="10" />
 ```
 
-### 标题前缀装饰
+### Title Prefix Decoration
 
 ```xml
-<!-- 蓝色矩形装饰 -->
+<!-- Blue rectangle decoration -->
 <rect x="40" y="40" width="10" height="40" fill="#0078D7" />
 ```
 
 ---
 
-## 九、SVG 技术约束
+## IX. SVG Technical Constraints
 
-### 必须遵守
+### Mandatory Rules
 
-1.  viewBox: `0 0 1280 720`
-2.  背景使用 `<rect>` 元素
-3.  文本换行使用 `<tspan>`（**严禁** `<foreignObject>`）
-4.  透明度使用 `fill-opacity` / `stroke-opacity`
-5.  禁止使用：`clipPath` (尽量避免, 除非用于图片裁切)、`mask`、`<style>`、`class`、`foreignObject`
-6.  禁止使用：`textPath`、`animate*`、`script`
-7.  渐变使用 `<defs>` 定义
-
----
-
-## 十、占位符规范
-
-| 占位符             | 说明               |
-| ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 演讲者/作者        |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CONTENT_PLACEHOLDER}}` | 内容区提示文本 |
-| `{{SECTION_NUMBER}}` | 章节编号 (01)    |
-| `{{SECTION_TITLE}}`| 章节标题           |
-| `{{PAGE_NUMBER}}`  | 页码               |
-| `{{SECTION_1_TITLE}}` | 目录项 1         |
+1. viewBox: `0 0 1280 720`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
+4. Use `fill-opacity` / `stroke-opacity` for transparency
+5. Prohibited: `clipPath` (avoid unless needed for image cropping), `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`
+7. Define gradients in `<defs>`
 
 ---
 
-## 十一、使用说明
+## X. Placeholder Specification
 
-1.  本模板为通用科技蓝商务风格，适用于各类企业商务场景。
-2.  内容页默认包含虚线框，可根据内容多少移除或调整大小。
-3.  波浪元素和六边形纹理为装饰性 SVG 路径，如需修改建议保持原有风格。
-4.  配色方案以蓝色系为主，可根据企业品牌色进行微调。
+| Placeholder                   | Description                |
+| ----------------------------- | -------------------------- |
+| `{{TITLE}}`                   | Main title                 |
+| `{{SUBTITLE}}`                | Subtitle                   |
+| `{{AUTHOR}}`                  | Speaker/Author             |
+| `{{DATE}}`                    | Date                       |
+| `{{PAGE_TITLE}}`              | Page title                 |
+| `{{CONTENT_PLACEHOLDER}}`     | Content area prompt text   |
+| `{{SECTION_NUMBER}}`          | Section number (01)        |
+| `{{SECTION_TITLE}}`           | Section title              |
+| `{{PAGE_NUMBER}}`             | Page number                |
+| `{{SECTION_1_TITLE}}`         | TOC item 1                 |
+
+---
+
+## XI. Usage Notes
+
+1. This template is a universal tech blue business style, suitable for various corporate business scenarios.
+2. Content pages include dashed frames by default; these can be removed or resized based on content volume.
+3. Wave elements and hexagonal patterns are decorative SVG paths; modifications should maintain the original style.
+4. The color scheme is primarily blue-based and can be fine-tuned to match corporate brand colors.

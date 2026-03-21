@@ -1,125 +1,125 @@
-> 📎 公共技术约束见 shared-standards.md
+> See shared-standards.md for common technical constraints.
 
-# 图片布局规范（强制执行）
+# Image Layout Specification (Mandatory)
 
-含图片页面的布局规则。Strategist 规划阶段、Executor 生成阶段都必须遵循。
+Layout rules for pages containing images. Both the Strategist planning phase and Executor generation phase must follow these rules.
 
-**核心原则：根据图片原始比例计算布局，确保图片完整展示，杜绝留白或裁切。**
-
----
-
-## 布局决策流程
-
-```
-1. 获取图片原始尺寸 → 计算比例 (宽/高)
-2. 根据比例选择布局类型
-3. 计算图片最大展示尺寸
-4. 分配剩余空间给文字区域
-5. 将结果填入《设计规范与内容大纲》的图片资源清单
-```
-
-**执行时机**：若图片方案包含「B) 用户提供」，在 Strategist 阶段完成八项确认后、进入内容分析与大纲编制之前，必须运行扫描并填充图片资源清单。
+**Core principle: Calculate layout based on the image's original aspect ratio, ensuring the image is displayed completely without excess whitespace or cropping.**
 
 ---
 
-## 布局类型选择（强制）
+## Layout Decision Flow
 
-| 图片比例 | 布局类型 | 图片位置 | 说明 |
-|----------|----------|----------|------|
-| > 2.0 (超宽) | 上下分栏 | 上方通栏 | 图片占画布宽度，高度按比例 |
-| 1.5-2.0 (宽幅) | 上下分栏 | 上方 | 图片宽度=内容区宽度，高度按比例 |
-| 1.2-1.5 (标准) | 左右分栏 | 左侧 | 图片高度优先适配，宽度按比例 |
-| 0.8-1.2 (方形) | 左右分栏 | 左侧 | 图片取内容区高度，宽度按比例 |
-| < 0.8 (竖图) | 左右分栏 | 左侧 | 图片高度=内容区高度，宽度按比例 |
+```
+1. Get image original dimensions → Calculate ratio (width/height)
+2. Select layout type based on ratio
+3. Calculate maximum display size for the image
+4. Allocate remaining space for text area
+5. Fill results into the Design Specification's image resource list
+```
 
-> 边界情况：比例处于边界值时（如 1.5），根据文字量判断。文字多选左右，文字少选上下。
+**When to execute**: If the image approach includes "B) User-provided", after the Strategist completes the Eight Confirmations and before content analysis and outlining, the scan must be run and the image resource list populated.
 
 ---
 
-## 尺寸计算公式
+## Layout Type Selection (Mandatory)
 
-### PPT 16:9 (1280x720) 画布参数
+| Image Ratio | Layout Type | Image Position | Description |
+|-------------|-------------|----------------|-------------|
+| > 2.0 (ultra-wide) | Top-bottom split | Top full-width | Image spans canvas width, height proportional |
+| 1.5-2.0 (wide) | Top-bottom split | Top | Image width = content area width, height proportional |
+| 1.2-1.5 (standard) | Left-right split | Left | Image height-first fit, width proportional |
+| 0.8-1.2 (square) | Left-right split | Left | Image takes content area height, width proportional |
+| < 0.8 (portrait) | Left-right split | Left | Image height = content area height, width proportional |
 
-```
-画布: 1280 x 720 px
-内容区: 1160 x 640 px (左右边距 60px, 上下边距 40px)
-标题区高度: 60 px
-内容起点: y = 80 px (标题 + 间距)
-```
-
-### 上下布局计算
-
-```
-图片宽度 = W = 1160 px
-图片高度 = W / R = 1160 / R px
-文字区高度 = H - 图片高度 - 间距(20px)
-
-验证：文字区高度 >= 150px (至少 3-4 行文字)
-若不满足 → 改用左右布局
-```
-
-### 左右布局计算
-
-**方式 1（高度优先，适用于竖图）**：
-```
-图片高度 = H = 600 px
-图片宽度 = H x R = 600 x R px
-文字区宽度 = W - 图片宽度 - 间距(20px)
-```
-
-**方式 2（宽度受限，适用于宽图转左右）**：
-```
-图片宽度 = W x 0.7 = 812 px
-图片高度 = 图片宽度 / R
-文字区宽度 = W - 图片宽度 - 间距(20px)
-```
-
-**验证**：文字区宽度 >= 280px，否则需减小图片区宽度。
+> Edge cases: When ratio is at a boundary (e.g., 1.5), decide based on text volume. More text → left-right; less text → top-bottom.
 
 ---
 
-## 布局示例
+## Dimension Calculation Formulas
 
-### 超宽图 (比例 2.45)
-
-```
-原图: 1960x800, R=2.45 → 上下分栏
-图片: 1160x473, 文字区: 1160x147 → 上下 7:3
-```
-
-### 标准横图 (比例 1.38)
+### PPT 16:9 (1280x720) Canvas Parameters
 
 ```
-原图: 1614x1171, R=1.38 → 左右分栏
-图片: 773x560 (左侧), 文字区: 367x560 (右侧) → 左右 7:3
+Canvas: 1280 x 720 px
+Content area: 1160 x 640 px (left/right margin 60px, top/bottom margin 40px)
+Title area height: 60 px
+Content start: y = 80 px (title + spacing)
 ```
 
-### 宽幅图边界情况 (比例 1.75)
+### Top-Bottom Layout Calculation
 
 ```
-原图: 1820x1040, R=1.75
-尝试上下: 图片高度=663, 文字区=-43 ❌
-改用左右: 图片 780x446 (左侧), 文字区 360x600 (右侧) → 左右 7:3
+Image width = W = 1160 px
+Image height = W / R = 1160 / R px
+Text area height = H - image height - gap(20px)
+
+Validation: Text area height >= 150px (at least 3-4 lines of text)
+If not satisfied → Switch to left-right layout
+```
+
+### Left-Right Layout Calculation
+
+**Method 1 (height-first, suitable for portrait images)**:
+```
+Image height = H = 600 px
+Image width = H x R = 600 x R px
+Text area width = W - image width - gap(20px)
+```
+
+**Method 2 (width-constrained, for wide images converted to left-right)**:
+```
+Image width = W x 0.7 = 812 px
+Image height = image width / R
+Text area width = W - image width - gap(20px)
+```
+
+**Validation**: Text area width >= 280px; otherwise reduce image area width.
+
+---
+
+## Layout Examples
+
+### Ultra-wide Image (ratio 2.45)
+
+```
+Original: 1960x800, R=2.45 → Top-bottom split
+Image: 1160x473, Text area: 1160x147 → 7:3 top-bottom
+```
+
+### Standard Landscape (ratio 1.38)
+
+```
+Original: 1614x1171, R=1.38 → Left-right split
+Image: 773x560 (left), Text area: 367x560 (right) → 7:3 left-right
+```
+
+### Wide Image Edge Case (ratio 1.75)
+
+```
+Original: 1820x1040, R=1.75
+Try top-bottom: image height=663, text area=-43 ❌
+Switch to left-right: image 780x446 (left), text area 360x600 (right) → 7:3 left-right
 ```
 
 ---
 
-## 禁止事项
+## Prohibited Practices
 
-| 禁止 | 正确做法 |
-|------|---------|
-| 固定使用 50:50 或任意比例 | 根据图片比例动态计算 |
-| 将宽图塞入方形容器 | 使用上下布局或加大图片区宽度 |
-| 将竖图放入横向窄条 | 使用左右布局，图片在左 |
-| 图片留白超过 10% | 重新计算布局或选择其他方案 |
-| 裁切图片关键内容 | 使用 `preserveAspectRatio="xMidYMid meet"` |
-| 文字区太小无法阅读 | 确保文字区 >= 150px（上下）或 >= 280px（左右） |
+| Prohibited | Correct Approach |
+|-----------|-----------------|
+| Fixed 50:50 or arbitrary ratios | Dynamic calculation based on image ratio |
+| Forcing wide image into square container | Use top-bottom layout or increase image area width |
+| Placing portrait image in narrow horizontal strip | Use left-right layout, image on left |
+| Image whitespace exceeding 10% | Recalculate layout or choose alternative approach |
+| Cropping key image content | Use `preserveAspectRatio="xMidYMid meet"` |
+| Text area too small to read | Ensure text area >= 150px (top-bottom) or >= 280px (left-right) |
 
 ---
 
-## SVG 图片嵌入代码
+## SVG Image Embedding Code
 
-### 完整展示（推荐用于数据图表）
+### Complete Display (recommended for data charts)
 
 ```xml
 <image href="../images/xxx.png"
@@ -127,7 +127,7 @@
        preserveAspectRatio="xMidYMid meet"/>
 ```
 
-### 裁切填充（仅用于背景图）
+### Crop-to-Fill (backgrounds only)
 
 ```xml
 <image href="../images/bg.png"
@@ -137,38 +137,38 @@
 
 ---
 
-## 图片资源清单模板
+## Image Resource List Template
 
-在《设计规范与内容大纲》中，图片资源清单必须包含：
+In the Design Specification & Content Outline, the image resource list must include:
 
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| 文件名 | 图片文件名 | `p12_0.png` |
-| 原始尺寸 | 宽x高 | 1524x968 |
-| 比例 | 宽/高 | 1.57 |
-| 页码 | 使用页码 | 第5页 |
-| 类型 | 视觉类型 | 背景图/实景照片/插画配图/图表架构/装饰图案 |
-| 布局方案 | 上下/左右 + 分栏比 | 上下 6:4 或 左右 7:3 |
-| 图片区域 | 图片展示尺寸 | 1160x420 或 780x446 |
-| 文字区域 | 剩余空间尺寸 | 1160x200 或 360x600 |
+| Field | Description | Example |
+|-------|-------------|---------|
+| Filename | Image filename | `p12_0.png` |
+| Original dimensions | Width x Height | 1524x968 |
+| Ratio | Width / Height | 1.57 |
+| Page | Usage page number | Page 5 |
+| Type | Visual type | Background / Photography / Illustration / Diagram / Decorative |
+| Layout plan | Top-bottom/Left-right + split ratio | Top-bottom 6:4 or Left-right 7:3 |
+| Image area | Image display dimensions | 1160x420 or 780x446 |
+| Text area | Remaining space dimensions | 1160x200 or 360x600 |
 
-**类型字段用于 Image_Generator 选择合适的提示词策略。**
+**The Type field is used by Image_Generator to select the appropriate prompt strategy.**
 
 ---
 
-## 自动化工具
+## Automation Tool
 
 ```bash
-python3 scripts/analyze_images.py <项目路径>/images
+python3 scripts/analyze_images.py <project_path>/images
 ```
 
-输出包含尺寸、比例、布局建议（Markdown 表格），可直接用于填写图片资源清单。
+Output includes dimensions, ratios, and layout recommendations (Markdown table), which can be directly used to populate the image resource list.
 
 ---
 
-## 角色职责
+## Role Responsibilities
 
-| 角色 | 职责 |
-|------|------|
-| **Strategist** | 运行 analyze_images.py，按本规范计算布局，填写图片资源清单 |
-| **Executor** | 严格按图片资源清单中的布局方案和尺寸生成 SVG |
+| Role | Responsibility |
+|------|---------------|
+| **Strategist** | Run analyze_images.py, calculate layout per this spec, populate image resource list |
+| **Executor** | Strictly follow the layout plan and dimensions in the image resource list when generating SVGs |

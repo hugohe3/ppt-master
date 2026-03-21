@@ -1,102 +1,102 @@
-# SVG 图表模板库（33 种）
+# SVG Chart Template Library (33 Types)
 
-本目录提供 **33 种标准化 SVG 图表模板**，可直接作为 PPT Master 的图表选型参考。
+This directory provides **33 standardized SVG chart templates** for use as chart selection references in PPT Master.
 
-- **完整索引**：[README.md](./README.md)（人工浏览）
-- **JSON 索引**：[charts_index.json](./charts_index.json)（AI / 程序优先读取）
+- **Full Index**: [README.md](./README.md) (human browsing)
+- **JSON Index**: [charts_index.json](./charts_index.json) (AI / programmatic lookup — preferred)
 
-生成图表页面前，建议先阅读对应模板文件了解其结构和布局。
+Before generating chart pages, review the corresponding template file to understand its structure and layout.
 
-## 快速选择
+## Quick Selection
 
-> 🤖 **AI / 程序选型建议**：优先读取 `charts_index.json`；人工浏览和快速比对时使用本 README。
+> **AI / Programmatic recommendation**: Prefer reading `charts_index.json`; use this README for human browsing and quick comparison.
 
-| 我想展示... | 推荐模板 | 文件名 |
-|------------|---------|--------|
-| 关键数字指标 | KPI 卡片 | `kpi_cards.svg` |
-| 类别数值对比 | 柱状图 | `bar_chart.svg` |
-| 长标签排名 | 水平条形图 | `horizontal_bar_chart.svg` |
-| 多系列对比 | 分组柱状图 | `grouped_bar_chart.svg` |
-| 时间趋势 | 折线图 | `line_chart.svg` |
-| 累积趋势 | 面积图 | `area_chart.svg` |
-| 占比构成 | 饼图 / 环形图 | `pie_chart.svg` / `donut_chart.svg` |
-| 目标完成度 | 进度条 / 仪表盘 | `progress_bar_chart.svg` / `gauge_chart.svg` |
-| 转化漏斗 | 漏斗图 | `funnel_chart.svg` |
-| 项目排期 | 甘特图 | `gantt_chart.svg` |
-| 里程碑事件 | 时间轴 | `timeline.svg` |
-| 多维评估 | 雷达图 | `radar_chart.svg` |
-| 左右双向对比 | 蝴蝶图 | `butterfly_chart.svg` |
-| 增减分解 | 瀑布图 | `waterfall_chart.svg` |
-| 流量/资金流向 | 桑基图 | `sankey_chart.svg` |
-| 战略分析 | SWOT / 波特五力 | `swot_analysis.svg` / `porter_five_forces.svg` |
-| 四象限分析 | 矩阵图 | `matrix_2x2.svg` |
+| I want to show... | Recommended Template | Filename |
+|-------------------|---------------------|----------|
+| Key numeric metrics | KPI Cards | `kpi_cards.svg` |
+| Category value comparison | Bar Chart | `bar_chart.svg` |
+| Long-label rankings | Horizontal Bar Chart | `horizontal_bar_chart.svg` |
+| Multi-series comparison | Grouped Bar Chart | `grouped_bar_chart.svg` |
+| Time trends | Line Chart | `line_chart.svg` |
+| Cumulative trends | Area Chart | `area_chart.svg` |
+| Proportional composition | Pie / Donut Chart | `pie_chart.svg` / `donut_chart.svg` |
+| Goal completion rate | Progress Bar / Gauge | `progress_bar_chart.svg` / `gauge_chart.svg` |
+| Conversion funnel | Funnel Chart | `funnel_chart.svg` |
+| Project scheduling | Gantt Chart | `gantt_chart.svg` |
+| Milestone events | Timeline | `timeline.svg` |
+| Multi-dimensional assessment | Radar Chart | `radar_chart.svg` |
+| Bidirectional comparison | Butterfly Chart | `butterfly_chart.svg` |
+| Incremental breakdown | Waterfall Chart | `waterfall_chart.svg` |
+| Flow / fund allocation | Sankey Chart | `sankey_chart.svg` |
+| Strategic analysis | SWOT / Porter's Five Forces | `swot_analysis.svg` / `porter_five_forces.svg` |
+| Quadrant analysis | Matrix (2x2) | `matrix_2x2.svg` |
 
-## 完整图表索引
+## Full Chart Index
 
-### 对比类
+### Comparison
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `bar_chart.svg` | 垂直柱状对比（3-8 柱） | 销售额对比、区域排名 |
-| `horizontal_bar_chart.svg` | 水平条形排名（5-12 条） | 品牌排行、满意度评分 |
-| `grouped_bar_chart.svg` | 多系列分组对比 | 季度产品线对比、同比环比 |
-| `stacked_bar_chart.svg` | 堆叠构成对比 | 收入构成、市场份额变化 |
-| `butterfly_chart.svg` | 左右双向对比 | 人口金字塔、AB 测试、收支对比 |
-| `bullet_chart.svg` | 目标 vs 实际 | KPI 达成、绩效评估 |
-| `dumbbell_chart.svg` | 多维度得分对比 | 竞品评估、综合指数 |
-| `waterfall_chart.svg` | 增减变化分解 | 利润分解、预算变化 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `bar_chart.svg` | Vertical bar comparison (3-8 bars) | Sales comparison, regional ranking |
+| `horizontal_bar_chart.svg` | Horizontal bar ranking (5-12 bars) | Brand ranking, satisfaction scores |
+| `grouped_bar_chart.svg` | Multi-series grouped comparison | Quarterly product line comparison, YoY/QoQ |
+| `stacked_bar_chart.svg` | Stacked composition comparison | Revenue composition, market share changes |
+| `butterfly_chart.svg` | Bidirectional comparison | Population pyramid, A/B testing, income vs expense |
+| `bullet_chart.svg` | Target vs actual | KPI achievement, performance evaluation |
+| `dumbbell_chart.svg` | Multi-dimension score comparison | Competitive analysis, composite index |
+| `waterfall_chart.svg` | Incremental change breakdown | Profit decomposition, budget variance |
 
-### 趋势类
+### Trends
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `line_chart.svg` | 折线趋势（支持多条） | 时间序列、增长趋势 |
-| `area_chart.svg` | 面积累积趋势 | 流量趋势、用户增长 |
-| `stacked_area_chart.svg` | 多系列堆叠趋势 | 营收来源、流量来源变化 |
-| `dual_axis_line_chart.svg` | 双 Y 轴不同量纲对比 | 销量与利润率、流量与转化率 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `line_chart.svg` | Line trend (multi-line support) | Time series, growth trends |
+| `area_chart.svg` | Area cumulative trend | Traffic trends, user growth |
+| `stacked_area_chart.svg` | Multi-series stacked trend | Revenue sources, traffic source changes |
+| `dual_axis_line_chart.svg` | Dual Y-axis different-unit comparison | Sales vs profit margin, traffic vs conversion rate |
 
-### 占比类
+### Proportions
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `pie_chart.svg` | 基础占比（3-6 块） | 市场份额、预算分配 |
-| `donut_chart.svg` | 环形占比（带中心数据） | 结构占比、类别构成 |
-| `treemap_chart.svg` | 层级面积占比 | 预算分配、市场份额构成 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `pie_chart.svg` | Basic proportion (3-6 slices) | Market share, budget allocation |
+| `donut_chart.svg` | Ring proportion (with center data) | Structural proportion, category composition |
+| `treemap_chart.svg` | Hierarchical area proportion | Budget allocation, market share composition |
 
-### 指标类
+### Metrics
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `kpi_cards.svg` | 关键指标卡片（2×2 / 1×4） | 财务总览、数据看板 |
-| `gauge_chart.svg` | 仪表盘达成度 | KPI 完成率、性能监控 |
-| `progress_bar_chart.svg` | 多项进度条对比 | OKR 进度、项目完成度 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `kpi_cards.svg` | Key metric cards (2x2 / 1x4) | Financial overview, data dashboard |
+| `gauge_chart.svg` | Gauge completion rate | KPI completion, performance monitoring |
+| `progress_bar_chart.svg` | Multi-item progress bars | OKR progress, project completion |
 
-### 分析类
+### Analysis
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `radar_chart.svg` | 多维度评估（4-8 维） | 能力评估、竞品对比 |
-| `scatter_chart.svg` | 相关性 / 分布 | 投入产出、价格需求 |
-| `funnel_chart.svg` | 转化漏斗（3-5 阶段） | 销售漏斗、用户转化 |
-| `matrix_2x2.svg` | 四象限分析 | 波士顿矩阵、优先级分析 |
-| `bubble_chart.svg` | 三维气泡（X/Y/大小） | 市场规模 vs 增长率 vs 份额 |
-| `heatmap_chart.svg` | 矩阵热力图 | 用户活跃时段、相关性矩阵 |
-| `pareto_chart.svg` | 80/20 帕累托分析 | 质量归因、销售贡献 |
-| `box_plot_chart.svg` | 箱线图分布统计 | 薪资分布、质量控制 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `radar_chart.svg` | Multi-dimensional assessment (4-8 axes) | Capability assessment, competitive comparison |
+| `scatter_chart.svg` | Correlation / distribution | Input-output analysis, price-demand |
+| `funnel_chart.svg` | Conversion funnel (3-5 stages) | Sales funnel, user conversion |
+| `matrix_2x2.svg` | Four-quadrant analysis | BCG matrix, priority analysis |
+| `bubble_chart.svg` | 3D bubble (X/Y/Size) | Market size vs growth rate vs share |
+| `heatmap_chart.svg` | Matrix heatmap | User activity periods, correlation matrix |
+| `pareto_chart.svg` | 80/20 Pareto analysis | Quality attribution, sales contribution |
+| `box_plot_chart.svg` | Box plot distribution | Salary distribution, quality control |
 
-### 项目管理 / 关系类
+### Project Management / Relationships
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `gantt_chart.svg` | 甘特图排期（6-12 任务） | 项目管理、产品路线图 |
-| `timeline.svg` | 时间轴事件（3-8 节点） | 里程碑、历史演进 |
-| `process_flow.svg` | 流程图步骤 | 业务流程、操作指南 |
-| `org_chart.svg` | 组织结构（2-4 层） | 公司架构、汇报关系 |
-| `sankey_chart.svg` | 数据流向（三层级） | 预算流向、用户转化路径 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `gantt_chart.svg` | Gantt schedule (6-12 tasks) | Project management, product roadmap |
+| `timeline.svg` | Timeline events (3-8 nodes) | Milestones, historical evolution |
+| `process_flow.svg` | Process flow steps | Business processes, operational guides |
+| `org_chart.svg` | Org structure (2-4 levels) | Company structure, reporting relationships |
+| `sankey_chart.svg` | Data flow (three-tier) | Budget flow, user conversion paths |
 
-### 战略框架类
+### Strategic Frameworks
 
-| 文件名 | 用途 | 适用场景 |
-|--------|------|---------|
-| `swot_analysis.svg` | SWOT 四象限分析 | 战略规划、竞品分析 |
-| `porter_five_forces.svg` | 波特五力模型 | 行业分析、市场进入评估 |
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `swot_analysis.svg` | SWOT four-quadrant analysis | Strategic planning, competitive analysis |
+| `porter_five_forces.svg` | Porter's Five Forces model | Industry analysis, market entry assessment |

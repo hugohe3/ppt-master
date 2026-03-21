@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 """
-PPT Master - 讲稿拆分工具
+PPT Master - Speaker Notes Splitting Tool
 
-将 total.md 讲稿文件拆分为多个独立的讲稿文件，每个文件对应一个 SVG 页面。
+Splits the total.md speaker notes file into multiple individual notes files,
+each corresponding to one SVG page.
 
-用法:
-    python3 scripts/total_md_split.py <项目路径>
-    python3 scripts/total_md_split.py <项目路径> -o output_dir
+Usage:
+    python3 scripts/total_md_split.py <project_path>
+    python3 scripts/total_md_split.py <project_path> -o output_dir
 
-示例:
-    python3 scripts/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD
-    python3 scripts/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -o notes
+Examples:
+    python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD
+    python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD -o notes
 
-依赖:
-    无（仅使用标准库）
+Dependencies:
+    None (only uses standard library)
 
-注意:
-    - 会检查 SVG 文件与讲稿的一一对应关系
-    - 如果存在 SVG 没有对应的讲稿，会输出提示
-    - 拆分后的文档不包含一级标题
-    - 拆分后的文档命名与 SVG 文件同名，后缀改为 .md
+Notes:
+    - Checks the one-to-one mapping between SVG files and speaker notes
+    - Outputs a notice if any SVG file has no corresponding notes
+    - Split documents do not include the level-1 heading
+    - Split document names match the SVG filenames with .md extension
 """
 
 import sys
@@ -46,31 +47,30 @@ def normalize_title(title: str) -> str:
 
 
 
-
 def extract_leading_number(text: str) -> Optional[int]:
     """Extract leading slide number if present."""
     if not text:
         return None
-    
+
     # Try 1: Start with digits (standard)
     m = re.match(r'^(\d{1,3})', text.strip())
     if m:
         return int(m.group(1))
-        
+
     # Try 2: Common prefixes (Slide X, Page X, 第X页)
     # Case insensitive for English
     text_lower = text.lower().strip()
-    
+
     # Slide/Page X
     m = re.match(r'^(?:slide|page|p)\s*[-_:]?\s*(\d{1,3})', text_lower)
     if m:
         return int(m.group(1))
-        
+
     # 第X页/张
     m = re.match(r'^第\s*(\d{1,3})\s*[页张]', text_lower)
     if m:
         return int(m.group(1))
-        
+
     return None
 
 
@@ -112,18 +112,18 @@ def match_title(
 
 def find_svg_files(project_path: Path) -> List[Path]:
     """
-    查找项目中的 SVG 文件
+    Find SVG files in the project
 
     Args:
-        project_path: 项目目录路径
+        project_path: Project directory path
 
     Returns:
-        SVG 文件列表（按文件名排序）
+        List of SVG files (sorted by filename)
     """
     svg_dir = project_path / 'svg_output'
 
     if not svg_dir.exists():
-        print(f"错误: {svg_dir} 目录不存在")
+        print(f"Error: {svg_dir} directory does not exist")
         return []
 
     return sorted(svg_dir.glob('*.svg'))
@@ -131,29 +131,29 @@ def find_svg_files(project_path: Path) -> List[Path]:
 
 def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose: bool = True) -> Dict[str, str]:
     """
-    解析 total.md 文件，提取每个一级标题对应的讲稿内容
+    Parse total.md file and extract speaker notes content for each level-1 heading
 
     Args:
-        md_path: total.md 文件路径
+        md_path: Path to total.md file
 
     Returns:
-        字典，key 为一级标题（不含 #），value 为讲稿内容
+        Dictionary where key is the level-1 heading (without #) and value is the notes content
     """
     if not md_path.exists():
-        print(f"错误: {md_path} 文件不存在")
+        print(f"Error: {md_path} file does not exist")
         return {}
 
     try:
         with open(md_path, 'r', encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
-        print(f"错误: 无法读取文件 {md_path}: {e}")
+        print(f"Error: Unable to read file {md_path}: {e}")
         return {}
 
     svg_stems = svg_stems or []
     exact, norm_map, num_map = build_match_maps(svg_stems)
 
-    # 按标题解析（支持 # / ## / ###）
+    # Parse by headings (supports # / ## / ###)
     notes: Dict[str, str] = {}
     current_key: Optional[str] = None
     current_lines: List[str] = []
@@ -190,33 +190,33 @@ def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose
             notes[current_key] = text
 
     if verbose and unmatched_headings:
-        print("\n[提示] 发现未匹配的标题（已忽略）：")
+        print("\n[Notice] Found unmatched headings (ignored):")
         for t in unmatched_headings[:10]:
             print(f"  - {t}")
         if len(unmatched_headings) > 10:
-            print(f"  ... 以及另外 {len(unmatched_headings) - 10} 个")
+            print(f"  ... and {len(unmatched_headings) - 10} more")
 
     return notes
 
 
 def check_svg_note_mapping(svg_files: List[Path], notes: Dict[str, str]) -> Tuple[bool, List[str]]:
     """
-    检查 SVG 文件与讲稿的映射关系
+    Check the mapping between SVG files and speaker notes
 
     Args:
-        svg_files: SVG 文件列表
-        notes: 讲稿字典（key 为标题）
+        svg_files: List of SVG files
+        notes: Notes dictionary (key is heading)
 
     Returns:
-        (是否全部匹配, 缺失的讲稿标题列表)
+        (whether all matched, list of missing notes headings)
     """
     missing_notes = []
 
     for svg_path in svg_files:
-        # 提取 SVG 文件名（不含扩展名）
+        # Extract SVG filename (without extension)
         svg_stem = svg_path.stem
 
-        # 检查是否在讲稿中存在对应的标题
+        # Check if a corresponding heading exists in the notes
         if svg_stem not in notes:
             missing_notes.append(svg_stem)
 
@@ -225,18 +225,18 @@ def check_svg_note_mapping(svg_files: List[Path], notes: Dict[str, str]) -> Tupl
 
 def split_notes(notes: Dict[str, str], output_dir: Path, verbose: bool = True) -> bool:
     """
-    根据讲稿字典拆分并保存为多个文件
+    Split and save notes dictionary into multiple files
 
     Args:
-        notes: 讲稿字典（key 为标题，value 为内容）
-        output_dir: 输出目录
-        verbose: 是否输出详细信息
+        notes: Notes dictionary (key is heading, value is content)
+        output_dir: Output directory
+        verbose: Whether to output detailed information
 
     Returns:
-        是否成功
+        Whether successful
     """
     if not notes:
-        print("错误: 没有找到讲稿内容")
+        print("Error: No notes content found")
         return False
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -244,7 +244,7 @@ def split_notes(notes: Dict[str, str], output_dir: Path, verbose: bool = True) -
     success_count = 0
 
     for title, content in notes.items():
-        # 生成输出文件名（与 SVG 文件同名，后缀改为 .md）
+        # Generate output filename (same name as SVG file, with .md extension)
         output_path = output_dir / f"{title}.md"
 
         try:
@@ -252,50 +252,50 @@ def split_notes(notes: Dict[str, str], output_dir: Path, verbose: bool = True) -
                 f.write(content)
 
             if verbose:
-                print(f"  已生成: {output_path.name}")
+                print(f"  Generated: {output_path.name}")
 
             success_count += 1
 
         except Exception as e:
             if verbose:
-                print(f"  错误: 无法写入文件 {output_path}: {e}")
+                print(f"  Error: Unable to write file {output_path}: {e}")
 
     if verbose:
-        print(f"\n[完成] 成功生成 {success_count}/{len(notes)} 个文件")
+        print(f"\n[Done] Successfully generated {success_count}/{len(notes)} file(s)")
 
     return success_count == len(notes)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description='PPT Master - 讲稿拆分工具',
+        description='PPT Master - Speaker Notes Splitting Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
-    %(prog)s projects/<svg 标题>_ppt169_YYYYMMDD
-    %(prog)s projects/<svg 标题>_ppt169_YYYYMMDD -o notes
-    %(prog)s projects/<svg 标题>_ppt169_YYYYMMDD -q
+Examples:
+    %(prog)s projects/<svg_title>_ppt169_YYYYMMDD
+    %(prog)s projects/<svg_title>_ppt169_YYYYMMDD -o notes
+    %(prog)s projects/<svg_title>_ppt169_YYYYMMDD -q
 
-功能:
-    - 读取 total.md 讲稿文件
-    - 检查 SVG 文件与讲稿的对应关系
-    - 拆分讲稿为多个独立文件
-    - 输出文件命名与 SVG 文件同名
+Features:
+    - Reads the total.md speaker notes file
+    - Checks the mapping between SVG files and notes
+    - Splits notes into multiple individual files
+    - Output filenames match SVG filenames
 '''
     )
 
-    parser.add_argument('project_path', type=str, help='项目目录路径')
-    parser.add_argument('-o', '--output', type=str, default=None, help='输出目录路径（默认：项目下的 notes 目录）')
-    parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
+    parser.add_argument('project_path', type=str, help='Project directory path')
+    parser.add_argument('-o', '--output', type=str, default=None, help='Output directory path (default: notes directory under project)')
+    parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
 
     args = parser.parse_args()
 
     project_path = Path(args.project_path)
     if not project_path.exists():
-        print(f"错误: 路径不存在: {project_path}")
+        print(f"Error: Path does not exist: {project_path}")
         sys.exit(1)
 
-    # 确定输出目录
+    # Determine output directory
     if args.output:
         output_dir = Path(args.output)
     else:
@@ -304,57 +304,57 @@ def main():
     verbose = not args.quiet
 
     if verbose:
-        print("PPT Master - 讲稿拆分工具")
+        print("PPT Master - Speaker Notes Splitting Tool")
         print("=" * 50)
-        print(f"  项目路径: {project_path}")
-        print(f"  输出目录: {output_dir}")
+        print(f"  Project path: {project_path}")
+        print(f"  Output directory: {output_dir}")
         print()
 
-    # 查找 SVG 文件
+    # Find SVG files
     svg_files = find_svg_files(project_path)
 
     if not svg_files:
-        print("错误: 未找到 SVG 文件")
+        print("Error: No SVG files found")
         sys.exit(1)
 
     if verbose:
-        print(f"  找到 {len(svg_files)} 个 SVG 文件")
+        print(f"  Found {len(svg_files)} SVG file(s)")
 
-    # 解析 total.md
+    # Parse total.md
     total_md_path = project_path / 'notes' / 'total.md'
     svg_stems = [p.stem for p in svg_files]
     notes = parse_total_md(total_md_path, svg_stems, verbose)
 
     if not notes:
-        print("错误: 未找到讲稿内容")
+        print("Error: No notes content found")
         sys.exit(1)
 
     if verbose:
-        print(f"  找到 {len(notes)} 个讲稿章节")
+        print(f"  Found {len(notes)} notes section(s)")
         print()
 
-    # 检查映射关系
+    # Check mapping
     all_match, missing_notes = check_svg_note_mapping(svg_files, notes)
 
     if not all_match:
-        print("错误: SVG 文件与讲稿不匹配")
-        print(f"  缺失的讲稿: {', '.join(missing_notes)}")
-        print("\n请重新生成讲稿文件，确保每个 SVG 都有对应的讲稿。")
+        print("Error: SVG files and notes do not match")
+        print(f"  Missing notes: {', '.join(missing_notes)}")
+        print("\nPlease regenerate the notes file to ensure every SVG has corresponding notes.")
         sys.exit(1)
 
     if verbose:
-        print("[OK] SVG 文件与讲稿一一对应")
+        print("[OK] SVG files and notes have one-to-one correspondence")
         print()
 
-    # 拆分讲稿
+    # Split notes
     success = split_notes(notes, output_dir, verbose)
 
     if success:
         if verbose:
-            print(f"\n[完成] 讲稿拆分完成")
+            print(f"\n[Done] Notes splitting complete")
         sys.exit(0)
     else:
-        print(f"\n[失败] 讲稿拆分失败")
+        print(f"\n[Failed] Notes splitting failed")
         sys.exit(1)
 
 

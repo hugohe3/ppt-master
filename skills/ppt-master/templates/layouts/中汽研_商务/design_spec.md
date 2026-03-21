@@ -1,162 +1,162 @@
-# 中汽研模板 (CATARC Style) - 设计规范 (v2.0 优化版)
+# CATARC (中汽研) Business Template - Design Specification (v2.0 Enhanced)
 
-> 适用于中汽研产品认证、测评认证、技术展示、商务拜访等场景。
-> **v2.0 更新**: 全面升级为现代科技商务风格，引入渐变、微光效果与几何装饰。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | 中汽研_商务（原 zhongqiyan_v2）                           |
-| **适用场景**   | 产品认证展示、测评认证介绍、技术推介、高端商务汇报     |
-| **设计调性**   | **现代科技、权威专业、沉稳大气**                       |
-| **主题模式**   | 深蓝科技渐变 + 清爽白底内容页                          |
+> Suitable for CATARC product certification, evaluation & certification, technology showcases, business visits, and similar scenarios.
+> **v2.0 Update**: Fully upgraded to a modern tech-business style with gradients, subtle glow effects, and geometric decorations.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| **Template Name** | 中汽研_商务 (formerly zhongqiyan_v2)                    |
+| **Use Cases**  | Product certification display, evaluation presentations, technology promotion, high-end business reporting |
+| **Design Tone** | **Modern tech, authoritative & professional, composed & grand** |
+| **Theme Mode** | Deep blue tech gradient + clean white content pages         |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 60px，上 90px，下 50px   |
-| **内容安全区** | x: 60-1220, y: 90-670         |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
+| **viewBox**    | `0 0 1280 720`               |
+| **Page Margins** | Left/Right 60px, Top 90px, Bottom 50px |
+| **Safe Area**  | x: 60-1220, y: 90-670        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 核心色板
+### Core Palette
 
-| 角色           | 色值        | 渐变方案 (SVG defs)              | 备注                             |
-| -------------- | ----------- | -------------------------------- | -------------------------------- |
-| **主导深蓝**   | `#003366`   | `#003366` -> `#001F4D`           | 品牌主色基调                     |
-| **科技亮蓝**   | `#0050B3`   | `#0050B3` -> `#007ACC`           | 提亮装饰、渐变亮部               |
-| **辅助冷灰**   | `#F0F2F5`   | N/A                              | 背景块、卡片底色                 |
-| **活力红**     | `#D32F2F`   | N/A                              | 强调点缀、警示                   |
-| **纯白**       | `#FFFFFF`   | N/A                              | 文字、反白图标                   |
+| Role           | Color Value | Gradient (SVG defs)            | Notes                            |
+| -------------- | ----------- | ------------------------------ | -------------------------------- |
+| **Primary Deep Blue** | `#003366` | `#003366` -> `#001F4D`      | Brand primary tone               |
+| **Tech Bright Blue**  | `#0050B3` | `#0050B3` -> `#007ACC`      | Highlight decoration, gradient bright end |
+| **Auxiliary Cool Gray** | `#F0F2F5` | N/A                        | Background blocks, card base     |
+| **Vibrant Red** | `#D32F2F` | N/A                            | Accent, emphasis, alerts         |
+| **Pure White**  | `#FFFFFF`  | N/A                            | Text, inverted icons             |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Color Value | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **主标题/正文**| `#1F2937`   | 深灰，用于白底正文     |
-| **副文本**     | `#6B7280`   | 浅灰，用于说明文字     |
-| **反白文字**   | `#FFFFFF`   | 深色背景上的文字       |
-| **水印文字**   | `#E5E7EB`   | 极浅灰，用于背景大字   |
+| **Headings/Body** | `#1F2937` | Dark gray for body text on white backgrounds |
+| **Secondary Text** | `#6B7280` | Light gray for descriptions |
+| **Inverted Text** | `#FFFFFF` | Text on dark backgrounds |
+| **Watermark Text** | `#E5E7EB` | Very light gray for background text |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**优先字体栈**: `"Microsoft YaHei", "PingFang SC", "Heiti SC", "Segoe UI", Arial, sans-serif`
+**Primary Font Stack**: `"Microsoft YaHei", "PingFang SC", "Heiti SC", "Segoe UI", Arial, sans-serif`
 
-### 字号层级 (优化对比度)
+### Font Size Hierarchy (Optimized Contrast)
 
-| 层级 | 用途             | 字号 | 字重    | 颜色       |
-| ---- | ---------------- | ---- | ------- | ---------- |
-| H1   | 封面主标题       | 56px | Bold    | #FFFFFF    |
-| H2   | 页面大标题       | 32px | Bold    | #003366    |
-| H3   | 模块标题         | 24px | Bold    | #333333    |
-| P    | 正文内容         | 18px | Regular | #4B5563    |
-| Num  | 序号/装饰数字    | 80px+| Bold    | Opacity 10%|
-
----
-
-## 五、页面结构
-
-### 通用导航栏 (y=0 to 90)
-
-- **顶部彩条**: 渐变蓝条，高度 6px。
-- **Logo区域**: 右上角固定。
-- **标题组合**: 左上角，包含章节序号（色块衬底）与页面标题。
-- **装饰线**: 标题下方淡灰色细线，增加透气感。
+| Level | Usage              | Size | Weight  | Color      |
+| ----- | ------------------ | ---- | ------- | ---------- |
+| H1    | Cover main title   | 56px | Bold    | #FFFFFF    |
+| H2    | Page heading       | 32px | Bold    | #003366    |
+| H3    | Section title      | 24px | Bold    | #333333    |
+| P     | Body content       | 18px | Regular | #4B5563    |
+| Num   | Decorative numbers | 80px+| Bold    | Opacity 10%|
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
-- **视觉重心**: 左侧大面积留白或图片，右侧/底部深色科技感切割。
-- **装饰**: 动态几何线条（Tech Lines），模拟光束感。
-- **内容布局**: 标题左对齐或居中悬浮卡片式，增强层级感。
+### Common Navigation Bar (y=0 to 90)
 
-### 2. 目录页 (02_toc.svg)
-- **布局**: 卡片式列表。每章一个横向卡片，带有微阴影（模拟）。
-- **数字**: 极大的半透明数字背景（01, 02...）增加设计感。
-
-### 3. 章节页 (02_chapter.svg)
-- **背景**: 全屏深蓝径向渐变，营造沉浸感。
-- **元素**: 中央聚合式排版，辅以放射状线条或圆环装饰。
-
-### 4. 内容页 (03_content.svg)
-- **布局**: 清爽白底，最大化内容展示区。
-- **辅助**: 右下角添加极淡的Logo水印。
-
-### 5. 结束页 (04_ending.svg)
-- **背景**: 呼应封面的深色调。
-- **元素**: 居中感谢语，配以精致的联系方式排版。
+- **Top Color Bar**: Gradient blue bar, 6px height.
+- **Logo Area**: Fixed at upper-right corner.
+- **Title Group**: Upper-left corner, includes chapter number (with colored block background) and page title.
+- **Decorative Line**: Light gray thin line below the title for visual breathing room.
 
 ---
 
-## 七、布局模式（推荐）
+## VI. Page Types
 
-### 1. 卡片式列表 (Card List)
-- 宽卡片垂直排列，适合目录或要点陈述。
-- 使用阴影模拟（如透明黑色矩形）增加浮动感。
+### 1. Cover Page (01_cover.svg)
+- **Visual Focus**: Large whitespace or image on the left, dark tech-styled cutout on the right/bottom.
+- **Decoration**: Dynamic geometric lines (Tech Lines), simulating light beam effects.
+- **Content Layout**: Title left-aligned or centered floating card style for enhanced hierarchy.
 
-### 2. 对比布局 (Contrast Layout)
-- 左右分栏，左深右浅或左图右文，强调对比。
+### 2. Table of Contents (02_toc.svg)
+- **Layout**: Card-style list. Each chapter as a horizontal card with simulated subtle shadow.
+- **Numbers**: Extra-large semi-transparent numbers in the background (01, 02...) for added design appeal.
 
-### 3. 中心辐射 (Radial)
-- 核心概念居中，四周环绕说明，适合章节页或总结页。
+### 3. Chapter Page (02_chapter.svg)
+- **Background**: Full-screen deep blue radial gradient for an immersive feel.
+- **Elements**: Center-focused typography with radiating lines or ring decorations.
 
----
+### 4. Content Page (03_content.svg)
+- **Layout**: Clean white background, maximizing content display area.
+- **Auxiliary**: Very faint Logo watermark in the lower-right corner.
 
-## 八、间距规范
-
-| 属性         | 值    | 说明                     |
-| ------------ | ----- | ------------------------ |
-| **基础单位** | 8px   | 8px 栅格系统             |
-| **模块间距** | 32px  | 舒适的阅读间距           |
-| **卡片间距** | 16px  | 紧凑与关联感             |
-
----
-
-## 九、SVG 技术约束
-
-### 必须遵守
-
-1. **渐变支持**: 使用 `<linearGradient>` 和 `<radialGradient>` 定义在 `<defs>` 中。
-2. **阴影模拟**: PPT不支持 SVG滤镜阴影，使用**半透明黑色矩形 (`fill="#000000" fill-opacity="0.1"`)** 错位叠加来模拟卡片阴影。
-3. **透明度**: 严格使用 `fill-opacity` / `stroke-opacity`。
-4. **禁区**: 无 `clipPath`, `mask`。
+### 5. Ending Page (04_ending.svg)
+- **Background**: Echoes the cover's dark tone.
+- **Elements**: Centered thank-you message with refined contact information layout.
 
 ---
 
-## 十、占位符规范
+## VII. Layout Patterns (Recommended)
 
-| 占位符             | 描述               |
-| ------------------ | ------------------ |
-| `{{TITLE}}`        | 演示文稿主标题     |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 汇报人/部门        |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 内容页标题         |
-| `{{CHAPTER_NUM}}`  | 章节编号 (01, 02)  |
-| `{{LOGO_LARGE}}`   | 封面/封底大Logo    |
-| `{{LOGO_HEADER}}`  | 导航栏小Logo       |
+### 1. Card List
+- Wide cards arranged vertically, suitable for table of contents or key points.
+- Use shadow simulation (e.g., semi-transparent black rectangles) for a floating effect.
+
+### 2. Contrast Layout
+- Left-right split: left dark / right light, or left image / right text, emphasizing contrast.
+
+### 3. Radial Layout
+- Core concept centered with surrounding explanations, suitable for chapter or summary pages.
 
 ---
 
-## 十一、使用说明（推荐）
+## VIII. Spacing Guidelines
 
-1. **阴影处理**: 所有卡片阴影已通过矢量矩形模拟，不仅兼容性好，而且支持无损缩放。
-2. **渐变**: 如需修改渐变色，请在 `<defs>` 区域调整 `stop-color`。
-3. **Logo**: 建议使用透明底 PNG，对于深色背景页使用反白 Logo。
+| Property       | Value | Description              |
+| -------------- | ----- | ------------------------ |
+| **Base Unit**  | 8px   | 8px grid system          |
+| **Module Gap** | 32px  | Comfortable reading gap  |
+| **Card Gap**   | 16px  | Compact with cohesion    |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+1. **Gradient Support**: Use `<linearGradient>` and `<radialGradient>` defined within `<defs>`.
+2. **Shadow Simulation**: PPT does not support SVG filter shadows. Use **semi-transparent black rectangles (`fill="#000000" fill-opacity="0.1"`)** with offset stacking to simulate card shadows.
+3. **Opacity**: Strictly use `fill-opacity` / `stroke-opacity`.
+4. **Forbidden**: No `clipPath`, `mask`.
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder        | Description           |
+| ------------------ | --------------------- |
+| `{{TITLE}}`        | Presentation main title |
+| `{{SUBTITLE}}`     | Subtitle              |
+| `{{AUTHOR}}`       | Presenter / Department |
+| `{{DATE}}`         | Date                  |
+| `{{PAGE_TITLE}}`   | Content page title    |
+| `{{CHAPTER_NUM}}`  | Chapter number (01, 02) |
+| `{{LOGO_LARGE}}`   | Cover/back page large Logo |
+| `{{LOGO_HEADER}}`  | Navigation bar small Logo |
+
+---
+
+## XI. Usage Notes (Recommended)
+
+1. **Shadow Handling**: All card shadows are simulated via vector rectangles, ensuring good compatibility and lossless scaling.
+2. **Gradients**: To modify gradient colors, adjust `stop-color` values in the `<defs>` section.
+3. **Logo**: Recommend using transparent PNG. Use inverted (white) Logo for dark background pages.

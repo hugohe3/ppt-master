@@ -1,313 +1,313 @@
-# PPT Master 示例项目
+# PPT Master Example Projects
 
-> 本目录包含 **15 个精选示例项目**，涵盖咨询风格、通用风格、创意风格等多种设计范式，共计 **229 页 SVG 演示文稿**。
+> This directory contains **15 curated example projects** covering consulting style, general-purpose style, creative style, and other design paradigms, totaling **229 SVG presentation pages**.
 
-🌐 **[在线预览所有示例项目 →](https://hugohe3.github.io/ppt-master/)**
+**[Preview all example projects online](https://hugohe3.github.io/ppt-master/)**
 
-## 📊 示例总览
+## Overview
 
-| 类别 | 项目数 | 总页数 | 特点 |
-|------|--------|--------|------|
-| 🏢 咨询风格 | 8 | 142 页 | 数据驱动、结构化、专业留白 |
-| 🎨 通用灵活 | 3 | 32 页 | 灵活布局、主题多样 |
-| ✨ 创意风格 | 4 | 55 页 | 独特视觉语言、文化特色 |
+| Category | Projects | Total Pages | Highlights |
+|----------|----------|-------------|------------|
+| Consulting Style | 8 | 142 pages | Data-driven, structured, professional whitespace |
+| General-Purpose | 3 | 32 pages | Flexible layouts, diverse themes |
+| Creative Style | 4 | 55 pages | Unique visual language, cultural aesthetics |
 
 ---
 
-## 🏢 咨询风格示例
+## Consulting Style Examples
 
 ### ppt169_顶级咨询风_心理治疗中的依恋
 
-> **32 页** · 最大规模示例项目
+> **32 pages** - Largest example project
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 顶级咨询风格（MBB 级） |
-| **配色方案** | 专业蓝系 + 温暖治愈色 |
-| **视觉隐喻** | "安全基地" — 稳固结构、层次分明 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Top-tier consulting (MBB level) |
+| **Color Scheme** | Professional blue + warm therapeutic tones |
+| **Visual Metaphor** | "Secure Base" - solid structure, clear hierarchy |
 
-**核心特色**：螺旋上升结构，从 Bowlby → Ainsworth → Main → Fonagy 的理论演进，到临床实践的应用深化。
+**Key Features**: Spiral-ascending structure tracing the theoretical evolution from Bowlby to Ainsworth to Main to Fonagy, deepening into clinical practice applications.
 
-📁 [查看项目](./ppt169_顶级咨询风_心理治疗中的依恋/) · 📄 [设计规范](./ppt169_顶级咨询风_心理治疗中的依恋/设计规范与内容大纲.md)
+[View Project](./ppt169_顶级咨询风_心理治疗中的依恋/) | [Design Spec](./ppt169_顶级咨询风_心理治疗中的依恋/design_spec.md)
 
 ---
 
 ### ppt169_顶级咨询风_甘孜州经济财政分析
 
-> **17 页** · 政务财政分析
+> **17 pages** - Government fiscal analysis
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 顶级咨询风格（MBB 级） |
-| **配色方案** | 政务蓝 #1E3A5F + 藏红 #C41E3A + 金色 #D4AF37 |
-| **目标受众** | 政府领导、财政部门、发改委、投资方、金融机构 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Top-tier consulting (MBB level) |
+| **Color Scheme** | Government blue #1E3A5F + Tibetan red #C41E3A + Gold #D4AF37 |
+| **Target Audience** | Government leaders, fiscal departments, investment agencies, financial institutions |
 
-**核心特色**：基于 2024 年甘孜州决算数据，涵盖 GDP、财政收支、政府债务、举债能力等多维分析。采用藏区文化元素（藏红装饰、云纹图案），数据驱动的政务汇报风格。
+**Key Features**: Based on 2024 Ganzi Prefecture budget data, covering GDP, fiscal revenue/expenditure, government debt, borrowing capacity, and more. Incorporates Tibetan cultural elements (Tibetan red accents, cloud patterns) in a data-driven government reporting style.
 
-📁 [查看项目](./ppt169_顶级咨询风_甘孜州经济财政分析/) · 📄 [设计规范](./ppt169_顶级咨询风_甘孜州经济财政分析/设计规范与内容大纲.md)
+[View Project](./ppt169_顶级咨询风_甘孜州经济财政分析/) | [Design Spec](./ppt169_顶级咨询风_甘孜州经济财政分析/design_spec.md)
 
 ---
 
 ### ppt169_顶级咨询风_构建有效AI代理_Anthropic
 
-> **15 页** · AI 代理架构设计
+> **15 pages** - AI agent architecture design
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 顶级咨询风格（MBB 级） |
-| **配色方案** | Anthropic 橙 #D97757 + 深空灰 #1A1A2E + 科技蓝 #4A90D9 |
-| **目标受众** | AI/LLM 开发者、技术架构师、产品经理 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Top-tier consulting (MBB level) |
+| **Color Scheme** | Anthropic orange #D97757 + Deep space gray #1A1A2E + Tech blue #4A90D9 |
+| **Target Audience** | AI/LLM developers, technical architects, product managers |
 
-**核心特色**：基于 Anthropic 官方工程博客《Building Effective Agents》，涵盖 Workflows vs Agents 定义、五种 Workflow 模式（Prompt Chaining、Routing、Parallelization、Orchestrator-Workers、Evaluator-Optimizer）、自主代理架构、工具设计原则（ACI）等。
+**Key Features**: Based on Anthropic's official engineering blog "Building Effective Agents", covering Workflows vs Agents definitions, five Workflow patterns (Prompt Chaining, Routing, Parallelization, Orchestrator-Workers, Evaluator-Optimizer), autonomous agent architecture, and tool design principles (ACI).
 
-📁 [查看项目](./ppt169_顶级咨询风_构建有效AI代理_Anthropic/) · 📄 [设计规范](./ppt169_顶级咨询风_构建有效AI代理_Anthropic/设计规范与内容大纲.md)
+[View Project](./ppt169_顶级咨询风_构建有效AI代理_Anthropic/) | [Design Spec](./ppt169_顶级咨询风_构建有效AI代理_Anthropic/design_spec.md)
 
 ---
 
-### ppt169_顶级咨询风_重庆市区域报告 🆕
+### ppt169_顶级咨询风_重庆市区域报告
 
-> **20 页** · 区域财政分析
+> **20 pages** - Regional fiscal analysis
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 顶级咨询风格（MBB 级） |
-| **配色方案** | 金融研究蓝系：主导色 #1E3A5F + 辅助色 #4A90D9 + 强调色 #E63946/#2ECC71 |
-| **目标受众** | 政府领导、财政部门、发改委、投资方、金融机构 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Top-tier consulting (MBB level) |
+| **Color Scheme** | Financial research blue: Primary #1E3A5F + Secondary #4A90D9 + Accent #E63946/#2ECC71 |
+| **Target Audience** | Government leaders, fiscal departments, investment agencies, financial institutions |
 
-**核心特色**：基于企业预警通数据，全面分析重庆市 2024-2025 年经济情况、财政及债务、区域城投、银行业金融资源、区域融资、区域风险、重点企业等七大模块。采用指标卡（KPI Card）、数据表格、趋势图表等可视化形式，数据驱动的专业政务/金融分析风格。
+**Key Features**: Based on enterprise early-warning data, comprehensive analysis of Chongqing's 2024-2025 economy, fiscal affairs and debt, regional urban investment, banking financial resources, regional financing, regional risks, and key enterprises across seven modules. Uses KPI cards, data tables, trend charts, and other visualizations in a professional government/financial analysis style.
 
-📁 [查看项目](./ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) · 📄 [设计规范](./ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/设计规范与内容大纲.md)
+[View Project](./ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/) | [Design Spec](./ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/design_spec.md)
 
 ---
 
 ### ppt169_高端咨询风_南欧江水电站战略评估
 
-> **20 页** · "流域危机"设计语言
+> **20 pages** - "River Basin Crisis" design language
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 高端咨询风格 |
-| **配色方案** | "湄公河"色系：深水蓝 → 电力蓝 |
-| **视觉隐喻** | 水流层叠、断裂与张力、地图与流域 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Premium consulting style |
+| **Color Scheme** | "Mekong River" palette: Deep water blue to Electric blue |
+| **Visual Metaphor** | Water cascading layers, fractures and tension, maps and river basins |
 
-**核心特色**：老挝南欧江梯级水电站项目、主权债务危机与仲裁案全景分析，面向政府决策者与金融机构高管。
+**Key Features**: Laos Nam Ou River cascade hydropower project, sovereign debt crisis and arbitration case panoramic analysis, targeting government decision-makers and financial institution executives.
 
-📁 [查看项目](./ppt169_高端咨询风_南欧江水电站战略评估/) · 📄 [设计规范](./ppt169_高端咨询风_南欧江水电站战略评估/设计规范与内容大纲.md)
+[View Project](./ppt169_高端咨询风_南欧江水电站战略评估/) | [Design Spec](./ppt169_高端咨询风_南欧江水电站战略评估/design_spec.md)
 
 ---
 
 ### ppt169_高端咨询风_汽车认证五年战略规划
 
-> **20 页** · 战略规划汇报
+> **20 pages** - Strategic planning report
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 高端咨询风格（McKinsey/BCG 风格） |
-| **配色方案** | 深海蓝 #003F6C + 活力绿 #00A651 |
-| **目标受众** | 认证机构高层、董事会、监管部门 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Premium consulting (McKinsey/BCG style) |
+| **Color Scheme** | Deep sea blue #003F6C + Vibrant green #00A651 |
+| **Target Audience** | Certification agency leadership, board of directors, regulatory bodies |
 
-**核心特色**：汽车及零部件领域自愿性产品认证 2026-2030 五年战略规划，涵盖新能源/绿色低碳主题。
+**Key Features**: Automotive and components voluntary product certification 2026-2030 five-year strategic plan, covering new energy/green low-carbon themes.
 
-📁 [查看项目](./ppt169_高端咨询风_汽车认证五年战略规划/) · 📄 [设计规范](./ppt169_高端咨询风_汽车认证五年战略规划/设计规范与内容大纲.md)
+[View Project](./ppt169_高端咨询风_汽车认证五年战略规划/) | [Design Spec](./ppt169_高端咨询风_汽车认证五年战略规划/design_spec.md)
 
 ---
 
 ### ppt169_麦肯锡风_kimsoong_customer_loyalty
 
-> **8 页** · 麦肯锡经典风格
+> **8 pages** - Classic McKinsey style
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 高端咨询风格（麦肯锡） |
-| **配色方案** | McKinsey Blue #005587 + Amber #F5A623 |
-| **设计原则** | MECE 原则、数据驱动、信息可视化 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Premium consulting (McKinsey) |
+| **Color Scheme** | McKinsey Blue #005587 + Amber #F5A623 |
+| **Design Principles** | MECE principle, data-driven, information visualization |
 
-**核心特色**：客户忠诚度计划分析，展示麦肯锡经典的结构化思维与图表矩阵设计。
+**Key Features**: Customer loyalty program analysis, showcasing McKinsey's classic structured thinking and chart matrix design.
 
-📁 [查看项目](./ppt169_麦肯锡风_kimsoong_customer_loyalty/) · 📄 [设计规范](./ppt169_麦肯锡风_kimsoong_customer_loyalty/设计规范与内容大纲.md)
+[View Project](./ppt169_麦肯锡风_kimsoong_customer_loyalty/) | [Design Spec](./ppt169_麦肯锡风_kimsoong_customer_loyalty/design_spec.md)
 
 ---
 
 ### ppt169_谷歌风_google_annual_report
 
-> **10 页** · Google 品牌风格
+> **10 pages** - Google brand style
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 高端咨询风格 + Google 品牌色 |
-| **配色方案** | Google Blue #4285F4 / Red #EA4335 / Yellow #FBBC04 / Green #34A853 |
-| **视觉特点** | 数据驱动、简洁克制、品牌一致性 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Premium consulting + Google brand colors |
+| **Color Scheme** | Google Blue #4285F4 / Red #EA4335 / Yellow #FBBC04 / Green #34A853 |
+| **Visual Features** | Data-driven, clean and restrained, brand consistency |
 
-**核心特色**：Google 2025 年度工作汇报模板，融合 Google 设计语言与咨询专业度。
+**Key Features**: Google 2025 annual work report template, blending Google design language with consulting professionalism.
 
-📁 [查看项目](./ppt169_谷歌风_google_annual_report/) · 📄 [设计规范](./ppt169_谷歌风_google_annual_report/设计规范与内容大纲.md)
+[View Project](./ppt169_谷歌风_google_annual_report/) | [Design Spec](./ppt169_谷歌风_google_annual_report/design_spec.md)
 
 ---
 
-## 🎨 通用灵活风格示例
+## General-Purpose Style Examples
 
 ### ppt169_通用灵活+代码_debug六步法
 
-> **10 页** · 程序员培训
+> **10 pages** - Developer training
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 通用灵活 + 代码/科技感 |
-| **配色方案** | GitHub 深色主题：#0d1117 背景 + #58a6ff 强调 |
-| **目标受众** | 程序员、开发者、技术团队 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | General-purpose + Code/Tech aesthetic |
+| **Color Scheme** | GitHub dark theme: #0d1117 background + #58a6ff accent |
+| **Target Audience** | Programmers, developers, technical teams |
 
-**核心特色**：深色科技风格，适合技术团队内部培训分享。
+**Key Features**: Dark tech style, suitable for internal technical team training sessions.
 
-📁 [查看项目](./ppt169_通用灵活+代码_debug六步法/) · 📄 [设计规范](./ppt169_通用灵活+代码_debug六步法/设计规范与内容大纲.md)
+[View Project](./ppt169_通用灵活+代码_debug六步法/) | [Design Spec](./ppt169_通用灵活+代码_debug六步法/design_spec.md)
 
 ---
 
 ### ppt169_通用灵活+学术_重庆大学论文格式标准
 
-> **11 页** · 学术规范指南
+> **11 pages** - Academic standards guide
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 通用灵活 + 学术风格 |
-| **配色方案** | 重大蓝 #1A5F9E + 橙色强调 #E07C24 |
-| **目标受众** | 硕士/博士研究生 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | General-purpose + Academic style |
+| **Color Scheme** | CQU Blue #1A5F9E + Orange accent #E07C24 |
+| **Target Audience** | Master's/PhD graduate students |
 
-**核心特色**：基于《重庆大学博士、硕士学位论文撰写格式标准及要求（2019 年修订）》，学术、规范、清晰、实用。
+**Key Features**: Based on "Chongqing University Doctoral and Master's Thesis Formatting Standards and Requirements (2019 Revision)", academic, standardized, clear, and practical.
 
-📁 [查看项目](./ppt169_通用灵活+学术_重庆大学论文格式标准/) · 📄 [设计规范](./ppt169_通用灵活+学术_重庆大学论文格式标准/设计规范与内容大纲.md)
+[View Project](./ppt169_通用灵活+学术_重庆大学论文格式标准/) | [Design Spec](./ppt169_通用灵活+学术_重庆大学论文格式标准/design_spec.md)
 
 ---
 
 ### ppt169_通过灵活+代码_三大AI编程神器横向对比
 
-> **11 页** · 技术评测
+> **11 pages** - Technical review
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 通用灵活 |
-| **配色方案** | 科技蓝 #2563EB + 活力橙 #F97316 + 成功绿 #10B981 |
-| **使用场景** | 技术分享、公众号推文、技术社群 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | General-purpose |
+| **Color Scheme** | Tech blue #2563EB + Vibrant orange #F97316 + Success green #10B981 |
+| **Use Cases** | Tech sharing, blog posts, tech communities |
 
-**核心特色**：OpenSpec vs ZCF vs Spec Kit 三大 AI 编程工具横向对比分析。
+**Key Features**: Side-by-side comparison of three AI programming tools: OpenSpec vs ZCF vs Spec Kit.
 
-📁 [查看项目](./ppt169_通过灵活+代码_三大AI编程神器横向对比/) · 📄 [设计规范](./ppt169_通过灵活+代码_三大AI编程神器横向对比/设计规范与内容大纲.md)
+[View Project](./ppt169_通过灵活+代码_三大AI编程神器横向对比/) | [Design Spec](./ppt169_通过灵活+代码_三大AI编程神器横向对比/design_spec.md)
 
 ---
 
-## ✨ 创意风格示例
+## Creative Style Examples
 
 ### ppt169_易理风_地山谦卦深度研究
 
-> **20 页** · 易经本体美学
+> **20 pages** - I Ching ontological aesthetics
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 易理玄学风格 |
-| **视觉哲学** | 阴阳对立统一、爻象符号系统、天圆地方、金石古意 |
-| **信息架构** | 六爻层进结构 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | I Ching metaphysical style |
+| **Visual Philosophy** | Yin-Yang dialectical unity, Yao symbol system, Heaven-round Earth-square, Bronze-stone antiquity |
+| **Information Architecture** | Six-Yao progressive structure |
 
-**核心特色**：采用「阴阳爻变」设计语言，玄黑与素白强对比，阳爻（⚊）与阴爻（⚋）作为核心视觉语言，从象数理占到现代哲学的多维同构。
+**Key Features**: Employs a "Yin-Yang Yao Transformation" design language with stark black-and-white contrast. Yang Yao and Yin Yao serve as the core visual language, achieving multi-dimensional isomorphism from Image-Number-Principle-Divination to modern philosophy.
 
-📁 [查看项目](./ppt169_易理风_地山谦卦深度研究/) · 📄 [设计规范](./ppt169_易理风_地山谦卦深度研究/设计规范与内容大纲.md)
+[View Project](./ppt169_易理风_地山谦卦深度研究/) | [Design Spec](./ppt169_易理风_地山谦卦深度研究/design_spec.md)
 
 ---
 
 ### ppt169_禅意风_金刚经第一品研究
 
-> **15 页** · 禅意学术风格
+> **15 pages** - Zen academic style
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 禅意学术风格 |
-| **视觉隐喻** | "道在平常" — 水墨留白、层层递进、古朴典雅 |
-| **信息架构** | 螺旋深入结构 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Zen academic style |
+| **Visual Metaphor** | "The Way in the Ordinary" - Ink wash whitespace, progressive depth, antique elegance |
+| **Information Architecture** | Spiral-deepening structure |
 
-**核心特色**：页面布局如同禅画，以留白营造意境，暗示"空"的智慧。从文本到义理，从表象到本质，契合般若思想的层次。
+**Key Features**: Page layouts resemble Zen paintings, using whitespace to create atmosphere that hints at the wisdom of "emptiness". Progresses from text to meaning, from surface to essence, aligned with the layered nature of Prajna thought.
 
-📁 [查看项目](./ppt169_禅意风_金刚经第一品研究/) · 📄 [设计规范](./ppt169_禅意风_金刚经第一品研究/设计规范与内容大纲.md)
+[View Project](./ppt169_禅意风_金刚经第一品研究/) | [Design Spec](./ppt169_禅意风_金刚经第一品研究/design_spec.md)
 
 ---
 
 ### ppt169_像素风_git_introduction
 
-> **10 页** · 像素复古游戏风
+> **10 pages** - Pixel retro gaming style
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 像素复古游戏风 (Pixel Retro Gaming Style) |
-| **配色方案** | 霓虹系：霓虹绿 #39FF14 / 赛博粉 #FF2E97 / 电光蓝 #00D4FF |
-| **背景色** | 深空黑 #0D1117 + 星夜蓝 #161B22 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Pixel Retro Gaming Style |
+| **Color Scheme** | Neon palette: Neon green #39FF14 / Cyber pink #FF2E97 / Electric blue #00D4FF |
+| **Background** | Deep space black #0D1117 + Starry night blue #161B22 |
 
-**核心特色**：Git 入门完全指南，采用复古游戏像素风格，用"存档点"隐喻版本控制概念。
+**Key Features**: Complete Git beginner's guide using retro gaming pixel art style, with "save points" as a metaphor for version control concepts.
 
-📁 [查看项目](./ppt169_像素风_git_introduction/) · 📄 [设计规范](./ppt169_像素风_git_introduction/设计规范与内容大纲.md)
+[View Project](./ppt169_像素风_git_introduction/) | [Design Spec](./ppt169_像素风_git_introduction/design_spec.md)
 
 ---
 
 ### demo_project_intro_ppt169_20251211
 
-> **10 页** · PPT Master 官方介绍
+> **10 pages** - PPT Master official introduction
 
-| 属性 | 内容 |
-|------|------|
-| **画布格式** | PPT 16:9 (1280×720) |
-| **设计风格** | 清新科技风格 (Modern Tech) |
-| **配色方案** | 靛蓝紫渐变 (#6366F1 → #06B6D4) |
-| **页数** | 10 页 |
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280x720) |
+| **Design Style** | Modern Tech |
+| **Color Scheme** | Indigo-purple gradient (#6366F1 to #06B6D4) |
+| **Pages** | 10 pages |
 
-**包含页面**：封面 → 痛点与挑战 → 解决方案 → 系统架构 → 四大角色 → 核心特性 → 支持格式 → 工具生态 → 快速开始 → 行动号召
+**Included Pages**: Cover > Pain Points & Challenges > Solution > System Architecture > Four Roles > Core Features > Supported Formats > Tool Ecosystem > Quick Start > Call to Action
 
-📁 [查看项目](./demo_project_intro_ppt169_20251211/) · 📄 [设计规范](./demo_project_intro_ppt169_20251211/设计规范与内容大纲.md)
+[View Project](./demo_project_intro_ppt169_20251211/) | [Design Spec](./demo_project_intro_ppt169_20251211/design_spec.md)
 
 ---
 
-## 📁 项目结构
+## Project Structure
 
-每个示例项目采用以下标准结构：
+Each example project follows this standard structure:
 
 ```
 <project_name>/
-├── 设计规范与内容大纲.md      # 设计规范文档（必需）
-├── images/                   # 图片资源（如有）
-├── svg_output/               # 原始 SVG（带占位符，作为模板）
+├── design_spec.md               # Design specification document (required)
+├── images/                      # Image assets (if any)
+├── svg_output/                  # Original SVGs (with placeholders, as templates)
 │   ├── slide_01_xxx.svg
 │   └── ...
-└── svg_final/                # 最终 SVG（嵌入图标/图片后）
+└── svg_final/                   # Final SVGs (after icon/image embedding)
     ├── slide_01_xxx.svg
     └── ...
 ```
 
-## 📖 使用说明
+## Usage Guide
 
-### 预览项目
+### Previewing Projects
 
-**方法 1: 使用 HTTP 服务器（推荐）**
+**Method 1: Using an HTTP Server (Recommended)**
 
 ```bash
-# 预览最终版本
+# Preview the final version
 python -m http.server --directory examples/<project_name>/svg_final 8000
 
-# 预览原始版本（带占位符）
+# Preview the original version (with placeholders)
 python -m http.server --directory examples/<project_name>/svg_output 8000
 
-# 访问 http://localhost:8000
+# Visit http://localhost:8000
 ```
 
-**方法 2: 直接打开 SVG**
+**Method 2: Open SVG Directly**
 
 ```bash
 # macOS
@@ -320,37 +320,37 @@ start examples/<project_name>/svg_final/slide_01_cover.svg
 xdg-open examples/<project_name>/svg_final/slide_01_cover.svg
 ```
 
-### 学习路径建议
+### Suggested Learning Path
 
-1. **入门**：从 `demo_project_intro_ppt169_20251211` 开始，了解项目结构
-2. **咨询风格**：学习 `ppt169_麦肯锡风_kimsoong_customer_loyalty`，掌握 MECE 原则
-3. **复杂项目**：研究 `ppt169_顶级咨询风_心理治疗中的依恋`（32 页），理解大型项目组织
-4. **政务风格**：参考 `ppt169_顶级咨询风_甘孜州经济财政分析`（17 页），掌握数据驱动分析
-5. **创意探索**：参考易理风格或禅意风格，尝试独特视觉语言
+1. **Getting Started**: Begin with `demo_project_intro_ppt169_20251211` to understand the project structure
+2. **Consulting Style**: Study `ppt169_麦肯锡风_kimsoong_customer_loyalty` to master the MECE principle
+3. **Complex Projects**: Explore `ppt169_顶级咨询风_心理治疗中的依恋` (32 pages) to understand large-scale project organization
+4. **Government Style**: Refer to `ppt169_顶级咨询风_甘孜州经济财政分析` (17 pages) to master data-driven analysis
+5. **Creative Exploration**: Study the I Ching or Zen style for unique visual languages
 
-## 🤝 贡献示例
+## Contributing Examples
 
-欢迎分享你的项目！请确保：
+We welcome your project contributions! Please ensure:
 
-1. ✅ 遵循标准项目结构
-2. ✅ 包含完整的设计规范文档
-3. ✅ SVG 文件符合技术规范（使用 `python3 skills/ppt-master/scripts/svg_quality_checker.py` 检查）
-4. ✅ 不包含敏感信息
+1. Follow the standard project structure
+2. Include a complete design specification document
+3. SVG files comply with technical specifications (check with `python3 skills/ppt-master/scripts/svg_quality_checker.py`)
+4. No sensitive information is included
 
-### 贡献步骤
+### How to Contribute
 
-1. Fork 本仓库
-2. 在 `examples/` 目录下创建项目文件夹
-3. 提交 Pull Request
+1. Fork this repository
+2. Create a project folder under `examples/`
+3. Submit a Pull Request
 
-## 📚 相关资源
+## Related Resources
 
-- [快速开始](../README.md)
-- [工作流教程](../skills/ppt-master/SKILL.md)
-- [设计规范](../skills/ppt-master/references/design-guidelines.md)
-- [图表模板](../skills/ppt-master/templates/charts/)
-- [图标库](../skills/ppt-master/templates/icons/)（640+ 图标）
+- [Quick Start](../README.md)
+- [Workflow Tutorial](../skills/ppt-master/SKILL.md)
+- [Design Guidelines](../skills/ppt-master/references/design-guidelines.md)
+- [Chart Templates](../skills/ppt-master/templates/charts/)
+- [Icon Library](../skills/ppt-master/templates/icons/) (640+ icons)
 
 ---
 
-*最后更新: 2025-12-13*
+*Last updated: 2025-12-13*

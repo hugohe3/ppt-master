@@ -1,48 +1,48 @@
-# 模板资源
+# Template Resources
 
-## 📝 设计规范与大纲参考
+## Design Specification & Outline Reference
 
-`design_spec_reference.md` 是一个全能型的参考模板，用于定义项目的：
-1.  **视觉规范**：画布尺寸、配色方案、字体字号、布局原则
-2.  **内容大纲**：具体的页面结构规划（Slide by Slide）
-3.  **技术约束**：SVG 生成和 PPT 兼容性的硬性要求
+`design_spec_reference.md` is an all-in-one reference template for defining:
+1.  **Visual Specifications**: Canvas dimensions, color scheme, typography, layout principles
+2.  **Content Outline**: Slide-by-slide page structure planning
+3.  **Technical Constraints**: Hard requirements for SVG generation and PPT compatibility
 
-[查看设计规范与大纲参考](./design_spec_reference.md)
+[View Design Spec Reference](./design_spec_reference.md)
 
-## 📄 页面布局模板
+## Page Layout Templates
 
-`layouts/` 目录包含预置的页面布局模板，按设计风格分类：
+The `layouts/` directory contains pre-built page layout templates organized by design style:
 
-- **General**: 通用灵活风格，现代简洁
-- **Consultant**: 咨询风格，专业严谨
-- **Consultant Top**: 顶级咨询风格（MBB级）
-- **Academic Defense**: 学术答辩风格，专业科研（新增 ✨）
+- **General**: Versatile modern style, clean and flexible
+- **Consultant**: Consulting style, professional and structured
+- **Consultant Top**: Top-tier consulting style (MBB-level)
+- **Academic Defense**: Academic defense style, research-oriented
 
-- **人工浏览**：[layouts/README.md](./layouts/README.md)
-- **AI / 程序查询**：[layouts/layouts_index.json](./layouts/layouts_index.json)
+- **Human browsing**: [layouts/README.md](./layouts/README.md)
+- **AI / Programmatic lookup**: [layouts/layouts_index.json](./layouts/layouts_index.json)
 
-## 📊 图表模板
+## Chart Templates
 
-`charts/` 目录包含 33 种常用图表模板：
+The `charts/` directory contains 33 standard chart templates:
 
-- KPI 卡片
-- 柱状图 / 堆叠柱状图
-- 折线图 / 双Y轴折线图
-- 环形图
-- 雷达图
-- 漏斗图
-- 矩阵图 (2×2)
-- 时间轴
-- 甘特图
-- 流程图
-- 组织结构图
+- KPI Cards
+- Bar Chart / Stacked Bar Chart
+- Line Chart / Dual-Axis Line Chart
+- Donut Chart
+- Radar Chart
+- Funnel Chart
+- Matrix (2x2)
+- Timeline
+- Gantt Chart
+- Process Flow
+- Org Chart
 
-- **人工浏览**：[charts/README.md](./charts/README.md)
-- **AI / 程序查询**：[charts/charts_index.json](./charts/charts_index.json)
+- **Human browsing**: [charts/README.md](./charts/README.md)
+- **AI / Programmatic lookup**: [charts/charts_index.json](./charts/charts_index.json)
 
-## 🎨 图标库
+## Icon Library
 
-`icons/` 目录包含 640+ 矢量图标，来源于 [SVG Repo](https://www.svgrepo.com/)。
+The `icons/` directory contains 640+ vector icons sourced from [SVG Repo](https://www.svgrepo.com/).
 
-- **人工浏览**：[icons/README.md](./icons/README.md)
-- **AI / 程序查询**：[icons/icons_index.json](./icons/icons_index.json)
+- **Human browsing**: [icons/README.md](./icons/README.md)
+- **AI / Programmatic lookup**: [icons/icons_index.json](./icons/icons_index.json)

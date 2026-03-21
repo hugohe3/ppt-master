@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-PPT Master - 统一配置管理模块
+PPT Master - Unified Configuration Management Module
 
-集中管理项目的所有配置项，确保配置的一致性和可维护性。
+Centrally manages all project configuration items to ensure consistency and maintainability.
 
-用法:
+Usage:
     from config import Config, CANVAS_FORMATS, DESIGN_COLORS
-    
-    # 获取画布格式
+
+    # Get canvas format
     ppt169 = Config.get_canvas_format('ppt169')
-    
-    # 获取配色方案
+
+    # Get color scheme
     colors = Config.get_color_scheme('consulting')
 """
 
@@ -20,29 +20,29 @@ import json
 
 
 # ============================================================
-# 路径配置
+# Path Configuration
 # ============================================================
 
-# 项目根目录
+# Project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
 
-# 核心目录
+# Core directories
 SCRIPTS_DIR = PROJECT_ROOT / 'scripts'
 REFERENCES_DIR = PROJECT_ROOT / 'references'
 TEMPLATES_DIR = PROJECT_ROOT / 'templates'
 WORKFLOWS_DIR = PROJECT_ROOT / 'workflows'
 
-# 仓库根目录
+# Repository root directory
 REPO_ROOT = PROJECT_ROOT.parent.parent
 EXAMPLES_DIR = REPO_ROOT / 'examples'
 PROJECTS_DIR = REPO_ROOT / 'projects'
 
-# 模板子目录
+# Template subdirectories
 CHART_TEMPLATES_DIR = TEMPLATES_DIR / 'charts'
 
 
 # ============================================================
-# 画布格式配置
+# Canvas Format Configuration
 # ============================================================
 
 CANVAS_FORMATS = {
@@ -53,7 +53,7 @@ CANVAS_FORMATS = {
         'width': 1280,
         'height': 720,
         'aspect_ratio': '16:9',
-        'use_case': '现代投影设备、在线演示'
+        'use_case': 'Modern projectors, online presentations'
     },
     'ppt43': {
         'name': 'PPT 4:3',
@@ -62,16 +62,16 @@ CANVAS_FORMATS = {
         'width': 1024,
         'height': 768,
         'aspect_ratio': '4:3',
-        'use_case': '传统投影设备'
+        'use_case': 'Traditional projectors'
     },
     'wechat': {
-        'name': '微信公众号头图',
+        'name': 'WeChat Article Header',
         'dimensions': '900×383',
         'viewbox': '0 0 900 383',
         'width': 900,
         'height': 383,
         'aspect_ratio': '2.35:1',
-        'use_case': '公众号文章配图'
+        'use_case': 'WeChat article cover images'
     },
     'xiaohongshu': {
         'name': '小红书',
@@ -80,54 +80,54 @@ CANVAS_FORMATS = {
         'width': 1242,
         'height': 1660,
         'aspect_ratio': '3:4',
-        'use_case': '知识分享、产品种草'
+        'use_case': 'Knowledge sharing, product reviews'
     },
     'moments': {
-        'name': '朋友圈/Instagram',
+        'name': 'Moments/Instagram',
         'dimensions': '1080×1080',
         'viewbox': '0 0 1080 1080',
         'width': 1080,
         'height': 1080,
         'aspect_ratio': '1:1',
-        'use_case': '社交媒体方形图片'
+        'use_case': 'Social media square images'
     },
     'story': {
-        'name': 'Story/竖版',
+        'name': 'Story/Vertical',
         'dimensions': '1080×1920',
         'viewbox': '0 0 1080 1920',
         'width': 1080,
         'height': 1920,
         'aspect_ratio': '9:16',
-        'use_case': '短视频封面、快拍'
+        'use_case': 'Short video covers, stories'
     },
     'banner': {
-        'name': '横版 Banner',
+        'name': 'Horizontal Banner',
         'dimensions': '1920×1080',
         'viewbox': '0 0 1920 1080',
         'width': 1920,
         'height': 1080,
         'aspect_ratio': '16:9',
-        'use_case': '网页横幅、大屏展示'
+        'use_case': 'Web banners, large screen displays'
     },
     'a4': {
-        'name': 'A4 打印',
+        'name': 'A4 Print',
         'dimensions': '1240×1754',
         'viewbox': '0 0 1240 1754',
         'width': 1240,
         'height': 1754,
         'aspect_ratio': '√2:1',
-        'use_case': '打印文档、PDF导出'
+        'use_case': 'Print documents, PDF export'
     }
 }
 
 
 # ============================================================
-# 设计配色配置
+# Design Color Configuration
 # ============================================================
 
 DESIGN_COLORS = {
     'consulting': {
-        'name': '咨询风格',
+        'name': 'Consulting Style',
         'primary': '#005587',
         'secondary': '#0076A8',
         'accent': '#F5A623',
@@ -140,7 +140,7 @@ DESIGN_COLORS = {
         'background_alt': '#F8F9FA'
     },
     'general': {
-        'name': '通用灵活风格',
+        'name': 'General Flexible Style',
         'primary': '#2196F3',
         'secondary': '#4CAF50',
         'accent': '#FF9800',
@@ -154,7 +154,7 @@ DESIGN_COLORS = {
         'background_alt': '#F8F9FA'
     },
     'tech': {
-        'name': '科技风格',
+        'name': 'Tech Style',
         'primary': '#00D1FF',
         'secondary': '#7B61FF',
         'accent': '#00FF88',
@@ -167,7 +167,7 @@ DESIGN_COLORS = {
         'background_alt': '#1A1F2E'
     },
     'academic': {
-        'name': '学术规范风格',
+        'name': 'Academic Style',
         'primary': '#8B0000',
         'secondary': '#1E3A5F',
         'accent': '#C9B037',
@@ -180,7 +180,7 @@ DESIGN_COLORS = {
         'background_alt': '#F5F5F5'
     },
     'government': {
-        'name': '政务风格',
+        'name': 'Government Style',
         'primary': '#C41E3A',
         'secondary': '#1E3A5F',
         'accent': '#D4AF37',
@@ -196,90 +196,90 @@ DESIGN_COLORS = {
 
 
 # ============================================================
-# 行业配色模板
+# Industry Color Templates
 # ============================================================
 
 INDUSTRY_COLORS = {
     'finance': {
-        'name': '金融/银行',
+        'name': 'Finance/Banking',
         'primary': '#003366',
         'secondary': '#4A90D9',
         'accent': '#D4AF37'
     },
     'healthcare': {
-        'name': '医疗/健康',
+        'name': 'Healthcare/Medical',
         'primary': '#00796B',
         'secondary': '#4DB6AC',
         'accent': '#FF7043'
     },
     'technology': {
-        'name': '科技/互联网',
+        'name': 'Technology/Internet',
         'primary': '#1565C0',
         'secondary': '#42A5F5',
         'accent': '#00E676'
     },
     'education': {
-        'name': '教育/培训',
+        'name': 'Education/Training',
         'primary': '#5E35B1',
         'secondary': '#7E57C2',
         'accent': '#FFD54F'
     },
     'retail': {
-        'name': '零售/消费',
+        'name': 'Retail/Consumer',
         'primary': '#E53935',
         'secondary': '#EF5350',
         'accent': '#FFB300'
     },
     'manufacturing': {
-        'name': '制造/工业',
+        'name': 'Manufacturing/Industrial',
         'primary': '#455A64',
         'secondary': '#78909C',
         'accent': '#FF6F00'
     },
     'energy': {
-        'name': '能源/环保',
+        'name': 'Energy/Environmental',
         'primary': '#2E7D32',
         'secondary': '#66BB6A',
         'accent': '#FDD835'
     },
     'realestate': {
-        'name': '房地产/建筑',
+        'name': 'Real Estate/Construction',
         'primary': '#795548',
         'secondary': '#A1887F',
         'accent': '#4CAF50'
     },
     'legal': {
-        'name': '法律/合规',
+        'name': 'Legal/Compliance',
         'primary': '#37474F',
         'secondary': '#546E7A',
         'accent': '#8D6E63'
     },
     'media': {
-        'name': '媒体/娱乐',
+        'name': 'Media/Entertainment',
         'primary': '#7B1FA2',
         'secondary': '#AB47BC',
         'accent': '#FF4081'
     },
     'logistics': {
-        'name': '物流/供应链',
+        'name': 'Logistics/Supply Chain',
         'primary': '#F57C00',
         'secondary': '#FFB74D',
         'accent': '#0288D1'
     },
     'agriculture': {
-        'name': '农业/食品',
+        'name': 'Agriculture/Food',
         'primary': '#558B2F',
         'secondary': '#8BC34A',
         'accent': '#FFCA28'
     },
     'tourism': {
-        'name': '旅游/酒店',
+        'name': 'Tourism/Hospitality',
         'primary': '#00ACC1',
         'secondary': '#4DD0E1',
         'accent': '#FF7043'
     },
     'automotive': {
-        'name': '汽车/交通',
+        'name': 'Automotive/Transportation',
         'primary': '#263238',
         'secondary': '#455A64',
         'accent': '#D32F2F'
@@ -288,7 +288,7 @@ INDUSTRY_COLORS = {
 
 
 # ============================================================
-# 字体配置
+# Font Configuration
 # ============================================================
 
 FONTS = {
@@ -311,7 +311,7 @@ FONT_SIZES = {
 
 
 # ============================================================
-# 布局配置
+# Layout Configuration
 # ============================================================
 
 LAYOUT_MARGINS = {
@@ -343,33 +343,33 @@ LAYOUT_MARGINS = {
 
 
 # ============================================================
-# SVG 技术规范
+# SVG Technical Specifications
 # ============================================================
 
 SVG_CONSTRAINTS = {
-    # 禁用元素 - PPT 不兼容
+    # Forbidden elements - PPT incompatible
     'forbidden_elements': [
-        # 裁剪 / 遮罩
+        # Clipping / Masking
         'clipPath',
         'mask',
-        # 样式系统
+        # Style system
         'style',
-        # 结构 / 嵌套
+        # Structure / Nesting
         'foreignObject',
         'marker',
-        # 文本 / 字体
+        # Text / Fonts
         'textPath',
-        # 动画 / 交互
+        # Animation / Interaction
         'animate',
         'animateMotion',
         'animateTransform',
         'animateColor',
         'set',
         'script',
-        # 其他
+        # Others
         'iframe',
     ],
-    # 禁用属性
+    # Forbidden attributes
     'forbidden_attributes': [
         'class',
         'id',
@@ -377,17 +377,17 @@ SVG_CONSTRAINTS = {
         'onfocus', 'onblur', 'onchange',
         'marker-end',
     ],
-    # 禁用模式（正则匹配）
+    # Forbidden patterns (regex matching)
     'forbidden_patterns': [
-        r'@font-face',  # Web 字体
-        r'rgba\s*\(',   # rgba 颜色（PPT 不兼容）
-        r'<\?xml-stylesheet\b',  # 外部 CSS
+        r'@font-face',  # Web fonts
+        r'rgba\s*\(',   # rgba colors (PPT incompatible)
+        r'<\?xml-stylesheet\b',  # External CSS
         r'<link[^>]*rel\s*=\s*["\']stylesheet["\']',
-        r'@import\s+',  # 外部 CSS
-        r'<g[^>]*\sopacity\s*=',  # 组透明度
-        r'<image[^>]*\sopacity\s*=',  # 图片透明度
-        r'\bon\w+\s*=',  # 事件属性
-        r'(?s)(?=.*<symbol)(?=.*<use\b)',  # <symbol> + <use> 复杂用法（顺序无关）
+        r'@import\s+',  # External CSS
+        r'<g[^>]*\sopacity\s*=',  # Group opacity
+        r'<image[^>]*\sopacity\s*=',  # Image opacity
+        r'\bon\w+\s*=',  # Event attributes
+        r'(?s)(?=.*<symbol)(?=.*<use\b)',  # <symbol> + <use> complex usage (order-independent)
     ],
     'recommended_fonts': [
         'system-ui',
@@ -399,123 +399,123 @@ SVG_CONSTRAINTS = {
 
 
 # ============================================================
-# 配置管理类
+# Configuration Manager Class
 # ============================================================
 
 class Config:
-    """配置管理器"""
+    """Configuration manager."""
 
     @staticmethod
     def get_canvas_format(format_key: str) -> Optional[Dict]:
         """
-        获取画布格式配置
+        Get canvas format configuration.
 
         Args:
-            format_key: 格式键名（如 'ppt169', 'xiaohongshu'）
+            format_key: Format key name (e.g. 'ppt169', 'xiaohongshu')
 
         Returns:
-            格式配置字典，不存在则返回 None
+            Format configuration dict, or None if not found
         """
         return CANVAS_FORMATS.get(format_key)
 
     @staticmethod
     def get_all_canvas_formats() -> Dict:
-        """获取所有画布格式"""
+        """Get all canvas formats."""
         return CANVAS_FORMATS.copy()
 
     @staticmethod
     def get_color_scheme(style: str) -> Optional[Dict]:
         """
-        获取配色方案
+        Get color scheme.
 
         Args:
-            style: 风格名称（如 'consulting', 'general', 'tech'）
+            style: Style name (e.g. 'consulting', 'general', 'tech')
 
         Returns:
-            配色方案字典
+            Color scheme dict
         """
         return DESIGN_COLORS.get(style)
 
     @staticmethod
     def get_industry_colors(industry: str) -> Optional[Dict]:
         """
-        获取行业配色
+        Get industry color palette.
 
         Args:
-            industry: 行业名称（如 'finance', 'healthcare'）
+            industry: Industry name (e.g. 'finance', 'healthcare')
 
         Returns:
-            行业配色字典
+            Industry color dict
         """
         return INDUSTRY_COLORS.get(industry)
 
     @staticmethod
     def get_all_industries() -> List[str]:
-        """获取所有行业列表"""
+        """Get list of all industries."""
         return list(INDUSTRY_COLORS.keys())
 
     @staticmethod
     def get_layout_margins(format_key: str) -> Optional[Dict]:
         """
-        获取布局边距配置
+        Get layout margin configuration.
 
         Args:
-            format_key: 格式键名
+            format_key: Format key name
 
         Returns:
-            边距配置字典
+            Margin configuration dict
         """
         return LAYOUT_MARGINS.get(format_key)
 
     @staticmethod
     def get_font(font_type: str = 'system_ui') -> str:
         """
-        获取字体声明
+        Get font declaration.
 
         Args:
-            font_type: 字体类型（'system_ui', 'sans_serif', 'monospace'）
+            font_type: Font type ('system_ui', 'sans_serif', 'monospace')
 
         Returns:
-            字体声明字符串
+            Font declaration string
         """
         return FONTS.get(font_type, FONTS['system_ui'])
 
     @staticmethod
     def get_font_size(size_name: str) -> int:
         """
-        获取字体大小
+        Get font size.
 
         Args:
-            size_name: 大小名称（如 'title', 'body', 'caption'）
+            size_name: Size name (e.g. 'title', 'body', 'caption')
 
         Returns:
-            字体大小（像素）
+            Font size (pixels)
         """
         return FONT_SIZES.get(size_name, FONT_SIZES['body'])
 
     @staticmethod
     def validate_svg_element(element_name: str) -> bool:
         """
-        验证 SVG 元素是否允许使用
+        Validate whether an SVG element is allowed.
 
         Args:
-            element_name: 元素名称
+            element_name: Element name
 
         Returns:
-            是否允许使用
+            Whether the element is allowed
         """
         return element_name.lower() not in [e.lower() for e in SVG_CONSTRAINTS['forbidden_elements']]
 
     @staticmethod
     def get_project_path(subdir: str = '') -> Path:
         """
-        获取项目路径
+        Get project path.
 
         Args:
-            subdir: 子目录名称
+            subdir: Subdirectory name
 
         Returns:
-            完整路径
+            Full path
         """
         if subdir:
             return PROJECT_ROOT / subdir
@@ -524,10 +524,10 @@ class Config:
     @staticmethod
     def export_config(output_file: str = 'config_export.json'):
         """
-        导出配置为 JSON 文件
+        Export configuration to a JSON file.
 
         Args:
-            output_file: 输出文件路径
+            output_file: Output file path
         """
         config_data = {
             'canvas_formats': CANVAS_FORMATS,
@@ -541,44 +541,44 @@ class Config:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(config_data, f, ensure_ascii=False, indent=2)
 
-        print(f"配置已导出到: {output_file}")
+        print(f"Configuration exported to: {output_file}")
 
 
 # ============================================================
-# 命令行接口
+# Command Line Interface
 # ============================================================
 
 def main():
-    """命令行入口"""
+    """Command line entry point."""
     import sys
 
     if len(sys.argv) < 2:
-        print("PPT Master - 配置管理工具\n")
-        print("用法:")
-        print("  python3 scripts/config.py list-formats     # 列出所有画布格式")
-        print("  python3 scripts/config.py list-colors      # 列出所有配色方案")
-        print("  python3 scripts/config.py list-industries  # 列出所有行业配色")
-        print("  python3 scripts/config.py export           # 导出配置到 JSON")
-        print("  python3 scripts/config.py format <key>     # 查看指定画布格式")
+        print("PPT Master - Configuration Management Tool\n")
+        print("Usage:")
+        print("  python3 scripts/config.py list-formats     # List all canvas formats")
+        print("  python3 scripts/config.py list-colors      # List all color schemes")
+        print("  python3 scripts/config.py list-industries  # List all industry colors")
+        print("  python3 scripts/config.py export           # Export configuration to JSON")
+        print("  python3 scripts/config.py format <key>     # View a specific canvas format")
         return
 
     command = sys.argv[1]
 
     if command == 'list-formats':
-        print("\n📐 画布格式列表:\n")
+        print("\nCanvas Format List:\n")
         for key, info in CANVAS_FORMATS.items():
             print(
                 f"  {key:15} | {info['name']:15} | {info['dimensions']:12} | {info['use_case']}")
 
     elif command == 'list-colors':
-        print("\n🎨 配色方案列表:\n")
+        print("\nColor Scheme List:\n")
         for key, info in DESIGN_COLORS.items():
-            print(f"  {key:12} | {info['name']:15} | 主色: {info['primary']}")
+            print(f"  {key:12} | {info['name']:15} | Primary: {info['primary']}")
 
     elif command == 'list-industries':
-        print("\n🏢 行业配色列表:\n")
+        print("\nIndustry Color List:\n")
         for key, info in INDUSTRY_COLORS.items():
-            print(f"  {key:15} | {info['name']:15} | 主色: {info['primary']}")
+            print(f"  {key:15} | {info['name']:15} | Primary: {info['primary']}")
 
     elif command == 'export':
         output_file = sys.argv[2] if len(
@@ -589,15 +589,15 @@ def main():
         format_key = sys.argv[2]
         info = Config.get_canvas_format(format_key)
         if info:
-            print(f"\n📐 画布格式: {format_key}\n")
+            print(f"\nCanvas Format: {format_key}\n")
             for key, value in info.items():
                 print(f"  {key}: {value}")
         else:
-            print(f"❌ 未找到格式: {format_key}")
-            print(f"   可用格式: {', '.join(CANVAS_FORMATS.keys())}")
+            print(f"[ERROR] Format not found: {format_key}")
+            print(f"   Available formats: {', '.join(CANVAS_FORMATS.keys())}")
 
     else:
-        print(f"❌ 未知命令: {command}")
+        print(f"[ERROR] Unknown command: {command}")
 
 
 if __name__ == '__main__':
