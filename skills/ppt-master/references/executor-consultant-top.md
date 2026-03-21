@@ -1,218 +1,218 @@
-# Executor Consultant Top -- 顶级咨询风格 (MBB 级)
+# Executor Consultant Top — Top-tier Consulting Style (MBB Level)
 
-> 基础准则见 executor-base.md，技术约束见 shared-standards.md
-
----
-
-## 角色定位
-
-MBB 级（McKinsey / Bain / BCG）顶级咨询风格的 SVG 设计执行师。适用于战略规划、董事会汇报、投融资路演、高管决策支持等**高端咨询**场景。核心特征：数据驱动洞察、金字塔结构叙事、极致简洁，输出面向 C-level 决策者。
+> Common guidelines: executor-base.md. Technical constraints: shared-standards.md.
 
 ---
 
-## SCQA 框架（叙事结构）
+## Role Definition
 
-每份 MBB 级演示都遵循 SCQA 叙事结构：
-
-| 元素 | 作用 | 典型页面 |
-|------|------|---------|
-| **S - Situation** | 设定共识背景 | 封面 / 第 1-2 页 |
-| **C - Complication** | 引入问题/张力 | 第 2-3 页 |
-| **Q - Question** | 隐含或明确的待解决问题 | 过渡页 |
-| **A - Answer** | 核心解决方案 | 正文所有页 |
-
-**页面编排**：封面体现 S+C -> Executive Summary 回答 Q -> 章节展开 A -> 结尾回扣 S
-
-**标题写法**：
-
-| SCQA 元素 | 弱标题 | MBB 级标题 |
-|-----------|--------|-----------|
-| S | "行业背景" | "数字化渗透率突破 60%，行业进入深水区" |
-| C | "面临挑战" | "然而三大结构性矛盾制约了规模化落地" |
-| Q | "战略问题" | "如何在 18 个月内实现从试点到全面部署？" |
-| A | "解决方案" | "三步走路径：聚焦、扩展、规模化" |
+An MBB-level (McKinsey / Bain / BCG) top-tier consulting style SVG design executor. Suitable for strategic planning, board presentations, investment roadshows, C-suite decision support, and other **premium consulting** scenarios. Core characteristics: data-driven insights, pyramid-structured narrative, extreme simplicity. Output targets C-level decision-makers.
 
 ---
 
-## 数据情境化（永不孤立呈现数据）
+## SCQA Framework (Narrative Structure)
 
-> **黄金法则**：永远不会孤立展示单一数据点。每个数字都需要上下文。
+Every MBB-level presentation follows the SCQA narrative structure:
 
-| 方法 | 模式 | 视觉实现 |
-|------|------|---------|
-| **时间对比** | "从 X 到 Y" | 折线图 + 箭头标注变化幅度 |
-| **基准对标** | "X vs 行业均值 Y" | 柱状图中加灰色虚线基准线 |
-| **竞品对比** | "我方 X vs 竞品 Y" | 并列柱状图，高亮自身数据 |
-| **目标差距** | "实际 X / 目标 Y" | 进度条 + 差距标注 |
-| **排名定位** | "位列第 N / 共 M" | 横向柱状图 + 高亮标记 |
+| Element | Purpose | Typical Pages |
+|---------|---------|---------------|
+| **S - Situation** | Establish shared context | Cover / Pages 1-2 |
+| **C - Complication** | Introduce the problem / tension | Pages 2-3 |
+| **Q - Question** | The implicit or explicit question to solve | Transition page |
+| **A - Answer** | Core solution | All body pages |
 
-**数据标注三要素**：每个数据可视化必须包含 (1)数值本身（大字号粗体） (2)对比参照（基准线/同期/竞品） (3)含义解读（"So what?"）
+**Page sequencing**: Cover embodies S+C → Executive Summary answers Q → Chapters develop A → Closing revisits S
+
+**Title writing**:
+
+| SCQA Element | Weak Title | MBB-level Title |
+|-------------|------------|-----------------|
+| S | "Industry Background" | "Digital penetration surpasses 60%, industry enters deep waters" |
+| C | "Challenges Faced" | "Yet three structural contradictions constrain scaled deployment" |
+| Q | "Strategic Question" | "How to move from pilot to full deployment within 18 months?" |
+| A | "Solution" | "Three-phase path: Focus, Expand, Scale" |
+
+---
+
+## Data Contextualization (Never Present Data in Isolation)
+
+> **Golden Rule**: Never display a single data point in isolation. Every number needs context.
+
+| Method | Pattern | Visual Implementation |
+|--------|---------|----------------------|
+| **Time comparison** | "From X to Y" | Line chart + arrow annotating magnitude of change |
+| **Benchmark** | "X vs industry average Y" | Bar chart with gray dashed baseline |
+| **Competitive comparison** | "Us X vs Competitor Y" | Side-by-side bar chart, highlight own data |
+| **Target gap** | "Actual X / Target Y" | Progress bar + gap annotation |
+| **Ranking** | "Ranked #N of M" | Horizontal bar chart + highlight marker |
+
+**Data annotation three essentials**: Every data visualization must include (1) The value itself (large bold font) (2) Comparison reference (baseline / prior period / competitor) (3) Meaning interpretation ("So what?")
 
 ```xml
 <text x="160" y="280" text-anchor="middle" font-size="42" font-weight="bold" fill="#1E293B">97.3%</text>
-<text x="160" y="310" text-anchor="middle" font-size="13" fill="#64748B">行业均值 82% | 竞品 A 89%</text>
-<text x="160" y="335" text-anchor="middle" font-size="12" fill="#059669">领先行业 15.3 个百分点</text>
+<text x="160" y="310" text-anchor="middle" font-size="13" fill="#64748B">Industry avg 82% | Competitor A 89%</text>
+<text x="160" y="335" text-anchor="middle" font-size="12" fill="#059669">Leading industry by 15.3 percentage points</text>
 ```
 
 ---
 
-## 金字塔原则（结论先行）
+## Pyramid Principle (Conclusion First)
 
-> 高管不关心你的*过程*，只关心*结果*。
+> Executives don't care about your *process* — they care about *results*.
 
 ```
-         ┌─────────────┐
-         │  核心结论    │   ← 页面标题 / Takeaway
-         └──────┬──────┘
-      ┌─────────┼─────────┐
-  ┌───┴───┐ ┌───┴───┐ ┌───┴───┐
-  │论据 1 │ │论据 2 │ │论据 3 │   ← 主要支撑点
-  └───────┘ └───────┘ └───────┘
+         ┌─────────────────┐
+         │  Core Conclusion │   ← Page title / Takeaway
+         └────────┬────────┘
+      ┌───────────┼───────────┐
+  ┌───┴───┐  ┌───┴───┐  ┌───┴───┐
+  │ Arg 1 │  │ Arg 2 │  │ Arg 3 │   ← Key supporting points
+  └───────┘  └───────┘  └───────┘
 ```
 
-| 层级 | 位置 | 字号 |
-|------|------|------|
-| 核心结论 | Takeaway Box | 16-18px 粗体 |
-| 论据 | 内容区主体 | 14-16px |
-| 支撑数据 | 图表/卡片 | 12-14px |
+| Level | Position | Font Size |
+|-------|----------|-----------|
+| Core conclusion | Takeaway Box | 16-18px bold |
+| Arguments | Content area body | 14-16px |
+| Supporting data | Charts / cards | 12-14px |
 
-**对比**：标题"市场调研结果"(错) -> "元宇宙需要 5-10 年才能规模化"(对)；正文"我们调研了...发现了..."(错) -> "三个论据：(1)... (2)... (3)..."(对)
+**Contrast**: Title "Market Research Results" (wrong) → "Metaverse needs 5-10 years to reach scale" (right); Body "We researched... and found..." (wrong) → "Three arguments: (1)... (2)... (3)..." (right)
 
 ---
 
-## MBB 级布局模式
+## MBB-level Layout Patterns
 
-### 内容页标准结构（1280x720）
+### Content Page Standard Structure (1280x720)
 
 ```
 ┌──────────────────────────────────┐
-│ 渐变顶条 (0,0 → 1280,6)          │
+│ Gradient top bar (0,0 → 1280,6)  │
 ├──────────────────────────────────┤
-│ 观点性标题 (x=40, y=50, 24px)    │
+│ Assertion title (x=40, y=50, 24px)│
 ├──────────────────────────────────┤
-│ Takeaway Box (x=40, y=75,        │  ← 深色背景+白字，一句话结论
+│ Takeaway Box (x=40, y=75,        │  ← Dark background + white text, one-sentence conclusion
 │   w=1200, h=45)                  │
 ├──────────────────────────────────┤
-│ 内容区 (x=40, y=140,             │  ← 图表/数据/分析
+│ Content area (x=40, y=140,       │  ← Charts / data / analysis
 │   w=1200, h=520)                 │
 ├──────────────────────────────────┤
-│ 来源 | CONFIDENTIAL | 页码       │  ← y=700, 10px
+│ Source | CONFIDENTIAL | Page #    │  ← y=700, 10px
 └──────────────────────────────────┘
 ```
 
-### 战略路径图
+### Strategic Roadmap
 
-三阶段横排，`<rect rx="8">` + 标题 + 举措列表，`<polygon>` 箭头连接：
+Three phases laid out horizontally, `<rect rx="8">` + title + action list, `<polygon>` arrows connecting:
 
 ```
-聚焦核心(0-6月)  ──>  扩展能力(6-12月)  ──>  规模化(12-18月)
-x=40,w=380           x=450,w=380            x=860,w=380
+Focus Core (0-6mo)  ──>  Expand Capability (6-12mo)  ──>  Scale Up (12-18mo)
+x=40,w=380              x=450,w=380                     x=860,w=380
 ```
 
-### 对标分析矩阵
+### Benchmarking Matrix
 
-横向表格，我方行主题色高亮，其他灰色。领先指标绿色标记，落后红色标记。用 `<circle>` 或 `<rect>` 构建评分点。
+Horizontal table; own row highlighted in theme color, others in gray. Leading indicators marked green, lagging marked red. Use `<circle>` or `<rect>` to build score points.
 
-### 瀑布图（变化归因）
+### Waterfall Chart (Change Attribution)
 
-起点 -> 增减因素 -> 终点。正向因素绿色柱，负向红色柱，起止点深色柱，累计线虚线连接。
-
----
-
-## 颜色的战略性使用
-
-MBB 级配色极度克制，颜色为信息服务：
-
-| 用途 | 方法 |
-|------|------|
-| **聚焦** | 目标数据主题色，其他全灰 |
-| **降低认知负荷** | 同系列同色深浅区分（`fill-opacity` 1.0/0.6/0.3） |
-| **语义** | 绿=正向，红=负向，灰=基准 |
-| **品牌** | 渐变顶条/装饰线用品牌色 |
-
-**戒律**：主色调不超过 3 种；强调色全文仅 2-3 处；数据系列同色系深浅而非不同颜色；背景白色或极浅灰。
+Start → increase/decrease factors → End. Positive factors green bars, negative factors red bars, start/end points dark bars, cumulative line as dashed connector.
 
 ---
 
-## 图表 vs 表格选择矩阵
+## Strategic Use of Color
 
-| 场景 | 推荐形式 | 原因 |
-|------|---------|------|
-| 比较 2-7 个类别 | **柱状图** | 视觉对比直观 |
-| 时间趋势 | **折线图** | 时间序列清晰 |
-| 精确数值/大量排名 | **表格** | 50 个点用柱状图会乱 |
-| 占比构成 | **环形图** | 比饼图更现代 |
-| 双维度定位 | **2x2 矩阵** | 战略象限分析 |
-| 变化归因 | **瀑布图** | 因素拆解 |
+MBB-level color usage is extremely restrained — color serves information:
+
+| Purpose | Method |
+|---------|--------|
+| **Focus** | Target data in theme color, everything else gray |
+| **Reduce cognitive load** | Same series differentiated by opacity (`fill-opacity` 1.0/0.6/0.3) |
+| **Semantics** | Green = positive, Red = negative, Gray = baseline |
+| **Branding** | Gradient top bar / decorative lines in brand color |
+
+**Commandments**: No more than 3 primary colors; accent color used at most 2-3 places globally; data series use same-hue depth variations, not different colors; background white or very light gray.
 
 ---
 
-## 演讲备注风格
+## Chart vs Table Selection Matrix
 
-### 叙事基调
+| Scenario | Recommended Form | Reason |
+|----------|-----------------|--------|
+| Comparing 2-7 categories | **Bar chart** | Visual comparison is intuitive |
+| Time trends | **Line chart** | Time series clarity |
+| Precise values / large rankings | **Table** | 50 data points in a bar chart would be chaotic |
+| Proportional composition | **Donut chart** | More modern than pie charts |
+| Two-dimensional positioning | **2x2 matrix** | Strategic quadrant analysis |
+| Change attribution | **Waterfall chart** | Factor decomposition |
 
-面向**高管/决策者**，金字塔结构，每句话都有信息量。语气沉稳、权威、有洞察力。
+---
 
-### 控场标记
+## Speaker Notes Style
 
-| 标记 | 用途 | 示例 |
-|------|------|------|
-| `[停顿]` | 关键洞察后留白，让高管消化 | "这意味着我们正在错失千亿级市场。[停顿]" |
-| `[环视]` | 观察决策者反应，判断是否展开 | "[环视] 各位如有疑问，我可以展开。" |
-| `[数据]` | 数字口语化表达 | "[数据] 63% -> 将近三分之二" |
-| `[对标]` | 强调对比基准 | "[对标] 相比行业均值 12%，我们 23% 几乎翻倍" |
-| `[过渡]` | 段首承上启下，放在每页正文开头 | "[过渡] 承接战略框架，深入看实施路径。" |
+### Narrative Tone
 
-### 备注写作要点
+Targeting **executives / decision-makers**. Pyramid structure — every sentence carries information. Composed, authoritative, and insightful tone.
 
-- **金字塔结构**：结论 -> 论据 -> 细节
-- **数据情境化**：每个数字有对比参照
-- **高管语言**："战略意义在于..."、"核心洞察是..."
-- **备选机制**：标注"时间紧张可略过的内容"，支持弹性时长
-- **要点结构**：`要点：(1)核心洞察 (2)数据支撑 (3)战略意义`
+### Stage Direction Markers
 
-### 备注示例
+| Marker | Purpose | Example |
+|--------|---------|---------|
+| `[Pause]` | Silence after key insight, let executives absorb | "This means we are missing a billion-dollar market. [Pause]" |
+| `[Scan Room]` | Observe decision-makers' reactions, decide whether to elaborate | "[Scan Room] If there are questions, I can elaborate." |
+| `[Data]` | Conversational number delivery | "[Data] 63% → nearly two-thirds" |
+| `[Benchmark]` | Emphasize comparison baseline | "[Benchmark] Compared to the industry average of 12%, our 23% is nearly double" |
+| `[Transition]` | Bridge from previous page, at start of each page's text | "[Transition] Building on the strategic framework, let's drill into the implementation path." |
+
+### Notes Writing Guidelines
+
+- **Pyramid structure**: Conclusion → Arguments → Details
+- **Data contextualization**: Every number has a comparison reference
+- **Executive language**: "The strategic implication is...", "The core insight is..."
+- **Flex mechanism**: Annotate "content that can be skipped if time is tight" for flexible duration
+- **Key points structure**: `Key points: (1) Core insight (2) Data support (3) Strategic implication`
+
+### Notes Example
 
 ```markdown
-# 03_战略路径
+# 03_strategic_path
 
-[过渡] 明确了问题和机会之后，接下来是最关键的——我们的应对路径。
+[Transition] Having clarified the problem and the opportunity, now comes the most critical part — our response path.
 
-我们建议三步走策略。[停顿]
+We recommend a three-phase strategy. [Pause]
 
-第一步，聚焦。未来六个月集中资源攻克华东市场。
-[数据] 华东贡献了将近三分之二的行业增量，[对标] 但我们渗透率仅为竞品 A 的一半。[停顿]
+Phase one: Focus. Over the next six months, concentrate resources on conquering the Eastern China market.
+[Data] Eastern China contributes nearly two-thirds of industry growth, [Benchmark] yet our penetration rate is only half of Competitor A's. [Pause]
 
-第二步，扩展。以华东为样板，复制到华南和华北。
-第三步，规模化。借助数字化平台实现全国覆盖。
+Phase two: Expand. Use Eastern China as a template, replicate to Southern and Northern China.
+Phase three: Scale. Leverage a digital platform for nationwide coverage.
 
-[环视] 第一步的资源配置详见附录，需要现在展开吗？
+[Scan Room] The resource allocation for phase one is in the appendix — would you like me to walk through it now?
 
-要点：(1)聚焦-扩展-规模化三步走 (2)华东优先的数据支撑 (3)18 个月全面部署
-时长：3 分钟
-备选：[时间紧张可跳过二三步细节，直接到财务影响]
+Key points: (1) Focus-Expand-Scale three-phase approach (2) Data-backed Eastern China priority (3) 18-month full deployment
+Duration: 3 minutes
+Flex: [If time is tight, skip phase two and three details and go straight to financial impact]
 ```
 
 ---
 
-## MBB 级质量检查补充
+## MBB-level Quality Checklist Supplement
 
-### 内容层面
+### Content Level
 
-- [ ] **SCQA 完整**：整体遵循情境-复杂性-问题-答案结构
-- [ ] **数据情境化**：每个数据点有对比参照
-- [ ] **结论先行**：每页 Takeaway Box 有一句话结论
-- [ ] **MECE 原则**：分类分析互斥穷尽
+- [ ] **SCQA complete**: Overall follows Situation-Complication-Question-Answer structure
+- [ ] **Data contextualized**: Every data point has a comparison reference
+- [ ] **Conclusion first**: Every page's Takeaway Box has a one-sentence conclusion
+- [ ] **MECE principle**: Categorized analysis is mutually exclusive and collectively exhaustive
 
-### 视觉层面
+### Visual Level
 
-- [ ] **颜色有意图**：配色服务于信息传达
-- [ ] **留白充足**：不拥挤，让信息"呼吸"
-- [ ] **视觉层次**：结论 > 论据 > 细节，字号/粗细区分
-- [ ] **品牌一致**：渐变顶条、页脚全文统一
+- [ ] **Color with intent**: Colors serve information delivery
+- [ ] **Ample whitespace**: Not crowded; information can "breathe"
+- [ ] **Visual hierarchy**: Conclusion > Arguments > Details, differentiated by font size/weight
+- [ ] **Brand consistency**: Gradient top bar and footer unified throughout
 
-### 备注层面
+### Notes Level
 
-- [ ] **金字塔结构**：每页结论先行
-- [ ] **控场标记完整**：关键位置有 [停顿][环视]
-- [ ] **备选内容标注**：支持弹性时长
+- [ ] **Pyramid structure**: Every page is conclusion-first
+- [ ] **Stage markers complete**: [Pause] and [Scan Room] at key positions
+- [ ] **Flex content annotated**: Supports flexible duration

@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-PPT Master - 智能图片裁剪工具
+PPT Master - Smart Image Cropping Tool
 
-根据 SVG 中 <image> 元素的 preserveAspectRatio 属性智能裁剪图片：
-- slice: 裁剪填充（类似 CSS object-fit: cover）
-- meet: 完整显示，不裁剪（类似 CSS object-fit: contain）
+Smartly crops images based on the preserveAspectRatio attribute of <image> elements in SVG:
+- slice: Crop to fill (similar to CSS object-fit: cover)
+- meet: Display fully without cropping (similar to CSS object-fit: contain)
 
-支持9种对齐方式：
-- xMinYMin / xMidYMin / xMaxYMin (顶部对齐)
-- xMinYMid / xMidYMid / xMaxYMid (垂直居中)
-- xMinYMax / xMidYMax / xMaxYMax (底部对齐)
+Supports 9 alignment modes:
+- xMinYMin / xMidYMin / xMaxYMin (top alignment)
+- xMinYMid / xMidYMid / xMaxYMid (vertical center)
+- xMinYMax / xMidYMax / xMaxYMax (bottom alignment)
 
-用法：
-    python scripts/crop_images.py <SVG文件或目录> [--dry-run]
+Usage:
+    python scripts/crop_images.py <SVG file or directory> [--dry-run]
 """
 
 import os
@@ -31,14 +31,14 @@ except ImportError:
 
 def parse_preserve_aspect_ratio(attr: str) -> tuple:
     """
-    解析 preserveAspectRatio 属性
-    
-    返回: (align, meet_or_slice)
-        align: 如 'xMidYMid'
-        meet_or_slice: 'meet' 或 'slice'
+    Parse the preserveAspectRatio attribute.
+
+    Returns: (align, meet_or_slice)
+        align: e.g. 'xMidYMid'
+        meet_or_slice: 'meet' or 'slice'
     """
     if not attr:
-        return ('xMidYMid', 'meet')  # 默认值
+        return ('xMidYMid', 'meet')  # Default value
     
     parts = attr.strip().split()
     align = parts[0] if parts else 'xMidYMid'
@@ -49,11 +49,11 @@ def parse_preserve_aspect_ratio(attr: str) -> tuple:
 
 def get_crop_anchor(align: str) -> tuple:
     """
-    根据 align 值返回裁剪锚点
-    
-    返回: (x_anchor, y_anchor)
-        x_anchor: 0.0 (左), 0.5 (中), 1.0 (右)
-        y_anchor: 0.0 (上), 0.5 (中), 1.0 (下)
+    Return the crop anchor point based on the align value.
+
+    Returns: (x_anchor, y_anchor)
+        x_anchor: 0.0 (left), 0.5 (center), 1.0 (right)
+        y_anchor: 0.0 (top), 0.5 (center), 1.0 (bottom)
     """
     x_map = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}
     y_map = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}
@@ -77,38 +77,38 @@ def get_crop_anchor(align: str) -> tuple:
 def crop_image_to_size(img: Image.Image, target_width: int, target_height: int, 
                        x_anchor: float = 0.5, y_anchor: float = 0.5) -> Image.Image:
     """
-    按目标比例裁剪图片，保持原图分辨率（不缩放）
-    
-    新逻辑：只按目标宽高比裁剪原图，不进行任何缩放操作，
-    这样可以保持原图的分辨率和清晰度。
-    
+    Crop an image to the target aspect ratio, preserving original resolution (no scaling).
+
+    New logic: Only crops the original image to the target aspect ratio without any scaling,
+    thus preserving the original resolution and clarity.
+
     Args:
-        img: PIL Image 对象
-        target_width: 目标宽度（用于计算比例）
-        target_height: 目标高度（用于计算比例）
-        x_anchor: 水平锚点 (0=左, 0.5=中, 1=右)
-        y_anchor: 垂直锚点 (0=上, 0.5=中, 1=下)
-    
+        img: PIL Image object
+        target_width: Target width (used to calculate ratio)
+        target_height: Target height (used to calculate ratio)
+        x_anchor: Horizontal anchor (0=left, 0.5=center, 1=right)
+        y_anchor: Vertical anchor (0=top, 0.5=center, 1=bottom)
+
     Returns:
-        裁剪后的 PIL Image 对象（保持原图分辨率）
+        Cropped PIL Image object (preserving original resolution)
     """
     img_width, img_height = img.size
     
-    # 计算目标宽高比
+    # Calculate target aspect ratio
     target_ratio = target_width / target_height
     img_ratio = img_width / img_height
     
-    # 根据比例计算裁剪区域（在原图上裁剪，不缩放）
+    # Calculate crop region on the original image based on ratio (no scaling)
     if img_ratio > target_ratio:
-        # 原图更宽，需要裁剪左右两侧
+        # Original image is wider; crop left and right sides
         crop_height = img_height
         crop_width = int(img_height * target_ratio)
     else:
-        # 原图更高，需要裁剪上下两侧
+        # Original image is taller; crop top and bottom sides
         crop_width = img_width
         crop_height = int(img_width / target_ratio)
     
-    # 根据锚点计算裁剪位置
+    # Calculate crop position based on anchor point
     extra_width = img_width - crop_width
     extra_height = img_height - crop_height
     
@@ -117,37 +117,37 @@ def crop_image_to_size(img: Image.Image, target_width: int, target_height: int,
     right = left + crop_width
     bottom = top + crop_height
     
-    # 只裁剪，不缩放
+    # Crop only, no scaling
     return img.crop((left, top, right, bottom))
 
 
 def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = False, 
                        verbose: bool = True) -> tuple:
     """
-    处理 SVG 文件中的图片，根据 preserveAspectRatio 属性进行裁剪
-    
+    Process images in an SVG file, cropping based on the preserveAspectRatio attribute.
+
     Args:
-        svg_file: SVG 文件路径
-        output_dir: 裁剪后图片的输出目录（默认为 images/cropped/）
-        dry_run: 仅预览，不实际处理
-        verbose: 详细输出
-    
+        svg_file: SVG file path
+        output_dir: Output directory for cropped images (default: images/cropped/)
+        dry_run: Preview only, no actual processing
+        verbose: Verbose output
+
     Returns:
         (processed_count, error_count)
     """
     svg_path = Path(svg_file)
     svg_dir = svg_path.parent
     
-    # 默认输出目录
+    # Default output directory
     if output_dir is None:
-        # 查找项目的 images 目录
-        # svg_output 或 svg_final 的父目录下的 images
+        # Find the project's images directory
+        # Parent directory of svg_output or svg_final, under images
         project_dir = svg_dir.parent
         output_dir = project_dir / 'images' / 'cropped'
     else:
         output_dir = Path(output_dir)
     
-    # 解析 SVG
+    # Parse SVG
     try:
         ET.register_namespace('', 'http://www.w3.org/2000/svg')
         ET.register_namespace('xlink', 'http://www.w3.org/1999/xlink')
@@ -155,7 +155,7 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
         root = tree.getroot()
     except Exception as e:
         if verbose:
-            print(f"  [ERROR] 解析 SVG 失败: {e}")
+            print(f"  [ERROR] Failed to parse SVG: {e}")
         return (0, 1)
     
     ns = {'svg': 'http://www.w3.org/2000/svg', 'xlink': 'http://www.w3.org/1999/xlink'}
@@ -164,26 +164,26 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
     error_count = 0
     modified = False
     
-    # 查找所有 image 元素
+    # Find all image elements
     for image in root.iter('{http://www.w3.org/2000/svg}image'):
-        # 获取 href 属性
+        # Get href attribute
         href = image.get('{http://www.w3.org/1999/xlink}href') or image.get('href')
         if not href:
             continue
         
-        # 跳过 base64 内嵌图片
+        # Skip Base64 inline images
         if href.startswith('data:'):
             continue
         
-        # 获取 preserveAspectRatio 属性
+        # Get preserveAspectRatio attribute
         par = image.get('preserveAspectRatio', '')
         align, mode = parse_preserve_aspect_ratio(par)
         
-        # 只处理 slice 模式
+        # Only process slice mode
         if mode != 'slice':
             continue
         
-        # 获取目标尺寸
+        # Get target dimensions
         try:
             target_width = int(float(image.get('width', 0)))
             target_height = int(float(image.get('height', 0)))
@@ -193,7 +193,7 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
         if target_width <= 0 or target_height <= 0:
             continue
         
-        # 解析图片路径
+        # Parse image path
         href_decoded = unquote(href)
         if href_decoded.startswith('../'):
             img_path = (svg_dir / href_decoded).resolve()
@@ -202,10 +202,10 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
         
         if not img_path.exists():
             if verbose:
-                print(f"    [SKIP] 图片不存在: {href}")
+                print(f"    [SKIP] Image not found: {href}")
             continue
         
-        # 获取裁剪锚点
+        # Get crop anchor point
         x_anchor, y_anchor = get_crop_anchor(align)
         
         if dry_run:
@@ -215,25 +215,25 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
             processed_count += 1
             continue
         
-        # 创建输出目录
+        # Create output directory
         output_dir.mkdir(parents=True, exist_ok=True)
         
         try:
-            # 打开并处理图片
+            # Open and process image
             img = Image.open(img_path)
             
-            # 转换模式
+            # Convert mode
             if img.mode in ('RGBA', 'P'):
                 img = img.convert('RGB')
             
-            # 裁剪
+            # Crop
             cropped = crop_image_to_size(img, target_width, target_height, x_anchor, y_anchor)
             
-            # 生成输出文件名（保持原文件名，放到 cropped 目录）
+            # Generate output filename (keep original name, place in cropped directory)
             output_filename = img_path.name
             output_path = output_dir / output_filename
             
-            # 保存
+            # Save
             if img_path.suffix.lower() == '.png':
                 cropped.save(output_path, 'PNG', optimize=True)
             else:
@@ -243,14 +243,14 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
                 print(f"    [OK] {img_path.name}: {img.size} -> {target_width}x{target_height} "
                       f"({align})")
             
-            # 更新 SVG 中的图片路径
+            # Update image path in SVG
             new_href = f"../images/cropped/{output_filename}"
             if image.get('{http://www.w3.org/1999/xlink}href'):
                 image.set('{http://www.w3.org/1999/xlink}href', new_href)
             else:
                 image.set('href', new_href)
             
-            # 移除 preserveAspectRatio（图片已是正确尺寸）
+            # Remove preserveAspectRatio (image is now correctly sized)
             if 'preserveAspectRatio' in image.attrib:
                 del image.attrib['preserveAspectRatio']
             
@@ -262,7 +262,7 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
                 print(f"    [ERROR] {img_path.name}: {e}")
             error_count += 1
     
-    # 保存修改后的 SVG
+    # Save modified SVG
     if modified and not dry_run:
         tree.write(str(svg_path), encoding='unicode', xml_declaration=False)
     
@@ -270,14 +270,14 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
 
 
 def process_directory(directory: str, dry_run: bool = False, verbose: bool = True) -> tuple:
-    """处理目录中的所有 SVG 文件"""
+    """Process all SVG files in a directory."""
     directory = Path(directory)
     total_processed = 0
     total_errors = 0
     
     for svg_file in directory.glob('*.svg'):
         if verbose:
-            print(f"  处理: {svg_file.name}")
+            print(f"  Processing: {svg_file.name}")
         processed, errors = process_svg_images(str(svg_file), dry_run=dry_run, verbose=verbose)
         total_processed += processed
         total_errors += errors
@@ -289,34 +289,34 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='PPT Master - 智能图片裁剪工具',
+        description='PPT Master - Smart Image Cropping Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例：
+Examples:
   %(prog)s projects/my_project/svg_output
   %(prog)s page_01.svg --dry-run
-  
-preserveAspectRatio 用法：
-  xMidYMid slice   居中裁剪（默认）
-  xMidYMin slice   保留顶部
-  xMidYMax slice   保留底部
-  xMinYMid slice   保留左侧
-  xMaxYMid slice   保留右侧
-  xMidYMid meet    完整显示，不裁剪
+
+preserveAspectRatio usage:
+  xMidYMid slice   Center crop (default)
+  xMidYMin slice   Keep top
+  xMidYMax slice   Keep bottom
+  xMinYMid slice   Keep left
+  xMaxYMid slice   Keep right
+  xMidYMid meet    Display fully, no cropping
         '''
     )
     
-    parser.add_argument('path', type=Path, help='SVG 文件或目录')
-    parser.add_argument('--dry-run', '-n', action='store_true', help='仅预览，不实际处理')
-    parser.add_argument('--quiet', '-q', action='store_true', help='安静模式')
+    parser.add_argument('path', type=Path, help='SVG file or directory')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Preview only, no actual processing')
+    parser.add_argument('--quiet', '-q', action='store_true', help='Quiet mode')
     
     args = parser.parse_args()
     
     if not args.path.exists():
-        print(f"[ERROR] 路径不存在: {args.path}")
+        print(f"[ERROR] Path not found: {args.path}")
         exit(1)
-    
-    print("PPT Master - 智能图片裁剪")
+
+    print("PPT Master - Smart Image Cropping")
     print("=" * 50)
     
     if args.path.is_file():
@@ -327,7 +327,7 @@ preserveAspectRatio 用法：
                                                verbose=not args.quiet)
     
     print()
-    print(f"完成: {processed} 张图片已裁剪, {errors} 个错误")
+    print(f"Done: {processed} image(s) cropped, {errors} error(s)")
 
 
 if __name__ == '__main__':

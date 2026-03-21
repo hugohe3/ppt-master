@@ -1,166 +1,166 @@
-# 中汽研模板 (CATARC Style) - 设计规范 (v3.0 Future Tech)
+# CATARC (中汽研) Modern Template - Design Specification (v3.0 Future Tech)
 
-> 适用于中汽研高端发布会、前瞻技术汇报、国际交流等场景。
-> **v3.0 更新**: 引入"未来科技"设计语言，使用深邃蓝+霓虹青配色，强调空间感与光影流动。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | 中汽研_现代（CATARC_Modern_Tech）                       |
-| **适用场景**   | 前瞻技术展示、战略发布、高端商务汇报                   |
-| **设计调性**   | **未来感、科技、深邃、精致**                           |
-| **主题模式**   | 沉浸式深色封面/过渡页 + 清爽微灰内容页                 |
+> Suitable for CATARC high-end launches, forward-looking technology presentations, international exchanges, and similar scenarios.
+> **v3.0 Update**: Introduces a "Future Tech" design language with deep blue + neon cyan palette, emphasizing spatial depth and flowing light effects.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| **Template Name** | 中汽研_现代 (CATARC_Modern_Tech)                       |
+| **Use Cases**  | Forward-looking technology showcases, strategic releases, high-end business reporting |
+| **Design Tone** | **Futuristic, tech-forward, deep & refined**              |
+| **Theme Mode** | Immersive dark cover/transition pages + clean light-gray content pages |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 80px，上 100px，下 60px  |
-| **内容安全区** | x: 80-1200, y: 100-660        |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
+| **viewBox**    | `0 0 1280 720`               |
+| **Page Margins** | Left/Right 80px, Top 100px, Bottom 60px |
+| **Safe Area**  | x: 80-1200, y: 100-660       |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 核心色板 (Future Tech Palette)
+### Core Palette (Future Tech Palette)
 
-| 角色           | 色值        | 渐变方案 (SVG defs)              | 备注                             |
-| -------------- | ----------- | -------------------------------- | -------------------------------- |
-| **深邃夜空**   | `#001529`   | `#001529` -> `#002B52`           | 封面/过渡页主背景                |
-| **科技蓝**     | `#1890FF`   | `#1890FF` -> `#096DD9`           | 主视觉强调色                     |
-| **霓虹青**     | `#00E5FF`   | `#00E5FF` -> `#00B5D8`           | 极亮色点缀，用于高光/数据        |
-| **极昼灰**     | `#F7F9FC`   | N/A                              | 内容页背景 (非纯白，更护眼)      |
-| **暗夜黑**     | `#1F2937`   | N/A                              | 正文文字                         |
+| Role           | Color Value | Gradient (SVG defs)            | Notes                            |
+| -------------- | ----------- | ------------------------------ | -------------------------------- |
+| **Deep Night Sky** | `#001529` | `#001529` -> `#002B52`        | Cover/transition page main background |
+| **Tech Blue**  | `#1890FF`  | `#1890FF` -> `#096DD9`         | Primary visual accent            |
+| **Neon Cyan**  | `#00E5FF`  | `#00E5FF` -> `#00B5D8`         | Ultra-bright accent for highlights/data |
+| **Polar Gray** | `#F7F9FC`  | N/A                            | Content page background (not pure white, easier on eyes) |
+| **Dark Night** | `#1F2937`  | N/A                            | Body text                        |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Color Value | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **主标题(深)** | `#FFFFFF`   | 深色背景上的主标题     |
-| **主标题(浅)** | `#001529`   | 浅色背景上的主标题     |
-| **正文**       | `#374151`   | 内容页正文             |
-| **次级文本**   | `#6B7280`   | 辅助说明               |
-| **装饰字**     | `#E5E7EB`   | 极浅水印字             |
+| **Heading (Dark BG)** | `#FFFFFF` | Main title on dark backgrounds |
+| **Heading (Light BG)** | `#001529` | Main title on light backgrounds |
+| **Body Text**  | `#374151`  | Content page body text  |
+| **Secondary Text** | `#6B7280` | Auxiliary descriptions  |
+| **Decorative Text** | `#E5E7EB` | Very light watermark text |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**优先字体栈**: `"Roboto", "Helvetica Neue", "Microsoft YaHei", "PingFang SC", sans-serif`
-*英文数字推荐使用 Roboto 或 Arial 以体现科技几何感。*
+**Primary Font Stack**: `"Roboto", "Helvetica Neue", "Microsoft YaHei", "PingFang SC", sans-serif`
+*English and numbers are recommended to use Roboto or Arial for a tech geometric feel.*
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级 | 用途             | 字号 | 字重    | 颜色       |
-| ---- | ---------------- | ---- | ------- | ---------- |
-| H1   | 封面主标题       | 64px | Bold    | #FFFFFF    |
-| H2   | 页面大标题       | 36px | Bold    | #001529    |
-| H3   | 模块标题         | 24px | Bold    | #1890FF    |
-| P    | 正文内容         | 18px | Regular | #374151    |
-| Deco | 装饰性大数字     | 120px| Bold    | Opacity 5% |
-
----
-
-## 五、页面结构 (Asymmetric Tech Layout)
-
-### 通用导航栏 (y=0 to 100)
-
-- **非对称设计**: 标题左对齐，但增加左侧几何装饰条。
-- **Logo**: 悬浮于右上角，带微弱发光效果。
-- **装饰**: 顶部仅在右侧保留一抹亮色线条，打破平衡。
+| Level | Usage              | Size  | Weight  | Color      |
+| ----- | ------------------ | ----- | ------- | ---------- |
+| H1    | Cover main title   | 64px  | Bold    | #FFFFFF    |
+| H2    | Page heading       | 36px  | Bold    | #001529    |
+| H3    | Section title      | 24px  | Bold    | #1890FF    |
+| P     | Body content       | 18px  | Regular | #374151    |
+| Deco  | Decorative large numbers | 120px | Bold | Opacity 5% |
 
 ---
 
-## 六、页面类型
+## V. Page Structure (Asymmetric Tech Layout)
 
-### 1. 封面页 (01_cover.svg)
-- **视觉重心**: **深邃空间感**。背景使用深蓝径向渐变。
-- **Hero Element**: 右侧使用抽象的 **"光之流线" (Luminous Flow)** 或 **"数字矩阵" (Digital Matrix)**。
-- **标题**: 左下对齐，强调厚重的字体和霓虹色下划线。
+### Common Navigation Bar (y=0 to 100)
 
-### 2. 目录页 (02_toc.svg)
-- **布局**: **左黑右白 (Split Screen)**。
-- **左侧**: 深色区域放置 "CONTENTS" 和 Logo。
-- **右侧**: 浅色区域放置目录项。摒弃卡片，改用 **"时间轴" (Timeline)** 或 **"悬浮列表"** 样式。
-- **序号**: 使用霓虹青色 (`#00E5FF`) 高亮。
-
-### 3. 章节页 (02_chapter.svg)
-- **背景**: 深色背景。
-- **特效**: 巨大的镂空数字背景 (Stroke Text)。
-- **动感**: 增加倾斜的装饰线，模拟速度感。
-
-### 4. 内容页 (03_content.svg)
-- **背景**: 极浅灰 `#F7F9FC`。
-- **Header**: 悬浮式标题栏，增加层级感。
-- **Watermark**: 右下角放置科技感的几何图形水印。
-
-### 5. 结束页 (04_ending.svg)
-- **背景**: 呼应封面。
-- **中心**: 简约的 "Thank You"，辅以环绕的光圈装饰。
+- **Asymmetric Design**: Title left-aligned with a geometric decorative bar on the left.
+- **Logo**: Floating in the upper-right corner with a subtle glow effect.
+- **Decoration**: Top area retains only a splash of bright color line on the right side, breaking visual balance.
 
 ---
 
-## 七、布局模式（推荐）
+## VI. Page Types
 
-### 1. 悬浮时间轴 (Floating Timeline)
-- 利用右侧空间展示时间或流程。
-- 节点使用 neon glowing effect。
+### 1. Cover Page (01_cover.svg)
+- **Visual Focus**: **Deep spatial depth**. Background uses a deep blue radial gradient.
+- **Hero Element**: Right side features abstract **"Luminous Flow"** or **"Digital Matrix"** graphics.
+- **Title**: Bottom-left aligned, emphasizing bold typography with a neon-colored underline.
 
-### 2. HUD 数据展示 (HUD Display)
-- 模拟抬头显示器风格，使用细线框和高亮数字展示关键 KPI。
+### 2. Table of Contents (02_toc.svg)
+- **Layout**: **Split Screen (left dark, right light)**.
+- **Left Side**: Dark area containing "CONTENTS" and Logo.
+- **Right Side**: Light area with TOC items. Replaces cards with **"Timeline"** or **"Floating List"** style.
+- **Numbers**: Highlighted in neon cyan (`#00E5FF`).
 
-### 3. 不对称对比 (Asymmetric Contrast)
-- 利用页面非对称结构，创造动感的图文排版。
+### 3. Chapter Page (02_chapter.svg)
+- **Background**: Dark background.
+- **Special Effect**: Large outlined numbers in the background (Stroke Text).
+- **Dynamism**: Added tilted decorative lines to simulate a sense of speed.
 
----
+### 4. Content Page (03_content.svg)
+- **Background**: Very light gray `#F7F9FC`.
+- **Header**: Floating title bar for enhanced hierarchy.
+- **Watermark**: Tech-styled geometric watermark in the lower-right corner.
 
-## 八、间距规范
-
-| 属性         | 值    | 说明                     |
-| ------------ | ----- | ------------------------ |
-| **基础单位** | 8px   | 科技感通常使用 8px 栅格  |
-| **模块间距** | 48px  | 极为宽敞的现代感         |
-| **行距**     | 1.6   | 增加行距提升可读性       |
-
----
-
-## 九、SVG 技术约束
-
-### 必须遵守
-
-1. **混合模式**: 尽量避免 `mix-blend-mode`，使用透明度 (`opacity`) 替代。
-2. **渐变**: 多用 `linearGradient` 有角度的渐变 (e.g., `x1="0%" y1="0%" x2="100%" y2="50%"`) 制造光影。
-3. **描边**: 使用细的 `stroke-width="1"` 加上低透明度 `stroke-opacity="0.2"` 模拟玻璃边缘。
+### 5. Ending Page (04_ending.svg)
+- **Background**: Echoes the cover.
+- **Center**: Minimalist "Thank You" with surrounding halo ring decoration.
 
 ---
 
-## 十、占位符规范
+## VII. Layout Patterns (Recommended)
 
-| 占位符             | 描述               |
-| ------------------ | ------------------ |
-| `{{TITLE}}`        | 演示文稿主标题     |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 汇报单位           |
-| `{{PRESENTER}}`    | 汇报人             |
-| `{{DATE}}`         | 日期               |
-| `{{CHAPTER_NUM}}`  | 章节编号 (01, 02)  |
-| `{{PAGE_TITLE}}`   | 内容页标题         |
-| `{{STAT_1}}`       | 统计数据1          |
+### 1. Floating Timeline
+- Uses right-side space for time or process display.
+- Nodes feature a neon glowing effect.
+
+### 2. HUD Display
+- Simulates a heads-up display style using thin wireframes and highlighted numbers for key KPIs.
+
+### 3. Asymmetric Contrast
+- Leverages the page's asymmetric structure to create dynamic image-text layouts.
 
 ---
 
-## 十一、使用说明（推荐）
+## VIII. Spacing Guidelines
 
-1. **光影效果**: 所有的光影均由 SVG 渐变实现，不依赖外部图片。
-2. **字体**: 为获得最佳科技感，数字建议强制使用 **Roboto** 或 **DIN** 字体。
-3. **背景**: 深色背景在投影仪上效果极佳，但需注意环境光尽可能暗。
+| Property       | Value | Description              |
+| -------------- | ----- | ------------------------ |
+| **Base Unit**  | 8px   | Tech designs typically use an 8px grid |
+| **Module Gap** | 48px  | Extra spacious for a modern feel |
+| **Line Height** | 1.6  | Increased line height for readability |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+1. **Blend Modes**: Avoid `mix-blend-mode` wherever possible; use `opacity` as a substitute.
+2. **Gradients**: Leverage angled `linearGradient` (e.g., `x1="0%" y1="0%" x2="100%" y2="50%"`) to create light and shadow effects.
+3. **Strokes**: Use thin `stroke-width="1"` with low transparency `stroke-opacity="0.2"` to simulate glass edges.
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder        | Description           |
+| ------------------ | --------------------- |
+| `{{TITLE}}`        | Presentation main title |
+| `{{SUBTITLE}}`     | Subtitle              |
+| `{{AUTHOR}}`       | Presenting organization |
+| `{{PRESENTER}}`    | Presenter             |
+| `{{DATE}}`         | Date                  |
+| `{{CHAPTER_NUM}}`  | Chapter number (01, 02) |
+| `{{PAGE_TITLE}}`   | Content page title    |
+| `{{STAT_1}}`       | Statistical data 1    |
+
+---
+
+## XI. Usage Notes (Recommended)
+
+1. **Light & Shadow Effects**: All light and shadow effects are achieved via SVG gradients, with no dependency on external images.
+2. **Fonts**: For optimal tech aesthetics, numbers are recommended to use **Roboto** or **DIN** fonts.
+3. **Backgrounds**: Dark backgrounds look excellent on projectors, but ensure the ambient lighting is as dim as possible.

@@ -1,73 +1,73 @@
-# 画布格式规范
+# Canvas Format Specification
 
-> 📎 SVG 基础规则见 shared-standards.md
+> See shared-standards.md for SVG basic rules.
 
-## 格式速查表
+## Format Quick Reference
 
-| 格式 | viewBox | 比例 | 适用场景 |
-|------|---------|------|---------|
-| PPT 16:9 | `0 0 1280 720` | 16:9 | 商业演示、会议汇报 |
-| PPT 4:3 | `0 0 1024 768` | 4:3 | 传统投影、学术演讲 |
-| 小红书 | `0 0 1242 1660` | 3:4 | 图文分享、知识帖 |
-| 朋友圈/IG | `0 0 1080 1080` | 1:1 | 方形海报、品牌展示 |
-| Story/抖音 | `0 0 1080 1920` | 9:16 | 竖屏快拍、短视频封面 |
-| 公众号头图 | `0 0 900 383` | 2.35:1 | 微信公众号文章配图 |
-| 横版Banner | `0 0 1920 1080` | 16:9 | 网页Banner、电子屏 |
-| 竖版海报 | `0 0 1080 1920` | 9:16 | 手机屏幕、电梯广告 |
-| A4 打印 | `0 0 1240 1754` | 1:√2 | 打印海报、宣传单页 |
+| Format | viewBox | Ratio | Use Case |
+|--------|---------|-------|----------|
+| PPT 16:9 | `0 0 1280 720` | 16:9 | Business presentations, meetings |
+| PPT 4:3 | `0 0 1024 768` | 4:3 | Traditional projectors, academic talks |
+| Xiaohongshu (RED) | `0 0 1242 1660` | 3:4 | Image-text sharing, knowledge posts |
+| WeChat Moments / IG | `0 0 1080 1080` | 1:1 | Square posters, brand showcases |
+| Story / TikTok | `0 0 1080 1920` | 9:16 | Vertical stories, short video covers |
+| WeChat Article Header | `0 0 900 383` | 2.35:1 | WeChat article cover images |
+| Landscape Banner | `0 0 1920 1080` | 16:9 | Web banners, digital screens |
+| Portrait Poster | `0 0 1080 1920` | 9:16 | Phone screens, elevator ads |
+| A4 Print | `0 0 1240 1754` | 1:sqrt(2) | Print posters, flyers |
 
-## 格式选择决策树
+## Format Selection Decision Tree
 
 ```
-内容用途？
-├─ 演示汇报
-│  ├─ 现代设备 → PPT 16:9 (1280×720)
-│  └─ 传统设备 → PPT 4:3 (1024×768)
-├─ 社交分享
-│  ├─ 小红书 → 1242×1660
-│  ├─ 朋友圈/IG → 1080×1080
-│  └─ Story/抖音 → 1080×1920
-└─ 营销物料
-   ├─ 公众号头图 → 900×383
-   ├─ Banner → 1920×1080
-   └─ 打印 → 1240×1754
+Content purpose?
+├── Presentation
+│   ├── Modern devices → PPT 16:9 (1280x720)
+│   └── Traditional devices → PPT 4:3 (1024x768)
+├── Social sharing
+│   ├── Xiaohongshu (RED) → 1242x1660
+│   ├── WeChat Moments / IG → 1080x1080
+│   └── Story / TikTok → 1080x1920
+└── Marketing materials
+    ├── WeChat Article Header → 900x383
+    ├── Banner → 1920x1080
+    └── Print → 1240x1754
 ```
 
-## 布局原则
+## Layout Principles
 
-### 横屏 (16:9, 4:3, 2.35:1)
-- 视觉动线：Z字型，从左到右
-- 边距：40-80px
-- 布局：多栏、左右分割、网格
-- 卡片尺寸（16:9）：单行 530-600px，双行 265-295px
+### Landscape (16:9, 4:3, 2.35:1)
+- Visual flow: Z-pattern, left to right
+- Margins: 40-80px
+- Layouts: multi-column, left-right split, grid
+- Card dimensions (16:9): single-row 530-600px, double-row 265-295px
 
-### 竖屏 (3:4, 9:16)
-- 视觉动线：从上到下
-- 边距：60-120px
-- 布局：单栏、上下分割、卡片堆叠
-- 卡片尺寸（3:4）：高度 400-600px，间距 40-60px
+### Portrait (3:4, 9:16)
+- Visual flow: top to bottom
+- Margins: 60-120px
+- Layouts: single-column, top-bottom split, card stacking
+- Card dimensions (3:4): height 400-600px, gap 40-60px
 
-### 正方形 (1:1)
-- 视觉动线：中心辐射
-- 边距：60-100px
-- 核心区域：约 800×800px
+### Square (1:1)
+- Visual flow: center-radiating
+- Margins: 60-100px
+- Core area: ~800x800px
 
-## 格式特定设计
+## Format-specific Design
 
-| 格式 | 标题区 | 内容区 | 特殊注意 |
-|------|--------|--------|---------|
-| PPT | 80-100px | 充分利用宽度 | 页码右下角 |
-| 小红书 | 180-240px（加粗） | 上下留白充足 | 底部品牌区 120-160px |
-| 朋友圈 | 200-280px | 中心 500-600px | 底部二维码区 150-200px |
-| Story | — | 中部 1500px | 顶部安全区 120px，底部 180px |
-| 公众号头图 | 居中/左对齐 48-72px | — | 配图右侧或背景 |
+| Format | Title Area | Content Area | Special Notes |
+|--------|-----------|--------------|---------------|
+| PPT | 80-100px | Full width utilization | Page number bottom-right |
+| Xiaohongshu (RED) | 180-240px (bold) | Generous top/bottom whitespace | Brand area at bottom 120-160px |
+| WeChat Moments | 200-280px | Center 500-600px | QR code area at bottom 150-200px |
+| Story | — | Middle 1500px | Top safe zone 120px, bottom 180px |
+| WeChat Article Header | Center/left-aligned 48-72px | — | Image on right or as background |
 
-## ViewBox 示例
+## ViewBox Examples
 
 ```xml
 <svg width="1280" height="720" viewBox="0 0 1280 720">   <!-- PPT 16:9 -->
-<svg width="1242" height="1660" viewBox="0 0 1242 1660"> <!-- 小红书 -->
-<svg width="1080" height="1080" viewBox="0 0 1080 1080"> <!-- 朋友圈 -->
+<svg width="1242" height="1660" viewBox="0 0 1242 1660"> <!-- Xiaohongshu -->
+<svg width="1080" height="1080" viewBox="0 0 1080 1080"> <!-- WeChat Moments -->
 <svg width="1080" height="1920" viewBox="0 0 1080 1920"> <!-- Story -->
-<svg width="900" height="383" viewBox="0 0 900 383">     <!-- 公众号头图 -->
+<svg width="900" height="383" viewBox="0 0 900 383">     <!-- WeChat Article Header -->
 ```

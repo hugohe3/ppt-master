@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-PPT Master - Gemini 水印去除工具
+PPT Master - Gemini Watermark Remover
 
-去除 Gemini 生成图片右下角的水印 Logo。
-使用逆向混合算法还原原始像素。
+Removes the watermark logo from the bottom-right corner of Gemini-generated images.
+Uses a reverse blending algorithm to restore original pixels.
 
-用法:
-    python3 scripts/gemini_watermark_remover.py <图片路径>
-    python3 scripts/gemini_watermark_remover.py <图片路径> -o 输出路径.png
+Usage:
+    python3 scripts/gemini_watermark_remover.py <image_path>
+    python3 scripts/gemini_watermark_remover.py <image_path> -o output_path.png
 
-示例:
+Examples:
     python3 scripts/gemini_watermark_remover.py projects/demo/images/bg_01.png
     python3 scripts/gemini_watermark_remover.py image.jpg -o image_clean.jpg
 
-依赖:
+Dependencies:
     pip install Pillow numpy
 
-注意:
-    - 支持 PNG、JPG、JPEG 格式
-    - 自动检测水印尺寸（48px 或 96px）
-    - 输出文件默认添加 _unwatermarked 后缀
+Notes:
+    - Supports PNG, JPG, JPEG formats
+    - Automatically detects watermark size (48px or 96px)
+    - Output file defaults to adding an _unwatermarked suffix
 """
 
 import sys
@@ -29,15 +29,15 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-# 导入同目录模块
+# Import modules from the same directory
 sys.path.insert(0, str(Path(__file__).parent))
 
-# 算法参数
-ALPHA_THRESHOLD = 0.002  # Alpha 阈值，低于此值不处理
-MAX_ALPHA = 0.99  # 最大 Alpha 值，防止除零
-LOGO_VALUE = 255  # Logo 像素值（白色）
+# Algorithm parameters
+ALPHA_THRESHOLD = 0.002  # Alpha threshold; values below this are not processed
+MAX_ALPHA = 0.99  # Maximum alpha value to prevent division by zero
+LOGO_VALUE = 255  # Logo pixel value (white)
 
-# 水印背景图路径
+# Watermark background image paths
 SCRIPT_DIR = Path(__file__).parent
 BG_48_PATH = SCRIPT_DIR / "assets" / "bg_48.png"
 BG_96_PATH = SCRIPT_DIR / "assets" / "bg_96.png"
@@ -45,14 +45,14 @@ BG_96_PATH = SCRIPT_DIR / "assets" / "bg_96.png"
 
 def detect_watermark_config(width: int, height: int) -> dict:
     """
-    根据图片尺寸检测水印配置
-    
+    Detect watermark configuration based on image dimensions
+
     Args:
-        width: 图片宽度
-        height: 图片高度
-    
+        width: Image width
+        height: Image height
+
     Returns:
-        配置字典，包含 logo_size、margin_right、margin_bottom
+        Configuration dict containing logo_size, margin_right, margin_bottom
     """
     if width > 1024 and height > 1024:
         return {"logo_size": 96, "margin_right": 64, "margin_bottom": 64}
@@ -61,15 +61,15 @@ def detect_watermark_config(width: int, height: int) -> dict:
 
 def calculate_watermark_position(width: int, height: int, config: dict) -> dict:
     """
-    计算水印位置
-    
+    Calculate watermark position
+
     Args:
-        width: 图片宽度
-        height: 图片高度
-        config: 水印配置
-    
+        width: Image width
+        height: Image height
+        config: Watermark configuration
+
     Returns:
-        位置字典，包含 x、y、width、height
+        Position dict containing x, y, width, height
     """
     logo_size = config["logo_size"]
     return {
@@ -82,13 +82,13 @@ def calculate_watermark_position(width: int, height: int, config: dict) -> dict:
 
 def calculate_alpha_map(bg_image: Image.Image) -> np.ndarray:
     """
-    从水印背景图计算 Alpha 通道映射
-    
+    Calculate the alpha channel map from the watermark background image
+
     Args:
-        bg_image: 水印背景 PNG 图片
-    
+        bg_image: Watermark background PNG image
+
     Returns:
-        Alpha 映射数组（0-1 范围）
+        Alpha map array (range 0-1)
     """
     bg_array = np.array(bg_image.convert("RGB"), dtype=np.float32)
     max_channel = np.max(bg_array, axis=2)
@@ -97,15 +97,15 @@ def calculate_alpha_map(bg_image: Image.Image) -> np.ndarray:
 
 def remove_watermark(image: Image.Image, alpha_map: np.ndarray, position: dict) -> Image.Image:
     """
-    使用逆向混合算法去除水印
-    
+    Remove watermark using a reverse blending algorithm
+
     Args:
-        image: 原始图片
-        alpha_map: Alpha 映射数组
-        position: 水印位置
-    
+        image: Original image
+        alpha_map: Alpha map array
+        position: Watermark position
+
     Returns:
-        去除水印后的图片
+        Image with watermark removed
     """
     img_array = np.array(image.convert("RGBA"), dtype=np.float32)
     x, y, w, h = position["x"], position["y"], position["width"], position["height"]
@@ -129,15 +129,15 @@ def remove_watermark(image: Image.Image, alpha_map: np.ndarray, position: dict) 
 
 def process_image(input_path: Path, output_path: Path | None = None, verbose: bool = True) -> Path:
     """
-    处理单张图片，去除水印
-    
+    Process a single image to remove its watermark
+
     Args:
-        input_path: 输入图片路径
-        output_path: 输出图片路径（可选）
-        verbose: 是否输出详细信息
-    
+        input_path: Input image path
+        output_path: Output image path (optional)
+        verbose: Whether to output detailed information
+
     Returns:
-        输出文件路径
+        Output file path
     """
     image = Image.open(input_path)
     width, height = image.size
@@ -146,16 +146,16 @@ def process_image(input_path: Path, output_path: Path | None = None, verbose: bo
     position = calculate_watermark_position(width, height, config)
 
     if verbose:
-        print(f"  图片尺寸: {width} x {height}")
-        print(f"  水印尺寸: {config['logo_size']} x {config['logo_size']}")
-        print(f"  水印位置: ({position['x']}, {position['y']})")
+        print(f"  Image size: {width} x {height}")
+        print(f"  Watermark size: {config['logo_size']} x {config['logo_size']}")
+        print(f"  Watermark position: ({position['x']}, {position['y']})")
 
     bg_path = BG_96_PATH if config["logo_size"] == 96 else BG_48_PATH
-    
+
     if not bg_path.exists():
-        print(f"错误: 水印背景图不存在: {bg_path}")
+        print(f"Error: Watermark background image not found: {bg_path}")
         sys.exit(1)
-    
+
     bg_image = Image.open(bg_path)
     alpha_map = calculate_alpha_map(bg_image)
 
@@ -175,41 +175,41 @@ def process_image(input_path: Path, output_path: Path | None = None, verbose: bo
 
 def main():
     parser = argparse.ArgumentParser(
-        description='PPT Master - Gemini 水印去除工具',
+        description='PPT Master - Gemini Watermark Remover',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
+Examples:
     %(prog)s projects/demo/images/bg_01.png
     %(prog)s image.jpg -o image_clean.jpg
 
-说明:
-    - 自动检测水印尺寸（大图 96px，小图 48px）
-    - 支持 PNG、JPG、JPEG 格式
-    - 默认输出文件添加 _unwatermarked 后缀
+Notes:
+    - Automatically detects watermark size (96px for large images, 48px for small)
+    - Supports PNG, JPG, JPEG formats
+    - Output file defaults to adding an _unwatermarked suffix
 '''
     )
-    
-    parser.add_argument('input', type=Path, help='输入图片路径')
-    parser.add_argument('-o', '--output', type=Path, default=None, help='输出图片路径')
-    parser.add_argument('-q', '--quiet', action='store_true', help='静默模式')
-    
+
+    parser.add_argument('input', type=Path, help='Input image path')
+    parser.add_argument('-o', '--output', type=Path, default=None, help='Output image path')
+    parser.add_argument('-q', '--quiet', action='store_true', help='Quiet mode')
+
     args = parser.parse_args()
 
     if not args.input.exists():
-        print(f"错误: 文件不存在: {args.input}")
+        print(f"Error: File not found: {args.input}")
         sys.exit(1)
 
     verbose = not args.quiet
     if verbose:
-        print("PPT Master - Gemini 水印去除工具")
+        print("PPT Master - Gemini Watermark Remover")
         print("=" * 40)
-        print(f"  输入文件: {args.input}")
+        print(f"  Input file: {args.input}")
 
     output = process_image(args.input, args.output, verbose=verbose)
-    
+
     if verbose:
         print()
-        print(f"[完成] 已保存: {output}")
+        print(f"[Done] Saved to: {output}")
 
 
 if __name__ == "__main__":

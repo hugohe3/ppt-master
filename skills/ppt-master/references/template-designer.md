@@ -1,165 +1,165 @@
-> 📎 公共技术约束见 shared-standards.md
+> See shared-standards.md for common technical constraints.
 
-# Template Designer — 模板设计角色
+# Template Designer — Template Design Role
 
-## 核心使命
+## Core Mission
 
-基于《设计规范与内容大纲》生成项目专属的页面模板，供用户确认后用于批量内容生成。
+Generate project-specific page templates based on the Design Specification & Content Outline, for user confirmation before batch content generation.
 
-> 这是一个独立角色：仅通过 `/create-template` 工作流触发，不在 PPT 生成流程中使用。
+> This is a standalone role: only triggered via the `/create-template` workflow; not used in the PPT generation pipeline.
 
-## 使用方式
+## Usage
 
-- **触发方式**：`/create-template` 工作流
-- **输出位置**：`templates/layouts/<模板名称>/`
-
----
-
-## 核心模板清单
-
-| 序号 | 文件名 | 用途 | 说明 |
-|------|--------|------|------|
-| 01 | `01_cover.svg` | 封面 | 固定结构：标题、副标题、日期、机构 |
-| 02 | `02_chapter.svg` | 章节页 | 固定结构：章节编号、章节标题 |
-| 03 | `03_content.svg` | 内容页 | 灵活结构：只定义页眉页脚，内容区由 AI 自由布局 |
-| 04 | `04_ending.svg` | 结束页 | 固定结构：感谢语、联系方式 |
-| -- | `02_toc.svg` | 目录页 | 可选：目录标题、章节列表（编号+标题） |
-
-**设计理念**：模板定义视觉一致性和结构性页面，内容页保持最大灵活性。
-
-**命名说明**：目录页保持 `02_toc.svg` 命名以兼容模板库与排序规则。
-
-### 可选扩展页（按需）
-
-- 过渡页 / 小节页（如 `05_section_break.svg`）
-- 附录页（如 `06_appendix.svg`）
-- 免责声明 / 保密页（如 `07_disclaimer.svg`）
+- **Trigger**: `/create-template` workflow
+- **Output location**: `templates/layouts/<template_name>/`
 
 ---
 
-## 模板设计规范
+## Core Template Inventory
 
-### 1. 必须生成 design_spec.md
+| # | Filename | Purpose | Description |
+|---|----------|---------|-------------|
+| 01 | `01_cover.svg` | Cover | Fixed structure: title, subtitle, date, organization |
+| 02 | `02_chapter.svg` | Chapter page | Fixed structure: chapter number, chapter title |
+| 03 | `03_content.svg` | Content page | Flexible structure: only defines header/footer; content area freely laid out by AI |
+| 04 | `04_ending.svg` | Ending page | Fixed structure: thank-you message, contact info |
+| -- | `02_toc.svg` | Table of contents | Optional: TOC title, chapter list (number + title) |
 
-创建全局模板时，必须生成 `design_spec.md`，包含：
+**Design philosophy**: Templates define visual consistency and structural pages; content pages maintain maximum flexibility.
+
+**Naming note**: TOC page keeps `02_toc.svg` naming for template library compatibility and sort order.
+
+### Optional Extension Pages (As Needed)
+
+- Transition / sub-section page (e.g., `05_section_break.svg`)
+- Appendix page (e.g., `06_appendix.svg`)
+- Disclaimer / confidentiality page (e.g., `07_disclaimer.svg`)
+
+---
+
+## Template Design Specifications
+
+### 1. Must Generate design_spec.md
+
+When creating a global template, a `design_spec.md` must be generated, containing:
 
 ```markdown
-# [模板名称] - 设计规范
+# [Template Name] - Design Specification
 
-## 一、模板概述（名称、适用场景、设计调性）
-## 二、画布规范（16:9, 1280x720, viewBox）
-## 三、配色方案（主色、辅助色、强调色 HEX 值）
-## 四、排版体系（字体栈、字号层级）
-## 五、页面结构（通用布局、装饰设计）
-## 六、页面类型（4 种核心页面）
-## 七、布局模式（推荐）
-## 八、间距规范
-## 九、SVG 技术约束
-## 十、占位符规范
+## I. Template Overview (name, use cases, design tone)
+## II. Canvas Specification (16:9, 1280x720, viewBox)
+## III. Color Scheme (primary, secondary, accent HEX values)
+## IV. Typography System (font stack, font size hierarchy)
+## V. Page Structure (common layout, decorative design)
+## VI. Page Types (4 core page types)
+## VII. Layout Modes (recommended)
+## VIII. Spacing Specification
+## IX. SVG Technical Constraints
+## X. Placeholder Specification
 ```
 
-### 2. 继承设计规范
+### 2. Inherit Design Specification
 
-模板必须严格遵循《设计规范与内容大纲》中的：
-- **画布尺寸**：viewBox 与设计规范一致
-- **配色方案**：使用规范中的主导色、辅助色、强调色
-- **字体方案**：使用规范中的字体预设
-- **布局原则**：边距、间距符合规范
+Templates must strictly follow the Design Specification & Content Outline:
+- **Canvas dimensions**: viewBox matches the design spec
+- **Color scheme**: Uses primary, secondary, and accent colors from the spec
+- **Font plan**: Uses font presets from the spec
+- **Layout principles**: Margins and spacing conform to the spec
 
-### 3. 占位符标记
+### 3. Placeholder Markers
 
-使用明确的占位符标记可替换内容：
+Use clear placeholder markers for replaceable content:
 
 ```xml
-<!-- 文本占位符 -->
+<!-- Text placeholder -->
 <text x="80" y="320" fill="#FFFFFF" font-size="48" font-weight="bold">
   {{TITLE}}
 </text>
 
-<!-- 内容区占位符（内容页专用） -->
+<!-- Content area placeholder (content page only) -->
 <rect x="40" y="90" width="1200" height="550" fill="#FFFFFF" rx="8"/>
 <text x="640" y="365" text-anchor="middle" fill="#CBD5E1" font-size="16">
   {{CONTENT_AREA}}
 </text>
 ```
 
-### 4. 占位符规范
+### 4. Placeholder Reference
 
-| 占位符 | 用途 | 适用模板 |
-|--------|------|----------|
-| `{{TITLE}}` | 主标题 | 封面 |
-| `{{SUBTITLE}}` | 副标题 | 封面 |
-| `{{DATE}}` | 日期 | 封面 |
-| `{{AUTHOR}}` | 作者/机构 | 封面 |
-| `{{TOC_TITLE}}` | 目录标题 | 目录页 |
-| `{{TOC_ITEMS}}` | 目录项列表 | 目录页 |
-| `{{CHAPTER_NUM}}` | 章节编号 | 章节页 |
-| `{{CHAPTER_TITLE}}` | 章节标题 | 章节页 |
-| `{{CHAPTER_DESC}}` | 章节描述 | 章节页 |
-| `{{PAGE_TITLE}}` | 页面标题 | 内容页 |
-| `{{KEY_MESSAGE}}` | 核心观点 | 内容页（咨询风格） |
-| `{{CONTENT_AREA}}` | 内容区域 | 内容页 |
-| `{{SECTION_NAME}}` | 章节名称 | 内容页页脚 |
-| `{{SOURCE}}` | 数据来源 | 内容页页脚 |
-| `{{PAGE_NUM}}` | 页码 | 内容页、结束页 |
-| `{{THANK_YOU}}` | 感谢语 | 结束页 |
-| `{{TAGLINE}}` | 口号 | 结束页 |
-| `{{CONTACT_INFO}}` | 联系信息 | 结束页 |
-| `{{COPYRIGHT}}` | 版权 | 结束页 |
+| Placeholder | Purpose | Applicable Template |
+|------------|---------|-------------------|
+| `{{TITLE}}` | Main title | Cover |
+| `{{SUBTITLE}}` | Subtitle | Cover |
+| `{{DATE}}` | Date | Cover |
+| `{{AUTHOR}}` | Author / Organization | Cover |
+| `{{TOC_TITLE}}` | TOC title | TOC page |
+| `{{TOC_ITEMS}}` | TOC item list | TOC page |
+| `{{CHAPTER_NUM}}` | Chapter number | Chapter page |
+| `{{CHAPTER_TITLE}}` | Chapter title | Chapter page |
+| `{{CHAPTER_DESC}}` | Chapter description | Chapter page |
+| `{{PAGE_TITLE}}` | Page title | Content page |
+| `{{KEY_MESSAGE}}` | Key takeaway | Content page (consulting style) |
+| `{{CONTENT_AREA}}` | Content area | Content page |
+| `{{SECTION_NAME}}` | Section name | Content page footer |
+| `{{SOURCE}}` | Data source | Content page footer |
+| `{{PAGE_NUM}}` | Page number | Content page, ending page |
+| `{{THANK_YOU}}` | Thank-you message | Ending page |
+| `{{TAGLINE}}` | Tagline / slogan | Ending page |
+| `{{CONTACT_INFO}}` | Contact info | Ending page |
+| `{{COPYRIGHT}}` | Copyright | Ending page |
 
 ---
 
-## 输出要求
+## Output Requirements
 
-### 文件保存位置
+### File Save Location
 
 ```
-templates/layouts/<模板名称>/
-├── design_spec.md     # 设计规范（必须）
+templates/layouts/<template_name>/
+├── design_spec.md     # Design specification (required)
 ├── 01_cover.svg
 ├── 02_chapter.svg
-├── 02_toc.svg          # 可选
+├── 02_toc.svg          # Optional
 ├── 03_content.svg
 ├── 04_ending.svg
-└── *.png / *.jpg       # 图片资源（如有）
+└── *.png / *.jpg       # Image assets (if any)
 ```
 
-### 模板预览
+### Template Preview
 
-每个模板生成后，提供简要说明表格，列出各模板状态。
+After each template is generated, provide a brief summary table listing each template's status.
 
 ---
 
-## 使用预置模板库（可选）
+## Using Pre-built Template Library (Optional)
 
-如已有适合的模板资源，可直接使用而非生成新模板：
+If suitable template resources already exist, use them directly instead of generating new ones:
 
-1. **复制模板**：将模板文件复制到项目 `templates/` 目录
-2. **调整配色**：根据项目设计规范修改颜色
-3. **自定义修改**：根据项目特点个性化调整
+1. **Copy template**: Copy template files to the project's `templates/` directory
+2. **Adjust colors**: Modify colors per the project design spec
+3. **Customize**: Make project-specific adjustments
 
-**示例库结构**（查询 `templates/layouts/layouts_index.json`）：
+**Example library structure** (query `templates/layouts/layouts_index.json`):
 
 ```
 templates/layouts/
-├── general/           # 通用灵活风格
-├── consultant/        # 咨询风格
-└── consultant_top/    # 顶级咨询风格（MBB级）
+├── general/           # General versatile style
+├── consultant/        # Consulting style
+└── consultant_top/    # Top consulting style (MBB level)
 ```
 
 ---
 
-## 阶段完成检查点
+## Phase Completion Checkpoint
 
 ```markdown
-## Template_Designer 阶段完成
+## Template_Designer Phase Complete
 
-- [x] 已阅读 `references/template-designer.md`
-- [x] 已生成 4 个核心页面模板
-- [ ] 目录页模板（可选）
-- [ ] 可选扩展页（如需）
-- [x] 所有模板已保存到 `templates/` 目录
-- [x] 模板遵循设计规范（配色、字体、布局）
-- [x] 占位符标记清晰规范
-- [ ] **下一步**: 请用户确认模板
+- [x] Read `references/template-designer.md`
+- [x] Generated 4 core page templates
+- [ ] TOC page template (optional)
+- [ ] Optional extension pages (if needed)
+- [x] All templates saved to `templates/` directory
+- [x] Templates follow design spec (colors, fonts, layout)
+- [x] Placeholder markers are clear and standardized
+- [ ] **Next step**: Request user confirmation of templates
 ```

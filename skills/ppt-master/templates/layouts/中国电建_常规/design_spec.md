@@ -1,205 +1,205 @@
-# 中国电建模板 (POWERCHINA Style) - 设计规范
+# POWERCHINA (中国电建) Standard Template - Design Specification
 
-> 适用于中国电力建设集团有限公司项目汇报、工程展示、商务洽谈、企业宣传等场景。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                         |
-| -------------- | ------------------------------------------------------------ |
-| **模板名称**   | 中国电建_常规（原 powerchina）                       |
-| **适用场景**   | 工程项目汇报、技术方案展示、商务洽谈、企业宣传、年度总结     |
-| **设计调性**   | 专业、稳重、国际化、央企风范                                 |
-| **主题模式**   | 亮色主题（白色背景 + 电建蓝强调色）                          |
+> Suitable for PowerChina (China Power Construction Corporation) project reports, engineering showcases, business negotiations, corporate promotion, and similar scenarios.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| **Template Name** | 中国电建_常规 (formerly powerchina)                           |
+| **Use Cases**  | Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries |
+| **Design Tone** | Professional, composed, international, state-owned enterprise style |
+| **Theme Mode** | Light theme (white background + POWERCHINA blue accent)          |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 60px，上 80px，下 40px   |
-| **内容安全区** | x: 60-1220, y: 80-680         |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
+| **viewBox**    | `0 0 1280 720`               |
+| **Page Margins** | Left/Right 60px, Top 80px, Bottom 40px |
+| **Safe Area**  | x: 60-1220, y: 80-680        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系（电建品牌色）
+### Primary Colors (POWERCHINA Brand Colors)
 
-| 角色           | 色值        | 备注                               |
+| Role           | Color Value | Notes                              |
 | -------------- | ----------- | ---------------------------------- |
-| **电建蓝**     | `#00418D`   | 主色调，标题栏、强调色块、装饰条   |
-| **深邃蓝**     | `#002B5C`   | 章节页背景、渐变暗部               |
-| **活力蓝**     | `#0066CC`   | 辅助强调、图表色                   |
-| **天际蓝**     | `#4A90D9`   | 装饰点缀、次级强调                 |
-| **背景白**     | `#FFFFFF`   | 页面主背景                         |
-| **辅助浅灰**   | `#F4F6F8`   | 非重点内容背景块                   |
+| **POWERCHINA Blue** | `#00418D` | Primary color for title bars, accent blocks, decorative bars |
+| **Deep Blue**  | `#002B5C`  | Chapter page background, gradient dark end |
+| **Vibrant Blue** | `#0066CC` | Secondary accent, chart colors     |
+| **Sky Blue**   | `#4A90D9`  | Decorative accents, tertiary emphasis |
+| **Background White** | `#FFFFFF` | Main page background              |
+| **Auxiliary Light Gray** | `#F4F6F8` | Secondary content background blocks |
 
-### 辅助色（中国红点缀）
+### Auxiliary Colors (China Red Accents)
 
-| 角色           | 色值        | 备注                               |
+| Role           | Color Value | Notes                              |
 | -------------- | ----------- | ---------------------------------- |
-| **中国红**     | `#C41E3A`   | 重要数据强调、点缀装饰             |
-| **金色**       | `#C9A227`   | 荣誉、成就展示                     |
+| **China Red**  | `#C41E3A`  | Key data emphasis, decorative accents |
+| **Gold**       | `#C9A227`  | Honors, achievements display       |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Color Value | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **主文字**     | `#1A1A1A`   | 正文、标题             |
-| **白色文字**   | `#FFFFFF`   | 深色色块上的文字       |
-| **辅助文字**   | `#4A5568`   | 置灰章节、辅助说明     |
-| **浅色辅助**   | `#718096`   | 注释、页码、提示       |
+| **Primary Text** | `#1A1A1A` | Body text, headings    |
+| **White Text** | `#FFFFFF`  | Text on dark backgrounds |
+| **Secondary Text** | `#4A5568` | Dimmed chapters, auxiliary descriptions |
+| **Light Auxiliary** | `#718096` | Annotations, page numbers, hints |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, sans-serif`
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级 | 用途             | 字号 | 字重    |
-| ---- | ---------------- | ---- | ------- |
-| H1   | 封面主标题       | 48px | Bold    |
-| H2   | 页面大标题       | 28px | Bold    |
-| H3   | 模块标题/小标题  | 24px | Bold    |
-| P    | 正文内容         | 18px | Regular |
-| High | 强调数据         | 36px | Bold    |
-| Sub  | 辅助说明         | 14px | Regular |
-
----
-
-## 五、页面结构
-
-### 通用布局
-
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0, h=6px    | 电建蓝渐变横条，贯穿整页               |
-| **标题栏** | y=30, h=50px  | 章节序号块 + 标题文字 + 右上角Logo     |
-| **内容区** | y=100, h=560px | 主要内容区域                          |
-| **页脚**   | y=680, h=40px | 页码、企业名称、底部装饰线             |
+| Level | Usage              | Size | Weight  |
+| ----- | ------------------ | ---- | ------- |
+| H1    | Cover main title   | 48px | Bold    |
+| H2    | Page heading       | 28px | Bold    |
+| H3    | Section title / Subtitle | 24px | Bold |
+| P     | Body content       | 18px | Regular |
+| High  | Emphasized data    | 36px | Bold    |
+| Sub   | Auxiliary notes    | 14px | Regular |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### Common Layout
 
-- 深蓝渐变背景 + 工程感斜线纹理
-- 左侧品牌蓝装饰条
-- 主标题 + 副标题（白色）
-- 企业英文名称 POWERCHINA
-- 底部红色装饰条
-
-### 2. 目录页 (02_toc.svg)
-
-- 白色背景 + 左侧蓝色装饰区
-- 最多支持5个章节
-- 数字编号 + 竖线分隔设计
-- 右侧可放置企业数据
-
-### 3. 章节页 (02_chapter.svg)
-
-- 深蓝色渐变背景
-- 大号章节编号
-- 章节标题 + 英文副标题
-- 几何网格装饰
-
-### 4. 内容页 (03_content.svg)
-
-- 白色背景
-- 标准导航栏
-- 灵活内容区域
-- 支持多种布局模式
-
-### 5. 结束页 (04_ending.svg)
-
-- 深蓝渐变背景
-- 企业Logo区域
-- 感谢语（中英文）
-- 企业信息
+| Area       | Position/Height | Description                            |
+| ---------- | --------------- | -------------------------------------- |
+| **Top**    | y=0, h=6px      | POWERCHINA blue gradient bar spanning full width |
+| **Title Bar** | y=30, h=50px | Chapter number block + Title text + Top-right Logo |
+| **Content** | y=100, h=560px | Main content area                     |
+| **Footer** | y=680, h=40px   | Page number, company name, bottom decorative line |
 
 ---
 
-## 七、布局模式（推荐）
+## VI. Page Types
 
-### 1. 左右分栏 (Split Column)
-- 经典图文混排，左文右图或左图右文。
-- 分栏比例推荐 1:1 或 2:3。
+### 1. Cover Page (01_cover.svg)
 
-### 2. 卡片阵列 (Card Grid)
-- 3列或4列卡片布局，用于展示项目案例或荣誉资质。
-- 卡片背景推荐使用辅助浅灰 `#F4F6F8`。
+- Deep blue gradient background + engineering-style diagonal line texture
+- Left-side brand blue decorative bar
+- Main title + subtitle (white)
+- Company English name POWERCHINA
+- Bottom red decorative bar
 
-### 3. 流程图 (Process)
-- 横向时间轴或流程图，展示项目进度。
-- 使用电建蓝作为主轴颜色，中国红标记关键节点。
+### 2. Table of Contents (02_toc.svg)
 
----
+- White background + left-side blue decorative area
+- Supports up to 5 chapters
+- Numbered items + vertical line separator design
+- Right side can display corporate data
 
-## 八、间距规范
+### 3. Chapter Page (02_chapter.svg)
 
-| 属性         | 值    | 说明                     |
-| ------------ | ----- | ------------------------ |
-| **基础单位** | 8px   | 所有间距应为 8px 的倍数  |
-| **模块间距** | 32px  | 大模块之间的标准间距     |
-| **卡片间距** | 24px  | 卡片之间的间距           |
-| **内部留白** | 24px  | 卡片内部的 Padding       |
-| **文本行距** | 1.5   | 正文标准行距             |
+- Deep blue gradient background
+- Large chapter number
+- Chapter title + English subtitle
+- Geometric grid decoration
 
----
+### 4. Content Page (03_content.svg)
 
-## 九、SVG 技术约束
+- White background
+- Standard navigation bar
+- Flexible content area
+- Supports multiple layout patterns
 
-### 必须遵守
+### 5. Ending Page (04_ending.svg)
 
-1. viewBox 固定为 `0 0 1280 720`
-2. 背景必须包含全屏 `<rect>`
-3. 文本换行使用 `<tspan>`
-4. 透明度必须使用 `fill-opacity` / `stroke-opacity`
-5. 箭头需使用 `<polygon>` 绘制，禁止 `marker`
-
-### 禁用元素 (黑名单)
-
-- `clipPath`, `mask` (裁剪/遮罩)
-- `<style>`, `class` (样式表；`<defs>` 内 `id` 合法)
-- `foreignObject` (外部对象)
-- `textPath` (路径文本)
-- `animate`, `animateTransform`, `set` (动画)
-
-- `rgba()` 颜色格式 (必须用 hex + opacity)
-- `<g opacity="...">` (组透明度，需单独设置)
+- Deep blue gradient background
+- Corporate Logo area
+- Thank-you message (Chinese & English)
+- Corporate information
 
 ---
 
-## 十、占位符规范
+## VII. Layout Patterns (Recommended)
 
-| 占位符             | 说明               |
-| ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 汇报单位           |
-| `{{PRESENTER}}`    | 汇报人             |
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{DATE}}`         | 日期               |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CONTENT_AREA}}` | 内容区域标识       |
+### 1. Split Column
+- Classic image-text mixed layout: left text / right image, or left image / right text.
+- Recommended split ratio: 1:1 or 2:3.
+
+### 2. Card Grid
+- 3-column or 4-column card layout for showcasing project cases or qualifications.
+- Card background recommended: auxiliary light gray `#F4F6F8`.
+
+### 3. Process Flow
+- Horizontal timeline or flowchart for displaying project progress.
+- POWERCHINA blue as the main axis color, China Red for key milestone markers.
 
 ---
 
-## 十一、使用说明（推荐）
+## VIII. Spacing Guidelines
 
-1. **Logo 适配**: 封面页和结束页使用反白 Logo，内容页右上角使用彩色或反白 Logo。
-2. **图片资源**: 确保 template 目录下 `images/` 文件夹内包含必要的 Logo 文件。
-3. **字体**: 推荐安装“微软雅黑”以获得最佳显示效果。
+| Property       | Value | Description              |
+| -------------- | ----- | ------------------------ |
+| **Base Unit**  | 8px   | All spacing should be multiples of 8px |
+| **Module Gap** | 32px  | Standard gap between major modules |
+| **Card Gap**   | 24px  | Gap between cards        |
+| **Inner Padding** | 24px | Padding inside cards    |
+| **Line Height** | 1.5  | Standard body line height |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+1. viewBox fixed at `0 0 1280 720`
+2. Background must include a full-screen `<rect>`
+3. Text wrapping via `<tspan>`
+4. Opacity must use `fill-opacity` / `stroke-opacity`
+5. Arrows must use `<polygon>`, no `marker`
+
+### Forbidden Elements (Blacklist)
+
+- `clipPath`, `mask` (clipping/masking)
+- `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
+- `foreignObject` (foreign objects)
+- `textPath` (text on path)
+- `animate`, `animateTransform`, `set` (animations)
+
+- `rgba()` color format (must use hex + opacity)
+- `<g opacity="...">` (group opacity — set individually on each element)
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder          | Description        |
+| -------------------- | ------------------ |
+| `{{TITLE}}`          | Main title         |
+| `{{SUBTITLE}}`       | Subtitle           |
+| `{{AUTHOR}}`         | Presenting organization |
+| `{{PRESENTER}}`      | Presenter          |
+| `{{CHAPTER_NUM}}`    | Chapter number     |
+| `{{PAGE_NUM}}`       | Page number        |
+| `{{DATE}}`           | Date               |
+| `{{CHAPTER_TITLE}}`  | Chapter title      |
+| `{{PAGE_TITLE}}`     | Page title         |
+| `{{CONTENT_AREA}}`   | Content area identifier |
+
+---
+
+## XI. Usage Notes (Recommended)
+
+1. **Logo Adaptation**: Cover and ending pages use inverted (white) Logo; content page upper-right uses color or inverted Logo.
+2. **Image Assets**: Ensure the `images/` folder under the template directory contains necessary Logo files.
+3. **Fonts**: Recommend installing "Microsoft YaHei" for optimal display.

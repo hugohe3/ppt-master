@@ -1,231 +1,231 @@
-# 政府蓝模板 (Government Blue Style) - 设计规范
+# Government Blue Style Template - Design Specification
 
-> 适用于各级政府机构政务汇报、重点项目推介、规划方案汇报、招商引资等场景。
+> Suitable for government agency briefings, key project presentations, planning proposals, investment promotion, and similar scenarios across all levels of government.
 
 ---
 
-## 一、模板概述
+## I. Template Overview
 
-| 属性           | 描述                                                         |
+| Property       | Description                                                  |
 | -------------- | ------------------------------------------------------------ |
-| **模板名称**   | government_blue（政府蓝模板）                                |
-| **适用场景**   | 重点项目汇报、十四五规划、工作总结、招商引资、政策解读       |
-| **设计调性**   | 大气、科技感、现代化、专业政务风格                           |
-| **主题模式**   | 亮色主题（白色背景 + 蓝色渐变装饰）                          |
+| **Template Name** | government_blue (Government Blue Template)                |
+| **Use Cases**  | Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation |
+| **Design Tone** | Grand, tech-forward, modern, professional government style  |
+| **Theme Mode** | Light theme (white background + blue gradient accents)       |
 
 ---
 
-## 二、画布规范
+## II. Canvas Specification
 
-| 属性           | 值                            |
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 60px，上 80px，下 40px   |
-| **内容安全区** | x: 60-1220, y: 80-680         |
+| **Page Margins** | Left/Right 60px, Top 80px, Bottom 40px |
+| **Safe Area**  | x: 60-1220, y: 80-680         |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色           | 色值        | 备注                               |
+| Role           | Value       | Notes                              |
 | -------------- | ----------- | ---------------------------------- |
-| **主导深蓝**   | `#0050B3`   | 标题、核心边框、序号块             |
-| **科技亮蓝**   | `#00B4D8`   | 装饰元素、强调色、渐变亮部         |
-| **深海蓝**     | `#003366`   | 章节页背景、渐变暗部               |
-| **辅助浅蓝**   | `#E6F4FF`   | 背景底色、弱化区块                 |
-| **天际蓝**     | `#90E0EF`   | 点缀装饰、次级强调                 |
+| **Primary Deep Blue** | `#0050B3` | Titles, key borders, section number blocks |
+| **Tech Bright Blue** | `#00B4D8` | Decorative elements, accent color, gradient highlights |
+| **Ocean Blue**  | `#003366`  | Chapter page backgrounds, gradient dark end |
+| **Auxiliary Light Blue** | `#E6F4FF` | Background base, subdued blocks |
+| **Sky Blue**    | `#90E0EF`  | Decorative accents, secondary emphasis |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **主文字**     | `#1A1A1A`   | 正文、标题             |
-| **白色文字**   | `#FFFFFF`   | 深色色块上的文字       |
-| **辅助文字**   | `#4A5568`   | 置灰章节、辅助说明     |
-| **浅色辅助**   | `#718096`   | 注释、页码、提示       |
+| **Primary Text** | `#1A1A1A` | Body text, titles      |
+| **White Text** | `#FFFFFF`   | Text on dark backgrounds |
+| **Secondary Text** | `#4A5568` | Dimmed sections, supplementary notes |
+| **Light Auxiliary** | `#718096` | Annotations, page numbers, hints |
 
-### 功能色
+### Functional Colors
 
-| 用途     | 色值        | 说明           |
+| Usage    | Value       | Description    |
 | -------- | ----------- | -------------- |
-| **成功** | `#38A169`   | 完成/达标      |
-| **警示** | `#E53E3E`   | 注意/预警      |
-| **信息** | `#3182CE`   | 一般说明       |
+| **Success** | `#38A169` | Completed/On target |
+| **Warning** | `#E53E3E` | Attention/Alert |
+| **Info**    | `#3182CE` | General information |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `"Microsoft YaHei", "微软雅黑", "SimHei", "Source Han Sans SC", Arial, sans-serif`
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", "Source Han Sans SC", Arial, sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级 | 用途             | 字号 | 字重    |
-| ---- | ---------------- | ---- | ------- |
-| H1   | 封面主标题       | 52px | Bold    |
-| H2   | 页面大标题       | 28px | Bold    |
-| H3   | 模块标题/小标题  | 24px | Bold    |
-| P    | 正文内容         | 18px | Regular |
-| High | 强调数据         | 36px | Bold    |
-| Sub  | 辅助说明         | 14px | Regular |
-
----
-
-## 五、页面结构
-
-### 通用布局
-
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0, h=6px    | 蓝色渐变横条（亮蓝→深蓝），贯穿整页    |
-| **标题栏** | y=30, h=50px  | 章节序号块 + 标题文字 + 右上角徽标     |
-| **内容区** | y=100, h=560px | 主要内容区域                          |
-| **页脚**   | y=680, h=40px | 页码、单位名称、底部装饰线             |
-
-### 导航栏设计
-
-- **顶部装饰线**: 蓝色渐变（`#00B4D8` → `#0050B3`），高度 6px，贯穿整页
-- **底部装饰线**: 深蓝色 (`#0050B3`)，高度 4px，y=716
-- **标题栏** (y=30):
-  - 章节序号块: 深蓝色正方形 (50×50px)，白色数字居中
-  - 标题文字: 距序号块 20px，28px 字号，`#1A1A1A`
-  - 右上角徽标: 固定于 x=1107，尺寸 113×50px
+| Level | Usage              | Size | Weight  |
+| ----- | ------------------ | ---- | ------- |
+| H1    | Cover main title   | 52px | Bold    |
+| H2    | Page heading       | 28px | Bold    |
+| H3    | Section title/Subtitle | 24px | Bold |
+| P     | Body content       | 18px | Regular |
+| High  | Highlighted data   | 36px | Bold    |
+| Sub   | Supplementary text | 14px | Regular |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### General Layout
 
-- 深蓝渐变背景 + 科技网格纹理
-- 左侧亮蓝装饰条
-- 主标题 + 副标题（白色）
-- 汇报人/单位信息
-- 底部日期区域
-- 几何装饰圆形
+| Area       | Position/Height | Description                            |
+| ---------- | --------------- | -------------------------------------- |
+| **Top**    | y=0, h=6px      | Blue gradient bar (bright blue → deep blue), full width |
+| **Title Bar** | y=30, h=50px | Section number block + title text + top-right logo |
+| **Content Area** | y=100, h=560px | Main content area                 |
+| **Footer** | y=680, h=40px   | Page number, organization name, bottom decoration line |
 
-### 2. 目录页 (02_toc.svg)
+### Navigation Bar Design
 
-- 浅蓝渐变背景
-- 左侧装饰梯形 + 渐变竖条
-- 最多支持5个章节
-- 圆形编号 + 连接线设计
-- 悬浮卡片效果（使用纯色模拟）
-
-### 3. 章节页 (02_chapter.svg)
-
-- 深蓝色渐变背景
-- 径向光晕装饰
-- 大号章节编号（半透明 + 描边效果）
-- 章节标题 + 英文副标题
-- 亮蓝装饰条
-
-### 4. 内容页 (03_content.svg)
-
-- 浅色渐变背景
-- 渐变序号块
-- 虚线分隔线
-- 灵活内容区域
-- 支持多种布局模式
-
-### 5. 结束页 (04_ending.svg)
-
-- 深蓝渐变背景
-- 波浪曲线装饰
-- 居中感谢语（中英文）
-- 亮蓝分隔线
-- 联系信息
+- **Top Decoration Line**: Blue gradient (`#00B4D8` → `#0050B3`), height 6px, full width
+- **Bottom Decoration Line**: Deep blue (`#0050B3`), height 4px, y=716
+- **Title Bar** (y=30):
+  - Section number block: Deep blue square (50×50px), white number centered
+  - Title text: 20px from number block, 28px font size, `#1A1A1A`
+  - Top-right logo: Fixed at x=1107, dimensions 113×50px
 
 ---
 
-## 七、布局模式
+## VI. Page Types
 
-| 模式               | 适用场景                   |
-| ------------------ | -------------------------- |
-| **单栏居中**       | 封面、结语、重要观点       |
-| **左右分栏 (5:5)** | 对比展示                   |
-| **左右分栏 (4:6)** | 图文混排                   |
-| **上下分栏**       | 流程说明、政策列表         |
-| **三栏卡片**       | 项目列表、数据展示         |
-| **矩阵网格**       | 分类展示                   |
-| **表格**           | 数据对比、规范列表         |
+### 1. Cover Page (01_cover.svg)
+
+- Deep blue gradient background + tech grid texture
+- Left-side bright blue accent bar
+- Main title + subtitle (white)
+- Presenter/Organization info
+- Bottom date area
+- Geometric decorative circles
+
+### 2. Table of Contents (02_toc.svg)
+
+- Light blue gradient background
+- Left-side decorative trapezoid + gradient vertical bar
+- Supports up to 5 chapters
+- Circular numbering + connector line design
+- Floating card effect (simulated with solid colors)
+
+### 3. Chapter Page (02_chapter.svg)
+
+- Deep blue gradient background
+- Radial glow decoration
+- Large chapter number (semi-transparent + stroke effect)
+- Chapter title + English subtitle
+- Bright blue accent bar
+
+### 4. Content Page (03_content.svg)
+
+- Light gradient background
+- Gradient number block
+- Dashed divider lines
+- Flexible content area
+- Supports multiple layout modes
+
+### 5. Ending Page (04_ending.svg)
+
+- Deep blue gradient background
+- Wave curve decoration
+- Centered thank-you message (Chinese and English)
+- Bright blue divider line
+- Contact information
 
 ---
 
-## 八、间距规范
+## VII. Layout Modes
 
-| 元素         | 数值   |
-| ------------ | ------ |
-| 卡片间距     | 24px   |
-| 内容块间距   | 32px   |
-| 卡片内边距   | 24px   |
-| 卡片圆角     | 8px    |
-| 图标与文字   | 12px   |
+| Mode               | Use Cases                      |
+| ------------------ | ------------------------------ |
+| **Single Column Centered** | Cover, closing, key points |
+| **Two Columns (5:5)** | Comparative display         |
+| **Two Columns (4:6)** | Image-text mixed layout     |
+| **Top-Bottom Split** | Process descriptions, policy lists |
+| **Three-Column Cards** | Project lists, data display |
+| **Matrix Grid**    | Category display               |
+| **Table**          | Data comparison, specification lists |
 
 ---
 
-## 九、SVG 技术约束
+## VIII. Spacing Guidelines
 
-### 必须遵守
+| Element          | Value  |
+| ---------------- | ------ |
+| Card spacing     | 24px   |
+| Content block spacing | 32px |
+| Card padding     | 24px   |
+| Card border radius | 8px  |
+| Icon-to-text gap | 12px   |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Use `<polygon>` triangles instead of `<marker>` for arrows
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-- 图片透明度使用遮罩层替代
-- 仅使用内联样式，禁止外部 CSS 和 `@font-face`
+- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- Use overlay layers instead of image opacity
+- Use inline styles only; external CSS and `@font-face` are prohibited
 
 ---
 
-## 十、占位符规范
+## X. Placeholder Specification
 
-模板使用 `{{PLACEHOLDER}}` 格式的占位符，常用占位符：
+Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 单位名称（中文）   |
-| `{{AUTHOR_EN}}`    | 单位名称（英文）   |
-| `{{PRESENTER}}`    | 汇报人             |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{DATE}}`         | 日期               |
-| `{{ORGANIZATION}}` | 单位全称           |
-| `{{ORG_SHORT}}`    | 单位简称           |
-| `{{CONTACT_INFO}}` | 联系信息           |
-| `{{LOGO_HEADER}}`  | 页眉徽标文件名     |
+| `{{TITLE}}`        | Main title         |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{AUTHOR}}`       | Organization name (Chinese) |
+| `{{AUTHOR_EN}}`    | Organization name (English) |
+| `{{PRESENTER}}`    | Presenter          |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{CHAPTER_NUM}}`  | Chapter number     |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{DATE}}`         | Date               |
+| `{{ORGANIZATION}}` | Full organization name |
+| `{{ORG_SHORT}}`    | Abbreviated organization name |
+| `{{CONTACT_INFO}}` | Contact information |
+| `{{LOGO_HEADER}}`  | Header logo filename |
 
 ---
 
-## 十一、使用说明
+## XI. Usage Instructions
 
-1. 复制模板到项目目录
-2. 替换 images 目录中的徽标文件（如有）
-3. 根据内容需求选择合适的页面模板
-4. 使用占位符标记需要替换的内容
-5. 通过 Executor 角色生成最终 SVG
+1. Copy the template to the project directory
+2. Replace logo files in the images directory (if applicable)
+3. Select the appropriate page template based on content requirements
+4. Mark content to be replaced using placeholders
+5. Generate the final SVG through the Executor role
 
 ---
 
-## 十二、设计亮点
+## XII. Design Highlights
 
-- **科技感渐变**: 亮蓝到深蓝的渐变体现现代科技风格
-- **几何装饰元素**: 圆形、网格增添科技氛围
-- **波浪曲线**: 结束页动感装饰
-- **悬浮卡片效果**: 目录页现代化设计
-- **清晰视觉层级**: 确保信息传达效率
+- **Tech Gradient**: Bright-to-deep blue gradient reflects a modern tech aesthetic
+- **Geometric Decorative Elements**: Circles and grids add a tech atmosphere
+- **Wave Curves**: Dynamic decoration on the ending page
+- **Floating Card Effect**: Modern design for the table of contents page
+- **Clear Visual Hierarchy**: Ensures efficient information delivery

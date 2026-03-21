@@ -1,208 +1,208 @@
-# 招商银行 - 设计规范 v2.0
+# China Merchants Bank (招商银行) - Design Specification v2.0
 
-> 适用于招商银行及金融机构的高端工作汇报、业务展示、年度报告、VIP客户服务等场景。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                   |
-| -------------- | ------------------------------------------------------ |
-| **模板名称**   | 招商银行                                               |
-| **适用场景**   | 高端工作汇报、业务展示、年度报告、产品推介             |
-| **设计调性**   | 极简轻奢、精致、多层次、现代金融                       |
-| **主题模式**   | 亮色主题（微纹理背景 + 招行红/金精细装饰）             |
+> Suitable for China Merchants Bank and financial institutions' high-end work reports, business showcases, annual reports, VIP client services, and similar scenarios.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
+| Property       | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| **Template Name** | 招商银行                                                |
+| **Use Cases**  | High-end work reports, business showcases, annual reports, product promotion |
+| **Design Tone** | Minimalist luxury, refined, multi-layered, modern finance  |
+| **Theme Mode** | Light theme (subtle textured background + CMB red/gold refined accents) |
+
+---
+
+## II. Canvas Specification
+
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **安全边距**   | 40px (左右), 35px (上下)      |
-| **内容安全区** | x: 40-1240, y: 70-665         |
-| **网格基准**   | 40px                          |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
+| **viewBox**    | `0 0 1280 720`               |
+| **Safe Margins** | 40px (left/right), 35px (top/bottom) |
+| **Safe Area**  | x: 40-1240, y: 70-665        |
+| **Grid Base**  | 40px                          |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 核心色系
+### Core Colors
 
-| 角色             | 色值        | 备注                             |
+| Role             | Color Value | Notes                            |
 | ---------------- | ----------- | -------------------------------- |
-| **招行红 Red**   | `#C41230`   | 品牌主色，用于强调、标题条       |
-| **辅助金 Gold**  | `#C9A962`   | 奢华质感色，用于双线边框、装饰   |
-| **深红 DarkRed** | `#9A0E26`   | 深邃背景色，提升画面层次         |
-| **背景白**       | `#FFFFFF`   | 卡片及高亮区域背景               |
-| **微纹理白**     | `#FAFAFA`   | 极淡背景色，避免纯白刺眼         |
-| **暖灰装饰**     | `#F8F6F3`   | 底部装饰条、卡片背景             |
+| **CMB Red**      | `#C41230`   | Brand primary, used for accents, title bars |
+| **Auxiliary Gold** | `#C9A962` | Luxury accent for double-line borders, decorations |
+| **Dark Red**     | `#9A0E26`   | Deep background color for added depth |
+| **Background White** | `#FFFFFF` | Card and highlight area backgrounds |
+| **Subtle Texture White** | `#FAFAFA` | Very light background to avoid harsh pure white |
+| **Warm Gray Accent** | `#F8F6F3` | Bottom decorative bars, card backgrounds |
 
-### 安全区定位点 (新版极简装饰)
+### Safe Area Anchor Points (New Minimalist Decoration)
 
 ```xml
-<!-- 四角定位点（替代旧版卡片边框） -->
+<!-- Four-corner anchor points (replacing legacy card borders) -->
 <path d="M40 140 L50 140 M40 140 L40 150" stroke="#C9A962" stroke-width="1" stroke-opacity="0.5" />
 <path d="M1240 140 L1230 140 M1240 140 L1240 150" stroke="#C9A962" stroke-width="1" stroke-opacity="0.5" />
 ```
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级     | 用途             | 字号   | 字重    |
-| -------- | ---------------- | ------ | ------- |
-| H1       | 封面主标题       | 52px   | Bold    |
-| H2       | 页面标题         | 24-28px| Bold    |
-| H3       | 章节标题         | 52px   | Bold    |
-| H4       | 小节/卡片标题    | 20-22px| Bold    |
-| P        | 正文内容         | 16-18px| Regular |
-| Caption  | 辅助说明         | 12-14px| Regular |
-| Number   | 章节编号         | 320px  | Bold (Low Opacity) |
-
----
-
-## 五、页面结构
-
-### 通用布局
-
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **页眉**   | y=0-75        | 红底金线，左上角圆环装饰               |
-| **观点条** | y=95-120      | (内容页) 极简红线引导 + 文字           |
-| **内容区** | y=140-650     | 开放式布局，无固定边框                 |
-| **页脚**   | y=665+        | 页码、版权、机构名称                   |
-
-### 核心装饰设计 (Design DNA)
-
-1.  **精致双线**: 1px 主线 + 3px 辅线的组合，模拟高端印刷工艺。
-2.  **多层同心圆**: 招行向日葵的抽象表达，增加视觉深度。
-3.  **微点阵纹理**: 极小圆点组成的阵列，增加画面的呼吸感。
-4.  **菱形分割**: 标题分割处使用菱形装饰，体现精致感。
+| Level    | Usage              | Size    | Weight  |
+| -------- | ------------------ | ------- | ------- |
+| H1       | Cover main title   | 52px    | Bold    |
+| H2       | Page title         | 24-28px | Bold    |
+| H3       | Chapter title      | 52px    | Bold    |
+| H4       | Subsection / Card title | 20-22px | Bold |
+| P        | Body content       | 16-18px | Regular |
+| Caption  | Auxiliary notes    | 12-14px | Regular |
+| Number   | Chapter number     | 320px   | Bold (Low Opacity) |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### Common Layout
 
--   **背景**: 白色主背景 + 底部暖灰装饰带。
--   **顶部**: 红色横条 + 金色双线。
--   **装饰**: 左上角多层圆环，右侧边缘垂直装饰线。
--   **标题区**: 居中布局，带有圆角边框和菱形分割线。
+| Area       | Position/Height | Description                            |
+| ---------- | --------------- | -------------------------------------- |
+| **Header** | y=0-75          | Red background with gold lines, top-left ring decoration |
+| **Key Message Bar** | y=95-120 | (Content pages) Minimalist red line guide + text |
+| **Content** | y=140-650      | Open layout with no fixed borders      |
+| **Footer** | y=665+          | Page number, copyright, institution name |
 
-### 2. 目录页 (02_toc.svg)
+### Core Decorative Design (Design DNA)
 
--   **页眉**: 固定“目录 / CONTENTS”标题。
--   **列表**: 左右双栏**清单式布局**（无背景卡片）。
--   **设计**: 采用“大号红字编号 + 标题 + 金色下划线”组合，适应性强。
--   **装饰**: 左侧带有纵向线条和装饰文字 Index。
-
-### 3. 章节页 (02_chapter.svg)
-
--   **背景**: 全屏深红色背景 (`#9A0E26`)。
--   **视觉中心**: 左侧金色竖条与标题组合。
--   **右侧**: 复杂的金色横条阶梯效果 + 对角线纹理。
--   **背景字**: 巨大的半透明章节数字。
-
-### 4. 内容页 (03_content.svg)
-
--   **布局**: **全开放式布局**，移除中心边框，最大化内容展示区。
--   **核心观点**: 顶部以极简的左侧红线+文字呈现，弱化视觉干扰。
--   **界定**: 仅在四角保留极淡的“安全区定位点”。
--   **页脚**: 包含数据来源、页码及章节名称。
-
-### 5. 结束页 (04_ending.svg)
-
--   **呼应**: 布局与封面页高度一致，形成首尾闭环。
--   **联系信息**: 底部设有宽大的联系信息卡片。
--   **装饰**: 左右对称的多层金色圆环。
+1. **Refined Double Lines**: 1px main line + 3px auxiliary line combination, simulating high-end print craftsmanship.
+2. **Multi-Layer Concentric Circles**: Abstract representation of CMB's sunflower logo, adding visual depth.
+3. **Micro Dot-Matrix Texture**: Arrays of tiny dots for added visual breathing room.
+4. **Diamond Dividers**: Diamond-shaped decorations at title division points for a refined touch.
 
 ---
 
-## 七、布局模式（推荐）
+## VI. Page Types
 
-### 1. 核心观点型 (Key Message Layout)
--   使用顶部的灰色观点条展示一句话核心结论。
--   下方配合单个大图表或大字强调。
+### 1. Cover Page (01_cover.svg)
 
-### 2. 卡片阵列型 (Card Grid)
--   利用内容区的白色背景，放置 2x2 或 3x2 的数据卡片。
--   每个卡片建议使用 `#FDF2F4` (浅红) 或 `#F8F6F3` (暖灰) 背景。
+- **Background**: White main background + bottom warm gray decorative band.
+- **Top**: Red horizontal bar + gold double lines.
+- **Decoration**: Multi-layer concentric rings at top-left, vertical decorative lines at right edge.
+- **Title Area**: Centered layout with rounded border and diamond divider line.
 
-### 3. 双栏对比型 (Split Column)
--   左侧展示现状/问题，右侧展示方案/成效。
--   中间可使用金色箭头作为逻辑连接。
+### 2. Table of Contents (02_toc.svg)
 
----
+- **Header**: Fixed "目录 / CONTENTS" title.
+- **List**: Left-right dual-column **checklist layout** (no background cards).
+- **Design**: Uses "large red number + title + gold underline" combination for strong adaptability.
+- **Decoration**: Left side features vertical lines and decorative "Index" text.
 
-## 八、间距规范
+### 3. Chapter Page (02_chapter.svg)
 
-| 属性         | 值    | 说明                     |
-| ------------ | ----- | ------------------------ |
-| **基础单位** | 4px   | 所有间距应为 4px 的倍数  |
-| **模块间距** | 40px  | 大模块之间的标准间距     |
-| **卡片间距** | 24px  | 卡片之间的间距           |
-| **内部留白** | 20px  | 卡片内部的 Padding       |
-| **文本行距** | 1.5   | 正文标准行距             |
+- **Background**: Full-screen dark red background (`#9A0E26`).
+- **Visual Center**: Left-side gold vertical bar with title combination.
+- **Right Side**: Complex gold horizontal bar staircase effect + diagonal line texture.
+- **Background Text**: Giant semi-transparent chapter numbers.
 
----
+### 4. Content Page (03_content.svg)
 
-## 九、SVG 技术约束
+- **Layout**: **Fully open layout**, removing center borders to maximize content display area.
+- **Key Message**: Top area presented with minimalist left-side red line + text, reducing visual distraction.
+- **Boundary**: Only very faint "safe area anchor points" retained at four corners.
+- **Footer**: Contains data source, page number, and chapter name.
 
-### 必须遵守
+### 5. Ending Page (04_ending.svg)
 
-1.  viewBox 固定为 `0 0 1280 720`
-2.  背景必须包含全屏 `<rect>`
-3.  文本换行使用 `<tspan>`
-4.  透明度必须使用 `fill-opacity` / `stroke-opacity`
-5.  箭头需使用 `<polygon>` 绘制，禁止 `marker`
-
-### 禁用元素 (黑名单)
-
--   `clipPath`, `mask` (裁剪/遮罩)
--   `<style>`, `class` (样式表；`<defs>` 内 `id` 合法)
--   `foreignObject` (外部对象)
--   `textPath` (路径文本)
--   `animate`, `animateTransform`, `set` (动画)
-
--   `rgba()` 颜色格式 (必须用 hex + opacity)
--   `<g opacity="...">` (组透明度，需单独设置)
+- **Echo**: Layout closely mirrors the cover page, creating a cohesive bookend.
+- **Contact Info**: Wide contact information card at the bottom.
+- **Decoration**: Symmetrical multi-layer gold concentric rings on left and right.
 
 ---
 
-## 十、占位符规范
+## VII. Layout Patterns (Recommended)
 
-| 占位符              | 说明               |
-| ------------------- | ------------------ |
-| `{{TITLE}}`         | 主标题             |
-| `{{SUBTITLE}}`      | 副标题             |
-| `{{AUTHOR}}`        | 汇报人姓名         |
-| `{{DATE}}`          | 日期               |
-| `{{CHAPTER_NUM}}`   | 章节编号           |
-| `{{CHAPTER_TITLE}}` | 章节标题           |
-| `{{CHAPTER_DESC}}`  | 章节描述           |
-| `{{PAGE_TITLE}}`    | 页面标题           |
-| `{{KEY_MESSAGE}}`   | 核心观点           |
-| `{{CONTENT_AREA}}`  | 内容区域标识       |
-| `{{TOC_ITEM_N_TITLE}}`| 目录标题(N=1..n) |
-| `{{TOC_ITEM_N_DESC}}` | 目录描述(N=1..n) |
-| `{{THANK_YOU}}`     | 结束语             |
-| `{{CONTACT_INFO}}`  | 联系方式           |
+### 1. Key Message Layout
+- Use the top gray message bar to present a one-sentence key conclusion.
+- Pair with a single large chart or emphasized text below.
+
+### 2. Card Grid
+- Place 2x2 or 3x2 data cards within the white content area.
+- Recommended card backgrounds: `#FDF2F4` (light red) or `#F8F6F3` (warm gray).
+
+### 3. Split Column Comparison
+- Left side presents current state / problems; right side presents solutions / results.
+- Gold arrows can serve as logical connectors in the middle.
 
 ---
 
-## 十一、使用说明
+## VIII. Spacing Guidelines
 
-1.  **Logo 适配**: 建议使用白色反白 Logo。
-2.  **字体安装**: 推荐安装“微软雅黑”或使用同等无衬线字体。
-3.  **扩展配色**: 如需更多配色，请保持红金比例不变。
+| Property       | Value | Description              |
+| -------------- | ----- | ------------------------ |
+| **Base Unit**  | 4px   | All spacing should be multiples of 4px |
+| **Module Gap** | 40px  | Standard gap between major modules |
+| **Card Gap**   | 24px  | Gap between cards        |
+| **Inner Padding** | 20px | Padding inside cards    |
+| **Line Height** | 1.5  | Standard body line height |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
+
+1. viewBox fixed at `0 0 1280 720`
+2. Background must include a full-screen `<rect>`
+3. Text wrapping via `<tspan>`
+4. Opacity must use `fill-opacity` / `stroke-opacity`
+5. Arrows must use `<polygon>`, no `marker`
+
+### Forbidden Elements (Blacklist)
+
+- `clipPath`, `mask` (clipping/masking)
+- `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
+- `foreignObject` (foreign objects)
+- `textPath` (text on path)
+- `animate`, `animateTransform`, `set` (animations)
+
+- `rgba()` color format (must use hex + opacity)
+- `<g opacity="...">` (group opacity — set individually on each element)
+
+---
+
+## X. Placeholder Specification
+
+| Placeholder           | Description        |
+| --------------------- | ------------------ |
+| `{{TITLE}}`           | Main title         |
+| `{{SUBTITLE}}`        | Subtitle           |
+| `{{AUTHOR}}`          | Presenter name     |
+| `{{DATE}}`            | Date               |
+| `{{CHAPTER_NUM}}`     | Chapter number     |
+| `{{CHAPTER_TITLE}}`   | Chapter title      |
+| `{{CHAPTER_DESC}}`    | Chapter description |
+| `{{PAGE_TITLE}}`      | Page title         |
+| `{{KEY_MESSAGE}}`     | Key message        |
+| `{{CONTENT_AREA}}`    | Content area identifier |
+| `{{TOC_ITEM_N_TITLE}}`| TOC item title (N=1..n) |
+| `{{TOC_ITEM_N_DESC}}` | TOC item description (N=1..n) |
+| `{{THANK_YOU}}`       | Closing message    |
+| `{{CONTACT_INFO}}`    | Contact information |
+
+---
+
+## XI. Usage Notes
+
+1. **Logo Adaptation**: Recommend using white inverted Logo.
+2. **Font Installation**: Recommend installing "Microsoft YaHei" or an equivalent sans-serif font.
+3. **Extended Colors**: If additional colors are needed, maintain the red-gold ratio unchanged.

@@ -1,356 +1,356 @@
-# ai_ops - 企业数智化设计规范
+# ai_ops - Enterprise Digital Intelligence Design Specification
 
-> 适用于运营商 AI 运维架构、数字化转型方案、智能化建设汇报、IT 系统总体视图等高信息密度场景。
+> Suitable for telecom operator AI operations architecture, digital transformation proposals, smart infrastructure reports, IT system overview diagrams, and other high-information-density scenarios.
 
-> **风格参考**: 见 `reference_style.svg`（运营商运维 AI 建设总体视图），该文件展示了本模板的核心视觉语言。
-
----
-
-## 一、模板概述
-
-| 属性           | 描述                                                                 |
-| -------------- | -------------------------------------------------------------------- |
-| **模板名称**   | ai_ops（企业数智化）                                                 |
-| **适用场景**   | 运营商 AI 运维架构、IT 系统总体视图、数字化转型方案、智能化建设汇报  |
-| **设计调性**   | 信息密集、结构化、模块分区、运营商政企风格                           |
-| **主题模式**   | 亮色主题（白色背景 + 红蓝双色点缀 + 暖灰面板）                      |
-| **信息密度**   | 高密度——单页可承载 6-10 个信息模块，适合运营商汇报习惯               |
+> **Style Reference**: See `reference_style.svg` (Telecom Operator AI Operations Architecture Overview), which demonstrates the core visual language of this template.
 
 ---
 
-## 二、画布规范
+## I. Template Overview
 
-| 属性           | 值                            |
-| -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
-| **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 30-50px，上 20px，下 40px |
-| **内容安全区** | x: 30-1250, y: 80-680         |
-| **标题区域**   | y: 20-80                      |
-| **网格基准**   | 20px（高密度布局需要更细的网格）|
-
-> **注意**: 边距比常规模板更窄（30px vs 60px），以适应运营商高信息密度的汇报习惯。
+| Property           | Description                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| **Template Name**  | ai_ops (Enterprise Digital Intelligence)                                       |
+| **Use Cases**      | Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports |
+| **Design Tone**    | Information-dense, structured, modular zoning, telecom/enterprise style        |
+| **Theme Mode**     | Light theme (white background + red-blue dual-color accents + warm gray panels) |
+| **Info Density**   | High density — a single page can accommodate 6-10 information modules, matching telecom reporting conventions |
 
 ---
 
-## 三、配色方案
+## II. Canvas Specification
 
-### 主色系
+| Property           | Value                            |
+| ------------------ | -------------------------------- |
+| **Format**         | Standard 16:9                    |
+| **Dimensions**     | 1280 × 720 px                   |
+| **viewBox**        | `0 0 1280 720`                  |
+| **Page Margins**   | Left/right 30-50px, top 20px, bottom 40px |
+| **Content Safe Area** | x: 30-1250, y: 80-680        |
+| **Title Area**     | y: 20-80                        |
+| **Grid Baseline**  | 20px (high-density layouts require a finer grid) |
 
-| 角色             | 色值        | 备注                                 |
-| ---------------- | ----------- | ------------------------------------ |
-| **主色 Red**     | `#C00000`   | 品牌识别、标题竖条、编号徽章、目标条 |
-| **辅助色 Blue**  | `#2E75B6`   | 场景标签、分类标头、底部装饰条       |
-| **浅蓝**         | `#5B9BD5`   | 功能模块卡片、子项目标签             |
-
-### 功能色
-
-| 角色           | 色值        | 用途                         |
-| -------------- | ----------- | ---------------------------- |
-| **暖灰底色**   | `#FDF3EB`   | 概述面板、开放平台面板背景   |
-| **暖橙边框**   | `#F8CBAD`   | 面板边框、装饰分隔           |
-| **浅灰背景**   | `#F2F2F2`   | 副标题带、指标卡片背景       |
-| **卡片灰底**   | `#E7E6E6`   | 子模块卡片、能力底座卡片     |
-| **卡片边框**   | `#D9D9D9`   | 卡片描边                     |
-
-### 文字色系
-
-| 角色           | 色值        | 用途                   |
-| -------------- | ----------- | ---------------------- |
-| **正文黑**     | `#000000`   | 标题、正文标准色       |
-| **白色文字**   | `#FFFFFF`   | 深色色块上的文字       |
-| **辅助文字**   | `#666666`   | 副标题、注释           |
-| **浅色辅助**   | `#999999`   | 页码、来源标注         |
-| **数据强调**   | `#C00000`   | KPI 数值、关键指标     |
+> **Note**: Margins are narrower than standard templates (30px vs 60px) to accommodate the high-information-density reporting style common in telecom presentations.
 
 ---
 
-## 四、排版体系
+## III. Color Scheme
 
-### 字体方案
+### Primary Colors
 
-**字体栈**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, sans-serif`
+| Role               | Value       | Notes                                        |
+| ------------------ | ----------- | -------------------------------------------- |
+| **Primary Red**    | `#C00000`   | Brand identity, title vertical bar, number badges, target bars |
+| **Accent Blue**    | `#2E75B6`   | Scenario labels, category headers, bottom accent bars |
+| **Light Blue**     | `#5B9BD5`   | Feature module cards, sub-item labels        |
 
-### 字号层级
+### Functional Colors
 
-| 层级     | 用途                 | 字号    | 字重    |
-| -------- | -------------------- | ------- | ------- |
-| H1       | 封面主标题           | 36-48px | Bold    |
-| H2       | 页面标题             | 32-36px | Bold    |
-| H3       | 模块标题/小标题      | 18-20px | Bold    |
-| P        | 正文内容             | 14-16px | Regular |
-| Caption  | 辅助说明/脚注        | 12-14px | Regular |
-| Data     | KPI 数值/指标强调    | 24-36px | Bold    |
+| Role               | Value       | Usage                              |
+| ------------------ | ----------- | ---------------------------------- |
+| **Warm Gray BG**   | `#FDF3EB`   | Overview panel, open platform panel background |
+| **Warm Orange Border** | `#F8CBAD` | Panel borders, decorative dividers |
+| **Light Gray BG**  | `#F2F2F2`   | Subtitle bar, metric card background |
+| **Card Gray BG**   | `#E7E6E6`   | Sub-module cards, capability base cards |
+| **Card Border**    | `#D9D9D9`   | Card strokes                       |
 
-> **注意**: 正文字号偏小（14-16px vs 常规 18-20px），以适应单页高信息密度排布。
+### Text Colors
 
----
-
-## 五、核心设计原则
-
-### 运营商高密度信息风格
-
-本模板模拟运营商技术汇报的视觉语言，核心特征为"**模块化分区 + 高信息密度 + 红蓝双色层级**"。
-
-1. **左侧红色竖条**: 标题前使用红色矩形竖条（10×40px）作为视觉锚点，是整个模板最核心的标题标识。
-2. **编号徽章**: 使用红色方形编号（30×30px，白色数字），用于标识关键举措/能力编号（如"五大举措"中的 1-5）。
-3. **虚线分区框**: 使用 `stroke-dasharray="5 5"` 虚线矩形对内容模块分组，营造结构化、模块化的视觉效果。运营商汇报中常见的"分区框"。
-4. **蓝色标签条**: 使用 `#2E75B6` 蓝色填充矩形（全宽或定宽）作为场景/分类标签头，承载场景名称。
-5. **暖灰概述面板**: 使用 `#FDF3EB` 底色 + `#F8CBAD` 边框的面板承载概述/摘要/开放平台入口等信息。
-6. **指标卡片组**: 白色小卡片 + `#F2F2F2` 边框，紧密排列展示 KPI 指标，数值部分用 `#C00000` 红色强调。
-7. **浅蓝子模块**: `#5B9BD5` 填充的小矩形卡片，用于展示具体功能项（如"AI一键排障助手"）。
-8. **灰色能力底座**: `#E7E6E6` / `#F2F2F2` 底色的卡片用于展示基础能力/平台组件。
-
-### 高级特性
-
-1. **三角形装饰**: 顶部区域可使用淡色半透明三角形（`fill-opacity="0.3"`）作为视觉引导。
-2. **星形/图标点缀**: 关键成果旁可使用简单 polygon 星形强化视觉冲击力。
-3. **多级嵌套分区**: 外层虚线框 > 内层小标签区 > 具体功能卡片，形成三层视觉层级。
-4. **紧凑行距**: 模块间间距压缩至 10-20px，最大化信息承载量。
+| Role               | Value       | Usage                          |
+| ------------------ | ----------- | ------------------------------ |
+| **Body Black**     | `#000000`   | Titles, standard body text     |
+| **White Text**     | `#FFFFFF`   | Text on dark color blocks      |
+| **Secondary Text** | `#666666`   | Subtitles, annotations         |
+| **Light Secondary**| `#999999`   | Page numbers, source citations |
+| **Data Emphasis**  | `#C00000`   | KPI values, key metrics        |
 
 ---
 
-## 六、页面结构
+## IV. Typography System
 
-### 通用布局
+### Font Stack
 
-| 区域         | 位置/高度      | 内容说明                                       |
-| ------------ | -------------- | ---------------------------------------------- |
-| **标题区**   | y=20-80        | 红色竖条 + 标题文字 + 可选副标题概述条         |
-| **概述条**   | y=80-140       | 全宽 `#F2F2F2` 背景条，承载页面核心摘要文字   |
-| **内容区**   | y=140-670      | 主要内容区域（多模块密集排布）                 |
-| **页脚**     | y=680-720      | 红色窄条页码 + 章节名 + 来源标注               |
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", "SimHei", Arial, sans-serif`
 
-### 导航栏设计
+### Font Size Hierarchy
 
-- **标题竖条**: 红色矩形 `#C00000`，10×40px，位于标题文字左侧
-- **标题文字**: 距竖条 10px，36px 字号，`#C00000` 色或 `#000000`
-- **概述条**: 全宽浅灰矩形（h=60px），居中 16px 正文，承载页面概述/导语
+| Level    | Usage                  | Size    | Weight  |
+| -------- | ---------------------- | ------- | ------- |
+| H1       | Cover main title       | 36-48px | Bold    |
+| H2       | Page title             | 32-36px | Bold    |
+| H3       | Module title/subtitle  | 18-20px | Bold    |
+| P        | Body content           | 14-16px | Regular |
+| Caption  | Supplementary/footnotes | 12-14px | Regular |
+| Data     | KPI values/metric emphasis | 24-36px | Bold |
 
-### 装饰元素
-
-- **编号徽章**: 30×30px 红色方块 + 白色数字（居中）
-- **蓝色标签**: 定宽蓝色矩形 + 白色文字（如"故障定界定段"）
-- **虚线分区框**: `stroke="#C00000"` 或 `stroke="#E7E6E6"`，`stroke-dasharray="5 5"`
-- **暖灰面板**: `fill="#FDF3EB"` + `stroke="#F8CBAD"` + `stroke-width="2"`
-- **浅蓝功能卡**: `fill="#5B9BD5"` 矩形 + 白色文字
+> **Note**: Body font size is smaller than usual (14-16px vs standard 18-20px) to accommodate high information density per page.
 
 ---
 
-## 七、页面类型
+## V. Core Design Principles
 
-### 1. 封面页 (01_cover.svg)
+### Telecom High-Density Information Style
 
-- **背景**: 白色 `#FFFFFF`
-- **左侧装饰**: 全高红蓝双色竖条（红色上半 + 蓝色下半），宽度 60px
-- **标题区**: 居中大号标题 `{{TITLE}}`（红色），下方浅灰概述条内置副标题 `{{SUBTITLE}}`
-- **中部装饰**: 编号徽章（1-5）+ 蓝色场景标签，展示核心能力/场景
-- **底部信息**: 演讲者 `{{AUTHOR}}` + 日期 `{{DATE}}`
-- **底部装饰**: 暖灰窄条 + 蓝色全宽底部条
+This template emulates the visual language of telecom technical reports. The core characteristics are "**modular zoning + high information density + red-blue dual-color hierarchy**".
 
-### 2. 章节页 (02_chapter.svg)
+1. **Left Red Vertical Bar**: A red rectangle (10×40px) before titles serves as a visual anchor — the most essential title identifier throughout the template.
+2. **Number Badges**: Red square badges (30×30px with white numbers) identify key initiatives/capability numbers (e.g., numbers 1-5 in "Five Key Initiatives").
+3. **Dashed Zone Frames**: `stroke-dasharray="5 5"` dashed rectangles group content modules, creating a structured, modular visual effect — a common "zone frame" in telecom reports.
+4. **Blue Label Bars**: `#2E75B6` blue-filled rectangles (full-width or fixed-width) serve as scenario/category headers carrying scenario names.
+5. **Warm Gray Overview Panels**: Panels with `#FDF3EB` background + `#F8CBAD` border carry overviews, summaries, and open platform entries.
+6. **Metric Card Groups**: White cards with `#F2F2F2` borders, closely arranged to display KPI metrics; values highlighted in `#C00000` red.
+7. **Light Blue Sub-modules**: `#5B9BD5` filled small rectangular cards displaying specific feature items (e.g., "AI One-Click Troubleshooting Assistant").
+8. **Gray Capability Base Cards**: Cards with `#E7E6E6` / `#F2F2F2` background for displaying foundational capabilities/platform components.
 
-- **背景**: 白色 `#FFFFFF`
-- **左右装饰**: 左侧红色竖条 + 右侧蓝色竖条（呼应封面双色）
-- **中心**: 红色编号徽章（80×80px 大号）`{{CHAPTER_NUM}}` + 水印数字（160px 浅灰）
-- **标题**: 居中 `{{CHAPTER_TITLE}}`（48px Bold）
-- **装饰线**: 红蓝双线（红色粗线 + 蓝色细线）
-- **描述**: `{{CHAPTER_DESC}}` 灰色文字
+### Advanced Features
 
-### 3. 内容页 (03_content.svg)
-
-- **顶部**: 4px 红色顶部条 + 白色标题栏（80px 高）
-- **标题标识**: 红色竖条（8×40px）+ 32px Bold 标题 `{{PAGE_TITLE}}`
-- **内容区**: 虚线框（`stroke-dasharray="5 5"`）标识内容区域 `{{CONTENT_AREA}}`
-- **页脚**: 浅灰底栏，左侧红色竖条 + 章节名 `{{SECTION_NAME}}`，右侧红色方块页码 `{{PAGE_NUM}}`
-- **来源标注**: 页脚居中 `{{SOURCE}}`
-
-### 4. 结束页 (04_ending.svg)
-
-- **布局**: 与封面完全呼应——左侧红蓝双色竖条、底部蓝色条
-- **中央面板**: 暖灰面板（`#FDF3EB` + `#F8CBAD` 边框），承载感谢语
-- **内容**: `{{THANK_YOU}}`（红色 64px Bold）+ `{{TAGLINE}}`（蓝色 22px）
-- **联系信息**: `{{CONTACT_INFO}}` + `{{COPYRIGHT}}`
-- **底部装饰**: 编号徽章 + 蓝色标签，呼应封面
+1. **Triangle Decorations**: The top area may use light semi-transparent triangles (`fill-opacity="0.3"`) as visual guides.
+2. **Star/Icon Accents**: Simple polygon stars near key achievements enhance visual impact.
+3. **Multi-level Nested Zones**: Outer dashed frame > inner label area > specific feature cards, forming a three-layer visual hierarchy.
+4. **Compact Line Spacing**: Module spacing compressed to 10-20px to maximize information capacity.
 
 ---
 
-## 八、布局模式
+## VI. Page Structure
 
-| 模式                   | 适用场景                                   |
-| ---------------------- | ------------------------------------------ |
-| **总体视图（架构图）** | AI 建设总体视图、系统架构全景              |
-| **指标仪表盘**         | KPI 展示、成效汇报、数据看板              |
-| **多模块分区**         | 能力清单、场景矩阵、分域展示              |
-| **流程/时间线**        | 建设路径、实施计划、演进路线              |
-| **上下分栏**           | 目标+成效（上）、场景+能力（下）          |
-| **左右分栏 (3:7)**     | 左侧导航标签 + 右侧内容区                |
-| **卡片矩阵 (2×3/3×3)**| 能力模块、团队分工、项目列表              |
-| **表格**               | 指标对比、进度跟踪                        |
+### General Layout
 
-> **推荐**: 运营商汇报常采用"**总体视图**"模式——单页展示完整架构，从目标→成效→场景→编排→基础能力，自上而下层层展开。
+| Area               | Position/Height  | Description                                          |
+| ------------------ | ---------------- | ---------------------------------------------------- |
+| **Title Area**     | y=20-80          | Red vertical bar + title text + optional subtitle overview bar |
+| **Overview Bar**   | y=80-140         | Full-width `#F2F2F2` background bar carrying the page's core summary |
+| **Content Area**   | y=140-670        | Main content area (densely packed multi-module layout) |
+| **Footer**         | y=680-720        | Red narrow bar with page number + chapter name + source citation |
+
+### Navigation Bar Design
+
+- **Title Vertical Bar**: Red rectangle `#C00000`, 10×40px, positioned left of the title text
+- **Title Text**: 10px from the vertical bar, 36px font size, `#C00000` or `#000000`
+- **Overview Bar**: Full-width light gray rectangle (h=60px), centered 16px body text carrying the page overview/introduction
+
+### Decorative Elements
+
+- **Number Badges**: 30×30px red squares + white numbers (centered)
+- **Blue Labels**: Fixed-width blue rectangles + white text (e.g., "Fault Boundary Identification")
+- **Dashed Zone Frames**: `stroke="#C00000"` or `stroke="#E7E6E6"`, `stroke-dasharray="5 5"`
+- **Warm Gray Panels**: `fill="#FDF3EB"` + `stroke="#F8CBAD"` + `stroke-width="2"`
+- **Light Blue Feature Cards**: `fill="#5B9BD5"` rectangles + white text
 
 ---
 
-## 九、常用组件
+## VII. Page Types
 
-### 标题竖条装饰
+### 1. Cover Page (01_cover.svg)
+
+- **Background**: White `#FFFFFF`
+- **Left Decoration**: Full-height red-blue dual-color vertical bar (red upper half + blue lower half), width 60px
+- **Title Area**: Centered large title `{{TITLE}}` (red), with subtitle `{{SUBTITLE}}` inside a light gray overview bar below
+- **Middle Decoration**: Number badges (1-5) + blue scenario labels showcasing core capabilities/scenarios
+- **Bottom Info**: Speaker `{{AUTHOR}}` + date `{{DATE}}`
+- **Bottom Decoration**: Warm gray narrow bar + blue full-width bottom bar
+
+### 2. Chapter Page (02_chapter.svg)
+
+- **Background**: White `#FFFFFF`
+- **Left/Right Decoration**: Left red vertical bar + right blue vertical bar (echoing the cover dual-color scheme)
+- **Center**: Red number badge (80×80px large) `{{CHAPTER_NUM}}` + watermark number (160px light gray)
+- **Title**: Centered `{{CHAPTER_TITLE}}` (48px Bold)
+- **Decorative Line**: Red-blue dual lines (thick red line + thin blue line)
+- **Description**: `{{CHAPTER_DESC}}` in gray text
+
+### 3. Content Page (03_content.svg)
+
+- **Top**: 4px red top bar + white title bar (80px height)
+- **Title Identifier**: Red vertical bar (8×40px) + 32px Bold title `{{PAGE_TITLE}}`
+- **Content Area**: Dashed frame (`stroke-dasharray="5 5"`) marking content area `{{CONTENT_AREA}}`
+- **Footer**: Light gray bottom bar, left red vertical bar + chapter name `{{SECTION_NAME}}`, right red square page number `{{PAGE_NUM}}`
+- **Source Citation**: Footer centered `{{SOURCE}}`
+
+### 4. Ending Page (04_ending.svg)
+
+- **Layout**: Mirrors the cover — left red-blue dual-color vertical bar, bottom blue bar
+- **Central Panel**: Warm gray panel (`#FDF3EB` + `#F8CBAD` border) carrying the thank-you message
+- **Content**: `{{THANK_YOU}}` (red 64px Bold) + `{{TAGLINE}}` (blue 22px)
+- **Contact Info**: `{{CONTACT_INFO}}` + `{{COPYRIGHT}}`
+- **Bottom Decoration**: Number badges + blue labels, echoing the cover
+
+---
+
+## VIII. Layout Patterns
+
+| Pattern                        | Applicable Scenarios                              |
+| ------------------------------ | ------------------------------------------------- |
+| **Architecture Overview**      | AI operations overview, system architecture panorama |
+| **Metrics Dashboard**          | KPI display, performance reports, data dashboards |
+| **Multi-Module Zoning**        | Capability lists, scenario matrices, domain displays |
+| **Process/Timeline**           | Implementation roadmap, deployment plan, evolution path |
+| **Top-Bottom Split**           | Objectives+results (top), scenarios+capabilities (bottom) |
+| **Left-Right Split (3:7)**     | Left navigation labels + right content area       |
+| **Card Matrix (2x3/3x3)**     | Capability modules, team assignments, project lists |
+| **Table**                      | Metric comparisons, progress tracking             |
+
+> **Recommended**: Telecom reports commonly use the "**Architecture Overview**" pattern — a single page presenting the complete architecture from objectives → results → scenarios → orchestration → foundational capabilities, unfolding top to bottom.
+
+---
+
+## IX. Common Components
+
+### Title Vertical Bar Decoration
 
 ```xml
-<!-- 红色竖条 + 标题 -->
+<!-- Red vertical bar + title -->
 <rect x="30" y="20" width="10" height="40" fill="#C00000" />
-<text x="50" y="55" font-family="Microsoft YaHei, sans-serif" font-size="36" font-weight="bold" fill="#C00000">页面标题</text>
+<text x="50" y="55" font-family="Microsoft YaHei, sans-serif" font-size="36" font-weight="bold" fill="#C00000">Page Title</text>
 ```
 
-### 编号徽章
+### Number Badge
 
 ```xml
-<!-- 红色方形编号 -->
+<!-- Red square number badge -->
 <rect x="80" y="560" width="30" height="30" fill="#C00000" />
 <text x="95" y="582" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
 ```
 
-### 蓝色场景标签
+### Blue Scenario Label
 
 ```xml
-<!-- 蓝色标签条 -->
+<!-- Blue label bar -->
 <rect x="120" y="310" width="220" height="40" fill="#2E75B6" />
-<text x="230" y="336" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">故障定界定段</text>
+<text x="230" y="336" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Fault Boundary Identification</text>
 ```
 
-### 指标卡片
+### Metric Card
 
 ```xml
-<!-- 白底指标卡片（数值红色强调） -->
+<!-- White metric card (values highlighted in red) -->
 <rect x="120" y="215" width="140" height="35" fill="#FFFFFF" stroke="#F2F2F2" stroke-width="2" />
-<text x="190" y="239" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#000000" text-anchor="middle">故障工单压降<tspan fill="#C00000">30%</tspan></text>
+<text x="190" y="239" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="bold" fill="#000000" text-anchor="middle">Fault tickets reduced by<tspan fill="#C00000">30%</tspan></text>
 ```
 
-### 虚线分区框
+### Dashed Zone Frame
 
 ```xml
-<!-- 虚线内容分区 -->
+<!-- Dashed content zone -->
 <rect x="120" y="390" width="940" height="150" fill="none" stroke="#C00000" stroke-width="2" stroke-dasharray="5 5" />
 ```
 
-### 暖灰概述条
+### Warm Gray Overview Bar
 
 ```xml
-<!-- 全宽暖灰概述/摘要条 -->
+<!-- Full-width warm gray overview/summary bar -->
 <rect x="30" y="80" width="1220" height="60" fill="#F2F2F2" />
-<text x="640" y="115" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#000000" text-anchor="middle">概述文字内容...</text>
+<text x="640" y="115" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#000000" text-anchor="middle">Overview text content...</text>
 ```
 
-### 暖灰面板
+### Warm Gray Panel
 
 ```xml
-<!-- 暖灰面板（开放平台/摘要区） -->
+<!-- Warm gray panel (open platform/summary area) -->
 <rect x="1080" y="390" width="160" height="300" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="2" />
 ```
 
-### 浅蓝功能卡片
+### Light Blue Feature Card
 
 ```xml
-<!-- 功能模块卡片 -->
+<!-- Feature module card -->
 <rect x="160" y="450" width="240" height="30" fill="#5B9BD5" />
-<text x="280" y="471" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">AI一键排障助手</text>
+<text x="280" y="471" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" text-anchor="middle">AI One-Click Troubleshooting Assistant</text>
 ```
 
-### 灰色能力底座卡片
+### Gray Capability Base Card
 
 ```xml
-<!-- 基础能力卡片 -->
+<!-- Foundational capability card -->
 <rect x="120" y="630" width="80" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1" />
-<text x="160" y="655" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#000000" text-anchor="middle">核心网</text>
+<text x="160" y="655" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#000000" text-anchor="middle">Core Network</text>
 ```
 
 ---
 
-## 十、间距规范
+## X. Spacing Specification
 
-| 元素               | 数值      |
-| ------------------ | --------- |
-| 页面左右边距       | 30-50px   |
-| 页面上下边距       | 20-40px   |
-| 标题区高度         | 60px      |
-| 概述条高度         | 60px      |
-| 标题与概述条间距   | 0px       |
-| 概述条与内容间距   | 10-20px   |
-| 模块间间距         | 10-20px   |
-| 卡片间间距         | 10px      |
-| 卡片内边距         | 15-20px   |
-| 编号徽章与标签间距 | 5-10px    |
-| 页脚高度           | 40px      |
+| Element                        | Value     |
+| ------------------------------ | --------- |
+| Page left/right margins        | 30-50px   |
+| Page top/bottom margins        | 20-40px   |
+| Title area height              | 60px      |
+| Overview bar height            | 60px      |
+| Title to overview bar spacing  | 0px       |
+| Overview bar to content spacing | 10-20px  |
+| Module spacing                 | 10-20px   |
+| Card spacing                   | 10px      |
+| Card inner padding             | 15-20px   |
+| Badge to label spacing         | 5-10px    |
+| Footer height                  | 40px      |
 
-> **紧凑原则**: 运营商风格追求单页最大信息量，间距普遍比常规模板小 30-50%。
+> **Compact Principle**: The telecom style pursues maximum information per page; spacing is generally 30-50% smaller than standard templates.
 
 ---
 
-## 十一、SVG 技术约束
+## XI. SVG Technical Constraints
 
-### 必须遵守
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（**严禁** `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`（`<defs>` 内 `id` 合法）
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 禁止使用：`<symbol>+<use>`、`<iframe>`、`@font-face`
-8. 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-9. 箭头使用 `<polygon>` 三角形替代 `<marker>`
-10. 仅使用系统字体和内联样式
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed)
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Prohibited: `<symbol>+<use>`, `<iframe>`, `@font-face`
+8. Prohibited: `<g opacity="...">` (group opacity) — set opacity on each child element individually
+9. Use `<polygon>` triangles instead of `<marker>` for arrows
+10. Use only system fonts and inline styles
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 图片透明度使用遮罩层替代
-- 渐变使用 `<defs>` 中的 `<linearGradient>` 定义
-- 圆角矩形使用 `rx`/`ry` 属性（后处理会转为 Path）
-
----
-
-## 十二、占位符规范
-
-模板使用 `{{PLACEHOLDER}}` 格式的占位符：
-
-| 占位符              | 说明                 | 适用模板     |
-| ------------------- | -------------------- | ------------ |
-| `{{TITLE}}`         | 主标题               | 封面         |
-| `{{SUBTITLE}}`      | 副标题/概述          | 封面         |
-| `{{AUTHOR}}`        | 演讲者/单位名称      | 封面         |
-| `{{DATE}}`          | 日期                 | 封面         |
-| `{{CHAPTER_NUM}}`   | 章节编号             | 章节页       |
-| `{{CHAPTER_TITLE}}` | 章节标题             | 章节页       |
-| `{{CHAPTER_DESC}}`  | 章节描述             | 章节页       |
-| `{{PAGE_TITLE}}`    | 页面标题             | 内容页       |
-| `{{CONTENT_AREA}}`  | 内容区域标识         | 内容页       |
-| `{{SECTION_NAME}}`  | 章节名称（页脚）     | 内容页       |
-| `{{SOURCE}}`        | 数据来源（页脚）     | 内容页       |
-| `{{PAGE_NUM}}`      | 页码                 | 内容页、结束页 |
-| `{{THANK_YOU}}`     | 感谢语               | 结束页       |
-| `{{TAGLINE}}`       | 口号/标语            | 结束页       |
-| `{{CONTACT_INFO}}`  | 联系信息             | 结束页       |
-| `{{COPYRIGHT}}`     | 版权                 | 结束页       |
+- Use overlay layers instead of image opacity
+- Define gradients using `<linearGradient>` inside `<defs>`
+- Use `rx`/`ry` attributes for rounded rectangles (post-processing converts to Path)
 
 ---
 
-## 十三、使用说明
+## XII. Placeholder Specification
 
-1. 复制本模板目录到项目 `templates/` 目录
-2. 查看 `reference_style.svg` 理解核心视觉风格
-3. 根据内容需求选择合适的页面模板
-4. 使用占位符标记需要替换的内容
-5. 通过 Executor 角色生成最终 SVG
-6. 高信息密度页面建议参考 `reference_style.svg` 的多模块分区布局
+The template uses `{{PLACEHOLDER}}` format placeholders:
+
+| Placeholder         | Description              | Applicable Template |
+| ------------------- | ------------------------ | ------------------- |
+| `{{TITLE}}`         | Main title               | Cover               |
+| `{{SUBTITLE}}`      | Subtitle/overview        | Cover               |
+| `{{AUTHOR}}`        | Speaker/organization     | Cover               |
+| `{{DATE}}`          | Date                     | Cover               |
+| `{{CHAPTER_NUM}}`   | Chapter number           | Chapter page        |
+| `{{CHAPTER_TITLE}}` | Chapter title            | Chapter page        |
+| `{{CHAPTER_DESC}}`  | Chapter description      | Chapter page        |
+| `{{PAGE_TITLE}}`    | Page title               | Content page        |
+| `{{CONTENT_AREA}}`  | Content area identifier  | Content page        |
+| `{{SECTION_NAME}}`  | Section name (footer)    | Content page        |
+| `{{SOURCE}}`        | Data source (footer)     | Content page        |
+| `{{PAGE_NUM}}`      | Page number              | Content/ending page |
+| `{{THANK_YOU}}`     | Thank-you message        | Ending page         |
+| `{{TAGLINE}}`       | Slogan/tagline           | Ending page         |
+| `{{CONTACT_INFO}}`  | Contact information      | Ending page         |
+| `{{COPYRIGHT}}`     | Copyright                | Ending page         |
 
 ---
 
-## 十四、设计亮点
+## XIII. Usage Notes
 
-- **运营商基因**: 源自真实运营商 AI 运维架构汇报，天然适配运营商/政企汇报风格
-- **高信息密度**: 单页可承载完整架构视图（目标→成效→场景→编排→基础能力）
-- **红蓝双色层级**: 红色=核心/强调/目标，蓝色=场景/模块/能力，层级清晰
-- **编号徽章体系**: 红色方块编号贯穿全文，形成"N 大举措"的视觉叙事
-- **三层嵌套分区**: 虚线外框→分类标签→功能卡片，结构化表达复杂架构
-- **指标卡片组**: 紧凑排列 KPI 指标，数值红色强调，一目了然
+1. Copy this template directory to the project `templates/` directory
+2. Review `reference_style.svg` to understand the core visual style
+3. Select appropriate page templates based on content needs
+4. Mark content to be replaced using placeholders
+5. Generate final SVG through the Executor role
+6. For high-information-density pages, refer to the multi-module zoning layout in `reference_style.svg`
+
+---
+
+## XIV. Design Highlights
+
+- **Telecom DNA**: Derived from real telecom AI operations architecture reports, naturally suited for telecom/enterprise presentation styles
+- **High Information Density**: A single page can accommodate a complete architecture view (objectives → results → scenarios → orchestration → foundational capabilities)
+- **Red-Blue Dual-Color Hierarchy**: Red = core/emphasis/objectives, Blue = scenarios/modules/capabilities — clear visual hierarchy
+- **Number Badge System**: Red square numbers throughout create a "N Key Initiatives" visual narrative
+- **Three-Level Nested Zoning**: Dashed outer frame → category labels → feature cards for structured expression of complex architectures
+- **Metric Card Groups**: Compactly arranged KPI metrics with red-highlighted values for instant readability

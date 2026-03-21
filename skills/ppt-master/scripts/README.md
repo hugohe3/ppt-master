@@ -1,32 +1,32 @@
-# PPT Master 工具集
+# PPT Master Toolset
 
-本目录包含用于项目管理、验证和文件处理的实用工具。
+This directory contains utility tools for project management, validation, and file processing.
 
-## 工具架构总览
+## Tool Architecture Overview
 
 ```mermaid
 graph TB
-    subgraph Input["📥 输入转换"]
+    subgraph Input["Input Conversion"]
         A1[pdf_to_md.py]
         A2[web_to_md.py / .cjs]
     end
-    
-    subgraph Project["📁 项目管理"]
+
+    subgraph Project["Project Management"]
         B1[project_manager.py]
         B2[project_utils.py]
         B1 --> B2
     end
-    
-    subgraph Finalize["⚙️ 后处理 (finalize_svg.py)"]
+
+    subgraph Finalize["Post-processing (finalize_svg.py)"]
         direction TB
-        C0[finalize_svg.py<br/>统一入口]
+        C0[finalize_svg.py<br/>Unified Entry Point]
         C1[embed_icons.py]
         C2[crop_images.py]
         C3[fix_image_aspect.py]
         C4[embed_images.py]
         C5[flatten_tspan.py]
         C6[svg_rect_to_path.py]
-        
+
         C0 --> C1
         C0 --> C2
         C0 --> C3
@@ -34,112 +34,112 @@ graph TB
         C0 --> C5
         C0 --> C6
     end
-    
-    subgraph Export["📤 导出"]
+
+    subgraph Export["Export"]
         D1[svg_to_pptx.py]
     end
-    
-    subgraph Quality["🔍 质量检查"]
+
+    subgraph Quality["Quality Check"]
         E1[svg_quality_checker.py]
         E2[batch_validate.py]
     end
-    
-    subgraph Utils["🛠️ 辅助工具"]
+
+    subgraph Utils["Utilities"]
         F1[rotate_images.py]
         F2[analyze_images.py]
         F3[svg_position_calculator.py]
         F4[config.py]
         F5[nano_banana_gen.py]
     end
-    
+
     A1 --> B1
     A2 --> B1
     B1 -->|svg_output/| C0
     C0 -->|svg_final/| D1
-    D1 -->|.pptx| Output[📊 PowerPoint]
+    D1 -->|.pptx| Output[PowerPoint]
 ```
 
-### 核心工作流
+### Core Workflow
 
 ```
-源文档 → [pdf_to_md / web_to_md] → Markdown
+Source Document → [pdf_to_md / web_to_md] → Markdown
                     ↓
               [project_manager init]
                     ↓
-              AI 生成 SVG → svg_output/
+              AI generates SVG → svg_output/
                     ↓
-              [finalize_svg] ← 聚合 6 个子工具
+              [finalize_svg] ← Aggregates 6 sub-tools
                     ↓
               svg_final/
                     ↓
               [svg_to_pptx] → output.pptx
 ```
 
-### 工具分类快速索引
+### Tool Category Quick Index
 
-| 分类 | 工具 | 说明 |
-|------|------|------|
-| **输入转换** | `pdf_to_md.py`, `web_to_md.py/.cjs` | 将 PDF/网页转为 Markdown |
-| **项目管理** | `project_manager.py` | 创建、验证项目 |
-| **后处理** | `finalize_svg.py` ⭐ | 统一入口，调用下方 6 个工具 |
-| ↳ 子工具 | `embed_icons.py` | 嵌入图标占位符 |
-| ↳ 子工具 | `crop_images.py` | 智能裁剪图片 |
-| ↳ 子工具 | `fix_image_aspect.py` | 修复图片宽高比 |
-| ↳ 子工具 | `embed_images.py` | Base64 嵌入图片 |
-| ↳ 子工具 | `flatten_tspan.py` | 文本扁平化 |
-| ↳ 子工具 | `svg_rect_to_path.py` | 圆角矩形转 Path |
-| **导出** | `svg_to_pptx.py` | SVG 转 PowerPoint |
-| **讲稿处理** | `total_md_split.py` | 讲稿拆分工具 |
-| **质量检查** | `svg_quality_checker.py`, `batch_validate.py` | 验证 SVG 规范 |
-| **素材生成** | `nano_banana_gen.py` | 利用 Gemini Nano 生成高品质图片 |
-| **辅助** | `config.py`, `analyze_images.py`, `rotate_images.py` | 配置和图片处理 |
+| Category | Tool | Description |
+|----------|------|-------------|
+| **Input Conversion** | `pdf_to_md.py`, `web_to_md.py/.cjs` | Convert PDF/web pages to Markdown |
+| **Project Management** | `project_manager.py` | Create and validate projects |
+| **Post-processing** | `finalize_svg.py` ⭐ | Unified entry point, invokes the 6 tools below |
+| ↳ Sub-tool | `embed_icons.py` | Embed icon placeholders |
+| ↳ Sub-tool | `crop_images.py` | Smart image cropping |
+| ↳ Sub-tool | `fix_image_aspect.py` | Fix image aspect ratio |
+| ↳ Sub-tool | `embed_images.py` | Base64 image embedding |
+| ↳ Sub-tool | `flatten_tspan.py` | Text flattening |
+| ↳ Sub-tool | `svg_rect_to_path.py` | Rounded rect to Path |
+| **Export** | `svg_to_pptx.py` | SVG to PowerPoint |
+| **Speaker Notes** | `total_md_split.py` | Speaker notes splitter |
+| **Quality Check** | `svg_quality_checker.py`, `batch_validate.py` | Validate SVG compliance |
+| **Asset Generation** | `nano_banana_gen.py` | Generate high-quality images via Gemini Nano |
+| **Utilities** | `config.py`, `analyze_images.py`, `rotate_images.py` | Configuration and image processing |
 
 ---
 
-## 工具列表
+## Tool List
 
-### 0. pdf_to_md.py — PDF 转 Markdown 工具（推荐首选）
+### 0. pdf_to_md.py — PDF to Markdown Tool (Recommended First Choice)
 
-使用 PyMuPDF 将 PDF 文档转换为 Markdown 格式，本地运行、快速、免费。
+Uses PyMuPDF to convert PDF documents to Markdown format. Runs locally, fast, and free.
 
-**功能**:
+**Features**:
 
-- 提取 PDF 文本内容并转换为 Markdown
-- 自动提取表格并转换为 Markdown 表格
-- 自动提取图片并保存到 `images/` 目录
-- 支持批量处理目录下的所有 PDF
+- Extract PDF text content and convert to Markdown
+- Automatically extract tables and convert to Markdown tables
+- Automatically extract images and save to `images/` directory
+- Support batch processing of all PDFs in a directory
 
-**用法**:
+**Usage**:
 
 ```bash
-# 转换单个文件
+# Convert a single file
 python3 scripts/pdf_to_md.py book.pdf
 
-# 指定输出文件
+# Specify output file
 python3 scripts/pdf_to_md.py book.pdf -o output.md
 
-# 转换目录下所有 PDF
+# Convert all PDFs in a directory
 python3 scripts/pdf_to_md.py ./pdfs
 
-# 指定输出目录
+# Specify output directory
 python3 scripts/pdf_to_md.py ./pdfs -o ./markdown
 ```
 
-**何时使用 pdf_to_md.py vs MinerU**:
+**When to use pdf_to_md.py vs MinerU**:
 
-| 场景 | 推荐工具 | 原因 |
-|------|----------|------|
-| **原生 PDF**（Word/LaTeX 导出） | `pdf_to_md.py` | 本地、秒级、免费 |
-| **简单表格** | `pdf_to_md.py` | 已支持表格提取 |
-| **隐私敏感文档** | `pdf_to_md.py` | 数据不出本机 |
-| **扫描版/图片 PDF** | MinerU | 需要 OCR |
-| **复杂多栏排版** | MinerU | 版面分析更准 |
-| **数学公式** | MinerU | AI 识别能力强 |
-| **乱码 PDF**（编码丢失） | MinerU | 视觉识别兜底 |
+| Scenario | Recommended Tool | Reason |
+|----------|------------------|--------|
+| **Native PDF** (exported from Word/LaTeX) | `pdf_to_md.py` | Local, instant, free |
+| **Simple tables** | `pdf_to_md.py` | Table extraction supported |
+| **Privacy-sensitive documents** | `pdf_to_md.py` | Data stays on your machine |
+| **Scanned/image PDFs** | MinerU | OCR required |
+| **Complex multi-column layouts** | MinerU | Better layout analysis |
+| **Math formulas** | MinerU | Stronger AI recognition |
+| **Garbled PDFs** (encoding lost) | MinerU | Visual recognition as fallback |
 
-> **策略**: PyMuPDF 优先，MinerU 兜底。先运行 `pdf_to_md.py`，如结果乱码/空白/排版错乱再换 MinerU。
+> **Strategy**: PyMuPDF first, MinerU as fallback. Run `pdf_to_md.py` first; if the result is garbled/blank/misformatted, switch to MinerU.
 
-**依赖**:
+**Dependencies**:
 
 ```bash
 pip install PyMuPDF
@@ -147,75 +147,75 @@ pip install PyMuPDF
 
 ---
 
-### 0.5. web_to_md.py / web_to_md.cjs — 网页转 Markdown 工具
+### 0.5. web_to_md.py / web_to_md.cjs — Web Page to Markdown Tool
 
-将网页内容抓取并转换为 Markdown 格式，自动下载图片到本地。
+Scrapes web page content and converts it to Markdown format, automatically downloading images locally.
 
-**注意**: 提供 Python 和 Node.js 两个版本。对于微信公众号等有 TLS 指纹拦截的站点，**强烈推荐使用 Node.js 版本** (`web_to_md.cjs`)。
+**Note**: Both Python and Node.js versions are provided. For sites with TLS fingerprint blocking such as WeChat Official Accounts, **the Node.js version is strongly recommended** (`web_to_md.cjs`).
 
-**功能**:
+**Features**:
 
-- 抓取网页内容并转换为 Markdown
-- 自动提取页面元数据（标题、日期、作者）
-- 自动下载图片并保存到 `_files/` 目录
-- **自动清理文件名**（仅保留中英文数字下划线，兼容性极佳）
-- 智能识别主要内容区域（支持中文新闻/政府网站）
-- 支持批量处理多个 URL
+- Scrape web page content and convert to Markdown
+- Automatically extract page metadata (title, date, author)
+- Automatically download images and save to `_files/` directory
+- **Automatic filename cleanup** (retains only alphanumeric characters, Chinese characters, and underscores for maximum compatibility)
+- Smart main content area detection (supports Chinese news/government websites)
+- Support batch processing of multiple URLs
 
-**用法 (Python)**:
+**Usage (Python)**:
 
 ```bash
-# 转换单个网页
+# Convert a single web page
 python3 scripts/web_to_md.py https://example.com/article
 
-# 转换多个网页
+# Convert multiple web pages
 python3 scripts/web_to_md.py https://url1.com https://url2.com
 
-# 从文件批量读取 URL
+# Batch read URLs from file
 python3 scripts/web_to_md.py -f urls.txt
 
-# 指定输出文件
+# Specify output file
 python3 scripts/web_to_md.py https://example.com -o output.md
 ```
 
-**用法 (Node.js) — 推荐用于微信公众号**:
+**Usage (Node.js) — Recommended for WeChat Official Accounts**:
 
 ```bash
-# 转换单个网页
+# Convert a single web page
 node scripts/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
 
-# 转换多个网页
+# Convert multiple web pages
 node scripts/web_to_md.cjs https://url1.com https://url2.com
 
-# 从文件批量读取 URL
+# Batch read URLs from file
 node scripts/web_to_md.cjs -f urls.txt
 ```
 
-**输出结构**:
+**Output Structure**:
 
 ```
 projects/
-├── 文章标题.md           # Markdown 内容
-└── 文章标题_files/       # 图片目录
+├── article_title.md           # Markdown content
+└── article_title_files/       # Image directory
     ├── image_1.jpg
     ├── image_2.png
     └── ...
 ```
 
-**何时使用 web_to_md.py / .cjs**:
+**When to use web_to_md.py / .cjs**:
 
-| 场景 | 推荐工具 | 原因 |
-|------|----------|------|
-| **微信公众号/高防站点** | `web_to_md.cjs` | Node.js 对 TLS 指纹拦截不仅更友好，且能大大降低被 403 的概率 |
-| **普通新闻/文章类网页** | 任选其一 | 均可自动提取正文、下载图片 |
-| **图文内容**（游记、攻略等） | 任选其一 | 保留图片资源 |
-| **政府/机构网站** | `web_to_md.py` | Python 版对某些特定中文编码处理可能微优 |
-| **需要登录的页面** | 手动处理 | 工具不支持认证 |
-| **动态渲染页面（SPA）** | 手动处理 | 需要 headless browser |
+| Scenario | Recommended Tool | Reason |
+|----------|------------------|--------|
+| **WeChat Official Accounts / heavily protected sites** | `web_to_md.cjs` | Node.js handles TLS fingerprint blocking better and significantly reduces the chance of 403 errors |
+| **Regular news/article pages** | Either one | Both can auto-extract body text and download images |
+| **Image-rich content** (travel logs, guides, etc.) | Either one | Preserves image assets |
+| **Government/institutional websites** | `web_to_md.py` | Python version may handle certain Chinese encodings slightly better |
+| **Pages requiring login** | Manual processing | Tools do not support authentication |
+| **Dynamically rendered pages (SPA)** | Manual processing | Requires a headless browser |
 
-> **策略**: 遇到 403 错误或微信文章时，请直接切换使用 `web_to_md.cjs`。
+> **Strategy**: If you encounter a 403 error or are scraping a WeChat article, switch directly to `web_to_md.cjs`.
 
-**依赖**:
+**Dependencies**:
 
 Python:
 ```bash
@@ -223,635 +223,635 @@ pip install requests beautifulsoup4
 ```
 
 Node.js:
-(脚本使用原生模块，无需额外 npm install，但需 Node.js 环境)
+(The script uses native modules; no extra npm install needed, but a Node.js environment is required)
 
 ---
 
-### 0.6. rotate_images.py — 图片方向修正工具
+### 0.6. rotate_images.py — Image Orientation Correction Tool
 
-处理从网页下载的图片 EXIF 方向信息丢失或错误的专用工具。
+A dedicated tool for handling missing or incorrect EXIF orientation data in images downloaded from the web.
 
-**功能**:
+**Features**:
 
-- **自动 EXIF 修正**: 识别并修复带有 EXIF Orientation 标签的图片
-- **可视化旋转**: 生成 HTML 工具页面，点击即可旋转图片
-- **自然排序**: 确保图片按文件名自然顺序排列
-- **独立运行**: 不依赖爬虫脚本，可单独对任何目录使用
+- **Auto EXIF correction**: Detect and fix images with EXIF Orientation tags
+- **Visual rotation**: Generate an HTML tool page for click-to-rotate functionality
+- **Natural sorting**: Ensure images are sorted by filename in natural order
+- **Standalone operation**: Independent of scraping scripts; can be used on any directory
 
-**用法**:
+**Usage**:
 
 ```bash
-# 1. 自动修正（静默模式，仅修复 EXIF）
+# 1. Auto-correct (silent mode, EXIF fix only)
 python3 scripts/rotate_images.py auto projects/xxx_files
 
-# 2. 生成可视化工具（先修复 EXIF，再生成网页）
+# 2. Generate visual tool (fix EXIF first, then generate web page)
 python3 scripts/rotate_images.py gen projects/xxx_files
-# -> 生成 projects/image_orientation_tool.html，浏览器打开即可操作
+# -> Generates projects/image_orientation_tool.html, open in browser to operate
 
-# 3. 应用修正（根据网页生成的 JSON）
+# 3. Apply corrections (from JSON generated by the web page)
 python3 scripts/rotate_images.py fix fixes.json
 ```
 
 ---
 
-### 1. project_utils.py — 项目工具公共模块
+### 1. project_utils.py — Project Utilities Common Module
 
-提供项目信息解析、验证等公共功能，供其他工具复用。
+Provides common functionality for project info parsing, validation, etc., reused by other tools.
 
-**功能**:
+**Features**:
 
-- 画布格式定义和管理
-- 项目信息解析（从目录名提取格式、日期等）
-- 项目结构验证
-- SVG viewBox 验证
-- 项目查找和统计
+- Canvas format definition and management
+- Project info parsing (extract format, date, etc. from directory name)
+- Project structure validation
+- SVG viewBox validation
+- Project discovery and statistics
 
-**用法**:
+**Usage**:
 
 ```bash
-# 作为模块被其他工具导入
+# Imported as a module by other tools
 from project_utils import get_project_info, validate_project_structure
 
-# 也可以直接运行测试
+# Can also be run directly for testing
 python3 scripts/project_utils.py <project_path>
 ```
 
 ---
 
-### 2. project_manager.py — 项目管理工具
+### 2. project_manager.py — Project Management Tool
 
-项目初始化、验证和管理的一站式工具。
+An all-in-one tool for project initialization, validation, and management.
 
-**功能**:
+**Features**:
 
-- 初始化新项目（创建标准目录结构）
-- 验证项目完整性
-- 查看项目信息
+- Initialize new projects (create standard directory structure)
+- Validate project integrity
+- View project information
 
-**用法**:
+**Usage**:
 
 ```bash
-# 初始化新项目
+# Initialize a new project
 python3 scripts/project_manager.py init <project_name> --format ppt169
 
-# 将原始材料和标准化 Markdown 收进项目目录
+# Import raw materials and standardized Markdown into the project directory
 python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...]
 
-# 验证项目结构
+# Validate project structure
 python3 scripts/project_manager.py validate <project_path>
 
-# 查看项目信息
+# View project information
 python3 scripts/project_manager.py info <project_path>
 ```
 
-说明：
-- 工作空间外文件默认复制到 `sources/`
-- 使用 `--move` 时，工作空间外文件改为移动到 `sources/`
-- 如果文件已位于当前工作空间内，会直接移动到 `sources/`
+Notes:
+- Files outside the workspace are copied to `sources/` by default
+- With `--move`, files outside the workspace are moved to `sources/` instead
+- If a file is already within the current workspace, it will be moved directly to `sources/`
 
-**支持的画布格式**:
+**Supported Canvas Formats**:
 
 - `ppt169` - PPT 16:9 (1280×720)
 - `ppt43` - PPT 4:3 (1024×768)
-- `wechat` - 微信公众号头图 (900×383)
-- `xiaohongshu` - 小红书 3:4 (1242×1660)
-- `moments` - 朋友圈/Instagram 1:1 (1080×1080)
-- `story` - Story/竖版 9:16 (1080×1920)
-- `banner` - 横版 Banner 16:9 (1920×1080)
-- `a4` - A4 打印 (1240×1754)
+- `wechat` - WeChat Official Account header image (900×383)
+- `xiaohongshu` - Xiaohongshu (RED) 3:4 (1242×1660)
+- `moments` - WeChat Moments / Instagram 1:1 (1080×1080)
+- `story` - Story / Vertical 9:16 (1080×1920)
+- `banner` - Horizontal Banner 16:9 (1920×1080)
+- `a4` - A4 Print (1240×1754)
 
-**示例**:
+**Examples**:
 
 ```bash
-# 创建一个新的 PPT 16:9 项目
+# Create a new PPT 16:9 project
 python3 scripts/project_manager.py init my_presentation --format ppt169
 
-# 验证项目
+# Validate project
 python3 scripts/project_manager.py validate projects/my_presentation_ppt169_20251116
 
-# 查看项目信息
+# View project information
 python3 scripts/project_manager.py info projects/my_presentation_ppt169_20251116
 ```
 
 ---
 
-### 3. flatten_tspan.py — 文本扁平化（去 `<tspan>`）
+### 3. flatten_tspan.py — Text Flattening (Remove `<tspan>`)
 
-> **推荐**: 使用 `finalize_svg.py` 作为统一入口，已集成文本扁平化功能。以下为独立使用的高级用法。
+> **Recommended**: Use `finalize_svg.py` as the unified entry point, which already includes text flattening. The following is advanced standalone usage.
 
-将含有多行 `<tspan>` 的 `<text>` 结构扁平化为多条独立的 `<text>` 元素，便于部分渲染器兼容或文本抽取。
+Flattens `<text>` structures containing multi-line `<tspan>` elements into multiple independent `<text>` elements, for compatibility with certain renderers or text extraction.
 
-**注意**: 生成端仍应使用 `<tspan>` 手动换行（禁用项详见 `AGENTS.md`）。此工具仅用于后处理。
+**Note**: The generation side should still use `<tspan>` for manual line breaks (see banned features in `AGENTS.md`). This tool is for post-processing only.
 
-**用法**:
+**Usage**:
 
 ```bash
-# 扁平化整个输出目录
+# Flatten an entire output directory
 python3 scripts/flatten_tspan.py examples/<project>/svg_output
 
-# 处理单个 SVG
+# Process a single SVG
 python3 scripts/flatten_tspan.py path/to/input.svg path/to/output.svg
 ```
 
-**行为说明**:
+**Behavior**:
 
-- 逐个 `<tspan>` 计算绝对位置（综合 `x`/`y` 与 `dx`/`dy`），合并父/子样式，输出为独立 `<text>`
-- 复制父 `<text>` 的通用文本属性和 `style`，子级覆盖优先
-- 保留或合并 `transform`
-- 输出采用 UTF-8 编码，无 XML 声明
+- Computes absolute position for each `<tspan>` (combining `x`/`y` with `dx`/`dy`), merges parent/child styles, and outputs as independent `<text>` elements
+- Copies common text attributes and `style` from the parent `<text>`; child overrides take priority
+- Preserves or merges `transform`
+- Output uses UTF-8 encoding without XML declaration
 
-**已知限制**:
+**Known Limitations**:
 
-- 仅处理 `<text>`/`<tspan>` 结构；其他子元素不做转换
-- 复杂嵌套或特殊布局请先在生成端简化为规范的逐行 `<tspan>`
+- Only processes `<text>`/`<tspan>` structures; other child elements are not converted
+- For complex nesting or special layouts, simplify to standardized per-line `<tspan>` on the generation side first
 
 ---
 
-### 4. batch_validate.py — 批量项目验证工具
+### 4. batch_validate.py — Batch Project Validation Tool
 
-一次性检查多个项目的结构完整性和规范性。
+Check the structural integrity and compliance of multiple projects at once.
 
-**功能**:
+**Features**:
 
-- 批量验证项目结构
-- 检查必需文件（README、设计规范、SVG 等）
-- 验证 SVG viewBox 设置
-- 生成验证报告
-- 提供修复建议
+- Batch project structure validation
+- Check required files (README, design spec, SVGs, etc.)
+- Validate SVG viewBox settings
+- Generate validation reports
+- Provide fix suggestions
 
-**用法**:
+**Usage**:
 
 ```bash
-# 验证单个目录
+# Validate a single directory
 python3 scripts/batch_validate.py examples
 
-# 验证多个目录
+# Validate multiple directories
 python3 scripts/batch_validate.py examples projects
 
-# 验证所有
+# Validate all
 python3 scripts/batch_validate.py --all
 
-# 导出报告
+# Export report
 python3 scripts/batch_validate.py examples --export
 ```
 
-**示例输出**:
+**Example Output**:
 
 ```
 ✅ google_annual_report_ppt169_20251116
-   路径: examples/google_annual_report_ppt169_20251116
-   格式: PPT 16:9 | SVG: 10 个 | 日期: 2025-11-16
+   Path: examples/google_annual_report_ppt169_20251116
+   Format: PPT 16:9 | SVGs: 10 | Date: 2025-11-16
 
-⚠️  某项目名称
-   路径: examples/某项目名称
-   格式: PPT 16:9 | SVG: 8 个 | 日期: 2025-10-15
-   ⚠️  警告 (1):
-      - SVG 文件命名不规范: old_name.svg
+⚠️  some_project_name
+   Path: examples/some_project_name
+   Format: PPT 16:9 | SVGs: 8 | Date: 2025-10-15
+   ⚠️  Warnings (1):
+      - Non-standard SVG filename: old_name.svg
 ```
 
 ---
 
-### 5. generate_examples_index.py — Examples 索引生成工具
+### 5. generate_examples_index.py — Examples Index Generator
 
-自动扫描 examples 目录并生成 README.md 索引文件。
+Automatically scans the examples directory and generates a README.md index file.
 
-**功能**:
+**Features**:
 
-- 自动发现所有示例项目
-- 按格式分类整理
-- 生成统计信息
-- 创建预览链接
-- 更新使用说明
+- Automatically discover all example projects
+- Organize by format category
+- Generate statistics
+- Create preview links
+- Update usage instructions
 
-**用法**:
+**Usage**:
 
 ```bash
-# 生成 examples/README.md
+# Generate examples/README.md
 python3 scripts/generate_examples_index.py
 
-# 指定目录
+# Specify directory
 python3 scripts/generate_examples_index.py examples
 ```
 
-**特性**:
+**Characteristics**:
 
-- 自动检测项目信息（名称、格式、日期、SVG 数量）
-- 按画布格式分组
-- 显示最近更新的项目
-- 包含使用说明和贡献指南
+- Auto-detect project info (name, format, date, SVG count)
+- Group by canvas format
+- Show recently updated projects
+- Include usage instructions and contribution guidelines
 
 ---
 
-### 6. error_helper.py — 错误消息助手
+### 6. error_helper.py — Error Message Helper
 
-提供友好的错误消息和具体的修复建议。
+Provides friendly error messages and specific fix suggestions.
 
-**功能**:
+**Features**:
 
-- 标准化错误类型定义
-- 提供具体的解决方案
-- 支持上下文定制
-- 格式化输出
+- Standardized error type definitions
+- Provide specific solutions
+- Support context customization
+- Formatted output
 
-**用法**:
+**Usage**:
 
 ```bash
-# 查看所有错误类型
+# View all error types
 python3 scripts/error_helper.py
 
-# 查看特定错误的解决方案
+# View solution for a specific error
 python3 scripts/error_helper.py missing_readme
 
-# 带上下文
+# With context
 python3 scripts/error_helper.py missing_readme project_path=my_project
 ```
 
-**支持的错误类型**:
+**Supported Error Types**:
 
-- `missing_readme` - 缺少 README.md
-- `missing_spec` - 缺少设计规范
-- `missing_svg_output` - 缺少 svg_output 目录
-- `viewbox_mismatch` - viewBox 不匹配
-- `foreignobject_detected` - 检测到禁用元素（详见 AGENTS.md 黑名单）
-- 等等...
+- `missing_readme` - Missing README.md
+- `missing_spec` - Missing design specification
+- `missing_svg_output` - Missing svg_output directory
+- `viewbox_mismatch` - viewBox mismatch
+- `foreignobject_detected` - Banned element detected (see AGENTS.md blocklist)
+- etc.
 
 ---
 
-### 7. svg_quality_checker.py — SVG 质量检查工具
+### 7. svg_quality_checker.py — SVG Quality Check Tool
 
-检查 SVG 文件是否符合项目技术规范。
+Checks whether SVG files comply with the project's technical specifications.
 
-**功能**:
+**Features**:
 
-- 验证 viewBox 属性
-- 检测禁用元素（详见 AGENTS.md）
-- 检查字体使用
-- 验证 width/height 与 viewBox 一致性
-- 检查文本换行方式
+- Validate viewBox attribute
+- Detect banned elements (see AGENTS.md)
+- Check font usage
+- Validate width/height consistency with viewBox
+- Check text line-break methods
 
-**用法**:
+**Usage**:
 
 ```bash
-# 检查单个文件
+# Check a single file
 python3 scripts/svg_quality_checker.py examples/project/svg_output/01_cover.svg
 
-# 检查整个目录
+# Check an entire directory
 python3 scripts/svg_quality_checker.py examples/project/svg_output
 
-# 检查项目（自动查找 svg_output）
+# Check a project (auto-finds svg_output)
 python3 scripts/svg_quality_checker.py examples/project
 
-# 指定期望格式
+# Specify expected format
 python3 scripts/svg_quality_checker.py examples/project --format ppt169
 
-# 检查所有项目
+# Check all projects
 python3 scripts/svg_quality_checker.py --all examples
 
-# 导出报告
+# Export report
 python3 scripts/svg_quality_checker.py examples/project --export
 ```
 
-**检查项目**:
+**Check Items**:
 
-- ✅ viewBox 属性存在且格式正确
-- ✅ 无禁用元素（详见 AGENTS.md）
-- ✅ 使用《设计规范》指定的字体
-- ✅ width/height 与 viewBox 一致
-- ✅ 文本使用 `<tspan>` 换行
+- ✅ viewBox attribute exists and is correctly formatted
+- ✅ No banned elements (see AGENTS.md)
+- ✅ Uses fonts specified in the Design Specification & Content Outline (design_spec)
+- ✅ width/height consistent with viewBox
+- ✅ Text uses `<tspan>` for line breaks
 
 ---
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-为确保导出 PPT 后效果一致，**透明度必须使用标准写法**：
+To ensure consistent appearance after exporting to PPT, **transparency must use standard syntax**:
 
-| ❌ 禁止 | ✅ 正确 |
-|--------|--------|
+| ❌ Banned | ✅ Correct |
+|-----------|-----------|
 | `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
-| `<g opacity="0.2">...</g>` | 每个子元素单独设置透明度 |
-| `<image opacity="0.3"/>` | 图片后加遮罩层 `<rect fill="背景色" opacity="0.7"/>` |
+| `<g opacity="0.2">...</g>` | Set opacity on each child element individually |
+| `<image opacity="0.3"/>` | Add a mask layer after the image: `<rect fill="background-color" opacity="0.7"/>` |
 
-> 📌 **记忆口诀**：PPT 不认 rgba、不认组透明、不认图片透明、不认 marker
+> **Mnemonic**: PPT does not support rgba, group opacity, image opacity, or markers.
 
 ---
 
-### 8. svg_to_pptx.py — SVG 转 PPTX 工具
+### 8. svg_to_pptx.py — SVG to PPTX Tool
 
-将项目中的 SVG 文件批量转换为 PowerPoint 演示文稿，保留矢量图形的可编辑性。
+Batch converts SVG files in a project to a PowerPoint presentation, preserving vector graphics editability.
 
-**功能**:
+**Features**:
 
-- 批量将 SVG 转换为 PPTX
-- 每个 SVG 对应一张幻灯片
-- 自动检测画布格式并设置幻灯片尺寸
-- 支持使用 svg_output 或 svg_final 目录
-- SVG 在 PowerPoint 中保持可编辑
-- **支持页面切换动画和入场动画**
-- **自动嵌入演讲备注**（从 notes/ 目录读取）
+- Batch convert SVGs to PPTX
+- Each SVG corresponds to one slide
+- Auto-detect canvas format and set slide dimensions
+- Support using svg_output or svg_final directories
+- SVGs remain editable in PowerPoint
+- **Support slide transition and entrance animations**
+- **Auto-embed speaker notes** (read from notes/ directory)
 
-**用法**:
+**Usage**:
 
 ```bash
-# 推荐：使用后处理完成的版本（默认嵌入备注）
-python3 scripts/svg_to_pptx.py <项目路径> -s final
+# Recommended: use the post-processed version (notes embedded by default)
+python3 scripts/svg_to_pptx.py <project_path> -s final
 
-# 禁用演讲备注
-python3 scripts/svg_to_pptx.py <项目路径> -s final --no-notes
+# Disable speaker notes
+python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
 
-# 使用原始版本
-python3 scripts/svg_to_pptx.py <项目路径>
+# Use original version
+python3 scripts/svg_to_pptx.py <project_path>
 
-# 指定输出文件
-python3 scripts/svg_to_pptx.py <项目路径> -s final -o output.pptx
+# Specify output file
+python3 scripts/svg_to_pptx.py <project_path> -s final -o output.pptx
 
-# 添加页面切换效果
-python3 scripts/svg_to_pptx.py <项目路径> -t fade --transition-duration 1.0
+# Add slide transition effects
+python3 scripts/svg_to_pptx.py <project_path> -t fade --transition-duration 1.0
 
-# 静默模式
-python3 scripts/svg_to_pptx.py <项目路径> -s final -q
+# Silent mode
+python3 scripts/svg_to_pptx.py <project_path> -s final -q
 ```
 
-**演讲备注**:
+**Speaker Notes**:
 
-工具自动读取 `notes/` 目录中的 Markdown 备注文件，并嵌入到 PPTX 的演讲者备注中。
+The tool automatically reads Markdown note files from the `notes/` directory and embeds them into the PPTX speaker notes.
 
-**文件命名支持两种方式**：
-- **推荐**：与 SVG 同名（如 `01_封面.svg` 对应 `notes/01_封面.md`）
-- **兼容**：`slide01.md` 格式（向后兼容）
+**Two naming conventions are supported**:
+- **Recommended**: Same name as the SVG (e.g., `01_cover.svg` maps to `notes/01_cover.md`)
+- **Compatible**: `slide01.md` format (backward compatible)
 
-| 参数 | 说明 |
-|------|------|
-| 默认 | 自动嵌入备注（无备注文件则留空） |
-| `--no-notes` | 禁用备注嵌入 |
+| Parameter | Description |
+|-----------|-------------|
+| Default | Auto-embed notes (empty if no note file found) |
+| `--no-notes` | Disable note embedding |
 
-**切换效果参数**:
+**Transition Effect Parameters**:
 
-| 参数 | 说明 | 可选值 |
-|------|------|--------|
-| `-t`, `--transition` | 页面切换效果 | fade, push, wipe, split, reveal, cover, random |
-| `--transition-duration` | 切换持续时间（秒，默认 0.5） | 任意正数 |
-| `--auto-advance` | 自动翻页间隔（秒） | 任意正数 |
+| Parameter | Description | Options |
+|-----------|-------------|---------|
+| `-t`, `--transition` | Slide transition effect | fade, push, wipe, split, reveal, cover, random |
+| `--transition-duration` | Transition duration in seconds (default 0.5) | Any positive number |
+| `--auto-advance` | Auto-advance interval in seconds | Any positive number |
 
-**切换效果说明**:
+**Transition Effects**:
 
-| 效果 | 说明 |
-|------|------|
-| fade | 淡入淡出 |
-| push | 推入 |
-| wipe | 擦除 |
-| split | 分割 |
-| reveal | 揭示 |
-| cover | 覆盖 |
-| random | 随机 |
+| Effect | Description |
+|--------|-------------|
+| fade | Fade in/out |
+| push | Push |
+| wipe | Wipe |
+| split | Split |
+| reveal | Reveal |
+| cover | Cover |
+| random | Random |
 
-**SVG 来源目录 (`-s`)**:
+**SVG Source Directory (`-s`)**:
 
-| 参数 | 目录 | 说明 |
-|------|------|------|
-| `-s output` | `svg_output/` | 原始版本 |
-| `-s final` | `svg_final/` | 后处理完成（推荐） |
-| `-s <任意名>` | `<任意名>/` | 直接指定子目录 |
+| Parameter | Directory | Description |
+|-----------|-----------|-------------|
+| `-s output` | `svg_output/` | Original version |
+| `-s final` | `svg_final/` | Post-processed (recommended) |
+| `-s <any_name>` | `<any_name>/` | Specify subdirectory directly |
 
-**示例**:
+**Examples**:
 
 ```bash
-# 推荐流程：先后处理，再导出（带切换效果）
+# Recommended workflow: post-process first, then export (with transition effects)
 python3 scripts/finalize_svg.py examples/ppt169_demo
 python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final -t fade
 
-# 自动播放演示（3秒切换）
+# Auto-play presentation (3-second transitions)
 python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final -t fade --auto-advance 3
 ```
 
-**依赖**:
+**Dependencies**:
 
 ```bash
 pip install python-pptx
 ```
 
-**注意**:
+**Notes**:
 
-- SVG 以原生矢量格式嵌入，保持可编辑性
-- 需要 PowerPoint 2016+ 才能正确显示
-- 文件体积比 PNG 方案小很多
-- 切换效果默认关闭，需要用户显式启用
-- 演讲备注默认开启，使用 `--no-notes` 禁用
+- SVGs are embedded in native vector format, maintaining editability
+- Requires PowerPoint 2016+ for correct display
+- File size is much smaller than the PNG approach
+- Transition effects are off by default; users must explicitly enable them
+- Speaker notes are on by default; use `--no-notes` to disable
 
 ---
 
-### 9. total_md_split.py — 讲稿拆分工具
+### 9. total_md_split.py — Speaker Notes Splitter
 
-将 `total.md` 讲稿文件拆分为多个独立的讲稿文件，每个文件对应一个 SVG 页面。
+Splits the `total.md` speaker notes file into multiple individual note files, each corresponding to one SVG page.
 
-**功能**:
+**Features**:
 
-- 读取 `total.md` 文件，解析其中的一级标题和讲稿内容
-- 检查 `svg_output` 文件夹中的 SVG 文件是否都有对应的讲稿
-- 如果存在 SVG 没有对应的讲稿，会输出错误提示要求重新生成讲稿文件
-- 如果全部匹配，根据名称对文档进行拆分，分成多个文档
-- 拆分后的文档命名与 SVG 文件同名，后缀改为 `.md`
-- 拆分后的文档**不包含**一级标题
+- Read the `total.md` file and parse its level-1 headings and note content
+- Check whether all SVG files in the `svg_output` folder have corresponding notes
+- If any SVG lacks a corresponding note, output an error prompting regeneration of the notes file
+- If all match, split the document by name into multiple files
+- Split files are named the same as their SVG counterparts with a `.md` extension
+- Split files **do not include** the level-1 heading
 
-**用法**:
-
-```bash
-# 基本用法
-python3 scripts/total_md_split.py <项目路径>
-
-# 指定输出目录
-python3 scripts/total_md_split.py <项目路径> -o <输出目录>
-
-# 静默模式
-python3 scripts/total_md_split.py <项目路径> -q
-```
-
-**示例**:
+**Usage**:
 
 ```bash
-# 基本用法
-python3 scripts/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD
+# Basic usage
+python3 scripts/total_md_split.py <project_path>
 
-# 指定输出目录
-python3 scripts/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -o notes
+# Specify output directory
+python3 scripts/total_md_split.py <project_path> -o <output_directory>
 
-# 静默模式
-python3 scripts/total_md_split.py projects/<svg 标题>_ppt169_YYYYMMDD -q
+# Silent mode
+python3 scripts/total_md_split.py <project_path> -q
 ```
 
-**讲稿格式要求**:
+**Examples**:
 
-`total.md` 文件需要使用以下格式：
+```bash
+# Basic usage
+python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD
+
+# Specify output directory
+python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD -o notes
+
+# Silent mode
+python3 scripts/total_md_split.py projects/<svg_title>_ppt169_YYYYMMDD -q
+```
+
+**Notes Format Requirements**:
+
+The `total.md` file must use the following format:
 
 ```markdown
-# 01_<页面标题>
+# 01_<page_title>
 
-讲稿内容...
-
----
-
-# 02_<页面标题>
-
-讲稿内容...
+Speaker notes content...
 
 ---
 
-# 03_<页面名称>
+# 02_<page_title>
 
-讲稿内容...
+Speaker notes content...
+
+---
+
+# 03_<page_title>
+
+Speaker notes content...
 ```
 
-- 每个章节以 `# ` 开头的一级标题开始（**严格要求**）
-- 标题文本需与对应 SVG 文件名一致（**严格要求**）
-- 章节之间必须用 `---` 分隔（**严格要求**）
-- 讲稿内容在标题之后，直到下一个标题或文件结束
+- Each section begins with a level-1 heading starting with `# ` (**strictly required**)
+- The heading text must match the corresponding SVG filename (**strictly required**)
+- Sections must be separated by `---` (**strictly required**)
+- Note content follows the heading until the next heading or end of file
 
-**容错说明（工具侧）**：
-即便未完全符合上述格式，`total_md_split.py` 仍会尝试根据标题/页码/名称相似度进行拆分，但结果不保证正确。请以严格格式为准。
+**Fault Tolerance (Tool Side)**:
+Even if the format does not strictly conform, `total_md_split.py` will attempt to split based on heading/page number/name similarity, but results are not guaranteed. Please adhere to the strict format.
 
-**错误处理**:
+**Error Handling**:
 
-如果存在 SVG 文件没有对应的讲稿，工具会输出错误信息：
+If any SVG file lacks a corresponding note, the tool will output an error message:
 
 ```
-错误: SVG 文件与讲稿不匹配
-  缺失的讲稿: <N>_<页面标题>
+Error: SVG files and speaker notes do not match
+  Missing notes: <N>_<page_title>
 
-请重新生成讲稿文件，确保每个 SVG 都有对应的讲稿。
+Please regenerate the notes file, ensuring every SVG has a corresponding note.
 ```
 
-**依赖**:
+**Dependencies**:
 
 - Python 3.6+
-- 无外部依赖（仅使用标准库）
+- No external dependencies (standard library only)
 
 ---
 
-### 10. svg_position_calculator.py — SVG 位置计算与验证工具
+### 10. svg_position_calculator.py — SVG Position Calculation & Validation Tool
 
-图表坐标的**事前计算**和**事后验证**工具，帮助确保 SVG 元素位置准确无误。
+A tool for **pre-calculation** and **post-validation** of chart coordinates, helping ensure accurate SVG element positioning.
 
-#### 核心功能
+#### Core Features
 
-| 功能 | 说明 |
-|------|------|
-| **analyze** | 分析 SVG 文件，提取所有图形元素的坐标信息 |
-| **calc** | 根据数据计算期望的图表坐标 |
-| **interactive** | 交互式引导计算（推荐新手使用） |
-| **from-json** | 从 JSON 配置文件批量计算 |
-| **validate** | 验证 SVG 坐标与期望值的偏差 |
+| Feature | Description |
+|---------|-------------|
+| **analyze** | Analyze an SVG file and extract coordinate information for all graphical elements |
+| **calc** | Calculate expected chart coordinates based on data |
+| **interactive** | Interactive guided calculation (recommended for beginners) |
+| **from-json** | Batch calculation from a JSON configuration file |
+| **validate** | Validate SVG coordinates against expected values for deviation |
 
-#### 支持的图表类型
+#### Supported Chart Types
 
-| 类型 | 计算内容 | 输出 |
-|------|----------|------|
-| **柱状图 (bar)** | 柱子 X/Y/宽/高、标签位置 | 坐标表格 |
-| **饼图 (pie)** | 扇区角度、弧线端点、标签位置 | 坐标表格 + Path d 属性 |
-| **雷达图 (radar)** | 多边形顶点、标签位置 | 坐标表格 + polygon points |
-| **折线图 (line)** | 数据点 SVG 坐标 | 坐标表格 + Path d 属性 |
-| **网格布局 (grid)** | 单元格位置和尺寸 | 坐标表格 |
-| **自定义折线** | 任意公式计算 | 坐标表格 + polyline points |
+| Type | Calculation | Output |
+|------|-------------|--------|
+| **Bar chart (bar)** | Bar X/Y/width/height, label positions | Coordinate table |
+| **Pie chart (pie)** | Sector angles, arc endpoints, label positions | Coordinate table + Path d attribute |
+| **Radar chart (radar)** | Polygon vertices, label positions | Coordinate table + polygon points |
+| **Line chart (line)** | Data point SVG coordinates | Coordinate table + Path d attribute |
+| **Grid layout (grid)** | Cell positions and dimensions | Coordinate table |
+| **Custom polyline** | Arbitrary formula calculation | Coordinate table + polyline points |
 
 ---
 
-#### 命令详解
+#### Command Details
 
-##### 1. analyze — 分析 SVG 文件
+##### 1. analyze — Analyze SVG File
 
-提取 SVG 中所有图形元素的位置信息，用于验证或调试。
+Extract position information for all graphical elements in an SVG, for validation or debugging.
 
 ```bash
-python3 scripts/svg_position_calculator.py analyze <svg文件>
+python3 scripts/svg_position_calculator.py analyze <svg_file>
 ```
 
-**输出示例**:
+**Example Output**:
 
 ```
 ======================================================================
-SVG 文件分析: slide_03_chart.svg
+SVG File Analysis: slide_03_chart.svg
 ======================================================================
-画布 viewBox: 0 0 1920 1200
+Canvas viewBox: 0 0 1920 1200
 
-元素统计:
-  - rect 矩形: 18 个
-  - circle 圆形: 7 个
-  - polyline/polygon: 1 个
-  - path 路径: 2 个
+Element Statistics:
+  - rect (rectangles): 18
+  - circle: 7
+  - polyline/polygon: 1
+  - path: 2
 
-=== 矩形元素 (rect) ===
-序号    X         Y         宽度        高度
+=== Rectangle Elements (rect) ===
+Index   X         Y         Width       Height
 1     0         0         1920      130
 2     190       285       200       530
 ...
 
-=== 折线/多边形 (polyline/polygon) ===
-折线 1 (39 个点):
-  起始点: (210,431) → (250,425) → (290,433) → (330,377) → (370,517)
-  ... 共 39 个点
+=== Polylines/Polygons (polyline/polygon) ===
+Polyline 1 (39 points):
+  Start: (210,431) → (250,425) → (290,433) → (330,377) → (370,517)
+  ... 39 points total
 ```
 
-##### 2. calc — 快速计算坐标
+##### 2. calc — Quick Coordinate Calculation
 
-根据数据快速计算图表元素的期望坐标。
+Quickly calculate expected chart element coordinates based on data.
 
-**柱状图**:
+**Bar Chart**:
 
 ```bash
 python3 scripts/svg_position_calculator.py calc bar \
-    --data "华东:185,华南:142,华北:128" \
+    --data "East:185,South:142,North:128" \
     --canvas ppt169 \
     --bar-width 50
 ```
 
-输出:
+Output:
 ```
-=== 柱状图坐标计算 ===
-画布: 1280×720
-图表区域: (140, 150) - (1160, 600)
+=== Bar Chart Coordinate Calculation ===
+Canvas: 1280×720
+Chart Area: (140, 150) - (1160, 600)
 
-序号  标签          数值      X        Y        宽度     高度
+Index  Label         Value     X        Y        Width    Height
 ----  ----------  --------  -------  -------  -------  -------
-   1  华东             185.0    560.0    190.9     50.0    409.1
-   2  华南             142.0    625.0    286.0     50.0    314.0
-   3  华北             128.0    690.0    317.0     50.0    283.0
+   1  East             185.0    560.0    190.9     50.0    409.1
+   2  South            142.0    625.0    286.0     50.0    314.0
+   3  North            128.0    690.0    317.0     50.0    283.0
 ```
 
-**饼图**:
+**Pie Chart**:
 
 ```bash
 python3 scripts/svg_position_calculator.py calc pie \
-    --data "A:35,B:25,C:20,D:12,其他:8" \
+    --data "A:35,B:25,C:20,D:12,Other:8" \
     --center 420,400 \
     --radius 200 \
     --start-angle -90
 ```
 
-输出:
+Output:
 ```
-=== 饼图扇区计算 ===
-圆心: (420, 400) | 半径: 200
+=== Pie Chart Sector Calculation ===
+Center: (420, 400) | Radius: 200
 
-序号  标签          百分比    起始角    终止角    标签X    标签Y
+Index  Label         Percent   Start     End       LabelX   LabelY
 ----  ----------  --------  --------  --------  -------  -------
    1  A              35.0%     -90.0     36.0     476.0    296.2
    2  B              25.0%      36.0    126.0     508.3    443.8
 ...
 
-=== Path d 属性 ===
+=== Path d Attributes ===
 1. A: M 0,0 L 0.00,-200.00 A 200,200 0 0,1 161.80,-117.56 Z
 2. B: M 0,0 L 161.80,-117.56 A 200,200 0 0,1 117.56,161.80 Z
 ...
 ```
 
-**雷达图**:
+**Radar Chart**:
 
 ```bash
 python3 scripts/svg_position_calculator.py calc radar \
-    --data "性能:90,安全:85,易用:75,价格:70,服务:80" \
+    --data "Performance:90,Security:85,Usability:75,Price:70,Service:80" \
     --center 640,400 \
     --radius 200
 ```
 
-**折线图**:
+**Line Chart**:
 
 ```bash
 python3 scripts/svg_position_calculator.py calc line \
@@ -860,7 +860,7 @@ python3 scripts/svg_position_calculator.py calc line \
     --y-range "0,150"
 ```
 
-**网格布局**:
+**Grid Layout**:
 
 ```bash
 python3 scripts/svg_position_calculator.py calc grid \
@@ -869,42 +869,42 @@ python3 scripts/svg_position_calculator.py calc grid \
     --padding 20 --gap 20
 ```
 
-##### 3. interactive — 交互式模式
+##### 3. interactive — Interactive Mode
 
-适合不熟悉命令行参数的用户，通过菜单引导完成计算。
+Suitable for users unfamiliar with command-line arguments; guides you through calculation via menus.
 
 ```bash
 python3 scripts/svg_position_calculator.py interactive
 ```
 
-菜单选项:
+Menu Options:
 ```
-选择图表类型:
-  1. 柱状图 (bar)
-  2. 饼图 (pie)
-  3. 雷达图 (radar)
-  4. 折线图 (line)
-  5. 网格布局 (grid)
-  6. 自定义折线 (custom)    ← 支持自定义公式
-  0. 退出
+Select chart type:
+  1. Bar chart (bar)
+  2. Pie chart (pie)
+  3. Radar chart (radar)
+  4. Line chart (line)
+  5. Grid layout (grid)
+  6. Custom polyline (custom)    ← Supports custom formulas
+  0. Exit
 ```
 
-**自定义折线（选项 6）** 特别适用于价格指数图等需要自定义坐标公式的场景:
+**Custom polyline (option 6)** is particularly useful for scenarios like price index charts that require custom coordinate formulas:
 
 ```
-=== 自定义折线计算 ===
-X起始值 [170]: 210
-X步长 [40]: 40
-Y基准值 [595]: 595
-Y缩放系数 [20]: 20
-参考基准值 [100]: 100
+=== Custom Polyline Calculation ===
+X start value [170]: 210
+X step [40]: 40
+Y baseline [595]: 595
+Y scale factor [20]: 20
+Reference baseline [100]: 100
 
-公式: X = 210 + 序号 × 40
-      Y = 595 - (数值 - 100) × 20
+Formula: X = 210 + index × 40
+         Y = 595 - (value - 100) × 20
 
-输入数据: 108.2,108.5,108.1,110.9,103.9,97.0
+Input data: 108.2,108.5,108.1,110.9,103.9,97.0
 
-序号    数值        X         Y
+Index   Value       X         Y
 ----  ----------  --------  --------
 1     108.2       250       431
 2     108.5       290       425
@@ -917,30 +917,30 @@ polyline points:
 250,431 290,425 330,433 370,377 410,517 450,655
 ```
 
-##### 4. from-json — JSON 配置批量计算
+##### 4. from-json — Batch Calculation from JSON Config
 
-从 JSON 文件读取配置进行计算，适合批量处理或保存常用配置。
+Read configuration from a JSON file for calculation; suitable for batch processing or saving frequently used configurations.
 
 ```bash
 python3 scripts/svg_position_calculator.py from-json config.json
 ```
 
-**JSON 配置示例**:
+**JSON Configuration Examples**:
 
-柱状图配置:
+Bar chart config:
 ```json
 {
     "type": "bar",
     "canvas": "ppt169",
     "data": {
-        "华东": 185,
-        "华南": 142,
-        "华北": 128
+        "East": 185,
+        "South": 142,
+        "North": 128
     }
 }
 ```
 
-自定义折线配置:
+Custom polyline config:
 ```json
 {
     "type": "custom_line",
@@ -955,52 +955,52 @@ python3 scripts/svg_position_calculator.py from-json config.json
 
 ---
 
-#### 典型验证工作流
+#### Typical Validation Workflow
 
-当 AI 生成 SVG 图表后，可以使用此工具验证坐标准确性：
+After AI generates SVG charts, you can use this tool to verify coordinate accuracy:
 
-1. **分析 SVG 文件**，提取实际坐标:
+1. **Analyze the SVG file** to extract actual coordinates:
    ```bash
    python3 scripts/svg_position_calculator.py analyze slide.svg
    ```
 
-2. **根据原始数据计算期望坐标**（使用 calc 或 interactive）
+2. **Calculate expected coordinates from the raw data** (using calc or interactive)
 
-3. **对比期望坐标与实际坐标**，检查偏差
+3. **Compare expected coordinates with actual coordinates** to check for deviations
 
-4. **如有偏差，修正 SVG 文件**
+4. **If deviations exist, correct the SVG file**
 
-**示例：验证价格指数折线图**
+**Example: Validating a Price Index Line Chart**
 
 ```bash
-# 1. 分析 SVG，查看 polyline points
+# 1. Analyze the SVG to view polyline points
 python3 scripts/svg_position_calculator.py analyze slide_03_trend.svg
 
-# 2. 使用交互模式计算期望坐标（选择 6. 自定义折线）
+# 2. Use interactive mode to calculate expected coordinates (select 6. Custom polyline)
 python3 scripts/svg_position_calculator.py interactive
 
-# 3. 对比输出的 polyline points 与 SVG 中的实际值
+# 3. Compare the output polyline points with the actual values in the SVG
 ```
 
 ---
 
-#### 坐标计算公式参考
+#### Coordinate Calculation Formula Reference
 
-**柱状图**:
+**Bar Chart**:
 ```
 bar_x = chart_area.x_min + (chart_area.width - total_bars_width) / 2 + i * (bar_width + gap)
 bar_y = chart_area.y_max - (value / max_value) * chart_area.height
 bar_height = (value / max_value) * chart_area.height
 ```
 
-**饼图弧线端点**:
+**Pie Chart Arc Endpoints**:
 ```
 angle_rad = angle_degrees × π / 180
 end_x = radius × cos(angle_rad)
 end_y = radius × sin(angle_rad)
 ```
 
-**折线图（自定义公式）**:
+**Line Chart (Custom Formula)**:
 ```
 X = base_x + index × step_x
 Y = base_y - (value - ref_value) × scale_y
@@ -1008,229 +1008,229 @@ Y = base_y - (value - ref_value) × scale_y
 
 ---
 
-#### 常见问题
+#### FAQ
 
-**Q: 输出中文乱码怎么办？**
+**Q: What if the output shows garbled Chinese characters?**
 
-A: 工具已自动处理 Windows 下的 UTF-8 编码问题。如仍有问题，请确保终端设置为 UTF-8:
+A: The tool automatically handles UTF-8 encoding issues on Windows. If problems persist, ensure your terminal is set to UTF-8:
 ```bash
 chcp 65001
 ```
 
-**Q: 如何验证复杂图表？**
+**Q: How to validate complex charts?**
 
-A: 对于复杂图表（如多系列柱状图），建议：
-1. 先用 `analyze` 提取所有元素
-2. 根据图表逻辑手动计算期望值
-3. 逐一对比验证
+A: For complex charts (e.g., multi-series bar charts), it is recommended to:
+1. First use `analyze` to extract all elements
+2. Manually calculate expected values based on chart logic
+3. Compare and verify one by one
 
-**Q: 支持哪些画布格式？**
+**Q: Which canvas formats are supported?**
 
-A: 支持 `ppt169`、`ppt43`、`xiaohongshu`、`moments` 等，详见 `project_utils.py` 中的 `CANVAS_FORMATS`。
+A: Supports `ppt169`, `ppt43`, `xiaohongshu`, `moments`, etc. See `CANVAS_FORMATS` in `project_utils.py` for details.
 
 ---
 
-### 11. svg_rect_to_path.py — SVG 圆角矩形转 Path 工具
+### 11. svg_rect_to_path.py — SVG Rounded Rect to Path Tool
 
-解决 SVG 在 PowerPoint 中「转换为形状」时圆角丢失的问题。
+Solves the problem of rounded corners being lost when using "Convert to Shape" in PowerPoint.
 
-**问题**: PowerPoint 不能正确解析 `<rect>` 的 `rx`/`ry` 圆角属性
+**Problem**: PowerPoint cannot correctly parse the `rx`/`ry` rounded corner attributes of `<rect>`
 
-**解决方案**: 将 `<rect rx="12" ry="12">` 转换为等效的 `<path d="...圆弧...">`
+**Solution**: Convert `<rect rx="12" ry="12">` to an equivalent `<path d="...arcs...">`
 
-**用法**:
+**Usage**:
 
 ```bash
-# 处理项目中的 SVG（默认使用 svg_output）
-python3 scripts/svg_rect_to_path.py <项目路径>
+# Process SVGs in a project (defaults to svg_output)
+python3 scripts/svg_rect_to_path.py <project_path>
 
-# 指定 SVG 来源目录
-python3 scripts/svg_rect_to_path.py <项目路径> -s final
+# Specify SVG source directory
+python3 scripts/svg_rect_to_path.py <project_path> -s final
 
-# 指定输出目录名
-python3 scripts/svg_rect_to_path.py <项目路径> -o svg_for_ppt
+# Specify output directory name
+python3 scripts/svg_rect_to_path.py <project_path> -o svg_for_ppt
 
-# 处理单个文件
+# Process a single file
 python3 scripts/svg_rect_to_path.py path/to/file.svg
 
-# 详细输出
-python3 scripts/svg_rect_to_path.py <项目路径> -v
+# Verbose output
+python3 scripts/svg_rect_to_path.py <project_path> -v
 ```
 
-**示例**:
+**Examples**:
 
 ```bash
-# 处理项目
+# Process a project
 python3 scripts/svg_rect_to_path.py examples/ppt169_demo
-# 输出到: examples/ppt169_demo/svg_rounded/
+# Output to: examples/ppt169_demo/svg_rounded/
 
-# 处理单个文件
+# Process a single file
 python3 scripts/svg_rect_to_path.py examples/ppt169_demo/svg_output/01_cover.svg
-# 输出到: examples/ppt169_demo/svg_output/01_cover_rounded.svg
+# Output to: examples/ppt169_demo/svg_output/01_cover_rounded.svg
 ```
 
-**使用场景**:
+**Use Cases**:
 
-当你需要在 PowerPoint 中将 SVG「转换为形状」进行编辑时，先用此工具预处理 SVG，可以保留圆角效果。
+When you need to "Convert to Shape" in PowerPoint for editing, pre-process the SVG with this tool to preserve rounded corner effects.
 
-**注意**:
+**Notes**:
 
-- 如果只是嵌入 SVG 而不转换为形状，无需使用此工具
-- 透明度在「转换为形状」后仍会丢失（PowerPoint 限制）
+- If you are only embedding the SVG without converting to shapes, this tool is not needed
+- Transparency will still be lost after "Convert to Shape" (PowerPoint limitation)
 
 ---
 
-### 12. fix_image_aspect.py — SVG 图片宽高比修复工具
+### 12. fix_image_aspect.py — SVG Image Aspect Ratio Fix Tool
 
-解决 SVG 中 `<image>` 元素在 PowerPoint「转换为形状」时图片拉伸变形的问题。
+Solves the problem of `<image>` elements in SVG being stretched when using "Convert to Shape" in PowerPoint.
 
-**问题**: PowerPoint 在将 SVG 转换为可编辑形状时，会忽略 `preserveAspectRatio` 属性，导致图片被拉伸以填满指定的 width/height 区域。
+**Problem**: When PowerPoint converts SVG to editable shapes, it ignores the `preserveAspectRatio` attribute, causing images to be stretched to fill the specified width/height area.
 
-**解决方案**: 
-1. 读取图片的原始宽高比
-2. 根据 `preserveAspectRatio` 模式（meet/slice）计算正确的 x, y, width, height
-3. 移除 `preserveAspectRatio` 属性，用精确计算的尺寸替代
+**Solution**:
+1. Read the image's original aspect ratio
+2. Calculate the correct x, y, width, height based on the `preserveAspectRatio` mode (meet/slice)
+3. Remove the `preserveAspectRatio` attribute, replacing it with precisely calculated dimensions
 
-**用法**:
+**Usage**:
 
 ```bash
-# 处理单个 SVG 文件
+# Process a single SVG file
 python3 scripts/fix_image_aspect.py path/to/slide.svg
 
-# 处理多个文件
+# Process multiple files
 python3 scripts/fix_image_aspect.py 01_cover.svg 02_toc.svg 03_content.svg
 
-# 预览模式（不修改文件）
+# Preview mode (does not modify files)
 python3 scripts/fix_image_aspect.py --dry-run path/to/slide.svg
 
-# 通过 finalize_svg.py 自动处理（推荐）
-python3 scripts/finalize_svg.py <项目路径>
+# Process automatically via finalize_svg.py (recommended)
+python3 scripts/finalize_svg.py <project_path>
 ```
 
-**依赖**:
+**Dependencies**:
 
 ```bash
-pip install Pillow  # 用于读取图片尺寸（推荐安装）
+pip install Pillow  # For reading image dimensions (recommended)
 ```
 
-> **注意**: 如果没有安装 Pillow，工具会尝试用基本方法读取 PNG/JPEG 的头信息，但建议安装以获得更好的兼容性。
+> **Note**: If Pillow is not installed, the tool will attempt to read PNG/JPEG header information using basic methods, but installing Pillow is recommended for better compatibility.
 
-**使用场景**:
+**Use Cases**:
 
-当你需要在 PowerPoint 中将 SVG「转换为形状」进行编辑，且 SVG 中包含图片时，使用此工具可以防止图片拉伸变形。
+When you need to "Convert to Shape" in PowerPoint for editing and the SVG contains images, use this tool to prevent image stretching.
 
-**已集成到 finalize_svg.py**:
+**Integrated into finalize_svg.py**:
 
-此工具已作为 `finalize_svg.py` 的处理步骤之一（`fix-aspect`），默认自动执行。
+This tool is already included as one of the processing steps in `finalize_svg.py` (`fix-aspect`) and runs automatically by default.
 
 ---
 
-### 13. gemini_watermark_remover.py — Gemini 水印去除工具
+### 13. gemini_watermark_remover.py — Gemini Watermark Removal Tool
 
-去除 Gemini 生成图片右下角的水印 Logo。使用逆向混合算法还原原始像素。
+Removes the watermark logo from the bottom-right corner of Gemini-generated images. Uses a reverse blending algorithm to restore original pixels.
 
-**功能**:
+**Features**:
 
-- 自动检测水印尺寸（大图 96px，小图 48px）
-- 支持 PNG、JPG、JPEG 格式
-- 使用逆向混合算法精确还原原始像素
-- 输出文件默认添加 `_unwatermarked` 后缀
+- Auto-detect watermark size (96px for large images, 48px for small images)
+- Support PNG, JPG, JPEG formats
+- Use reverse blending algorithm for precise original pixel restoration
+- Output files default to adding an `_unwatermarked` suffix
 
-**用法**:
+**Usage**:
 
 ```bash
-# 处理单张图片
-python3 scripts/gemini_watermark_remover.py <图片路径>
+# Process a single image
+python3 scripts/gemini_watermark_remover.py <image_path>
 
-# 指定输出文件
-python3 scripts/gemini_watermark_remover.py <图片路径> -o 输出路径.png
+# Specify output file
+python3 scripts/gemini_watermark_remover.py <image_path> -o output_path.png
 
-# 静默模式
-python3 scripts/gemini_watermark_remover.py <图片路径> -q
+# Silent mode
+python3 scripts/gemini_watermark_remover.py <image_path> -q
 ```
 
-**示例**:
+**Examples**:
 
 ```bash
-# 处理 Gemini 生成的图片
+# Process a Gemini-generated image
 python3 scripts/gemini_watermark_remover.py projects/demo/images/bg_01.png
 
-# 指定输出路径
+# Specify output path
 python3 scripts/gemini_watermark_remover.py image.jpg -o image_clean.jpg
 ```
 
-**水印检测规则**:
+**Watermark Detection Rules**:
 
-| 图片尺寸 | 水印尺寸 | 边距 |
-|----------|----------|------|
+| Image Size | Watermark Size | Margin |
+|------------|----------------|--------|
 | > 1024×1024 | 96×96 | 64px |
 | ≤ 1024×1024 | 48×48 | 32px |
 
-**依赖**:
+**Dependencies**:
 
 ```bash
 pip install Pillow numpy
 ```
 
-**注意**:
+**Notes**:
 
-- 此工具需要 `scripts/assets/` 目录下的 `bg_48.png` 和 `bg_96.png` 水印背景图
-- 处理后的图片会在原位置生成，添加 `_unwatermarked` 后缀
+- This tool requires `bg_48.png` and `bg_96.png` watermark background images in the `scripts/assets/` directory
+- Processed images are generated at the original location with an `_unwatermarked` suffix
 
 ---
 
-### 14. nano_banana_gen.py — Nano Banana 图像生成工具
+### 14. nano_banana_gen.py — Nano Banana Image Generation Tool
 
-利用 Google GenAI API 调用 Gemini 模型生成高质量图片素材。
+Uses the Google GenAI API to call Gemini models for generating high-quality image assets.
 
-**功能**:
+**Features**:
 
-- **高分辨率**: 支持最高 4K 分辨率生成
-- **自定义宽高比**: 支持 `16:9`, `4:3`, `1:1`, `9:16` 等主流比例
-- **提示词工程**: 内置负面提示词支持，自动优化生成质量
-- **自动保存**: 自动根据提示词命名并保存为 PNG 格式
+- **High resolution**: Supports up to 4K resolution generation
+- **Custom aspect ratio**: Supports mainstream ratios including `16:9`, `4:3`, `1:1`, `9:16`, etc.
+- **Prompt engineering**: Built-in negative prompt support with automatic quality optimization
+- **Auto-save**: Automatically names and saves output as PNG format based on the prompt
 
-**用法**:
+**Usage**:
 
 ```bash
-# 生成默认图片
+# Generate a default image
 python3 scripts/nano_banana_gen.py "A modern futuristic workspace"
 
-# 指定宽高比和尺寸
+# Specify aspect ratio and size
 python3 scripts/nano_banana_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
 
-# 指定输出目录
+# Specify output directory
 python3 scripts/nano_banana_gen.py "Concept car" -o projects/demo/images
 
-# 使用负面提示词
+# Use negative prompt
 python3 scripts/nano_banana_gen.py "Beautiful landscape" -n "low quality, blurry, watermark"
 ```
 
-**参数说明**:
+**Parameter Reference**:
 
-| 参数 | 缩写 | 默认值 | 可选值 |
-|------|------|--------|--------|
-| `prompt` | - | Nano Banana | 提示词字符串 |
-| `--negative_prompt` | `-n` | None | 负面提示词 |
-| `--aspect_ratio` | - | `1:1` | `1:1`, `16:9`, `4:3`, `3:2`, `9:16`, `21:9` 等 |
+| Parameter | Shorthand | Default | Options |
+|-----------|-----------|---------|---------|
+| `prompt` | - | Nano Banana | Prompt string |
+| `--negative_prompt` | `-n` | None | Negative prompt |
+| `--aspect_ratio` | - | `1:1` | `1:1`, `16:9`, `4:3`, `3:2`, `9:16`, `21:9`, etc. |
 | `--image_size` | - | `4K` | `1K`, `2K`, `4K` |
-| `--output` | `-o` | 当前工作目录 | 图片保存目录 |
+| `--output` | `-o` | Current working directory | Image save directory |
 
-**环境变量配置**:
+**Environment Variable Configuration**:
 
-使用前需设置环境变量：
+Set the following environment variables before use:
 
 ```bash
-# 必需：Gemini API Key
+# Required: Gemini API Key
 export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
 
-# 可选：自定义 API 端点（用于代理服务）
+# Optional: Custom API endpoint (for proxy services)
 export GEMINI_BASE_URL="YOUR_API_BASE_URL"
 ```
 
-> 💡 **提示**: 可将环境变量添加到 `~/.zshrc` 或 `~/.bashrc` 中永久生效。
+> **Tip**: You can add environment variables to `~/.zshrc` or `~/.bashrc` for persistent configuration.
 
-**依赖**:
+**Dependencies**:
 
 ```bash
 pip install google-genai
@@ -1238,137 +1238,137 @@ pip install google-genai
 
 ---
 
-### 15. embed_icons.py — SVG 图标嵌入工具
+### 15. embed_icons.py — SVG Icon Embedding Tool
 
-将 SVG 文件中的图标占位符 (`<use ...>`) 替换为实际的图标路径数据，实现图标的“零依赖”嵌入。
+Replaces icon placeholders (`<use ...>`) in SVG files with actual icon path data, achieving "zero-dependency" icon embedding.
 
-**功能**:
+**Features**:
 
-- 扫描 `<use data-icon="...">` 占位符
-- 从图标库（默认 `templates/icons/`）读取对应 SVG 图标
-- 嵌入为 `<g>` 组并应用位置、大小和颜色
-- 支持批量处理
+- Scan `<use data-icon="...">` placeholders
+- Read corresponding SVG icons from the icon library (default `templates/icons/`)
+- Embed as `<g>` groups with applied position, size, and color
+- Support batch processing
 
-**用法**:
+**Usage**:
 
 ```bash
-# 处理单个文件
+# Process a single file
 python3 scripts/embed_icons.py output.svg
 
-# 处理整个目录
+# Process an entire directory
 python3 scripts/embed_icons.py svg_output/*.svg
 
-# 预览模式
+# Preview mode
 python3 scripts/embed_icons.py --dry-run svg_output/*.svg
 ```
 
 ---
 
-## 工作流集成
+## Workflow Integration
 
-### 典型工作流程
+### Typical Workflow
 
-1. **创建新项目**
+1. **Create a new project**
 
    ```bash
    python3 scripts/project_manager.py init my_project --format ppt169
    ```
 
-2. **编辑设计规范**
-   编辑生成的 `设计规范与内容大纲.md` 文件
+2. **Edit the Design Specification & Content Outline**
+   Edit the generated `design_spec.md` file
 
-3. **生成 SVG 文件**
-   使用 AI 角色（Strategist → Executor → Optimizer）生成 SVG 并保存到 `svg_output/`
+3. **Generate SVG files**
+   Use AI roles (Strategist → Executor → Optimizer) to generate SVGs and save to `svg_output/`
 
-4. **后处理（默认执行全部）**
+4. **Post-processing (runs all steps by default)**
 
    ```bash
-   # 直接运行，无需参数
+   # Just run it, no extra parameters needed
    python3 scripts/finalize_svg.py projects/my_project_ppt169_20251116
    ```
 
-5. **导出为 PPTX**
+5. **Export to PPTX**
 
    ```bash
    python3 scripts/svg_to_pptx.py projects/my_project_ppt169_20251116 -s final
    ```
 
-6. **（可选）验证项目**
+6. **(Optional) Validate the project**
 
    ```bash
    python3 scripts/project_manager.py validate projects/my_project_ppt169_20251116
    ```
 
-### 批量操作
+### Batch Operations
 
-**批量验证项目**:
+**Batch validate projects**:
 
 ```bash
-# 验证所有示例项目
+# Validate all example projects
 python3 scripts/batch_validate.py examples
 
-# 验证并导出报告
+# Validate and export report
 python3 scripts/batch_validate.py examples --export
 ```
 
-**批量检查 SVG 质量**:
+**Batch check SVG quality**:
 
 ```bash
-# 检查所有示例项目的 SVG
+# Check SVGs in all example projects
 python3 scripts/svg_quality_checker.py --all examples
 
-# 导出质量报告
+# Export quality report
 python3 scripts/svg_quality_checker.py --all examples --export
 ```
 
-## 依赖要求
+## Dependency Requirements
 
-大部分工具使用 Python 3 标准库，无需额外依赖。
+Most tools use the Python 3 standard library and require no additional dependencies.
 
-**最低 Python 版本**: Python 3.6+
+**Minimum Python Version**: Python 3.6+
 
-**可选依赖**:
+**Optional Dependencies**:
 
-- `python-pptx` — SVG 转 PPTX 功能需要
-- `Pillow` — 图片宽高比修复、水印去除功能需要
-- `numpy` — 水印去除功能需要
+- `python-pptx` — Required for SVG to PPTX conversion
+- `Pillow` — Required for image aspect ratio fixing and watermark removal
+- `numpy` — Required for watermark removal
 
-安装依赖：
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
-# 或单独安装
+# Or install individually
 pip install python-pptx
 ```
 
-## 故障排除
+## Troubleshooting
 
-### 问题：项目验证失败
+### Issue: Project Validation Failed
 
-**解决方案**:
+**Solution**:
 
-1. 运行 `python3 scripts/project_manager.py validate <path>` 查看详细错误
-2. 根据错误提示修复缺失的文件或目录
-3. 参考 `projects/README.md` 了解标准结构
+1. Run `python3 scripts/project_manager.py validate <path>` to see detailed errors
+2. Fix missing files or directories based on the error messages
+3. Refer to `projects/README.md` for the standard structure
 
-### 问题：SVG 预览显示不正常
+### Issue: SVG Preview Not Displaying Correctly
 
-**解决方案**:
+**Solution**:
 
-1. 确保 SVG 文件路径正确
-2. 检查 SVG 文件命名是否符合规范（`slide_XX_name.svg`）
-3. 使用本地服务器预览：`python3 -m http.server --directory <svg_output_path> 8000`
+1. Ensure the SVG file path is correct
+2. Check that SVG filenames follow the naming convention (`slide_XX_name.svg`)
+3. Use a local server for preview: `python3 -m http.server --directory <svg_output_path> 8000`
 
-## 相关文档
+## Related Documentation
 
-- [工作流教程](../../AGENTS.md)
-- [快速参考](../../AGENTS.md)
-- [AGENTS 指南](../AGENTS.md)
+- [Workflow Tutorial](../../AGENTS.md)
+- [Quick Reference](../../AGENTS.md)
+- [AGENTS Guide](../AGENTS.md)
 
 ---
 
-_最后更新: 2026-02-03_
+_Last updated: 2026-02-03_
 
-_nano_banana_gen.py 文档更新: 2026-02-03_
+_nano_banana_gen.py documentation updated: 2026-02-03_
 
-_gemini_watermark_remover.py 文档更新: 2025-12-20_
+_gemini_watermark_remover.py documentation updated: 2025-12-20_

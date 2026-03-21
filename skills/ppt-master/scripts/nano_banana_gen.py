@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
 Nano Banana Image Generator (Gemini Nano)
-通过 Google GenAI API (Gemini) 生成高质量图片的工具。
+A tool for generating high-quality images via the Google GenAI API (Gemini).
 
-环境变量:
-  GEMINI_API_KEY   (必需) Gemini API Key，从 https://aistudio.google.com/apikey 获取
-  GEMINI_BASE_URL  (可选) 自定义 API 端点，用于代理服务
+Environment variables:
+  GEMINI_API_KEY   (required) Gemini API Key, obtained from https://aistudio.google.com/apikey
+  GEMINI_BASE_URL  (optional) Custom API endpoint for proxy services
 
-  配置示例:
+  Configuration example:
     export GEMINI_API_KEY="your-api-key"
-    export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"   # 仅代理时需要
+    export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"   # Only needed when using a proxy
 
-连接方式:
-  - 无 GEMINI_BASE_URL → 直连 Google 官方 API
-  - 有 GEMINI_BASE_URL → 通过代理 API (使用相同的 Official 协议)
+Connection modes:
+  - Without GEMINI_BASE_URL -> Direct connection to the official Google API
+  - With GEMINI_BASE_URL -> Via proxy API (using the same Official protocol)
 
-依赖:
+Dependencies:
   pip install google-genai Pillow
 """
 
@@ -26,7 +26,7 @@ import argparse
 from google import genai
 from google.genai import types
 
-# 可选依赖: PIL (用于报告图片分辨率)
+# Optional dependency: PIL (used to report image resolution)
 try:
     from PIL import Image as PILImage
     HAS_PIL = True
@@ -38,23 +38,23 @@ except ImportError:
 # ║  Constants                                                      ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-# Gemini 3.1 Flash Image 支持的全部宽高比 (含新增的 1:4, 4:1, 1:8, 8:1)
+# All aspect ratios supported by Gemini 3.1 Flash Image (including new 1:4, 4:1, 1:8, 8:1)
 VALID_ASPECT_RATIOS = [
     "1:1", "1:4", "1:8",
     "2:3", "3:2", "3:4", "4:1", "4:3",
     "4:5", "5:4", "8:1", "9:16", "16:9", "21:9"
 ]
 
-# 官方文档: "512px", "1K", "2K", "4K" (必须大写 K)
+# Official docs: "512px", "1K", "2K", "4K" (K must be uppercase)
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
-# 默认模型
+# Default model
 DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
 
-# 重试配置
-MAX_RETRIES = 3          # 最大重试次数
-RETRY_BASE_DELAY = 10    # 首次重试等待 (秒)
-RETRY_BACKOFF = 2        # 指数退避倍数
+# Retry configuration
+MAX_RETRIES = 3          # Maximum number of retries
+RETRY_BASE_DELAY = 10    # Initial retry wait (seconds)
+RETRY_BACKOFF = 2        # Exponential backoff multiplier
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -62,7 +62,7 @@ RETRY_BACKOFF = 2        # 指数退避倍数
 # ╚══════════════════════════════════════════════════════════════════╝
 
 def save_binary_file(file_name: str, data: bytes):
-    """保存二进制数据到文件"""
+    """Save binary data to a file"""
     with open(file_name, "wb") as f:
         f.write(data)
     print(f"File saved to: {file_name}")
@@ -70,7 +70,7 @@ def save_binary_file(file_name: str, data: bytes):
 
 def _resolve_output_path(prompt: str, output_dir: str = None,
                          filename: str = None, ext: str = ".png") -> str:
-    """根据参数计算最终的输出文件路径"""
+    """Compute the final output file path based on parameters"""
     if filename:
         file_name = os.path.splitext(filename)[0]
     else:
@@ -87,8 +87,8 @@ def _resolve_output_path(prompt: str, output_dir: str = None,
 
 def _normalize_image_size(image_size: str) -> str:
     """
-    大小写容错: 将用户输入规范化为 API 接受的格式。
-    例: "2k" → "2K", "4k" → "4K", "512PX" → "512px"
+    Case-insensitive normalization: normalize user input to API-accepted format.
+    e.g.: "2k" -> "2K", "4k" -> "4K", "512PX" -> "512px"
     """
     s = image_size.strip()
     upper = s.upper()
@@ -100,7 +100,7 @@ def _normalize_image_size(image_size: str) -> str:
 
 
 def _report_resolution(path: str):
-    """尝试用 PIL 报告图片分辨率"""
+    """Try to report image resolution using PIL"""
     if HAS_PIL:
         try:
             img = PILImage.open(path)
@@ -110,13 +110,13 @@ def _report_resolution(path: str):
 
 
 def _is_rate_limit_error(e: Exception) -> bool:
-    """判断异常是否为速率限制 (429) 错误"""
+    """Check whether the exception is a rate limit (429) error"""
     err_str = str(e).lower()
     return "429" in err_str or "rate" in err_str or "quota" in err_str or "resource_exhausted" in err_str
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  Image Generation — 统一生成逻辑 (Official / Proxy)              ║
+# ║  Image Generation — Unified generation logic (Official / Proxy)  ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
@@ -124,24 +124,24 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = None) -> str:
     """
-    统一图像生成函数 (流式)。
+    Unified image generation function (streaming).
 
-    根据 base_url 是否存在自动选择连接方式:
-      - 无 base_url → 直连 Google 官方 API
-      - 有 base_url → 通过代理 API (使用相同的 Official 协议)
+    Automatically selects connection mode based on whether base_url is provided:
+      - Without base_url -> Direct connection to the official Google API
+      - With base_url -> Via proxy API (using the same Official protocol)
 
-    使用 generate_content_stream 实现流式接收，提供实时进度反馈：
-      - 显示已等待时长
-      - 收到 chunk 时显示编号和数据大小
-      - 保留最后一个 image chunk（最高质量）
+    Uses generate_content_stream for streaming reception with real-time progress feedback:
+      - Displays elapsed time
+      - Shows chunk number and data size when a chunk is received
+      - Keeps the last image chunk (highest quality)
 
     Returns:
-        保存的图片文件路径
+        Path of the saved image file
 
     Raises:
-        RuntimeError: 生成失败时
+        RuntimeError: When generation fails
     """
-    # 根据是否有 base_url 创建 client
+    # Create client based on whether base_url is provided
     if base_url:
         client = genai.Client(api_key=api_key, http_options={'base_url': base_url})
     else:
@@ -159,7 +159,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
             image_size=image_size,
         ),
     }
-    # ThinkingConfig 仅 flash 系列模型支持
+    # ThinkingConfig is only supported by flash series models
     if "flash" in model.lower():
         config_kwargs["thinking_config"] = types.ThinkingConfig(
             thinking_level="MINIMAL",
@@ -249,30 +249,30 @@ def generate(prompt: str, negative_prompt: str = None,
              model: str = DEFAULT_MODEL,
              max_retries: int = MAX_RETRIES) -> str:
     """
-    图像生成入口函数（带自动重试）。
+    Image generation entry point (with automatic retry).
 
-    根据环境变量 GEMINI_BASE_URL 是否存在，自动选择连接方式:
-      - 无 GEMINI_BASE_URL → 直连 Google 官方 API
-      - 有 GEMINI_BASE_URL → 通过代理 API (使用相同的 Official 协议)
+    Automatically selects connection mode based on the GEMINI_BASE_URL environment variable:
+      - Without GEMINI_BASE_URL -> Direct connection to the official Google API
+      - With GEMINI_BASE_URL -> Via proxy API (using the same Official protocol)
 
-    遇到 429 Rate Limit 错误时自动指数退避重试。
+    Automatically retries with exponential backoff on 429 Rate Limit errors.
 
     Args:
-        prompt: 正向提示词
-        negative_prompt: 负面提示词
-        aspect_ratio: 宽高比
-        image_size: 图片尺寸 ("512px", "1K", "2K", "4K", 大小写不敏感)
-        output_dir: 输出目录
-        filename: 输出文件名 (不含扩展名)
-        model: 模型名称 (默认 gemini-3.1-flash-image-preview)
-        max_retries: 最大重试次数
+        prompt: Positive prompt text
+        negative_prompt: Negative prompt text
+        aspect_ratio: Aspect ratio
+        image_size: Image size ("512px", "1K", "2K", "4K", case-insensitive)
+        output_dir: Output directory
+        filename: Output filename (without extension)
+        model: Model name (default gemini-3.1-flash-image-preview)
+        max_retries: Maximum number of retries
 
     Returns:
-        保存的图片文件路径
+        Path of the saved image file
 
     Raises:
-        ValueError: 参数不合法时
-        RuntimeError: 生成失败且重试耗尽时
+        ValueError: When parameters are invalid
+        RuntimeError: When generation fails after all retries are exhausted
     """
     api_key = os.environ.get("GEMINI_API_KEY")
     base_url = os.environ.get("GEMINI_BASE_URL")
@@ -280,7 +280,7 @@ def generate(prompt: str, negative_prompt: str = None,
     if not api_key:
         raise ValueError("GEMINI_API_KEY environment variable is not set.")
 
-    # 大小写容错
+    # Case-insensitive normalization
     image_size = _normalize_image_size(image_size)
 
     # Validate inputs

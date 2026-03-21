@@ -101,7 +101,7 @@ function parseHTML(html) {
   // Extract title
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   let title = titleMatch ? decodeHTMLEntities(titleMatch[1].trim()) : "";
-  // Clean title - remove site name suffix
+  // Clean title - remove site name suffix (e.g. Chinese government portal names)
   title = title.replace(/[-_|].*?(政府|门户|网站|委员会).*$/g, "").trim();
 
   // Extract meta tags

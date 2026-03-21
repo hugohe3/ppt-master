@@ -1,109 +1,109 @@
-> 📎 公共技术约束见 shared-standards.md
+> See shared-standards.md for common technical constraints.
 
-# SVG 图片嵌入指南
+# SVG Image Embedding Guide
 
-在 SVG 文件中添加图片的技术规范和推荐工作流。
+Technical specifications and recommended workflow for adding images to SVG files.
 
 ---
 
-## 图片资源清单格式
+## Image Resource List Format
 
-在《设计规范与内容大纲》中定义，每张图片标注状态。若图片方案包含「B) 用户提供」，需在 Strategist 阶段完成八项确认后立即运行 `analyze_images.py`，并在输出设计规范前完成清单填充。
+Defined in the Design Specification & Content Outline; each image has a status annotation. If the image approach includes "B) User-provided", you must run `analyze_images.py` immediately after the Strategist completes the Eight Confirmations, and complete the list before outputting the design spec.
 
 ```markdown
-| 文件名 | 尺寸 | 用途 | 状态 | 生成描述 |
-|--------|------|------|------|----------|
-| cover_bg.png | 1280x720 | 封面背景 | 待生成 | 现代科技感抽象背景，深蓝渐变 |
-| product.png | 600x400 | 第3页 | 已有 | - |
-| team.png | 600x400 | 第5页 | 占位符 | 团队协作场景（后期补充） |
+| Filename | Dimensions | Purpose | Status | Generation Description |
+|----------|-----------|---------|--------|----------------------|
+| cover_bg.png | 1280x720 | Cover background | Pending | Modern tech abstract background, deep blue gradient |
+| product.png | 600x400 | Page 3 | Existing | - |
+| team.png | 600x400 | Page 5 | Placeholder | Team collaboration scene (to be added later) |
 ```
 
-### 三种状态的处理
+### Three Status Types
 
-| 状态 | 含义 | Executor 处理方式 |
-|------|------|-------------------|
-| **待生成** | 需 AI 生成，有描述 | 先生成图片放入 `images/`，再用 `<image>` 引用 |
-| **已有** | 用户已有图片 | 放入 `images/`，用 `<image>` 引用 |
-| **占位符** | 暂不处理 | 用虚线框占位，后期替换 |
+| Status | Meaning | Executor Handling |
+|--------|---------|-------------------|
+| **Pending** | Needs AI generation, has description | Generate image first into `images/`, then reference with `<image>` |
+| **Existing** | User already has image | Place in `images/`, reference with `<image>` |
+| **Placeholder** | Not yet processed | Use dashed border placeholder; replace later |
 
 ---
 
-## 工作流程
+## Workflow
 
 ```
-1. Strategist 定义图片需求 → 添加图片资源清单，标注每张状态
-2. 图片准备（待生成/已有）→ 放入 项目/images/
-3. Executor 生成 SVG（svg_output/）
-   ├── 已有/待生成 → <image href="../images/xxx.png" .../>
-   └── 占位符 → 虚线框 + 描述文本
-4. 预览：python3 -m http.server -d <项目路径> 8000 → /svg_output/<文件名>.svg
-5. 后处理与导出
-   ├── python3 scripts/finalize_svg.py <项目路径>
-   └── python3 scripts/svg_to_pptx.py <项目路径> -s final
+1. Strategist defines image needs → Add image resource list, annotate each status
+2. Image preparation (pending/existing) → Place in project/images/
+3. Executor generates SVGs (svg_output/)
+   ├── Existing/Pending → <image href="../images/xxx.png" .../>
+   └── Placeholder → Dashed border + description text
+4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
+5. Post-processing & Export
+   ├── python3 scripts/finalize_svg.py <project_path>
+   └── python3 scripts/svg_to_pptx.py <project_path> -s final
 ```
 
-> 推荐：生成阶段在 `svg_output/` 保留外部引用，后处理通过 `finalize_svg.py` 自动嵌入图片到 `svg_final/`，再从 `svg_final/` 导出 PPTX。
+> Recommended: During generation, keep external references in `svg_output/`. Post-processing via `finalize_svg.py` auto-embeds images into `svg_final/`, then export PPTX from `svg_final/`.
 
 ---
 
-## 外部引用 vs Base64 内嵌
+## External Reference vs Base64 Embedding
 
-| 方式 | 优点 | 缺点 | 适用场景 |
-|------|------|------|----------|
-| **外部引用** | 文件小、迭代快、便于替换 | 预览需从项目根起 HTTP 服务 | `svg_output/` 开发阶段 |
-| **Base64 内嵌** | 文件独立、导出稳定 | 文件体积大 | `svg_final/` 交付阶段 |
+| Method | Pros | Cons | Suitable For |
+|--------|------|------|-------------|
+| **External reference** | Small file size, fast iteration, easy to replace | Preview requires HTTP server from project root | `svg_output/` development phase |
+| **Base64 embedding** | Self-contained file, stable export | Large file size | `svg_final/` delivery phase |
 
 ---
 
-## 方式一：外部引用（生成阶段推荐）
+## Method 1: External Reference (Recommended for Generation Phase)
 
-### 语法
+### Syntax
 
 ```xml
 <image href="../images/image.png" x="0" y="0" width="1280" height="720"
        preserveAspectRatio="xMidYMid slice"/>
 ```
 
-### 关键属性
+### Key Attributes
 
-| 属性 | 说明 | 示例 |
-|------|------|------|
-| `href` | 图片路径（相对或绝对） | `"../images/cover.png"` |
-| `x`, `y` | 图片左上角位置 | `x="0" y="0"` |
-| `width`, `height` | 图片显示尺寸 | `width="1280" height="720"` |
-| `preserveAspectRatio` | 缩放方式 | `"xMidYMid slice"` |
+| Attribute | Description | Example |
+|-----------|-------------|---------|
+| `href` | Image path (relative or absolute) | `"../images/cover.png"` |
+| `x`, `y` | Image top-left corner position | `x="0" y="0"` |
+| `width`, `height` | Image display dimensions | `width="1280" height="720"` |
+| `preserveAspectRatio` | Scaling mode | `"xMidYMid slice"` |
 
-### preserveAspectRatio 常用值
+### preserveAspectRatio Common Values
 
-| 值 | 效果 |
-|----|------|
-| `xMidYMid slice` | 居中裁剪（类似 CSS `cover`） |
-| `xMidYMid meet` | 完整显示（类似 CSS `contain`） |
-| `none` | 拉伸填满，不保持比例 |
+| Value | Effect |
+|-------|--------|
+| `xMidYMid slice` | Center crop (similar to CSS `cover`) |
+| `xMidYMid meet` | Complete display (similar to CSS `contain`) |
+| `none` | Stretch to fill, no aspect ratio preservation |
 
-### 预览方式
+### Preview Method
 
-浏览器安全限制下，直接双击 SVG 无法加载外部图片。从项目根目录启动 HTTP 服务器：
+Browser security restrictions prevent loading external images from directly opened SVGs. Start an HTTP server from the project root:
 
 ```bash
-python3 -m http.server -d <项目路径> 8000
-# 访问 http://localhost:8000/svg_output/your_file.svg
+python3 -m http.server -d <project_path> 8000
+# Visit http://localhost:8000/svg_output/your_file.svg
 ```
 
 ---
 
-## 方式二：Base64 内嵌（交付阶段推荐）
+## Method 2: Base64 Embedding (Recommended for Delivery Phase)
 
-### 语法
+### Syntax
 
 ```xml
 <image href="data:image/png;base64,iVBORw0KGgo..." x="0" y="0" width="1280" height="720"/>
 ```
 
-### MIME 类型
+### MIME Types
 
-| MIME 类型 | 文件格式 |
-|-----------|----------|
+| MIME Type | File Format |
+|-----------|-------------|
 | `image/png` | PNG |
 | `image/jpeg` | JPG/JPEG |
 | `image/gif` | GIF |
@@ -112,66 +112,66 @@ python3 -m http.server -d <项目路径> 8000
 
 ---
 
-## 转换流程
+## Conversion Process
 
-### 推荐：统一走 finalize_svg.py
+### Recommended: Use finalize_svg.py (Unified Pipeline)
 
 ```bash
-python3 scripts/finalize_svg.py <项目路径>        # 图标、图片、文本、圆角一次处理
-python3 scripts/svg_to_pptx.py <项目路径> -s final # 从最终版本导出 PPTX
+python3 scripts/finalize_svg.py <project_path>         # Icons, images, text, rounded rects — all in one pass
+python3 scripts/svg_to_pptx.py <project_path> -s final  # Export PPTX from final version
 ```
 
-### 独立使用 embed_images.py（高级用法）
+### Standalone: embed_images.py (Advanced Usage)
 
-仅处理特定 SVG 而不跑完整后处理时：
+For processing specific SVGs without running the full pipeline:
 
 ```bash
-python3 scripts/embed_images.py <svg文件>                        # 单个
-python3 scripts/embed_images.py <项目路径>/svg_output/*.svg      # 批量
-python3 scripts/embed_images.py --dry-run <项目路径>/svg_output/*.svg  # 预览
+python3 scripts/embed_images.py <svg_file>                         # Single file
+python3 scripts/embed_images.py <project_path>/svg_output/*.svg    # Batch
+python3 scripts/embed_images.py --dry-run <project_path>/svg_output/*.svg  # Preview
 ```
 
 ---
 
-## 最佳实践
+## Best Practices
 
-### 图片优化
+### Image Optimization
 
-嵌入前压缩图片以减少文件体积：
+Compress images before embedding to reduce file size:
 
 ```bash
 convert input.png -quality 85 -resize 1920x1080\> output.png  # ImageMagick
-pngquant --quality=65-80 input.png -o output.png               # pngquant（推荐）
+pngquant --quality=65-80 input.png -o output.png               # pngquant (recommended)
 ```
 
-### 文件组织
+### File Organization
 
 ```
 project/
-├── images/            # 图片资源
-├── sources/           # 源文件及其附带图片
+├── images/            # Image assets
+├── sources/           # Source files and their accompanying images
 │   └── article_files/
-├── svg_output/        # 原始版本（外部引用）
-└── svg_final/         # 最终版本（已嵌入图片）
+├── svg_output/        # Raw version (external references)
+└── svg_final/         # Final version (images embedded)
 ```
 
-### 圆角处理（禁止 clipPath）
+### Rounded Corner Handling (clipPath Forbidden)
 
-由于 `clipPath` 在 PPT 中不兼容，禁止使用裁剪路径为图片加圆角。替代方案：
-- 生成图片时直接处理圆角（导出为带圆角的 PNG）
-- 或用同尺寸圆角矩形覆盖边缘（视觉模拟）
+Since `clipPath` is incompatible with PPT, clipping paths for image rounded corners are FORBIDDEN. Alternatives:
+- Process rounded corners during image generation (export PNG with rounded corners)
+- Or overlay a same-size rounded rectangle over the edges (visual simulation)
 
 ---
 
-## 常见问题
+## FAQ
 
-**Q: 直接打开 SVG 看不到图片？**
-浏览器安全策略阻止跨目录请求。从项目根目录启动 HTTP 服务器，或先运行 `finalize_svg.py` 再查看 `svg_final/`。
+**Q: Can't see images when opening SVG directly?**
+Browser security policy blocks cross-directory requests. Start an HTTP server from the project root, or run `finalize_svg.py` first then view from `svg_final/`.
 
-**Q: Base64 文件太大？**
-压缩原始图片、使用 JPEG 格式、降低分辨率（匹配实际显示尺寸即可）。
+**Q: Base64 file too large?**
+Compress the original image, use JPEG format, reduce resolution (match actual display dimensions).
 
-**Q: 如何反向提取 Base64 图片？**
+**Q: How to reverse-extract a Base64 image?**
 ```bash
 base64 -d image.b64 > image.png
 ```

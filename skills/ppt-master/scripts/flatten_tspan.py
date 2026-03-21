@@ -164,17 +164,17 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         return el.tag == f"{{{SVG_NS}}}{name}"
 
     def is_new_line_tspan(tspan):
-        """判断 tspan 是否表示换行（有独立 y 或非零 dy）"""
+        """Determine whether a tspan represents a new line (has its own y or non-zero dy)."""
         t_dy_attr = get_attr(tspan, "dy")
         t_y_attr = get_attr(tspan, "y")
         t_x_attr = get_attr(tspan, "x")
         dy_val = parse_first_number(t_dy_attr) if t_dy_attr is not None else None
-        # 有独立 y 属性，或有非零 dy，或有独立 x 属性（表示新行开始）
+        # Has its own y attribute, or has non-zero dy, or has its own x attribute (indicating a new line)
         if t_y_attr is not None:
             return True
         if dy_val is not None and dy_val != 0:
             return True
-        # 如果 tspan 有 x 属性且前面还有同级 tspan，也认为是新行
+        # If tspan has an x attribute and there are preceding sibling tspans, treat it as a new line
         if t_x_attr is not None:
             return True
         return False
@@ -192,7 +192,7 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
         if parent is None:
             continue
 
-        # 先检查是否有任何 tspan 需要扁平化（有 dy 且 dy != 0，或有独立的 y 属性）
+        # First check whether any tspan needs flattening (dy != 0 or has its own y attribute)
         needs_flatten = False
         for child in list(text_el):
             if not is_svg_tag(child, "tspan"):
@@ -201,7 +201,7 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
                 needs_flatten = True
                 break
         
-        # 如果没有任何 tspan 需要换行，跳过整个 text 元素
+        # If no tspan needs a line break, skip the entire text element
         if not needs_flatten:
             continue
 
@@ -211,7 +211,7 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
 
         new_texts = []
         
-        # 用于收集同一行的 tspan 元素
+        # Collect tspan elements belonging to the same line
         current_line_tspans = []
         current_line_lead_text = None
         
@@ -226,9 +226,9 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
 
             content = collect_text_content(child)
             
-            # 检查这个 tspan 是否开始了新行
+            # Check whether this tspan starts a new line
             if is_new_line_tspan(child):
-                # 先保存之前积累的同一行 tspans
+                # Save previously accumulated same-line tspans first
                 if current_line_tspans or current_line_lead_text:
                     ne = _create_text_element_from_line(
                         text_el, current_line_lead_text, current_line_tspans, cur_x, cur_y
@@ -237,15 +237,15 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
                     current_line_tspans = []
                     current_line_lead_text = None
                 
-                # 更新位置
+                # Update position
                 nx, ny = compute_line_positions(text_el, child, cur_x, cur_y)
                 cur_x, cur_y = nx, ny
             
-            # 如果内容不为空，添加到当前行
+            # If content is not empty, add to the current line
             if content.strip():
                 current_line_tspans.append(child)
         
-        # 处理最后一行
+        # Process the last line
         if current_line_tspans or current_line_lead_text:
             ne = _create_text_element_from_line(
                 text_el, current_line_lead_text, current_line_tspans, cur_x, cur_y
@@ -275,9 +275,9 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
 
 def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
     """
-    从一行的内容（可能包含前导文本和多个 tspan）创建一个 text 元素。
-    如果只有一个 tspan 且没有前导文本，直接创建简单的 text。
-    如果有多个 tspan 或前导文本，保留 tspan 结构。
+    Create a text element from a line's content (may contain leading text and multiple tspans).
+    If there is only one tspan and no leading text, create a simple text element.
+    If there are multiple tspans or leading text, preserve the tspan structure.
     """
     ne = ET.Element(f"{{{SVG_NS}}}text")
     
@@ -291,7 +291,7 @@ def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
     if p_tf:
         ne.set("transform", p_tf)
     
-    # 如果只有一个 tspan 且没有前导文本，创建简单的 text
+    # If there is only one tspan and no leading text, create a simple text element
     if not lead_text and len(tspans) == 1:
         tspan = tspans[0]
         content = collect_text_content(tspan)
@@ -316,28 +316,28 @@ def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
         
         ne.text = content
     else:
-        # 保留 tspan 结构
+        # Preserve tspan structure
         if lead_text:
             ne.text = lead_text
         
         for tspan in tspans:
-            # 创建新的 tspan，但移除位置相关属性
+            # Create a new tspan, but remove position-related attributes
             new_tspan = ET.SubElement(ne, f"{{{SVG_NS}}}tspan")
             
-            # 复制样式属性
+            # Copy style attributes
             for attr in TEXT_STYLE_ATTRS:
                 cv = tspan.get(attr)
                 if cv is not None:
                     new_tspan.set(attr, cv)
             
-            # 复制 style
+            # Copy style
             if tspan.get("style"):
                 new_tspan.set("style", tspan.get("style"))
             
-            # 复制文本内容
+            # Copy text content
             new_tspan.text = collect_text_content(tspan)
             
-            # 复制 tail（tspan 后面的文本）
+            # Copy tail (text following the tspan)
             if tspan.tail:
                 new_tspan.tail = tspan.tail
     
@@ -380,24 +380,24 @@ def _interactive_get_paths():
     Interactive mode: prompt the user for input path (SVG file or directory)
     and optional output path. Returns (inp, out_base) or (None, None) if cancelled.
     """
-    print("[交互模式] 未提供参数，将以交互方式运行。")
-    print("请输入需要处理的路径（SVG 文件或包含 SVG 的目录）。")
-    print("输入 q 回车可退出。\n")
+    print("[Interactive mode] No arguments provided; running interactively.")
+    print("Please enter the path to process (SVG file or directory containing SVGs).")
+    print("Enter q to quit.\n")
 
     while True:
-        raw = input("输入路径 (file/dir): ").strip()
+        raw = input("Input path (file/dir): ").strip()
         if raw.lower() in {"q", "quit", "exit"} or raw == "":
             return None, None
         inp = os.path.expanduser(raw)
         if os.path.exists(inp):
             break
-        print("路径不存在，请重新输入或输入 q 退出。")
+        print("Path does not exist. Please re-enter or enter q to quit.")
 
     default_out = _compute_default_out_base(inp)
     if os.path.isdir(inp):
-        prompt = f"输出目录 [默认: {default_out}]: "
+        prompt = f"Output directory [default: {default_out}]: "
     else:
-        prompt = f"输出文件 [默认: {default_out}]: "
+        prompt = f"Output file [default: {default_out}]: "
 
     raw_out = input(prompt).strip()
     out_base = os.path.expanduser(raw_out) if raw_out else default_out
@@ -425,7 +425,7 @@ def main():
     if args.interactive or not args.input:
         inp, out_base = _interactive_get_paths()
         if not inp:
-            print("已取消。用法: python scripts/flatten_tspan.py <input_dir_or_svg> [output_dir]")
+            print("Cancelled. Usage: python scripts/flatten_tspan.py <input_dir_or_svg> [output_dir]")
             sys.exit(0)
     else:
         inp = args.input

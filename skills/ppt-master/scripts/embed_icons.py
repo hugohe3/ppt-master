@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-SVG 图标嵌入工具
+SVG Icon Embedding Tool
 
-将 SVG 文件中的图标占位符替换为实际的图标代码。
+Replaces icon placeholders in SVG files with actual icon code.
 
-占位符语法：
+Placeholder syntax:
     <use data-icon="rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 
-替换后：
+After replacement:
     <g transform="translate(100, 200) scale(3)" fill="#0076A8">
       <path d="..."/>
     </g>
 
-用法：
+Usage:
     python3 scripts/embed_icons.py <svg_file> [svg_file2] ...
     python3 scripts/embed_icons.py svg_output/*.svg
 
-选项：
-    --icons-dir <path>    图标目录路径（默认：templates/icons/）
-    --dry-run             仅显示将要替换的内容，不修改文件
-    --verbose             显示详细信息
+Options:
+    --icons-dir <path>    Icon directory path (default: templates/icons/)
+    --dry-run             Only show what would be replaced, without modifying files
+    --verbose             Show detailed information
 """
 
 import os
@@ -29,35 +29,35 @@ import argparse
 from pathlib import Path
 
 
-# 默认图标目录
+# Default icon directory
 DEFAULT_ICONS_DIR = Path(__file__).parent.parent / 'templates' / 'icons'
 
-# 图标基础尺寸
+# Icon base size
 ICON_BASE_SIZE = 16
 
 
 def extract_paths_from_icon(icon_path: Path) -> list[str]:
     """
-    从图标 SVG 文件中提取所有 path 元素
-    
+    Extract all path elements from an icon SVG file.
+
     Args:
-        icon_path: 图标文件路径
-        
+        icon_path: Icon file path
+
     Returns:
-        path 元素列表（不含 fill 属性）
+        List of path elements (without fill attribute)
     """
     if not icon_path.exists():
         return []
     
     content = icon_path.read_text(encoding='utf-8')
     
-    # 匹配所有 <path ... /> 元素
+    # Match all <path ... /> elements
     path_pattern = r'<path\s+([^>]*)/>'
     matches = re.findall(path_pattern, content, re.DOTALL)
     
     paths = []
     for attrs in matches:
-        # 移除 fill 属性（将在外层 <g> 上统一设置）
+        # Remove fill attribute (will be set uniformly on the outer <g>)
         attrs_clean = re.sub(r'\s*fill="[^"]*"', '', attrs)
         paths.append(f'<path {attrs_clean.strip()}/>')
     
@@ -66,28 +66,28 @@ def extract_paths_from_icon(icon_path: Path) -> list[str]:
 
 def parse_use_element(use_match: str) -> dict:
     """
-    解析 use 元素的属性
-    
+    Parse attributes of a use element.
+
     Args:
-        use_match: use 元素的完整字符串
-        
+        use_match: Complete string of the use element
+
     Returns:
-        属性字典
+        Attribute dictionary
     """
     attrs = {}
     
-    # 提取 data-icon
+    # Extract data-icon
     icon_match = re.search(r'data-icon="([^"]+)"', use_match)
     if icon_match:
         attrs['icon'] = icon_match.group(1)
     
-    # 提取数值属性
+    # Extract numeric attributes
     for attr in ['x', 'y', 'width', 'height']:
         match = re.search(rf'{attr}="([^"]+)"', use_match)
         if match:
             attrs[attr] = float(match.group(1))
     
-    # 提取 fill 颜色
+    # Extract fill color
     fill_match = re.search(r'fill="([^"]+)"', use_match)
     if fill_match:
         attrs['fill'] = fill_match.group(1)
@@ -97,14 +97,14 @@ def parse_use_element(use_match: str) -> dict:
 
 def generate_icon_group(attrs: dict, paths: list[str]) -> str:
     """
-    生成图标的 <g> 元素
-    
+    Generate the icon's <g> element.
+
     Args:
-        attrs: use 元素的属性
-        paths: 图标的 path 元素列表
-        
+        attrs: Attributes of the use element
+        paths: List of icon path elements
+
     Returns:
-        完整的 <g> 元素字符串
+        Complete <g> element string
     """
     x = attrs.get('x', 0)
     y = attrs.get('y', 0)
@@ -113,16 +113,16 @@ def generate_icon_group(attrs: dict, paths: list[str]) -> str:
     fill = attrs.get('fill', '#000000')
     icon_name = attrs.get('icon', 'unknown')
     
-    # 计算缩放比例（基于 width，假设等比缩放）
+    # Calculate scale factor (based on width, assuming uniform scaling)
     scale = width / ICON_BASE_SIZE
     
-    # 构建 transform
+    # Build transform
     if scale == 1:
         transform = f'translate({x}, {y})'
     else:
         transform = f'translate({x}, {y}) scale({scale})'
     
-    # 生成 <g> 元素
+    # Generate <g> element
     paths_str = '\n    '.join(paths)
     
     return f'''<!-- icon: {icon_name} -->
@@ -133,36 +133,36 @@ def generate_icon_group(attrs: dict, paths: list[str]) -> str:
 
 def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, verbose: bool = False) -> int:
     """
-    处理单个 SVG 文件，替换所有图标占位符
-    
+    Process a single SVG file, replacing all icon placeholders.
+
     Args:
-        svg_path: SVG 文件路径
-        icons_dir: 图标目录路径
-        dry_run: 是否仅预览不修改
-        verbose: 是否显示详细信息
-        
+        svg_path: SVG file path
+        icons_dir: Icon directory path
+        dry_run: Whether to only preview without modifying
+        verbose: Whether to show detailed information
+
     Returns:
-        替换的图标数量
+        Number of icons replaced
     """
     if not svg_path.exists():
-        print(f"[ERROR] 文件不存在: {svg_path}")
+        print(f"[ERROR] File not found: {svg_path}")
         return 0
     
     content = svg_path.read_text(encoding='utf-8')
     
-    # 匹配 <use data-icon="xxx" ... /> 元素
+    # Match <use data-icon="xxx" ... /> elements
     use_pattern = r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>'
     matches = list(re.finditer(use_pattern, content))
     
     if not matches:
         if verbose:
-            print(f"[SKIP] 无图标占位符: {svg_path}")
+            print(f"[SKIP] No icon placeholders: {svg_path}")
         return 0
     
     replaced_count = 0
     new_content = content
     
-    # 从后向前替换，避免位置偏移
+    # Replace from back to front to avoid position offset
     for match in reversed(matches):
         use_str = match.group(0)
         attrs = parse_use_element(use_str)
@@ -175,7 +175,7 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         paths = extract_paths_from_icon(icon_path)
         
         if not paths:
-            print(f"[WARN] 图标不存在: {icon_name} (in {svg_path.name})")
+            print(f"[WARN] Icon not found: {icon_name} (in {svg_path.name})")
             continue
         
         replacement = generate_icon_group(attrs, paths)
@@ -198,10 +198,10 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
 
 def main():
     parser = argparse.ArgumentParser(
-        description='将 SVG 文件中的图标占位符替换为实际图标代码',
+        description='Replace icon placeholders in SVG files with actual icon code',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
+Examples:
   python3 scripts/embed_icons.py svg_output/01_cover.svg
   python3 scripts/embed_icons.py svg_output/*.svg
   python3 scripts/embed_icons.py --dry-run svg_output/*.svg
@@ -209,24 +209,24 @@ def main():
         '''
     )
     
-    parser.add_argument('files', nargs='+', help='要处理的 SVG 文件')
+    parser.add_argument('files', nargs='+', help='SVG files to process')
     parser.add_argument('--icons-dir', type=Path, default=DEFAULT_ICONS_DIR,
-                        help=f'图标目录路径（默认：{DEFAULT_ICONS_DIR}）')
+                        help=f'Icon directory path (default: {DEFAULT_ICONS_DIR})')
     parser.add_argument('--dry-run', action='store_true',
-                        help='仅显示将要替换的内容，不修改文件')
+                        help='Only show what would be replaced, without modifying files')
     parser.add_argument('--verbose', '-v', action='store_true',
-                        help='显示详细信息')
+                        help='Show detailed information')
     
     args = parser.parse_args()
     
-    # 验证图标目录
+    # Validate icon directory
     if not args.icons_dir.exists():
-        print(f"[ERROR] 图标目录不存在: {args.icons_dir}")
+        print(f"[ERROR] Icon directory not found: {args.icons_dir}")
         sys.exit(1)
-    
-    print(f"[DIR] 图标目录: {args.icons_dir}")
+
+    print(f"[DIR] Icon directory: {args.icons_dir}")
     if args.dry_run:
-        print("[PREVIEW] 预览模式（不修改文件）")
+        print("[PREVIEW] Preview mode (no files will be modified)")
     print()
     
     total_replaced = 0
@@ -241,8 +241,8 @@ def main():
                 total_files += 1
     
     print()
-    print(f"[Summary] 总计: {total_files} 个文件, {total_replaced} 个图标" + 
-          (" (预览)" if args.dry_run else " 已替换"))
+    print(f"[Summary] Total: {total_files} file(s), {total_replaced} icon(s)" +
+          (" (preview)" if args.dry_run else " replaced"))
 
 
 if __name__ == '__main__':

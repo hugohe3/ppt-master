@@ -1,242 +1,242 @@
-# 顶级咨询模板 (Top Consultant Style) - 设计规范
+# Top Consultant Style Template - Design Specification
 
-> 适用于顶级咨询公司风格的战略汇报、高管演示、投资分析等高端场景。
+> Suitable for top-tier consulting firm style strategic reports, executive presentations, investment analysis, and other high-end scenarios.
 
 ---
 
-## 一、模板概述
+## I. Template Overview
 
-| 属性           | 描述                                                   |
+| Property       | Description                                            |
 | -------------- | ------------------------------------------------------ |
-| **模板名称**   | consultant_top（顶级咨询模板）                         |
-| **适用场景**   | 战略规划、高管汇报、投资分析、董事会演示               |
-| **设计调性**   | 高端、精致、权威、数据驱动                             |
-| **主题模式**   | 深色主题（暗黑背景 + 渐变强调 + 金色点缀）             |
+| **Template Name** | consultant_top (Top Consultant Template)            |
+| **Use Cases**  | Strategic planning, executive reports, investment analysis, board presentations |
+| **Design Tone** | Premium, refined, authoritative, data-driven         |
+| **Theme Mode** | Dark theme (dark background + gradient accents + gold highlights) |
 
 ---
 
-## 二、画布规范
+## II. Canvas Specification
 
-| 属性           | 值                            |
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 40px，上 20px，下 40px   |
-| **内容安全区** | x: 40-1240, y: 40-680         |
+| **Page Margins** | Left/Right 40px, Top 20px, Bottom 40px |
+| **Safe Area**  | x: 40-1240, y: 40-680        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色           | 色值        | 备注                             |
+| Role           | Value       | Notes                            |
 | -------------- | ----------- | -------------------------------- |
-| **主背景暗黑** | `#0D1117`   | 封面、章节页、结束页背景         |
-| **内容页白**   | `#FFFFFF`   | 内容页主背景                     |
-| **渐变起点蓝** | `#1E40AF`   | 顶部渐变条起点                   |
-| **渐变终点紫** | `#7C3AED`   | 顶部渐变条终点                   |
-| **金色强调**   | `#D4AF37`   | 分隔线、高亮装饰                 |
-| **紫蓝强调**   | `#6366F1`   | 章节编号、次级强调               |
+| **Primary Dark** | `#0D1117` | Cover, chapter, ending page backgrounds |
+| **Content White** | `#FFFFFF` | Content page main background     |
+| **Gradient Start Blue** | `#1E40AF` | Top gradient bar start point |
+| **Gradient End Purple** | `#7C3AED` | Top gradient bar end point   |
+| **Gold Accent** | `#D4AF37`  | Dividers, highlight decorations  |
+| **Purple-Blue Accent** | `#6366F1` | Chapter numbers, secondary accents |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **白色文字**   | `#FFFFFF`   | 深色背景上的主要文字   |
-| **浅灰文字**   | `#9CA3AF`   | 描述文字、副标题       |
-| **次要文字**   | `#6B7280`   | 页脚、时间             |
-| **正文黑**     | `#111827`   | 亮色背景正文           |
+| **White Text** | `#FFFFFF`   | Primary text on dark backgrounds |
+| **Light Gray Text** | `#9CA3AF` | Descriptions, subtitles |
+| **Tertiary Text** | `#6B7280` | Footer, timestamps     |
+| **Body Black** | `#111827`   | Body text on light backgrounds |
 
-### 中性色
+### Neutral Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **卡片背景**   | `#1F2937`   | 深色卡片背景           |
-| **分割线**     | `#E5E7EB`   | 亮色背景分割线         |
-| **边框灰**     | `#374151`   | 深色背景边框           |
+| **Card Background** | `#1F2937` | Dark card background |
+| **Divider**    | `#E5E7EB`   | Dividers on light backgrounds |
+| **Border Gray** | `#374151`  | Borders on dark backgrounds |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `Arial, "Helvetica Neue", sans-serif`
+**Font Stack**: `Arial, "Helvetica Neue", sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级 | 用途             | 字号 | 字重    | 字间距  |
-| ---- | ---------------- | ---- | ------- | ------- |
-| H1   | 封面主标题       | 56px | Bold    | 2px     |
-| H2   | 页面大标题       | 28px | Bold    | 1px     |
-| H3   | 章节标题         | 48px | Bold    | 2px     |
-| H4   | 卡片标题         | 18px | Bold    | 1px     |
-| P    | 正文内容         | 14px | Regular | -       |
-| High | 强调数据         | 40px | Bold    | -       |
-| Sub  | 辅助说明         | 12px | Regular | -       |
-
----
-
-## 五、页面结构
-
-### 通用布局
-
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **顶部**   | y=0, h=6px    | 渐变装饰条（蓝-紫渐变）                |
-| **页眉**   | y=20, h=60px  | 核心观点/页面标题                      |
-| **内容区** | y=100, h=520px| 主要内容区域                           |
-| **页脚**   | y=660, h=60px | 数据来源、机密标识、页码               |
-
-### 装饰设计
-
-- **顶部渐变条**: 蓝紫渐变 (`#1E40AF` → `#7C3AED`)，高度 4-6px
-- **左侧金色线**: 金色 (`#D4AF37`)，宽度 4px，用于章节页装饰
-- **网格装饰**: 低透明度线条网格，营造数据/精密感
+| Level | Usage            | Size | Weight  | Letter Spacing |
+| ----- | ---------------- | ---- | ------- | -------------- |
+| H1    | Cover main title | 56px | Bold    | 2px            |
+| H2    | Page main title  | 28px | Bold    | 1px            |
+| H3    | Section title    | 48px | Bold    | 2px            |
+| H4    | Card title       | 18px | Bold    | 1px            |
+| P     | Body content     | 14px | Regular | -              |
+| High  | Highlighted data | 40px | Bold    | -              |
+| Sub   | Auxiliary text   | 12px | Regular | -              |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### General Layout
 
-- 暗黑背景 (`#0D1117`)
-- 顶部渐变装饰条
-- 左侧金色竖线装饰
-- 主标题 + 副标题 + 项目编号
-- 右侧网格装饰
-- 底部日期、机密标识、作者信息
+| Area           | Position/Height | Description                            |
+| -------------- | --------------- | -------------------------------------- |
+| **Top**        | y=0, h=6px      | Gradient decorative bar (blue-purple gradient) |
+| **Header**     | y=20, h=60px    | Key message / page title               |
+| **Content Area** | y=100, h=520px | Main content area                    |
+| **Footer**     | y=660, h=60px   | Data source, confidential label, page number |
 
-### 2. 目录页 (02_toc.svg)
+### Decorative Elements
 
-- 暗黑背景
-- 顶部渐变条
-- 双竖线分隔符 `||` 设计（金色）
-- 章节编号使用紫蓝色
-- 右侧网格装饰
-- 机密标识
-
-### 3. 章节页 (02_chapter.svg)
-
-- 暗黑背景
-- 顶部渐变条
-- 左侧金色竖线
-- 大号半透明背景编号
-- 章节标题 + 描述
-- 右侧网格装饰
-
-### 4. 内容页 (03_content.svg)
-
-- 白色背景
-- 顶部渐变细条
-- 深色核心观点条（金色左侧装饰）
-- 灵活内容区域
-- 页脚：数据来源、机密标识、页码
-
-### 5. 结束页 (04_ending.svg)
-
-- 暗黑背景
-- 顶部渐变条
-- 网格装饰背景
-- 居中感谢语
-- 金色分隔线
-- 联系信息卡片
-- 机密标识 + 版权
+- **Top Gradient Bar**: Blue-purple gradient (`#1E40AF` → `#7C3AED`), height 4-6px
+- **Left Gold Line**: Gold (`#D4AF37`), width 4px, used for chapter page decoration
+- **Grid Decoration**: Low-opacity line grid for a data/precision feel
 
 ---
 
-## 七、布局模式
+## VI. Page Types
 
-| 模式               | 适用场景                   |
-| ------------------ | -------------------------- |
-| **单栏居中**       | 封面、结语                 |
-| **左右分栏 (5:5)** | 数据对比                   |
-| **左右分栏 (3:7)** | 图表+文字                  |
-| **矩阵网格**       | 多维分析                   |
-| **瀑布图**         | 财务分析                   |
-| **表格**           | 数据汇总                   |
+### 1. Cover Page (01_cover.svg)
+
+- Dark background (`#0D1117`)
+- Top gradient decorative bar
+- Left gold vertical line decoration
+- Main title + subtitle + project ID
+- Right-side grid decoration
+- Bottom date, confidential label, author info
+
+### 2. Table of Contents Page (02_toc.svg)
+
+- Dark background
+- Top gradient bar
+- Double vertical line separator `||` design (gold)
+- Chapter numbers in purple-blue
+- Right-side grid decoration
+- Confidential label
+
+### 3. Chapter Page (02_chapter.svg)
+
+- Dark background
+- Top gradient bar
+- Left gold vertical line
+- Large semi-transparent background number
+- Chapter title + description
+- Right-side grid decoration
+
+### 4. Content Page (03_content.svg)
+
+- White background
+- Top gradient thin bar
+- Dark key message bar (gold left decoration)
+- Flexible content area
+- Footer: data source, confidential label, page number
+
+### 5. Ending Page (04_ending.svg)
+
+- Dark background
+- Top gradient bar
+- Grid decoration background
+- Centered thank-you message
+- Gold divider
+- Contact info card
+- Confidential label + copyright
 
 ---
 
-## 八、间距规范
+## VII. Layout Patterns
 
-| 元素         | 数值   |
-| ------------ | ------ |
-| 卡片间距     | 20px   |
-| 内容块间距   | 24px   |
-| 卡片内边距   | 24px   |
-| 卡片圆角     | 8px    |
-| 图标与文字   | 10px   |
+| Pattern            | Use Cases                      |
+| ------------------ | ------------------------------ |
+| **Single Column Centered** | Cover, ending            |
+| **Left-Right Split (5:5)** | Data comparison         |
+| **Left-Right Split (3:7)** | Chart + text            |
+| **Matrix Grid**    | Multi-dimensional analysis     |
+| **Waterfall Chart** | Financial analysis            |
+| **Table**          | Data summary                   |
 
 ---
 
-## 九、SVG 技术约束
+## VIII. Spacing Guidelines
 
-### 必须遵守
+| Element            | Value  |
+| ------------------ | ------ |
+| Card gap           | 20px   |
+| Content block gap  | 24px   |
+| Card padding       | 24px   |
+| Card border radius | 8px    |
+| Icon-to-text gap   | 10px   |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
-8. 渐变使用 `<defs>` 定义 `<linearGradient>`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; no `rgba()`
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Use `<polygon>` triangles for arrows instead of `<marker>`
+8. Define gradients using `<defs>` with `<linearGradient>`
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-- 图片透明度使用遮罩层替代
-- 仅使用内联样式，禁止外部 CSS 和 `@font-face`
+- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- Use overlay layers for image transparency
+- Inline styles only; no external CSS or `@font-face`
 
 ---
 
-## 十、占位符规范
+## X. Placeholder Specification
 
-模板使用 `{{PLACEHOLDER}}` 格式的占位符，常用占位符：
+Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{PROJECT_ID}}`   | 项目编号           |
-| `{{AUTHOR}}`       | 作者               |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{KEY_MESSAGE}}`  | 核心观点（Exhibit）|
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{SOURCE}}`       | 数据来源           |
-| `{{CONTACT_NAME}}` | 联系人姓名         |
-| `{{CONTACT_INFO}}` | 联系方式           |
-| `{{COPYRIGHT}}`    | 版权信息           |
-| `{{LOGO}}`         | Logo文字           |
+| `{{TITLE}}`        | Main title         |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{PROJECT_ID}}`   | Project ID         |
+| `{{AUTHOR}}`       | Author             |
+| `{{DATE}}`         | Date               |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{KEY_MESSAGE}}`  | Key message (Exhibit) |
+| `{{CHAPTER_NUM}}`  | Chapter number     |
+| `{{CHAPTER_TITLE}}`| Chapter title      |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{SOURCE}}`       | Data source        |
+| `{{CONTACT_NAME}}` | Contact person name |
+| `{{CONTACT_INFO}}` | Contact information |
+| `{{COPYRIGHT}}`    | Copyright info     |
+| `{{LOGO}}`         | Logo text          |
 
 ---
 
-## 十一、特色设计元素
+## XI. Signature Design Elements
 
-### 机密标识
+### Confidential Label
 
-所有页面底部居中显示 `CONFIDENTIAL` 标识，金色文字。
+All pages display a centered `CONFIDENTIAL` label at the bottom in gold text.
 
-### Exhibit 标题条
+### Exhibit Title Bar
 
-内容页顶部使用深色背景 + 金色左侧装饰的核心观点条，类似咨询公司的 "Exhibit" 风格。
+Content pages feature a dark background + gold left decoration key message bar at the top, similar to the "Exhibit" style used by consulting firms.
 
-### 网格背景
+### Grid Background
 
-章节页和结束页使用低透明度的网格线条装饰，营造专业数据分析氛围。
+Chapter and ending pages use low-opacity grid line decoration to create a professional data analysis atmosphere.
 
 ---
 
-## 十二、使用说明
+## XII. Usage Instructions
 
-1. 复制模板到项目目录
-2. 根据内容需求选择合适的页面模板
-3. 使用占位符标记需要替换的内容
-4. 确保机密标识正确显示
-5. 通过 Executor 角色生成最终 SVG
+1. Copy the template to the project directory
+2. Select the appropriate page template based on content needs
+3. Use placeholders to mark content that needs replacement
+4. Ensure the confidential label displays correctly
+5. Generate the final SVG through the Executor role

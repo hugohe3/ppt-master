@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-PPT Master - 项目工具公共模块
+PPT Master - Project Utilities Module
 
-提供项目信息解析、验证等公共功能，供其他工具复用。
+Provides common functions for project information parsing and validation,
+reusable by other tools.
 """
 
 import re
@@ -10,11 +11,11 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
-# 画布格式定义（统一来源）
+# Canvas format definitions (unified source)
 try:
     from config import CANVAS_FORMATS
 except ImportError:
-    # 兜底：保持最小可用配置，避免运行时崩溃
+    # Fallback: maintain minimal usable configuration to avoid runtime crashes
     CANVAS_FORMATS = {
         'ppt169': {
             'name': 'PPT 16:9',
@@ -29,7 +30,7 @@ except ImportError:
             'aspect_ratio': '4:3'
         },
         'wechat': {
-            'name': '微信公众号头图',
+            'name': 'WeChat Article Header',
             'dimensions': '900×383',
             'viewbox': '0 0 900 383',
             'aspect_ratio': '2.35:1'
@@ -41,25 +42,25 @@ except ImportError:
             'aspect_ratio': '3:4'
         },
         'moments': {
-            'name': '朋友圈/Instagram',
+            'name': 'Moments/Instagram',
             'dimensions': '1080×1080',
             'viewbox': '0 0 1080 1080',
             'aspect_ratio': '1:1'
         },
         'story': {
-            'name': 'Story/竖版',
+            'name': 'Story/Vertical',
             'dimensions': '1080×1920',
             'viewbox': '0 0 1080 1920',
             'aspect_ratio': '9:16'
         },
         'banner': {
-            'name': '横版 Banner',
+            'name': 'Horizontal Banner',
             'dimensions': '1920×1080',
             'viewbox': '0 0 1920 1080',
             'aspect_ratio': '16:9'
         },
         'a4': {
-            'name': 'A4 打印',
+            'name': 'A4 Print',
             'dimensions': '1240×1754',
             'viewbox': '0 0 1240 1754',
             'aspect_ratio': '√2:1'
@@ -76,7 +77,7 @@ CANVAS_FORMAT_ALIASES = {
 
 
 def normalize_canvas_format(format_key: str) -> str:
-    """标准化画布格式键名（支持常见别名）。"""
+    """Normalize canvas format key name (supports common aliases)."""
     if not format_key:
         return ''
     key = format_key.strip().lower()
@@ -85,25 +86,25 @@ def normalize_canvas_format(format_key: str) -> str:
 
 def parse_project_name(dir_name: str) -> Dict[str, str]:
     """
-    从项目目录名解析项目信息
+    Parse project information from the project directory name.
 
     Args:
-        dir_name: 项目目录名称
+        dir_name: Project directory name
 
     Returns:
-        包含 name, format, date 的字典
+        Dictionary containing name, format, date
     """
     result = {
         'name': dir_name,
         'format': 'unknown',
-        'format_name': '未知格式',
+        'format_name': 'Unknown format',
         'date': 'unknown',
-        'date_formatted': '未知日期'
+        'date_formatted': 'Unknown date'
     }
 
     dir_name_lower = dir_name.lower()
 
-    # 提取日期 (格式: _YYYYMMDD)
+    # Extract date (format: _YYYYMMDD)
     date_match = re.search(r'_(\d{8})$', dir_name)
     if date_match:
         date_str = date_match.group(1)
@@ -114,7 +115,7 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
         except ValueError:
             pass
 
-    # 优先按标准格式解析: name_format_YYYYMMDD
+    # Prefer parsing standard format: name_format_YYYYMMDD
     full_match = re.match(r'^(?P<name>.+)_(?P<format>[a-z0-9_-]+)_(?P<date>\d{8})$', dir_name_lower)
     if full_match:
         raw_format = full_match.group('format')
@@ -125,7 +126,7 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
             result['name'] = dir_name[:len(full_match.group('name'))]
             return result
 
-    # 兜底：只匹配末尾 `_format`，避免误删项目名内部片段
+    # Fallback: only match trailing `_format` to avoid deleting parts of the project name
     sorted_formats = sorted(CANVAS_FORMATS.keys(), key=len, reverse=True)
     for fmt_key in sorted_formats:
         if re.search(rf'_{re.escape(fmt_key)}(?:_\d{{8}})?$', dir_name_lower):
@@ -133,7 +134,7 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
             result['format_name'] = CANVAS_FORMATS[fmt_key]['name']
             break
 
-    # 提取项目名称（仅移除末尾日期和格式后缀）
+    # Extract project name (only remove trailing date and format suffix)
     name = re.sub(r'_\d{8}$', '', dir_name)
     if result['format'] != 'unknown':
         name = re.sub(rf'_{re.escape(result["format"])}$', '', name, flags=re.IGNORECASE)
@@ -144,17 +145,17 @@ def parse_project_name(dir_name: str) -> Dict[str, str]:
 
 def get_project_info(project_path: str) -> Dict:
     """
-    获取项目的详细信息
+    Get detailed project information.
 
     Args:
-        project_path: 项目目录路径
+        project_path: Project directory path
 
     Returns:
-        项目信息字典
+        Project information dictionary
     """
     project_path = Path(project_path)
 
-    # 解析目录名
+    # Parse directory name
     parsed = parse_project_name(project_path.name)
 
     info = {
@@ -178,10 +179,10 @@ def get_project_info(project_path: str) -> Dict:
     if not project_path.exists():
         return info
 
-    # 检查 README.md
+    # Check README.md
     info['has_readme'] = (project_path / 'README.md').exists()
 
-    # 检查设计规范文件（多个可能的名称）
+    # Check design specification files (multiple possible names)
     spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
     for spec_file in spec_files:
         if (project_path / spec_file).exists():
@@ -189,7 +190,7 @@ def get_project_info(project_path: str) -> Dict:
             info['spec_file'] = spec_file
             break
 
-    # 检查来源文档
+    # Check source documents
     legacy_source_file = project_path / '来源文档.md'
     sources_dir = project_path / 'sources'
     info['has_source'] = legacy_source_file.exists() or sources_dir.exists()
@@ -197,14 +198,14 @@ def get_project_info(project_path: str) -> Dict:
     if sources_dir.exists():
         info['source_count'] = len([p for p in sources_dir.iterdir() if p.is_file()])
 
-    # 统计 SVG 文件
+    # Count SVG files
     svg_output = project_path / 'svg_output'
     if svg_output.exists():
         svg_files = sorted(svg_output.glob('*.svg'))
         info['svg_count'] = len(svg_files)
         info['svg_files'] = [f.name for f in svg_files]
 
-    # 获取画布格式详细信息
+    # Get canvas format details
     if info['format'] in CANVAS_FORMATS:
         info['canvas_info'] = CANVAS_FORMATS[info['format']]
 
@@ -213,29 +214,29 @@ def get_project_info(project_path: str) -> Dict:
 
 def validate_project_structure(project_path: str, verbose: bool = False) -> Tuple[bool, List[str], List[str]]:
     """
-    验证项目结构的完整性
+    Validate project structure completeness.
 
     Args:
-        project_path: 项目目录路径
-        verbose: 是否显示详细的修复建议
+        project_path: Project directory path
+        verbose: Whether to show detailed fix suggestions
 
     Returns:
-        (是否有效, 错误列表, 警告列表)
+        (is_valid, error_list, warning_list)
     """
     project_path = Path(project_path)
     errors = []
     warnings = []
 
-    # 尝试导入错误助手
+    # Try to import error helper
     try:
         from error_helper import ErrorHelper
         use_helper = True
     except ImportError:
         use_helper = False
 
-    # 检查目录是否存在
+    # Check if directory exists
     if not project_path.exists():
-        msg = f"项目目录不存在: {project_path}"
+        msg = f"Project directory does not exist: {project_path}"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_directory',
                                                            {'project_path': str(project_path)})
@@ -243,59 +244,59 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
         return False, errors, warnings
 
     if not project_path.is_dir():
-        errors.append(f"不是有效的目录: {project_path}")
+        errors.append(f"Not a valid directory: {project_path}")
         return False, errors, warnings
 
-    # 检查必需文件
+    # Check required files
     if not (project_path / 'README.md').exists():
-        msg = "缺少必需文件: README.md"
+        msg = "Missing required file: README.md"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_readme',
                                                            {'project_path': str(project_path)})
         errors.append(msg)
 
-    # 检查设计规范文件
+    # Check design specification file
     spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
     has_spec = any((project_path / f).exists() for f in spec_files)
     if not has_spec:
-        msg = "缺少设计规范文件（建议文件名: 设计规范与内容大纲.md）"
+        msg = "Missing design specification file (suggested filename: design_specification.md)"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
         warnings.append(msg)
 
-    # 检查 svg_output 目录
+    # Check svg_output directory
     svg_output = project_path / 'svg_output'
     if not svg_output.exists():
-        msg = "缺少 svg_output 目录"
+        msg = "Missing svg_output directory"
         if use_helper and verbose:
             msg += "\n" + \
                 ErrorHelper.format_error_message('missing_svg_output')
         errors.append(msg)
     elif not svg_output.is_dir():
-        errors.append("svg_output 不是目录")
+        errors.append("svg_output is not a directory")
     else:
-        # 检查是否有 SVG 文件
+        # Check for SVG files
         svg_files = list(svg_output.glob('*.svg'))
         if not svg_files:
-            msg = "svg_output 目录为空，没有 SVG 文件"
+            msg = "svg_output directory is empty, no SVG files found"
             if use_helper and verbose:
                 msg += "\n" + \
                     ErrorHelper.format_error_message('empty_svg_output')
             warnings.append(msg)
         else:
-            # 验证 SVG 文件命名（与 project_manager.py 保持一致）
+            # Validate SVG file naming (consistent with project_manager.py)
             for svg_file in svg_files:
                 if not re.match(r'^(slide_\d+_\w+|P?\d+_.+)\.svg$', svg_file.name):
-                    msg = f"SVG 文件命名不规范: {svg_file.name}"
+                    msg = f"Non-standard SVG file naming: {svg_file.name}"
                     if use_helper and verbose:
                         msg += "\n" + ErrorHelper.format_error_message('invalid_svg_naming',
                                                                        {'file_name': svg_file.name})
                     warnings.append(msg)
 
-    # 检查目录命名格式
+    # Check directory naming format
     dir_name = project_path.name
     if not re.search(r'_\d{8}$', dir_name):
-        msg = f"目录名缺少日期后缀 (_YYYYMMDD): {dir_name}"
+        msg = f"Directory name missing date suffix (_YYYYMMDD): {dir_name}"
         if use_helper and verbose:
             msg += "\n" + \
                 ErrorHelper.format_error_message('missing_date_suffix')
@@ -307,60 +308,60 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
 
 def validate_svg_viewbox(svg_files: List[Path], expected_format: Optional[str] = None) -> List[str]:
     """
-    验证 SVG 文件的 viewBox 设置
+    Validate the viewBox settings of SVG files.
 
     Args:
-        svg_files: SVG 文件列表
-        expected_format: 期望的画布格式（如 'ppt169'）
+        svg_files: List of SVG files
+        expected_format: Expected canvas format (e.g. 'ppt169')
 
     Returns:
-        警告列表
+        List of warnings
     """
     warnings = []
     viewbox_pattern = re.compile(r'viewBox="([^"]+)"')
     viewboxes = set()
 
-    # 确定期望的 viewBox
+    # Determine expected viewBox
     expected_viewbox = None
     if expected_format and expected_format in CANVAS_FORMATS:
         expected_viewbox = CANVAS_FORMATS[expected_format]['viewbox']
 
-    for svg_file in svg_files[:10]:  # 检查前10个文件
+    for svg_file in svg_files[:10]:  # Check first 10 files
         try:
             with open(svg_file, 'r', encoding='utf-8') as f:
-                content = f.read(2000)  # 只读取前2000字符
+                content = f.read(2000)  # Only read first 2000 characters
                 match = viewbox_pattern.search(content)
                 if match:
                     viewbox = match.group(1)
                     viewboxes.add(viewbox)
 
-                    # 如果指定了期望格式，检查是否匹配
+                    # If expected format is specified, check for match
                     if expected_viewbox and viewbox != expected_viewbox:
                         warnings.append(
-                            f"{svg_file.name}: viewBox '{viewbox}' 与期望格式 "
-                            f"'{expected_format}' 不匹配（期望: '{expected_viewbox}'）"
+                            f"{svg_file.name}: viewBox '{viewbox}' does not match expected format "
+                            f"'{expected_format}' (expected: '{expected_viewbox}')"
                         )
                 else:
-                    warnings.append(f"{svg_file.name}: 未找到 viewBox 属性")
+                    warnings.append(f"{svg_file.name}: viewBox attribute not found")
         except Exception as e:
-            warnings.append(f"{svg_file.name}: 读取失败 - {e}")
+            warnings.append(f"{svg_file.name}: Failed to read - {e}")
 
-    # 检查是否有多个不同的 viewBox
+    # Check for multiple different viewBoxes
     if len(viewboxes) > 1:
-        warnings.append(f"检测到多个不同的 viewBox 设置: {viewboxes}")
+        warnings.append(f"Multiple different viewBox settings detected: {viewboxes}")
 
     return warnings
 
 
 def find_all_projects(base_dir: str) -> List[Path]:
     """
-    查找指定目录下的所有项目
+    Find all projects under the specified directory.
 
     Args:
-        base_dir: 基础目录路径
+        base_dir: Base directory path
 
     Returns:
-        项目目录列表
+        List of project directories
     """
     base_path = Path(base_dir)
     if not base_path.exists():
@@ -369,7 +370,7 @@ def find_all_projects(base_dir: str) -> List[Path]:
     projects = []
     for item in base_path.iterdir():
         if item.is_dir() and not item.name.startswith('.'):
-            # 检查是否是有效的项目目录（包含 svg_output 或设计规范）
+            # Check if it's a valid project directory (contains svg_output or design spec)
             has_svg_output = (item / 'svg_output').exists()
             has_spec = any((item / f).exists() for f in
                            ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md'])
@@ -382,13 +383,13 @@ def find_all_projects(base_dir: str) -> List[Path]:
 
 def format_file_size(size_bytes: int) -> str:
     """
-    格式化文件大小
+    Format file size.
 
     Args:
-        size_bytes: 文件大小（字节）
+        size_bytes: File size in bytes
 
     Returns:
-        格式化的文件大小字符串
+        Formatted file size string
     """
     for unit in ['B', 'KB', 'MB', 'GB']:
         if size_bytes < 1024.0:
@@ -399,13 +400,13 @@ def format_file_size(size_bytes: int) -> str:
 
 def get_project_stats(project_path: str) -> Dict:
     """
-    获取项目的统计信息
+    Get project statistics.
 
     Args:
-        project_path: 项目目录路径
+        project_path: Project directory path
 
     Returns:
-        统计信息字典
+        Statistics dictionary
     """
     project_path = Path(project_path)
     stats = {
@@ -438,37 +439,37 @@ def get_project_stats(project_path: str) -> Dict:
 
 
 if __name__ == '__main__':
-    # 测试代码
+    # Test code
     import sys
 
     if len(sys.argv) > 1:
         project_path = sys.argv[1]
         info = get_project_info(project_path)
 
-        print(f"\n项目信息: {info['dir_name']}")
+        print(f"\nProject Info: {info['dir_name']}")
         print("=" * 60)
-        print(f"项目名称: {info['name']}")
-        print(f"画布格式: {info['format_name']} ({info['format']})")
-        print(f"创建日期: {info['date_formatted']}")
-        print(f"SVG 文件: {info['svg_count']} 个")
-        print(f"README: {'✓' if info['has_readme'] else '✗'}")
-        print(f"设计规范: {'✓' if info['has_spec'] else '✗'}")
+        print(f"Project Name: {info['name']}")
+        print(f"Canvas Format: {info['format_name']} ({info['format']})")
+        print(f"Created: {info['date_formatted']}")
+        print(f"SVG Files: {info['svg_count']}")
+        print(f"README: {'Yes' if info['has_readme'] else 'No'}")
+        print(f"Design Spec: {'Yes' if info['has_spec'] else 'No'}")
 
-        print("\n验证结果:")
+        print("\nValidation Results:")
         print("-" * 60)
         is_valid, errors, warnings = validate_project_structure(project_path)
 
         if errors:
-            print("❌ 错误:")
+            print("[ERROR]")
             for error in errors:
                 print(f"  - {error}")
 
         if warnings:
-            print("⚠️  警告:")
+            print("[WARN]")
             for warning in warnings:
                 print(f"  - {warning}")
 
         if is_valid and not warnings:
-            print("✅ 项目结构完整，没有问题")
+            print("[OK] Project structure is complete, no issues found")
     else:
-        print("用法: python3 project_utils.py <project_path>")
+        print("Usage: python3 project_utils.py <project_path>")

@@ -1,75 +1,75 @@
 # CLAUDE.md
 
-本文件为 Claude Code 提供项目概览。执行 PPT 生成任务前，**必须先阅读 [AGENTS.md](./AGENTS.md) 与 `skills/ppt-master/SKILL.md`** 获取完整工作流与规则。
+This file provides a project overview for Claude Code. Before executing PPT generation tasks, **you MUST first read [AGENTS.md](./AGENTS.md) and `skills/ppt-master/SKILL.md`** for the complete workflow and rules.
 
-## 项目概述
+## Project Overview
 
-PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统。通过多角色协作（Strategist → Image_Generator → Executor → Optimizer），将源文档（PDF/URL/Markdown）转化为高质量 SVG 页面，并导出为 PPTX。
+PPT Master is an AI-driven multi-format SVG content generation system. Through multi-role collaboration (Strategist → Image_Generator → Executor → Optimizer), it converts source documents (PDF/URL/Markdown) into high-quality SVG pages and exports them as PPTX.
 
-**核心流程**：`源文档 → 创建项目 → 模板选项 → Strategist八项确认 → [Image_Generator] → Executor → 后处理 → 导出PPTX`
+**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist Eight Confirmations → [Image_Generator] → Executor → Post-processing → Export PPTX`
 
-## 常用命令
+## Common Commands
 
 ```bash
-# 源内容转换
-python3 skills/ppt-master/scripts/pdf_to_md.py <PDF文件>
+# Source content conversion
+python3 skills/ppt-master/scripts/pdf_to_md.py <PDF_file>
 python3 skills/ppt-master/scripts/web_to_md.py <URL>
 node skills/ppt-master/scripts/web_to_md.cjs <URL>
 
-# 项目管理
-python3 skills/ppt-master/scripts/project_manager.py init <项目名> --format ppt169
-python3 skills/ppt-master/scripts/project_manager.py import-sources <项目路径> <源文件或URL...> --move
-python3 skills/ppt-master/scripts/project_manager.py validate <项目路径>
+# Project management
+python3 skills/ppt-master/scripts/project_manager.py init <project_name> --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py import-sources <project_path> <source_files_or_URLs...> --move
+python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 
-# 图片工具
-python3 skills/ppt-master/scripts/analyze_images.py <项目路径>/images
-python3 skills/ppt-master/scripts/nano_banana_gen.py "提示词" --aspect_ratio 16:9 --image_size 1K -o <项目路径>/images
+# Image tools
+python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
+python3 skills/ppt-master/scripts/nano_banana_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 
-# SVG 质量检查
-python3 skills/ppt-master/scripts/svg_quality_checker.py <项目路径>
+# SVG quality check
+python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 
-# 后处理三步（必须按顺序逐条执行，禁止一次性执行）
-python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
-# ✅ 确认无报错后执行下一条
-python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
-# ✅ 确认无报错后执行下一条
-python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
+# Post-processing pipeline (MUST run sequentially, one at a time — NEVER batch)
+python3 skills/ppt-master/scripts/total_md_split.py <project_path>
+# ✅ Confirm no errors before running the next command
+python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
+# ✅ Confirm no errors before running the next command
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ```
 
-## 架构
+## Architecture
 
-- `skills/ppt-master/references/` — AI 角色定义和技术规范
-- `skills/ppt-master/scripts/` — 28个工具脚本
-- `skills/ppt-master/templates/` — 布局模板、图表模板、640+ 矢量图标
-- `examples/` — 示例项目
-- `projects/` — 用户项目工作区
+- `skills/ppt-master/references/` — AI role definitions and technical specifications
+- `skills/ppt-master/scripts/` — 28 tool scripts
+- `skills/ppt-master/templates/` — Layout templates, chart templates, 640+ vector icons
+- `examples/` — Example projects
+- `projects/` — User project workspace
 
-## SVG 技术约束（不可协商）
+## SVG Technical Constraints (Non-negotiable)
 
-**禁用功能**：`clipPath` | `mask` | `<style>` | `class` | 外部 CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>`（`<defs>` 内 `id` 为合法引用，不在此列）
+**Banned features**: `clipPath` | `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
 
-**PPT 兼容性替代**：
+**PPT compatibility alternatives**:
 
-| 禁止 | 替代 |
-|------|------|
+| Banned | Alternative |
+|--------|-------------|
 | `rgba()` | `fill-opacity` / `stroke-opacity` |
-| `<g opacity>` | 每个子元素单独设置 opacity |
-| `<image opacity>` | 遮罩层叠加 |
-| `marker-end` 箭头 | `<polygon>` 三角形 |
+| `<g opacity>` | Set opacity on each child element individually |
+| `<image opacity>` | Overlay with a mask layer |
+| `marker-end` arrows | `<polygon>` triangles |
 
-## 画布格式速查
+## Canvas Format Quick Reference
 
-| 格式 | viewBox |
-|------|---------|
+| Format | viewBox |
+|--------|---------|
 | PPT 16:9 | `0 0 1280 720` |
 | PPT 4:3 | `0 0 1024 768` |
-| 小红书 | `0 0 1242 1660` |
-| 朋友圈 | `0 0 1080 1080` |
+| Xiaohongshu (RED) | `0 0 1242 1660` |
+| WeChat Moments | `0 0 1080 1080` |
 | Story | `0 0 1080 1920` |
 
-## 后处理注意事项
+## Post-processing Notes
 
-- **禁止**用 `cp` 命令替代 `finalize_svg.py`
-- **禁止**从 `svg_output/` 直接导出，必须从 `svg_final/`（`-s final`）导出
-- 后处理三步命令不要添加 `--only` 等额外参数
-- **禁止**将后处理三步写在同一个代码块或同一次 shell 调用中执行
+- **NEVER** use `cp` as a substitute for `finalize_svg.py`
+- **NEVER** export directly from `svg_output/` — MUST export from `svg_final/` (use `-s final`)
+- Do NOT add extra flags like `--only` to the post-processing commands
+- **NEVER** run the three post-processing steps in a single code block or single shell invocation

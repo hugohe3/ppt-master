@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-SVG 图片嵌入工具
-将 SVG 中引用的外部图片转换为 Base64 内嵌格式
+SVG Image Embedding Tool
+Converts externally referenced images in SVG files to Base64 inline format.
 
-用法:
+Usage:
     python3 embed_images.py <svg_file> [svg_file2] ...
     python3 embed_images.py *.svg
 
-示例:
-    python3 embed_images.py examples/ppt169_demo/svg_output/01_封面.svg
+Examples:
+    python3 embed_images.py examples/ppt169_demo/svg_output/01_cover.svg
     python3 embed_images.py examples/ppt169_demo/svg_output/*.svg
 """
 
@@ -19,7 +19,7 @@ import sys
 import argparse
 
 def get_mime_type(filename):
-    """根据文件扩展名返回 MIME 类型"""
+    """Return the MIME type based on file extension."""
     ext = filename.lower().split('.')[-1]
     mime_map = {
         'png': 'image/png',
@@ -32,7 +32,7 @@ def get_mime_type(filename):
     return mime_map.get(ext, 'application/octet-stream')
 
 def get_file_size_str(size_bytes):
-    """将字节数转换为可读的文件大小"""
+    """Convert byte count to a human-readable file size string."""
     if size_bytes < 1024:
         return f"{size_bytes} B"
     elif size_bytes < 1024 * 1024:
@@ -42,14 +42,14 @@ def get_file_size_str(size_bytes):
 
 def embed_images_in_svg(svg_path, dry_run=False):
     """
-    将 SVG 文件中的外部图片转换为 Base64 内嵌
-    
+    Convert externally referenced images in an SVG file to Base64 inline format.
+
     Args:
-        svg_path: SVG 文件路径
-        dry_run: 如果为 True，只显示会处理的图片，不实际修改文件
-    
+        svg_path: SVG file path
+        dry_run: If True, only show which images would be processed without modifying the file
+
     Returns:
-        tuple: (处理的图片数量, 嵌入后的文件大小)
+        tuple: (number of images processed, file size after embedding)
     """
     svg_dir = os.path.dirname(os.path.abspath(svg_path))
     
@@ -58,7 +58,7 @@ def embed_images_in_svg(svg_path, dry_run=False):
     
     original_size = len(content.encode('utf-8'))
     
-    # 匹配 href="xxx.png" 或 href="xxx.jpg" 等（排除已经是 data: 的）
+    # Match href="xxx.png" or href="xxx.jpg" etc. (exclude those already using data:)
     pattern = r'href="(?!data:)([^"]+\.(png|jpg|jpeg|gif|webp))"'
     
     images_found = []
@@ -68,11 +68,11 @@ def embed_images_in_svg(svg_path, dry_run=False):
         nonlocal images_embedded
         img_path = match.group(1)
         
-        # 解码 XML/HTML 实体（如 &amp; -> &）
+        # Decode XML/HTML entities (e.g., &amp; -> &)
         import html
         img_path_decoded = html.unescape(img_path)
         
-        # 处理相对路径
+        # Handle relative paths
         if not os.path.isabs(img_path_decoded):
             full_path = os.path.join(svg_dir, img_path_decoded)
         else:
@@ -102,7 +102,7 @@ def embed_images_in_svg(svg_path, dry_run=False):
     
     new_size = len(new_content.encode('utf-8'))
     
-    # 打印处理的图片
+    # Print processed images
     if images_found:
         print(f"\n[FILE] {os.path.basename(svg_path)}")
         for img_path, status, size in images_found:
@@ -124,18 +124,18 @@ def embed_images_in_svg(svg_path, dry_run=False):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='将 SVG 中引用的外部图片转换为 Base64 内嵌格式',
+        description='Convert externally referenced images in SVG files to Base64 inline format',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
-示例:
-  %(prog)s 01_封面.svg              # 处理单个文件
-  %(prog)s *.svg                     # 处理当前目录所有 SVG
-  %(prog)s --dry-run *.svg           # 预览将处理的文件
+Examples:
+  %(prog)s 01_cover.svg                # Process a single file
+  %(prog)s *.svg                       # Process all SVGs in current directory
+  %(prog)s --dry-run *.svg             # Preview files to be processed
         '''
     )
-    parser.add_argument('files', nargs='+', help='要处理的 SVG 文件')
+    parser.add_argument('files', nargs='+', help='SVG files to process')
     parser.add_argument('--dry-run', '-n', action='store_true',
-                        help='只显示将要处理的图片，不实际修改文件')
+                        help='Only show which images would be processed, without modifying files')
     
     args = parser.parse_args()
     

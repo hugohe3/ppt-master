@@ -17,7 +17,7 @@
   },
   "categories": {
     "brand": {
-      "label": "品牌风格模板",
+      "label": "Brand Style Templates",
       "layouts": [
         "google_style",
         "mckinsey",
@@ -31,7 +31,7 @@
       ]
     },
     "general": {
-      "label": "通用风格模板",
+      "label": "General Style Templates",
       "layouts": [
         "consultant",
         "consultant_top",
@@ -41,7 +41,7 @@
       ]
     },
     "scenario": {
-      "label": "场景专用模板",
+      "label": "Scenario-Specific Templates",
       "layouts": [
         "academic_defense",
         "psychology_attachment",
@@ -50,7 +50,7 @@
       ]
     },
     "government": {
-      "label": "政企风格模板",
+      "label": "Government/Enterprise Templates",
       "layouts": [
         "government_red",
         "government_blue",
@@ -58,7 +58,7 @@
       ]
     },
     "special": {
-      "label": "特殊风格模板",
+      "label": "Special Style Templates",
       "layouts": [
         "pixel_retro"
       ]
@@ -124,17 +124,17 @@
   "layouts": {
     "academic_defense": {
       "dir": "academic_defense",
-      "label": "学术答辩模板",
+      "label": "Academic Defense Template",
       "category": "scenario",
-      "summary": "适用于学术答辩、研究汇报与课题申请的规范型模板",
+      "summary": "A standard template for academic defenses, research presentations, and project proposals",
       "useCases": [
-        "毕业答辩",
-        "学术汇报",
-        "研究进展报告",
-        "课题申请"
+        "Graduation defense",
+        "Academic presentation",
+        "Research progress report",
+        "Project proposal"
       ],
-      "tone": "专业、严谨、科研感、清晰层次",
-      "themeMode": "亮色主题（白色背景 + 深蓝标题条）",
+      "tone": "Professional, rigorous, research-oriented, clear hierarchy",
+      "themeMode": "Light theme (white background + dark blue title bar)",
       "pageTypes": [
         "cover",
         "toc",
@@ -144,26 +144,26 @@
       ],
       "assets": [],
       "keywords": [
-        "学术",
-        "答辩",
-        "科研",
-        "规范"
+        "Academic",
+        "Defense",
+        "Research",
+        "Standard"
       ]
     },
     "ai_ops": {
       "dir": "ai_ops",
-      "label": "企业数智化模板",
+      "label": "Enterprise Digital Intelligence Template",
       "category": "government",
-      "summary": "适用于运营商 AI 运维架构、IT 系统总体视图、数字化转型方案等高信息密度场景",
+      "summary": "For high-density scenarios such as telecom AI operations architecture, IT system overview, and digital transformation plans",
       "useCases": [
-        "运营商 AI 运维架构",
-        "IT 系统总体视图",
-        "数字化转型方案",
-        "智能化建设汇报",
-        "企业技术规划"
+        "Telecom AI operations architecture",
+        "IT system overview",
+        "Digital transformation plan",
+        "Smart infrastructure report",
+        "Enterprise technology roadmap"
       ],
-      "tone": "信息密集、结构化、模块分区、运营商政企风格",
-      "themeMode": "亮色主题（白色背景 + 红蓝双色点缀 + 暖灰面板）",
+      "tone": "Information-dense, structured, modular layout, telecom/government-enterprise style",
+      "themeMode": "Light theme (white background + red/blue accents + warm gray panels)",
       "pageTypes": [
         "cover",
         "toc",
@@ -175,26 +175,26 @@
         "reference_style.svg"
       ],
       "keywords": [
-        "运营商",
-        "AI运维",
-        "数智化",
-        "高密度",
-        "架构视图"
+        "Telecom",
+        "AI operations",
+        "Digital intelligence",
+        "High density",
+        "Architecture view"
       ]
     },
     "anthropic": {
       "dir": "anthropic",
-      "label": "Anthropic 风格模板",
+      "label": "Anthropic Style Template",
       "category": "brand",
-      "summary": "适用于 AI / LLM 技术分享与产品发布的科技感模板",
+      "summary": "A tech-oriented template for AI/LLM knowledge sharing and product launches",
       "useCases": [
-        "AI 技术分享",
-        "开发者大会",
-        "技术培训",
-        "产品发布"
+        "AI technology sharing",
+        "Developer conference",
+        "Technical training",
+        "Product launch"
       ],
-      "tone": "科技感、专业、现代、结论先行",
-      "themeMode": "混合主题（深色封面/章节 + 亮色内容页）",
+      "tone": "Tech-forward, professional, modern, conclusion-first",
+      "themeMode": "Hybrid theme (dark cover/chapter + light content pages)",
       "pageTypes": [
         "cover",
         "toc",
@@ -206,23 +206,23 @@
       "keywords": [
         "AI",
         "LLM",
-        "开发者",
-        "科技"
+        "Developer",
+        "Technology"
       ]
     },
     "consultant": {
       "dir": "consultant",
-      "label": "咨询顾问模板",
+      "label": "Consultant Template",
       "category": "general",
-      "summary": "适用于商业咨询、战略分析和项目汇报的专业模板",
+      "summary": "A professional template for business consulting, strategic analysis, and project reports",
       "useCases": [
-        "商业咨询",
-        "战略分析",
-        "项目汇报",
-        "企业培训"
+        "Business consulting",
+        "Strategic analysis",
+        "Project report",
+        "Corporate training"
       ],
-      "tone": "专业、简约、商务、现代",
-      "themeMode": "深色主题（深蓝背景 + 蓝色强调色 + 金色点缀）",
+      "tone": "Professional, minimalist, business, modern",
+      "themeMode": "Dark theme (dark blue background + blue accent + gold highlights)",
       "pageTypes": [
         "cover",
         "toc",
@@ -232,25 +232,25 @@
       ],
       "assets": [],
       "keywords": [
-        "咨询",
-        "商务",
-        "战略",
-        "汇报"
+        "Consulting",
+        "Business",
+        "Strategy",
+        "Report"
       ]
     },
     "consultant_top": {
       "dir": "consultant_top",
-      "label": "顶级咨询模板",
+      "label": "Top-Tier Consulting Template",
       "category": "general",
-      "summary": "适用于董事会和高管级战略汇报的 MBB 风格模板",
+      "summary": "An MBB-style template for board-level and executive strategic presentations",
       "useCases": [
-        "战略规划",
-        "高管汇报",
-        "投资分析",
-        "董事会演示"
+        "Strategic planning",
+        "Executive presentation",
+        "Investment analysis",
+        "Board presentation"
       ],
-      "tone": "高端、精致、权威、数据驱动",
-      "themeMode": "深色主题（暗黑背景 + 渐变强调 + 金色点缀）",
+      "tone": "Premium, refined, authoritative, data-driven",
+      "themeMode": "Dark theme (dark background + gradient accent + gold highlights)",
       "pageTypes": [
         "cover",
         "toc",
@@ -261,24 +261,24 @@
       "assets": [],
       "keywords": [
         "MBB",
-        "董事会",
-        "高管",
-        "战略"
+        "Board",
+        "Executive",
+        "Strategy"
       ]
     },
     "general": {
       "dir": "general",
-      "label": "通用模板",
+      "label": "General Template",
       "category": "general",
-      "summary": "适用于多数工作汇报和项目介绍的通用模板",
+      "summary": "A versatile template suitable for most work reports and project introductions",
       "useCases": [
-        "工作汇报",
-        "项目介绍",
-        "产品展示",
-        "培训演示"
+        "Work report",
+        "Project introduction",
+        "Product showcase",
+        "Training presentation"
       ],
-      "tone": "现代、清新、专业、通用",
-      "themeMode": "混合主题（深色封面/章节页 + 浅色内容页）",
+      "tone": "Modern, fresh, professional, versatile",
+      "themeMode": "Hybrid theme (dark cover/chapter pages + light content pages)",
       "pageTypes": [
         "cover",
         "toc",
@@ -288,25 +288,25 @@
       ],
       "assets": [],
       "keywords": [
-        "通用",
-        "商业演示",
-        "工作汇报",
-        "项目介绍"
+        "General",
+        "Business presentation",
+        "Work report",
+        "Project introduction"
       ]
     },
     "google_style": {
       "dir": "google_style",
-      "label": "Google 风格模板",
+      "label": "Google Style Template",
       "category": "brand",
-      "summary": "适用于年度汇报和技术分享的 Google 品牌风格模板",
+      "summary": "A Google-branded template for annual reports and technical sharing",
       "useCases": [
-        "年度工作汇报",
-        "技术分享",
-        "项目成果展示",
-        "数据驱动型演示"
+        "Annual work report",
+        "Technical sharing",
+        "Project showcase",
+        "Data-driven presentation"
       ],
-      "tone": "专业、现代、简洁克制、数据驱动、充足留白",
-      "themeMode": "亮色主题（白色/浅灰背景 + Google 品牌色强调）",
+      "tone": "Professional, modern, clean and restrained, data-driven, ample whitespace",
+      "themeMode": "Light theme (white/light gray background + Google brand color accents)",
       "pageTypes": [
         "cover",
         "toc",
@@ -317,25 +317,25 @@
       "assets": [],
       "keywords": [
         "Google",
-        "品牌风格",
-        "技术分享",
-        "年度报告"
+        "Brand style",
+        "Technical sharing",
+        "Annual report"
       ]
     },
     "government_blue": {
       "dir": "government_blue",
-      "label": "政府蓝模板",
+      "label": "Government Blue Template",
       "category": "government",
-      "summary": "适用于智慧政务与数字化转型汇报的蓝色政务模板",
+      "summary": "A blue government-themed template for smart governance and digital transformation reports",
       "useCases": [
-        "重点项目汇报",
-        "十四五规划",
-        "工作总结",
-        "招商引资",
-        "政策解读"
+        "Key project report",
+        "Five-year plan",
+        "Work summary",
+        "Investment promotion",
+        "Policy briefing"
       ],
-      "tone": "大气、科技感、现代化、专业政务风格",
-      "themeMode": "亮色主题（白色背景 + 蓝色渐变装饰）",
+      "tone": "Grand, tech-forward, modernized, professional government style",
+      "themeMode": "Light theme (white background + blue gradient decorations)",
       "pageTypes": [
         "cover",
         "toc",
@@ -345,26 +345,26 @@
       ],
       "assets": [],
       "keywords": [
-        "政务",
-        "政府蓝",
-        "智慧城市",
-        "数字化"
+        "Government affairs",
+        "Government blue",
+        "Smart city",
+        "Digitalization"
       ]
     },
     "government_red": {
       "dir": "government_red",
-      "label": "政府红模板",
+      "label": "Government Red Template",
       "category": "government",
-      "summary": "适用于政务汇报与党建场景的红色政务模板",
+      "summary": "A red government-themed template for government reports and party-building scenarios",
       "useCases": [
-        "政务汇报",
-        "政策解读",
-        "工作总结",
-        "项目推介",
-        "招商引资"
+        "Government report",
+        "Policy briefing",
+        "Work summary",
+        "Project promotion",
+        "Investment promotion"
       ],
-      "tone": "权威、庄重、专业、现代化政务风格",
-      "themeMode": "亮色主题（白色背景 + 政府红/蓝强调色）",
+      "tone": "Authoritative, solemn, professional, modernized government style",
+      "themeMode": "Light theme (white background + government red/blue accents)",
       "pageTypes": [
         "cover",
         "toc",
@@ -374,25 +374,25 @@
       ],
       "assets": [],
       "keywords": [
-        "政务",
-        "党建",
-        "政府红",
-        "权威"
+        "Government affairs",
+        "Party building",
+        "Government red",
+        "Authoritative"
       ]
     },
     "mckinsey": {
       "dir": "mckinsey",
-      "label": "麦肯锡风格模板",
+      "label": "McKinsey Style Template",
       "category": "brand",
-      "summary": "适用于战略咨询和投资分析的麦肯锡风格模板",
+      "summary": "A McKinsey-style template for strategic consulting and investment analysis",
       "useCases": [
-        "战略咨询",
-        "高管汇报",
-        "投资分析",
-        "商业提案"
+        "Strategic consulting",
+        "Executive presentation",
+        "Investment analysis",
+        "Business proposal"
       ],
-      "tone": "数据驱动、结构化思维、专业留白、极简高端",
-      "themeMode": "亮色主题（白色背景 + McKinsey Blue 强调）",
+      "tone": "Data-driven, structured thinking, professional whitespace, minimalist premium",
+      "themeMode": "Light theme (white background + McKinsey Blue accent)",
       "pageTypes": [
         "cover",
         "toc",
@@ -402,26 +402,26 @@
       ],
       "assets": [],
       "keywords": [
-        "麦肯锡",
-        "咨询",
-        "结构化",
-        "高管汇报"
+        "McKinsey",
+        "Consulting",
+        "Structured",
+        "Executive presentation"
       ]
     },
     "medical_university": {
       "dir": "medical_university",
-      "label": "医院/医科大学模板",
+      "label": "Hospital/Medical University Template",
       "category": "scenario",
-      "summary": "适用于医学报告、病例讨论与科研汇报的专业模板",
+      "summary": "A professional template for medical reports, case discussions, and research presentations",
       "useCases": [
-        "医学学术报告",
-        "病例讨论",
-        "科研汇报",
-        "医院工作汇报",
-        "医学教育培训"
+        "Medical academic report",
+        "Case discussion",
+        "Research presentation",
+        "Hospital work report",
+        "Medical education training"
       ],
-      "tone": "专业、严谨、生命感、科技感、可信赖",
-      "themeMode": "亮色主题（白色背景 + 医学蓝标题条 + 生命绿点缀）",
+      "tone": "Professional, rigorous, life-affirming, tech-forward, trustworthy",
+      "themeMode": "Light theme (white background + medical blue title bar + life green accents)",
       "pageTypes": [
         "cover",
         "toc",
@@ -431,25 +431,25 @@
       ],
       "assets": [],
       "keywords": [
-        "医学",
-        "医院",
-        "病例",
-        "科研"
+        "Medical",
+        "Hospital",
+        "Case study",
+        "Research"
       ]
     },
     "pixel_retro": {
       "dir": "pixel_retro",
-      "label": "像素复古模板",
+      "label": "Pixel Retro Template",
       "category": "special",
-      "summary": "适用于技术分享和游戏主题内容的像素风模板",
+      "summary": "A pixel-art template for tech sharing and gaming-themed content",
       "useCases": [
-        "技术分享",
-        "编程教学",
-        "游戏介绍",
-        "极客风格展示"
+        "Technical sharing",
+        "Programming tutorial",
+        "Game introduction",
+        "Geek-style showcase"
       ],
-      "tone": "复古游戏、霓虹赛博、极客科技、8-bit 风格",
-      "themeMode": "暗色主题（深空黑背景 + 霓虹强调色）",
+      "tone": "Retro gaming, neon cyber, geek tech, 8-bit style",
+      "themeMode": "Dark theme (deep space black background + neon accents)",
       "pageTypes": [
         "cover",
         "toc",
@@ -459,25 +459,25 @@
       ],
       "assets": [],
       "keywords": [
-        "像素风",
-        "复古游戏",
-        "赛博朋克",
-        "技术"
+        "Pixel art",
+        "Retro gaming",
+        "Cyberpunk",
+        "Technology"
       ]
     },
     "psychology_attachment": {
       "dir": "psychology_attachment",
-      "label": "心理疗愈模板",
+      "label": "Psychology Healing Template",
       "category": "scenario",
-      "summary": "适用于心理治疗培训和咨询讲座的温暖专业模板",
+      "summary": "A warm and professional template for psychotherapy training and counseling lectures",
       "useCases": [
-        "心理治疗培训",
-        "学术讲座",
-        "咨询案例分析",
-        "专业分享"
+        "Psychotherapy training",
+        "Academic lecture",
+        "Counseling case analysis",
+        "Professional sharing"
       ],
-      "tone": "专业、温暖、疗愈、信任感",
-      "themeMode": "浅色主题（云白背景 + 蓝绿渐变强调 + 多彩语义色）",
+      "tone": "Professional, warm, healing, trustworthy",
+      "themeMode": "Light theme (cloud white background + blue-green gradient accent + colorful semantic colors)",
       "pageTypes": [
         "cover",
         "toc",
@@ -487,25 +487,25 @@
       ],
       "assets": [],
       "keywords": [
-        "心理学",
-        "疗愈",
-        "咨询",
-        "温暖"
+        "Psychology",
+        "Healing",
+        "Counseling",
+        "Warm"
       ]
     },
     "smart_red": {
       "dir": "smart_red",
-      "label": "智慧红橙商务模板",
+      "label": "Smart Red-Orange Business Template",
       "category": "general",
-      "summary": "适用于科技企业介绍和教育解决方案的活力商务模板",
+      "summary": "A vibrant business template for tech company introductions and education solutions",
       "useCases": [
-        "企业介绍",
-        "产品发布",
-        "解决方案演示",
-        "教育行业课件"
+        "Company introduction",
+        "Product launch",
+        "Solution presentation",
+        "Education courseware"
       ],
-      "tone": "现代、活力、专业、几何感",
-      "themeMode": "混合主题（深色/彩色封面 + 浅色内容页）",
+      "tone": "Modern, vibrant, professional, geometric",
+      "themeMode": "Hybrid theme (dark/colorful cover + light content pages)",
       "pageTypes": [
         "cover",
         "toc",
@@ -515,26 +515,26 @@
       ],
       "assets": [],
       "keywords": [
-        "红橙商务",
-        "科技企业",
-        "教育",
-        "活力"
+        "Red-orange business",
+        "Tech enterprise",
+        "Education",
+        "Vibrant"
       ]
     },
     "中国电建_常规": {
       "dir": "中国电建_常规",
-      "label": "中国电建常规模板",
+      "label": "PowerChina Standard Template",
       "category": "brand",
-      "summary": "适用于工程建设和央企汇报的稳健品牌模板",
+      "summary": "A solid brand template for engineering construction and state-owned enterprise reports",
       "useCases": [
-        "工程项目汇报",
-        "技术方案展示",
-        "商务洽谈",
-        "企业宣传",
-        "年度总结"
+        "Engineering project report",
+        "Technical proposal presentation",
+        "Business negotiation",
+        "Corporate promotion",
+        "Annual summary"
       ],
-      "tone": "专业、稳重、国际化、央企风范",
-      "themeMode": "亮色主题（白色背景 + 电建蓝强调色）",
+      "tone": "Professional, steady, international, state-owned enterprise style",
+      "themeMode": "Light theme (white background + PowerChina blue accent)",
       "pageTypes": [
         "cover",
         "toc",
@@ -549,25 +549,25 @@
         "电建logo.png"
       ],
       "keywords": [
-        "中国电建",
-        "央企",
-        "工程",
-        "能源"
+        "PowerChina",
+        "State-owned enterprise",
+        "Engineering",
+        "Energy"
       ]
     },
     "中国电建_现代": {
       "dir": "中国电建_现代",
-      "label": "中国电建现代模板",
+      "label": "PowerChina Modern Template",
       "category": "brand",
-      "summary": "适用于重大工程和国际业务展示的现代工程模板",
+      "summary": "A modern engineering template for major projects and international business presentations",
       "useCases": [
-        "重大工程汇报",
-        "国际市场推介",
-        "科技成果展示",
-        "高端商务洽谈"
+        "Major project report",
+        "International market promotion",
+        "Technology showcase",
+        "High-end business negotiation"
       ],
-      "tone": "宏大叙事、现代精工、数字科技、国际视野",
-      "themeMode": "深蓝科技渐变 + 精密网格纹理",
+      "tone": "Grand narrative, modern precision, digital technology, international vision",
+      "themeMode": "Deep blue tech gradient + precision grid texture",
       "pageTypes": [
         "cover",
         "toc",
@@ -582,25 +582,25 @@
         "电建logo.png"
       ],
       "keywords": [
-        "中国电建",
-        "国际工程",
-        "现代工程",
-        "科技"
+        "PowerChina",
+        "International engineering",
+        "Modern engineering",
+        "Technology"
       ]
     },
     "中汽研_商务": {
       "dir": "中汽研_商务",
-      "label": "中汽研商务模板",
+      "label": "CATARC Business Template",
       "category": "brand",
-      "summary": "适用于认证展示和高端商务汇报的中汽研品牌模板",
+      "summary": "A CATARC brand template for certification showcase and high-end business presentations",
       "useCases": [
-        "产品认证展示",
-        "测评认证介绍",
-        "技术推介",
-        "高端商务汇报"
+        "Product certification showcase",
+        "Testing & certification introduction",
+        "Technology promotion",
+        "High-end business presentation"
       ],
-      "tone": "现代科技、权威专业、沉稳大气",
-      "themeMode": "深蓝科技渐变 + 清爽白底内容页",
+      "tone": "Modern tech, authoritative professional, composed and grand",
+      "themeMode": "Deep blue tech gradient + clean white content pages",
       "pageTypes": [
         "cover",
         "toc",
@@ -613,25 +613,25 @@
         "大型 logo.png"
       ],
       "keywords": [
-        "中汽研",
-        "认证",
-        "商务",
-        "科技"
+        "CATARC",
+        "Certification",
+        "Business",
+        "Technology"
       ]
     },
     "中汽研_常规": {
       "dir": "中汽研_常规",
-      "label": "中汽研常规模板",
+      "label": "CATARC Standard Template",
       "category": "brand",
-      "summary": "适用于认证和测评场景的中汽研常规模板",
+      "summary": "A standard CATARC template for certification and testing scenarios",
       "useCases": [
-        "产品认证展示",
-        "测评认证介绍",
-        "技术推介",
-        "商务拜访"
+        "Product certification showcase",
+        "Testing & certification introduction",
+        "Technology promotion",
+        "Business visit"
       ],
-      "tone": "专业、权威、可信赖、咨询风格",
-      "themeMode": "亮色主题（白色背景 + 深蓝强调色）",
+      "tone": "Professional, authoritative, trustworthy, consulting style",
+      "themeMode": "Light theme (white background + dark blue accent)",
       "pageTypes": [
         "cover",
         "toc",
@@ -644,24 +644,24 @@
         "大型 logo.png"
       ],
       "keywords": [
-        "中汽研",
-        "认证",
-        "测评",
-        "权威"
+        "CATARC",
+        "Certification",
+        "Testing",
+        "Authoritative"
       ]
     },
     "中汽研_现代": {
       "dir": "中汽研_现代",
-      "label": "中汽研现代模板",
+      "label": "CATARC Modern Template",
       "category": "brand",
-      "summary": "适用于前瞻技术展示和高端发布的未来科技模板",
+      "summary": "A futuristic tech template for cutting-edge technology showcase and premium launches",
       "useCases": [
-        "前瞻技术展示",
-        "战略发布",
-        "高端商务汇报"
+        "Cutting-edge technology showcase",
+        "Strategic launch",
+        "High-end business presentation"
       ],
-      "tone": "未来感、科技、深邃、精致",
-      "themeMode": "沉浸式深色封面/过渡页 + 清爽微灰内容页",
+      "tone": "Futuristic, tech-forward, deep, refined",
+      "themeMode": "Immersive dark cover/transition pages + clean light gray content pages",
       "pageTypes": [
         "cover",
         "toc",
@@ -674,25 +674,25 @@
         "大型 logo.png"
       ],
       "keywords": [
-        "中汽研",
-        "未来科技",
-        "前瞻技术",
-        "发布会"
+        "CATARC",
+        "Future tech",
+        "Cutting-edge technology",
+        "Launch event"
       ]
     },
     "招商银行": {
       "dir": "招商银行",
-      "label": "招商银行模板",
+      "label": "China Merchants Bank Template",
       "category": "brand",
-      "summary": "适用于金融机构高端汇报和年度报告的品牌模板",
+      "summary": "A brand template for premium financial institution reports and annual presentations",
       "useCases": [
-        "高端工作汇报",
-        "业务展示",
-        "年度报告",
-        "产品推介"
+        "Premium work report",
+        "Business showcase",
+        "Annual report",
+        "Product promotion"
       ],
-      "tone": "极简轻奢、精致、多层次、现代金融",
-      "themeMode": "亮色主题（微纹理背景 + 招行红/金精细装饰）",
+      "tone": "Minimalist luxury, refined, multi-layered, modern finance",
+      "themeMode": "Light theme (textured background + CMB red/gold fine decorations)",
       "pageTypes": [
         "cover",
         "toc",
@@ -704,26 +704,26 @@
         "招商银行公司金融.png"
       ],
       "keywords": [
-        "招商银行",
-        "金融",
-        "高端汇报",
-        "年度报告"
+        "China Merchants Bank",
+        "Finance",
+        "Premium report",
+        "Annual report"
       ]
     },
     "科技蓝商务": {
       "dir": "科技蓝商务",
-      "label": "科技蓝商务模板",
+      "label": "Tech Blue Business Template",
       "category": "general",
-      "summary": "适用于企业汇报与方案提案的科技商务模板",
+      "summary": "A tech-business template for corporate reports and solution proposals",
       "useCases": [
-        "企业汇报",
-        "产品发布",
-        "方案提案",
-        "流程规范",
-        "培训材料"
+        "Corporate report",
+        "Product launch",
+        "Solution proposal",
+        "Process documentation",
+        "Training materials"
       ],
-      "tone": "科技、商务、专业、简洁",
-      "themeMode": "混合主题（深蓝/科技蓝封面 + 浅色内容页）",
+      "tone": "Tech-forward, business, professional, clean",
+      "themeMode": "Hybrid theme (dark blue/tech blue cover + light content pages)",
       "pageTypes": [
         "cover",
         "toc",
@@ -733,25 +733,25 @@
       ],
       "assets": [],
       "keywords": [
-        "科技蓝",
-        "商务",
-        "方案提案",
-        "企业汇报"
+        "Tech blue",
+        "Business",
+        "Solution proposal",
+        "Corporate report"
       ]
     },
     "重庆大学": {
       "dir": "重庆大学",
-      "label": "重庆大学模板",
+      "label": "Chongqing University Template",
       "category": "scenario",
-      "summary": "适用于学术答辩与科研汇报的高校专属模板",
+      "summary": "A university-exclusive template for academic defenses and research presentations",
       "useCases": [
-        "学术答辩",
-        "科研汇报",
-        "教学展示",
-        "学术交流"
+        "Academic defense",
+        "Research presentation",
+        "Teaching showcase",
+        "Academic exchange"
       ],
-      "tone": "学术稳重、山城气韵、现代简约",
-      "themeMode": "学术蓝主色 + 山城层叠意象",
+      "tone": "Academically composed, mountain-city essence, modern minimalist",
+      "themeMode": "Academic blue primary + mountain-city layered imagery",
       "pageTypes": [
         "cover",
         "toc",
@@ -764,10 +764,10 @@
         "重庆大学logo2.png"
       ],
       "keywords": [
-        "重庆大学",
-        "学术",
-        "答辩",
-        "高校"
+        "Chongqing University",
+        "Academic",
+        "Defense",
+        "University"
       ]
     }
   }

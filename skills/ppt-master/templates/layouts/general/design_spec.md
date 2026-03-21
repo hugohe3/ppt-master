@@ -1,220 +1,220 @@
-# 通用模板 (General Style) - 设计规范
+# General Style Template - Design Specification
 
-> 适用于各类通用演示场景，包括工作汇报、项目介绍、产品展示等。
+> Suitable for various general presentation scenarios, including work reports, project introductions, product showcases, and more.
 
 ---
 
-## 一、模板概述
+## I. Template Overview
 
-| 属性           | 描述                                                   |
+| Property       | Description                                            |
 | -------------- | ------------------------------------------------------ |
-| **模板名称**   | general（通用模板）                                    |
-| **适用场景**   | 工作汇报、项目介绍、产品展示、培训演示                 |
-| **设计调性**   | 现代、清新、专业、通用                                 |
-| **主题模式**   | 混合主题（深色封面/章节页 + 浅色内容页）               |
+| **Template Name** | general (General Template)                          |
+| **Use Cases**  | Work reports, project introductions, product showcases, training presentations |
+| **Design Tone** | Modern, fresh, professional, versatile               |
+| **Theme Mode** | Mixed theme (dark cover/chapter pages + light content pages) |
 
 ---
 
-## 二、画布规范
+## II. Canvas Specification
 
-| 属性           | 值                            |
+| Property       | Value                         |
 | -------------- | ----------------------------- |
-| **格式**       | 标准 16:9                     |
-| **尺寸**       | 1280 × 720 px                 |
+| **Format**     | Standard 16:9                 |
+| **Dimensions** | 1280 × 720 px                |
 | **viewBox**    | `0 0 1280 720`                |
-| **页面边距**   | 左右 40px，上 10px，下 60px   |
-| **内容安全区** | x: 40-1240, y: 90-660         |
+| **Page Margins** | Left/Right 40px, Top 10px, Bottom 60px |
+| **Safe Area**  | x: 40-1240, y: 90-660        |
 
 ---
 
-## 三、配色方案
+## III. Color Scheme
 
-### 主色系
+### Primary Colors
 
-| 角色           | 色值        | 备注                             |
+| Role           | Value       | Notes                            |
 | -------------- | ----------- | -------------------------------- |
-| **深蓝主色**   | `#1E3A5F`   | 封面、章节页背景、标题           |
-| **深蓝暗色**   | `#0F1C2E`   | 渐变终点                         |
-| **内容背景**   | `#F8FAFC`   | 内容页主背景                     |
-| **卡片白**     | `#FFFFFF`   | 卡片背景                         |
-| **紫色强调**   | `#6366F1`   | 章节编号、装饰圆、强调元素       |
-| **青色强调**   | `#22D3EE`   | 辅助装饰圆                       |
+| **Primary Dark Blue** | `#1E3A5F` | Cover, chapter page backgrounds, titles |
+| **Dark Blue Deep** | `#0F1C2E` | Gradient end point             |
+| **Content Background** | `#F8FAFC` | Content page main background |
+| **Card White** | `#FFFFFF`   | Card background                  |
+| **Purple Accent** | `#6366F1` | Chapter numbers, decorative circles, emphasis elements |
+| **Cyan Accent** | `#22D3EE`  | Secondary decorative circles     |
 
-### 文字色系
+### Text Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **白色文字**   | `#FFFFFF`   | 深色背景上的主要文字   |
-| **主文字**     | `#333333`   | 卡片内正文             |
-| **标题深蓝**   | `#1E3A5F`   | 亮色背景标题           |
-| **辅助文字**   | `#94A3B8`   | 副标题、描述           |
-| **次要文字**   | `#64748B`   | 页脚、章节标识         |
+| **White Text** | `#FFFFFF`   | Primary text on dark backgrounds |
+| **Primary Text** | `#333333` | Body text in cards     |
+| **Title Dark Blue** | `#1E3A5F` | Titles on light backgrounds |
+| **Secondary Text** | `#94A3B8` | Subtitles, descriptions |
+| **Tertiary Text** | `#64748B` | Footer, section labels |
 
-### 中性色
+### Neutral Colors
 
-| 角色           | 色值        | 用途                   |
+| Role           | Value       | Usage                  |
 | -------------- | ----------- | ---------------------- |
-| **边框灰**     | `#E2E8F0`   | 分割线、卡片边框       |
-| **浅灰背景**   | `#CBD5E1`   | 占位符文字             |
+| **Border Gray** | `#E2E8F0`  | Dividers, card borders |
+| **Light Gray Background** | `#CBD5E1` | Placeholder text |
 
 ---
 
-## 四、排版体系
+## IV. Typography System
 
-### 字体方案
+### Font Stack
 
-**字体栈**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
+**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
 
-### 字号层级
+### Font Size Hierarchy
 
-| 层级 | 用途             | 字号 | 字重    |
-| ---- | ---------------- | ---- | ------- |
-| H1   | 封面主标题       | 48px | Bold    |
-| H2   | 页面标题         | 24px | Bold    |
-| H3   | 章节标题         | 48px | Bold    |
-| H4   | 卡片标题         | 20px | Bold    |
-| P    | 正文内容         | 16px | Regular |
-| High | 强调数据         | 36px | Bold    |
-| Sub  | 辅助说明         | 14px | Regular |
-| XS   | 页码、版权       | 12px | Regular |
-
----
-
-## 五、页面结构
-
-### 通用布局
-
-| 区域       | 位置/高度     | 内容说明                               |
-| ---------- | ------------- | -------------------------------------- |
-| **页眉**   | y=0, h=70px   | 白色背景 + 底部分隔线 + 页面标题       |
-| **内容区** | y=90, h=550px | 主要内容区域（白色卡片）               |
-| **页脚**   | y=660, h=60px | 白色背景 + 章节标识 + 页码             |
-
-### 装饰设计
-
-- **装饰圆**: 低透明度渐变圆形，紫色和青色
-- **左侧标识竖条**: 深蓝色 (`#1E3A5F`)，宽度 4-6px
-- **分隔线**: 浅灰色 (`#E2E8F0`)，宽度 1px
+| Level | Usage            | Size | Weight  |
+| ----- | ---------------- | ---- | ------- |
+| H1    | Cover main title | 48px | Bold    |
+| H2    | Page title       | 24px | Bold    |
+| H3    | Section title    | 48px | Bold    |
+| H4    | Card title       | 20px | Bold    |
+| P     | Body content     | 16px | Regular |
+| High  | Highlighted data | 36px | Bold    |
+| Sub   | Auxiliary text   | 14px | Regular |
+| XS    | Page number, copyright | 12px | Regular |
 
 ---
 
-## 六、页面类型
+## V. Page Structure
 
-### 1. 封面页 (01_cover.svg)
+### General Layout
 
-- 深色渐变背景 (`#1E3A5F` → `#0F1C2E`)
-- 右上角装饰圆（紫色、青色，低透明度）
-- 左侧装饰白线
-- 主标题 + 副标题
-- 底部半透明信息区（日期、作者）
+| Area           | Position/Height | Description                            |
+| -------------- | --------------- | -------------------------------------- |
+| **Header**     | y=0, h=70px     | White background + bottom divider + page title |
+| **Content Area** | y=90, h=550px | Main content area (white cards)        |
+| **Footer**     | y=660, h=60px   | White background + top divider + section label + page number |
 
-### 2. 目录页 (02_toc.svg)
+### Decorative Elements
 
-- 浅色背景
-- 白色页眉 + 深蓝标题
-- 卡片式目录项布局
-- 双竖线分隔符 `||` 设计
-- 不同颜色左侧装饰条区分章节
-- 装饰圆点缀
-
-### 3. 章节页 (02_chapter.svg)
-
-- 深色纯色背景 (`#1E3A5F`)
-- 装饰圆（紫色、青色，低透明度）
-- 大号半透明背景编号
-- 居中章节标题
-- 分隔线 + 章节描述
-
-### 4. 内容页 (03_content.svg)
-
-- 浅灰背景 (`#F8FAFC`)
-- 白色页眉 + 底部分隔线
-- 白色内容卡片（圆角 8px）
-- 白色页脚 + 顶部分隔线
-- 左侧深蓝竖条章节标识
-
-### 5. 结束页 (04_ending.svg)
-
-- 深色渐变背景
-- 装饰圆
-- 居中感谢语
-- 分隔线 + 口号
-- 联系信息
-- 底部版权
+- **Decorative Circles**: Low-opacity gradient circles in purple and cyan
+- **Left Indicator Bar**: Dark blue (`#1E3A5F`), width 4-6px
+- **Divider Lines**: Light gray (`#E2E8F0`), width 1px
 
 ---
 
-## 七、布局模式
+## VI. Page Types
 
-| 模式               | 适用场景                   |
-| ------------------ | -------------------------- |
-| **单栏居中**       | 封面、结语                 |
-| **卡片式双列**     | 目录页                     |
-| **左右分栏 (5:5)** | 对比展示                   |
-| **左右分栏 (4:6)** | 图文混排                   |
-| **网格卡片**       | 项目列表                   |
-| **表格**           | 数据汇总                   |
+### 1. Cover Page (01_cover.svg)
+
+- Dark gradient background (`#1E3A5F` → `#0F1C2E`)
+- Top-right decorative circles (purple, cyan, low opacity)
+- Left decorative white line
+- Main title + subtitle
+- Bottom semi-transparent info area (date, author)
+
+### 2. Table of Contents Page (02_toc.svg)
+
+- Light background
+- White header + dark blue title
+- Card-style TOC item layout
+- Double vertical line separator `||` design
+- Different colored left bars to distinguish sections
+- Decorative circle accents
+
+### 3. Chapter Page (02_chapter.svg)
+
+- Dark solid background (`#1E3A5F`)
+- Decorative circles (purple, cyan, low opacity)
+- Large semi-transparent background number
+- Centered chapter title
+- Divider line + chapter description
+
+### 4. Content Page (03_content.svg)
+
+- Light gray background (`#F8FAFC`)
+- White header + bottom divider
+- White content cards (border radius 8px)
+- White footer + top divider
+- Left dark blue vertical bar section indicator
+
+### 5. Ending Page (04_ending.svg)
+
+- Dark gradient background
+- Decorative circles
+- Centered thank-you message
+- Divider line + tagline
+- Contact information
+- Bottom copyright
 
 ---
 
-## 八、间距规范
+## VII. Layout Patterns
 
-| 元素         | 数值   |
-| ------------ | ------ |
-| 卡片间距     | 20px   |
-| 内容块间距   | 24px   |
-| 卡片内边距   | 20px   |
-| 卡片圆角     | 8px    |
-| 图标与文字   | 12px   |
+| Pattern            | Use Cases                      |
+| ------------------ | ------------------------------ |
+| **Single Column Centered** | Cover, ending            |
+| **Two-Column Cards** | Table of contents             |
+| **Left-Right Split (5:5)** | Comparison display      |
+| **Left-Right Split (4:6)** | Image-text mixed layout |
+| **Grid Cards**     | Project lists                  |
+| **Table**          | Data summary                   |
 
 ---
 
-## 九、SVG 技术约束
+## VIII. Spacing Guidelines
 
-### 必须遵守
+| Element            | Value  |
+| ------------------ | ------ |
+| Card gap           | 20px   |
+| Content block gap  | 24px   |
+| Card padding       | 20px   |
+| Card border radius | 8px    |
+| Icon-to-text gap   | 12px   |
+
+---
+
+## IX. SVG Technical Constraints
+
+### Mandatory Rules
 
 1. viewBox: `0 0 1280 720`
-2. 背景使用 `<rect>` 元素
-3. 文本换行使用 `<tspan>`（禁止 `<foreignObject>`）
-4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`
-6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
-7. 箭头使用 `<polygon>` 三角形替代 `<marker>`
-8. 渐变使用 `<defs>` 定义 `<linearGradient>`
+2. Use `<rect>` elements for backgrounds
+3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
+4. Use `fill-opacity` / `stroke-opacity` for transparency; no `rgba()`
+5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+7. Use `<polygon>` triangles for arrows instead of `<marker>`
+8. Define gradients using `<defs>` with `<linearGradient>`
 
-### PPT 兼容性规则
+### PPT Compatibility Rules
 
-- 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置
-- 图片透明度使用遮罩层替代
-- 仅使用内联样式，禁止外部 CSS 和 `@font-face`
+- No `<g opacity="...">` (group opacity); set opacity on each child element individually
+- Use overlay layers for image transparency
+- Inline styles only; no external CSS or `@font-face`
 
 ---
 
-## 十、占位符规范
+## X. Placeholder Specification
 
-模板使用 `{{PLACEHOLDER}}` 格式的占位符，常用占位符：
+Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
-| 占位符             | 说明               |
+| Placeholder        | Description        |
 | ------------------ | ------------------ |
-| `{{TITLE}}`        | 主标题             |
-| `{{SUBTITLE}}`     | 副标题             |
-| `{{AUTHOR}}`       | 作者               |
-| `{{DATE}}`         | 日期               |
-| `{{PAGE_TITLE}}`   | 页面标题           |
-| `{{CHAPTER_NUM}}`  | 章节编号           |
-| `{{CHAPTER_TITLE}}`| 章节标题           |
-| `{{CHAPTER_DESC}}` | 章节描述           |
-| `{{SECTION_NAME}}` | 章节名称（页脚）   |
-| `{{PAGE_NUM}}`     | 页码               |
-| `{{CONTACT_INFO}}` | 联系信息           |
-| `{{COPYRIGHT}}`    | 版权信息           |
-| `{{LOGO}}`         | Logo文字           |
+| `{{TITLE}}`        | Main title         |
+| `{{SUBTITLE}}`     | Subtitle           |
+| `{{AUTHOR}}`       | Author             |
+| `{{DATE}}`         | Date               |
+| `{{PAGE_TITLE}}`   | Page title         |
+| `{{CHAPTER_NUM}}`  | Chapter number     |
+| `{{CHAPTER_TITLE}}`| Chapter title      |
+| `{{CHAPTER_DESC}}` | Chapter description |
+| `{{SECTION_NAME}}` | Section name (footer) |
+| `{{PAGE_NUM}}`     | Page number        |
+| `{{CONTACT_INFO}}` | Contact information |
+| `{{COPYRIGHT}}`    | Copyright info     |
+| `{{LOGO}}`         | Logo text          |
 
 ---
 
-## 十一、使用说明
+## XI. Usage Instructions
 
-1. 复制模板到项目目录
-2. 根据内容需求选择合适的页面模板
-3. 使用占位符标记需要替换的内容
-4. 通过 Executor 角色生成最终 SVG
+1. Copy the template to the project directory
+2. Select the appropriate page template based on content needs
+3. Use placeholders to mark content that needs replacement
+4. Generate the final SVG through the Executor role
