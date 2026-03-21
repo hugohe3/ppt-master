@@ -1,16 +1,12 @@
 # CLAUDE.md
 
-本文件为 Claude Code 提供项目概览。仓库的核心能力集中在 `skills/ppt-master/`。
+本文件为 Claude Code 提供项目概览。执行 PPT 生成任务前，**必须先阅读 [AGENTS.md](./AGENTS.md) 与 `skills/ppt-master/SKILL.md`** 获取完整工作流与规则。
 
 ## 项目概述
 
 PPT Master 是一个 AI 驱动的多格式 SVG 内容生成系统。通过多角色协作（Strategist → Image_Generator → Executor → Optimizer），将源文档（PDF/URL/Markdown）转化为高质量 SVG 页面，并导出为 PPTX。
 
 **核心流程**：`源文档 → 创建项目 → 模板选项 → Strategist八项确认 → [Image_Generator] → Executor → 后处理 → 导出PPTX`
-
-**Skill 模式**：如已安装 skill，使用 `/ppt` 命令进入交互式流程。
-
-**完整工作流和规则手册**：执行 PPT 生成任务前，优先阅读 [AGENTS.md](./AGENTS.md) 与 `skills/ppt-master/SKILL.md`。
 
 ## 常用命令
 
@@ -22,18 +18,21 @@ node skills/ppt-master/scripts/web_to_md.cjs <URL>
 
 # 项目管理
 python3 skills/ppt-master/scripts/project_manager.py init <项目名> --format ppt169
+python3 skills/ppt-master/scripts/project_manager.py import-sources <项目路径> <源文件或URL...> --move
 python3 skills/ppt-master/scripts/project_manager.py validate <项目路径>
 
 # 图片工具
 python3 skills/ppt-master/scripts/analyze_images.py <项目路径>/images
-python3 skills/ppt-master/scripts/nano_banana_gen.py "提示词" --aspect_ratio 16:9 --image_size 4K -o <项目路径>/images
+python3 skills/ppt-master/scripts/nano_banana_gen.py "提示词" --aspect_ratio 16:9 --image_size 1K -o <项目路径>/images
 
 # SVG 质量检查
 python3 skills/ppt-master/scripts/svg_quality_checker.py <项目路径>
 
-# 后处理三步（必须按顺序执行）
+# 后处理三步（必须按顺序逐条执行，禁止一次性执行）
 python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
+# ✅ 确认无报错后执行下一条
 python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
+# ✅ 确认无报错后执行下一条
 python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 ```
 
@@ -43,6 +42,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 - `skills/ppt-master/scripts/` — 28个工具脚本
 - `skills/ppt-master/templates/` — 布局模板、图表模板、640+ 矢量图标
 - `examples/` — 示例项目
+- `projects/` — 用户项目工作区
 
 ## SVG 技术约束（不可协商）
 
@@ -72,3 +72,4 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 - **禁止**用 `cp` 命令替代 `finalize_svg.py`
 - **禁止**从 `svg_output/` 直接导出，必须从 `svg_final/`（`-s final`）导出
 - 后处理三步命令不要添加 `--only` 等额外参数
+- **禁止**将后处理三步写在同一个代码块或同一次 shell 调用中执行

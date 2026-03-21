@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本文件为通用 AI 代理提供项目入口。仓库的核心能力集中在 `skills/ppt-master/SKILL.md`。
+本文件为通用 AI 代理提供项目入口。执行 PPT 生成任务前，**必须先阅读 `skills/ppt-master/SKILL.md`** 获取完整工作流与规则。
 
 ## 项目概述
 
