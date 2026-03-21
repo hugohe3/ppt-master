@@ -295,7 +295,7 @@
 2. 背景使用 `<rect>` 元素
 3. 文本换行使用 `<tspan>`（**严禁** `<foreignObject>`）
 4. 透明度使用 `fill-opacity` / `stroke-opacity`，禁止 `rgba()`
-5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`id`、`foreignObject`
+5. 禁止使用：`clipPath`、`mask`、`<style>`、`class`、`foreignObject`（`<defs>` 内 `id` 合法）
 6. 禁止使用：`textPath`、`animate*`、`script`、`marker`/`marker-end`
 7. 禁止使用：`<symbol>+<use>`、`<iframe>`、`@font-face`
 8. 禁止 `<g opacity="...">`（组透明度），每个子元素单独设置

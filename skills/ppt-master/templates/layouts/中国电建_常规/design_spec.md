@@ -171,7 +171,7 @@
 ### 禁用元素 (黑名单)
 
 - `clipPath`, `mask` (裁剪/遮罩)
-- `<style>`, `class`, `id` (样式表)
+- `<style>`, `class` (样式表；`<defs>` 内 `id` 合法)
 - `foreignObject` (外部对象)
 - `textPath` (路径文本)
 - `animate`, `animateTransform`, `set` (动画)

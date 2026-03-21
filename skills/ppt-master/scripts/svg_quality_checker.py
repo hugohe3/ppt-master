@@ -155,8 +155,13 @@ class SVGQualityChecker:
             result['errors'].append("检测到禁用的 <style> 元素（使用内联属性替代）")
         if re.search(r'\bclass\s*=', content):
             result['errors'].append("检测到禁用的 class 属性（使用内联样式替代）")
-        if re.search(r'\bid\s*=', content):
-            result['errors'].append("检测到禁用的 id 属性（使用内联样式替代）")
+        # id 属性：仅当同时存在 <style> 时才报错（id 配合 CSS 选择器才有害）
+        # <defs> 内的 linearGradient/filter 等必须使用 id，Inkscape 也会自动为元素添加 id，
+        # 这些单独存在的 id 对 PPT 导出无影响
+        if '<style' in content_lower and re.search(r'\bid\s*=', content):
+            result['errors'].append(
+                "检测到 id 属性与 <style> 配合使用（禁止 CSS 选择器，使用内联样式替代）"
+            )
         if re.search(r'<\?xml-stylesheet\b', content_lower):
             result['errors'].append("检测到禁用的 xml-stylesheet（禁止引用外部 CSS）")
         if re.search(r'<link[^>]*rel\s*=\s*["\']stylesheet["\']', content_lower):

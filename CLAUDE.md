@@ -46,7 +46,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 ## SVG 技术约束（不可协商）
 
-**禁用功能**：`clipPath` | `mask` | `<style>` | `class/id` | 外部 CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>`
+**禁用功能**：`clipPath` | `mask` | `<style>` | `class` | 外部 CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>`（`<defs>` 内 `id` 为合法引用，不在此列）
 
 **PPT 兼容性替代**：
 
