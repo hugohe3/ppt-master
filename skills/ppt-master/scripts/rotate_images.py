@@ -295,7 +295,7 @@ class ImageRotator:
                 for tag, value in exif.items():
                     if ExifTags.TAGS.get(tag) == 'Orientation':
                         return value
-        except:
+        except Exception:
             pass
         return None
 
