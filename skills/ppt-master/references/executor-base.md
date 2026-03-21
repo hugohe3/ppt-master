@@ -105,7 +105,7 @@
 | 强调字体 | 黑体 | Arial Black/Consolas |
 | 注释字体 | 微软雅黑/宋体 | Arial/Times |
 
-详细参见 `docs/design_guidelines.md`。
+详细参见 `references/design-guidelines.md`。
 
 ---
 

@@ -334,7 +334,7 @@ xdg-open examples/<project_name>/svg_final/slide_01_cover.svg
 
 1. ✅ 遵循标准项目结构
 2. ✅ 包含完整的设计规范文档
-3. ✅ SVG 文件符合技术规范（使用 `python tools/svg_quality_checker.py` 检查）
+3. ✅ SVG 文件符合技术规范（使用 `python3 skills/ppt-master/scripts/svg_quality_checker.py` 检查）
 4. ✅ 不包含敏感信息
 
 ### 贡献步骤
@@ -346,10 +346,10 @@ xdg-open examples/<project_name>/svg_final/slide_01_cover.svg
 ## 📚 相关资源
 
 - [快速开始](../README.md)
-- [工作流教程](../docs/workflow_tutorial.md)
-- [设计规范](../docs/design_guidelines.md)
-- [图表模板](../templates/charts/)
-- [图标库](../templates/icons/)（640+ 图标）
+- [工作流教程](../skills/ppt-master/SKILL.md)
+- [设计规范](../skills/ppt-master/references/design-guidelines.md)
+- [图表模板](../skills/ppt-master/templates/charts/)
+- [图标库](../skills/ppt-master/templates/icons/)（640+ 图标）
 
 ---
 

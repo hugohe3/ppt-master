@@ -154,7 +154,7 @@ templates/layouts/
 ```markdown
 ## Template_Designer 阶段完成
 
-- [x] 已阅读 `roles/Template_Designer.md`
+- [x] 已阅读 `references/template-designer.md`
 - [x] 已生成 4 个核心页面模板
 - [ ] 目录页模板（可选）
 - [ ] 可选扩展页（如需）

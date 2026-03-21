@@ -66,7 +66,7 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     # 生成 README 内容
     content = []
     content.append("# PPT Master 示例项目索引\n")
-    content.append("> 本文件由 `tools/generate_examples_index.py` 自动生成\n")
+    content.append("> 本文件由 `skills/ppt-master/scripts/generate_examples_index.py` 自动生成\n")
     content.append(f"> 最后更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
 
     # 概览统计
