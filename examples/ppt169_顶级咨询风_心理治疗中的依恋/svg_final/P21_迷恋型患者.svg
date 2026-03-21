@@ -71,10 +71,10 @@
       <text x="175" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">无助模式</text>
       
       <text x="20" y="75" font-size="14" font-weight="600" fill="#B54545">⚠️ 陷阱</text>
-      <text fill="#374151" font-size="13" x="20" y="100">患者表现得无能为力，</text><text fill="#374151" font-size="13" x="20" y="120">诱使治疗师扮演"拯救者"</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
+      <text font-size="13" fill="#374151" x="20" y="100">患者表现得无能为力，</text><text font-size="13" fill="#374151" x="20" y="120">诱使治疗师扮演"拯救者"</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
       
       <text x="20" y="160" font-size="14" font-weight="600" fill="#3D8B7A">✓ 干预</text>
-      <text fill="#374151" font-size="13" x="20" y="185">• 发展性梯度：期望更多</text><text fill="#374151" font-size="13" x="20" y="207">• 搭脚手架：不替患者思考</text><text fill="#374151" font-size="13" x="20" y="229">• 容忍焦虑：允许沉默</text><text fill="#374151" font-size="13" x="20" y="251">• 让患者发现自己的资源</text></g>
+      <text font-size="13" fill="#374151" x="20" y="185">• 发展性梯度：期望更多</text><text font-size="13" fill="#374151" x="20" y="207">• 搭脚手架：不替患者思考</text><text font-size="13" fill="#374151" x="20" y="229">• 容忍焦虑：允许沉默</text><text font-size="13" fill="#374151" x="20" y="251">• 让患者发现自己的资源</text></g>
     
     
     <g transform="translate(370, 35)">
@@ -85,10 +85,10 @@
       <text x="175" y="28" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">愤怒与混乱模式</text>
       
       <text x="20" y="75" font-size="14" font-weight="600" fill="#B54545">⚠️ 特征</text>
-      <text fill="#374151" font-size="13" x="20" y="100">生活在危机中，情绪压倒一切</text><text fill="#374151" font-size="13" x="20" y="120">常投射出恶意的他者</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
+      <text font-size="13" fill="#374151" x="20" y="100">生活在危机中，情绪压倒一切</text><text font-size="13" fill="#374151" x="20" y="120">常投射出恶意的他者</text><line x1="20" y1="135" x2="330" y2="135" stroke="#E5E7EB" stroke-width="1" />
       
       <text x="20" y="160" font-size="14" font-weight="600" fill="#3D8B7A">✓ 干预</text>
-      <text fill="#374151" font-size="13" x="20" y="185">• 共情：理解行为背后的绝望</text><text fill="#374151" font-size="13" x="20" y="207">• 设定界限：对破坏性行为</text><text fill="#374151" font-size="13" x="20" y="229">• 提供"被容纳"的安全感</text><text fill="#374151" font-size="13" x="20" y="251">• 这正是其童年所缺失的</text></g>
+      <text font-size="13" fill="#374151" x="20" y="185">• 共情：理解行为背后的绝望</text><text font-size="13" fill="#374151" x="20" y="207">• 设定界限：对破坏性行为</text><text font-size="13" fill="#374151" x="20" y="229">• 提供"被容纳"的安全感</text><text font-size="13" fill="#374151" x="20" y="251">• 这正是其童年所缺失的</text></g>
   </g>
   
   

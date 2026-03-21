@@ -19,7 +19,7 @@
     
     
     <g transform="translate(55, 95)">
-        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
 
         <path fill="#1A5F9E" d="M12,0 H358 A12,12 0 0 1 370,12 V38 A12,12 0 0 1 358,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
         <rect y="40" width="370" height="10" fill="#1A5F9E" />
@@ -65,7 +65,7 @@
 
     
     <g transform="translate(455, 95)">
-        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
 
         <path fill="#38A169" d="M12,0 H358 A12,12 0 0 1 370,12 V38 A12,12 0 0 1 358,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
         <rect y="40" width="370" height="10" fill="#38A169" />
@@ -113,7 +113,7 @@
 
     
     <g transform="translate(855, 95)">
-        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
+        <path fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" d="M12,0 H358 A12,12 0 0 1 370,12 V518 A12,12 0 0 1 358,530 H12 A12,12 0 0 1 0,518 V12 A12,12 0 0 1 12,0 Z" />
 
         <path fill="#E07C24" d="M12,0 H358 A12,12 0 0 1 370,12 V38 A12,12 0 0 1 358,50 H12 A12,12 0 0 1 0,38 V12 A12,12 0 0 1 12,0 Z" />
         <rect y="40" width="370" height="10" fill="#E07C24" />

@@ -28,7 +28,7 @@
   <rect width="1280" height="720" fill="#0D1117" />
   
   
-  <g opacity="0.1">
+  <g fill-opacity="0.1">
     <line x1="0" y1="60" x2="1280" y2="60" stroke="#39FF14" stroke-width="1" />
     <line x1="0" y1="120" x2="1280" y2="120" stroke="#39FF14" stroke-width="1" />
     <line x1="0" y1="180" x2="1280" y2="180" stroke="#39FF14" stroke-width="1" />

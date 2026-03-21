@@ -4,10 +4,7 @@
             <stop offset="0%" style="stop-color:#58a6ff" />
             <stop offset="100%" style="stop-color:#7ee787" />
         </linearGradient>
-        <marker id="flowArrow" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
-            <polygon points="0 0, 12 4, 0 8" fill="url(#accentGradient)" />
-        </marker>
-    </defs>
+</defs>
 
     
     <rect width="1280" height="720" fill="#0d1117" />
@@ -30,7 +27,7 @@
         </g>
 
         
-        <line x1="340" y1="100" x2="400" y2="100" stroke="url(#accentGradient)" stroke-width="4" marker-end="url(#flowArrow)" />
+        <line x1="340" y1="100" x2="400" y2="100" stroke="url(#accentGradient)" stroke-width="4" />
 
         
         <g transform="translate(420, 0)">
@@ -44,7 +41,7 @@
         </g>
 
         
-        <line x1="760" y1="100" x2="820" y2="100" stroke="url(#accentGradient)" stroke-width="4" marker-end="url(#flowArrow)" />
+        <line x1="760" y1="100" x2="820" y2="100" stroke="url(#accentGradient)" stroke-width="4" />
 
         
         <g transform="translate(840, 0)">

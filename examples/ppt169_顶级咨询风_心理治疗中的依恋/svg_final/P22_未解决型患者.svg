@@ -71,7 +71,9 @@
     <path d="M340,125 L340,145" stroke="#6B7280" stroke-width="2" fill="none" />
     <polygon points="340,150 334,140 346,140" fill="#6B7280" />
     
-    
+    <polygon points="336.0,145.0 340.0,153.0 344.0,145.0" fill="#6B7280" />
+<polygon points="336.0,145.0 340.0,153.0 344.0,145.0" fill="#6B7280" />
+
     <g transform="translate(0, 155)">
       <path fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2" d="M12,0 H668 A12,12 0 0 1 680,12 V68 A12,12 0 0 1 668,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
       
@@ -86,7 +88,9 @@
     <path d="M340,240 L340,260" stroke="#6B7280" stroke-width="2" fill="none" />
     <polygon points="340,265 334,255 346,255" fill="#6B7280" />
     
-    
+    <polygon points="336.0,260.0 340.0,268.0 344.0,260.0" fill="#6B7280" />
+<polygon points="336.0,260.0 340.0,268.0 344.0,260.0" fill="#6B7280" />
+
     <g transform="translate(0, 270)">
       <path fill="#FFFFFF" stroke="#E07843" stroke-width="2" d="M12,0 H668 A12,12 0 0 1 680,12 V68 A12,12 0 0 1 668,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
       
@@ -101,7 +105,9 @@
     <path d="M340,355 L340,375" stroke="#6B7280" stroke-width="2" fill="none" />
     <polygon points="340,380 334,370 346,370" fill="#6B7280" />
     
-    
+    <polygon points="336.0,375.0 340.0,383.0 344.0,375.0" fill="#6B7280" />
+<polygon points="336.0,375.0 340.0,383.0 344.0,375.0" fill="#6B7280" />
+
     <g transform="translate(0, 385)">
       <path fill="#FFFFFF" stroke="#64748B" stroke-width="2" d="M12,0 H668 A12,12 0 0 1 680,12 V68 A12,12 0 0 1 668,80 H12 A12,12 0 0 1 0,68 V12 A12,12 0 0 1 12,0 Z" />
       

@@ -12,10 +12,7 @@
       <stop offset="0%" style="stop-color:#D97757" />
       <stop offset="100%" style="stop-color:#F59E0B" />
     </linearGradient>
-    <marker id="arrowDown" markerWidth="10" markerHeight="10" refX="5" refY="10" orient="auto">
-      <path d="M0,0 L5,10 L10,0" fill="#64748B" />
-    </marker>
-  </defs>
+</defs>
   
   
   <rect width="1280" height="720" fill="#FFFFFF" />
@@ -132,19 +129,15 @@
     
     <line x1="20" y1="80" x2="520" y2="80" stroke="#F59E0B" stroke-opacity="0.3" stroke-width="1" />
     
-    <text x="30" y="110" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
-      <tspan x="30" dy="0">• Agent 系统以</tspan>
+    <text font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E" x="30" y="110"><tspan>• Agent 系统以</tspan>
       <tspan font-weight="bold" fill="#D97757"> 延迟 </tspan>
       <tspan>和</tspan>
       <tspan font-weight="bold" fill="#D97757"> 成本 </tspan>
       <tspan>换取更好的任务表现</tspan>
-    </text>
-    <text x="30" y="138" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
-      <tspan x="30" dy="0">• 错误可能</tspan>
+    </text><text font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E" x="30" y="138"><tspan>• 错误可能</tspan>
       <tspan font-weight="bold" fill="#EF4444">复合累积</tspan>
       <tspan>，需要广泛测试与防护</tspan>
-    </text>
-    <text x="30" y="166" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+    </text><text x="30" y="166" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
       • 评估这种权衡何时有意义
     </text>
     
@@ -166,12 +159,10 @@
     
     <line x1="20" y1="290" x2="520" y2="290" stroke="#10B981" stroke-opacity="0.3" stroke-width="1" />
     
-    <text x="30" y="320" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
-      <tspan x="30" dy="0">✓ 从</tspan>
+    <text font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E" x="30" y="320"><tspan>✓ 从</tspan>
       <tspan font-weight="bold" fill="#10B981">简单 prompt</tspan>
       <tspan>开始</tspan>
-    </text>
-    <text x="30" y="348" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
+    </text><text x="30" y="348" font-family="Arial, sans-serif" font-size="16" fill="#1A1A2E">
       ✓ 用全面评估优化
     </text>
     

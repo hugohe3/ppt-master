@@ -103,12 +103,9 @@
     <text x="110" y="595" font-family="Arial, sans-serif" font-size="17" fill="#2C3E50">
         <tspan>78% of customer losses are controllable factors</tspan>
     </text>
-    <text font-size="15" fill="#5D6D7E" font-family="Arial, sans-serif" x="110" y="617">Competitive switching (52%) and service dissatisfaction (26%) represent the</text><text font-size="15" fill="#5D6D7E" font-family="Arial, sans-serif" x="110" y="635">primary levers for retention improvement.</text><path d="M 730,215 Q 780,240 780,280" stroke="#E74C3C" stroke-width="2" fill="none" marker-end="url(#arrow-red2)" />
+    <text font-size="15" font-family="Arial, sans-serif" fill="#5D6D7E" x="110" y="617">Competitive switching (52%) and service dissatisfaction (26%) represent the</text><text font-size="15" font-family="Arial, sans-serif" fill="#5D6D7E" x="110" y="635">primary levers for retention improvement.</text><path d="M 730,215 Q 780,240 780,280" stroke="#E74C3C" stroke-width="2" fill="none" />
     <defs>
-        <marker id="arrow-red2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#E74C3C" />
-        </marker>
-    </defs>
+</defs>
 
     <rect x="790" y="270" width="180" height="45" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2" />
     <text x="880" y="290" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C" text-anchor="middle">

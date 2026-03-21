@@ -24,7 +24,7 @@
   <rect x="0" y="4" width="1280" height="2" fill="#39FF14" opacity="0.4" />
   
   
-  <g opacity="0.05">
+  <g fill-opacity="0.05">
     <line x1="0" y1="120" x2="1280" y2="120" stroke="#39FF14" stroke-width="1" />
     <line x1="0" y1="240" x2="1280" y2="240" stroke="#39FF14" stroke-width="1" />
     <line x1="0" y1="360" x2="1280" y2="360" stroke="#39FF14" stroke-width="1" />
@@ -56,7 +56,7 @@
     <rect x="20" y="70" width="340" height="2" fill="#30363D" />
     
     
-    <text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="110">版本控制系统 (VCS)</text><text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="145">追踪和管理文件变更</text><text font-size="18" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="30" y="180">世界上最流行的 VCS</text><rect x="30" y="220" width="320" height="25" fill="#0D1117" stroke="#30363D" stroke-width="1" />
+    <text font-size="18" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="30" y="110">版本控制系统 (VCS)</text><text font-size="18" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="30" y="145">追踪和管理文件变更</text><text font-size="18" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="30" y="180">世界上最流行的 VCS</text><rect x="30" y="220" width="320" height="25" fill="#0D1117" stroke="#30363D" stroke-width="1" />
     <rect x="32" y="222" width="285" height="21" fill="#39FF14" opacity="0.8" />
     <text x="295" y="239" font-family="Consolas, monospace" font-size="14" fill="#0D1117" font-weight="bold">90%+</text>
     <text x="30" y="260" font-family="Consolas, monospace" font-size="12" fill="#8B949E">开发者使用率</text>

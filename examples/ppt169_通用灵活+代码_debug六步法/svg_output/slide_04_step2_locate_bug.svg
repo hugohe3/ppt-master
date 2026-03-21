@@ -4,10 +4,7 @@
             <stop offset="0%" style="stop-color:#58a6ff" />
             <stop offset="100%" style="stop-color:#7ee787" />
         </linearGradient>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff" />
-        </marker>
-    </defs>
+</defs>
 
     <!-- 背景 -->
     <rect width="1280" height="720" fill="#0d1117" />
@@ -48,8 +45,7 @@
             font-weight="bold" fill="#e6edf3">触发事件</text>
 
         <!-- 箭头1 -->
-        <line x1="190" y1="40" x2="260" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
-            marker-end="url(#arrowhead)" />
+        <line x1="190" y1="40" x2="260" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         <!-- 节点2: 前端处理 -->
         <rect x="270" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
@@ -59,8 +55,7 @@
             font-weight="bold" fill="#e6edf3">处理/发送请求</text>
 
         <!-- 箭头2 -->
-        <line x1="460" y1="40" x2="530" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
-            marker-end="url(#arrowhead)" />
+        <line x1="460" y1="40" x2="530" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         <!-- 节点3: 后端处理 - 可能出错的地方 -->
         <rect x="540" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#f85149" stroke-width="3" />
@@ -74,8 +69,7 @@
             font-weight="bold" fill="#fff">BUG?</text>
 
         <!-- 箭头3 -->
-        <line x1="730" y1="40" x2="800" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4"
-            marker-end="url(#arrowhead)" />
+        <line x1="730" y1="40" x2="800" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         <!-- 节点4: 数据库 -->
         <rect x="810" y="0" width="180" height="80" rx="12" fill="#161b22" stroke="#7ee787" stroke-width="2" />
@@ -86,7 +80,7 @@
         <line x1="990" y1="40" x2="1040" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <line x1="1040" y1="40" x2="1040" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <line x1="1040" y1="110" x2="90" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
-        <line x1="90" y1="110" x2="90" y2="85" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <line x1="90" y1="110" x2="90" y2="85" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <text x="565" y="128" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">返回结果</text>
     </g>
 

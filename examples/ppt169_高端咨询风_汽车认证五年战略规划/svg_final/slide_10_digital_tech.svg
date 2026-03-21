@@ -40,12 +40,7 @@
     <text x="185" y="140" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C" text-anchor="middle">远程审核技术</text>
     
     
-    <text x="30" y="180" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="30" dy="0">突破地理限制，实现高效远程审核</tspan>
-    </text>
-    
-    
-    <g transform="translate(30, 210)">
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="30" y="180">突破地理限制，实现高效远程审核</text><g transform="translate(30, 210)">
       <path fill="#F0F4F8" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <circle cx="20" cy="20" r="6" fill="#0076A8" />
       <text x="40" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">高清视频+实时交互</text>
@@ -82,12 +77,7 @@
     <text x="185" y="140" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C" text-anchor="middle">区块链存证</text>
     
     
-    <text x="30" y="180" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="30" dy="0">构建可信、不可篡改的认证信任体系</tspan>
-    </text>
-    
-    
-    <g transform="translate(30, 210)">
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="30" y="180">构建可信、不可篡改的认证信任体系</text><g transform="translate(30, 210)">
       <path fill="#F5F0F8" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <circle cx="20" cy="20" r="6" fill="#9C27B0" />
       <text x="40" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">加密存证 · 全程可追溯</text>
@@ -124,12 +114,7 @@
     <text x="185" y="140" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="22" font-weight="bold" fill="#003F6C" text-anchor="middle">AI智能应用</text>
     
     
-    <text x="30" y="180" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#4A4A6A">
-      <tspan x="30" dy="0">人工智能赋能全流程智能化升级</tspan>
-    </text>
-    
-    
-    <g transform="translate(30, 210)">
+    <text font-size="14" fill="#4A4A6A" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" x="30" y="180">人工智能赋能全流程智能化升级</text><g transform="translate(30, 210)">
       <path fill="#FFF3ED" d="M6,0 H304 A6,6 0 0 1 310,6 V34 A6,6 0 0 1 304,40 H6 A6,6 0 0 1 0,34 V6 A6,6 0 0 1 6,0 Z" />
       <circle cx="20" cy="20" r="6" fill="#FF6B35" />
       <text x="40" y="25" font-family="system-ui, -apple-system, 'Microsoft YaHei', sans-serif" font-size="14" fill="#1A1A2E">文档自动校验 · 智能纠错</text>

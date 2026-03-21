@@ -34,7 +34,8 @@
       <path d="M470,85 L470,100" stroke="#B54545" stroke-width="2" />
       <polygon points="470,85 464,95 476,95" fill="#B54545" />
       
-      
+      <polygon points="466.0,100.0 470.0,108.0 474.0,100.0" fill="#B54545" />
+
       <path fill="#D4EDDA" stroke="#3D8B7A" stroke-width="2" d="M12,100 H488 A12,12 0 0 1 500,112 V188 A12,12 0 0 1 488,200 H12 A12,12 0 0 1 0,188 V112 A12,12 0 0 1 12,100 Z" />
       <text x="250" y="140" font-size="18" font-weight="bold" fill="#3D8B7A" text-anchor="middle">容纳之窗</text>
       <text x="250" y="165" font-size="14" fill="#374151" text-anchor="middle">最佳调节区域 — 有效的治疗干预保持在此范围内</text>
@@ -44,7 +45,8 @@
       <path d="M470,200 L470,215" stroke="#64748B" stroke-width="2" />
       <polygon points="470,220 464,210 476,210" fill="#64748B" />
       
-      
+      <polygon points="466.0,215.0 470.0,223.0 474.0,215.0" fill="#64748B" />
+
       <path fill="#E2E8F0" stroke="#64748B" stroke-width="1" d="M12,220 H488 A12,12 0 0 1 500,232 V288 A12,12 0 0 1 488,300 H12 A12,12 0 0 1 0,288 V232 A12,12 0 0 1 12,220 Z" />
       <text x="20" y="255" font-size="15" font-weight="bold" fill="#64748B">过度激活区 (PNS)</text>
       <text x="20" y="278" font-size="13" fill="#374151">冻结/麻木 | 呼吸心跳变慢 | 瞳孔收缩 | 面色潮红</text>

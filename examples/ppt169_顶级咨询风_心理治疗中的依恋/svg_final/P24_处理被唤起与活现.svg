@@ -51,7 +51,7 @@
       
       <g transform="translate(25, 75)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#3D8B7A">情感传染机制</text>
-        <text fill="#374151" font-size="14" x="0" y="25">由于镜像神经元的作用，患者的体验会在</text><text fill="#374151" font-size="14" x="0" y="47">治疗师身上唤起相应的感受</text></g>
+        <text font-size="14" fill="#374151" x="0" y="25">由于镜像神经元的作用，患者的体验会在</text><text font-size="14" fill="#374151" x="0" y="47">治疗师身上唤起相应的感受</text></g>
       
       <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1" />
       
@@ -71,7 +71,7 @@
       
       <g transform="translate(25, 270)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#3D8B7A">✓ 治疗性运用</text>
-        <text fill="#374151" font-size="14" x="0" y="28">• 治疗师的主观体验是了解患者解离情感的宝贵资源</text><text fill="#374151" font-size="14" x="0" y="50">• 识别并适当表达这些被唤起的感受</text><text fill="#374151" font-size="14" x="0" y="72">• 帮助患者接纳和整合这些体验</text></g>
+        <text font-size="14" fill="#374151" x="0" y="28">• 治疗师的主观体验是了解患者解离情感的宝贵资源</text><text font-size="14" fill="#374151" x="0" y="50">• 识别并适当表达这些被唤起的感受</text><text font-size="14" fill="#374151" x="0" y="72">• 帮助患者接纳和整合这些体验</text></g>
     </g>
     
     
@@ -86,7 +86,7 @@
       
       <g transform="translate(25, 75)">
         <text x="0" y="0" font-size="15" font-weight="600" fill="#E07843">定义</text>
-        <text fill="#374151" font-size="14" x="0" y="25">活现是移情与反移情交织的产物，</text><text fill="#374151" font-size="14" x="0" y="47">是潜意识关系模式的重演</text></g>
+        <text font-size="14" fill="#374151" x="0" y="25">活现是移情与反移情交织的产物，</text><text font-size="14" fill="#374151" x="0" y="47">是潜意识关系模式的重演</text></g>
       
       <line x1="25" y1="140" x2="535" y2="140" stroke="#E5E7EB" stroke-width="1" />
       

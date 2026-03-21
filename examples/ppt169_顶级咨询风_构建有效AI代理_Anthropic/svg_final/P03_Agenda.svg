@@ -100,8 +100,9 @@
     <text x="175" y="262" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="#D97757" text-anchor="middle">Autonomous Agents</text>
     
     
-    <text font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748B" x="175" y="320">复杂度递增</text><text font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748B" x="175" y="342">按需升级</text><path d="M320,140 L340,170 L320,200" stroke="#E2E8F0" stroke-width="2" fill="none" />
-  </g>
+    <text text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748B" x="175" y="320">复杂度递增</text><text text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748B" x="175" y="342">按需升级</text><path d="M320,140 L340,170 L320,200" stroke="#E2E8F0" stroke-width="2" fill="none" />
+  <polygon points="336.0,170.0 340.0,178.0 344.0,170.0" fill="#E2E8F0" />
+</g>
   
   
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">

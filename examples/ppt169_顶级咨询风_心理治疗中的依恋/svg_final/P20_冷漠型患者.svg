@@ -51,7 +51,7 @@
     
     <text x="20" y="35" font-size="16" font-weight="bold" fill="#E07843">⚠️ 第22条军规</text>
     
-    <text fill="#374151" font-size="14" x="20" y="65">患者需要亲密关系来治愈，</text><text fill="#374151" font-size="14" x="20" y="87">但亲密正是他们防御的对象。</text><text fill="#E07843" font-size="14" font-weight="600" x="20" y="109">治疗师变得重要本身就是威胁。</text></g>
+    <text font-size="14" fill="#374151" x="20" y="65">患者需要亲密关系来治愈，</text><text font-size="14" fill="#374151" x="20" y="87">但亲密正是他们防御的对象。</text><text font-size="14" fill="#E07843" x="20" y="109" font-weight="600">治疗师变得重要本身就是威胁。</text></g>
   
   
   <g transform="translate(500, 145)" font-family="PingFang SC, Microsoft YaHei, sans-serif">

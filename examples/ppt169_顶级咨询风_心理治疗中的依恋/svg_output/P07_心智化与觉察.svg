@@ -20,12 +20,9 @@
   <g transform="translate(430, 140)">
     <!-- 图片容器（圆角裁剪） -->
     <defs>
-      <clipPath id="helixClip">
-        <rect x="0" y="0" width="420" height="320" rx="16"/>
-      </clipPath>
-    </defs>
+</defs>
     <rect x="0" y="0" width="420" height="320" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
-    <image xlink:href="../images/double_helix.png" x="10" y="10" width="400" height="300" clip-path="url(#helixClip)" preserveAspectRatio="xMidYMid slice"/>
+    <image xlink:href="../images/double_helix.png" x="10" y="10" width="400" height="300" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 标签 -->
     <g transform="translate(40, 280)">

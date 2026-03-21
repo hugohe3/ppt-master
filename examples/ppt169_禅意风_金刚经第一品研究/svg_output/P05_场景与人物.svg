@@ -47,12 +47,9 @@
   <!-- 右栏：配图 -->
   <g transform="translate(700, 140)">
     <rect x="0" y="0" width="540" height="380" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
-    <image xlink:href="../images/jetavana.png" x="10" y="10" width="520" height="360" preserveAspectRatio="xMidYMid slice" clip-path="url(#imgClip)"/>
+    <image xlink:href="../images/jetavana.png" x="10" y="10" width="520" height="360" preserveAspectRatio="xMidYMid slice"/>
     <defs>
-      <clipPath id="imgClip">
-        <rect x="10" y="10" width="520" height="360" rx="8"/>
-      </clipPath>
-    </defs>
+</defs>
   </g>
   
   <!-- 右栏：意义说明 -->

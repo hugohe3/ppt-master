@@ -164,11 +164,8 @@
 
     <!-- Alert arrow -->
     <defs>
-        <marker id="arrow-alert" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
-        </marker>
-    </defs>
-    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" marker-end="url(#arrow-alert)" />
+</defs>
+    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" />
 
     <!-- Alert text box -->
     <rect x="1040" y="495" width="90" height="50" fill="#FEE" stroke="#E74C3C" stroke-width="1" rx="4" />

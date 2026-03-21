@@ -67,7 +67,7 @@
       <text x="300" y="0">📐 10+ 画布格式</text>
     </g>
     
-    <g font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" opacity="0.85">
+    <g font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#FFFFFF" text-anchor="middle" fill-opacity="0.85">
       <text x="-300" y="35">📊 13 种图表模板</text>
       <text x="0" y="35">🎯 640+ 矢量图标</text>
       <text x="300" y="35">🖼️ 纯 SVG 输出</text>

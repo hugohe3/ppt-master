@@ -26,7 +26,7 @@
   <line x1="0" y1="520" x2="1280" y2="520" stroke="url(#lineGradient)" stroke-width="1"/>
   
   <!-- 抽象汽车轮廓装饰 -->
-  <g opacity="0.15" transform="translate(900, 280)">
+  <g fill-opacity="0.15" transform="translate(900, 280)">
     <ellipse cx="0" cy="80" rx="120" ry="40" fill="none" stroke="#0076A8" stroke-width="2"/>
     <ellipse cx="200" cy="80" rx="120" ry="40" fill="none" stroke="#0076A8" stroke-width="2"/>
     <path d="M-80 40 Q100 -60 280 40" fill="none" stroke="#0076A8" stroke-width="2"/>

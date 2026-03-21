@@ -27,7 +27,7 @@
       
       <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🧠 心智化 Mentalizing</text>
       
-      <text fill="#374151" font-size="15" x="20" y="80">通过推断心理状态（信念、愿望、</text><text fill="#374151" font-size="15" x="20" y="104">感受）来理解自己和他人行为的</text><text fill="#374151" font-size="15" x="20" y="128">心理过程</text><path fill="#E0F2FE" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
+      <text font-size="15" fill="#374151" x="20" y="80">通过推断心理状态（信念、愿望、</text><text font-size="15" fill="#374151" x="20" y="104">感受）来理解自己和他人行为的</text><text font-size="15" fill="#374151" x="20" y="128">心理过程</text><path fill="#E0F2FE" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
       <text x="185" y="163" font-size="13" fill="#2E5C8E" text-anchor="middle">💡 依恋关系的进化目的：发展心智化能力</text>
     </g>
     
@@ -39,7 +39,7 @@
       
       <text x="20" y="33" font-size="18" font-weight="bold" fill="#FFFFFF">🔍 反思功能 Reflective Function</text>
       
-      <text fill="#374151" font-size="15" x="20" y="80">将自己和他人视为具有心理深度</text><text fill="#374151" font-size="15" x="20" y="104">的存在，能够理解行为背后的</text><text fill="#374151" font-size="15" x="20" y="128">心理动机和意图</text><path fill="#D4EDDA" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
+      <text font-size="15" fill="#374151" x="20" y="80">将自己和他人视为具有心理深度</text><text font-size="15" fill="#374151" x="20" y="104">的存在，能够理解行为背后的</text><text font-size="15" fill="#374151" x="20" y="128">心理动机和意图</text><path fill="#D4EDDA" d="M24,145 H346 A4,4 0 0 1 350,149 V167 A4,4 0 0 1 346,171 H24 A4,4 0 0 1 20,167 V149 A4,4 0 0 1 24,145 Z" />
       <text x="185" y="163" font-size="13" fill="#3D8B7A" text-anchor="middle">🛡️ 代际传递解药：高反思功能打破恶性循环</text>
     </g>
     
@@ -49,7 +49,7 @@
       
       <text x="20" y="35" font-size="16" font-weight="bold" fill="#FFFFFF">🔑 Fonagy的核心洞见</text>
       
-      <text fill="#CBD5E1" font-size="14" x="20" y="70">即使父母童年不幸，如果他们</text><text fill="#CBD5E1" font-size="14" x="20" y="92">具备高反思功能，仍能抚养出</text><text fill="#CBD5E1" font-size="14" x="20" y="114">安全依恋的孩子。</text><text x="20" y="150" font-size="14" fill="#E07843" font-weight="600">
+      <text font-size="14" fill="#CBD5E1" x="20" y="70">即使父母童年不幸，如果他们</text><text font-size="14" fill="#CBD5E1" x="20" y="92">具备高反思功能，仍能抚养出</text><text font-size="14" fill="#CBD5E1" x="20" y="114">安全依恋的孩子。</text><text x="20" y="150" font-size="14" fill="#E07843" font-weight="600">
         反思能力 &gt; 童年历史
       </text>
     </g>
@@ -78,7 +78,7 @@
       <text x="40" y="87" font-size="13" fill="#B54545" text-anchor="middle">困境</text>
       
       
-      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心世界 = 外部现实</text><text fill="#374151" font-size="15" x="20" y="150">• 信念即事实</text><text fill="#374151" font-size="15" x="20" y="174">• 感到恐惧 = 环境必然危险</text><text fill="#374151" font-size="15" x="20" y="198">• 只有单一视角</text><text fill="#374151" font-size="15" x="20" y="222">• 情感调节困难</text></g>
+      <text font-size="15" fill="#374151" x="20" y="120" font-weight="600">内心世界 = 外部现实</text><text font-size="15" fill="#374151" x="20" y="150">• 信念即事实</text><text font-size="15" fill="#374151" x="20" y="174">• 感到恐惧 = 环境必然危险</text><text font-size="15" fill="#374151" x="20" y="198">• 只有单一视角</text><text font-size="15" fill="#374151" x="20" y="222">• 情感调节困难</text></g>
     
     
     <g transform="translate(400, 0)">
@@ -95,7 +95,7 @@
       <text x="40" y="87" font-size="13" fill="#E07843" text-anchor="middle">过渡</text>
       
       
-      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心世界 ≠ 外部现实（脱钩）</text><text fill="#374151" font-size="15" x="20" y="150">• 想象被感觉为真实</text><text fill="#374151" font-size="15" x="20" y="174">• 但必须切断与现实的联系</text><text fill="#374151" font-size="15" x="20" y="198">• 游戏/幻想中的安全空间</text><text fill="#374151" font-size="15" x="20" y="222">• 智力化防御</text></g>
+      <text font-size="15" fill="#374151" x="20" y="120" font-weight="600">内心世界 ≠ 外部现实（脱钩）</text><text font-size="15" fill="#374151" x="20" y="150">• 想象被感觉为真实</text><text font-size="15" fill="#374151" x="20" y="174">• 但必须切断与现实的联系</text><text font-size="15" fill="#374151" x="20" y="198">• 游戏/幻想中的安全空间</text><text font-size="15" fill="#374151" x="20" y="222">• 智力化防御</text></g>
     
     
     <g transform="translate(800, 0)">
@@ -112,7 +112,7 @@
       <text x="40" y="87" font-size="13" fill="#3D8B7A" text-anchor="middle">目标</text>
       
       
-      <text fill="#374151" font-size="15" font-weight="600" x="20" y="120">内心 ↔ 现实（分离但关联）</text><text fill="#374151" font-size="15" x="20" y="150">• 认识到思想≠事实</text><text fill="#374151" font-size="15" x="20" y="174">• 能反思表征的性质</text><text fill="#374151" font-size="15" x="20" y="198">• 多视角思考</text><text fill="#374151" font-size="15" x="20" y="222">• 情感可调节</text></g>
+      <text font-size="15" fill="#374151" x="20" y="120" font-weight="600">内心 ↔ 现实（分离但关联）</text><text font-size="15" fill="#374151" x="20" y="150">• 认识到思想≠事实</text><text font-size="15" fill="#374151" x="20" y="174">• 能反思表征的性质</text><text font-size="15" fill="#374151" x="20" y="198">• 多视角思考</text><text font-size="15" fill="#374151" x="20" y="222">• 情感可调节</text></g>
   </g>
   
   

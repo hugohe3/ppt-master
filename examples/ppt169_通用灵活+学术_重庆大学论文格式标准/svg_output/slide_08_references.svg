@@ -22,11 +22,11 @@
     <!-- 左上：顺序编码制 -->
     <g transform="translate(60, 100)">
         <rect width="560" height="220" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#1A5F9E" />
         <rect y="35" width="560" height="10" fill="#1A5F9E" />
-        <circle cx="30" cy="23" r="16" fill="rgba(255,255,255,0.2)" />
+        <circle cx="30" cy="23" r="16" fill="#FFFFFF" fill-opacity="0.2" />
         <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold"
             fill="#FFFFFF">1</text>
         <text x="60" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" font-weight="bold"
@@ -50,11 +50,11 @@
     <!-- 右上：著者-出版年制 -->
     <g transform="translate(660, 100)">
         <rect width="560" height="220" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#38A169" />
         <rect y="35" width="560" height="10" fill="#38A169" />
-        <circle cx="30" cy="23" r="16" fill="rgba(255,255,255,0.2)" />
+        <circle cx="30" cy="23" r="16" fill="#FFFFFF" fill-opacity="0.2" />
         <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold"
             fill="#FFFFFF">2</text>
         <text x="60" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" font-weight="bold"
@@ -78,16 +78,16 @@
     <!-- 左下：APA格式 -->
     <g transform="translate(60, 340)">
         <rect width="560" height="220" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#E07C24" />
         <rect y="35" width="560" height="10" fill="#E07C24" />
-        <circle cx="30" cy="23" r="16" fill="rgba(255,255,255,0.2)" />
+        <circle cx="30" cy="23" r="16" fill="#FFFFFF" fill-opacity="0.2" />
         <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold"
             fill="#FFFFFF">3</text>
         <text x="60" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" font-weight="bold"
             fill="#FFFFFF">APA格式</text>
-        <text x="200" y="30" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.8)">American
+        <text x="200" y="30" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8">American
             Psychological Association</text>
 
         <text x="25" y="75" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"
@@ -108,16 +108,16 @@
     <!-- 右下：MLA格式 -->
     <g transform="translate(660, 340)">
         <rect width="560" height="220" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#805AD5" />
         <rect y="35" width="560" height="10" fill="#805AD5" />
-        <circle cx="30" cy="23" r="16" fill="rgba(255,255,255,0.2)" />
+        <circle cx="30" cy="23" r="16" fill="#FFFFFF" fill-opacity="0.2" />
         <text x="30" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold"
             fill="#FFFFFF">4</text>
         <text x="60" y="30" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="18" font-weight="bold"
             fill="#FFFFFF">MLA格式</text>
-        <text x="200" y="30" font-family="Arial, sans-serif" font-size="12" fill="rgba(255,255,255,0.8)">Modern Language
+        <text x="200" y="30" font-family="Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8">Modern Language
             Association</text>
 
         <text x="25" y="75" font-family="Microsoft YaHei, PingFang SC, sans-serif" font-size="14"

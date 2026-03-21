@@ -21,7 +21,7 @@
     <!-- 左栏：页面设置 -->
     <g transform="translate(60, 100)">
         <rect width="560" height="520" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="50" rx="12" fill="#1A5F9E" />
         <rect y="40" width="560" height="10" fill="#1A5F9E" />
@@ -112,7 +112,7 @@
     <!-- 右栏：字体与页眉页脚 -->
     <g transform="translate(660, 100)">
         <rect width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="50" rx="12" fill="#E07C24" />
         <rect y="40" width="560" height="10" fill="#E07C24" />
@@ -136,7 +136,7 @@
     <!-- 页眉页脚规范 -->
     <g transform="translate(660, 370)">
         <rect width="560" height="250" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="50" rx="12" fill="#805AD5" />
         <rect y="40" width="560" height="10" fill="#805AD5" />

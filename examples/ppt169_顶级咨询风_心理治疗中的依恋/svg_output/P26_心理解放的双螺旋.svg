@@ -28,12 +28,9 @@
   <!-- 中央双螺旋图片 -->
   <g transform="translate(480, 140)">
     <defs>
-      <clipPath id="helixClip2">
-        <rect x="0" y="0" width="320" height="280" rx="16"/>
-      </clipPath>
-    </defs>
+</defs>
     <rect x="0" y="0" width="320" height="280" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
-    <image xlink:href="../images/double_helix.png" x="0" y="0" width="320" height="280" clip-path="url(#helixClip2)" preserveAspectRatio="xMidYMid slice"/>
+    <image xlink:href="../images/double_helix.png" x="0" y="0" width="320" height="280" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 中心标签 -->
     <rect x="110" y="230" width="100" height="30" rx="15" fill="#1E3A5F"/>

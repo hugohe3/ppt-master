@@ -36,10 +36,7 @@
         </filter>
         
         
-        <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L0,8 L8,4 z" fill="#005587" opacity="0.6" />
-        </marker>
-    </defs>
+</defs>
     
     
     <rect width="1280" height="720" fill="#FFFFFF" />
@@ -90,7 +87,7 @@
     <text x="145" y="208" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" font-weight="bold">
         <tspan>Goal:</tspan>
     </text>
-    <text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="145" y="228">Transform transactional buyers into</text><text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="145" y="246">lifetime customers</text><text x="145" y="265" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+    <text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="145" y="228">Transform transactional buyers into</text><text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="145" y="246">lifetime customers</text><text x="145" y="265" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
         <tspan>→ Increase customer lifetime value</tspan>
     </text>
 
@@ -114,7 +111,7 @@
     <text x="785" y="208" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" font-weight="bold">
         <tspan>Goal:</tspan>
     </text>
-    <text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="785" y="228">Boost repeat purchase rate from</text><text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="785" y="246">15% to 30%+ within 2 years</text><text x="785" y="265" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+    <text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="785" y="228">Boost repeat purchase rate from</text><text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="785" y="246">15% to 30%+ within 2 years</text><text x="785" y="265" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
         <tspan>→ Double retention rate</tspan>
     </text>
 
@@ -138,7 +135,7 @@
     <text x="145" y="548" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" font-weight="bold">
         <tspan>Goal:</tspan>
     </text>
-    <text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="145" y="568">Improve questionnaire response from</text><text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="145" y="586">40% to 70%+; enable data insights</text><text x="145" y="605" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+    <text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="145" y="568">Improve questionnaire response from</text><text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="145" y="586">40% to 70%+; enable data insights</text><text x="145" y="605" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
         <tspan>→ Data-driven decision making</tspan>
     </text>
 
@@ -162,7 +159,7 @@
     <text x="785" y="548" font-family="Arial, sans-serif" font-size="14" fill="#2C3E50" font-weight="bold">
         <tspan>Goal:</tspan>
     </text>
-    <text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="785" y="568">Empower staff to build authentic</text><text font-size="13" fill="#5D6D7E" font-family="Arial, sans-serif" x="785" y="586">customer relationships</text><text x="785" y="605" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
+    <text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="785" y="568">Empower staff to build authentic</text><text font-size="13" font-family="Arial, sans-serif" fill="#5D6D7E" x="785" y="586">customer relationships</text><text x="785" y="605" font-family="Arial, sans-serif" font-size="14" fill="#005587" font-weight="bold">
         <tspan>→ Service excellence culture</tspan>
     </text>
 

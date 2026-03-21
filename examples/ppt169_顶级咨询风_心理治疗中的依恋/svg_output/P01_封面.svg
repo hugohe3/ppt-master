@@ -5,17 +5,13 @@
       <stop offset="50%" style="stop-color:#2E5C8E"/>
       <stop offset="100%" style="stop-color:#3D8B7A"/>
     </linearGradient>
-    <clipPath id="coverClip">
-      <rect x="0" y="0" width="1280" height="720"/>
-    </clipPath>
-  </defs>
+</defs>
   
   <!-- 渐变背景 -->
   <rect width="1280" height="720" fill="url(#coverGradient)"/>
   
   <!-- 背景图片（半透明叠加） -->
-  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" 
-         clip-path="url(#coverClip)" preserveAspectRatio="xMidYMid slice"/>
+  <image xlink:href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
   <!-- 图片透明度遮罩层（原 opacity="0.25" → 遮罩 opacity="0.75"） -->
   <rect x="0" y="0" width="1280" height="720" fill="#1E3A5F" opacity="0.75"/>
   

@@ -40,10 +40,7 @@
         <text x="110" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#8B5CF6" text-anchor="middle" font-weight="700">1</text>
 
         <text x="150" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#C4B5FD" font-weight="600">Spec Kit</text>
-        <text x="150" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8">
-            <tspan x="150" dy="0">产品经理 + 架构师 + 程序员 三合一</tspan>
-        </text>
-        <text x="150" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
+        <text font-size="14" font-family="system-ui, -apple-system, sans-serif" fill="#94A3B8" x="150" y="210">产品经理 + 架构师 + 程序员 三合一</text><text x="150" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
             <tspan>适合从 </tspan>
             <tspan fill="#8B5CF6" font-weight="600">0 到 1</tspan>
             <tspan> 想清楚再动手</tspan>
@@ -60,10 +57,7 @@
         <text x="510" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#2563EB" text-anchor="middle" font-weight="700">2</text>
 
         <text x="550" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#93C5FD" font-weight="600">OpenSpec</text>
-        <text x="550" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8">
-            <tspan x="550" dy="0">存量项目的变更管理专家</tspan>
-        </text>
-        <text x="550" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
+        <text font-size="14" font-family="system-ui, -apple-system, sans-serif" fill="#94A3B8" x="550" y="210">存量项目的变更管理专家</text><text x="550" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
             <tspan>适合需求明确、</tspan>
             <tspan fill="#2563EB" font-weight="600">快速执行</tspan>
             <tspan>的场景</tspan>
@@ -80,10 +74,7 @@
         <text x="910" y="177" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#10B981" text-anchor="middle" font-weight="700">3</text>
 
         <text x="950" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#6EE7B7" font-weight="600">ZCF</text>
-        <text x="950" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#94A3B8">
-            <tspan x="950" dy="0">AI 编程环境的瑞士军刀</tspan>
-        </text>
-        <text x="950" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
+        <text font-size="14" font-family="system-ui, -apple-system, sans-serif" fill="#94A3B8" x="950" y="210">AI 编程环境的瑞士军刀</text><text x="950" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF">
             <tspan>适合</tspan>
             <tspan fill="#10B981" font-weight="600">快速配置</tspan>
             <tspan>、开箱即用</tspan>

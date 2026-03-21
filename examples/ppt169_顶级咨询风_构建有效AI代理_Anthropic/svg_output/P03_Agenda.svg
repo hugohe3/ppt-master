@@ -107,7 +107,8 @@
     
     <!-- 箭头装饰 -->
     <path d="M320,140 L340,170 L320,200" stroke="#E2E8F0" stroke-width="2" fill="none"/>
-  </g>
+  <polygon points="336.0,170.0 340.0,178.0 344.0,170.0" fill="#E2E8F0"/>
+</g>
   
   <!-- 底部页码 -->
   <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">

@@ -12,10 +12,7 @@
       <stop offset="0%" style="stop-color:#D97757"/>
       <stop offset="100%" style="stop-color:#F59E0B"/>
     </linearGradient>
-    <marker id="arrowDown" markerWidth="10" markerHeight="10" refX="5" refY="10" orient="auto">
-      <path d="M0,0 L5,10 L10,0" fill="#64748B"/>
-    </marker>
-  </defs>
+</defs>
   
   <!-- 背景 -->
   <rect width="1280" height="720" fill="#FFFFFF"/>

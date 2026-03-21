@@ -128,7 +128,7 @@
       KEY RECOMMENDATIONS
     </text>
     
-    <text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" font-weight="600" x="20" y="80">1. 针对用例定制</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="106">根据特定场景调整能力</text><text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" font-weight="600" x="20" y="155">2. 易用接口</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="181">确保文档完善、易于调用</text><text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" font-weight="600" x="20" y="230">3. 推荐: MCP</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="256">Model Context Protocol</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="280">简化第三方工具集成</text></g>
+    <text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" x="20" y="80" font-weight="600">1. 针对用例定制</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="106">根据特定场景调整能力</text><text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" x="20" y="155" font-weight="600">2. 易用接口</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="181">确保文档完善、易于调用</text><text font-family="Arial, sans-serif" font-size="15" fill="#FFFFFF" x="20" y="230" font-weight="600">3. 推荐: MCP</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="256">Model Context Protocol</text><text font-family="Arial, sans-serif" font-size="15" fill="#94A3B8" x="20" y="280">简化第三方工具集成</text></g>
   
   
   <path fill="#F0FDF4" stroke="#10B981" stroke-width="1" d="M68,610 H1212 A8,8 0 0 1 1220,618 V652 A8,8 0 0 1 1212,660 H68 A8,8 0 0 1 60,652 V618 A8,8 0 0 1 68,610 Z" />

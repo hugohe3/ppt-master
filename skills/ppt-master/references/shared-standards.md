@@ -13,7 +13,7 @@ PPT Master 公共技术约束，消除跨角色文件重复。
 | `clipPath` | 裁剪路径 |
 | `mask` | 遮罩 |
 | `<style>` | 内嵌样式表 |
-| `class` / `id` | CSS 选择器属性 |
+| `class` | CSS 选择器属性（`<defs>` 内 `id` 为合法引用，不在此列） |
 | 外部 CSS | 外部样式表链接 |
 | `<foreignObject>` | 嵌入外部内容 |
 | `<symbol>` + `<use>` | 符号引用复用 |
@@ -73,7 +73,7 @@ PPT Master 公共技术约束，消除跨角色文件重复。
 - **背景**：用 `<rect>` 定义页面背景色
 - **换行**：用 `<tspan>` 手动换行，禁止 `<foreignObject>`
 - **字体**：仅使用系统字体（微软雅黑、Arial、Calibri 等），禁止 `@font-face`
-- **样式**：仅使用内联样式（`fill="..."` `font-size="..."`），禁止 `<style>` / `class` / `id`
+- **样式**：仅使用内联样式（`fill="..."` `font-size="..."`），禁止 `<style>` / `class`（`<defs>` 内 `id` 合法）
 - **颜色**：使用 HEX 值，透明度用 `fill-opacity` / `stroke-opacity`
 - **图片引用**：`<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`
 - **图标占位**：`<use data-icon="icon-name" x="" y="" width="48" height="48" fill="#HEX"/>`（后处理自动嵌入）

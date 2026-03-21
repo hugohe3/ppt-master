@@ -33,10 +33,7 @@
         </filter>
         
         
-        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
-        </marker>
-    </defs>
+</defs>
     
     
     <rect width="1280" height="720" fill="#FFFFFF" />
@@ -134,9 +131,10 @@
     <text x="1050" y="485" font-family="Arial, sans-serif" font-size="18" fill="#E74C3C" font-weight="bold">
         <tspan>85% LOST</tspan>
     </text>
-    <line x1="1035" y1="475" x2="1045" y2="475" stroke="#E74C3C" stroke-width="2.5" marker-end="url(#arrowred)" />
+    <line x1="1035" y1="475" x2="1045" y2="475" stroke="#E74C3C" stroke-width="2.5" />
 
-    
+    <polygon points="1116.0,276.0 1124.0,280.0 1116.0,284.0" fill="#E74C3C" />
+
     <path fill="#FFF3E0" stroke="#F5A623" stroke-width="2" d="M664,540 H1216 A4,4 0 0 1 1220,544 V616 A4,4 0 0 1 1216,620 H664 A4,4 0 0 1 660,616 V544 A4,4 0 0 1 664,540 Z" />
     <text x="680" y="570" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50" font-weight="bold">
         <tspan>💡 Key Insight:</tspan>

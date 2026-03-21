@@ -47,9 +47,9 @@
       <text x="170" y="128" font-size="15" fill="#3D8B7A" text-anchor="middle">→ 发展情感调节能力</text>
       
       
-      <text fill="#374151" font-size="15" x="25" y="175">📌 养育特征</text><text fill="#374151" font-size="14" x="25" y="203">• 父母敏感且反应迅速</text><text fill="#374151" font-size="14" x="25" y="227">• 情感表达被接纳和镜映</text><text fill="#374151" font-size="14" x="25" y="251">• 痛苦时获得安慰</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
+      <text font-size="15" fill="#374151" x="25" y="175">📌 养育特征</text><text font-size="14" fill="#374151" x="25" y="203">• 父母敏感且反应迅速</text><text font-size="14" fill="#374151" x="25" y="227">• 情感表达被接纳和镜映</text><text font-size="14" fill="#374151" x="25" y="251">• 痛苦时获得安慰</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
       
-      <text fill="#374151" font-size="15" x="25" y="315">🎯 结果</text><text fill="#374151" font-size="14" x="25" y="343">• 情感可识别、可调节</text><text fill="#374151" font-size="14" x="25" y="367">• 灵活的应对策略</text><text fill="#374151" font-size="14" x="25" y="391">• 能够寻求和接受帮助</text><path fill="#3D8B7A" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
+      <text font-size="15" fill="#374151" x="25" y="315">🎯 结果</text><text font-size="14" fill="#374151" x="25" y="343">• 情感可识别、可调节</text><text font-size="14" fill="#374151" x="25" y="367">• 灵活的应对策略</text><text font-size="14" fill="#374151" x="25" y="391">• 能够寻求和接受帮助</text><path fill="#3D8B7A" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
       <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✓ 整合</text>
     </g>
     
@@ -69,9 +69,9 @@
       <text x="170" y="128" font-size="15" fill="#64748B" text-anchor="middle">→ 过度调节/抑制情感</text>
       
       
-      <text fill="#374151" font-size="15" x="25" y="175">📌 养育特征</text><text fill="#374151" font-size="14" x="25" y="203">• 父母拒绝或厌恶亲近</text><text fill="#374151" font-size="14" x="25" y="227">• 情感表达被忽视或贬低</text><text fill="#374151" font-size="14" x="25" y="251">• 只有"坚强"才被接纳</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
+      <text font-size="15" fill="#374151" x="25" y="175">📌 养育特征</text><text font-size="14" fill="#374151" x="25" y="203">• 父母拒绝或厌恶亲近</text><text font-size="14" fill="#374151" x="25" y="227">• 情感表达被忽视或贬低</text><text font-size="14" fill="#374151" x="25" y="251">• 只有"坚强"才被接纳</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
       
-      <text fill="#374151" font-size="15" x="25" y="315">🎯 结果</text><text fill="#374151" font-size="14" x="25" y="343">• 情感被最小化</text><text fill="#374151" font-size="14" x="25" y="367">• 强迫性自力更生</text><text fill="#374151" font-size="14" x="25" y="391">• 避免依赖他人</text><path fill="#64748B" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
+      <text font-size="15" fill="#374151" x="25" y="315">🎯 结果</text><text font-size="14" fill="#374151" x="25" y="343">• 情感被最小化</text><text font-size="14" fill="#374151" x="25" y="367">• 强迫性自力更生</text><text font-size="14" fill="#374151" x="25" y="391">• 避免依赖他人</text><path fill="#64748B" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
       <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✗ 隔离</text>
     </g>
     
@@ -91,9 +91,9 @@
       <text x="170" y="128" font-size="15" fill="#E07843" text-anchor="middle">→ 调节不足/放大情感</text>
       
       
-      <text fill="#374151" font-size="15" x="25" y="175">📌 养育特征</text><text fill="#374151" font-size="14" x="25" y="203">• 父母反应不可预测</text><text fill="#374151" font-size="14" x="25" y="227">• 时而可用时而不可用</text><text fill="#374151" font-size="14" x="25" y="251">• 只有"足够痛苦"才被关注</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
+      <text font-size="15" fill="#374151" x="25" y="175">📌 养育特征</text><text font-size="14" fill="#374151" x="25" y="203">• 父母反应不可预测</text><text font-size="14" fill="#374151" x="25" y="227">• 时而可用时而不可用</text><text font-size="14" fill="#374151" x="25" y="251">• 只有"足够痛苦"才被关注</text><line x1="25" y1="285" x2="315" y2="285" stroke="#E5E7EB" stroke-width="1" />
       
-      <text fill="#374151" font-size="15" x="25" y="315">🎯 结果</text><text fill="#374151" font-size="14" x="25" y="343">• 情感被最大化</text><text fill="#374151" font-size="14" x="25" y="367">• 持续警惕和焦虑</text><text fill="#374151" font-size="14" x="25" y="391">• 过度依赖他人</text><path fill="#E07843" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
+      <text font-size="15" fill="#374151" x="25" y="315">🎯 结果</text><text font-size="14" fill="#374151" x="25" y="343">• 情感被最大化</text><text font-size="14" fill="#374151" x="25" y="367">• 持续警惕和焦虑</text><text font-size="14" fill="#374151" x="25" y="391">• 过度依赖他人</text><path fill="#E07843" d="M103,420 H237 A18,18 0 0 1 255,438 V438 A18,18 0 0 1 237,456 H103 A18,18 0 0 1 85,438 V438 A18,18 0 0 1 103,420 Z" />
       <text x="170" y="444" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">✗ 淹没</text>
     </g>
   </g>

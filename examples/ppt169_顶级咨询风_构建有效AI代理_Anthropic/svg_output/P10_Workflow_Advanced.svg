@@ -10,10 +10,7 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <marker id="arrowCurve" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#D97757"/>
-    </marker>
-  </defs>
+</defs>
   
   <!-- 背景 -->
   <rect width="1280" height="720" fill="#FFFFFF"/>

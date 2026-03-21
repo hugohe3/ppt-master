@@ -4,10 +4,7 @@
             <stop offset="0%" style="stop-color:#58a6ff" />
             <stop offset="100%" style="stop-color:#7ee787" />
         </linearGradient>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#58a6ff" />
-        </marker>
-    </defs>
+</defs>
 
     
     <rect width="1280" height="720" fill="#0d1117" />
@@ -42,7 +39,7 @@
         <text x="90" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#e6edf3">触发事件</text>
 
         
-        <line x1="190" y1="40" x2="260" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <line x1="190" y1="40" x2="260" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         
         <path fill="#161b22" stroke="#7ee787" stroke-width="2" d="M282,0 H438 A12,12 0 0 1 450,12 V68 A12,12 0 0 1 438,80 H282 A12,12 0 0 1 270,68 V12 A12,12 0 0 1 282,0 Z" />
@@ -50,7 +47,7 @@
         <text x="360" y="58" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="18" font-weight="bold" fill="#e6edf3">处理/发送请求</text>
 
         
-        <line x1="460" y1="40" x2="530" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <line x1="460" y1="40" x2="530" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         
         <path fill="#161b22" stroke="#f85149" stroke-width="3" d="M552,0 H708 A12,12 0 0 1 720,12 V68 A12,12 0 0 1 708,80 H552 A12,12 0 0 1 540,68 V12 A12,12 0 0 1 552,0 Z" />
@@ -61,7 +58,7 @@
         <text x="700" y="16" text-anchor="middle" font-family="SF Pro Display, -apple-system, sans-serif" font-size="14" font-weight="bold" fill="#fff">BUG?</text>
 
         
-        <line x1="730" y1="40" x2="800" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <line x1="730" y1="40" x2="800" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
 
         
         <path fill="#161b22" stroke="#7ee787" stroke-width="2" d="M822,0 H978 A12,12 0 0 1 990,12 V68 A12,12 0 0 1 978,80 H822 A12,12 0 0 1 810,68 V12 A12,12 0 0 1 822,0 Z" />
@@ -72,7 +69,7 @@
         <line x1="990" y1="40" x2="1040" y2="40" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <line x1="1040" y1="40" x2="1040" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <line x1="1040" y1="110" x2="90" y2="110" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
-        <line x1="90" y1="110" x2="90" y2="85" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#arrowhead)" />
+        <line x1="90" y1="110" x2="90" y2="85" stroke="#58a6ff" stroke-width="2" stroke-dasharray="8,4" />
         <text x="565" y="128" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="14" fill="#8b949e">返回结果</text>
     </g>
 

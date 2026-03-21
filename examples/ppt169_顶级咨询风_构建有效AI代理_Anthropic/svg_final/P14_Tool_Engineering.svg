@@ -112,7 +112,10 @@
     <text x="657" y="34" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#1A1A2E">
       Poka-yoke 防错设计
     </text>
-    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="62">• 改变参数设计，让错误难以发生</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="82">• 示例：使用</text><text font-family="Arial, sans-serif" font-size="13" fill="#D97757" font-weight="600" x="615" y="82">绝对路径</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="82">替代相对路径 → 错误率降为 0</text><path fill="#F59E0B" fill-opacity="0.1" d="M627,105 H703 A12,12 0 0 1 715,117 V117 A12,12 0 0 1 703,129 H627 A12,12 0 0 1 615,117 V117 A12,12 0 0 1 627,105 Z" />
+    <text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="62">• 改变参数设计，让错误难以发生</text><text font-family="Arial, sans-serif" font-size="13" fill="#64748B" x="615" y="82"><tspan>• 示例：使用</tspan>
+      <tspan font-weight="600" fill="#D97757">绝对路径</tspan>
+      <tspan>替代相对路径 → 错误率降为 0</tspan>
+    </text><path fill="#F59E0B" fill-opacity="0.1" d="M627,105 H703 A12,12 0 0 1 715,117 V117 A12,12 0 0 1 703,129 H627 A12,12 0 0 1 615,117 V117 A12,12 0 0 1 627,105 Z" />
     <text x="665" y="121" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" text-anchor="middle">
       防错机制
     </text>

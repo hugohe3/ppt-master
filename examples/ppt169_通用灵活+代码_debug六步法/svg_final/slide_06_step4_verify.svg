@@ -4,10 +4,7 @@
             <stop offset="0%" style="stop-color:#58a6ff" />
             <stop offset="100%" style="stop-color:#7ee787" />
         </linearGradient>
-        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-            <polygon points="0 0, 10 3.5, 0 7" fill="#7ee787" />
-        </marker>
-    </defs>
+</defs>
 
     
     <rect width="1280" height="720" fill="#0d1117" />
@@ -93,7 +90,7 @@
             <text x="110" y="55" text-anchor="middle" font-family="SF Pro Text, -apple-system, sans-serif" font-size="16" fill="#e6edf3">加 Log 监测数据</text>
 
             
-            <line x1="230" y1="40" x2="290" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="230" y1="40" x2="290" y2="40" stroke="#7ee787" stroke-width="2" />
 
             
             <g transform="translate(300, 0)">
@@ -103,7 +100,7 @@
             </g>
 
             
-            <line x1="530" y1="40" x2="590" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="530" y1="40" x2="590" y2="40" stroke="#7ee787" stroke-width="2" />
 
             
             <g transform="translate(600, 0)">
@@ -113,7 +110,7 @@
             </g>
 
             
-            <line x1="830" y1="40" x2="890" y2="40" stroke="#7ee787" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="830" y1="40" x2="890" y2="40" stroke="#7ee787" stroke-width="2" />
 
             
             <g transform="translate(900, 0)">

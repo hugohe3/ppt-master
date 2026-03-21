@@ -22,7 +22,7 @@
     <!-- 第一栏：引言 -->
     <g transform="translate(60, 100)">
         <rect width="360" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="360" height="55" rx="12" fill="#1A5F9E" />
         <rect y="45" width="360" height="10" fill="#1A5F9E" />
@@ -72,7 +72,7 @@
     <!-- 第二栏：正文 -->
     <g transform="translate(440, 100)">
         <rect width="400" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="400" height="55" rx="12" fill="#E07C24" />
         <rect y="45" width="400" height="10" fill="#E07C24" />
@@ -126,7 +126,7 @@
     <!-- 第三栏：结论 -->
     <g transform="translate(880, 100)">
         <rect width="340" height="500" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="340" height="55" rx="12" fill="#38A169" />
         <rect y="45" width="340" height="10" fill="#38A169" />

@@ -74,7 +74,7 @@
   <ellipse cx="640" cy="300" rx="500" ry="250" fill="url(#glowEffect)" opacity="0.3"/>
   
   <!-- 精致几何装饰 -->
-  <g opacity="0.1">
+  <g fill-opacity="0.1">
     <circle cx="80" cy="80" r="120" fill="none" stroke="#FFFFFF" stroke-width="1"/>
     <circle cx="80" cy="80" r="80" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
     <circle cx="1200" cy="640" r="150" fill="none" stroke="#FFFFFF" stroke-width="1"/>
@@ -111,7 +111,7 @@
       典型的高转移支付依赖型民族地区
     </text>
     
-    <g opacity="0.7">
+    <g fill-opacity="0.7">
       <circle cx="480" cy="300" r="4" fill="#D4AF37"/>
       <text x="500" y="306" font-family="system-ui, 'Microsoft YaHei', sans-serif" 
             font-size="18" fill="#FFFFFF">债务风险可控</text>
@@ -227,14 +227,14 @@
         font-size="14" fill="#FFFFFF" opacity="0.5">17 / 17</text>
   
   <!-- 左下角装饰 -->
-  <g opacity="0.2">
+  <g fill-opacity="0.2">
     <path d="M0 720 L0 600 Q60 600 60 660 L60 720 Z" fill="#C41E3A"/>
     <path d="M60 720 L60 640 Q100 640 100 680 L100 720 Z" fill="#D4AF37"/>
     <path d="M100 720 L100 670 Q125 670 125 695 L125 720 Z" fill="#C41E3A" opacity="0.5"/>
   </g>
   
   <!-- 右下角装饰 -->
-  <g opacity="0.2">
+  <g fill-opacity="0.2">
     <path d="M1280 720 L1280 600 Q1220 600 1220 660 L1220 720 Z" fill="#C41E3A"/>
     <path d="M1220 720 L1220 640 Q1180 640 1180 680 L1180 720 Z" fill="#D4AF37"/>
     <path d="M1180 720 L1180 670 Q1155 670 1155 695 L1155 720 Z" fill="#C41E3A" opacity="0.5"/>

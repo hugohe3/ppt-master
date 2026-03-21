@@ -19,13 +19,9 @@
   <!-- 左侧：安全基地图片 -->
   <g transform="translate(60, 150)">
     <defs>
-      <clipPath id="secureBaseClip">
-        <rect x="0" y="0" width="400" height="300" rx="16"/>
-      </clipPath>
-    </defs>
+</defs>
     <rect x="0" y="0" width="400" height="300" rx="16" fill="#F1F5F9" stroke="#3D8B7A" stroke-width="2"/>
-    <image xlink:href="../images/secure_base.png" x="0" y="0" width="400" height="300" 
-           clip-path="url(#secureBaseClip)" preserveAspectRatio="xMidYMid slice"/>
+    <image xlink:href="../images/secure_base.png" x="0" y="0" width="400" height="300" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 图片标注 -->
     <rect x="20" y="250" width="160" height="35" rx="8" fill="#3D8B7A" fill-opacity="0.9"/>

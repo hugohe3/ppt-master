@@ -30,19 +30,7 @@
      inkscape:current-layer="g44" />
   <defs
      id="defs3">
-    <marker
-       id="arrowhead"
-       markerWidth="10"
-       markerHeight="7"
-       refX="9"
-       refY="3.5"
-       orient="auto">
-      <polygon
-         points="0 0, 10 3.5, 0 7"
-         fill="#8B9A9A"
-         id="polygon1" />
-    </marker>
-    <linearGradient
+<linearGradient
        id="flowGradient"
        x1="0%"
        y1="0%"
@@ -61,17 +49,7 @@
          stop-color="#2E4A62"
          id="stop3" />
     </linearGradient>
-    <clipPath
-       id="imgClip2">
-      <rect
-         x="10"
-         y="10"
-         width="300"
-         height="260"
-         rx="8"
-         id="rect3" />
-    </clipPath>
-  </defs>
+</defs>
   <!-- 背景 -->
   <rect
      width="1280"
@@ -116,7 +94,6 @@
        width="300"
        height="260"
        preserveAspectRatio="xMidYMid slice"
-       clip-path="url(#imgClip2)"
        id="image5" />
   </g>
   <!-- 左下：核心洞见 -->
@@ -331,9 +308,9 @@
          d="M190 35 L220 35"
          stroke="#C9A962"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path17" />
-      <!-- 步骤2: 著衣持钵 -->
+      <polygon points="220.0,31.0 228.0,35.0 220.0,39.0" fill="#C9A962"/>
+<!-- 步骤2: 著衣持钵 -->
       <g
          transform="translate(230, 0)"
          id="g20">
@@ -385,9 +362,9 @@
          d="M420 35 L450 35"
          stroke="#5D8C6A"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path20" />
-      <!-- 步骤3: 入城乞食 -->
+      <polygon points="450.0,31.0 458.0,35.0 450.0,39.0" fill="#5D8C6A"/>
+<!-- 步骤3: 入城乞食 -->
       <g
          transform="translate(460, 0)"
          id="g23">
@@ -440,7 +417,6 @@
        d="m 622,189 v 30"
        stroke="#5d8c6a"
        stroke-width="2"
-       marker-end="url(#arrowhead)"
        id="path24" />
     <!-- 流程图 - 第二行（乞食阶段）-->
     <g
@@ -498,9 +474,9 @@
          d="M450 35 L420 35"
          stroke="#5D8C6A"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path26" />
-      <!-- 步骤5: 还至本处 -->
+      <polygon points="420.0,31.0 412.0,35.0 420.0,39.0" fill="#5D8C6A"/>
+<!-- 步骤5: 还至本处 -->
       <g
          transform="translate(230, 0)"
          id="g29">
@@ -552,9 +528,9 @@
          d="M220 35 L190 35"
          stroke="#C9A962"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path29" />
-      <!-- 步骤6: 饭食讫 -->
+      <polygon points="190.0,31.0 182.0,35.0 190.0,39.0" fill="#C9A962"/>
+<!-- 步骤6: 饭食讫 -->
       <g
          id="g32">
         <circle
@@ -606,7 +582,6 @@
        d="m 145,301 v 30"
        stroke="#2e4a62"
        stroke-width="2"
-       marker-end="url(#arrowhead)"
        id="path33" />
     <!-- 流程图 - 第三行（安住阶段）-->
     <g
@@ -663,9 +638,9 @@
          d="M190 35 L220 35"
          stroke="#2E4A62"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path35" />
-      <!-- 步骤8: 洗足已 -->
+      <polygon points="220.0,31.0 228.0,35.0 220.0,39.0" fill="#2E4A62"/>
+<!-- 步骤8: 洗足已 -->
       <g
          transform="translate(230, 0)"
          id="g38">
@@ -717,9 +692,9 @@
          d="M420 35 L450 35"
          stroke="#2E4A62"
          stroke-width="2"
-         marker-end="url(#arrowhead)"
          id="path38" />
-      <!-- 步骤9: 敷座而坐（终点高亮） -->
+      <polygon points="450.0,31.0 458.0,35.0 450.0,39.0" fill="#2E4A62"/>
+<!-- 步骤9: 敷座而坐（终点高亮） -->
       <g
          transform="translate(460, 0)"
          id="g41">

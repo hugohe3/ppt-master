@@ -26,7 +26,7 @@
     <!-- 卡片1: 封面 -->
     <g transform="translate(60, 110)">
         <rect width="270" height="240" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#1A5F9E" />
         <circle cx="24" cy="35" r="14" fill="#1A5F9E" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -54,7 +54,7 @@
     <!-- 卡片2: 中文题名页 -->
     <g transform="translate(350, 110)">
         <rect width="270" height="240" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#2B7BC4" />
         <circle cx="24" cy="35" r="14" fill="#2B7BC4" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -81,7 +81,7 @@
     <!-- 卡片3: 英文题名页 -->
     <g transform="translate(640, 110)">
         <rect width="270" height="240" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#38A169" />
         <circle cx="24" cy="35" r="14" fill="#38A169" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -107,7 +107,7 @@
     <!-- 卡片4: 中文摘要 -->
     <g transform="translate(950, 110)">
         <rect width="270" height="240" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#E07C24" />
         <circle cx="24" cy="35" r="14" fill="#E07C24" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -136,7 +136,7 @@
     <!-- 卡片5: 英文摘要 -->
     <g transform="translate(60, 370)">
         <rect width="270" height="220" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#805AD5" />
         <circle cx="24" cy="35" r="14" fill="#805AD5" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -159,7 +159,7 @@
     <!-- 卡片6: 目次页 -->
     <g transform="translate(350, 370)">
         <rect width="270" height="220" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#DD6B20" />
         <circle cx="24" cy="35" r="14" fill="#DD6B20" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -182,7 +182,7 @@
     <!-- 卡片7: 插图附表清单 -->
     <g transform="translate(640, 370)">
         <rect width="270" height="220" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#319795" />
         <circle cx="24" cy="35" r="14" fill="#319795" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"
@@ -207,7 +207,7 @@
     <!-- 卡片8: 符号缩略词表 -->
     <g transform="translate(950, 370)">
         <rect width="270" height="220" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.05))" />
+             />
         <rect width="270" height="6" rx="3" fill="#D53F8C" />
         <circle cx="24" cy="35" r="14" fill="#D53F8C" />
         <text x="24" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold"

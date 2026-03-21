@@ -25,7 +25,7 @@
     <!-- 左栏：中文摘要 -->
     <g transform="translate(60, 110)">
         <rect width="560" height="450" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <!-- 标题栏 -->
         <rect width="560" height="50" rx="12" fill="#1A5F9E" />
@@ -80,7 +80,7 @@
     <g transform="translate(660, 110)">
         <!-- 英文摘要卡片 -->
         <rect width="560" height="240" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="50" rx="12" fill="#2B7BC4" />
         <rect y="40" width="560" height="10" fill="#2B7BC4" />
@@ -103,7 +103,7 @@
         <!-- 关键词卡片 -->
         <g transform="translate(0, 260)">
             <rect width="560" height="190" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-                filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+                 />
 
             <rect width="560" height="50" rx="12" fill="#38A169" />
             <rect y="40" width="560" height="10" fill="#38A169" />

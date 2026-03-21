@@ -62,7 +62,7 @@
         
         <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">安全依恋可以重建</text>
         
-        <text fill="#E5E7EB" font-size="15" x="30" y="85">安全依恋可以在治疗关系中</text><text fill="#E5E7EB" font-size="15" x="30" y="109">重新建立</text><text x="30" y="140" font-size="13" fill="#94A3B8">治疗关系本身就是改变的机制</text>
+        <text font-size="15" fill="#E5E7EB" x="30" y="85">安全依恋可以在治疗关系中</text><text font-size="15" fill="#E5E7EB" x="30" y="109">重新建立</text><text x="30" y="140" font-size="13" fill="#94A3B8">治疗关系本身就是改变的机制</text>
       </g>
       
       
@@ -74,7 +74,7 @@
         
         <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">非言语需要被看见</text>
         
-        <text fill="#E5E7EB" font-size="15" x="30" y="85">非言语体验需要被看见、</text><text fill="#E5E7EB" font-size="15" x="30" y="109">容纳和转化</text><text x="30" y="140" font-size="13" fill="#94A3B8">活现、唤起、具身化是治愈的通道</text>
+        <text font-size="15" fill="#E5E7EB" x="30" y="85">非言语体验需要被看见、</text><text font-size="15" fill="#E5E7EB" x="30" y="109">容纳和转化</text><text x="30" y="140" font-size="13" fill="#94A3B8">活现、唤起、具身化是治愈的通道</text>
       </g>
       
       
@@ -86,7 +86,7 @@
         
         <text x="80" y="45" font-size="18" font-weight="bold" fill="#FFFFFF">双螺旋通向解放</text>
         
-        <text fill="#E5E7EB" font-size="15" x="30" y="85">心智化与觉察是</text><text fill="#E5E7EB" font-size="15" x="30" y="109">心理解放的双螺旋</text><text x="30" y="140" font-size="13" fill="#94A3B8">反思过去，临在当下，走向整合</text>
+        <text font-size="15" fill="#E5E7EB" x="30" y="85">心智化与觉察是</text><text font-size="15" fill="#E5E7EB" x="30" y="109">心理解放的双螺旋</text><text x="30" y="140" font-size="13" fill="#94A3B8">反思过去，临在当下，走向整合</text>
       </g>
     </g>
     

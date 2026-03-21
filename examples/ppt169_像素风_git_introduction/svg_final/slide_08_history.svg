@@ -78,7 +78,7 @@
     <rect x="0" y="0" width="520" height="40" fill="#00D4FF" opacity="0.2" />
     <text x="20" y="28" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#00D4FF">👤 Linus Torvalds</text>
     
-    <text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="70">• Linux 操作系统的创始人</text><text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="96">• Git 的创造者</text><text font-size="16" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="122">• 传奇工程师，开源倡导者</text><rect x="0" y="160" width="520" height="260" fill="#161B22" stroke="#FF2E97" stroke-width="2" />
+    <text font-size="16" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="70">• Linux 操作系统的创始人</text><text font-size="16" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="96">• Git 的创造者</text><text font-size="16" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="122">• 传奇工程师，开源倡导者</text><rect x="0" y="160" width="520" height="260" fill="#161B22" stroke="#FF2E97" stroke-width="2" />
     <rect x="0" y="160" width="520" height="40" fill="#FF2E97" opacity="0.2" />
     <text x="20" y="188" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FF2E97">🎭 "Git" 名字的含义</text>
     

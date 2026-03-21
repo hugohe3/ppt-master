@@ -214,7 +214,7 @@
 | `clipPath`         | 不使用裁剪             |
 | `mask`             | 不使用遮罩             |
 | `<style>`          | 使用内联样式           |
-| `class` / `id`     | 使用内联属性           |
+| `class`            | 使用内联属性（`<defs>` 内 `id` 合法） |
 | `foreignObject`    | 使用 `<tspan>` 换行    |
 | `textPath`         | 使用普通 `<text>`      |
 | `animate*` / `set` | 不使用动画             |

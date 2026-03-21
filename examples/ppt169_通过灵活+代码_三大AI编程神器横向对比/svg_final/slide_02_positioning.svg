@@ -34,7 +34,7 @@
 
         
         <path fill="#F5F3FF" d="M98,320 H382 A8,8 0 0 1 390,328 V372 A8,8 0 0 1 382,380 H98 A8,8 0 0 1 90,372 V328 A8,8 0 0 1 98,320 Z" />
-        <text font-size="15" text-anchor="middle" font-weight="600" fill="#5B21B6" font-family="system-ui, -apple-system, sans-serif" x="240" y="350">产品经理 + 架构师 + 程序员</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#5B21B6" font-family="system-ui, -apple-system, sans-serif" x="240" y="372">的三合一工作台</text><text x="240" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#5B21B6" x="240" y="350">产品经理 + 架构师 + 程序员</text><text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#5B21B6" x="240" y="372">的三合一工作台</text><text x="240" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
         <text x="240" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">规格驱动开发</text>
         <text x="240" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Spec-Driven Development</text>
     </g>
@@ -54,7 +54,7 @@
 
         
         <path fill="#EFF6FF" d="M498,320 H782 A8,8 0 0 1 790,328 V372 A8,8 0 0 1 782,380 H498 A8,8 0 0 1 490,372 V328 A8,8 0 0 1 498,320 Z" />
-        <text font-size="15" text-anchor="middle" font-weight="600" fill="#1D4ED8" font-family="system-ui, -apple-system, sans-serif" x="640" y="350">存量项目的</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#1D4ED8" font-family="system-ui, -apple-system, sans-serif" x="640" y="372">需求管理专家</text><text x="640" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#1D4ED8" x="640" y="350">存量项目的</text><text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#1D4ED8" x="640" y="372">需求管理专家</text><text x="640" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
         <text x="640" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">变更驱动开发</text>
         <text x="640" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Change-Driven Development</text>
     </g>
@@ -74,7 +74,7 @@
 
         
         <path fill="#ECFDF5" d="M898,320 H1182 A8,8 0 0 1 1190,328 V372 A8,8 0 0 1 1182,380 H898 A8,8 0 0 1 890,372 V328 A8,8 0 0 1 898,320 Z" />
-        <text font-size="15" text-anchor="middle" font-weight="600" fill="#047857" font-family="system-ui, -apple-system, sans-serif" x="1040" y="350">AI 编程环境的</text><text font-size="15" text-anchor="middle" font-weight="600" fill="#047857" font-family="system-ui, -apple-system, sans-serif" x="1040" y="372">一键配置器</text><text x="1040" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
+        <text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#047857" x="1040" y="350">AI 编程环境的</text><text font-size="15" text-anchor="middle" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#047857" x="1040" y="372">一键配置器</text><text x="1040" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" fill="#64748B" text-anchor="middle">核心理念</text>
         <text x="1040" y="440" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#1E293B" text-anchor="middle" font-weight="600">零配置，开箱即用</text>
         <text x="1040" y="465" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#64748B" text-anchor="middle">Zero-Config Code Flow</text>
     </g>

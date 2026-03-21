@@ -32,10 +32,14 @@
     
     
     <text x="25" y="180" font-size="16" font-weight="600" fill="#2E5C8E">评估重点</text>
-    <text fill="#374151" font-size="15" x="25" y="205">• 评估成人当前的"依恋心理状态"</text><text fill="#374151" font-size="15" x="25" y="231">• 关键不在于历史事实本身</text><text fill="#374151" font-size="15" x="25" y="257">• 而在于叙述的</text><text fill="#2E5C8E" font-size="15" font-weight="600" x="25" y="257">连贯性</text><text fill="#374151" font-size="15" x="25" y="257">和</text><text fill="#2E5C8E" font-size="15" font-weight="600" x="25" y="257">形式</text><line x1="25" y1="290" x2="515" y2="290" stroke="#E5E7EB" stroke-width="1" />
+    <text font-size="15" fill="#374151" x="25" y="205">• 评估成人当前的"依恋心理状态"</text><text font-size="15" fill="#374151" x="25" y="231">• 关键不在于历史事实本身</text><text font-size="15" fill="#374151" x="25" y="257"><tspan>• 而在于叙述的</tspan>
+      <tspan font-weight="600" fill="#2E5C8E">连贯性</tspan>
+      <tspan>和</tspan>
+      <tspan font-weight="600" fill="#2E5C8E">形式</tspan>
+    </text><line x1="25" y1="290" x2="515" y2="290" stroke="#E5E7EB" stroke-width="1" />
     
     <text x="25" y="320" font-size="16" font-weight="600" fill="#2E5C8E">访谈方法</text>
-    <text fill="#374151" font-size="15" x="25" y="345">• 询问童年依恋经历的半结构化访谈</text><text fill="#374151" font-size="15" x="25" y="371">• 要求用形容词描述与父母的关系</text><text fill="#374151" font-size="15" x="25" y="397">• 探索分离、丧失和创伤经历</text></g>
+    <text font-size="15" fill="#374151" x="25" y="345">• 询问童年依恋经历的半结构化访谈</text><text font-size="15" fill="#374151" x="25" y="371">• 要求用形容词描述与父母的关系</text><text font-size="15" fill="#374151" x="25" y="397">• 探索分离、丧失和创伤经历</text></g>
   
   
   <g transform="translate(640, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">

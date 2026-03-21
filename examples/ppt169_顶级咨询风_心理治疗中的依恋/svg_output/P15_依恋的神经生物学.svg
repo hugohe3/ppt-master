@@ -19,12 +19,9 @@
   <!-- 中央大脑图片 -->
   <g transform="translate(340, 140)">
     <defs>
-      <clipPath id="brainClip">
-        <rect x="0" y="0" width="400" height="360" rx="16"/>
-      </clipPath>
-    </defs>
+</defs>
     <rect x="0" y="0" width="400" height="360" rx="16" fill="#F1F5F9" stroke="#E5E7EB" stroke-width="1"/>
-    <image xlink:href="../images/brain_attachment.png" x="0" y="0" width="400" height="360" clip-path="url(#brainClip)" preserveAspectRatio="xMidYMid slice"/>
+    <image xlink:href="../images/brain_attachment.png" x="0" y="0" width="400" height="360" preserveAspectRatio="xMidYMid slice"/>
   </g>
   
   <!-- 左侧标注卡片 -->

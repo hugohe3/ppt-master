@@ -24,7 +24,7 @@
   <rect x="0" y="4" width="1280" height="2" fill="#39FF14" opacity="0.4"/>
   
   <!-- 网格背景装饰 -->
-  <g opacity="0.05">
+  <g fill-opacity="0.05">
     <line x1="0" y1="120" x2="1280" y2="120" stroke="#39FF14" stroke-width="1"/>
     <line x1="0" y1="240" x2="1280" y2="240" stroke="#39FF14" stroke-width="1"/>
     <line x1="0" y1="360" x2="1280" y2="360" stroke="#39FF14" stroke-width="1"/>

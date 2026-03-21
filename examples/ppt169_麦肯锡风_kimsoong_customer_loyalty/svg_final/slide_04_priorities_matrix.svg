@@ -152,11 +152,8 @@
 
     
     <defs>
-        <marker id="arrow-alert" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
-        </marker>
-    </defs>
-    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" marker-end="url(#arrow-alert)" />
+</defs>
+    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" />
 
     
     <path fill="#FEE" stroke="#E74C3C" stroke-width="1" d="M1044,495 H1126 A4,4 0 0 1 1130,499 V541 A4,4 0 0 1 1126,545 H1044 A4,4 0 0 1 1040,541 V499 A4,4 0 0 1 1044,495 Z" />

@@ -8,14 +8,8 @@
     </linearGradient>
     
     
-    <marker id="arrowGold" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#C9A962" />
-    </marker>
-    <marker id="arrowGray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <polygon points="0 0, 8 3, 0 6" fill="#8B9A9A" />
-    </marker>
-    
-    
+
+
     <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="110%">
       <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#2E4A62" flood-opacity="0.08" />
     </filter>
@@ -58,16 +52,18 @@
         <text x="100" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#2E4A62" text-anchor="middle">时间 · 地点 · 人物 · 事件</text>
         
         
-        <path d="M210 26 L250 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M210 26 L250 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="250.0,22.0 258.0,26.0 250.0,30.0" fill="#8B9A9A" />
+
         <path fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5" d="M266,0 H394 A6,6 0 0 1 400,6 V46 A6,6 0 0 1 394,52 H266 A6,6 0 0 1 260,46 V6 A6,6 0 0 1 266,0 Z" />
         <text x="330" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#C9A962" text-anchor="middle">证信序（通序）</text>
         
         
-        <path d="M410 26 L450 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M410 26 L450 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="450.0,22.0 458.0,26.0 450.0,30.0" fill="#8B9A9A" />
+
         <path fill="#E8F0EA" stroke="#5D8C6A" stroke-width="1.5" d="M466,0 H594 A6,6 0 0 1 600,6 V46 A6,6 0 0 1 594,52 H466 A6,6 0 0 1 460,46 V6 A6,6 0 0 1 466,0 Z" />
         <text x="530" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#5D8C6A" text-anchor="middle">发起序（别序）</text>
         
@@ -80,8 +76,9 @@
   
   
   <g>
-    <path d="M640 275 L640 300" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)" />
-    <circle cx="640" cy="290" r="3" fill="#C9A962" opacity="0.5" />
+    <path d="M640 275 L640 300" stroke="#C9A962" stroke-width="2.5" />
+    <polygon points="636.0,300.0 640.0,308.0 644.0,300.0" fill="#C9A962" />
+<circle cx="640" cy="290" r="3" fill="#C9A962" opacity="0.5" />
   </g>
   
   
@@ -106,16 +103,18 @@
         <text x="65" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#5D8C6A" text-anchor="middle">"敷座而坐"</text>
         
         
-        <path d="M140 26 L175 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M140 26 L175 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="175.0,22.0 183.0,26.0 175.0,30.0" fill="#8B9A9A" />
+
         <path fill="#E8F0EA" d="M191,0 H329 A6,6 0 0 1 335,6 V46 A6,6 0 0 1 329,52 H191 A6,6 0 0 1 185,46 V6 A6,6 0 0 1 191,0 Z" />
         <text x="260" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#5D8C6A" text-anchor="middle">须菩提起座发问</text>
         
         
-        <path d="M345 26 L380 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M345 26 L380 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="380.0,22.0 388.0,26.0 380.0,30.0" fill="#8B9A9A" />
+
         <path fill="#FDF8E8" stroke="#C9A962" stroke-width="2" d="M396,0 H604 A6,6 0 0 1 610,6 V46 A6,6 0 0 1 604,52 H396 A6,6 0 0 1 390,46 V6 A6,6 0 0 1 396,0 Z" />
         <text x="500" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="bold" fill="#C9A962" text-anchor="middle">引出核心问题</text>
         
@@ -128,8 +127,9 @@
   
   
   <g>
-    <path d="M640 445 L640 470" stroke="#C9A962" stroke-width="2.5" marker-end="url(#arrowGold)" />
-    <circle cx="640" cy="460" r="3" fill="#C9A962" opacity="0.5" />
+    <path d="M640 445 L640 470" stroke="#C9A962" stroke-width="2.5" />
+    <polygon points="636.0,470.0 640.0,478.0 644.0,470.0" fill="#C9A962" />
+<circle cx="640" cy="460" r="3" fill="#C9A962" opacity="0.5" />
   </g>
   
   
@@ -154,16 +154,18 @@
         <text x="75" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#C9A962" text-anchor="middle">平常心是道</text>
         
         
-        <path d="M160 26 L200 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M160 26 L200 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="200.0,22.0 208.0,26.0 200.0,30.0" fill="#8B9A9A" />
+
         <path fill="#2E4A62" d="M216,0 H484 A6,6 0 0 1 490,6 V46 A6,6 0 0 1 484,52 H216 A6,6 0 0 1 210,46 V6 A6,6 0 0 1 216,0 Z" />
         <text x="350" y="32" font-family="Songti SC, SimSun, serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">"应无所住而生其心"</text>
         
         
-        <path d="M500 26 L540 26" stroke="#8B9A9A" stroke-width="1.5" marker-end="url(#arrowGray)" />
+        <path d="M500 26 L540 26" stroke="#8B9A9A" stroke-width="1.5" />
         
-        
+        <polygon points="540.0,22.0 548.0,26.0 540.0,30.0" fill="#8B9A9A" />
+
         <path fill="#FDF8E8" stroke="#C9A962" stroke-width="1.5" d="M556,0 H824 A6,6 0 0 1 830,6 V46 A6,6 0 0 1 824,52 H556 A6,6 0 0 1 550,46 V6 A6,6 0 0 1 556,0 Z" />
         <text x="690" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" font-weight="500" fill="#C9A962" text-anchor="middle">般若智慧的前语言呈现</text>
         

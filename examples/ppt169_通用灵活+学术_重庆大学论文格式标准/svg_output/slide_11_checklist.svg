@@ -21,7 +21,7 @@
     <!-- 左栏 -->
     <g transform="translate(60, 100)">
         <rect width="560" height="520" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#1A5F9E" />
         <rect y="35" width="560" height="10" fill="#1A5F9E" />
@@ -113,7 +113,7 @@
     <!-- 右栏 -->
     <g transform="translate(660, 100)">
         <rect width="560" height="520" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"
-            filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+             />
 
         <rect width="560" height="45" rx="12" fill="#E07C24" />
         <rect y="35" width="560" height="10" fill="#E07C24" />

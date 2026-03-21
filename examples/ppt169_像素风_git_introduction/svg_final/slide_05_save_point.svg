@@ -159,10 +159,10 @@
     <rect x="0" y="0" width="560" height="130" fill="#161B22" stroke="#39FF14" stroke-width="2" />
     <text x="20" y="32" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#39FF14">💾 存档 = Git Commit</text>
     <rect x="20" y="45" width="520" height="1" fill="#30363D" />
-    <text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="72">• 每次存档 = 保存当前状态的快照</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="96">• 可以随时回到任何存档点</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="20" y="120">• 搞砸了？读档重来！</text><rect x="600" y="0" width="560" height="130" fill="#161B22" stroke="#FFD700" stroke-width="2" />
+    <text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="72">• 每次存档 = 保存当前状态的快照</text><text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="96">• 可以随时回到任何存档点</text><text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="20" y="120">• 搞砸了？读档重来！</text><rect x="600" y="0" width="560" height="130" fill="#161B22" stroke="#FFD700" stroke-width="2" />
     <text x="620" y="32" font-family="Consolas, monospace" font-size="18" font-weight="bold" fill="#FFD700">🎯 核心思想</text>
     <rect x="620" y="45" width="520" height="1" fill="#30363D" />
-    <text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="72">• Git 就是你的「无限存档」工具</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="96">• 不怕犯错，因为可以回退</text><text font-size="15" fill="#E6EDF3" font-family="-apple-system, Microsoft YaHei, sans-serif" x="620" y="120">• 大胆实验，安心开发！</text></g>
+    <text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="620" y="72">• Git 就是你的「无限存档」工具</text><text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="620" y="96">• 不怕犯错，因为可以回退</text><text font-size="15" font-family="-apple-system, Microsoft YaHei, sans-serif" fill="#E6EDF3" x="620" y="120">• 大胆实验，安心开发！</text></g>
   
   
   <g transform="translate(60, 600)">

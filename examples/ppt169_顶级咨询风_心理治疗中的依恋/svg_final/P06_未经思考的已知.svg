@@ -62,7 +62,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🎭</text>
       
       
-      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">在与治疗师的关系中</text><text fill="#E07843" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">重演过去的模式</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text font-size="16" fill="#374151" text-anchor="middle" x="180" y="175">在与治疗师的关系中</text><text font-size="16" fill="#E07843" text-anchor="middle" x="180" y="199" font-weight="600">重演过去的模式</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 由患者与治疗师共同创造</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">
@@ -85,7 +85,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🪞</text>
       
       
-      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">通过投射性认同</text><text fill="#3D8B7A" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">在治疗师身上唤起体验</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text font-size="16" fill="#374151" text-anchor="middle" x="180" y="175">通过投射性认同</text><text font-size="16" fill="#3D8B7A" text-anchor="middle" x="180" y="199" font-weight="600">在治疗师身上唤起体验</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 患者无法容忍的恐惧、羞耻、愤怒</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">
@@ -108,7 +108,7 @@
       <text x="180" y="120" font-size="32" text-anchor="middle">🧘</text>
       
       
-      <text fill="#374151" text-anchor="middle" font-size="16" x="180" y="175">通过身体感觉、姿势</text><text fill="#2E5C8E" text-anchor="middle" font-size="16" font-weight="600" x="180" y="199">和运动来表达</text><text x="30" y="230" font-size="14" fill="#6B7280">
+      <text font-size="16" fill="#374151" text-anchor="middle" x="180" y="175">通过身体感觉、姿势</text><text font-size="16" fill="#2E5C8E" text-anchor="middle" x="180" y="199" font-weight="600">和运动来表达</text><text x="30" y="230" font-size="14" fill="#6B7280">
         <tspan>• 身体记录着分数</tspan>
       </text>
       <text x="30" y="250" font-size="14" fill="#6B7280">

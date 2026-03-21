@@ -17,7 +17,7 @@
     <rect width="1280" height="720" fill="#0d1117" />
 
     <!-- 装饰性代码符号背景 - 与封面呼应 -->
-    <g fill="#161b22" font-family="SF Mono, Menlo, monospace" font-size="100" opacity="0.25">
+    <g fill="#161b22" font-family="SF Mono, Menlo, monospace" font-size="100" fill-opacity="0.25">
         <text x="80" y="130">{</text>
         <text x="1100" y="180">}</text>
         <text x="120" y="580">&lt;/&gt;</text>

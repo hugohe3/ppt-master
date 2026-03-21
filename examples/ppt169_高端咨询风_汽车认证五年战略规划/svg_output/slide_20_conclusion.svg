@@ -85,11 +85,12 @@
      height="720"
      href="../images/conclusion_background.png"
      preserveAspectRatio="xMidYMid slice"
-     opacity="0.5"
+     
      id="image4" />
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" fill-opacity="0.5"/>
   <!-- 装饰性几何图形 -->
   <g
-     opacity="0.1"
+     fill-opacity="0.1"
      id="g8">
     <circle
        cx="1150"

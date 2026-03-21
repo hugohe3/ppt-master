@@ -71,7 +71,9 @@
     <path d="M340,125 L340,145" stroke="#6B7280" stroke-width="2" fill="none"/>
     <polygon points="340,150 334,140 346,140" fill="#6B7280"/>
     
-    <!-- 阶段2 -->
+    <polygon points="336.0,145.0 340.0,153.0 344.0,145.0" fill="#6B7280"/>
+<polygon points="336.0,145.0 340.0,153.0 344.0,145.0" fill="#6B7280"/>
+<!-- 阶段2 -->
     <g transform="translate(0, 155)">
       <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#2E5C8E" stroke-width="2"/>
       
@@ -86,7 +88,9 @@
     <path d="M340,240 L340,260" stroke="#6B7280" stroke-width="2" fill="none"/>
     <polygon points="340,265 334,255 346,255" fill="#6B7280"/>
     
-    <!-- 阶段3 -->
+    <polygon points="336.0,260.0 340.0,268.0 344.0,260.0" fill="#6B7280"/>
+<polygon points="336.0,260.0 340.0,268.0 344.0,260.0" fill="#6B7280"/>
+<!-- 阶段3 -->
     <g transform="translate(0, 270)">
       <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#E07843" stroke-width="2"/>
       
@@ -101,7 +105,9 @@
     <path d="M340,355 L340,375" stroke="#6B7280" stroke-width="2" fill="none"/>
     <polygon points="340,380 334,370 346,370" fill="#6B7280"/>
     
-    <!-- 阶段4 -->
+    <polygon points="336.0,375.0 340.0,383.0 344.0,375.0" fill="#6B7280"/>
+<polygon points="336.0,375.0 340.0,383.0 344.0,375.0" fill="#6B7280"/>
+<!-- 阶段4 -->
     <g transform="translate(0, 385)">
       <rect x="0" y="0" width="680" height="80" rx="12" fill="#FFFFFF" stroke="#64748B" stroke-width="2"/>
       

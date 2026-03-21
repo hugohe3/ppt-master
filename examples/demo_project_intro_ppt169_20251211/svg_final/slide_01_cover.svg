@@ -75,7 +75,7 @@
   </g>
   
   
-  <g font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" opacity="0.7">
+  <g font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
     <text x="100" y="640">📍 github.com/hugohe3/ppt-master</text>
     <text x="1180" y="640" text-anchor="end">MIT License</text>
   </g>

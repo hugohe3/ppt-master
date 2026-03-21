@@ -55,7 +55,7 @@
             <path fill="#F5F3FF" d="M453,230 H527 A8,8 0 0 1 535,238 V272 A8,8 0 0 1 527,280 H453 A8,8 0 0 1 445,272 V238 A8,8 0 0 1 453,230 Z" />
             <text x="490" y="252" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#5B21B6" text-anchor="middle" font-weight="600">1. 立宪</text>
             <text x="490" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED" text-anchor="middle">constitution</text>
-            <path d="M540 255 L555 255" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrow)" />
+            <path d="M540 255 L555 255" stroke="#8B5CF6" stroke-width="2" />
 
             
             <path fill="#F5F3FF" d="M568,230 H642 A8,8 0 0 1 650,238 V272 A8,8 0 0 1 642,280 H568 A8,8 0 0 1 560,272 V238 A8,8 0 0 1 568,230 Z" />

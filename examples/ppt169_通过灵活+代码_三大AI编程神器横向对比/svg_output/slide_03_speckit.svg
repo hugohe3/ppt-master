@@ -63,7 +63,7 @@
                 text-anchor="middle" font-weight="600">1. 立宪</text>
             <text x="490" y="268" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#7C3AED"
                 text-anchor="middle">constitution</text>
-            <path d="M540 255 L555 255" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrow)" />
+            <path d="M540 255 L555 255" stroke="#8B5CF6" stroke-width="2" />
 
             <!-- Step 2 -->
             <rect x="560" y="230" width="90" height="50" rx="8" fill="#F5F3FF" />

@@ -31,10 +31,10 @@
     
     <text x="20" y="155" font-size="16" font-weight="600" fill="#1E293B">核心贡献</text>
     
-    <text fill="#374151" font-size="14" x="20" y="185">• 创立依恋理论</text><text fill="#374151" font-size="14" x="20" y="209">• 提出依恋行为系统概念</text><text fill="#374151" font-size="14" x="20" y="233">• 发展内部工作模型理论</text><text fill="#374151" font-size="14" x="20" y="257">• 强调真实关系体验的作用</text><line x1="20" y1="300" x2="280" y2="300" stroke="#E5E7EB" stroke-width="1" />
+    <text font-size="14" fill="#374151" x="20" y="185">• 创立依恋理论</text><text font-size="14" fill="#374151" x="20" y="209">• 提出依恋行为系统概念</text><text font-size="14" fill="#374151" x="20" y="233">• 发展内部工作模型理论</text><text font-size="14" fill="#374151" x="20" y="257">• 强调真实关系体验的作用</text><line x1="20" y1="300" x2="280" y2="300" stroke="#E5E7EB" stroke-width="1" />
     
     <text x="20" y="325" font-size="16" font-weight="600" fill="#1E293B">核心观点</text>
-    <text fill="#6B7280" font-size="14" font-style="italic" x="20" y="355">"依恋是基于进化的</text><text fill="#6B7280" font-size="14" font-style="italic" x="20" y="375">生物学必要性"</text></g>
+    <text font-size="14" fill="#6B7280" font-style="italic" x="20" y="355">"依恋是基于进化的</text><text font-size="14" fill="#6B7280" font-style="italic" x="20" y="375">生物学必要性"</text></g>
   
   
   <g transform="translate(400, 150)" font-family="PingFang SC, Microsoft YaHei, sans-serif">

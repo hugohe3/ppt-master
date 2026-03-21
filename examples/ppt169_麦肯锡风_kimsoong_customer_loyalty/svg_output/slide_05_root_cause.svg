@@ -109,12 +109,9 @@
     </text>
 
     <!-- Annotation arrows -->
-    <path d="M 730,215 Q 780,240 780,280" stroke="#E74C3C" stroke-width="2" fill="none" marker-end="url(#arrow-red2)" />
+    <path d="M 730,215 Q 780,240 780,280" stroke="#E74C3C" stroke-width="2" fill="none" />
     <defs>
-        <marker id="arrow-red2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L7,3 z" fill="#E74C3C" />
-        </marker>
-    </defs>
+</defs>
 
     <rect x="790" y="270" width="180" height="45" fill="#FFEBEE" stroke="#E74C3C" stroke-width="2" />
     <text x="880" y="290" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C"

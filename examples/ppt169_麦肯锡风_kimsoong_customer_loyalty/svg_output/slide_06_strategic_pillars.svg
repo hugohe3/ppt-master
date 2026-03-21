@@ -36,10 +36,7 @@
         </filter>
         
         <!-- Arrow markers -->
-        <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L0,8 L8,4 z" fill="#005587" opacity="0.6" />
-        </marker>
-    </defs>
+</defs>
     
     <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF" />

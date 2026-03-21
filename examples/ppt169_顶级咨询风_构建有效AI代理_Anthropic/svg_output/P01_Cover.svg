@@ -26,7 +26,7 @@
   <rect width="1280" height="720" fill="url(#bgGradient)"/>
   
   <!-- 装饰性网格线 -->
-  <g stroke="#FFFFFF" stroke-opacity="0.03" stroke-width="1">
+  <g stroke="#FFFFFF" stroke-fill-opacity="0.03" stroke-width="1">
     <line x1="0" y1="180" x2="1280" y2="180"/>
     <line x1="0" y1="360" x2="1280" y2="360"/>
     <line x1="0" y1="540" x2="1280" y2="540"/>
@@ -40,7 +40,7 @@
   <ellipse cx="200" cy="550" rx="250" ry="180" fill="url(#glowBlue)"/>
   
   <!-- 装饰性节点和连接线 (AI 网络感) -->
-  <g stroke="#4A90D9" stroke-opacity="0.4" stroke-width="1" fill="none">
+  <g stroke="#4A90D9" stroke-fill-opacity="0.4" stroke-width="1" fill="none">
     <path d="M100,200 Q250,150 350,220"/>
     <path d="M350,220 Q450,280 500,200"/>
     <path d="M900,480 Q1000,420 1100,480"/>
@@ -48,7 +48,7 @@
   </g>
   
   <!-- 节点圆点 -->
-  <g fill="#4A90D9" fill-opacity="0.6">
+  <g fill="#4A90D9" fill-fill-opacity="0.6">
     <circle cx="100" cy="200" r="4"/>
     <circle cx="350" cy="220" r="6"/>
     <circle cx="500" cy="200" r="4"/>
@@ -58,7 +58,7 @@
   </g>
   
   <!-- 橙色装饰节点 -->
-  <g fill="#D97757" fill-opacity="0.7">
+  <g fill="#D97757" fill-fill-opacity="0.7">
     <circle cx="1050" cy="180" r="8"/>
     <circle cx="1150" cy="120" r="5"/>
     <circle cx="180" cy="520" r="6"/>

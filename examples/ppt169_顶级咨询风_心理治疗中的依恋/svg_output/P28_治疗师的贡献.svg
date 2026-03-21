@@ -19,13 +19,9 @@
   <!-- 中央治疗二元图片 -->
   <g transform="translate(440, 140)">
     <defs>
-      <clipPath id="therapyClip">
-        <rect x="0" y="0" width="400" height="300" rx="16"/>
-      </clipPath>
-    </defs>
+</defs>
     <rect x="0" y="0" width="400" height="300" rx="16" fill="#F1F5F9" stroke="#2E5C8E" stroke-width="2"/>
-    <image xlink:href="../images/therapy_dyad.png" x="0" y="0" width="400" height="300" 
-           clip-path="url(#therapyClip)" preserveAspectRatio="xMidYMid slice"/>
+    <image xlink:href="../images/therapy_dyad.png" x="0" y="0" width="400" height="300" preserveAspectRatio="xMidYMid slice"/>
     
     <!-- 图片标注 -->
     <rect x="120" y="255" width="160" height="35" rx="8" fill="#2E5C8E" fill-opacity="0.9"/>

@@ -10,19 +10,9 @@
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
         </filter>
-        <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
-            markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="#10B981" />
-        </marker>
-        <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
-            markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="#8B5CF6" />
-        </marker>
-        <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"
-            markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L9,3 z" fill="#2563EB" />
-        </marker>
-    </defs>
+
+
+</defs>
 
     <!-- 背景 -->
     <rect width="1280" height="720" fill="#F8FAFC" />
@@ -50,7 +40,7 @@
         <text x="160" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B"
             text-anchor="middle">配置环境</text>
 
-        <line x1="235" y1="210" x2="295" y2="210" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)" />
+        <line x1="235" y1="210" x2="295" y2="210" stroke="#10B981" stroke-width="2" />
 
         <rect x="305" y="175" width="130" height="70" rx="10" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2" />
         <text x="370" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#8B5CF6"
@@ -58,7 +48,7 @@
         <text x="370" y="225" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B"
             text-anchor="middle">0→1 开发</text>
 
-        <line x1="445" y1="210" x2="505" y2="210" stroke="#8B5CF6" stroke-width="2" marker-end="url(#arrowPurple)" />
+        <line x1="445" y1="210" x2="505" y2="210" stroke="#8B5CF6" stroke-width="2" />
 
         <rect x="515" y="175" width="130" height="70" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
         <text x="580" y="205" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB"
@@ -95,7 +85,7 @@
         <text x="160" y="405" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B"
             text-anchor="middle">配置环境</text>
 
-        <line x1="235" y1="390" x2="295" y2="390" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)" />
+        <line x1="235" y1="390" x2="295" y2="390" stroke="#10B981" stroke-width="2" />
 
         <rect x="305" y="355" width="130" height="70" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" />
         <text x="370" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#2563EB"
@@ -138,7 +128,7 @@
         <text x="160" y="585" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#64748B"
             text-anchor="middle">配置环境</text>
 
-        <line x1="235" y1="570" x2="295" y2="570" stroke="#10B981" stroke-width="2" marker-end="url(#arrowGreen)" />
+        <line x1="235" y1="570" x2="295" y2="570" stroke="#10B981" stroke-width="2" />
 
         <rect x="305" y="535" width="180" height="70" rx="10" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2" />
         <text x="395" y="565" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#8B5CF6"
