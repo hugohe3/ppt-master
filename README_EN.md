@@ -84,6 +84,7 @@ Recommended AI editors:
 | Tool                                                | Rating | Description                                                                   |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
 | **[Claude Code](https://claude.ai/)**               | ⭐⭐⭐ | **Highly Recommended**! Anthropic official CLI, native Opus support, largest context window |
+| Codebuddy IDE                                       |  ⭐⭐  | Great Chinese AI IDE, good support for local models like Kimi 2.5 and MiniMax 2.7 |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | Mainstream AI editor, great experience but relatively expensive                |
 | [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | Microsoft official solution, cost-effective, but limited context window (200k, 35% reserved for output) |
 | [Antigravity](https://antigravity.dev/)             |   ⭐   | Free but very limited quota and unstable. Alternative only.                    |
@@ -103,7 +104,7 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
    ...
 ```
 
-> 💡 **Model Recommendation**: Opus 4.6 works best. However, due to the current instability of Opus on some IDEs (like Antigravity), using other stable AI clients is recommended.
+> 💡 **Model Recommendation**: Claude Opus works best, but most mainstream models today (like Kimi 2.5 and MiniMax 2.7, tested via Codebuddy IDE) can also generate decent results with only minor gaps in layout details. Due to the instability of Opus on some IDEs (like Antigravity), trying other stable AI clients is recommended.
 
 > 💡 **Image Generation Integration**: Configure Google AI environment variables (`GEMINI_API_KEY`, optionally `GEMINI_BASE_URL` for proxy) to integrate nano banana 2 image generation via `skills/ppt-master/scripts/nano_banana_gen.py`. If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
 
