@@ -27,13 +27,15 @@ import json
 PROJECT_ROOT = Path(__file__).parent.parent
 
 # 核心目录
-TOOLS_DIR = PROJECT_ROOT / 'tools'
-DOCS_DIR = PROJECT_ROOT / 'docs'
+SCRIPTS_DIR = PROJECT_ROOT / 'scripts'
+REFERENCES_DIR = PROJECT_ROOT / 'references'
 TEMPLATES_DIR = PROJECT_ROOT / 'templates'
-EXAMPLES_DIR = PROJECT_ROOT / 'examples'
-PROJECTS_DIR = PROJECT_ROOT / 'projects'
-ROLES_DIR = PROJECT_ROOT / 'roles'
-TESTS_DIR = PROJECT_ROOT / 'tests'
+WORKFLOWS_DIR = PROJECT_ROOT / 'workflows'
+
+# 仓库根目录
+REPO_ROOT = PROJECT_ROOT.parent.parent
+EXAMPLES_DIR = REPO_ROOT / 'examples'
+PROJECTS_DIR = REPO_ROOT / 'projects'
 
 # 模板子目录
 CHART_TEMPLATES_DIR = TEMPLATES_DIR / 'charts'

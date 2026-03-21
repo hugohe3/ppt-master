@@ -7,7 +7,7 @@
 #   pip install -r requirements.txt
 
 # ─────────────────────────────────────────────────────────────
-# SVG 转 PPTX 工具 (tools/svg_to_pptx.py)
+# SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
 # ─────────────────────────────────────────────────────────────
 # 用于将 SVG 文件批量转换为 PowerPoint 演示文稿
 # 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
@@ -25,7 +25,7 @@ svglib>=1.5.0
 reportlab>=4.0.0
 
 # ─────────────────────────────────────────────────────────────
-# PDF 转 Markdown 工具 (tools/pdf_to_md.py)
+# PDF 转 Markdown 工具 (skills/ppt-master/scripts/pdf_to_md.py)
 # ─────────────────────────────────────────────────────────────
 # 用于将 PDF 文件转换为 Markdown 格式，支持文本、图片、表格提取
 PyMuPDF>=1.23.0
@@ -39,13 +39,13 @@ Pillow>=9.0.0
 numpy>=1.20.0
 
 # ─────────────────────────────────────────────────────────────
-# 网页转 Markdown 工具 (tools/web_to_md.py)
+# 网页转 Markdown 工具 (skills/ppt-master/scripts/web_to_md.py)
 # ─────────────────────────────────────────────────────────────
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 
 # ─────────────────────────────────────────────────────────────
-# AI 图片生成工具 (tools/nano_banana_gen.py)
+# AI 图片生成工具 (skills/ppt-master/scripts/nano_banana_gen.py)
 # ─────────────────────────────────────────────────────────────
 # 用于调用 Google Gemini API 生成高质量图片（需要 API Key）
 google-genai>=1.0.0
