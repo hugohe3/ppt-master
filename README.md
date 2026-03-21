@@ -84,6 +84,7 @@ pip install -r requirements.txt
 | 工具                                                | 推荐度 | 说明                                                                          |
 | --------------------------------------------------- | :----: | ----------------------------------------------------------------------------- |
 | **[Claude Code](https://claude.ai/)**               | ⭐⭐⭐ | **强烈推荐**！Anthropic 官方 CLI，原生 Opus 支持，上下文最充裕                |
+| Codebuddy IDE                                       |  ⭐⭐  | 优秀的国产 AI IDE，对 Kimi 2.5、MiniMax 2.7 等国产大模型有较好支持             |
 | [Cursor](https://cursor.sh/)                        |  ⭐⭐  | 主流 AI 编辑器，体验好但价格较高                                              |
 | [VS Code + Copilot](https://code.visualstudio.com/) |  ⭐⭐  | 微软官方方案，性价比高，但上下文窗口受限（200k，预留 35% 给输出）             |
 | [Antigravity](https://antigravity.dev/)             |   ⭐   | 免费但额度极少且不稳定，仅作备选                                              |
@@ -102,7 +103,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
    ...
 ```
 
-> 💡 **模型推荐**：Opus 4.6 效果最佳，但因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端。
+> 💡 **模型推荐**：Claude Opus 效果最佳，但大部分主流模型（如 Kimi 2.5、MiniMax 2.7 等，可通过 Codebuddy IDE 使用）目前均能生成不错的内容，仅在细节排版效果上可能存在差距。因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端进行创作。
 
 > 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `skills/ppt-master/scripts/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
 
