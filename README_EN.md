@@ -15,7 +15,7 @@ Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed pre
 
 > **Online Examples**: [GitHub Pages Preview](https://hugohe3.github.io/ppt-master/) — See actual generated results
 
-> **Video Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
+> **Video Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1ZZAFzWEPJ/)
 
 ---
 

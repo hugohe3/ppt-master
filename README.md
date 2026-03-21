@@ -15,7 +15,7 @@
 
 > **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) — 查看实际生成效果
 
-> **视频演示**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1iUmQBtEGH/)
+> **视频演示**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1ZZAFzWEPJ/)
 
 ---
 
