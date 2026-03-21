@@ -106,7 +106,21 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **Model Recommendation**: Claude Opus works best, but most mainstream models today (like Kimi 2.5 and MiniMax 2.7, tested via Codebuddy IDE) can also generate decent results with only minor gaps in layout details. Due to the instability of Opus on some IDEs (like Antigravity), trying other stable AI clients is recommended.
 
-> 💡 **Image Generation Integration**: Configure Google AI environment variables (`GEMINI_API_KEY`, optionally `GEMINI_BASE_URL` for proxy) to integrate nano banana 2 image generation via `skills/ppt-master/scripts/nano_banana_gen.py`. If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
+#### Gemini Image Generation API (Optional)
+
+The `nano_banana_gen.py` tool can generate high-quality images via the Gemini API directly within AI clients. Configure the following environment variables before use:
+
+```bash
+# Required: Gemini API Key (obtain from https://aistudio.google.com/apikey)
+export GEMINI_API_KEY="your-api-key"
+
+# Optional: Custom API endpoint (for proxy services)
+export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
+```
+
+> 💡 **Persist settings**: Add the `export` commands above to `~/.zshrc` (macOS/Linux zsh) or `~/.bashrc` (Linux bash), then restart your terminal.
+
+> 💡 If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
 
 > 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
 

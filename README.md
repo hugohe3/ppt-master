@@ -105,7 +105,21 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **模型推荐**：Claude Opus 效果最佳，但大部分主流模型（如 Kimi 2.5、MiniMax 2.7 等，可通过 Codebuddy IDE 使用）目前均能生成不错的内容，仅在细节排版效果上可能存在差距。因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端进行创作。
 
-> 💡 **生图能力集成**：建议配置 Google AI 的环境变量（`GEMINI_API_KEY`，如需代理可添加 `GEMINI_BASE_URL`），以便借助本项目的 `skills/ppt-master/scripts/nano_banana_gen.py` 在 AI 客户端中集成 nano banana 2 的强大生图能力。若使用 Antigravity 代理，调用时请注意需传入模型参数（`-m gemini-3.1-flash-image`）。
+#### Gemini 生图 API（可选）
+
+本项目的 `nano_banana_gen.py` 可通过 Gemini API 在 AI 客户端中直接生成高质量配图。使用前需配置环境变量：
+
+```bash
+# 必需：Gemini API Key（从 https://aistudio.google.com/apikey 获取）
+export GEMINI_API_KEY="your-api-key"
+
+# 可选：自定义 API 端点（用于代理服务）
+export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
+```
+
+> 💡 **持久化**：将上述 `export` 命令添加到 `~/.zshrc`（macOS/Linux zsh）或 `~/.bashrc`（Linux bash）中，重启终端即可永久生效。
+
+> 💡 若使用 Antigravity 代理，调用时需传入模型参数（`-m gemini-3.1-flash-image`）。
 
 > 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
 

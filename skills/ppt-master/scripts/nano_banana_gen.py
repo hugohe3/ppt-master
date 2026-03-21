@@ -3,6 +3,14 @@
 Nano Banana Image Generator (Gemini Nano)
 通过 Google GenAI API (Gemini) 生成高质量图片的工具。
 
+环境变量:
+  GEMINI_API_KEY   (必需) Gemini API Key，从 https://aistudio.google.com/apikey 获取
+  GEMINI_BASE_URL  (可选) 自定义 API 端点，用于代理服务
+
+  配置示例:
+    export GEMINI_API_KEY="your-api-key"
+    export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"   # 仅代理时需要
+
 连接方式:
   - 无 GEMINI_BASE_URL → 直连 Google 官方 API
   - 有 GEMINI_BASE_URL → 通过代理 API (使用相同的 Official 协议)
