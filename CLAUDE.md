@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides a project overview for Claude Code. Before executing PPT generation tasks, **you MUST first read [AGENTS.md](./AGENTS.md) and `skills/ppt-master/SKILL.md`** for the complete workflow and rules.
+This file provides a project overview for Claude Code. Before executing PPT generation tasks, **you MUST first read `skills/ppt-master/SKILL.md`** for the complete workflow and rules.
 
 ## Project Overview
 
