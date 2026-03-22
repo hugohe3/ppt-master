@@ -142,9 +142,9 @@ If suitable template resources already exist, use them directly instead of gener
 
 ```
 templates/layouts/
-├── general/           # General versatile style
-├── consultant/        # Consulting style
-└── consultant_top/    # Top consulting style (MBB level)
+├── exhibit/           # Exhibit style (conclusion-first, data-driven)
+├── 科技蓝商务/         # Tech blue business style
+└── smart_red/         # Smart red-orange style
 ```
 
 ---
