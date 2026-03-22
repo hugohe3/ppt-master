@@ -569,6 +569,9 @@ python3 scripts/svg_to_pptx.py <project_path> -t fade --transition-duration 1.0
 
 # Silent mode
 python3 scripts/svg_to_pptx.py <project_path> -s final -q
+
+# Native shapes (fallback when PowerPoint is unavailable for manual "Convert to Shape")
+python3 scripts/svg_to_pptx.py <project_path> -s final --native
 ```
 
 **Speaker Notes**:

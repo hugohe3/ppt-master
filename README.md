@@ -211,6 +211,7 @@ python3 skills/ppt-master/scripts/pdf_to_md.py <PDF_file>
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
+# Fallback: add --native if no PowerPoint available for manual "Convert to Shape"
 ```
 
 > 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)
