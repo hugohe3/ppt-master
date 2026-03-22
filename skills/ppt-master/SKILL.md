@@ -20,7 +20,7 @@ description: >
 >
 > 1. **SERIAL EXECUTION** — Steps MUST be executed in order; the output of each step is the input for the next. Non-BLOCKING adjacent steps may proceed continuously once prerequisites are met, without waiting for the user to say "continue"
 > 2. **BLOCKING = HARD STOP** — Steps marked ⛔ BLOCKING require a full stop; the AI MUST wait for an explicit user response before proceeding and MUST NOT make any decisions on behalf of the user
-> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: once the user confirms the Eight Confirmations, the AI may automatically and continuously generate the design spec, outline, SVGs, speaker notes, and proceed into post-processing — as long as prerequisites are met, seamless progression is allowed without waiting for user confirmation)
+> 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: the Eight Confirmations in Step 4 are ⛔ BLOCKING — the AI MUST present recommendations and wait for explicit user confirmation before proceeding. Once the user confirms, all subsequent non-BLOCKING steps — design spec output, SVG generation, speaker notes, and post-processing — may proceed automatically without further user confirmation)
 > 4. **GATE BEFORE ENTRY** — Each Step has prerequisites (🚧 GATE) listed at the top; these MUST be verified before starting that Step
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
 
@@ -163,10 +163,12 @@ Read references/shared-standards.md
 7. Typography plan
 8. Image usage approach
 
-If the user has provided images:
+If the user has provided images, run the analysis script **before outputting the design spec** (do NOT directly read/open image files — use the script output only):
 ```bash
 python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```
+
+> ⚠️ **Image handling rule**: The AI must NEVER directly read, open, or view image files (`.jpg`, `.png`, etc.). All image information must come from the `analyze_images.py` script output or the Design Specification's Image Resource List.
 
 **Output**: `<project_path>/design_spec.md`
 
@@ -217,6 +219,8 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 ```
 
 > Only need to read executor-base + one style file.
+
+**Design Parameter Confirmation (Mandatory)**: Before generating the first SVG, the Executor MUST review and output key design parameters from the Design Specification (canvas dimensions, color scheme, font plan, body font size) to ensure spec adherence. See executor-base.md Section 2 for details.
 
 **Visual Construction Phase**:
 - Batch-generate SVG pages → `<project_path>/svg_output/`
@@ -269,7 +273,11 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 
 Read `references/optimizer-crap.md`
 
-After optimization, you MUST **re-run all post-processing sub-steps starting from Step 7.1** (7.1 → 7.2 → 7.3) — skipping is NOT allowed.
+1. Optimizer analyzes and optimizes the specified SVG files in `svg_output/`
+2. Optimized files are saved with `yh_` prefix in `svg_output/`
+3. After all optimizations are complete, **MUST re-run the entire post-processing pipeline** (Step 7.1 → 7.2 → 7.3), following the same sequential execution rules as Step 7
+
+> ⚠️ Do NOT skip re-processing — optimized SVGs still need icon embedding, image processing, and PPTX export.
 
 ---
 

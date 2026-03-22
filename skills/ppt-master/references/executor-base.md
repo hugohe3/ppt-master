@@ -74,13 +74,21 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 
 **Common icons**: `chart-bar` `arrow-trend-up` `users` `cog` `circle-checkmark` `target` `clock` `file` `dollar` `lightbulb`
 
+> ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Using icon names not in the index is FORBIDDEN — verify against `templates/icons/icons_index.json` if uncertain.
+
 Full index: `templates/icons/README.md`
 
 ---
 
 ## 5. Chart Reference
 
-When the Design Spec includes a **VII. Chart Reference List**, read the referenced SVG templates from `templates/charts/` to understand common chart patterns. How to apply or adapt them is at your discretion.
+When the Design Spec includes a **VII. Chart Reference List**, read the referenced SVG templates from `templates/charts/` to understand common chart patterns.
+
+**Adaptation rules**:
+- **Must preserve**: Chart type (bar/line/pie etc.) as specified in the Design Spec
+- **Must adapt**: Data values, labels, colors (match the project's color scheme), and dimensions to fit the page layout
+- **May adjust**: Axis ranges, grid lines, legend position, spacing — as long as the chart remains accurate and readable
+- **Must NOT**: Change chart type without Design Spec justification, or remove data points specified in the outline
 
 > Chart templates: `templates/charts/` (33 types). Index: `templates/charts/charts_index.json`
 
