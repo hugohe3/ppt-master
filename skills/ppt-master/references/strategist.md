@@ -88,7 +88,27 @@ Built-in library contains 640+ icons; see `templates/icons/README.md`.
 >
 > **Quick lookup**: By category → `icons_index.json` `categories`; by semantics → `quickLookup`; full list → `templates/icons/FULL_INDEX.md`
 
-### g. Image Usage Confirmation
+### g. Chart Reference Selection
+
+When content outline pages involve **data visualization** (comparisons, trends, proportions, KPIs, flows, strategic frameworks, etc.), consult the chart template library to select appropriate chart types.
+
+Built-in library contains 33 chart templates; see `templates/charts/charts_index.json`.
+
+> **Selection workflow**:
+> 1. Identify pages that need data visualization during content planning
+> 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
+> 3. Review `bestFor` / `avoidFor` to confirm the chart type fits the data characteristics
+> 4. List all selected charts in Design Spec **section VII (Chart Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the chart type name
+>
+> **Quick lookup by goal**:
+> - Ranking/comparison → `bar_chart`, `horizontal_bar_chart`, `grouped_bar_chart`
+> - Trends over time → `line_chart`, `area_chart`, `dual_axis_line_chart`
+> - Proportions → `donut_chart`, `pie_chart`, `treemap_chart`
+> - KPIs/targets → `kpi_cards`, `bullet_chart`, `gauge_chart`
+> - Conversion/flow → `funnel_chart`, `sankey_chart`, `waterfall_chart`
+> - Strategy → `swot_analysis`, `porter_five_forces`, `matrix_2x2`
+
+### h. Image Usage Confirmation
 
 | Option | Approach | Suitable Scenarios |
 |--------|----------|-------------------|
@@ -295,12 +315,13 @@ The Strategist should make professional judgments on the template basis generate
 | IV. Typography System | Font plan (P1-P5), font size hierarchy (H1-Code, 7 levels) |
 | V. Layout Principles | Page structure (header/content/footer zones), 6 layout modes, spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
-| VII. Image Resource List | Filename, dimensions, ratio, purpose, status, generation description |
-| VIII. Content Outline | Grouped by chapter; each page includes layout, title, content points |
-| IX. Speaker Notes Requirements | File naming rules, content structure description |
-| X. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
-| XI. Design Checklist | Pre-generation / post-generation check items |
-| XII. Next Steps | Clarify subsequent pipeline (Image_Generator or Executor) |
+| VII. Chart Reference List | Chart type, reference template path, used-in pages, purpose |
+| VIII. Image Resource List | Filename, dimensions, ratio, purpose, status, generation description |
+| IX. Content Outline | Grouped by chapter; each page includes layout, title, content points, chart type (if applicable) |
+| X. Speaker Notes Requirements | File naming rules, content structure description |
+| XI. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
+| XII. Design Checklist | Pre-generation / post-generation check items |
+| XIII. Next Steps | Clarify subsequent pipeline (Image_Generator or Executor) |
 
 **Generation steps**:
 1. Read reference template: `templates/design_spec_reference.md`

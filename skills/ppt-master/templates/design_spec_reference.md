@@ -162,7 +162,17 @@
 
 ---
 
-## VII. Image Resource List (if needed)
+## VII. Chart Reference List (if needed)
+
+> When the presentation includes data visualization, Strategist selects chart types from `templates/charts/charts_index.json` and lists them here for the Executor to reference.
+
+| Chart Type | Reference Template | Used In |
+| ---------- | ------------------ | ------- |
+| [e.g. grouped_bar_chart] | `templates/charts/grouped_bar_chart.svg` | Slide 05 |
+
+---
+
+## VIII. Image Resource List (if needed)
 
 | Filename | Dimensions | Ratio | Purpose | Type | Status | Generation Description |
 | -------- | --------- | ----- | ------- | ---- | ------ | --------------------- |
@@ -184,7 +194,7 @@
 
 ---
 
-## VIII. Content Outline
+## IX. Content Outline
 
 ### Part 1: [Chapter Name]
 
@@ -199,10 +209,13 @@
 
 - **Layout**: [Choose layout mode]
 - **Title**: [Page title]
+- **Chart**: [chart_type] (see VII. Chart Reference List)
 - **Content**:
   - [Point 1]
   - [Point 2]
   - [Point 3]
+
+> **Chart field**: Only add when the page includes data visualization. Chart type must be listed in section VII.
 
 ---
 
@@ -210,7 +223,7 @@
 
 ---
 
-## IX. Speaker Notes Requirements
+## X. Speaker Notes Requirements
 
 Generate corresponding speaker note files for each page, saved to the `notes/` directory:
 
@@ -219,7 +232,7 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 
 ---
 
-## X. Technical Constraints Reminder
+## XI. Technical Constraints Reminder
 
 ### SVG Generation Must Follow:
 
@@ -239,7 +252,7 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 
 ---
 
-## XI. Design Checklist
+## XII. Design Checklist
 
 ### Pre-generation
 
@@ -260,7 +273,7 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 
 ---
 
-## XII. Next Steps
+## XIII. Next Steps
 
 1. ✅ Design spec complete
 2. **Next step**: [Choose based on image approach]

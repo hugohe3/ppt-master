@@ -78,7 +78,15 @@ Full index: `templates/icons/README.md`
 
 ---
 
-## 5. Image Handling
+## 5. Chart Reference
+
+When the Design Spec includes a **VII. Chart Reference List**, read the referenced SVG templates from `templates/charts/` to understand common chart patterns. How to apply or adapt them is at your discretion.
+
+> Chart templates: `templates/charts/` (33 types). Index: `templates/charts/charts_index.json`
+
+---
+
+## 6. Image Handling
 
 Handle images based on their status in the Design Specification's "Image Resource List":
 
@@ -94,7 +102,7 @@ Handle images based on their status in the Design Specification's "Image Resourc
 
 ---
 
-## 6. Font Usage
+## 7. Font Usage
 
 Apply corresponding fonts for different text roles based on the font plan in the Design Specification & Content Outline:
 
@@ -109,7 +117,7 @@ See `references/design-guidelines.md` for details.
 
 ---
 
-## 7. Speaker Notes Generation Framework
+## 8. Speaker Notes Generation Framework
 
 ### Task 1. Generate Complete Speaker Notes Document
 
@@ -145,7 +153,7 @@ Automatically split `notes/total.md` into individual speaker note files in the `
 
 ---
 
-## 8. Next Steps After Completion
+## 9. Next Steps After Completion
 
 > **Auto-continuation**: After Visual Construction Phase (all SVG pages) and Logic Construction Phase (all notes) are complete, the Executor proceeds directly to the post-processing pipeline.
 
