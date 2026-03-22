@@ -64,6 +64,13 @@ except ImportError:
     ANIMATIONS_AVAILABLE = False
     TRANSITIONS = {}
 
+# Import native shape converter
+try:
+    from svg_to_shapes import convert_svg_to_slide_shapes
+    NATIVE_SHAPES_AVAILABLE = True
+except ImportError:
+    NATIVE_SHAPES_AVAILABLE = False
+
 # SVG to PNG library detection (for Office compatibility mode)
 # Prefer CairoSVG (better rendering quality), fall back to svglib
 PNG_RENDERER = None  # 'cairosvg' | 'svglib' | None
@@ -615,7 +622,8 @@ def create_pptx_with_native_svg(
     auto_advance: Optional[float] = None,
     use_compat_mode: bool = True,
     notes: Optional[dict] = None,
-    enable_notes: bool = True
+    enable_notes: bool = True,
+    use_native_shapes: bool = False
 ) -> bool:
     """
     Create a PPTX file with native SVG
@@ -631,14 +639,25 @@ def create_pptx_with_native_svg(
         use_compat_mode: Use Office compatibility mode (PNG + SVG dual format, enabled by default)
         notes: Notes dictionary, key is slide number, value is notes content
         enable_notes: Whether to enable notes embedding (enabled by default)
+        use_native_shapes: Convert SVG to native DrawingML shapes (directly editable)
     """
     if not svg_files:
         print("Error: No SVG files found")
         return False
 
+    # Native shapes mode takes priority over compat mode
+    if use_native_shapes:
+        if not NATIVE_SHAPES_AVAILABLE:
+            print("Error: svg_to_shapes module not available, cannot use native shapes mode")
+            print("  Falling back to SVG embedding mode")
+            use_native_shapes = False
+        else:
+            # Native shapes mode doesn't use compat/PNG
+            use_compat_mode = False
+
     # Check compatibility mode dependencies
     renderer_name, renderer_status, renderer_hint = get_png_renderer_info()
-    if use_compat_mode and PNG_RENDERER is None:
+    if not use_native_shapes and use_compat_mode and PNG_RENDERER is None:
         print("Warning: No PNG rendering library installed, cannot use compatibility mode")
         print(f"  {renderer_hint}")
         print("  Will use pure SVG mode (may not display in Office LTSC 2021 and similar versions)")
@@ -668,7 +687,9 @@ def create_pptx_with_native_svg(
     if verbose:
         print(f"  Slide dimensions: {pixel_width} x {pixel_height} px")
         print(f"  SVG file count: {len(svg_files)}")
-        if use_compat_mode:
+        if use_native_shapes:
+            print(f"  Mode: Native DrawingML shapes (directly editable)")
+        elif use_compat_mode:
             print(f"  Compatibility mode: Enabled (PNG + SVG dual format)")
             print(f"  PNG renderer: {renderer_name} {renderer_status}")
         else:
@@ -717,65 +738,118 @@ def create_pptx_with_native_svg(
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
-            svg_filename = f'image{i}.svg'
-            png_filename = f'image{i}.png'
-            png_rid = 'rId2'
-            svg_rid = 'rId3' if use_compat_mode else 'rId2'
 
             try:
-                # Copy SVG to media directory
-                shutil.copy(svg_path, media_dir / svg_filename)
-
-                # Compatibility mode: generate PNG fallback image
-                slide_has_png = False
-                if use_compat_mode:
-                    png_path = media_dir / png_filename
-                    png_success = convert_svg_to_png(
-                        svg_path,
-                        png_path,
-                        width=pixel_width,
-                        height=pixel_height
+                # ---- Native shapes mode ----
+                if use_native_shapes:
+                    slide_xml, media_files_dict, rel_entries = convert_svg_to_slide_shapes(
+                        svg_path, slide_num=slide_num, verbose=verbose
                     )
-                    if png_success:
-                        slide_has_png = True
-                        any_png_generated = True
-                    else:
-                        # PNG generation failed, fall back to pure SVG
-                        if verbose:
-                            print(f"  [{i}/{len(svg_files)}] {svg_path.name} - PNG generation failed, using pure SVG")
-                        svg_rid = 'rId2'
 
-                # Update slide XML
-                slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
-                slide_xml = create_slide_xml_with_svg(
-                    slide_num,
-                    png_rid=png_rid,
-                    svg_rid=svg_rid,
-                    width_emu=width_emu,
-                    height_emu=height_emu,
-                    transition=transition,
-                    transition_duration=transition_duration,
-                    auto_advance=auto_advance,
-                    use_compat_mode=(use_compat_mode and slide_has_png)
-                )
-                with open(slide_xml_path, 'w', encoding='utf-8') as f:
-                    f.write(slide_xml)
+                    # Add transition if specified
+                    if transition and ANIMATIONS_AVAILABLE:
+                        transition_xml = '\n' + create_transition_xml(
+                            effect=transition,
+                            duration=transition_duration,
+                            advance_after=auto_advance
+                        )
+                        slide_xml = slide_xml.replace(
+                            '</p:sld>',
+                            transition_xml + '\n</p:sld>'
+                        )
 
-                # Create/update relationship file
-                rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
-                rels_dir.mkdir(exist_ok=True)
-                rels_path = rels_dir / f'slide{slide_num}.xml.rels'
-                rels_xml = create_slide_rels_xml(
-                    png_rid=png_rid,
-                    png_filename=png_filename,
-                    svg_rid=svg_rid,
-                    svg_filename=svg_filename,
-                    use_compat_mode=(use_compat_mode and slide_has_png)
-                )
-                with open(rels_path, 'w', encoding='utf-8') as f:
-                    f.write(rels_xml)
+                    # Write slide XML
+                    slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
+                    with open(slide_xml_path, 'w', encoding='utf-8') as f:
+                        f.write(slide_xml)
 
-                # Process notes
+                    # Write media files (from embedded images)
+                    for media_name, media_data in media_files_dict.items():
+                        with open(media_dir / media_name, 'wb') as f:
+                            f.write(media_data)
+
+                    # Build relationships XML
+                    rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
+                    rels_dir.mkdir(exist_ok=True)
+                    rels_path = rels_dir / f'slide{slide_num}.xml.rels'
+
+                    extra_rels = ''
+                    for rel in rel_entries:
+                        extra_rels += f'\n  <Relationship Id="{rel["id"]}" Type="{rel["type"]}" Target="{rel["target"]}"/>'
+
+                    rels_xml = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>{extra_rels}
+</Relationships>'''
+                    with open(rels_path, 'w', encoding='utf-8') as f:
+                        f.write(rels_xml)
+
+                    # Track image formats for Content_Types
+                    for media_name in media_files_dict:
+                        ext = media_name.rsplit('.', 1)[-1].lower()
+                        if ext in ('png', 'jpg', 'jpeg', 'gif', 'webp'):
+                            any_png_generated = True  # reuse flag for any image
+
+                # ---- Legacy SVG embedding mode ----
+                else:
+                    svg_filename = f'image{i}.svg'
+                    png_filename = f'image{i}.png'
+                    png_rid = 'rId2'
+                    svg_rid = 'rId3' if use_compat_mode else 'rId2'
+
+                    # Copy SVG to media directory
+                    shutil.copy(svg_path, media_dir / svg_filename)
+
+                    # Compatibility mode: generate PNG fallback image
+                    slide_has_png = False
+                    if use_compat_mode:
+                        png_path = media_dir / png_filename
+                        png_success = convert_svg_to_png(
+                            svg_path,
+                            png_path,
+                            width=pixel_width,
+                            height=pixel_height
+                        )
+                        if png_success:
+                            slide_has_png = True
+                            any_png_generated = True
+                        else:
+                            # PNG generation failed, fall back to pure SVG
+                            if verbose:
+                                print(f"  [{i}/{len(svg_files)}] {svg_path.name} - PNG generation failed, using pure SVG")
+                            svg_rid = 'rId2'
+
+                    # Update slide XML
+                    slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
+                    slide_xml = create_slide_xml_with_svg(
+                        slide_num,
+                        png_rid=png_rid,
+                        svg_rid=svg_rid,
+                        width_emu=width_emu,
+                        height_emu=height_emu,
+                        transition=transition,
+                        transition_duration=transition_duration,
+                        auto_advance=auto_advance,
+                        use_compat_mode=(use_compat_mode and slide_has_png)
+                    )
+                    with open(slide_xml_path, 'w', encoding='utf-8') as f:
+                        f.write(slide_xml)
+
+                    # Create/update relationship file
+                    rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
+                    rels_dir.mkdir(exist_ok=True)
+                    rels_path = rels_dir / f'slide{slide_num}.xml.rels'
+                    rels_xml = create_slide_rels_xml(
+                        png_rid=png_rid,
+                        png_filename=png_filename,
+                        svg_rid=svg_rid,
+                        svg_filename=svg_filename,
+                        use_compat_mode=(use_compat_mode and slide_has_png)
+                    )
+                    with open(rels_path, 'w', encoding='utf-8') as f:
+                        f.write(rels_xml)
+
+                # Process notes (shared between native and legacy mode)
                 notes_content = ''
                 if enable_notes:
                     # Match by filename (new logic) or by index (backward compatible)
@@ -813,7 +887,12 @@ def create_pptx_with_native_svg(
                         f.write(slide_rels_content)
 
                 if verbose:
-                    mode_str = " (PNG+SVG)" if (use_compat_mode and slide_has_png) else " (SVG)"
+                    if use_native_shapes:
+                        mode_str = " (Native)"
+                    elif use_compat_mode and not use_native_shapes:
+                        mode_str = " (PNG+SVG)" if any_png_generated else " (SVG)"
+                    else:
+                        mode_str = " (SVG)"
                     has_notes = enable_notes and bool(notes_content)
                     notes_str = " +notes" if has_notes else ""
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
@@ -824,17 +903,23 @@ def create_pptx_with_native_svg(
                 if verbose:
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name} - Error: {e}")
 
-        # Update [Content_Types].xml to add SVG and PNG types
+        # Update [Content_Types].xml to add media types
         content_types_path = extract_dir / '[Content_Types].xml'
         with open(content_types_path, 'r', encoding='utf-8') as f:
             content_types = f.read()
 
-        # Add SVG extension type (if not present)
         types_to_add = []
-        if 'Extension="svg"' not in content_types:
-            types_to_add.append('  <Default Extension="svg" ContentType="image/svg+xml"/>')
+        if not use_native_shapes:
+            # Legacy mode: need SVG extension type
+            if 'Extension="svg"' not in content_types:
+                types_to_add.append('  <Default Extension="svg" ContentType="image/svg+xml"/>')
         if any_png_generated and 'Extension="png"' not in content_types:
             types_to_add.append('  <Default Extension="png" ContentType="image/png"/>')
+        # Add jpg support for native mode embedded images
+        if use_native_shapes and 'Extension="jpg"' not in content_types:
+            types_to_add.append('  <Default Extension="jpg" ContentType="image/jpeg"/>')
+        if use_native_shapes and 'Extension="jpeg"' not in content_types:
+            types_to_add.append('  <Default Extension="jpeg" ContentType="image/jpeg"/>')
 
         if types_to_add:
             content_types = content_types.replace(
@@ -890,6 +975,7 @@ Examples:
     %(prog)s examples/ppt169_demo             # Use original version
     %(prog)s examples/ppt169_demo -o presentation.pptx
     %(prog)s examples/ppt169_demo --no-compat # Disable compatibility mode (pure SVG only)
+    %(prog)s examples/ppt169_demo --native    # Native DrawingML shapes (directly editable)
 
     # Add page transition effects
     %(prog)s examples/ppt169_demo --transition fade
@@ -929,6 +1015,10 @@ Speaker notes (enabled by default):
     # Compatibility mode arguments
     parser.add_argument('--no-compat', action='store_true',
                         help='Disable Office compatibility mode (pure SVG only, requires Office 2019+)')
+
+    # Native shapes mode arguments
+    parser.add_argument('--native', action='store_true', default=False,
+                        help='Convert SVG to native DrawingML shapes (directly editable without manual conversion)')
 
     # Transition effect arguments
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
@@ -1003,7 +1093,8 @@ Speaker notes (enabled by default):
         auto_advance=args.auto_advance,
         use_compat_mode=not args.no_compat,
         notes=notes,
-        enable_notes=enable_notes
+        enable_notes=enable_notes,
+        use_native_shapes=args.native
     )
 
     sys.exit(0 if success else 1)
