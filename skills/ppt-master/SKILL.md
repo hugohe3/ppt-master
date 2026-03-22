@@ -160,8 +160,8 @@ Read references/shared-standards.md
 4. Style objective
 5. Color scheme
 6. Icon usage approach
-7. Image usage approach
-8. Typography plan
+7. Typography plan
+8. Image usage approach
 
 If the user has provided images:
 ```bash

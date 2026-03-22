@@ -88,25 +88,33 @@ Built-in library contains 640+ icons; see `templates/icons/README.md`.
 >
 > **Quick lookup**: By category → `icons_index.json` `categories`; by semantics → `quickLookup`; full list → `templates/icons/FULL_INDEX.md`
 
-### g. Chart Reference Selection
+### g. Typography Plan Confirmation (Font + Size)
 
-When content outline pages involve **data visualization** (comparisons, trends, proportions, KPIs, flows, strategic frameworks, etc.), consult the chart template library to select appropriate chart types.
+#### Font Presets
 
-Built-in library contains 33 chart templates; see `templates/charts/charts_index.json`.
+| Scenario | Preset | Title | Body | Emphasis |
+|----------|--------|-------|------|----------|
+| Modern business, tech | P1 | Microsoft YaHei / Arial | Microsoft YaHei / Calibri | SimHei |
+| Government documents, reports | P2 | SimHei | SimSun / Times | SimSun |
+| Culture, arts, humanities | P3 | KaiTi / Georgia | Microsoft YaHei | SimHei |
+| Traditional, conservative | P4 | SimSun | Microsoft YaHei / Arial | SimSun |
+| English-primary | P5 | Arial / Impact | Calibri / Georgia | Arial Black |
 
-> **Selection workflow**:
-> 1. Identify pages that need data visualization during content planning
-> 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
-> 3. Review `bestFor` / `avoidFor` to confirm the chart type fits the data characteristics
-> 4. List all selected charts in Design Spec **section VII (Chart Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the chart type name
->
-> **Quick lookup by goal**:
-> - Ranking/comparison → `bar_chart`, `horizontal_bar_chart`, `grouped_bar_chart`
-> - Trends over time → `line_chart`, `area_chart`, `dual_axis_line_chart`
-> - Proportions → `donut_chart`, `pie_chart`, `treemap_chart`
-> - KPIs/targets → `kpi_cards`, `bullet_chart`, `gauge_chart`
-> - Conversion/flow → `funnel_chart`, `sankey_chart`, `waterfall_chart`
-> - Strategy → `swot_analysis`, `porter_five_forces`, `matrix_2x2`
+#### Font Size Baseline (all sizes in px)
+
+Selection principle: Font size is based on **content density**, not design style.
+
+| Content Density | Points per Page | Body Baseline | Suitable Scenarios |
+|----------------|----------------|---------------|-------------------|
+| Relaxed | 3-5 items | 24px | Keynote-style, training materials |
+| Dense | 6+ items | 18px | Data reports, consulting analysis |
+
+| Level | Ratio | 24px Baseline | 18px Baseline |
+|-------|-------|---------------|---------------|
+| Cover title | 2.5-3x | 60-72px | 45-54px |
+| Page title | 1.5-2x | 36-48px | 27-36px |
+| **Body** | **1x** | **24px** | **18px** |
+| Annotation | 0.75x | 18px | 14px |
 
 ### h. Image Usage Confirmation
 
@@ -156,35 +164,27 @@ Core logic: The layout container's aspect ratio must closely match the image's o
 
 > **Pipeline handoff**: When C) AI generation is selected, after outputting the design spec, prompt the user to invoke Image_Generator. Once images are collected in `images/`, proceed to Executor.
 
-### h. Typography Plan (Font + Size)
+### Chart Reference (Non-blocking — Strategist recommends, no user confirmation needed)
 
-#### Font Presets
+When content outline pages involve **data visualization** (comparisons, trends, proportions, KPIs, flows, strategic frameworks, etc.), consult the chart template library to select appropriate chart types.
 
-| Scenario | Preset | Title | Body | Emphasis |
-|----------|--------|-------|------|----------|
-| Modern business, tech | P1 | Microsoft YaHei / Arial | Microsoft YaHei / Calibri | SimHei |
-| Government documents, reports | P2 | SimHei | SimSun / Times | SimSun |
-| Culture, arts, humanities | P3 | KaiTi / Georgia | Microsoft YaHei | SimHei |
-| Traditional, conservative | P4 | SimSun | Microsoft YaHei / Arial | SimSun |
-| English-primary | P5 | Arial / Impact | Calibri / Georgia | Arial Black |
+Built-in library contains 33 chart templates; see `templates/charts/charts_index.json`.
 
-#### Font Size Baseline (all sizes in px)
+> **Selection workflow**:
+> 1. Identify pages that need data visualization during content planning
+> 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
+> 3. Review `bestFor` / `avoidFor` to confirm the chart type fits the data characteristics
+> 4. List all selected charts in Design Spec **section VII (Chart Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the chart type name
+>
+> **Quick lookup by goal**:
+> - Ranking/comparison → `bar_chart`, `horizontal_bar_chart`, `grouped_bar_chart`
+> - Trends over time → `line_chart`, `area_chart`, `dual_axis_line_chart`
+> - Proportions → `donut_chart`, `pie_chart`, `treemap_chart`
+> - KPIs/targets → `kpi_cards`, `bullet_chart`, `gauge_chart`
+> - Conversion/flow → `funnel_chart`, `sankey_chart`, `waterfall_chart`
+> - Strategy → `swot_analysis`, `porter_five_forces`, `matrix_2x2`
 
-Selection principle: Font size is based on **content density**, not design style.
-
-| Content Density | Points per Page | Body Baseline | Suitable Scenarios |
-|----------------|----------------|---------------|-------------------|
-| Relaxed | 3-5 items | 24px | Keynote-style, training materials |
-| Dense | 6+ items | 18px | Data reports, consulting analysis |
-
-| Level | Ratio | 24px Baseline | 18px Baseline |
-|-------|-------|---------------|---------------|
-| Cover title | 2.5-3x | 60-72px | 45-54px |
-| Page title | 1.5-2x | 36-48px | 27-36px |
-| **Body** | **1x** | **24px** | **18px** |
-| Annotation | 0.75x | 18px | 14px |
-
-### i. Speaker Notes Requirements (Default — no discussion needed)
+### Speaker Notes Requirements (Default — no discussion needed)
 
 - File naming: Recommended to match SVG names (`01_cover.svg` → `notes/01_cover.md`), also compatible with `notes/slide01.md`
 - Fill in the Design Spec: total presentation duration, notes style (formal / conversational / interactive), presentation purpose (inform / persuade / inspire / instruct / report)
