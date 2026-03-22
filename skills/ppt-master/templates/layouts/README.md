@@ -1,4 +1,4 @@
-# Page Layout Template Library (22 Templates)
+# Page Layout Template Library (20 Templates)
 
 Pre-built PPT page layout templates supporting multiple styles and use cases.
 
@@ -22,9 +22,7 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 | `中国电建_常规` | Brand | Power & energy, engineering, state-owned enterprise reports | PowerChina Blue `#00418D` | Craftsmanship, steady and reliable |
 | `中国电建_现代` | Brand | International engineering, premium roadshows, tech innovation | Deep Sea Blue `#001F45` | [Modern] Grand narrative, digital tech |
 | `招商银行` | Brand | Premium reports, VIP services, annual reports | CMB Red `#C41230` | Minimalist luxury, financial texture, borderless |
-| `consultant` | General | Consulting reports, business presentations | Deep Blue + Gold | Professional and rigorous, left sidebar accent |
-| `consultant_top` | General | MBB-level consulting reports, board presentations | Gradient top bar + Gold accents | Key insight area, confidentiality markings |
-| `general` | General | General business presentations | Deep Blue gradient + Indigo Purple | Modern clean, versatile |
+| `exhibit` | General | Exhibit-driven strategic reports, executive presentations, board briefings | Gradient top bar + Gold accents | Conclusion-first, data-driven, confidential |
 | `academic_defense` | Scenario | Thesis defense, academic reports, grant proposals | Deep Blue + Red accents | Clear hierarchy, academic standards |
 | `psychology_attachment` | Scenario | Psychotherapy training, counseling lectures | Blue-green gradient + Colorful semantic colors | Warm professional, therapeutic feel |
 | `medical_university` | Scenario | Medical reports, case discussions, research presentations | Medical Blue `#0066B3` | Professional rigorous, life-affirming |
@@ -62,9 +60,7 @@ Universal business styles not tied to any specific brand, broadly applicable.
 
 | Template | Description |
 |----------|-------------|
-| `consultant` | Consulting report style, professional and rigorous |
-| `consultant_top` | Top-tier consulting style (MBB-level), key insight area |
-| `general` | Versatile flexible style, suitable for most business presentations |
+| `exhibit` | Exhibit-driven style, conclusion-first layout with Exhibit takeaway bar, gradient top bar, grid decoration |
 | `科技蓝商务` | Tech business style, rigorous and professional, hexagonal texture |
 | `smart_red` | Smart red-orange business style, modern and vibrant, geometric cutaway design |
 
@@ -196,11 +192,8 @@ Templates use `{{PLACEHOLDER}}` format to mark replaceable content:
 ### Copy from Template Library to Project
 
 ```bash
-# Copy general style template to project
-cp templates/layouts/general/* projects/<project>/templates/
-
-# Copy consulting style template to project
-cp templates/layouts/consultant/* projects/<project>/templates/
+# Copy exhibit style template to project
+cp templates/layouts/exhibit/* projects/<project>/templates/
 
 # Copy Google style template to project
 cp templates/layouts/google_style/* projects/<project>/templates/

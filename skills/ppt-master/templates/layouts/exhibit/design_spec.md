@@ -1,6 +1,6 @@
-# Top Consultant Style Template - Design Specification
+# Exhibit Style Template - Design Specification
 
-> Suitable for top-tier consulting firm style strategic reports, executive presentations, investment analysis, and other high-end scenarios.
+> Conclusion-first layout with Exhibit takeaway bars, ideal for data-driven strategic reports and executive presentations.
 
 ---
 
@@ -8,9 +8,9 @@
 
 | Property       | Description                                            |
 | -------------- | ------------------------------------------------------ |
-| **Template Name** | consultant_top (Top Consultant Template)            |
+| **Template Name** | exhibit (Exhibit Style Template)                    |
 | **Use Cases**  | Strategic planning, executive reports, investment analysis, board presentations |
-| **Design Tone** | Premium, refined, authoritative, data-driven         |
+| **Design Tone** | Premium, refined, authoritative, data-driven, conclusion-first |
 | **Theme Mode** | Dark theme (dark background + gradient accents + gold highlights) |
 
 ---

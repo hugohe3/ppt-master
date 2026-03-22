@@ -1,774 +1,196 @@
 {
   "meta": {
-    "total": 22,
+    "total": 20,
     "defaultViewBox": "0 0 1280 720",
-    "formats": [
-      "ppt169"
-    ],
-    "standardFiles": [
-      "design_spec.md",
-      "01_cover.svg",
-      "02_toc.svg",
-      "02_chapter.svg",
-      "03_content.svg",
-      "04_ending.svg"
-    ],
-    "updated": "2026-03-18"
+    "formats": ["ppt169"],
+    "standardFiles": ["design_spec.md", "01_cover.svg", "02_toc.svg", "02_chapter.svg", "03_content.svg", "04_ending.svg"],
+    "standardPageTypes": ["cover", "toc", "chapter", "content", "ending"],
+    "updated": "2026-03-22"
   },
   "categories": {
     "brand": {
       "label": "Brand Style Templates",
-      "layouts": [
-        "google_style",
-        "mckinsey",
-        "anthropic",
-        "中汽研_常规",
-        "中汽研_商务",
-        "中汽研_现代",
-        "中国电建_常规",
-        "中国电建_现代",
-        "招商银行"
-      ]
+      "layouts": ["google_style", "mckinsey", "anthropic", "中汽研_常规", "中汽研_商务", "中汽研_现代", "中国电建_常规", "中国电建_现代", "招商银行"]
     },
     "general": {
       "label": "General Style Templates",
-      "layouts": [
-        "consultant",
-        "consultant_top",
-        "general",
-        "科技蓝商务",
-        "smart_red"
-      ]
+      "layouts": ["exhibit", "科技蓝商务", "smart_red"]
     },
     "scenario": {
       "label": "Scenario-Specific Templates",
-      "layouts": [
-        "academic_defense",
-        "psychology_attachment",
-        "medical_university",
-        "重庆大学"
-      ]
+      "layouts": ["academic_defense", "psychology_attachment", "medical_university", "重庆大学"]
     },
     "government": {
       "label": "Government/Enterprise Templates",
-      "layouts": [
-        "government_red",
-        "government_blue",
-        "ai_ops"
-      ]
+      "layouts": ["government_red", "government_blue", "ai_ops"]
     },
     "special": {
       "label": "Special Style Templates",
-      "layouts": [
-        "pixel_retro"
-      ]
+      "layouts": ["pixel_retro"]
     }
   },
   "quickLookup": {
-    "strategy": [
-      "consultant_top",
-      "mckinsey",
-      "consultant"
-    ],
-    "board": [
-      "consultant_top",
-      "mckinsey",
-      "招商银行"
-    ],
-    "general_business": [
-      "general",
-      "科技蓝商务",
-      "consultant"
-    ],
-    "technology": [
-      "anthropic",
-      "google_style",
-      "smart_red",
-      "general",
-      "ai_ops"
-    ],
-    "government": [
-      "government_red",
-      "government_blue",
-      "ai_ops"
-    ],
-    "academic": [
-      "academic_defense",
-      "重庆大学"
-    ],
-    "medical": [
-      "medical_university"
-    ],
-    "psychology": [
-      "psychology_attachment"
-    ],
-    "finance": [
-      "招商银行",
-      "consultant_top",
-      "mckinsey"
-    ],
-    "certification": [
-      "中汽研_常规",
-      "中汽研_商务",
-      "中汽研_现代"
-    ],
-    "energy": [
-      "中国电建_常规",
-      "中国电建_现代"
-    ],
-    "creative": [
-      "pixel_retro",
-      "smart_red"
-    ]
+    "strategy": ["exhibit", "mckinsey"],
+    "board": ["exhibit", "mckinsey", "招商银行"],
+    "general_business": ["科技蓝商务", "smart_red", "exhibit"],
+    "technology": ["anthropic", "google_style", "smart_red", "ai_ops"],
+    "government": ["government_red", "government_blue", "ai_ops"],
+    "academic": ["academic_defense", "重庆大学"],
+    "medical": ["medical_university"],
+    "psychology": ["psychology_attachment"],
+    "finance": ["招商银行", "exhibit", "mckinsey"],
+    "certification": ["中汽研_常规", "中汽研_商务", "中汽研_现代"],
+    "energy": ["中国电建_常规", "中国电建_现代"],
+    "creative": ["pixel_retro", "smart_red"]
   },
   "layouts": {
     "academic_defense": {
-      "dir": "academic_defense",
       "label": "Academic Defense Template",
-      "category": "scenario",
       "summary": "A standard template for academic defenses, research presentations, and project proposals",
-      "useCases": [
-        "Graduation defense",
-        "Academic presentation",
-        "Research progress report",
-        "Project proposal"
-      ],
       "tone": "Professional, rigorous, research-oriented, clear hierarchy",
       "themeMode": "Light theme (white background + dark blue title bar)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Academic",
-        "Defense",
-        "Research",
-        "Standard"
-      ]
+      "keywords": ["Academic", "Defense", "Research", "Standard"]
     },
     "ai_ops": {
-      "dir": "ai_ops",
       "label": "Enterprise Digital Intelligence Template",
-      "category": "government",
       "summary": "For high-density scenarios such as telecom AI operations architecture, IT system overview, and digital transformation plans",
-      "useCases": [
-        "Telecom AI operations architecture",
-        "IT system overview",
-        "Digital transformation plan",
-        "Smart infrastructure report",
-        "Enterprise technology roadmap"
-      ],
       "tone": "Information-dense, structured, modular layout, telecom/government-enterprise style",
       "themeMode": "Light theme (white background + red/blue accents + warm gray panels)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "reference_style.svg"
-      ],
-      "keywords": [
-        "Telecom",
-        "AI operations",
-        "Digital intelligence",
-        "High density",
-        "Architecture view"
-      ]
+      "assets": ["reference_style.svg"],
+      "keywords": ["Telecom", "AI operations", "Digital intelligence", "High density", "Architecture view"]
     },
     "anthropic": {
-      "dir": "anthropic",
       "label": "Anthropic Style Template",
-      "category": "brand",
       "summary": "A tech-oriented template for AI/LLM knowledge sharing and product launches",
-      "useCases": [
-        "AI technology sharing",
-        "Developer conference",
-        "Technical training",
-        "Product launch"
-      ],
       "tone": "Tech-forward, professional, modern, conclusion-first",
       "themeMode": "Hybrid theme (dark cover/chapter + light content pages)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "AI",
-        "LLM",
-        "Developer",
-        "Technology"
-      ]
+      "keywords": ["AI", "LLM", "Developer", "Technology"]
     },
-    "consultant": {
-      "dir": "consultant",
-      "label": "Consultant Template",
-      "category": "general",
-      "summary": "A professional template for business consulting, strategic analysis, and project reports",
-      "useCases": [
-        "Business consulting",
-        "Strategic analysis",
-        "Project report",
-        "Corporate training"
-      ],
-      "tone": "Professional, minimalist, business, modern",
-      "themeMode": "Dark theme (dark blue background + blue accent + gold highlights)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Consulting",
-        "Business",
-        "Strategy",
-        "Report"
-      ]
-    },
-    "consultant_top": {
-      "dir": "consultant_top",
-      "label": "Top-Tier Consulting Template",
-      "category": "general",
-      "summary": "An MBB-style template for board-level and executive strategic presentations",
-      "useCases": [
-        "Strategic planning",
-        "Executive presentation",
-        "Investment analysis",
-        "Board presentation"
-      ],
-      "tone": "Premium, refined, authoritative, data-driven",
+    "exhibit": {
+      "label": "Exhibit Style Template",
+      "summary": "Conclusion-first layout with Exhibit takeaway bars for data-driven strategic reports and executive presentations",
+      "tone": "Premium, refined, authoritative, data-driven, conclusion-first",
       "themeMode": "Dark theme (dark background + gradient accent + gold highlights)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "MBB",
-        "Board",
-        "Executive",
-        "Strategy"
-      ]
-    },
-    "general": {
-      "dir": "general",
-      "label": "General Template",
-      "category": "general",
-      "summary": "A versatile template suitable for most work reports and project introductions",
-      "useCases": [
-        "Work report",
-        "Project introduction",
-        "Product showcase",
-        "Training presentation"
-      ],
-      "tone": "Modern, fresh, professional, versatile",
-      "themeMode": "Hybrid theme (dark cover/chapter pages + light content pages)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "General",
-        "Business presentation",
-        "Work report",
-        "Project introduction"
-      ]
+      "keywords": ["Exhibit", "Board", "Executive", "Strategy", "Conclusion-first"]
     },
     "google_style": {
-      "dir": "google_style",
       "label": "Google Style Template",
-      "category": "brand",
       "summary": "A Google-branded template for annual reports and technical sharing",
-      "useCases": [
-        "Annual work report",
-        "Technical sharing",
-        "Project showcase",
-        "Data-driven presentation"
-      ],
       "tone": "Professional, modern, clean and restrained, data-driven, ample whitespace",
       "themeMode": "Light theme (white/light gray background + Google brand color accents)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Google",
-        "Brand style",
-        "Technical sharing",
-        "Annual report"
-      ]
+      "keywords": ["Google", "Brand style", "Technical sharing", "Annual report"]
     },
     "government_blue": {
-      "dir": "government_blue",
       "label": "Government Blue Template",
-      "category": "government",
       "summary": "A blue government-themed template for smart governance and digital transformation reports",
-      "useCases": [
-        "Key project report",
-        "Five-year plan",
-        "Work summary",
-        "Investment promotion",
-        "Policy briefing"
-      ],
       "tone": "Grand, tech-forward, modernized, professional government style",
       "themeMode": "Light theme (white background + blue gradient decorations)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Government affairs",
-        "Government blue",
-        "Smart city",
-        "Digitalization"
-      ]
+      "keywords": ["Government affairs", "Government blue", "Smart city", "Digitalization"]
     },
     "government_red": {
-      "dir": "government_red",
       "label": "Government Red Template",
-      "category": "government",
       "summary": "A red government-themed template for government reports and party-building scenarios",
-      "useCases": [
-        "Government report",
-        "Policy briefing",
-        "Work summary",
-        "Project promotion",
-        "Investment promotion"
-      ],
       "tone": "Authoritative, solemn, professional, modernized government style",
       "themeMode": "Light theme (white background + government red/blue accents)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Government affairs",
-        "Party building",
-        "Government red",
-        "Authoritative"
-      ]
+      "keywords": ["Government affairs", "Party building", "Government red", "Authoritative"]
     },
     "mckinsey": {
-      "dir": "mckinsey",
       "label": "McKinsey Style Template",
-      "category": "brand",
       "summary": "A McKinsey-style template for strategic consulting and investment analysis",
-      "useCases": [
-        "Strategic consulting",
-        "Executive presentation",
-        "Investment analysis",
-        "Business proposal"
-      ],
       "tone": "Data-driven, structured thinking, professional whitespace, minimalist premium",
       "themeMode": "Light theme (white background + McKinsey Blue accent)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "McKinsey",
-        "Consulting",
-        "Structured",
-        "Executive presentation"
-      ]
+      "keywords": ["McKinsey", "Consulting", "Structured", "Executive presentation"]
     },
     "medical_university": {
-      "dir": "medical_university",
       "label": "Hospital/Medical University Template",
-      "category": "scenario",
       "summary": "A professional template for medical reports, case discussions, and research presentations",
-      "useCases": [
-        "Medical academic report",
-        "Case discussion",
-        "Research presentation",
-        "Hospital work report",
-        "Medical education training"
-      ],
       "tone": "Professional, rigorous, life-affirming, tech-forward, trustworthy",
       "themeMode": "Light theme (white background + medical blue title bar + life green accents)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Medical",
-        "Hospital",
-        "Case study",
-        "Research"
-      ]
+      "keywords": ["Medical", "Hospital", "Case study", "Research"]
     },
     "pixel_retro": {
-      "dir": "pixel_retro",
       "label": "Pixel Retro Template",
-      "category": "special",
       "summary": "A pixel-art template for tech sharing and gaming-themed content",
-      "useCases": [
-        "Technical sharing",
-        "Programming tutorial",
-        "Game introduction",
-        "Geek-style showcase"
-      ],
       "tone": "Retro gaming, neon cyber, geek tech, 8-bit style",
       "themeMode": "Dark theme (deep space black background + neon accents)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Pixel art",
-        "Retro gaming",
-        "Cyberpunk",
-        "Technology"
-      ]
+      "keywords": ["Pixel art", "Retro gaming", "Cyberpunk", "Technology"]
     },
     "psychology_attachment": {
-      "dir": "psychology_attachment",
       "label": "Psychology Healing Template",
-      "category": "scenario",
       "summary": "A warm and professional template for psychotherapy training and counseling lectures",
-      "useCases": [
-        "Psychotherapy training",
-        "Academic lecture",
-        "Counseling case analysis",
-        "Professional sharing"
-      ],
       "tone": "Professional, warm, healing, trustworthy",
       "themeMode": "Light theme (cloud white background + blue-green gradient accent + colorful semantic colors)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Psychology",
-        "Healing",
-        "Counseling",
-        "Warm"
-      ]
+      "keywords": ["Psychology", "Healing", "Counseling", "Warm"]
     },
     "smart_red": {
-      "dir": "smart_red",
       "label": "Smart Red-Orange Business Template",
-      "category": "general",
       "summary": "A vibrant business template for tech company introductions and education solutions",
-      "useCases": [
-        "Company introduction",
-        "Product launch",
-        "Solution presentation",
-        "Education courseware"
-      ],
       "tone": "Modern, vibrant, professional, geometric",
       "themeMode": "Hybrid theme (dark/colorful cover + light content pages)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Red-orange business",
-        "Tech enterprise",
-        "Education",
-        "Vibrant"
-      ]
+      "keywords": ["Red-orange business", "Tech enterprise", "Education", "Vibrant"]
     },
     "中国电建_常规": {
-      "dir": "中国电建_常规",
       "label": "PowerChina Standard Template",
-      "category": "brand",
       "summary": "A solid brand template for engineering construction and state-owned enterprise reports",
-      "useCases": [
-        "Engineering project report",
-        "Technical proposal presentation",
-        "Business negotiation",
-        "Corporate promotion",
-        "Annual summary"
-      ],
       "tone": "Professional, steady, international, state-owned enterprise style",
       "themeMode": "Light theme (white background + PowerChina blue accent)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "中国水务logo.png",
-        "华东院logo.png",
-        "水电三局logo.png",
-        "电建logo.png"
-      ],
-      "keywords": [
-        "PowerChina",
-        "State-owned enterprise",
-        "Engineering",
-        "Energy"
-      ]
+      "assets": ["中国水务logo.png", "华东院logo.png", "水电三局logo.png", "电建logo.png"],
+      "keywords": ["PowerChina", "State-owned enterprise", "Engineering", "Energy"]
     },
     "中国电建_现代": {
-      "dir": "中国电建_现代",
       "label": "PowerChina Modern Template",
-      "category": "brand",
       "summary": "A modern engineering template for major projects and international business presentations",
-      "useCases": [
-        "Major project report",
-        "International market promotion",
-        "Technology showcase",
-        "High-end business negotiation"
-      ],
       "tone": "Grand narrative, modern precision, digital technology, international vision",
       "themeMode": "Deep blue tech gradient + precision grid texture",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "中国水务logo.png",
-        "华东院logo.png",
-        "水电三局logo.png",
-        "电建logo.png"
-      ],
-      "keywords": [
-        "PowerChina",
-        "International engineering",
-        "Modern engineering",
-        "Technology"
-      ]
+      "assets": ["中国水务logo.png", "华东院logo.png", "水电三局logo.png", "电建logo.png"],
+      "keywords": ["PowerChina", "International engineering", "Modern engineering", "Technology"]
     },
     "中汽研_商务": {
-      "dir": "中汽研_商务",
       "label": "CATARC Business Template",
-      "category": "brand",
       "summary": "A CATARC brand template for certification showcase and high-end business presentations",
-      "useCases": [
-        "Product certification showcase",
-        "Testing & certification introduction",
-        "Technology promotion",
-        "High-end business presentation"
-      ],
       "tone": "Modern tech, authoritative professional, composed and grand",
       "themeMode": "Deep blue tech gradient + clean white content pages",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "右上角 logo.png",
-        "大型 logo.png"
-      ],
-      "keywords": [
-        "CATARC",
-        "Certification",
-        "Business",
-        "Technology"
-      ]
+      "assets": ["右上角 logo.png", "大型 logo.png"],
+      "keywords": ["CATARC", "Certification", "Business", "Technology"]
     },
     "中汽研_常规": {
-      "dir": "中汽研_常规",
       "label": "CATARC Standard Template",
-      "category": "brand",
       "summary": "A standard CATARC template for certification and testing scenarios",
-      "useCases": [
-        "Product certification showcase",
-        "Testing & certification introduction",
-        "Technology promotion",
-        "Business visit"
-      ],
       "tone": "Professional, authoritative, trustworthy, consulting style",
       "themeMode": "Light theme (white background + dark blue accent)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "右上角 logo.png",
-        "大型 logo.png"
-      ],
-      "keywords": [
-        "CATARC",
-        "Certification",
-        "Testing",
-        "Authoritative"
-      ]
+      "assets": ["右上角 logo.png", "大型 logo.png"],
+      "keywords": ["CATARC", "Certification", "Testing", "Authoritative"]
     },
     "中汽研_现代": {
-      "dir": "中汽研_现代",
       "label": "CATARC Modern Template",
-      "category": "brand",
       "summary": "A futuristic tech template for cutting-edge technology showcase and premium launches",
-      "useCases": [
-        "Cutting-edge technology showcase",
-        "Strategic launch",
-        "High-end business presentation"
-      ],
       "tone": "Futuristic, tech-forward, deep, refined",
       "themeMode": "Immersive dark cover/transition pages + clean light gray content pages",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "右上角 logo.png",
-        "大型 logo.png"
-      ],
-      "keywords": [
-        "CATARC",
-        "Future tech",
-        "Cutting-edge technology",
-        "Launch event"
-      ]
+      "assets": ["右上角 logo.png", "大型 logo.png"],
+      "keywords": ["CATARC", "Future tech", "Cutting-edge technology", "Launch event"]
     },
     "招商银行": {
-      "dir": "招商银行",
       "label": "China Merchants Bank Template",
-      "category": "brand",
       "summary": "A brand template for premium financial institution reports and annual presentations",
-      "useCases": [
-        "Premium work report",
-        "Business showcase",
-        "Annual report",
-        "Product promotion"
-      ],
       "tone": "Minimalist luxury, refined, multi-layered, modern finance",
       "themeMode": "Light theme (textured background + CMB red/gold fine decorations)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "招商银行公司金融.png"
-      ],
-      "keywords": [
-        "China Merchants Bank",
-        "Finance",
-        "Premium report",
-        "Annual report"
-      ]
+      "assets": ["招商银行公司金融.png"],
+      "keywords": ["China Merchants Bank", "Finance", "Premium report", "Annual report"]
     },
     "科技蓝商务": {
-      "dir": "科技蓝商务",
       "label": "Tech Blue Business Template",
-      "category": "general",
       "summary": "A tech-business template for corporate reports and solution proposals",
-      "useCases": [
-        "Corporate report",
-        "Product launch",
-        "Solution proposal",
-        "Process documentation",
-        "Training materials"
-      ],
       "tone": "Tech-forward, business, professional, clean",
       "themeMode": "Hybrid theme (dark blue/tech blue cover + light content pages)",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [],
-      "keywords": [
-        "Tech blue",
-        "Business",
-        "Solution proposal",
-        "Corporate report"
-      ]
+      "keywords": ["Tech blue", "Business", "Solution proposal", "Corporate report"]
     },
     "重庆大学": {
-      "dir": "重庆大学",
       "label": "Chongqing University Template",
-      "category": "scenario",
       "summary": "A university-exclusive template for academic defenses and research presentations",
-      "useCases": [
-        "Academic defense",
-        "Research presentation",
-        "Teaching showcase",
-        "Academic exchange"
-      ],
       "tone": "Academically composed, mountain-city essence, modern minimalist",
       "themeMode": "Academic blue primary + mountain-city layered imagery",
-      "pageTypes": [
-        "cover",
-        "toc",
-        "chapter",
-        "content",
-        "ending"
-      ],
-      "assets": [
-        "重庆大学logo.png",
-        "重庆大学logo2.png"
-      ],
-      "keywords": [
-        "Chongqing University",
-        "Academic",
-        "Defense",
-        "University"
-      ]
+      "assets": ["重庆大学logo.png", "重庆大学logo2.png"],
+      "keywords": ["Chongqing University", "Academic", "Defense", "University"]
     }
   }
 }
