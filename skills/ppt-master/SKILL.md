@@ -115,6 +115,9 @@ Import source content (choose based on the situation):
 
 ⛔ **BLOCKING**: If the user has not yet clearly expressed whether to use a template, you MUST present options and **wait for an explicit user response** before proceeding. If the user has previously stated "no template" or specified a particular template, skip this prompt and proceed directly.
 
+**⚡ Early-exit**: If the user has already stated "no template" / "不使用模板" / "自由设计" (or equivalent) at any prior point in the conversation, **do NOT query `layouts_index.json`** — skip directly to Step 4. This avoids unnecessary token consumption.
+
+**Template recommendation flow** (only when the user has NOT yet decided):
 Query `${SKILL_DIR}/templates/layouts/layouts_index.json` to list available templates and their style descriptions.
 **When presenting options, you MUST provide a professional recommendation based on the current PPT topic and content** (recommend a specific template or free design, with reasoning), then ask the user:
 
