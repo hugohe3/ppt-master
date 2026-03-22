@@ -15,8 +15,6 @@ Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed pre
 
 > **Online Examples**: [GitHub Pages Preview](https://hugohe3.github.io/ppt-master/) — See actual generated results
 
-> **Video Demo**: [YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1ZZAFzWEPJ/)
-
 ---
 
 ## 🎴 Featured Examples
@@ -36,6 +34,52 @@ Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed pre
 |                         | [Git Introduction Guide](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E5%83%8F%E7%B4%A0%E9%A3%8E_git_introduction) |  10   | Pixel retro game style |
 
 📖 [View Complete Examples Documentation](./examples/README.md)
+
+---
+
+## 🏗️ System Architecture
+
+```
+User Input (PDF/URL/Markdown)
+    ↓
+[Source Content Conversion] → pdf_to_md.py / web_to_md.py
+    ↓
+[Create Project] → project_manager.py init <project_name> --format <format>
+    ↓
+[Template Option] A) Use existing template B) No template
+    ↓
+[Need New Template?] → Use /create-template workflow separately
+    ↓
+[Strategist] - Eight Confirmations & Design Specifications
+    ↓
+[Image_Generator] (When AI generation is selected)
+    ↓
+[Executor] - Two-Phase Generation
+    ├── Visual Construction Phase: Generate all SVG pages → svg_output/
+    └── Logic Construction Phase: Generate complete speaker notes → notes/total.md
+    ↓
+[Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
+    ↓
+Output: Editable PPTX (auto-embeds speaker notes)
+    ↓
+[Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
+    ↓
+If optimized: re-run post-processing and export
+```
+
+### 📚 Documentation Navigation
+
+| Document | Description |
+|----------|-------------|
+| 🧭 [AGENTS.md](./AGENTS.md) | Repository-level entry overview for general AI agents |
+| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | Canonical `ppt-master` workflow and rules |
+| 🎨 [Design Guidelines](./skills/ppt-master/references/design-guidelines.md) | Colors, typography, and layout specifications |
+| 📐 [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
+| 🖼️ [Image Embedding Guide](./skills/ppt-master/references/svg-image-embedding.md) | SVG image embedding best practices |
+| 📊 [Chart Template Library](./skills/ppt-master/templates/charts/) | Standardized chart templates |
+| 🔧 [Role Definitions](./skills/ppt-master/references/) | Role definitions and technical references |
+| 🛠️ [Toolset](./skills/ppt-master/scripts/README.md) | Usage instructions for all tools |
+| 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
 ---
 
@@ -106,7 +150,11 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **Model Recommendation**: Claude Opus works best, but most mainstream models today (like Kimi 2.5 and MiniMax 2.7, tested via Codebuddy IDE) can also generate decent results with only minor gaps in layout details. Due to the instability of Opus on some IDEs (like Antigravity), trying other stable AI clients is recommended.
 
-#### Gemini Image Generation API (Optional)
+> 📝 **Post-Export Editing**: Each page in the exported PPTX is in SVG format. Select the page content in PowerPoint, right-click and choose **"Convert to Shape"** to freely edit all text, shapes, and colors. Requires **Office 2016** or later.
+
+> 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
+
+### 5. Gemini Image Generation (Optional)
 
 The `nano_banana_gen.py` tool can generate high-quality images via the Gemini API directly within AI clients. Configure the following environment variables before use:
 
@@ -122,61 +170,26 @@ export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
 
 > 💡 If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
 
-> 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
-
 > 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `skills/ppt-master/scripts/gemini_watermark_remover.py`.
 
 ---
 
-## 🏗️ System Architecture
+## 📁 Project Structure
 
+```text
+ppt-master/
+├── skills/
+│   └── ppt-master/                 # Main skill source
+│       ├── SKILL.md                #   Main entry: workflow definition
+│       ├── workflows/              #   Workflow entry files
+│       ├── references/             #   Role definitions and specs
+│       ├── scripts/                #   Tool scripts
+│       └── templates/              #   Layouts, charts, icons
+├── examples/                       # Example projects
+├── projects/                       # User project workspace
+├── AGENTS.md                       # General AI agent entry
+└── CLAUDE.md                       # Dedicated Claude Code CLI entry
 ```
-User Input (PDF/URL/Markdown)
-    ↓
-[Source Content Conversion] → pdf_to_md.py / web_to_md.py
-    ↓
-[Create Project] → project_manager.py init <project_name> --format <format>
-    ↓
-[Template Option] A) Use existing template B) No template
-    ↓
-[Need New Template?] → Use /create-template workflow separately
-    ↓
-[Strategist] - Eight Confirmations & Design Specifications
-    ↓
-[Image_Generator] (When AI generation is selected)
-    ↓
-[Executor] - Two-Phase Generation
-    ├── Visual Construction Phase: Generate all SVG pages → svg_output/
-    └── Logic Construction Phase: Generate complete speaker notes → notes/total.md
-    ↓
-[Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
-    ↓
-Output: Editable PPTX (auto-embeds speaker notes)
-    ↓
-[Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
-    ↓
-If optimized: re-run post-processing and export
-```
-
-> 📖 For the full workflow, start with [SKILL.md](./skills/ppt-master/SKILL.md). For a repository-level overview, see [AGENTS.md](./AGENTS.md).
-
-> 💡 **PPT Editing Tip**: Each page in the exported PPTX is in SVG format. Select the page content in PowerPoint, right-click and choose **"Convert to Shape"** to freely edit all elements. Requires **Office 2016** or later.
-
----
-
-## 📚 Documentation Navigation
-
-| Document | Description |
-|----------|-------------|
-| 🧭 [AGENTS.md](./AGENTS.md) | Repository-level entry overview for general AI agents |
-| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | Canonical `ppt-master` workflow and rules |
-| 🎨 [Design Guidelines](./skills/ppt-master/references/design-guidelines.md) | Colors, typography, and layout specifications |
-| 📐 [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
-| 🖼️ [Image Embedding Guide](./skills/ppt-master/references/svg-image-embedding.md) | SVG image embedding best practices |
-| 📊 [Chart Template Library](./skills/ppt-master/templates/charts/) | Standardized chart templates |
-| 🔧 [Role Definitions](./skills/ppt-master/references/) | Role definitions and technical references |
-| 🛠️ [Toolset](./skills/ppt-master/scripts/README.md) | Usage instructions for all tools |
-| 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
 ---
 
@@ -201,25 +214,6 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ```
 
 > 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)
-
----
-
-## 📁 Project Structure
-
-```text
-ppt-master/
-├── skills/
-│   └── ppt-master/                 # Main skill source
-│       ├── SKILL.md                #   Main entry: workflow definition
-│       ├── workflows/              #   Workflow entry files
-│       ├── references/             #   Role definitions and specs
-│       ├── scripts/                #   Tool scripts
-│       └── templates/              #   Layouts, charts, icons
-├── examples/                       # Example projects
-├── projects/                       # User project workspace
-├── AGENTS.md                       # General AI agent entry
-└── CLAUDE.md                       # Dedicated Claude Code CLI entry
-```
 
 ---
 

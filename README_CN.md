@@ -15,8 +15,6 @@
 
 > **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) — 查看实际生成效果
 
-> **视频演示**：[YouTube](https://www.youtube.com/watch?v=jM2fHmvMwx0) | [Bilibili](https://www.bilibili.com/video/BV1ZZAFzWEPJ/)
-
 ---
 
 ## 🎴 精选示例
@@ -36,6 +34,51 @@
 |                 | [Git 入门指南](https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_%E5%83%8F%E7%B4%A0%E9%A3%8E_git_introduction) |  10  | 像素复古游戏风 |
 
 📖 [查看完整示例文档](./examples/README.md)
+
+---
+
+## 🏗️ 系统架构
+
+```
+用户输入 (PDF/URL/Markdown)
+    ↓
+[源内容转换] → pdf_to_md.py / web_to_md.py
+    ↓
+[创建项目] → project_manager.py init <项目名> --format <格式>
+    ↓
+[模板选项] A) 使用已有模板 B) 不使用模板
+    ↓
+[需要新模板？] → 使用 /create-template 工作流单独创建
+    ↓
+[Strategist] 策略师 - 八项确认与设计规范
+    ↓
+[Image_Generator] 图片生成师（当选择 AI 生成时）
+    ↓
+[Executor] 执行师 - 分阶段生成
+    ├── 视觉构建阶段：连续生成所有 SVG 页面 → svg_output/
+    └── 逻辑构建阶段：生成完整讲稿 → notes/total.md
+    ↓
+[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
+    ↓
+输出: 可编辑的 PPTX（自动嵌入讲稿）
+    ↓
+[Optimizer_CRAP] 优化师（可选，初版后不满意再用）
+    ↓
+如有优化：重新运行后处理与导出
+```
+
+### 📚 文档导航
+
+| 文档 | 说明 |
+|------|------|
+| 🧭 [AGENTS.md](./AGENTS.md) | 仓库级入口概览（适用于通用 AI 代理） |
+| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | `ppt-master` 核心流程与规则源 |
+| 🎨 [设计指南](./skills/ppt-master/references/design-guidelines.md) | 配色、排版、布局规范详解 |
+| 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
+| 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
+| 📊 [图表模板库](./skills/ppt-master/templates/charts/) | 13 种标准化图表模板 |
+| 🛠️ [工具集](./skills/ppt-master/scripts/README.md) | 所有工具的使用说明 |
+| 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
 ---
 
@@ -105,7 +148,11 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **模型推荐**：Claude Opus 效果最佳，但大部分主流模型（如 Kimi 2.5、MiniMax 2.7 等，可通过 Codebuddy IDE 使用）目前均能生成不错的内容，仅在细节排版效果上可能存在差距。因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端进行创作。
 
-#### Gemini 生图 API（可选）
+> 📝 **导出后编辑**：导出的 PPTX 中每页为 SVG 格式。在 PowerPoint 中选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 后即可自由编辑所有文字、图形和颜色。需要 **Office 2016** 或更高版本。
+
+> 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
+
+### 5. Gemini 生图配置（可选）
 
 本项目的 `nano_banana_gen.py` 可通过 Gemini API 在 AI 客户端中直接生成高质量配图。使用前需配置环境变量：
 
@@ -121,60 +168,26 @@ export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
 
 > 💡 若使用 Antigravity 代理，调用时需传入模型参数（`-m gemini-3.1-flash-image`）。
 
-> 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
-
 > 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `skills/ppt-master/scripts/gemini_watermark_remover.py` 去除。
 
 ---
 
-## 🏗️ 系统架构
+## 📁 项目结构
 
+```text
+ppt-master/
+├── skills/
+│   └── ppt-master/                 # 规范源（完全自包含的单一 Skill 源）
+│       ├── SKILL.md                #   主入口：工作流定义与执行边界
+│       ├── workflows/              #   工作流引擎脚本与独立任务
+│       ├── references/             #   AI 角色定义 + 技术文档规范
+│       ├── scripts/                #   工具脚本集成
+│       └── templates/              #   模板库（布局 + 图表 + 图标）
+├── examples/                       # 示例项目（包含多种生成案例）
+├── projects/                       # 用户项目默认工作区
+├── AGENTS.md                       # 通用 AI 代理入口概览
+└── CLAUDE.md                       # Claude Code CLI 专属入口概览
 ```
-用户输入 (PDF/URL/Markdown)
-    ↓
-[源内容转换] → pdf_to_md.py / web_to_md.py
-    ↓
-[创建项目] → project_manager.py init <项目名> --format <格式>
-    ↓
-[模板选项] A) 使用已有模板 B) 不使用模板
-    ↓
-[需要新模板？] → 使用 /create-template 工作流单独创建
-    ↓
-[Strategist] 策略师 - 八项确认与设计规范
-    ↓
-[Image_Generator] 图片生成师（当选择 AI 生成时）
-    ↓
-[Executor] 执行师 - 分阶段生成
-    ├── 视觉构建阶段：连续生成所有 SVG 页面 → svg_output/
-    └── 逻辑构建阶段：生成完整讲稿 → notes/total.md
-    ↓
-[后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
-    ↓
-输出: 可编辑的 PPTX（自动嵌入讲稿）
-    ↓
-[Optimizer_CRAP] 优化师（可选，初版后不满意再用）
-    ↓
-如有优化：重新运行后处理与导出
-```
-
-> 📖 详细工作流程请优先参阅 [skills/ppt-master/SKILL.md](./skills/ppt-master/SKILL.md)，仓库级入口概览见 [AGENTS.md](./AGENTS.md)
-
-> 💡 **PPT 编辑提示**：导出的 PPTX 中每页为 SVG 格式。选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 即可自由编辑所有元素。需要 **Office 2016** 或更高版本。
-
----
-
-## 📚 文档导航
-
-| 文档 | 说明 |
-|------|------|
-| 🧭 [AGENTS.md](./AGENTS.md) | 仓库级入口概览（适用于通用 AI 代理） |
-| 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | `ppt-master` 核心流程与规则源 |
-| 🎨 [设计指南](./skills/ppt-master/references/design-guidelines.md) | 配色、排版、布局规范详解 |
-| 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
-| 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
-| 📊 [图表模板库](./skills/ppt-master/templates/charts/) | 13 种标准化图表模板 |
-| 🛠️ [工具集](./skills/ppt-master/scripts/README.md) | 所有工具的使用说明 |
-| 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
 ---
 
@@ -198,25 +211,6 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 ```
 
 > 📖 完整工具说明请参阅 [脚本使用指南](./skills/ppt-master/scripts/README.md)
-
----
-
-## 📁 项目结构
-
-```text
-ppt-master/
-├── skills/
-│   └── ppt-master/                 # 规范源（完全自包含的单一 Skill 源）
-│       ├── SKILL.md                #   主入口：工作流定义与执行边界
-│       ├── workflows/              #   工作流引擎脚本与独立任务
-│       ├── references/             #   AI 角色定义 + 技术文档规范
-│       ├── scripts/                #   工具脚本集成
-│       └── templates/              #   模板库（布局 + 图表 + 图标）
-├── examples/                       # 示例项目（包含多种生成案例）
-├── projects/                       # 用户项目默认工作区
-├── AGENTS.md                       # 通用 AI 代理入口概览
-└── CLAUDE.md                       # Claude Code CLI 专属入口概览
-```
 
 ---
 
