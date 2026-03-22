@@ -41,6 +41,7 @@ python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 # ✅ Confirm no errors before running the next command
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
+# Fallback: add --native if no PowerPoint available for manual "Convert to Shape"
 ```
 
 ## Core Directories

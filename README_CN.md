@@ -207,6 +207,7 @@ python3 skills/ppt-master/scripts/pdf_to_md.py <PDF文件>
 python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
 python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
+# 备选：无 PowerPoint 时可加 --native 跳过手动"转换为形状"，但稳定性不及 PPT 原生转换
 
 ```
 
