@@ -45,6 +45,13 @@ REPO_ROOT = SKILL_DIR.parent.parent
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 PDF_SUFFIXES = {".pdf"}
+DOC_SUFFIXES = {
+    ".docx", ".doc", ".odt", ".rtf",          # Office documents
+    ".epub",                                    # eBooks
+    ".html", ".htm",                            # Web pages
+    ".tex", ".latex", ".rst", ".org",           # Academic / technical
+    ".ipynb", ".typ",                           # Notebooks / Typst
+}
 WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
 
 
@@ -214,6 +221,17 @@ class ProjectManager:
                 sys.executable,
                 str(TOOLS_DIR / "pdf_to_md.py"),
                 str(pdf_path),
+                "-o",
+                str(markdown_path),
+            ]
+        )
+
+    def _import_doc(self, doc_path: Path, markdown_path: Path) -> None:
+        self._run_tool(
+            [
+                sys.executable,
+                str(TOOLS_DIR / "doc_to_md.py"),
+                str(doc_path),
                 "-o",
                 str(markdown_path),
             ]
@@ -432,6 +450,25 @@ class ProjectManager:
                     summary["markdown"].append(str(markdown_path))
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
+            elif suffix in DOC_SUFFIXES:
+                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
+                if archived_path.stem in explicit_markdown_stems:
+                    summary["notes"].append(
+                        f"{item}: skipped document auto-conversion because a same-stem Markdown source was provided"
+                    )
+                    continue
+                if canonical_markdown_path.exists():
+                    summary["markdown"].append(str(canonical_markdown_path))
+                    summary["notes"].append(
+                        f"{item}: skipped document auto-conversion because {canonical_markdown_path.name} already exists"
+                    )
+                    continue
+                markdown_path = canonical_markdown_path
+                try:
+                    self._import_doc(archived_path, markdown_path)
+                    summary["markdown"].append(str(markdown_path))
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["skipped"].append(f"{item}: document conversion failed ({exc})")
             elif suffix == ".txt":
                 markdown_path = self._normalize_text_source(archived_path, sources_dir)
                 summary["markdown"].append(str(markdown_path))

@@ -8,6 +8,7 @@ This directory contains utility tools for project management, validation, and fi
 graph TB
     subgraph Input["Input Conversion"]
         A1[pdf_to_md.py]
+        A1b[doc_to_md.py]
         A2[web_to_md.py / .cjs]
     end
 
@@ -62,7 +63,7 @@ graph TB
 ### Core Workflow
 
 ```
-Source Document → [pdf_to_md / web_to_md] → Markdown
+Source Document → [pdf_to_md / doc_to_md / web_to_md] → Markdown
                     ↓
               [project_manager init]
                     ↓
@@ -79,7 +80,7 @@ Source Document → [pdf_to_md / web_to_md] → Markdown
 
 | Category | Tool | Description |
 |----------|------|-------------|
-| **Input Conversion** | `pdf_to_md.py`, `web_to_md.py/.cjs` | Convert PDF/web pages to Markdown |
+| **Input Conversion** | `pdf_to_md.py`, `doc_to_md.py`, `web_to_md.py/.cjs` | Convert PDF/DOCX/web pages to Markdown |
 | **Project Management** | `project_manager.py` | Create and validate projects |
 | **Post-processing** | `finalize_svg.py` ⭐ | Unified entry point, invokes the 6 tools below |
 | ↳ Sub-tool | `embed_icons.py` | Embed icon placeholders |
@@ -143,6 +144,37 @@ python3 scripts/pdf_to_md.py ./pdfs -o ./markdown
 
 ```bash
 pip install PyMuPDF
+```
+
+---
+
+### 0.3. doc_to_md.py — Document to Markdown Tool (Pandoc-based)
+
+Uses Pandoc to convert various document formats to Markdown. Ideal for converting DOCX lecture notes, manuscripts, and other documents.
+
+**Supported formats**: `.docx`, `.doc`, `.odt`, `.rtf`, `.epub`, `.html`, `.tex`, `.rst`, `.org`, `.ipynb`, `.typ`
+
+**Usage**:
+
+```bash
+# Convert a Word document
+python3 scripts/doc_to_md.py lecture.docx
+
+# Specify output file
+python3 scripts/doc_to_md.py lecture.docx -o output.md
+
+# Convert other formats
+python3 scripts/doc_to_md.py notes.epub
+python3 scripts/doc_to_md.py paper.tex -o paper.md
+```
+
+**Dependencies**:
+
+```bash
+# Install pandoc (required)
+# macOS:   brew install pandoc
+# Ubuntu:  sudo apt install pandoc
+# Windows: https://pandoc.org/installing.html
 ```
 
 ---

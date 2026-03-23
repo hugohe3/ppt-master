@@ -2,7 +2,7 @@
 name: ppt-master
 description: >
   AI-driven multi-format SVG content generation system. Converts source documents
-  (PDF/URL/Markdown) into high-quality SVG pages and exports to PPTX through
+  (PDF/DOCX/URL/Markdown) into high-quality SVG pages and exports to PPTX through
   multi-role collaboration. Use when user asks to "create PPT", "make presentation",
   "生成PPT", "做PPT", "制作演示文稿", or mentions "ppt-master".
 ---
@@ -36,6 +36,7 @@ description: >
 | Script | Purpose |
 |--------|---------|
 | `${SKILL_DIR}/scripts/pdf_to_md.py` | PDF to Markdown |
+| `${SKILL_DIR}/scripts/doc_to_md.py` | Documents to Markdown via Pandoc (DOCX, EPUB, HTML, LaTeX, RST, etc.) |
 | `${SKILL_DIR}/scripts/web_to_md.py` | Web page to Markdown |
 | `${SKILL_DIR}/scripts/web_to_md.cjs` | WeChat / high-security sites to Markdown |
 | `${SKILL_DIR}/scripts/project_manager.py` | Project init / validate / manage |
@@ -68,13 +69,15 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 ### Step 1: Source Content Processing
 
-🚧 **GATE**: User has provided source material (PDF / URL / Markdown file / text description / conversation content — any form is acceptable).
+🚧 **GATE**: User has provided source material (PDF / DOCX / EPUB / URL / Markdown file / text description / conversation content — any form is acceptable).
 
 When the user provides non-Markdown content, convert immediately:
 
 | User Provides | Command |
 |---------------|---------|
 | PDF file | `python3 ${SKILL_DIR}/scripts/pdf_to_md.py <file>` |
+| DOCX / Word / Office document | `python3 ${SKILL_DIR}/scripts/doc_to_md.py <file>` |
+| EPUB / HTML / LaTeX / RST / other | `python3 ${SKILL_DIR}/scripts/doc_to_md.py <file>` |
 | Web link | `python3 ${SKILL_DIR}/scripts/web_to_md.py <URL>` |
 | WeChat / high-security site | `node ${SKILL_DIR}/scripts/web_to_md.cjs <URL>` |
 | Markdown | Read directly |
