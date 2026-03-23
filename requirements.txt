@@ -31,6 +31,15 @@ reportlab>=4.0.0
 PyMuPDF>=1.23.0
 
 # ─────────────────────────────────────────────────────────────
+# 文档转 Markdown 工具 (skills/ppt-master/scripts/doc_to_md.py)
+# ─────────────────────────────────────────────────────────────
+# 使用 Pandoc 将 DOCX/EPUB/HTML/LaTeX/RST 等格式转换为 Markdown
+# 无 Python 包依赖，需要系统安装 pandoc：
+#   macOS:   brew install pandoc
+#   Ubuntu:  sudo apt install pandoc
+#   Windows: https://pandoc.org/installing.html
+
+# ─────────────────────────────────────────────────────────────
 # 图片处理工具
 # ─────────────────────────────────────────────────────────────
 # fix_image_aspect.py - 修复图片宽高比（防止 PPT 转形状时拉伸）

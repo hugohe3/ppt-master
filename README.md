@@ -6,7 +6,7 @@
 
 English | [中文](./README_CN.md)
 
-Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed presentations that you can edit directly in PowerPoint**. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
+Drop in a PDF, DOCX, URL, or Markdown file — AI generates **beautifully designed presentations that you can edit directly in PowerPoint**. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
 
 > 💡 **Major Update**: The project architecture has undergone a massive upgrade (Skill-based architecture):
 > 1. **Lower Token Consumption & Model Dependency**: Significantly reduced token consumption. Now, even non-Opus models can generate decent results.
@@ -40,9 +40,9 @@ Drop in a PDF, URL, or Markdown file — AI generates **beautifully designed pre
 ## 🏗️ System Architecture
 
 ```
-User Input (PDF/URL/Markdown)
+User Input (PDF/DOCX/URL/Markdown)
     ↓
-[Source Content Conversion] → pdf_to_md.py / web_to_md.py
+[Source Content Conversion] → pdf_to_md.py / doc_to_md.py / web_to_md.py
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
@@ -110,6 +110,18 @@ If you need to use the `web_to_md.cjs` tool (for converting web pages from WeCha
 | **Linux** | Use [NodeSource](https://github.com/nodesource/distributions): `curl -fsSL https://deb.nodesource.com/setup_lts.x \| sudo -E bash - && sudo apt-get install -y nodejs` |
 
 > 💡 **Verify Installation**: Run `node --version` to confirm version ≥ 18
+
+#### Pandoc (Optional)
+
+If you need to use the `doc_to_md.py` tool (for converting DOCX, EPUB, LaTeX, and other document formats to Markdown), install [Pandoc](https://pandoc.org/).
+
+| Platform | Recommended Installation |
+|----------|-------------------------|
+| **macOS** | Use [Homebrew](https://brew.sh/): `brew install pandoc` |
+| **Windows** | Download installer from [Pandoc Official Website](https://pandoc.org/installing.html) |
+| **Linux** | Use package manager: `sudo apt install pandoc` (Ubuntu/Debian) |
+
+> 💡 **Verify Installation**: Run `pandoc --version` to confirm it is installed
 
 ### 2. Clone Repository and Install Dependencies
 
@@ -206,6 +218,9 @@ python3 skills/ppt-master/scripts/project_manager.py import-sources <project_pat
 
 # PDF to Markdown
 python3 skills/ppt-master/scripts/pdf_to_md.py <PDF_file>
+
+# DOCX / Office documents to Markdown (requires pandoc)
+python3 skills/ppt-master/scripts/doc_to_md.py <DOCX_file>
 
 # Post-processing (run in order)
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
