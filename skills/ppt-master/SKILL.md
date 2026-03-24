@@ -263,7 +263,9 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
-# Fallback: add --native if no PowerPoint available for manual "Convert to Shape"
+# Default: generates two files — native shapes (.pptx) + SVG reference (_svg.pptx)
+# Use --only native  to skip SVG reference version
+# Use --only legacy  to only generate SVG image version
 ```
 
 > ❌ **NEVER** use `cp` as a substitute for `finalize_svg.py` — it performs multiple critical processing steps
