@@ -1,14 +1,16 @@
-# PPT Master — AI 生成可编辑的精美演示文稿，支持任意文档输入
+# PPT Master — AI 生成原生可编辑 PPTX，支持任意文档输入
 
-[![Version](https://img.shields.io/badge/version-v2.2.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/badge/version-v2.3.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
 [English](./README.md) | 中文
 
-丢进一份 PDF、DOCX、网址或 Markdown，AI 自动生成**可在 PowerPoint 中直接编辑**的精美演示文稿。支持 PPT 16:9、小红书、朋友圈等 10+ 种格式。
+丢进一份 PDF、DOCX、网址或 Markdown，AI 自动生成**原生可编辑的 PowerPoint 演示文稿**——不是图片，每个文本框、图表、图形都是真正的 PowerPoint 对象，点击即可编辑。支持 PPT 16:9、小红书、朋友圈等 10+ 种格式。
 
-> 💡 **架构大更新**：目前项目架构已进行重大升级（Skill-based architecture）：
+> 🔥 **重磅更新：原生可编辑 PPTX** — 生成的演示文稿现在默认包含**真正的 PowerPoint 原生形状**（DrawingML），文字、图表、图形均可在 PowerPoint 中直接编辑，无需任何额外操作。告别"转换为形状"！
+>
+> 💡 **架构更新**：目前项目使用 Skill-based 架构：
 > 1. **大幅减少 Token 消耗与模型依赖**：现在即使不使用 Opus 模型，其他模型也能生成质量尚可的结果。
 > 2. **更强的系统扩展性**：整个 `skills` 文件夹按 Agent Skills 标准组织，每个子目录都是一个完全自包含的 Skill。您可以将其直接放入支持该标准的 AI 客户端的 skills 目录中作为本地技能原生调用（例如：Claude Code 的 `.claude/skills/` 或 `~/.claude/skills/`；Antigravity 置于全局 skills 目录后经由 `.agent/workflows/` 引用；GitHub Copilot 的 `.github/skills/` 或 `~/.copilot/skills/`）。
 > 3. **稳定版降级选择**：旧版多平台适配架构虽然 Token 消耗较多，但经受了更长时间的检验。如果您在使用当前新版本时遇到不稳定情况，可以随时尝试退回至老架构的最终版本：[v1.3.0](https://github.com/hugohe3/ppt-master/tree/v1.3.0)。
@@ -60,7 +62,7 @@
     ↓
 [后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
     ↓
-输出: 可编辑的 PPTX（自动嵌入讲稿）
+输出: 原生可编辑 PPTX（真实形状）+ SVG 参考版 PPTX（自动嵌入讲稿）
     ↓
 [Optimizer_CRAP] 优化师（可选，初版后不满意再用）
     ↓
@@ -160,7 +162,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **模型推荐**：Claude Opus 效果最佳，但大部分主流模型（如 Kimi 2.5、MiniMax 2.7 等，可通过 Codebuddy IDE 使用）目前均能生成不错的内容，仅在细节排版效果上可能存在差距。因目前某些 IDE (如 Antigravity) 的 Opus 极不稳定，请优先使用其他稳定的 AI 客户端进行创作。
 
-> 📝 **导出后编辑**：导出的 PPTX 中每页为 SVG 格式。在 PowerPoint 中选中页面内容，右键选择 **"转换为形状"** (Convert to Shape) 后即可自由编辑所有文字、图形和颜色。需要 **Office 2016** 或更高版本。
+> 📝 **导出后编辑**：默认导出的 PPTX（`.pptx`）包含**原生 PowerPoint 形状**，文字、图形和颜色可直接编辑，无需额外操作。同时还会生成一份 SVG 参考版（`_svg.pptx`），该版本需在 PowerPoint 中选中内容后右键选择 **"转换为形状"** (Convert to Shape) 方可编辑。需要 **Office 2016** 或更高版本。
 
 > 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
 
@@ -236,7 +238,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 <details>
 <summary><b>Q: 生成的 PPT 可以编辑吗？</b></summary>
 
-可以。导出的 PPTX 中每页为 SVG 格式，在 PowerPoint 中选中内容，右键选择 **"转换为形状"** (Convert to Shape) 后，所有文字、图形、颜色都可以自由编辑。需要 **Office 2016** 或更高版本。
+可以！默认导出的 PPTX（`.pptx`）包含**原生 PowerPoint 形状**，所有文字、图形、颜色均可在 PowerPoint 中直接编辑，无需任何转换操作。同时还会生成一份 SVG 参考版（`_svg.pptx`），该版本需选中内容后右键 **"转换为形状"** (Convert to Shape) 方可编辑。需要 **Office 2016** 或更高版本。
 
 </details>
 
@@ -307,4 +309,4 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 Made with ❤️ by Hugo He
 
-[⬆ 回到顶部](#ppt-master--ai-生成可编辑的精美演示文稿支持任意文档输入)
+[⬆ 回到顶部](#ppt-master--ai-生成原生可编辑-pptx支持任意文档输入)
