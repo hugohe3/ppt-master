@@ -17,7 +17,7 @@
   <circle cx="640" cy="360" r="50" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.15"/>
   
   <!-- 层级标注 -->
-  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-fill-opacity="0.4">
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#FFFFFF" fill-opacity="0.4">
     <text x="640" y="100" text-anchor="middle">觉察性自我</text>
     <text x="640" y="150" text-anchor="middle">反思性自我</text>
     <text x="640" y="210" text-anchor="middle">表征性自我</text>
