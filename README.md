@@ -226,7 +226,9 @@ python3 skills/ppt-master/scripts/doc_to_md.py <DOCX_file>
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
-# Fallback: add --native if no PowerPoint available for manual "Convert to Shape"
+# Default: generates two files — native shapes (.pptx) + SVG reference (_svg.pptx)
+# Use --only native  to skip SVG reference version
+# Use --only legacy  to only generate SVG image version
 ```
 
 > 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)

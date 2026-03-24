@@ -222,7 +222,8 @@ python3 skills/ppt-master/scripts/doc_to_md.py <DOCX文件>
 python3 skills/ppt-master/scripts/total_md_split.py <项目路径>
 python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
-# 备选：无 PowerPoint 时可加 --native 跳过手动"转换为形状"，但稳定性不及 PPT 原生转换
+# 默认生成两个文件：原生可编辑形状 (.pptx) + SVG 图片参考版 (_svg.pptx)
+# 仅生成原生版：--only native    仅生成 SVG 图片版：--only legacy
 
 ```
 

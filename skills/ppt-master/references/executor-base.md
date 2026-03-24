@@ -176,5 +176,5 @@ python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX
 python3 scripts/svg_to_pptx.py <project_path> -s final
-# Fallback: add --native if no PowerPoint available for manual "Convert to Shape"
+# Default: generates native shapes (.pptx) + SVG reference (_svg.pptx)
 ```
