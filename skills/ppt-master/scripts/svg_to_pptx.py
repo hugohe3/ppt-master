@@ -971,11 +971,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo -s final    # Recommended: use post-processed version
-    %(prog)s examples/ppt169_demo             # Use original version
-    %(prog)s examples/ppt169_demo -o presentation.pptx
-    %(prog)s examples/ppt169_demo --no-compat # Disable compatibility mode (pure SVG only)
-    %(prog)s examples/ppt169_demo --native    # Native DrawingML shapes (directly editable)
+    %(prog)s examples/ppt169_demo -s final    # Default: native + SVG reference (two files)
+    %(prog)s examples/ppt169_demo --only native   # Only native shapes version
+    %(prog)s examples/ppt169_demo --only legacy   # Only SVG image version
+    %(prog)s examples/ppt169_demo -o out.pptx     # Explicit path (SVG ref → out_svg.pptx)
 
     # Add page transition effects
     %(prog)s examples/ppt169_demo --transition fade
@@ -1016,9 +1015,12 @@ Speaker notes (enabled by default):
     parser.add_argument('--no-compat', action='store_true',
                         help='Disable Office compatibility mode (pure SVG only, requires Office 2019+)')
 
-    # Native shapes mode arguments
-    parser.add_argument('--native', action='store_true', default=False,
-                        help='Convert SVG to native DrawingML shapes (directly editable without manual conversion)')
+    # Output mode arguments
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument('--only', type=str, choices=['native', 'legacy'], default=None,
+                            help='Only generate one version: native (editable shapes) or legacy (SVG image)')
+    mode_group.add_argument('--native', action='store_true', default=False,
+                            help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
 
     # Transition effect arguments
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
@@ -1057,15 +1059,30 @@ Speaker notes (enabled by default):
         print("Error: No SVG files found")
         sys.exit(1)
 
-    if args.output:
-        output_path = Path(args.output)
-    else:
-        # Default with timestamp to avoid overwriting previous versions
-        from datetime import datetime
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = project_path / f"{project_name}_{timestamp}.pptx"
+    # Determine which versions to generate
+    # Default: both native + SVG reference.  --only limits to one.
+    only_mode = args.only  # None | 'native' | 'legacy'
+    gen_native = only_mode in (None, 'native')
+    gen_legacy = only_mode in (None, 'legacy')
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # --native flag (deprecated) maps to --only native
+    if args.native and only_mode is None:
+        gen_legacy = False
+
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    if args.output:
+        # Explicit output: use as-is for the primary version
+        output_base = Path(args.output)
+        native_path = output_base
+        stem = output_base.stem
+        legacy_path = output_base.parent / f"{stem}_svg{output_base.suffix}"
+    else:
+        native_path = project_path / f"{project_name}_{timestamp}.pptx"
+        legacy_path = project_path / f"{project_name}_{timestamp}_svg.pptx"
+
+    native_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
 
@@ -1075,17 +1092,9 @@ Speaker notes (enabled by default):
     if enable_notes:
         notes = find_notes_files(project_path, svg_files)
 
-    if verbose:
-        print("PPT Master - SVG to PPTX Tool (Native SVG)")
-        print("=" * 50)
-        print(f"  Project path: {project_path}")
-        print(f"  SVG directory: {source_dir_name}")
-        print(f"  Output file: {output_path}")
-        print()
-
-    success = create_pptx_with_native_svg(
-        svg_files,
-        output_path,
+    # Shared args for both runs
+    shared_kwargs = dict(
+        svg_files=svg_files,
         canvas_format=canvas_format,
         verbose=verbose,
         transition=args.transition,
@@ -1094,8 +1103,46 @@ Speaker notes (enabled by default):
         use_compat_mode=not args.no_compat,
         notes=notes,
         enable_notes=enable_notes,
-        use_native_shapes=args.native
     )
+
+    success = True
+
+    # --- Native shapes version (primary) ---
+    if gen_native:
+        if verbose:
+            print("PPT Master - SVG to PPTX Tool")
+            print("=" * 50)
+            print(f"  Project path: {project_path}")
+            print(f"  SVG directory: {source_dir_name}")
+            print(f"  Output file: {native_path}")
+            print()
+
+        ok = create_pptx_with_native_svg(
+            output_path=native_path,
+            use_native_shapes=True,
+            **shared_kwargs,
+        )
+        success = success and ok
+
+    # --- SVG image reference version ---
+    if gen_legacy:
+        if verbose:
+            if gen_native:
+                print()
+                print("-" * 50)
+            print("PPT Master - SVG to PPTX Tool (SVG Reference)")
+            print("=" * 50)
+            print(f"  Project path: {project_path}")
+            print(f"  SVG directory: {source_dir_name}")
+            print(f"  Output file: {legacy_path}")
+            print()
+
+        ok = create_pptx_with_native_svg(
+            output_path=legacy_path,
+            use_native_shapes=False,
+            **shared_kwargs,
+        )
+        success = success and ok
 
     sys.exit(0 if success else 1)
 
