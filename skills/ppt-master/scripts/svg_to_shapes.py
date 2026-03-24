@@ -90,19 +90,35 @@ FONT_FALLBACK_WIN = {
     'Source Han Serif TC': 'SimSun',
     'WenQuanYi Micro Hei': 'Microsoft YaHei',
     'WenQuanYi Zen Hei': 'Microsoft YaHei',
-    # Latin fonts
+    # Latin fonts (macOS / Linux / Web → Windows)
     'SF Pro': 'Segoe UI',
     'SF Pro Display': 'Segoe UI',
     'SF Pro Text': 'Segoe UI',
     'SF Mono': 'Consolas',
     'Menlo': 'Consolas',
     'Monaco': 'Consolas',
+    'Helvetica Neue': 'Arial',
+    'Helvetica': 'Arial',
+    'Roboto': 'Segoe UI',
+    'Ubuntu': 'Segoe UI',
+    'Liberation Sans': 'Arial',
+    'Liberation Serif': 'Times New Roman',
+    'Liberation Mono': 'Consolas',
+    'DejaVu Sans': 'Segoe UI',
+    'DejaVu Serif': 'Times New Roman',
+    'DejaVu Sans Mono': 'Consolas',
 }
 # Generic CSS font families → Windows defaults
 GENERIC_FONT_MAP = {
     'monospace': 'Consolas',
     'sans-serif': 'Segoe UI',
     'serif': 'Times New Roman',
+}
+# Serif latin fonts — when these are the latin choice and no EA font is
+# specified, prefer SimSun (serif CJK) over Microsoft YaHei (sans-serif CJK).
+_SERIF_LATIN = {
+    'Times New Roman', 'Georgia', 'Garamond', 'Palatino', 'Palatino Linotype',
+    'Book Antiqua', 'Cambria', 'SimSun', 'Liberation Serif', 'DejaVu Serif',
 }
 
 # Preset dash patterns: SVG stroke-dasharray -> DrawingML prstDash
@@ -340,9 +356,16 @@ def parse_font_family(font_family_str: str) -> Dict[str, str]:
     if not latin_font and ea_font:
         latin_font = ea_font
 
+    final_latin = latin_font or 'Segoe UI'
+
+    # EA must always be a CJK-capable font — never fall back to a latin-only
+    # font like Arial or Georgia, which would break Chinese/Japanese/Korean text.
+    if not ea_font:
+        ea_font = 'SimSun' if final_latin in _SERIF_LATIN else 'Microsoft YaHei'
+
     return {
-        'latin': latin_font or 'Segoe UI',
-        'ea': ea_font or latin_font or 'Microsoft YaHei',
+        'latin': final_latin,
+        'ea': ea_font,
     }
 
 
