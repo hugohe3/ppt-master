@@ -1859,8 +1859,32 @@ def parse_transform(transform_str: str) -> Tuple[float, float, float, float]:
     return dx, dy, sx, sy
 
 
+def _extract_shape_bounds_emu(shape_xml: str) -> Optional[Tuple[int, int, int, int]]:
+    """Extract bounds (x, y, x+cx, y+cy) in EMU from a shape XML string.
+
+    Works for <p:sp>, <p:pic>, and <p:grpSp> — the first <a:off> and <a:ext>
+    in each is the element's own position/size on the slide.
+    """
+    off_match = re.search(r'<a:off x="(-?\d+)" y="(-?\d+)"', shape_xml)
+    ext_match = re.search(r'<a:ext cx="(\d+)" cy="(\d+)"', shape_xml)
+    if off_match and ext_match:
+        x = int(off_match.group(1))
+        y = int(off_match.group(2))
+        cx = int(ext_match.group(1))
+        cy = int(ext_match.group(2))
+        return (x, y, x + cx, y + cy)
+    return None
+
+
 def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
-    """Convert SVG <g> by expanding translate, scale, and inheritable styles into child context."""
+    """Convert SVG <g> to DrawingML group shape <p:grpSp>.
+
+    Preserves group structure so elements can be selected and moved together
+    in PowerPoint.  Single-child groups are flattened to avoid unnecessary nesting.
+
+    Uses identity coordinate mapping (chOff/chExt == off/ext) so child shapes
+    keep their absolute slide coordinates unchanged.
+    """
     transform = elem.get('transform', '')
     dx, dy, sx, sy = parse_transform(transform)
 
@@ -1871,15 +1895,72 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
     style_overrides = _extract_inheritable_styles(elem)
 
     child_ctx = ctx.child(dx, dy, sx, sy, filter_id, style_overrides)
-    shapes = []
 
+    # Convert all children
+    child_shapes = []
     for child in elem:
         shape_xml = convert_element(child, child_ctx)
         if shape_xml:
-            shapes.append(shape_xml)
+            child_shapes.append(shape_xml)
 
     ctx.sync_from_child(child_ctx)
-    return '\n'.join(shapes)
+
+    if not child_shapes:
+        return ''
+
+    # Single child: flatten (no need for group wrapper)
+    if len(child_shapes) == 1:
+        return child_shapes[0]
+
+    # Multiple children: wrap in <p:grpSp>
+    # Calculate group bounds from child shapes (in EMU)
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+
+    for shape_xml in child_shapes:
+        bounds = _extract_shape_bounds_emu(shape_xml)
+        if bounds:
+            min_x = min(min_x, bounds[0])
+            min_y = min(min_y, bounds[1])
+            max_x = max(max_x, bounds[2])
+            max_y = max(max_y, bounds[3])
+
+    if min_x == float('inf'):
+        # No shapes with extractable bounds — fall back to flat join
+        return '\n'.join(child_shapes)
+
+    group_x = int(min_x)
+    group_y = int(min_y)
+    group_w = max(int(max_x - min_x), 1)
+    group_h = max(int(max_y - min_y), 1)
+
+    shapes_xml = '\n'.join(child_shapes)
+    group_id = ctx.next_id()
+
+    # Shadow effect from filter on the group
+    group_effect = ''
+    if filter_id and filter_id in ctx.defs:
+        group_effect = build_shadow_xml(ctx.defs[filter_id])
+
+    # Identity coordinate mapping: chOff/chExt mirrors off/ext
+    # so children keep their absolute slide coordinates as-is.
+    return f'''<p:grpSp>
+<p:nvGrpSpPr>
+<p:cNvPr id="{group_id}" name="Group {group_id}"/>
+<p:cNvGrpSpPr/>
+<p:nvPr/>
+</p:nvGrpSpPr>
+<p:grpSpPr>
+<a:xfrm>
+<a:off x="{group_x}" y="{group_y}"/>
+<a:ext cx="{group_w}" cy="{group_h}"/>
+<a:chOff x="{group_x}" y="{group_y}"/>
+<a:chExt cx="{group_w}" cy="{group_h}"/>
+</a:xfrm>
+{group_effect}
+</p:grpSpPr>
+{shapes_xml}
+</p:grpSp>'''
 
 
 # ---------------------------------------------------------------------------
