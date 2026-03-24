@@ -40,6 +40,14 @@ FONT_PX_TO_HUNDREDTHS_PT = 75
 # DrawingML angle unit: 60000ths of a degree
 ANGLE_UNIT = 60000
 
+# SVG attributes that are inheritable from parent <g> to children
+INHERITABLE_ATTRS = [
+    'fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linecap',
+    'opacity', 'fill-opacity', 'stroke-opacity',
+    'font-family', 'font-size', 'font-weight', 'font-style',
+    'text-anchor', 'letter-spacing',
+]
+
 # Known East Asian fonts
 EA_FONTS = {
     'PingFang SC', 'PingFang TC', 'PingFang HK',
@@ -52,8 +60,50 @@ EA_FONTS = {
     'Source Han Serif SC', 'Source Han Serif TC',
     'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
     'YouYuan', 'LiSu', 'HuaWenKaiTi',
+    'Songti SC', 'Songti TC',
 }
 SYSTEM_FONTS = {'system-ui', '-apple-system', 'BlinkMacSystemFont'}
+
+# macOS/Linux-only fonts → Windows equivalents (PPTX targets Windows primarily)
+FONT_FALLBACK_WIN = {
+    'PingFang SC': 'Microsoft YaHei',
+    'PingFang TC': 'Microsoft JhengHei',
+    'PingFang HK': 'Microsoft JhengHei',
+    'Hiragino Sans': 'Microsoft YaHei',
+    'Hiragino Sans GB': 'Microsoft YaHei',
+    'Hiragino Mincho ProN': 'SimSun',
+    'STHeiti': 'SimHei',
+    'STSong': 'SimSun',
+    'STKaiti': 'KaiTi',
+    'STFangsong': 'FangSong',
+    'STXihei': 'Microsoft YaHei',
+    'STZhongsong': 'SimSun',
+    'Songti SC': 'SimSun',
+    'Songti TC': 'SimSun',
+    'Noto Sans SC': 'Microsoft YaHei',
+    'Noto Sans TC': 'Microsoft JhengHei',
+    'Noto Serif SC': 'SimSun',
+    'Noto Serif TC': 'SimSun',
+    'Source Han Sans SC': 'Microsoft YaHei',
+    'Source Han Sans TC': 'Microsoft JhengHei',
+    'Source Han Serif SC': 'SimSun',
+    'Source Han Serif TC': 'SimSun',
+    'WenQuanYi Micro Hei': 'Microsoft YaHei',
+    'WenQuanYi Zen Hei': 'Microsoft YaHei',
+    # Latin fonts
+    'SF Pro': 'Segoe UI',
+    'SF Pro Display': 'Segoe UI',
+    'SF Pro Text': 'Segoe UI',
+    'SF Mono': 'Consolas',
+    'Menlo': 'Consolas',
+    'Monaco': 'Consolas',
+}
+# Generic CSS font families → Windows defaults
+GENERIC_FONT_MAP = {
+    'monospace': 'Consolas',
+    'sans-serif': 'Segoe UI',
+    'serif': 'Times New Roman',
+}
 
 # Preset dash patterns: SVG stroke-dasharray -> DrawingML prstDash
 DASH_PRESETS = {
@@ -88,6 +138,8 @@ class ConvertContext:
     media_files: Dict[str, bytes] = field(default_factory=dict)  # filename -> data
     rel_entries: List[Dict[str, str]] = field(default_factory=list)
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
+    svg_dir: Optional[Path] = None  # directory of the source SVG file
+    inherited_styles: Dict[str, str] = field(default_factory=dict)
 
     def next_id(self) -> int:
         cid = self.id_counter
@@ -101,8 +153,24 @@ class ConvertContext:
 
     def child(self, dx: float = 0, dy: float = 0,
               sx: float = 1.0, sy: float = 1.0,
-              filter_id: Optional[str] = None) -> 'ConvertContext':
-        """Create child context with accumulated translation and scale."""
+              filter_id: Optional[str] = None,
+              style_overrides: Optional[Dict[str, str]] = None) -> 'ConvertContext':
+        """Create child context with accumulated translation, scale, and styles."""
+        merged = dict(self.inherited_styles)
+        if style_overrides:
+            # Opacity is multiplicative, not override
+            for op_key in ('opacity', 'fill-opacity', 'stroke-opacity'):
+                if op_key in style_overrides and op_key in merged:
+                    try:
+                        merged[op_key] = str(float(merged[op_key]) * float(style_overrides[op_key]))
+                    except ValueError:
+                        merged[op_key] = style_overrides[op_key]
+                elif op_key in style_overrides:
+                    merged[op_key] = style_overrides[op_key]
+            # Other attrs: child overrides parent
+            for k, v in style_overrides.items():
+                if k not in ('opacity', 'fill-opacity', 'stroke-opacity'):
+                    merged[k] = v
         return ConvertContext(
             defs=self.defs,
             id_counter=self.id_counter,
@@ -115,6 +183,8 @@ class ConvertContext:
             media_files=self.media_files,
             rel_entries=self.rel_entries,
             rel_id_counter=self.rel_id_counter,
+            svg_dir=self.svg_dir,
+            inherited_styles=merged,
         )
 
     def sync_from_child(self, child_ctx: 'ConvertContext'):
@@ -140,6 +210,24 @@ def _f(val: Optional[str], default: float = 0.0) -> float:
         return float(val)
     except (ValueError, TypeError):
         return default
+
+
+def _extract_inheritable_styles(elem: ET.Element) -> Dict[str, str]:
+    """Extract all SVG-inheritable presentation attributes from an element."""
+    styles = {}
+    for attr in INHERITABLE_ATTRS:
+        val = elem.get(attr)
+        if val is not None:
+            styles[attr] = val
+    return styles
+
+
+def _get_attr(elem: ET.Element, attr: str, ctx: 'ConvertContext') -> Optional[str]:
+    """Get effective attribute: element's own value first, then inherited from context."""
+    val = elem.get(attr)
+    if val is not None:
+        return val
+    return ctx.inherited_styles.get(attr)
 
 
 def ctx_x(val: float, ctx: 'ConvertContext') -> float:
@@ -219,7 +307,12 @@ def get_effective_filter_id(elem: ET.Element, ctx: ConvertContext) -> Optional[s
 # ---------------------------------------------------------------------------
 
 def parse_font_family(font_family_str: str) -> Dict[str, str]:
-    """Parse CSS font-family to latin/ea typefaces."""
+    """Parse CSS font-family to latin/ea typefaces.
+
+    Prioritises Windows-available fonts since PPTX is primarily opened on
+    Windows.  macOS/Linux-only fonts are mapped to their Windows equivalents
+    via FONT_FALLBACK_WIN.
+    """
     if not font_family_str:
         return {'latin': 'Segoe UI', 'ea': 'Microsoft YaHei'}
 
@@ -228,12 +321,19 @@ def parse_font_family(font_family_str: str) -> Dict[str, str]:
     ea_font = None
 
     for font in fonts:
-        if font in SYSTEM_FONTS or font in ('sans-serif', 'serif', 'monospace'):
+        if font in SYSTEM_FONTS:
             continue
+        # Resolve generic families
+        if font in GENERIC_FONT_MAP:
+            resolved = GENERIC_FONT_MAP[font]
+            latin_font = latin_font or resolved
+            continue
+        # Map to Windows equivalent if needed
+        win_font = FONT_FALLBACK_WIN.get(font, font)
         if font in EA_FONTS:
-            ea_font = ea_font or font
+            ea_font = ea_font or win_font
         else:
-            latin_font = latin_font or font
+            latin_font = latin_font or win_font
 
     # If no latin font found but we have EA, use EA as latin too
     # (PPT renders CJK text via latin typeface when ea doesn't match)
@@ -365,10 +465,9 @@ def build_gradient_fill(grad_elem: ET.Element,
 
         angle_rad = math.atan2(y2 - y1, x2 - x1)
         angle_deg = math.degrees(angle_rad)
-        # DrawingML angle: 0 = right, rotates clockwise, in 60000ths of degree
-        # SVG gradient: angle from (x1,y1) to (x2,y2) in standard math direction
-        # DrawingML lin ang: measured from top, clockwise
-        dml_angle = int(((90 + angle_deg) % 360) * ANGLE_UNIT)
+        # DrawingML lin ang: 0°=left-to-right, 90°=top-to-bottom (clockwise)
+        # SVG atan2 with y-down: 0°=left-to-right, 90°=top-to-bottom — same system
+        dml_angle = int((angle_deg % 360) * ANGLE_UNIT)
 
         return f'''<a:gradFill>
 <a:gsLst>{gs_list}</a:gsLst>
@@ -388,8 +487,8 @@ def build_gradient_fill(grad_elem: ET.Element,
 
 def build_fill_xml(elem: ET.Element, ctx: ConvertContext,
                    opacity: Optional[float] = None) -> str:
-    """Build fill XML for a shape element."""
-    fill = elem.get('fill')
+    """Build fill XML for a shape element, with inherited style support."""
+    fill = _get_attr(elem, 'fill', ctx)
     if fill is None:
         # SVG default fill is black
         fill = '#000000'
@@ -410,22 +509,19 @@ def build_fill_xml(elem: ET.Element, ctx: ConvertContext,
     return '<a:noFill/>'
 
 
-def build_stroke_xml(elem: ET.Element, opacity: Optional[float] = None) -> str:
-    """Build <a:ln> XML for stroke."""
-    stroke = elem.get('stroke')
+def build_stroke_xml(elem: ET.Element, ctx: ConvertContext,
+                     opacity: Optional[float] = None) -> str:
+    """Build <a:ln> XML for stroke, with inherited style support."""
+    stroke = _get_attr(elem, 'stroke', ctx)
     if not stroke or stroke == 'none':
         return '<a:ln><a:noFill/></a:ln>'
 
-    color = parse_hex_color(stroke)
-    if not color:
-        return '<a:ln><a:noFill/></a:ln>'
-
-    width = _f(elem.get('stroke-width'), 1.0)
+    width = _f(_get_attr(elem, 'stroke-width', ctx), 1.0)
     width_emu = px_to_emu(width)
 
     # Dash pattern
     dash_xml = ''
-    dasharray = elem.get('stroke-dasharray')
+    dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
     if dasharray and dasharray != 'none':
         preset = DASH_PRESETS.get(dasharray.strip())
         if preset:
@@ -436,9 +532,20 @@ def build_stroke_xml(elem: ET.Element, opacity: Optional[float] = None) -> str:
     # Line cap
     cap_map = {'round': 'rnd', 'square': 'sq', 'butt': 'flat'}
     cap_attr = ''
-    linecap = elem.get('stroke-linecap')
+    linecap = _get_attr(elem, 'stroke-linecap', ctx)
     if linecap and linecap in cap_map:
         cap_attr = f' cap="{cap_map[linecap]}"'
+
+    # Check for gradient stroke
+    grad_id = resolve_url_id(stroke)
+    if grad_id and grad_id in ctx.defs:
+        grad_fill = build_gradient_fill(ctx.defs[grad_id], opacity)
+        return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}</a:ln>'
+
+    # Solid color stroke
+    color = parse_hex_color(stroke)
+    if not color:
+        return '<a:ln><a:noFill/></a:ln>'
 
     alpha_xml = ''
     if opacity is not None and opacity < 1.0:
@@ -498,20 +605,21 @@ def get_element_opacity(elem: ET.Element) -> Optional[float]:
         return None
 
 
-def get_fill_opacity(elem: ET.Element) -> Optional[float]:
+def get_fill_opacity(elem: ET.Element, ctx: Optional[ConvertContext] = None) -> Optional[float]:
     """
-    Get effective fill opacity combining 'opacity' and 'fill-opacity'.
+    Get effective fill opacity combining 'opacity' and 'fill-opacity',
+    including inherited values from context.
     Returns None if fully opaque.
     """
     base = 1.0
-    op = elem.get('opacity')
+    op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
             base = float(op)
         except ValueError:
             pass
 
-    fill_op = elem.get('fill-opacity')
+    fill_op = _get_attr(elem, 'fill-opacity', ctx) if ctx else elem.get('fill-opacity')
     if fill_op:
         try:
             base *= float(fill_op)
@@ -521,20 +629,21 @@ def get_fill_opacity(elem: ET.Element) -> Optional[float]:
     return base if base < 1.0 else None
 
 
-def get_stroke_opacity(elem: ET.Element) -> Optional[float]:
+def get_stroke_opacity(elem: ET.Element, ctx: Optional[ConvertContext] = None) -> Optional[float]:
     """
-    Get effective stroke opacity combining 'opacity' and 'stroke-opacity'.
+    Get effective stroke opacity combining 'opacity' and 'stroke-opacity',
+    including inherited values from context.
     Returns None if fully opaque.
     """
     base = 1.0
-    op = elem.get('opacity')
+    op = _get_attr(elem, 'opacity', ctx) if ctx else elem.get('opacity')
     if op:
         try:
             base = float(op)
         except ValueError:
             pass
 
-    stroke_op = elem.get('stroke-opacity')
+    stroke_op = _get_attr(elem, 'stroke-opacity', ctx) if ctx else elem.get('stroke-opacity')
     if stroke_op:
         try:
             base *= float(stroke_op)
@@ -1001,10 +1110,10 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> str:
     if w <= 0 or h <= 0:
         return ''
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     # Shadow
     effect = ''
@@ -1022,25 +1131,184 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> str:
     )
 
 
-def convert_circle(elem: ET.Element, ctx: ConvertContext) -> str:
-    """Convert SVG <circle> to DrawingML ellipse shape."""
-    cx_ = ctx_x(_f(elem.get('cx')), ctx)
-    cy_ = ctx_y(_f(elem.get('cy')), ctx)
-    r_x = _f(elem.get('r')) * ctx.scale_x
-    r_y = _f(elem.get('r')) * ctx.scale_y
+def _build_arc_ring_path(cx: float, cy: float, r: float,
+                         stroke_width: float,
+                         dash_len: float, dash_offset: float,
+                         rotate_deg: float,
+                         sx: float, sy: float) -> tuple:
+    """Build a filled annular-sector (donut segment) as DrawingML custGeom.
 
-    if r_x <= 0 or r_y <= 0:
+    SVG donut charts use stroke-dasharray on a circle to draw arc segments.
+    DrawingML cannot reproduce this, so we convert each arc segment into a
+    filled ring shape (outer arc → line → inner arc → close).
+
+    Returns (geom_xml, min_x_emu, min_y_emu, w_emu, h_emu).
+    """
+    circumference = 2 * math.pi * r
+    if circumference <= 0:
+        return '', 0, 0, 0, 0
+
+    # Arc start/end as fraction of circumference
+    start_frac = -dash_offset / circumference
+    end_frac = start_frac + dash_len / circumference
+
+    # Convert to angles (radians), starting from top (SVG rotate(-90) is common)
+    start_angle = start_frac * 2 * math.pi + math.radians(rotate_deg)
+    end_angle = end_frac * 2 * math.pi + math.radians(rotate_deg)
+
+    half_sw = stroke_width / 2
+    r_outer = (r + half_sw)
+    r_inner = (r - half_sw)
+
+    # Generate points for the arc (use enough segments for smoothness)
+    num_segments = max(16, int(abs(end_angle - start_angle) / (math.pi / 32)))
+    angles = [start_angle + (end_angle - start_angle) * i / num_segments
+              for i in range(num_segments + 1)]
+
+    outer_pts = [(cx + r_outer * math.sin(a), cy - r_outer * math.cos(a)) for a in angles]
+    inner_pts = [(cx + r_inner * math.sin(a), cy - r_inner * math.cos(a)) for a in reversed(angles)]
+
+    all_pts = outer_pts + inner_pts
+
+    # Apply scale
+    all_pts = [(px * sx, py * sy) for px, py in all_pts]
+
+    # Bounding box
+    xs = [p[0] for p in all_pts]
+    ys = [p[1] for p in all_pts]
+    min_x = min(xs)
+    min_y = min(ys)
+    max_x = max(xs)
+    max_y = max(ys)
+    width = max_x - min_x
+    height = max_y - min_y
+
+    if width < 0.5 or height < 0.5:
+        return '', 0, 0, 0, 0
+
+    w_emu = px_to_emu(width)
+    h_emu = px_to_emu(height)
+
+    # Build path commands (translate to local coordinates)
+    lines = []
+    for i, (px, py) in enumerate(all_pts):
+        lx = px_to_emu(px - min_x)
+        ly = px_to_emu(py - min_y)
+        if i == 0:
+            lines.append(f'<a:moveTo><a:pt x="{lx}" y="{ly}"/></a:moveTo>')
+        else:
+            lines.append(f'<a:lnTo><a:pt x="{lx}" y="{ly}"/></a:lnTo>')
+    lines.append('<a:close/>')
+
+    path_xml = '\n'.join(lines)
+    geom = f'''<a:custGeom>
+<a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>
+<a:rect l="l" t="t" r="r" b="b"/>
+<a:pathLst><a:path w="{w_emu}" h="{h_emu}">
+{path_xml}
+</a:path></a:pathLst>
+</a:custGeom>'''
+
+    return geom, px_to_emu(min_x), px_to_emu(min_y), w_emu, h_emu
+
+
+def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
+    """Detect if a circle uses stroke-dasharray to simulate an arc segment."""
+    dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
+    if not dasharray or dasharray == 'none':
+        return False
+    stroke = _get_attr(elem, 'stroke', ctx)
+    if not stroke or stroke == 'none':
+        return False
+    # Donut segments have large stroke-width relative to radius
+    sw = _f(_get_attr(elem, 'stroke-width', ctx), 0)
+    r = _f(elem.get('r'), 0)
+    if sw <= 0 or r <= 0:
+        return False
+    # If dasharray doesn't match a standard preset, treat as arc
+    if dasharray.strip() in DASH_PRESETS:
+        return False
+    return True
+
+
+def convert_circle(elem: ET.Element, ctx: ConvertContext) -> str:
+    """Convert SVG <circle> to DrawingML ellipse shape.
+
+    Detects SVG donut-chart circles (stroke-dasharray arc segments) and
+    converts them to filled annular-sector shapes instead.
+    """
+    cx_ = _f(elem.get('cx'))
+    cy_ = _f(elem.get('cy'))
+    r = _f(elem.get('r'))
+
+    if r <= 0:
         return ''
 
-    x = cx_ - r_x
-    y = cy_ - r_y
+    # --- Donut-chart arc segment detection ---
+    if _is_donut_circle(elem, ctx):
+        dasharray = _get_attr(elem, 'stroke-dasharray', ctx)
+        dash_vals = re.split(r'[\s,]+', dasharray.strip())
+        dash_len = float(dash_vals[0]) if dash_vals else 0
+        dash_offset = _f(elem.get('stroke-dashoffset'), 0)
+        stroke_width = _f(_get_attr(elem, 'stroke-width', ctx), 1)
+
+        # Parse rotate transform on the element
+        rotate_deg = 0.0
+        transform = elem.get('transform', '')
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rotate_deg = float(r_match.group(1))
+
+        geom, min_x, min_y, w_emu, h_emu = _build_arc_ring_path(
+            ctx_x(cx_, ctx) / ctx.scale_x,  # pass unscaled center
+            ctx_y(cy_, ctx) / ctx.scale_y,
+            r, stroke_width, dash_len, dash_offset, rotate_deg,
+            ctx.scale_x, ctx.scale_y
+        )
+        if not geom:
+            return ''
+
+        # Use the stroke color/gradient as fill for the arc shape
+        stroke_val = _get_attr(elem, 'stroke', ctx)
+        op = get_fill_opacity(elem, ctx)
+        grad_id = resolve_url_id(stroke_val) if stroke_val else None
+        if grad_id and grad_id in ctx.defs:
+            fill = build_gradient_fill(ctx.defs[grad_id], op)
+        elif stroke_val:
+            color = parse_hex_color(stroke_val)
+            fill = build_solid_fill(color, op) if color else '<a:noFill/>'
+        else:
+            fill = '<a:noFill/>'
+
+        stroke_xml = '<a:ln><a:noFill/></a:ln>'
+
+        effect = ''
+        filt_id = get_effective_filter_id(elem, ctx)
+        if filt_id and filt_id in ctx.defs:
+            effect = build_shadow_xml(ctx.defs[filt_id])
+
+        shape_id = ctx.next_id()
+        return _wrap_shape(
+            shape_id, f'Arc {shape_id}',
+            min_x, min_y, w_emu, h_emu,
+            geom, fill, stroke_xml, effect
+        )
+
+    # --- Normal circle ---
+    cx_s = ctx_x(cx_, ctx)
+    cy_s = ctx_y(cy_, ctx)
+    r_x = r * ctx.scale_x
+    r_y = r * ctx.scale_y
+
+    x = cx_s - r_x
+    y = cy_s - r_y
     w = r_x * 2
     h = r_y * 2
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
@@ -1086,8 +1354,8 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> str:
 </a:path></a:pathLst>
 </a:custGeom>'''
 
-    stroke_op = get_stroke_opacity(elem)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke_op = get_stroke_opacity(elem, ctx)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     shape_id = ctx.next_id()
     return _wrap_shape(
@@ -1140,10 +1408,10 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> str:
 </a:path></a:pathLst>
 </a:custGeom>'''
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
@@ -1198,10 +1466,10 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> str:
 </a:path></a:pathLst>
 </a:custGeom>'''
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     shape_id = ctx.next_id()
     return _wrap_shape(
@@ -1249,10 +1517,10 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> str:
 </a:path></a:pathLst>
 </a:custGeom>'''
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     shape_id = ctx.next_id()
     return _wrap_shape(
@@ -1262,26 +1530,136 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> str:
     )
 
 
-def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
-    """Convert SVG <text> to DrawingML text shape."""
-    # Get text content (including children like tspan)
-    text_content = ''.join(elem.itertext()).strip()
-    if not text_content:
+def _normalize_text(text: str) -> str:
+    """Collapse internal whitespace/newlines into a single space, strip ends."""
+    if not text:
         return ''
+    return re.sub(r'\s+', ' ', text).strip()
 
+
+def _build_text_runs(elem: ET.Element, parent_attrs: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Build a list of text runs from a <text> element, handling <tspan> children.
+
+    Each run is a dict with keys: text, fill, fill_raw, font_weight, font_style,
+    font_family, font_size.  Child <tspan> attributes override parent defaults.
+    """
+    runs = []
+
+    # Direct text of <text> element (before first child)
+    if elem.text:
+        t = _normalize_text(elem.text)
+        if t:
+            runs.append({**parent_attrs, 'text': t})
+
+    for child in elem:
+        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if child_tag == 'tspan':
+            t = _normalize_text(''.join(child.itertext()))
+            if t:
+                run_attrs = dict(parent_attrs)
+                # Override with tspan-specific attributes
+                if child.get('font-weight'):
+                    run_attrs['font_weight'] = child.get('font-weight')
+                if child.get('fill'):
+                    child_fill = child.get('fill')
+                    run_attrs['fill_raw'] = child_fill
+                    c = parse_hex_color(child_fill)
+                    if c:
+                        run_attrs['fill'] = c
+                if child.get('font-size'):
+                    run_attrs['font_size'] = _f(child.get('font-size'), run_attrs['font_size'])
+                if child.get('font-family'):
+                    run_attrs['font_family'] = child.get('font-family')
+                if child.get('font-style'):
+                    run_attrs['font_style'] = child.get('font-style')
+                runs.append({**run_attrs, 'text': t})
+
+            # Tail text after </tspan> (still belongs to parent)
+            if child.tail:
+                t = _normalize_text(child.tail)
+                if t:
+                    runs.append({**parent_attrs, 'text': t})
+
+    return runs
+
+
+def _build_run_xml(run: Dict[str, Any], default_fonts: Dict[str, str],
+                   ctx: Optional[ConvertContext] = None) -> str:
+    """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
+    text = run['text']
+    fill = run.get('fill', '000000')
+    fill_raw = run.get('fill_raw', '')
+    fw = run.get('font_weight', '400')
+    fs_px = run.get('font_size', 16)
+    fstyle = run.get('font_style', '')
+    ff = run.get('font_family', '')
+    opacity = run.get('opacity')
+
+    sz = round(fs_px * FONT_PX_TO_HUNDREDTHS_PT)
+    b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
+    i_attr = ' i="1"' if fstyle == 'italic' else ''
+
+    fonts = parse_font_family(ff) if ff else default_fonts
+
+    # Build fill XML - gradient or solid
+    grad_id = resolve_url_id(fill_raw)
+    if grad_id and ctx and grad_id in ctx.defs:
+        fill_xml = build_gradient_fill(ctx.defs[grad_id], opacity)
+    else:
+        alpha_xml = ''
+        if opacity is not None and opacity < 1.0:
+            alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+        fill_xml = f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
+
+    return f'''<a:r>
+<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr} dirty="0">
+{fill_xml}
+<a:latin typeface="{_xml_escape(fonts['latin'])}"/>
+<a:ea typeface="{_xml_escape(fonts['ea'])}"/>
+<a:cs typeface="{_xml_escape(fonts['latin'])}"/>
+</a:rPr>
+<a:t>{_xml_escape(text)}</a:t>
+</a:r>'''
+
+
+def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
+    """Convert SVG <text> to DrawingML text shape with multi-run support."""
     x = ctx_x(_f(elem.get('x')), ctx)
     y = ctx_y(_f(elem.get('y')), ctx)
-    font_size = _f(elem.get('font-size'), 16) * ctx.scale_y
-    font_weight = elem.get('font-weight', '400')
-    font_family_str = elem.get('font-family', '')
-    text_anchor = elem.get('text-anchor', 'start')
-    fill_color = parse_hex_color(elem.get('fill', '#000000')) or '000000'
-    opacity = get_fill_opacity(elem)
+    font_size = _f(_get_attr(elem, 'font-size', ctx), 16) * ctx.scale_y
+    font_weight = _get_attr(elem, 'font-weight', ctx) or '400'
+    font_family_str = _get_attr(elem, 'font-family', ctx) or ''
+    text_anchor = _get_attr(elem, 'text-anchor', ctx) or 'start'
+    fill_raw = _get_attr(elem, 'fill', ctx) or '#000000'
+    fill_color = parse_hex_color(fill_raw) or '000000'
+    opacity = get_fill_opacity(elem, ctx)
+    font_style = _get_attr(elem, 'font-style', ctx) or ''
 
     fonts = parse_font_family(font_family_str)
 
-    # Estimate text dimensions (generous to avoid clipping)
-    text_width = estimate_text_width(text_content, font_size, font_weight) * 1.15
+    # Build runs from <text> + <tspan> children
+    parent_attrs = {
+        'fill': fill_color,
+        'fill_raw': fill_raw,
+        'font_weight': font_weight,
+        'font_size': font_size,
+        'font_family': font_family_str,
+        'font_style': font_style,
+        'opacity': opacity,
+    }
+    runs = _build_text_runs(elem, parent_attrs)
+
+    if not runs:
+        return ''
+
+    # Combined text for width estimation
+    full_text = ''.join(r['text'] for r in runs)
+    if not full_text.strip():
+        return ''
+
+    # Estimate text dimensions
+    text_width = estimate_text_width(full_text, font_size, font_weight) * 1.15
     text_height = font_size * 1.5
     padding = font_size * 0.1
 
@@ -1290,36 +1668,24 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
         box_x = x - text_width / 2 - padding
     elif text_anchor == 'end':
         box_x = x - text_width - padding
-    else:  # start
+    else:
         box_x = x - padding
 
-    # y in SVG is baseline, move up by ~80% of font size for top of text
     box_y = y - font_size * 0.85
-
     box_w = text_width + padding * 2
     box_h = text_height + padding
 
-    # DrawingML font size in hundredths of a point
-    sz = round(font_size * FONT_PX_TO_HUNDREDTHS_PT)
-
-    # Bold
-    b_attr = ' b="1"' if font_weight in ('bold', '600', '700', '800', '900') else ''
-
-    # Italic
-    font_style = elem.get('font-style', '')
-    i_attr = ' i="1"' if font_style == 'italic' else ''
-
-    # Letter spacing: SVG px -> DrawingML hundredths of a point (spc)
+    # Letter spacing
     spc_attr = ''
-    letter_spacing = elem.get('letter-spacing')
+    letter_spacing = _get_attr(elem, 'letter-spacing', ctx)
     if letter_spacing:
         try:
-            spc_val = float(letter_spacing) * 100  # px to hundredths of pt (approx)
+            spc_val = float(letter_spacing) * 100
             spc_attr = f' spc="{int(spc_val)}"'
         except ValueError:
             pass
 
-    # Text rotation (transform="rotate(...)" on text element)
+    # Text rotation
     text_rot = 0
     text_transform = elem.get('transform', '')
     if text_transform:
@@ -1331,13 +1697,17 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
     algn_map = {'start': 'l', 'middle': 'ctr', 'end': 'r'}
     algn = algn_map.get(text_anchor, 'l')
 
-    # Alpha
-    alpha_xml = ''
-    if opacity is not None and opacity < 1.0:
-        alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+    # Shadow effect from filter
+    effect_xml = ''
+    filt_id = get_effective_filter_id(elem, ctx)
+    if filt_id and filt_id in ctx.defs:
+        effect_xml = build_shadow_xml(ctx.defs[filt_id])
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
+
+    # Build runs XML (pass ctx for gradient support)
+    runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx) for r in runs)
 
     return f'''<p:sp>
 <p:nvSpPr>
@@ -1350,6 +1720,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
 <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
 <a:noFill/>
 <a:ln><a:noFill/></a:ln>
+{effect_xml}
 </p:spPr>
 <p:txBody>
 <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0">
@@ -1358,15 +1729,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
 <a:lstStyle/>
 <a:p>
 <a:pPr algn="{algn}"/>
-<a:r>
-<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{spc_attr} dirty="0">
-<a:solidFill><a:srgbClr val="{fill_color}">{alpha_xml}</a:srgbClr></a:solidFill>
-<a:latin typeface="{_xml_escape(fonts['latin'])}"/>
-<a:ea typeface="{_xml_escape(fonts['ea'])}"/>
-<a:cs typeface="{_xml_escape(fonts['latin'])}"/>
-</a:rPr>
-<a:t>{_xml_escape(text_content)}</a:t>
-</a:r>
+{runs_xml}
 </a:p>
 </p:txBody>
 </p:sp>'''
@@ -1386,7 +1749,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> str:
     if w <= 0 or h <= 0:
         return ''
 
-    # Extract base64 data
+    # Extract image data
     if href.startswith('data:'):
         # data:image/png;base64,iVBOR...
         match = re.match(r'data:image/(\w+);base64,(.+)', href, re.DOTALL)
@@ -1397,8 +1760,20 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> str:
             img_format = 'jpg'
         img_data = base64.b64decode(match.group(2))
     else:
-        # External file reference - skip in native mode
-        return ''
+        # External file reference - resolve relative to SVG directory
+        if ctx.svg_dir is None:
+            return ''
+        img_path = ctx.svg_dir / href
+        if not img_path.exists():
+            # Also try relative to project root (parent of svg_final/)
+            img_path = ctx.svg_dir.parent / href
+        if not img_path.exists():
+            print(f'  Warning: External image not found: {href}')
+            return ''
+        img_format = img_path.suffix.lstrip('.').lower()
+        if img_format == 'jpeg':
+            img_format = 'jpg'
+        img_data = img_path.read_bytes()
 
     # Generate filename and relationship
     img_idx = len(ctx.media_files) + 1
@@ -1447,10 +1822,10 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> str:
     w = rx * 2
     h = ry * 2
 
-    fill_op = get_fill_opacity(elem)
-    stroke_op = get_stroke_opacity(elem)
+    fill_op = get_fill_opacity(elem, ctx)
+    stroke_op = get_stroke_opacity(elem, ctx)
     fill = build_fill_xml(elem, ctx, fill_op)
-    stroke = build_stroke_xml(elem, stroke_op)
+    stroke = build_stroke_xml(elem, ctx, stroke_op)
 
     geom = '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
 
@@ -1485,23 +1860,20 @@ def parse_transform(transform_str: str) -> Tuple[float, float, float, float]:
 
 
 def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
-    """Convert SVG <g> by expanding translate and scale into child coordinates."""
+    """Convert SVG <g> by expanding translate, scale, and inheritable styles into child context."""
     transform = elem.get('transform', '')
     dx, dy, sx, sy = parse_transform(transform)
 
     # Check for filter on the group
     filter_id = resolve_url_id(elem.get('filter', ''))
 
-    # Check for fill attribute on the group (used by icons)
-    group_fill = elem.get('fill')
+    # Extract all inheritable styles from this <g>
+    style_overrides = _extract_inheritable_styles(elem)
 
-    child_ctx = ctx.child(dx, dy, sx, sy, filter_id)
+    child_ctx = ctx.child(dx, dy, sx, sy, filter_id, style_overrides)
     shapes = []
 
     for child in elem:
-        # Propagate group fill to children that don't have their own fill
-        if group_fill and not child.get('fill'):
-            child.set('fill', group_fill)
         shape_xml = convert_element(child, child_ctx)
         if shape_xml:
             shapes.append(shape_xml)
@@ -1589,7 +1961,7 @@ def convert_svg_to_slide_shapes(
     defs = collect_defs(root)
 
     # Create context
-    ctx = ConvertContext(defs=defs, slide_num=slide_num)
+    ctx = ConvertContext(defs=defs, slide_num=slide_num, svg_dir=Path(svg_path).parent)
 
     # Convert all top-level elements
     shapes = []
