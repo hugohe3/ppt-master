@@ -4,7 +4,7 @@ This file provides a project overview for Claude Code. Before executing PPT gene
 
 ## Project Overview
 
-PPT Master is an AI-driven multi-format SVG content generation system. Through multi-role collaboration (Strategist → Image_Generator → Executor → Optimizer), it converts source documents (PDF/DOCX/URL/Markdown) into high-quality SVG pages and exports them as PPTX.
+PPT Master is an AI-driven presentation generation system. Through multi-role collaboration (Strategist → Image_Generator → Executor → Optimizer), it converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
 
 **Core Pipeline**: `Source Document → Create Project → Template Option → Strategist Eight Confirmations → [Image_Generator] → Executor → Post-processing → Export PPTX`
 

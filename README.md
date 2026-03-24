@@ -1,14 +1,16 @@
-# PPT Master — AI generates editable, beautifully designed presentations from any document
+# PPT Master — AI generates natively editable PPTX from any document
 
-[![Version](https://img.shields.io/badge/version-v2.2.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
+[![Version](https://img.shields.io/badge/version-v2.3.0-blue.svg)](https://github.com/hugohe3/ppt-master/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub stars](https://img.shields.io/github/stars/hugohe3/ppt-master.svg)](https://github.com/hugohe3/ppt-master/stargazers)
 
 English | [中文](./README_CN.md)
 
-Drop in a PDF, DOCX, URL, or Markdown file — AI generates **beautifully designed presentations that you can edit directly in PowerPoint**. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
+Drop in a PDF, DOCX, URL, or Markdown file — AI generates **natively editable PowerPoint presentations with real shapes**, not images. Every text box, chart, and graphic is a real PowerPoint object you can click and edit. Supports PPT 16:9, social media cards, marketing posters, and 10+ other formats.
 
-> 💡 **Major Update**: The project architecture has undergone a massive upgrade (Skill-based architecture):
+> 🔥 **NEW: Native Editable PPTX** — Generated presentations now contain **real PowerPoint shapes** (DrawingML) by default — text, charts, and graphics are directly editable in PowerPoint without any extra steps. No more "Convert to Shape"!
+>
+> 💡 **Architecture Update**: The project uses a Skill-based architecture:
 > 1. **Lower Token Consumption & Model Dependency**: Significantly reduced token consumption. Now, even non-Opus models can generate decent results.
 > 2. **High Extensibility**: The `skills` folder is organized according to the Agent Skills standard, with each subdirectory being a fully self-contained Skill. It can be natively invoked by dropping it into the skills directory of compatible AI clients (e.g., `.claude/skills/` or `~/.claude/skills/` for Claude Code; global skills directory referenced via `.agent/workflows/` for Antigravity; `.github/skills/` or `~/.copilot/skills/` for GitHub Copilot).
 > 3. **Stable Fallback**：Although the previous multi-platform architecture consumes more tokens, it has been more extensively tested. If you experience instability with the current version, you can always fall back to the last release of the old architecture: [v1.3.0](https://github.com/hugohe3/ppt-master/tree/v1.3.0).
@@ -60,7 +62,7 @@ User Input (PDF/DOCX/URL/Markdown)
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: Editable PPTX (auto-embeds speaker notes)
+Output: Native editable PPTX with real shapes + SVG reference PPTX (auto-embeds speaker notes)
     ↓
 [Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
     ↓
@@ -162,7 +164,7 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **Model Recommendation**: Claude Opus works best, but most mainstream models today (like Kimi 2.5 and MiniMax 2.7, tested via Codebuddy IDE) can also generate decent results with only minor gaps in layout details. Due to the instability of Opus on some IDEs (like Antigravity), trying other stable AI clients is recommended.
 
-> 📝 **Post-Export Editing**: Each page in the exported PPTX is in SVG format. Select the page content in PowerPoint, right-click and choose **"Convert to Shape"** to freely edit all text, shapes, and colors. Requires **Office 2016** or later.
+> 📝 **Post-Export Editing**: The default exported PPTX (`.pptx`) contains **native PowerPoint shapes** — text, graphics, and colors are directly editable, no extra steps needed. A second SVG reference file (`_svg.pptx`) is also generated; for that version, select the content in PowerPoint and use **"Convert to Shape"** to edit. Requires **Office 2016** or later.
 
 > 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
 
@@ -240,7 +242,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 <details>
 <summary><b>Q: Can I edit the generated presentations?</b></summary>
 
-Yes! Each page in the exported PPTX is in SVG format. In PowerPoint, select the content, right-click and choose **"Convert to Shape"** — then all text, shapes, and colors become fully editable. Requires **Office 2016** or later.
+Yes! The default export (`.pptx`) produces **native PowerPoint shapes** — all text, graphics, and colors are directly editable in PowerPoint without any conversion. An SVG reference version (`_svg.pptx`) is also generated; for that file, select the content and use **"Convert to Shape"** to unlock editing. Requires **Office 2016** or later.
 
 </details>
 
@@ -311,4 +313,4 @@ If this project helps you, please give it a ⭐ Star!
 
 Made with ❤️ by Hugo He
 
-[⬆ Back to Top](#ppt-master--ai-generates-editable-beautifully-designed-presentations-from-any-document)
+[⬆ Back to Top](#ppt-master--ai-generates-natively-editable-pptx-from-any-document)
