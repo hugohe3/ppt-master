@@ -573,37 +573,38 @@ Batch converts SVG files in a project to a PowerPoint presentation, preserving v
 
 **Features**:
 
-- Batch convert SVGs to PPTX
+- **Default: generates two files** — native shapes (.pptx) + SVG reference (_svg.pptx)
+- Native shapes version: directly editable DrawingML shapes in PowerPoint
+- SVG reference version: preserves SVG as image for archival and quality review
 - Each SVG corresponds to one slide
 - Auto-detect canvas format and set slide dimensions
 - Support using svg_output or svg_final directories
-- SVGs remain editable in PowerPoint
 - **Support slide transition and entrance animations**
 - **Auto-embed speaker notes** (read from notes/ directory)
 
 **Usage**:
 
 ```bash
-# Recommended: use the post-processed version (notes embedded by default)
+# Default: generates native shapes + SVG reference (two files)
 python3 scripts/svg_to_pptx.py <project_path> -s final
+
+# Only native shapes version (skip SVG reference)
+python3 scripts/svg_to_pptx.py <project_path> -s final --only native
+
+# Only SVG image version
+python3 scripts/svg_to_pptx.py <project_path> -s final --only legacy
+
+# Specify output file (SVG ref → output_svg.pptx)
+python3 scripts/svg_to_pptx.py <project_path> -s final -o output.pptx
 
 # Disable speaker notes
 python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
-
-# Use original version
-python3 scripts/svg_to_pptx.py <project_path>
-
-# Specify output file
-python3 scripts/svg_to_pptx.py <project_path> -s final -o output.pptx
 
 # Add slide transition effects
 python3 scripts/svg_to_pptx.py <project_path> -t fade --transition-duration 1.0
 
 # Silent mode
 python3 scripts/svg_to_pptx.py <project_path> -s final -q
-
-# Native shapes (fallback when PowerPoint is unavailable for manual "Convert to Shape")
-python3 scripts/svg_to_pptx.py <project_path> -s final --native
 ```
 
 **Speaker Notes**:
@@ -666,9 +667,11 @@ pip install python-pptx
 
 **Notes**:
 
-- SVGs are embedded in native vector format, maintaining editability
+- Default generates two PPTX files: native shapes (editable) + SVG reference (archival)
+- Native shapes version is directly editable in PowerPoint without manual conversion
+- SVG reference version preserves original SVGs for quality review and version archival
+- Use `--only native` or `--only legacy` to generate just one version
 - Requires PowerPoint 2016+ for correct display
-- File size is much smaller than the PNG approach
 - Transition effects are off by default; users must explicitly enable them
 - Speaker notes are on by default; use `--no-notes` to disable
 
