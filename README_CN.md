@@ -17,6 +17,12 @@
 
 > **在线示例**：[GitHub Pages 在线预览](https://hugohe3.github.io/ppt-master/) — 查看实际生成效果
 
+> 🎨 **设计哲学 —— AI 是你的设计师，不是完工师**
+>
+> 生成的 PPTX 是一份**设计稿**，而非成品。把它理解成建筑师的效果图：AI 负责视觉设计、排版布局和内容结构，交付给你一个高质量的起点。要想获得真正精良的成品，**需要你自己在 PowerPoint 里做精装修**：换掉形状、细化图表、调整配色、把占位图形替换成原生对象。这个工具的目标是消除 90% 的从零开始的工作量，而不是替代人在最后一公里的判断。不要指望 AI 一遍搞定所有——好的演示文稿从来不是这样做出来的。
+>
+> **工具的上限是你的上限。** PPT Master 放大的是你已有的能力——你有设计感和内容判断力，它帮你快速落地；你不知道一个好的演示文稿应该长什么样，它也没法替你知道。输出的质量，归根结底是你自身品味与判断力的映射。
+
 ---
 
 ## 🎴 精选示例
@@ -62,7 +68,10 @@
     ↓
 [后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
     ↓
-输出: 原生可编辑 PPTX（真实形状）+ SVG 参考版 PPTX（自动嵌入讲稿）
+输出: 自动生成两个文件：
+    ├── presentation.pptx        ← 原生形状版（DrawingML）— 推荐用于编辑与交付
+    └── presentation_svg.pptx   ← SVG 参考版 — 像素级视觉参考；在 PowerPoint 中选中内容
+                                    后使用"转换为形状"可解锁单独元素的编辑
     ↓
 [Optimizer_CRAP] 优化师（可选，初版后不满意再用）
     ↓
@@ -255,6 +264,13 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 <summary><b>Q: 必须使用 Optimizer_CRAP 吗？</b></summary>
 
 不是必须的。仅在需要优化关键页面视觉效果时使用。
+
+</details>
+
+<details>
+<summary><b>Q: 生成的图表可以编辑数据吗？</b></summary>
+
+图表以**自定义设计的 SVG 图形**形式渲染，转换为原生 PowerPoint 形状——而不是 Excel 驱动的图表对象。这使得图表外观精良，视觉效果通常优于 PowerPoint 默认图表样式。但图表的底层数据无法通过 PowerPoint 图表编辑器修改。如果你需要可实时更新数据的图表（例如通过编辑表格来刷新数据），需要在导出后自行将其替换为原生 PowerPoint 图表。
 
 </details>
 

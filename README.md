@@ -17,6 +17,12 @@ Drop in a PDF, DOCX, URL, or Markdown file — AI generates **natively editable 
 
 > **Online Examples**: [GitHub Pages Preview](https://hugohe3.github.io/ppt-master/) — See actual generated results
 
+> 🎨 **Design Philosophy — AI as Your Designer, Not Your Finisher**
+>
+> The generated PPTX is a **design draft**, not a finished product. Think of it like an architect's rendering: the AI handles visual design, layout, and content structure — delivering a high-quality starting point. For truly polished results, **expect to do your own finishing work** in PowerPoint: swapping shapes, refining charts, adjusting colors, replacing placeholder graphics with native objects. The goal is to eliminate 90% of the blank-page work, not to replace human judgment in the final mile. Don't expect one AI pass to do everything — that's not how good presentations are made.
+>
+> **A tool's ceiling is your ceiling.** PPT Master amplifies the skills you already have — if you have a strong sense of design and content, it helps you execute faster. If you don't know what a great presentation looks like, the tool won't know either. The output quality is ultimately a reflection of your own taste and judgment.
+
 ---
 
 ## 🎴 Featured Examples
@@ -62,7 +68,10 @@ User Input (PDF/DOCX/URL/Markdown)
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: Native editable PPTX with real shapes + SVG reference PPTX (auto-embeds speaker notes)
+Output: Two files are generated automatically:
+    ├── presentation.pptx        ← Native shapes (DrawingML) — recommended for editing & delivery
+    └── presentation_svg.pptx   ← SVG reference version — pixel-perfect visual reference; use
+                                    "Convert to Shape" in PowerPoint to unlock individual elements
     ↓
 [Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
     ↓
@@ -259,6 +268,13 @@ Yes! The default export (`.pptx`) produces **native PowerPoint shapes** — all 
 <summary><b>Q: Is Optimizer_CRAP required?</b></summary>
 
 No. Only use it when you need to optimize the visual effects of key pages.
+
+</details>
+
+<details>
+<summary><b>Q: Are the charts in the generated PPTX editable?</b></summary>
+
+Charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — not Excel-driven chart objects. This gives them a polished, high-fidelity appearance that often looks better than default PowerPoint charts. However, the underlying data is not editable via PowerPoint's chart editor. If you need a live, data-driven chart (e.g., one you can update by editing a spreadsheet), you will need to manually replace it with a native PowerPoint chart after export.
 
 </details>
 
