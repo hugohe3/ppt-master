@@ -278,6 +278,52 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 ---
 
+## 🔧 技术路线
+
+**核心流程：AI 生成 SVG → 后处理转换为 DrawingML（PPTX）。**
+
+整个流程分为三个阶段：
+
+**第一阶段：内容理解与设计规划**
+源文档（PDF/DOCX/URL/Markdown）经过转换变为结构化文本，由 Strategist 角色完成内容分析、页面规划和设计风格确认，输出完整的设计规格。
+
+**第二阶段：AI 视觉生成**
+Executor 角色逐页生成演示文稿的视觉内容，输出为 SVG 文件。这个阶段的产物是**设计稿**，而非成品。
+
+**第三阶段：工程化转换**
+后处理脚本将 SVG 转换为 DrawingML，每一个形状都变成真正的 PowerPoint 原生对象——可点击、可编辑、可改色，而不是嵌入的图片。
+
+---
+
+**为什么是 SVG？**
+
+SVG 是这套流程的核心枢纽。这个选择是通过逐一排除其他方案得出的。
+
+**直接生成 DrawingML** 看起来最直接——跳过中间格式，AI 直接输出 PowerPoint 的底层 XML。但 DrawingML 极其繁琐，一个简单的圆角矩形就需要数十行嵌套 XML，AI 的训练数据中远少于 SVG，生成质量不稳定，调试几乎无法肉眼完成。
+
+**HTML/CSS** 是 AI 最熟悉的格式之一，但 HTML 和 PowerPoint 有根本不同的世界观。HTML 描述的是**文档**——标题、段落、列表，元素的位置由内容流动决定。PowerPoint 描述的是**画布**——每个元素都是独立的、绝对定位的对象，没有流，没有上下文关系。这不只是排版计算的问题，而是两种完全不同的内容组织方式之间的鸿沟。就算解决了浏览器排版引擎的问题（Chromium 用数百万行代码做这件事），HTML 里的一个 `<table>` 也没法自然地变成 PPT 里的几个独立形状。
+
+**WMF/EMF**（Windows 图元文件）是微软自家的原生矢量图形格式，与 DrawingML 有直接的血缘关系——理论上转换损耗最小。但 AI 对它几乎没有训练数据，这条路死在起点。值得注意的是：连微软自家的格式在这里都输给了 SVG。
+
+**SVG 作为嵌入图片** 是最简单的路线——把整张幻灯片渲染成图片塞进 PPT。但这样完全丧失可编辑性，形状变成像素，文字无法选中，颜色无法修改，和截图没有本质区别。
+
+SVG 胜出，因为它与 DrawingML 拥有相同的世界观：两者都是绝对坐标的二维矢量图形格式，共享同一套概念体系：
+
+| SVG | DrawingML |
+|---|---|
+| `<path d="...">` | `<a:custGeom>` |
+| `<rect rx="...">` | `<a:prstGeom prst="roundRect">` |
+| `<circle>` / `<ellipse>` | `<a:prstGeom prst="ellipse">` |
+| `transform="translate/scale/rotate"` | `<a:xfrm>` |
+| `linearGradient` / `radialGradient` | `<a:gradFill>` |
+| `fill-opacity` / `stroke-opacity` | `<a:alpha>` |
+
+转换不是格式错配，而是两种方言之间的精确翻译。
+
+SVG 也是唯一同时满足流程中所有角色需要的格式：**AI 能可靠地生成它，人能在任意浏览器里直接预览和调试，脚本能精确地转换它**——在生成任何 DrawingML 之前，设计稿就已经完全透明可见。
+
+---
+
 ## 🤝 贡献指南
 
 欢迎贡献！
