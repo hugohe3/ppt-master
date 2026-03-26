@@ -22,17 +22,12 @@ import threading
 from openai import OpenAI
 from image_backends.backend_common import (
     MAX_RETRIES,
-    HAS_PIL,
     is_rate_limit_error,
     normalize_image_size,
-    report_resolution,
     resolve_output_path,
     retry_delay,
+    save_image_bytes,
 )
-
-if HAS_PIL:
-    import io
-    from PIL import Image as PILImage
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -140,17 +135,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     if resp is not None and resp.data:
         path = resolve_output_path(prompt, output_dir, filename, ".png")
         image_data = base64.b64decode(resp.data[0].b64_json)
-
-        if HAS_PIL:
-            image = PILImage.open(io.BytesIO(image_data))
-            image.save(path)
-        else:
-            with open(path, "wb") as f:
-                f.write(image_data)
-
-        print(f"  File saved to: {path}")
-        report_resolution(path)
-        return path
+        return save_image_bytes(image_data, path)
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
 
