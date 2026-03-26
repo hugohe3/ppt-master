@@ -23,9 +23,9 @@ from image_backends.backend_common import (
     MAX_RETRIES,
     is_rate_limit_error,
     normalize_image_size,
-    report_resolution,
     resolve_output_path,
     retry_delay,
+    save_image_bytes,
 )
 
 
@@ -142,12 +142,12 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     if last_image_data is not None and last_image_data.inline_data is not None:
         if chunk_count > 1:
             print(f"  Keeping the final chunk (highest quality).")
-        image = last_image_data.as_image()
         path = resolve_output_path(prompt, output_dir, filename, ".png")
-        image.save(path)
-        print(f"File saved to: {path}")
-        report_resolution(path)
-        return path
+        return save_image_bytes(
+            last_image_data.inline_data.data,
+            path,
+            content_type=getattr(last_image_data.inline_data, "mime_type", None),
+        )
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
 

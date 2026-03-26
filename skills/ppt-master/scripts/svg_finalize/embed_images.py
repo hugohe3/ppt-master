@@ -18,8 +18,21 @@ import re
 import sys
 import argparse
 
-def get_mime_type(filename):
-    """Return the MIME type based on file extension."""
+
+def get_mime_type(filename, file_bytes=None):
+    """Return the MIME type based on file bytes first, then extension as fallback."""
+    if file_bytes:
+        if file_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+            return 'image/png'
+        if file_bytes.startswith(b"\xff\xd8\xff"):
+            return 'image/jpeg'
+        if file_bytes.startswith((b"GIF87a", b"GIF89a")):
+            return 'image/gif'
+        if file_bytes.startswith(b"RIFF") and file_bytes[8:12] == b"WEBP":
+            return 'image/webp'
+        if file_bytes.lstrip().startswith(b"<svg"):
+            return 'image/svg+xml'
+
     ext = filename.lower().split('.')[-1]
     mime_map = {
         'png': 'image/png',
@@ -90,9 +103,10 @@ def embed_images_in_svg(svg_path, dry_run=False):
             return match.group(0)
         
         with open(full_path, 'rb') as img_file:
-            b64_data = base64.b64encode(img_file.read()).decode('utf-8')
-        
-        mime_type = get_mime_type(img_path)
+            img_bytes = img_file.read()
+            b64_data = base64.b64encode(img_bytes).decode('utf-8')
+
+        mime_type = get_mime_type(img_path, img_bytes)
         images_embedded += 1
         images_found.append((img_path, "EMBEDDED", img_size))
         
