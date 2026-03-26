@@ -72,10 +72,6 @@ Output: Two files are generated automatically:
     ├── presentation.pptx        ← Native shapes (DrawingML) — recommended for editing & delivery
     └── presentation_svg.pptx   ← SVG reference version — pixel-perfect visual reference; use
                                     "Convert to Shape" in PowerPoint to unlock individual elements
-    ↓
-[Optimizer_CRAP] (Optional, only if the first draft is unsatisfactory)
-    ↓
-If optimized: re-run post-processing and export
 ```
 
 ### 📚 Documentation Navigation
@@ -261,13 +257,6 @@ Yes! The default export (`.pptx`) produces **native PowerPoint shapes** — all 
 - **Executor_General**: General scenarios, flexible layout
 - **Executor_Consultant**: General consulting, data visualization
 - **Executor_Consultant_Top**: Top consulting (MBB level), 5 core techniques
-
-</details>
-
-<details>
-<summary><b>Q: Is Optimizer_CRAP required?</b></summary>
-
-No. Only use it when you need to optimize the visual effects of key pages.
 
 </details>
 

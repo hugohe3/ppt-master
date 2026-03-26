@@ -1320,7 +1320,7 @@ python3 scripts/embed_icons.py --dry-run svg_output/*.svg
    Edit the generated `design_spec.md` file
 
 3. **Generate SVG files**
-   Use AI roles (Strategist → Executor → Optimizer) to generate SVGs and save to `svg_output/`
+   Use AI roles (Strategist → Executor) to generate SVGs and save to `svg_output/`
 
 4. **Post-processing (runs all steps by default)**
 

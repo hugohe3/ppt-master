@@ -42,6 +42,7 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 
 ## 3. Execution Guidelines
 
+- **Proximity principle**: Place related elements close together to form visual groups; increase spacing between unrelated groups to reinforce logical structure
 - **Absolute spec adherence**: Strictly follow the color, layout, canvas format, and typography parameters in the spec
 - **Follow template structure**: If templates exist, inherit the template's visual framework
 - **Phased batch generation** (recommended):
