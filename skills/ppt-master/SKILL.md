@@ -308,7 +308,6 @@ Before switching roles, you **MUST first read** the corresponding reference file
 |----------|------|
 | Shared technical constraints | `references/shared-standards.md` |
 | Canvas format specification | `references/canvas-formats.md` |
-| Design guidelines | `references/design-guidelines.md` |
 | Image layout specification | `references/image-layout-spec.md` |
 | SVG image embedding | `references/svg-image-embedding.md` |
 

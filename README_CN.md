@@ -84,7 +84,6 @@
 |------|------|
 | 🧭 [AGENTS.md](./AGENTS.md) | 仓库级入口概览（适用于通用 AI 代理） |
 | 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | `ppt-master` 核心流程与规则源 |
-| 🎨 [设计指南](./skills/ppt-master/references/design-guidelines.md) | 配色、排版、布局规范详解 |
 | 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
 | 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
 | 📊 [图表模板库](./skills/ppt-master/templates/charts/) | 13 种标准化图表模板 |

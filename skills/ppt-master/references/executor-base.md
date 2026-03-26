@@ -121,8 +121,6 @@ Apply corresponding fonts for different text roles based on the font plan in the
 | Emphasis font | SimHei | Arial Black / Consolas |
 | Annotation font | Microsoft YaHei / SimSun | Arial / Times |
 
-See `references/design-guidelines.md` for details.
-
 ---
 
 ## 8. Speaker Notes Generation Framework

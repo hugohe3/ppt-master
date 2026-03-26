@@ -90,8 +90,6 @@
 
 **Font stack**: `[Fill in CSS font-family string]`
 
-> **Reference**: Font categories in `references/design-guidelines.md`
-
 ### Font Size Hierarchy
 
 > **Design principle**: Use body font size as baseline (1x), derive other levels proportionally
@@ -144,6 +142,9 @@
 | Card padding | 20-32px | [fill in] |
 | Card border radius | 8-16px | [fill in] |
 | Icon-text gap | 8-16px | [fill in] |
+| Single-row card height | 530-600px | [fill in] |
+| Double-row card height | 265-295px each | [fill in] |
+| Three-column card width | 360-380px each | [fill in] |
 
 ---
 

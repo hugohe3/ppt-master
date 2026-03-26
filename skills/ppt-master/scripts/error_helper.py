@@ -106,7 +106,7 @@ class ErrorHelper:
                 'Remove <foreignObject> elements',
                 'Use <text> + <tspan> for manual line wrapping',
                 'This is a project technical specification requirement',
-                'Reference: references/design-guidelines.md'
+                'Reference: references/shared-standards.md'
             ],
             'severity': 'error'
         },
