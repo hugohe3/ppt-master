@@ -373,6 +373,20 @@ If this project helps you, please give it a ⭐ Star!
 
 ---
 
+## ☕ Sponsor
+
+If this project saves you time, consider buying me a coffee to keep the tokens burning!
+
+<a href="https://github.com/sponsors/hugohe3">
+  <img src="https://img.shields.io/badge/GitHub%20Sponsors-♥-ea4aaa?style=for-the-badge&logo=github-sponsors" alt="GitHub Sponsors" />
+</a>
+
+**Alipay / 支付宝**
+
+<img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="250" />
+
+---
+
 Made with ❤️ by Hugo He
 
 [⬆ Back to Top](#ppt-master--ai-generates-natively-editable-pptx-from-any-document)
