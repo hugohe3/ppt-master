@@ -5,30 +5,34 @@ OpenAI Compatible Image Generation Backend
 Generates images via OpenAI-compatible APIs (OpenAI, local models like Qwen-Image, etc.).
 Used by image_gen.py as a backend module.
 
-Environment variables:
-  IMAGE_API_KEY    (required) API key
-  IMAGE_BASE_URL   (optional) Custom API endpoint (e.g. http://127.0.0.1:3000/v1)
-  IMAGE_MODEL      (optional) Model name (default: gpt-image-1)
+Configuration keys:
+  OPENAI_API_KEY   (required) API key
+  OPENAI_BASE_URL  (optional) Custom API endpoint (e.g. http://127.0.0.1:3000/v1)
+  OPENAI_MODEL     (optional) Model name (default: gpt-image-1)
 
 Dependencies:
   pip install openai Pillow
 """
 
 import base64
-import io
 import os
-import sys
 import time
 import threading
 
 from openai import OpenAI
+from image_backends.backend_common import (
+    MAX_RETRIES,
+    HAS_PIL,
+    is_rate_limit_error,
+    normalize_image_size,
+    report_resolution,
+    resolve_output_path,
+    retry_delay,
+)
 
-# Optional dependency: PIL (used to report image resolution)
-try:
+if HAS_PIL:
+    import io
     from PIL import Image as PILImage
-    HAS_PIL = True
-except ImportError:
-    HAS_PIL = False
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -61,58 +65,6 @@ IMAGE_SIZE_TO_QUALITY = {
 }
 
 DEFAULT_MODEL = "gpt-image-1"
-
-MAX_RETRIES = 3
-RETRY_BASE_DELAY = 10
-RETRY_BACKOFF = 2
-
-
-# ╔══════════════════════════════════════════════════════════════════╗
-# ║  Utilities                                                      ║
-# ╚══════════════════════════════════════════════════════════════════╝
-
-def _resolve_output_path(prompt: str, output_dir: str = None,
-                         filename: str = None, ext: str = ".png") -> str:
-    """Compute the final output file path based on parameters"""
-    if filename:
-        file_name = os.path.splitext(filename)[0]
-    else:
-        safe = "".join(c for c in prompt if c.isalnum() or c in (' ', '_')).rstrip()
-        safe = safe.replace(" ", "_").lower()[:30]
-        file_name = safe or "generated_image"
-
-    full_name = f"{file_name}{ext}"
-    if output_dir:
-        os.makedirs(output_dir, exist_ok=True)
-        return os.path.join(output_dir, full_name)
-    return full_name
-
-
-def _report_resolution(path: str):
-    """Try to report image resolution using PIL"""
-    if HAS_PIL:
-        try:
-            img = PILImage.open(path)
-            print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
-        except Exception:
-            pass
-
-
-def _is_rate_limit_error(e: Exception) -> bool:
-    """Check whether the exception is a rate limit (429) error"""
-    err_str = str(e).lower()
-    return "429" in err_str or "rate" in err_str or "quota" in err_str
-
-
-def _normalize_image_size(image_size: str) -> str:
-    """Normalize image size input to standard format."""
-    s = image_size.strip()
-    upper = s.upper()
-    if upper in ("1K", "2K", "4K"):
-        return upper
-    if upper in ("512PX", "512"):
-        return "512px"
-    return s
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -186,7 +138,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print(f"\n  ✅ Image generated ({elapsed:.1f}s)")
 
     if resp is not None and resp.data:
-        path = _resolve_output_path(prompt, output_dir, filename, ".png")
+        path = resolve_output_path(prompt, output_dir, filename, ".png")
         image_data = base64.b64decode(resp.data[0].b64_json)
 
         if HAS_PIL:
@@ -197,7 +149,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                 f.write(image_data)
 
         print(f"  File saved to: {path}")
-        _report_resolution(path)
+        report_resolution(path)
         return path
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
@@ -214,10 +166,10 @@ def generate(prompt: str, negative_prompt: str = None,
     """
     OpenAI-compatible image generation with automatic retry.
 
-    Reads credentials from environment variables:
-      IMAGE_API_KEY  / OPENAI_API_KEY   (fallback)
-      IMAGE_BASE_URL / OPENAI_BASE_URL  (fallback)
-      IMAGE_MODEL    (optional override)
+    Reads credentials from the current process environment or the project-root `.env`:
+      OPENAI_API_KEY
+      OPENAI_BASE_URL
+      OPENAI_MODEL (optional override)
 
     Args:
         prompt: Positive prompt text
@@ -232,18 +184,18 @@ def generate(prompt: str, negative_prompt: str = None,
     Returns:
         Path of the saved image file
     """
-    api_key = os.environ.get("IMAGE_API_KEY") or os.environ.get("OPENAI_API_KEY")
-    base_url = os.environ.get("IMAGE_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
+    api_key = os.environ.get("OPENAI_API_KEY")
+    base_url = os.environ.get("OPENAI_BASE_URL")
 
     if not api_key:
         raise ValueError(
-            "No API key found. Set IMAGE_API_KEY or OPENAI_API_KEY environment variable."
+            "No API key found. Set OPENAI_API_KEY in the current environment or the project-root .env."
         )
 
     if model is None:
-        model = os.environ.get("IMAGE_MODEL") or DEFAULT_MODEL
+        model = os.environ.get("OPENAI_MODEL") or DEFAULT_MODEL
 
-    image_size = _normalize_image_size(image_size)
+    image_size = normalize_image_size(image_size)
 
     if aspect_ratio not in ASPECT_RATIO_TO_SIZE:
         supported = list(ASPECT_RATIO_TO_SIZE.keys())
@@ -260,13 +212,13 @@ def generate(prompt: str, negative_prompt: str = None,
                                    filename, model, base_url)
         except Exception as e:
             last_error = e
-            if attempt < max_retries and _is_rate_limit_error(e):
-                delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
+            if attempt < max_retries and is_rate_limit_error(e):
+                delay = retry_delay(attempt, rate_limited=True)
                 print(f"\n  ⚠️  Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
                       f"Waiting {delay}s before retry...")
                 time.sleep(delay)
             elif attempt < max_retries:
-                delay = 5
+                delay = retry_delay(attempt, rate_limited=False)
                 print(f"\n  ⚠️  Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
                       f"Retrying in {delay}s...")
                 time.sleep(delay)

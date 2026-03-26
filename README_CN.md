@@ -83,7 +83,12 @@
 | 📐 [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT、小红书、朋友圈等 10+ 种格式 |
 | 🖼️ [图片嵌入指南](./skills/ppt-master/references/svg-image-embedding.md) | SVG 图片嵌入最佳实践 |
 | 📊 [图表模板库](./skills/ppt-master/templates/charts/) | 13 种标准化图表模板 |
-| 🛠️ [工具集](./skills/ppt-master/scripts/README.md) | 所有工具的使用说明 |
+| 🛠️ [工具集](./skills/ppt-master/scripts/README.md) | 脚本索引与高频命令 |
+| ↳ [转换文档](./skills/ppt-master/scripts/docs/conversion.md) | PDF / DOCX / 网页转 Markdown |
+| ↳ [项目文档](./skills/ppt-master/scripts/docs/project.md) | 项目初始化、校验与索引 |
+| ↳ [SVG 流水线文档](./skills/ppt-master/scripts/docs/svg-pipeline.md) | 后处理、校验、备注与 PPTX 导出 |
+| ↳ [图片文档](./skills/ppt-master/scripts/docs/image.md) | 图片生成与图片分析工具 |
+| ↳ [排障文档](./skills/ppt-master/scripts/docs/troubleshooting.md) | 校验、预览、导出与依赖问题 |
 | 💼 [示例索引](./examples/README.md) | 15 个项目、229 页 SVG 示例 |
 
 ---
@@ -172,9 +177,33 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 ### 5. AI 生图配置（可选）
 
-本项目的 `image_gen.py` 可通过 Gemini 或 OpenAI 兼容 API 在 AI 客户端中直接生成高质量配图。配置方式二选一：
+本项目的 `image_gen.py` 支持多家图片模型提供商，但推荐默认只聚焦少数后端：
 
-#### 方式 A：使用 `.env` 文件（推荐）
+- 核心推荐：`gemini`、`openai`、`qwen`、`zhipu`、`volcengine`
+- 扩展支持：`stability`、`bfl`（FLUX）、`ideogram`
+- 实验支持：`siliconflow`、`fal`、`replicate`
+
+可用下面的命令直接查看 CLI 中的后端分级：
+
+```bash
+python3 skills/ppt-master/scripts/image_gen.py --list-backends
+```
+
+图片生成支持两种配置来源：
+
+1. 当前运行进程的环境变量
+2. 项目根目录 `.env` 文件作为补充 fallback
+
+优先级：
+- 当前进程环境变量优先
+- `.env` 只补充那些当前进程里还没有的值
+
+有一条规则是强制的：
+- 必须显式设置 `IMAGE_BACKEND`
+
+工具不会根据 API Key 自动猜后端，也不会在未配置时偷偷默认到 Gemini。
+
+#### 方式 A：配置 `.env`
 
 ```bash
 cp .env.example .env
@@ -184,30 +213,49 @@ cp .env.example .env
 
 ```env
 IMAGE_BACKEND=gemini
-IMAGE_API_KEY=your-api-key
+GEMINI_API_KEY=your-api-key
+GEMINI_MODEL=gemini-3.1-flash-image-preview
 ```
 
 > `.env` 文件已在 `.gitignore` 中，不会被提交到仓库，无需担心密钥泄露。
 
-#### 方式 B：使用环境变量
+#### 方式 B：使用当前进程环境变量
 
 ```bash
-# 后端选择："gemini"（默认）或 "openai"
-export IMAGE_BACKEND="gemini"
-
-# 必需：所选后端的 API Key
-export IMAGE_API_KEY="your-api-key"
-
-# 可选：自定义 API 端点（用于代理服务或本地模型）
-export IMAGE_BASE_URL="https://your-proxy-url.com/v1beta"
-
-# 可选：模型名称覆盖
-export IMAGE_MODEL="gemini-3.1-flash-image-preview"
+export IMAGE_BACKEND=gemini
+export GEMINI_API_KEY=your-api-key
+export GEMINI_MODEL=gemini-3.1-flash-image-preview
+python3 skills/ppt-master/scripts/image_gen.py "abstract tech background"
 ```
 
-> 💡 **持久化**：将上述 `export` 命令添加到 `~/.zshrc`（macOS/Linux zsh）或 `~/.bashrc`（Linux bash）中，重启终端即可永久生效。
+这种方式适合 CI、容器、密钥管理平台，以及一次性的本地测试。
 
-> 💡 **向后兼容**：`GEMINI_API_KEY` / `GEMINI_BASE_URL` 以及 `OPENAI_API_KEY` / `OPENAI_BASE_URL` 仍然有效。未设置 `IMAGE_BACKEND` 时，系统会根据已配置的 key 自动检测后端。
+注意：
+- 脚本读取的是“当前运行进程可见的环境变量”，不是抽象意义上的 shell 配置
+- 如果某个工具启动的是非交互 shell，而你的 `~/.bashrc` 或 `~/.zshrc` 没有被 source，那么里面的 export 可能根本不可见
+- 这种情况下，本地开发通常还是 `.env` 更稳定
+
+> 💡 **提供商命名空间**：请把密钥和模型覆盖写在各家自己的变量里，例如 `GEMINI_API_KEY`、`GEMINI_MODEL`、`GEMINI_BASE_URL`、`OPENAI_API_KEY`、`QWEN_MODEL`、`ZHIPU_MODEL`、`VOLCENGINE_API_KEY`、`REPLICATE_API_TOKEN`。
+
+> 💡 **不支持全局图片密钥变量**：`IMAGE_API_KEY`、`IMAGE_MODEL`、`IMAGE_BASE_URL` 已明确废弃，请只使用 provider 自己的变量。
+
+> 💡 **多提供商共存**：同一个 `.env` 或同一组环境变量里可以保留多家配置，但必须用 `IMAGE_BACKEND` 明确指定当前启用的是哪一家。
+
+示例：
+
+```env
+IMAGE_BACKEND=zhipu
+
+GEMINI_API_KEY=your-gemini-key
+GEMINI_MODEL=gemini-3.1-flash-image-preview
+
+ZHIPU_API_KEY=your-zhipu-key
+ZHIPU_MODEL=glm-image
+```
+
+切换提供商时，只改 `IMAGE_BACKEND` 即可。
+
+> 💡 **推荐原则**：没有特殊诉求时，优先使用“核心推荐”里的后端。
 
 > 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `skills/ppt-master/scripts/gemini_watermark_remover.py` 去除。
 
@@ -257,7 +305,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 ```
 
-> 📖 完整工具说明请参阅 [脚本使用指南](./skills/ppt-master/scripts/README.md)
+> 📖 脚本文档建议先看 [脚本使用指南](./skills/ppt-master/scripts/README.md)，再按主题进入 [转换](./skills/ppt-master/scripts/docs/conversion.md)、[项目](./skills/ppt-master/scripts/docs/project.md)、[SVG 流水线](./skills/ppt-master/scripts/docs/svg-pipeline.md)、[图片](./skills/ppt-master/scripts/docs/image.md)、[排障](./skills/ppt-master/scripts/docs/troubleshooting.md)
 
 ---
 

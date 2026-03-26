@@ -84,7 +84,12 @@ Output: Two files are generated automatically:
 | 🖼️ [Image Embedding Guide](./skills/ppt-master/references/svg-image-embedding.md) | SVG image embedding best practices |
 | 📊 [Chart Template Library](./skills/ppt-master/templates/charts/) | Standardized chart templates |
 | 🔧 [Role Definitions](./skills/ppt-master/references/) | Role definitions and technical references |
-| 🛠️ [Toolset](./skills/ppt-master/scripts/README.md) | Usage instructions for all tools |
+| 🛠️ [Toolset](./skills/ppt-master/scripts/README.md) | Script index and high-frequency commands |
+| ↳ [Conversion Docs](./skills/ppt-master/scripts/docs/conversion.md) | PDF / DOCX / web conversion tools |
+| ↳ [Project Docs](./skills/ppt-master/scripts/docs/project.md) | Project init, validation, and indexing |
+| ↳ [SVG Pipeline Docs](./skills/ppt-master/scripts/docs/svg-pipeline.md) | Finalize, validate, notes, and PPTX export |
+| ↳ [Image Docs](./skills/ppt-master/scripts/docs/image.md) | Image generation and image analysis tools |
+| ↳ [Troubleshooting Docs](./skills/ppt-master/scripts/docs/troubleshooting.md) | Validation, preview, export, and dependency issues |
 | 💼 [Examples Index](./examples/README.md) | 15 projects, 229 SVG pages of examples |
 
 ---
@@ -174,9 +179,33 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 ### 5. AI Image Generation (Optional)
 
-The `image_gen.py` tool generates high-quality images via Gemini or OpenAI-compatible APIs directly within AI clients. Choose one of the following configuration methods:
+The `image_gen.py` tool supports multiple providers, but the recommended set is intentionally kept small.
 
-#### Option A: Using `.env` file (Recommended)
+- Core recommended: `gemini`, `openai`, `qwen`, `zhipu`, `volcengine`
+- Extended: `stability`, `bfl` (FLUX), `ideogram`
+- Experimental: `siliconflow`, `fal`, `replicate`
+
+To inspect the current support tiers in the CLI:
+
+```bash
+python3 skills/ppt-master/scripts/image_gen.py --list-backends
+```
+
+Image generation accepts configuration from either of these sources:
+
+1. Current process environment variables
+2. Project-root `.env` file as a fallback
+
+Precedence:
+- Current process environment wins
+- `.env` only fills values that are not already present
+
+One rule is mandatory:
+- `IMAGE_BACKEND` must be set explicitly
+
+The tool does **not** guess a provider from API keys, and it does **not** default to Gemini.
+
+#### Option A: Configure `.env`
 
 ```bash
 cp .env.example .env
@@ -186,30 +215,49 @@ Edit the `.env` file with your configuration:
 
 ```env
 IMAGE_BACKEND=gemini
-IMAGE_API_KEY=your-api-key
+GEMINI_API_KEY=your-api-key
+GEMINI_MODEL=gemini-3.1-flash-image-preview
 ```
 
 > `.env` is already in `.gitignore` and will not be committed to the repository, so your keys stay safe.
 
-#### Option B: Using environment variables
+#### Option B: Use current process environment variables
 
 ```bash
-# Backend selection: "gemini" (default) or "openai"
-export IMAGE_BACKEND="gemini"
-
-# Required: API key for the selected backend
-export IMAGE_API_KEY="your-api-key"
-
-# Optional: Custom API endpoint (for proxy services or local models)
-export IMAGE_BASE_URL="https://your-proxy-url.com/v1beta"
-
-# Optional: Model name override
-export IMAGE_MODEL="gemini-3.1-flash-image-preview"
+export IMAGE_BACKEND=gemini
+export GEMINI_API_KEY=your-api-key
+export GEMINI_MODEL=gemini-3.1-flash-image-preview
+python3 skills/ppt-master/scripts/image_gen.py "abstract tech background"
 ```
 
-> 💡 **Persist settings**: Add the `export` commands above to `~/.zshrc` (macOS/Linux zsh) or `~/.bashrc` (Linux bash), then restart your terminal.
+This is useful for CI, containers, secret managers, and one-off local runs.
 
-> 💡 **Legacy support**: `GEMINI_API_KEY` / `GEMINI_BASE_URL` and `OPENAI_API_KEY` / `OPENAI_BASE_URL` still work for backward compatibility. If `IMAGE_BACKEND` is not set, the system auto-detects based on available keys.
+Important:
+- The script reads the current process environment, not your shell startup files in the abstract
+- If a tool launches a non-interactive shell and your `~/.bashrc` or `~/.zshrc` is not sourced, those exports may not be visible
+- In that situation, `.env` is usually the more stable local choice
+
+> 💡 **Provider-specific config**: Put credentials and overrides in provider namespaces such as `GEMINI_API_KEY`, `GEMINI_MODEL`, `GEMINI_BASE_URL`, `OPENAI_API_KEY`, `QWEN_MODEL`, `ZHIPU_MODEL`, `VOLCENGINE_API_KEY`, and `REPLICATE_API_TOKEN`.
+
+> 💡 **No global image credentials**: `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally not supported. Use provider-specific variables only.
+
+> 💡 **Multi-provider setup**: You can keep multiple providers in one `.env` or environment, but `IMAGE_BACKEND` must explicitly select the active one.
+
+Example:
+
+```env
+IMAGE_BACKEND=zhipu
+
+GEMINI_API_KEY=your-gemini-key
+GEMINI_MODEL=gemini-3.1-flash-image-preview
+
+ZHIPU_API_KEY=your-zhipu-key
+ZHIPU_MODEL=glm-image
+```
+
+Switch providers by changing `IMAGE_BACKEND` only.
+
+> 💡 **Recommendation**: Prefer the core backends unless you have a clear reason to use an extended or experimental provider.
 
 > 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `skills/ppt-master/scripts/gemini_watermark_remover.py`.
 
@@ -261,7 +309,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 # Default transition: fade (0.5s). Disable with: -t none
 ```
 
-> 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)
+> 📖 For script docs, start with [Tools Usage Guide](./skills/ppt-master/scripts/README.md), then jump to [Conversion](./skills/ppt-master/scripts/docs/conversion.md), [Project](./skills/ppt-master/scripts/docs/project.md), [SVG Pipeline](./skills/ppt-master/scripts/docs/svg-pipeline.md), [Image](./skills/ppt-master/scripts/docs/image.md), or [Troubleshooting](./skills/ppt-master/scripts/docs/troubleshooting.md)
 
 ---
 

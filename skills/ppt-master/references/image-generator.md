@@ -239,24 +239,40 @@ python3 scripts/image_gen.py "your prompt" \
 | `--image_size` | - | Size (`1K`/`2K`/`4K`) | `1K` |
 | `--output` | `-o` | Output directory | Current directory |
 | `--filename` | `-f` | Output filename (no extension) | Auto-named |
-| `--backend` | `-b` | Override backend (`gemini`/`openai`) | Auto-detect |
+| `--backend` | `-b` | Override backend (`gemini`/`openai`/`stability`/`bfl`/`ideogram`/`qwen`/`zhipu`/`volcengine`/`siliconflow`/`fal`/`replicate`) | None |
 | `--model` | `-m` | Model name | Backend default |
+| `--list-backends` | - | Print support tiers and exit | `false` |
 
-**Environment variables**:
+**Configuration sources**:
+- Current process environment variables
+- Project-root `.env` as fallback
+
+Precedence:
+- Current process environment wins
+- `.env` fills missing values only
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `IMAGE_BACKEND` | Optional | `gemini` or `openai` (auto-detect if not set) |
-| `IMAGE_API_KEY` | Required | API key for the selected backend |
-| `IMAGE_BASE_URL` | Optional | Custom API endpoint (proxy / local models) |
-| `IMAGE_MODEL` | Optional | Model name override |
+| `IMAGE_BACKEND` | Required | `gemini` / `openai` / `stability` / `bfl` / `ideogram` / `qwen` / `zhipu` / `volcengine` / `siliconflow` / `fal` / `replicate` |
+| `{PROVIDER}_API_KEY` | Required | Provider-specific API key, e.g. `GEMINI_API_KEY`, `ZHIPU_API_KEY` |
+| `{PROVIDER}_BASE_URL` | Optional | Provider-specific custom endpoint |
+| `{PROVIDER}_MODEL` | Optional | Provider-specific model override |
 
-> Legacy: `GEMINI_API_KEY` / `GEMINI_BASE_URL` still work for backward compatibility.
+> Use provider-specific names only: `GEMINI_API_KEY`, `OPENAI_API_KEY`, `STABILITY_API_KEY`, `BFL_API_KEY`, `IDEOGRAM_API_KEY`, `QWEN_API_KEY` / `DASHSCOPE_API_KEY`, `ZHIPU_API_KEY` / `BIGMODEL_API_KEY`, `VOLCENGINE_API_KEY` / `ARK_API_KEY`, `SILICONFLOW_API_KEY`, `FAL_KEY`, and `REPLICATE_API_TOKEN`.
+
+> `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
+
+> If `.env` or the current environment contains multiple provider configs, `IMAGE_BACKEND` explicitly selects the active one.
+
+**Support tiers (recommended usage)**:
+- Core: `gemini`, `openai`, `qwen`, `zhipu`, `volcengine`
+- Extended: `stability`, `bfl`, `ideogram`
+- Experimental: `siliconflow`, `fal`, `replicate`
 
 **Generation pacing (mandatory)**:
 - Execute only one generation command at a time; wait for file confirmation before the next
 - Recommend 2-5 second intervals between images to avoid concurrency failures
-- If failure/no output occurs, halt the queue, check environment variables and output directory, then resume
+- If failure/no output occurs, halt the queue, check `IMAGE_BACKEND`, provider-specific credentials, and the output directory, then resume
 
 #### Method 2: Auto-generation
 

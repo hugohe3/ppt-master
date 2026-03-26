@@ -43,7 +43,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ## Architecture
 
 - `skills/ppt-master/references/` — AI role definitions and technical specifications
-- `skills/ppt-master/scripts/` — 28 tool scripts
+- `skills/ppt-master/scripts/` — Runnable tool scripts
+- `skills/ppt-master/scripts/docs/` — Topic-focused script docs
 - `skills/ppt-master/templates/` — Layout templates, chart templates, 640+ vector icons
 - `examples/` — Example projects
 - `projects/` — User project workspace

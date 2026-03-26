@@ -32,12 +32,12 @@ import shutil
 import argparse
 from pathlib import Path
 
-# Import utility modules from the same directory
+# Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
-from embed_icons import process_svg_file as embed_icons_in_file
-from embed_images import embed_images_in_svg
-from fix_image_aspect import fix_image_aspect_in_svg
-from crop_images import process_svg_images as crop_images_in_svg
+from svg_finalize.crop_images import process_svg_images as crop_images_in_svg
+from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
+from svg_finalize.embed_images import embed_images_in_svg
+from svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
 
 
 def safe_print(text):
@@ -53,7 +53,7 @@ def safe_print(text):
 def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
     """Flatten text in a single SVG file (in-place modification)"""
     try:
-        from flatten_tspan import flatten_text_with_tspans
+        from svg_finalize.flatten_tspan import flatten_text_with_tspans
         from xml.etree import ElementTree as ET
 
         tree = ET.parse(str(svg_file))
@@ -73,7 +73,7 @@ def process_flatten_text(svg_file: Path, verbose: bool = False) -> bool:
 def process_rounded_rect(svg_file: Path, verbose: bool = False) -> int:
     """Convert rounded rectangles in a single SVG file (in-place modification)"""
     try:
-        from svg_rect_to_path import process_svg
+        from svg_finalize.svg_rect_to_path import process_svg
 
         with open(svg_file, 'r', encoding='utf-8') as f:
             content = f.read()

@@ -4,12 +4,12 @@ SVG Image Embedding Tool
 Converts externally referenced images in SVG files to Base64 inline format.
 
 Usage:
-    python3 embed_images.py <svg_file> [svg_file2] ...
-    python3 embed_images.py *.svg
+    python3 scripts/svg_finalize/embed_images.py <svg_file> [svg_file2] ...
+    python3 scripts/svg_finalize/embed_images.py *.svg
 
 Examples:
-    python3 embed_images.py examples/ppt169_demo/svg_output/01_cover.svg
-    python3 embed_images.py examples/ppt169_demo/svg_output/*.svg
+    python3 scripts/svg_finalize/embed_images.py examples/ppt169_demo/svg_output/01_cover.svg
+    python3 scripts/svg_finalize/embed_images.py examples/ppt169_demo/svg_output/*.svg
 """
 
 import os
