@@ -494,7 +494,7 @@ def create_slide_xml_with_svg(
     svg_rid: str,
     width_emu: int,
     height_emu: int,
-    transition: Optional[str] = None,
+    transition: Optional[str] = 'fade',
     transition_duration: float = 0.5,
     auto_advance: Optional[float] = None,
     use_compat_mode: bool = True
@@ -617,7 +617,7 @@ def create_pptx_with_native_svg(
     output_path: Path,
     canvas_format: Optional[str] = None,
     verbose: bool = True,
-    transition: Optional[str] = None,
+    transition: Optional[str] = 'fade',
     transition_duration: float = 0.5,
     auto_advance: Optional[float] = None,
     use_compat_mode: bool = True,
@@ -633,8 +633,8 @@ def create_pptx_with_native_svg(
         output_path: Output path
         canvas_format: Canvas format
         verbose: Whether to output detailed information
-        transition: Transition effect (fade/push/wipe/split/reveal/cover/random)
-        transition_duration: Transition duration (seconds)
+        transition: Transition effect (fade/push/wipe/split/strips/cover/random, default: fade)
+        transition_duration: Transition duration in seconds (default: 0.4)
         auto_advance: Auto-advance interval (seconds)
         use_compat_mode: Use Office compatibility mode (PNG + SVG dual format, enabled by default)
         notes: Notes dictionary, key is slide number, value is notes content
@@ -964,7 +964,7 @@ def create_pptx_with_native_svg(
 
 def main():
     # Build transition effect option list
-    transition_choices = list(TRANSITIONS.keys()) if TRANSITIONS else ['fade', 'push', 'wipe', 'split', 'reveal', 'cover', 'random']
+    transition_choices = ['none'] + (list(TRANSITIONS.keys()) if TRANSITIONS else ['fade', 'push', 'wipe', 'split', 'strips', 'cover', 'random'])
 
     parser = argparse.ArgumentParser(
         description='PPT Master - SVG to PPTX Tool (Office Compatibility Mode)',
@@ -976,8 +976,8 @@ Examples:
     %(prog)s examples/ppt169_demo --only legacy   # Only SVG image version
     %(prog)s examples/ppt169_demo -o out.pptx     # Explicit path (SVG ref → out_svg.pptx)
 
-    # Add page transition effects
-    %(prog)s examples/ppt169_demo --transition fade
+    # Disable transition / change transition effect
+    %(prog)s examples/ppt169_demo -t none
     %(prog)s examples/ppt169_demo -t push --transition-duration 1.0
 
 SVG source directory (-s):
@@ -1023,9 +1023,9 @@ Speaker notes (enabled by default):
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
 
     # Transition effect arguments
-    parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
-                        help='Page transition effect (default: none)')
-    parser.add_argument('--transition-duration', type=float, default=0.5,
+    parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default='fade',
+                        help='Page transition effect (default: fade, use "none" to disable)')
+    parser.add_argument('--transition-duration', type=float, default=0.4,
                         help='Transition duration in seconds (default: 0.5)')
     parser.add_argument('--auto-advance', type=float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
@@ -1092,12 +1092,15 @@ Speaker notes (enabled by default):
     if enable_notes:
         notes = find_notes_files(project_path, svg_files)
 
+    # Convert 'none' string to None for downstream logic
+    transition = args.transition if args.transition != 'none' else None
+
     # Shared args for both runs
     shared_kwargs = dict(
         svg_files=svg_files,
         canvas_format=canvas_format,
         verbose=verbose,
-        transition=args.transition,
+        transition=transition,
         transition_duration=args.transition_duration,
         auto_advance=args.auto_advance,
         use_compat_mode=not args.no_compat,

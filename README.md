@@ -239,6 +239,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 # Default: generates two files — native shapes (.pptx) + SVG reference (_svg.pptx)
 # Use --only native  to skip SVG reference version
 # Use --only legacy  to only generate SVG image version
+# Default transition: fade (0.5s). Disable with: -t none
 ```
 
 > 📖 For complete tool documentation, see [Tools Usage Guide](./skills/ppt-master/scripts/README.md)
