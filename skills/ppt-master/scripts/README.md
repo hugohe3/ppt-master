@@ -600,8 +600,11 @@ python3 scripts/svg_to_pptx.py <project_path> -s final -o output.pptx
 # Disable speaker notes
 python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
 
-# Add slide transition effects
-python3 scripts/svg_to_pptx.py <project_path> -t fade --transition-duration 1.0
+# Disable default fade transition
+python3 scripts/svg_to_pptx.py <project_path> -t none
+
+# Use a different transition effect
+python3 scripts/svg_to_pptx.py <project_path> -t push --transition-duration 1.0
 
 # Silent mode
 python3 scripts/svg_to_pptx.py <project_path> -s final -q
@@ -624,19 +627,20 @@ The tool automatically reads Markdown note files from the `notes/` directory and
 
 | Parameter | Description | Options |
 |-----------|-------------|---------|
-| `-t`, `--transition` | Slide transition effect | fade, push, wipe, split, reveal, cover, random |
-| `--transition-duration` | Transition duration in seconds (default 0.5) | Any positive number |
+| `-t`, `--transition` | Slide transition effect (default: fade) | none, fade, push, wipe, split, strips, cover, random |
+| `--transition-duration` | Transition duration in seconds (default: 0.5) | Any positive number |
 | `--auto-advance` | Auto-advance interval in seconds | Any positive number |
 
 **Transition Effects**:
 
 | Effect | Description |
 |--------|-------------|
-| fade | Fade in/out |
+| none | No transition |
+| fade | Fade in/out (default) |
 | push | Push |
 | wipe | Wipe |
 | split | Split |
-| reveal | Reveal |
+| strips | Strips (diagonal wipe) |
 | cover | Cover |
 | random | Random |
 
@@ -651,12 +655,12 @@ The tool automatically reads Markdown note files from the `notes/` directory and
 **Examples**:
 
 ```bash
-# Recommended workflow: post-process first, then export (with transition effects)
+# Recommended workflow: post-process first, then export (fade transition applied by default)
 python3 scripts/finalize_svg.py examples/ppt169_demo
-python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final -t fade
+python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final
 
-# Auto-play presentation (3-second transitions)
-python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final -t fade --auto-advance 3
+# Auto-play presentation (3-second auto-advance)
+python3 scripts/svg_to_pptx.py examples/ppt169_demo -s final --auto-advance 3
 ```
 
 **Dependencies**:

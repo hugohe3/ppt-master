@@ -9,7 +9,8 @@ Supported transition effects:
     - push: Push
     - wipe: Wipe
     - split: Split
-    - reveal: Reveal
+    - strips: Strips (diagonal wipe)
+    - cover: Cover
     - random: Random
 
 Supported entrance animations:
@@ -49,10 +50,10 @@ TRANSITIONS: Dict[str, Dict[str, Any]] = {
         'element': 'split',
         'attrs': {'orient': 'horz', 'dir': 'out'},
     },
-    'reveal': {
-        'name': 'Reveal',
+    'strips': {
+        'name': 'Strips',
         'element': 'strips',
-        'attrs': {'dir': 'rd'},  # Reveal from bottom-right
+        'attrs': {'dir': 'rd'},  # Diagonal wipe from bottom-right
     },
     'cover': {
         'name': 'Cover',
@@ -66,24 +67,6 @@ TRANSITIONS: Dict[str, Dict[str, Any]] = {
     },
 }
 
-# Speed mapping (seconds -> OOXML speed values)
-SPEED_MAP = {
-    'slow': 1.0,
-    'med': 0.5,
-    'fast': 0.25,
-}
-
-
-def duration_to_speed(duration: float) -> str:
-    """Convert duration (seconds) to an OOXML speed value"""
-    if duration >= 0.75:
-        return 'slow'
-    elif duration >= 0.35:
-        return 'med'
-    else:
-        return 'fast'
-
-
 def create_transition_xml(
     effect: str = 'fade',
     duration: float = 0.5,
@@ -93,8 +76,8 @@ def create_transition_xml(
     Generate a slide transition effect XML fragment
 
     Args:
-        effect: Transition effect name (fade/push/wipe/split/reveal/cover/random)
-        duration: Transition duration (seconds)
+        effect: Transition effect name (fade/push/wipe/split/strips/cover/random)
+        duration: Transition duration (seconds, precise to milliseconds)
         advance_after: Auto-advance interval (seconds); None means manual advance
 
     Returns:
@@ -107,8 +90,9 @@ def create_transition_xml(
     element_name = trans_info['element']
     attrs = trans_info['attrs']
 
-    # Build speed attribute
-    speed = duration_to_speed(duration)
+    # Build dur attribute (milliseconds, precise control)
+    dur_ms = int(duration * 1000)
+    dur_attr = f' dur="{dur_ms}"'
 
     # Build auto-advance attribute
     adv_attr = ''
@@ -122,7 +106,7 @@ def create_transition_xml(
         effect_attrs = ' ' + effect_attrs
 
     # Generate XML
-    return f'''  <p:transition spd="{speed}"{adv_attr}>
+    return f'''  <p:transition{dur_attr}{adv_attr}>
     <p:{element_name}{effect_attrs}/>
   </p:transition>'''
 
@@ -277,7 +261,7 @@ def get_animation_help() -> str:
 
 if __name__ == '__main__':
     # Test output
-    print("=== Transition Effect XML Example (fade) ===")
+    print("=== Transition Effect XML Example (fade, 500ms) ===")
     print(create_transition_xml('fade', 0.5))
     print()
     print("=== Entrance Animation XML Example (fade) ===")

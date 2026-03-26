@@ -234,6 +234,7 @@ python3 skills/ppt-master/scripts/finalize_svg.py <项目路径>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 # 默认生成两个文件：原生可编辑形状 (.pptx) + SVG 图片参考版 (_svg.pptx)
 # 仅生成原生版：--only native    仅生成 SVG 图片版：--only legacy
+# 默认自带 fade 切换效果（0.5s），禁用切换：-t none
 
 ```
 
