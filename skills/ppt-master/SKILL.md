@@ -41,6 +41,7 @@ description: >
 | `${SKILL_DIR}/scripts/project_manager.py` | Project init / validate / manage |
 | `${SKILL_DIR}/scripts/analyze_images.py` | Image analysis |
 | `${SKILL_DIR}/scripts/nano_banana_gen.py` | AI image generation (Gemini API) |
+| `${SKILL_DIR}/scripts/openai_image_gen.py` | AI image generation (Gemini API) |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
 | `${SKILL_DIR}/scripts/finalize_svg.py` | SVG post-processing (unified entry) |
@@ -196,8 +197,14 @@ Read `references/image-generator.md`
 1. Extract all images with status "pending generation" from the design spec
 2. Generate prompt document → `<project_path>/images/image_prompts.md`
 3. Generate images (CLI tool recommended):
+  if user prefer to use gemini nano banana model:
    ```bash
    python3 ${SKILL_DIR}/scripts/nano_banana_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+   ```
+
+  if user prefer to use openai compatible model:
+   ```bash
+   python3 ${SKILL_DIR}/scripts/openai_image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
    ```
 
 **✅ Checkpoint — Confirm all images are ready, proceed to Step 6**:

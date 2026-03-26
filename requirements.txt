@@ -49,3 +49,5 @@ beautifulsoup4>=4.12.0
 # ─────────────────────────────────────────────────────────────
 # 用于调用 Google Gemini API 生成高质量图片（需要 API Key）
 google-genai>=1.0.0
+openai
+python-dotenv

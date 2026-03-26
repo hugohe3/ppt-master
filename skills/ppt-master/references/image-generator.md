@@ -222,9 +222,16 @@ For each image with "Pending" status:
 > Prerequisite: Section 4.2 must be complete; `images/image_prompts.md` must exist
 
 #### Method 1: Nano Banana CLI Tool (Recommended)
-
+if user prefer to use gemini nano banana model:
 ```bash
 python3 scripts/nano_banana_gen.py "your prompt" \
+  --aspect_ratio 16:9 --image_size 1K \
+  --output project/images --filename cover_bg
+```
+
+if user prefer to use openai compatible model:
+```bash
+python3 scripts/openai_image_gen.py "your prompt" \
   --aspect_ratio 16:9 --image_size 1K \
   --output project/images --filename cover_bg
 ```

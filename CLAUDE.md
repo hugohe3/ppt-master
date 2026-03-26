@@ -24,6 +24,7 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 # Image tools
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
 python3 skills/ppt-master/scripts/nano_banana_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+python3 skills/ppt-master/scripts/openai_image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 
 # SVG quality check
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>

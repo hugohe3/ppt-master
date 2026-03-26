@@ -19,14 +19,16 @@ Dependencies:
   pip install google-genai Pillow
 """
 
+import base64
+import io
 import os
 from pathlib import Path
 import sys
 import time
 import argparse
-from google import genai
-from google.genai import types
+import openai
 import dotenv
+
 
 # Optional dependency: PIL (used to report image resolution)
 try:
@@ -56,7 +58,7 @@ VALID_ASPECT_RATIOS = [
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 # Default model
-DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
+DEFAULT_MODEL = "Q_IMG"
 
 # Retry configuration
 MAX_RETRIES = 3          # Maximum number of retries
@@ -149,32 +151,14 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         RuntimeError: When generation fails
     """
     # Create client based on whether base_url is provided
-    if base_url:
-        client = genai.Client(api_key=api_key, http_options={'base_url': base_url})
-    else:
-        client = genai.Client(api_key=api_key)
+    client = openai.Client(api_key=api_key, base_url=base_url)
 
     # Build prompt
     final_prompt = prompt
     if negative_prompt:
         final_prompt += f"\n\nNegative prompt: {negative_prompt}"
 
-    config_kwargs = {
-        "response_modalities": ["IMAGE"],
-        "image_config": types.ImageConfig(
-            aspect_ratio=aspect_ratio,
-            image_size=image_size,
-        ),
-    }
-    # ThinkingConfig is only supported by flash series models
-    if "flash" in model.lower():
-        config_kwargs["thinking_config"] = types.ThinkingConfig(
-            thinking_level="MINIMAL",
-        )
-    config = types.GenerateContentConfig(**config_kwargs)
 
-    mode_label = "Proxy Mode" if base_url else "Official Mode"
-    print(f"[{mode_label}]")
     if base_url:
         print(f"  Base URL:     {base_url}")
     print(f"  Model:        {model}")
@@ -201,43 +185,23 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     hb_thread = threading.Thread(target=_heartbeat, daemon=True)
     hb_thread.start()
 
-    last_image_data = None  # (PIL.Image or bytes, mime_type)
-    chunk_count = 0
-    total_bytes = 0
-
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=[final_prompt],
-        config=config,
-    ):
-        elapsed = time.time() - start_time
-
-        if chunk.parts is None:
-            continue
-
-        for part in chunk.parts:
-            if part.text is not None:
-                print(f"\n  Model says: {part.text}", end="", flush=True)
-            elif part.inline_data is not None:
-                chunk_count += 1
-                data_size = len(part.inline_data.data) if part.inline_data.data else 0
-                total_bytes += data_size
-                size_str = f"{data_size / 1024:.0f}KB" if data_size < 1048576 else f"{data_size / 1048576:.1f}MB"
-                print(f"\n  📦 Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
-                last_image_data = part
-
+    resp = client.images.generate(
+        prompt=final_prompt,
+        model=DEFAULT_MODEL,
+        # output_format="png",
+        size=image_size,
+    )
+    
     # Stop heartbeat
     heartbeat_stop.set()
     hb_thread.join(timeout=1)
 
     elapsed = time.time() - start_time
-    print(f"\n  ✅ Stream complete ({elapsed:.1f}s, {chunk_count} chunk(s), {total_bytes / 1024:.0f}KB total)")
+    print(f"\n  ✅ Image generate complete ({elapsed:.1f}s")
 
-    if last_image_data is not None and last_image_data.inline_data is not None:
-        if chunk_count > 1:
-            print(f"  Keeping the final chunk (highest quality).")
-        image = last_image_data.as_image()
+    if resp is not None and resp.data:
         path = _resolve_output_path(prompt, output_dir, filename, ".png")
+        image = PILImage.open(io.BytesIO(base64.b64decode(resp.data[0].b64_json)))
         image.save(path)
         print(f"File saved to: {path}")
         _report_resolution(path)
@@ -281,11 +245,12 @@ def generate(prompt: str, negative_prompt: str = None,
         ValueError: When parameters are invalid
         RuntimeError: When generation fails after all retries are exhausted
     """
-    api_key = os.environ.get("GEMINI_API_KEY")
-    base_url = os.environ.get("GEMINI_BASE_URL")
+    api_key = os.environ.get("OPENAI_API_KEY")
+    base_url = os.environ.get("OPENAI_BASE_URL")
+    model = os.environ.get("OPENAI_IMAGE_MODEL", DEFAULT_MODEL)
 
     if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set.")
+        raise ValueError("OPENAI_API_KEY environment variable is not set.")
 
     # Case-insensitive normalization
     image_size = _normalize_image_size(image_size)
@@ -324,10 +289,10 @@ def generate(prompt: str, negative_prompt: str = None,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Generate images using Gemini Nano Banana."
+        description="Generate images using OpenAI compatible models."
     )
     parser.add_argument(
-        "prompt", nargs="?", default="Nano Banana",
+        "prompt", nargs="?", default="a cat",
         help="The text prompt for image generation."
     )
     parser.add_argument(

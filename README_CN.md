@@ -154,6 +154,7 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 ### 5. Gemini 生图配置（可选）
 
+#### 使用 Nano Banana
 本项目的 `nano_banana_gen.py` 可通过 Gemini API 在 AI 客户端中直接生成高质量配图。使用前需配置环境变量：
 
 ```bash
@@ -162,6 +163,17 @@ export GEMINI_API_KEY="your-api-key"
 
 # 可选：自定义 API 端点（用于代理服务）
 export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
+```
+
+#### 使用 OpenAI Compatible
+本项目的 `openai_image_gen.py` 可通过 OpenAI Compatible API 在 AI 客户端中直接生成高质量配图。使用前需配置环境变量：
+
+```bash
+# 必需：OpenAI API Key
+export OPENAI_API_KEY="your-api-key"
+
+# 可选：自定义 API 端点
+export OPENAI_BASE_URL="https://your-proxy-url.com/v1beta"
 ```
 
 > 💡 **持久化**：将上述 `export` 命令添加到 `~/.zshrc`（macOS/Linux zsh）或 `~/.bashrc`（Linux bash）中，重启终端即可永久生效。
