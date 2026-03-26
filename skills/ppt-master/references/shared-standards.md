@@ -100,7 +100,8 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 - NEVER use `cp` as a substitute for `finalize_svg.py`
 - NEVER export directly from `svg_output/` — MUST export from `svg_final/` (use `-s final`)
 - NEVER add extra flags like `--only`
-- After Optimizer optimization, re-run all three steps
+
+**Re-run rule**: Any modification to `svg_output/` after post-processing has completed (including page revisions, additions, or deletions) requires re-running Steps 2 and 3. Step 1 only needs re-running if `notes/total.md` was also modified.
 
 ---
 

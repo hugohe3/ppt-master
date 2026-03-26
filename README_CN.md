@@ -72,10 +72,6 @@
     ├── presentation.pptx        ← 原生形状版（DrawingML）— 推荐用于编辑与交付
     └── presentation_svg.pptx   ← SVG 参考版 — 像素级视觉参考；在 PowerPoint 中选中内容
                                     后使用"转换为形状"可解锁单独元素的编辑
-    ↓
-[Optimizer_CRAP] 优化师（可选，初版后不满意再用）
-    ↓
-如有优化：重新运行后处理与导出
 ```
 
 ### 📚 文档导航
@@ -257,13 +253,6 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 - **Executor_General**: 通用场景，灵活布局
 - **Executor_Consultant**: 一般咨询，数据可视化
 - **Executor_Consultant_Top**: 顶级咨询（MBB 级），5 大核心技巧
-
-</details>
-
-<details>
-<summary><b>Q: 必须使用 Optimizer_CRAP 吗？</b></summary>
-
-不是必须的。仅在需要优化关键页面视觉效果时使用。
 
 </details>
 

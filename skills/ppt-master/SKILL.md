@@ -274,22 +274,6 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 
 ---
 
-### Step 8: Optimizer Phase (Optional)
-
-🚧 **GATE**: Step 7 complete.
-
-> **Trigger condition**: User requests optimization, or design quality needs improvement
-
-Read `references/optimizer-crap.md`
-
-1. Optimizer analyzes and optimizes the specified SVG files in `svg_output/`
-2. Optimized files are saved with `yh_` prefix in `svg_output/`
-3. After all optimizations are complete, **MUST re-run the entire post-processing pipeline** (Step 7.1 → 7.2 → 7.3), following the same sequential execution rules as Step 7
-
-> ⚠️ Do NOT skip re-processing — optimized SVGs still need icon embedding, image processing, and PPTX export.
-
----
-
 ## Role Switching Protocol
 
 Before switching roles, you **MUST first read** the corresponding reference file — skipping is FORBIDDEN. Output marker:
@@ -316,5 +300,4 @@ Before switching roles, you **MUST first read** the corresponding reference file
 ## Notes
 
 - Do NOT add extra flags like `--only` to the post-processing commands — run them as-is
-- If Optimizer optimization was performed, re-run post-processing and export
 - Local preview: `python3 -m http.server -d <project_path>/svg_final 8000`
