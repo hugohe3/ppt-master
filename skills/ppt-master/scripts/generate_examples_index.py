@@ -188,7 +188,6 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     content.append("## [Resources] Related Resources\n")
     content.append("- [Quick Start](../README.md)")
     content.append("- [Workflow Tutorial](../../AGENTS.md)")
-    content.append("- [Design Guidelines](../references/design-guidelines.md)")
     content.append("- [Canvas Formats](../references/canvas-formats.md)")
     content.append("- [Role Definitions](../references/)")
     content.append("- [Chart Templates](../templates/charts/README.md)\n")

@@ -84,7 +84,6 @@ If optimized: re-run post-processing and export
 |----------|-------------|
 | 🧭 [AGENTS.md](./AGENTS.md) | Repository-level entry overview for general AI agents |
 | 📖 [SKILL.md](./skills/ppt-master/SKILL.md) | Canonical `ppt-master` workflow and rules |
-| 🎨 [Design Guidelines](./skills/ppt-master/references/design-guidelines.md) | Colors, typography, and layout specifications |
 | 📐 [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT, Xiaohongshu (RED), WeChat Moments, and 10+ formats |
 | 🖼️ [Image Embedding Guide](./skills/ppt-master/references/svg-image-embedding.md) | SVG image embedding best practices |
 | 📊 [Chart Template Library](./skills/ppt-master/templates/charts/) | Standardized chart templates |

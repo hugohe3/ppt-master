@@ -104,7 +104,146 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 
 ---
 
-## 6. Project Directory Structure
+## 6. Shadow & Overlay Techniques
+
+> `<mask>` elements and `<image opacity="...">` are banned. Always use stacked `<rect>` or gradient overlays instead (see §2).
+
+### Shadow
+
+#### Filter Soft Shadow — Recommended
+
+Best for: cards, floating panels, elevated elements. `svg_to_shapes.py` automatically converts `feGaussianBlur` + `feOffset` into native PPTX `<a:outerShdw>`.
+
+```xml
+<defs>
+  <filter id="softShadow" x="-15%" y="-15%" width="140%" height="140%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+    <feOffset dx="0" dy="4" result="offsetBlur"/>
+    <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+    <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+    <feMerge>
+      <feMergeNode in="shadow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+<rect x="60" y="60" width="400" height="240" rx="12" fill="#FFFFFF" filter="url(#softShadow)"/>
+```
+
+Recommended parameters:
+```
+stdDeviation:   6–10     (smaller = crisper, larger = softer)
+flood-opacity:  0.06–0.12  (keep low for a premium feel)
+dy:             3–6      (vertical > horizontal for natural top-light)
+dx:             0–2
+```
+
+#### Colored Shadow
+
+Best for: accent buttons, brand-colored cards. Use the element's own color family instead of black.
+
+```xml
+<filter id="colorShadow" x="-15%" y="-15%" width="140%" height="140%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+  <feOffset dx="0" dy="6" result="offsetBlur"/>
+  <feFlood flood-color="#1A73E8" flood-opacity="0.20" result="shadowColor"/>
+  <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+  <feMerge>
+    <feMergeNode in="shadow"/>
+    <feMergeNode in="SourceGraphic"/>
+  </feMerge>
+</filter>
+```
+
+Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.12–0.20.
+
+#### Layered Rect Shadow — High-Compatibility Fallback
+
+Best for: maximum compatibility with older PowerPoint versions. Stack 2–3 semi-transparent rectangles behind the main card:
+
+```xml
+<!-- Shadow layers (back to front, largest offset first) -->
+<rect x="68" y="72" width="400" height="240" rx="16" fill="#000000" fill-opacity="0.03"/>
+<rect x="65" y="69" width="400" height="240" rx="14" fill="#000000" fill-opacity="0.05"/>
+<rect x="62" y="66" width="400" height="240" rx="12" fill="#1A73E8" fill-opacity="0.04"/>
+<!-- Main card -->
+<rect x="60" y="60" width="400" height="240" rx="12" fill="#FFFFFF"/>
+```
+
+### Image Overlay
+
+#### Linear Gradient Overlay — Most Common
+
+Best for: image+text pages. Gradient direction should match text position (text on left → gradient darkens toward left).
+
+```xml
+<image href="..." x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+<defs>
+  <linearGradient id="imgOverlay" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%"   stop-color="#1A1A2E" stop-opacity="0.85"/>
+    <stop offset="55%"  stop-color="#1A1A2E" stop-opacity="0.30"/>
+    <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="0" width="1280" height="720" fill="url(#imgOverlay)"/>
+```
+
+#### Bottom Gradient Bar
+
+Best for: cover slides and full-image pages with bottom title.
+
+```xml
+<defs>
+  <linearGradient id="bottomBar" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%"   stop-color="#000000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.72"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="380" width="1280" height="340" fill="url(#bottomBar)"/>
+```
+
+#### Radial Gradient Overlay — Vignette Effect
+
+Best for: full-screen atmosphere slides; draws attention to the center.
+
+```xml
+<defs>
+  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+    <stop offset="0%"   stop-color="#000000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.58"/>
+  </radialGradient>
+</defs>
+<rect x="0" y="0" width="1280" height="720" fill="url(#vignette)"/>
+```
+
+#### Brand Color Overlay
+
+Best for: slides needing strong visual brand identity.
+
+```xml
+<defs>
+  <linearGradient id="brandOverlay" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%"   stop-color="#005587" stop-opacity="0.80"/>
+    <stop offset="100%" stop-color="#005587" stop-opacity="0.10"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="0" width="1280" height="720" fill="url(#brandOverlay)"/>
+```
+
+### Quick-Reference Table
+
+| Scenario | Recommended Technique | Avoid |
+|----------|-----------------------|-------|
+| Card / panel shadow | Filter soft shadow (`flood-opacity` ≤ 0.12) | Hard black shadow |
+| Accent / CTA button | Colored shadow (same hue family) | Generic gray shadow |
+| Text over image | Linear gradient overlay (direction matches text side) | Uniform flat opacity over whole image |
+| Cover / full-image slide | Bottom gradient bar + brand color | Solid black overlay |
+| Atmosphere / hero slide | Radial vignette | Unprocessed raw image |
+| Max PPT compatibility needed | Layered rect shadow | Filter-based shadow |
+
+---
+
+## 7. Project Directory Structure
 
 ```
 project/

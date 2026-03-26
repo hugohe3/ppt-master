@@ -347,7 +347,6 @@ We welcome your project contributions! Please ensure:
 
 - [Quick Start](../README.md)
 - [Workflow Tutorial](../skills/ppt-master/SKILL.md)
-- [Design Guidelines](../skills/ppt-master/references/design-guidelines.md)
 - [Chart Templates](../skills/ppt-master/templates/charts/)
 - [Icon Library](../skills/ppt-master/templates/icons/) (640+ icons)
 
