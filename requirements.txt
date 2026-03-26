@@ -1,60 +1,72 @@
-# PPT Master 依赖
-# ================
+# PPT Master Dependencies / PPT Master 依赖
+# =============================================
 #
+# Most tools use only the Python standard library. Below are optional dependencies.
 # 大部分工具仅使用 Python 标准库，以下为可选依赖。
 #
-# 安装方式：
+# Install / 安装方式：
 #   pip install -r requirements.txt
 
 # ─────────────────────────────────────────────────────────────
-# SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
+# SVG to PPTX tool / SVG 转 PPTX 工具 (skills/ppt-master/scripts/svg_to_pptx.py)
 # ─────────────────────────────────────────────────────────────
+# Batch-convert SVG files to PowerPoint presentations.
 # 用于将 SVG 文件批量转换为 PowerPoint 演示文稿
+# Uses Office-compatible mode (PNG + SVG dual format) by default, supports all Office versions.
 # 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
 python-pptx>=0.6.21
 
+# Office compatibility dependencies (choose one, CairoSVG preferred)
 # Office 兼容模式依赖（二选一，优先使用 cairosvg）
+# Converts SVG to PNG fallback images for Office LTSC 2021 etc.
 # 用于将 SVG 转换为 PNG 后备图片，确保 Office LTSC 2021 等版本正常显示
 #
-# 方案 A: CairoSVG（推荐，渐变/滤镜完整，约 25MB）
+# Option A / 方案 A: CairoSVG (recommended / 推荐, ~25MB, full gradient/filter support)
 #   pip install cairosvg
-#   macOS 需先: brew install cairo
+#   macOS: brew install cairo
 #
-# 方案 B: svglib（轻量，约 5MB，部分渐变可能丢失）
+# Option B / 方案 B: svglib (lightweight / 轻量, ~5MB, some gradients may be lost)
 svglib>=1.5.0
 reportlab>=4.0.0
 
 # ─────────────────────────────────────────────────────────────
-# PDF 转 Markdown 工具 (skills/ppt-master/scripts/pdf_to_md.py)
+# PDF to Markdown tool / PDF 转 Markdown 工具 (skills/ppt-master/scripts/pdf_to_md.py)
 # ─────────────────────────────────────────────────────────────
+# Converts PDF to Markdown with text, image, and table extraction.
 # 用于将 PDF 文件转换为 Markdown 格式，支持文本、图片、表格提取
 PyMuPDF>=1.23.0
 
 # ─────────────────────────────────────────────────────────────
-# 文档转 Markdown 工具 (skills/ppt-master/scripts/doc_to_md.py)
+# Document to Markdown tool / 文档转 Markdown 工具 (skills/ppt-master/scripts/doc_to_md.py)
 # ─────────────────────────────────────────────────────────────
+# Uses Pandoc to convert DOCX/EPUB/HTML/LaTeX/RST etc. to Markdown.
 # 使用 Pandoc 将 DOCX/EPUB/HTML/LaTeX/RST 等格式转换为 Markdown
+# No Python package dependencies. Requires system-level pandoc:
 # 无 Python 包依赖，需要系统安装 pandoc：
 #   macOS:   brew install pandoc
 #   Ubuntu:  sudo apt install pandoc
 #   Windows: https://pandoc.org/installing.html
 
 # ─────────────────────────────────────────────────────────────
-# 图片处理工具
+# Image processing tools / 图片处理工具
 # ─────────────────────────────────────────────────────────────
+# fix_image_aspect.py - Fix image aspect ratio (prevent stretching during PPT shape conversion)
 # fix_image_aspect.py - 修复图片宽高比（防止 PPT 转形状时拉伸）
+# gemini_watermark_remover.py - Remove watermarks from Gemini-generated images
 # gemini_watermark_remover.py - 去除 Gemini 生成图片的水印
 Pillow>=9.0.0
 numpy>=1.20.0
 
 # ─────────────────────────────────────────────────────────────
-# 网页转 Markdown 工具 (skills/ppt-master/scripts/web_to_md.py)
+# Web to Markdown tool / 网页转 Markdown 工具 (skills/ppt-master/scripts/web_to_md.py)
 # ─────────────────────────────────────────────────────────────
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 
 # ─────────────────────────────────────────────────────────────
-# AI 图片生成工具 (skills/ppt-master/scripts/nano_banana_gen.py)
+# AI image generation tool / AI 图片生成工具 (skills/ppt-master/scripts/image_gen.py)
 # ─────────────────────────────────────────────────────────────
-# 用于调用 Google Gemini API 生成高质量图片（需要 API Key）
+# Gemini backend / Gemini 后端 (IMAGE_BACKEND=gemini)
 google-genai>=1.0.0
+# OpenAI-compatible backend / OpenAI 兼容后端 (IMAGE_BACKEND=openai)
+openai>=1.0.0

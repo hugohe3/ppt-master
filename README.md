@@ -172,21 +172,44 @@ AI: Sure. First we'll confirm whether to use a template; after that Strategist w
 
 > 💡 **AI Lost Context?** Ask the AI to read `skills/ppt-master/SKILL.md` first; use `AGENTS.md` as the repository-level entry overview.
 
-### 5. Gemini Image Generation (Optional)
+### 5. AI Image Generation (Optional)
 
-The `nano_banana_gen.py` tool can generate high-quality images via the Gemini API directly within AI clients. Configure the following environment variables before use:
+The `image_gen.py` tool generates high-quality images via Gemini or OpenAI-compatible APIs directly within AI clients. Choose one of the following configuration methods:
+
+#### Option A: Using `.env` file (Recommended)
 
 ```bash
-# Required: Gemini API Key (obtain from https://aistudio.google.com/apikey)
-export GEMINI_API_KEY="your-api-key"
+cp .env.example .env
+```
 
-# Optional: Custom API endpoint (for proxy services)
-export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
+Edit the `.env` file with your configuration:
+
+```env
+IMAGE_BACKEND=gemini
+IMAGE_API_KEY=your-api-key
+```
+
+> `.env` is already in `.gitignore` and will not be committed to the repository, so your keys stay safe.
+
+#### Option B: Using environment variables
+
+```bash
+# Backend selection: "gemini" (default) or "openai"
+export IMAGE_BACKEND="gemini"
+
+# Required: API key for the selected backend
+export IMAGE_API_KEY="your-api-key"
+
+# Optional: Custom API endpoint (for proxy services or local models)
+export IMAGE_BASE_URL="https://your-proxy-url.com/v1beta"
+
+# Optional: Model name override
+export IMAGE_MODEL="gemini-3.1-flash-image-preview"
 ```
 
 > 💡 **Persist settings**: Add the `export` commands above to `~/.zshrc` (macOS/Linux zsh) or `~/.bashrc` (Linux bash), then restart your terminal.
 
-> 💡 If using the Antigravity proxy, pass the model parameter (`-m gemini-3.1-flash-image`).
+> 💡 **Legacy support**: `GEMINI_API_KEY` / `GEMINI_BASE_URL` and `OPENAI_API_KEY` / `OPENAI_BASE_URL` still work for backward compatibility. If `IMAGE_BACKEND` is not set, the system auto-detects based on available keys.
 
 > 💡 **AI Image Generation Tip**: For AI-generated images, we recommend generating them in [Gemini](https://gemini.google.com/) and selecting **Download full size** for higher resolution. Gemini images have a star watermark in the bottom right corner, which can be removed using [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) or this project's `skills/ppt-master/scripts/gemini_watermark_remover.py`.
 

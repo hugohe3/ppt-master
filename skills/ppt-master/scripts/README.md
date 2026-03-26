@@ -50,7 +50,7 @@ graph TB
         F2[analyze_images.py]
         F3[svg_position_calculator.py]
         F4[config.py]
-        F5[nano_banana_gen.py]
+        F5[image_gen.py]
     end
 
     A1 --> B1
@@ -92,7 +92,7 @@ Source Document → [pdf_to_md / doc_to_md / web_to_md] → Markdown
 | **Export** | `svg_to_pptx.py` | SVG to PowerPoint |
 | **Speaker Notes** | `total_md_split.py` | Speaker notes splitter |
 | **Quality Check** | `svg_quality_checker.py`, `batch_validate.py` | Validate SVG compliance |
-| **Asset Generation** | `nano_banana_gen.py` | Generate high-quality images via Gemini Nano |
+| **Asset Generation** | `image_gen.py` | AI image generation (Gemini / OpenAI) |
 | **Utilities** | `config.py`, `analyze_images.py`, `rotate_images.py` | Configuration and image processing |
 
 ---
@@ -1221,61 +1221,75 @@ pip install Pillow numpy
 
 ---
 
-### 14. nano_banana_gen.py — Nano Banana Image Generation Tool
+### 14. image_gen.py — Unified AI Image Generation Tool
 
-Uses the Google GenAI API to call Gemini models for generating high-quality image assets.
+Generates high-quality images via Gemini or OpenAI-compatible APIs, with automatic backend dispatch.
 
 **Features**:
 
+- **Multi-backend**: Supports Gemini and OpenAI-compatible APIs (including local models)
+- **Auto-detect**: Automatically selects backend based on configured environment variables
 - **High resolution**: Supports up to 4K resolution generation
 - **Custom aspect ratio**: Supports mainstream ratios including `16:9`, `4:3`, `1:1`, `9:16`, etc.
 - **Prompt engineering**: Built-in negative prompt support with automatic quality optimization
-- **Auto-save**: Automatically names and saves output as PNG format based on the prompt
 
 **Usage**:
 
 ```bash
-# Generate a default image
-python3 scripts/nano_banana_gen.py "A modern futuristic workspace"
+# Generate an image
+python3 scripts/image_gen.py "A modern futuristic workspace"
 
 # Specify aspect ratio and size
-python3 scripts/nano_banana_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
+python3 scripts/image_gen.py "Abstract tech background" --aspect_ratio 16:9 --image_size 4K
 
 # Specify output directory
-python3 scripts/nano_banana_gen.py "Concept car" -o projects/demo/images
+python3 scripts/image_gen.py "Concept car" -o projects/demo/images
 
 # Use negative prompt
-python3 scripts/nano_banana_gen.py "Beautiful landscape" -n "low quality, blurry, watermark"
+python3 scripts/image_gen.py "Beautiful landscape" -n "low quality, blurry, watermark"
+
+# Override backend
+python3 scripts/image_gen.py "A cat" --backend openai
 ```
 
 **Parameter Reference**:
 
 | Parameter | Shorthand | Default | Options |
 |-----------|-----------|---------|---------|
-| `prompt` | - | Nano Banana | Prompt string |
+| `prompt` | - | - | Prompt string |
 | `--negative_prompt` | `-n` | None | Negative prompt |
 | `--aspect_ratio` | - | `1:1` | `1:1`, `16:9`, `4:3`, `3:2`, `9:16`, `21:9`, etc. |
-| `--image_size` | - | `4K` | `1K`, `2K`, `4K` |
+| `--image_size` | - | `1K` | `512px`, `1K`, `2K`, `4K` |
 | `--output` | `-o` | Current working directory | Image save directory |
+| `--filename` | `-f` | Auto-named | Output filename (without extension) |
+| `--backend` | `-b` | Auto-detect | `gemini` or `openai` |
+| `--model` | `-m` | Backend default | Model name override |
 
 **Environment Variable Configuration**:
 
-Set the following environment variables before use:
-
 ```bash
-# Required: Gemini API Key
-export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+# Backend selection (optional, auto-detects if not set)
+export IMAGE_BACKEND="gemini"    # or "openai"
 
-# Optional: Custom API endpoint (for proxy services)
-export GEMINI_BASE_URL="YOUR_API_BASE_URL"
+# API Key (required)
+export IMAGE_API_KEY="your-api-key"
+
+# Custom API endpoint (optional, for proxy or local models)
+export IMAGE_BASE_URL="https://your-proxy-url.com/v1beta"
+
+# Model override (optional)
+export IMAGE_MODEL="gemini-3.1-flash-image-preview"
 ```
 
-> **Tip**: You can add environment variables to `~/.zshrc` or `~/.bashrc` for persistent configuration.
+Or use a `.env` file: `cp .env.example .env` and edit.
+
+> **Legacy support**: `GEMINI_API_KEY` / `GEMINI_BASE_URL` and `OPENAI_API_KEY` / `OPENAI_BASE_URL` still work for backward compatibility.
 
 **Dependencies**:
 
 ```bash
-pip install google-genai
+pip install google-genai   # Gemini backend
+pip install openai         # OpenAI backend
 ```
 
 ---
@@ -1411,6 +1425,6 @@ pip install python-pptx
 
 _Last updated: 2026-02-03_
 
-_nano_banana_gen.py documentation updated: 2026-02-03_
+_image_gen.py documentation updated: 2026-03-26_
 
 _gemini_watermark_remover.py documentation updated: 2025-12-20_
