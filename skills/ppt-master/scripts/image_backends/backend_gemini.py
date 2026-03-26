@@ -5,28 +5,28 @@ Gemini Image Generation Backend
 Generates images via the Google GenAI API (Gemini).
 Used by image_gen.py as a backend module.
 
-Environment variables (checked in order):
-  IMAGE_API_KEY   / GEMINI_API_KEY   (required)
-  IMAGE_BASE_URL  / GEMINI_BASE_URL  (optional) Custom API endpoint for proxy services
-  IMAGE_MODEL                        (optional) Override default model
+Configuration keys:
+  GEMINI_API_KEY   (required)
+  GEMINI_BASE_URL  (optional) Custom API endpoint for proxy services
+  GEMINI_MODEL     (optional) Override default model
 
 Dependencies:
   pip install google-genai Pillow
 """
 
 import os
-import sys
 import time
 import threading
 from google import genai
 from google.genai import types
-
-# Optional dependency: PIL (used to report image resolution)
-try:
-    from PIL import Image as PILImage
-    HAS_PIL = True
-except ImportError:
-    HAS_PIL = False
+from image_backends.backend_common import (
+    MAX_RETRIES,
+    is_rate_limit_error,
+    normalize_image_size,
+    report_resolution,
+    resolve_output_path,
+    retry_delay,
+)
 
 
 # ╔══════════════════════════════���═══════════════════════════════════╗
@@ -42,68 +42,6 @@ VALID_ASPECT_RATIOS = [
 VALID_IMAGE_SIZES = ["512px", "1K", "2K", "4K"]
 
 DEFAULT_MODEL = "gemini-3.1-flash-image-preview"
-
-MAX_RETRIES = 3
-RETRY_BASE_DELAY = 10
-RETRY_BACKOFF = 2
-
-
-# ╔═════════════════��════════════════════════════════════════════════╗
-# ║  Utilities                                                      ║
-# ╚═══════════════���══════════════════════���═══════════════════════════╝
-
-def save_binary_file(file_name: str, data: bytes):
-    """Save binary data to a file"""
-    with open(file_name, "wb") as f:
-        f.write(data)
-    print(f"File saved to: {file_name}")
-
-
-def _resolve_output_path(prompt: str, output_dir: str = None,
-                         filename: str = None, ext: str = ".png") -> str:
-    """Compute the final output file path based on parameters"""
-    if filename:
-        file_name = os.path.splitext(filename)[0]
-    else:
-        safe = "".join(c for c in prompt if c.isalnum() or c in (' ', '_')).rstrip()
-        safe = safe.replace(" ", "_").lower()[:30]
-        file_name = safe or "generated_image"
-
-    full_name = f"{file_name}{ext}"
-    if output_dir:
-        os.makedirs(output_dir, exist_ok=True)
-        return os.path.join(output_dir, full_name)
-    return full_name
-
-
-def _normalize_image_size(image_size: str) -> str:
-    """
-    Case-insensitive normalization: normalize user input to API-accepted format.
-    e.g.: "2k" -> "2K", "4k" -> "4K", "512PX" -> "512px"
-    """
-    s = image_size.strip()
-    upper = s.upper()
-    if upper in ("1K", "2K", "4K"):
-        return upper
-    if upper in ("512PX", "512"):
-        return "512px"
-    return s
-
-
-def _report_resolution(path: str):
-    """Try to report image resolution using PIL"""
-    if HAS_PIL:
-        try:
-            img = PILImage.open(path)
-            print(f"  Resolution:   {img.size[0]}x{img.size[1]}")
-        except Exception:
-            pass
-
-
-def _is_rate_limit_error(e: Exception) -> bool:
-    """Check whether the exception is a rate limit (429) error"""
-    err_str = str(e).lower()
-    return "429" in err_str or "rate" in err_str or "quota" in err_str or "resource_exhausted" in err_str
 
 
 # ╔══════���═══════════════════════════════════════════════��═══════════╗
@@ -205,10 +143,10 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         if chunk_count > 1:
             print(f"  Keeping the final chunk (highest quality).")
         image = last_image_data.as_image()
-        path = _resolve_output_path(prompt, output_dir, filename, ".png")
+        path = resolve_output_path(prompt, output_dir, filename, ".png")
         image.save(path)
         print(f"File saved to: {path}")
-        _report_resolution(path)
+        report_resolution(path)
         return path
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
@@ -225,10 +163,10 @@ def generate(prompt: str, negative_prompt: str = None,
     """
     Gemini image generation with automatic retry.
 
-    Reads credentials from environment variables:
-      IMAGE_API_KEY / GEMINI_API_KEY (fallback)
-      IMAGE_BASE_URL / GEMINI_BASE_URL (fallback)
-      IMAGE_MODEL (optional override)
+    Reads credentials from the current process environment or the project-root `.env`:
+      GEMINI_API_KEY
+      GEMINI_BASE_URL
+      GEMINI_MODEL (optional override)
 
     Args:
         prompt: Positive prompt text
@@ -243,18 +181,18 @@ def generate(prompt: str, negative_prompt: str = None,
     Returns:
         Path of the saved image file
     """
-    api_key = os.environ.get("IMAGE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    base_url = os.environ.get("IMAGE_BASE_URL") or os.environ.get("GEMINI_BASE_URL")
+    api_key = os.environ.get("GEMINI_API_KEY")
+    base_url = os.environ.get("GEMINI_BASE_URL")
 
     if not api_key:
         raise ValueError(
-            "No API key found. Set IMAGE_API_KEY or GEMINI_API_KEY environment variable."
+            "No API key found. Set GEMINI_API_KEY in the current environment or the project-root .env."
         )
 
     if model is None:
-        model = os.environ.get("IMAGE_MODEL") or DEFAULT_MODEL
+        model = os.environ.get("GEMINI_MODEL") or DEFAULT_MODEL
 
-    image_size = _normalize_image_size(image_size)
+    image_size = normalize_image_size(image_size)
 
     if aspect_ratio not in VALID_ASPECT_RATIOS:
         raise ValueError(f"Invalid aspect ratio '{aspect_ratio}'. Valid: {VALID_ASPECT_RATIOS}")
@@ -270,13 +208,13 @@ def generate(prompt: str, negative_prompt: str = None,
                                    filename, model, base_url)
         except Exception as e:
             last_error = e
-            if attempt < max_retries and _is_rate_limit_error(e):
-                delay = RETRY_BASE_DELAY * (RETRY_BACKOFF ** attempt)
+            if attempt < max_retries and is_rate_limit_error(e):
+                delay = retry_delay(attempt, rate_limited=True)
                 print(f"\n  ⚠️  Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
                       f"Waiting {delay}s before retry...")
                 time.sleep(delay)
             elif attempt < max_retries:
-                delay = 5
+                delay = retry_delay(attempt, rate_limited=False)
                 print(f"\n  ⚠️  Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
                       f"Retrying in {delay}s...")
                 time.sleep(delay)

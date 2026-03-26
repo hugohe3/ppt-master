@@ -13,8 +13,8 @@ After replacement:
     </g>
 
 Usage:
-    python3 scripts/embed_icons.py <svg_file> [svg_file2] ...
-    python3 scripts/embed_icons.py svg_output/*.svg
+    python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
+    python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 
 Options:
     --icons-dir <path>    Icon directory path (default: templates/icons/)
@@ -30,7 +30,7 @@ from pathlib import Path
 
 
 # Default icon directory
-DEFAULT_ICONS_DIR = Path(__file__).parent.parent / 'templates' / 'icons'
+DEFAULT_ICONS_DIR = Path(__file__).parent.parent.parent / 'templates' / 'icons'
 
 # Icon base size
 ICON_BASE_SIZE = 16
@@ -202,10 +202,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:
-  python3 scripts/embed_icons.py svg_output/01_cover.svg
-  python3 scripts/embed_icons.py svg_output/*.svg
-  python3 scripts/embed_icons.py --dry-run svg_output/*.svg
-  python3 scripts/embed_icons.py --icons-dir my_icons/ output.svg
+  python3 scripts/svg_finalize/embed_icons.py svg_output/01_cover.svg
+  python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
+  python3 scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
+  python3 scripts/svg_finalize/embed_icons.py --icons-dir my_icons/ output.svg
         '''
     )
     
@@ -247,4 +247,3 @@ Examples:
 
 if __name__ == '__main__':
     main()
-

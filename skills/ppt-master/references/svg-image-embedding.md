@@ -126,9 +126,9 @@ python3 scripts/svg_to_pptx.py <project_path> -s final  # Export PPTX from final
 For processing specific SVGs without running the full pipeline:
 
 ```bash
-python3 scripts/embed_images.py <svg_file>                         # Single file
-python3 scripts/embed_images.py <project_path>/svg_output/*.svg    # Batch
-python3 scripts/embed_images.py --dry-run <project_path>/svg_output/*.svg  # Preview
+python3 scripts/svg_finalize/embed_images.py <svg_file>                         # Single file
+python3 scripts/svg_finalize/embed_images.py <project_path>/svg_output/*.svg    # Batch
+python3 scripts/svg_finalize/embed_images.py --dry-run <project_path>/svg_output/*.svg  # Preview
 ```
 
 ---

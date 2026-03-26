@@ -52,6 +52,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 - `skills/ppt-master/workflows/create-template.md` — Standalone template workflow
 - `skills/ppt-master/references/` — Role definitions and technical specifications
 - `skills/ppt-master/scripts/` — Tool scripts
+- `skills/ppt-master/scripts/docs/` — Topic-focused script docs (`conversion`, `project`, `svg-pipeline`, `image`, `troubleshooting`)
 - `skills/ppt-master/templates/` — Layout templates, chart templates, icon library
 - `examples/` — Example projects
 - `projects/` — User project workspace
