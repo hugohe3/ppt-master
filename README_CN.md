@@ -170,21 +170,44 @@ AI：好的，先确认是否使用模板；确认后我会继续八项确认并
 
 > 💡 **AI 迷失上下文？** 可提示 AI 优先阅读 `skills/ppt-master/SKILL.md`；如需一个仓库级入口概览，再参考 `AGENTS.md`
 
-### 5. Gemini 生图配置（可选）
+### 5. AI 生图配置（可选）
 
-本项目的 `nano_banana_gen.py` 可通过 Gemini API 在 AI 客户端中直接生成高质量配图。使用前需配置环境变量：
+本项目的 `image_gen.py` 可通过 Gemini 或 OpenAI 兼容 API 在 AI 客户端中直接生成高质量配图。配置方式二选一：
+
+#### 方式 A：使用 `.env` 文件（推荐）
 
 ```bash
-# 必需：Gemini API Key（从 https://aistudio.google.com/apikey 获取）
-export GEMINI_API_KEY="your-api-key"
+cp .env.example .env
+```
 
-# 可选：自定义 API 端点（用于代理服务）
-export GEMINI_BASE_URL="https://your-proxy-url.com/v1beta"
+编辑 `.env` 文件，填入你的配置：
+
+```env
+IMAGE_BACKEND=gemini
+IMAGE_API_KEY=your-api-key
+```
+
+> `.env` 文件已在 `.gitignore` 中，不会被提交到仓库，无需担心密钥泄露。
+
+#### 方式 B：使用环境变量
+
+```bash
+# 后端选择："gemini"（默认）或 "openai"
+export IMAGE_BACKEND="gemini"
+
+# 必需：所选后端的 API Key
+export IMAGE_API_KEY="your-api-key"
+
+# 可选：自定义 API 端点（用于代理服务或本地模型）
+export IMAGE_BASE_URL="https://your-proxy-url.com/v1beta"
+
+# 可选：模型名称覆盖
+export IMAGE_MODEL="gemini-3.1-flash-image-preview"
 ```
 
 > 💡 **持久化**：将上述 `export` 命令添加到 `~/.zshrc`（macOS/Linux zsh）或 `~/.bashrc`（Linux bash）中，重启终端即可永久生效。
 
-> 💡 若使用 Antigravity 代理，调用时需传入模型参数（`-m gemini-3.1-flash-image`）。
+> 💡 **向后兼容**：`GEMINI_API_KEY` / `GEMINI_BASE_URL` 以及 `OPENAI_API_KEY` / `OPENAI_BASE_URL` 仍然有效。未设置 `IMAGE_BACKEND` 时，系统会根据已配置的 key 自动检测后端。
 
 > 💡 **AI 生成图片建议**：如需 AI 生成配图，建议在 [Gemini](https://gemini.google.com/) 中生成后选择 **Download full size** 下载，分辨率比 Antigravity 直接生成的更高。Gemini 生成的图片右下角会有星星水印，可使用 [gemini-watermark-remover](https://github.com/journey-ad/gemini-watermark-remover) 或本项目的 `skills/ppt-master/scripts/gemini_watermark_remover.py` 去除。
 

@@ -106,7 +106,7 @@ Full directive: "color palette: deep navy blue (#1E3A5F), light gray (#F8F9FA), 
 | WeChat Moments | 1:1 | 1080x1080 |
 | Story | 9:16 | 1080x1920 |
 
-> Nano Banana supported aspect ratios: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
+> Supported aspect ratios: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9` (Gemini also supports `1:4`, `1:8`, `4:1`, `8:1`)
 
 ---
 
@@ -221,10 +221,10 @@ For each image with "Pending" status:
 
 > Prerequisite: Section 4.2 must be complete; `images/image_prompts.md` must exist
 
-#### Method 1: Nano Banana CLI Tool (Recommended)
+#### Method 1: Unified CLI Tool (Recommended)
 
 ```bash
-python3 scripts/nano_banana_gen.py "your prompt" \
+python3 scripts/image_gen.py "your prompt" \
   --aspect_ratio 16:9 --image_size 1K \
   --output project/images --filename cover_bg
 ```
@@ -233,14 +233,25 @@ python3 scripts/nano_banana_gen.py "your prompt" \
 
 | Parameter | Short | Description | Default |
 |-----------|-------|-------------|---------|
-| `prompt` | - | Positive prompt (positional arg) | `Nano Banana` |
+| `prompt` | - | Positive prompt (positional arg) | - |
 | `--negative_prompt` | `-n` | Negative prompt | None |
 | `--aspect_ratio` | - | Image aspect ratio | `1:1` |
 | `--image_size` | - | Size (`1K`/`2K`/`4K`) | `1K` |
 | `--output` | `-o` | Output directory | Current directory |
 | `--filename` | `-f` | Output filename (no extension) | Auto-named |
+| `--backend` | `-b` | Override backend (`gemini`/`openai`) | Auto-detect |
+| `--model` | `-m` | Model name | Backend default |
 
-**Environment variables**: Required: `GEMINI_API_KEY`. Optional: `GEMINI_BASE_URL`
+**Environment variables**:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `IMAGE_BACKEND` | Optional | `gemini` or `openai` (auto-detect if not set) |
+| `IMAGE_API_KEY` | Required | API key for the selected backend |
+| `IMAGE_BASE_URL` | Optional | Custom API endpoint (proxy / local models) |
+| `IMAGE_MODEL` | Optional | Model name override |
+
+> Legacy: `GEMINI_API_KEY` / `GEMINI_BASE_URL` still work for backward compatibility.
 
 **Generation pacing (mandatory)**:
 - Execute only one generation command at a time; wait for file confirmation before the next

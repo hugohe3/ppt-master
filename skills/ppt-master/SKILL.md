@@ -41,7 +41,7 @@ description: >
 | `${SKILL_DIR}/scripts/web_to_md.cjs` | WeChat / high-security sites to Markdown |
 | `${SKILL_DIR}/scripts/project_manager.py` | Project init / validate / manage |
 | `${SKILL_DIR}/scripts/analyze_images.py` | Image analysis |
-| `${SKILL_DIR}/scripts/nano_banana_gen.py` | AI image generation (Gemini API) |
+| `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (Gemini / OpenAI) |
 | `${SKILL_DIR}/scripts/svg_quality_checker.py` | SVG quality check |
 | `${SKILL_DIR}/scripts/total_md_split.py` | Speaker notes splitting |
 | `${SKILL_DIR}/scripts/finalize_svg.py` | SVG post-processing (unified entry) |
@@ -200,7 +200,7 @@ Read `references/image-generator.md`
 2. Generate prompt document → `<project_path>/images/image_prompts.md`
 3. Generate images (CLI tool recommended):
    ```bash
-   python3 ${SKILL_DIR}/scripts/nano_banana_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+   python3 ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
    ```
 
 **✅ Checkpoint — Confirm all images are ready, proceed to Step 6**:
