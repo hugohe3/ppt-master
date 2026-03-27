@@ -7,6 +7,7 @@ Supports heading levels, bold, italic, and list detection.
 
 import fitz  # PyMuPDF
 import argparse
+import hashlib
 import os
 import re
 from pathlib import Path
@@ -292,6 +293,65 @@ def merge_adjacent_headings(elements: list) -> list:
     return merged
 
 
+# Image filtering thresholds
+MIN_IMAGE_PIXELS = 100       # Minimum pixel dimension (width AND height)
+MIN_IMAGE_AREA = 30000       # Minimum pixel area (e.g. 200x150)
+MIN_IMAGE_BYTES = 2048       # Minimum image data size (2KB)
+MIN_PAGE_RATIO = 0.05        # Minimum render size relative to page (5%)
+MAX_ASPECT_RATIO = 12        # Maximum aspect ratio (filters decorative bars)
+MAX_LOW_INFO_BPP = 0.08      # Bytes-per-pixel threshold for low-info images
+MAX_LOW_INFO_AREA = 500000   # Area threshold: only apply bpp filter below this
+
+
+def should_keep_image(block, page_rect, seen_hashes=None) -> bool:
+    """Filter out small/decorative/duplicate images commonly found in PPT-converted PDFs."""
+    w, h = block.get("width", 0), block.get("height", 0)
+
+    # Pixel dimension filter
+    if w < MIN_IMAGE_PIXELS or h < MIN_IMAGE_PIXELS:
+        return False
+
+    # Pixel area filter
+    area = w * h
+    if area < MIN_IMAGE_AREA:
+        return False
+
+    image_data = block.get("image", b"")
+    if len(image_data) < MIN_IMAGE_BYTES:
+        return False
+
+    # Deduplicate: skip images with identical content (e.g. repeated backgrounds)
+    if seen_hashes is not None:
+        img_hash = hashlib.md5(image_data).hexdigest()
+        if img_hash in seen_hashes:
+            return False
+        seen_hashes.add(img_hash)
+
+    # Check render size relative to page
+    bbox = block.get("bbox", (0, 0, 0, 0))
+    render_w = bbox[2] - bbox[0]
+    render_h = bbox[3] - bbox[1]
+    page_w = page_rect.width
+    page_h = page_rect.height
+    if page_w > 0 and page_h > 0:
+        if render_w / page_w < MIN_PAGE_RATIO and render_h / page_h < MIN_PAGE_RATIO:
+            return False
+
+    # Filter extreme aspect ratios (decorative bars/separators)
+    aspect = max(w, h) / max(min(w, h), 1)
+    if aspect > MAX_ASPECT_RATIO:
+        return False
+
+    # Filter low-info images: solid color blocks / gradients have very high
+    # compression ratios (low bytes-per-pixel). Only apply to smaller images
+    # to avoid filtering large photos with dark/uniform backgrounds.
+    bpp = len(image_data) / area
+    if bpp < MAX_LOW_INFO_BPP and area < MAX_LOW_INFO_AREA:
+        return False
+
+    return True
+
+
 def clean_text(text: str) -> str:
     """Clean extracted text."""
     lines = text.split('\n')
@@ -367,6 +427,7 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None) -> str:
             print(f"     - {t[:30]}...")
 
     markdown_content = f"# {title}\n\n"
+    seen_image_hashes = set()  # Track seen image hashes for deduplication
 
     img_dir = None
     rel_img_dir = None
@@ -490,11 +551,15 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None) -> str:
                     })
 
             elif block["type"] == 1:
-                page_elements.append({
-                    "y0": block["bbox"][1],
-                    "type": 1,
-                    "content": block
-                })
+                if should_keep_image(block, page.rect, seen_image_hashes):
+                    page_elements.append({
+                        "y0": block["bbox"][1],
+                        "type": 1,
+                        "content": block
+                    })
+                else:
+                    w, h = block.get("width", 0), block.get("height", 0)
+                    print(f"  [SKIP] Filtered small/decorative image: {w}x{h}px, {len(block.get('image', b''))} bytes")
 
         page_elements.sort(key=lambda x: x["y0"])
 
