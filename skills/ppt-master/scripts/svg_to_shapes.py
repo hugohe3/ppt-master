@@ -588,6 +588,7 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     dx = 0.0
     dy = 4.0
     shadow_opacity = 0.3
+    shadow_color = '000000'
 
     for child in filter_elem.iter():
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -598,6 +599,9 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
             dy = _f(child.get('dy'), 4.0)
         elif tag == 'feFlood':
             shadow_opacity = _f(child.get('flood-opacity'), 0.3)
+            raw_color = child.get('flood-color', '').strip().lstrip('#')
+            if len(raw_color) == 6 and all(c in '0123456789abcdefABCDEF' for c in raw_color):
+                shadow_color = raw_color.upper()
         elif tag == 'feFuncA':
             # feComponentTransfer > feFuncA type="linear" slope="0.3"
             if child.get('type') == 'linear':
@@ -611,7 +615,7 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
 
     return f'''<a:effectLst>
 <a:outerShdw blurRad="{blur_rad}" dist="{dist}" dir="{dir_angle}" algn="tl" rotWithShape="0">
-<a:srgbClr val="000000"><a:alpha val="{alpha_val}"/></a:srgbClr>
+<a:srgbClr val="{shadow_color}"><a:alpha val="{alpha_val}"/></a:srgbClr>
 </a:outerShdw>
 </a:effectLst>'''
 
