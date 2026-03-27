@@ -46,7 +46,7 @@
 
     <!-- 副标语 -->
     <text x="640" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#5D6D7E">
-        {{TAGLINE}}
+        {{ENDING_SUBTITLE}}
     </text>
 
     <!-- 联系信息卡片 -->
@@ -55,7 +55,7 @@
     
     <!-- 联系人信息 -->
     <text x="640" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">
-        {{CONTACT_NAME}}
+        {{CONTACT_INFO}}
     </text>
     <text x="640" y="515" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#7F8C8D">
         {{CONTACT_TITLE}}

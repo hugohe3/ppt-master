@@ -34,48 +34,48 @@
         <g>
             <circle cx="90" cy="200" r="24" fill="#D97757"/>
             <text x="90" y="207" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
-            <text x="130" y="195" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_01_TITLE}}</text>
-            <text x="130" y="218" font-size="16" fill="#64748B">{{CHAPTER_01_DESC}}</text>
+            <text x="130" y="195" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_1_TITLE}}</text>
+            <text x="130" y="218" font-size="16" fill="#64748B">{{TOC_ITEM_1_DESC}}</text>
         </g>
         
         <!-- 第2章 -->
         <g>
             <circle cx="90" cy="285" r="24" fill="#D97757"/>
             <text x="90" y="292" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
-            <text x="130" y="280" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_02_TITLE}}</text>
-            <text x="130" y="303" font-size="16" fill="#64748B">{{CHAPTER_02_DESC}}</text>
+            <text x="130" y="280" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_2_TITLE}}</text>
+            <text x="130" y="303" font-size="16" fill="#64748B">{{TOC_ITEM_2_DESC}}</text>
         </g>
         
         <!-- 第3章 -->
         <g>
             <circle cx="90" cy="370" r="24" fill="#D97757"/>
             <text x="90" y="377" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
-            <text x="130" y="365" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_03_TITLE}}</text>
-            <text x="130" y="388" font-size="16" fill="#64748B">{{CHAPTER_03_DESC}}</text>
+            <text x="130" y="365" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_3_TITLE}}</text>
+            <text x="130" y="388" font-size="16" fill="#64748B">{{TOC_ITEM_3_DESC}}</text>
         </g>
         
         <!-- 第4章 -->
         <g>
             <circle cx="90" cy="455" r="24" fill="#D97757"/>
             <text x="90" y="462" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
-            <text x="130" y="450" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_04_TITLE}}</text>
-            <text x="130" y="473" font-size="16" fill="#64748B">{{CHAPTER_04_DESC}}</text>
+            <text x="130" y="450" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_4_TITLE}}</text>
+            <text x="130" y="473" font-size="16" fill="#64748B">{{TOC_ITEM_4_DESC}}</text>
         </g>
         
         <!-- 第5章 -->
         <g>
             <circle cx="90" cy="540" r="24" fill="#D97757"/>
             <text x="90" y="547" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
-            <text x="130" y="535" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_05_TITLE}}</text>
-            <text x="130" y="558" font-size="16" fill="#64748B">{{CHAPTER_05_DESC}}</text>
+            <text x="130" y="535" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_5_TITLE}}</text>
+            <text x="130" y="558" font-size="16" fill="#64748B">{{TOC_ITEM_5_DESC}}</text>
         </g>
         
         <!-- 第6章 -->
         <g>
             <circle cx="90" cy="625" r="24" fill="#D97757"/>
             <text x="90" y="632" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
-            <text x="130" y="620" font-size="20" font-weight="600" fill="#1A1A2E">{{CHAPTER_06_TITLE}}</text>
-            <text x="130" y="643" font-size="16" fill="#64748B">{{CHAPTER_06_DESC}}</text>
+            <text x="130" y="620" font-size="20" font-weight="600" fill="#1A1A2E">{{TOC_ITEM_6_TITLE}}</text>
+            <text x="130" y="643" font-size="16" fill="#64748B">{{TOC_ITEM_6_DESC}}</text>
         </g>
     </g>
     

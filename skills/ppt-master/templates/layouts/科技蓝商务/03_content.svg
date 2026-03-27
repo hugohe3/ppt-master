@@ -18,11 +18,11 @@
   <rect x="60" y="140" width="1160" height="500" fill="none" stroke="#A0C4E3" stroke-width="2" stroke-dasharray="8,8" rx="10" opacity="0.3" />
   
   <!-- Placeholder Text for guidance (will be replaced by actual content) -->
-  <text x="640" y="390" font-family="Microsoft YaHei" font-size="24" fill="#CCCCCC" text-anchor="middle">{{CONTENT_PLACEHOLDER}}</text>
+  <text x="640" y="390" font-family="Microsoft YaHei" font-size="24" fill="#CCCCCC" text-anchor="middle">{{CONTENT_AREA}}</text>
 
   <!-- Footer -->
   <rect x="0" y="690" width="1280" height="30" fill="#F5F5F5" />
-  <text x="1240" y="710" font-family="Arial" font-size="14" fill="#666666" text-anchor="end">{{PAGE_NUMBER}}</text>
+  <text x="1240" y="710" font-family="Arial" font-size="14" fill="#666666" text-anchor="end">{{PAGE_NUM}}</text>
   <text x="40" y="710" font-family="Microsoft YaHei" font-size="14" fill="#999999">CONFIDENTIAL - INTERNAL USE ONLY</text>
 
 </svg>

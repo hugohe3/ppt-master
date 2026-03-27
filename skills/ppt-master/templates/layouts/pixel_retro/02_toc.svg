@@ -43,7 +43,7 @@
       <rect x="20" y="35" width="40" height="40" fill="#39FF14" />
       <text x="40" y="62" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#0D1117">01</text>
       <!-- 章节标题 -->
-      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_1}}</text>
+      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_1_TITLE}}</text>
     </g>
     
     <!-- 第二章节 -->
@@ -53,7 +53,7 @@
       <text x="50" y="17" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#FFFFFF" font-weight="bold">🔴 关键必学</text>
       <rect x="20" y="35" width="40" height="40" fill="#00D4FF" />
       <text x="40" y="62" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#0D1117">02</text>
-      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_2}}</text>
+      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_2_TITLE}}</text>
     </g>
     
     <!-- 第三章节 - 建议了解 -->
@@ -63,7 +63,7 @@
       <text x="50" y="17" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#0D1117" font-weight="bold">🟡 建议了解</text>
       <rect x="20" y="35" width="40" height="40" fill="#FFD700" />
       <text x="40" y="62" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#0D1117">03</text>
-      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_3}}</text>
+      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#E6EDF3">{{TOC_ITEM_3_TITLE}}</text>
     </g>
     
     <!-- 第四章节 - 可选内容 -->
@@ -73,7 +73,7 @@
       <text x="50" y="17" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#FFFFFF" font-weight="bold">🟢 可选内容</text>
       <rect x="20" y="35" width="40" height="40" fill="#238636" />
       <text x="40" y="62" text-anchor="middle" font-family="Consolas, monospace" font-size="24" font-weight="bold" fill="#FFFFFF">04</text>
-      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#8B949E">{{TOC_ITEM_4}}</text>
+      <text x="80" y="60" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="20" fill="#8B949E">{{TOC_ITEM_4_TITLE}}</text>
     </g>
     
   </g>

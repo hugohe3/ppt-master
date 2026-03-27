@@ -50,8 +50,8 @@
         <text x="350" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0050B3">01</text>
         <line x1="390" y1="200" x2="1180" y2="200" stroke="#E4E7EB" stroke-width="2"/>
         <circle cx="390" cy="200" r="5" fill="#00B4D8"/>
-        <text x="420" y="195" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_01_TITLE}}</text>
-        <text x="420" y="220" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_01_DESC}}</text>
+        <text x="420" y="195" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_1_TITLE}}</text>
+        <text x="420" y="220" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_1_DESC}}</text>
     </g>
 
     <!-- 目录项 2 -->
@@ -60,8 +60,8 @@
         <text x="350" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0050B3">02</text>
         <line x1="390" y1="300" x2="1180" y2="300" stroke="#E4E7EB" stroke-width="2"/>
         <circle cx="390" cy="300" r="5" fill="#00B4D8"/>
-        <text x="420" y="295" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_02_TITLE}}</text>
-        <text x="420" y="320" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_02_DESC}}</text>
+        <text x="420" y="295" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_2_TITLE}}</text>
+        <text x="420" y="320" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_2_DESC}}</text>
     </g>
 
     <!-- 目录项 3 -->
@@ -70,8 +70,8 @@
         <text x="350" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0050B3">03</text>
         <line x1="390" y1="400" x2="1180" y2="400" stroke="#E4E7EB" stroke-width="2"/>
         <circle cx="390" cy="400" r="5" fill="#00B4D8"/>
-        <text x="420" y="395" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_03_TITLE}}</text>
-        <text x="420" y="420" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_03_DESC}}</text>
+        <text x="420" y="395" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_3_TITLE}}</text>
+        <text x="420" y="420" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_3_DESC}}</text>
     </g>
 
     <!-- 目录项 4 -->
@@ -80,8 +80,8 @@
         <text x="350" y="510" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0050B3">04</text>
         <line x1="390" y1="500" x2="1180" y2="500" stroke="#E4E7EB" stroke-width="2"/>
         <circle cx="390" cy="500" r="5" fill="#00B4D8"/>
-        <text x="420" y="495" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_04_TITLE}}</text>
-        <text x="420" y="520" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_04_DESC}}</text>
+        <text x="420" y="495" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_4_TITLE}}</text>
+        <text x="420" y="520" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_4_DESC}}</text>
     </g>
 
     <!-- 目录项 5 -->
@@ -90,8 +90,8 @@
         <text x="350" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0050B3">05</text>
         <line x1="390" y1="600" x2="1180" y2="600" stroke="#E4E7EB" stroke-width="2"/>
         <circle cx="390" cy="600" r="5" fill="#00B4D8"/>
-        <text x="420" y="595" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_05_TITLE}}</text>
-        <text x="420" y="620" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_05_DESC}}</text>
+        <text x="420" y="595" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_5_TITLE}}</text>
+        <text x="420" y="620" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_5_DESC}}</text>
     </g>
 
     <!-- 右侧装饰 -->

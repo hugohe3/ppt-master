@@ -228,6 +228,8 @@ Small circle elements representing the nighttime lights of the Mountain City:
 | `{{PAGE_NUM}}`       | Page number            |
 | `{{THANK_YOU}}`      | Thank-you message      |
 | `{{CONTACT_INFO}}`   | Contact information    |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title       |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description  |
 
 ---
 

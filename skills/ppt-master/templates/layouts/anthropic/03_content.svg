@@ -105,6 +105,11 @@
         <text x="930" y="564" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="600" fill="#D97757">{{CARD_3_TAG}}</text>
     </g>
     
+    <!-- Executor 自由布局锚点 -->
+    <text x="640" y="625" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#CBD5E1">
+        {{CONTENT_AREA}}
+    </text>
+
     <!-- 页码 -->
     <text x="640" y="680" font-family="Arial, sans-serif" font-size="14" fill="#64748B" text-anchor="middle">
         {{PAGE_NUM}} / {{TOTAL_PAGES}}

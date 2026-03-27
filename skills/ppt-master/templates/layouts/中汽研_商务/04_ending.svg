@@ -26,7 +26,7 @@
     <g transform="translate(640, 320)">
         
         <!-- 大 Logo -->
-        <image href="../images/{{LOGO_LARGE}}" x="-150" y="-120" width="300" height="120" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <image href="../images/{{LOGO_LARGE}}" x="-150" y="-120" width="300" height="120" preserveAspectRatio="xMidYMid meet"/>
         
         <!-- 感谢词 -->
         <text x="0" y="80" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF" letter-spacing="4">

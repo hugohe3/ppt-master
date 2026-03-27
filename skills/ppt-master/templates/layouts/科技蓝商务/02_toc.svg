@@ -28,40 +28,40 @@
   <rect x="440" y="140" width="780" height="100" fill="#F5F5F7" rx="8" />
   <rect x="440" y="140" width="8" height="100" fill="#0078D7" />
   <text x="480" y="175" font-family="Arial" font-size="36" font-weight="bold" fill="#0078D7">01</text>
-  <text x="550" y="180" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{SECTION_1_TITLE}}</text>
+  <text x="550" y="180" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_1_TITLE}}</text>
   <text x="550" y="215" font-family="Microsoft YaHei" font-size="14" fill="#666666">概念与立项阶段的关键活动与交付物</text>
 
   <!-- Item 2 -->
   <rect x="440" y="260" width="780" height="100" fill="#F5F5F7" rx="8" />
   <rect x="440" y="260" width="8" height="100" fill="#4CA1E7" />
   <text x="480" y="295" font-family="Arial" font-size="36" font-weight="bold" fill="#4CA1E7">02</text>
-  <text x="550" y="300" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{SECTION_2_TITLE}}</text>
+  <text x="550" y="300" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_2_TITLE}}</text>
   <text x="550" y="335" font-family="Microsoft YaHei" font-size="14" fill="#666666">PRD撰写、技术方案设计与联合评审</text>
 
   <!-- Item 3 -->
   <rect x="440" y="380" width="780" height="100" fill="#F5F5F7" rx="8" />
   <rect x="440" y="380" width="8" height="100" fill="#0078D7" />
   <text x="480" y="415" font-family="Arial" font-size="36" font-weight="bold" fill="#0078D7">03</text>
-  <text x="550" y="420" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{SECTION_3_TITLE}}</text>
+  <text x="550" y="420" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_3_TITLE}}</text>
   <text x="550" y="455" font-family="Microsoft YaHei" font-size="14" fill="#666666">开发实现、质量测试与产品验收</text>
 
   <!-- Item 4 -->
   <rect x="440" y="500" width="780" height="100" fill="#F5F5F7" rx="8" />
   <rect x="440" y="500" width="8" height="100" fill="#4CA1E7" />
   <text x="480" y="535" font-family="Arial" font-size="36" font-weight="bold" fill="#4CA1E7">04</text>
-  <text x="550" y="540" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{SECTION_4_TITLE}}</text>
+  <text x="550" y="540" font-family="Microsoft YaHei" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_4_TITLE}}</text>
   <text x="550" y="575" font-family="Microsoft YaHei" font-size="14" fill="#666666">部署发布、日常运营与数据驱动</text>
 
   <!-- Item 5 -->
   <rect x="440" y="620" width="380" height="70" fill="#F5F5F7" rx="8" />
   <rect x="440" y="620" width="8" height="70" fill="#002E5D" />
   <text x="480" y="663" font-family="Arial" font-size="28" font-weight="bold" fill="#002E5D">05</text>
-  <text x="530" y="665" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#333333">{{SECTION_5_TITLE}}</text>
+  <text x="530" y="665" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#333333">{{TOC_ITEM_5_TITLE}}</text>
 
   <!-- Item 6 -->
   <rect x="840" y="620" width="380" height="70" fill="#F5F5F7" rx="8" />
   <rect x="840" y="620" width="8" height="70" fill="#002E5D" />
   <text x="880" y="663" font-family="Arial" font-size="28" font-weight="bold" fill="#002E5D">06</text>
-  <text x="930" y="665" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#333333">{{SECTION_6_TITLE}}</text>
+  <text x="930" y="665" font-family="Microsoft YaHei" font-size="18" font-weight="bold" fill="#333333">{{TOC_ITEM_6_TITLE}}</text>
 
 </svg>

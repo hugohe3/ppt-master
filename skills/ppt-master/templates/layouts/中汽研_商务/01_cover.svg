@@ -17,7 +17,7 @@
     </defs>
 
     <!-- 背景图片层 (全屏铺底) -->
-    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
+    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
 
     <!-- 渐变遮罩层 (增强文字可读性，右下角加深) -->
     <rect x="0" y="0" width="1280" height="720" fill="url(#gradMain)" fill-opacity="0.85" />
@@ -38,7 +38,7 @@
     <g transform="translate(100, 0)">
         
         <!-- Logo (左上) -->
-        <image href="../images/{{LOGO_LARGE}}" x="0" y="80" width="200" height="80" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <image href="../images/{{LOGO_LARGE}}" x="0" y="80" width="200" height="80" preserveAspectRatio="xMidYMid meet"/>
         
         <!-- 主标题 (大号加粗, 白色) -->
         <text x="0" y="320" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF" letter-spacing="2">
@@ -72,12 +72,12 @@
     </g>
 
     <!-- 右侧装饰元素 (虚线网格) -->
-    <g transform="translate(800, 100)" opacity="0.1">
-        <line x1="0" y1="0" x2="400" y2="0" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="50" x2="400" y2="50" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="100" x2="400" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="0" y1="0" x2="0" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
-        <line x1="400" y1="0" x2="400" y2="100" stroke="#FFFFFF" stroke-dasharray="4,4"/>
+    <g transform="translate(800, 100)">
+        <line x1="0" y1="0" x2="400" y2="0" stroke="#FFFFFF" stroke-opacity="0.1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="50" x2="400" y2="50" stroke="#FFFFFF" stroke-opacity="0.1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="100" x2="400" y2="100" stroke="#FFFFFF" stroke-opacity="0.1" stroke-dasharray="4,4"/>
+        <line x1="0" y1="0" x2="0" y2="100" stroke="#FFFFFF" stroke-opacity="0.1" stroke-dasharray="4,4"/>
+        <line x1="400" y1="0" x2="400" y2="100" stroke="#FFFFFF" stroke-opacity="0.1" stroke-dasharray="4,4"/>
     </g>
 
 </svg>

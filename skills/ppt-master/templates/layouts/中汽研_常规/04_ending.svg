@@ -43,20 +43,20 @@
     <!-- 单位信息（中文） -->
     <text x="640" y="610" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" fill="#FFFFFF"
         fill-opacity="0.85">
-        {{AUTHOR}}
+        {{CONTACT_INFO}}
     </text>
 
     <!-- 单位信息（英文） -->
     <text x="640" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF"
         fill-opacity="0.6">
-        {{AUTHOR_EN}}
+        {{AUTHOR}}
     </text>
 
     <!-- 底部信息区 -->
     <rect x="0" y="680" width="1280" height="40" fill="#FFFFFF" fill-opacity="0.1" />
     <text x="640" y="707" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF"
         fill-opacity="0.6">
-        {{TAGLINE}}
+        {{ENDING_SUBTITLE}}
     </text>
 
 </svg>

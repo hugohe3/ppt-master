@@ -19,42 +19,42 @@
   
     <!-- 目录项 - 第1章 -->
     <g>
-        <text x="330" y="195" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">{{CHAPTER_01_NUM}}</text>
+        <text x="330" y="195" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">01</text>
         <text x="385" y="195" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">||</text>
-        <text x="430" y="195" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{CHAPTER_01_TITLE}}</text>
-        <text x="430" y="228" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{CHAPTER_01_DESC}}</text>
+        <text x="430" y="195" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_1_TITLE}}</text>
+        <text x="430" y="228" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{TOC_ITEM_1_DESC}}</text>
     </g>
   
     <!-- 目录项 - 第2章 -->
     <g>
-        <text x="330" y="295" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">{{CHAPTER_02_NUM}}</text>
+        <text x="330" y="295" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">02</text>
         <text x="385" y="295" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">||</text>
-        <text x="430" y="295" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{CHAPTER_02_TITLE}}</text>
-        <text x="430" y="328" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{CHAPTER_02_DESC}}</text>
+        <text x="430" y="295" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_2_TITLE}}</text>
+        <text x="430" y="328" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{TOC_ITEM_2_DESC}}</text>
     </g>
   
     <!-- 目录项 - 第3章 -->
     <g>
-        <text x="330" y="395" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">{{CHAPTER_03_NUM}}</text>
+        <text x="330" y="395" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">03</text>
         <text x="385" y="395" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">||</text>
-        <text x="430" y="395" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{CHAPTER_03_TITLE}}</text>
-        <text x="430" y="428" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{CHAPTER_03_DESC}}</text>
+        <text x="430" y="395" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_3_TITLE}}</text>
+        <text x="430" y="428" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{TOC_ITEM_3_DESC}}</text>
     </g>
   
     <!-- 目录项 - 第4章 -->
     <g>
-        <text x="330" y="495" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">{{CHAPTER_04_NUM}}</text>
+        <text x="330" y="495" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">04</text>
         <text x="385" y="495" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">||</text>
-        <text x="430" y="495" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{CHAPTER_04_TITLE}}</text>
-        <text x="430" y="528" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{CHAPTER_04_DESC}}</text>
+        <text x="430" y="495" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_4_TITLE}}</text>
+        <text x="430" y="528" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{TOC_ITEM_4_DESC}}</text>
     </g>
   
     <!-- 目录项 - 第5章 -->
     <g>
-        <text x="330" y="595" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">{{CHAPTER_05_NUM}}</text>
+        <text x="330" y="595" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">05</text>
         <text x="385" y="595" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#004098">||</text>
-        <text x="430" y="595" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{CHAPTER_05_TITLE}}</text>
-        <text x="430" y="628" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{CHAPTER_05_DESC}}</text>
+        <text x="430" y="595" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="bold" fill="#333333">{{TOC_ITEM_5_TITLE}}</text>
+        <text x="430" y="628" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#666666">{{TOC_ITEM_5_DESC}}</text>
     </g>
   
     <!-- 右侧装饰元素（可选统计区） -->

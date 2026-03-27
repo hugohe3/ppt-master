@@ -90,7 +90,7 @@
     
     <!-- 引用语 -->
     <text x="640" y="465" font-family="Arial, sans-serif" font-size="18" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">
-        "{{TAGLINE}}"
+        "{{COVER_QUOTE}}"
     </text>
     
     <!-- 底部信息 -->

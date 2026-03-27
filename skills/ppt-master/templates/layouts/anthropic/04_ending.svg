@@ -77,14 +77,14 @@
     
     <!-- 副标语 -->
     <text x="640" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#FFFFFF" fill-opacity="0.7">
-        {{TAGLINE}}
+        {{ENDING_SUBTITLE}}
     </text>
     
     <!-- 联系信息卡片 -->
     <rect x="440" y="460" width="400" height="120" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="1" rx="12"/>
     
     <text x="640" y="505" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">
-        {{CONTACT_NAME}}
+        {{CONTACT_INFO}}
     </text>
     <text x="640" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
         {{CONTACT_EMAIL}}

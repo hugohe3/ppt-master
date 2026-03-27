@@ -244,7 +244,10 @@ To adapt to other medical institution branding, replace the corresponding values
 | `{{SOURCE}}`        | Data source                  |
 | `{{PAGE_NUM}}`      | Page number                  |
 | `{{SECTION_NAME}}`  | Section name (footer)        |
-| `{{TOC_ITEM_N}}`    | TOC item (N=1,2,3...)        |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title (N=1..n)   |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description (N=1..n) |
+| `{{THANK_YOU}}`     | Thank-you message            |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle/tagline    |
 
 ---
 

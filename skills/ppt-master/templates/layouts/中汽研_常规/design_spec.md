@@ -196,6 +196,10 @@ Templates use `{{PLACEHOLDER}}` format. Common placeholders:
 | `{{PAGE_TITLE}}`     | Page title         |
 | `{{CHAPTER_NUM}}`    | Chapter number     |
 | `{{PAGE_NUM}}`       | Page number        |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title   |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`      | Thank-you message  |
+| `{{CONTACT_INFO}}`   | Primary contact info |
 | `{{LOGO_LARGE}}`     | Large Logo filename |
 | `{{LOGO_HEADER}}`    | Header Logo filename |
 | `{{COVER_BG_IMAGE}}` | Cover background image filename |

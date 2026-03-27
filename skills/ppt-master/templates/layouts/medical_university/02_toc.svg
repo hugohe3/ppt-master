@@ -73,13 +73,13 @@
     <rect x="80" y="355" width="540" height="95" fill="none" stroke="#D0D7E0" stroke-width="1" stroke-dasharray="4,4"
         rx="8" />
     <text x="350" y="410" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="16">{{TOC_ITEM_5}}</text>
+        font-size="16">{{TOC_ITEM_5_TITLE}}</text>
 
     <!-- 目录项 06（可选） -->
     <rect x="660" y="355" width="540" height="95" fill="none" stroke="#D0D7E0" stroke-width="1" stroke-dasharray="4,4"
         rx="8" />
     <text x="930" y="410" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif"
-        font-size="16">{{TOC_ITEM_6}}</text>
+        font-size="16">{{TOC_ITEM_6_TITLE}}</text>
 
     <!-- ==================== 装饰元素 ==================== -->
     <!-- 底部医疗图标装饰 -->

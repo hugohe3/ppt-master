@@ -208,6 +208,8 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 | `{{ORGANIZATION}}` | Full organization name |
 | `{{ORG_SHORT}}`    | Abbreviated organization name |
 | `{{CONTACT_INFO}}` | Contact information |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
 | `{{LOGO_HEADER}}`  | Header logo filename |
 
 ---

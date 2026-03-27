@@ -32,7 +32,7 @@
   <text x="640" y="420" text-anchor="middle" fill="#1A2E44" font-family="Microsoft YaHei, PingFang SC, Arial, sans-serif" font-size="48" font-weight="bold">{{THANK_YOU}}</text>
   
   <!-- 副标语 -->
-  <text x="640" y="475" text-anchor="middle" fill="#006BB7" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">{{TAGLINE}}</text>
+  <text x="640" y="475" text-anchor="middle" fill="#006BB7" font-family="Microsoft YaHei, Arial, sans-serif" font-size="18">{{ENDING_SUBTITLE}}</text>
   
   <!-- 底部色块 -->
   <rect x="0" y="560" width="1280" height="160" fill="url(#bottomBar)"/>

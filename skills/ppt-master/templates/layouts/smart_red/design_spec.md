@@ -192,7 +192,10 @@
 | `{{CHAPTER_NUM}}`  | Chapter number     |
 | `{{CHAPTER_TITLE}}`| Chapter title      |
 | `{{PAGE_NUM}}`     | Page number        |
-| `{{TOC_ITEM_1}}`   | TOC item 1         |
+| `{{TOC_ITEM_1_TITLE}}` | TOC item title |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle |
+| `{{CONTACT_INFO}}` | Primary contact info |
 | `{{CLOSING_MESSAGE}}`| Closing message  |
 
 ---

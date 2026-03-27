@@ -28,8 +28,8 @@
         <rect x="60" y="170" width="6" height="110" fill="#005587" rx="3"/>
         <rect x="80" y="190" width="60" height="60" fill="#005587" fill-opacity="0.08" rx="4"/>
         <text x="110" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#005587">01</text>
-        <text x="165" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_01_TITLE}}</text>
-        <text x="165" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_01_DESC}}</text>
+        <text x="165" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{TOC_ITEM_1_TITLE}}</text>
+        <text x="165" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{TOC_ITEM_1_DESC}}</text>
     </g>
 
     <!-- 第2章 -->
@@ -38,8 +38,8 @@
         <rect x="660" y="170" width="6" height="110" fill="#0076A8" rx="3"/>
         <rect x="680" y="190" width="60" height="60" fill="#0076A8" fill-opacity="0.08" rx="4"/>
         <text x="710" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0076A8">02</text>
-        <text x="765" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_02_TITLE}}</text>
-        <text x="765" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_02_DESC}}</text>
+        <text x="765" y="218" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{TOC_ITEM_2_TITLE}}</text>
+        <text x="765" y="248" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{TOC_ITEM_2_DESC}}</text>
     </g>
 
     <!-- 第3章 -->
@@ -48,8 +48,8 @@
         <rect x="60" y="300" width="6" height="110" fill="#004D5C" rx="3"/>
         <rect x="80" y="320" width="60" height="60" fill="#004D5C" fill-opacity="0.08" rx="4"/>
         <text x="110" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#004D5C">03</text>
-        <text x="165" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_03_TITLE}}</text>
-        <text x="165" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_03_DESC}}</text>
+        <text x="165" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{TOC_ITEM_3_TITLE}}</text>
+        <text x="165" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{TOC_ITEM_3_DESC}}</text>
     </g>
 
     <!-- 第4章 -->
@@ -58,8 +58,8 @@
         <rect x="660" y="300" width="6" height="110" fill="#F5A623" rx="3"/>
         <rect x="680" y="320" width="60" height="60" fill="#F5A623" fill-opacity="0.08" rx="4"/>
         <text x="710" y="362" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#F5A623">04</text>
-        <text x="765" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{CHAPTER_04_TITLE}}</text>
-        <text x="765" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{CHAPTER_04_DESC}}</text>
+        <text x="765" y="348" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2C3E50">{{TOC_ITEM_4_TITLE}}</text>
+        <text x="765" y="378" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">{{TOC_ITEM_4_DESC}}</text>
     </g>
 
     <!-- 第5章 (可选) -->
@@ -67,7 +67,7 @@
         <rect x="60" y="430" width="560" height="110" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6,4" rx="6"/>
         <rect x="80" y="450" width="60" height="60" fill="#E5E7EB" fill-opacity="0.5" rx="4"/>
         <text x="110" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#BDC3C7">05</text>
-        <text x="165" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{CHAPTER_05}}</text>
+        <text x="165" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{TOC_ITEM_5_TITLE}}</text>
     </g>
 
     <!-- 第6章 (可选) -->
@@ -75,7 +75,7 @@
         <rect x="660" y="430" width="560" height="110" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="6,4" rx="6"/>
         <rect x="680" y="450" width="60" height="60" fill="#E5E7EB" fill-opacity="0.5" rx="4"/>
         <text x="710" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#BDC3C7">06</text>
-        <text x="765" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{CHAPTER_06}}</text>
+        <text x="765" y="488" font-family="Arial, sans-serif" font-size="18" fill="#95A5A6">{{TOC_ITEM_6_TITLE}}</text>
     </g>
 
     <!-- 底部装饰 -->

@@ -34,7 +34,7 @@
   
   <!-- 口号 -->
   <text x="640" y="380" text-anchor="middle" fill="#9CA3AF" font-family="Arial, sans-serif" font-size="22" letter-spacing="2">
-    {{TAGLINE}}
+    {{ENDING_SUBTITLE}}
   </text>
   
   <!-- 联系信息卡片 -->

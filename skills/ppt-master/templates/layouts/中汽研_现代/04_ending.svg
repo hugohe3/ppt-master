@@ -32,7 +32,7 @@
     <g transform="translate(640, 320)">
         
         <!-- Logo -->
-        <image href="../images/{{LOGO_LARGE}}" x="-150" y="-140" width="300" height="100" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <image href="../images/{{LOGO_LARGE}}" x="-150" y="-140" width="300" height="100" preserveAspectRatio="xMidYMid meet"/>
         
         <!-- 感谢词 -->
         <text x="0" y="40" text-anchor="middle" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="56" font-weight="bold" fill="#FFFFFF" letter-spacing="4">

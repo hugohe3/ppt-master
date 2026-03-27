@@ -31,7 +31,7 @@
 
     <!-- Thank You 标题 -->
     <text x="640" y="240" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="700" fill="url(#textGradient)" text-anchor="middle">
-        Thank You!
+        {{THANK_YOU}}
     </text>
 
     <!-- 副标题 -->
@@ -82,7 +82,7 @@
 
     <!-- 结语 -->
     <text x="640" y="650" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="500" fill="#5F6368" text-anchor="middle">
-        {{CLOSING_MESSAGE}}
+        {{CONTACT_INFO}}
     </text>
 
     <!-- 底部四色圆点装饰 -->

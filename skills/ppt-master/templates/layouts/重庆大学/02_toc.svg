@@ -31,38 +31,38 @@
   <!-- 目录项 1 -->
   <text x="80" y="200" fill="#006BB7" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="80" font-weight="bold">01</text>
   <rect x="170" y="160" width="4" height="60" fill="url(#goldAccent)"/>
-  <text x="190" y="195" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_1}}</text>
-  <text x="190" y="225" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_1}}</text>
+  <text x="190" y="195" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_1_TITLE}}</text>
+  <text x="190" y="225" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_1_DESC}}</text>
   
   <!-- 目录项 2 -->
   <text x="700" y="200" fill="#006BB7" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="80" font-weight="bold">02</text>
   <rect x="790" y="160" width="4" height="60" fill="url(#goldAccent)"/>
-  <text x="810" y="195" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_2}}</text>
-  <text x="810" y="225" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_2}}</text>
+  <text x="810" y="195" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_2_TITLE}}</text>
+  <text x="810" y="225" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_2_DESC}}</text>
   
   <!-- 目录项 3 -->
   <text x="80" y="340" fill="#006BB7" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="80" font-weight="bold">03</text>
   <rect x="170" y="300" width="4" height="60" fill="url(#goldAccent)"/>
-  <text x="190" y="335" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_3}}</text>
-  <text x="190" y="365" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_3}}</text>
+  <text x="190" y="335" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_3_TITLE}}</text>
+  <text x="190" y="365" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_3_DESC}}</text>
   
   <!-- 目录项 4 -->
   <text x="700" y="340" fill="#006BB7" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="80" font-weight="bold">04</text>
   <rect x="790" y="300" width="4" height="60" fill="url(#goldAccent)"/>
-  <text x="810" y="335" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_4}}</text>
-  <text x="810" y="365" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_4}}</text>
+  <text x="810" y="335" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_4_TITLE}}</text>
+  <text x="810" y="365" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_4_DESC}}</text>
   
   <!-- 目录项 5 -->
   <text x="80" y="480" fill="#006BB7" fill-opacity="0.15" font-family="Arial, sans-serif" font-size="80" font-weight="bold">05</text>
   <rect x="170" y="440" width="4" height="60" fill="url(#goldAccent)"/>
-  <text x="190" y="475" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_5}}</text>
-  <text x="190" y="505" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_5}}</text>
+  <text x="190" y="475" fill="#1A2E44" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_5_TITLE}}</text>
+  <text x="190" y="505" fill="#6B7B8C" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_5_DESC}}</text>
   
   <!-- 目录项 6（可选，更淡化） -->
   <text x="700" y="480" fill="#006BB7" fill-opacity="0.08" font-family="Arial, sans-serif" font-size="80" font-weight="bold">06</text>
   <rect x="790" y="440" width="4" height="60" fill="#D0D7E0"/>
-  <text x="810" y="475" fill="#A0AEC0" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_6}}</text>
-  <text x="810" y="505" fill="#B0BCC8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_DESC_6}}</text>
+  <text x="810" y="475" fill="#A0AEC0" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_6_TITLE}}</text>
+  <text x="810" y="505" fill="#B0BCC8" font-family="Microsoft YaHei, Arial, sans-serif" font-size="14">{{TOC_ITEM_6_DESC}}</text>
   
   <!-- 底部波浪装饰 -->
   <path d="M0,680 Q160,665 320,680 T640,665 T960,680 T1280,665 L1280,720 L0,720 Z" fill="#006BB7" fill-opacity="0.06"/>

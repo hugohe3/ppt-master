@@ -11,7 +11,7 @@
     <rect width="1280" height="720" fill="url(#coverGradient)" />
 
     <!-- 可选：背景图片（使用时替换 {{COVER_BG_IMAGE}}） -->
-    <!-- <image href="{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.25"/> -->
+    <!-- 如需弱化图片，请改用叠加蒙层，不要直接设置 <image opacity> -->
 
     <!-- 装饰圆形 -->
     <circle cx="1100" cy="150" r="200" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.1" />

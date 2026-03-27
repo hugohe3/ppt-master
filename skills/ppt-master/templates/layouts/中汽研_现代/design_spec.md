@@ -156,6 +156,10 @@
 | `{{CHAPTER_NUM}}`  | Chapter number (01, 02) |
 | `{{PAGE_TITLE}}`   | Content page title    |
 | `{{STAT_1}}`       | Statistical data 1    |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title    |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message     |
+| `{{CONTACT_INFO}}` | Contact information   |
 
 ---
 

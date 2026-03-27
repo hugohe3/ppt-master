@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="720" viewBox="0 0 1280 720">
     <!-- 模板: 目录页 (Future Tech Timeline Style) -->
 
     <defs>
@@ -21,7 +21,7 @@
     <!-- 左侧内容 -->
     <g transform="translate(60, 0)">
         <!-- Logo -->
-        <image href="../images/{{LOGO_LARGE}}" x="0" y="60" width="200" height="80" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <image href="../images/{{LOGO_LARGE}}" x="0" y="60" width="200" height="80" preserveAspectRatio="xMidYMid meet"/>
         
         <!-- 大标题 -->
         <text x="0" y="240" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="#FFFFFF" opacity="0.1">02</text>
@@ -49,40 +49,40 @@
             <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
             <!-- 内容 -->
             <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">01</text>
-            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_01_TITLE}}</text>
-            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_01_DESC}}</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{TOC_ITEM_1_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{TOC_ITEM_1_DESC}}</text>
         </g>
 
         <!-- Chapter 2 -->
         <g transform="translate(0, 110)">
              <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
             <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">02</text>
-            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_02_TITLE}}</text>
-            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_02_DESC}}</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{TOC_ITEM_2_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{TOC_ITEM_2_DESC}}</text>
         </g>
 
         <!-- Chapter 3 -->
         <g transform="translate(0, 220)">
              <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
             <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">03</text>
-            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_03_TITLE}}</text>
-            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_03_DESC}}</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{TOC_ITEM_3_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{TOC_ITEM_3_DESC}}</text>
         </g>
 
         <!-- Chapter 4 -->
         <g transform="translate(0, 330)">
              <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
             <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">04</text>
-            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_04_TITLE}}</text>
-            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_04_DESC}}</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{TOC_ITEM_4_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{TOC_ITEM_4_DESC}}</text>
         </g>
         
         <!-- Chapter 5 -->
         <g transform="translate(0, 440)">
              <circle cx="0" cy="20" r="8" fill="#FFFFFF" stroke="#1890FF" stroke-width="3" />
             <text x="40" y="15" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1890FF">05</text>
-            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{CHAPTER_05_TITLE}}</text>
-            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{CHAPTER_05_DESC}}</text>
+            <text x="90" y="15" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="24" font-weight="bold" fill="#1F2937">{{TOC_ITEM_5_TITLE}}</text>
+            <text x="90" y="45" font-family="Microsoft YaHei, sans-serif" font-size="16" fill="#6B7280">{{TOC_ITEM_5_DESC}}</text>
         </g>
     </g>
     

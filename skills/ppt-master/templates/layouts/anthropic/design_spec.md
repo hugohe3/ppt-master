@@ -217,14 +217,20 @@
 | ------------------ | ------------------ |
 | `{{TITLE}}`        | Main title         |
 | `{{SUBTITLE}}`     | Subtitle           |
+| `{{COVER_QUOTE}}`  | Cover quote        |
 | `{{SOURCE}}`       | Source info        |
 | `{{DATE}}`         | Date               |
 | `{{PAGE_TITLE}}`   | Page title (core takeaway) |
 | `{{PAGE_LABEL}}`   | Page type label    |
+| `{{CONTENT_AREA}}` | Flexible content anchor |
 | `{{CHAPTER_NUM}}`  | Chapter number     |
 | `{{CHAPTER_TITLE}}`| Chapter title      |
 | `{{PAGE_NUM}}`     | Page number        |
 | `{{TOTAL_PAGES}}`  | Total pages        |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{CONTACT_INFO}}` | Primary contact info |
 
 ---
 

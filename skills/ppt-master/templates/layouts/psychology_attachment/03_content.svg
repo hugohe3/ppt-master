@@ -8,7 +8,7 @@
     <!-- 标题区域 -->
     <text x="60" y="75" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="bold"
         fill="#1E293B">
-        {{TITLE}}
+        {{PAGE_TITLE}}
     </text>
     <text x="60" y="105" font-family="system-ui, sans-serif" font-size="16" fill="#64748B">
         {{TITLE_EN}}

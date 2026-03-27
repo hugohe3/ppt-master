@@ -91,7 +91,7 @@
     <!-- Item 06 (可选) -->
     <g transform="translate(700, 330)">
         <text x="0" y="0" fill="#CCCCCC" font-family="Arial, sans-serif" font-size="32" font-weight="bold">06</text>
-        <text x="60" y="0" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_6}}</text>
+        <text x="60" y="0" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="22" font-weight="bold">{{TOC_ITEM_6_TITLE}}</text>
         <rect x="60" y="40" width="300" height="1" fill="#E0E0E0" stroke-dasharray="4,2" />
     </g>
 
