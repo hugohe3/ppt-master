@@ -4,14 +4,15 @@
 
 ## Core Mission
 
-Generate project-specific page templates based on the Design Specification & Content Outline, for user confirmation before batch content generation.
+Generate reusable page templates for the **global template library** based on a finalized template brief.
 
-> This is a standalone role: only triggered via the `/create-template` workflow; not used in the PPT generation pipeline.
+> This is a standalone role: only triggered via the `/create-template` workflow. It is **not** the project-level template selection/customization step in the main PPT generation pipeline.
 
 ## Usage
 
 - **Trigger**: `/create-template` workflow
 - **Output location**: `templates/layouts/<template_name>/`
+- **Input**: finalized template brief (template ID, display name, category, applicable scenarios, tone, theme mode, canvas format, optional reference assets)
 
 ---
 
@@ -60,7 +61,7 @@ When creating a global template, a `design_spec.md` must be generated, containin
 
 ### 2. Inherit Design Specification
 
-Templates must strictly follow the Design Specification & Content Outline:
+Templates must strictly follow the finalized template brief and the generated `design_spec.md`:
 - **Canvas dimensions**: viewBox matches the design spec
 - **Color scheme**: Uses primary, secondary, and accent colors from the spec
 - **Font plan**: Uses font presets from the spec
@@ -91,8 +92,6 @@ Use clear placeholder markers for replaceable content:
 | `{{SUBTITLE}}` | Subtitle | Cover |
 | `{{DATE}}` | Date | Cover |
 | `{{AUTHOR}}` | Author / Organization | Cover |
-| `{{TOC_TITLE}}` | TOC title | TOC page |
-| `{{TOC_ITEMS}}` | TOC item list | TOC page |
 | `{{CHAPTER_NUM}}` | Chapter number | Chapter page |
 | `{{CHAPTER_TITLE}}` | Chapter title | Chapter page |
 | `{{CHAPTER_DESC}}` | Chapter description | Chapter page |
@@ -103,9 +102,18 @@ Use clear placeholder markers for replaceable content:
 | `{{SOURCE}}` | Data source | Content page footer |
 | `{{PAGE_NUM}}` | Page number | Content page, ending page |
 | `{{THANK_YOU}}` | Thank-you message | Ending page |
-| `{{TAGLINE}}` | Tagline / slogan | Ending page |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle | Ending page |
+| `{{CLOSING_MESSAGE}}` | Closing message | Ending page |
 | `{{CONTACT_INFO}}` | Contact info | Ending page |
 | `{{COPYRIGHT}}` | Copyright | Ending page |
+
+For TOC pages in **newly created library templates**, use indexed placeholders:
+
+- `{{TOC_ITEM_1_TITLE}}`, `{{TOC_ITEM_1_DESC}}`
+- `{{TOC_ITEM_2_TITLE}}`, `{{TOC_ITEM_2_DESC}}`
+- ...
+
+Do **not** create new TOC placeholder families such as `{{CHAPTER_01_TITLE}}` for new templates. Existing templates may contain legacy placeholder variants, but new library assets should converge on the indexed TOC contract.
 
 ---
 
@@ -138,6 +146,8 @@ If suitable template resources already exist, use them directly instead of gener
 2. **Adjust colors**: Modify colors per the project design spec
 3. **Customize**: Make project-specific adjustments
 
+This section describes downstream reuse. The `Template_Designer` role itself is responsible for creating or normalizing the reusable library asset first.
+
 **Example library structure** (query `templates/layouts/layouts_index.json`):
 
 ```
@@ -158,8 +168,8 @@ templates/layouts/
 - [x] Generated 4 core page templates
 - [ ] TOC page template (optional)
 - [ ] Optional extension pages (if needed)
-- [x] All templates saved to `templates/` directory
+- [x] All templates saved to `templates/layouts/<template_name>/`
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] Placeholder markers are clear and standardized
-- [ ] **Next step**: Request user confirmation of templates
+- [ ] **Next step**: Validate assets and register the template in `layouts_index.json`
 ```

@@ -27,7 +27,8 @@
     <rect width="1280" height="720" fill="url(#gradSky)" />
     
     <!-- 背部图片 (低透明度融合) -->
-    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice" opacity="0.3"/>
+    <image href="../images/{{COVER_BG_IMAGE}}" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+    <rect width="1280" height="720" fill="url(#gradSky)" fill-opacity="0.7" />
     
     <!-- 2. 右侧几何装饰 (Tech Polymer) -->
     <g transform="translate(640, 0)">
@@ -61,10 +62,10 @@
         </text>
 
         <!-- 装饰性数据点缀 -->
-        <g transform="translate(0, 460)" opacity="0.4">
-            <text x="0" y="0" font-family="Arial" font-size="12" fill="#FFFFFF">COORD: 39.90N, 116.40E</text>
-            <rect x="180" y="-8" width="40" height="8" fill="#FFFFFF" />
-            <rect x="230" y="-8" width="10" height="8" fill="#00E5FF" />
+        <g transform="translate(0, 460)">
+            <text x="0" y="0" font-family="Arial" font-size="12" fill="#FFFFFF" fill-opacity="0.4">COORD: 39.90N, 116.40E</text>
+            <rect x="180" y="-8" width="40" height="8" fill="#FFFFFF" fill-opacity="0.4" />
+            <rect x="230" y="-8" width="10" height="8" fill="#00E5FF" fill-opacity="0.4" />
         </g>
 
         <!-- 底部信息卡片 -->

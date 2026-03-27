@@ -265,10 +265,14 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 | `{{AUTHOR}}`       | Author/Organization |
 | `{{PAGE_TITLE}}`   | Page title         |
 | `{{PAGE_TITLE_EN}}`| Page title (English) |
+| `{{CONTENT_AREA}}` | Flexible content area |
 | `{{CHAPTER_NUM}}`  | Chapter number     |
 | `{{PAGE_NUM}}`     | Page number        |
 | `{{TOTAL_PAGES}}`  | Total page count   |
 | `{{VERSION}}`      | Version number     |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{CONTACT_INFO}}` | Primary contact info |
 
 ---
 

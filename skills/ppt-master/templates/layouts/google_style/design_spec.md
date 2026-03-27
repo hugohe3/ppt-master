@@ -264,6 +264,10 @@ Templates use `{{PLACEHOLDER}}` format placeholders:
 | `{{CHAPTER_TITLE_EN}}` | Chapter English subtitle |
 | `{{PAGE_NUM}}`         | Page number              |
 | `{{CONTENT_AREA}}`     | Content area placeholder |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title           |
+| `{{THANK_YOU}}`        | Thank-you message        |
+| `{{CONTACT_INFO}}`     | Primary contact info     |
+| `{{ENDING_SUBTITLE}}`  | Ending subtitle          |
 
 ---
 

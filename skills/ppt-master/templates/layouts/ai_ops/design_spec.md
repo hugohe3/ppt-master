@@ -165,12 +165,13 @@ This template emulates the visual language of telecom technical reports. The cor
 - **Content Area**: Dashed frame (`stroke-dasharray="5 5"`) marking content area `{{CONTENT_AREA}}`
 - **Footer**: Light gray bottom bar, left red vertical bar + chapter name `{{SECTION_NAME}}`, right red square page number `{{PAGE_NUM}}`
 - **Source Citation**: Footer centered `{{SOURCE}}`
+- **TOC**: Use canonical indexed placeholders such as `{{TOC_ITEM_1_TITLE}}`
 
 ### 4. Ending Page (04_ending.svg)
 
 - **Layout**: Mirrors the cover — left red-blue dual-color vertical bar, bottom blue bar
 - **Central Panel**: Warm gray panel (`#FDF3EB` + `#F8CBAD` border) carrying the thank-you message
-- **Content**: `{{THANK_YOU}}` (red 64px Bold) + `{{TAGLINE}}` (blue 22px)
+- **Content**: `{{THANK_YOU}}` (red 64px Bold) + `{{ENDING_SUBTITLE}}` (blue 22px)
 - **Contact Info**: `{{CONTACT_INFO}}` + `{{COPYRIGHT}}`
 - **Bottom Decoration**: Number badges + blue labels, echoing the cover
 
@@ -329,7 +330,7 @@ The template uses `{{PLACEHOLDER}}` format placeholders:
 | `{{SOURCE}}`        | Data source (footer)     | Content page        |
 | `{{PAGE_NUM}}`      | Page number              | Content/ending page |
 | `{{THANK_YOU}}`     | Thank-you message        | Ending page         |
-| `{{TAGLINE}}`       | Slogan/tagline           | Ending page         |
+| `{{ENDING_SUBTITLE}}` | Slogan/tagline         | Ending page         |
 | `{{CONTACT_INFO}}`  | Contact information      | Ending page         |
 | `{{COPYRIGHT}}`     | Copyright                | Ending page         |
 

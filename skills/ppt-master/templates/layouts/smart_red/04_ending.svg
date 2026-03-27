@@ -27,8 +27,8 @@
   <g transform="translate(640, 340)" text-anchor="middle">
       
       <!-- Thank You Text -->
-      <text x="0" y="0" font-family="'Microsoft YaHei', sans-serif" font-size="80" font-weight="bold" fill="#333333" letter-spacing="4">谢谢观看</text>
-      <text x="0" y="60" font-family="Arial, sans-serif" font-size="24" fill="#DE3545" letter-spacing="10">THANKS FOR WATCHING</text>
+      <text x="0" y="0" font-family="'Microsoft YaHei', sans-serif" font-size="80" font-weight="bold" fill="#333333" letter-spacing="4">{{THANK_YOU}}</text>
+      <text x="0" y="60" font-family="Arial, sans-serif" font-size="24" fill="#DE3545" letter-spacing="10">{{ENDING_SUBTITLE}}</text>
       
       <!-- Separator -->
       <line x1="-150" y1="100" x2="150" y2="100" stroke="#CCCCCC" stroke-width="1" />
@@ -38,7 +38,7 @@
       
       <!-- Contact Info Placeholder -->
       <text x="0" y="200" font-family="Arial, sans-serif" font-size="16" fill="#999999">
-        http://www.yourcompany.com
+        {{CONTACT_INFO}}
       </text>
   </g>
 </svg>

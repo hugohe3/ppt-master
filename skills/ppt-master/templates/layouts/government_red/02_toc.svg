@@ -30,40 +30,40 @@
     <g>
         <rect x="310" y="160" width="40" height="40" fill="#8B0000"/>
         <text x="330" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">01</text>
-        <text x="370" y="185" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_01_TITLE}}</text>
-        <text x="370" y="210" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_01_DESC}}</text>
+        <text x="370" y="185" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_1_TITLE}}</text>
+        <text x="370" y="210" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_1_DESC}}</text>
     </g>
 
     <!-- 目录项 - 第2章 -->
     <g>
         <rect x="310" y="250" width="40" height="40" fill="#8B0000"/>
         <text x="330" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">02</text>
-        <text x="370" y="275" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_02_TITLE}}</text>
-        <text x="370" y="300" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_02_DESC}}</text>
+        <text x="370" y="275" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_2_TITLE}}</text>
+        <text x="370" y="300" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_2_DESC}}</text>
     </g>
 
     <!-- 目录项 - 第3章 -->
     <g>
         <rect x="310" y="340" width="40" height="40" fill="#8B0000"/>
         <text x="330" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">03</text>
-        <text x="370" y="365" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_03_TITLE}}</text>
-        <text x="370" y="390" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_03_DESC}}</text>
+        <text x="370" y="365" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_3_TITLE}}</text>
+        <text x="370" y="390" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_3_DESC}}</text>
     </g>
 
     <!-- 目录项 - 第4章 -->
     <g>
         <rect x="310" y="430" width="40" height="40" fill="#8B0000"/>
         <text x="330" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">04</text>
-        <text x="370" y="455" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_04_TITLE}}</text>
-        <text x="370" y="480" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_04_DESC}}</text>
+        <text x="370" y="455" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_4_TITLE}}</text>
+        <text x="370" y="480" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_4_DESC}}</text>
     </g>
 
     <!-- 目录项 - 第5章 -->
     <g>
         <rect x="310" y="520" width="40" height="40" fill="#8B0000"/>
         <text x="330" y="550" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">05</text>
-        <text x="370" y="545" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{CHAPTER_05_TITLE}}</text>
-        <text x="370" y="570" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{CHAPTER_05_DESC}}</text>
+        <text x="370" y="545" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="bold" fill="#1A1A1A">{{TOC_ITEM_5_TITLE}}</text>
+        <text x="370" y="570" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#718096">{{TOC_ITEM_5_DESC}}</text>
     </g>
 
     <!-- 右侧装饰区域 -->

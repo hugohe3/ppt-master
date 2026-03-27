@@ -197,6 +197,7 @@
 | `{{TOC_ITEM_N_TITLE}}`| TOC item title (N=1..n) |
 | `{{TOC_ITEM_N_DESC}}` | TOC item description (N=1..n) |
 | `{{THANK_YOU}}`       | Closing message    |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle    |
 | `{{CONTACT_INFO}}`    | Contact information |
 
 ---

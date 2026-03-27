@@ -143,6 +143,8 @@ All template design specification documents should follow this chapter structure
 
 Templates use `{{PLACEHOLDER}}` format to mark replaceable content:
 
+> For **newly created library templates**, use the canonical placeholder contract below. Some existing templates still contain legacy placeholder variants; those should be treated as historical exceptions rather than the standard for new assets.
+
 ### General Placeholders
 
 | Placeholder | Purpose | Applicable Pages |
@@ -174,7 +176,9 @@ Templates use `{{PLACEHOLDER}}` format to mark replaceable content:
 
 | Placeholder | Purpose |
 |-------------|---------|
-| `{{TOC_ITEM_1}}` ~ `{{TOC_ITEM_5}}` | TOC items 1-5 |
+| `{{TOC_ITEM_1_TITLE}}` ~ `{{TOC_ITEM_N_TITLE}}` | TOC item titles |
+| `{{TOC_ITEM_1_DESC}}` ~ `{{TOC_ITEM_N_DESC}}` | Optional TOC item descriptions |
+| `{{TOC_ITEM_1}}` ~ `{{TOC_ITEM_N}}` | Legacy simple TOC items; do not use for new templates unless no description field is needed |
 
 ### Ending Page
 
@@ -220,6 +224,10 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 3. Ensure `design_spec.md` follows the standard chapter structure
 4. All SVGs use `viewBox="0 0 1280 720"`
 5. Follow SVG technical constraints (see below)
+6. Validate the template directory with `python3 scripts/svg_quality_checker.py templates/layouts/<template_name> --format ppt169`
+7. Register the new template in `templates/layouts/layouts_index.json`
+
+`layouts_index.json` is the primary machine-readable source for template discovery. A template folder without an index entry is considered incomplete.
 
 ### SVG Technical Constraints (All Templates Must Comply)
 

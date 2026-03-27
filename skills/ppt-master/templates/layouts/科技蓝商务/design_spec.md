@@ -185,11 +185,16 @@
 | `{{AUTHOR}}`                  | Speaker/Author             |
 | `{{DATE}}`                    | Date                       |
 | `{{PAGE_TITLE}}`              | Page title                 |
-| `{{CONTENT_PLACEHOLDER}}`     | Content area prompt text   |
-| `{{SECTION_NUMBER}}`          | Section number (01)        |
-| `{{SECTION_TITLE}}`           | Section title              |
-| `{{PAGE_NUMBER}}`             | Page number                |
-| `{{SECTION_1_TITLE}}`         | TOC item 1                 |
+| `{{CONTENT_AREA}}`            | Content area prompt text   |
+| `{{CHAPTER_NUM}}`             | Chapter number (01)        |
+| `{{CHAPTER_TITLE}}`           | Chapter title              |
+| `{{CHAPTER_DESC}}`            | Chapter description        |
+| `{{PAGE_NUM}}`                | Page number                |
+| `{{TOC_ITEM_1_TITLE}}`        | TOC item 1 title           |
+| `{{THANK_YOU}}`               | Thank-you message          |
+| `{{ENDING_SUBTITLE}}`         | Ending subtitle            |
+| `{{CLOSING_MESSAGE}}`         | Closing message            |
+| `{{CONTACT_INFO}}`            | Primary contact info       |
 
 ---
 

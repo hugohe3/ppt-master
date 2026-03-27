@@ -69,7 +69,7 @@
     <!-- 底部信息区 -->
     <rect x="0" y="680" width="1280" height="40" fill="#8B0000" fill-opacity="0.8" />
     <text x="640" y="707" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.9">
-        {{TAGLINE}}
+        {{ENDING_SUBTITLE}}
     </text>
 
 </svg>

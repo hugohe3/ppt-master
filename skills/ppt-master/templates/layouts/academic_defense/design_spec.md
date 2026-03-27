@@ -222,8 +222,10 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 | `{{PAGE_NUM}}`     | Page number        |
 | `{{SOURCE}}`       | Data source        |
 | `{{SECTION_NAME}}` | Section name (footer) |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title (N=1..n) |
+| `{{TOC_ITEM_N_DESC}}` | TOC item description (N=1..n) |
 | `{{THANK_YOU}}`    | Thank-you message  |
-| `{{TAGLINE}}`      | Tagline/slogan     |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle/tagline |
 | `{{CONTACT_INFO}}` | Contact information |
 | `{{EMAIL}}`        | Email address      |
 | `{{COPYRIGHT}}`    | Copyright info     |

@@ -35,7 +35,7 @@
   
   <!-- 主标题（霓虹发光） -->
   <text x="640" y="80" text-anchor="middle" font-family="Consolas, Monaco, monospace" font-size="48" font-weight="bold" fill="#39FF14" filter="url(#glowGreen)">
-    🎯 {{END_TITLE}}
+    🎯 {{THANK_YOU}}
   </text>
   <text x="640" y="115" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Microsoft YaHei, sans-serif" font-size="20" fill="#8B949E">
     {{END_SUBTITLE}}
@@ -129,7 +129,7 @@
     </text>
     <!-- 说明文字 -->
     <text x="580" y="80" text-anchor="middle" font-family="-apple-system, Microsoft YaHei, sans-serif" font-size="18" fill="#E6EDF3">
-      {{CTA_DESCRIPTION}}
+      {{CONTACT_INFO}}
     </text>
     <!-- 按钮组 -->
     <g transform="translate(400, 90)">

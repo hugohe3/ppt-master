@@ -226,6 +226,10 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 | `{{CHAPTER_TITLE}}`| Chapter title      |
 | `{{PAGE_NUM}}`     | Page number        |
 | `{{SOURCE}}`       | Data source        |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{CONTACT_INFO}}` | Contact information |
 | `{{CONFIDENTIAL}}` | Confidential label |
 
 ---

@@ -16,7 +16,7 @@
   <text x="640" y="310" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="64" font-weight="bold" fill="#C00000" text-anchor="middle">{{THANK_YOU}}</text>
 
   <!-- English Tagline -->
-  <text x="640" y="370" font-family="Arial, sans-serif" font-size="22" fill="#2E75B6" text-anchor="middle" letter-spacing="6">{{TAGLINE}}</text>
+  <text x="640" y="370" font-family="Arial, sans-serif" font-size="22" fill="#2E75B6" text-anchor="middle" letter-spacing="6">{{ENDING_SUBTITLE}}</text>
 
   <!-- Separator -->
   <line x1="480" y1="400" x2="800" y2="400" stroke="#E7E6E6" stroke-width="1" />

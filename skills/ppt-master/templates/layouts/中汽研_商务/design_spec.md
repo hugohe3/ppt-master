@@ -150,6 +150,10 @@
 | `{{DATE}}`         | Date                  |
 | `{{PAGE_TITLE}}`   | Content page title    |
 | `{{CHAPTER_NUM}}`  | Chapter number (01, 02) |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title    |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message     |
+| `{{CONTACT_INFO}}` | Contact information   |
 | `{{LOGO_LARGE}}`   | Cover/back page large Logo |
 | `{{LOGO_HEADER}}`  | Navigation bar small Logo |
 

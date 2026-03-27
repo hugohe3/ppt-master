@@ -163,6 +163,10 @@
 | `{{PAGE_TITLE}}`   | Content page title    |
 | `{{STAT_1}}`       | Statistical data 1    |
 | `{{CONTENT_AREA}}` | Content area identifier |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title    |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message     |
+| `{{CONTACT_INFO}}` | Contact information   |
 
 ---
 

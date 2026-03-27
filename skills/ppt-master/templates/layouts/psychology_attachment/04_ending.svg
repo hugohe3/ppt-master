@@ -58,18 +58,18 @@
     <!-- 主标题 -->
     <text x="640" y="260" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="56" font-weight="bold"
         fill="#FFFFFF" text-anchor="middle">
-        {{TITLE}}
+        {{THANK_YOU}}
     </text>
 
     <!-- 副标题 -->
     <text x="640" y="320" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" fill="#E5E7EB"
         text-anchor="middle">
-        {{SUBTITLE}}
+        {{ENDING_SUBTITLE}}
     </text>
 
     <!-- 英文标题 -->
     <text x="640" y="360" font-family="system-ui, sans-serif" font-size="18" fill="#94A3B8" text-anchor="middle">
-        {{TITLE_EN}}
+        {{THANK_YOU_EN}}
     </text>
 
     <!-- 装饰线 -->
@@ -78,7 +78,7 @@
     <!-- 感谢语 -->
     <text x="640" y="470" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="32" fill="#FFFFFF"
         text-anchor="middle">
-        {{THANKS_TEXT}}
+        {{CLOSING_MESSAGE}}
     </text>
 
     <!-- 信息卡片 -->
@@ -86,7 +86,7 @@
 
     <text x="640" y="560" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="16" fill="#E5E7EB"
         text-anchor="middle">
-        {{CONTACT_LINE_1}}
+        {{CONTACT_INFO}}
     </text>
     <text x="640" y="590" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#94A3B8"
         text-anchor="middle">

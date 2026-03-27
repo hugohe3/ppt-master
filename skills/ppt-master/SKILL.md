@@ -140,7 +140,7 @@ cp ${SKILL_DIR}/templates/layouts/<template_name>/*.jpg <project_path>/images/ 2
 
 After the user confirms option B, proceed directly to Step 4.
 
-> To create a new template, Read `references/template-designer.md`
+> To create a new global template, read `workflows/create-template.md`
 
 **✅ Checkpoint — User has responded with template selection, template files copied (if option A). Proceed to Step 4.**
 

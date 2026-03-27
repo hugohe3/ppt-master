@@ -51,11 +51,11 @@
   
   <!-- 目录项 05（可选） -->
   <rect x="80" y="345" width="540" height="90" fill="none" stroke="#D0D7E0" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
-  <text x="350" y="398" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">{{TOC_ITEM_5}}</text>
+  <text x="350" y="398" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">{{TOC_ITEM_5_TITLE}}</text>
   
   <!-- 目录项 06（可选） -->
   <rect x="660" y="345" width="540" height="90" fill="none" stroke="#D0D7E0" stroke-width="1" stroke-dasharray="4,4" rx="8"/>
-  <text x="930" y="398" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">{{TOC_ITEM_6}}</text>
+  <text x="930" y="398" text-anchor="middle" fill="#999999" font-family="Microsoft YaHei, Arial, sans-serif" font-size="16">{{TOC_ITEM_6_TITLE}}</text>
   
   <!-- ==================== 页脚区域 ==================== -->
   <line x1="40" y1="665" x2="1240" y2="665" stroke="#E8F4FC" stroke-width="1"/>

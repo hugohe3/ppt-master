@@ -20,7 +20,7 @@
   
   <!-- 副标语 -->
   <text x="640" y="365" text-anchor="middle" fill="#666666" font-family="Microsoft YaHei, Arial, sans-serif" font-size="24">
-    {{TAGLINE}}
+    {{ENDING_SUBTITLE}}
   </text>
   
   <!-- 装饰分割线 -->

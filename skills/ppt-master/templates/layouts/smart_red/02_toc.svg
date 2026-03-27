@@ -31,28 +31,28 @@
         <g transform="translate(0, 0)">
             <circle cx="40" cy="40" r="32" fill="#FFFFFF" stroke="#DE3545" stroke-width="3" />
             <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#DE3545">01</text>
-            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_1}}</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_1_TITLE}}</text>
         </g>
 
         <!-- Item 2 -->
         <g transform="translate(0, 110)">
             <circle cx="40" cy="40" r="32" fill="#DE3545" />
             <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">02</text>
-            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_2}}</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_2_TITLE}}</text>
         </g>
 
         <!-- Item 3 -->
         <g transform="translate(0, 220)">
             <circle cx="40" cy="40" r="32" fill="#FFFFFF" stroke="#DE3545" stroke-width="3" />
             <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#DE3545">03</text>
-            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_3}}</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_3_TITLE}}</text>
         </g>
 
         <!-- Item 4 -->
         <g transform="translate(0, 330)">
             <circle cx="40" cy="40" r="32" fill="#DE3545" />
             <text x="40" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">04</text>
-            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_4}}</text>
+            <text x="95" y="45" font-family="'Microsoft YaHei', sans-serif" font-size="32" font-weight="bold" fill="#333333">{{TOC_ITEM_4_TITLE}}</text>
         </g>
 
     </g>

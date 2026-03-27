@@ -23,10 +23,10 @@
   <rect x="540" y="180" width="200" height="3" fill="#4CA1E7" rx="1" />
 
   <!-- Main Content -->
-  <text x="640" y="300" font-family="Microsoft YaHei" font-size="72" font-weight="bold" fill="#FFFFFF" text-anchor="middle" letter-spacing="12">感谢聆听</text>
+  <text x="640" y="300" font-family="Microsoft YaHei" font-size="72" font-weight="bold" fill="#FFFFFF" text-anchor="middle" letter-spacing="12">{{THANK_YOU}}</text>
   
   <!-- English Subtitle -->
-  <text x="640" y="360" font-family="Arial" font-size="24" fill="#A0C4E3" text-anchor="middle" letter-spacing="4">THANK YOU FOR LISTENING</text>
+  <text x="640" y="360" font-family="Arial" font-size="24" fill="#A0C4E3" text-anchor="middle" letter-spacing="4">{{ENDING_SUBTITLE}}</text>
 
   <!-- Divider -->
   <rect x="540" y="400" width="200" height="2" fill="#FFFFFF" fill-opacity="0.3" />
@@ -38,8 +38,8 @@
   <!-- Contact Info Area -->
   <rect x="340" y="540" width="600" height="100" fill="#FFFFFF" fill-opacity="0.05" rx="10" />
   
-  <text x="640" y="580" font-family="Microsoft YaHei" font-size="16" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">如有疑问，欢迎交流讨论</text>
-  <text x="640" y="615" font-family="Arial" font-size="14" fill="#A0C4E3" text-anchor="middle">{{CONTACT_EMAIL}} | {{CONTACT_PHONE}}</text>
+  <text x="640" y="580" font-family="Microsoft YaHei" font-size="16" fill="#FFFFFF" fill-opacity="0.8" text-anchor="middle">{{CLOSING_MESSAGE}}</text>
+  <text x="640" y="615" font-family="Arial" font-size="14" fill="#A0C4E3" text-anchor="middle">{{CONTACT_INFO}}</text>
 
   <!-- Bottom Wave -->
   <path d="M0,650 C200,610 400,680 640,630 C880,580 1100,670 1280,620 L1280,720 L0,720 Z" fill="#002E5D" fill-opacity="0.4" />

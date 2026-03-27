@@ -358,6 +358,8 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 | `{{TITLE}}`          | Main title           |
 | `{{SUBTITLE}}`       | Subtitle             |
 | `{{TITLE_EN}}`       | English title        |
+| `{{PAGE_TITLE}}`     | Content page title   |
+| `{{CONTENT_AREA}}`   | Flexible content area |
 | `{{CHAPTER_NUM}}`    | Chapter number       |
 | `{{CHAPTER_TITLE}}`  | Chapter title        |
 | `{{CHAPTER_EN}}`     | Chapter English title |
@@ -365,6 +367,10 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 | `{{QUOTE_AUTHOR}}`   | Quote author         |
 | `{{PAGE_NUM}}`       | Page number          |
 | `{{COVER_BG_IMAGE}}` | Cover background image path |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title     |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`      | Thank-you message    |
+| `{{CONTACT_INFO}}`   | Primary contact info |
 
 ---
 

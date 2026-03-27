@@ -195,6 +195,10 @@
 | `{{CHAPTER_TITLE}}`  | Chapter title      |
 | `{{PAGE_TITLE}}`     | Page title         |
 | `{{CONTENT_AREA}}`   | Content area identifier |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title   |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`      | Thank-you message  |
+| `{{CONTACT_INFO}}`   | Contact information |
 
 ---
 

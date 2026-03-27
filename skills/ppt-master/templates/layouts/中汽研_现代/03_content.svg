@@ -20,7 +20,7 @@
         <rect x="0" y="80" width="1280" height="4" fill="#1890FF" />
         
         <!-- Logo -->
-        <image href="../images/{{LOGO_HEADER}}" x="1100" y="15" width="120" height="50" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>
+        <image href="../images/{{LOGO_HEADER}}" x="1100" y="15" width="120" height="50" preserveAspectRatio="xMidYMid meet"/>
         
         <!-- 页面标题 -->
         <text x="80" y="52" font-family="Microsoft YaHei, SimHei, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">
@@ -43,9 +43,9 @@
     </text>
 
     <!-- 右下角装饰水印 (Tech HUD) -->
-    <g transform="translate(1180, 650)" opacity="0.1">
-        <circle cx="0" cy="0" r="40" fill="none" stroke="#000000" stroke-width="2" />
-        <path d="M-40,0 L40,0 M0,-40 L0,40" stroke="#000000" stroke-width="1" />
+    <g transform="translate(1180, 650)">
+        <circle cx="0" cy="0" r="40" fill="none" stroke="#000000" stroke-opacity="0.1" stroke-width="2" />
+        <path d="M-40,0 L40,0 M0,-40 L0,40" stroke="#000000" stroke-opacity="0.1" stroke-width="1" />
     </g>
 
     <!-- 页码 -->

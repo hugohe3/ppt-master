@@ -35,6 +35,10 @@
   <!-- 宽度: 1160px, 高度: 530px                    -->
   <!-- 此区域由 Executor 自由设计内容               -->
   <!-- ============================================ -->
+  <rect x="60" y="140" width="1160" height="500" fill="none" stroke="#30363D" stroke-width="2" stroke-dasharray="8,8" />
+  <text x="640" y="405" text-anchor="middle" font-family="Consolas, monospace" font-size="20" fill="#8B949E">
+    {{CONTENT_AREA}}
+  </text>
   
   <!-- 底部装饰线 -->
   <rect x="0" y="716" width="1280" height="4" fill="#39FF14" fill-opacity="0.6" />

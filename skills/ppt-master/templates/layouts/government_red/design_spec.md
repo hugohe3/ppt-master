@@ -200,6 +200,10 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 | `{{CHAPTER_NUM}}`  | Chapter number     |
 | `{{PAGE_NUM}}`     | Page number        |
 | `{{DATE}}`         | Date               |
+| `{{TOC_ITEM_N_TITLE}}` | TOC item title |
+| `{{TOC_ITEM_N_DESC}}`  | TOC item description |
+| `{{THANK_YOU}}`    | Thank-you message  |
+| `{{CONTACT_INFO}}` | Contact information |
 | `{{LOGO_HEADER}}`  | Header logo filename |
 | `{{COVER_BG_IMAGE}}`| Cover background image filename |
 
