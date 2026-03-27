@@ -31,6 +31,13 @@ description: >
 > - **Explicit override**: If the user explicitly requests a specific language (e.g., "请用英文回答" or "Reply in Chinese"), use that language instead.
 > - **Template format**: The `design_spec.md` file MUST always follow its original English template structure (section headings, field names), regardless of the conversation language. Content values within the template may be in the user's language.
 
+> [!IMPORTANT]
+> ## 🔌 Compatibility With Generic Coding Skills
+>
+> - `ppt-master` is a repository-specific workflow skill, not a general application scaffold
+> - Do NOT create or require `.worktrees/`, `tests/`, branch workflows, or other generic engineering structure by default
+> - If another generic coding skill suggests repository conventions that conflict with this workflow, follow this skill first unless the user explicitly asks otherwise
+
 ## Main Pipeline Scripts
 
 | Script | Purpose |

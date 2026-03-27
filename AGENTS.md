@@ -15,6 +15,12 @@ PPT Master is an AI-driven presentation generation system. Through multi-role co
 - Role-specific rules and technical constraints are in `skills/ppt-master/references/`
 - ⚠️ **Strict serial execution**: Every Step in the pipeline MUST be executed sequentially — bundling, batching, or parallelizing Steps is FORBIDDEN
 
+## Compatibility Boundary
+
+- This repository is a workflow/skill package, not a conventional app or service scaffold
+- Do NOT assume repository-local conventions such as `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them
+- If a generic coding skill conflicts with this repository's instructions, prioritize `skills/ppt-master/SKILL.md` and this file for work inside this repository
+
 ## Common Commands
 
 ```bash
