@@ -78,13 +78,20 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> str:
     if filt_id and filt_id in ctx.defs:
         effect = build_effect_xml(ctx.defs[filt_id])
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+
     geom = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 
     shape_id = ctx.next_id()
     return _wrap_shape(
         shape_id, f'Rectangle {shape_id}',
         px_to_emu(x), px_to_emu(y), px_to_emu(w), px_to_emu(h),
-        geom, fill, stroke, effect,
+        geom, fill, stroke, effect, rot=rot,
     )
 
 
@@ -314,11 +321,18 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> str:
     stroke_op = get_stroke_opacity(elem, ctx)
     stroke = build_stroke_xml(elem, ctx, stroke_op)
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+
     shape_id = ctx.next_id()
     return _wrap_shape(
         shape_id, f'Line {shape_id}',
         px_to_emu(min_x), px_to_emu(min_y), w_emu, h_emu,
-        geom, '<a:noFill/>', stroke,
+        geom, '<a:noFill/>', stroke, rot=rot,
     )
 
 
@@ -432,11 +446,18 @@ def convert_polygon(elem: ET.Element, ctx: ConvertContext) -> str:
     fill = build_fill_xml(elem, ctx, fill_op)
     stroke = build_stroke_xml(elem, ctx, stroke_op)
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+
     shape_id = ctx.next_id()
     return _wrap_shape(
         shape_id, f'Polygon {shape_id}',
         px_to_emu(min_x), px_to_emu(min_y), w_emu, h_emu,
-        geom, fill, stroke,
+        geom, fill, stroke, rot=rot,
     )
 
 
@@ -474,11 +495,18 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> str:
     fill = build_fill_xml(elem, ctx, fill_op)
     stroke = build_stroke_xml(elem, ctx, stroke_op)
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+
     shape_id = ctx.next_id()
     return _wrap_shape(
         shape_id, f'Polyline {shape_id}',
         px_to_emu(min_x), px_to_emu(min_y), w_emu, h_emu,
-        geom, '<a:noFill/>', stroke,
+        geom, '<a:noFill/>', stroke, rot=rot,
     )
 
 
@@ -751,6 +779,14 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> str:
         'target': f'../media/{img_filename}',
     })
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+    rot_attr = f' rot="{rot}"' if rot else ''
+
     shape_id = ctx.next_id()
 
     return f'''<p:pic>
@@ -764,7 +800,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> str:
 <a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
-<a:xfrm><a:off x="{px_to_emu(x)}" y="{px_to_emu(y)}"/>
+<a:xfrm{rot_attr}><a:off x="{px_to_emu(x)}" y="{px_to_emu(y)}"/>
 <a:ext cx="{px_to_emu(w)}" cy="{px_to_emu(h)}"/></a:xfrm>
 <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
 </p:spPr>
@@ -797,9 +833,16 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> str:
 
     geom = '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
 
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+
     shape_id = ctx.next_id()
     return _wrap_shape(
         shape_id, f'Ellipse {shape_id}',
         px_to_emu(x), px_to_emu(y), px_to_emu(w), px_to_emu(h),
-        geom, fill, stroke,
+        geom, fill, stroke, rot=rot,
     )
