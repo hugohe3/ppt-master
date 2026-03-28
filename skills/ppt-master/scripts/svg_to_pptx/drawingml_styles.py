@@ -161,11 +161,21 @@ def build_stroke_xml(
     if linecap and linecap in cap_map:
         cap_attr = f' cap="{cap_map[linecap]}"'
 
+    # Line join
+    join_xml = ''
+    linejoin = _get_attr(elem, 'stroke-linejoin', ctx)
+    if linejoin == 'round':
+        join_xml = '<a:round/>'
+    elif linejoin == 'bevel':
+        join_xml = '<a:bevel/>'
+    elif linejoin == 'miter':
+        join_xml = '<a:miter lim="800000"/>'
+
     # Gradient stroke
     grad_id = resolve_url_id(stroke)
     if grad_id and grad_id in ctx.defs:
         grad_fill = build_gradient_fill(ctx.defs[grad_id], opacity)
-        return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}</a:ln>'
+        return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}{join_xml}</a:ln>'
 
     # Solid color stroke
     color = parse_hex_color(stroke)
@@ -177,20 +187,24 @@ def build_stroke_xml(
         alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
 
     return f'''<a:ln w="{width_emu}"{cap_attr}>
-<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>{dash_xml}
+<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>{dash_xml}{join_xml}
 </a:ln>'''
 
 
-def build_shadow_xml(filter_elem: ET.Element) -> str:
-    """Build <a:effectLst> with <a:outerShdw> from SVG filter element."""
-    if filter_elem is None:
-        return ''
+def _parse_filter_params(
+    filter_elem: ET.Element,
+) -> dict[str, float | str]:
+    """Extract common parameters from an SVG filter element.
 
+    Returns:
+        Dict with keys: std_dev, dx, dy, opacity, color, has_offset.
+    """
     std_dev = 4.0
     dx = 0.0
-    dy = 4.0
-    shadow_opacity = 0.3
-    shadow_color = '000000'
+    dy = 0.0
+    opacity = 0.3
+    color = '000000'
+    has_offset = False
 
     for child in filter_elem.iter():
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -198,26 +212,83 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
             std_dev = _f(child.get('stdDeviation'), 4.0)
         elif tag == 'feOffset':
             dx = _f(child.get('dx'), 0.0)
-            dy = _f(child.get('dy'), 4.0)
+            dy = _f(child.get('dy'), 0.0)
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
         elif tag == 'feFlood':
-            shadow_opacity = _f(child.get('flood-opacity'), 0.3)
+            opacity = _f(child.get('flood-opacity'), 0.3)
             raw_color = child.get('flood-color', '').strip().lstrip('#')
             if len(raw_color) == 6 and all(c in '0123456789abcdefABCDEF' for c in raw_color):
-                shadow_color = raw_color.upper()
+                color = raw_color.upper()
         elif tag == 'feFuncA':
             if child.get('type') == 'linear':
-                shadow_opacity = _f(child.get('slope'), 0.3)
+                opacity = _f(child.get('slope'), 0.3)
+
+    return {
+        'std_dev': std_dev, 'dx': dx, 'dy': dy,
+        'opacity': opacity, 'color': color, 'has_offset': has_offset,
+    }
+
+
+def build_shadow_xml(filter_elem: ET.Element) -> str:
+    """Build <a:effectLst> with <a:outerShdw> from SVG filter element."""
+    if filter_elem is None:
+        return ''
+
+    p = _parse_filter_params(filter_elem)
+    std_dev = p['std_dev']
+    dx = p['dx']
+    dy = p['dy']
+    # For shadow, default dy to 4 if no offset was found
+    if not p['has_offset']:
+        dy = 4.0
 
     blur_rad = px_to_emu(std_dev * 2)
     dist = px_to_emu(math.sqrt(dx * dx + dy * dy))
     dir_angle = int(((90 + math.degrees(math.atan2(dy, max(dx, 0.001)))) % 360) * ANGLE_UNIT)
-    alpha_val = int(shadow_opacity * 100000)
+    alpha_val = int(p['opacity'] * 100000)
 
     return f'''<a:effectLst>
 <a:outerShdw blurRad="{blur_rad}" dist="{dist}" dir="{dir_angle}" algn="tl" rotWithShape="0">
-<a:srgbClr val="{shadow_color}"><a:alpha val="{alpha_val}"/></a:srgbClr>
+<a:srgbClr val="{p['color']}"><a:alpha val="{alpha_val}"/></a:srgbClr>
 </a:outerShdw>
 </a:effectLst>'''
+
+
+def build_glow_xml(filter_elem: ET.Element) -> str:
+    """Build <a:effectLst> with <a:glow> from SVG filter element.
+
+    Used for filters that have feGaussianBlur without meaningful feOffset,
+    typically title glow or highlight effects.
+    """
+    if filter_elem is None:
+        return ''
+
+    p = _parse_filter_params(filter_elem)
+    rad = px_to_emu(p['std_dev'] * 2)
+    alpha_val = int(p['opacity'] * 100000)
+
+    return f'''<a:effectLst>
+<a:glow rad="{rad}">
+<a:srgbClr val="{p['color']}"><a:alpha val="{alpha_val}"/></a:srgbClr>
+</a:glow>
+</a:effectLst>'''
+
+
+def build_effect_xml(filter_elem: ET.Element) -> str:
+    """Build effect XML by classifying the SVG filter as shadow or glow.
+
+    Classification rules:
+    - feOffset with non-zero dx/dy → outer shadow
+    - No feOffset or zero offset → glow effect
+    """
+    if filter_elem is None:
+        return ''
+
+    p = _parse_filter_params(filter_elem)
+    if p['has_offset']:
+        return build_shadow_xml(filter_elem)
+    return build_glow_xml(filter_elem)
 
 
 def get_element_opacity(elem: ET.Element) -> float | None:

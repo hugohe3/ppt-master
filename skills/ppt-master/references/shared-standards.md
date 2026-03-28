@@ -113,7 +113,7 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 
 #### Filter Soft Shadow — Recommended
 
-Best for: cards, floating panels, elevated elements. `svg_to_shapes.py` automatically converts `feGaussianBlur` + `feOffset` into native PPTX `<a:outerShdw>`.
+Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter automatically converts `feGaussianBlur` + `feOffset` into native PPTX `<a:outerShdw>`.
 
 ```xml
 <defs>
@@ -157,6 +157,34 @@ Best for: accent buttons, brand-colored cards. Use the element's own color famil
 ```
 
 Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.12–0.20.
+
+#### Glow Effect
+
+Best for: title highlights, key metrics, hero text. The converter automatically converts `feGaussianBlur` without `feOffset` into native PPTX `<a:glow>`.
+
+```xml
+<defs>
+  <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+    <feFlood flood-color="#1A73E8" flood-opacity="0.40" result="glowColor"/>
+    <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+<text x="640" y="360" text-anchor="middle" font-size="48" fill="#1A73E8" filter="url(#titleGlow)">Key Insight</text>
+```
+
+Recommended parameters:
+```
+stdDeviation:   2–5      (smaller = subtle, larger = prominent)
+flood-color:    brand color or accent color (NOT black)
+flood-opacity:  0.25–0.50  (stronger than shadow for visibility)
+```
+
+**Key difference from shadow**: No `<feOffset>` element (or dx=0/dy=0). The converter uses this to distinguish glow from shadow.
 
 #### Layered Rect Shadow — High-Compatibility Fallback
 
@@ -237,6 +265,7 @@ Best for: slides needing strong visual brand identity.
 |----------|-----------------------|-------|
 | Card / panel shadow | Filter soft shadow (`flood-opacity` ≤ 0.12) | Hard black shadow |
 | Accent / CTA button | Colored shadow (same hue family) | Generic gray shadow |
+| Title / metric highlight | Glow filter (brand color, no offset) | Overuse on body text |
 | Text over image | Linear gradient overlay (direction matches text side) | Uniform flat opacity over whole image |
 | Cover / full-image slide | Bottom gradient bar + brand color | Solid black overlay |
 | Atmosphere / hero slide | Radial vignette | Unprocessed raw image |
@@ -244,7 +273,44 @@ Best for: slides needing strong visual brand identity.
 
 ---
 
-## 7. Project Directory Structure
+## 7. Stroke & Text Decoration
+
+### stroke-linejoin
+
+Controls how line segments join at corners. Supported values convert to native PPTX line join types:
+
+| SVG Value | PPTX Equivalent | Best For |
+|-----------|-----------------|----------|
+| `round` | Round join | Smooth polyline charts, organic shapes |
+| `bevel` | Bevel join | Technical diagrams |
+| `miter` | Miter join (default) | Sharp-cornered rectangles, arrows |
+
+```xml
+<polyline points="100,200 200,100 300,200" fill="none"
+  stroke="#1A73E8" stroke-width="3" stroke-linejoin="round"/>
+```
+
+### text-decoration
+
+Supported text decorations convert to native PPTX text formatting:
+
+| SVG Value | PPTX Equivalent | Best For |
+|-----------|-----------------|----------|
+| `underline` | Single underline | Emphasis, links, key terms |
+| `line-through` | Strikethrough | Removed items, before/after comparisons |
+
+```xml
+<text x="100" y="200" font-size="20" fill="#333333" text-decoration="underline">Important Term</text>
+
+<!-- Per-tspan decoration -->
+<text x="100" y="240" font-size="18" fill="#333333">
+  Regular text <tspan text-decoration="line-through" fill="#999999">old value</tspan> new value
+</text>
+```
+
+---
+
+## 8. Project Directory Structure
 
 ```
 project/
