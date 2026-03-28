@@ -10,7 +10,33 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 |--------------|---------|-----------|
 | Project creation + Template option confirmed | **Strategist**: Eight Confirmations + Design Spec | Image_Generator or Executor |
 
-> See shared-standards.md for SVG technical constraints, PPT compatibility rules, canvas format table, and post-processing commands.
+---
+
+## Canvas Format Quick Reference
+
+### Presentations
+
+| Format | viewBox | Dimensions | Ratio |
+|--------|---------|------------|-------|
+| PPT 16:9 | `0 0 1280 720` | 1280x720 | 16:9 |
+| PPT 4:3 | `0 0 1024 768` | 1024x768 | 4:3 |
+
+### Social Media
+
+| Format | viewBox | Dimensions | Ratio |
+|--------|---------|------------|-------|
+| Xiaohongshu (RED) | `0 0 1242 1660` | 1242x1660 | 3:4 |
+| WeChat Moments / Instagram Post | `0 0 1080 1080` | 1080x1080 | 1:1 |
+| Story / TikTok Vertical | `0 0 1080 1920` | 1080x1920 | 9:16 |
+
+### Marketing Materials
+
+| Format | viewBox | Dimensions | Ratio |
+|--------|---------|------------|-------|
+| WeChat Article Header | `0 0 900 383` | 900x383 | 2.35:1 |
+| Landscape Banner | `0 0 1920 1080` | 1920x1080 | 16:9 |
+| Portrait Poster | `0 0 1080 1920` | 1080x1920 | 9:16 |
+| A4 Print (150dpi) | `0 0 1240 1754` | 1240x1754 | 1:1.414 |
 
 ---
 
@@ -22,7 +48,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ### a. Canvas Format Confirmation
 
-Recommend format based on scenario (see canvas format quick reference in shared-standards.md).
+Recommend format based on scenario (see Canvas Format Quick Reference above).
 
 ### b. Page Count Confirmation
 

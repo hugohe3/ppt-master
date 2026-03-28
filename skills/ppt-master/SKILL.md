@@ -159,10 +159,9 @@ After the user confirms option B, proceed directly to Step 4.
 
 🚧 **GATE**: Step 3 complete; user has confirmed template selection.
 
-First, read the role definitions:
+First, read the role definition:
 ```
 Read references/strategist.md
-Read references/shared-standards.md
 ```
 
 **Must complete the Eight Confirmations** (refer to `templates/design_spec_reference.md` for the template structure):

@@ -273,7 +273,26 @@ Best for: slides needing strong visual brand identity.
 
 ---
 
-## 7. Stroke & Text Decoration
+## 7. Stroke, Text & Shape Effects
+
+### stroke-dasharray — Dashed / Dotted Lines
+
+Converts to native PPTX `<a:prstDash>`. Use preset patterns for best results:
+
+| SVG Value | PPTX Preset | Best For |
+|-----------|-------------|----------|
+| `4,4` | Dash | General dashed lines, separators |
+| `2,2` | Dot (sysDot) | Subtle dotted borders, placeholder outlines |
+| `8,4` | Long dash | Timeline connectors, flow arrows |
+| `8,4,2,4` | Long dash-dot | Technical drawings, dimension lines |
+
+```xml
+<rect x="60" y="60" width="400" height="240" rx="12"
+  fill="none" stroke="#999999" stroke-width="2" stroke-dasharray="4,4"/>
+
+<line x1="100" y1="360" x2="1180" y2="360"
+  stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2,2"/>
+```
 
 ### stroke-linejoin
 
@@ -307,6 +326,50 @@ Supported text decorations convert to native PPTX text formatting:
   Regular text <tspan text-decoration="line-through" fill="#999999">old value</tspan> new value
 </text>
 ```
+
+### Gradient Fill — linearGradient & radialGradient
+
+Gradients defined in `<defs>` and referenced via `fill="url(#id)"` convert to native PPTX `<a:gradFill>`. Use them as shape fills (not just overlays) for polished surfaces.
+
+**Linear gradient** — best for buttons, header bars, background panels:
+
+```xml
+<defs>
+  <linearGradient id="btnGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#1A73E8"/>
+    <stop offset="100%" stop-color="#0D47A1"/>
+  </linearGradient>
+</defs>
+<rect x="540" y="600" width="200" height="48" rx="24" fill="url(#btnGrad)"/>
+```
+
+**Radial gradient** — best for spotlight backgrounds, circular accents:
+
+```xml
+<defs>
+  <radialGradient id="spotBg" cx="50%" cy="50%" r="70%">
+    <stop offset="0%" stop-color="#1A73E8" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#1A73E8" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<circle cx="640" cy="360" r="300" fill="url(#spotBg)"/>
+```
+
+### transform: rotate — Element Rotation
+
+Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on shapes, paths, and text.
+
+```xml
+<!-- Rotated decorative element -->
+<rect x="100" y="100" width="60" height="60" fill="#1A73E8" fill-opacity="0.1"
+  transform="rotate(45, 130, 130)"/>
+
+<!-- Rotated text label -->
+<text x="50" y="400" font-size="14" fill="#999999"
+  transform="rotate(-90, 50, 400)">Y-Axis Label</text>
+```
+
+**Syntax**: `rotate(angle)` or `rotate(angle, cx, cy)` where `cx,cy` is the rotation center. Positive angles rotate clockwise.
 
 ---
 
