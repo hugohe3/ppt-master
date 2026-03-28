@@ -371,6 +371,61 @@ Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on all element 
 
 **Syntax**: `rotate(angle)` or `rotate(angle, cx, cy)` where `cx,cy` is the rotation center. Positive angles rotate clockwise.
 
+### Arc Paths — Donut / Pie Charts
+
+When drawing donut or pie chart sectors with `<path>`, the arc endpoint coordinates must be calculated precisely using trigonometry. **Never estimate or approximate arc endpoints** — even small errors produce wildly incorrect shapes.
+
+**Calculation formula** (center `cx,cy`, radius `r`, angle `θ` in degrees):
+```
+x = cx + r × cos(θ × π / 180)
+y = cy + r × sin(θ × π / 180)
+```
+
+**Key rules**:
+1. Start at **-90°** (12 o'clock position) and go clockwise
+2. Each sector spans `percentage × 360°`
+3. Use **large-arc flag = 1** when the sector is > 180°, **0** otherwise
+4. sweep-direction = 1 (clockwise) for outer arc, 0 (counter-clockwise) for inner arc returning
+5. **Always verify** that the sum of all sector angles equals 360° and that the last sector's end point matches the first sector's start point
+
+**Example — 75% donut sector** (center 400,400, outer r=180, inner r=100):
+```
+Start angle: -90°    → outer(400, 220), inner(400, 300)
+End angle: -90+270=180° → outer(220, 400), inner(300, 400)
+Large-arc flag: 1 (270° > 180°)
+
+<path d="M 400,220 A 180,180 0 1,1 220,400 L 300,400 A 100,100 0 1,0 400,300 Z"/>
+```
+
+### Polygon Arrows on Diagonal Lines
+
+When using `<polygon>` triangles as arrowheads (since `marker-end` is banned), arrows on **horizontal or vertical lines** can use simple point offsets. But arrows on **diagonal lines** must have their triangle vertices rotated to match the line direction.
+
+**Method**: Calculate the triangle points using the line's direction vector:
+
+```
+Given line from (x1,y1) to (x2,y2):
+1. Direction vector: dx = x2-x1, dy = y2-y1
+2. Normalize: len = √(dx²+dy²), ux = dx/len, uy = dy/len
+3. Perpendicular: px = -uy, py = ux
+4. Arrow tip = (x2, y2)
+5. Back point 1 = (x2 - ux×12 + px×5,  y2 - uy×12 + py×5)
+6. Back point 2 = (x2 - ux×12 - px×5,  y2 - uy×12 - py×5)
+```
+
+**Example — diagonal line** from (260,310) to (370,430):
+```
+dx=110, dy=120, len≈162.8, ux=0.676, uy=0.737
+px=-0.737, py=0.676
+Tip: (370, 430)
+Back1: (370-8.1-3.7, 430-8.8+3.4) = (358.2, 424.6)
+Back2: (370-8.1+3.7, 430-8.8-3.4) = (365.6, 417.8)
+
+<polygon points="370,430 365.6,417.8 358.2,424.6" fill="#C8A96E"/>
+```
+
+⚠️ **Never use a fixed downward/rightward triangle on a diagonal line** — the arrow will point in the wrong direction.
+
 ---
 
 ## 8. Project Directory Structure
