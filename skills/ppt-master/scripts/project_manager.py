@@ -16,7 +16,6 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 try:
@@ -56,11 +55,13 @@ WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
 
 
 def is_url(value: str) -> bool:
+    """Return whether a string looks like an HTTP(S) URL."""
     parsed = urlparse(value)
     return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
 
 
 def sanitize_name(value: str) -> str:
+    """Sanitize a user-facing name into a filesystem-safe token."""
     safe = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in value.strip())
     safe = safe.strip("._")
     while "__" in safe:
@@ -69,6 +70,7 @@ def sanitize_name(value: str) -> str:
 
 
 def derive_url_basename(url: str) -> str:
+    """Derive a stable base filename from a URL."""
     parsed = urlparse(url)
     parts = [sanitize_name(parsed.netloc)]
     if parsed.path and parsed.path != "/":
@@ -79,6 +81,7 @@ def derive_url_basename(url: str) -> str:
 
 
 def is_within_path(path: Path, parent: Path) -> bool:
+    """Return whether `path` resolves inside `parent`."""
     try:
         path.resolve().relative_to(parent.resolve())
         return True
@@ -98,7 +101,7 @@ class ProjectManager:
         self,
         project_name: str,
         canvas_format: str = "ppt169",
-        base_dir: Optional[str] = None,
+        base_dir: str | None = None,
     ) -> str:
         base_path = Path(base_dir) if base_dir else self.base_dir
 
@@ -195,7 +198,7 @@ class ProjectManager:
             shutil.copytree(source, destination)
         return destination
 
-    def _run_tool(self, args: List[str]) -> None:
+    def _run_tool(self, args: list[str]) -> None:
         try:
             result = subprocess.run(
                 args,
@@ -272,7 +275,7 @@ class ProjectManager:
         canonical = re.sub(r"([^\s\]()/]+_files)/", "__ASSET_DIR__/", canonical)
         return canonical.strip()
 
-    def _find_equivalent_markdown(self, source_path: Path, sources_dir: Path) -> Optional[Path]:
+    def _find_equivalent_markdown(self, source_path: Path, sources_dir: Path) -> Path | None:
         source_content = source_path.read_text(encoding="utf-8", errors="replace")
         canonical_source = self._canonicalize_markdown_content(source_content)
 
@@ -291,7 +294,7 @@ class ProjectManager:
 
         return None
 
-    def _companion_asset_dir(self, source_path: Path) -> Optional[Path]:
+    def _companion_asset_dir(self, source_path: Path) -> Path | None:
         candidate = source_path.with_name(f"{source_path.stem}_files")
         if candidate.exists() and candidate.is_dir():
             return candidate
@@ -316,7 +319,7 @@ class ProjectManager:
         source_path: Path,
         sources_dir: Path,
         move: bool,
-    ) -> Tuple[Path, Optional[Path], Optional[str]]:
+    ) -> tuple[Path, Path | None, str | None]:
         archived_markdown = self._copy_or_move_file(
             source_path,
             sources_dir / source_path.name,
@@ -349,9 +352,9 @@ class ProjectManager:
     def import_sources(
         self,
         project_path: str,
-        source_items: List[str],
+        source_items: list[str],
         move: bool = False,
-    ) -> Dict[str, List[str]]:
+    ) -> dict[str, list[str]]:
         project_dir = Path(project_path)
         if not project_dir.exists() or not project_dir.is_dir():
             raise FileNotFoundError(f"Project directory not found: {project_dir}")
@@ -359,7 +362,7 @@ class ProjectManager:
             raise ValueError("At least one source path or URL is required")
 
         sources_dir = self._source_dir(project_dir)
-        summary: Dict[str, List[str]] = {
+        summary: dict[str, list[str]] = {
             "archived": [],
             "markdown": [],
             "assets": [],
@@ -477,7 +480,7 @@ class ProjectManager:
 
         return summary
 
-    def validate_project(self, project_path: str) -> Tuple[bool, List[str], List[str]]:
+    def validate_project(self, project_path: str) -> tuple[bool, list[str], list[str]]:
         project_path_obj = Path(project_path)
         is_valid, errors, warnings = validate_project_structure(str(project_path_obj))
 
@@ -492,7 +495,7 @@ class ProjectManager:
 
         return is_valid, errors, warnings
 
-    def get_project_info(self, project_path: str) -> Dict:
+    def get_project_info(self, project_path: str) -> dict[str, object]:
         shared = get_project_info_common(project_path)
         return {
             "name": shared.get("name", Path(project_path).name),
@@ -508,10 +511,12 @@ class ProjectManager:
 
 
 def print_usage() -> None:
+    """Print CLI usage information from the module docstring."""
     print(__doc__)
 
 
-def parse_init_args(argv: List[str]) -> Tuple[str, str, str]:
+def parse_init_args(argv: list[str]) -> tuple[str, str, str]:
+    """Parse arguments for the `init` subcommand."""
     if len(argv) < 3:
         raise ValueError("Project name is required")
 
@@ -533,13 +538,14 @@ def parse_init_args(argv: List[str]) -> Tuple[str, str, str]:
     return project_name, canvas_format, base_dir
 
 
-def parse_import_args(argv: List[str]) -> Tuple[str, List[str], bool]:
+def parse_import_args(argv: list[str]) -> tuple[str, list[str], bool]:
+    """Parse arguments for the `import-sources` subcommand."""
     if len(argv) < 4:
         raise ValueError("Project path and at least one source are required")
 
     project_path = argv[2]
     move = False
-    sources: List[str] = []
+    sources: list[str] = []
 
     for arg in argv[3:]:
         if arg == "--move":
@@ -551,6 +557,7 @@ def parse_import_args(argv: List[str]) -> Tuple[str, List[str], bool]:
 
 
 def main() -> None:
+    """Run the CLI entry point."""
     if len(sys.argv) < 2:
         print_usage()
         sys.exit(1)

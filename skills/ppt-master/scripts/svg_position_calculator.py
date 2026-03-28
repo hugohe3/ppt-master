@@ -1293,7 +1293,8 @@ def from_json_config(config_file: str) -> None:
         print(" ".join(points_list))
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='SVG Position Calculation and Validation Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,

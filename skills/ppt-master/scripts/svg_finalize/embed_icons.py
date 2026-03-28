@@ -64,7 +64,7 @@ def extract_paths_from_icon(icon_path: Path) -> list[str]:
     return paths
 
 
-def parse_use_element(use_match: str) -> dict:
+def parse_use_element(use_match: str) -> dict[str, str | float]:
     """
     Parse attributes of a use element.
 
@@ -74,7 +74,7 @@ def parse_use_element(use_match: str) -> dict:
     Returns:
         Attribute dictionary
     """
-    attrs = {}
+    attrs: dict[str, str | float] = {}
     
     # Extract data-icon
     icon_match = re.search(r'data-icon="([^"]+)"', use_match)
@@ -95,7 +95,7 @@ def parse_use_element(use_match: str) -> dict:
     return attrs
 
 
-def generate_icon_group(attrs: dict, paths: list[str]) -> str:
+def generate_icon_group(attrs: dict[str, str | float], paths: list[str]) -> str:
     """
     Generate the icon's <g> element.
 
@@ -196,7 +196,8 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
     return replaced_count
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='Replace icon placeholders in SVG files with actual icon code',
         formatter_class=argparse.RawDescriptionHelpFormatter,

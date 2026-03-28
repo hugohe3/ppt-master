@@ -46,7 +46,8 @@ TEXT_STYLE_ATTRS = {
 num_re = re.compile(r"^[\s,]*([+-]?(?:\d+\.?\d*|\d*\.\d+))")
 
 
-def parse_first_number(val: str):
+def parse_first_number(val: str | None) -> float | None:
+    """Parse the first numeric token from an SVG attribute value."""
     if val is None:
         return None
     m = num_re.match(val)
@@ -58,7 +59,8 @@ def parse_first_number(val: str):
         return None
 
 
-def format_number(n: float) -> str:
+def format_number(n: float | None) -> str | None:
+    """Format a float for compact SVG attribute output."""
     if n is None:
         return None
     if abs(n - round(n)) < 1e-6:
@@ -68,8 +70,9 @@ def format_number(n: float) -> str:
     return s
 
 
-def parse_style(style_str: str) -> dict:
-    out = {}
+def parse_style(style_str: str | None) -> dict[str, str]:
+    """Parse an inline SVG style string into a mapping."""
+    out: dict[str, str] = {}
     if not style_str:
         return out
     # split by ; and then :
@@ -82,28 +85,37 @@ def parse_style(style_str: str) -> dict:
     return out
 
 
-def style_to_string(style_map: dict) -> str:
+def style_to_string(style_map: dict[str, str]) -> str:
+    """Serialize a style mapping back into an inline SVG style string."""
     if not style_map:
         return ""
     return ";".join(f"{k}:{v}" for k, v in style_map.items())
 
 
-def merge_styles(parent_style: str, child_style: str) -> str:
+def merge_styles(parent_style: str | None, child_style: str | None) -> str:
+    """Merge parent and child inline styles, preferring child values."""
     p = parse_style(parent_style)
     c = parse_style(child_style)
     p.update(c)  # child overrides
     return style_to_string(p)
 
 
-def get_attr(elem, name, default=None):
+def get_attr(elem: ET.Element | None, name: str, default: str | None = None) -> str | None:
+    """Read an attribute from an element with a default fallback."""
     return elem.get(name) if elem is not None and name in elem.attrib else default
 
 
-def compute_line_positions(text_el, tspan_el, cur_x, cur_y):
+def compute_line_positions(
+    text_el: ET.Element,
+    tspan_el: ET.Element,
+    cur_x: float | None,
+    cur_y: float | None,
+) -> tuple[float | None, float | None]:
     """
     Compute absolute x,y for a tspan based on parent <text> current baseline and tspan's x/y/dx/dy.
     Returns (new_x, new_y).
     """
+    del text_el
     # Prefer explicit x/y on tspan
     t_x_attr = get_attr(tspan_el, "x")
     t_y_attr = get_attr(tspan_el, "y")
@@ -129,7 +141,8 @@ def compute_line_positions(text_el, tspan_el, cur_x, cur_y):
     return nx, ny
 
 
-def collect_text_content(el) -> str:
+def collect_text_content(el: ET.Element) -> str:
+    """Collect all text content from an element subtree."""
     # Gather all text within the element (flatten nested tspans if any)
     parts = []
     for s in el.itertext():
@@ -138,7 +151,12 @@ def collect_text_content(el) -> str:
     return "".join(parts)
 
 
-def copy_text_attrs(src_el, dst_el, exclude=None):
+def copy_text_attrs(
+    src_el: ET.Element,
+    dst_el: ET.Element,
+    exclude: set[str] | None = None,
+) -> None:
+    """Copy shared text styling attributes between SVG text elements."""
     exclude = exclude or set()
     # Copy style string first
     if "style" in src_el.attrib and "style" not in exclude:
@@ -156,14 +174,15 @@ def copy_text_attrs(src_el, dst_el, exclude=None):
 
 
 def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
+    """Flatten multi-line tspan text into independent text nodes when needed."""
     root = tree.getroot()
     parent_map = {c: p for p in root.iter() for c in p}
     changed = False
 
-    def is_svg_tag(el, name):
+    def is_svg_tag(el: ET.Element, name: str) -> bool:
         return el.tag == f"{{{SVG_NS}}}{name}"
 
-    def is_new_line_tspan(tspan):
+    def is_new_line_tspan(tspan: ET.Element) -> bool:
         """Determine whether a tspan represents a new line (has its own y or non-zero dy)."""
         t_dy_attr = get_attr(tspan, "dy")
         t_y_attr = get_attr(tspan, "y")
@@ -273,7 +292,13 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
     return changed
 
 
-def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
+def _create_text_element_from_line(
+    text_el: ET.Element,
+    lead_text: str | None,
+    tspans: list[ET.Element],
+    x: float | None,
+    y: float | None,
+) -> ET.Element:
     """
     Create a text element from a line's content (may contain leading text and multiple tspans).
     If there is only one tspan and no leading text, create a simple text element.
@@ -345,6 +370,7 @@ def _create_text_element_from_line(text_el, lead_text, tspans, x, y):
 
 
 def process_svg_file(src_path: str, dst_path: str) -> bool:
+    """Flatten eligible tspan lines in one SVG file."""
     try:
         tree = ET.parse(src_path)
     except ET.ParseError as e:
@@ -375,7 +401,7 @@ def _compute_default_out_base(inp: str) -> str:
         return base + "_flattext" + ext
 
 
-def _interactive_get_paths():
+def _interactive_get_paths() -> tuple[str | None, str | None]:
     """
     Interactive mode: prompt the user for input path (SVG file or directory)
     and optional output path. Returns (inp, out_base) or (None, None) if cancelled.
@@ -405,7 +431,8 @@ def _interactive_get_paths():
     return inp, out_base
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     # CLI parsing with optional interactive mode
     parser = argparse.ArgumentParser(
         description="Flatten <tspan> lines into multiple <text> nodes for better compatibility.",

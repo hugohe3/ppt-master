@@ -40,8 +40,8 @@ from svg_finalize.embed_images import embed_images_in_svg
 from svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
 
 
-def safe_print(text):
-    """Safe print that handles Windows terminal encoding issues"""
+def safe_print(text: str) -> None:
+    """Print text while tolerating Windows terminal encoding limits."""
     try:
         print(text)
     except UnicodeEncodeError:
@@ -92,7 +92,12 @@ def process_rounded_rect(svg_file: Path, verbose: bool = False) -> int:
         return 0
 
 
-def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, quiet: bool = False):
+def finalize_project(
+    project_dir: Path,
+    options: dict[str, bool],
+    dry_run: bool = False,
+    quiet: bool = False,
+) -> bool:
     """
     Finalize SVG files in the project
 
@@ -231,7 +236,8 @@ def finalize_project(project_dir: Path, options: dict, dry_run: bool = False, qu
     return True
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PPT Master - SVG Post-processing Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,

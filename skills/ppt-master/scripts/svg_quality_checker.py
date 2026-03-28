@@ -424,8 +424,8 @@ class SVGQualityChecker:
         print(f"\n[REPORT] Check report exported: {output_file}")
 
 
-def main():
-    """Main function"""
+def main() -> None:
+    """Run the CLI entry point."""
     if len(sys.argv) < 2:
         print("PPT Master - SVG Quality Check Tool\n")
         print("Usage:")

@@ -200,8 +200,8 @@ def generate_examples_index(examples_dir: str = 'examples') -> str:
     return "\n".join(content)
 
 
-def main():
-    """Main function"""
+def main() -> None:
+    """Run the CLI entry point."""
     examples_dir = 'examples'
 
     if len(sys.argv) > 1:

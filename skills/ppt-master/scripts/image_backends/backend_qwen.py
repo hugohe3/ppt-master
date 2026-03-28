@@ -81,6 +81,7 @@ ASPECT_RATIO_SIZE_MAP = {
 
 
 def _resolve_url(base_url: str) -> str:
+    """Resolve the Qwen generation endpoint."""
     base = base_url.rstrip("/")
     if base.endswith("/generation"):
         return base
@@ -88,6 +89,7 @@ def _resolve_url(base_url: str) -> str:
 
 
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
+    """Resolve the target resolution for a ratio and logical size preset."""
     normalized = normalize_image_size(image_size)
     size = (ASPECT_RATIO_SIZE_MAP.get(normalized) or {}).get(aspect_ratio)
     if not size:
@@ -103,6 +105,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
+    """Generate one image with the Qwen backend."""
     size = _resolve_size(aspect_ratio, image_size)
     url = _resolve_url(base_url)
     headers = {
@@ -158,6 +161,7 @@ def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
+    """Generate an image with retries using the Qwen backend."""
     api_key = require_api_key(
         "QWEN_API_KEY",
         "DASHSCOPE_API_KEY",

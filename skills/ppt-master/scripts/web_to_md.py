@@ -20,11 +20,12 @@ Note:
 """
 
 import argparse
-import sys
+import datetime
+import io
 import os
 import re
+import sys
 import time
-import datetime
 from urllib.parse import urljoin, urlparse
 
 try:
@@ -37,7 +38,6 @@ except ImportError:
 
 try:
     from PIL import Image
-    import io
     PILLOW_AVAILABLE = True
 except ImportError:
     PILLOW_AVAILABLE = False
@@ -78,9 +78,14 @@ CONFIG = {
 }
 
 
-def fetch_url(url):
-    """
-    Fetches the URL handling headers, timeout and encoding detection.
+def fetch_url(url: str) -> str:
+    """Fetch a web page with explicit headers and encoding detection.
+
+    Args:
+        url: Target URL.
+
+    Returns:
+        The response body as text.
     """
     headers = {
         "User-Agent": CONFIG["user_agent"],
@@ -101,8 +106,8 @@ def fetch_url(url):
         raise Exception(f"Failed to fetch {url}: {str(e)}")
 
 
-def clean_title(title):
-    """Removes common suffixes from titles."""
+def clean_title(title: str) -> str:
+    """Remove common site suffixes from a title."""
     if not title:
         return ""
     # Remove site name suffixes often found in Chinese titles
@@ -110,8 +115,8 @@ def clean_title(title):
     return clean.strip()
 
 
-def sanitize_filename(name):
-    """Sanitizes the filename for file system."""
+def sanitize_filename(name: str) -> str:
+    """Sanitize a string for filesystem-safe filenames."""
     # Replace whitespace with underscore first
     clean = re.sub(r'\s+', '_', name)
     # Remove all except Chinese, English, Numbers, Underscore
@@ -121,8 +126,8 @@ def sanitize_filename(name):
     return clean[:80]  # Truncate
 
 
-def derive_base_name(title, url):
-    """Derive a safe, non-empty basename from title or URL."""
+def derive_base_name(title: str, url: str) -> str:
+    """Derive a safe, non-empty basename from a title or URL."""
     base = sanitize_filename(title or "")
     if base:
         return base
@@ -141,8 +146,8 @@ def derive_base_name(title, url):
     return f"untitled_{ts}"
 
 
-def build_image_filename(abs_url, seq, content_type=None):
-    """Builds a safe image filename using URL and optional content-type hint."""
+def build_image_filename(abs_url: str, seq: int, content_type: str | None = None) -> str:
+    """Build a safe image filename from URL metadata."""
     parsed = urlparse(abs_url)
     basename = os.path.basename(parsed.path).split('?')[0]
     stem, ext = os.path.splitext(basename)
@@ -164,8 +169,13 @@ def build_image_filename(abs_url, seq, content_type=None):
     return f"{stem}{ext}"
 
 
-def download_and_rewrite_images(content_element, page_url, image_dir, rel_prefix):
-    """Download images under content_element and rewrite src to local relative paths."""
+def download_and_rewrite_images(
+    content_element: Tag | None,
+    page_url: str,
+    image_dir: str,
+    rel_prefix: str,
+) -> int:
+    """Download images under the main content node and rewrite `src` paths."""
     if content_element is None:
         return 0
     images = list(content_element.find_all("img"))
@@ -264,8 +274,8 @@ def download_and_rewrite_images(content_element, page_url, image_dir, rel_prefix
     return saved
 
 
-def extract_metadata(soup, url):
-    """Extracts metadata like title, date, author from Soup."""
+def extract_metadata(soup: BeautifulSoup, url: str) -> dict[str, str]:
+    """Extract page metadata such as title, date, description, and author."""
 
     # 1. Title
     title_tag = soup.title
@@ -345,10 +355,8 @@ def extract_metadata(soup, url):
     }
 
 
-def find_main_content(soup):
-    """
-    Tries to find the main content area using reliable heuristics for Chinese gov/news sites.
-    """
+def find_main_content(soup: BeautifulSoup) -> Tag | None:
+    """Find the most likely main content container in a page."""
     # 1. Clean up first (remove known clutter)
     for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript", "iframe"]):
         tag.decompose()
@@ -402,10 +410,8 @@ def find_main_content(soup):
     return best_element if best_element else soup.body
 
 
-def element_to_markdown(element):
-    """
-    Recursive function to convert a BS4 element to Markdown.
-    """
+def element_to_markdown(element: Tag | NavigableString | None) -> str:
+    """Recursively convert a BeautifulSoup node to Markdown."""
     if element is None:
         return ""
 
@@ -505,14 +511,11 @@ def element_to_markdown(element):
     return f"{content} "
 
 
-def simple_html_to_markdown_traversal(soup):
-    """
-    A more robust HTML to Markdown converter using BS4 traversal.
-    We handle block elements by adding newlines.
-    """
+def simple_html_to_markdown_traversal(soup: Tag | BeautifulSoup | None) -> str:
+    """Convert HTML content to Markdown using BeautifulSoup traversal."""
     lines = []
 
-    def traverse(node):
+    def traverse(node: Tag | NavigableString) -> str:
         if isinstance(node, NavigableString):
             text = str(node)
             # Normalize whitespace but keep single spaces
@@ -617,7 +620,8 @@ def simple_html_to_markdown_traversal(soup):
     return md or ""
 
 
-def process_url(url, output_file=None):
+def process_url(url: str, output_file: str | None = None) -> tuple[bool, str, str | None]:
+    """Fetch, convert, and save one web page as Markdown."""
     print(f"\n[Fetching] {url}")
     try:
         html = fetch_url(url)
@@ -690,7 +694,8 @@ def process_url(url, output_file=None):
         return False, url, str(e)
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Web to Markdown Converter (Python)")
     parser.add_argument("urls", nargs="*", help="URLs to process")

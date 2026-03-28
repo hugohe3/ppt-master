@@ -31,6 +31,7 @@ DEFAULT_MODEL = "black-forest-labs/flux-1.1-pro"
 
 
 def _split_model(model: str) -> tuple[str, str]:
+    """Split a Replicate model reference into owner and name."""
     parts = [part for part in model.strip().split("/") if part]
     if len(parts) != 2:
         raise ValueError(
@@ -40,6 +41,7 @@ def _split_model(model: str) -> tuple[str, str]:
 
 
 def _extract_output_url(payload: dict) -> str | None:
+    """Extract an output URL from a Replicate prediction payload."""
     output = payload.get("output")
     if isinstance(output, str):
         return output
@@ -58,6 +60,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
+    """Generate one image with the Replicate backend."""
     del image_size
 
     if aspect_ratio not in VALID_ASPECT_RATIOS:
@@ -132,6 +135,7 @@ def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
+    """Generate an image with retries using the Replicate backend."""
     api_key = require_api_key(
         "REPLICATE_API_KEY",
         "REPLICATE_API_TOKEN",

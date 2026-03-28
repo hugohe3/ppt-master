@@ -548,7 +548,7 @@ class Config:
 # Command Line Interface
 # ============================================================
 
-def main():
+def main() -> None:
     """Command line entry point."""
     import sys
 

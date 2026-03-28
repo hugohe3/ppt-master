@@ -54,6 +54,7 @@ ASPECT_RATIO_TO_DIMENSIONS = {
 
 
 def _submit_request(url: str, headers: dict, payload: dict) -> dict:
+    """Submit a BFL generation request and return the JSON response."""
     response = requests.post(url, headers=headers, json=payload, timeout=180)
     if response.status_code != 200:
         raise http_error(response, "BFL generation request")
@@ -64,6 +65,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
+    """Generate one image with the Black Forest Labs backend."""
     del image_size  # BFL quality is primarily controlled by model choice.
 
     if aspect_ratio not in VALID_ASPECT_RATIOS:
@@ -140,6 +142,7 @@ def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
+    """Generate an image with retries using the BFL backend."""
     api_key = require_api_key(
         "BFL_API_KEY",
         message="No API key found. Set BFL_API_KEY in the current environment or the project-root .env.",

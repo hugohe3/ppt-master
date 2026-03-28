@@ -41,7 +41,7 @@ except ImportError:
     print("       Will try to use basic method for JPEG/PNG files.")
 
 
-def get_image_dimensions_pil(image_path):
+def get_image_dimensions_pil(image_path: str) -> tuple[int | None, int | None]:
     """Get image dimensions using PIL."""
     try:
         with Image.open(image_path) as img:
@@ -51,8 +51,8 @@ def get_image_dimensions_pil(image_path):
         return None, None
 
 
-def get_image_dimensions_basic(image_path):
-    """Get image dimensions using basic method (no PIL dependency)."""
+def get_image_dimensions_basic(image_path: str) -> tuple[int | None, int | None]:
+    """Get image dimensions using basic parsing without PIL."""
     try:
         with open(image_path, 'rb') as f:
             data = f.read(64)  # Read header information
@@ -97,7 +97,7 @@ def get_image_dimensions_basic(image_path):
         return None, None
 
 
-def get_image_dimensions_from_base64(data_uri):
+def get_image_dimensions_from_base64(data_uri: str) -> tuple[int | None, int | None]:
     """Get image dimensions from a Base64 data URI."""
     import io
     try:
@@ -126,8 +126,8 @@ def get_image_dimensions_from_base64(data_uri):
         return None, None
 
 
-def get_image_dimensions(href, svg_dir):
-    """Get image dimensions."""
+def get_image_dimensions(href: str, svg_dir: str) -> tuple[int | None, int | None]:
+    """Get image dimensions for either inline or external images."""
     # Handle data URI
     if href.startswith('data:'):
         return get_image_dimensions_from_base64(href)
@@ -148,7 +148,13 @@ def get_image_dimensions(href, svg_dir):
         return get_image_dimensions_basic(full_path)
 
 
-def calculate_fitted_dimensions(img_width, img_height, box_width, box_height, mode='meet'):
+def calculate_fitted_dimensions(
+    img_width: int,
+    img_height: int,
+    box_width: float,
+    box_height: float,
+    mode: str = 'meet',
+) -> tuple[float, float, float, float]:
     """
     Calculate the fitted dimensions for an image within a bounding box.
 
@@ -192,7 +198,7 @@ def calculate_fitted_dimensions(img_width, img_height, box_width, box_height, mo
     return new_width, new_height, offset_x, offset_y
 
 
-def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
+def fix_image_aspect_in_svg(svg_path: str, dry_run: bool = False, verbose: bool = True) -> int:
     """
     Fix image aspect ratios in an SVG file.
 
@@ -314,7 +320,8 @@ def fix_image_aspect_in_svg(svg_path, dry_run=False, verbose=True):
     return fixed_count
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='Fix image aspect ratios in SVG to prevent stretching when PowerPoint converts to shapes',
         formatter_class=argparse.RawDescriptionHelpFormatter,

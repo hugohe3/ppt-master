@@ -415,8 +415,8 @@ class ErrorHelper:
             print("-" * 80)
 
 
-def main():
-    """Main function - for testing."""
+def main() -> None:
+    """Run the CLI entry point for error lookup."""
     import sys
 
     if len(sys.argv) > 1:

@@ -18,6 +18,7 @@ Usage:
 import os
 import re
 import hashlib
+import sys
 from pathlib import Path
 from xml.etree import ElementTree as ET
 from urllib.parse import unquote
@@ -29,7 +30,7 @@ except ImportError:
     exit(1)
 
 
-def parse_preserve_aspect_ratio(attr: str) -> tuple:
+def parse_preserve_aspect_ratio(attr: str) -> tuple[str, str]:
     """
     Parse the preserveAspectRatio attribute.
 
@@ -47,7 +48,7 @@ def parse_preserve_aspect_ratio(attr: str) -> tuple:
     return (align, meet_or_slice)
 
 
-def get_crop_anchor(align: str) -> tuple:
+def get_crop_anchor(align: str) -> tuple[float, float]:
     """
     Return the crop anchor point based on the align value.
 
@@ -74,8 +75,13 @@ def get_crop_anchor(align: str) -> tuple:
     return (x_anchor, y_anchor)
 
 
-def crop_image_to_size(img: Image.Image, target_width: int, target_height: int, 
-                       x_anchor: float = 0.5, y_anchor: float = 0.5) -> Image.Image:
+def crop_image_to_size(
+    img: Image.Image,
+    target_width: int,
+    target_height: int,
+    x_anchor: float = 0.5,
+    y_anchor: float = 0.5,
+) -> Image.Image:
     """
     Crop an image to the target aspect ratio, preserving original resolution (no scaling).
 
@@ -121,8 +127,12 @@ def crop_image_to_size(img: Image.Image, target_width: int, target_height: int,
     return img.crop((left, top, right, bottom))
 
 
-def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = False, 
-                       verbose: bool = True) -> tuple:
+def process_svg_images(
+    svg_file: str,
+    output_dir: str | Path | None = None,
+    dry_run: bool = False,
+    verbose: bool = True,
+) -> tuple[int, int]:
     """
     Process images in an SVG file, cropping based on the preserveAspectRatio attribute.
 
@@ -269,13 +279,13 @@ def process_svg_images(svg_file: str, output_dir: str = None, dry_run: bool = Fa
     return (processed_count, error_count)
 
 
-def process_directory(directory: str, dry_run: bool = False, verbose: bool = True) -> tuple:
+def process_directory(directory: str, dry_run: bool = False, verbose: bool = True) -> tuple[int, int]:
     """Process all SVG files in a directory."""
-    directory = Path(directory)
+    directory_path = Path(directory)
     total_processed = 0
     total_errors = 0
     
-    for svg_file in directory.glob('*.svg'):
+    for svg_file in directory_path.glob('*.svg'):
         if verbose:
             print(f"  Processing: {svg_file.name}")
         processed, errors = process_svg_images(str(svg_file), dry_run=dry_run, verbose=verbose)
@@ -285,9 +295,8 @@ def process_directory(directory: str, dry_run: bool = False, verbose: bool = Tru
     return (total_processed, total_errors)
 
 
-def main():
-    import argparse
-    
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PPT Master - Smart Image Cropping Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -314,7 +323,7 @@ preserveAspectRatio usage:
     
     if not args.path.exists():
         print(f"[ERROR] Path not found: {args.path}")
-        exit(1)
+        sys.exit(1)
 
     print("PPT Master - Smart Image Cropping")
     print("=" * 50)
