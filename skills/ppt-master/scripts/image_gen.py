@@ -168,16 +168,18 @@ SUPPORTED_BACKENDS = tuple(sorted(BACKEND_REGISTRY))
 
 
 def _is_image_env_key(name: str) -> bool:
+    """Return whether an env var name belongs to image generation config."""
     return name.startswith(IMAGE_ENV_PREFIXES)
 
 
 def _strip_env_quotes(value: str) -> str:
+    """Strip matching surrounding quotes from a `.env` value."""
     if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
         return value[1:-1]
     return value
 
 
-def _load_image_env_file():
+def _load_image_env_file() -> None:
     """
     Load image generation config from the project-root `.env` as a fallback layer.
 
@@ -225,7 +227,7 @@ def _load_image_env_file():
             os.environ.setdefault(key, _strip_env_quotes(value.strip()))
 
 
-def _validate_runtime_config():
+def _validate_runtime_config() -> None:
     """Reject deprecated global image variables from any configuration source."""
     for key in DEPRECATED_IMAGE_KEYS:
         if key not in os.environ:
@@ -242,7 +244,8 @@ def _validate_runtime_config():
         )
 
 
-def _build_backend_aliases():
+def _build_backend_aliases() -> dict[str, str]:
+    """Build a lookup from aliases to canonical backend names."""
     aliases = {}
     for canonical_name, config in BACKEND_REGISTRY.items():
         aliases[canonical_name] = canonical_name
@@ -254,13 +257,14 @@ def _build_backend_aliases():
 BACKEND_ALIASES = _build_backend_aliases()
 
 
-def _load_backend(canonical_name: str):
+def _load_backend(canonical_name: str) -> tuple[object, str]:
+    """Import and return the configured backend module."""
     module_name = f"image_backends.{BACKEND_REGISTRY[canonical_name]['module']}"
     module = __import__(module_name, fromlist=["*"])
     return module, canonical_name
 
 
-def _print_backend_list():
+def _print_backend_list() -> None:
     """Print supported backends grouped by support tier."""
     print("Supported image backends:\n")
     tiers = ("core", "extended", "experimental")
@@ -280,7 +284,7 @@ def _print_backend_list():
     print(f"Config fallback file: {ENV_PATH}")
 
 
-def _resolve_backend():
+def _resolve_backend() -> tuple[object, str]:
     """
     Determine which backend to use from explicit configuration.
 
@@ -313,7 +317,8 @@ def _resolve_backend():
     sys.exit(1)
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Generate images using AI image model providers."
     )

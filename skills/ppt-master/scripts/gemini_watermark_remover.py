@@ -36,6 +36,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 ALPHA_THRESHOLD = 0.002  # Alpha threshold; values below this are not processed
 MAX_ALPHA = 0.99  # Maximum alpha value to prevent division by zero
 LOGO_VALUE = 255  # Logo pixel value (white)
+LARGE_IMAGE_THRESHOLD = 1024
+LARGE_LOGO_SIZE = 96
+SMALL_LOGO_SIZE = 48
+LARGE_MARGIN = 64
+SMALL_MARGIN = 32
 
 # Watermark background image paths
 SCRIPT_DIR = Path(__file__).parent
@@ -43,7 +48,7 @@ BG_48_PATH = SCRIPT_DIR / "assets" / "bg_48.png"
 BG_96_PATH = SCRIPT_DIR / "assets" / "bg_96.png"
 
 
-def detect_watermark_config(width: int, height: int) -> dict:
+def detect_watermark_config(width: int, height: int) -> dict[str, int]:
     """
     Detect watermark configuration based on image dimensions
 
@@ -54,12 +59,20 @@ def detect_watermark_config(width: int, height: int) -> dict:
     Returns:
         Configuration dict containing logo_size, margin_right, margin_bottom
     """
-    if width > 1024 and height > 1024:
-        return {"logo_size": 96, "margin_right": 64, "margin_bottom": 64}
-    return {"logo_size": 48, "margin_right": 32, "margin_bottom": 32}
+    if width > LARGE_IMAGE_THRESHOLD and height > LARGE_IMAGE_THRESHOLD:
+        return {
+            "logo_size": LARGE_LOGO_SIZE,
+            "margin_right": LARGE_MARGIN,
+            "margin_bottom": LARGE_MARGIN,
+        }
+    return {
+        "logo_size": SMALL_LOGO_SIZE,
+        "margin_right": SMALL_MARGIN,
+        "margin_bottom": SMALL_MARGIN,
+    }
 
 
-def calculate_watermark_position(width: int, height: int, config: dict) -> dict:
+def calculate_watermark_position(width: int, height: int, config: dict[str, int]) -> dict[str, int]:
     """
     Calculate watermark position
 
@@ -173,7 +186,8 @@ def process_image(input_path: Path, output_path: Path | None = None, verbose: bo
     return output_path
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PPT Master - Gemini Watermark Remover',
         formatter_class=argparse.RawDescriptionHelpFormatter,

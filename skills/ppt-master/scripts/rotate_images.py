@@ -520,8 +520,8 @@ class ImageRotator:
 </html>
 """
 
-def main():
-    """Main function"""
+def main() -> None:
+    """Run the CLI entry point."""
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)

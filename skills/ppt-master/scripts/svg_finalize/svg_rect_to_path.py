@@ -23,12 +23,18 @@ import sys
 import re
 import argparse
 from pathlib import Path
-from typing import Tuple, Dict, List
+from typing import Any
 from xml.etree import ElementTree as ET
 
 
-def rect_to_rounded_path(x: float, y: float, width: float, height: float, 
-                          rx: float, ry: float) -> str:
+def rect_to_rounded_path(
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+    rx: float,
+    ry: float,
+) -> str:
     """
     Convert a rounded rectangle to an SVG path string.
     Uses elliptical arc commands to draw rounded corners.
@@ -105,13 +111,13 @@ def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
     if root.tag.startswith('{'):
         ns = root.tag.split('}')[0] + '}'
     
-    def get_tag_name(tag):
+    def get_tag_name(tag: str) -> str:
         """Get tag name without namespace."""
         if tag.startswith('{'):
             return tag.split('}')[1]
         return tag
     
-    def process_element(elem):
+    def process_element(elem: ET.Element) -> None:
         """Process a single element."""
         nonlocal converted_count
         tag_name = get_tag_name(elem.tag)
@@ -170,7 +176,7 @@ def process_svg(content: str, verbose: bool = False) -> Tuple[str, int]:
     return result, converted_count
 
 
-def process_svg_file(input_path: Path, output_path: Path, verbose: bool = False) -> Tuple[bool, int]:
+def process_svg_file(input_path: Path, output_path: Path, verbose: bool = False) -> tuple[bool, int]:
     """Process a single SVG file."""
     try:
         with open(input_path, 'r', encoding='utf-8') as f:
@@ -192,7 +198,7 @@ def process_svg_file(input_path: Path, output_path: Path, verbose: bool = False)
         return False, 0
 
 
-def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Path], str]:
+def find_svg_files(project_path: Path, source: str = 'output') -> tuple[list[Path], str]:
     """Find SVG files in a project."""
     dir_map = {
         'output': 'svg_output',
@@ -218,7 +224,8 @@ def find_svg_files(project_path: Path, source: str = 'output') -> Tuple[List[Pat
     return sorted(svg_dir.glob('*.svg')), dir_name
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PPT Master - SVG Rounded Rectangle to Path Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,

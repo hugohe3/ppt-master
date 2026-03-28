@@ -49,7 +49,7 @@ def check_pandoc() -> bool:
     return shutil.which("pandoc") is not None
 
 
-def convert_to_markdown(input_path: str, output_path: str = None) -> str:
+def convert_to_markdown(input_path: str, output_path: str | None = None) -> str:
     """
     Convert a document to Markdown using Pandoc.
 
@@ -153,9 +153,9 @@ def convert_to_markdown(input_path: str, output_path: str = None) -> str:
 
     # 3. Convert <img> HTML tags to Markdown ![alt](src) syntax
     #    Pandoc generates <img> when the source has styling (width/height)
-    def _img_to_md(m):
-        src = m.group("src")
-        alt = m.group("alt") or Path(src).stem
+    def _img_to_md(match: re.Match[str]) -> str:
+        src = match.group("src")
+        alt = match.group("alt") or Path(src).stem
         return f"![{alt}]({src})"
 
     markdown_content = re.sub(
@@ -193,7 +193,8 @@ def _format_size(size: int) -> str:
     return f"{size:.1f} GB"
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Convert documents to Markdown using Pandoc",
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -24,28 +24,42 @@ except ImportError:
     print("Error: PIL/Pillow not installed. Run: pip install Pillow")
     sys.exit(1)
 
+IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff", ".tif"}
+REPORT_WIDTH = 100
+CATEGORY_WIDTH = 50
+PPT_WIDTH = 1280
+PPT_HEIGHT = 720
+FULL_SCREEN_MIN_RATIO = 1.5
+FULL_SCREEN_MAX_RATIO = 2.0
 
-def analyze_images(images_dir):
-    """Analyze size information of all images in the specified directory"""
+ImageAnalysis = dict[str, str | float | int]
 
-    # Supported image formats
-    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif'}
 
-    results = []
+def analyze_images(images_dir: str) -> list[ImageAnalysis]:
+    """Analyze all image files in a directory.
+
+    Args:
+        images_dir: Directory that contains image files.
+
+    Returns:
+        A list of image analysis records sorted by filename.
+    """
+
+    results: list[ImageAnalysis] = []
 
     # Iterate through all files in the directory
     for filename in sorted(os.listdir(images_dir)):
         filepath = os.path.join(images_dir, filename)
 
         # Check if it is an image file
-        if os.path.isfile(filepath) and Path(filename).suffix.lower() in image_extensions:
+        if os.path.isfile(filepath) and Path(filename).suffix.lower() in IMAGE_EXTENSIONS:
             try:
                 with Image.open(filepath) as img:
                     width, height = img.size
                     aspect_ratio = width / height
 
                     # Determine PPT layout recommendation
-                    if aspect_ratio > 1.5:
+                    if aspect_ratio > FULL_SCREEN_MIN_RATIO:
                         layout_hint = "Wide landscape"
                     elif aspect_ratio > 1.2:
                         layout_hint = "Standard landscape"
@@ -70,26 +84,30 @@ def analyze_images(images_dir):
     return results
 
 
-def print_results(results):
-    """Print analysis results"""
+def print_results(results: list[ImageAnalysis]) -> None:
+    """Print the analysis report to stdout.
 
-    print("\n" + "="*100)
+    Args:
+        results: Image analysis records returned by `analyze_images`.
+    """
+
+    print("\n" + "=" * REPORT_WIDTH)
     print("Image Size Analysis Report")
-    print("="*100)
+    print("=" * REPORT_WIDTH)
 
     # Table header
     print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Layout':<15} {'Filename'}")
-    print("-"*100)
+    print("-" * REPORT_WIDTH)
 
     for i, img in enumerate(results, 1):
         print(f"{i:<4} {img['width']:<7} {img['height']:<7} {img['aspect_ratio']:<7.2f} {img['filesize_kb']:<10.1f}KB {img['layout_hint']:<15} {img['filename'][:40]}")
 
-    print("-"*100)
+    print("-" * REPORT_WIDTH)
     print(f"Total: {len(results)} images\n")
 
     # Group statistics by aspect ratio
     print("\nGroup by Aspect Ratio:")
-    print("-"*50)
+    print("-" * CATEGORY_WIDTH)
 
     categories = {
         "Wide (>1.5)": [],
@@ -121,28 +139,32 @@ def print_results(results):
                 print(f"  ... and {len(imgs) - 5} more")
 
     # PPT layout recommendations
-    print("\\n" + "="*100)
+    print("\\n" + "=" * REPORT_WIDTH)
     print("PPT Fit Suggestions (16:9 = 1280x720)")
-    print("="*100)
+    print("=" * REPORT_WIDTH)
 
-    ppt_width, ppt_height = 1280, 720
+    ppt_width, ppt_height = PPT_WIDTH, PPT_HEIGHT
     ppt_ratio = ppt_width / ppt_height
 
     print(f"\\nStandard PPT canvas: {ppt_width}x{ppt_height} (ratio {ppt_ratio:.2f})")
 
     fit_count = 0
     for img in results:
-        if 1.5 <= img['aspect_ratio'] <= 2.0:
+        if FULL_SCREEN_MIN_RATIO <= img["aspect_ratio"] <= FULL_SCREEN_MAX_RATIO:
             fit_count += 1
 
     print(f"\\nImages suitable for full-screen display: {fit_count}")
 
 
-def generate_markdown(results):
-    """Generate a Markdown-format image resource inventory"""
-    print("\\n" + "="*100)
+def generate_markdown(results: list[ImageAnalysis]) -> None:
+    """Print a Markdown-ready image inventory section.
+
+    Args:
+        results: Image analysis records returned by `analyze_images`.
+    """
+    print("\\n" + "=" * REPORT_WIDTH)
     print("Markdown Snippet for Strategist (Copy & Paste)")
-    print("="*100)
+    print("=" * REPORT_WIDTH)
     print("\\n## Image Resource Inventory (Auto-scan Results)\\n")
     print("| Filename | Size | Ratio | Layout Suggestion | Usage | Status | Generation Description |")
     print("|----------|------|-------|-------------------|-------|--------|-----------------------|")
@@ -159,11 +181,16 @@ def generate_markdown(results):
 
         # Usage and generation description to be filled in by the strategist; placeholders used here
         print(f"| {img['filename']} | {img['width']}x{img['height']} | {img['aspect_ratio']:.2f} | {layout_desc} | (to be filled) | Existing | - |")
-    print("\\n" + "="*100 + "\\n")
+    print("\\n" + "=" * REPORT_WIDTH + "\\n")
 
 
-def save_csv(results, csv_path):
-    """Save results to a CSV file"""
+def save_csv(results: list[ImageAnalysis], csv_path: str) -> None:
+    """Save analysis results to a CSV file.
+
+    Args:
+        results: Image analysis records returned by `analyze_images`.
+        csv_path: Destination CSV path.
+    """
     with open(csv_path, 'w', encoding='utf-8') as f:
         f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Layout\n")
         for i, img in enumerate(results, 1):
@@ -171,7 +198,8 @@ def save_csv(results, csv_path):
     print(f"\nCSV saved to: {csv_path}")
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     if len(sys.argv) < 2:
         print("Usage: python analyze_images.py <images_folder_path>")
         print("Example: python analyze_images.py projects/myproject/images")

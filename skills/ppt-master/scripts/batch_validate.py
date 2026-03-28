@@ -12,9 +12,8 @@ Usage:
 """
 
 import sys
-from pathlib import Path
-from typing import List, Dict
 from collections import defaultdict
+from pathlib import Path
 
 try:
     from project_utils import (
@@ -34,7 +33,7 @@ class BatchValidator:
     """Batch validator"""
 
     def __init__(self):
-        self.results = []
+        self.results: list[dict[str, object]] = []
         self.summary = {
             'total': 0,
             'valid': 0,
@@ -45,7 +44,7 @@ class BatchValidator:
             'svg_issues': 0
         }
 
-    def validate_directory(self, directory: str, recursive: bool = False) -> List[Dict]:
+    def validate_directory(self, directory: str, recursive: bool = False) -> list[dict[str, object]]:
         """
         Validate all projects in a directory
 
@@ -77,7 +76,7 @@ class BatchValidator:
 
         return self.results
 
-    def validate_project(self, project_path: str) -> Dict:
+    def validate_project(self, project_path: str) -> dict[str, object]:
         """
         Validate a single project
 
@@ -160,8 +159,8 @@ class BatchValidator:
 
         return result
 
-    def print_summary(self):
-        """Print validation summary"""
+    def print_summary(self) -> None:
+        """Print a summary of validation results."""
         print("\n" + "=" * 80)
         print("[Summary] Validation Summary")
         print("=" * 80)
@@ -211,7 +210,7 @@ class BatchValidator:
             return 0
         return int(count / self.summary['total'] * 100)
 
-    def export_report(self, output_file: str = 'validation_report.txt'):
+    def export_report(self, output_file: str = 'validation_report.txt') -> None:
         """
         Export validation report to file
 
@@ -255,8 +254,8 @@ class BatchValidator:
         print(f"\n[REPORT] Validation report exported: {output_file}")
 
 
-def main():
-    """Main function"""
+def main() -> None:
+    """Run the CLI entry point."""
     if len(sys.argv) < 2:
         print("PPT Master - Batch Project Validation Tool\n")
         print("Usage:")

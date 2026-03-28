@@ -83,6 +83,7 @@ def detect_image_extension(image_bytes: bytes, content_type: str = None) -> str 
 
 
 def _normalize_extension(ext: str) -> str:
+    """Normalize equivalent image extensions to a canonical form."""
     ext = ext.lower()
     if ext == ".jpeg":
         return ".jpg"
@@ -135,7 +136,7 @@ def save_image_bytes(image_bytes: bytes, path: str, content_type: str = None) ->
     return path
 
 
-def report_resolution(path: str):
+def report_resolution(path: str) -> None:
     """Try to report image resolution using PIL."""
     if HAS_PIL:
         try:
@@ -185,7 +186,7 @@ def download_image(url: str, path: str, headers: dict = None, timeout: int = 180
     )
 
 
-def require_api_key(*candidates: str, message: str):
+def require_api_key(*candidates: str, message: str) -> str:
     """Return the first non-empty env var from candidates or raise."""
     for name in candidates:
         value = os.environ.get(name)
@@ -202,12 +203,16 @@ def http_error(response: requests.Response, label: str) -> RuntimeError:
     return RuntimeError(f"{label} failed ({response.status_code}): {body}")
 
 
-def poll_json(url: str, headers: dict, *,
-              interval_seconds: float = 2.0,
-              timeout_seconds: int = 300,
-              status_label: str = "status",
-              ready_values=None,
-              failed_values=None) -> dict:
+def poll_json(
+    url: str,
+    headers: dict[str, str],
+    *,
+    interval_seconds: float = 2.0,
+    timeout_seconds: int = 300,
+    status_label: str = "status",
+    ready_values: list[str] | None = None,
+    failed_values: list[str] | None = None,
+) -> dict:
     """Poll a JSON endpoint until it reports a ready or failed status."""
     ready = {value.lower() for value in (ready_values or ["ready", "success", "succeeded"])}
     failed = {value.lower() for value in (failed_values or ["error", "failed", "fail"])}

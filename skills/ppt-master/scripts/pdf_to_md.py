@@ -13,9 +13,23 @@ import re
 from pathlib import Path
 from collections import Counter
 
+FONT_BODY_SIZE = 12
+FONT_H1_SIZE = 24
+FONT_H2_SIZE = 18
+FONT_H3_SIZE = 14
+HEADER_FOOTER_SAMPLE_LIMIT = 40
+HEADER_FOOTER_EDGE_SAMPLE_SIZE = 20
 
-def analyze_font_sizes(doc) -> dict:
-    """Analyze font size distribution in the document to infer heading levels."""
+
+def analyze_font_sizes(doc: fitz.Document) -> dict[str, float]:
+    """Analyze font size distribution to infer heading levels.
+
+    Args:
+        doc: Open PDF document.
+
+    Returns:
+        A size mapping containing body and inferred heading sizes.
+    """
     size_counter = Counter()
 
     for page in doc:
@@ -30,7 +44,12 @@ def analyze_font_sizes(doc) -> dict:
                             size_counter[size] += len(text)
 
     if not size_counter:
-        return {"body": 12, "h1": 24, "h2": 18, "h3": 14}
+        return {
+            "body": FONT_BODY_SIZE,
+            "h1": FONT_H1_SIZE,
+            "h2": FONT_H2_SIZE,
+            "h3": FONT_H3_SIZE,
+        }
 
     sorted_sizes = sorted(size_counter.items(), key=lambda x: x[1], reverse=True)
     body_size = sorted_sizes[0][0]
@@ -177,7 +196,7 @@ def remove_page_footer(text: str) -> str:
     return text.rstrip()
 
 
-def detect_headers_footers(doc, threshold_ratio: float = 0.6) -> set:
+def detect_headers_footers(doc: fitz.Document, threshold_ratio: float = 0.6) -> set[str]:
     """
     Detect headers and footers statistically.
 
@@ -193,8 +212,11 @@ def detect_headers_footers(doc, threshold_ratio: float = 0.6) -> set:
 
     # Sample first 20 and last 20 pages (avoid processing too slowly)
     pages_to_scan = list(range(len(doc)))
-    if len(doc) > 40:
-        pages_to_scan = pages_to_scan[:20] + pages_to_scan[-20:]
+    if len(doc) > HEADER_FOOTER_SAMPLE_LIMIT:
+        pages_to_scan = (
+            pages_to_scan[:HEADER_FOOTER_EDGE_SAMPLE_SIZE]
+            + pages_to_scan[-HEADER_FOOTER_EDGE_SAMPLE_SIZE:]
+        )
 
     for i in pages_to_scan:
         page = doc[i]
@@ -303,8 +325,21 @@ MAX_LOW_INFO_BPP = 0.08      # Bytes-per-pixel threshold for low-info images
 MAX_LOW_INFO_AREA = 500000   # Area threshold: only apply bpp filter below this
 
 
-def should_keep_image(block, page_rect, seen_hashes=None) -> bool:
-    """Filter out small/decorative/duplicate images commonly found in PPT-converted PDFs."""
+def should_keep_image(
+    block: dict[str, object],
+    page_rect: fitz.Rect,
+    seen_hashes: set[str] | None = None,
+) -> bool:
+    """Filter out small, decorative, or duplicate images.
+
+    Args:
+        block: Image block extracted from PyMuPDF.
+        page_rect: Current page rectangle.
+        seen_hashes: Optional set used to deduplicate image payloads.
+
+    Returns:
+        Whether the image should be kept in the Markdown output.
+    """
     w, h = block.get("width", 0), block.get("height", 0)
 
     # Pixel dimension filter
@@ -690,8 +725,13 @@ def extract_pdf_to_markdown(pdf_path: str, output_path: str = None) -> str:
     return markdown_content
 
 
-def process_directory(input_dir: str, output_dir: str = None):
-    """Process all PDF files in the directory."""
+def process_directory(input_dir: str, output_dir: str | None = None) -> None:
+    """Convert all PDFs in a directory to Markdown.
+
+    Args:
+        input_dir: Directory containing PDF files.
+        output_dir: Optional output directory for Markdown files.
+    """
     input_path = Path(input_dir)
 
     if output_dir:
@@ -709,7 +749,8 @@ def process_directory(input_dir: str, output_dir: str = None):
         extract_pdf_to_markdown(str(pdf_file), str(output_file))
 
 
-def main():
+def main() -> int:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PDF to Markdown converter (with structure detection and LLM optimization)',
         formatter_class=argparse.RawDescriptionHelpFormatter,

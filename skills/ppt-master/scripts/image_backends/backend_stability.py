@@ -41,6 +41,7 @@ MODEL_ENDPOINTS = {
 
 
 def _resolve_endpoint(model: str, image_size: str, base_url: str) -> tuple[str, str]:
+    """Resolve the Stability model alias and endpoint URL."""
     resolved_model = model or DEFAULT_MODEL
     if not model and image_size.upper() in ("2K", "4K"):
         resolved_model = "stable-image-ultra"
@@ -59,6 +60,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
+    """Generate one image with the Stability backend."""
     if aspect_ratio not in VALID_ASPECT_RATIOS:
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for Stability backend. "
@@ -106,6 +108,7 @@ def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
+    """Generate an image with retries using the Stability backend."""
     api_key = require_api_key(
         "STABILITY_API_KEY",
         message="No API key found. Set STABILITY_API_KEY in the current environment or the project-root .env.",

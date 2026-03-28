@@ -24,11 +24,9 @@ Notes:
 """
 
 import sys
-import os
 import argparse
 import re
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
 
 HEADING_RE = re.compile(r'^(#{1,6})\s*(.+?)\s*$')
 HR_RE = re.compile(r'^\s*[-*]{3,}\s*$')
@@ -47,7 +45,7 @@ def normalize_title(title: str) -> str:
 
 
 
-def extract_leading_number(text: str) -> Optional[int]:
+def extract_leading_number(text: str) -> int | None:
     """Extract leading slide number if present."""
     if not text:
         return None
@@ -74,10 +72,11 @@ def extract_leading_number(text: str) -> Optional[int]:
     return None
 
 
-def build_match_maps(svg_stems: List[str]) -> Tuple[set, Dict[str, List[str]], Dict[int, List[str]]]:
+def build_match_maps(svg_stems: list[str]) -> tuple[set[str], dict[str, list[str]], dict[int, list[str]]]:
+    """Build exact, normalized, and numeric maps for SVG stem matching."""
     exact = set(svg_stems)
-    norm_map: Dict[str, List[str]] = {}
-    num_map: Dict[int, List[str]] = {}
+    norm_map: dict[str, list[str]] = {}
+    num_map: dict[int, list[str]] = {}
     for stem in svg_stems:
         norm = normalize_title(stem)
         if norm:
@@ -90,11 +89,12 @@ def build_match_maps(svg_stems: List[str]) -> Tuple[set, Dict[str, List[str]], D
 
 def match_title(
     raw_title: str,
-    exact: set,
-    norm_map: Dict[str, List[str]],
-    num_map: Dict[int, List[str]],
-    svg_stems: Optional[List[str]] = None,
-) -> Optional[str]:
+    exact: set[str],
+    norm_map: dict[str, list[str]],
+    num_map: dict[int, list[str]],
+    svg_stems: list[str] | None = None,
+) -> str | None:
+    """Match a note heading to its corresponding SVG stem."""
     if raw_title in exact:
         return raw_title
     norm = normalize_title(raw_title)
@@ -110,7 +110,7 @@ def match_title(
     return None
 
 
-def find_svg_files(project_path: Path) -> List[Path]:
+def find_svg_files(project_path: Path) -> list[Path]:
     """
     Find SVG files in the project
 
@@ -129,7 +129,11 @@ def find_svg_files(project_path: Path) -> List[Path]:
     return sorted(svg_dir.glob('*.svg'))
 
 
-def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose: bool = True) -> Dict[str, str]:
+def parse_total_md(
+    md_path: Path,
+    svg_stems: list[str] | None = None,
+    verbose: bool = True,
+) -> dict[str, str]:
     """
     Parse total.md file and extract speaker notes content for each level-1 heading
 
@@ -154,10 +158,10 @@ def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose
     exact, norm_map, num_map = build_match_maps(svg_stems)
 
     # Parse by headings (supports # / ## / ###)
-    notes: Dict[str, str] = {}
-    current_key: Optional[str] = None
-    current_lines: List[str] = []
-    unmatched_headings: List[str] = []
+    notes: dict[str, str] = {}
+    current_key: str | None = None
+    current_lines: list[str] = []
+    unmatched_headings: list[str] = []
 
     lines = content.splitlines()
     for line in lines:
@@ -199,7 +203,7 @@ def parse_total_md(md_path: Path, svg_stems: Optional[List[str]] = None, verbose
     return notes
 
 
-def check_svg_note_mapping(svg_files: List[Path], notes: Dict[str, str]) -> Tuple[bool, List[str]]:
+def check_svg_note_mapping(svg_files: list[Path], notes: dict[str, str]) -> tuple[bool, list[str]]:
     """
     Check the mapping between SVG files and speaker notes
 
@@ -223,7 +227,7 @@ def check_svg_note_mapping(svg_files: List[Path], notes: Dict[str, str]) -> Tupl
     return len(missing_notes) == 0, missing_notes
 
 
-def split_notes(notes: Dict[str, str], output_dir: Path, verbose: bool = True) -> bool:
+def split_notes(notes: dict[str, str], output_dir: Path, verbose: bool = True) -> bool:
     """
     Split and save notes dictionary into multiple files
 
@@ -266,7 +270,8 @@ def split_notes(notes: Dict[str, str], output_dir: Path, verbose: bool = True) -
     return success_count == len(notes)
 
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='PPT Master - Speaker Notes Splitting Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,

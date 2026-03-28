@@ -19,8 +19,8 @@ import sys
 import argparse
 
 
-def get_mime_type(filename, file_bytes=None):
-    """Return the MIME type based on file bytes first, then extension as fallback."""
+def get_mime_type(filename: str, file_bytes: bytes | None = None) -> str:
+    """Return the MIME type based on file bytes first, then extension."""
     if file_bytes:
         if file_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
             return 'image/png'
@@ -44,7 +44,7 @@ def get_mime_type(filename, file_bytes=None):
     }
     return mime_map.get(ext, 'application/octet-stream')
 
-def get_file_size_str(size_bytes):
+def get_file_size_str(size_bytes: int) -> str:
     """Convert byte count to a human-readable file size string."""
     if size_bytes < 1024:
         return f"{size_bytes} B"
@@ -53,7 +53,7 @@ def get_file_size_str(size_bytes):
     else:
         return f"{size_bytes / (1024 * 1024):.1f} MB"
 
-def embed_images_in_svg(svg_path, dry_run=False):
+def embed_images_in_svg(svg_path: str, dry_run: bool = False) -> tuple[int, int]:
     """
     Convert externally referenced images in an SVG file to Base64 inline format.
 
@@ -136,7 +136,8 @@ def embed_images_in_svg(svg_path, dry_run=False):
     
     return (images_embedded, new_size)
 
-def main():
+def main() -> None:
+    """Run the CLI entry point."""
     parser = argparse.ArgumentParser(
         description='Convert externally referenced images in SVG files to Base64 inline format',
         formatter_class=argparse.RawDescriptionHelpFormatter,
