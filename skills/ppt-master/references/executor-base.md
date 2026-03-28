@@ -146,6 +146,22 @@ After **all SVG pages are generated and finalized**, enter the "Logic Constructi
 
 > Each style may extend with additional markers (`[Interactive]`/`[Data]`/`[Scan Room]`/`[Benchmark]` etc.), see `executor-{style}.md`.
 
+**Language consistency rule**: All structural labels and stage direction markers in speaker notes **MUST match the presentation's content language**. When the presentation content is non-English, localize every label — do NOT mix English labels with non-English content.
+
+| English | 中文 | 日本語 | 한국어 |
+|---------|------|--------|--------|
+| `[Transition]` | `[过渡]` | `[つなぎ]` | `[전환]` |
+| `[Pause]` | `[停顿]` | `[間]` | `[멈춤]` |
+| `[Interactive]` | `[互动]` | `[問いかけ]` | `[상호작용]` |
+| `[Data]` | `[数据]` | `[データ]` | `[데이터]` |
+| `[Scan Room]` | `[观察]` | `[観察]` | `[관찰]` |
+| `[Benchmark]` | `[对标]` | `[ベンチマーク]` | `[벤치마크]` |
+| `Key points:` | `要点：` | `要点：` | `핵심 포인트:` |
+| `Duration:` | `时长：` | `所要時間：` | `소요 시간:` |
+| `Flex:` | `弹性：` | `調整：` | `조정:` |
+
+> For languages not listed above, translate each label to the corresponding natural term in that language.
+
 **Requirements**:
 
 - Notes should be conversational and flow naturally
