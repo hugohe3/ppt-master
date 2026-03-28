@@ -11,7 +11,7 @@ from .drawingml_utils import (
     SVG_NS,
     _extract_inheritable_styles, resolve_url_id,
 )
-from .drawingml_styles import build_shadow_xml
+from .drawingml_styles import build_effect_xml
 from .drawingml_elements import (
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
@@ -125,7 +125,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
 
     group_effect = ''
     if filter_id and filter_id in ctx.defs:
-        group_effect = build_shadow_xml(ctx.defs[filter_id])
+        group_effect = build_effect_xml(ctx.defs[filter_id])
 
     return f'''<p:grpSp>
 <p:nvGrpSpPr>

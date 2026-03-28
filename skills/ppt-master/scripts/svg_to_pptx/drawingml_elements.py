@@ -19,7 +19,7 @@ from .drawingml_utils import (
 )
 from .drawingml_styles import (
     build_solid_fill, build_gradient_fill,
-    build_fill_xml, build_stroke_xml, build_shadow_xml,
+    build_fill_xml, build_stroke_xml, build_effect_xml,
     get_fill_opacity, get_stroke_opacity,
 )
 from .drawingml_paths import (
@@ -76,7 +76,7 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> str:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_shadow_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(ctx.defs[filt_id])
 
     geom = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 
@@ -238,7 +238,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> str:
         effect = ''
         filt_id = get_effective_filter_id(elem, ctx)
         if filt_id and filt_id in ctx.defs:
-            effect = build_shadow_xml(ctx.defs[filt_id])
+            effect = build_effect_xml(ctx.defs[filt_id])
 
         shape_id = ctx.next_id()
         return _wrap_shape(
@@ -266,7 +266,7 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> str:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_shadow_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(ctx.defs[filt_id])
 
     geom = '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
 
@@ -375,7 +375,7 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> str:
     effect = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect = build_shadow_xml(ctx.defs[filt_id])
+        effect = build_effect_xml(ctx.defs[filt_id])
 
     shape_id = ctx.next_id()
     return _wrap_shape(
@@ -529,6 +529,8 @@ def _build_text_runs(
                     run_attrs['font_family'] = child.get('font-family')
                 if child.get('font-style'):
                     run_attrs['font_style'] = child.get('font-style')
+                if child.get('text-decoration'):
+                    run_attrs['text_decoration'] = child.get('text-decoration')
                 runs.append({**run_attrs, 'text': t})
 
             # Tail text after </tspan> belongs to parent
@@ -555,9 +557,13 @@ def _build_run_xml(
     ff = run.get('font_family', '')
     opacity = run.get('opacity')
 
+    text_dec = run.get('text_decoration', '')
+
     sz = round(fs_px * FONT_PX_TO_HUNDREDTHS_PT)
     b_attr = ' b="1"' if fw in ('bold', '600', '700', '800', '900') else ''
     i_attr = ' i="1"' if fstyle == 'italic' else ''
+    u_attr = ' u="sng"' if 'underline' in text_dec else ''
+    strike_attr = ' strike="sngStrike"' if 'line-through' in text_dec else ''
 
     fonts = parse_font_family(ff) if ff else default_fonts
 
@@ -572,7 +578,7 @@ def _build_run_xml(
         fill_xml = f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
 
     return f'''<a:r>
-<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr} dirty="0">
+<a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
 {fill_xml}
 <a:latin typeface="{_xml_escape(fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(fonts['ea'])}"/>
@@ -594,6 +600,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
     fill_color = parse_hex_color(fill_raw) or '000000'
     opacity = get_fill_opacity(elem, ctx)
     font_style = _get_attr(elem, 'font-style', ctx) or ''
+    text_decoration = _get_attr(elem, 'text-decoration', ctx) or ''
 
     fonts = parse_font_family(font_family_str)
 
@@ -604,6 +611,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
         'font_size': font_size,
         'font_family': font_family_str,
         'font_style': font_style,
+        'text_decoration': text_decoration,
         'opacity': opacity,
     }
     runs = _build_text_runs(elem, parent_attrs)
@@ -658,7 +666,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> str:
     effect_xml = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect_xml = build_shadow_xml(ctx.defs[filt_id])
+        effect_xml = build_effect_xml(ctx.defs[filt_id])
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
