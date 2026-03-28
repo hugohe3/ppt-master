@@ -314,6 +314,31 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 
 ---
 
+## 🎨 Create Custom Template
+
+Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
+
+**Step 1 — Prepare Screenshots**
+
+Take screenshots of the key page types from your reference PPT — cover page, table of contents, chapter divider, content page, and closing page. Save them as images in a single folder with clear, descriptive filenames (e.g., `cover.png`, `toc.png`, `chapter.png`, `content.png`, `closing.png`).
+
+**Step 2 — Let AI Create the Template**
+
+Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your screenshots into a template. In your prompt, provide:
+
+- The template's English name and Chinese name
+- The intended use case (e.g., government reports, premium consulting, product launches)
+- The desired visual effects and color palette to apply when this template is used
+- Whether to enable AI image generation
+
+**Step 3 — Wait for the Result**
+
+The AI agent will handle the rest — analyzing your screenshots, building the layout definitions, and registering the template so it appears as a selectable option in the PPT Master workflow.
+
+> 💡 **Tip**: The more specific you are about the style and use case, the better the generated template will match your expectations.
+
+---
+
 ## ❓ FAQ
 
 <details>
