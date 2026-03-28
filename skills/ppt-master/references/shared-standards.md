@@ -118,9 +118,9 @@ Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter
 ```xml
 <defs>
   <filter id="softShadow" x="-15%" y="-15%" width="140%" height="140%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
-    <feOffset dx="0" dy="4" result="offsetBlur"/>
-    <feFlood flood-color="#000000" flood-opacity="0.08" result="shadowColor"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+    <feOffset dx="0" dy="6" result="offsetBlur"/>
+    <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
     <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
     <feMerge>
       <feMergeNode in="shadow"/>
@@ -133,9 +133,9 @@ Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter
 
 Recommended parameters:
 ```
-stdDeviation:   6–10     (smaller = crisper, larger = softer)
-flood-opacity:  0.06–0.12  (keep low for a premium feel)
-dy:             3–6      (vertical > horizontal for natural top-light)
+stdDeviation:   10–16    (smaller = crisper, larger = softer)
+flood-opacity:  0.12–0.20  (too low will be invisible in PPTX)
+dy:             4–8      (vertical > horizontal for natural top-light)
 dx:             0–2
 ```
 
@@ -156,7 +156,7 @@ Best for: accent buttons, brand-colored cards. Use the element's own color famil
 </filter>
 ```
 
-Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.12–0.20.
+Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.15–0.25.
 
 #### Glow Effect
 
@@ -165,8 +165,8 @@ Best for: title highlights, key metrics, hero text. The converter automatically 
 ```xml
 <defs>
   <filter id="titleGlow" x="-30%" y="-30%" width="160%" height="160%">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
-    <feFlood flood-color="#1A73E8" flood-opacity="0.40" result="glowColor"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+    <feFlood flood-color="#1A73E8" flood-opacity="0.45" result="glowColor"/>
     <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
     <feMerge>
       <feMergeNode in="glow"/>
@@ -179,9 +179,9 @@ Best for: title highlights, key metrics, hero text. The converter automatically 
 
 Recommended parameters:
 ```
-stdDeviation:   2–5      (smaller = subtle, larger = prominent)
+stdDeviation:   4–8      (smaller = subtle, larger = prominent)
 flood-color:    brand color or accent color (NOT black)
-flood-opacity:  0.25–0.50  (stronger than shadow for visibility)
+flood-opacity:  0.35–0.55  (stronger than shadow for visibility)
 ```
 
 **Key difference from shadow**: No `<feOffset>` element (or dx=0/dy=0). The converter uses this to distinguish glow from shadow.
@@ -357,7 +357,7 @@ Gradients defined in `<defs>` and referenced via `fill="url(#id)"` convert to na
 
 ### transform: rotate — Element Rotation
 
-Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on shapes, paths, and text.
+Rotation converts to native PPTX `<a:xfrm rot="...">`. Supported on all element types: `rect`, `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `image`, and `text`.
 
 ```xml
 <!-- Rotated decorative element -->
