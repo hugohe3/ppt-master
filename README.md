@@ -358,6 +358,22 @@ Yes! The default export (`.pptx`) produces **native PowerPoint shapes** — all 
 </details>
 
 <details>
+<summary><b>Q: Isn't using Claude too expensive?</b></summary>
+
+It depends on how you use it. If you're using a direct API or subscription quota, a single presentation may cost around **$5** — but compared to spending 1–2 days building a presentation manually, this is a reasonable trade-off.
+
+There are much cheaper options. **VS Code Copilot** at $10/month gives you 300 standard requests, which converts to roughly **100 premium (Opus-level) requests**. By default PPT Master has 2 confirmation rounds (template selection + eight confirmations), but if you specify "no template" upfront, it reduces to just **1 confirmation round — only 2 messages** (AI asks, you confirm). That means each presentation costs about **6 Opus requests** or **2 Sonnet requests**. At the $0.04 USD/request overage rate:
+
+| Model | Requests per PPT | Overage Cost |
+|-------|:-----------------:|:------------:|
+| Opus | ~6 | ~$0.24 USD |
+| Sonnet | ~2 | ~$0.08 USD |
+
+For a complete presentation, **$0.08–$0.24 USD** is not expensive at all.
+
+</details>
+
+<details>
 <summary><b>Q: Are the charts in the generated PPTX editable?</b></summary>
 
 Charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — not Excel-driven chart objects. This gives them a polished, high-fidelity appearance that often looks better than default PowerPoint charts. However, the underlying data is not editable via PowerPoint's chart editor. If you need a live, data-driven chart (e.g., one you can update by editing a spreadsheet), you will need to manually replace it with a native PowerPoint chart after export.
