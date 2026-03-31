@@ -145,6 +145,26 @@ pip install -r requirements.txt
 
 > If you encounter permission issues, use `pip install --user -r requirements.txt` or install in a virtual environment.
 
+### 2.1 Daily Update (Recommended)
+
+If you only want to pull the latest code and sync Python dependencies, run:
+
+```bash
+python3 skills/ppt-master/scripts/update_repo.py
+```
+
+This command will:
+
+- Run `git pull --ff-only`
+- Run `pip install -r requirements.txt` only when `requirements.txt` changed
+- Keep local ignored files such as `.env`
+
+Notes:
+
+- The script stops when tracked local changes are present, so local edits do not get mixed into the update flow
+- System dependencies such as `Node.js` and `Pandoc` still need to be installed manually
+- If you want to skip Python dependency sync, use `python3 skills/ppt-master/scripts/update_repo.py --skip-pip`
+
 ### 3. Open AI Editor
 
 Recommended AI editors:

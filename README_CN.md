@@ -144,6 +144,26 @@ pip install -r requirements.txt
 
 > 如遇权限问题，可使用 `pip install --user -r requirements.txt` 或在虚拟环境中安装。
 
+### 2.1 日常更新（推荐）
+
+如果只是拉最新代码并同步 Python 依赖，直接运行：
+
+```bash
+python3 skills/ppt-master/scripts/update_repo.py
+```
+
+这个命令会：
+
+- 执行 `git pull --ff-only`
+- 仅在 `requirements.txt` 发生变化时执行 `pip install -r requirements.txt`
+- 保留 `.env` 这类本地忽略文件
+
+注意：
+
+- 如果仓库里有未提交的已跟踪改动，脚本会停止，避免把本地修改和更新流程混在一起
+- `Node.js`、`Pandoc` 这类系统依赖仍需手动安装
+- 如需跳过 Python 依赖同步，可使用 `python3 skills/ppt-master/scripts/update_repo.py --skip-pip`
+
 ### 3. 打开 AI 编辑器
 
 推荐使用以下 AI 编辑器：
