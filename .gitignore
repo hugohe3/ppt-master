@@ -79,10 +79,10 @@ tramp
 # generated/
 # *.svg
 
-# Working drafts and notes
-drafts/
-notes/
-scratch/
+# Working drafts and notes (root-level only — project notes/ subdirs are tracked)
+/drafts/
+/notes/
+/scratch/
 .notes/
 
 # Test files

@@ -1,160 +1,114 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- Gradient and filter definitions -->
-    <defs>
-        <!-- Gradients for funnel -->
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#005587;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#003A5C;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#0076A8;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#005587;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#4A90A4;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#3B7A8F;stop-opacity:1" />
-        </linearGradient>
-        <linearGradient id="grad4" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#F5A623;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#E89207;stop-opacity:1" />
-        </linearGradient>
-        
-        <!-- Shadow filter -->
-        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.3"/>
-            </feComponentTransfer>
-            <feMerge>
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-        
-        <!-- Arrow marker definition -->
-</defs>
-    
-    <!-- Background -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
-
-    <!-- Header bar -->
-    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
-
-    <!-- Title -->
-    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
-        <tspan>Critical Challenges in Customer Retention</tspan>
-    </text>
-
-    <!-- Left section: Problem statement -->
-    <rect x="60" y="140" width="520" height="520" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
-
-    <text x="90" y="180" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
-        <tspan>Key Challenges</tspan>
-    </text>
-
-    <!-- Challenge 1 -->
-    <circle cx="90" cy="232" r="8" fill="#E74C3C" />
-    <text x="115" y="240" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
-        <tspan>Low Repeat Purchase Rate</tspan>
-    </text>
-    <text x="115" y="283" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
-        <tspan>15%</tspan>
-    </text>
-    <text x="115" y="308" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
-        <tspan>Only 1 in 7 customers return</tspan>
-    </text>
-
-    <!-- Challenge 2 -->
-    <circle cx="90" cy="382" r="8" fill="#E74C3C" />
-    <text x="115" y="390" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
-        <tspan>High Customer Loss to Competitors</tspan>
-    </text>
-    <text x="115" y="433" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
-        <tspan>52%</tspan>
-    </text>
-    <text x="115" y="458" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
-        <tspan>Bought competitor's model</tspan>
-    </text>
-
-    <!-- Challenge 3 -->
-    <circle cx="90" cy="532" r="8" fill="#E74C3C" />
-    <text x="115" y="540" font-family="Arial, sans-serif" font-size="17" font-weight="bold" fill="#2C3E50">
-        <tspan>Poor After-Sales Satisfaction</tspan>
-    </text>
-    <text x="115" y="583" font-family="Arial, sans-serif" font-size="44" font-weight="bold" fill="#E74C3C">
-        <tspan>67%</tspan>
-    </text>
-    <text x="115" y="608" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
-        <tspan>Rated service as Fair or Poor</tspan>
-    </text>
-    
-    <!-- Bottom note -->
-    <text x="90" y="635" font-family="Arial, sans-serif" font-size="13" fill="#7F8C8D" font-style="italic">
-        <tspan>Critical priority: Address service quality and competitive</tspan>
-    </text>
-    <text x="90" y="650" font-family="Arial, sans-serif" font-size="13" fill="#7F8C8D" font-style="italic">
-        <tspan>positioning to stem customer loss</tspan>
-    </text>
-
-    <!-- Right section: Customer Journey Funnel -->
-    <text x="660" y="165" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#005587">
-        <tspan>Customer Retention Funnel</tspan>
-    </text>
-
-    <!-- Funnel visualization: continuous with uniform taper -->
-    <!-- Stage 1: Purchase (width 500px) -->
-    <path d="M 660,205 L 1160,205 L 1116,280 L 704,280 Z" fill="url(#grad1)" filter="url(#shadow)" />
-    <text x="910" y="250" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Initial Purchase: 100%</tspan>
-    </text>
-
-    <!-- Stage 2: Satisfied (width 412px, each side narrows 44px) -->
-    <path d="M 704,280 L 1116,280 L 1072,355 L 748,355 Z" fill="url(#grad2)" filter="url(#shadow)" />
-    <text x="910" y="325" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Satisfied: 74%</tspan>
-    </text>
-
-    <!-- Stage 3: Consider Repurchase (width 324px, each side narrows 44px) -->
-    <path d="M 748,355 L 1072,355 L 1028,430 L 792,430 Z" fill="url(#grad3)" filter="url(#shadow)" />
-    <text x="910" y="400" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Consider Return: 33%</tspan>
-    </text>
-
-    <!-- Stage 4: Actual Repurchase (width 236px, each side narrows 44px) -->
-    <path d="M 792,430 L 1028,430 L 984,505 L 836,505 Z" fill="url(#grad4)" filter="url(#shadow)" />
-    <text x="910" y="475" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50"
-        text-anchor="middle">
-        <tspan>Repurchase: 15%</tspan>
-    </text>
-
-    <!-- Loss annotation with improved positioning -->
-    <text x="1050" y="485" font-family="Arial, sans-serif" font-size="18" fill="#E74C3C" font-weight="bold">
-        <tspan>85% LOST</tspan>
-    </text>
-    <line x1="1035" y1="475" x2="1045" y2="475" stroke="#E74C3C" stroke-width="2.5" />
-
-    <polygon points="1116.0,276.0 1124.0,280.0 1116.0,284.0" fill="#E74C3C"/>
-<!-- Insight box -->
-    <rect x="660" y="540" width="560" height="80" fill="#FFF3E0" stroke="#F5A623" stroke-width="2" rx="4" />
-    <text x="680" y="570" font-family="Arial, sans-serif" font-size="16" fill="#2C3E50" font-weight="bold">
-        <tspan>💡 Key Insight:</tspan>
-    </text>
-    <text x="680" y="594" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
-        <tspan>78% of losses are controllable through improved</tspan>
-    </text>
-    <text x="680" y="612" font-family="Arial, sans-serif" font-size="15" fill="#5D6D7E">
-        <tspan>service quality and competitive differentiation</tspan>
-    </text>
-
-    <!-- Footer -->
-    <text x="60" y="695" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
-        <tspan>2</tspan>
-    </text>
-    <text x="1160" y="695" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
-        <tspan>Source: Kimsoong Customer Survey 2024</tspan>
-    </text>
+  <defs>
+    <linearGradient id="topGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#002A50"/>
+      <stop offset="100%" stop-color="#0070C0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="5" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.11" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="deepShadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dx="0" dy="7" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.14" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bubbleShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.20" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topGrad)"/>
+  <text x="40" y="44" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#0F172A">Kimsoong retains only 15% of buyers — a structural loyalty crisis threatening long-term growth</text>
+  <rect x="40" y="56" width="1200" height="44" rx="2" fill="#18345E"/>
+  <rect x="40" y="56" width="5" height="44" rx="2" fill="#38BDF8"/>
+  <text x="57" y="83" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#F8FAFC">85% of customers never return; 78% of defections stem from competitive pricing and service failure — both directly addressable</text>
+  <!-- 3 KPI cards ─────────────────────────────────────────────────────── -->
+  <text x="40" y="122" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" letter-spacing="3">THREE CRITICAL METRICS</text>
+  <!-- Card 1: 15% -->
+  <rect x="40" y="132" width="370" height="110" rx="4" fill="#FEF2F2" filter="url(#shadow)"/>
+  <rect x="40" y="132" width="5" height="110" rx="2" fill="#DC2626"/>
+  <text x="68" y="168" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">Repeat purchase rate</text>
+  <text x="68" y="216" font-family="Arial, sans-serif" font-size="52" font-weight="bold" fill="#DC2626">15%</text>
+  <text x="200" y="216" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">vs. target 30%</text>
+  <text x="68" y="234" font-family="Arial, sans-serif" font-size="11" fill="#DC2626" font-weight="bold">Gap: −50%  |  Only 1 in 7 ever returns</text>
+  <!-- Card 2: 52% -->
+  <rect x="430" y="132" width="370" height="110" rx="4" fill="#FFFBEB" filter="url(#shadow)"/>
+  <rect x="430" y="132" width="5" height="110" rx="2" fill="#F59E0B"/>
+  <text x="458" y="168" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">Lost to competitors</text>
+  <text x="458" y="216" font-family="Arial, sans-serif" font-size="52" font-weight="bold" fill="#F59E0B">52%</text>
+  <text x="590" y="216" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">of lapsed buyers</text>
+  <text x="458" y="234" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" font-weight="bold">Primary defection driver — directly controllable</text>
+  <!-- Card 3: 67% -->
+  <rect x="820" y="132" width="420" height="110" rx="4" fill="#FEF2F2" filter="url(#shadow)"/>
+  <rect x="820" y="132" width="5" height="110" rx="2" fill="#F59E0B"/>
+  <text x="848" y="168" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">After-sales rated Fair or Poor</text>
+  <text x="848" y="216" font-family="Arial, sans-serif" font-size="52" font-weight="bold" fill="#F59E0B">67%</text>
+  <text x="980" y="216" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8">of all customers</text>
+  <text x="848" y="234" font-family="Arial, sans-serif" font-size="11" fill="#F59E0B" font-weight="bold">Drives 26% of all defection — must-fix priority</text>
+  <!-- 100 buyers flow ─────────────────────────────────────────────── -->
+  <text x="40" y="270" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" letter-spacing="3">FATE OF 100 KIMSOONG BUYERS — ONE PURCHASE COHORT</text>
+  <!-- Stacked bar: total w=1200, each unit=12px -->
+  <!-- Retained (15): x=40, w=180 -->
+  <rect x="40" y="280" width="180" height="52" rx="0" fill="#005587"/>
+  <text x="130" y="311" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">15</text>
+  <!-- Competitor switch (52): x=220, w=624 -->
+  <rect x="220" y="280" width="624" height="52" rx="0" fill="#DC2626"/>
+  <text x="532" y="311" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">52</text>
+  <!-- Service disappointed (26): x=844, w=312 -->
+  <rect x="844" y="280" width="312" height="52" rx="0" fill="#F59E0B"/>
+  <text x="1000" y="311" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">26</text>
+  <!-- Other (7): x=1156, w=84 -->
+  <rect x="1156" y="280" width="84" height="52" rx="0" fill="#CBD5E1"/>
+  <text x="1198" y="311" font-family="Arial, sans-serif" font-size="13" fill="#475569" text-anchor="middle">7</text>
+  <!-- Segment dividers -->
+  <line x1="220" y1="276" x2="220" y2="336" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="844" y1="276" x2="844" y2="336" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="1156" y1="276" x2="1156" y2="336" stroke="#FFFFFF" stroke-width="1.5"/>
+  <!-- Annotation labels below bar -->
+  <line x1="130" y1="332" x2="130" y2="350" stroke="#94A3B8" stroke-width="1"/>
+  <text x="130" y="365" font-family="Arial, sans-serif" font-size="12" fill="#005587" font-weight="bold" text-anchor="middle">Return to Kimsoong</text>
+  <line x1="532" y1="332" x2="532" y2="350" stroke="#94A3B8" stroke-width="1"/>
+  <text x="532" y="365" font-family="Arial, sans-serif" font-size="12" fill="#DC2626" font-weight="bold" text-anchor="middle">Bought competitor model</text>
+  <text x="532" y="381" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8" text-anchor="middle">Initiative: loyalty discount + trade-in</text>
+  <line x1="1000" y1="332" x2="1000" y2="350" stroke="#94A3B8" stroke-width="1"/>
+  <text x="1000" y="365" font-family="Arial, sans-serif" font-size="12" fill="#F59E0B" font-weight="bold" text-anchor="middle">Disappointed with service</text>
+  <text x="1000" y="381" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8" text-anchor="middle">Initiative: free 3-yr after-sales</text>
+  <text x="1198" y="365" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8" text-anchor="middle">Other</text>
+  <!-- Controllable bracket annotation -->
+  <line x1="220" y1="404" x2="1155" y2="404" stroke="#DC2626" stroke-width="1" stroke-dasharray="4,3"/>
+  <polygon points="220,400 220,408 214,404" fill="#DC2626"/>
+  <polygon points="1155,400 1155,408 1161,404" fill="#DC2626"/>
+  <text x="688" y="396" font-family="Arial, sans-serif" font-size="11" fill="#DC2626" font-weight="bold" text-anchor="middle">52 + 26 = 78 customers  ·  78% controllable</text>
+  <!-- Strategic insight box -->
+  <rect x="40" y="424" width="1200" height="82" rx="4" fill="#F0F9FF"/>
+  <rect x="40" y="424" width="5" height="82" rx="2" fill="#005587"/>
+  <text x="60" y="452" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#005587">Strategic implication:</text>
+  <text x="60" y="474" font-family="Arial, sans-serif" font-size="13" fill="#1E293B">78% of Kimsoong's customer loss is caused by factors the company can directly control — competitive pricing and service quality.</text>
+  <text x="60" y="496" font-family="Arial, sans-serif" font-size="13" fill="#1E293B">A targeted loyalty programme addressing both can realistically double the repeat purchase rate within 12 months at low incremental cost.</text>
+  <!-- Data quality note -->
+  <rect x="40" y="526" width="580" height="60" rx="4" fill="#FFFBEB"/>
+  <rect x="40" y="526" width="5" height="60" rx="2" fill="#F59E0B"/>
+  <text x="60" y="550" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#92400E">Data quality gap:</text>
+  <text x="60" y="568" font-family="Arial, sans-serif" font-size="12" fill="#475569">9% of defectors listed as "unknown" — due to low questionnaire return rate (40%).</text>
+  <text x="60" y="578" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">Improving survey data will reduce this blind spot.</text>
+  <rect x="650" y="526" width="590" height="60" rx="4" fill="#F0FDF4"/>
+  <rect x="650" y="526" width="5" height="60" rx="2" fill="#059669"/>
+  <text x="670" y="550" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#065F46">Key management lever:</text>
+  <text x="670" y="568" font-family="Arial, sans-serif" font-size="12" fill="#475569">Cost-effective programme — costs shared 50/50 between Head Office</text>
+  <text x="670" y="582" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">and European franchises. Low incremental investment, high retention upside.</text>
+  <rect x="0" y="694" width="1280" height="26" fill="#F8FAFC"/>
+  <line x1="0" y1="694" x2="1280" y2="694" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="40" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Source: Kimsoong Customer Loyalty Programme Brief, November 2025</text>
+  <text x="640" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">STRICTLY CONFIDENTIAL  |  NOT FOR DISTRIBUTION</text>
+  <text x="1240" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="end">2</text>
 </svg>

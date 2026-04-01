@@ -1,192 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-    <!-- Background -->
-    <rect width="1280" height="720" fill="#FFFFFF" />
-
-    <!-- Header bar -->
-    <rect x="0" y="0" width="1280" height="4" fill="#005587" />
-
-    <!-- Title -->
-    <text x="60" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#2C3E50">
-        <tspan>Customer Priorities vs. Current Performance</tspan>
-    </text>
-
-    <!-- Matrix container -->
-    <rect x="140" y="140" width="1000" height="480" fill="#FFFFFF" stroke="#ECF0F1" stroke-width="2" />
-
-    <!-- Quadrant backgrounds for visual distinction -->
-    <!-- Q1: Top-Left (Maintain) -->
-    <rect x="140" y="140" width="500" height="240" fill="#F0F9FF" opacity="0.4" />
-    
-    <!-- Q2: Top-Right (Leverage Strengths) -->
-    <rect x="640" y="140" width="500" height="240" fill="#DBEAFE" opacity="0.5" />
-    
-    <!-- Q3: Bottom-Left (Low Priority) -->
-    <rect x="140" y="380" width="500" height="240" fill="#F9FAFB" opacity="0.4" />
-    
-    <!-- Q4: Bottom-Right (Critical Gap) -->
-    <rect x="640" y="380" width="500" height="240" fill="#FEE2E2" opacity="0.3" />
-
-    <!-- Grid lines -->
-    <line x1="640" y1="140" x2="640" y2="620" stroke="#94A3B8" stroke-width="2" />
-    <line x1="140" y1="380" x2="1140" y2="380" stroke="#94A3B8" stroke-width="2" />
-
-    <!-- Axes -->
-    <line x1="140" y1="620" x2="1140" y2="620" stroke="#2C3E50" stroke-width="2" />
-    <line x1="140" y1="140" x2="140" y2="620" stroke="#2C3E50" stroke-width="2" />
-
-    <!-- X-axis label -->
-    <text x="640" y="655" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
-        text-anchor="middle">
-        <tspan>Importance to Customer →</tspan>
-    </text>
-    <text x="180" y="655" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
-        <tspan>Low</tspan>
-    </text>
-    <text x="1080" y="655" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
-        <tspan>High</tspan>
-    </text>
-
-    <!-- Y-axis label -->
-    <text x="100" y="385" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#005587"
-        text-anchor="middle" transform="rotate(-90 100 385)">
-        <tspan>Current Satisfaction →</tspan>
-    </text>
-    <text x="100" y="600" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="middle"
-        transform="rotate(-90 100 600)">
-        <tspan>Low</tspan>
-    </text>
-    <text x="100" y="170" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="middle"
-        transform="rotate(-90 100 170)">
-        <tspan>High</tspan>
-    </text>
-
-    <!-- Quadrant labels with background boxes -->
-    <!-- Q1: Maintain (Top-Left quadrant, top-right corner) -->
-    <rect x="520" y="150" width="110" height="32" fill="#FFFFFF" stroke="#0076A8" stroke-width="1.5" rx="4" opacity="0.95" />
-    <text x="575" y="172" font-family="Arial, sans-serif" font-size="15" fill="#0076A8" font-weight="bold" text-anchor="middle">
-        <tspan>Maintain</tspan>
-    </text>
-    
-    <!-- Q2: Leverage Strengths (Top-Right quadrant, top-left corner) -->
-    <rect x="650" y="150" width="160" height="32" fill="#FFFFFF" stroke="#005587" stroke-width="1.5" rx="4" opacity="0.95" />
-    <text x="730" y="172" font-family="Arial, sans-serif" font-size="15" fill="#005587" font-weight="bold" text-anchor="middle">
-        <tspan>Leverage Strengths</tspan>
-    </text>
-    
-    <!-- Q3: Low Priority (Bottom-Left quadrant, bottom-right corner) -->
-    <rect x="510" y="585" width="120" height="32" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5" rx="4" opacity="0.95" />
-    <text x="570" y="607" font-family="Arial, sans-serif" font-size="15" fill="#64748B" font-weight="bold" text-anchor="middle">
-        <tspan>Low Priority</tspan>
-    </text>
-    
-    <!-- Q4: CRITICAL GAP (Bottom-Right quadrant, bottom-left corner) -->
-    <rect x="650" y="585" width="140" height="32" fill="#FEE2E2" stroke="#E74C3C" stroke-width="2" rx="4" opacity="0.95" />
-    <text x="720" y="607" font-family="Arial, sans-serif" font-size="15" fill="#E74C3C" font-weight="bold" text-anchor="middle">
-        <tspan>CRITICAL GAP</tspan>
-    </text>
-
-    <!-- Data points (bubbles) - repositioned to avoid overlap -->
-
-    <!-- Comfort (x=250, y=260) - Low importance, high satisfaction -->
-    <circle cx="250" cy="260" r="38" fill="#7FB3C7" opacity="0.75" />
-    <text x="250" y="258" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Comfort</tspan>
-    </text>
-    <text x="250" y="273" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#7)</tspan>
-    </text>
-
-    <!-- Performance (x=320, y=330) - Low importance, mid satisfaction -->
-    <circle cx="320" cy="330" r="42" fill="#4A90A4" opacity="0.75" />
-    <text x="320" y="325" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Performance</tspan>
-    </text>
-    <text x="320" y="342" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#6)</tspan>
-    </text>
-
-    <!-- Warranty (x=720, y=290) - Mid importance, mid-high satisfaction -->
-    <circle cx="720" cy="290" r="46" fill="#0076A8" opacity="0.75" />
-    <text x="720" y="287" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Warranty</tspan>
-    </text>
-    <text x="720" y="303" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#5)</tspan>
-    </text>
-
-    <!-- Reliability (x=920, y=210) - High importance, high satisfaction -->
-    <circle cx="920" cy="210" r="52" fill="#005587" opacity="0.85" />
-    <text x="920" y="207" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Reliability</tspan>
-    </text>
-    <text x="920" y="223" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#3)</tspan>
-    </text>
-
-    <!-- Economy (x=1020, y=200) - Highest importance, high satisfaction -->
-    <circle cx="1020" cy="200" r="54" fill="#005587" opacity="0.85" />
-    <text x="1020" y="197" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Economy</tspan>
-    </text>
-    <text x="1020" y="213" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#1)</tspan>
-    </text>
-
-    <!-- Price (x=970, y=270) - High importance, mid-high satisfaction -->
-    <circle cx="970" cy="270" r="52" fill="#005587" opacity="0.85" />
-    <text x="970" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Price</tspan>
-    </text>
-    <text x="970" y="285" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#2)</tspan>
-    </text>
-
-    <!-- After-sales Service (x=930, y=520) - CRITICAL: High importance, Low satisfaction -->
-    <circle cx="930" cy="520" r="62" fill="#E74C3C" opacity="0.9" />
-    <circle cx="930" cy="520" r="68" fill="none" stroke="#E74C3C" stroke-width="3" stroke-dasharray="5,3" />
-    <text x="930" y="512" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>After-sales</tspan>
-    </text>
-    <text x="930" y="530" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF"
-        text-anchor="middle">
-        <tspan>Service</tspan>
-    </text>
-    <text x="930" y="546" font-family="Arial, sans-serif" font-size="11" fill="#FFFFFF" text-anchor="middle">
-        <tspan>(#4 Priority)</tspan>
-    </text>
-
-    <!-- Alert arrow -->
-    <defs>
-</defs>
-    <path d="M 1005,520 L 1045,520" stroke="#E74C3C" stroke-width="3" />
-
-    <!-- Alert text box -->
-    <rect x="1040" y="495" width="90" height="50" fill="#FEE" stroke="#E74C3C" stroke-width="1" rx="4" />
-    <text x="1085" y="515" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C"
-        text-anchor="middle">
-        <tspan>URGENT</tspan>
-    </text>
-    <text x="1085" y="532" font-family="Arial, sans-serif" font-size="11" fill="#E74C3C" text-anchor="middle">
-        <tspan>High priority</tspan>
-    </text>
-
-    <!-- Legend -->
-    <text x="180" y="165" font-family="Arial, sans-serif" font-size="12" fill="#5D6D7E">
-        <tspan>Bubble size = relative weight | Number = priority rank</tspan>
-    </text>
-
-    <!-- Footer -->
-    <text x="60" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E">
-        <tspan>4</tspan>
-    </text>
-    <text x="1160" y="680" font-family="Arial, sans-serif" font-size="14" fill="#5D6D7E" text-anchor="end">
-        <tspan>Priority-Performance Matrix Analysis</tspan>
-    </text>
+  <defs>
+    <linearGradient id="topGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#002A50"/>
+      <stop offset="100%" stop-color="#0070C0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="5" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.11" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="deepShadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="14"/>
+      <feOffset dx="0" dy="7" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.14" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bubbleShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3" result="ob"/>
+      <feFlood flood-color="#000000" flood-opacity="0.20" result="sc"/>
+      <feComposite in="sc" in2="ob" operator="in" result="s"/>
+      <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topGrad)"/>
+  <text x="40" y="44" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#0F172A">After-sales service is the highest-priority performance gap — high customer importance, lowest Kimsoong score</text>
+  <rect x="40" y="56" width="1200" height="44" rx="2" fill="#18345E"/>
+  <rect x="40" y="56" width="5" height="44" rx="2" fill="#38BDF8"/>
+  <text x="57" y="83" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#F8FAFC">Reliability and price are genuine strengths to protect; after-sales service sits in the urgent 'Invest' quadrant and must be addressed first</text>
+  <!-- Matrix background frame -->
+  <rect x="195" y="115" width="720" height="533" rx="2" fill="#FAFAFA" stroke="#E2E8F0" stroke-width="1"/>
+  <!-- FIXED Quadrant coloured fills -->
+  <!-- Top-LEFT (MAINTAIN): very light grey -->
+  <rect x="195" y="115" width="360" height="266" fill="#F8FAFC"/>
+  <!-- Top-RIGHT (PROTECT — GREEN): light green -->
+  <rect x="555" y="115" width="360" height="266" fill="#F0FDF4"/>
+  <!-- Bottom-LEFT (DE-PRIORITIZE): white -->
+  <rect x="195" y="381" width="360" height="267" fill="#FAFAFA"/>
+  <!-- Bottom-RIGHT (INVEST/FIX — RED): light red -->
+  <rect x="555" y="381" width="360" height="267" fill="#FFF1F2"/>
+  <!-- Grid lines — centre dividers -->
+  <line x1="555" y1="115" x2="555" y2="648" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="7,5"/>
+  <line x1="195" y1="381" x2="915" y2="381" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="7,5"/>
+  <!-- Quadrant labels -->
+  <text x="285" y="140" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle" letter-spacing="2">MAINTAIN</text>
+  <text x="715" y="140" font-family="Arial, sans-serif" font-size="10" fill="#059669" text-anchor="middle" letter-spacing="2" font-weight="bold">PROTECT  &#x2714;</text>
+  <text x="285" y="638" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle" letter-spacing="2">DE-PRIORITISE</text>
+  <text x="715" y="638" font-family="Arial, sans-serif" font-size="10" fill="#DC2626" text-anchor="middle" letter-spacing="2" font-weight="bold">INVEST / FIX  &#x26A0;</text>
+  <!-- Axis labels -->
+  <text x="555" y="672" font-family="Arial, sans-serif" font-size="11" fill="#475569" text-anchor="middle">&#x2190;  Lower Priority     CUSTOMER PRIORITY     Higher Priority  &#x2192;</text>
+  <text x="168" y="381" font-family="Arial, sans-serif" font-size="11" fill="#475569" text-anchor="middle" transform="rotate(-90, 168, 381)">Worse  &#x2193;    PERFORMANCE    &#x2191;  Better</text>
+  <text x="200" y="376" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Higher</text>
+  <text x="200" y="389" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Perf.</text>
+  <text x="200" y="480" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Lower</text>
+  <text x="200" y="493" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Perf.</text>
+  <!-- BUBBLES (right half = high priority) -->
+  <!-- Reliability: priority #3, performance HIGH → top-right quadrant -->
+  <circle cx="690" cy="218" r="34" fill="#059669" filter="url(#bubbleShadow)"/>
+  <text x="690" y="214" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Reliab-</text>
+  <text x="690" y="230" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">ility</text>
+  <!-- Price: priority #2, performance GOOD → top-right quadrant -->
+  <circle cx="755" cy="278" r="28" fill="#0076A8" filter="url(#bubbleShadow)"/>
+  <text x="755" y="283" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Price</text>
+  <!-- Economy: priority #1 (highest), performance MODERATE → top-right, near center -->
+  <circle cx="838" cy="364" r="32" fill="#005587" filter="url(#bubbleShadow)"/>
+  <text x="838" y="360" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Econ-</text>
+  <text x="838" y="374" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">omy</text>
+  <!-- After-sales: priority #4, performance VERY LOW → bottom-right CRITICAL -->
+  <circle cx="700" cy="535" r="46" fill="#DC2626" filter="url(#bubbleShadow)"/>
+  <text x="700" y="526" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">After-</text>
+  <text x="700" y="542" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Sales</text>
+  <text x="700" y="558" font-family="Arial, sans-serif" font-size="10" fill="#FFFFFF" fill-opacity="0.85" text-anchor="middle">Service</text>
+  <!-- Annotation arrow from after-sales bubble to callout -->
+  <line x1="746" y1="520" x2="956" y2="480" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <!-- Right panel: legend + critical finding -->
+  <rect x="936" y="115" width="304" height="248" rx="4" fill="#FFFFFF" filter="url(#shadow)"/>
+  <rect x="936" y="115" width="5" height="248" rx="2" fill="#94A3B8"/>
+  <text x="958" y="146" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" letter-spacing="2">LEGEND  —  BUBBLE SIZE = RELATIVE PRIORITY</text>
+  <circle cx="965" cy="188" r="18" fill="#059669"/>
+  <text x="992" y="193" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">Reliability — strength</text>
+  <circle cx="965" cy="236" r="14" fill="#0076A8"/>
+  <text x="992" y="241" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">Price — competitive</text>
+  <circle cx="965" cy="280" r="16" fill="#005587"/>
+  <text x="992" y="285" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">Economy — monitor</text>
+  <circle cx="965" cy="330" r="22" fill="#DC2626"/>
+  <text x="992" y="335" font-family="Arial, sans-serif" font-size="12" fill="#1E293B">After-sales — critical</text>
+  <!-- Critical finding callout -->
+  <rect x="936" y="380" width="304" height="262" rx="4" fill="#FFF1F2" filter="url(#shadow)"/>
+  <rect x="936" y="380" width="5" height="262" rx="2" fill="#DC2626"/>
+  <text x="958" y="410" font-family="Arial, sans-serif" font-size="10" fill="#DC2626" font-weight="bold" letter-spacing="2">CRITICAL FINDING</text>
+  <text x="958" y="436" font-family="Arial, sans-serif" font-size="14" fill="#1E293B" font-weight="bold">After-Sales Service</text>
+  <line x1="958" y1="448" x2="1228" y2="448" stroke="#F1F5F9" stroke-width="1"/>
+  <text x="958" y="470" font-family="Arial, sans-serif" font-size="12" fill="#475569">Customer rank: #4 of 7</text>
+  <text x="958" y="488" font-family="Arial, sans-serif" font-size="12" fill="#475569">(top 57% of priorities)</text>
+  <text x="958" y="516" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#DC2626">67%</text>
+  <text x="958" y="536" font-family="Arial, sans-serif" font-size="12" fill="#475569">rate it Fair or Poor</text>
+  <text x="958" y="554" font-family="Arial, sans-serif" font-size="12" fill="#475569">Only 33% say Good+</text>
+  <line x1="958" y1="568" x2="1228" y2="568" stroke="#F1F5F9" stroke-width="1"/>
+  <text x="958" y="588" font-family="Arial, sans-serif" font-size="12" fill="#DC2626" font-weight="bold">Drives 26% of defection</text>
+  <text x="958" y="606" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">Initiative #1: 3-year free</text>
+  <text x="958" y="621" font-family="Arial, sans-serif" font-size="11" fill="#94A3B8">after-sales service</text>
+  <text x="958" y="638" font-family="Arial, sans-serif" font-size="11" fill="#059669" font-weight="bold">Must-fix priority</text>
+  <rect x="0" y="694" width="1280" height="26" fill="#F8FAFC"/>
+  <line x1="0" y1="694" x2="1280" y2="694" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="40" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8">Source: Kimsoong customer satisfaction survey  |  Priority data from post-purchase questionnaire</text>
+  <text x="640" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">STRICTLY CONFIDENTIAL  |  NOT FOR DISTRIBUTION</text>
+  <text x="1240" y="711" font-family="Arial, sans-serif" font-size="10" fill="#94A3B8" text-anchor="end">4</text>
 </svg>
