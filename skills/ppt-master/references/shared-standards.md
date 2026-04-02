@@ -78,6 +78,38 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 - **Image references**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`
 - **Icon placeholders**: `<use data-icon="icon-name" x="" y="" width="48" height="48" fill="#HEX"/>` (auto-embedded during post-processing)
 
+### Element Grouping (Mandatory)
+
+Logically related elements **MUST** be wrapped in `<g>` tags. This produces PowerPoint groups in the exported PPTX, making slides easier to select, move, and edit.
+
+> ⚠️ **Only `<g opacity="...">` is banned** (see §2). Plain `<g>` for structural grouping is required.
+
+**What to group**:
+
+| Grouping Unit | Contains |
+|---------------|----------|
+| Card / panel | Background rect + shadow + icon + title + body text |
+| Process step | Number circle + icon + label + description |
+| List item | Bullet / number + icon + title + description |
+| Icon-text combo | Icon element + adjacent label |
+| Page header | Title + subtitle + accent decoration |
+| Page footer | Page number + branding |
+| Decorative cluster | Related decorative shapes (rings, orbs, dots) |
+
+**Example**:
+
+```xml
+<g id="card-benefits-1">
+  <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
+  <use data-icon="bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
+  <text x="105" y="270" font-size="56" font-weight="bold" fill="#0071E3">10×</text>
+  <text x="250" y="270" font-size="30" font-weight="bold" fill="#1D1D1F">Faster</text>
+  <text x="105" y="310" font-size="18" fill="#6E6E73">Reduce production time from days to hours.</text>
+</g>
+```
+
+**Naming convention**: Use descriptive `id` attributes on `<g>` tags (e.g., `card-1`, `step-discover`, `header`, `footer`). IDs are optional but recommended for readability.
+
 ---
 
 ## 5. Post-processing Pipeline (3 Steps)
