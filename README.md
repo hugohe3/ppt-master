@@ -30,7 +30,7 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
 
 ### 1. Install
 
-**Required:** Python 3.8+ · **Optional:** [Node.js](https://nodejs.org/) 18+ (for WeChat page conversion) · [Pandoc](https://pandoc.org/) (for DOCX/EPUB conversion)
+**Required:** [Python](https://www.python.org/downloads/) 3.8+ · **Optional:** [Node.js](https://nodejs.org/) 18+ (for WeChat page conversion) · [Pandoc](https://pandoc.org/) (for DOCX/EPUB conversion)
 
 ```bash
 # macOS
