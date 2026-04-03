@@ -334,13 +334,15 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <项目路径> -s final
 
 想把自己喜欢的 PPT 模板制作成 PPT Master 可调用的模板？按以下步骤操作：
 
-**第一步 — 准备截图**
+**第一步 — 准备参考材料**
 
-将参考 PPT 的关键页面类型分别截图保存：欢迎页、目录页、章节页、内容页、结尾页。将截图放到同一个文件夹中，并使用规范的文件名（如 `cover.png`、`toc.png`、`chapter.png`、`content.png`、`closing.png`）。
+最简单的方式仍然是将参考 PPT 的关键页面类型分别截图保存：欢迎页、目录页、章节页、内容页、结尾页。将截图放到同一个文件夹中，并使用规范的文件名（如 `cover.png`、`toc.png`、`chapter.png`、`content.png`、`closing.png`）。
+
+如果你已经有原始 `.pptx` 模板文件，也可以把它作为参考源一并提供。PPT Master 会先从 PPTX 中提取可复用的背景图、logo、主题色和字体信息，再把这些素材用于模板重建。这个步骤是内部预处理，用户可见的 `/create-template` 工作流不变。
 
 **第二步 — 让 AI 创建模板**
 
-使用 AI 编程代理（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将截图转换成模板。在提示中需要提供：
+使用 AI 编程代理（Claude Code、Codex 等），要求它使用 **PPT Master 的 `/create-template` 工作流**，将这些参考材料转换成模板。在提示中需要提供：
 
 - 模板的英文名称和中文名称
 - 适用场景（如政府汇报、高端咨询、产品宣讲等）

@@ -31,7 +31,7 @@ Confirm the following with the user:
 | Tone summary | Yes | Short tone description for recommendation, such as `Modern, restrained, data-driven` |
 | Theme mode | Yes | Theme description for recommendation, such as `Light theme (white background + blue accent)` |
 | Canvas format | Yes | Default `ppt169`; if another format is needed, specify it explicitly before generation |
-| Reference source | Optional | Existing project or template path |
+| Reference source | Optional | Existing project, screenshot folder, or `.pptx` template file path |
 | Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
 | Design style | Optional | Additional style notes, decorative language, brand cues |
 | Assets list | Optional | Logos / background textures / reference images to include in the template package |
@@ -48,6 +48,30 @@ Confirm the following with the user:
 ```bash
 ls -la "<reference_source_path>"
 ```
+
+If the reference source is a `.pptx` template file, first run the lightweight import helper to extract reusable assets and style metadata:
+
+```bash
+python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
+```
+
+Use the generated `manifest.json`, `analysis.md`, and exported `assets/` as internal reference material for template reconstruction. This helper is intentionally limited to asset/style extraction; it does **not** directly convert the PPTX into final template SVG files.
+
+When `.pptx` import output exists, use the following internal priority order during template creation:
+
+1. `manifest.json`
+2. `analysis.md`
+3. exported `assets/`
+4. user-provided screenshots or the original PPTX only for visual cross-checking
+
+Interpretation rule:
+
+- `manifest.json` is the source of truth for slide size, theme colors, fonts, background inheritance, and reusable asset inventory
+- `analysis.md` is the compact human-readable summary used to guide page-type selection
+- exported `assets/` are the preferred source for backgrounds, logos, and decorative images
+- screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
+
+Do **not** treat the imported PPTX as a direct SVG conversion target. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
 
 ---
 
@@ -66,6 +90,16 @@ mkdir -p "skills/ppt-master/templates/layouts/<template_id>"
 ## Step 3: Invoke Template_Designer Role
 
 **Switch to the Template_Designer role** and generate per role definition. The role input is the finalized template brief from Step 1, not a project design spec.
+
+If `.pptx` import output exists, pass the following internal package to the role:
+
+- finalized template brief from Step 1
+- `manifest.json`
+- `analysis.md`
+- exported `assets/`
+- optional screenshots, if available
+
+The role should use the import output to anchor objective facts such as theme colors, fonts, reusable backgrounds, and common branding assets, then rebuild the final SVG templates in a simplified, maintainable form.
 
 1. **design_spec.md** — Design specification document
 2. **4 core templates** — Cover, chapter, content, ending pages

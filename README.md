@@ -338,13 +338,15 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 
 Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
 
-**Step 1 — Prepare Screenshots**
+**Step 1 — Prepare Reference Material**
 
-Take screenshots of the key page types from your reference PPT — cover page, table of contents, chapter divider, content page, and closing page. Save them as images in a single folder with clear, descriptive filenames (e.g., `cover.png`, `toc.png`, `chapter.png`, `content.png`, `closing.png`).
+The simplest path is still to prepare screenshots of the key page types from your reference PPT — cover page, table of contents, chapter divider, content page, and closing page. Save them as images in a single folder with clear, descriptive filenames (e.g., `cover.png`, `toc.png`, `chapter.png`, `content.png`, `closing.png`).
+
+If you already have the original `.pptx` template file, you can also provide it as a reference source. PPT Master can extract reusable background images, logos, theme colors, and font metadata from the PPTX first, then use those assets during template reconstruction. This is an internal preprocessing step — the visible `/create-template` workflow does not change.
 
 **Step 2 — Let AI Create the Template**
 
-Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your screenshots into a template. In your prompt, provide:
+Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. In your prompt, provide:
 
 - The template's English name and Chinese name
 - The intended use case (e.g., government reports, premium consulting, product launches)
