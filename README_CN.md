@@ -30,7 +30,7 @@
 
 ### 1. 安装
 
-**必需：** Python 3.8+ · **可选：** [Node.js](https://nodejs.org/) 18+（微信公众号转换）· [Pandoc](https://pandoc.org/)（DOCX/EPUB 转换）
+**必需：** [Python](https://www.python.org/downloads/) 3.8+ · **可选：** [Node.js](https://nodejs.org/) 18+（微信公众号转换）· [Pandoc](https://pandoc.org/)（DOCX/EPUB 转换）
 
 ```bash
 # macOS
