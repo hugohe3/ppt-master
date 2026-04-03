@@ -14,6 +14,21 @@ Generate reusable page templates for the **global template library** based on a 
 - **Output location**: `templates/layouts/<template_name>/`
 - **Input**: finalized template brief (template ID, display name, category, applicable scenarios, tone, theme mode, canvas format, optional reference assets)
 
+When the workflow provides PPTX import output, the effective input package becomes:
+
+- finalized template brief
+- `manifest.json`
+- `analysis.md`
+- exported `assets/`
+- optional screenshots for visual cross-checking
+
+Input priority for PPTX-backed template creation:
+
+1. `manifest.json` for factual metadata
+2. exported `assets/` for reusable visual resources
+3. `analysis.md` for page-type guidance
+4. screenshots / original PPTX only for style verification
+
 ---
 
 ## Core Template Inventory
@@ -67,6 +82,26 @@ Templates must strictly follow the finalized template brief and the generated `d
 - **Font plan**: Uses font presets from the spec
 - **Layout principles**: Margins and spacing conform to the spec
 
+If PPTX import output exists:
+- Prefer imported theme colors and fonts over visually guessed values
+- Reuse extracted backgrounds and logos where they are globally meaningful to the template
+- Treat page-type candidates from `analysis.md` as hints, not guarantees
+
+### 2.1 PPTX Import Simplification Rule
+
+The imported PPTX is a **reference source**, not a direct conversion target.
+
+Do:
+- preserve brand assets, recurring backgrounds, and stable structural motifs
+- rebuild the layout into a clean SVG structure aligned with PPT Master constraints
+- simplify repeated decorative fragments into a smaller number of maintainable SVG elements
+- use a background image asset when the original decorative layer is too complex to recreate cleanly
+
+Do not:
+- attempt 1:1 translation of every PowerPoint shape, group, shadow, or decorative fragment
+- mirror PPT-specific complexity when it makes the resulting SVG brittle or hard to edit
+- introduce dense low-value vector detail that does not materially improve template reuse
+
 ### 3. Placeholder Markers
 
 Use clear placeholder markers for replaceable content:
@@ -115,6 +150,8 @@ For TOC pages in **newly created library templates**, use indexed placeholders:
 
 Do **not** create new TOC placeholder families such as `{{CHAPTER_01_TITLE}}` for new templates. Existing templates may contain legacy placeholder variants, but new library assets should converge on the indexed TOC contract.
 
+When rebuilding from imported PPTX references, placeholder insertion takes priority over visual mimicry. If the original layout leaves insufficient room for canonical placeholders, adjust the layout instead of inventing one-off placeholder families.
+
 ---
 
 ## Output Requirements
@@ -135,6 +172,11 @@ templates/layouts/<template_name>/
 ### Template Preview
 
 After each template is generated, provide a brief summary table listing each template's status.
+
+If the template is based on PPTX import output, briefly note:
+- which extracted assets were reused directly
+- which complex original decorations were intentionally simplified
+- whether any page-type mapping required judgment beyond the import heuristic
 
 ---
 

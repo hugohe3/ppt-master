@@ -73,6 +73,22 @@ python3 scripts/generate_examples_index.py
 python3 scripts/generate_examples_index.py examples
 ```
 
+## `pptx_template_import.py`
+
+Lightweight importer for `.pptx` template sources.
+
+```bash
+python3 scripts/pptx_template_import.py <template.pptx>
+python3 scripts/pptx_template_import.py <template.pptx> -o <output_dir>
+```
+
+Notes:
+- Extracts reusable media assets from `ppt/media/`
+- Summarizes slide size, theme colors, and font metadata
+- Infers background image inheritance across slide, layout, and master
+- Produces `manifest.json`, `analysis.md`, and `assets/`
+- Intended as an internal helper for template reconstruction, not a direct PPTX-to-SVG converter
+
 ## `error_helper.py`
 
 Show standardized fixes for common project errors.
