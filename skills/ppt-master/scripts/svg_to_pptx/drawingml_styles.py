@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import re
 from xml.etree import ElementTree as ET
 
 from .drawingml_context import ConvertContext
@@ -152,7 +153,17 @@ def build_stroke_xml(
         if preset:
             dash_xml = f'<a:prstDash val="{preset}"/>'
         else:
-            dash_xml = '<a:prstDash val="dash"/>'
+            # Unknown pattern → build custDash proportional to stroke width
+            try:
+                parts = re.split(r'[\s,]+', dasharray.strip())
+                d_raw = float(parts[0])
+                sp_raw = float(parts[1]) if len(parts) > 1 else d_raw
+                sw = max(width, 0.001)
+                d_pct = int(d_raw / sw * 100000)
+                sp_pct = int(sp_raw / sw * 100000)
+                dash_xml = f'<a:custDash><a:ds d="{d_pct}" sp="{sp_pct}"/></a:custDash>'
+            except (ValueError, IndexError):
+                dash_xml = '<a:prstDash val="sysDash"/>'
 
     # Line cap
     cap_map = {'round': 'rnd', 'square': 'sq', 'butt': 'flat'}
@@ -208,7 +219,18 @@ def _parse_filter_params(
 
     for child in filter_elem.iter():
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
-        if tag == 'feGaussianBlur':
+        if tag == 'feDropShadow':
+            # Shorthand element: all params in one place
+            std_dev = _f(child.get('stdDeviation'), 4.0)
+            dx = _f(child.get('dx'), 0.0)
+            dy = _f(child.get('dy'), 0.0)
+            if abs(dx) > 0.01 or abs(dy) > 0.01:
+                has_offset = True
+            opacity = _f(child.get('flood-opacity'), 0.3)
+            raw_color = child.get('flood-color', '').strip().lstrip('#')
+            if len(raw_color) == 6 and all(c in '0123456789abcdefABCDEF' for c in raw_color):
+                color = raw_color.upper()
+        elif tag == 'feGaussianBlur':
             std_dev = _f(child.get('stdDeviation'), 4.0)
         elif tag == 'feOffset':
             dx = _f(child.get('dx'), 0.0)

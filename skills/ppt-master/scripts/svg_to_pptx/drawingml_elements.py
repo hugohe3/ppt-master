@@ -193,6 +193,11 @@ def _is_donut_circle(elem: ET.Element, ctx: ConvertContext) -> bool:
     if dasharray.strip() in DASH_PRESETS:
         return False
 
+    # Thin strokes relative to radius are decorative dashed rings, not donut arcs.
+    # Real donut arcs need sw/r >= 0.15 (e.g. sw=40 on r=100 → 0.40).
+    if sw / r < 0.15:
+        return False
+
     return True
 
 
