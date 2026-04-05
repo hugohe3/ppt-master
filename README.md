@@ -117,9 +117,7 @@ Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` to see tier
 
 ## Contributing
 
-1. Fork → branch → commit → PR
-
-**Areas:** 🎨 Templates · 📊 Charts · 📝 Docs · 🐛 Bugs · 💡 Ideas
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 
 ## License
 
