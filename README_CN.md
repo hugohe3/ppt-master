@@ -117,9 +117,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 ## 贡献
 
-1. Fork → 分支 → 提交 → PR
-
-**方向：** 🎨 模板 · 📊 图表 · 📝 文档 · 🐛 Bug · 💡 建议
+详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## 开源协议
 
