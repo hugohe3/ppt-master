@@ -23,7 +23,7 @@ import sys
 import re
 import argparse
 from pathlib import Path
-from typing import Any
+from typing import Any, Tuple
 from xml.etree import ElementTree as ET
 
 
