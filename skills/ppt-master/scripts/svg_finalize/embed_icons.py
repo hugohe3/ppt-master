@@ -6,11 +6,18 @@ Replaces icon placeholders in SVG files with actual icon code.
 
 Placeholder syntax:
     <use data-icon="rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
+    <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
+    <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 
 After replacement:
     <g transform="translate(100, 200) scale(3)" fill="#0076A8">
       <path d="..."/>
     </g>
+
+Icon libraries (subdirectories of templates/icons/):
+    chunk/          - 640+ fill icons, 16x16 viewBox  (default, no prefix needed)
+    tabler-filled/  - 1000+ fill icons, 24x24 viewBox (use prefix: tabler-filled/name)
+    tabler-outline/ - 5000+ stroke icons, 24x24 viewBox (use prefix: tabler-outline/name)
 
 Usage:
     python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
@@ -27,41 +34,101 @@ import re
 import sys
 import argparse
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 
 # Default icon directory
 DEFAULT_ICONS_DIR = Path(__file__).parent.parent.parent / 'templates' / 'icons'
 
-# Icon base size
-ICON_BASE_SIZE = 16
+# Icon base size per library
+ICON_BASE_SIZES = {
+    'chunk': 16,
+    'tabler-filled': 24,
+    'tabler-outline': 24,
+}
+DEFAULT_ICON_BASE_SIZE = 16
 
 
-def extract_paths_from_icon(icon_path: Path) -> list[str]:
+def _get_viewbox_size(content: str) -> float:
+    """Extract the width from viewBox attribute (assumed square). Returns 0 if not found."""
+    m = re.search(r'viewBox=["\']0 0 ([\d.]+)', content)
+    if m:
+        return float(m.group(1))
+    return 0
+
+
+def _detect_icon_style(content: str) -> str:
+    """Detect whether an icon is fill-based or stroke-based."""
+    # stroke="currentColor" with fill="none" → stroke style
+    if 'stroke="currentColor"' in content and 'fill="none"' in content:
+        return 'stroke'
+    return 'fill'
+
+
+def _extract_shape_elements(content: str, color: str) -> list[str]:
     """
-    Extract all path elements from an icon SVG file.
+    Extract all drawable shape elements from an icon SVG, replacing
+    fill/stroke color references (currentColor or #xxxxxx) with the target color.
 
-    Args:
-        icon_path: Icon file path
+    Supports: <path>, <circle>, <rect>, <line>, <polyline>, <polygon>, <ellipse>
+    """
+    shape_tags = ('path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse')
+    pattern = r'<(' + '|'.join(shape_tags) + r')(\s[^>]*)?(?:/>|></\1>)'
+    matches = re.findall(pattern, content, re.DOTALL)
+
+    elements = []
+    for tag, attrs in matches:
+        # Remove standalone fill/stroke color attrs so outer <g> controls color
+        attrs_clean = re.sub(r'\s*fill="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs)
+        attrs_clean = re.sub(r'\s*stroke="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs_clean)
+        elements.append(f'<{tag}{attrs_clean}/>')
+
+    return elements
+
+
+def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
+    """
+    Resolve icon name to file path and base size.
+
+    Supports:
+      - "home"                  → icons_dir/chunk/home.svg  (default to chunk/)
+      - "tabler-filled/home"    → icons_dir/tabler-filled/home.svg
+      - "tabler-outline/home"   → icons_dir/tabler-outline/home.svg
+
+    Returns (path, base_size). base_size=0 means not found.
+    """
+    if '/' in icon_name:
+        lib, name = icon_name.split('/', 1)
+        icon_path = icons_dir / lib / f'{name}.svg'
+        base_size = ICON_BASE_SIZES.get(lib, 24)
+    else:
+        # Try chunk first (backward compat), then tabler-filled
+        icon_path = icons_dir / 'chunk' / f'{icon_name}.svg'
+        base_size = 16
+        if not icon_path.exists():
+            icon_path = icons_dir / f'{icon_name}.svg'  # legacy flat layout
+            base_size = 16
+
+    return icon_path, base_size
+
+
+def extract_paths_from_icon(icon_path: Path, target_color: str = '#000000') -> tuple[list[str], str, float]:
+    """
+    Extract drawable elements from an icon SVG file.
 
     Returns:
-        List of path elements (without fill attribute)
+        (elements, style, base_size)
+        style: 'fill' or 'stroke'
+        base_size: detected from viewBox
     """
     if not icon_path.exists():
-        return []
-    
+        return [], 'fill', 16
+
     content = icon_path.read_text(encoding='utf-8')
-    
-    # Match all <path ... /> elements
-    path_pattern = r'<path\s+([^>]*)/>'
-    matches = re.findall(path_pattern, content, re.DOTALL)
-    
-    paths = []
-    for attrs in matches:
-        # Remove fill attribute (will be set uniformly on the outer <g>)
-        attrs_clean = re.sub(r'\s*fill="[^"]*"', '', attrs)
-        paths.append(f'<path {attrs_clean.strip()}/>')
-    
-    return paths
+    style = _detect_icon_style(content)
+    base_size = _get_viewbox_size(content) or 16
+    elements = _extract_shape_elements(content, target_color)
+    return elements, style, base_size
 
 
 def parse_use_element(use_match: str) -> dict[str, str | float]:
@@ -95,39 +162,46 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     return attrs
 
 
-def generate_icon_group(attrs: dict[str, str | float], paths: list[str]) -> str:
+def generate_icon_group(attrs: dict[str, str | float], elements: list[str], style: str, base_size: float) -> str:
     """
     Generate the icon's <g> element.
 
     Args:
-        attrs: Attributes of the use element
-        paths: List of icon path elements
+        attrs:     Attributes of the use element
+        elements:  List of drawable SVG elements
+        style:     'fill' or 'stroke'
+        base_size: Icon's natural size (viewBox width)
 
     Returns:
         Complete <g> element string
     """
     x = attrs.get('x', 0)
     y = attrs.get('y', 0)
-    width = attrs.get('width', ICON_BASE_SIZE)
-    height = attrs.get('height', ICON_BASE_SIZE)
-    fill = attrs.get('fill', '#000000')
+    width = attrs.get('width', base_size)
+    height = attrs.get('height', base_size)
+    color = attrs.get('fill', '#000000')
     icon_name = attrs.get('icon', 'unknown')
-    
-    # Calculate scale factor (based on width, assuming uniform scaling)
-    scale = width / ICON_BASE_SIZE
-    
-    # Build transform
-    if scale == 1:
+
+    scale_x = width / base_size
+    scale_y = height / base_size
+
+    if abs(scale_x - 1) < 1e-6 and abs(scale_y - 1) < 1e-6:
         transform = f'translate({x}, {y})'
+    elif abs(scale_x - scale_y) < 1e-6:
+        transform = f'translate({x}, {y}) scale({scale_x})'
     else:
-        transform = f'translate({x}, {y}) scale({scale})'
-    
-    # Generate <g> element
-    paths_str = '\n    '.join(paths)
-    
+        transform = f'translate({x}, {y}) scale({scale_x}, {scale_y})'
+
+    elements_str = '\n    '.join(elements)
+
+    if style == 'stroke':
+        color_attrs = f'fill="none" stroke="{color}"'
+    else:
+        color_attrs = f'fill="{color}"'
+
     return f'''<!-- icon: {icon_name} -->
-  <g transform="{transform}" fill="{fill}">
-    {paths_str}
+  <g transform="{transform}" {color_attrs}>
+    {elements_str}
   </g>'''
 
 
@@ -170,19 +244,20 @@ def process_svg_file(svg_path: Path, icons_dir: Path, dry_run: bool = False, ver
         icon_name = attrs.get('icon')
         if not icon_name:
             continue
+
+        icon_path, _ = resolve_icon_path(str(icon_name), icons_dir)
+        color = str(attrs.get('fill', '#000000'))
+        elements, style, base_size = extract_paths_from_icon(icon_path, color)
         
-        icon_path = icons_dir / f'{icon_name}.svg'
-        paths = extract_paths_from_icon(icon_path)
-        
-        if not paths:
+        if not elements:
             print(f"[WARN] Icon not found: {icon_name} (in {svg_path.name})")
             continue
         
-        replacement = generate_icon_group(attrs, paths)
+        replacement = generate_icon_group(attrs, elements, style, base_size)
         
         if verbose or dry_run:
             print(f"  [*] {icon_name}: x={attrs.get('x', 0)}, y={attrs.get('y', 0)}, "
-                  f"size={attrs.get('width', 16)}, fill={attrs.get('fill', '#000000')}")
+                  f"size={attrs.get('width', base_size)}, fill={color}, style={style}")
         
         new_content = new_content[:match.start()] + replacement + new_content[match.end():]
         replaced_count += 1

@@ -66,21 +66,64 @@ File naming format: `<number>_<page_name>.svg`
 
 ## 4. Icon Usage
 
-Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 640+ icons, recommended) | **D: Custom** (user-specified)
+Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6700+ icons, recommended) | **D: Custom** (user-specified)
 
 **Built-in icons — Placeholder method (recommended)**:
 
 ```xml
+<!-- chunk library (fill, 16px, no prefix needed) -->
 <use data-icon="chart-bar" x="100" y="200" width="48" height="48" fill="#005587"/>
+<!-- tabler-filled library (fill, 24px) -->
+<use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
+<!-- tabler-outline library (stroke, 24px) -->
+<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587"/>
 ```
 
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
-**Common icons**: `chart-bar` `arrow-trend-up` `users` `cog` `circle-checkmark` `target` `clock` `file` `dollar` `lightbulb`
+**Three icon libraries**:
 
-> ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Using icon names not in the index is FORBIDDEN — verify against `templates/icons/icons_index.json` if uncertain.
+| Library | Style | Count | Prefix | Best for |
+|---------|-------|-------|--------|----------|
+| `chunk` | fill/solid | 640+ | none (default) | Bold, thick icons |
+| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | Modern solid icons |
+| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Light, elegant style |
 
-Full index: `templates/icons/README.md`
+**Searching for icons** — use terminal, zero token cost:
+```bash
+ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
+ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
+ls skills/ppt-master/templates/icons/chunk/ | grep arrow
+```
+
+**Abstract concept → icon name** (for concepts whose meaning isn't obvious from the filename):
+
+| Concept | chunk / tabler-filled | tabler-outline |
+|---------|----------------------|----------------|
+| Growth / Increase | `arrow-trend-up` | `arrow-trend-up` |
+| Decline / Decrease | `arrow-trend-down` | `arrow-trend-down` |
+| Success / Complete | `circle-checkmark` | `circle-check` |
+| Warning / Risk | `triangle-exclamation` | `alert-triangle` |
+| Innovation / Idea | `lightbulb` | `bulb` |
+| Strategy / Goal | `target` | `target` |
+| Efficiency / Speed | `bolt` | `bolt` |
+| Collaboration / Team | `users` | `users` |
+| Settings / Config | `cog` | `settings` |
+| Security / Trust | `shield` | `shield` |
+| Money / Finance | `dollar` | `currency-dollar` |
+| Time / Deadline | `clock` | `clock` |
+| Location / Region | `map-pin` | `map-pin` |
+| Communication | `comment` | `message` |
+| Analysis / Data | `chart-bar` | `chart-bar` |
+| Process / Flow | `arrows-rotate-clockwise` | `refresh` |
+| Global / World | `globe` | `world` |
+| Excellence / Award | `star` | `star` |
+| Expand / Scale | `maximize` | `maximize` |
+| Problem / Issue | `bug` | `bug` |
+
+> For self-evident names (home, user, file, search, arrow, etc.) — just `grep` directly without consulting the table.
+
+> ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Before using any icon, verify it exists via `ls | grep` search. **Mixing fill and outline icons in the same presentation is FORBIDDEN** — use only the style specified in the Design Spec.
 
 ---
 
