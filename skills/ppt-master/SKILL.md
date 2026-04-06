@@ -64,7 +64,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 |-------|------|---------|
 | Layout templates | `${SKILL_DIR}/templates/layouts/layouts_index.json` | Query available page layout templates |
 | Chart templates | `${SKILL_DIR}/templates/charts/charts_index.json` | Query available chart SVG templates |
-| Icon library | `${SKILL_DIR}/templates/icons/icons_index.json` | Query available icon names and categories |
+| Icon library | `${SKILL_DIR}/templates/icons/` | Search icons on demand: `ls templates/icons/<library>/ \| grep <keyword>` (libraries: `chunk/`, `tabler-filled/`, `tabler-outline/`) |
 
 ## Standalone Workflows
 
