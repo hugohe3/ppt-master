@@ -94,11 +94,11 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print(f"  Aspect Ratio: {aspect_ratio} -> {mapped_ratio}")
     print(f"  Render Speed: {rendering_speed}")
     print()
-    print("  ⏳ Generating...", end="", flush=True)
+    print("  [..] Generating...", end="", flush=True)
     start = time.time()
     response = requests.post(url, headers=headers, files=files, timeout=300)
     elapsed = time.time() - start
-    print(f"\n  ✅ Response received ({elapsed:.1f}s)")
+    print(f"\n  [DONE] Response received ({elapsed:.1f}s)")
 
     if response.status_code != 200:
         raise http_error(response, "Ideogram generation")
@@ -146,7 +146,7 @@ def generate(prompt: str, negative_prompt: str = None,
             limited = is_rate_limit_error(exc)
             delay = retry_delay(attempt, rate_limited=limited)
             label = "Rate limit hit" if limited else f"Error: {exc}"
-            print(f"\n  ⚠️  {label}. Retrying in {delay}s...")
+            print(f"\n  [WARN] {label}. Retrying in {delay}s...")
             time.sleep(delay)
 
     raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")

@@ -101,7 +101,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print()
 
     start_time = time.time()
-    print(f"  ⏳ Generating...", end="", flush=True)
+    print(f"  [..] Generating...", end="", flush=True)
 
     # Heartbeat thread
     heartbeat_stop = threading.Event()
@@ -130,7 +130,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         hb_thread.join(timeout=1)
 
     elapsed = time.time() - start_time
-    print(f"\n  ✅ Image generated ({elapsed:.1f}s)")
+    print(f"\n  [DONE] Image generated ({elapsed:.1f}s)")
 
     if resp is not None and resp.data:
         path = resolve_output_path(prompt, output_dir, filename, ".png")
@@ -199,12 +199,12 @@ def generate(prompt: str, negative_prompt: str = None,
             last_error = e
             if attempt < max_retries and is_rate_limit_error(e):
                 delay = retry_delay(attempt, rate_limited=True)
-                print(f"\n  ⚠️  Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
+                print(f"\n  [WARN] Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
                       f"Waiting {delay}s before retry...")
                 time.sleep(delay)
             elif attempt < max_retries:
                 delay = retry_delay(attempt, rate_limited=False)
-                print(f"\n  ⚠️  Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                print(f"\n  [WARN] Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
                       f"Retrying in {delay}s...")
                 time.sleep(delay)
             else:

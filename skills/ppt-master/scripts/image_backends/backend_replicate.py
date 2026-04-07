@@ -94,11 +94,11 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
     print()
-    print("  ⏳ Generating...", end="", flush=True)
+    print("  [..] Generating...", end="", flush=True)
     start = time.time()
     response = requests.post(url, headers=headers, json=payload, timeout=180)
     elapsed = time.time() - start
-    print(f"\n  ✅ Initial response received ({elapsed:.1f}s)")
+    print(f"\n  [DONE] Initial response received ({elapsed:.1f}s)")
 
     if response.status_code not in (200, 201):
         raise http_error(response, "Replicate generation request")
@@ -114,7 +114,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         if not poll_url:
             raise RuntimeError(f"Replicate response missing poll URL: {data}")
 
-        print("  ⏳ Polling result...")
+        print("  [..] Polling result...")
         data = poll_json(
             poll_url,
             {"Authorization": f"Bearer {api_key}"},
@@ -165,7 +165,7 @@ def generate(prompt: str, negative_prompt: str = None,
             limited = is_rate_limit_error(exc)
             delay = retry_delay(attempt, rate_limited=limited)
             label = "Rate limit hit" if limited else f"Error: {exc}"
-            print(f"\n  ⚠️  {label}. Retrying in {delay}s...")
+            print(f"\n  [WARN] {label}. Retrying in {delay}s...")
             time.sleep(delay)
 
     raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")

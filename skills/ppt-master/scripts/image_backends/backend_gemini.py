@@ -94,7 +94,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print()
 
     start_time = time.time()
-    print(f"  ⏳ Generating...", end="", flush=True)
+    print(f"  [..] Generating...", end="", flush=True)
 
     heartbeat_stop = threading.Event()
 
@@ -130,14 +130,14 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
                 data_size = len(part.inline_data.data) if part.inline_data.data else 0
                 total_bytes += data_size
                 size_str = f"{data_size / 1024:.0f}KB" if data_size < 1048576 else f"{data_size / 1048576:.1f}MB"
-                print(f"\n  📦 Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
+                print(f"\n  [OK] Chunk #{chunk_count} received ({size_str}, {elapsed:.1f}s)", end="", flush=True)
                 last_image_data = part
 
     heartbeat_stop.set()
     hb_thread.join(timeout=1)
 
     elapsed = time.time() - start_time
-    print(f"\n  ✅ Stream complete ({elapsed:.1f}s, {chunk_count} chunk(s), {total_bytes / 1024:.0f}KB total)")
+    print(f"\n  [DONE] Stream complete ({elapsed:.1f}s, {chunk_count} chunk(s), {total_bytes / 1024:.0f}KB total)")
 
     if last_image_data is not None and last_image_data.inline_data is not None:
         if chunk_count > 1:
@@ -210,12 +210,12 @@ def generate(prompt: str, negative_prompt: str = None,
             last_error = e
             if attempt < max_retries and is_rate_limit_error(e):
                 delay = retry_delay(attempt, rate_limited=True)
-                print(f"\n  ⚠️  Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
+                print(f"\n  [WARN] Rate limit hit (attempt {attempt + 1}/{max_retries + 1}). "
                       f"Waiting {delay}s before retry...")
                 time.sleep(delay)
             elif attempt < max_retries:
                 delay = retry_delay(attempt, rate_limited=False)
-                print(f"\n  ⚠️  Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                print(f"\n  [WARN] Error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
                       f"Retrying in {delay}s...")
                 time.sleep(delay)
             else:
