@@ -66,13 +66,11 @@ File naming format: `<number>_<page_name>.svg`
 
 ## 4. Icon Usage
 
-Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6700+ icons, recommended) | **D: Custom** (user-specified)
+Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6000+ icons, recommended) | **D: Custom** (user-specified)
 
 **Built-in icons — Placeholder method (recommended)**:
 
 ```xml
-<!-- chunk library (fill, 16px, no prefix needed) -->
-<use data-icon="chart-bar" x="100" y="200" width="48" height="48" fill="#005587"/>
 <!-- tabler-filled library (fill, 24px) -->
 <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
 <!-- tabler-outline library (stroke, 24px) -->
@@ -81,11 +79,10 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
-**Three icon libraries**:
+**Two icon libraries**:
 
 | Library | Style | Count | Prefix | Best for |
 |---------|-------|-------|--------|----------|
-| `chunk` | fill/solid | 640+ | none (default) | Bold, thick icons |
 | `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | Modern solid icons |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Light, elegant style |
 
@@ -93,30 +90,29 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 ```bash
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
-ls skills/ppt-master/templates/icons/chunk/ | grep arrow
 ```
 
 **Abstract concept → icon name** (for concepts whose meaning isn't obvious from the filename):
 
-| Concept | chunk / tabler-filled | tabler-outline |
-|---------|----------------------|----------------|
+| Concept | tabler-filled | tabler-outline |
+|---------|---------------|----------------|
 | Growth / Increase | `arrow-trend-up` | `arrow-trend-up` |
 | Decline / Decrease | `arrow-trend-down` | `arrow-trend-down` |
-| Success / Complete | `circle-checkmark` | `circle-check` |
-| Warning / Risk | `triangle-exclamation` | `alert-triangle` |
-| Innovation / Idea | `lightbulb` | `bulb` |
+| Success / Complete | `circle-check` | `circle-check` |
+| Warning / Risk | `alert-triangle` | `alert-triangle` |
+| Innovation / Idea | `bulb` | `bulb` |
 | Strategy / Goal | `target` | `target` |
 | Efficiency / Speed | `bolt` | `bolt` |
 | Collaboration / Team | `users` | `users` |
-| Settings / Config | `cog` | `settings` |
+| Settings / Config | `settings` | `settings` |
 | Security / Trust | `shield` | `shield` |
-| Money / Finance | `dollar` | `currency-dollar` |
+| Money / Finance | `currency-dollar` | `currency-dollar` |
 | Time / Deadline | `clock` | `clock` |
 | Location / Region | `map-pin` | `map-pin` |
-| Communication | `comment` | `message` |
+| Communication | `message` | `message` |
 | Analysis / Data | `chart-bar` | `chart-bar` |
-| Process / Flow | `arrows-rotate-clockwise` | `refresh` |
-| Global / World | `globe` | `world` |
+| Process / Flow | `refresh` | `refresh` |
+| Global / World | `world` | `world` |
 | Excellence / Award | `star` | `star` |
 | Expand / Scale | `maximize` | `maximize` |
 | Problem / Issue | `bug` | `bug` |

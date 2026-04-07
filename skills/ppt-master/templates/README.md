@@ -42,7 +42,12 @@ The `charts/` directory contains 33 standard chart templates:
 
 ## Icon Library
 
-The `icons/` directory contains 640+ vector icons sourced from [SVG Repo](https://www.svgrepo.com/).
+The `icons/` directory contains 6000+ vector icons from [Tabler Icons](https://tabler.io/icons), organized in two active libraries:
 
-- **Human browsing**: [icons/README.md](./icons/README.md)
-- **AI / Programmatic lookup**: [icons/icons_index.json](./icons/icons_index.json)
+| Library | Style | Count |
+|---------|-------|-------|
+| `tabler-filled` | fill / solid | 1000+ |
+| `tabler-outline` | stroke / line | 5000+ |
+
+- **Usage & style rules**: [icons/README.md](./icons/README.md)
+- **Search icons**: `ls skills/ppt-master/templates/icons/<library>/ | grep <keyword>`

@@ -143,7 +143,7 @@ python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 python3 scripts/svg_finalize/embed_icons.py --dry-run svg_output/*.svg
 ```
 
-Use for manual icon embedding checks outside `finalize_svg.py`.
+Replaces `<use data-icon="tabler-filled/name" .../>` and `<use data-icon="tabler-outline/name" .../>` placeholders with actual SVG path elements. Use for manual icon embedding checks outside `finalize_svg.py`.
 
 ## PPT Compatibility Rules
 
