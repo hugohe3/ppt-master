@@ -104,22 +104,21 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 | **C** | Built-in icon library | Professional scenarios (recommended) |
 | **D** | Custom icons | Has brand assets |
 
-Built-in library contains 6700+ icons across three libraries:
+Built-in library contains 6000+ icons across two libraries:
 
 | Library | Style | Count | Prefix |
 |---------|-------|-------|--------|
-| `chunk` | fill/solid | 640+ | none (default) |
 | `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` |
 
 > **Mandatory rules when choosing C**:
 > 1. **Lock icon style first** — choose ONE of the two styles for the entire presentation:
->    - **Fill/Solid style**: use `chunk` and/or `tabler-filled` (may mix these two freely)
->    - **Outline/Stroke style**: use `tabler-outline` only
+>    - **Fill/Solid style**: use `tabler-filled`
+>    - **Outline/Stroke style**: use `tabler-outline`
 >    - ⚠️ Mixing fill and outline icons in the same presentation is FORBIDDEN
 > 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<library>/ | grep <keyword>`
 > 3. Use the verified filename (without `.svg`) as the icon name
-> 4. Include the library prefix for tabler icons (e.g., `tabler-filled/home`)
+> 4. Always include the library prefix (e.g., `tabler-filled/home` or `tabler-outline/home`)
 > 5. List the final icon inventory and chosen style in the Design Spec; Executor may only use icons from this list
 >
 > **Do NOT preload any index file** — use `ls | grep` to search on demand with zero token cost.

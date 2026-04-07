@@ -42,11 +42,11 @@ DEFAULT_ICONS_DIR = Path(__file__).parent.parent.parent / 'templates' / 'icons'
 
 # Icon base size per library
 ICON_BASE_SIZES = {
-    'chunk': 16,
+    'chunk': 16,          # legacy
     'tabler-filled': 24,
     'tabler-outline': 24,
 }
-DEFAULT_ICON_BASE_SIZE = 16
+DEFAULT_ICON_BASE_SIZE = 24
 
 
 def _get_viewbox_size(content: str) -> float:
@@ -91,9 +91,9 @@ def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
     Resolve icon name to file path and base size.
 
     Supports:
-      - "home"                  → icons_dir/chunk/home.svg  (default to chunk/)
       - "tabler-filled/home"    → icons_dir/tabler-filled/home.svg
       - "tabler-outline/home"   → icons_dir/tabler-outline/home.svg
+      - "home" (no prefix)      → falls back to icons_dir/chunk/home.svg (legacy compat only)
 
     Returns (path, base_size). base_size=0 means not found.
     """
@@ -102,7 +102,7 @@ def resolve_icon_path(icon_name: str, icons_dir: Path) -> tuple[Path, float]:
         icon_path = icons_dir / lib / f'{name}.svg'
         base_size = ICON_BASE_SIZES.get(lib, 24)
     else:
-        # Try chunk first (backward compat), then tabler-filled
+        # Backward compatibility: un-prefixed names fall back to legacy chunk/ library
         icon_path = icons_dir / 'chunk' / f'{icon_name}.svg'
         base_size = 16
         if not icon_path.exists():
