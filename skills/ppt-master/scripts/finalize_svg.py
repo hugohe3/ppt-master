@@ -45,8 +45,17 @@ def safe_print(text: str) -> None:
     try:
         print(text)
     except UnicodeEncodeError:
-        text = text.replace('✅', '[OK]').replace('❌', '[ERROR]')
-        text = text.replace('📁', '[DIR]').replace('📄', '[FILE]')
+        replacements = {
+            chr(0x23F3): "[..]",
+            chr(0x2705): "[DONE]",
+            chr(0x274C): "[ERROR]",
+            chr(0x26A0) + chr(0xFE0F): "[WARN]",
+            chr(0x1F4C1): "[DIR]",
+            chr(0x1F4C4): "[FILE]",
+            chr(0x1F4E6): "[OK]",
+        }
+        for source, target in replacements.items():
+            text = text.replace(source, target)
         print(text)
 
 

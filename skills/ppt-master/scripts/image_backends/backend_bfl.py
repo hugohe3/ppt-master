@@ -111,17 +111,17 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
     print()
-    print("  ⏳ Submitting request...", end="", flush=True)
+    print("  [..] Submitting request...", end="", flush=True)
     start = time.time()
     request_payload = _submit_request(url, headers, payload)
     elapsed = time.time() - start
-    print(f"\n  ✅ Request accepted ({elapsed:.1f}s)")
+    print(f"\n  [DONE] Request accepted ({elapsed:.1f}s)")
 
     polling_url = request_payload.get("polling_url")
     if not polling_url:
         raise RuntimeError(f"BFL response missing polling_url: {request_payload}")
 
-    print("  ⏳ Polling result...")
+    print("  [..] Polling result...")
     result_payload = poll_json(
         polling_url,
         {"x-key": api_key, "accept": "application/json"},
@@ -171,7 +171,7 @@ def generate(prompt: str, negative_prompt: str = None,
             limited = is_rate_limit_error(exc)
             delay = retry_delay(attempt, rate_limited=limited)
             label = "Rate limit hit" if limited else f"Error: {exc}"
-            print(f"\n  ⚠️  {label}. Retrying in {delay}s...")
+            print(f"\n  [WARN] {label}. Retrying in {delay}s...")
             time.sleep(delay)
 
     raise RuntimeError(f"Failed after {max_retries + 1} attempts. Last error: {last_error}")
