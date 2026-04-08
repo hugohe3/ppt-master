@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import ConvertContext
+from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS,
     _extract_inheritable_styles, resolve_url_id,
@@ -49,27 +49,11 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float]:
     return dx, dy, sx, sy
 
 
-def _extract_shape_bounds_emu(shape_xml: str) -> tuple[int, int, int, int] | None:
-    """Extract bounds (x, y, x+cx, y+cy) in EMU from a shape XML string.
-
-    Works for <p:sp>, <p:pic>, and <p:grpSp>.
-    """
-    off_match = re.search(r'<a:off x="(-?\d+)" y="(-?\d+)"', shape_xml)
-    ext_match = re.search(r'<a:ext cx="(\d+)" cy="(\d+)"', shape_xml)
-    if off_match and ext_match:
-        x = int(off_match.group(1))
-        y = int(off_match.group(2))
-        cx = int(ext_match.group(1))
-        cy = int(ext_match.group(2))
-        return (x, y, x + cx, y + cy)
-    return None
-
-
 # ---------------------------------------------------------------------------
 # Group handling
 # ---------------------------------------------------------------------------
 
-def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
+def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <g> to DrawingML group shape <p:grpSp>.
 
     Preserves group structure so elements can be selected and moved together
@@ -85,49 +69,50 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
     style_overrides = _extract_inheritable_styles(elem)
     child_ctx = ctx.child(dx, dy, sx, sy, filter_id, style_overrides)
 
-    child_shapes: list[str] = []
+    child_results: list[ShapeResult] = []
     for child in elem:
-        shape_xml = convert_element(child, child_ctx)
-        if shape_xml:
-            child_shapes.append(shape_xml)
+        result = convert_element(child, child_ctx)
+        if result:
+            child_results.append(result)
 
     ctx.sync_from_child(child_ctx)
 
-    if not child_shapes:
-        return ''
+    if not child_results:
+        return None
 
     # Single child: flatten
-    if len(child_shapes) == 1:
-        return child_shapes[0]
+    if len(child_results) == 1:
+        return child_results[0]
 
     # Multiple children: wrap in <p:grpSp>
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
 
-    for shape_xml in child_shapes:
-        bounds = _extract_shape_bounds_emu(shape_xml)
-        if bounds:
-            min_x = min(min_x, bounds[0])
-            min_y = min(min_y, bounds[1])
-            max_x = max(max_x, bounds[2])
-            max_y = max(max_y, bounds[3])
+    for child_result in child_results:
+        bounds = child_result.bounds_emu
+        if bounds is None:
+            continue
+        min_x = min(min_x, bounds[0])
+        min_y = min(min_y, bounds[1])
+        max_x = max(max_x, bounds[2])
+        max_y = max(max_y, bounds[3])
 
     if min_x == float('inf'):
-        return '\n'.join(child_shapes)
+        return ShapeResult(xml='\n'.join(result.xml for result in child_results))
 
     group_x = int(min_x)
     group_y = int(min_y)
     group_w = max(int(max_x - min_x), 1)
     group_h = max(int(max_y - min_y), 1)
 
-    shapes_xml = '\n'.join(child_shapes)
+    shapes_xml = '\n'.join(result.xml for result in child_results)
     group_id = ctx.next_id()
 
     group_effect = ''
     if filter_id and filter_id in ctx.defs:
         group_effect = build_effect_xml(ctx.defs[filter_id])
 
-    return f'''<p:grpSp>
+    return ShapeResult(xml=f'''<p:grpSp>
 <p:nvGrpSpPr>
 <p:cNvPr id="{group_id}" name="Group {group_id}"/>
 <p:cNvGrpSpPr/>
@@ -143,7 +128,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> str:
 {group_effect}
 </p:grpSpPr>
 {shapes_xml}
-</p:grpSp>'''
+</p:grpSp>''', bounds_emu=(group_x, group_y, group_x + group_w, group_y + group_h))
 
 
 # ---------------------------------------------------------------------------
@@ -183,7 +168,7 @@ def collect_defs(root: ET.Element) -> dict[str, ET.Element]:
     return defs
 
 
-def convert_element(elem: ET.Element, ctx: ConvertContext) -> str:
+def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Dispatch an SVG element to the appropriate converter."""
     tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
 
@@ -193,12 +178,12 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> str:
             return converter(elem, ctx)
         except Exception as e:
             print(f'  Warning: Failed to convert <{tag}>: {e}')
-            return ''
+            return None
 
     if tag in _NON_VISUAL_TAGS:
-        return ''
+        return None
 
-    return ''
+    return None
 
 
 def convert_svg_to_slide_shapes(
@@ -235,7 +220,7 @@ def convert_svg_to_slide_shapes(
             continue
         result = convert_element(child, ctx)
         if result:
-            shapes.append(result)
+            shapes.append(result.xml)
             converted += 1
         else:
             if tag not in _NON_VISUAL_TAGS:
