@@ -52,6 +52,13 @@ ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 
 ## Style Rules
 
-- **Fill / Solid**: use `tabler-filled`
-- **Stroke / Line**: use `tabler-outline`
-- ⚠️ Do **not** mix fill and outline icons in the same presentation
+**Default: use `tabler-filled`** — PPT is a projection medium (bright rooms, projector washes out contrast, audience sits 3–10 m away). Solid filled icons remain clearly legible under these conditions.
+
+Use `tabler-outline` only when the design explicitly calls for a light, minimal, line-art style — and only when the presentation will be viewed on-screen at close range rather than projected.
+
+| Library | When to use |
+|---------|-------------|
+| `tabler-filled` ✅ **(default)** | Projection / presentation / most scenarios |
+| `tabler-outline` | Screen-only decks needing a light, elegant aesthetic |
+
+⚠️ Do **not** mix fill and outline icons in the same presentation — pick one style and use it consistently throughout.

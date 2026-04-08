@@ -106,15 +106,15 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 
 Built-in library contains 6000+ icons across two libraries:
 
-| Library | Style | Count | Prefix |
-|---------|-------|-------|--------|
-| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` |
-| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` |
+| Library | Style | Count | Prefix | When to use |
+|---------|-------|-------|--------|-------------|
+| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | ✅ **Default** — projection / presentation / most scenarios |
+| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
 
 > **Mandatory rules when choosing C**:
-> 1. **Lock icon style first** — choose ONE of the two styles for the entire presentation:
->    - **Fill/Solid style**: use `tabler-filled`
->    - **Outline/Stroke style**: use `tabler-outline`
+> 1. **Lock icon style first** — default to `tabler-filled`; only switch to `tabler-outline` when the design explicitly calls for a light, line-art style and the deck will be viewed on-screen (not projected):
+>    - **Fill/Solid style** (default): use `tabler-filled`
+>    - **Outline/Stroke style** (screen-only, light aesthetic): use `tabler-outline`
 >    - ⚠️ Mixing fill and outline icons in the same presentation is FORBIDDEN
 > 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<library>/ | grep <keyword>`
 > 3. Use the verified filename (without `.svg`) as the icon name
