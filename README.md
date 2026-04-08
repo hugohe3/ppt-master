@@ -158,6 +158,17 @@ If this project helps you, please give it a ⭐!
 
 ---
 
+## Supported by DigitalOcean
+
+<p>This project is supported by:</p>
+<p>
+  <a href="https://m.do.co/c/547f129aabe1">
+    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="201" />
+  </a>
+</p>
+
+---
+
 ## Sponsor
 
 If this project saves you time, consider buying me a coffee!
