@@ -81,10 +81,10 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 
 **Two icon libraries**:
 
-| Library | Style | Count | Prefix | Best for |
-|---------|-------|-------|--------|----------|
-| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | Modern solid icons |
-| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Light, elegant style |
+| Library | Style | Count | Prefix | When to use |
+|---------|-------|-------|--------|-------------|
+| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | ✅ **Default** — projection / presentation / most scenarios |
+| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
 
 **Searching for icons** — use terminal, zero token cost:
 ```bash
@@ -92,30 +92,30 @@ ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 ```
 
-**Abstract concept → icon name** (for concepts whose meaning isn't obvious from the filename):
+**Abstract concept → icon name** (icon names are identical across both libraries; add the library prefix when using):
 
-| Concept | tabler-filled | tabler-outline |
-|---------|---------------|----------------|
-| Growth / Increase | `arrow-trend-up` | `arrow-trend-up` |
-| Decline / Decrease | `arrow-trend-down` | `arrow-trend-down` |
-| Success / Complete | `circle-check` | `circle-check` |
-| Warning / Risk | `alert-triangle` | `alert-triangle` |
-| Innovation / Idea | `bulb` | `bulb` |
-| Strategy / Goal | `target` | `target` |
-| Efficiency / Speed | `bolt` | `bolt` |
-| Collaboration / Team | `users` | `users` |
-| Settings / Config | `settings` | `settings` |
-| Security / Trust | `shield` | `shield` |
-| Money / Finance | `currency-dollar` | `currency-dollar` |
-| Time / Deadline | `clock` | `clock` |
-| Location / Region | `map-pin` | `map-pin` |
-| Communication | `message` | `message` |
-| Analysis / Data | `chart-bar` | `chart-bar` |
-| Process / Flow | `refresh` | `refresh` |
-| Global / World | `world` | `world` |
-| Excellence / Award | `star` | `star` |
-| Expand / Scale | `maximize` | `maximize` |
-| Problem / Issue | `bug` | `bug` |
+| Concept | Icon Name |
+|---------|-----------|
+| Growth / Increase | `arrow-trend-up` |
+| Decline / Decrease | `arrow-trend-down` |
+| Success / Complete | `circle-check` |
+| Warning / Risk | `alert-triangle` |
+| Innovation / Idea | `bulb` |
+| Strategy / Goal | `target` |
+| Efficiency / Speed | `bolt` |
+| Collaboration / Team | `users` |
+| Settings / Config | `settings` |
+| Security / Trust | `shield` |
+| Money / Finance | `currency-dollar` |
+| Time / Deadline | `clock` |
+| Location / Region | `map-pin` |
+| Communication | `message` |
+| Analysis / Data | `chart-bar` |
+| Process / Flow | `refresh` |
+| Global / World | `world` |
+| Excellence / Award | `star` |
+| Expand / Scale | `maximize` |
+| Problem / Issue | `bug` |
 
 > For self-evident names (home, user, file, search, arrow, etc.) — just `grep` directly without consulting the table.
 
