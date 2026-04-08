@@ -71,55 +71,63 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 **Built-in icons — Placeholder method (recommended)**:
 
 ```xml
-<!-- tabler-filled library (fill, 24px) -->
+<!-- chunk (default — straight-line geometry, sharp corners, structured) -->
+<use data-icon="chunk/home" x="100" y="200" width="48" height="48" fill="#005587"/>
+
+<!-- tabler-filled (bezier-curve forms, smooth & rounded contours) -->
 <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
-<!-- tabler-outline library (stroke, 24px) -->
+
+<!-- tabler-outline (light, line-art style — screen-only decks) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587"/>
 ```
 
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
-**Two icon libraries**:
+**Three icon libraries**:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
-| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | ✅ **Default** — projection / presentation / most scenarios |
+| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | ✅ **Default** — most scenarios |
+| `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | When design calls for smooth, rounded, organic icon forms |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
+
+> ⚠️ **One presentation = one library.** Never mix icons from different libraries. If the chosen library lacks an exact icon, find the closest available alternative **within that same library** — do not cross into another library to fill the gap.
 
 **Searching for icons** — use terminal, zero token cost:
 ```bash
+ls skills/ppt-master/templates/icons/chunk/ | grep home
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 ```
 
-**Abstract concept → icon name** (icon names are identical across both libraries; add the library prefix when using):
+**Abstract concept → icon name** (names for `chunk`; tabler libraries use their own equivalents — verify with `ls | grep`):
 
-| Concept | Icon Name |
-|---------|-----------|
-| Growth / Increase | `arrow-trend-up` |
-| Decline / Decrease | `arrow-trend-down` |
-| Success / Complete | `circle-check` |
-| Warning / Risk | `alert-triangle` |
-| Innovation / Idea | `bulb` |
-| Strategy / Goal | `target` |
-| Efficiency / Speed | `bolt` |
-| Collaboration / Team | `users` |
-| Settings / Config | `settings` |
-| Security / Trust | `shield` |
-| Money / Finance | `currency-dollar` |
-| Time / Deadline | `clock` |
-| Location / Region | `map-pin` |
-| Communication | `message` |
-| Analysis / Data | `chart-bar` |
-| Process / Flow | `refresh` |
-| Global / World | `world` |
-| Excellence / Award | `star` |
-| Expand / Scale | `maximize` |
-| Problem / Issue | `bug` |
+| Concept | chunk | tabler-filled / tabler-outline |
+|---------|-------|-------------------------------|
+| Growth / Increase | `arrow-trend-up` | same |
+| Decline / Decrease | `arrow-trend-down` | same |
+| Success / Complete | `circle-checkmark` | `circle-check` |
+| Warning / Risk | `triangle-exclamation` | `alert-triangle` |
+| Innovation / Idea | `lightbulb` | `bulb` |
+| Strategy / Goal | `target` | same |
+| Efficiency / Speed | `bolt` | same |
+| Collaboration / Team | `users` | same |
+| Settings / Config | `cog` | `settings` |
+| Security / Trust | `shield` | same |
+| Money / Finance | `dollar` | `currency-dollar` |
+| Time / Deadline | `clock` | same |
+| Location / Region | `map-pin` | same |
+| Communication | `comment` | `message` |
+| Analysis / Data | `chart-bar` | same |
+| Process / Flow | `arrows-rotate-clockwise` | `refresh` |
+| Global / World | `globe` | `world` |
+| Excellence / Award | `star` | same |
+| Expand / Scale | `maximize` | same |
+| Problem / Issue | `bug` | same |
 
-> For self-evident names (home, user, file, search, arrow, etc.) — just `grep` directly without consulting the table.
+> For self-evident names (home, user, file, search, arrow, etc.) — just `grep chunk/` directly without consulting the table.
 
-> ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Before using any icon, verify it exists via `ls | grep` search. **Mixing fill and outline icons in the same presentation is FORBIDDEN** — use only the style specified in the Design Spec.
+> ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Before using any icon, verify it exists via `ls | grep` search. **Mixing icons from different libraries in the same presentation is FORBIDDEN** — use only the library specified in the Design Spec.
 
 ---
 

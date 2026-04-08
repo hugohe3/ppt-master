@@ -76,7 +76,7 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 - **Styles**: Use inline styles only (`fill="..."` `font-size="..."`); `<style>` / `class` are FORBIDDEN (`id` inside `<defs>` is legitimate)
 - **Colors**: Use HEX values; for transparency use `fill-opacity` / `stroke-opacity`
 - **Image references**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`
-- **Icon placeholders**: `<use data-icon="tabler-filled/name" x="" y="" width="48" height="48" fill="#HEX"/>` or `<use data-icon="tabler-outline/name" .../>` (auto-embedded during post-processing). Always include the library prefix.
+- **Icon placeholders**: `<use data-icon="chunk/name" x="" y="" width="48" height="48" fill="#HEX"/>` (default library); or `tabler-filled/name` / `tabler-outline/name` when that library is chosen for the deck. (auto-embedded during post-processing). Always include the library prefix. **One presentation = one library — never mix libraries.**
 
 ### Element Grouping (Mandatory)
 

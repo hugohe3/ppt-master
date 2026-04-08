@@ -104,22 +104,25 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 | **C** | Built-in icon library | Professional scenarios (recommended) |
 | **D** | Custom icons | Has brand assets |
 
-Built-in library contains 6000+ icons across two libraries:
+Built-in library contains 7000+ icons across three libraries:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
-| `tabler-filled` | fill/solid | 1000+ | `tabler-filled/` | ✅ **Default** — projection / presentation / most scenarios |
+| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | ✅ **Default** — most scenarios |
+| `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | When design calls for smooth, rounded, organic icon forms |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
 
 > **Mandatory rules when choosing C**:
-> 1. **Lock icon style first** — default to `tabler-filled`; only switch to `tabler-outline` when the design explicitly calls for a light, line-art style and the deck will be viewed on-screen (not projected):
->    - **Fill/Solid style** (default): use `tabler-filled`
+> 1. **Lock icon library first** — default to `chunk`; switch to `tabler-filled` only when the design calls for smooth, rounded, organic icon forms; use `tabler-outline` only for screen-only light aesthetic decks:
+>    - **Sharp, rectilinear geometry** (default): use `chunk` — all paths use straight-line commands only (M/L/H/V/Z)
+>    - **Smooth, rounded forms**: use `tabler-filled` — all contours built with bezier curves and arcs (C/A)
 >    - **Outline/Stroke style** (screen-only, light aesthetic): use `tabler-outline`
->    - ⚠️ Mixing fill and outline icons in the same presentation is FORBIDDEN
-> 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<library>/ | grep <keyword>`
+>    - **Outline/Stroke style** (screen-only, light aesthetic): use `tabler-outline`
+>    - ⚠️ **One presentation = one library.** Mixing icons from different libraries is FORBIDDEN. If a chosen library lacks an exact icon, find the closest alternative **within that same library**.
+> 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
 > 3. Use the verified filename (without `.svg`) as the icon name
-> 4. Always include the library prefix (e.g., `tabler-filled/home` or `tabler-outline/home`)
-> 5. List the final icon inventory and chosen style in the Design Spec; Executor may only use icons from this list
+> 4. Always include the library prefix (e.g., `chunk/home` or `tabler-filled/home`)
+> 5. List the final icon inventory and chosen library in the Design Spec; Executor may only use icons from this list
 >
 > **Do NOT preload any index file** — use `ls | grep` to search on demand with zero token cost.
 
