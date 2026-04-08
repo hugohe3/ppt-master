@@ -158,6 +158,17 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 ---
 
+## DigitalOcean Support
+
+<p>本项目获得 DigitalOcean Open Source Credits Program 支持：</p>
+<p>
+  <a href="https://m.do.co/c/547f129aabe1">
+    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="201" />
+  </a>
+</p>
+
+---
+
 ## 赞助
 
 如果这个项目帮你省了时间，欢迎请我喝杯咖啡！
