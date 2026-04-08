@@ -8,6 +8,14 @@ from dataclasses import dataclass, field
 
 
 @dataclass
+class ShapeResult:
+    """Internal conversion result carrying XML plus resolved EMU bounds."""
+
+    xml: str
+    bounds_emu: tuple[int, int, int, int] | None = None
+
+
+@dataclass
 class ConvertContext:
     """Shared context passed through the SVG → DrawingML conversion pipeline.
 

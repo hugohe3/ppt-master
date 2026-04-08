@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import re
 import shutil
 import tempfile
 import zipfile
@@ -34,6 +36,31 @@ try:
     from pptx_animations import create_transition_xml
 except ImportError:
     create_transition_xml = None
+
+
+def _append_relationship(
+    rels_path: Path,
+    rel_type: str,
+    target: str,
+) -> str:
+    """Append a relationship entry with the next available rId."""
+    with open(rels_path, 'r', encoding='utf-8') as f:
+        rels_content = f.read()
+
+    rid_numbers = [int(match) for match in re.findall(r'Id="rId(\d+)"', rels_content)]
+    next_rid = f'rId{max(rid_numbers, default=0) + 1}'
+    rel_xml = (
+        f'  <Relationship Id="{next_rid}" '
+        f'Type="{rel_type}" Target="{target}"/>'
+    )
+    rels_content = rels_content.replace(
+        '</Relationships>', rel_xml + '\n</Relationships>',
+    )
+
+    with open(rels_path, 'w', encoding='utf-8') as f:
+        f.write(rels_content)
+
+    return next_rid
 
 
 def create_pptx_with_native_svg(
@@ -150,6 +177,8 @@ def create_pptx_with_native_svg(
 
         success_count = 0
         has_any_image = False
+        media_cache: dict[tuple[str, str], str] = {}
+        notes_slides_created: set[int] = set()
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
@@ -179,9 +208,29 @@ def create_pptx_with_native_svg(
                         f.write(slide_xml)
 
                     # Write media files
+                    media_name_map: dict[str, str] = {}
                     for media_name, media_data in media_files_dict.items():
-                        with open(media_dir / media_name, 'wb') as f:
-                            f.write(media_data)
+                        ext = media_name.rsplit('.', 1)[-1].lower()
+                        media_hash = hashlib.sha256(media_data).hexdigest()
+                        cache_key = (ext, media_hash)
+                        cached_name = media_cache.get(cache_key)
+
+                        if cached_name is None:
+                            cached_name = media_name
+                            media_cache[cache_key] = cached_name
+                            with open(media_dir / cached_name, 'wb') as f:
+                                f.write(media_data)
+
+                        media_name_map[media_name] = cached_name
+
+                    for rel in rel_entries:
+                        target = rel.get('target', '')
+                        if not target.startswith('../media/'):
+                            continue
+                        media_name = target.split('../media/', 1)[1]
+                        mapped_name = media_name_map.get(media_name)
+                        if mapped_name:
+                            rel['target'] = f'../media/{mapped_name}'
 
                     # Build relationships XML
                     rels_dir = extract_dir / 'ppt' / 'slides' / '_rels'
@@ -262,35 +311,28 @@ def create_pptx_with_native_svg(
                     svg_stem = svg_path.stem
                     notes_content = notes.get(svg_stem, '') if notes else ''
                     notes_text = markdown_to_plain_text(notes_content) if notes_content else ''
+                    if notes_text:
+                        notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
+                        notes_slides_dir.mkdir(exist_ok=True)
 
-                    notes_slides_dir = extract_dir / 'ppt' / 'notesSlides'
-                    notes_slides_dir.mkdir(exist_ok=True)
+                        notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
+                        notes_xml = create_notes_slide_xml(slide_num, notes_text)
+                        with open(notes_xml_path, 'w', encoding='utf-8') as f:
+                            f.write(notes_xml)
 
-                    notes_xml_path = notes_slides_dir / f'notesSlide{slide_num}.xml'
-                    notes_xml = create_notes_slide_xml(slide_num, notes_text)
-                    with open(notes_xml_path, 'w', encoding='utf-8') as f:
-                        f.write(notes_xml)
+                        notes_rels_dir = notes_slides_dir / '_rels'
+                        notes_rels_dir.mkdir(exist_ok=True)
+                        notes_rels_path = notes_rels_dir / f'notesSlide{slide_num}.xml.rels'
+                        notes_rels_xml = create_notes_slide_rels_xml(slide_num)
+                        with open(notes_rels_path, 'w', encoding='utf-8') as f:
+                            f.write(notes_rels_xml)
 
-                    notes_rels_dir = notes_slides_dir / '_rels'
-                    notes_rels_dir.mkdir(exist_ok=True)
-                    notes_rels_path = notes_rels_dir / f'notesSlide{slide_num}.xml.rels'
-                    notes_rels_xml = create_notes_slide_rels_xml(slide_num)
-                    with open(notes_rels_path, 'w', encoding='utf-8') as f:
-                        f.write(notes_rels_xml)
-
-                    # Update slide.xml.rels to add notes association
-                    with open(rels_path, 'r', encoding='utf-8') as f:
-                        slide_rels_content = f.read()
-                    notes_rel = (
-                        f'  <Relationship Id="rId10" '
-                        f'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide" '
-                        f'Target="../notesSlides/notesSlide{slide_num}.xml"/>'
-                    )
-                    slide_rels_content = slide_rels_content.replace(
-                        '</Relationships>', notes_rel + '\n</Relationships>',
-                    )
-                    with open(rels_path, 'w', encoding='utf-8') as f:
-                        f.write(slide_rels_content)
+                        _append_relationship(
+                            rels_path,
+                            'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide',
+                            f'../notesSlides/notesSlide{slide_num}.xml',
+                        )
+                        notes_slides_created.add(slide_num)
 
                 if verbose:
                     if use_native_shapes:
@@ -299,7 +341,7 @@ def create_pptx_with_native_svg(
                         mode_str = " (PNG+SVG)" if has_any_image else " (SVG)"
                     else:
                         mode_str = " (SVG)"
-                    has_notes = enable_notes and bool(notes_content)
+                    has_notes = slide_num in notes_slides_created
                     notes_str = " +notes" if has_notes else ""
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
 
@@ -333,8 +375,8 @@ def create_pptx_with_native_svg(
                 f.write(content_types)
 
         # Add notesSlides content types
-        if enable_notes:
-            for i in range(1, len(svg_files) + 1):
+        if enable_notes and notes_slides_created:
+            for i in sorted(notes_slides_created):
                 override = (
                     f'  <Override PartName="/ppt/notesSlides/notesSlide{i}.xml" '
                     f'ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>'
