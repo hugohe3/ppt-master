@@ -19,6 +19,7 @@ When the workflow provides a PPTX reference source, the effective input package 
 - finalized template brief
 - `manifest.json`
 - `analysis.md`
+- `normalized_assets.json`
 - exported `assets/`
 - cleaned slide SVG references from `svg/`
 - `reference_svg_selection.json`
@@ -27,11 +28,12 @@ When the workflow provides a PPTX reference source, the effective input package 
 Input priority for PPTX-backed template creation:
 
 1. `manifest.json` for factual metadata
-2. exported `assets/` for reusable visual resources
-3. `analysis.md` for page-type guidance
-4. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
-5. cleaned slide SVG references for composition, spacing, and fixed decorative cues
-6. screenshots / original PPTX only for style verification
+2. `normalized_assets.json` for canonical asset decisions
+3. exported `assets/` for reusable visual resources
+4. `analysis.md` for page-type guidance
+5. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
+6. cleaned slide SVG references for composition, spacing, and fixed decorative cues
+7. screenshots / original PPTX only for style verification
 
 ---
 
@@ -88,7 +90,7 @@ Templates must strictly follow the finalized template brief and the generated `d
 
 If PPTX import output exists:
 - Prefer imported theme colors and fonts over visually guessed values
-- Reuse extracted backgrounds and logos where they are globally meaningful to the template
+- Reuse canonical backgrounds and logos from `normalized_assets.json` where they are globally meaningful to the template
 - Treat page-type candidates from `analysis.md` as hints, not guarantees
 
 ### 2.1 PPTX Import Simplification Rule
@@ -100,13 +102,25 @@ Do:
 - rebuild the layout into a clean SVG structure aligned with PPT Master constraints
 - simplify repeated decorative fragments into a smaller number of maintainable SVG elements
 - use a background image asset when the original decorative layer is too complex to recreate cleanly
+- prefer original exported assets such as `image1.png` over matched `inline_*` assets whenever AI normalization determines they represent the same visible image
+- treat `inline_*` assets primarily as export-reference layers rather than final template asset names
 - use cleaned slide SVG references to inspect composition, spacing, text hierarchy, and fixed decorative structure only after factual metadata has been anchored
-- do not read every exported SVG by default; always inspect slides 1, 2, and the last slide, then inspect at least 7 additional representative pages from the selection file
+- if there are `<= 10` cleaned SVG reference pages to inspect, read all of them; if there are more than `10`, read only `10` representative pages
 
 Do not:
 - attempt 1:1 translation of every PowerPoint shape, group, shadow, or decorative fragment
 - mirror PPT-specific complexity when it makes the resulting SVG brittle or hard to edit
 - introduce dense low-value vector detail that does not materially improve template reuse
+- promote mask-only / alpha-helper `inline_*` assets into the final template package unless they are the only viable reusable representation
+
+### 2.2 Original-vs-Inline Asset Normalization
+
+When `normalized_assets.json` exists, follow these rules:
+
+1. If an original exported asset and an `inline_*` asset clearly correspond to the same visible image, use the **original exported asset** as the canonical template source.
+2. If an `inline_*` asset has no reliable original exported counterpart, it may be kept as a derived template asset.
+3. If an `inline_*` asset appears only as a mask, alpha helper, or other non-semantic support layer inside SVG export output, do not include it in the final template asset set by default.
+4. Final template asset names should be semantic, such as `cover_bg.png` or `brand_emblem.png`, rather than `image3.png` or `inline_abcd1234.png`.
 
 ### 3. Placeholder Markers
 
