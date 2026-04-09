@@ -1,461 +1,194 @@
 #!/usr/bin/env python3
-"""Extract lightweight template assets and style metadata from a PPTX file.
+"""Unified PPTX preparation entry point for the /create-template workflow.
 
-This helper is intentionally limited in scope:
-- extract reusable media assets
-- summarize slide size, theme colors, and fonts
-- infer common background assets through slide/layout/master inheritance
-- produce a compact manifest for downstream template reconstruction
+This command prepares a reusable reference workspace from a PPTX source. It can:
 
-It does NOT try to convert arbitrary PPTX shapes into SVG templates.
+1. extract lightweight PPTX metadata and reusable assets
+2. export every slide to SVG with PowerPoint on Windows
+3. replace inline Base64 images inside exported SVG files with external assets
+4. optimize cleaned reference SVG files for downstream inspection
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import posixpath
-import re
-import shutil
-import zipfile
-from collections import Counter, defaultdict
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
-from typing import Any
-from xml.etree import ElementTree as ET
+import platform
+import subprocess
+import tempfile
+from pathlib import Path
+
+from template_import.externalize_images import discover_svg_files, externalize_svg_batch
+from template_import.manifest import build_manifest
+from template_import.optimize_reference import optimize_reference_batch
+
+PPT_PDF_TO_SVG_SCALE = 96.0 / 72.0
 
 
-NS = {
-    "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
-    "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
-    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-    "rel": "http://schemas.openxmlformats.org/package/2006/relationships",
+POWERSHELL_EXPORT_SCRIPT = r"""
+param(
+    [Parameter(Mandatory = $true)][string]$PptxPath,
+    [Parameter(Mandatory = $true)][string]$OutputDir
+)
+
+$ErrorActionPreference = 'Stop'
+$powerpoint = $null
+$presentation = $null
+
+try {
+    New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
+    $powerpoint = New-Object -ComObject PowerPoint.Application
+    $powerpoint.Visible = -1
+    $presentation = $powerpoint.Presentations.Open($PptxPath, $false, $false, $false)
+
+    foreach ($slide in $presentation.Slides) {
+        $fileName = ('slide_{0:D2}.svg' -f $slide.SlideIndex)
+        $target = Join-Path $OutputDir $fileName
+        $slide.Export($target, 'SVG')
+    }
 }
-
-EMU_PER_INCH = 914400
-
-SLIDE_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
-LAYOUT_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
-MASTER_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
-THEME_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme"
-IMAGE_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"
-
-THANKS_KEYWORDS = ("thank", "thanks", "q&a", "qa", "contact", "致谢", "谢谢", "感谢", "答疑", "联系方式")
-TOC_KEYWORDS = ("agenda", "contents", "content", "outline", "目录", "议程", "目录页")
-CHAPTER_KEYWORDS = ("chapter", "part", "section", "章节", "部分")
-
-
-@dataclass
-class SlideRecord:
-    index: int
-    name: str
-    slide_path: str
-    layout_path: str | None
-    master_path: str | None
-    background_asset: str | None
-    background_source: str | None
-    image_assets: list[str]
-    text_samples: list[str]
-    text_count: int
-    shape_count: int
-    page_type: str
+finally {
+    if ($presentation -ne $null) {
+        $presentation.Close()
+    }
+    if ($powerpoint -ne $null) {
+        $powerpoint.Quit()
+    }
+    [System.GC]::Collect()
+    [System.GC]::WaitForPendingFinalizers()
+}
+"""
 
 
-def normalize_part(path: str, base: str | None = None) -> str:
-    if base:
-        path = str(PurePosixPath(base).parent.joinpath(path))
-    path = path.replace("\\", "/")
-    normalized = posixpath.normpath(path)
-    if normalized.startswith("./"):
-        normalized = normalized[2:]
-    return normalized.lstrip("/")
+POWERSHELL_PDF_EXPORT_SCRIPT = r"""
+param(
+    [Parameter(Mandatory = $true)][string]$PptxPath,
+    [Parameter(Mandatory = $true)][string]$PdfPath
+)
+
+$ErrorActionPreference = 'Stop'
+$powerpoint = $null
+$presentation = $null
+
+try {
+    $pdfDir = Split-Path -Parent $PdfPath
+    New-Item -ItemType Directory -Force -Path $pdfDir | Out-Null
+    $powerpoint = New-Object -ComObject PowerPoint.Application
+    $powerpoint.Visible = -1
+    $presentation = $powerpoint.Presentations.Open($PptxPath, $false, $false, $false)
+    $presentation.SaveAs($PdfPath, 32)
+}
+finally {
+    if ($presentation -ne $null) {
+        $presentation.Close()
+    }
+    if ($powerpoint -ne $null) {
+        $powerpoint.Quit()
+    }
+    [System.GC]::Collect()
+    [System.GC]::WaitForPendingFinalizers()
+}
+"""
 
 
-def rels_path_for(part_path: str) -> str:
-    part = PurePosixPath(part_path)
-    return str(part.parent / "_rels" / f"{part.name}.rels")
+def run_powershell_script(script_body: str, *script_args: str) -> subprocess.CompletedProcess[bytes]:
+    with tempfile.NamedTemporaryFile("w", suffix=".ps1", delete=False, encoding="utf-8") as handle:
+        handle.write(script_body)
+        script_path = Path(handle.name)
 
-
-def load_xml_from_zip(zf: zipfile.ZipFile, part_path: str) -> ET.Element | None:
     try:
-        with zf.open(part_path) as fh:
-            return ET.parse(fh).getroot()
-    except KeyError:
-        return None
-    except ET.ParseError:
-        return None
-
-
-def parse_relationships(zf: zipfile.ZipFile, part_path: str) -> dict[str, dict[str, str]]:
-    rels_root = load_xml_from_zip(zf, rels_path_for(part_path))
-    if rels_root is None:
-        return {}
-
-    rels: dict[str, dict[str, str]] = {}
-    for rel in rels_root.findall("rel:Relationship", NS):
-        rel_id = rel.attrib.get("Id")
-        target = rel.attrib.get("Target")
-        rel_type = rel.attrib.get("Type")
-        if not rel_id or not target or not rel_type:
-            continue
-        rels[rel_id] = {
-            "type": rel_type,
-            "target": normalize_part(target, part_path),
-        }
-    return rels
-
-
-def emu_to_pixels(value: int) -> int:
-    # PowerPoint uses 96 dpi; enough for summary output.
-    return int(round(value / EMU_PER_INCH * 96))
-
-
-def sanitize_filename(value: str) -> str:
-    value = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip())
-    return value.strip("._") or "asset"
-
-
-def extract_text_samples(root: ET.Element | None, limit: int = 6) -> list[str]:
-    if root is None:
-        return []
-    samples: list[str] = []
-    for node in root.findall(".//a:t", NS):
-        text = (node.text or "").strip()
-        if not text:
-            continue
-        samples.append(text)
-        if len(samples) >= limit:
-            break
-    return samples
-
-
-def extract_image_targets(root: ET.Element | None, rels: dict[str, dict[str, str]]) -> list[str]:
-    if root is None:
-        return []
-    targets: list[str] = []
-    seen: set[str] = set()
-    for blip in root.findall(".//a:blip", NS):
-        rel_id = blip.attrib.get(f"{{{NS['r']}}}embed")
-        if not rel_id:
-            continue
-        rel = rels.get(rel_id)
-        if not rel or rel["type"] != IMAGE_REL:
-            continue
-        target = rel["target"]
-        if target in seen:
-            continue
-        seen.add(target)
-        targets.append(target)
-    return targets
-
-
-def detect_background_asset(root: ET.Element | None, rels: dict[str, dict[str, str]]) -> str | None:
-    if root is None:
-        return None
-
-    bg = root.find("p:cSld/p:bg", NS)
-    if bg is None:
-        bg = root.find("p:bg", NS)
-    if bg is None:
-        return None
-
-    blip = bg.find(".//a:blip", NS)
-    if blip is None:
-        return None
-
-    rel_id = blip.attrib.get(f"{{{NS['r']}}}embed")
-    if not rel_id:
-        return None
-    rel = rels.get(rel_id)
-    if not rel or rel["type"] != IMAGE_REL:
-        return None
-    return rel["target"]
-
-
-def count_slide_shapes(root: ET.Element | None) -> int:
-    if root is None:
-        return 0
-    sp_tree = root.find("p:cSld/p:spTree", NS)
-    if sp_tree is None:
-        return 0
-    return len(list(sp_tree))
-
-
-def classify_slide(index: int, total: int, texts: list[str], image_count: int, shape_count: int) -> str:
-    joined = " ".join(texts).lower()
-    if any(keyword in joined for keyword in THANKS_KEYWORDS):
-        return "ending_candidate"
-    if any(keyword in joined for keyword in TOC_KEYWORDS):
-        return "toc_candidate"
-    if any(keyword in joined for keyword in CHAPTER_KEYWORDS):
-        return "chapter_candidate"
-    if index == 1 and image_count <= 3:
-        return "cover_candidate"
-    if index == total and len(texts) <= 6:
-        return "ending_candidate"
-    if len(texts) <= 3 and shape_count <= 12:
-        return "chapter_candidate"
-    return "content_candidate"
-
-
-def parse_theme(root: ET.Element | None) -> dict[str, Any]:
-    if root is None:
-        return {"colors": {}, "fonts": {}}
-
-    colors: dict[str, str] = {}
-    clr_scheme = root.find(".//a:clrScheme", NS)
-    if clr_scheme is not None:
-        for child in list(clr_scheme):
-            if not isinstance(child.tag, str):
-                continue
-            name = child.tag.split("}", 1)[-1]
-            srgb = child.find("a:srgbClr", NS)
-            sys_clr = child.find("a:sysClr", NS)
-            if srgb is not None and "val" in srgb.attrib:
-                colors[name] = f"#{srgb.attrib['val']}"
-            elif sys_clr is not None:
-                last = sys_clr.attrib.get("lastClr")
-                if last:
-                    colors[name] = f"#{last}"
-
-    fonts: dict[str, str] = {}
-    font_scheme = root.find(".//a:fontScheme", NS)
-    if font_scheme is not None:
-        major = font_scheme.find("a:majorFont", NS)
-        minor = font_scheme.find("a:minorFont", NS)
-        if major is not None:
-            latin = major.find("a:latin", NS)
-            if latin is not None and latin.attrib.get("typeface"):
-                fonts["majorLatin"] = latin.attrib["typeface"]
-        if minor is not None:
-            latin = minor.find("a:latin", NS)
-            if latin is not None and latin.attrib.get("typeface"):
-                fonts["minorLatin"] = latin.attrib["typeface"]
-            ea = minor.find("a:ea", NS)
-            if ea is not None and ea.attrib.get("typeface"):
-                fonts["minorEastAsia"] = ea.attrib["typeface"]
-
-    return {"colors": colors, "fonts": fonts}
-
-
-def choose_common_assets(asset_usage: Counter[str]) -> list[str]:
-    common = [asset for asset, count in asset_usage.items() if count > 1]
-    return sorted(common)
-
-
-def write_analysis(
-    output_path: Path,
-    pptx_name: str,
-    slide_size: dict[str, int],
-    theme: dict[str, Any],
-    slides: list[SlideRecord],
-    common_assets: list[str],
-) -> None:
-    lines = [
-        f"# Template Import Analysis - {pptx_name}",
-        "",
-        "## Summary",
-        f"- Slide size: {slide_size['width_px']} x {slide_size['height_px']} px",
-        f"- Theme colors: {', '.join(sorted(theme['colors'].keys())) or 'none detected'}",
-        f"- Theme fonts: {', '.join(f'{k}={v}' for k, v in theme['fonts'].items()) or 'none detected'}",
-        f"- Common assets: {len(common_assets)}",
-        "",
-        "## Slide Candidates",
-    ]
-
-    for slide in slides:
-        sample = " | ".join(slide.text_samples[:3]) if slide.text_samples else "(no text sample)"
-        lines.extend(
+        completed = subprocess.run(
             [
-                f"- Slide {slide.index}: {slide.page_type}",
-                f"  - Name: {slide.name}",
-                f"  - Background: {slide.background_asset or 'none'} ({slide.background_source or 'n/a'})",
-                f"  - Images: {len(slide.image_assets)}",
-                f"  - Text sample: {sample}",
-            ]
-        )
-
-    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
-    with zipfile.ZipFile(pptx_path, "r") as zf:
-        presentation_root = load_xml_from_zip(zf, "ppt/presentation.xml")
-        if presentation_root is None:
-            raise RuntimeError("Invalid PPTX: missing ppt/presentation.xml")
-
-        slide_size = {"width_emu": 0, "height_emu": 0, "width_px": 0, "height_px": 0}
-        sld_sz = presentation_root.find("p:sldSz", NS)
-        if sld_sz is not None:
-            width_emu = int(sld_sz.attrib.get("cx", "0"))
-            height_emu = int(sld_sz.attrib.get("cy", "0"))
-            slide_size = {
-                "width_emu": width_emu,
-                "height_emu": height_emu,
-                "width_px": emu_to_pixels(width_emu),
-                "height_px": emu_to_pixels(height_emu),
-            }
-
-        presentation_rels = parse_relationships(zf, "ppt/presentation.xml")
-        slide_parts: list[str] = []
-        for sld_id in presentation_root.findall("p:sldIdLst/p:sldId", NS):
-            rel_id = sld_id.attrib.get(f"{{{NS['r']}}}id")
-            rel = presentation_rels.get(rel_id or "")
-            if rel and rel["type"] == SLIDE_REL:
-                slide_parts.append(rel["target"])
-
-        asset_dir = output_dir / "assets"
-        asset_dir.mkdir(parents=True, exist_ok=True)
-
-        copied_assets: dict[str, str] = {}
-        for info in zf.infolist():
-            if not info.filename.startswith("ppt/media/") or info.is_dir():
-                continue
-            original_name = PurePosixPath(info.filename).name
-            safe_name = sanitize_filename(original_name)
-            destination = asset_dir / safe_name
-            stem = destination.stem
-            suffix = destination.suffix
-            counter = 2
-            while destination.exists():
-                destination = asset_dir / f"{stem}_{counter}{suffix}"
-                counter += 1
-            with zf.open(info.filename) as src, open(destination, "wb") as dst:
-                shutil.copyfileobj(src, dst)
-            copied_assets[info.filename] = destination.name
-
-        slide_records: list[SlideRecord] = []
-        asset_usage: Counter[str] = Counter()
-
-        theme_summary = {"colors": {}, "fonts": {}}
-
-        for index, slide_path in enumerate(slide_parts, 1):
-            slide_root = load_xml_from_zip(zf, slide_path)
-            slide_rels = parse_relationships(zf, slide_path)
-
-            layout_path = None
-            for rel in slide_rels.values():
-                if rel["type"] == LAYOUT_REL:
-                    layout_path = rel["target"]
-                    break
-
-            layout_root = load_xml_from_zip(zf, layout_path) if layout_path else None
-            layout_rels = parse_relationships(zf, layout_path) if layout_path else {}
-
-            master_path = None
-            for rel in layout_rels.values():
-                if rel["type"] == MASTER_REL:
-                    master_path = rel["target"]
-                    break
-
-            master_root = load_xml_from_zip(zf, master_path) if master_path else None
-            master_rels = parse_relationships(zf, master_path) if master_path else {}
-
-            theme_path = None
-            for rel in master_rels.values():
-                if rel["type"] == THEME_REL:
-                    theme_path = rel["target"]
-                    break
-            if theme_path and not theme_summary["colors"] and not theme_summary["fonts"]:
-                theme_summary = parse_theme(load_xml_from_zip(zf, theme_path))
-
-            bg_asset = None
-            bg_source = None
-            for label, root, rels in (
-                ("slide", slide_root, slide_rels),
-                ("layout", layout_root, layout_rels),
-                ("master", master_root, master_rels),
-            ):
-                candidate = detect_background_asset(root, rels)
-                if candidate:
-                    bg_asset = candidate
-                    bg_source = label
-                    break
-
-            image_targets = extract_image_targets(slide_root, slide_rels)
-            texts = extract_text_samples(slide_root)
-            shape_count = count_slide_shapes(slide_root)
-            page_type = classify_slide(index, len(slide_parts), texts, len(image_targets), shape_count)
-
-            resolved_bg = copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None)
-            resolved_images = [
-                copied_assets.get(target, PurePosixPath(target).name)
-                for target in image_targets
-            ]
-
-            if resolved_bg:
-                asset_usage[resolved_bg] += 1
-            for asset_name in resolved_images:
-                asset_usage[asset_name] += 1
-
-            slide_records.append(
-                SlideRecord(
-                    index=index,
-                    name=PurePosixPath(slide_path).name,
-                    slide_path=slide_path,
-                    layout_path=layout_path,
-                    master_path=master_path,
-                    background_asset=resolved_bg,
-                    background_source=bg_source,
-                    image_assets=resolved_images,
-                    text_samples=texts,
-                    text_count=len(texts),
-                    shape_count=shape_count,
-                    page_type=page_type,
-                )
-            )
-
-        common_assets = choose_common_assets(asset_usage)
-        page_type_map: dict[str, list[int]] = defaultdict(list)
-        for slide in slide_records:
-            page_type_map[slide.page_type].append(slide.index)
-
-        manifest = {
-            "source": {
-                "pptx": str(pptx_path),
-                "name": pptx_path.name,
-            },
-            "slideSize": slide_size,
-            "theme": theme_summary,
-            "assets": {
-                "exportDir": "assets",
-                "commonAssets": common_assets,
-                "allAssets": sorted(copied_assets.values()),
-            },
-            "pageTypeCandidates": dict(sorted(page_type_map.items())),
-            "slides": [
-                {
-                    "index": slide.index,
-                    "name": slide.name,
-                    "slidePath": slide.slide_path,
-                    "layoutPath": slide.layout_path,
-                    "masterPath": slide.master_path,
-                    "backgroundAsset": slide.background_asset,
-                    "backgroundSource": slide.background_source,
-                    "imageAssets": slide.image_assets,
-                    "textSamples": slide.text_samples,
-                    "textCount": slide.text_count,
-                    "shapeCount": slide.shape_count,
-                    "pageType": slide.page_type,
-                }
-                for slide in slide_records
+                "powershell",
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                str(script_path),
+                *script_args,
             ],
-        }
-
-        write_analysis(
-            output_dir / "analysis.md",
-            pptx_path.name,
-            slide_size,
-            theme_summary,
-            slide_records,
-            common_assets,
+            capture_output=True,
+            text=False,
+            check=False,
         )
-        return manifest
+    finally:
+        script_path.unlink(missing_ok=True)
+    return completed
+
+
+def decode_process_output(completed: subprocess.CompletedProcess[bytes]) -> str:
+    stderr = (completed.stderr or b"").decode("utf-8", errors="replace").strip()
+    stdout = (completed.stdout or b"").decode("utf-8", errors="replace").strip()
+    return stderr or stdout or "PowerPoint export failed"
+
+
+def export_pptx_slides_to_svg(pptx_path: Path, output_dir: Path) -> list[Path]:
+    if platform.system() != "Windows":
+        raise RuntimeError("pptx_template_import.py currently requires Windows PowerPoint")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    completed = run_powershell_script(
+        POWERSHELL_EXPORT_SCRIPT,
+        "-PptxPath",
+        str(pptx_path),
+        "-OutputDir",
+        str(output_dir),
+    )
+
+    if completed.returncode != 0:
+        raise RuntimeError(decode_process_output(completed))
+
+    svg_files = discover_svg_files([str(output_dir)])
+    if not svg_files:
+        raise RuntimeError("PowerPoint export completed but no SVG files were found")
+    return svg_files
+
+
+def export_pptx_to_pdf(pptx_path: Path, pdf_path: Path) -> Path:
+    completed = run_powershell_script(
+        POWERSHELL_PDF_EXPORT_SCRIPT,
+        "-PptxPath",
+        str(pptx_path),
+        "-PdfPath",
+        str(pdf_path),
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(decode_process_output(completed))
+    if not pdf_path.exists():
+        raise RuntimeError("PowerPoint PDF export completed but no PDF file was found")
+    return pdf_path
+
+
+def export_pdf_pages_to_svg(pdf_path: Path, output_dir: Path) -> list[Path]:
+    import fitz
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    svg_files: list[Path] = []
+    matrix = fitz.Matrix(PPT_PDF_TO_SVG_SCALE, PPT_PDF_TO_SVG_SCALE)
+    with fitz.open(pdf_path) as document:
+        for index, page in enumerate(document, 1):
+            target = output_dir / f"slide_{index:02d}.svg"
+            target.write_text(
+                page.get_svg_image(matrix=matrix, text_as_path=False),
+                encoding="utf-8",
+            )
+            svg_files.append(target)
+    return svg_files
+
+
+def export_pptx_slides_to_svg_with_fallback(pptx_path: Path, output_dir: Path) -> tuple[list[Path], str]:
+    try:
+        return export_pptx_slides_to_svg(pptx_path, output_dir), "powerpoint-svg"
+    except Exception:
+        pdf_path = output_dir.parent / f"{pptx_path.stem}_slides.pdf"
+        export_pptx_to_pdf(pptx_path, pdf_path)
+        svg_files = export_pdf_pages_to_svg(pdf_path, output_dir)
+        return svg_files, "powerpoint-pdf-fallback"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Extract reusable assets and style metadata from a PPTX template source."
+        description="Prepare a PPTX reference workspace for /create-template."
     )
     parser.add_argument("pptx_file", help="Path to the source .pptx file")
     parser.add_argument(
@@ -463,7 +196,118 @@ def parse_args() -> argparse.Namespace:
         "--output",
         help="Output directory (default: <pptx_stem>_template_import beside the source file)",
     )
+    parser.add_argument(
+        "--skip-manifest",
+        action="store_true",
+        help="Skip PPTX metadata extraction and asset inventory generation",
+    )
+    parser.add_argument(
+        "--manifest-only",
+        action="store_true",
+        help="Only extract manifest.json, analysis.md, and reusable assets without exporting slides to SVG",
+    )
+    parser.add_argument(
+        "--keep-raw",
+        action="store_true",
+        help="Keep raw PowerPoint-exported SVG files in svg_raw/",
+    )
+    parser.add_argument(
+        "--no-externalize",
+        action="store_true",
+        help="Skip inline image externalization and keep raw SVG output only",
+    )
+    parser.add_argument(
+        "--no-optimize",
+        action="store_true",
+        help="Skip the second-pass structural optimization for cleaned reference SVG files",
+    )
     return parser.parse_args()
+
+
+def build_reference_svg_selection(manifest: dict, svg_files: list[Path]) -> dict:
+    slides = manifest.get("slides", [])
+    total = len(slides) or len(svg_files)
+    svg_by_index = {
+        index: f"svg/slide_{index:02d}.svg"
+        for index in range(1, len(svg_files) + 1)
+    }
+
+    mandatory: list[int] = []
+    for index in (1, 2, total):
+        if 1 <= index <= total and index not in mandatory:
+            mandatory.append(index)
+
+    selected = list(mandatory)
+    selected_set = set(selected)
+
+    # Prefer page-type diversity first.
+    by_page_type: dict[str, list[int]] = {}
+    for slide in slides:
+        by_page_type.setdefault(slide.get("pageType", "unknown"), []).append(slide["index"])
+
+    preferred_types = [
+        "cover_candidate",
+        "chapter_candidate",
+        "toc_candidate",
+        "content_candidate",
+        "ending_candidate",
+    ]
+    for page_type in preferred_types:
+        for index in by_page_type.get(page_type, []):
+            if index not in selected_set and index not in mandatory:
+                selected.append(index)
+                selected_set.add(index)
+                break
+
+    # Then fill with evenly distributed content/reference pages until
+    # there are at least 7 pages beyond 1/2/last when possible.
+    target_total = min(total, len(mandatory) + 7)
+    remaining = [index for index in range(1, total + 1) if index not in selected_set]
+    while len(selected) < target_total and remaining:
+        needed = target_total - len(selected)
+        picks: list[int] = []
+        for slot in range(needed):
+            pos = round((slot + 1) * (len(remaining) + 1) / (needed + 1)) - 1
+            pos = max(0, min(pos, len(remaining) - 1))
+            candidate = remaining[pos]
+            if candidate not in picks:
+                picks.append(candidate)
+        for candidate in picks:
+            if candidate not in selected_set:
+                selected.append(candidate)
+                selected_set.add(candidate)
+        remaining = [index for index in remaining if index not in selected_set]
+
+    selected.sort()
+    recommended = [
+        {
+            "index": index,
+            "svg": svg_by_index.get(index, f"svg/slide_{index:02d}.svg"),
+            "pageType": next(
+                (slide.get("pageType", "unknown") for slide in slides if slide["index"] == index),
+                "unknown",
+            ),
+            "reason": (
+                "mandatory"
+                if index in mandatory
+                else "representative_reference"
+            ),
+        }
+        for index in selected
+    ]
+
+    return {
+        "totalSlides": total,
+        "mandatoryIndexes": mandatory,
+        "minimumAdditionalReferenceCount": 7,
+        "recommendedIndexes": selected,
+        "recommendedSvgRefs": recommended,
+        "guidance": (
+            "Always reference slides 1, 2, and the last slide. "
+            "Beyond those mandatory pages, use at least 7 additional representative SVG pages "
+            "instead of consuming every exported SVG by default."
+        ),
+    }
 
 
 def main() -> int:
@@ -483,24 +327,85 @@ def main() -> int:
     )
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    try:
-        manifest = build_manifest(pptx_path, output_dir)
-    except Exception as exc:
-        print(f"Error: failed to import template source: {exc}")
+    if args.skip_manifest and args.manifest_only:
+        print("Error: --skip-manifest and --manifest-only cannot be used together")
         return 1
 
-    manifest_path = output_dir / "manifest.json"
-    manifest_path.write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+    if not args.skip_manifest:
+        try:
+            manifest = build_manifest(pptx_path, output_dir)
+        except Exception as exc:
+            print(f"Error: failed to extract PPTX metadata: {exc}")
+            return 1
+
+        manifest_path = output_dir / "manifest.json"
+        manifest_path.write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    else:
+        manifest = {"slides": []}
+
+    if args.manifest_only:
+        print(f"Imported PPTX template source: {pptx_path.name}")
+        print(f"Output directory: {output_dir}")
+        if not args.skip_manifest:
+            print(f"Manifest: {manifest_path.name}")
+            print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
+            print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
+            print(f"Slides analyzed: {len(manifest['slides'])}")
+        return 0
+
+    raw_dir = output_dir / "svg_raw"
+    try:
+        raw_svg_files, export_mode = export_pptx_slides_to_svg_with_fallback(pptx_path, raw_dir)
+    except Exception as exc:
+        print(f"Error: failed to export PPTX slides to SVG: {exc}")
+        return 1
+
+    if args.no_externalize:
+        print(f"Export mode: {export_mode}")
+        print(f"Exported raw SVG slides: {len(raw_svg_files)}")
+        print(f"Output directory: {output_dir}")
+        return 0
+
+    cleaned_dir = output_dir / "svg"
+    results = externalize_svg_batch(
+        svg_files=raw_svg_files,
+        output_dir=cleaned_dir,
+        assets_dir=output_dir / "assets",
+    )
+    final_svg_bytes = sum(item.output_svg_bytes for item in results)
+
+    if not args.no_optimize:
+        optimize_results, optimize_output_dir = optimize_reference_batch([str(cleaned_dir)], precision=2)
+        before_opt = sum(item.original_bytes for item in optimize_results)
+        after_opt = sum(item.optimized_bytes for item in optimize_results)
+        final_svg_bytes = after_opt
+        print(f"Optimized SVG files: {len(optimize_results)}")
+        print(f"SVG bytes after structural optimization: {before_opt} -> {after_opt}")
+        print(f"Icon candidate report: {optimize_output_dir / 'icon_candidates.json'}")
+
+    if not args.keep_raw:
+        for svg_file in raw_dir.glob("*.svg"):
+            svg_file.unlink(missing_ok=True)
+        raw_dir.rmdir()
+
+    reference_selection = build_reference_svg_selection(manifest, sorted(cleaned_dir.glob("*.svg")))
+    (output_dir / "reference_svg_selection.json").write_text(
+        json.dumps(reference_selection, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 
-    print(f"Imported PPTX template source: {pptx_path.name}")
+    total_before = sum(item.original_svg_bytes for item in results)
+    total_images = sum(item.images_externalized for item in results)
+
+    print(f"Export mode: {export_mode}")
+    print(f"Exported SVG slides: {len(results)}")
+    print(f"Inline images externalized: {total_images}")
+    print(f"SVG bytes: {total_before} -> {final_svg_bytes}")
+    print(f"Reference SVG selection: {output_dir / 'reference_svg_selection.json'}")
     print(f"Output directory: {output_dir}")
-    print(f"Manifest: {manifest_path.name}")
-    print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
-    print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
-    print(f"Slides analyzed: {len(manifest['slides'])}")
     return 0
 
 

@@ -75,19 +75,30 @@ python3 scripts/generate_examples_index.py examples
 
 ## `pptx_template_import.py`
 
-Lightweight importer for `.pptx` template sources.
+Unified PPTX preparation entry point for `/create-template`.
 
 ```bash
 python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> -o <output_dir>
+python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
+python3 scripts/pptx_template_import.py <template.pptx> --keep-raw
+python3 scripts/pptx_template_import.py <template.pptx> --skip-manifest
 ```
 
 Notes:
 - Extracts reusable media assets from `ppt/media/`
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
-- Produces `manifest.json`, `analysis.md`, and `assets/`
-- Intended as an internal helper for template reconstruction, not a direct PPTX-to-SVG converter
+- Generates `manifest.json`, `analysis.md`, `assets/`, cleaned slide SVGs, and `reference_svg_selection.json`
+- Windows-only when SVG export is needed because it uses installed Microsoft PowerPoint
+- Writes cleaned SVG files to `svg/` after externalizing inline Base64 image payloads
+- Required in `/create-template` whenever the reference source is `.pptx`
+- Default output directory is `<pptx_stem>_template_import/`
+- Use `--manifest-only` when you explicitly want only the lightweight import output without slide SVG export
+- Intended for template reference preparation, not for final 1:1 template delivery
+
+Implementation note:
+- Internal helpers for this workflow live under `scripts/template_import/`
 
 ## `error_helper.py`
 

@@ -5,7 +5,7 @@
     "formats": ["ppt169"],
     "standardFiles": ["design_spec.md", "01_cover.svg", "02_toc.svg", "02_chapter.svg", "03_content.svg", "04_ending.svg"],
     "standardPageTypes": ["cover", "toc", "chapter", "content", "ending"],
-    "updated": "2026-03-22"
+    "updated": "2026-04-09"
   },
   "categories": {
     "brand": {
