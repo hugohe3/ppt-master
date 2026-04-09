@@ -24,14 +24,6 @@ It aggregates:
 - `flatten_tspan.py`
 - `svg_rect_to_path.py`
 
-Typical usage:
-
-```bash
-python3 scripts/finalize_svg.py <project_path>
-```
-
-Use standalone sub-tools only when you need advanced debugging or one-off fixes.
-
 ## `svg_to_pptx.py`
 
 Convert project SVGs into PPTX.

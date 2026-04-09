@@ -231,10 +231,24 @@ def process_svg_images(
         try:
             # Open and process image
             img = Image.open(img_path)
-            
-            # Convert mode
-            if img.mode in ('RGBA', 'P'):
-                img = img.convert('RGB')
+            output_is_png = img_path.suffix.lower() == '.png'
+
+            # Preserve alpha for PNG assets such as translucent overlays.
+            if output_is_png:
+                if img.mode == 'P':
+                    img = img.convert('RGBA')
+                elif img.mode not in ('RGBA', 'LA', 'RGB', 'L'):
+                    img = img.convert('RGBA' if 'A' in img.getbands() else 'RGB')
+            else:
+                if img.mode in ('RGBA', 'LA'):
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    alpha = img.getchannel('A')
+                    background.paste(img.convert('RGB'), mask=alpha)
+                    img = background
+                elif img.mode == 'P':
+                    img = img.convert('RGB')
+                elif img.mode not in ('RGB', 'L'):
+                    img = img.convert('RGB')
             
             # Crop
             cropped = crop_image_to_size(img, target_width, target_height, x_anchor, y_anchor)
@@ -244,7 +258,7 @@ def process_svg_images(
             output_path = output_dir / output_filename
             
             # Save
-            if img_path.suffix.lower() == '.png':
+            if output_is_png:
                 cropped.save(output_path, 'PNG', optimize=True)
             else:
                 cropped.save(output_path, 'JPEG', quality=90, optimize=True)

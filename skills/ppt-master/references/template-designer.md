@@ -14,12 +14,14 @@ Generate reusable page templates for the **global template library** based on a 
 - **Output location**: `templates/layouts/<template_name>/`
 - **Input**: finalized template brief (template ID, display name, category, applicable scenarios, tone, theme mode, canvas format, optional reference assets)
 
-When the workflow provides PPTX import output, the effective input package becomes:
+When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
 - finalized template brief
 - `manifest.json`
 - `analysis.md`
 - exported `assets/`
+- cleaned slide SVG references from `svg/`
+- `reference_svg_selection.json`
 - optional screenshots for visual cross-checking
 
 Input priority for PPTX-backed template creation:
@@ -27,7 +29,9 @@ Input priority for PPTX-backed template creation:
 1. `manifest.json` for factual metadata
 2. exported `assets/` for reusable visual resources
 3. `analysis.md` for page-type guidance
-4. screenshots / original PPTX only for style verification
+4. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
+5. cleaned slide SVG references for composition, spacing, and fixed decorative cues
+6. screenshots / original PPTX only for style verification
 
 ---
 
@@ -96,6 +100,8 @@ Do:
 - rebuild the layout into a clean SVG structure aligned with PPT Master constraints
 - simplify repeated decorative fragments into a smaller number of maintainable SVG elements
 - use a background image asset when the original decorative layer is too complex to recreate cleanly
+- use cleaned slide SVG references to inspect composition, spacing, text hierarchy, and fixed decorative structure only after factual metadata has been anchored
+- do not read every exported SVG by default; always inspect slides 1, 2, and the last slide, then inspect at least 7 additional representative pages from the selection file
 
 Do not:
 - attempt 1:1 translation of every PowerPoint shape, group, shadow, or decorative fragment

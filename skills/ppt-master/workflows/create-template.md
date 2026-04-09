@@ -49,29 +49,43 @@ Confirm the following with the user:
 ls -la "<reference_source_path>"
 ```
 
-If the reference source is a `.pptx` template file, first run the lightweight import helper to extract reusable assets and style metadata:
+If the reference source is a `.pptx` template file, use the unified preparation helper:
 
 ```bash
 python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
 ```
 
-Use the generated `manifest.json`, `analysis.md`, and exported `assets/` as internal reference material for template reconstruction. This helper is intentionally limited to asset/style extraction; it does **not** directly convert the PPTX into final template SVG files.
+This helper performs the full PPTX reference preparation in one workspace:
 
-When `.pptx` import output exists, use the following internal priority order during template creation:
+- extracts reusable assets and style metadata
+- generates `manifest.json`
+- generates `analysis.md`
+- exports each slide to `svg/`
+- externalizes large inline bitmap payloads into `assets/`
+- generates `reference_svg_selection.json`
+
+It is still a reconstruction aid, not a final direct template conversion.
+
+Use the generated `manifest.json`, `analysis.md`, exported `assets/`, and `svg/` slide references as internal reference material for template reconstruction.
+
+When the reference source is `.pptx`, use the following internal priority order during template creation:
 
 1. `manifest.json`
 2. `analysis.md`
 3. exported `assets/`
-4. user-provided screenshots or the original PPTX only for visual cross-checking
+4. cleaned slide SVG references from `svg/`
+5. user-provided screenshots or the original PPTX only for visual cross-checking
 
 Interpretation rule:
 
 - `manifest.json` is the source of truth for slide size, theme colors, fonts, background inheritance, and reusable asset inventory
 - `analysis.md` is the compact human-readable summary used to guide page-type selection
 - exported `assets/` are the preferred source for backgrounds, logos, and decorative images
+- cleaned `svg/` slides are mandatory reference material for layout rhythm, page composition, and fixed decorative structure
+- do not consume every exported SVG by default: always reference slides `1`, `2`, and the last slide, then add at least `7` representative SVG pages from the remaining slides
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
-Do **not** treat the imported PPTX as a direct SVG conversion target. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
+Do **not** treat the imported PPTX or exported slide SVGs as direct final template assets. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
 
 ---
 
@@ -91,12 +105,14 @@ mkdir -p "skills/ppt-master/templates/layouts/<template_id>"
 
 **Switch to the Template_Designer role** and generate per role definition. The role input is the finalized template brief from Step 1, not a project design spec.
 
-If `.pptx` import output exists, pass the following internal package to the role:
+If the reference source is `.pptx`, pass the following internal package to the role:
 
 - finalized template brief from Step 1
 - `manifest.json`
 - `analysis.md`
 - exported `assets/`
+- cleaned slide SVG references from `svg/`
+- `reference_svg_selection.json`
 - optional screenshots, if available
 
 The role should use the import output to anchor objective facts such as theme colors, fonts, reusable backgrounds, and common branding assets, then rebuild the final SVG templates in a simplified, maintainable form.
