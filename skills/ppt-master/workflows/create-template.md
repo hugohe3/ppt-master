@@ -102,6 +102,11 @@ Interpretation rule:
 - if the remaining cleaned SVG reference pages are `<= 10`, read all of them; if they are `> 10`, read only `10` representative pages
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
+**Hard gate**:
+
+- Before creating any template file, the agent MUST finish reading all SVG files listed in `reference_svg_selection.json`
+- The agent MUST explicitly report the read slide indexes before starting template generation
+
 Do **not** treat the imported PPTX or exported slide SVGs as direct final template assets. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
 
 ---

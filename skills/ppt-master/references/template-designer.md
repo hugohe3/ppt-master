@@ -93,6 +93,11 @@ If PPTX import output exists:
 - Reuse canonical backgrounds and logos from `normalized_assets.json` where they are globally meaningful to the template
 - Treat page-type candidates from `analysis.md` as hints, not guarantees
 
+**Precondition**:
+
+- If `reference_svg_selection.json` is provided, do not generate any template SVG or `design_spec.md` until all selected reference SVG files have been read
+- Before template generation begins, explicitly report the read slide indexes
+
 ### 2.1 PPTX Import Simplification Rule
 
 The imported PPTX is a **reference source**, not a direct conversion target.
