@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    多列对比/定价表模板
+    用途: 服务套餐对比、定价方案、会员等级
+    适用场景: SaaS定价页、产品版本对比、服务分级
+    支持: 3列 (推荐2-4列)
+    -->
+
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="highlightShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+            <feOffset dx="0" dy="4" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1280" height="720" fill="#F8F9FA"/>
+
+    <!-- 标题 -->
+    <text x="640" y="52" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">选择适合的方案</text>
+    <text x="640" y="78" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Pricing Plans · 灵活方案满足不同规模需求</text>
+
+    <!-- 基础版 (左) -->
+    <g filter="url(#cardShadow)">
+        <rect x="80" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
+        <!-- 头部 -->
+        <rect x="80" y="110" width="340" height="120" rx="16" fill="#6C5CE7" fill-opacity="0.06"/>
+        <rect x="80" y="214" width="340" height="16" fill="#FFFFFF"/>
+        <text x="250" y="152" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="20" font-weight="700" fill="#6C5CE7">基础版</text>
+        <text x="250" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="13" fill="#95A5A6">适合个人与小团队</text>
+        <text x="210" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="42" font-weight="800" fill="#1A252F">¥99</text>
+        <text x="268" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" fill="#95A5A6">/月</text>
+        <!-- 功能列表 -->
+        <line x1="110" y1="240" x2="390" y2="240" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="142" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">5个项目空间</text>
+        <text x="118" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="142" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">10GB存储</text>
+        <text x="118" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="142" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">基础报表功能</text>
+        <text x="118" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="142" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">邮件支持</text>
+        <text x="118" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="142" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">API集成</text>
+        <text x="118" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <text x="142" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">自定义工作流</text>
+        <text x="118" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <text x="142" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">专属客户经理</text>
+        <text x="118" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <text x="142" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">SLA保障</text>
+        <text x="118" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <!-- 按钮 -->
+        <rect x="120" y="560" width="200" height="44" rx="22" fill="#FFFFFF" stroke="#6C5CE7" stroke-width="2"/>
+        <text x="220" y="587" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#6C5CE7">开始使用</text>
+    </g>
+
+    <!-- 专业版 (中, 推荐高亮) -->
+    <g filter="url(#highlightShadow)">
+        <rect x="470" y="95" width="340" height="590" rx="16" fill="#FFFFFF"/>
+        <!-- 推荐标签 -->
+        <rect x="580" y="82" width="80" height="26" rx="13" fill="#00B894"/>
+        <text x="620" y="99" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" font-weight="700" fill="#FFFFFF">最受欢迎</text>
+        <!-- 头部 -->
+        <rect x="470" y="95" width="340" height="130" rx="16" fill="#00B894"/>
+        <rect x="470" y="209" width="340" height="16" fill="#FFFFFF"/>
+        <text x="640" y="142" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="20" font-weight="700" fill="#FFFFFF">专业版</text>
+        <text x="640" y="165" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="13" fill="#FFFFFF" fill-opacity="0.85">适合成长型企业</text>
+        <text x="598" y="205" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="42" font-weight="800" fill="#1A252F">¥399</text>
+        <text x="658" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" fill="#95A5A6">/月</text>
+        <line x1="500" y1="235" x2="780" y2="235" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="532" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">无限项目空间</text>
+        <text x="508" y="270" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">100GB存储</text>
+        <text x="508" y="305" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">高级报表 + 仪表板</text>
+        <text x="508" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">优先工单支持</text>
+        <text x="508" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">API集成</text>
+        <text x="508" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">自定义工作流</text>
+        <text x="508" y="445" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="532" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">专属客户经理</text>
+        <text x="508" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <text x="532" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#BDC3C7">SLA保障</text>
+        <text x="508" y="515" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#BDC3C7">—</text>
+        <rect x="510" y="555" width="200" height="44" rx="22" fill="#00B894"/>
+        <text x="610" y="582" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#FFFFFF">立即升级</text>
+    </g>
+
+    <!-- 企业版 (右) -->
+    <g filter="url(#cardShadow)">
+        <rect x="860" y="110" width="340" height="560" rx="16" fill="#FFFFFF"/>
+        <rect x="860" y="110" width="340" height="120" rx="16" fill="#1A252F" fill-opacity="0.04"/>
+        <rect x="860" y="214" width="340" height="16" fill="#FFFFFF"/>
+        <text x="1030" y="152" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="20" font-weight="700" fill="#1A252F">企业版</text>
+        <text x="1030" y="175" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="13" fill="#95A5A6">适合大型组织</text>
+        <text x="1030" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="36" font-weight="800" fill="#1A252F">联系销售</text>
+        <line x1="890" y1="240" x2="1170" y2="240" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="922" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">无限项目空间</text>
+        <text x="898" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">无限存储</text>
+        <text x="898" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">全部报表 + BI分析</text>
+        <text x="898" y="345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">7×24电话支持</text>
+        <text x="898" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">API集成 + Webhook</text>
+        <text x="898" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">自定义工作流</text>
+        <text x="898" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">专属客户经理</text>
+        <text x="898" y="485" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <text x="922" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#2C3E50">99.9% SLA保障</text>
+        <text x="898" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#00B894">✓</text>
+        <rect x="900" y="560" width="200" height="44" rx="22" fill="#FFFFFF" stroke="#1A252F" stroke-width="2"/>
+        <text x="1000" y="587" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">联系我们</text>
+    </g>
+
+    <!-- 底部 -->
+    <text x="640" y="710" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#BDC3C7">所有方案均含14天免费试用 · 支持随时升降级</text>
+</svg>

@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    多维特性对比表模板
+    用途: 多方案/产品横向对比、特性矩阵
+    适用场景: 产品选型、竞品对比、服务套餐比较
+    支持: 3列×6行 (推荐2-4列, 4-8行)
+    -->
+
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 标题 -->
+    <text x="640" y="55" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">解决方案对比评估</text>
+    <text x="640" y="82" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Comparison Matrix · 三大方案核心指标横向对比</text>
+
+    <!-- 表头行 -->
+    <rect x="60" y="105" width="240" height="55" rx="8" fill="#F8F9FA"/>
+    <text x="180" y="139" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#5F6368">评估维度</text>
+
+    <!-- 方案A列头 -->
+    <rect x="320" y="105" width="280" height="55" rx="8" fill="#6C5CE7" filter="url(#cardShadow)"/>
+    <text x="460" y="132" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">方案 A</text>
+    <text x="460" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#FFFFFF" fill-opacity="0.8">自建私有化部署</text>
+
+    <!-- 方案B列头 (推荐) -->
+    <rect x="620" y="100" width="280" height="62" rx="8" fill="#00B894" filter="url(#cardShadow)"/>
+    <rect x="750" y="92" width="56" height="20" rx="10" fill="#FDCB6E"/>
+    <text x="778" y="105" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="10" font-weight="700" fill="#FFFFFF">推荐</text>
+    <text x="760" y="131" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">方案 B</text>
+    <text x="760" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#FFFFFF" fill-opacity="0.8">混合云架构</text>
+
+    <!-- 方案C列头 -->
+    <rect x="920" y="105" width="280" height="55" rx="8" fill="#0984E3" filter="url(#cardShadow)"/>
+    <text x="1060" y="132" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">方案 C</text>
+    <text x="1060" y="150" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#FFFFFF" fill-opacity="0.8">纯SaaS订阅</text>
+
+    <!-- 数据行 (6行, 每行高82, 起始y=175) -->
+    <!-- 行1: 部署成本 -->
+    <rect x="60" y="175" width="240" height="75" rx="6" fill="#F8F9FA"/>
+    <text x="180" y="218" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#2C3E50">部署成本</text>
+    <rect x="320" y="175" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="460" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="700" fill="#1A252F">¥500万</text>
+    <text x="460" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#E74C3C">偏高</text>
+    <rect x="620" y="175" width="280" height="75" rx="6" fill="#00B894" fill-opacity="0.05" stroke="#00B894" stroke-width="1.5"/>
+    <text x="760" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="700" fill="#1A252F">¥180万</text>
+    <text x="760" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#00B894">最优</text>
+    <rect x="920" y="175" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="1060" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="700" fill="#1A252F">¥80万/年</text>
+    <text x="1060" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#FDCB6E">中等</text>
+
+    <!-- 行2: 数据安全 -->
+    <rect x="60" y="260" width="240" height="75" rx="6" fill="#F8F9FA"/>
+    <text x="180" y="303" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#2C3E50">数据安全</text>
+    <rect x="320" y="260" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="460" y="303" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★★</text>
+    <rect x="620" y="260" width="280" height="75" rx="6" fill="#00B894" fill-opacity="0.05" stroke="#00B894" stroke-width="1.5"/>
+    <text x="760" y="303" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★☆</text>
+    <rect x="920" y="260" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="1060" y="303" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#E74C3C">★★★☆☆</text>
+
+    <!-- 行3: 扩展能力 -->
+    <rect x="60" y="345" width="240" height="75" rx="6" fill="#F8F9FA"/>
+    <text x="180" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#2C3E50">弹性扩展</text>
+    <rect x="320" y="345" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="460" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#E74C3C">★★☆☆☆</text>
+    <rect x="620" y="345" width="280" height="75" rx="6" fill="#00B894" fill-opacity="0.05" stroke="#00B894" stroke-width="1.5"/>
+    <text x="760" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★★</text>
+    <rect x="920" y="345" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="1060" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★★</text>
+
+    <!-- 行4: 上线周期 -->
+    <rect x="60" y="430" width="240" height="75" rx="6" fill="#F8F9FA"/>
+    <text x="180" y="473" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#2C3E50">上线周期</text>
+    <rect x="320" y="430" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="460" y="473" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">6-12个月</text>
+    <rect x="620" y="430" width="280" height="75" rx="6" fill="#00B894" fill-opacity="0.05" stroke="#00B894" stroke-width="1.5"/>
+    <text x="760" y="473" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">3-5个月</text>
+    <rect x="920" y="430" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="1060" y="473" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">1-2个月</text>
+
+    <!-- 行5: 定制化 -->
+    <rect x="60" y="515" width="240" height="75" rx="6" fill="#F8F9FA"/>
+    <text x="180" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#2C3E50">定制化程度</text>
+    <rect x="320" y="515" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="460" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★★</text>
+    <rect x="620" y="515" width="280" height="75" rx="6" fill="#00B894" fill-opacity="0.05" stroke="#00B894" stroke-width="1.5"/>
+    <text x="760" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#00B894">★★★★☆</text>
+    <rect x="920" y="515" width="280" height="75" rx="6" fill="#FFFFFF" stroke="#EEEEEE" stroke-width="1"/>
+    <text x="1060" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#E74C3C">★★☆☆☆</text>
+
+    <!-- 底部总评 -->
+    <rect x="60" y="610" width="240" height="70" rx="8" fill="#F8F9FA"/>
+    <text x="180" y="650" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#2C3E50">综合评分</text>
+    <rect x="320" y="610" width="280" height="70" rx="8" fill="#6C5CE7" fill-opacity="0.08"/>
+    <text x="460" y="652" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="800" fill="#6C5CE7">72</text>
+    <rect x="620" y="610" width="280" height="70" rx="8" fill="#00B894" fill-opacity="0.1"/>
+    <text x="760" y="652" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="800" fill="#00B894">91</text>
+    <rect x="920" y="610" width="280" height="70" rx="8" fill="#0984E3" fill-opacity="0.08"/>
+    <text x="1060" y="652" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="800" fill="#0984E3">68</text>
+</svg>

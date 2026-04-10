@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    词云图模板
+    用途: 关键词权重可视化、热点话题、标签分布
+    适用场景: 用户反馈关键词、行业热点、技术栈概览
+    支持: 20-30个关键词 (大小表示权重)
+    -->
+
+    <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#EEF1F5;stop-opacity:1"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+
+    <!-- 标题 -->
+    <text x="640" y="55" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">行业热点关键词</text>
+    <text x="640" y="82" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Word Cloud · 字号大小反映关键词热度权重</text>
+
+    <!-- 词云主体 (手动排布, 大小=权重) -->
+    <!-- Tier 1: 最大 (核心关键词) -->
+    <text x="520" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="58" font-weight="800" fill="#6C5CE7" fill-opacity="0.9">人工智能</text>
+    <text x="400" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="52" font-weight="800" fill="#0984E3" fill-opacity="0.85">大模型</text>
+
+    <!-- Tier 2: 次大 -->
+    <text x="750" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="42" font-weight="700" fill="#00B894" fill-opacity="0.85">数字化转型</text>
+    <text x="180" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="38" font-weight="700" fill="#E17055" fill-opacity="0.8">云计算</text>
+    <text x="650" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="40" font-weight="700" fill="#D4A537" fill-opacity="0.8">智能制造</text>
+
+    <!-- Tier 3: 中等 -->
+    <text x="110" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="600" fill="#A29BFE" fill-opacity="0.75">数据安全</text>
+    <text x="900" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="32" font-weight="600" fill="#74B9FF" fill-opacity="0.8">自动驾驶</text>
+    <text x="140" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="600" fill="#55EFC4" fill-opacity="0.8">边缘计算</text>
+    <text x="920" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="600" fill="#E74C3C" fill-opacity="0.7">元宇宙</text>
+    <text x="350" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="600" fill="#0984E3" fill-opacity="0.7">区块链</text>
+
+    <!-- Tier 4: 较小 -->
+    <text x="580" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="500" fill="#6C5CE7" fill-opacity="0.6">量子计算</text>
+    <text x="850" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="500" fill="#E17055" fill-opacity="0.6">Web3.0</text>
+    <text x="1020" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="500" fill="#00B894" fill-opacity="0.65">物联网</text>
+    <text x="80" y="380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="500" fill="#D63031" fill-opacity="0.6">机器学习</text>
+    <text x="640" y="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="500" fill="#A29BFE" fill-opacity="0.65">低代码</text>
+    <text x="300" y="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="22" font-weight="500" fill="#74B9FF" fill-opacity="0.65">数字孪生</text>
+
+    <!-- Tier 5: 最小 -->
+    <text x="780" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="17" font-weight="400" fill="#95A5A6" fill-opacity="0.6">RPA</text>
+    <text x="1080" y="470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="400" fill="#BDC3C7" fill-opacity="0.6">GPT</text>
+    <text x="1000" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="18" font-weight="400" fill="#A29BFE" fill-opacity="0.55">DevOps</text>
+    <text x="130" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="400" fill="#00B894" fill-opacity="0.5">零信任</text>
+    <text x="500" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="18" font-weight="400" fill="#E17055" fill-opacity="0.55">多模态</text>
+    <text x="880" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="17" font-weight="400" fill="#6C5CE7" fill-opacity="0.5">知识图谱</text>
+    <text x="250" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="400" fill="#D4A537" fill-opacity="0.5">AIGC</text>
+    <text x="1050" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="400" fill="#74B9FF" fill-opacity="0.5">联邦学习</text>
+    <text x="700" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="400" fill="#55EFC4" fill-opacity="0.5">隐私计算</text>
+
+    <!-- 图例 -->
+    <rect x="60" y="630" width="400" height="55" rx="8" fill="#FFFFFF" fill-opacity="0.6"/>
+    <text x="80" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#5F6368">权重等级:</text>
+    <text x="160" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#6C5CE7">极高</text>
+    <text x="220" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="600" fill="#0984E3">高</text>
+    <text x="260" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="500" fill="#00B894">中</text>
+    <text x="300" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="400" fill="#95A5A6">低</text>
+    <text x="80" y="674" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#BDC3C7">字号越大代表该关键词在行业讨论中出现频率越高</text>
+
+    <!-- 数据来源 -->
+    <text x="1220" y="690" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="11" fill="#BDC3C7">数据来源: 行业报告与社交媒体分析 · 2025年度</text>
+</svg>

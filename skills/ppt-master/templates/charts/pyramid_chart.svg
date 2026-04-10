@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    金字塔层级图模板
+    用途: 层级结构、价值递增、战略分层展示
+    适用场景: 马斯洛需求层次、企业战略分层、能力成熟度模型
+    支持: 5层 (推荐3-6层)
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.12"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- 背景渐变 -->
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EEF1F5;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+    
+    <!-- 标题区域 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="700" fill="#1A252F" letter-spacing="-0.5">战略能力金字塔</text>
+    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D">Strategic Capability Pyramid · 从基础到顶层的五级递进</text>
+    
+    <!-- 金字塔主体 (居左, x中心=380) -->
+    <!-- 第5层 (顶) -->
+    <polygon points="380,140 440,220 320,220" fill="#6C5CE7"/>
+    <text x="380" y="198" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" font-weight="700" fill="#FFFFFF">愿景引领</text>
+    
+    <!-- 第4层 -->
+    <polygon points="320,232 440,232 490,320 270,320" fill="#A29BFE"/>
+    <text x="380" y="286" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="700" fill="#FFFFFF">创新驱动</text>
+    
+    <!-- 第3层 -->
+    <polygon points="270,332 490,332 540,420 220,420" fill="#74B9FF"/>
+    <text x="380" y="386" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="15" font-weight="700" fill="#FFFFFF">品牌影响力</text>
+    
+    <!-- 第2层 -->
+    <polygon points="220,432 540,432 590,520 170,520" fill="#55EFC4"/>
+    <text x="380" y="486" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="15" font-weight="700" fill="#FFFFFF">技术研发能力</text>
+    
+    <!-- 第1层 (底) -->
+    <polygon points="170,532 590,532 640,620 120,620" fill="#FDCB6E"/>
+    <text x="380" y="586" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="700" fill="#FFFFFF">基础运营体系</text>
+    
+    <!-- 右侧说明卡片 -->
+    <!-- 第5层说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="130" width="520" height="80" rx="10" fill="#FFFFFF"/>
+        <rect x="700" y="130" width="6" height="80" rx="3" fill="#6C5CE7"/>
+        <text x="726" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">愿景引领</text>
+        <text x="726" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">确立行业地位与长期方向，统领全局战略布局</text>
+    </g>
+    <line x1="440" y1="180" x2="700" y2="170" stroke="#6C5CE7" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.4"/>
+    
+    <!-- 第4层说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="228" width="520" height="80" rx="10" fill="#FFFFFF"/>
+        <rect x="700" y="228" width="6" height="80" rx="3" fill="#A29BFE"/>
+        <text x="726" y="256" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">创新驱动</text>
+        <text x="726" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">构建持续创新机制，探索前沿技术与商业模式</text>
+    </g>
+    <line x1="490" y1="276" x2="700" y2="268" stroke="#A29BFE" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.4"/>
+    
+    <!-- 第3层说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="326" width="520" height="80" rx="10" fill="#FFFFFF"/>
+        <rect x="700" y="326" width="6" height="80" rx="3" fill="#74B9FF"/>
+        <text x="726" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">品牌影响力</text>
+        <text x="726" y="378" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">打造行业领先品牌认知，建立客户信任与忠诚</text>
+    </g>
+    <line x1="540" y1="376" x2="700" y2="366" stroke="#74B9FF" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.4"/>
+    
+    <!-- 第2层说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="424" width="520" height="80" rx="10" fill="#FFFFFF"/>
+        <rect x="700" y="424" width="6" height="80" rx="3" fill="#55EFC4"/>
+        <text x="726" y="452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">技术研发能力</text>
+        <text x="726" y="476" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">500+核心专利，深厚技术积累支撑产品竞争力</text>
+    </g>
+    <line x1="590" y1="476" x2="700" y2="464" stroke="#55EFC4" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.4"/>
+    
+    <!-- 第1层说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="700" y="522" width="520" height="80" rx="10" fill="#FFFFFF"/>
+        <rect x="700" y="522" width="6" height="80" rx="3" fill="#FDCB6E"/>
+        <text x="726" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">基础运营体系</text>
+        <text x="726" y="574" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">精细化运营管理，全球化供应链与智能仓储体系</text>
+    </g>
+    <line x1="640" y1="576" x2="700" y2="562" stroke="#FDCB6E" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.4"/>
+
+    <!-- 底部注释 -->
+    <text x="60" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#BDC3C7">层级越高代表战略价值越大，底层是上层的支撑基础</text>
+</svg>

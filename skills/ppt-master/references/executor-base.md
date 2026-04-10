@@ -143,7 +143,7 @@ When the Design Spec includes a **VII. Visualization Reference List**, read the 
 - **May adjust**: Axis ranges, grid lines, legend position, spacing — as long as the chart remains accurate and readable
 - **Must NOT**: Change visualization type without Design Spec justification, or remove data points / structural elements specified in the outline
 
-> Visualization templates: `templates/charts/` (33 types). Index: `templates/charts/charts_index.json`
+> Visualization templates: `templates/charts/` (52 types). Index: `templates/charts/charts_index.json`
 
 ---
 

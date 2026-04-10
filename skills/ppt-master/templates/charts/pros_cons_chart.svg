@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    优劣势对比模板
+    用途: 双向对比、利弊分析、方案评估
+    适用场景: 产品对比、方案优劣势、决策支持
+    支持: 左右对称 3+3 项 (推荐2-5项)
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.12"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题区域 -->
+    <text x="640" y="60" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="700" fill="#1A252F" letter-spacing="-0.5">方案优劣势对比</text>
+    <text x="640" y="90" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D">Pros vs Cons Analysis · 客观评估决策依据</text>
+    
+    <!-- 中间分隔标签 -->
+    <rect x="588" y="120" width="104" height="40" rx="20" fill="#27AE60"/>
+    <text x="640" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="700" fill="#FFFFFF">PROS</text>
+    <polygon points="588,140 568,128 568,152" fill="#27AE60"/>
+
+    <rect x="588" y="172" width="104" height="40" rx="20" fill="#E74C3C"/>
+    <text x="640" y="198" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" font-weight="700" fill="#FFFFFF">CONS</text>
+    <polygon points="692,192 712,180 712,204" fill="#E74C3C"/>
+    
+    <!-- 左侧标题 (优势) -->
+    <text x="280" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="22" font-weight="700" fill="#27AE60">优势</text>
+    
+    <!-- 右侧标题 (劣势) -->
+    <text x="1000" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="22" font-weight="700" fill="#E74C3C">劣势</text>
+    
+    <!-- 优势卡片 1 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="230" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="60" y="230" width="6" height="100" rx="3" fill="#27AE60"/>
+        <circle cx="96" cy="268" r="18" fill="#27AE60" fill-opacity="0.12"/>
+        <text x="96" y="274" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#27AE60">✓</text>
+        <text x="128" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">产品质量领先</text>
+        <text x="128" y="296" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">核心技术自主可控，用户满意度持续高于行业均值15%</text>
+    </g>
+    
+    <!-- 优势卡片 2 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="348" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="60" y="348" width="6" height="100" rx="3" fill="#27AE60"/>
+        <circle cx="96" cy="386" r="18" fill="#27AE60" fill-opacity="0.12"/>
+        <text x="96" y="392" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#27AE60">✓</text>
+        <text x="128" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">品牌认知度高</text>
+        <text x="128" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">全渠道覆盖率85%，品牌知名度位列细分市场TOP3</text>
+    </g>
+    
+    <!-- 优势卡片 3 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="466" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="60" y="466" width="6" height="100" rx="3" fill="#27AE60"/>
+        <circle cx="96" cy="504" r="18" fill="#27AE60" fill-opacity="0.12"/>
+        <text x="96" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#27AE60">✓</text>
+        <text x="128" y="504" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">用户生态完善</text>
+        <text x="128" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">用户留存率/分享率/复购率远超行业平均水平</text>
+    </g>
+    
+    <!-- 劣势卡片 1 -->
+    <g filter="url(#cardShadow)">
+        <rect x="710" y="230" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="1214" y="230" width="6" height="100" rx="3" fill="#E74C3C"/>
+        <circle cx="1184" cy="268" r="18" fill="#E74C3C" fill-opacity="0.12"/>
+        <text x="1184" y="274" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
+        <text x="730" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">产品迭代周期长</text>
+        <text x="730" y="296" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">从用户反馈到功能上线平均需12周，竞品仅需6-8周</text>
+    </g>
+    
+    <!-- 劣势卡片 2 -->
+    <g filter="url(#cardShadow)">
+        <rect x="710" y="348" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="1214" y="348" width="6" height="100" rx="3" fill="#E74C3C"/>
+        <circle cx="1184" cy="386" r="18" fill="#E74C3C" fill-opacity="0.12"/>
+        <text x="1184" y="392" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
+        <text x="730" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">下沉市场薄弱</text>
+        <text x="730" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">二三线城市渗透率仅23%，经销商网络覆盖不足</text>
+    </g>
+    
+    <!-- 劣势卡片 3 -->
+    <g filter="url(#cardShadow)">
+        <rect x="710" y="466" width="510" height="100" rx="10" fill="#FFFFFF"/>
+        <rect x="1214" y="466" width="6" height="100" rx="3" fill="#E74C3C"/>
+        <circle cx="1184" cy="504" r="18" fill="#E74C3C" fill-opacity="0.12"/>
+        <text x="1184" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
+        <text x="730" y="504" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="16" font-weight="700" fill="#1A252F">服务响应待提升</text>
+        <text x="730" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">售后工单平均响应时长48h，客户流失风险增大</text>
+    </g>
+    
+    <!-- 底部建议栏 -->
+    <rect x="60" y="610" width="1160" height="70" rx="10" fill="#F8F9FA"/>
+    <text x="640" y="642" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="15" font-weight="700" fill="#1A252F">建议策略</text>
+    <text x="640" y="665" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D">巩固产品与品牌优势，同步加速迭代节奏、拓展下沉渠道、强化售后响应体系</text>
+    
+    <!-- 底部装饰条 -->
+    <rect x="60" y="696" width="580" height="4" rx="2" fill="#27AE60" fill-opacity="0.25"/>
+    <rect x="640" y="696" width="580" height="4" rx="2" fill="#E74C3C" fill-opacity="0.25"/>
+</svg>

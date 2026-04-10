@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    中心辐射图模板 (Hub & Spoke)
+    用途: 中心主题与外围要素关系、核心-卫星结构
+    适用场景: 核心能力与支撑要素、平台生态、核心产品与衍生服务
+    支持: 1中心+6外围 (推荐4-8个)
+    -->
+
+    <defs>
+        <filter id="hubShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="spokeShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="hubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#0984E3;stop-opacity:1"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 标题 -->
+    <text x="640" y="48" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">智慧企业能力中台</text>
+    <text x="640" y="75" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Hub &amp; Spoke · 核心平台驱动六大能力域</text>
+
+    <!-- 连接线(辐射线) 从中心(640,390)到6个外围节点 -->
+    <!-- 上 -->
+    <line x1="640" y1="330" x2="640" y2="165" stroke="#6C5CE7" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="640" y1="330" x2="640" y2="165" stroke="#6C5CE7" stroke-width="6" stroke-opacity="0.06"/>
+    <!-- 右上 -->
+    <line x1="690" y1="345" x2="960" y2="175" stroke="#00B894" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="690" y1="345" x2="960" y2="175" stroke="#00B894" stroke-width="6" stroke-opacity="0.06"/>
+    <!-- 右下 -->
+    <line x1="695" y1="420" x2="975" y2="540" stroke="#FDCB6E" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="695" y1="420" x2="975" y2="540" stroke="#FDCB6E" stroke-width="6" stroke-opacity="0.06"/>
+    <!-- 下 -->
+    <line x1="640" y1="450" x2="640" y2="610" stroke="#E17055" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="640" y1="450" x2="640" y2="610" stroke="#E17055" stroke-width="6" stroke-opacity="0.06"/>
+    <!-- 左下 -->
+    <line x1="585" y1="420" x2="305" y2="540" stroke="#A29BFE" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="585" y1="420" x2="305" y2="540" stroke="#A29BFE" stroke-width="6" stroke-opacity="0.06"/>
+    <!-- 左上 -->
+    <line x1="590" y1="345" x2="320" y2="175" stroke="#74B9FF" stroke-width="2.5" stroke-opacity="0.2"/>
+    <line x1="590" y1="345" x2="320" y2="175" stroke="#74B9FF" stroke-width="6" stroke-opacity="0.06"/>
+
+    <!-- 中心Hub -->
+    <circle cx="640" cy="390" r="70" fill="url(#hubGrad)" filter="url(#hubShadow)"/>
+    <circle cx="640" cy="390" r="55" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.3"/>
+    <text x="640" y="383" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="18" font-weight="800" fill="#FFFFFF">智慧</text>
+    <text x="640" y="407" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="18" font-weight="800" fill="#FFFFFF">中台</text>
+
+    <!-- Spoke 1: 数据能力 (正上) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="555" y="100" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#6C5CE7" stroke-width="2"/>
+        <circle cx="585" cy="134" r="16" fill="#6C5CE7"/>
+        <rect x="578" y="128" width="14" height="4" rx="2" fill="#FFFFFF"/>
+        <rect x="578" y="135" width="10" height="4" rx="2" fill="#FFFFFF"/>
+        <text x="612" y="128" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">数据能力</text>
+        <text x="612" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">数据湖 + 实时分析</text>
+    </g>
+
+    <!-- Spoke 2: AI引擎 (右上) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="880" y="115" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#00B894" stroke-width="2"/>
+        <circle cx="910" cy="149" r="16" fill="#00B894"/>
+        <text x="910" y="154" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="12" font-weight="700" fill="#FFFFFF">AI</text>
+        <text x="937" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">AI引擎</text>
+        <text x="937" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">模型训练 + 推理服务</text>
+    </g>
+
+    <!-- Spoke 3: 业务引擎 (右下) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="895" y="490" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#D4A537" stroke-width="2"/>
+        <circle cx="925" cy="524" r="16" fill="#D4A537"/>
+        <polygon points="919,518 919,530 930,524" fill="#FFFFFF"/>
+        <text x="952" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">业务引擎</text>
+        <text x="952" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">工作流 + 规则引擎</text>
+    </g>
+
+    <!-- Spoke 4: 集成能力 (正下) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="555" y="590" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#E17055" stroke-width="2"/>
+        <circle cx="585" cy="624" r="16" fill="#E17055"/>
+        <rect x="577" y="618" width="6" height="14" rx="2" fill="#FFFFFF"/>
+        <rect x="586" y="614" width="6" height="22" rx="2" fill="#FFFFFF"/>
+        <text x="612" y="618" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">集成能力</text>
+        <text x="612" y="638" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">API网关 + 消息总线</text>
+    </g>
+
+    <!-- Spoke 5: 安全能力 (左下) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="215" y="490" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#A29BFE" stroke-width="2"/>
+        <circle cx="245" cy="524" r="16" fill="#A29BFE"/>
+        <rect x="237" y="516" width="16" height="18" rx="3" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="272" y="518" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">安全能力</text>
+        <text x="272" y="538" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">IAM + 零信任架构</text>
+    </g>
+
+    <!-- Spoke 6: 用户体验 (左上) -->
+    <g filter="url(#spokeShadow)">
+        <rect x="230" y="115" width="170" height="68" rx="12" fill="#FFFFFF" stroke="#74B9FF" stroke-width="2"/>
+        <circle cx="260" cy="149" r="16" fill="#74B9FF"/>
+        <circle cx="260" cy="146" r="6" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+        <line x1="260" y1="152" x2="260" y2="158" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+        <text x="287" y="143" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="14" font-weight="700" fill="#1A252F">用户体验</text>
+        <text x="287" y="163" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+              font-size="11" fill="#7F8C8D">低代码 + 设计系统</text>
+    </g>
+
+    <!-- 装饰性背景环 -->
+    <circle cx="640" cy="390" r="180" fill="none" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="6,4"/>
+    <circle cx="640" cy="390" r="115" fill="none" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="4,3"/>
+
+    <!-- 底部总结 -->
+    <text x="640" y="700" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#BDC3C7">核心中台连接六大能力域，形成统一的企业数字化底座</text>
+</svg>

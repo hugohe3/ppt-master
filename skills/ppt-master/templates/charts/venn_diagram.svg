@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    韦恩关系图模板
+    用途: 集合关系、交叉领域、共性分析
+    适用场景: 能力交叉分析、部门协作关系、产品定位
+    支持: 3圆交叉 (经典三元韦恩)
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.12"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    
+    <!-- 标题区域 -->
+    <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="700" fill="#1A252F" letter-spacing="-0.5">核心能力交叉分析</text>
+    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D">Core Competency Intersection · 三大领域的协同关系</text>
+    
+    <!-- 韦恩图主体 (中心 x=480, y=400) -->
+    <!-- 圆A: 技术 (左上) -->
+    <circle cx="420" cy="350" r="175" fill="#3498DB" fill-opacity="0.15" stroke="#3498DB" stroke-width="2.5" stroke-opacity="0.6"/>
+    <text x="340" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="20" font-weight="700" fill="#2980B9">技术</text>
+    <text x="340" y="305" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D">Technology</text>
+    
+    <!-- 圆B: 市场 (右上) -->
+    <circle cx="540" cy="350" r="175" fill="#E74C3C" fill-opacity="0.15" stroke="#E74C3C" stroke-width="2.5" stroke-opacity="0.6"/>
+    <text x="620" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="20" font-weight="700" fill="#C0392B">市场</text>
+    <text x="620" y="305" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D">Market</text>
+    
+    <!-- 圆C: 运营 (下方) -->
+    <circle cx="480" cy="460" r="175" fill="#2ECC71" fill-opacity="0.15" stroke="#2ECC71" stroke-width="2.5" stroke-opacity="0.6"/>
+    <text x="480" y="560" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="20" font-weight="700" fill="#27AE60">运营</text>
+    <text x="480" y="585" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="13" fill="#7F8C8D">Operations</text>
+    
+    <!-- A∩B 交叉标签 (技术+市场) -->
+    <text x="480" y="310" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="600" fill="#8E44AD">产品创新</text>
+    
+    <!-- A∩C 交叉标签 (技术+运营) -->
+    <text x="415" y="440" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="600" fill="#16A085">技术运维</text>
+    
+    <!-- B∩C 交叉标签 (市场+运营) -->
+    <text x="545" y="440" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="600" fill="#D35400">客户运营</text>
+    
+    <!-- 中心交叉 (核心竞争力) -->
+    <text x="480" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="15" font-weight="800" fill="#2C3E50">核心竞争力</text>
+    
+    <!-- 右侧说明面板 -->
+    <g filter="url(#cardShadow)">
+        <rect x="740" y="140" width="480" height="90" rx="10" fill="#FFFFFF"/>
+        <rect x="740" y="140" width="6" height="90" rx="3" fill="#3498DB"/>
+        <circle cx="768" cy="168" r="10" fill="#3498DB" fill-opacity="0.2"/>
+        <circle cx="768" cy="168" r="5" fill="#3498DB"/>
+        <text x="790" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#1A252F">技术能力</text>
+        <text x="768" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">自主研发引擎 · AI算法 · 云原生架构</text>
+    </g>
+    
+    <g filter="url(#cardShadow)">
+        <rect x="740" y="248" width="480" height="90" rx="10" fill="#FFFFFF"/>
+        <rect x="740" y="248" width="6" height="90" rx="3" fill="#E74C3C"/>
+        <circle cx="768" cy="276" r="10" fill="#E74C3C" fill-opacity="0.2"/>
+        <circle cx="768" cy="276" r="5" fill="#E74C3C"/>
+        <text x="790" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#1A252F">市场洞察</text>
+        <text x="768" y="308" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">全渠道覆盖 · 品牌认知领先 · 用户增长飞轮</text>
+    </g>
+    
+    <g filter="url(#cardShadow)">
+        <rect x="740" y="356" width="480" height="90" rx="10" fill="#FFFFFF"/>
+        <rect x="740" y="356" width="6" height="90" rx="3" fill="#2ECC71"/>
+        <circle cx="768" cy="384" r="10" fill="#2ECC71" fill-opacity="0.2"/>
+        <circle cx="768" cy="384" r="5" fill="#2ECC71"/>
+        <text x="790" y="388" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#1A252F">运营效率</text>
+        <text x="768" y="416" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">供应链优化 · 智能仓储 · 精细化成本管控</text>
+    </g>
+    
+    <!-- 核心交叉说明 -->
+    <g filter="url(#cardShadow)">
+        <rect x="740" y="480" width="480" height="80" rx="10" fill="#F8F9FA"/>
+        <rect x="740" y="480" width="480" height="6" rx="3" fill="#8E44AD"/>
+        <text x="980" y="515" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#8E44AD">核心竞争力 = 技术 × 市场 × 运营</text>
+        <text x="980" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#7F8C8D">三大能力的深度融合构成不可复制的竞争壁垒</text>
+    </g>
+
+    <!-- 底部注释 -->
+    <text x="60" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" fill="#BDC3C7">圆形面积表示能力覆盖范围，交叉区域表示协同价值</text>
+</svg>

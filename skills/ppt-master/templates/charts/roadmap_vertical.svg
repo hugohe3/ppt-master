@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    纵向路线图模板
+    用途: 垂直时间线、里程碑路线图
+    适用场景: 年度规划、产品路线图、战略里程碑
+    支持: 6节点纵向 (推荐4-8个)
+    -->
+
+    <defs>
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#0984E3;stop-opacity:1"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 标题 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">2025年度战略路线图</text>
+    <text x="60" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Annual Roadmap · 六大关键里程碑</text>
+
+    <!-- 主纵向时间线 (x=180) -->
+    <line x1="180" y1="115" x2="180" y2="690" stroke="#E0E0E0" stroke-width="4" stroke-linecap="round"/>
+    <!-- 渐变进度覆盖 (已完成部分) -->
+    <line x1="180" y1="115" x2="180" y2="400" stroke="url(#lineGrad)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- 节点1: Q1 (已完成) -->
+    <circle cx="180" cy="148" r="16" fill="#6C5CE7" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M 175,148 L 178,153 L 185,143" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <text x="220" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="700" fill="#6C5CE7">2025 Q1</text>
+    <rect x="220" y="148" width="440" height="62" rx="8" fill="#FFFFFF" stroke="#6C5CE7" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="240" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">组织架构升级</text>
+    <text x="240" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#7F8C8D">完成事业部制改革，成立三大业务线独立运营单元</text>
+    <rect x="580" y="157" width="52" height="20" rx="10" fill="#6C5CE7" fill-opacity="0.1"/>
+    <text x="606" y="171" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="10" font-weight="600" fill="#6C5CE7">已完成</text>
+
+    <!-- 节点2: Q1末 (已完成) -->
+    <circle cx="180" cy="255" r="16" fill="#A29BFE" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M 175,255 L 178,260 L 185,250" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <text x="220" y="247" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="700" fill="#A29BFE">2025 Q1末</text>
+    <rect x="220" y="255" width="440" height="62" rx="8" fill="#FFFFFF" stroke="#A29BFE" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="240" y="279" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">A轮融资关闭</text>
+    <text x="240" y="301" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#7F8C8D">完成A轮¥5000万融资，估值达到¥3亿</text>
+    <rect x="580" y="264" width="52" height="20" rx="10" fill="#A29BFE" fill-opacity="0.1"/>
+    <text x="606" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="10" font-weight="600" fill="#A29BFE">已完成</text>
+
+    <!-- 节点3: Q2 (进行中) -->
+    <circle cx="180" cy="362" r="18" fill="#0984E3" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="180" cy="362" r="7" fill="#FFFFFF"/>
+    <text x="220" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="700" fill="#0984E3">2025 Q2</text>
+    <rect x="220" y="362" width="440" height="62" rx="8" fill="#FFFFFF" stroke="#0984E3" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="220" y="362" width="440" height="5" rx="3" fill="#0984E3"/>
+    <text x="240" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">产品V2.0发布</text>
+    <text x="240" y="412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#7F8C8D">集成AI引擎，上线智能推荐和自动化工作流</text>
+    <rect x="580" y="374" width="52" height="20" rx="10" fill="#0984E3"/>
+    <text x="606" y="388" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="10" font-weight="700" fill="#FFFFFF">进行中</text>
+
+    <!-- 右侧卡片 (下方节点换到右侧展示) -->
+    <!-- 节点4: Q3 -->
+    <circle cx="180" cy="470" r="14" fill="#E0E0E0" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="180" cy="470" r="5" fill="#FFFFFF"/>
+    <text x="220" y="462" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#95A5A6">2025 Q3</text>
+    <rect x="220" y="470" width="440" height="62" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#cardShadow)"/>
+    <text x="240" y="494" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="600" fill="#5F6368">海外市场试水</text>
+    <text x="240" y="516" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#95A5A6">东南亚三国试点运营，验证本地化策略</text>
+
+    <!-- 节点5: Q4 -->
+    <circle cx="180" cy="577" r="14" fill="#E0E0E0" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="180" cy="577" r="5" fill="#FFFFFF"/>
+    <text x="220" y="569" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#95A5A6">2025 Q4</text>
+    <rect x="220" y="577" width="440" height="62" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#cardShadow)"/>
+    <text x="240" y="601" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="600" fill="#5F6368">B轮融资启动</text>
+    <text x="240" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#95A5A6">目标估值¥10亿，完成规模化扩张资金储备</text>
+
+    <!-- 节点6: 年末 -->
+    <circle cx="180" cy="672" r="14" fill="#E0E0E0" stroke="#FFFFFF" stroke-width="3"/>
+    <circle cx="180" cy="672" r="5" fill="#FFFFFF"/>
+    <text x="220" y="672" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#95A5A6">2025 年末</text>
+    <text x="340" y="672" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#95A5A6">· 用户突破500万 · ARR达到¥1.5亿</text>
+
+    <!-- 右侧年度目标面板 -->
+    <rect x="760" y="115" width="460" height="580" rx="12" fill="#F8F9FA" filter="url(#cardShadow)"/>
+    <text x="990" y="155" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="18" font-weight="700" fill="#1A252F">年度核心目标</text>
+    <line x1="800" y1="172" x2="1180" y2="172" stroke="#E0E0E0" stroke-width="1"/>
+
+    <!-- 目标1 -->
+    <circle cx="810" cy="210" r="8" fill="#6C5CE7"/>
+    <text x="830" y="215" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#1A252F">营收目标</text>
+    <text x="830" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="36" font-weight="800" fill="#6C5CE7">¥1.5亿</text>
+    <text x="970" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">ARR</text>
+
+    <!-- 目标2 -->
+    <circle cx="810" cy="290" r="8" fill="#00B894"/>
+    <text x="830" y="295" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#1A252F">用户增长</text>
+    <text x="830" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="36" font-weight="800" fill="#00B894">500万</text>
+    <text x="960" y="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">注册用户</text>
+
+    <!-- 目标3 -->
+    <circle cx="810" cy="370" r="8" fill="#FDCB6E"/>
+    <text x="830" y="375" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="600" fill="#1A252F">团队规模</text>
+    <text x="830" y="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="36" font-weight="800" fill="#D4A537">300人</text>
+    <text x="940" y="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">年末编制</text>
+
+    <!-- 核心策略 -->
+    <line x1="800" y1="440" x2="1180" y2="440" stroke="#E0E0E0" stroke-width="1"/>
+    <text x="990" y="470" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">关键策略</text>
+
+    <rect x="800" y="490" width="380" height="36" rx="8" fill="#6C5CE7" fill-opacity="0.06"/>
+    <text x="810" y="513" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#2C3E50">1. 产品驱动增长 (PLG) 策略</text>
+    <rect x="800" y="536" width="380" height="36" rx="8" fill="#00B894" fill-opacity="0.06"/>
+    <text x="810" y="559" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#2C3E50">2. 企业客户大单突破</text>
+    <rect x="800" y="582" width="380" height="36" rx="8" fill="#FDCB6E" fill-opacity="0.08"/>
+    <text x="810" y="605" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#2C3E50">3. 海外市场 PMF 验证</text>
+    <rect x="800" y="628" width="380" height="36" rx="8" fill="#E17055" fill-opacity="0.06"/>
+    <text x="810" y="651" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#2C3E50">4. AI 技术壁垒构建</text>
+</svg>
