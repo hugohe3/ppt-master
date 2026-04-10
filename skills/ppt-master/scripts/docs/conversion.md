@@ -1,6 +1,6 @@
 # Conversion Tools
 
-Source conversion tools turn PDFs, documents, and web pages into Markdown before project creation.
+Source conversion tools turn PDFs, documents, slide decks, and web pages into Markdown before project creation.
 
 ## `pdf_to_md.py`
 
@@ -53,6 +53,37 @@ brew install pandoc
 # Ubuntu
 sudo apt install pandoc
 ```
+
+## `ppt_to_md.py`
+
+Structured PowerPoint-to-Markdown converter for Open XML slide decks.
+
+Supported formats include:
+- `.pptx`, `.pptm`
+- `.ppsx`, `.ppsm`
+- `.potx`, `.potm`
+
+```bash
+python3 scripts/ppt_to_md.py sales_deck.pptx
+python3 scripts/ppt_to_md.py sales_deck.pptx -o output.md
+python3 scripts/ppt_to_md.py ./decks
+python3 scripts/ppt_to_md.py ./decks -o ./markdown
+python3 scripts/ppt_to_md.py template.ppsx -o notes/template.md
+```
+
+Behavior:
+- extracts slide text in reading order
+- converts PowerPoint tables to Markdown tables
+- exports embedded pictures to a sibling `_files/` directory
+- appends speaker notes when present
+
+Dependency:
+
+```bash
+pip install python-pptx
+```
+
+Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF first.
 
 ## `web_to_md.py` / `web_to_md.cjs`
 

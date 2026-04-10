@@ -44,6 +44,7 @@ REPO_ROOT = SKILL_DIR.parent.parent
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
 PDF_SUFFIXES = {".pdf"}
+PRESENTATION_SUFFIXES = {".pptx", ".pptm", ".ppsx", ".ppsm", ".potx", ".potm"}
 DOC_SUFFIXES = {
     ".docx", ".doc", ".odt", ".rtf",          # Office documents
     ".epub",                                    # eBooks
@@ -235,6 +236,17 @@ class ProjectManager:
                 sys.executable,
                 str(TOOLS_DIR / "doc_to_md.py"),
                 str(doc_path),
+                "-o",
+                str(markdown_path),
+            ]
+        )
+
+    def _import_presentation(self, presentation_path: Path, markdown_path: Path) -> None:
+        self._run_tool(
+            [
+                sys.executable,
+                str(TOOLS_DIR / "ppt_to_md.py"),
+                str(presentation_path),
                 "-o",
                 str(markdown_path),
             ]
@@ -453,6 +465,25 @@ class ProjectManager:
                     summary["markdown"].append(str(markdown_path))
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: PDF conversion failed ({exc})")
+            elif suffix in PRESENTATION_SUFFIXES:
+                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
+                if archived_path.stem in explicit_markdown_stems:
+                    summary["notes"].append(
+                        f"{item}: skipped presentation auto-conversion because a same-stem Markdown source was provided"
+                    )
+                    continue
+                if canonical_markdown_path.exists():
+                    summary["markdown"].append(str(canonical_markdown_path))
+                    summary["notes"].append(
+                        f"{item}: skipped presentation auto-conversion because {canonical_markdown_path.name} already exists"
+                    )
+                    continue
+                markdown_path = canonical_markdown_path
+                try:
+                    self._import_presentation(archived_path, markdown_path)
+                    summary["markdown"].append(str(markdown_path))
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["skipped"].append(f"{item}: presentation conversion failed ({exc})")
             elif suffix in DOC_SUFFIXES:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 if archived_path.stem in explicit_markdown_stems:
