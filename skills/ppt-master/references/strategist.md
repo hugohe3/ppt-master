@@ -42,7 +42,13 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ## 1. Eight Confirmations Process
 
-⛔ **BLOCKING**: Before starting analysis, reference `templates/design_spec_reference.md` and provide professional recommendations for the following eight items, then **present them as a bundled package to the user and wait for explicit confirmation or modifications**.
+🚧 **GATE — Mandatory read before proceeding**: Before starting analysis or writing any part of the Design Specification, you **MUST** `read_file` the reference template:
+```
+read_file templates/design_spec_reference.md
+```
+The design_spec.md output **MUST** follow this template's structure exactly (Sections I through XI). After writing, perform a section-by-section self-check: I Project Information ✓ → II Canvas Spec ✓ → III Visual Theme ✓ → IV Typography ✓ → V Layout Principles ✓ → VI Icon Usage ✓ → VII Visualization Reference List ✓ → VIII Image Resource List ✓ → IX Content Outline ✓ → X Speaker Notes Requirements ✓ → XI Technical Constraints Reminder ✓. Any missing section must be completed before outputting the file.
+
+⛔ **BLOCKING**: After completing the read above, provide professional recommendations for the following eight items, then **present them as a bundled package to the user and wait for explicit confirmation or modifications**.
 
 > **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline (besides template selection). Once the user confirms, the AI must automatically complete the Design Specification & Content Outline and seamlessly proceed to subsequent image generation (if applicable), SVG generation, and post-processing — no additional questions or pauses in between.
 
