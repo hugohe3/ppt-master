@@ -29,6 +29,7 @@ PPT Master is an AI-driven presentation generation system. Through multi-role co
 # Source content conversion
 python3 skills/ppt-master/scripts/pdf_to_md.py <PDF_file>
 python3 skills/ppt-master/scripts/doc_to_md.py <DOCX_or_other_file>   # Requires: pandoc (DOCX/EPUB/HTML/LaTeX/RST/etc.)
+python3 skills/ppt-master/scripts/ppt_to_md.py <PPTX_file>
 python3 skills/ppt-master/scripts/web_to_md.py <URL>
 node skills/ppt-master/scripts/web_to_md.cjs <URL>
 
