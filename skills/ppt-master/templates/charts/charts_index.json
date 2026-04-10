@@ -4,7 +4,8 @@
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
-    "updated": "2026-03-22"
+    "libraryPositioning": "Visualization template library covering charts, infographics, diagrams, and strategic frameworks. The `charts/` path is retained for backward compatibility.",
+    "updated": "2026-04-11"
   },
   "categories": {
     "comparison": {

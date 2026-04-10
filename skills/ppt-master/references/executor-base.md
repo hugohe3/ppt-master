@@ -131,17 +131,17 @@ ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 
 ---
 
-## 5. Chart Reference
+## 5. Visualization Reference
 
-When the Design Spec includes a **VII. Chart Reference List**, read the referenced SVG templates from `templates/charts/` to understand common chart patterns.
+When the Design Spec includes a **VII. Visualization Reference List**, read the referenced SVG templates from `templates/charts/` to understand the intended visualization patterns. The path remains `templates/charts/` for backward compatibility.
 
 **Adaptation rules**:
-- **Must preserve**: Chart type (bar/line/pie etc.) as specified in the Design Spec
+- **Must preserve**: Visualization type (bar/line/pie/timeline/process/framework etc.) as specified in the Design Spec
 - **Must adapt**: Data values, labels, colors (match the project's color scheme), and dimensions to fit the page layout
 - **May adjust**: Axis ranges, grid lines, legend position, spacing — as long as the chart remains accurate and readable
-- **Must NOT**: Change chart type without Design Spec justification, or remove data points specified in the outline
+- **Must NOT**: Change visualization type without Design Spec justification, or remove data points / structural elements specified in the outline
 
-> Chart templates: `templates/charts/` (33 types). Index: `templates/charts/charts_index.json`
+> Visualization templates: `templates/charts/` (33 types). Index: `templates/charts/charts_index.json`
 
 ---
 

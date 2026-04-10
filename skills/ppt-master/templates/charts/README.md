@@ -1,6 +1,8 @@
-# SVG Chart Template Library (33 Types)
+# SVG Visualization Template Library (33 Types)
 
-This directory provides **33 standardized SVG chart templates** for use as chart selection references in PPT Master.
+This directory provides **33 standardized SVG visualization templates** for use as structured visualization selection references in PPT Master.
+
+> For backward compatibility, the directory remains `templates/charts/`, but the library scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks.
 
 - **Full Index**: [README.md](./README.md) (human browsing)
 - **JSON Index**: [charts_index.json](./charts_index.json) (AI / programmatic lookup — preferred)
@@ -11,8 +13,8 @@ Before generating chart pages, review the corresponding template file to underst
 
 > **AI / Programmatic recommendation**: Prefer reading `charts_index.json`; use this README for human browsing and quick comparison.
 
-| I want to show... | Recommended Template | Filename |
-|-------------------|---------------------|----------|
+| I want to show... | Recommended Visualization | Filename |
+|-------------------|---------------------------|----------|
 | Key numeric metrics | KPI Cards | `kpi_cards.svg` |
 | Category value comparison | Bar Chart | `bar_chart.svg` |
 | Long-label rankings | Horizontal Bar Chart | `horizontal_bar_chart.svg` |
@@ -31,7 +33,7 @@ Before generating chart pages, review the corresponding template file to underst
 | Strategic analysis | SWOT / Porter's Five Forces | `swot_analysis.svg` / `porter_five_forces.svg` |
 | Quadrant analysis | Matrix (2x2) | `matrix_2x2.svg` |
 
-## Full Chart Index
+## Full Visualization Index
 
 ### Comparison
 
