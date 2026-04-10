@@ -21,9 +21,9 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 - **Human browsing**: [layouts/README.md](./layouts/README.md)
 - **AI / Programmatic lookup**: [layouts/layouts_index.json](./layouts/layouts_index.json)
 
-## Chart Templates
+## Visualization Templates
 
-The `charts/` directory contains 33 standard chart templates:
+The `charts/` directory contains 33 standard visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks:
 
 - KPI Cards
 - Bar Chart / Stacked Bar Chart

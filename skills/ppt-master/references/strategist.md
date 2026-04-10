@@ -202,17 +202,17 @@ Core logic: The layout container's aspect ratio must closely match the image's o
 
 > **Pipeline handoff**: When C) AI generation is selected, after outputting the design spec, prompt the user to invoke Image_Generator. Once images are collected in `images/`, proceed to Executor.
 
-### Chart Reference (Non-blocking — Strategist recommends, no user confirmation needed)
+### Visualization Reference (Non-blocking — Strategist recommends, no user confirmation needed)
 
-When content outline pages involve **data visualization** (comparisons, trends, proportions, KPIs, flows, strategic frameworks, etc.), consult the chart template library to select appropriate chart types.
+When content outline pages involve **data visualization or infographic-style structured information design** (comparisons, trends, proportions, KPIs, flows, timelines, org structures, strategic frameworks, etc.), consult the visualization template library to select appropriate visualization types.
 
-Built-in library contains 33 chart templates; see `templates/charts/charts_index.json`.
+Built-in library contains 33 visualization templates; see `templates/charts/charts_index.json`. The path name remains `charts/` for backward compatibility, but the library scope is broader than data charts alone.
 
 > **Selection workflow**:
 > 1. Identify pages that need data visualization during content planning
 > 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
-> 3. Review `bestFor` / `avoidFor` to confirm the chart type fits the data characteristics
-> 4. List all selected charts in Design Spec **section VII (Chart Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the chart type name
+> 3. Review `bestFor` / `avoidFor` to confirm the visualization type fits the information structure and data characteristics
+> 4. List all selected visualizations in Design Spec **section VII (Visualization Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the visualization type name
 >
 > **Quick lookup by goal**:
 > - Ranking/comparison → `bar_chart`, `horizontal_bar_chart`, `grouped_bar_chart`
@@ -353,9 +353,9 @@ The Strategist should make professional judgments on the template basis generate
 | IV. Typography System | Font plan (P1-P5), font size hierarchy (H1-Code, 7 levels) |
 | V. Layout Principles | Page structure (header/content/footer zones), 6 layout modes, spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
-| VII. Chart Reference List | Chart type, reference template path, used-in pages, purpose |
+| VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |
 | VIII. Image Resource List | Filename, dimensions, ratio, purpose, status, generation description |
-| IX. Content Outline | Grouped by chapter; each page includes layout, title, content points, chart type (if applicable) |
+| IX. Content Outline | Grouped by chapter; each page includes layout, title, content points, visualization type (if applicable) |
 | X. Speaker Notes Requirements | File naming rules, content structure description |
 | XI. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
 | XII. Design Checklist | Pre-generation / post-generation check items |

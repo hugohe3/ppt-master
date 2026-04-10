@@ -163,12 +163,12 @@
 
 ---
 
-## VII. Chart Reference List (if needed)
+## VII. Visualization Reference List (if needed)
 
-> When the presentation includes data visualization, Strategist selects chart types from `templates/charts/charts_index.json` and lists them here for the Executor to reference.
+> When the presentation includes data visualization or infographic-style structured information design, Strategist selects visualization types from `templates/charts/charts_index.json` and lists them here for the Executor to reference. The path remains under `templates/charts/` for backward compatibility.
 
-| Chart Type | Reference Template | Used In |
-| ---------- | ------------------ | ------- |
+| Visualization Type | Reference Template | Used In |
+| ------------------ | ------------------ | ------- |
 | [e.g. grouped_bar_chart] | `templates/charts/grouped_bar_chart.svg` | Slide 05 |
 
 ---
@@ -210,13 +210,13 @@
 
 - **Layout**: [Choose layout mode]
 - **Title**: [Page title]
-- **Chart**: [chart_type] (see VII. Chart Reference List)
+- **Visualization**: [visualization_type] (see VII. Visualization Reference List)
 - **Content**:
   - [Point 1]
   - [Point 2]
   - [Point 3]
 
-> **Chart field**: Only add when the page includes data visualization. Chart type must be listed in section VII.
+> **Visualization field**: Only add when the page includes data visualization or structured infographic elements. Visualization type must be listed in section VII.
 
 ---
 
