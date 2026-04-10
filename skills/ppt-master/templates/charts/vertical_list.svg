@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    垂直列表模板
+    用途: 纵向编号列表、特性/优势罗列、要点展示
+    适用场景: 核心优势、关键发现、特性清单、要点总结
+    支持: 5项纵向 (推荐3-6项)
+    -->
+
+    <defs>
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 标题 -->
+    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="30" font-weight="700" fill="#1A252F">五大核心竞争优势</text>
+    <text x="60" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Core Strengths · 构建差异化护城河的关键能力</text>
+
+    <!-- 主竖线 -->
+    <line x1="160" y1="115" x2="160" y2="680" stroke="#E8E8E8" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- 项目1 -->
+    <circle cx="160" cy="155" r="24" fill="#6C5CE7" filter="url(#cardShadow)"/>
+    <text x="160" y="161" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="800" fill="#FFFFFF">01</text>
+    <line x1="184" y1="155" x2="230" y2="155" stroke="#6C5CE7" stroke-width="2" stroke-opacity="0.4"/>
+    <rect x="230" y="120" width="980" height="70" rx="10" fill="#6C5CE7" fill-opacity="0.04" filter="url(#cardShadow)"/>
+    <rect x="230" y="120" width="5" height="70" rx="3" fill="#6C5CE7"/>
+    <text x="258" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">品牌影响力</text>
+    <text x="258" y="174" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#7F8C8D">行业领先的品牌认知度与美誉度，覆盖全国主要市场，品牌价值连续三年位居行业 TOP3</text>
+    <text x="1180" y="160" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="800" fill="#6C5CE7" fill-opacity="0.12">BRAND</text>
+
+    <!-- 项目2 -->
+    <circle cx="160" cy="265" r="24" fill="#00B894" filter="url(#cardShadow)"/>
+    <text x="160" y="271" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="800" fill="#FFFFFF">02</text>
+    <line x1="184" y1="265" x2="230" y2="265" stroke="#00B894" stroke-width="2" stroke-opacity="0.4"/>
+    <rect x="230" y="230" width="980" height="70" rx="10" fill="#00B894" fill-opacity="0.04" filter="url(#cardShadow)"/>
+    <rect x="230" y="230" width="5" height="70" rx="3" fill="#00B894"/>
+    <text x="258" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">技术研发能力</text>
+    <text x="258" y="284" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#7F8C8D">持续高研发投入占比 15%+，拥有 500+ 核心自主专利，AI 与大数据双引擎驱动创新</text>
+    <text x="1180" y="270" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="800" fill="#00B894" fill-opacity="0.12">TECH</text>
+
+    <!-- 项目3 -->
+    <circle cx="160" cy="375" r="24" fill="#0984E3" filter="url(#cardShadow)"/>
+    <text x="160" y="381" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="800" fill="#FFFFFF">03</text>
+    <line x1="184" y1="375" x2="230" y2="375" stroke="#0984E3" stroke-width="2" stroke-opacity="0.4"/>
+    <rect x="230" y="340" width="980" height="70" rx="10" fill="#0984E3" fill-opacity="0.04" filter="url(#cardShadow)"/>
+    <rect x="230" y="340" width="5" height="70" rx="3" fill="#0984E3"/>
+    <text x="258" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">供应链管理</text>
+    <text x="258" y="394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#7F8C8D">全球化供应链布局与智能仓储物流体系，覆盖 300+ 城市，平均交付时效缩短 40%</text>
+    <text x="1180" y="380" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="800" fill="#0984E3" fill-opacity="0.12">SUPPLY</text>
+
+    <!-- 项目4 -->
+    <circle cx="160" cy="485" r="24" fill="#D4A537" filter="url(#cardShadow)"/>
+    <text x="160" y="491" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="800" fill="#FFFFFF">04</text>
+    <line x1="184" y1="485" x2="230" y2="485" stroke="#D4A537" stroke-width="2" stroke-opacity="0.4"/>
+    <rect x="230" y="450" width="980" height="70" rx="10" fill="#D4A537" fill-opacity="0.04" filter="url(#cardShadow)"/>
+    <rect x="230" y="450" width="5" height="70" rx="3" fill="#D4A537"/>
+    <text x="258" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">客户服务体系</text>
+    <text x="258" y="504" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#7F8C8D">7×24 小时快速响应机制，客户满意度持续保持在 96% 以上，NPS 行业领先</text>
+    <text x="1180" y="490" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="800" fill="#D4A537" fill-opacity="0.12">SERVICE</text>
+
+    <!-- 项目5 -->
+    <circle cx="160" cy="595" r="24" fill="#E17055" filter="url(#cardShadow)"/>
+    <text x="160" y="601" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" font-weight="800" fill="#FFFFFF">05</text>
+    <line x1="184" y1="595" x2="230" y2="595" stroke="#E17055" stroke-width="2" stroke-opacity="0.4"/>
+    <rect x="230" y="560" width="980" height="70" rx="10" fill="#E17055" fill-opacity="0.04" filter="url(#cardShadow)"/>
+    <rect x="230" y="560" width="5" height="70" rx="3" fill="#E17055"/>
+    <text x="258" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="16" font-weight="700" fill="#1A252F">创新与智能化</text>
+    <text x="258" y="614" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#7F8C8D">AI 与大数据赋能业务决策，每年推出 10+ 创新产品与解决方案，引领行业技术变革</text>
+    <text x="1180" y="600" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="24" font-weight="800" fill="#E17055" fill-opacity="0.12">INNOVATION</text>
+
+    <!-- 底部箭头指示 -->
+    <polygon points="160,668 170,680 150,680" fill="#E0E0E0"/>
+
+    <!-- 底部注释 -->
+    <text x="640" y="710" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#BDC3C7">左侧编号轴标注顺序，右侧卡片展开要点详情，适合优势清单与要点罗列</text>
+</svg>

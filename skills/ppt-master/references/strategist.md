@@ -204,25 +204,22 @@ Core logic: The layout container's aspect ratio must closely match the image's o
 
 ### Visualization Reference (Non-blocking — Strategist recommends, no user confirmation needed)
 
-When content outline pages involve **data visualization or infographic-style structured information design** (comparisons, trends, proportions, KPIs, flows, timelines, org structures, strategic frameworks, etc.), consult the visualization template library to select appropriate visualization types.
+When content outline pages involve **data visualization or infographic-style structured information design** (comparisons, trends, proportions, KPIs, flows, timelines, org structures, strategic frameworks, etc.), Strategist should select appropriate visualization types from the built-in template library.
 
-Built-in library contains 33 visualization templates; see `templates/charts/charts_index.json`. The path name remains `charts/` for backward compatibility, but the library scope is broader than data charts alone.
-
-> **Rule**: When a page involves visualization-oriented content such as data charts, infographics, KPI overviews, timelines, process diagrams, relationship diagrams, or strategic frameworks, Strategist should consult `templates/charts/charts_index.json` to determine an appropriate visualization type, then record that type in the Design Spec and Content Outline. Strategist is responsible for semantic selection, not detailed SVG styling.
+> **Mandatory first step**: At the beginning of content planning, **read the full `templates/charts/charts_index.json`** file. This index contains all available visualization templates (52 types across 8 categories), including each template's `summary`, `bestFor`, `avoidFor`, and `keywords`. Strategist must internalize the full catalog before making selections — do NOT rely on memory or partial lists.
 
 > **Selection workflow**:
-> 1. Identify pages that need data visualization during content planning
-> 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
-> 3. Confirm the visualization type fits the information structure and data characteristics
-> 4. List all selected visualizations in Design Spec **section VII (Visualization Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the visualization type name
+> 1. Read and internalize the complete `templates/charts/charts_index.json`
+> 2. For each page in the content outline, determine whether it needs visualization based on its information structure
+> 3. Match page content against the `bestFor` / `avoidFor` / `keywords` fields across all 52 templates to find the best fit
+> 4. Use `quickLookup` as a secondary cross-reference when multiple candidates seem suitable
+> 5. List all selected visualizations in Design Spec **section VII (Visualization Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the visualization type name
 >
-> **Quick lookup by goal**:
-> - Ranking/comparison → `bar_chart`, `horizontal_bar_chart`, `grouped_bar_chart`
-> - Trends over time → `line_chart`, `area_chart`, `dual_axis_line_chart`
-> - Proportions → `donut_chart`, `pie_chart`, `treemap_chart`
-> - KPIs/targets → `kpi_cards`, `bullet_chart`, `gauge_chart`
-> - Conversion/flow → `funnel_chart`, `sankey_chart`, `waterfall_chart`
-> - Strategy → `swot_analysis`, `porter_five_forces`, `matrix_2x2`
+> **Rules**:
+> - Strategist is responsible for **semantic selection** (which type fits the content), not detailed SVG styling
+> - One page may use at most one primary visualization type; complex pages may combine a chart with a supporting layout
+> - Prefer specificity: if `vertical_list` fits better than generic `numbered_steps`, choose the more specific template
+> - When no built-in template fits, note "custom layout" instead of forcing a poor match
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 

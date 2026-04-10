@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!-- 
+    功能卡片网格模板
+    用途: 功能特性展示、优势清单、服务项列表
+    适用场景: 产品功能亮点、团队能力矩阵、服务套餐
+    支持: 2×3 网格 (推荐4-9项)
+    -->
+    
+    <defs>
+        <!-- 卡片阴影 -->
+        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.12"/>
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- 背景渐变 -->
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#EEF1F5;stop-opacity:1" />
+        </linearGradient>
+    </defs>
+    
+    <!-- 背景 -->
+    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+    
+    <!-- 标题区域 -->
+    <text x="640" y="60" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="700" fill="#1A252F" letter-spacing="-0.5">核心产品功能</text>
+    <text x="640" y="90" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="16" fill="#7F8C8D">Core Features · 六大能力构建完整解决方案</text>
+    
+    <!-- 卡片布局 2×3 (卡片宽370, 高260, 间距30) -->
+    <!-- 第一行 y=120 -->
+    
+    <!-- 卡片1 - 智能分析 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="120" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="60" y="120" width="370" height="5" rx="3" fill="#6C5CE7"/>
+        <!-- 图标圆 -->
+        <circle cx="115" cy="178" r="30" fill="#6C5CE7" fill-opacity="0.1"/>
+        <rect x="101" y="168" width="28" height="4" rx="2" fill="#6C5CE7"/>
+        <rect x="101" y="176" width="20" height="4" rx="2" fill="#6C5CE7"/>
+        <rect x="101" y="184" width="24" height="4" rx="2" fill="#6C5CE7"/>
+        <!-- 标题 -->
+        <text x="160" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">智能数据分析</text>
+        <text x="160" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#6C5CE7" font-weight="600">Smart Analytics</text>
+        <!-- 分割线 -->
+        <line x1="85" y1="215" x2="405" y2="215" stroke="#F0F0F0" stroke-width="1"/>
+        <!-- 描述 -->
+        <text x="85" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">基于AI的多维数据分析引擎，</text>
+        <text x="85" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">自动发现趋势与异常，生成</text>
+        <text x="85" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">可视化洞察报告</text>
+        <!-- 标签 -->
+        <rect x="85" y="305" width="52" height="22" rx="11" fill="#6C5CE7" fill-opacity="0.1"/>
+        <text x="111" y="320" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#6C5CE7">核心</text>
+    </g>
+    
+    <!-- 卡片2 - 实时协作 -->
+    <g filter="url(#cardShadow)">
+        <rect x="455" y="120" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="455" y="120" width="370" height="5" rx="3" fill="#00B894"/>
+        <circle cx="510" cy="178" r="30" fill="#00B894" fill-opacity="0.1"/>
+        <circle cx="503" cy="175" r="10" fill="none" stroke="#00B894" stroke-width="2.5"/>
+        <circle cx="517" cy="180" r="10" fill="none" stroke="#00B894" stroke-width="2.5"/>
+        <text x="555" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">实时多人协作</text>
+        <text x="555" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#00B894" font-weight="600">Real-time Collaboration</text>
+        <line x1="480" y1="215" x2="800" y2="215" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="480" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">支持团队成员同时在线编辑，</text>
+        <text x="480" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">实时同步变更，内置评论与</text>
+        <text x="480" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">版本回溯功能</text>
+        <rect x="480" y="305" width="52" height="22" rx="11" fill="#00B894" fill-opacity="0.1"/>
+        <text x="506" y="320" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#00B894">核心</text>
+    </g>
+    
+    <!-- 卡片3 - 安全合规 -->
+    <g filter="url(#cardShadow)">
+        <rect x="850" y="120" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="850" y="120" width="370" height="5" rx="3" fill="#0984E3"/>
+        <circle cx="905" cy="178" r="30" fill="#0984E3" fill-opacity="0.1"/>
+        <rect x="893" y="166" width="24" height="28" rx="4" fill="none" stroke="#0984E3" stroke-width="2.5"/>
+        <line x1="905" y1="166" x2="905" y2="158" stroke="#0984E3" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="950" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">安全与合规</text>
+        <text x="950" y="194" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#0984E3" font-weight="600">Security &amp; Compliance</text>
+        <line x1="875" y1="215" x2="1195" y2="215" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="875" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">企业级数据加密、权限管理，</text>
+        <text x="875" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">符合SOC2/GDPR等国际标准，</text>
+        <text x="875" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">审计日志完整留痕</text>
+        <rect x="875" y="305" width="52" height="22" rx="11" fill="#0984E3" fill-opacity="0.1"/>
+        <text x="901" y="320" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#0984E3">保障</text>
+    </g>
+    
+    <!-- 第二行 y=405 -->
+    
+    <!-- 卡片4 - 自动化工作流 -->
+    <g filter="url(#cardShadow)">
+        <rect x="60" y="405" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="60" y="405" width="370" height="5" rx="3" fill="#FDCB6E"/>
+        <circle cx="115" cy="463" r="30" fill="#FDCB6E" fill-opacity="0.12"/>
+        <polygon points="107,455 107,473 122,464" fill="#D4A537"/>
+        <text x="160" y="457" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">自动化工作流</text>
+        <text x="160" y="479" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#D4A537" font-weight="600">Workflow Automation</text>
+        <line x1="85" y1="500" x2="405" y2="500" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="85" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">可视化流程编排，无代码配</text>
+        <text x="85" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">置触发条件与动作，消除重</text>
+        <text x="85" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">复性人工操作</text>
+        <rect x="85" y="590" width="52" height="22" rx="11" fill="#FDCB6E" fill-opacity="0.15"/>
+        <text x="111" y="605" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#D4A537">效率</text>
+    </g>
+    
+    <!-- 卡片5 - 开放集成 -->
+    <g filter="url(#cardShadow)">
+        <rect x="455" y="405" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="455" y="405" width="370" height="5" rx="3" fill="#E17055"/>
+        <circle cx="510" cy="463" r="30" fill="#E17055" fill-opacity="0.1"/>
+        <rect x="498" y="456" width="10" height="16" rx="2" fill="#E17055"/>
+        <rect x="512" y="451" width="10" height="26" rx="2" fill="#E17055"/>
+        <text x="555" y="457" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">开放API集成</text>
+        <text x="555" y="479" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#E17055" font-weight="600">Open API Integration</text>
+        <line x1="480" y1="500" x2="800" y2="500" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="480" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">提供200+标准API接口，</text>
+        <text x="480" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">支持主流SaaS/ERP/CRM系统</text>
+        <text x="480" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">无缝对接</text>
+        <rect x="480" y="590" width="52" height="22" rx="11" fill="#E17055" fill-opacity="0.1"/>
+        <text x="506" y="605" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#E17055">扩展</text>
+    </g>
+    
+    <!-- 卡片6 - 智能报表 -->
+    <g filter="url(#cardShadow)">
+        <rect x="850" y="405" width="370" height="260" rx="12" fill="#FFFFFF"/>
+        <rect x="850" y="405" width="370" height="5" rx="3" fill="#A29BFE"/>
+        <circle cx="905" cy="463" r="30" fill="#A29BFE" fill-opacity="0.1"/>
+        <rect x="893" y="454" width="24" height="20" rx="3" fill="none" stroke="#A29BFE" stroke-width="2.5"/>
+        <line x1="898" y1="464" x2="912" y2="464" stroke="#A29BFE" stroke-width="2" stroke-linecap="round"/>
+        <text x="950" y="457" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="18" font-weight="700" fill="#1A252F">智能报表中心</text>
+        <text x="950" y="479" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="12" fill="#A29BFE" font-weight="600">Smart Reporting</text>
+        <line x1="875" y1="500" x2="1195" y2="500" stroke="#F0F0F0" stroke-width="1"/>
+        <text x="875" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">一键生成多维度数据报表，</text>
+        <text x="875" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">支持定时推送与自定义仪表</text>
+        <text x="875" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="13" fill="#5F6368">板，辅助管理层决策</text>
+        <rect x="875" y="590" width="52" height="22" rx="11" fill="#A29BFE" fill-opacity="0.1"/>
+        <text x="901" y="605" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="11" font-weight="600" fill="#A29BFE">洞察</text>
+    </g>
+</svg>

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 33,
+    "total": 52,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
@@ -35,6 +35,10 @@
     "strategy": {
       "label": "Strategic Frameworks",
       "charts": ["swot_analysis", "porter_five_forces"]
+    },
+    "infographic": {
+      "label": "Infographics",
+      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "comparison_table", "snake_flow", "roadmap_vertical", "sector_diagram", "word_cloud", "concentric_circles", "chevron_process", "comparison_columns", "fishbone_diagram", "hub_spoke", "vertical_list"]
     }
   },
   "quickLookup": {
@@ -49,239 +53,275 @@
     "roadmap": ["gantt_chart", "timeline", "process_flow"],
     "relationship": ["org_chart", "sankey_chart", "matrix_2x2"],
     "flow": ["process_flow", "sankey_chart", "waterfall_chart"],
-    "strategy": ["swot_analysis", "porter_five_forces", "matrix_2x2"]
+    "strategy": ["swot_analysis", "porter_five_forces", "matrix_2x2"],
+    "hierarchy": ["pyramid_chart", "isometric_stairs", "org_chart", "concentric_circles"],
+    "infographic": ["icon_grid", "numbered_steps", "cycle_diagram", "venn_diagram", "pros_cons_chart", "mind_map", "hub_spoke", "sector_diagram", "word_cloud", "vertical_list"],
+    "pros_cons": ["pros_cons_chart", "butterfly_chart", "swot_analysis", "comparison_table", "comparison_columns"],
+    "cause_effect": ["fishbone_diagram", "process_flow"],
+    "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
+    "pricing": ["comparison_columns", "comparison_table"],
+    "brainstorm": ["mind_map", "word_cloud", "hub_spoke"]
   },
   "charts": {
     "area_chart": {
       "label": "Area Chart",
-      "summary": "Trend changes and cumulative data visualization",
-      "bestFor": ["Emphasizing total volume changes", "Cumulative trends for 1-2 series", "Continuous time series"],
-      "avoidFor": ["Precise category ranking", "More than 2 stacked series"],
+      "summary": "Trend changes and cumulative volume (1-2 series, continuous time axis)",
       "keywords": ["trend", "cumulative", "area chart", "time series"]
     },
     "bar_chart": {
       "label": "Bar Chart",
-      "summary": "Category value comparison",
-      "bestFor": ["3-8 categories", "Single-series comparison", "Intuitive high-low difference display"],
-      "avoidFor": ["Time trends", "More than 12 long labels"],
+      "summary": "Category value comparison (3-8 categories, single series)",
       "keywords": ["comparison", "ranking", "category", "bar chart"]
     },
     "box_plot_chart": {
       "label": "Box Plot",
-      "summary": "Data distribution and outlier analysis",
-      "bestFor": ["Multi-group distribution comparison", "Showing median and dispersion", "Statistical analysis pages"],
-      "avoidFor": ["Single-value comparison in general business reports", "Front-page display when audience is unfamiliar with statistical charts"],
+      "summary": "Data distribution, median, dispersion and outlier analysis",
       "keywords": ["distribution", "statistics", "outlier", "box plot"]
     },
     "bubble_chart": {
       "label": "Bubble Chart",
-      "summary": "Three-dimensional data visualization",
-      "bestFor": ["Displaying 3 dimensions simultaneously", "Moderate sample size scatter distribution"],
-      "avoidFor": ["Scenarios requiring high precision readings", "Too many data points causing overlap"],
+      "summary": "Three-dimensional data visualization (x, y, size)",
       "keywords": ["correlation", "three-dimensional", "bubble chart", "competitive"]
     },
     "bullet_chart": {
       "label": "Bullet Chart",
-      "summary": "Target vs actual value comparison",
-      "bestFor": ["Target vs actual", "Multiple metrics in parallel", "Space-limited dashboards"],
-      "avoidFor": ["Composition/proportion analysis", "Complex time series"],
+      "summary": "Target vs actual value comparison; compact multi-metric dashboard",
       "keywords": ["target", "actual", "performance", "bullet chart"]
     },
     "butterfly_chart": {
       "label": "Butterfly Chart",
-      "summary": "Bidirectional left-right comparison",
-      "bestFor": ["Mirror-style bilateral comparison", "Two datasets for the same categories"],
-      "avoidFor": ["One-sided ranking", "Comparing more than 2 groups"],
+      "summary": "Bidirectional mirror comparison of two datasets",
       "keywords": ["bidirectional comparison", "butterfly chart", "mirror", "demographics"]
     },
     "donut_chart": {
       "label": "Donut Chart",
-      "summary": "Proportion and composition analysis",
-      "bestFor": ["3-6 part composition", "Center emphasis on key figures"],
-      "avoidFor": ["Too many subcategory proportions", "Precise ranking required"],
+      "summary": "Proportion and composition (3-6 parts, center KPI emphasis)",
       "keywords": ["proportion", "composition", "donut chart", "share"]
     },
     "dual_axis_line_chart": {
       "label": "Dual-Axis Line Chart",
-      "summary": "Dual Y-axis trend comparison with different units",
-      "bestFor": ["Two trends with significantly different units", "Dual-metric analysis on the same time axis"],
-      "avoidFor": ["More than 2 core metrics", "When readers may misread dual axes"],
+      "summary": "Dual Y-axis trend comparison with different units (2 metrics)",
       "keywords": ["dual axis", "line chart", "trend", "unit of measure"]
     },
     "dumbbell_chart": {
       "label": "Dumbbell Chart",
-      "summary": "Multi-dimension scores or before-after state comparison",
-      "bestFor": ["Showing differences between two sets of values", "Before-and-after metric changes"],
-      "avoidFor": ["Side-by-side comparison of more than three groups", "Detailed time series"],
+      "summary": "Before-after or two-group value difference comparison",
       "keywords": ["difference", "before-after comparison", "dumbbell chart", "evaluation"]
     },
     "funnel_chart": {
       "label": "Funnel Chart",
-      "summary": "Stage conversion and drop-off analysis",
-      "bestFor": ["3-5 stage conversion process", "Highlighting drop-off points"],
-      "avoidFor": ["Non-sequential category comparison", "Long processes with too many stages"],
+      "summary": "Stage conversion and drop-off analysis (3-5 stages)",
       "keywords": ["conversion", "funnel", "drop-off", "stage"]
     },
     "gantt_chart": {
       "label": "Gantt Chart",
-      "summary": "Project scheduling and task management",
-      "bestFor": ["Scheduling 6-12 tasks", "Showing time spans and dependencies"],
-      "avoidFor": ["Pure milestone display", "Too many tasks"],
+      "summary": "Project scheduling with task spans and dependencies (6-12 tasks)",
       "keywords": ["scheduling", "Gantt chart", "project", "roadmap"]
     },
     "gauge_chart": {
       "label": "Gauge Chart",
-      "summary": "Goal achievement visualization",
-      "bestFor": ["Single-metric achievement", "Emphasizing goal completion status"],
-      "avoidFor": ["Multi-category comparison", "Precise ranking analysis"],
+      "summary": "Single-metric goal achievement visualization",
       "keywords": ["achievement", "gauge", "KPI", "progress"]
     },
     "grouped_bar_chart": {
       "label": "Grouped Bar Chart",
-      "summary": "Multi-series grouped comparison",
-      "bestFor": ["2-4 series comparison", "Categories and series coexisting"],
-      "avoidFor": ["Too many series", "Long labels with too many categories"],
+      "summary": "Multi-series grouped comparison (2-4 series across categories)",
       "keywords": ["grouped", "multi-series", "bar chart", "year-over-year"]
     },
     "heatmap_chart": {
       "label": "Heatmap",
-      "summary": "Matrix intensity and pattern recognition",
-      "bestFor": ["Two-dimensional matrix data", "Identifying strong/weak patterns"],
-      "avoidFor": ["When precise cell values are needed", "Too many dimension labels making it hard to read"],
+      "summary": "Matrix intensity and pattern recognition (two-dimensional grid)",
       "keywords": ["heatmap", "matrix", "correlation", "intensity"]
     },
     "horizontal_bar_chart": {
       "label": "Horizontal Bar Chart",
-      "summary": "Long-label ranking and category comparison",
-      "bestFor": ["5-12 item ranking", "Long-label categories"],
-      "avoidFor": ["Time trends", "Dual-unit analysis"],
+      "summary": "Long-label ranking and category comparison (5-12 items)",
       "keywords": ["ranking", "horizontal bar chart", "long label", "comparison"]
     },
     "kpi_cards": {
       "label": "KPI Cards",
-      "summary": "Key numeric metrics overview",
-      "bestFor": ["2x2 or 1x4 metrics overview", "Front-page summary"],
-      "avoidFor": ["Trend change display", "Complex multi-dimension correlation analysis"],
+      "summary": "Key numeric metrics overview (2×2 or 1×4 card layout)",
       "keywords": ["KPI", "metric card", "overview", "dashboard"]
     },
     "line_chart": {
       "label": "Line Chart",
-      "summary": "Time trend visualization",
-      "bestFor": ["Continuous time axis", "1-3 series trend comparison"],
-      "avoidFor": ["Discrete category ranking", "Too many series on a single page"],
+      "summary": "Time trend visualization (1-3 series, continuous axis)",
       "keywords": ["trend", "line chart", "growth", "time series"]
     },
     "matrix_2x2": {
       "label": "2x2 Matrix",
-      "summary": "Dual-dimension positioning and priority analysis",
-      "bestFor": ["Two core dimensions", "Strategic trade-offs or classification positioning"],
-      "avoidFor": ["Single-dimension sorting", "Pages requiring precise numeric readings"],
+      "summary": "Dual-dimension positioning and priority quadrant analysis",
       "keywords": ["matrix", "quadrant", "priority", "positioning"]
     },
     "org_chart": {
       "label": "Organization Chart",
-      "summary": "Organizational hierarchy and reporting relationships",
-      "bestFor": ["2-4 level organizational structure", "Clear relationship chain display"],
-      "avoidFor": ["Process step descriptions", "Complex network diagrams with many nodes"],
+      "summary": "Organizational hierarchy and reporting relationships (2-4 levels)",
       "keywords": ["organization", "org chart", "hierarchy", "reporting relationship"]
     },
     "pareto_chart": {
       "label": "Pareto Chart",
-      "summary": "80/20 contribution analysis",
-      "bestFor": ["Identifying the vital few after sorting", "Bar-line combination showing cumulative contribution"],
-      "avoidFor": ["Data without clear top-heavy concentration", "Pure time trends"],
+      "summary": "80/20 contribution analysis with cumulative bar-line combination",
       "keywords": ["Pareto", "80/20", "cumulative contribution", "priority"]
     },
     "pie_chart": {
       "label": "Pie Chart",
-      "summary": "Basic proportion and composition",
-      "bestFor": ["3-6 part proportions", "Single-layer composition analysis"],
-      "avoidFor": ["Too many parts or very small differences", "Precise comparison of subtle differences needed"],
+      "summary": "Basic proportion and composition (3-6 parts)",
       "keywords": ["proportion", "pie chart", "composition", "share"]
     },
     "porter_five_forces": {
       "label": "Porter's Five Forces",
-      "summary": "Industry competitive structure analysis",
-      "bestFor": ["Strategic reports", "Industry entry and competitive landscape analysis"],
-      "avoidFor": ["Operational-level detail processes", "Pure data ranking pages"],
+      "summary": "Industry competitive structure strategic framework",
       "keywords": ["strategy", "five forces", "industry analysis", "competition"]
     },
     "process_flow": {
       "label": "Process Flow",
-      "summary": "Process steps and stage relationship visualization",
-      "bestFor": ["3-8 steps", "Sequential process description"],
-      "avoidFor": ["Complex network relationships", "Detailed scheduling"],
+      "summary": "Sequential process steps and stage relationships (3-8 steps)",
       "keywords": ["process", "steps", "flowchart", "methodology"]
     },
     "progress_bar_chart": {
       "label": "Progress Bar Chart",
-      "summary": "Multi-item progress and completion comparison",
-      "bestFor": ["Side-by-side comparison of multiple tasks", "Completion rate display"],
-      "avoidFor": ["Detailed time trends", "Complex composition analysis"],
+      "summary": "Multi-item completion rate and progress comparison",
       "keywords": ["progress", "completion rate", "progress bar", "OKR"]
     },
     "radar_chart": {
       "label": "Radar Chart",
-      "summary": "Multi-dimensional capability assessment",
-      "bestFor": ["4-8 dimensions", "Profile-based comprehensive comparison"],
-      "avoidFor": ["Too many dimensions", "Precise ranking required"],
+      "summary": "Multi-dimensional capability assessment (4-8 dimensions)",
       "keywords": ["radar chart", "multi-dimensional assessment", "capability", "competitive"]
     },
     "sankey_chart": {
       "label": "Sankey Diagram",
-      "summary": "Flow or resource direction visualization",
-      "bestFor": ["Three-level flow direction", "Emphasizing flow destination and loss"],
-      "avoidFor": ["Complex networks with too many nodes", "Precise ranking pages"],
+      "summary": "Flow direction and resource allocation visualization (3-level)",
       "keywords": ["flow direction", "Sankey diagram", "conversion path", "resource allocation"]
     },
     "scatter_chart": {
       "label": "Scatter Plot",
-      "summary": "Correlation and distribution analysis",
-      "bestFor": ["X/Y dual-dimension relationship", "Finding clusters and outliers"],
-      "avoidFor": ["Sequential processes", "Simple single-dimension ranking"],
+      "summary": "X/Y correlation, cluster and outlier analysis",
       "keywords": ["scatter plot", "correlation", "distribution", "outlier"]
     },
     "stacked_area_chart": {
       "label": "Stacked Area Chart",
-      "summary": "Multi-series stacked trend",
-      "bestFor": ["Total and composition changing simultaneously", "2-4 series trends"],
-      "avoidFor": ["Too many series making it hard to read", "Precise comparison of subtle changes in middle layers"],
+      "summary": "Multi-series stacked trend showing total and composition (2-4 series)",
       "keywords": ["stacked", "area chart", "trend", "composition change"]
     },
     "stacked_bar_chart": {
       "label": "Stacked Bar Chart",
-      "summary": "Composition and total side-by-side comparison",
-      "bestFor": ["Category total + composition display", "2-4 composition parts"],
-      "avoidFor": ["Comparing subtle differences in middle segments", "Too many categories and parts"],
+      "summary": "Composition and total side-by-side (2-4 composition parts per bar)",
       "keywords": ["stacked bar chart", "composition", "contribution", "total"]
     },
     "swot_analysis": {
       "label": "SWOT Analysis",
-      "summary": "Strengths, weaknesses, opportunities, and threats analysis",
-      "bestFor": ["Four-quadrant strategic analysis", "Executive communication and strategy discussion"],
-      "avoidFor": ["Pure quantitative data ranking", "Detailed execution scheduling"],
+      "summary": "Strengths, weaknesses, opportunities and threats four-quadrant framework",
       "keywords": ["SWOT", "strategy", "strengths and weaknesses", "opportunities and threats"]
     },
     "timeline": {
       "label": "Timeline",
-      "summary": "Milestones and historical evolution display",
-      "bestFor": ["3-8 key nodes", "Storytelling in chronological order"],
-      "avoidFor": ["Detailed task scheduling", "Complex relationship networks"],
+      "summary": "Milestones and historical evolution (3-8 key nodes)",
       "keywords": ["timeline", "milestone", "history", "evolution"]
     },
     "treemap_chart": {
       "label": "Treemap",
-      "summary": "Hierarchical area proportion display",
-      "bestFor": ["Hierarchical proportion data", "Comparing size and grouping simultaneously"],
-      "avoidFor": ["Time trends", "Categories requiring strict sorting"],
+      "summary": "Hierarchical area proportion display with grouping",
       "keywords": ["treemap", "area proportion", "hierarchy", "composition"]
     },
     "waterfall_chart": {
       "label": "Waterfall Chart",
-      "summary": "Incremental change breakdown",
-      "bestFor": ["Start-to-end change decomposition", "Showing positive and negative contributions"],
-      "avoidFor": ["Time trend line analysis", "Pure proportion composition pages"],
+      "summary": "Incremental change decomposition showing positive/negative contributions",
       "keywords": ["waterfall chart", "change breakdown", "contribution", "bridge analysis"]
+    },
+    "pyramid_chart": {
+      "label": "Pyramid Chart",
+      "summary": "Hierarchical structure and value layer progression (3-6 layers)",
+      "keywords": ["pyramid", "hierarchy", "layers", "maturity model", "Maslow"]
+    },
+    "venn_diagram": {
+      "label": "Venn Diagram",
+      "summary": "Set relationships and intersection analysis (2-3 overlapping domains)",
+      "keywords": ["Venn", "intersection", "overlap", "relationship", "synergy"]
+    },
+    "pros_cons_chart": {
+      "label": "Pros & Cons Chart",
+      "summary": "Bilateral advantage vs disadvantage comparison (2-5 items per side)",
+      "keywords": ["pros cons", "advantages", "disadvantages", "comparison", "evaluation"]
+    },
+    "cycle_diagram": {
+      "label": "Cycle Diagram",
+      "summary": "Circular repeating process and closed-loop flow (4-6 stages)",
+      "keywords": ["cycle", "loop", "PDCA", "iteration", "circular process"]
+    },
+    "numbered_steps": {
+      "label": "Numbered Steps",
+      "summary": "Horizontal sequential step-by-step process flow (3-6 steps)",
+      "keywords": ["steps", "numbered", "sequential", "methodology", "implementation path"]
+    },
+    "icon_grid": {
+      "label": "Icon Grid",
+      "summary": "Feature cards in grid layout with icons (4-9 items)",
+      "keywords": ["grid", "cards", "features", "capabilities", "icon list"]
+    },
+    "isometric_stairs": {
+      "label": "Isometric Stairs",
+      "summary": "3D staircase progression and maturity visualization (4-7 stages)",
+      "keywords": ["isometric", "3D stairs", "progression", "maturity", "growth stages"]
+    },
+    "mind_map": {
+      "label": "Mind Map",
+      "summary": "Center-radiating topic decomposition (1 core + 3-6 branches)",
+      "keywords": ["mind map", "brainstorm", "knowledge structure", "topic decomposition", "radial"]
+    },
+    "comparison_table": {
+      "label": "Comparison Table",
+      "summary": "Multi-dimensional feature comparison matrix (2-4 plans/products)",
+      "keywords": ["comparison matrix", "feature comparison", "evaluation", "product selection", "scoring"]
+    },
+    "snake_flow": {
+      "label": "Snake Flow",
+      "summary": "S-shaped winding multi-step process (6-10 steps, journey/lifecycle)",
+      "keywords": ["snake", "S-flow", "journey", "lifecycle", "winding process"]
+    },
+    "roadmap_vertical": {
+      "label": "Vertical Roadmap",
+      "summary": "Vertical timeline with milestones and status tracking (4-8 nodes)",
+      "keywords": ["roadmap", "vertical timeline", "milestones", "annual plan", "progress tracking"]
+    },
+    "sector_diagram": {
+      "label": "Sector Diagram",
+      "summary": "Semi-circular radial layout around central topic (4-8 areas)",
+      "keywords": ["sector", "radial", "semi-circle", "ecosystem", "service architecture"]
+    },
+    "word_cloud": {
+      "label": "Word Cloud",
+      "summary": "Keyword weight and frequency visualization (20-30 keywords)",
+      "keywords": ["word cloud", "keywords", "tag cloud", "hot topics", "frequency"]
+    },
+    "concentric_circles": {
+      "label": "Concentric Circles",
+      "summary": "Layered priority rings from core to periphery (3-5 layers)",
+      "keywords": ["concentric", "bullseye", "target", "priority layers", "onion diagram"]
+    },
+    "chevron_process": {
+      "label": "Chevron Process",
+      "summary": "Arrow-chain linear phase progression with deliverables (3-6 phases)",
+      "keywords": ["chevron", "arrow chain", "phase", "methodology", "implementation"]
+    },
+    "comparison_columns": {
+      "label": "Comparison Columns",
+      "summary": "Multi-column pricing or service tier comparison (2-4 tiers)",
+      "keywords": ["pricing", "columns", "service tiers", "membership", "subscription"]
+    },
+    "fishbone_diagram": {
+      "label": "Fishbone Diagram",
+      "summary": "Cause-and-effect root cause analysis / Ishikawa (4-6 branches)",
+      "keywords": ["fishbone", "Ishikawa", "cause effect", "root cause", "6M analysis"]
+    },
+    "hub_spoke": {
+      "label": "Hub & Spoke",
+      "summary": "Central hub connected to surrounding capability nodes (1 core + 4-8 spokes)",
+      "keywords": ["hub spoke", "central", "radial", "platform", "ecosystem", "satellite"]
+    },
+    "vertical_list": {
+      "label": "Vertical List",
+      "summary": "Numbered vertical list with detail cards (3-6 key points/advantages)",
+      "keywords": ["vertical list", "numbered list", "advantages", "features", "key points", "strengths"]
     }
   }
 }
