@@ -5,8 +5,9 @@ This command prepares a reusable reference workspace from a PPTX source. It can:
 
 1. extract lightweight PPTX metadata and reusable assets
 2. export every slide to SVG with PowerPoint on Windows
-3. replace inline Base64 images inside exported SVG files with external assets
-4. optimize cleaned reference SVG files for downstream inspection
+3. export PPTX to PDF on macOS with Keynote as a fallback bridge
+4. replace inline Base64 images inside exported SVG files with external assets
+5. optimize cleaned reference SVG files for downstream inspection
 """
 
 from __future__ import annotations
@@ -116,6 +117,17 @@ def run_powershell_script(script_body: str, *script_args: str) -> subprocess.Com
     return completed
 
 
+def run_osascript_lines(*script_lines: str) -> subprocess.CompletedProcess[bytes]:
+    command = ["osascript"]
+    for line in script_lines:
+        command.extend(["-e", line])
+    return subprocess.run(
+        command,
+        capture_output=True,
+        text=False,
+        check=False,
+    )
+
 def decode_process_output(completed: subprocess.CompletedProcess[bytes]) -> str:
     stderr = (completed.stderr or b"").decode("utf-8", errors="replace").strip()
     stdout = (completed.stdout or b"").decode("utf-8", errors="replace").strip()
@@ -145,17 +157,39 @@ def export_pptx_slides_to_svg(pptx_path: Path, output_dir: Path) -> list[Path]:
 
 
 def export_pptx_to_pdf(pptx_path: Path, pdf_path: Path) -> Path:
-    completed = run_powershell_script(
-        POWERSHELL_PDF_EXPORT_SCRIPT,
-        "-PptxPath",
-        str(pptx_path),
-        "-PdfPath",
-        str(pdf_path),
-    )
+    system = platform.system()
+
+    if system == "Windows":
+        completed = run_powershell_script(
+            POWERSHELL_PDF_EXPORT_SCRIPT,
+            "-PptxPath",
+            str(pptx_path),
+            "-PdfPath",
+            str(pdf_path),
+        )
+    elif system == "Darwin":
+        pdf_path.parent.mkdir(parents=True, exist_ok=True)
+        completed = run_osascript_lines(
+            'tell application "Keynote"',
+            "activate",
+            f'set pptxFile to POSIX file "{pptx_path}"',
+            f'set pdfFile to POSIX file "{pdf_path}"',
+            "with timeout of 600 seconds",
+            "set docRef to open pptxFile",
+            "export docRef to pdfFile as PDF",
+            "close docRef saving no",
+            "end timeout",
+            "end tell",
+        )
+    else:
+        raise RuntimeError(
+            "PPTX to PDF export is supported on Windows (PowerPoint) and macOS (Keynote)"
+        )
+
     if completed.returncode != 0:
         raise RuntimeError(decode_process_output(completed))
     if not pdf_path.exists():
-        raise RuntimeError("PowerPoint PDF export completed but no PDF file was found")
+        raise RuntimeError("PPTX PDF export completed but no PDF file was found")
     return pdf_path
 
 
