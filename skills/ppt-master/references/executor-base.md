@@ -133,15 +133,19 @@ ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 
 ## 5. Visualization Reference
 
-When the Design Spec includes a **VII. Visualization Reference List**, read the referenced SVG templates from `templates/charts/` to understand the intended visualization patterns. The path remains `templates/charts/` for backward compatibility.
+When the Design Spec includes a **VII. Visualization Reference List**, read the referenced SVG templates from `templates/charts/` before drawing pages that use those visualization types. The path remains `templates/charts/` for backward compatibility.
 
-> **Rule**: When Executor first uses a visualization type, Executor should look up the relevant SVG template in `templates/charts/` as a reference, then reuse that pattern for subsequent pages of the same type. Only look up another template when the visualization type changes or the structure is still unclear.
+🚧 **GATE — Mandatory read before first use**: When Executor encounters a visualization type listed in Section VII of the Design Spec for the first time, Executor **MUST** `read_file templates/charts/<chart_name>.svg` **before** generating that page. Extract the layout coordinates, card structure, spacing rhythm, and visual logic from the template as **creative reference and inspiration** — not as a strict copy. Then design the page independently using the project's own color scheme, typography, and content.
+
+> **Workflow**: read template SVG → understand structure & spacing → design original SVG informed by the reference → do NOT replicate the template verbatim.
+> **Reuse**: Once a visualization type has been read and understood, there is no need to re-read for subsequent pages of the same type.
+> **Change**: Read the new template when the visualization type changes or the structure needs re-reference.
 
 **Adaptation rules**:
 - **Must preserve**: Visualization type (bar/line/pie/timeline/process/framework etc.) as specified in the Design Spec
 - **Must adapt**: Data values, labels, colors (match the project's color scheme), and dimensions to fit the page layout
-- **May adjust**: Axis ranges, grid lines, legend position, spacing — as long as the chart remains accurate and readable
-- **Must NOT**: Change visualization type without Design Spec justification, or remove data points / structural elements specified in the outline
+- **May adjust freely**: Visual composition, axis ranges, grid lines, legend position, spacing, decorative elements — creative freedom is encouraged as long as the chart remains accurate and readable
+- **Must NOT**: Change visualization type without Design Spec justification, or omit data points / structural elements specified in the outline
 
 > Visualization templates: `templates/charts/` (52 types). Index: `templates/charts/charts_index.json`
 

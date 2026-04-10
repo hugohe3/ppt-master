@@ -166,7 +166,9 @@ First, read the role definition:
 Read references/strategist.md
 ```
 
-**Must complete the Eight Confirmations** (refer to `templates/design_spec_reference.md` for the template structure):
+> ⚠️ **Mandatory gate in `strategist.md`**: Before writing `design_spec.md`, Strategist MUST `read_file templates/design_spec_reference.md` and produce the spec following its full I–XI section structure. See `strategist.md` Section 1 for the explicit gate rule.
+
+**Must complete the Eight Confirmations** (full template structure in `templates/design_spec_reference.md`):
 
 ⛔ **BLOCKING**: The Eight Confirmations MUST be presented to the user as a bundled set of recommendations, and you MUST **wait for the user to confirm or modify** before outputting the Design Specification & Content Outline. This is one of only two core confirmation points in the workflow (the other is template selection). Once confirmed, all subsequent script execution and slide generation should proceed fully automatically.
 
