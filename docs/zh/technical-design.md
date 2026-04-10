@@ -17,7 +17,7 @@
 ```
 用户输入 (PDF/DOCX/URL/Markdown)
     ↓
-[源内容转换] → pdf_to_md.py / doc_to_md.py / web_to_md.py
+[源内容转换] → source_to_md/pdf_to_md.py / doc_to_md.py / web_to_md.py
     ↓
 [创建项目] → project_manager.py init <项目名> --format <格式>
     ↓

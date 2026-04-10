@@ -2,15 +2,15 @@
 
 Source conversion tools turn PDFs, documents, slide decks, and web pages into Markdown before project creation.
 
-## `pdf_to_md.py`
+## `source_to_md/pdf_to_md.py`
 
 Recommended first choice for native PDFs.
 
 ```bash
-python3 scripts/pdf_to_md.py book.pdf
-python3 scripts/pdf_to_md.py book.pdf -o output.md
-python3 scripts/pdf_to_md.py ./pdfs
-python3 scripts/pdf_to_md.py ./pdfs -o ./markdown
+python3 scripts/source_to_md/pdf_to_md.py book.pdf
+python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs
+python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
 ```
 
 Use cases:
@@ -29,7 +29,7 @@ Dependency:
 pip install PyMuPDF
 ```
 
-## `doc_to_md.py`
+## `source_to_md/doc_to_md.py`
 
 Pandoc-based converter for office and markup formats.
 
@@ -38,10 +38,10 @@ Supported formats include:
 - `.epub`, `.html`, `.tex`, `.rst`, `.org`, `.ipynb`, `.typ`
 
 ```bash
-python3 scripts/doc_to_md.py lecture.docx
-python3 scripts/doc_to_md.py lecture.docx -o output.md
-python3 scripts/doc_to_md.py notes.epub
-python3 scripts/doc_to_md.py paper.tex -o paper.md
+python3 scripts/source_to_md/doc_to_md.py lecture.docx
+python3 scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
+python3 scripts/source_to_md/doc_to_md.py notes.epub
+python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md
 ```
 
 Dependency:
@@ -54,7 +54,7 @@ brew install pandoc
 sudo apt install pandoc
 ```
 
-## `ppt_to_md.py`
+## `source_to_md/ppt_to_md.py`
 
 Structured PowerPoint-to-Markdown converter for Open XML slide decks.
 
@@ -64,11 +64,11 @@ Supported formats include:
 - `.potx`, `.potm`
 
 ```bash
-python3 scripts/ppt_to_md.py sales_deck.pptx
-python3 scripts/ppt_to_md.py sales_deck.pptx -o output.md
-python3 scripts/ppt_to_md.py ./decks
-python3 scripts/ppt_to_md.py ./decks -o ./markdown
-python3 scripts/ppt_to_md.py template.ppsx -o notes/template.md
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx
+python3 scripts/source_to_md/ppt_to_md.py sales_deck.pptx -o output.md
+python3 scripts/source_to_md/ppt_to_md.py ./decks
+python3 scripts/source_to_md/ppt_to_md.py ./decks -o ./markdown
+python3 scripts/source_to_md/ppt_to_md.py template.ppsx -o notes/template.md
 ```
 
 Behavior:
@@ -85,24 +85,24 @@ pip install python-pptx
 
 Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF first.
 
-## `web_to_md.py` / `web_to_md.cjs`
+## `source_to_md/web_to_md.py` / `source_to_md/web_to_md.cjs`
 
 Convert web pages to Markdown and download images locally.
 
 Python version:
 
 ```bash
-python3 scripts/web_to_md.py https://example.com/article
-python3 scripts/web_to_md.py https://url1.com https://url2.com
-python3 scripts/web_to_md.py -f urls.txt
-python3 scripts/web_to_md.py https://example.com -o output.md
+python3 scripts/source_to_md/web_to_md.py https://example.com/article
+python3 scripts/source_to_md/web_to_md.py https://url1.com https://url2.com
+python3 scripts/source_to_md/web_to_md.py -f urls.txt
+python3 scripts/source_to_md/web_to_md.py https://example.com -o output.md
 ```
 
 Node.js version for WeChat or anti-bot pages:
 
 ```bash
-node scripts/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
-node scripts/web_to_md.cjs https://url1.com https://url2.com
+node scripts/source_to_md/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
+node scripts/source_to_md/web_to_md.cjs https://url1.com https://url2.com
 ```
 
 Use the Node.js version first for WeChat Official Accounts and similar high-security sites.

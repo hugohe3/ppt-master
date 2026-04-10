@@ -4,18 +4,18 @@
 web_to_md.py - Web Page to Markdown Converter (Python Version)
 
 Usage:
-    python scripts/web_to_md.py <url>
-    python scripts/web_to_md.py <url1> <url2> ...
-    python scripts/web_to_md.py -f urls.txt
-    python scripts/web_to_md.py <url> -o output.md
+    python scripts/source_to_md/web_to_md.py <url>
+    python scripts/source_to_md/web_to_md.py <url1> <url2> ...
+    python scripts/source_to_md/web_to_md.py -f urls.txt
+    python scripts/source_to_md/web_to_md.py <url> -o output.md
 
 Dependencies:
     pip install requests beautifulsoup4
 
 Note:
-    Some websites (e.g., WeChat mp.weixin.qq.com) block Python's 'requests' library 
-    based on TLS fingerprints (JA3). If you encounter 403 errors or connection issues 
-    with such sites, please use the Node.js version (scripts/web_to_md.cjs) or 
+    Some websites (e.g., WeChat mp.weixin.qq.com) block Python's 'requests' library
+    based on TLS fingerprints (JA3). If you encounter 403 errors or connection issues
+    with such sites, please use the Node.js version (scripts/source_to_md/web_to_md.cjs) or
     modify this script to use 'curl_cffi'.
 """
 

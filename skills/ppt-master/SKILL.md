@@ -44,11 +44,11 @@ description: >
 
 | Script | Purpose |
 |--------|---------|
-| `${SKILL_DIR}/scripts/pdf_to_md.py` | PDF to Markdown |
-| `${SKILL_DIR}/scripts/doc_to_md.py` | Documents to Markdown via Pandoc (DOCX, EPUB, HTML, LaTeX, RST, etc.) |
-| `${SKILL_DIR}/scripts/ppt_to_md.py` | PowerPoint to Markdown |
-| `${SKILL_DIR}/scripts/web_to_md.py` | Web page to Markdown |
-| `${SKILL_DIR}/scripts/web_to_md.cjs` | WeChat / high-security sites to Markdown |
+| `${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py` | PDF to Markdown |
+| `${SKILL_DIR}/scripts/source_to_md/doc_to_md.py` | Documents to Markdown via Pandoc (DOCX, EPUB, HTML, LaTeX, RST, etc.) |
+| `${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py` | PowerPoint to Markdown |
+| `${SKILL_DIR}/scripts/source_to_md/web_to_md.py` | Web page to Markdown |
+| `${SKILL_DIR}/scripts/source_to_md/web_to_md.cjs` | WeChat / high-security sites to Markdown |
 | `${SKILL_DIR}/scripts/project_manager.py` | Project init / validate / manage |
 | `${SKILL_DIR}/scripts/analyze_images.py` | Image analysis |
 | `${SKILL_DIR}/scripts/image_gen.py` | AI image generation (multi-provider) |
@@ -85,12 +85,12 @@ When the user provides non-Markdown content, convert immediately:
 
 | User Provides | Command |
 |---------------|---------|
-| PDF file | `python3 ${SKILL_DIR}/scripts/pdf_to_md.py <file>` |
-| DOCX / Word / Office document | `python3 ${SKILL_DIR}/scripts/doc_to_md.py <file>` |
-| PPTX / PowerPoint deck | `python3 ${SKILL_DIR}/scripts/ppt_to_md.py <file>` |
-| EPUB / HTML / LaTeX / RST / other | `python3 ${SKILL_DIR}/scripts/doc_to_md.py <file>` |
-| Web link | `python3 ${SKILL_DIR}/scripts/web_to_md.py <URL>` |
-| WeChat / high-security site | `node ${SKILL_DIR}/scripts/web_to_md.cjs <URL>` |
+| PDF file | `python3 ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file>` |
+| DOCX / Word / Office document | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
+| PPTX / PowerPoint deck | `python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <file>` |
+| EPUB / HTML / LaTeX / RST / other | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
+| Web link | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` |
+| WeChat / high-security site | `node ${SKILL_DIR}/scripts/source_to_md/web_to_md.cjs <URL>` |
 | Markdown | Read directly |
 
 **✅ Checkpoint — Confirm source content is ready, proceed to Step 2.**

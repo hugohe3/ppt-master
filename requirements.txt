@@ -30,14 +30,14 @@ svglib>=1.5.0
 reportlab>=4.0.0
 
 # ─────────────────────────────────────────────────────────────
-# PDF to Markdown tool / PDF 转 Markdown 工具 (skills/ppt-master/scripts/pdf_to_md.py)
+# PDF to Markdown tool / PDF 转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/pdf_to_md.py)
 # ─────────────────────────────────────────────────────────────
 # Converts PDF to Markdown with text, image, and table extraction.
 # 用于将 PDF 文件转换为 Markdown 格式，支持文本、图片、表格提取
 PyMuPDF>=1.23.0
 
 # ─────────────────────────────────────────────────────────────
-# Document to Markdown tool / 文档转 Markdown 工具 (skills/ppt-master/scripts/doc_to_md.py)
+# Document to Markdown tool / 文档转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/doc_to_md.py)
 # ─────────────────────────────────────────────────────────────
 # Uses Pandoc to convert DOCX/EPUB/HTML/LaTeX/RST etc. to Markdown.
 # 使用 Pandoc 将 DOCX/EPUB/HTML/LaTeX/RST 等格式转换为 Markdown
@@ -58,7 +58,7 @@ Pillow>=9.0.0
 numpy>=1.20.0
 
 # ─────────────────────────────────────────────────────────────
-# Web to Markdown tool / 网页转 Markdown 工具 (skills/ppt-master/scripts/web_to_md.py)
+# Web to Markdown tool / 网页转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/web_to_md.py)
 # ─────────────────────────────────────────────────────────────
 requests>=2.31.0
 beautifulsoup4>=4.12.0
