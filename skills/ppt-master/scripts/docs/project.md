@@ -90,7 +90,8 @@ Notes:
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
 - Generates `manifest.json`, `analysis.md`, `assets/`, cleaned slide SVGs, and `reference_svg_selection.json`
-- Windows-only when SVG export is needed because it uses installed Microsoft PowerPoint
+- Native SVG export is Windows-only because it uses installed Microsoft PowerPoint
+- On macOS, the script falls back to exporting PDF via Keynote and then converts PDF pages to SVG
 - Writes cleaned SVG files to `svg/` after externalizing inline Base64 image payloads
 - Required in `/create-template` whenever the reference source is `.pptx`
 - Default output directory is `<pptx_stem>_template_import/`
