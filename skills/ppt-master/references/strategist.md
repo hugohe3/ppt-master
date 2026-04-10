@@ -208,10 +208,12 @@ When content outline pages involve **data visualization or infographic-style str
 
 Built-in library contains 33 visualization templates; see `templates/charts/charts_index.json`. The path name remains `charts/` for backward compatibility, but the library scope is broader than data charts alone.
 
+> **Rule**: When a page involves visualization-oriented content such as data charts, infographics, KPI overviews, timelines, process diagrams, relationship diagrams, or strategic frameworks, Strategist should consult `templates/charts/charts_index.json` to determine an appropriate visualization type, then record that type in the Design Spec and Content Outline. Strategist is responsible for semantic selection, not detailed SVG styling.
+
 > **Selection workflow**:
 > 1. Identify pages that need data visualization during content planning
 > 2. Consult `charts_index.json` — by analysis goal → `quickLookup`; by category → `categories`
-> 3. Review `bestFor` / `avoidFor` to confirm the visualization type fits the information structure and data characteristics
+> 3. Confirm the visualization type fits the information structure and data characteristics
 > 4. List all selected visualizations in Design Spec **section VII (Visualization Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the visualization type name
 >
 > **Quick lookup by goal**:

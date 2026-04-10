@@ -135,6 +135,8 @@ ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 
 When the Design Spec includes a **VII. Visualization Reference List**, read the referenced SVG templates from `templates/charts/` to understand the intended visualization patterns. The path remains `templates/charts/` for backward compatibility.
 
+> **Rule**: When Executor first uses a visualization type, Executor should look up the relevant SVG template in `templates/charts/` as a reference, then reuse that pattern for subsequent pages of the same type. Only look up another template when the visualization type changes or the structure is still unclear.
+
 **Adaptation rules**:
 - **Must preserve**: Visualization type (bar/line/pie/timeline/process/framework etc.) as specified in the Design Spec
 - **Must adapt**: Data values, labels, colors (match the project's color scheme), and dimensions to fit the page layout
