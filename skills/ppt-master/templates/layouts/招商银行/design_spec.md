@@ -1,209 +1,240 @@
-# China Merchants Bank (招商银行) - Design Specification v2.0
-
-> Suitable for China Merchants Bank and financial institutions' high-end work reports, business showcases, annual reports, VIP client services, and similar scenarios.
-
----
+# China Merchants Bank Transaction Banking - Design Specification
 
 ## I. Template Overview
 
-| Property       | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| **Template Name** | 招商银行                                                |
-| **Use Cases**  | High-end work reports, business showcases, annual reports, product promotion |
-| **Design Tone** | Minimalist luxury, refined, multi-layered, modern finance  |
-| **Theme Mode** | Light theme (subtle textured background + CMB red/gold refined accents) |
+| Property | Description |
+| --- | --- |
+| **Template Name** | 招商银行 |
+| **Display Name** | China Merchants Bank Transaction Banking Template |
+| **Use Cases** | 交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料 |
+| **Design Tone** | Brand-consistent, structured, product-focused, refined finance |
+| **Theme Mode** | Hybrid theme (brand-red cover/chapter/ending + light content pages) |
 
----
+Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 
 ## II. Canvas Specification
 
-| Property       | Value                         |
-| -------------- | ----------------------------- |
-| **Format**     | Standard 16:9                 |
-| **Dimensions** | 1280 × 720 px                |
-| **viewBox**    | `0 0 1280 720`               |
-| **Safe Margins** | 40px (left/right), 35px (top/bottom) |
-| **Safe Area**  | x: 40-1240, y: 70-665        |
-| **Grid Base**  | 40px                          |
-
----
+| Property | Value |
+| --- | --- |
+| **Format** | Standard 16:9 |
+| **Dimensions** | 1280 × 720 px |
+| **viewBox** | `0 0 1280 720` |
+| **Safe Margins** | 56px left/right, 48px top, 40px bottom |
+| **Primary Content Area** | x: 72-1216, y: 140-640 |
 
 ## III. Color Scheme
 
-### Core Colors
-
-| Role             | Color Value | Notes                            |
-| ---------------- | ----------- | -------------------------------- |
-| **CMB Red**      | `#C41230`   | Brand primary, used for accents, title bars |
-| **Auxiliary Gold** | `#C9A962` | Luxury accent for double-line borders, decorations |
-| **Dark Red**     | `#9A0E26`   | Deep background color for added depth |
-| **Background White** | `#FFFFFF` | Card and highlight area backgrounds |
-| **Subtle Texture White** | `#FAFAFA` | Very light background to avoid harsh pure white |
-| **Warm Gray Accent** | `#F8F6F3` | Bottom decorative bars, card backgrounds |
-
-### Safe Area Anchor Points (New Minimalist Decoration)
-
-```xml
-<!-- Four-corner anchor points (replacing legacy card borders) -->
-<path d="M40 140 L50 140 M40 140 L40 150" stroke="#C9A962" stroke-width="1" stroke-opacity="0.5" />
-<path d="M1240 140 L1230 140 M1240 140 L1240 150" stroke="#C9A962" stroke-width="1" stroke-opacity="0.5" />
-```
-
----
+| Role | Color Value | Usage |
+| --- | --- | --- |
+| **Brand Red** | `#C8152D` | Header strips, emphasis, chapter anchor |
+| **Deep Red** | `#8F0F1B` | Dark-page overlay and structural depth |
+| **Signal Red** | `#E26A74` | Fine divider accents on cover |
+| **Finance Blue** | `#2175D9` | Case-study secondary emphasis |
+| **Dark Text** | `#1F1F1F` | Main titles and core copy |
+| **Medium Gray** | `#666666` | Secondary copy |
+| **Light Gray** | `#E9E9E9` | Dividers and boundary hints |
+| **White** | `#FFFFFF` | Background and reverse text |
 
 ## IV. Typography System
 
-### Font Stack
+| Level | Usage | Size | Weight |
+| --- | --- | --- | --- |
+| **H1** | Cover title | 54px | Bold |
+| **H2** | Chapter title | 46px | Bold |
+| **H3** | Content title | 26px | Bold |
+| **H4** | TOC / card title | 20px | Bold |
+| **Body** | Paragraph text | 16px | Regular |
+| **Caption** | Metadata / footer | 12px | Regular |
+| **Display Number** | Chapter numeral | 220px | Bold |
 
-**Font Stack**: `"Microsoft YaHei", "微软雅黑", Arial, sans-serif`
-
-### Font Size Hierarchy
-
-| Level    | Usage              | Size    | Weight  |
-| -------- | ------------------ | ------- | ------- |
-| H1       | Cover main title   | 52px    | Bold    |
-| H2       | Page title         | 24-28px | Bold    |
-| H3       | Chapter title      | 52px    | Bold    |
-| H4       | Subsection / Card title | 20-22px | Bold |
-| P        | Body content       | 16-18px | Regular |
-| Caption  | Auxiliary notes    | 12-14px | Regular |
-| Number   | Chapter number     | 320px   | Bold (Low Opacity) |
-
----
+**Font Stack**: `"Microsoft YaHei", "PingFang SC", Arial, sans-serif`
 
 ## V. Page Structure
 
 ### Common Layout
 
-| Area       | Position/Height | Description                            |
-| ---------- | --------------- | -------------------------------------- |
-| **Header** | y=0-75          | Red background with gold lines, top-left ring decoration |
-| **Key Message Bar** | y=95-120 | (Content pages) Minimalist red line guide + text |
-| **Content** | y=140-650      | Open layout with no fixed borders      |
-| **Footer** | y=665+          | Page number, copyright, institution name |
+| Area | Description |
+| --- | --- |
+| **Header Strip** | Red brand strip with logo, used on light pages |
+| **Title Zone** | Left-aligned title and short key message |
+| **Content Body** | Open layout with only light boundary hints |
+| **Footer** | Thin divider, section/source/page number |
 
-### Core Decorative Design (Design DNA)
+### Design DNA
 
-1. **Refined Double Lines**: 1px main line + 3px auxiliary line combination, simulating high-end print craftsmanship.
-2. **Multi-Layer Concentric Circles**: Abstract representation of CMB's sunflower logo, adding visual depth.
-3. **Micro Dot-Matrix Texture**: Arrays of tiny dots for added visual breathing room.
-4. **Diamond Dividers**: Diamond-shaped decorations at title division points for a refined touch.
-
----
+1. Reuse the PPT's bank-red brand language, but simplify heavy PPT export artifacts into clean vector geometry.
+2. Keep cover / chapter / ending pages visually strong and brand-led.
+3. Keep content pages bright and practical for data, process, and case-study layouts.
+4. Preserve a secondary finance-blue accent to support comparison and case storytelling.
+5. Maintain content coverage ≤ 60%, ensuring visual "breathing room" on data-heavy pages.
+6. Use structured layouts (cards, grids, process flows) to organize financial data clearly.
 
 ## VI. Page Types
 
-### 1. Cover Page (01_cover.svg)
+### 1. Cover Page (`01_cover.svg`)
 
-- **Background**: White main background + bottom warm gray decorative band.
-- **Top**: Red horizontal bar + gold double lines.
-- **Decoration**: Multi-layer concentric rings at top-left, vertical decorative lines at right edge.
-- **Title Area**: Centered layout with rounded border and diamond divider line.
+- Uses the imported cover background asset `cover_bg.png`
+- Centered white typography with restrained divider lines
+- Suitable for title, subtitle, presenter, and date
 
-### 2. Table of Contents (02_toc.svg)
+### 2. Table of Contents (`02_toc.svg`)
 
-- **Header**: Fixed "目录 / CONTENTS" title.
-- **List**: Left-right dual-column **checklist layout** (no background cards).
-- **Design**: Uses "large red number + title + gold underline" combination for strong adaptability.
-- **Decoration**: Left side features vertical lines and decorative "Index" text.
+- Light page with red top strip and logo
+- Two-column indexed list for up to four agenda items
+- Red numerals + dark text for fast scanning
 
-### 3. Chapter Page (02_chapter.svg)
+### 3. Chapter Page (`02_chapter.svg`)
 
-- **Background**: Full-screen dark red background (`#9A0E26`).
-- **Visual Center**: Left-side gold vertical bar with title combination.
-- **Right Side**: Complex gold horizontal bar staircase effect + diagonal line texture.
-- **Background Text**: Giant semi-transparent chapter numbers.
+- Full-brand dark red background
+- Large translucent chapter numeral in the background
+- Left-aligned title and short chapter description
 
-### 4. Content Page (03_content.svg)
+### 4. Content Page (`03_content.svg`)
 
-- **Layout**: **Fully open layout**, removing center borders to maximize content display area.
-- **Key Message**: Top area presented with minimalist left-side red line + text, reducing visual distraction.
-- **Boundary**: Only very faint "safe area anchor points" retained at four corners.
-- **Footer**: Contains data source, page number, and chapter name.
+- Light page with a narrow red header strip and right-aligned white logo
+- Page title, section label, key message line, and open body region
+- Footer includes section name, source, and page number
 
-### 5. Ending Page (04_ending.svg)
+### 5. Ending Page (`04_ending.svg`)
 
-- **Echo**: Layout closely mirrors the cover page, creating a cohesive bookend.
-- **Contact Info**: Wide contact information card at the bottom.
-- **Decoration**: Symmetrical multi-layer gold concentric rings on left and right.
+- Reuses the cover background asset
+- Centered closing message and compact contact card
+- Suitable for formal client-facing endings
 
----
+## VII. Layout Modes
 
-## VII. Layout Patterns (Recommended)
+| Mode | Recommendation |
+| --- | --- |
+| **Process / Flow** | Use full-width body area with 3-6 horizontal stages |
+| **Case Study** | Use split columns or a left-right evidence / solution structure |
+| **Product Feature** | Use a short key message on top and modular cards below |
+| **Agenda / Sectioning** | Use TOC or chapter page instead of improvising layout headers |
 
-### 1. Key Message Layout
-- Use the top gray message bar to present a one-sentence key conclusion.
-- Pair with a single large chart or emphasized text below.
+## VIII. Spacing Specification
 
-### 2. Card Grid
-- Place 2x2 or 3x2 data cards within the white content area.
-- Recommended card backgrounds: `#FDF2F4` (light red) or `#F8F6F3` (warm gray).
-
-### 3. Split Column Comparison
-- Left side presents current state / problems; right side presents solutions / results.
-- Gold arrows can serve as logical connectors in the middle.
-
----
-
-## VIII. Spacing Guidelines
-
-| Property       | Value | Description              |
-| -------------- | ----- | ------------------------ |
-| **Base Unit**  | 4px   | All spacing should be multiples of 4px |
-| **Module Gap** | 40px  | Standard gap between major modules |
-| **Card Gap**   | 24px  | Gap between cards        |
-| **Inner Padding** | 20px | Padding inside cards    |
-| **Line Height** | 1.5  | Standard body line height |
-
----
+| Property | Value |
+| --- | --- |
+| **Base Unit** | 8px |
+| **Module Gap** | 24px |
+| **Card Gap** | 20px |
+| **Title to Body** | 44px |
+| **Footer Offset** | 32px from bottom |
 
 ## IX. SVG Technical Constraints
 
-### Mandatory Rules
-
-1. viewBox fixed at `0 0 1280 720`
-2. Background must include a full-screen `<rect>`
-3. Text wrapping via `<tspan>`
-4. Opacity must use `fill-opacity` / `stroke-opacity`
-5. Arrows must use `<polygon>`, no `marker`
-
-### Forbidden Elements (Blacklist)
-
-- `clipPath`, `mask` (clipping/masking)
-- `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
-- `foreignObject` (foreign objects)
-- `textPath` (text on path)
-- `animate`, `animateTransform`, `set` (animations)
-
-- `rgba()` color format (must use hex + opacity)
-- `<g opacity="...">` (group opacity — set individually on each element)
-
----
+1. `viewBox` must stay `0 0 1280 720`
+2. No `clipPath`, `mask`, `<style>`, `class`, `foreignObject`, `textPath`, or animation tags
+3. Use plain hex colors with `fill-opacity` / `stroke-opacity`
+4. Keep image assets semantic and minimal
+5. Prefer vector reconstruction over embedding PPT-export fragments
 
 ## X. Placeholder Specification
 
-| Placeholder           | Description        |
-| --------------------- | ------------------ |
-| `{{TITLE}}`           | Main title         |
-| `{{SUBTITLE}}`        | Subtitle           |
-| `{{AUTHOR}}`          | Presenter name     |
-| `{{DATE}}`            | Date               |
-| `{{CHAPTER_NUM}}`     | Chapter number     |
-| `{{CHAPTER_TITLE}}`   | Chapter title      |
-| `{{CHAPTER_DESC}}`    | Chapter description |
-| `{{PAGE_TITLE}}`      | Page title         |
-| `{{KEY_MESSAGE}}`     | Key message        |
-| `{{CONTENT_AREA}}`    | Content area identifier |
-| `{{TOC_ITEM_N_TITLE}}`| TOC item title (N=1..n) |
-| `{{TOC_ITEM_N_DESC}}` | TOC item description (N=1..n) |
-| `{{THANK_YOU}}`       | Closing message    |
-| `{{ENDING_SUBTITLE}}` | Ending subtitle    |
-| `{{CONTACT_INFO}}`    | Contact information |
+| Placeholder | Description |
+| --- | --- |
+| `{{TITLE}}` | Cover main title |
+| `{{SUBTITLE}}` | Cover subtitle |
+| `{{DATE}}` | Cover date |
+| `{{AUTHOR}}` | Cover presenter / organization |
+| `{{TAGLINE}}` | Cover tagline (e.g. product/service line) |
+| `{{BRAND_LINE}}` | Cover bottom brand attribution line |
+| `{{CHAPTER_NUM}}` | Chapter number |
+| `{{CHAPTER_TITLE}}` | Chapter title |
+| `{{CHAPTER_DESC}}` | Chapter description |
+| `{{PAGE_TITLE}}` | Content page title |
+| `{{KEY_MESSAGE}}` | Content page key message |
+| `{{CONTENT_AREA}}` | Content page body placeholder |
+| `{{SECTION_NAME}}` | Section label / footer section |
+| `{{SOURCE}}` | Source text |
+| `{{PAGE_NUM}}` | Page number |
+| `{{TOC_ITEM_1_TITLE}}` | TOC item 1 title |
+| `{{TOC_ITEM_1_DESC}}` | TOC item 1 description |
+| `{{TOC_ITEM_2_TITLE}}` | TOC item 2 title |
+| `{{TOC_ITEM_2_DESC}}` | TOC item 2 description |
+| `{{TOC_ITEM_3_TITLE}}` | TOC item 3 title |
+| `{{TOC_ITEM_3_DESC}}` | TOC item 3 description |
+| `{{TOC_ITEM_4_TITLE}}` | TOC item 4 title |
+| `{{TOC_ITEM_4_DESC}}` | TOC item 4 description |
+| `{{TOC_FOOTER}}` | TOC page footer description |
+| `{{THANK_YOU}}` | Ending main message |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle |
+| `{{CLOSING_MESSAGE}}` | Ending supporting sentence |
+| `{{CONTACT_NAME}}` | Ending contact person name |
+| `{{DEPARTMENT}}` | Ending department name |
+| `{{CONTACT_EMAIL}}` | Ending email address |
+| `{{CONTACT_PHONE}}` | Ending phone number |
 
----
+## XI. Asset Specification
 
-## XI. Usage Notes
+### Core Assets
 
-1. **Logo Adaptation**: Recommend using white inverted Logo.
-2. **Font Installation**: Recommend installing "Microsoft YaHei" or an equivalent sans-serif font.
-3. **Extended Colors**: If additional colors are needed, maintain the red-gold ratio unchanged.
+| Asset | Purpose |
+| --- | --- |
+| `cover_bg.png` | Cover / ending brand background (dark pages) |
+| `logo_white.png` | White brand logo for red and dark pages |
+| `logo_dark.png` | 「招商银行 \| 公司金融」dark logo for light page headers |
+
+### Optional Assets
+
+| Asset | Purpose |
+| --- | --- |
+| `page_header_bg.png` | Full-page header background reference (red accent + logo) |
+| `logo_crm_banner.png` | 「招商银行 \| CRM 4.0」red banner (product-specific, use when applicable) |
+| `ref_content_bg.png` | Content page reference layout (with building illustration, for design reference only) |
+
+### Usage Rule
+
+Core assets are wired into SVG templates. `logo_dark.png` is used on light pages (TOC, content); `logo_white.png` and `cover_bg.png` on dark pages (cover, chapter, ending). Optional assets are available for project-specific customization.
+
+## XII. Chart Specifications
+
+### Recommended Chart Dimensions
+
+| Chart Type | Recommended Size |
+| --- | --- |
+| Bar chart | 500-700 × 400px |
+| Pie chart | 300-400px diameter |
+| Data card | 160 × 120px |
+| Process flow | Full width, 100-140px height |
+| Comparison table | 1100 × 300-400px |
+
+### Chart Color Palette
+
+| Usage | Colors |
+| --- | --- |
+| Primary series | `#C8152D`, `#E26A74`, `#8F0F1B` |
+| Secondary series | `#2175D9`, `#5A9FE6` |
+| Positive indicator | `#27AE60` |
+| Negative indicator | `#E74C3C` |
+| Neutral | `#666666` |
+
+## XIII. Quality Checklist
+
+### Pre-Generation
+
+- [ ] Each page has a clear core message
+- [ ] Sufficient data/case-study support
+- [ ] Clear logical structure
+
+### Post-Generation
+
+- [ ] viewBox = `0 0 1280 720`
+- [ ] Brand Red `#C8152D` applied consistently across headers and accents
+- [ ] Key data prominently highlighted (Brand Red or Finance Blue)
+- [ ] Chart axes fully labeled
+- [ ] Text readability: contrast ratio > 4.5:1
+- [ ] Elements aligned to 8px grid
+- [ ] Header logo/strip consistent with template
+- [ ] Page numbers and source text present in footer
+- [ ] No `foreignObject`, `clipPath`, `mask`, `<style>`, or other banned tags
+- [ ] All text wrapping uses `<tspan>`, not `<foreignObject>`
+
+## XIV. Usage Instructions
+
+1. Copy the template directory to the project `templates/` folder
+2. Read this design specification to understand the visual system
+3. Select the appropriate page template for each slide
+4. Replace `company_finance_header.png` if the project is not CRM-specific
+5. Mark content to be replaced using `{{PLACEHOLDER}}` format
+6. Prioritize data charts and structured layouts; keep text concise
+7. Generate final SVGs through the Executor role
