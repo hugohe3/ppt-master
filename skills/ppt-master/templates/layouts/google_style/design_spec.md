@@ -236,8 +236,9 @@ The following SVG features are prohibited (not PPT-compatible):
 - `textPath`
 - `animate*` animation elements
 - `script`
-- `marker`, `marker-end`
 - `rgba()` color format (use HEX + opacity instead)
+
+> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval). The converter maps them to native DrawingML arrow heads.
 
 ### Shadow Implementation
 

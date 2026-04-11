@@ -199,8 +199,8 @@
 3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
 4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
 5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
-6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
-7. Use `<polygon>` triangles instead of `<marker>` for arrows
+6. Prohibited: `textPath`, `animate*`, `script`
+7. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
 8. Define gradients using `<linearGradient>` within `<defs>`
 
 ### PPT Compatibility Rules

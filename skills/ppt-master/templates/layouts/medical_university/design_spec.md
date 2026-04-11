@@ -218,8 +218,9 @@ To adapt to other medical institution branding, replace the corresponding values
 | `foreignObject`      | Use `<tspan>` for wrapping     |
 | `textPath`           | Use standard `<text>`          |
 | `animate*` / `set`   | Do not use animations          |
-| `marker-end`         | Use `<polygon>` for arrows     |
 | `<g opacity>`        | Set opacity on each element individually |
+
+> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval). The converter maps them to native DrawingML arrow heads.
 
 ---
 

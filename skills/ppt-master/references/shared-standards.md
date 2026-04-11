@@ -21,8 +21,47 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 | `@font-face` | Custom font declarations |
 | `<animate*>` / `<set>` | SVG animations |
 | `<script>` / event attributes | Scripts and interactivity |
-| `marker` / `marker-end` | Line endpoint markers |
 | `<iframe>` | Embedded frames |
+
+> **`marker-start` / `marker-end` is conditionally allowed** — see §1.1 for constraints. The converter maps qualifying markers to native DrawingML `<a:headEnd>` / `<a:tailEnd>`.
+
+---
+
+### 1.1 Line-end Markers (Conditionally Allowed)
+
+`marker-start` and `marker-end` on `<line>` and `<path>` elements are allowed **only** when the referenced `<marker>` satisfies all of the following:
+
+| Requirement | Reason |
+|-------------|--------|
+| Marker `<marker>` element defined inside `<defs>` | Converter looks up marker defs via id index |
+| `orient="auto"` | DrawingML arrow auto-rotates along the line tangent; other orient values will not round-trip |
+| Marker shape is **one of**: closed 3-vertex path/polygon (triangle), closed 4-vertex path/polygon (diamond), `<circle>` / `<ellipse>` (oval) | These three map cleanly to DrawingML `type="triangle" / "diamond" / "oval"`. Any other shape is silently dropped with a warning. |
+| Marker child's `fill` **matches** the parent line's `stroke` color | In DrawingML the arrow head inherits the line color — a mismatched marker fill will look wrong on export. |
+| `markerWidth` / `markerHeight` roughly in `3–15` range | Mapped to `sm` (<6) / `med` (6–12) / `lg` (>12) size buckets. |
+
+**Supported DrawingML mapping**:
+
+| SVG Marker Shape | DrawingML Output |
+|------------------|------------------|
+| `<path d="M0,0 L10,5 L0,10 Z"/>` (triangle) | `<a:tailEnd type="triangle" w="med" len="med"/>` |
+| `<polygon points="0,0 10,5 0,10"/>` | `<a:tailEnd type="triangle" w="med" len="med"/>` |
+| 4-vertex closed path/polygon | `<a:tailEnd type="diamond" .../>` |
+| `<circle cx="5" cy="5" r="4"/>` | `<a:tailEnd type="oval" .../>` |
+
+**Recommended template** — a standard arrow-head definition ready to reuse:
+
+```xml
+<defs>
+  <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5"
+          orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L10,5 L0,10 Z" fill="#1976D2"/>
+  </marker>
+</defs>
+<line x1="100" y1="200" x2="400" y2="200" stroke="#1976D2" stroke-width="3"
+      marker-end="url(#arrowHead)"/>
+```
+
+> ⚠️ Unclassifiable marker shapes (curved paths, multi-segment, >4 vertices, etc.) are **silently dropped** by the converter with a warning — the line will still render, but without an arrow. Fall back to manual `<polygon>` triangles when you need exotic arrow shapes.
 
 ---
 
@@ -33,9 +72,10 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 | `fill="rgba(255,255,255,0.1)"` | `fill="#FFFFFF" fill-opacity="0.1"` |
 | `<g opacity="0.2">...</g>` | Set `fill-opacity` / `stroke-opacity` on each child element individually |
 | `<image opacity="0.3"/>` | Overlay a `<rect fill="background-color" opacity="0.7"/>` mask layer after the image |
-| `marker-end` arrows | Draw triangle arrows with `<polygon>` |
 
-**Mnemonic**: PPT does not recognize rgba, group opacity, image opacity, or markers.
+**Mnemonic**: PPT does not recognize rgba, group opacity, or image opacity.
+
+> Arrows: prefer `marker-end` with a qualifying `<marker>` (see §1.1) — the converter produces native DrawingML arrow heads that auto-rotate. Fall back to manually drawn `<polygon>` triangles only for exotic arrow shapes not covered by the triangle/diamond/oval presets.
 
 ---
 
@@ -431,7 +471,9 @@ Large-arc flag: 1 (270° > 180°)
 
 ### Polygon Arrows on Diagonal Lines
 
-When using `<polygon>` triangles as arrowheads (since `marker-end` is banned), arrows on **horizontal or vertical lines** can use simple point offsets. But arrows on **diagonal lines** must have their triangle vertices rotated to match the line direction.
+> **Prefer `marker-end` first** (see §1.1) — the converter produces native DrawingML arrow heads that auto-rotate along the line tangent, eliminating the need for manual vertex math. Use this manual polygon approach only for exotic arrow shapes that cannot be expressed as triangle/diamond/oval presets.
+
+When using `<polygon>` triangles as arrowheads, arrows on **horizontal or vertical lines** can use simple point offsets. But arrows on **diagonal lines** must have their triangle vertices rotated to match the line direction.
 
 **Method**: Calculate the triangle points using the line's direction vector:
 

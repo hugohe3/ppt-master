@@ -356,7 +356,6 @@ SVG_CONSTRAINTS = {
         'style',
         # Structure / Nesting
         'foreignObject',
-        'marker',
         # Text / Fonts
         'textPath',
         # Animation / Interaction
@@ -370,12 +369,15 @@ SVG_CONSTRAINTS = {
         'iframe',
     ],
     # Forbidden attributes
+    # Note: marker-start / marker-end are NOT banned — they are conditionally
+    # allowed (see references/shared-standards.md §1.1). The svg_to_pptx
+    # converter maps qualifying <marker> defs to native DrawingML
+    # <a:headEnd>/<a:tailEnd>.
     'forbidden_attributes': [
         'class',
         'id',
         'onclick', 'onload', 'onmouseover', 'onmouseout',
         'onfocus', 'onblur', 'onchange',
-        'marker-end',
     ],
     # Forbidden patterns (regex matching)
     'forbidden_patterns': [

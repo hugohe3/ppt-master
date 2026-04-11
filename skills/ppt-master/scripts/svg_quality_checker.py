@@ -177,10 +177,14 @@ class SVGQualityChecker:
         has_use = re.search(r'<use\b', content_lower) is not None
         if has_symbol and has_use:
             result['errors'].append("Detected forbidden <symbol> + <use> complex usage (use basic shapes or simple <use> instead)")
-        if '<marker' in content_lower:
-            result['errors'].append("Detected forbidden <marker> element (PPT does not support SVG markers)")
-        if re.search(r'\bmarker-end\s*=', content_lower):
-            result['errors'].append("Detected forbidden marker-end attribute (use line + polygon instead)")
+        # marker-start / marker-end are conditionally allowed (see shared-standards.md §1.1).
+        # The converter maps qualifying <marker> defs to native DrawingML <a:headEnd>/<a:tailEnd>.
+        # We only warn when a marker is used without an obvious <defs> definition in the same file.
+        if re.search(r'\bmarker-(?:start|end)\s*=\s*["\']url\(#([^)]+)\)', content_lower):
+            if '<marker' not in content_lower:
+                result['errors'].append(
+                    "Detected marker-start/marker-end referencing a marker id, "
+                    "but no <marker> element found in the file")
 
         # Text / fonts
         if '<textpath' in content_lower:

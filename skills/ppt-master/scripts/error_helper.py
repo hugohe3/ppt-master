@@ -174,21 +174,15 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'marker_detected': {
-            'message': 'Forbidden <marker> element detected',
+        # Note: <marker> and marker-end are NO LONGER forbidden — they are
+        # conditionally allowed (see references/shared-standards.md §1.1).
+        # The converter maps qualifying markers to native DrawingML arrow heads.
+        'marker_orphan_ref': {
+            'message': 'marker-start/marker-end references a marker id, but no <marker> element is defined',
             'solutions': [
-                'Remove <marker> definitions',
-                'Use line + polygon to draw arrows',
-                'Reference the arrow drawing approach in AGENTS.md'
-            ],
-            'severity': 'error'
-        },
-        'marker_end_detected': {
-            'message': 'Forbidden marker-end attribute detected',
-            'solutions': [
-                'Remove marker-end attributes',
-                'Use line + polygon to draw arrows',
-                'Ensure arrow direction matches the line'
+                'Define the <marker> inside <defs>',
+                'Or remove the marker-start/marker-end attribute',
+                'See shared-standards.md §1.1 for marker constraints',
             ],
             'severity': 'error'
         },

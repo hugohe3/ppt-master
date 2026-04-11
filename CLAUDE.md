@@ -51,7 +51,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 
 ## SVG Technical Constraints (Non-negotiable)
 
-**Banned features**: `clipPath` | `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `marker-end` | `<iframe>` | `<symbol>+<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
+**Banned features**: `clipPath` | `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `<iframe>` | `<symbol>+<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
+
+**Conditionally allowed**: `marker-start` / `marker-end` — the referenced `<marker>` must live in `<defs>`, use `orient="auto"`, and its shape must be a triangle (3-vertex closed path/polygon), diamond (4-vertex), or circle/ellipse. The converter maps these to native DrawingML `<a:headEnd>` / `<a:tailEnd>`. See `shared-standards.md` §1.1 for full constraints.
 
 **PPT compatibility alternatives**:
 
@@ -60,7 +62,6 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 | `rgba()` | `fill-opacity` / `stroke-opacity` |
 | `<g opacity>` | Set opacity on each child element individually |
 | `<image opacity>` | Overlay with a mask layer |
-| `marker-end` arrows | `<polygon>` triangles |
 
 ## Canvas Format Quick Reference
 

@@ -250,7 +250,6 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 | `textPath` | Use plain `<text>` |
 | `animate*` | Static design |
 | `script` | No interactivity supported |
-| `marker` / `marker-end` | Use `<polygon>` triangles |
 | `rgba()` | Use HEX + `fill-opacity` |
 | `<g opacity="...">` | Set opacity on each child element individually |
 

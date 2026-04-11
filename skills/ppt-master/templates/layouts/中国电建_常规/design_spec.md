@@ -166,7 +166,7 @@
 2. Background must include a full-screen `<rect>`
 3. Text wrapping via `<tspan>`
 4. Opacity must use `fill-opacity` / `stroke-opacity`
-5. Arrows must use `<polygon>`, no `marker`
+5. `marker-start` / `marker-end` conditionally allowed — see shared-standards.md §1.1 (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval)
 
 ### Forbidden Elements (Blacklist)
 
