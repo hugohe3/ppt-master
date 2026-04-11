@@ -132,6 +132,125 @@ def build_fill_xml(
     return '<a:noFill/>'
 
 
+# ---------------------------------------------------------------------------
+# Marker (arrow-head) support
+# ---------------------------------------------------------------------------
+
+# Matches an (x, y) pair in a path "d" attribute: "M 10, 20" / "L -5 7.5" / etc.
+_MARKER_POINT_RE = re.compile(
+    r'[MLml]\s*(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)'
+)
+_MARKER_POLY_POINT_RE = re.compile(
+    r'(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)'
+)
+
+
+def _marker_size_buckets(w_attr: float, h_attr: float) -> tuple[str, str]:
+    """Map SVG markerWidth / markerHeight to DrawingML (w, len) buckets.
+
+    DrawingML arrow-end sizing is categorical: sm / med / lg.
+    Width (perpendicular to the line) maps from markerHeight;
+    length (along the line) maps from markerWidth.
+    """
+
+    def bucket(v: float) -> str:
+        if v < 6:
+            return 'sm'
+        if v > 12:
+            return 'lg'
+        return 'med'
+
+    return bucket(h_attr), bucket(w_attr)
+
+
+def _classify_marker(marker_elem: ET.Element) -> tuple[str, str, str] | None:
+    """Classify an SVG <marker> into a DrawingML line-end preset.
+
+    Returns (type, w, len) where:
+        type in {'triangle', 'stealth', 'diamond', 'oval', 'arrow'}
+        w, len in {'sm', 'med', 'lg'}
+    or None if the marker cannot be classified.
+
+    Current coverage (80/20): triangles (3-vertex closed paths or polygons),
+    diamonds (4-vertex symmetric), and circles / ellipses. Anything else
+    returns None so the caller can warn and skip.
+    """
+    mw = _f(marker_elem.get('markerWidth'), 3.0)
+    mh = _f(marker_elem.get('markerHeight'), 3.0)
+    w_bucket, len_bucket = _marker_size_buckets(mw, mh)
+
+    for child in marker_elem:
+        tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+
+        if tag in ('circle', 'ellipse'):
+            return ('oval', w_bucket, len_bucket)
+
+        if tag == 'path':
+            d = child.get('d', '')
+            if not d:
+                continue
+            points = _MARKER_POINT_RE.findall(d)
+            n = len(points)
+            closed = bool(re.search(r'[Zz]\s*$', d.strip()))
+            if n == 3 and closed:
+                return ('triangle', w_bucket, len_bucket)
+            if n == 4 and closed:
+                return ('diamond', w_bucket, len_bucket)
+            continue
+
+        if tag in ('polygon', 'polyline'):
+            pts_attr = child.get('points', '')
+            pts = _MARKER_POLY_POINT_RE.findall(pts_attr)
+            n = len(pts)
+            if n == 3:
+                return ('triangle', w_bucket, len_bucket)
+            if n == 4:
+                return ('diamond', w_bucket, len_bucket)
+            continue
+
+    return None
+
+
+def _emit_line_end(
+    elem: ET.Element,
+    ctx: ConvertContext,
+    which: str,
+) -> str:
+    """Build <a:headEnd> or <a:tailEnd> XML for an element's marker reference.
+
+    Args:
+        which: 'head' (SVG marker-start) or 'tail' (SVG marker-end).
+
+    Returns empty string if no marker, cannot resolve, or cannot classify.
+    """
+    attr = 'marker-start' if which == 'head' else 'marker-end'
+    ref = _get_attr(elem, attr, ctx)
+    if not ref or ref == 'none':
+        return ''
+
+    marker_id = resolve_url_id(ref)
+    if not marker_id or marker_id not in ctx.defs:
+        return ''
+
+    marker_elem = ctx.defs[marker_id]
+    tag = marker_elem.tag.replace(f'{{{SVG_NS}}}', '')
+    if tag != 'marker':
+        # ID collision with non-marker defs entry; ignore.
+        return ''
+
+    cls = _classify_marker(marker_elem)
+    if cls is None:
+        print(
+            f'  Warning: marker "{marker_id}" shape cannot be classified; '
+            f'skipping (supported: triangle, diamond, oval)'
+        )
+        return ''
+
+    typ, w_bucket, len_bucket = cls
+    dml_tag = 'headEnd' if which == 'head' else 'tailEnd'
+    return f'<a:{dml_tag} type="{typ}" w="{w_bucket}" len="{len_bucket}"/>'
+
+
 def build_stroke_xml(
     elem: ET.Element,
     ctx: ConvertContext,
@@ -182,11 +301,18 @@ def build_stroke_xml(
     elif linejoin == 'miter':
         join_xml = '<a:miter lim="800000"/>'
 
+    # Line-end markers (SVG marker-start / marker-end → <a:headEnd>/<a:tailEnd>)
+    # DrawingML schema order is: fill → prstDash → join → headEnd → tailEnd,
+    # so these must be appended after join_xml.
+    head_end = _emit_line_end(elem, ctx, 'head')
+    tail_end = _emit_line_end(elem, ctx, 'tail')
+    line_ends = head_end + tail_end
+
     # Gradient stroke
     grad_id = resolve_url_id(stroke)
     if grad_id and grad_id in ctx.defs:
         grad_fill = build_gradient_fill(ctx.defs[grad_id], opacity)
-        return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}{join_xml}</a:ln>'
+        return f'<a:ln w="{width_emu}"{cap_attr}>{grad_fill}{dash_xml}{join_xml}{line_ends}</a:ln>'
 
     # Solid color stroke
     color = parse_hex_color(stroke)
@@ -198,7 +324,7 @@ def build_stroke_xml(
         alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
 
     return f'''<a:ln w="{width_emu}"{cap_attr}>
-<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>{dash_xml}{join_xml}
+<a:solidFill><a:srgbClr val="{color}">{alpha_xml}</a:srgbClr></a:solidFill>{dash_xml}{join_xml}{line_ends}
 </a:ln>'''
 
 

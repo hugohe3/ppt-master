@@ -88,14 +88,14 @@
               font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
             <tspan>Threat of New Entrants</tspan>
         </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
         <rect x="-120" y="-5" width="90" height="10" rx="5" fill="#FFFFFF"/>
         <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="bold" fill="#FFFFFF">
             <tspan>Medium</tspan>
         </text>
         <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
             <tspan>Capital barriers, Tech accumulation needed</tspan>
         </text>
     </g>
@@ -108,14 +108,14 @@
               font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
             <tspan>Bargaining Power of Buyers</tspan>
         </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
         <rect x="-120" y="-5" width="135" height="10" rx="5" fill="#FFFFFF"/>
         <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="bold" fill="#FFFFFF">
             <tspan>High</tspan>
         </text>
         <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
             <tspan>Many choices, Low switching costs</tspan>
         </text>
     </g>
@@ -128,14 +128,14 @@
               font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
             <tspan>Threat of Substitutes</tspan>
         </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
         <rect x="-120" y="-5" width="54" height="10" rx="5" fill="#FFFFFF"/>
         <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="bold" fill="#FFFFFF">
             <tspan>Low</tspan>
         </text>
         <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
             <tspan>Few effective alternatives</tspan>
         </text>
     </g>
@@ -148,14 +148,14 @@
               font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
             <tspan>Bargaining Power of Suppliers</tspan>
         </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
         <rect x="-120" y="-5" width="108" height="10" rx="5" fill="#FFFFFF"/>
         <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="bold" fill="#FFFFFF">
             <tspan>Medium-High</tspan>
         </text>
         <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
             <tspan>Cloud vendors concentrated</tspan>
         </text>
     </g>
@@ -168,14 +168,14 @@
               font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
             <tspan>Competitive Rivalry</tspan>
         </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="rgba(255,255,255,0.3)"/>
+        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
         <rect x="-120" y="-5" width="162" height="10" rx="5" fill="#FFFFFF"/>
         <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="12" font-weight="bold" fill="#FFFFFF">
             <tspan>Very High</tspan>
         </text>
         <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
             <tspan>Many competitors, Price wars common</tspan>
         </text>
     </g>

@@ -78,7 +78,7 @@
         <!-- Data rows: x = 200 + (value/100) * 900 -->
         
         <!-- Row 1: US - Overall:78 Innovation:68 Diffusion:75 Adaptation:80 -->
-        <g class="data-row" transform="translate(0, 30)">
+        <g transform="translate(0, 30)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>US</tspan></text>
             <line x1="812" y1="0" x2="920" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -89,7 +89,7 @@
         </g>
         
         <!-- Row 2: Singapore - Overall:72 Innovation:55 Diffusion:68 Adaptation:75 -->
-        <g class="data-row" transform="translate(0, 78)">
+        <g transform="translate(0, 78)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Singapore</tspan></text>
             <line x1="695" y1="0" x2="875" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -100,7 +100,7 @@
         </g>
         
         <!-- Row 3: UK - Overall:70 Innovation:52 Diffusion:65 Adaptation:78 -->
-        <g class="data-row" transform="translate(0, 126)">
+        <g transform="translate(0, 126)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>UK</tspan></text>
             <line x1="668" y1="0" x2="902" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -111,7 +111,7 @@
         </g>
         
         <!-- Row 4: Switzerland - Overall:68 Innovation:50 Diffusion:62 Adaptation:76 -->
-        <g class="data-row" transform="translate(0, 174)">
+        <g transform="translate(0, 174)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Switzerland</tspan></text>
             <line x1="650" y1="0" x2="884" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -122,7 +122,7 @@
         </g>
         
         <!-- Row 5: Sweden - Overall:65 Innovation:45 Diffusion:58 Adaptation:78 -->
-        <g class="data-row" transform="translate(0, 222)">
+        <g transform="translate(0, 222)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Sweden</tspan></text>
             <line x1="605" y1="0" x2="902" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -133,7 +133,7 @@
         </g>
         
         <!-- Row 6: South Korea - Overall:62 Innovation:48 Diffusion:55 Adaptation:65 -->
-        <g class="data-row" transform="translate(0, 270)">
+        <g transform="translate(0, 270)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>South Korea</tspan></text>
             <line x1="632" y1="0" x2="785" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -144,7 +144,7 @@
         </g>
         
         <!-- Row 7: Germany - Overall:58 Innovation:42 Diffusion:52 Adaptation:68 -->
-        <g class="data-row" transform="translate(0, 318)">
+        <g transform="translate(0, 318)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Germany</tspan></text>
             <line x1="578" y1="0" x2="812" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -155,7 +155,7 @@
         </g>
         
         <!-- Row 8: China - Overall:52 Innovation:38 Diffusion:45 Adaptation:55 -->
-        <g class="data-row" transform="translate(0, 366)">
+        <g transform="translate(0, 366)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>China</tspan></text>
             <line x1="542" y1="0" x2="695" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -166,7 +166,7 @@
         </g>
         
         <!-- Row 9: Brazil - Overall:35 Innovation:18 Diffusion:28 Adaptation:38 -->
-        <g class="data-row" transform="translate(0, 414)">
+        <g transform="translate(0, 414)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Brazil</tspan></text>
             <line x1="362" y1="0" x2="542" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
@@ -177,7 +177,7 @@
         </g>
         
         <!-- Row 10: Argentina - Overall:28 Innovation:12 Diffusion:22 Adaptation:32 -->
-        <g class="data-row" transform="translate(0, 462)">
+        <g transform="translate(0, 462)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#333333" text-anchor="end"><tspan>Argentina</tspan></text>
             <line x1="308" y1="0" x2="488" y2="0" stroke="#CCCCCC" stroke-width="1.5"/>
