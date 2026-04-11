@@ -39,9 +39,9 @@ pip install -r requirements.txt
 
 If your contribution involves SVG files, follow the technical constraints documented in [CLAUDE.md](./CLAUDE.md):
 
-- Do not use: `clipPath`, `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `<animate*>`, `<script>`, `marker-end`, `<symbol>+<use>`
+- Do not use: `clipPath`, `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `<animate*>`, `<script>`, `<symbol>+<use>`
 - Use `fill-opacity` / `stroke-opacity` instead of `rgba()`
-- Use `<polygon>` triangles instead of `marker-end` arrows
+- `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 for the constraints (must live in `<defs>`, `orient="auto"`, shape must be triangle / diamond / oval)
 - All SVGs must use the correct `viewBox` for the target canvas format
 
 ## Reporting Bugs

@@ -297,10 +297,10 @@ This template emulates the visual language of telecom technical reports. The cor
 3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
 4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
 5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed)
-6. Prohibited: `textPath`, `animate*`, `script`, `marker`/`marker-end`
+6. Prohibited: `textPath`, `animate*`, `script`
 7. Prohibited: `<symbol>+<use>`, `<iframe>`, `@font-face`
 8. Prohibited: `<g opacity="...">` (group opacity) — set opacity on each child element individually
-9. Use `<polygon>` triangles instead of `<marker>` for arrows
+9. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
 10. Use only system fonts and inline styles
 
 ### PPT Compatibility Rules

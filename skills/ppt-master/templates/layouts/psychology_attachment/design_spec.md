@@ -339,7 +339,8 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 | **Structure/Nesting** | `<foreignObject>`                   |
 | **Text/Font**      | `textPath`, `@font-face`               |
 | **Animation/Interaction** | `<animate*>`, `<set>`, `on*`    |
-| **Markers/Arrows** | `marker`, `marker-end`                  |
+
+> `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (marker must be in `<defs>`, `orient="auto"`, shape = triangle / diamond / oval).
 
 ### PPT Compatibility Rules
 

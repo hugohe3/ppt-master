@@ -242,8 +242,8 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
 4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
 5. FORBIDDEN: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
-6. FORBIDDEN: `textPath`, `animate*`, `script`, `marker`/`marker-end`
-7. Arrows use `<polygon>` triangles instead of `<marker>`
+6. FORBIDDEN: `textPath`, `animate*`, `script`
+7. `marker-start` / `marker-end` conditionally allowed: `<marker>` must be in `<defs>`, `orient="auto"`, shape must be triangle / diamond / circle (see shared-standards.md §1.1)
 
 ### PPT Compatibility Rules:
 
