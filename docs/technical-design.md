@@ -35,10 +35,9 @@ User Input (PDF/DOCX/URL/Markdown)
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: Two files are generated automatically:
-    ├── presentation.pptx        ← Native shapes (DrawingML) — recommended for editing & delivery
-    └── presentation_svg.pptx   ← SVG reference version — pixel-perfect visual reference; use
-                                    "Convert to Shape" in PowerPoint to unlock individual elements
+Output: Two timestamped files saved to exports/:
+    ├── presentation_<timestamp>.pptx      ← Native shapes (DrawingML) — recommended for editing & delivery
+    └── presentation_<timestamp>_svg.pptx ← SVG snapshot — pixel-perfect visual reference backup
 ```
 
 ---

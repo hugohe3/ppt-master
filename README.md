@@ -89,7 +89,7 @@ AI:  Sure. Let's confirm the design spec:
 
 The AI handles everything — content analysis, visual design, SVG generation, and PPTX export.
 
-> **Output:** The `.pptx` file contains native shapes — directly editable. A second `_svg.pptx` reference file is also generated (use "Convert to Shape" in PowerPoint to edit). Requires Office 2016+.
+> **Output:** Two timestamped files are saved to `exports/` — a native-shapes `.pptx` (directly editable) and an `_svg.pptx` snapshot for visual reference. Requires Office 2016+.
 
 > **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
 

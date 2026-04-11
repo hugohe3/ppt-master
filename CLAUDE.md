@@ -35,7 +35,7 @@ python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 # ✅ Confirm no errors before running the next command
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
-# Default: generates two files — native shapes (.pptx) + SVG reference (_svg.pptx)
+# Output: exports/<project_name>_<timestamp>.pptx + exports/<project_name>_<timestamp>_svg.pptx
 # Use --only native  to skip SVG reference version
 # Use --only legacy  to only generate SVG image version
 ```
