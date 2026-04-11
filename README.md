@@ -7,6 +7,8 @@
 
 English | [中文](./README_CN.md)
 
+> This repository is initiated and maintained by Hugo He, a finance and investment professional with qualifications including CPA, CPV, and Consulting Engineer (Investment), and an open-source product builder focused on turning complex professional workflows into usable tools and products.
+
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
 **What makes it different:**
