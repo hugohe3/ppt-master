@@ -17,12 +17,13 @@ python3 scripts/image_gen.py --list-backends
 Support tiers:
 - Core: `gemini`, `openai`, `qwen`, `zhipu`, `volcengine`
 - Extended: `stability`, `bfl`, `ideogram`
-- Experimental: `siliconflow`, `fal`, `replicate`
+- Experimental: `minimax`, `siliconflow`, `fal`, `replicate`
 
 Backend selection:
 
 ```bash
 python3 scripts/image_gen.py "A cat" --backend openai
+python3 scripts/image_gen.py "A cinematic portrait" --backend minimax
 python3 scripts/image_gen.py "A product launch hero image" --backend qwen
 python3 scripts/image_gen.py "科技感背景图" --backend zhipu
 python3 scripts/image_gen.py "A product KV in cinematic style" --backend volcengine
@@ -54,7 +55,7 @@ export GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 Current process environment wins over `.env`.
 
-Use provider-specific keys only, such as `GEMINI_API_KEY`, `OPENAI_API_KEY`, `QWEN_API_KEY`, `ZHIPU_API_KEY`, `VOLCENGINE_API_KEY`, `FAL_KEY`, or `REPLICATE_API_TOKEN`.
+Use provider-specific keys only, such as `GEMINI_API_KEY`, `OPENAI_API_KEY`, `MINIMAX_API_KEY`, `QWEN_API_KEY`, `ZHIPU_API_KEY`, `VOLCENGINE_API_KEY`, `FAL_KEY`, or `REPLICATE_API_TOKEN`.
 
 `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
 

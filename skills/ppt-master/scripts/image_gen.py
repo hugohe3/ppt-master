@@ -7,6 +7,7 @@ Dispatches to the appropriate backend based on explicit provider configuration.
 Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment):
   IMAGE_BACKEND=gemini     -> Gemini backend (google-genai SDK)
   IMAGE_BACKEND=openai     -> OpenAI-compatible backend (openai SDK)
+  IMAGE_BACKEND=minimax    -> MiniMax image backend
   IMAGE_BACKEND=stability  -> Stability AI backend
   IMAGE_BACKEND=bfl        -> Black Forest Labs FLUX backend
   IMAGE_BACKEND=ideogram   -> Ideogram backend
@@ -45,6 +46,7 @@ IMAGE_ENV_PREFIXES = (
     "IMAGE_",
     "GEMINI_",
     "OPENAI_",
+    "MINIMAX_",
     "STABILITY_",
     "BFL_",
     "IDEOGRAM_",
@@ -90,6 +92,14 @@ BACKEND_REGISTRY = {
         "default_model": "gpt-image-1",
         "key_hint": "OPENAI_API_KEY",
         "aliases": ["openai-compatible", "openai_compatible"],
+    },
+    "minimax": {
+        "module": "backend_minimax",
+        "tier": "experimental",
+        "label": "MiniMax Image",
+        "default_model": "image-01",
+        "key_hint": "MINIMAX_API_KEY",
+        "aliases": ["minimaxi"],
     },
     "qwen": {
         "module": "backend_qwen",
