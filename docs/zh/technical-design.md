@@ -35,10 +35,9 @@
     ↓
 [后处理] → total_md_split.py（拆分讲稿）→ finalize_svg.py → svg_to_pptx.py
     ↓
-输出: 自动生成两个文件：
-    ├── presentation.pptx        ← 原生形状版（DrawingML）— 推荐用于编辑与交付
-    └── presentation_svg.pptx   ← SVG 参考版 — 像素级视觉参考；在 PowerPoint 中选中内容
-                                    后使用"转换为形状"可解锁单独元素的编辑
+输出: 两个带时间戳的文件保存至 exports/：
+    ├── presentation_<timestamp>.pptx      ← 原生形状版（DrawingML）— 推荐用于编辑与交付
+    └── presentation_<timestamp>_svg.pptx ← SVG 快照版 — 像素级视觉参考备份
 ```
 
 ---

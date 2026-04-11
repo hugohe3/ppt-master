@@ -38,7 +38,7 @@ python3 scripts/svg_to_pptx.py <project_path> -s final --auto-advance 3
 ```
 
 Behavior:
-- Default output: native editable PPTX + SVG reference PPTX
+- Default output: timestamped pair in `exports/` — `<project_name>_<timestamp>.pptx` (native editable) + `<project_name>_<timestamp>_svg.pptx` (SVG snapshot)
 - Recommended source directory: `svg_final/`
 - Speaker notes are embedded automatically unless `--no-notes` is used
 

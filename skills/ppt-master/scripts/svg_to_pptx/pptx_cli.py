@@ -25,7 +25,7 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f'''
 Examples:
-    %(prog)s examples/ppt169_demo -s final    # Default: native + SVG reference (two files)
+    %(prog)s examples/ppt169_demo -s final    # Default: timestamped pair saved to exports/
     %(prog)s examples/ppt169_demo --only native   # Only native shapes version
     %(prog)s examples/ppt169_demo --only legacy   # Only SVG image version
     %(prog)s examples/ppt169_demo -o out.pptx     # Explicit path (SVG ref -> out_svg.pptx)
@@ -128,8 +128,10 @@ Speaker notes (enabled by default):
         stem = output_base.stem
         legacy_path = output_base.parent / f"{stem}_svg{output_base.suffix}"
     else:
-        native_path = project_path / f"{project_name}_{timestamp}.pptx"
-        legacy_path = project_path / f"{project_name}_{timestamp}_svg.pptx"
+        exports_dir = project_path / "exports"
+        exports_dir.mkdir(parents=True, exist_ok=True)
+        native_path = exports_dir / f"{project_name}_{timestamp}.pptx"
+        legacy_path = exports_dir / f"{project_name}_{timestamp}_svg.pptx"
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
 

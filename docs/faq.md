@@ -6,7 +6,7 @@
 
 ## Q: Can I edit the generated presentations?
 
-Yes! The default export (`.pptx`) produces **native PowerPoint shapes** — all text, graphics, and colors are directly editable in PowerPoint without any conversion. An SVG reference version (`_svg.pptx`) is also generated; for that file, select the content and use **"Convert to Shape"** to unlock editing. Requires **Office 2016** or later.
+Yes! Both files are saved to `exports/` with a timestamp. The native `.pptx` produces **native PowerPoint shapes** — all text, graphics, and colors are directly editable without any conversion. The `_svg.pptx` is an SVG snapshot kept as a visual reference backup. Requires **Office 2016** or later.
 
 ## Q: What's the difference between the three Executors?
 

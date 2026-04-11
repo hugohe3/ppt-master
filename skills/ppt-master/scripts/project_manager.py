@@ -128,6 +128,7 @@ class ProjectManager:
             "notes",
             "templates",
             SOURCE_DIRNAME,
+            "exports",
         ):
             (project_path / rel_path).mkdir(parents=True, exist_ok=True)
 
@@ -145,6 +146,7 @@ class ProjectManager:
                 "- `notes/`: speaker notes\n"
                 "- `templates/`: project templates\n"
                 "- `sources/`: source materials and normalized markdown\n"
+                "- `exports/`: generated PPTX files (timestamped history)\n"
             ),
             encoding="utf-8",
         )
