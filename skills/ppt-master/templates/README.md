@@ -23,7 +23,7 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 
 ## Visualization Templates
 
-The `charts/` directory contains 33 standard visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks:
+The `charts/` directory contains 52 standardized visualization templates. For backward compatibility, the directory name remains `charts/`, but its scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks:
 
 - KPI Cards
 - Bar Chart / Stacked Bar Chart
@@ -42,10 +42,11 @@ The `charts/` directory contains 33 standard visualization templates. For backwa
 
 ## Icon Library
 
-The `icons/` directory contains 6000+ vector icons from [Tabler Icons](https://tabler.io/icons), organized in two active libraries:
+The `icons/` directory contains 6700+ vector icons across three active libraries:
 
 | Library | Style | Count |
 |---------|-------|-------|
+| `chunk` | fill / straight-line geometry | 640 |
 | `tabler-filled` | fill / solid | 1000+ |
 | `tabler-outline` | stroke / line | 5000+ |
 

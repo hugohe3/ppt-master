@@ -208,28 +208,7 @@ Core assets are wired into SVG templates. `logo_dark.png` is used on light pages
 | Negative indicator | `#E74C3C` |
 | Neutral | `#666666` |
 
-## XIII. Quality Checklist
-
-### Pre-Generation
-
-- [ ] Each page has a clear core message
-- [ ] Sufficient data/case-study support
-- [ ] Clear logical structure
-
-### Post-Generation
-
-- [ ] viewBox = `0 0 1280 720`
-- [ ] Brand Red `#C8152D` applied consistently across headers and accents
-- [ ] Key data prominently highlighted (Brand Red or Finance Blue)
-- [ ] Chart axes fully labeled
-- [ ] Text readability: contrast ratio > 4.5:1
-- [ ] Elements aligned to 8px grid
-- [ ] Header logo/strip consistent with template
-- [ ] Page numbers and source text present in footer
-- [ ] No `foreignObject`, `clipPath`, `mask`, `<style>`, or other banned tags
-- [ ] All text wrapping uses `<tspan>`, not `<foreignObject>`
-
-## XIV. Usage Instructions
+## XIII. Usage Instructions
 
 1. Copy the template directory to the project `templates/` folder
 2. Read this design specification to understand the visual system

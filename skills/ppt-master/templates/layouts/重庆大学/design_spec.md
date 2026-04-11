@@ -230,14 +230,3 @@ Small circle elements representing the nighttime lights of the Mountain City:
 | `{{CONTACT_INFO}}`   | Contact information    |
 | `{{TOC_ITEM_N_TITLE}}` | TOC item title       |
 | `{{TOC_ITEM_N_DESC}}`  | TOC item description  |
-
----
-
-## XI. Design Checklist
-
-- [ ] viewBox = `0 0 1280 720`
-- [ ] Diagonal block angles are consistent (8-12°)
-- [ ] Logo version matches background
-- [ ] Colors conform to specification
-- [ ] Wave decorations are correctly positioned
-- [ ] Text is readable (>=11px)

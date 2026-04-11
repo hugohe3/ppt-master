@@ -273,22 +273,3 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 3. Use placeholders to mark content that needs replacement
 4. Ensure presenter info and advisor info are complete
 5. Generate the final SVG through the Executor role
-
----
-
-## XIII. Design Checklist
-
-### Before Generation
-
-- [ ] Is the content suitable for the current page layout
-- [ ] Does the color scheme follow the specification
-- [ ] Is the font size hierarchy correct
-
-### After Generation
-
-- [ ] viewBox = `0 0 1280 720`
-- [ ] No prohibited elements
-- [ ] Text is readable (≥12px)
-- [ ] Content is within the safe area
-- [ ] Elements are properly aligned
-- [ ] Style consistency check passed
