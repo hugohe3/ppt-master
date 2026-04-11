@@ -247,6 +247,37 @@ def _emit_line_end(
         return ''
 
     typ, w_bucket, len_bucket = cls
+
+    # Reclassify size buckets based on markerUnits semantics:
+    #
+    # markerUnits="strokeWidth" (SVG default):
+    #   markerWidth IS a ratio to stroke-width, and DrawingML headEnd/tailEnd
+    #   also scale proportionally with line width.  We should compare the ratio
+    #   (markerWidth) directly against ratio-based thresholds — do NOT multiply
+    #   by stroke-width, because that double-counts the scaling.
+    #   Empirical DrawingML arrow ratios:
+    #     sm  ≈ 1.5×  stroke-width  →  markerWidth ≤ 2.0
+    #     med ≈ 2.5×  stroke-width  →  markerWidth  2.0 – 3.5
+    #     lg  ≈ 3.5×  stroke-width  →  markerWidth ≥ 3.5
+    #
+    # markerUnits="userSpaceOnUse":
+    #   markerWidth/Height are absolute pixel values – keep the existing
+    #   absolute-pixel thresholds from _marker_size_buckets (6 / 12).
+    marker_units = marker_elem.get('markerUnits', 'strokeWidth')
+    if marker_units != 'userSpaceOnUse':
+        mw = _f(marker_elem.get('markerWidth'), 3.0)
+        mh = _f(marker_elem.get('markerHeight'), 3.0)
+
+        def _ratio_bucket(v: float) -> str:
+            if v <= 2.0:
+                return 'sm'
+            if v >= 3.5:
+                return 'lg'
+            return 'med'
+
+        w_bucket = _ratio_bucket(mh)    # h → perpendicular width
+        len_bucket = _ratio_bucket(mw)  # w → length along line
+
     dml_tag = 'headEnd' if which == 'head' else 'tailEnd'
     return f'<a:{dml_tag} type="{typ}" w="{w_bucket}" len="{len_bucket}"/>'
 

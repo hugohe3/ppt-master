@@ -312,7 +312,13 @@ def convert_circle(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 # ---------------------------------------------------------------------------
 
 def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
-    """Convert SVG <line> to DrawingML custom geometry shape."""
+    """Convert SVG <line> to DrawingML shape.
+
+    Lines with marker-start / marker-end are converted using the 'line' preset
+    geometry (prstGeom prst="line") so that PowerPoint renders native arrow
+    heads (headEnd / tailEnd) correctly.  Plain lines (no markers) continue to
+    use custom geometry which is sufficient and avoids flipH/flipV complexity.
+    """
     x1 = ctx_x(_f(elem.get('x1')), ctx)
     y1 = ctx_y(_f(elem.get('y1')), ctx)
     x2 = ctx_x(_f(elem.get('x2')), ctx)
@@ -320,25 +326,6 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     min_x = min(x1, x2)
     min_y = min(y1, y2)
-    w = max(abs(x2 - x1), 1)
-    h = max(abs(y2 - y1), 1)
-
-    w_emu = px_to_emu(w)
-    h_emu = px_to_emu(h)
-
-    lx1 = px_to_emu(x1 - min_x)
-    ly1 = px_to_emu(y1 - min_y)
-    lx2 = px_to_emu(x2 - min_x)
-    ly2 = px_to_emu(y2 - min_y)
-
-    geom = f'''<a:custGeom>
-<a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>
-<a:rect l="l" t="t" r="r" b="b"/>
-<a:pathLst><a:path w="{w_emu}" h="{h_emu}">
-<a:moveTo><a:pt x="{lx1}" y="{ly1}"/></a:moveTo>
-<a:lnTo><a:pt x="{lx2}" y="{ly2}"/></a:lnTo>
-</a:path></a:pathLst>
-</a:custGeom>'''
 
     stroke_op = get_stroke_opacity(elem, ctx)
     stroke = build_stroke_xml(elem, ctx, stroke_op)
@@ -353,12 +340,97 @@ def convert_line(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shape_id = ctx.next_id()
     off_x = px_to_emu(min_x)
     off_y = px_to_emu(min_y)
-    return ShapeResult(
-        xml=_wrap_shape(
+
+    # Determine if this line carries arrow markers.
+    has_marker = bool(
+        _get_attr(elem, 'marker-start', ctx) or
+        _get_attr(elem, 'marker-end', ctx)
+    )
+
+    if has_marker:
+        # ----------------------------------------------------------------
+        # Preset geometry approach: prstGeom prst="line"
+        # PowerPoint only renders headEnd / tailEnd on lines whose geometry
+        # it can intrinsically understand as a "line" (i.e. preset or
+        # connector shapes).  Custom geometry shapes silently ignore
+        # headEnd / tailEnd in most PowerPoint versions.
+        #
+        # The "line" preset draws from (0,0) to (w,h).
+        #   headEnd  → placed at the start of the line = (x1, y1)
+        #   tailEnd  → placed at the end   of the line = (x2, y2)
+        # We set flipH / flipV so that the preset start/end align with the
+        # original SVG endpoints:
+        #   default  (no flip)  : top-left  → bottom-right  (x1≤x2, y1≤y2)
+        #   flipH               : top-right → bottom-left   (x1>x2, y1≤y2)
+        #   flipV               : bottom-left → top-right   (x1≤x2, y1>y2)
+        #   flipH + flipV       : bottom-right → top-left   (x1>x2, y1>y2)
+        # ----------------------------------------------------------------
+        w = abs(x2 - x1)
+        h = abs(y2 - y1)
+        # DrawingML requires ext cx/cy ≥ 1 EMU
+        w_emu = px_to_emu(w) if w > 0 else 1
+        h_emu = px_to_emu(h) if h > 0 else 1
+
+        flip_h = x1 > x2
+        flip_v = y1 > y2
+        flip_attr = ''
+        if flip_h and flip_v:
+            flip_attr = ' flipH="1" flipV="1"'
+        elif flip_h:
+            flip_attr = ' flipH="1"'
+        elif flip_v:
+            flip_attr = ' flipV="1"'
+
+        rot_attr = f' rot="{rot}"' if rot else ''
+        xml = (
+            f'<p:sp>'
+            f'<p:nvSpPr>'
+            f'<p:cNvPr id="{shape_id}" name="{_xml_escape(f"Line {shape_id}")}"/>'
+            f'<p:cNvSpPr/><p:nvPr/>'
+            f'</p:nvSpPr>'
+            f'<p:spPr>'
+            f'<a:xfrm{flip_attr}{rot_attr}>'
+            f'<a:off x="{off_x}" y="{off_y}"/>'
+            f'<a:ext cx="{w_emu}" cy="{h_emu}"/>'
+            f'</a:xfrm>'
+            f'<a:prstGeom prst="line"><a:avLst/></a:prstGeom>'
+            f'<a:noFill/>'
+            f'{stroke}'
+            f'</p:spPr>'
+            f'</p:sp>'
+        )
+    else:
+        # ----------------------------------------------------------------
+        # Custom geometry (original behaviour) for plain lines.
+        # ----------------------------------------------------------------
+        w = max(abs(x2 - x1), 1)
+        h = max(abs(y2 - y1), 1)
+        w_emu = px_to_emu(w)
+        h_emu = px_to_emu(h)
+
+        lx1 = px_to_emu(x1 - min_x)
+        ly1 = px_to_emu(y1 - min_y)
+        lx2 = px_to_emu(x2 - min_x)
+        ly2 = px_to_emu(y2 - min_y)
+
+        geom = (
+            f'<a:custGeom>'
+            f'<a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>'
+            f'<a:rect l="l" t="t" r="r" b="b"/>'
+            f'<a:pathLst><a:path w="{w_emu}" h="{h_emu}">'
+            f'<a:moveTo><a:pt x="{lx1}" y="{ly1}"/></a:moveTo>'
+            f'<a:lnTo><a:pt x="{lx2}" y="{ly2}"/></a:lnTo>'
+            f'</a:path></a:pathLst>'
+            f'</a:custGeom>'
+        )
+        xml = _wrap_shape(
             shape_id, f'Line {shape_id}',
             off_x, off_y, w_emu, h_emu,
             geom, '<a:noFill/>', stroke, rot=rot,
-        ),
+        )
+
+    return ShapeResult(
+        xml=xml,
         bounds_emu=(off_x, off_y, off_x + w_emu, off_y + h_emu),
     )
 
