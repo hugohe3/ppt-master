@@ -846,19 +846,197 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
 
 # ---------------------------------------------------------------------------
+# clipPath support (image clipping)
+# ---------------------------------------------------------------------------
+
+def _clip_commands_to_geom(
+    commands: list[PathCommand],
+    img_x: float, img_y: float,
+    img_w: float, img_h: float,
+    object_bbox: bool,
+) -> str:
+    """Convert clip path commands to DrawingML custGeom XML.
+
+    Coordinates are transformed relative to the image bounding box so that
+    (img_x, img_y) maps to (0, 0) and (img_x+img_w, img_y+img_h) maps to
+    (w_emu, h_emu).
+    """
+    w_emu = px_to_emu(img_w)
+    h_emu = px_to_emu(img_h)
+
+    if w_emu <= 0 or h_emu <= 0:
+        return '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+
+    def _tx(x: float) -> int:
+        if object_bbox:
+            return int(x * w_emu)
+        return px_to_emu(x - img_x)
+
+    def _ty(y: float) -> int:
+        if object_bbox:
+            return int(y * h_emu)
+        return px_to_emu(y - img_y)
+
+    parts: list[str] = []
+    for cmd in commands:
+        if cmd.cmd == 'M':
+            parts.append(
+                f'<a:moveTo><a:pt x="{_tx(cmd.args[0])}" '
+                f'y="{_ty(cmd.args[1])}"/></a:moveTo>'
+            )
+        elif cmd.cmd == 'L':
+            parts.append(
+                f'<a:lnTo><a:pt x="{_tx(cmd.args[0])}" '
+                f'y="{_ty(cmd.args[1])}"/></a:lnTo>'
+            )
+        elif cmd.cmd == 'C':
+            pts = ''.join(
+                f'<a:pt x="{_tx(cmd.args[i])}" y="{_ty(cmd.args[i + 1])}"/>'
+                for i in range(0, 6, 2)
+            )
+            parts.append(f'<a:cubicBezTo>{pts}</a:cubicBezTo>')
+        elif cmd.cmd == 'Z':
+            parts.append('<a:close/>')
+
+    path_inner = '\n'.join(parts)
+    return f'''<a:custGeom>
+<a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>
+<a:rect l="l" t="t" r="r" b="b"/>
+<a:pathLst><a:path w="{w_emu}" h="{h_emu}">
+{path_inner}
+</a:path></a:pathLst>
+</a:custGeom>'''
+
+
+def _resolve_clip_geometry(
+    elem: ET.Element,
+    ctx: ConvertContext,
+    raw_x: float, raw_y: float,
+    raw_w: float, raw_h: float,
+) -> str:
+    """Resolve clip-path on an image element to DrawingML geometry XML.
+
+    Supports:
+      - circle / ellipse  → prstGeom ellipse
+      - rect with rx/ry   → prstGeom roundRect
+      - path / polygon     → custGeom
+
+    Args:
+        elem: SVG element bearing a clip-path attribute.
+        ctx:  Conversion context (carries defs).
+        raw_x, raw_y: Image position in SVG space (pre-ctx-transform).
+        raw_w, raw_h: Image dimensions in SVG space (pre-ctx-transform).
+
+    Returns:
+        DrawingML geometry XML string.
+    """
+    DEFAULT = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+
+    clip_ref = elem.get('clip-path', '')
+    if not clip_ref or clip_ref == 'none':
+        return DEFAULT
+
+    clip_id = resolve_url_id(clip_ref)
+    if not clip_id or clip_id not in ctx.defs:
+        return DEFAULT
+
+    clip_elem = ctx.defs[clip_id]
+    clip_tag = clip_elem.tag.replace(f'{{{SVG_NS}}}', '')
+    if clip_tag != 'clipPath':
+        return DEFAULT
+
+    # Find the first shape child of the clipPath
+    shape = None
+    for child in clip_elem:
+        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if child_tag in ('circle', 'ellipse', 'rect', 'path', 'polygon'):
+            shape = child
+            break
+
+    if shape is None:
+        return DEFAULT
+
+    shape_tag = shape.tag.replace(f'{{{SVG_NS}}}', '')
+    is_obb = clip_elem.get('clipPathUnits') == 'objectBoundingBox'
+
+    # --- Circle / Ellipse → preset ellipse ---
+    if shape_tag in ('circle', 'ellipse'):
+        return '<a:prstGeom prst="ellipse"><a:avLst/></a:prstGeom>'
+
+    # --- Rect with rx/ry → preset roundRect ---
+    if shape_tag == 'rect':
+        rx = _f(shape.get('rx'))
+        ry = _f(shape.get('ry'), rx)
+        if rx <= 0 and ry <= 0:
+            return DEFAULT  # plain rect clip is a no-op
+        r = max(rx, ry)
+        if is_obb:
+            r = r * min(raw_w, raw_h)
+        shorter = min(raw_w, raw_h)
+        if shorter <= 0:
+            return DEFAULT
+        adj = int(min(r / (shorter / 2), 1.0) * 50000)
+        return (
+            f'<a:prstGeom prst="roundRect"><a:avLst>'
+            f'<a:gd name="adj" fmla="val {adj}"/>'
+            f'</a:avLst></a:prstGeom>'
+        )
+
+    # --- Path → custGeom ---
+    if shape_tag == 'path':
+        d = shape.get('d', '')
+        if not d:
+            return DEFAULT
+        commands = parse_svg_path(d)
+        commands = svg_path_to_absolute(commands)
+        commands = normalize_path_commands(commands)
+        if not commands:
+            return DEFAULT
+        return _clip_commands_to_geom(
+            commands, raw_x, raw_y, raw_w, raw_h, is_obb,
+        )
+
+    # --- Polygon → custGeom ---
+    if shape_tag == 'polygon':
+        pts = _parse_points(shape.get('points', ''))
+        if not pts:
+            return DEFAULT
+        commands = [PathCommand('M', [pts[0][0], pts[0][1]])]
+        for px_, py_ in pts[1:]:
+            commands.append(PathCommand('L', [px_, py_]))
+        commands.append(PathCommand('Z', []))
+        return _clip_commands_to_geom(
+            commands, raw_x, raw_y, raw_w, raw_h, is_obb,
+        )
+
+    return DEFAULT
+
+
+# ---------------------------------------------------------------------------
 # image
 # ---------------------------------------------------------------------------
 
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
-    """Convert SVG <image> to DrawingML picture element."""
+    """Convert SVG <image> to DrawingML picture element.
+
+    Supports clip-path attribute: when present, the clipPath shape is mapped
+    to DrawingML picture geometry (prstGeom or custGeom) so the image is
+    natively clipped in PowerPoint.
+    """
     href = elem.get('href') or elem.get(f'{{{XLINK_NS}}}href')
     if not href:
         return None
 
-    x = ctx_x(_f(elem.get('x')), ctx)
-    y = ctx_y(_f(elem.get('y')), ctx)
-    w = ctx_w(_f(elem.get('width')), ctx)
-    h = ctx_h(_f(elem.get('height')), ctx)
+    # Raw coordinates (pre-context-transform) for clip path calculations
+    raw_x = _f(elem.get('x'))
+    raw_y = _f(elem.get('y'))
+    raw_w = _f(elem.get('width'))
+    raw_h = _f(elem.get('height'))
+
+    x = ctx_x(raw_x, ctx)
+    y = ctx_y(raw_y, ctx)
+    w = ctx_w(raw_w, ctx)
+    h = ctx_h(raw_h, ctx)
 
     if w <= 0 or h <= 0:
         return None
@@ -905,6 +1083,9 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
             rot = int(float(r_match.group(1)) * ANGLE_UNIT)
     rot_attr = f' rot="{rot}"' if rot else ''
 
+    # Resolve clip-path → DrawingML geometry
+    clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
+
     shape_id = ctx.next_id()
     off_x = px_to_emu(x)
     off_y = px_to_emu(y)
@@ -924,7 +1105,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <p:spPr>
 <a:xfrm{rot_attr}><a:off x="{off_x}" y="{off_y}"/>
 <a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
-<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+{clip_geom}
 </p:spPr>
 </p:pic>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
 
