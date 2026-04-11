@@ -8,6 +8,17 @@
       - 对比: 不同类型节点视觉区分
       - 重复: 统一的卡片样式和连接线
       - 亲密性: 相关步骤分组，流程线清晰
+    复用建议:
+      - 连接线箭头继续使用 marker-end / marker-start
+      - 若某一处需要“实心粗箭头”强调迁移方向，应增加独立闭合 path / polygon，而不是把 marker 放大
+
+    可复用片段 1: 横向 block arrow（单个强调箭头）
+      <path d="M120,160 H520 V110 L760,280 L520,450 V400 H120 Z"
+            fill="#6FA0E8" stroke="#3F76C8" stroke-width="4"/>
+
+    可复用片段 2: 紧凑型 block arrow（卡片间迁移强调）
+      <path d="M0,0 H180 V-24 L270,36 L180,96 V72 H0 Z"
+            fill="#A7C4F5" stroke="#4A7FD1" stroke-width="3"/>
     -->
 
     <defs>

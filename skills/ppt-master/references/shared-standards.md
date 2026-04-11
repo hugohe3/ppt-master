@@ -39,6 +39,12 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 | Marker child's `fill` **matches** the parent line's `stroke` color | In DrawingML the arrow head inherits the line color — a mismatched marker fill will look wrong on export. |
 | `markerWidth` / `markerHeight` roughly in `3–15` range | Mapped to `sm` (<6) / `med` (6–12) / `lg` (>12) size buckets. |
 
+**Use boundary**:
+
+- Use `marker-start` / `marker-end` only for connector arrows where the line is primary.
+- Do **not** use `marker` for block / chunky / wide solid arrows where the arrow body is the main visual object.
+- For those solid arrows, draw a standalone closed `<path>` / `<polygon>` and reference `templates/charts/chevron_process.svg` or `templates/charts/process_flow.svg`.
+
 **Supported DrawingML mapping**:
 
 | SVG Marker Shape | DrawingML Output |
@@ -75,7 +81,7 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 
 **Mnemonic**: PPT does not recognize rgba, group opacity, or image opacity.
 
-> Arrows: prefer `marker-end` with a qualifying `<marker>` (see §1.1) — the converter produces native DrawingML arrow heads that auto-rotate. Fall back to manually drawn `<polygon>` triangles only for exotic arrow shapes not covered by the triangle/diamond/oval presets.
+> Arrows: prefer `marker-end` with a qualifying `<marker>` (see §1.1) for connector lines — the converter produces native DrawingML arrow heads that auto-rotate. For block arrows / chunky arrows, use a standalone closed shape instead of `marker`; see `templates/charts/chevron_process.svg` for phase arrows and `templates/charts/process_flow.svg` for mixed flow layouts.
 
 ---
 
@@ -471,7 +477,7 @@ Large-arc flag: 1 (270° > 180°)
 
 ### Polygon Arrows on Diagonal Lines
 
-> **Prefer `marker-end` first** (see §1.1) — the converter produces native DrawingML arrow heads that auto-rotate along the line tangent, eliminating the need for manual vertex math. Use this manual polygon approach only for exotic arrow shapes that cannot be expressed as triangle/diamond/oval presets.
+> For connector lines, prefer `marker-end` / `marker-start` (see §1.1). For chunky / wide solid / non-connector arrows, use standalone polygon or path geometry instead of `marker`.
 
 When using `<polygon>` triangles as arrowheads, arrows on **horizontal or vertical lines** can use simple point offsets. But arrows on **diagonal lines** must have their triangle vertices rotated to match the line direction.
 

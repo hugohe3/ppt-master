@@ -175,8 +175,8 @@
     },
     "process_flow": {
       "label": "Process Flow",
-      "summary": "Sequential process steps and stage relationships (3-8 steps)",
-      "keywords": ["process", "steps", "flowchart", "methodology"]
+      "summary": "Sequential process steps, connector arrows, and stage relationships (3-8 steps)",
+      "keywords": ["process", "steps", "flowchart", "methodology", "connector arrow", "line arrow", "marker arrow"]
     },
     "progress_bar_chart": {
       "label": "Progress Bar Chart",
@@ -300,8 +300,8 @@
     },
     "chevron_process": {
       "label": "Chevron Process",
-      "summary": "Arrow-chain linear phase progression with deliverables (3-6 phases)",
-      "keywords": ["chevron", "arrow chain", "phase", "methodology", "implementation"]
+      "summary": "Arrow-chain linear phase progression with chunky stage arrows and deliverables (3-6 phases)",
+      "keywords": ["chevron", "arrow chain", "block arrow", "chunky arrow", "solid arrow", "phase", "methodology", "implementation"]
     },
     "comparison_columns": {
       "label": "Comparison Columns",
