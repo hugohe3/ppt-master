@@ -10,7 +10,6 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 
 | Banned Feature | Description |
 |----------------|-------------|
-| `clipPath` | Clipping paths |
 | `mask` | Masks |
 | `<style>` | Embedded stylesheets |
 | `class` | CSS selector attributes (`id` inside `<defs>` is a legitimate reference and is NOT banned) |
@@ -24,6 +23,8 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 | `<iframe>` | Embedded frames |
 
 > **`marker-start` / `marker-end` is conditionally allowed** — see §1.1 for constraints. The converter maps qualifying markers to native DrawingML `<a:headEnd>` / `<a:tailEnd>`.
+>
+> **`clipPath` on `<image>` is conditionally allowed** — see §1.2 for constraints. The converter maps qualifying clip shapes to native DrawingML picture geometry (`<a:prstGeom>` or `<a:custGeom>`).
 
 ---
 
@@ -68,6 +69,59 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 ```
 
 > ⚠️ Unclassifiable marker shapes (curved paths, multi-segment, >4 vertices, etc.) are **silently dropped** by the converter with a warning — the line will still render, but without an arrow. Fall back to manual `<polygon>` triangles when you need exotic arrow shapes.
+
+---
+
+### 1.2 Image Clipping (Conditionally Allowed)
+
+`clip-path` on `<image>` elements is allowed when the referenced `<clipPath>` satisfies the following:
+
+| Requirement | Reason |
+|-------------|--------|
+| `<clipPath>` element defined inside `<defs>` | Converter looks up clip defs via id index |
+| Contains a **single** shape child | First child is used; multiple children are not composited |
+| Shape is one of: `<circle>`, `<ellipse>`, `<rect>` (with rx/ry), `<path>`, `<polygon>` | These map to DrawingML geometry (preset or custom) |
+| Used **only on `<image>` elements** | Non-image elements with clip-path are **forbidden** |
+
+**Use boundary**:
+
+- Use `clip-path` **only** for cropping `<image>` elements into non-rectangular shapes (circular avatars, rounded photo frames, hexagonal portraits, etc.).
+- Do **not** use `clip-path` on shapes (`<rect>`, `<circle>`, `<path>`, `<g>`, `<text>`, etc.) — draw the target shape directly instead. A rect clipped to a circle is just a circle; draw the `<circle>`.
+- PowerPoint's SVG renderer **does not render `clipPath` correctly** (images become invisible, shapes lose clipping). The Native PPTX converter handles it, but the SVG reference version will display incorrectly.
+
+**Supported DrawingML mapping**:
+
+| SVG Clip Shape | DrawingML Output | Use Case |
+|----------------|------------------|----------|
+| `<circle>` / `<ellipse>` | `<a:prstGeom prst="ellipse"/>` | Circular avatar, oval frame |
+| `<rect rx="..."/>` | `<a:prstGeom prst="roundRect"/>` with adj value | Rounded rectangle photo frame |
+| `<path>` / `<polygon>` | `<a:custGeom>` with path commands | Hexagon, diamond, custom shape |
+
+**Recommended template** — circular image clip:
+
+```xml
+<defs>
+  <clipPath id="avatarClip">
+    <circle cx="200" cy="200" r="100"/>
+  </clipPath>
+</defs>
+<image href="../images/photo.jpg" x="100" y="100" width="200" height="200"
+       clip-path="url(#avatarClip)" preserveAspectRatio="xMidYMid slice"/>
+```
+
+**Rounded rectangle clip** — for card-style image frames:
+
+```xml
+<defs>
+  <clipPath id="cardClip">
+    <rect x="60" y="120" width="400" height="250" rx="16"/>
+  </clipPath>
+</defs>
+<image href="../images/banner.jpg" x="60" y="120" width="400" height="250"
+       clip-path="url(#cardClip)" preserveAspectRatio="xMidYMid slice"/>
+```
+
+> ⚠️ `clip-path` on non-image elements is **FORBIDDEN** — the quality checker will report it as an error. For shapes, draw the target geometry directly; for groups, restructure the layout.
 
 ---
 
