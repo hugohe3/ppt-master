@@ -110,7 +110,7 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 | **C** | Built-in icon library | Professional scenarios (recommended) |
 | **D** | Custom icons | Has brand assets |
 
-Built-in library contains 7000+ icons across three libraries:
+Built-in library contains 6700+ icons across three libraries:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
@@ -348,7 +348,7 @@ The Strategist should make professional judgments on the template basis generate
 | B) General Consulting | Structured logical sections; data-driven insights | Consulting-style colors, structured content layout | Professional terms, data interpretation, conclusion-first |
 | C) Top Consulting | SCQA framework, pyramid principle conclusion-first | Data contextualization, strategic color usage | Highly condensed, logically rigorous, conclusion-driven |
 
-### 6.2 Outline Output Specification (Must include 12 chapters)
+### 6.2 Outline Output Specification (Must include 11 chapters)
 
 | Chapter | Content Requirements |
 |---------|---------------------|
@@ -363,8 +363,6 @@ The Strategist should make professional judgments on the template basis generate
 | IX. Content Outline | Grouped by chapter; each page includes layout, title, content points, visualization type (if applicable) |
 | X. Speaker Notes Requirements | File naming rules, content structure description |
 | XI. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
-| XII. Design Checklist | Pre-generation / post-generation check items |
-| XIII. Next Steps | Clarify subsequent pipeline (Image_Generator or Executor) |
 
 **Generation steps**:
 1. Read reference template: `templates/design_spec_reference.md`
@@ -387,7 +385,7 @@ The Strategist saves the Design Specification & Content Outline to `projects/<pr
 
 ## 8. Complete Design Spec and Prompt Next Steps
 
-Prompt the next step based on the confirmed template option and image usage selection.
+After writing `design_spec.md`, provide the next-step prompt based on the confirmed template option and image usage selection. This prompt is a workflow handoff instruction, not a section inside `design_spec.md`.
 
 ### Template Option A (Using existing template)
 

@@ -182,8 +182,8 @@ def get_project_info(project_path: str) -> Dict:
     # Check README.md
     info['has_readme'] = (project_path / 'README.md').exists()
 
-    # Check design specification files (multiple possible names)
-    spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
+    # Check design specification files (current standard + legacy names)
+    spec_files = ['design_spec.md', '设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
     for spec_file in spec_files:
         if (project_path / spec_file).exists():
             info['has_spec'] = True
@@ -256,10 +256,10 @@ def validate_project_structure(project_path: str, verbose: bool = False) -> Tupl
         errors.append(msg)
 
     # Check design specification file
-    spec_files = ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
+    spec_files = ['design_spec.md', '设计规范与内容大纲.md', 'design_specification.md', '设计规范.md']
     has_spec = any((project_path / f).exists() for f in spec_files)
     if not has_spec:
-        msg = "Missing design specification file (suggested filename: design_specification.md)"
+        msg = "Missing design specification file (suggested filename: design_spec.md)"
         if use_helper and verbose:
             msg += "\n" + ErrorHelper.format_error_message('missing_spec')
         warnings.append(msg)
@@ -373,7 +373,7 @@ def find_all_projects(base_dir: str) -> List[Path]:
             # Check if it's a valid project directory (contains svg_output or design spec)
             has_svg_output = (item / 'svg_output').exists()
             has_spec = any((item / f).exists() for f in
-                           ['设计规范与内容大纲.md', 'design_specification.md', '设计规范.md'])
+                           ['design_spec.md', '设计规范与内容大纲.md', 'design_specification.md', '设计规范.md'])
 
             if has_svg_output or has_spec:
                 projects.append(item)

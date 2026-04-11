@@ -234,29 +234,7 @@ Templates use `{{PLACEHOLDER}}` format placeholders. Common placeholders:
 
 ---
 
-## XII. Quality Checklist
-
-### Pre-Generation
-
-- [ ] Each page has a clear core message
-- [ ] Sufficient data support
-- [ ] Clear logical structure
-
-### Post-Generation
-
-- [ ] viewBox = `0 0 1280 720`
-- [ ] McKinsey Blue consistently applied
-- [ ] Key data prominently highlighted (Amber/Coral)
-- [ ] Chart axes fully labeled
-- [ ] Text readability is good (contrast ratio > 4.5:1)
-- [ ] Elements precisely aligned (grid alignment)
-- [ ] Page numbers/footer information complete
-- [ ] No `<foreignObject>`
-- [ ] All text uses `<tspan>` for line breaks
-
----
-
-## XIII. Usage Instructions
+## XII. Usage Instructions
 
 1. Copy the template to the project directory
 2. Select the appropriate page template based on briefing content requirements

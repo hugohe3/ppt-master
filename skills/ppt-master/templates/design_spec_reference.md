@@ -1,5 +1,7 @@
 # {project_name} - Design Spec
 
+> This document is the unified handoff artifact for design definition and execution constraints. It combines visual specifications, content outline, speaker-notes requirements, and implementation boundaries needed by downstream roles.
+
 ## I. Project Information
 
 | Item | Value |
@@ -152,7 +154,7 @@
 
 ### Source
 
-- **Built-in icon library**: `templates/icons/` (640+ icons)
+- **Built-in icon library**: `templates/icons/` (6700+ icons across three libraries)
 - **Usage method**: Placeholder format `{{icon:category/icon-name}}`
 
 ### Recommended Icon List (fill as needed)
@@ -250,33 +252,3 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 - `<g opacity="...">` FORBIDDEN (group opacity); set on each child element individually
 - Image transparency uses overlay mask layer (`<rect fill="bg-color" opacity="0.x"/>`)
 - Inline styles only; external CSS and `@font-face` FORBIDDEN
-
----
-
-## XII. Design Checklist
-
-### Pre-generation
-
-- [ ] Content fits page capacity
-- [ ] Layout mode selected correctly
-- [ ] Colors used semantically
-
-### Post-generation
-
-- [ ] viewBox = `{canvas_info['viewbox']}`
-- [ ] No `<foreignObject>` elements
-- [ ] All text readable (>=14px)
-- [ ] Content within safe area
-- [ ] All elements aligned to grid
-- [ ] Same elements maintain consistent style
-- [ ] Colors conform to spec
-- [ ] CRAP four-principle check passed
-
----
-
-## XIII. Next Steps
-
-1. ✅ Design spec complete
-2. **Next step**: [Choose based on image approach]
-   - No AI images → Invoke **Executor** role to generate SVGs
-   - Has AI images → Invoke **Image_Generator** role, then invoke Executor after completion

@@ -1,6 +1,6 @@
-# SVG Visualization Template Library (33 Types)
+# SVG Visualization Template Library (52 Types)
 
-This directory provides **33 standardized SVG visualization templates** for use as structured visualization selection references in PPT Master.
+This directory provides **52 standardized SVG visualization templates** for use as structured visualization selection references in PPT Master.
 
 > For backward compatibility, the directory remains `templates/charts/`, but the library scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks.
 

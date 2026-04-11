@@ -66,7 +66,7 @@ File naming format: `<number>_<page_name>.svg`
 
 ## 4. Icon Usage
 
-Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6000+ icons, recommended) | **D: Custom** (user-specified)
+Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6700+ icons, recommended) | **D: Custom** (user-specified)
 
 **Built-in icons — Placeholder method (recommended)**:
 
