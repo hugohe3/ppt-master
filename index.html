@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPT Master - AI 驱动的 SVG 演示文稿生成系统</title>
+    <title>PPT Master — AI generates natively editable PPTX from any document</title>
+    <meta name="description" content="Drop in a PDF, DOCX, URL, or Markdown — get back a natively editable PowerPoint with real shapes, not images. Open source, 20 templates, 15 live examples.">
+    <meta property="og:title" content="PPT Master — AI generates natively editable PPTX">
+    <meta property="og:description" content="Drop in any document, get back a natively editable PowerPoint with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.">
+    <meta property="og:image" content="https://hugohe3.github.io/ppt-master/docs/assets/screenshots/preview_tech_claude_plans.png">
+    <meta property="og:url" content="https://hugohe3.github.io/ppt-master/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PPT Master — AI generates natively editable PPTX">
+    <meta name="twitter:description" content="Drop in any document, get back a natively editable PowerPoint with real shapes. Not images. Open source.">
+    <meta name="twitter:image" content="https://hugohe3.github.io/ppt-master/docs/assets/screenshots/preview_tech_claude_plans.png">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
     <style>
@@ -82,6 +92,49 @@
             opacity: 0.95;
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        .header-cta {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-btn.primary {
+            background: #fff;
+            color: var(--primary);
+        }
+
+        .cta-btn.primary:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .cta-btn.secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
         }
 
         .stats {
@@ -327,6 +380,11 @@
                 font-size: 1.8rem;
             }
 
+            .header-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
             .stats {
                 gap: 20px;
             }
@@ -352,19 +410,23 @@
         <div class="header-content">
             <div class="logo">🎨</div>
             <h1>PPT Master</h1>
-            <p>AI 驱动的多格式 SVG 内容生成系统，通过四角色协作将来源文档转化为高质量演示文稿</p>
+            <p>AI generates natively editable PPTX from any document — real PowerPoint shapes, not images</p>
+            <div class="header-cta">
+                <a href="https://github.com/hugohe3/ppt-master" class="cta-btn primary" target="_blank">Star on GitHub</a>
+                <a href="https://github.com/hugohe3/ppt-master#quick-start" class="cta-btn secondary" target="_blank">Get Started</a>
+            </div>
             <div class="stats">
                 <div class="stat">
                     <div class="stat-value">15</div>
-                    <div class="stat-label">示例项目</div>
+                    <div class="stat-label">Examples</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value">229+</div>
-                    <div class="stat-label">SVG 页面</div>
+                    <div class="stat-label">Pages</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">风格分类</div>
+                    <div class="stat-value">20</div>
+                    <div class="stat-label">Templates</div>
                 </div>
             </div>
         </div>
@@ -372,10 +434,10 @@
 
     <nav class="nav">
         <div class="nav-content">
-            <button class="nav-btn active" data-filter="all">全部项目</button>
-            <button class="nav-btn" data-filter="consulting">🏢 咨询风格</button>
-            <button class="nav-btn" data-filter="general">🎨 通用灵活</button>
-            <button class="nav-btn" data-filter="creative">✨ 创意风格</button>
+            <button class="nav-btn active" data-filter="all">All Projects</button>
+            <button class="nav-btn" data-filter="consulting">🏢 Consulting</button>
+            <button class="nav-btn" data-filter="general">🎨 General</button>
+            <button class="nav-btn" data-filter="creative">✨ Creative</button>
         </div>
     </nav>
 
@@ -387,12 +449,12 @@
 
     <footer class="footer">
         <div class="footer-links">
-            <a href="https://github.com/hugohe3/ppt-master" target="_blank">📦 GitHub 仓库</a>
-            <a href="./README.md" target="_blank">📖 项目文档</a>
-            <a href="./skills/ppt-master/SKILL.md" target="_blank">📚 工作流教程</a>
-            <a href="./skills/ppt-master/templates/icons/" target="_blank">🎯 图标库</a>
+            <a href="https://github.com/hugohe3/ppt-master" target="_blank">📦 GitHub</a>
+            <a href="https://github.com/hugohe3/ppt-master#quick-start" target="_blank">📖 Quick Start</a>
+            <a href="https://github.com/hugohe3/ppt-master/blob/main/docs/faq.md" target="_blank">❓ FAQ</a>
+            <a href="https://github.com/hugohe3/ppt-master/discussions" target="_blank">💬 Discussions</a>
         </div>
-        <p class="footer-copy">PPT Master © 2025 · AI 驱动的演示文稿生成系统</p>
+        <p class="footer-copy">PPT Master © 2025–2026 · Made with ❤️ by <a href="https://www.hehugo.com/" target="_blank" style="color: var(--primary-light); text-decoration: none;">Hugo He</a></p>
     </footer>
 
     <script>
