@@ -24,17 +24,18 @@ from .drawingml_elements import (
 # Transform & layout helpers
 # ---------------------------------------------------------------------------
 
-def parse_transform(transform_str: str) -> tuple[float, float, float, float]:
-    """Parse SVG transform string, extract translate and scale.
+def parse_transform(transform_str: str) -> tuple[float, float, float, float, float]:
+    """Parse SVG transform string, extract translate, scale, and rotate.
 
     Returns:
-        (dx, dy, sx, sy) tuple.
+        (dx, dy, sx, sy, angle_deg) tuple.
     """
     if not transform_str:
-        return 0.0, 0.0, 1.0, 1.0
+        return 0.0, 0.0, 1.0, 1.0, 0.0
 
     dx, dy = 0.0, 0.0
     sx, sy = 1.0, 1.0
+    angle_deg = 0.0
 
     m = re.search(r'translate\(\s*([-\d.]+)[\s,]+([-\d.]+)\s*\)', transform_str)
     if m:
@@ -46,7 +47,11 @@ def parse_transform(transform_str: str) -> tuple[float, float, float, float]:
         sx = float(m.group(1))
         sy = float(m.group(2)) if m.group(2) else sx
 
-    return dx, dy, sx, sy
+    m = re.search(r'rotate\(\s*([-\d.]+)', transform_str)
+    if m:
+        angle_deg = float(m.group(1))
+
+    return dx, dy, sx, sy, angle_deg
 
 
 # ---------------------------------------------------------------------------
@@ -63,7 +68,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     keep their absolute slide coordinates unchanged.
     """
     transform = elem.get('transform', '')
-    dx, dy, sx, sy = parse_transform(transform)
+    dx, dy, sx, sy, angle_deg = parse_transform(transform)
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
@@ -112,6 +117,9 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if filter_id and filter_id in ctx.defs:
         group_effect = build_effect_xml(ctx.defs[filter_id])
 
+    rot_emu = int(angle_deg * 60000)
+    rot_attr = f' rot="{rot_emu}"' if rot_emu else ''
+
     return ShapeResult(xml=f'''<p:grpSp>
 <p:nvGrpSpPr>
 <p:cNvPr id="{group_id}" name="Group {group_id}"/>
@@ -119,7 +127,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <p:nvPr/>
 </p:nvGrpSpPr>
 <p:grpSpPr>
-<a:xfrm>
+<a:xfrm{rot_attr}>
 <a:off x="{group_x}" y="{group_y}"/>
 <a:ext cx="{group_w}" cy="{group_h}"/>
 <a:chOff x="{group_x}" y="{group_y}"/>
