@@ -9,7 +9,7 @@ English | [中文](./README_CN.md)
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
-  <a href="https://www.hehugo.com/"><strong>Author's Site</strong></a> ·
+  <a href="https://www.hehugo.com/"><strong>About Hugo He</strong></a> ·
   <a href="./examples/"><strong>Examples</strong></a> ·
   <a href="./docs/faq.md"><strong>FAQ</strong></a> ·
   <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>

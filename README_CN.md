@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>在线预览</strong></a> ·
-  <a href="https://www.hehugo.com/"><strong>作者主页</strong></a> ·
+  <a href="https://www.hehugo.com/"><strong>关于何雨果</strong></a> ·
   <a href="./examples/"><strong>示例</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
