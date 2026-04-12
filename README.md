@@ -61,7 +61,7 @@ This project is my attempt to bridge the gap between **domain expertise** and **
 
 ## Quick Start
 
-### 1. Install
+### 1. Prerequisites
 
 **Required:** [Python](https://www.python.org/downloads/) 3.10+ · **Optional:** [Node.js](https://nodejs.org/) 18+ (for WeChat page conversion) · [Pandoc](https://pandoc.org/) (for DOCX/EPUB conversion)
 
@@ -79,14 +79,6 @@ sudo apt install pandoc          # optional
 # Windows — download from python.org, nodejs.org, pandoc.org
 ```
 
-```bash
-git clone https://github.com/hugohe3/ppt-master.git
-cd ppt-master
-pip install -r requirements.txt
-```
-
-To update later: `python3 skills/ppt-master/scripts/update_repo.py`
-
 ### 2. Pick an AI Editor
 
 | Tool | Rating | Notes |
@@ -95,7 +87,17 @@ To update later: `python3 skills/ppt-master/scripts/update_repo.py`
 | [Cursor](https://cursor.sh/) / [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | Good alternatives |
 | Codebuddy IDE | ⭐⭐ | Best for Chinese models (Kimi 2.5, MiniMax 2.7) |
 
-### 3. Create
+### 3. Set Up
+
+```bash
+git clone https://github.com/hugohe3/ppt-master.git
+cd ppt-master
+pip install -r requirements.txt
+```
+
+To update later: `python3 skills/ppt-master/scripts/update_repo.py`
+
+### 4. Create
 
 Open the AI chat panel and describe what you want:
 
@@ -115,7 +117,7 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
 
-### 4. AI Image Generation (Optional)
+### 5. AI Image Generation (Optional)
 
 ```bash
 cp .env.example .env    # then edit with your API key
