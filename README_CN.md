@@ -117,6 +117,8 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **AI 迷失上下文？** 让它先读 `skills/ppt-master/SKILL.md`。
 
+> **遇到问题？** 查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
+
 ### 5. AI 生图配置（可选）
 
 ```bash
@@ -146,7 +148,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
 | 💼 | [示例](./examples/README.md) | 15 个项目，229 页 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |
-| ❓ | [常见问题](./docs/zh/faq.md) | 费用、编辑、自定义模板 |
+| ❓ | [常见问题](./docs/zh/faq.md) | 模型选择、费用、排版问题排查、自定义模板 |
 
 ---
 
