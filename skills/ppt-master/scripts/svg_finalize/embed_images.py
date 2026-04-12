@@ -53,13 +53,72 @@ def get_file_size_str(size_bytes: int) -> str:
     else:
         return f"{size_bytes / (1024 * 1024):.1f} MB"
 
-def embed_images_in_svg(svg_path: str, dry_run: bool = False) -> tuple[int, int]:
+def _optimize_image_bytes(img_bytes: bytes, mime_type: str,
+                          compress: bool = False,
+                          max_dimension: int | None = None) -> bytes:
+    """Optionally compress and/or downscale image bytes.
+
+    Returns the (possibly optimized) image bytes. Falls back to the
+    original bytes if PIL is not available or optimization fails.
+    """
+    if not compress and not max_dimension:
+        return img_bytes
+
+    try:
+        from PIL import Image as PILImage
+        import io
+    except ImportError:
+        return img_bytes
+
+    try:
+        img = PILImage.open(io.BytesIO(img_bytes))
+    except Exception:
+        return img_bytes
+
+    changed = False
+
+    # Downscale if exceeding max_dimension
+    if max_dimension:
+        w, h = img.size
+        if w > max_dimension or h > max_dimension:
+            ratio = min(max_dimension / w, max_dimension / h)
+            new_w, new_h = int(w * ratio), int(h * ratio)
+            img = img.resize((new_w, new_h), PILImage.LANCZOS)
+            changed = True
+
+    # Compress
+    if compress or changed:
+        buf = io.BytesIO()
+        if mime_type == 'image/jpeg':
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            img.save(buf, format='JPEG', quality=85, optimize=True)
+        elif mime_type == 'image/png':
+            img.save(buf, format='PNG', optimize=True)
+        else:
+            # For other formats, just re-save
+            fmt = img.format or 'PNG'
+            img.save(buf, format=fmt)
+
+        optimized = buf.getvalue()
+        # Only use optimized version if it's actually smaller
+        if len(optimized) < len(img_bytes):
+            return optimized
+
+    return img_bytes
+
+
+def embed_images_in_svg(svg_path: str, dry_run: bool = False,
+                        compress: bool = False,
+                        max_dimension: int | None = None) -> tuple[int, int]:
     """
     Convert externally referenced images in an SVG file to Base64 inline format.
 
     Args:
         svg_path: SVG file path
         dry_run: If True, only show which images would be processed without modifying the file
+        compress: If True, compress images before embedding (JPEG quality=85, PNG optimize)
+        max_dimension: If set, downscale images exceeding this dimension on either axis
 
     Returns:
         tuple: (number of images processed, file size after embedding)
@@ -93,23 +152,32 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False) -> tuple[int, int]
         
         if not os.path.exists(full_path):
             print(f"  [WARN] Image not found: {img_path}")
-            images_found.append((img_path, "NOT FOUND", 0))
+            images_found.append((img_path, "NOT FOUND", 0, None))
             return match.group(0)
-        
+
         img_size = os.path.getsize(full_path)
-        
+
         if dry_run:
-            images_found.append((img_path, "WILL EMBED", img_size))
+            images_found.append((img_path, "WILL EMBED", img_size, None))
             return match.group(0)
         
         with open(full_path, 'rb') as img_file:
             img_bytes = img_file.read()
-            b64_data = base64.b64encode(img_bytes).decode('utf-8')
 
         mime_type = get_mime_type(img_path, img_bytes)
+        optimized_bytes = _optimize_image_bytes(
+            img_bytes, mime_type, compress=compress, max_dimension=max_dimension)
+        b64_data = base64.b64encode(optimized_bytes).decode('utf-8')
+
         images_embedded += 1
-        images_found.append((img_path, "EMBEDDED", img_size))
-        
+        saved = len(img_bytes) - len(optimized_bytes)
+        if saved > 0 and (compress or max_dimension):
+            pct = saved / len(img_bytes) * 100
+            images_found.append((img_path, "EMBEDDED", img_size,
+                                 f"{get_file_size_str(len(img_bytes))} → {get_file_size_str(len(optimized_bytes))}, saved {pct:.0f}%"))
+        else:
+            images_found.append((img_path, "EMBEDDED", img_size, None))
+
         return f'href="data:{mime_type};base64,{b64_data}"'
     
     new_content = re.sub(pattern, replace_with_base64, content)
@@ -119,10 +187,13 @@ def embed_images_in_svg(svg_path: str, dry_run: bool = False) -> tuple[int, int]
     # Print processed images
     if images_found:
         print(f"\n[FILE] {os.path.basename(svg_path)}")
-        for img_path, status, size in images_found:
+        for img_path, status, size, opt_info in images_found:
             size_str = get_file_size_str(size) if size > 0 else ""
             if status == "EMBEDDED":
-                print(f"   [OK] {img_path} ({size_str})")
+                if opt_info:
+                    print(f"   [OK] {img_path} ({opt_info})")
+                else:
+                    print(f"   [OK] {img_path} ({size_str})")
             elif status == "WILL EMBED":
                 print(f"   [PREVIEW] {img_path} ({size_str}) [dry-run]")
             else:
@@ -151,11 +222,19 @@ Examples:
     parser.add_argument('files', nargs='+', help='SVG files to process')
     parser.add_argument('--dry-run', '-n', action='store_true',
                         help='Only show which images would be processed, without modifying files')
-    
+    parser.add_argument('--compress', action='store_true',
+                        help='Compress images before embedding (JPEG quality=85, PNG optimize)')
+    parser.add_argument('--max-dimension', type=int, default=None,
+                        help='Downscale images exceeding this dimension on either axis (e.g., 2560)')
+
     args = parser.parse_args()
-    
+
     if args.dry_run:
         print("[INFO] Dry-run mode: only preview, no modification\n")
+    if args.compress:
+        print("[INFO] Compression enabled: JPEG quality=85, PNG optimize")
+    if args.max_dimension:
+        print(f"[INFO] Max dimension: {args.max_dimension}px")
     
     total_images = 0
     total_files = 0
@@ -169,7 +248,9 @@ Examples:
             print(f"[SKIP] Skipping non-SVG file: {svg_file}")
             continue
         
-        images, _ = embed_images_in_svg(svg_file, dry_run=args.dry_run)
+        images, _ = embed_images_in_svg(svg_file, dry_run=args.dry_run,
+                                        compress=args.compress,
+                                        max_dimension=args.max_dimension)
         if images > 0:
             total_images += images
             total_files += 1

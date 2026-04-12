@@ -83,6 +83,12 @@ Every image must be output in the following format:
 | General Versatile | Modern illustration, flat design | `modern`, `flat design`, `gradient`, `vibrant colors` |
 | General Consulting | Clean professional, corporate | `professional`, `clean`, `corporate`, `minimalist` |
 | Top Consulting | Premium minimal, abstract geometric | `premium`, `sophisticated`, `geometric`, `abstract`, `elegant` |
+| Technology / SaaS | Futuristic, digital | `futuristic`, `digital`, `tech grid`, `circuit pattern`, `neon accents`, `dark background` |
+| Education / Training | Friendly, instructional | `friendly`, `instructional`, `whiteboard style`, `pastel colors`, `simple shapes` |
+| Marketing / Branding | Bold, energetic | `bold`, `energetic`, `dynamic composition`, `vivid colors`, `action-oriented` |
+| Healthcare / Medical | Clean, reassuring | `clean`, `clinical`, `soft blue-green palette`, `organic curves`, `reassuring` |
+| Finance / Banking | Conservative, trustworthy | `conservative`, `trustworthy`, `blue-gray palette`, `structured`, `precise` |
+| Creative / Design | Artistic, experimental | `artistic`, `experimental`, `asymmetric`, `textured`, `hand-crafted feel` |
 
 ### 2.4 Color Integration Method
 
@@ -107,6 +113,26 @@ Full directive: "color palette: deep navy blue (#1E3A5F), light gray (#F8F9FA), 
 | Story | 9:16 | 1080x1920 |
 
 > Supported aspect ratios: `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9` (Gemini also supports `1:4`, `1:8`, `4:1`, `8:1`)
+
+### 2.6 Multi-Image Coherence Strategy
+
+When generating multiple images for a single deck, visual coherence is critical. Use a **Deck Style Anchor** — a shared prefix of 15-25 words prepended to every image prompt.
+
+**Construction**: Combine style keywords (Section 2.3) + color directive (Section 2.4) + quality directive into one reusable prefix.
+
+**Example**:
+```
+Deck Style Anchor:
+"modern flat design illustration, color palette: deep navy (#1E3A5F), light gray (#F8F9FA), gold accent (#D4AF37), clean minimalist, high quality, 4K"
+
+Image 1 prompt: [Deck Style Anchor], abstract technology network showing connected nodes...
+Image 2 prompt: [Deck Style Anchor], team of professionals collaborating at a desk...
+Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
+```
+
+**Exception**: Background images may replace style keywords with `background`, `backdrop`, `negative space for text overlay` while keeping the same color directive. This ensures color consistency without compromising background functionality.
+
+**Rule**: Define the Deck Style Anchor once in the prompt document header (Section 5), then reference it in every individual prompt.
 
 ---
 
@@ -380,7 +406,21 @@ Abstract futuristic background with flowing digital waves...
 
 ### When Images Are Unsatisfactory
 
-Provide prompt variants for user selection: Variant A (more abstract), Variant B (more concrete), Variant C (different color tone).
+Diagnose the problem category and apply a targeted prompt fix:
+
+| Problem | Diagnosis | Prompt Adjustment |
+|---------|-----------|-------------------|
+| Wrong style | Image looks photorealistic when flat design was intended | Change style directive: replace `photography` with `flat design illustration` |
+| Wrong colors | Colors don't match the design spec palette | Strengthen color directive: add explicit HEX codes, repeat color names |
+| Wrong composition | Subject is off-center or layout doesn't fit the slide | Adjust composition directive: add `centered composition`, `rule of thirds`, or `wide negative space on left` |
+| Wrong subject | Image depicts something different from what was described | Rewrite subject description with more specificity and concrete details |
+| Low quality | Image is blurry, has artifacts, or lacks detail | Add `highly detailed, sharp focus, professional quality, 8K resolution` |
+
+**Variant workflow**:
+1. Keep the original prompt as "Variant A" in `image_prompts.md`
+2. Create modified prompt as "Variant B" with targeted fixes from the table above
+3. If needed, create "Variant C" with a different stylistic approach
+4. Label all variants clearly so the user can compare results
 
 ---
 

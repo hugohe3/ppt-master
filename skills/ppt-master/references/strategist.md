@@ -184,6 +184,17 @@ Selection principle: Font size is based on **content density**, not design style
 | Status | Pending generation / Existing / Placeholder |
 | Generation description | Fill in detailed description for AI generation |
 
+**Generation description quality guide** — the description is the seed for Image_Generator's prompt, so specificity matters:
+
+| Quality | Example | Why |
+|---------|---------|-----|
+| Bad | "team photo" | Too vague — style, setting, lighting, composition all unknown |
+| Good | "Professional team of 4 diverse people collaborating at a modern office desk, natural lighting, laptop visible" | Specifies subject count, setting, lighting, and props |
+| Bad | "tech background" | No color, style, or composition guidance |
+| Good | "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" | Specifies subject, colors with HEX, effects, and text area needs |
+| Bad | "chart" | Image_Generator cannot know what type of chart or data |
+| Good | "Clean flowchart showing 4 sequential steps connected by arrows, flat design, light gray background, blue accent nodes" | Specifies diagram type, count, style, colors |
+
 **Image type descriptions**:
 
 | Type | Suitable Scenarios |
@@ -205,6 +216,10 @@ Selection principle: Font size is based on **content density**, not design style
 | < 0.8 (portrait) | Left-right split, image on left |
 
 Core logic: The layout container's aspect ratio must closely match the image's original ratio. Never force a wide image into a square container or a portrait image into a narrow horizontal strip.
+
+> **Portrait canvases** (Xiaohongshu, Story): Layout rules differ — top-bottom is preferred for most ratios since left-right columns become too narrow. See "Portrait Canvas Override" in `references/image-layout-spec.md`.
+
+> **Multi-image slides**: When multiple images appear on one page, use the grid formulas in the "Multi-Image Layout" section of `references/image-layout-spec.md`.
 
 > **Pipeline handoff**: When C) AI generation is selected, after outputting the design spec, prompt the user to invoke Image_Generator. Once images are collected in `images/`, proceed to Executor.
 

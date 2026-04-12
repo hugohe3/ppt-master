@@ -38,14 +38,18 @@ Layout rules for pages containing images. Both the Strategist planning phase and
 
 ## Dimension Calculation Formulas
 
-### PPT 16:9 (1280x720) Canvas Parameters
+### Canvas Parameters (All Formats)
 
-```
-Canvas: 1280 x 720 px
-Content area: 1160 x 640 px (left/right margin 60px, top/bottom margin 40px)
-Title area height: 60 px
-Content start: y = 80 px (title + spacing)
-```
+| Format | Canvas | Margins (L/R, T/B) | Content Area (W x H) | Title Height | Content Start Y |
+|--------|--------|--------------------|-----------------------|-------------|----------------|
+| PPT 16:9 | 1280x720 | 60, 60 | 1160 x 600 | 60px | 80px |
+| PPT 4:3 | 1024x768 | 50, 50 | 924 x 608 | 60px | 70px |
+| Xiaohongshu | 1242x1660 | 60, 80 | 1122 x 1500 | 80px | 100px |
+| WeChat Moments | 1080x1080 | 60, 60 | 960 x 960 | 60px | 80px |
+| Story | 1080x1920 | 60, 120/180 | 960 x 1620 | 80px | 140px |
+| WeChat Article | 900x383 | 40, 40 | 820 x 303 | 40px | 50px |
+
+> In the formulas below, **W** = content area width, **H** = content area height (already excludes title). The PPT 16:9 example uses W=1160, H=600.
 
 ### Top-Bottom Layout Calculation
 
@@ -104,6 +108,63 @@ Switch to left-right: image 780x446 (left), text area 360x600 (right) → 7:3 le
 
 ---
 
+## Portrait Canvas Override
+
+The default layout type selection table assumes a **landscape or square canvas**. For portrait canvases (height > width), the rules change because left-right splits make both columns too narrow.
+
+| Canvas Orientation | Image Ratio | Recommended Layout | Reason |
+|-------------------|-------------|-------------------|--------|
+| Portrait (Xiaohongshu, Story) | > 1.5 (wide) | Top-bottom | Same as landscape canvas |
+| Portrait (Xiaohongshu, Story) | 1.2-1.5 (standard) | Top-bottom | Left-right too narrow on tall canvas |
+| Portrait (Xiaohongshu, Story) | 0.8-1.2 (square) | Top-bottom | Image fits well in top half |
+| Portrait (Xiaohongshu, Story) | 0.5-0.8 (portrait) | Left-right | Portrait image on tall canvas works |
+| Portrait (Xiaohongshu, Story) | < 0.5 (extreme portrait) | Left-right | Image takes one side, text the other |
+
+> On square canvases (WeChat Moments 1:1), use the standard landscape canvas rules.
+
+---
+
+## Multi-Image Layout
+
+When a slide contains multiple images, use these formulas to divide the content area evenly.
+
+### Grid Formulas
+
+```
+columns = number of columns
+rows = number of rows
+gap = 20px (PPT formats) or 30px (social formats)
+
+cell_width  = (W - (columns - 1) * gap) / columns
+cell_height = (H - (rows - 1) * gap) / rows
+```
+
+### Common Patterns
+
+| Image Count | Layout | Grid | Description |
+|-------------|--------|------|-------------|
+| 2 (both landscape) | Side-by-side | 2x1 | Two equal columns |
+| 2 (both portrait) | Stacked | 1x2 | Two equal rows |
+| 2 (mixed) | 1 large + 1 small | Custom | Landscape top (full-width), portrait right-bottom |
+| 3 | 1 large + 2 small | 1+2 | Left large (50% width), right column with 2 stacked |
+| 4 | Grid | 2x2 | Equal-sized cells |
+
+### Example: 2x2 Grid on PPT 16:9
+
+```
+W=1160, H=600, gap=20
+cell_width  = (1160 - 20) / 2 = 570
+cell_height = (600 - 20) / 2 = 290
+
+Image positions:
+  (60, 80)   570x290    (650, 80)  570x290
+  (60, 390)  570x290    (650, 390) 570x290
+```
+
+> For multi-image slides, use `preserveAspectRatio="xMidYMid meet"` on all images to maintain consistent display within cells.
+
+---
+
 ## Prohibited Practices
 
 | Prohibited | Correct Approach |
@@ -159,10 +220,12 @@ In the Design Specification & Content Outline, the image resource list must incl
 ## Automation Tool
 
 ```bash
-python3 scripts/analyze_images.py <project_path>/images
+python3 scripts/analyze_images.py <project_path>/images                    # Default: PPT 16:9
+python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT 4:3
+python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 ```
 
-Output includes dimensions, ratios, and layout recommendations (Markdown table), which can be directly used to populate the image resource list.
+The `--canvas` parameter selects the target canvas format (default `ppt169`). The tool computes layout type (top-bottom / left-right), image display area, and text area dimensions based on the formulas in this spec. Output includes a Markdown table that can be directly pasted into the image resource list.
 
 ---
 

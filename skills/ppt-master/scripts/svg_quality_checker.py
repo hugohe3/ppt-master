@@ -89,6 +89,9 @@ class SVGQualityChecker:
             # 5. Check text wrapping methods
             self._check_text_elements(content, result)
 
+            # 6. Check image references (file existence and resolution)
+            self._check_image_references(content, svg_path, result)
+
             # Determine pass/fail
             result['passed'] = len(result['errors']) == 0
 
@@ -287,6 +290,71 @@ class SVGQualityChecker:
             result['warnings'].append(
                 f"Detected {len(text_matches)} potentially overly long single-line text(s) (consider using tspan for wrapping)"
             )
+
+    def _check_image_references(self, content: str, svg_path: Path, result: Dict):
+        """Check image file existence and resolution vs display size."""
+        # Find all <image ...> elements (capture the full tag)
+        img_tag_pattern = re.compile(r'<image\b([^>]*)/?>', re.IGNORECASE)
+
+        svg_dir = svg_path.parent
+        checked = set()
+
+        for tag_match in img_tag_pattern.finditer(content):
+            attrs = tag_match.group(1)
+
+            # Extract href (prefer href over xlink:href)
+            href_match = (
+                re.search(r'\bhref="(?!data:)([^"]+)"', attrs) or
+                re.search(r'\bxlink:href="(?!data:)([^"]+)"', attrs)
+            )
+            if not href_match:
+                continue
+
+            href = href_match.group(1)
+            if href in checked:
+                continue
+            checked.add(href)
+
+            # Resolve path relative to SVG file directory
+            img_path = (svg_dir / href).resolve()
+
+            if not img_path.exists():
+                result['errors'].append(
+                    f"Image file not found: {href} (resolved to {img_path})")
+                continue
+
+            # Check resolution vs display size
+            w_match = re.search(r'\bwidth="([^"]+)"', attrs)
+            h_match = re.search(r'\bheight="([^"]+)"', attrs)
+            display_w_str = w_match.group(1) if w_match else None
+            display_h_str = h_match.group(1) if h_match else None
+            if not display_w_str or not display_h_str:
+                continue
+
+            try:
+                display_w = float(display_w_str)
+                display_h = float(display_h_str)
+            except (ValueError, TypeError):
+                continue
+
+            try:
+                from PIL import Image as PILImage
+                with PILImage.open(img_path) as img:
+                    actual_w, actual_h = img.size
+
+                if actual_w < display_w or actual_h < display_h:
+                    result['warnings'].append(
+                        f"Image {href} is {actual_w}x{actual_h} but displayed at "
+                        f"{int(display_w)}x{int(display_h)} — may appear blurry")
+                elif actual_w > display_w * 4 and actual_h > display_h * 4:
+                    result['warnings'].append(
+                        f"Image {href} is {actual_w}x{actual_h} but displayed at "
+                        f"{int(display_w)}x{int(display_h)} — consider downsizing "
+                        f"to reduce file size")
+            except ImportError:
+                pass  # PIL not available, skip resolution check
+            except Exception:
+                pass  # Image unreadable, skip resolution check
 
     def _categorize_issue(self, error_msg: str) -> str:
         """Categorize issue type"""
