@@ -7,7 +7,15 @@
 
 English | [中文](./README_CN.md)
 
-> This repository is initiated and maintained by Hugo He, a finance and investment professional with qualifications including CPA, CPV, and Consulting Engineer (Investment), and an open-source product builder focused on turning complex professional workflows into usable tools and products.
+<p align="center">
+  <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
+  <a href="https://www.hehugo.com/"><strong>Author's Site</strong></a> ·
+  <a href="./examples/"><strong>Examples</strong></a> ·
+  <a href="./docs/faq.md"><strong>FAQ</strong></a> ·
+  <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>
+</p>
+
+---
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
@@ -36,6 +44,18 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
     <td align="center"><img src="docs/assets/screenshots/preview_launch_xiaomi.png" alt="Product launch style — Xiaomi spring release" /><br/><sub><b>Product Launch</b> — high contrast, bold specs highlight</sub></td>
   </tr>
 </table>
+
+---
+
+## Built by Hugo He
+
+I'm a finance professional (CPA · CPV · Consulting Engineer) who got tired of spending hours on presentations that could be automated. So I built this.
+
+PPT Master started from a simple frustration: existing AI slide tools export images, not editable shapes. As someone who reviews and edits hundreds of slides in investment and consulting work, that was unacceptable. I wanted real DrawingML — click on any element and change it, just like you built it by hand.
+
+This project is my attempt to bridge the gap between **domain expertise** and **product engineering** — turning a complex professional pain point into an open-source tool that anyone can use.
+
+🌐 [Personal website](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
 
 ---
 
@@ -140,9 +160,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 
 [SVG Repo](https://www.svgrepo.com/) · [Tabler Icons](https://github.com/tabler/tabler-icons) · [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author)) (CRAP principles) · McKinsey, BCG, Bain
 
-## Contact
+## Contact & Collaboration
 
-[GitHub Issues](https://github.com/hugohe3/ppt-master/issues) · [@hugohe3](https://github.com/hugohe3)
+Looking to collaborate, integrate PPT Master into your workflow, or just have questions?
+
+- 💬 **Open-source discussions** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
+- 📧 **Business & consulting inquiries** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
+- 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
 
 ---
 
@@ -181,6 +205,6 @@ If this project saves you time, consider buying me a coffee!
 
 ---
 
-Made with ❤️ by Hugo He
+Made with ❤️ by [Hugo He](https://www.hehugo.com/)
 
 [⬆ Back to Top](#ppt-master--ai-generates-natively-editable-pptx-from-any-document)
