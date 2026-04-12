@@ -4,6 +4,32 @@
 
 ---
 
+## Q: What source formats does PPT Master accept?
+
+Almost anything: **PDF**, **DOCX**, **PPTX**, **EPUB**, **HTML**, **LaTeX**, **RST**, **URLs** (including WeChat articles), **Markdown**, or just plain text pasted into the conversation. The AI agent converts your source material to Markdown automatically before generating slides.
+
+## Q: Can PPT Master produce formats other than PowerPoint?
+
+Yes. Besides the standard **16:9** and **4:3** presentation formats, PPT Master supports social media and marketing formats out of the box:
+
+| Format | Use Case |
+|--------|----------|
+| Xiaohongshu (RED) 3:4 | Image-text sharing, knowledge posts |
+| WeChat Moments / IG 1:1 | Square posters, brand showcases |
+| Story / TikTok 9:16 | Vertical stories, short video covers |
+| WeChat Article Header | WeChat article cover images |
+| A4 Print | Print posters, flyers |
+
+Just specify the format when starting a project (e.g., `--format xhs`). The output is still a `.pptx` file containing native shapes.
+
+## Q: What AI tools work with PPT Master?
+
+PPT Master works with any AI coding agent that can read files and run shell commands — **Claude Code** (CLI / VS Code / JetBrains / Web), **VS Code Copilot**, **Codex**, and others. See the cost comparison below for pricing differences.
+
+## Q: Can I use AI-generated images in my presentation?
+
+Yes. PPT Master includes a built-in image generation script that supports multiple providers (Gemini, OpenAI, FLUX, Qwen, Zhipu, etc.). During the Strategist phase, if you choose "AI generation" for the image approach, the pipeline will automatically generate images based on your content. You can also provide your own images — just place them in the project's `images/` folder.
+
 ## Q: Can I edit the generated presentations?
 
 Yes! Both files are saved to `exports/` with a timestamp. The native `.pptx` produces **native PowerPoint shapes** — all text, graphics, and colors are directly editable without any conversion. The `_svg.pptx` is an SVG snapshot kept as a visual reference backup. Requires **Office 2016** or later.
@@ -31,6 +57,36 @@ For a complete presentation, **$0.08–$0.24 USD** is not expensive at all.
 
 Charts are rendered as **custom-designed SVG graphics** converted to native PowerPoint shapes — not Excel-driven chart objects. This gives them a polished, high-fidelity appearance that often looks better than default PowerPoint charts. However, the underlying data is not editable via PowerPoint's chart editor. If you need a live, data-driven chart (e.g., one you can update by editing a spreadsheet), you will need to manually replace it with a native PowerPoint chart after export.
 
+## Q: Which AI model works best?
+
+**Claude** (Opus / Sonnet) is the recommended and most tested model. SVG layout requires precise absolute-coordinate calculations (font size x character count x container width), and Claude handles this significantly better than alternatives.
+
+**GPT series** models tend to produce more layout issues — text overflowing containers, misaligned elements, coordinate miscalculations. If you must use a non-Claude model, try enabling Fast mode and keep expectations for layout precision lower.
+
+Other models (Gemini, GLM, MiniMax, etc.) vary in quality. In general, models with stronger frontend/visual capabilities produce better results.
+
+## Q: Text overflows or elements are misaligned — what can I do?
+
+This is almost always a model capability issue, not a bug in PPT Master. SVG layout is essentially manual absolute positioning — the model must calculate coordinates, font metrics, and container sizes correctly.
+
+**Fixes to try**:
+1. Switch to **Claude** (Opus or Sonnet) if you're using another model
+2. Tell the AI which specific page has the problem and describe the issue — it can regenerate individual pages
+3. Open the SVG source file directly and ask the AI to fix coordinates
+4. Remember: the generated PPTX is a **high-quality starting point**, not a final deliverable — minor adjustments in PowerPoint are expected
+
+## Q: How long does a presentation take to generate?
+
+A typical 10–15 page presentation takes about **10–20 minutes** with a fast model. Generation is **intentionally serial** (one page at a time) to maintain visual consistency across slides — parallel generation was tested and produced inconsistent styles.
+
+If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
+
+## Q: Can I preview or fix individual pages before the full export?
+
+Yes. You can **interrupt the workflow at any time** — after the first few pages are generated, review them and give feedback. The AI can regenerate specific pages based on your comments. You don't need to wait until the end to make corrections.
+
+For post-generation fixes, simply tell the AI: "Page 3 has a layout issue — the title overlaps the chart" and it will fix that specific SVG.
+
 ## Q: How do I create a custom template?
 
 Want to turn a PPT you love into a reusable template for PPT Master? Here's how:
@@ -43,12 +99,14 @@ If you already have the original `.pptx` template file, you can also provide it 
 
 **Step 2 — Let AI Create the Template**
 
-Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. In your prompt, provide:
+Use an AI coding agent (Claude Code, Codex, etc.) and ask it to use the **PPT Master `/create-template` workflow** to convert your reference material into a template. The more context you give, the better the result — for example:
 
-- The template's English name and Chinese name
-- The intended use case (e.g., government reports, premium consulting, product launches)
-- The desired visual effects and color palette to apply when this template is used
-- Whether to enable AI image generation
+- Template name and intended use case (e.g., government reports, premium consulting)
+- Desired tone and color palette (e.g., "modern and restrained, dark blue primary")
+- Category preference (`brand` / `general` / `scenario` / `government` / `special`)
+- Canvas format, if not the default 16:9
+
+You don't need to supply every detail upfront — the AI agent will ask follow-up questions to fill in anything missing (template ID, theme mode, etc.).
 
 **Step 3 — Wait for the Result**
 

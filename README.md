@@ -117,6 +117,8 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **AI lost context?** Ask it to read `skills/ppt-master/SKILL.md`.
 
+> **Something went wrong?** Check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
+
 ### 5. AI Image Generation (Optional)
 
 ```bash
@@ -146,7 +148,7 @@ Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` to see tier
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
 | 💼 | [Examples](./examples/README.md) | 15 projects, 229 pages |
 | 🏗️ | [Technical Design](./docs/technical-design.md) | Architecture, design philosophy, why SVG |
-| ❓ | [FAQ](./docs/faq.md) | Cost, editing, custom templates |
+| ❓ | [FAQ](./docs/faq.md) | Model selection, cost, layout troubleshooting, custom templates |
 
 ---
 
