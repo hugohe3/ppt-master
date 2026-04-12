@@ -7,7 +7,15 @@
 
 [English](./README.md) | 中文
 
-> 本仓库由何雨果（Hugo He）发起并维护。他是一名投融资专业人士，拥有注册会计师（CPA）、资产评估师（CPV）和咨询工程师（投资）等专业资质，同时也是一名开源产品实践者，持续探索如何将复杂专业工作转化为真正可用的工具与产品。
+<p align="center">
+  <a href="https://hugohe3.github.io/ppt-master/"><strong>在线预览</strong></a> ·
+  <a href="https://www.hehugo.com/"><strong>作者主页</strong></a> ·
+  <a href="./examples/"><strong>示例</strong></a> ·
+  <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
+  <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
+</p>
+
+---
 
 丢进一份 PDF、DOCX、网址或 Markdown，拿回一份**原生可编辑的 PowerPoint**——真正的形状、真正的文本框、真正的图表，不是图片。点击任何元素即可编辑。
 
@@ -36,6 +44,18 @@
     <td align="center"><img src="docs/assets/screenshots/preview_launch_xiaomi.png" alt="发布会风 — 小米春季新品" /><br/><sub><b>发布会风</b> — 高对比度，参数突出，苹果/小米发布会感</sub></td>
   </tr>
 </table>
+
+---
+
+## 关于作者
+
+我是何雨果（Hugo He），一名投融资领域的专业人士（注册会计师 · 资产评估师 · 咨询工程师），同时也是一名开源产品实践者。
+
+PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每天都要制作和审阅大量 PPT，而市面上的 AI 幻灯片工具导出的都是图片，不是可编辑的元素。作为一个每天都需要点击进去修改内容的人，这完全不可接受。我需要的是真正的 DrawingML——点击任何元素都能直接编辑，就像手工搭建的一样。
+
+这个项目是我把**专业领域经验**和**产品工程能力**结合起来的一次实践——把一个复杂的专业痛点，变成一个任何人都能用的开源工具。
+
+🌐 [个人网站](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
 
 ---
 
@@ -140,9 +160,13 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 [SVG Repo](https://www.svgrepo.com/) · [Tabler Icons](https://github.com/tabler/tabler-icons) · [Robin Williams](https://en.wikipedia.org/wiki/Robin_Williams_(author))（CRAP 设计原则）· 麦肯锡、BCG、贝恩
 
-## 联系
+## 联系与合作
 
-[GitHub Issues](https://github.com/hugohe3/ppt-master/issues) · [@hugohe3](https://github.com/hugohe3)
+欢迎合作交流、将 PPT Master 集成到你的工作流，或者单纯提问：
+
+- 💬 **开源讨论** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
+- 📧 **商务 / 咨询 / 定制合作** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
+- 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
 
 ---
 
@@ -181,6 +205,6 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 ---
 
-Made with ❤️ by Hugo He
+Made with ❤️ by [何雨果 Hugo He](https://www.hehugo.com/)
 
 [⬆ 回到顶部](#ppt-master--ai-生成原生可编辑-pptx支持任意文档输入)
