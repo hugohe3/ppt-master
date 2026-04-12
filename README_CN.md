@@ -61,7 +61,7 @@ PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每
 
 ## 快速开始
 
-### 1. 安装
+### 1. 前置条件
 
 **必需：** [Python](https://www.python.org/downloads/) 3.10+ · **可选：** [Node.js](https://nodejs.org/) 18+（微信公众号转换）· [Pandoc](https://pandoc.org/)（DOCX/EPUB 转换）
 
@@ -79,14 +79,6 @@ sudo apt install pandoc          # 可选
 # Windows — 从 python.org、nodejs.org、pandoc.org 下载安装
 ```
 
-```bash
-git clone https://github.com/hugohe3/ppt-master.git
-cd ppt-master
-pip install -r requirements.txt
-```
-
-日常更新：`python3 skills/ppt-master/scripts/update_repo.py`
-
 ### 2. 选择 AI 编辑器
 
 | 工具 | 推荐度 | 说明 |
@@ -95,7 +87,17 @@ pip install -r requirements.txt
 | [Cursor](https://cursor.sh/) / [VS Code + Copilot](https://code.visualstudio.com/) | ⭐⭐ | 不错的替代方案 |
 | Codebuddy IDE | ⭐⭐ | 国产模型最佳选择（Kimi 2.5、MiniMax 2.7） |
 
-### 3. 开始创作
+### 3. 配置项目
+
+```bash
+git clone https://github.com/hugohe3/ppt-master.git
+cd ppt-master
+pip install -r requirements.txt
+```
+
+日常更新：`python3 skills/ppt-master/scripts/update_repo.py`
+
+### 4. 开始创作
 
 打开 AI 聊天面板，描述你想要的内容：
 
@@ -115,7 +117,7 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **AI 迷失上下文？** 让它先读 `skills/ppt-master/SKILL.md`。
 
-### 4. AI 生图配置（可选）
+### 5. AI 生图配置（可选）
 
 ```bash
 cp .env.example .env    # 然后填入你的 API Key
