@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PPT Master SVG 幻灯片库 - 浏览和查看各种主题的演示幻灯片">
-    <meta name="keywords" content="幻灯片, SVG, 演示文稿, PPT">
-    <title>幻灯片库 - PPT Master</title>
+    <meta name="description" content="PPT Master Slide Gallery — Browse and view SVG presentation slides across various topics">
+    <meta name="keywords" content="slides, SVG, presentation, PPT, PowerPoint">
+    <meta property="og:title" content="Slide Gallery — PPT Master">
+    <meta property="og:description" content="Browse 15 example presentations with 229+ slides — AI-generated, natively editable PowerPoint from any document.">
+    <meta property="og:url" content="https://hugohe3.github.io/ppt-master/viewer.html">
+    <meta property="og:type" content="website">
+    <title>Slide Gallery — PPT Master</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,7 +33,7 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Microsoft YaHei', 'PingFang SC', 'system-ui', '-apple-system', 'sans-serif'],
+                        sans: ['system-ui', '-apple-system', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
                     }
                 }
             }
@@ -45,7 +49,7 @@
 
     <style>
         body {
-            font-family: 'Microsoft YaHei', 'PingFang SC', system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
@@ -237,7 +241,7 @@
                 <div class="flex items-center space-x-4">
                     <a href="index.html" class="text-gray-600 hover:text-brand-600 transition-colors">
                         <i class="fas fa-arrow-left"></i>
-                        <span class="ml-2">返回项目列表</span>
+                        <span class="ml-2">Back to Projects</span>
                     </a>
                 </div>
 
@@ -246,7 +250,7 @@
                     <button onclick="toggleDropdown()"
                         class="flex items-center space-x-2 px-4 py-2 bg-white rounded-lg shadow border border-gray-200 hover:border-brand-400 transition-colors">
                         <span id="currentCollectionIcon" class="text-xl">🎴</span>
-                        <span id="currentCollectionName" class="font-medium text-gray-700">选择幻灯片集</span>
+                        <span id="currentCollectionName" class="font-medium text-gray-700">Select Collection</span>
                         <i class="fas fa-chevron-down text-gray-400"></i>
                     </button>
                     <div id="dropdownMenu"
@@ -260,25 +264,25 @@
                     <div class="flex items-center space-x-1 mr-4 bg-gray-100 rounded-lg p-1">
                         <button onclick="setViewMode('normal')" id="normalModeBtn"
                             class="view-mode-btn px-3 py-1 rounded-md text-xs font-medium text-gray-600 hover:bg-white"
-                            title="标准视图">
+                            title="Normal View">
                             <i class="fas fa-columns"></i>
                         </button>
                         <button onclick="setViewMode('theater')" id="theaterModeBtn"
                             class="view-mode-btn px-3 py-1 rounded-md text-xs font-medium text-gray-600 hover:bg-white"
-                            title="剧院模式 (T)">
+                            title="Theater Mode (T)">
                             <i class="fas fa-tv"></i>
                         </button>
                     </div>
-                    <span class="text-gray-500">快捷键：</span>
+                    <span class="text-gray-500">Shortcuts:</span>
                     <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border">←</kbd>
                     <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border">→</kbd>
-                    <span class="text-gray-500">翻页</span>
+                    <span class="text-gray-500">Navigate</span>
                     <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">T</kbd>
-                    <span class="text-gray-500">剧院</span>
+                    <span class="text-gray-500">Theater</span>
                     <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">F</kbd>
-                    <span class="text-gray-500">全屏</span>
+                    <span class="text-gray-500">Fullscreen</span>
                     <kbd class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded border ml-2">ESC</kbd>
-                    <span class="text-gray-500">返回</span>
+                    <span class="text-gray-500">Back</span>
                 </div>
             </div>
         </div>
@@ -292,10 +296,10 @@
         <div id="libraryView">
             <div class="text-center mb-12">
                 <h1 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">
-                    🎴 幻灯片库
+                    🎴 Slide Gallery
                 </h1>
                 <p class="text-white/80 text-lg">
-                    选择一个幻灯片集开始浏览
+                    Select a collection to start browsing
                 </p>
             </div>
 
@@ -307,8 +311,8 @@
             <!-- Empty State -->
             <div id="emptyState" class="hidden text-center py-20">
                 <div class="text-6xl mb-4">📭</div>
-                <h3 class="text-xl font-medium text-white/80">暂无幻灯片集合</h3>
-                <p class="text-white/60 mt-2">请添加幻灯片配置</p>
+                <h3 class="text-xl font-medium text-white/80">No slide collections found</h3>
+                <p class="text-white/60 mt-2">Please add slide configurations</p>
             </div>
         </div>
 
@@ -319,13 +323,13 @@
                 <button onclick="backToLibrary()"
                     class="inline-flex items-center px-4 py-2 mb-4 text-white/80 hover:text-white transition-colors">
                     <i class="fas fa-th-large mr-2"></i>
-                    返回幻灯片库
+                    Back to Gallery
                 </button>
                 <h1 id="viewerTitle" class="text-3xl font-bold text-white mb-2 drop-shadow-lg">
-                    幻灯片标题
+                    Slide Title
                 </h1>
                 <p id="viewerDescription" class="text-white/70">
-                    幻灯片描述
+                    Slide Description
                 </p>
             </div>
 
@@ -336,7 +340,7 @@
                     <div class="glass rounded-2xl p-4 slide-container">
                         <object id="mainSlide" data="" type="image/svg+xml"
                             class="w-full rounded-lg fade-in cursor-pointer" onclick="toggleFullscreen()">
-                            <p class="text-center text-gray-500 py-10">SVG 加载中...</p>
+                            <p class="text-center text-gray-500 py-10">Loading SVG...</p>
                         </object>
                     </div>
 
@@ -370,7 +374,7 @@
                     <div class="glass rounded-2xl p-4 shadow-lg">
                         <h3 class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
                             <i class="fas fa-th-large mr-2 text-brand-600"></i>
-                            幻灯片目录
+                            Slide Index
                         </h3>
                         <div id="thumbnailContainer" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                             <!-- Thumbnails will be generated by JavaScript -->
@@ -381,10 +385,10 @@
                     <div class="glass rounded-2xl p-4 shadow-lg mt-4">
                         <h3 class="text-sm font-semibold text-gray-600 mb-3 flex items-center">
                             <i class="fas fa-info-circle mr-2 text-brand-600"></i>
-                            当前幻灯片
+                            Current Slide
                         </h3>
-                        <p id="slideTitle" class="text-gray-800 font-medium">标题</p>
-                        <p id="slideDesc" class="text-sm text-gray-500 mt-1">描述</p>
+                        <p id="slideTitle" class="text-gray-800 font-medium">Title</p>
+                        <p id="slideDesc" class="text-sm text-gray-500 mt-1">Description</p>
                     </div>
                 </div>
             </div>
@@ -393,7 +397,7 @@
             <div class="mt-12 slide-enter">
                 <h2 class="text-xl font-bold text-white mb-6 flex items-center drop-shadow">
                     <i class="fas fa-list-ul mr-3"></i>
-                    内容概览
+                    Overview
                 </h2>
                 <div id="overviewGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                     <!-- Overview thumbnails will be generated by JavaScript -->
@@ -406,7 +410,7 @@
     <footer class="mt-12 py-6">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p class="text-white/60 text-sm">
-                © 2024 PPT Master · 幻灯片库
+                PPT Master © 2025–2026 · Made with ❤️ by <a href="https://www.hehugo.com/" target="_blank" style="color: rgba(255,255,255,0.8); text-decoration: none;">Hugo He</a>
             </p>
         </div>
     </footer>
@@ -421,7 +425,7 @@
             <i class="fas fa-chevron-left"></i>
         </button>
         <object id="fullscreenImage" data="" type="image/svg+xml" class="fade-in">
-            <p>SVG 加载中...</p>
+            <p>Loading SVG...</p>
         </object>
         <button onclick="event.stopPropagation(); nextSlide()"
             class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors">
@@ -862,7 +866,7 @@
                         </div>
                         <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium text-white"
                              style="background: ${collection.color}">
-                            ${collection.slides.length} 页
+                            ${collection.slides.length} slides
                         </div>
                     </div>
                     <div class="p-5">
@@ -884,7 +888,7 @@
                     <span class="text-2xl mr-3">${collection.icon}</span>
                     <div class="flex-1 min-w-0">
                         <p class="font-medium text-gray-800 truncate">${collection.title}</p>
-                        <p class="text-xs text-gray-500">${collection.slides.length} 页</p>
+                        <p class="text-xs text-gray-500">${collection.slides.length} slides</p>
                     </div>
                     ${currentCollection?.id === collection.id ? '<i class="fas fa-check text-brand-500"></i>' : ''}
                 </div>
