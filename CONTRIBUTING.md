@@ -16,7 +16,7 @@ Thank you for your interest in contributing! This guide will help you get starte
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - Node.js 18+ (optional, for WeChat page conversion)
 - Pandoc (optional, for DOCX/EPUB conversion)
 

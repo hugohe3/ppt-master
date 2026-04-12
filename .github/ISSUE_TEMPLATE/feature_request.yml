@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest an improvement or new feature
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      placeholder: Describe the pain point or use case that motivates this request.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      placeholder: How do you think this could be implemented? (optional but helpful)
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Templates / styles
+        - Charts / visualization
+        - Export / post-processing
+        - Source conversion
+        - Image generation
+        - Workflow / UX
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      placeholder: Any workarounds you've tried or other approaches you've considered?
+    validations:
+      required: false
