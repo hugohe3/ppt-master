@@ -168,7 +168,8 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 欢迎合作交流、将 PPT Master 集成到你的工作流，或者单纯提问：
 
-- 💬 **开源讨论** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
+- 💬 **提问与分享** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
+- 🐛 **Bug 反馈与功能建议** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 📧 **商务 / 咨询 / 定制合作** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
 - 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
 

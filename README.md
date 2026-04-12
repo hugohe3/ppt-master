@@ -168,7 +168,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to get involved.
 
 Looking to collaborate, integrate PPT Master into your workflow, or just have questions?
 
-- 💬 **Open-source discussions** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
+- 💬 **Questions & sharing** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
+- 🐛 **Bug reports & feature requests** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 📧 **Business & consulting inquiries** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
 - 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
 
