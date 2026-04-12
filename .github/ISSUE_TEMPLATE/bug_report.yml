@@ -1,0 +1,91 @@
+name: Bug Report
+description: Report a problem with PPT Master
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please check the [FAQ](https://github.com/hugohe3/ppt-master/blob/main/docs/faq.md) first — your issue may already have a known solution.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Problem area
+      options:
+        - SVG generation / layout
+        - PPTX export (svg_to_pptx.py)
+        - Post-processing (finalize_svg.py / total_md_split.py)
+        - Source conversion (PDF / DOCX / URL to Markdown)
+        - Template (create-template / template selection)
+        - Image generation
+        - Installation / dependencies
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      placeholder: Describe the problem clearly. Include error messages if any.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What did you expect to happen?
+    validations:
+      required: false
+
+  - type: input
+    id: ai-tool
+    attributes:
+      label: AI editor / tool
+      placeholder: "e.g. Claude Code, VS Code Copilot, Cursor, Codex"
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: AI model
+      placeholder: "e.g. Claude Opus, Claude Sonnet, GPT-5.4, Gemini 3.1"
+    validations:
+      required: false
+
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "e.g. macOS 15, Windows 11, Ubuntu 24.04"
+    validations:
+      required: false
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "e.g. 3.12.4"
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or files
+      description: Attach screenshots, SVG files, or the generated PPTX if relevant.
+    validations:
+      required: false
