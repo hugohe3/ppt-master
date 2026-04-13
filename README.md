@@ -55,7 +55,7 @@ PPT Master is different:
 
 ## Built by Hugo He
 
-I'm a finance professional (CPA · CPV · Consulting Engineer) who got tired of spending hours on presentations that could be automated. So I built this.
+I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who got tired of spending hours on presentations that could be automated. So I built this.
 
 PPT Master started from a simple frustration: existing AI slide tools export images, not editable shapes. As someone who reviews and edits hundreds of slides in investment and consulting work, that was unacceptable. I wanted real DrawingML — click on any element and change it, just like you built it by hand.
 
