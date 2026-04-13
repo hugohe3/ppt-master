@@ -3,7 +3,7 @@
 
 Usage:
     python3 scripts/project_manager.py init <project_name> [--format ppt169] [--dir projects]
-    python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move]
+    python3 scripts/project_manager.py import-sources <project_path> <source1> [<source2> ...] [--move | --copy]
     python3 scripts/project_manager.py validate <project_path>
     python3 scripts/project_manager.py info <project_path>
 """
@@ -368,7 +368,10 @@ class ProjectManager:
         project_path: str,
         source_items: list[str],
         move: bool = False,
+        copy: bool = False,
     ) -> dict[str, list[str]]:
+        if move and copy:
+            raise ValueError("--move and --copy are mutually exclusive")
         project_dir = Path(project_path)
         if not project_dir.exists() or not project_dir.is_dir():
             raise FileNotFoundError(f"Project directory not found: {project_dir}")
@@ -416,7 +419,19 @@ class ProjectManager:
                 summary["skipped"].append(f"{item}: directories are not supported")
                 continue
 
-            effective_move = move or is_within_path(source_path, REPO_ROOT)
+            if copy:
+                effective_move = False
+            elif move:
+                effective_move = True
+            elif is_within_path(source_path, REPO_ROOT):
+                effective_move = True
+                print(
+                    f"note: {source_path} is inside the ppt-master repo; moved "
+                    f"(not copied) to avoid accidental commit. Pass --copy to override.",
+                    file=sys.stderr,
+                )
+            else:
+                effective_move = False
             suffix = source_path.suffix.lower()
 
             if suffix in {".md", ".markdown"}:
@@ -571,22 +586,28 @@ def parse_init_args(argv: list[str]) -> tuple[str, str, str]:
     return project_name, canvas_format, base_dir
 
 
-def parse_import_args(argv: list[str]) -> tuple[str, list[str], bool]:
+def parse_import_args(argv: list[str]) -> tuple[str, list[str], bool, bool]:
     """Parse arguments for the `import-sources` subcommand."""
     if len(argv) < 4:
         raise ValueError("Project path and at least one source are required")
 
     project_path = argv[2]
     move = False
+    copy = False
     sources: list[str] = []
 
     for arg in argv[3:]:
         if arg == "--move":
             move = True
+        elif arg == "--copy":
+            copy = True
         else:
             sources.append(arg)
 
-    return project_path, sources, move
+    if move and copy:
+        raise ValueError("--move and --copy are mutually exclusive")
+
+    return project_path, sources, move, copy
 
 
 def main() -> None:
@@ -610,8 +631,8 @@ def main() -> None:
             return
 
         if command == "import-sources":
-            project_path, sources, move = parse_import_args(sys.argv)
-            summary = manager.import_sources(project_path, sources, move=move)
+            project_path, sources, move, copy = parse_import_args(sys.argv)
+            summary = manager.import_sources(project_path, sources, move=move, copy=copy)
             print(f"[OK] Imported sources into: {project_path}")
             if summary["archived"]:
                 print("\nArchived originals / URL records:")
