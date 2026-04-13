@@ -95,13 +95,26 @@ sudo apt install pandoc          # 可选
 
 ### 3. 配置项目
 
+**方式 A — 下载 ZIP**（无需安装 Git）：
+[GitHub](https://github.com/hugohe3/ppt-master) → **Code → Download ZIP** · [AtomGit](https://atomgit.com/hugohe3/ppt-master) → **克隆/下载 → 下载ZIP**（国内网速更快）
+
+**方式 B — Git clone**（需先安装 [Git](https://git-scm.com/downloads)）：
+
 ```bash
+# GitHub
 git clone https://github.com/hugohe3/ppt-master.git
+# AtomGit（国内网速更快）
+git clone https://atomgit.com/hugohe3/ppt-master.git
 cd ppt-master
+```
+
+然后安装依赖：
+
+```bash
 pip install -r requirements.txt
 ```
 
-日常更新：`python3 skills/ppt-master/scripts/update_repo.py`
+日常更新（仅方式 B）：`python3 skills/ppt-master/scripts/update_repo.py`
 
 ### 4. 开始创作
 
