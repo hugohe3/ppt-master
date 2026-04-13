@@ -211,6 +211,10 @@ If this project helps you, please give it a ⭐!
 
 If this project saves you time, consider buying me a coffee!
 
+**PayPal**
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
+
 **Alipay / 支付宝**
 
 <img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="250" />
