@@ -95,13 +95,22 @@ sudo apt install pandoc          # optional
 
 ### 3. Set Up
 
+**Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
+
+**Option B — Git clone** (requires [Git](https://git-scm.com/downloads) installed):
+
 ```bash
 git clone https://github.com/hugohe3/ppt-master.git
 cd ppt-master
+```
+
+Then install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-To update later: `python3 skills/ppt-master/scripts/update_repo.py`
+To update later (Option B only): `python3 skills/ppt-master/scripts/update_repo.py`
 
 ### 4. Create
 
