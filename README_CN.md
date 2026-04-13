@@ -211,6 +211,10 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 如果这个项目帮你省了时间，欢迎请我喝杯咖啡！
 
+**PayPal**
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
+
 **支付宝**
 
 <img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="250" />
