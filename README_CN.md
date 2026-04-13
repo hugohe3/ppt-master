@@ -15,6 +15,8 @@
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
 
+> **官方渠道 —** 本项目**仅**在 [GitHub](https://github.com/hugohe3/ppt-master)（主仓库）和 [AtomGit](https://atomgit.com/hugohe3/ppt-master)（自动同步镜像）发布。其他平台上的转发版本均为非官方版本，不由作者维护。遵循 MIT 协议——使用需保留署名。
+
 ---
 
 丢进一份 PDF、DOCX、网址或 Markdown，拿回一份**原生可编辑的 PowerPoint**——真正的形状、真正的文本框、真正的图表，不是图片。点击任何元素即可编辑。

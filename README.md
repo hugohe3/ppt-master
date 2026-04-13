@@ -15,6 +15,8 @@ English | [中文](./README_CN.md)
   <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>
 </p>
 
+> **Official channels —** this project is published **only** on [GitHub](https://github.com/hugohe3/ppt-master) (primary) and [AtomGit](https://atomgit.com/hugohe3/ppt-master) (auto-synced mirror). Redistributions on any other platform are unofficial and not maintained by the author. Licensed under MIT — attribution required.
+
 ---
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
