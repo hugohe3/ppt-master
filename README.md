@@ -21,12 +21,16 @@ English | [中文](./README_CN.md)
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
-**What makes it different:**
+**[Why PPT Master?](./docs/why-ppt-master.md)**
 
-- Every element is a real PowerPoint object (DrawingML) — no "Convert to Shape" needed
-- Works with Claude Code, Cursor, VS Code Copilot, and other AI editors
-- 10+ output formats: PPT 16:9, social media cards, marketing posters, and more
-- Low cost — as little as **$0.08 per presentation** with VS Code Copilot; even non-Opus models produce decent results
+There's no shortage of AI presentation tools — what's missing is one where the output is **actually usable as a real PowerPoint file**. I build presentations every day, but most tools export images or web screenshots: they look nice but you can't edit anything. Others produce bare-bones text boxes and bullet lists. And they all want a monthly subscription, upload your files to their servers, and lock you into their platform.
+
+PPT Master is different:
+
+- **Real PowerPoint** — if a file can't be opened and edited in PowerPoint, it shouldn't be called a PPT. Every element PPT Master outputs is directly clickable and editable
+- **Transparent, predictable cost** — the tool is free and open source; the only cost is your own AI editor, and you know exactly what you're paying. As low as **$0.08/deck** with VS Code Copilot
+- **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
+- **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
 
 **[See live examples →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 15 projects, 229 pages
 
@@ -145,6 +149,7 @@ Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` to see tier
 
 | | Document | Description |
 |---|----------|-------------|
+| 🆚 | [Why PPT Master](./docs/why-ppt-master.md) | How it compares to Gamma, Copilot, and other AI tools |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | Core workflow and rules |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
