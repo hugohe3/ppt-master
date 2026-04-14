@@ -69,7 +69,27 @@ PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每
 
 ### 1. 前置条件
 
-**必需：** [Python](https://www.python.org/downloads/) 3.10+ · **可选：** [Node.js](https://nodejs.org/) 18+（微信公众号转换）· [Pandoc](https://pandoc.org/)（DOCX/EPUB 转换）
+| 依赖项 | 是否必需 | 作用 | 不装会怎样 |
+|--------|:--------:|------|-----------|
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——一切都依赖它 | 什么都跑不了 |
+| [Node.js](https://nodejs.org/) 18+ | ❌ 可选 | 将微信公众号文章、复杂网页转换为 Markdown | 仍可用 PDF、DOCX、纯文本、简单 URL 作为素材 |
+| [Pandoc](https://pandoc.org/) | ❌ 可选 | 将 DOCX、EPUB、HTML、LaTeX、RST 转换为 Markdown | 仍可用 PDF、纯文本、URL 作为素材 |
+
+
+> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。其余的用到时再装。
+
+<details open>
+<summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
+
+Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 Windows 用户写了一份**手把手安装指南**：
+
+**📖 [Windows 安装指南](./docs/zh/windows-installation.md)** — 从零到跑通第一份 PPT，10 分钟搞定。
+
+简要流程：从 [python.org](https://www.python.org/downloads/) 下载 Python → **安装时勾选 "Add to PATH"** → `pip install -r requirements.txt` → 完成。
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong> — 安装即用</summary>
 
 ```bash
 # macOS
@@ -77,13 +97,12 @@ brew install python
 brew install node                # 可选——用于微信公众号等网页转换
 brew install pandoc              # 可选——用于 DOCX/EPUB 转换
 
-# Ubuntu/Debian
+# Ubuntu / Debian
 sudo apt install python3 python3-pip
 sudo apt install nodejs npm      # 可选
 sudo apt install pandoc          # 可选
-
-# Windows — 从 python.org、nodejs.org、pandoc.org 下载安装
 ```
+</details>
 
 ### 2. 选择 AI 编辑器
 
@@ -173,6 +192,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 | | 文档 | 说明 |
 |---|------|------|
 | 🆚 | [为什么选 PPT Master](./docs/zh/why-ppt-master.md) | 与 Gamma、Copilot 等工具的对比 |
+| 🪟 | [Windows 安装指南](./docs/zh/windows-installation.md) | Windows 用户手把手安装教程 |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | 核心流程与规则 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
