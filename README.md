@@ -73,7 +73,7 @@ This project is my attempt to bridge the gap between **domain expertise** and **
 |------------|:---------:|--------------|----------------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — everything depends on this | Nothing works |
 | [Node.js](https://nodejs.org/) 18+ | ❌ Optional | Converts WeChat articles and complex web pages to Markdown | You can still use PDF, DOCX, plain text, and simple URLs as source |
-| [Pandoc](https://pandoc.org/) | ❌ Optional | Converts DOCX, EPUB, HTML, LaTeX, RST to Markdown | You can still use PDF, plain text, and URLs as source |
+| [Pandoc](https://pandoc.org/) | ❌ Optional | Converts legacy formats (`.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, `.typ`) to Markdown. `.docx`, `.html`, `.epub`, `.ipynb` are handled natively in Python — no pandoc needed. | You can still use PDF, DOCX, HTML, EPUB, Jupyter, plain text, and URLs as source |
 
 
 > **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations. Install the rest only when you need them.
@@ -95,12 +95,12 @@ Quick version: download Python from [python.org](https://www.python.org/download
 # macOS
 brew install python
 brew install node                # optional — for WeChat page conversion
-brew install pandoc              # optional — for DOCX/EPUB conversion
+brew install pandoc              # optional — only for legacy .doc/.odt/.rtf/.tex/.rst/.org/.typ
 
 # Ubuntu / Debian
 sudo apt install python3 python3-pip
 sudo apt install nodejs npm      # optional
-sudo apt install pandoc          # optional
+sudo apt install pandoc          # optional — only for legacy .doc/.odt/.rtf/.tex/.rst/.org/.typ
 ```
 </details>
 

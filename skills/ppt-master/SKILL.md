@@ -45,7 +45,7 @@ description: >
 | Script | Purpose |
 |--------|---------|
 | `${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py` | PDF to Markdown |
-| `${SKILL_DIR}/scripts/source_to_md/doc_to_md.py` | Documents to Markdown via Pandoc (DOCX, EPUB, HTML, LaTeX, RST, etc.) |
+| `${SKILL_DIR}/scripts/source_to_md/doc_to_md.py` | Documents to Markdown — native Python for DOCX/HTML/EPUB/IPYNB, pandoc fallback for legacy formats (.doc/.odt/.rtf/.tex/.rst/.org/.typ) |
 | `${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py` | PowerPoint to Markdown |
 | `${SKILL_DIR}/scripts/source_to_md/web_to_md.py` | Web page to Markdown |
 | `${SKILL_DIR}/scripts/source_to_md/web_to_md.cjs` | WeChat / high-security sites to Markdown |

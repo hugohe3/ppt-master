@@ -31,28 +31,37 @@ pip install PyMuPDF
 
 ## `source_to_md/doc_to_md.py`
 
-Pandoc-based converter for office and markup formats.
+Hybrid converter: pure-Python for the common formats, pandoc fallback for the rest.
 
-Supported formats include:
-- `.docx`, `.doc`, `.odt`, `.rtf`
-- `.epub`, `.html`, `.tex`, `.rst`, `.org`, `.ipynb`, `.typ`
+Native path (no external binary required):
+- `.docx` — via `mammoth`
+- `.html` / `.htm` — via `markdownify` + `beautifulsoup4`
+- `.epub` — via `ebooklib` + `markdownify`
+- `.ipynb` — via `nbconvert`
+
+Pandoc fallback (only if you need these):
+- `.doc`, `.odt`, `.rtf`, `.tex`/`.latex`, `.rst`, `.org`, `.typ`
 
 ```bash
 python3 scripts/source_to_md/doc_to_md.py lecture.docx
 python3 scripts/source_to_md/doc_to_md.py lecture.docx -o output.md
 python3 scripts/source_to_md/doc_to_md.py notes.epub
-python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md
+python3 scripts/source_to_md/doc_to_md.py paper.tex -o paper.md  # uses pandoc
 ```
 
-Dependency:
+Dependencies:
 
 ```bash
-# macOS
-brew install pandoc
+# Native path — always required
+pip install mammoth markdownify ebooklib nbconvert beautifulsoup4
 
-# Ubuntu
-sudo apt install pandoc
+# Fallback path — only for .doc/.odt/.rtf/.tex/.rst/.org/.typ
+# macOS:   brew install pandoc
+# Ubuntu:  sudo apt install pandoc
+# Windows: https://pandoc.org/installing.html
 ```
+
+All paths produce the same output convention: `<input>.md` plus a sibling `<input>_files/` directory containing extracted images with relative references.
 
 ## `source_to_md/ppt_to_md.py`
 

@@ -85,7 +85,7 @@ If a `.pptx` file appears in `exports/` that opens in PowerPoint — **you're do
 | Dependency | How to install | Verify |
 |------------|----------------|--------|
 | **Node.js** — WeChat articles / complex web pages | Download LTS from [nodejs.org](https://nodejs.org/) | `node --version` → v18+ |
-| **Pandoc** — DOCX / EPUB conversion | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
+| **Pandoc** — legacy formats only (`.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, `.typ`); `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
 | **CairoSVG** — higher quality PNG fallbacks | Install [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases), then `pip install cairosvg` | `python -c "import cairosvg"` |
 
 > Skip CairoSVG if unsure. PPT Master auto-falls back to `svglib` (already installed via `requirements.txt`), which works fine for most cases.

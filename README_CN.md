@@ -73,7 +73,7 @@ PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每
 |--------|:--------:|------|-----------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——一切都依赖它 | 什么都跑不了 |
 | [Node.js](https://nodejs.org/) 18+ | ❌ 可选 | 将微信公众号文章、复杂网页转换为 Markdown | 仍可用 PDF、DOCX、纯文本、简单 URL 作为素材 |
-| [Pandoc](https://pandoc.org/) | ❌ 可选 | 将 DOCX、EPUB、HTML、LaTeX、RST 转换为 Markdown | 仍可用 PDF、纯文本、URL 作为素材 |
+| [Pandoc](https://pandoc.org/) | ❌ 可选 | 将小众格式（`.doc`/`.odt`/`.rtf`/`.tex`/`.rst`/`.org`/`.typ`）转换为 Markdown。`.docx`、`.html`、`.epub`、`.ipynb` 已由 Python 原生处理，无需 pandoc。 | 仍可用 PDF、DOCX、HTML、EPUB、Jupyter、纯文本、URL 作为素材 |
 
 
 > **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。其余的用到时再装。
@@ -95,12 +95,12 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 # macOS
 brew install python
 brew install node                # 可选——用于微信公众号等网页转换
-brew install pandoc              # 可选——用于 DOCX/EPUB 转换
+brew install pandoc              # 可选——仅用于 .doc/.odt/.rtf/.tex/.rst/.org/.typ 等小众格式
 
 # Ubuntu / Debian
 sudo apt install python3 python3-pip
 sudo apt install nodejs npm      # 可选
-sudo apt install pandoc          # 可选
+sudo apt install pandoc          # 可选——仅用于 .doc/.odt/.rtf/.tex/.rst/.org/.typ 等小众格式
 ```
 </details>
 

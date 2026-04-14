@@ -88,7 +88,7 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 | 依赖 | 安装方式 | 验证 |
 |------|---------|------|
 | **Node.js** — 微信公众号 / 复杂网页转换 | [nodejs.org](https://nodejs.org/) 下载 LTS 版安装 | `node --version` → v18+ |
-| **Pandoc** — DOCX / EPUB 转换 | [pandoc.org](https://pandoc.org/installing.html) 下载 `.msi` 安装 | `pandoc --version` |
+| **Pandoc** — 仅用于小众格式（`.doc`/`.odt`/`.rtf`/`.tex`/`.rst`/`.org`/`.typ`）；`.docx`/`.html`/`.epub`/`.ipynb` 已由 Python 原生处理 | [pandoc.org](https://pandoc.org/installing.html) 下载 `.msi` 安装 | `pandoc --version` |
 | **CairoSVG** — 更高质量 PNG 后备图 | 安装 [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases) 后 `pip install cairosvg` | `python -c "import cairosvg"` |
 
 > CairoSVG 不确定就跳过。PPT Master 会自动用 `svglib`（已随 `requirements.txt` 安装），大多数情况够用。
