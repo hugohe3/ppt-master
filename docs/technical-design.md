@@ -21,7 +21,7 @@ User Input (PDF/DOCX/URL/Markdown)
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
-[Template Option] A) Use existing template B) No template
+[Template Option] A) Use existing template B) Free design
     ↓
 [Need New Template?] → Use /create-template workflow separately
     ↓
