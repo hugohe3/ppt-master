@@ -153,7 +153,7 @@ pip install -r requirements.txt
 
 ```
 AI：好的，先确认设计规范：
-   [模板] B) 不使用模板
+   [模板] B) 自由设计
    [格式] PPT 16:9
    [页数] 8-10 页
    ...

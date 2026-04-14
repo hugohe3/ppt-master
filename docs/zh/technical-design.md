@@ -21,7 +21,7 @@
     ↓
 [创建项目] → project_manager.py init <项目名> --format <格式>
     ↓
-[模板选项] A) 使用已有模板 B) 不使用模板
+[模板选项] A) 使用已有模板 B) 自由设计
     ↓
 [需要新模板？] → 使用 /create-template 工作流单独创建
     ↓

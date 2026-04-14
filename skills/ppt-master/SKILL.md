@@ -133,13 +133,15 @@ Import source content (choose based on the situation):
 
 **Template recommendation flow** (only when the user has NOT yet decided):
 Query `${SKILL_DIR}/templates/layouts/layouts_index.json` to list available templates and their style descriptions.
-**When presenting options, you MUST provide a professional recommendation based on the current PPT topic and content** (recommend a specific template or free design, with reasoning), then ask the user:
+**When presenting options, you MUST provide a professional recommendation based on the current PPT topic and content** (recommend a specific template or free design, with reasoning). By default, **lean toward free design** unless the content clearly benefits from a fixed structural preset (e.g., consulting report, annual report, academic paper). Then ask the user:
 
 > 💡 **AI Recommendation**: Based on your content topic (brief summary), I recommend **[specific template / free design]** because...
 >
+> Note: Both options produce fully-designed output. A template is a validated **"structure + style" preset** (e.g., McKinsey-style, Google-style); free design lets the AI tailor structure and style to your specific content — usually yielding a more content-fitting result.
+>
 > Which approach would you prefer?
-> **A) Use an existing template** (please specify template name or style preference)
-> **B) No template** — free design
+> **A) Use an existing template** — apply a validated structure+style preset (please specify template name or style preference)
+> **B) Free design** (recommended for most cases) — AI tailors structure and style to your content
 
 After the user confirms option A, copy template files to the project directory:
 ```bash
@@ -149,7 +151,7 @@ cp ${SKILL_DIR}/templates/layouts/<template_name>/*.png <project_path>/images/ 2
 cp ${SKILL_DIR}/templates/layouts/<template_name>/*.jpg <project_path>/images/ 2>/dev/null || true
 ```
 
-After the user confirms option B, proceed directly to Step 4.
+After the user confirms option B (free design), proceed directly to Step 4.
 
 > To create a new global template, read `workflows/create-template.md`
 
