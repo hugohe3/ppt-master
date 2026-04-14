@@ -69,7 +69,27 @@ This project is my attempt to bridge the gap between **domain expertise** and **
 
 ### 1. Prerequisites
 
-**Required:** [Python](https://www.python.org/downloads/) 3.10+ · **Optional:** [Node.js](https://nodejs.org/) 18+ (for WeChat page conversion) · [Pandoc](https://pandoc.org/) (for DOCX/EPUB conversion)
+| Dependency | Required? | What it does | If you skip it |
+|------------|:---------:|--------------|----------------|
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — everything depends on this | Nothing works |
+| [Node.js](https://nodejs.org/) 18+ | ❌ Optional | Converts WeChat articles and complex web pages to Markdown | You can still use PDF, DOCX, plain text, and simple URLs as source |
+| [Pandoc](https://pandoc.org/) | ❌ Optional | Converts DOCX, EPUB, HTML, LaTeX, RST to Markdown | You can still use PDF, plain text, and URLs as source |
+
+
+> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations. Install the rest only when you need them.
+
+<details open>
+<summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
+
+Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrote a **step-by-step guide** specifically for Windows users:
+
+**📖 [Windows Installation Guide](./docs/windows-installation.md)** — from zero to a working presentation in 10 minutes.
+
+Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → `pip install -r requirements.txt` → done.
+</details>
+
+<details>
+<summary><strong>macOS / Linux</strong> — install and go</summary>
 
 ```bash
 # macOS
@@ -77,13 +97,12 @@ brew install python
 brew install node                # optional — for WeChat page conversion
 brew install pandoc              # optional — for DOCX/EPUB conversion
 
-# Ubuntu/Debian
+# Ubuntu / Debian
 sudo apt install python3 python3-pip
 sudo apt install nodejs npm      # optional
 sudo apt install pandoc          # optional
-
-# Windows — download from python.org, nodejs.org, pandoc.org
 ```
+</details>
 
 ### 2. Pick an AI Editor
 
@@ -169,6 +188,7 @@ Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` to see tier
 | | Document | Description |
 |---|----------|-------------|
 | 🆚 | [Why PPT Master](./docs/why-ppt-master.md) | How it compares to Gamma, Copilot, and other AI tools |
+| 🪟 | [Windows Installation](./docs/windows-installation.md) | Step-by-step setup guide for Windows users |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | Core workflow and rules |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
