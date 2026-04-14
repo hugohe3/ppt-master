@@ -114,11 +114,21 @@ To update later (Option B only): `python3 skills/ppt-master/scripts/update_repo.
 
 ### 4. Create
 
-Open the AI chat panel and describe what you want:
+**Provide source materials (recommended):** Place your PDF, DOCX, images, or other files in the `projects/` directory, then tell the AI chat panel which files to use. The quickest way to get the path: right-click the file in your file manager or IDE sidebar → **Copy Path** (or **Copy Relative Path**) and paste it directly into the chat.
 
 ```
-You: I have a Q3 quarterly report that needs to be made into a PPT
+You: Please create a PPT from projects/q3-report/sources/report.pdf
+```
 
+**Paste content directly:** You can also paste text content straight into the chat window and the AI will generate a PPT from it.
+
+```
+You: Please turn the following into a PPT: [paste your content here...]
+```
+
+Either way, the AI will first confirm the design spec:
+
+```
 AI:  Sure. Let's confirm the design spec:
      [Template] B) No template
      [Format]   PPT 16:9
