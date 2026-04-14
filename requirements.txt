@@ -39,10 +39,23 @@ PyMuPDF>=1.23.0
 # ─────────────────────────────────────────────────────────────
 # Document to Markdown tool / 文档转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/doc_to_md.py)
 # ─────────────────────────────────────────────────────────────
-# Uses Pandoc to convert DOCX/EPUB/HTML/LaTeX/RST etc. to Markdown.
-# 使用 Pandoc 将 DOCX/EPUB/HTML/LaTeX/RST 等格式转换为 Markdown
-# No Python package dependencies. Requires system-level pandoc:
-# 无 Python 包依赖，需要系统安装 pandoc：
+# Native (pure-Python) paths — no external binary required:
+# 原生路径（纯 Python，无需外部程序）：
+#   .docx   → mammoth
+#   .html   → markdownify (+ beautifulsoup4, listed below)
+#   .epub   → ebooklib (+ markdownify)
+#   .ipynb  → nbconvert
+mammoth>=1.6.0
+markdownify>=0.11.6
+ebooklib>=0.18
+nbconvert>=7.0.0
+#
+# Fallback path — only needed for less common formats
+# (.doc .odt .rtf .tex/.latex .rst .org .typ).
+# Not required if you only convert the four native formats above.
+# 备用路径 —— 仅在需要处理以下小众格式时才用到
+# (.doc .odt .rtf .tex/.latex .rst .org .typ)。
+# 如果只处理上述四种原生格式，无需安装。
 #   macOS:   brew install pandoc
 #   Ubuntu:  sudo apt install pandoc
 #   Windows: https://pandoc.org/installing.html
