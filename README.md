@@ -69,14 +69,13 @@ This project is my attempt to bridge the gap between **domain expertise** and **
 
 ### 1. Prerequisites
 
-| Dependency | Required? | What it does | If you skip it |
-|------------|:---------:|--------------|----------------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — everything depends on this | Nothing works |
-| [Node.js](https://nodejs.org/) 18+ | ❌ Optional | Converts WeChat articles and complex web pages to Markdown | You can still use PDF, DOCX, plain text, and simple URLs as source |
-| [Pandoc](https://pandoc.org/) | ❌ Optional | Converts legacy formats (`.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, `.typ`) to Markdown. `.docx`, `.html`, `.epub`, `.ipynb` are handled natively in Python — no pandoc needed. | You can still use PDF, DOCX, HTML, EPUB, Jupyter, plain text, and URLs as source |
+**You only need Python.** Everything else is installed via `pip install -r requirements.txt`.
 
+| Dependency | Required? | What it does |
+|------------|:---------:|--------------|
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — the only thing you actually need to install |
 
-> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations. Install the rest only when you need them.
+> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations.
 
 <details open>
 <summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
@@ -94,13 +93,32 @@ Quick version: download Python from [python.org](https://www.python.org/download
 ```bash
 # macOS
 brew install python
-brew install node                # optional — for WeChat page conversion
-brew install pandoc              # optional — only for legacy .doc/.odt/.rtf/.tex/.rst/.org/.typ
+pip install -r requirements.txt
 
 # Ubuntu / Debian
 sudo apt install python3 python3-pip
-sudo apt install nodejs npm      # optional
-sudo apt install pandoc          # optional — only for legacy .doc/.odt/.rtf/.tex/.rst/.org/.typ
+pip install -r requirements.txt
+```
+</details>
+
+<details>
+<summary><strong>Edge-case fallbacks</strong> — 99% of users don't need these</summary>
+
+Two external tools exist as fallbacks for edge cases. **Most users will never need them** — install only if you hit one of the specific scenarios below.
+
+| Fallback | Install only if… |
+|----------|-----------------|
+| [Node.js](https://nodejs.org/) 18+ | You need to import WeChat Official Account articles **and** `curl_cffi` (part of `requirements.txt`) has no prebuilt wheel for your Python + OS + CPU combination. In normal setups `web_to_md.py` handles WeChat directly through `curl_cffi`. |
+| [Pandoc](https://pandoc.org/) | You need to convert legacy formats: `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`, `.html`, `.epub`, `.ipynb` are handled natively by Python — no pandoc required. |
+
+```bash
+# macOS (only if the above conditions apply)
+brew install node
+brew install pandoc
+
+# Ubuntu / Debian
+sudo apt install nodejs npm
+sudo apt install pandoc
 ```
 </details>
 

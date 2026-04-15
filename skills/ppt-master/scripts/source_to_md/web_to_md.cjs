@@ -2,6 +2,11 @@
 /**
  * web_to_md.cjs - Web Page to Markdown Converter (Enhanced)
  *
+ * STATUS: Fallback only. The Python version (web_to_md.py) now uses
+ * curl_cffi to impersonate a Chrome TLS fingerprint, which covers WeChat
+ * and other sites that previously required Node. Use this script only when
+ * curl_cffi cannot be installed on your platform.
+ *
  * Usage:
  *   node skills/ppt-master/scripts/source_to_md/web_to_md.cjs <url>              # Single URL
  *   node skills/ppt-master/scripts/source_to_md/web_to_md.cjs <url1> <url2> ...  # Multiple URLs

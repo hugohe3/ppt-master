@@ -71,12 +71,13 @@ PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每
 
 | 依赖项 | 是否必需 | 作用 | 不装会怎样 |
 |--------|:--------:|------|-----------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——一切都依赖它 | 什么都跑不了 |
-| [Node.js](https://nodejs.org/) 18+ | ❌ 可选 | 将微信公众号文章、复杂网页转换为 Markdown | 仍可用 PDF、DOCX、纯文本、简单 URL 作为素材 |
-| [Pandoc](https://pandoc.org/) | ❌ 可选 | 将小众格式（`.doc`/`.odt`/`.rtf`/`.tex`/`.rst`/`.org`/`.typ`）转换为 Markdown。`.docx`、`.html`、`.epub`、`.ipynb` 已由 Python 原生处理，无需 pandoc。 | 仍可用 PDF、DOCX、HTML、EPUB、Jupyter、纯文本、URL 作为素材 |
+**只需装 Python 即可。** 其余依赖通过 `pip install -r requirements.txt` 一次装齐。
 
+| 依赖 | 是否必须 | 用途 |
+|------|:--------:|------|
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——唯一真正需要安装的东西 |
 
-> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。其余的用到时再装。
+> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。
 
 <details open>
 <summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
@@ -94,13 +95,32 @@ Windows 需要一些额外步骤（PATH 设置、执行策略等）。我们为 
 ```bash
 # macOS
 brew install python
-brew install node                # 可选——用于微信公众号等网页转换
-brew install pandoc              # 可选——仅用于 .doc/.odt/.rtf/.tex/.rst/.org/.typ 等小众格式
+pip install -r requirements.txt
 
 # Ubuntu / Debian
 sudo apt install python3 python3-pip
-sudo apt install nodejs npm      # 可选
-sudo apt install pandoc          # 可选——仅用于 .doc/.odt/.rtf/.tex/.rst/.org/.typ 等小众格式
+pip install -r requirements.txt
+```
+</details>
+
+<details>
+<summary><strong>边缘场景备用方案</strong> — 99% 的用户用不到</summary>
+
+下面两个外部程序只作为极端场景的兜底。**绝大多数用户根本不需要装**，只有遇到以下具体场景才装：
+
+| 备用方案 | 只在以下情况才装 |
+|---------|-----------------|
+| [Node.js](https://nodejs.org/) 18+ | 你需要抓取微信公众号文章，**且**你的 Python + 系统 + CPU 组合下 `curl_cffi`（`requirements.txt` 里已默认安装）没有预编译 wheel。正常安装下 `web_to_md.py` 已能通过 `curl_cffi` 直接抓微信。 |
+| [Pandoc](https://pandoc.org/) | 你需要转 `.doc`、`.odt`、`.rtf`、`.tex`、`.rst`、`.org`、`.typ` 这些小众格式。`.docx`、`.html`、`.epub`、`.ipynb` 已由 Python 原生处理，不需要 pandoc。 |
+
+```bash
+# macOS（仅在上述条件成立时才装）
+brew install node
+brew install pandoc
+
+# Ubuntu / Debian
+sudo apt install nodejs npm
+sudo apt install pandoc
 ```
 </details>
 
