@@ -12,11 +12,18 @@ Usage:
 Dependencies:
     pip install requests beautifulsoup4
 
-Note:
-    Some websites (e.g., WeChat mp.weixin.qq.com) block Python's 'requests' library
-    based on TLS fingerprints (JA3). If you encounter 403 errors or connection issues
-    with such sites, please use the Node.js version (scripts/source_to_md/web_to_md.cjs) or
-    modify this script to use 'curl_cffi'.
+TLS fingerprint handling:
+    Some sites (e.g., WeChat mp.weixin.qq.com) block Python's default 'requests'
+    library based on TLS fingerprints (JA3). If 'curl_cffi' is installed, this script
+    uses it to impersonate a modern Chrome fingerprint and bypass such blocks. If
+    'curl_cffi' is unavailable, it silently falls back to plain 'requests' — so
+    non-blocking sites still work without the extra dependency.
+
+    Install for WeChat / Chinese-portal coverage:
+        pip install curl_cffi
+
+    If curl_cffi is unavailable on your platform, the Node.js counterpart
+    (scripts/source_to_md/web_to_md.cjs) remains available as a fallback.
 """
 
 import argparse
@@ -35,6 +42,32 @@ except ImportError:
     print("Error: This script requires 'requests' and 'beautifulsoup4'.")
     print("Please run: pip install requests beautifulsoup4")
     sys.exit(1)
+
+# Prefer curl_cffi for TLS-fingerprint impersonation (bypasses JA3 blocking on
+# sites like WeChat). Fall back to plain requests when it's not installed.
+try:
+    from curl_cffi import requests as curl_requests  # type: ignore
+    _CURL_IMPERSONATE = "chrome120"
+except ImportError:
+    curl_requests = None
+    _CURL_IMPERSONATE = None
+
+
+def _http_get(url: str, *, headers: dict | None = None, timeout: int | None = None,
+              verify: bool = False, stream: bool = False):
+    """HTTP GET with curl_cffi preferred, requests fallback.
+
+    Using curl_cffi lets this script fetch sites that reject Python's default
+    TLS fingerprint (notably mp.weixin.qq.com). Signature mirrors the subset of
+    requests.get() this script actually uses.
+    """
+    if curl_requests is not None:
+        return curl_requests.get(
+            url, headers=headers, timeout=timeout,
+            verify=verify, impersonate=_CURL_IMPERSONATE, stream=stream,
+        )
+    return requests.get(url, headers=headers, timeout=timeout,
+                        verify=verify, stream=stream)
 
 try:
     from PIL import Image
@@ -94,12 +127,14 @@ def fetch_url(url: str) -> str:
     }
 
     try:
-        response = requests.get(url, headers=headers,
-                                timeout=CONFIG["timeout"], verify=False)
+        response = _http_get(url, headers=headers,
+                             timeout=CONFIG["timeout"], verify=False)
         response.raise_for_status()
 
         # Enhanced encoding detection (requests handles this well usually, but we force apparent_encoding for Chinese)
-        response.encoding = response.apparent_encoding
+        # curl_cffi exposes the same .apparent_encoding attribute
+        if hasattr(response, "apparent_encoding") and response.apparent_encoding:
+            response.encoding = response.apparent_encoding
 
         return response.text
     except Exception as e:
@@ -187,16 +222,32 @@ def download_and_rewrite_images(
     saved = 0
 
     for idx, img in enumerate(images):
-        src = img.get("src")
-        if not src or src.startswith("data:"):
+        # Prefer lazy-load attributes — WeChat, Zhihu, and many CMSes keep the
+        # real image URL in data-src / data-original / data-lazy-src, with
+        # `src` pointing at a 1x1 placeholder or a template literal.
+        candidates = [
+            img.get("data-src"),
+            img.get("data-original"),
+            img.get("data-lazy-src"),
+            img.get("data-actualsrc"),
+            img.get("src"),
+        ]
+        src = next((s for s in candidates
+                    if s and not s.startswith("data:")
+                    and s.startswith(("http://", "https://", "//", "/"))), None)
+        if not src:
             continue
+
+        # Promote the chosen URL into the element's src so downstream rewrite
+        # (which matches on src) can retarget it to the local file.
+        img["src"] = src
 
         abs_url = urljoin(page_url, src)
         if abs_url in downloaded:
             saved_name = downloaded[abs_url]
         else:
             try:
-                resp = requests.get(
+                resp = _http_get(
                     abs_url,
                     headers={"User-Agent": CONFIG["user_agent"]},
                     timeout=CONFIG["timeout"],
