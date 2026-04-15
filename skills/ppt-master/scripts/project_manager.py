@@ -55,6 +55,15 @@ DOC_SUFFIXES = {
 WECHAT_HOST_KEYWORDS = ("mp.weixin.qq.com", "weixin.qq.com")
 
 
+def _curl_cffi_available() -> bool:
+    """Return whether curl_cffi is importable (enables Python TLS impersonation)."""
+    try:
+        import curl_cffi  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 def is_url(value: str) -> bool:
     """Return whether a string looks like an HTTP(S) URL."""
     parsed = urlparse(value)
@@ -255,9 +264,16 @@ class ProjectManager:
         )
 
     def _import_url(self, url: str, markdown_path: Path) -> None:
+        # Prefer web_to_md.py: it uses curl_cffi internally when available,
+        # which handles WeChat and other TLS-fingerprint-blocked sites.
+        # Fall back to the Node.js version only when the URL is known to
+        # require TLS impersonation AND curl_cffi isn't installed.
         host = urlparse(url).netloc.lower()
-        if any(keyword in host for keyword in WECHAT_HOST_KEYWORDS):
-            command = ["node", str(TOOLS_DIR / "source_to_md" / "web_to_md.cjs"), url, "-o", str(markdown_path)]
+        is_tls_sensitive = any(keyword in host for keyword in WECHAT_HOST_KEYWORDS)
+
+        if is_tls_sensitive and not _curl_cffi_available() and shutil.which("node"):
+            command = ["node", str(TOOLS_DIR / "source_to_md" / "web_to_md.cjs"),
+                       url, "-o", str(markdown_path)]
         else:
             command = [
                 sys.executable,

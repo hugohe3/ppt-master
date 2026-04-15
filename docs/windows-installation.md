@@ -80,15 +80,15 @@ If a `.pptx` file appears in `exports/` that opens in PowerPoint — **you're do
 
 ---
 
-## Step 6 — Optional Dependencies (install when needed)
+## Step 6 — Optional Enhancements (most users can skip this)
 
-| Dependency | How to install | Verify |
-|------------|----------------|--------|
-| **Node.js** — WeChat articles / complex web pages | Download LTS from [nodejs.org](https://nodejs.org/) | `node --version` → v18+ |
-| **Pandoc** — legacy formats only (`.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, `.typ`); `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
-| **CairoSVG** — higher quality PNG fallbacks | Install [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases), then `pip install cairosvg` | `python -c "import cairosvg"` |
+With Python and `requirements.txt` installed, you already have everything needed to generate presentations. The items below are **edge-case fallbacks and enhancements** — install only if you hit the specific scenario.
 
-> Skip CairoSVG if unsure. PPT Master auto-falls back to `svglib` (already installed via `requirements.txt`), which works fine for most cases.
+| Enhancement | Install only if… | How to install | Verify |
+|-------------|-----------------|----------------|--------|
+| **CairoSVG** — higher quality PNG fallbacks | You want crisper PNG fallbacks for Office versions that don't render SVG natively. `svglib` (already installed) is fine for most cases. | Install [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases), then `pip install cairosvg` | `python -c "import cairosvg"` |
+| **Node.js** 18+ — WeChat fallback | You need to import WeChat Official Account articles **and** `curl_cffi` (part of `requirements.txt`) has no wheel for your Python version. Normally `web_to_md.py` handles WeChat through `curl_cffi`. | Download LTS from [nodejs.org](https://nodejs.org/) | `node --version` → v18+ |
+| **Pandoc** — legacy document formats | You need to convert `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`/`.html`/`.epub`/`.ipynb` work natively in Python. | Download `.msi` from [pandoc.org](https://pandoc.org/installing.html) | `pandoc --version` |
 
 ---
 

@@ -98,7 +98,7 @@ Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF f
 
 Convert web pages to Markdown and download images locally.
 
-Python version:
+### Python version (preferred)
 
 ```bash
 python3 scripts/source_to_md/web_to_md.py https://example.com/article
@@ -107,14 +107,24 @@ python3 scripts/source_to_md/web_to_md.py -f urls.txt
 python3 scripts/source_to_md/web_to_md.py https://example.com -o output.md
 ```
 
-Node.js version for WeChat or anti-bot pages:
+When `curl_cffi` is installed (included in `requirements.txt`), this script
+automatically impersonates a modern Chrome TLS fingerprint, which lets it
+fetch WeChat Official Accounts (`mp.weixin.qq.com`) and other sites that
+block Python's default TLS fingerprint. No extra flags needed. If
+`curl_cffi` is not available, it falls back to plain `requests`.
+
+### Node.js version (fallback)
+
+Retained as a backup for rare environments where `curl_cffi` can't be
+installed (e.g., uncommon Python + OS + CPU combinations without prebuilt
+wheels):
 
 ```bash
 node scripts/source_to_md/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
-node scripts/source_to_md/web_to_md.cjs https://url1.com https://url2.com
 ```
 
-Use the Node.js version first for WeChat Official Accounts and similar high-security sites.
+For most users the Python version is sufficient — Node.js is no longer
+required for WeChat coverage.
 
 ## `rotate_images.py`
 
