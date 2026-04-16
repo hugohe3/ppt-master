@@ -5,9 +5,9 @@ PPT Master - SVG Quality Check Tool
 Checks whether SVG files comply with project technical specifications.
 
 Usage:
-    python3 scripts/svg_quality_checker.py <svg_file>
-    python3 scripts/svg_quality_checker.py <directory>
-    python3 scripts/svg_quality_checker.py --all examples
+    uv run scripts/svg_quality_checker.py <svg_file>
+    uv run scripts/svg_quality_checker.py <directory>
+    uv run scripts/svg_quality_checker.py --all examples
 """
 
 import sys
