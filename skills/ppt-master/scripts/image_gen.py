@@ -267,10 +267,26 @@ def _build_backend_aliases() -> dict[str, str]:
 BACKEND_ALIASES = _build_backend_aliases()
 
 
+_BACKEND_PIP_HINTS = {
+    "gemini": "google-genai",
+    "openai": "openai",
+}
+
+
 def _load_backend(canonical_name: str) -> tuple[object, str]:
     """Import and return the configured backend module."""
     module_name = f"image_backends.{BACKEND_REGISTRY[canonical_name]['module']}"
-    module = __import__(module_name, fromlist=["*"])
+    try:
+        module = __import__(module_name, fromlist=["*"])
+    except ImportError as exc:
+        pip_name = _BACKEND_PIP_HINTS.get(canonical_name, exc.name or "<dependency>")
+        print(
+            f"Error: backend '{canonical_name}' needs a package that is not installed.\n"
+            f"Missing: {exc.name}\n"
+            f"Run: pip install {pip_name}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     return module, canonical_name
 
 
