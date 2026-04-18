@@ -30,6 +30,11 @@ python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --im
 # SVG quality check
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 
+# Template distillation from a source PPTX (produces layouts/<name>/ pack)
+python3 -m pptx_blueprint <source.pptx> -o skills/ppt-master/templates/layouts/<name>
+# Add --engine blueprint|legacy|auto, --max-layouts N, --strict, --report as needed
+# Must be run from skills/ppt-master/scripts/ (so Python resolves the package)
+
 # Post-processing pipeline (MUST run sequentially, one at a time — NEVER batch)
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 # ✅ Confirm no errors before running the next command
