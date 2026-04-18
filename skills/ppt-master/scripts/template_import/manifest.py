@@ -61,6 +61,35 @@ class SlideRecord:
     page_type: str
 
 
+def summarize_part_record(
+    *,
+    part_path: str | None,
+    root: ET.Element | None,
+    rels: dict[str, dict[str, str]],
+    copied_assets: dict[str, str],
+    used_by_slides: list[int],
+    parent_path: str | None = None,
+    theme_path: str | None = None,
+) -> dict[str, Any] | None:
+    if not part_path:
+        return None
+
+    bg_asset = detect_background_asset(root, rels)
+    image_targets = extract_image_targets(root, rels)
+    return {
+        "path": part_path,
+        "name": PurePosixPath(part_path).name,
+        "parentPath": parent_path,
+        "themePath": theme_path,
+        "backgroundAsset": copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None),
+        "imageAssets": [copied_assets.get(target, PurePosixPath(target).name) for target in image_targets],
+        "textSamples": extract_text_samples(root),
+        "textCount": len(root.findall(".//a:t", NS)) if root is not None else 0,
+        "shapeCount": count_slide_shapes(root),
+        "usedBySlides": used_by_slides,
+    }
+
+
 def normalize_part(path: str, base: str | None = None) -> str:
     if base:
         path = str(PurePosixPath(base).parent.joinpath(path))
@@ -278,6 +307,59 @@ def write_analysis(
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_structure_analysis(
+    output_path: Path,
+    structures: dict[str, Any],
+) -> None:
+    layouts = structures.get("layouts", [])
+    masters = structures.get("masters", [])
+
+    lines = [
+        "# Master/Layout Reference Analysis",
+        "",
+        "## Summary",
+        f"- Unique layouts: {len(layouts)}",
+        f"- Unique masters: {len(masters)}",
+        "",
+        "## Layouts",
+    ]
+
+    if not layouts:
+        lines.append("- (none)")
+    for layout in layouts:
+        sample = " | ".join(layout.get("textSamples", [])[:3]) or "(no text sample)"
+        lines.extend(
+            [
+                f"- {layout['name']}",
+                f"  - Path: {layout['path']}",
+                f"  - Parent master: {layout.get('parentPath') or 'n/a'}",
+                f"  - Used by slides: {', '.join(str(i) for i in layout.get('usedBySlides', [])) or 'n/a'}",
+                f"  - Background asset: {layout.get('backgroundAsset') or 'none'}",
+                f"  - Image assets: {', '.join(layout.get('imageAssets', [])) or 'none'}",
+                f"  - Text sample: {sample}",
+            ]
+        )
+
+    lines.extend(["", "## Masters"])
+    if not masters:
+        lines.append("- (none)")
+    for master in masters:
+        sample = " | ".join(master.get("textSamples", [])[:3]) or "(no text sample)"
+        lines.extend(
+            [
+                f"- {master['name']}",
+                f"  - Path: {master['path']}",
+                f"  - Theme path: {master.get('themePath') or 'n/a'}",
+                f"  - Used by slides: {', '.join(str(i) for i in master.get('usedBySlides', [])) or 'n/a'}",
+                f"  - Background asset: {master.get('backgroundAsset') or 'none'}",
+                f"  - Image assets: {', '.join(master.get('imageAssets', [])) or 'none'}",
+                f"  - Text sample: {sample}",
+            ]
+        )
+
+    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
     with zipfile.ZipFile(pptx_path, "r") as zf:
         presentation_root = load_xml_from_zip(zf, "ppt/presentation.xml")
@@ -305,6 +387,8 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 slide_parts.append(rel["target"])
 
         asset_dir = output_dir / "assets"
+        if asset_dir.exists():
+            shutil.rmtree(asset_dir)
         asset_dir.mkdir(parents=True, exist_ok=True)
 
         copied_assets: dict[str, str] = {}
@@ -326,6 +410,10 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
 
         slide_records: list[SlideRecord] = []
         asset_usage: Counter[str] = Counter()
+        layout_usage: defaultdict[str, list[int]] = defaultdict(list)
+        master_usage: defaultdict[str, list[int]] = defaultdict(list)
+        layout_cache: dict[str, dict[str, Any]] = {}
+        master_cache: dict[str, dict[str, Any]] = {}
 
         theme_summary = {"colors": {}, "fonts": {}}
 
@@ -388,6 +476,23 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             for asset_name in resolved_images:
                 asset_usage[asset_name] += 1
 
+            if layout_path:
+                layout_usage[layout_path].append(index)
+                if layout_path not in layout_cache:
+                    layout_cache[layout_path] = {
+                        "root": layout_root,
+                        "rels": layout_rels,
+                        "master_path": master_path,
+                    }
+            if master_path:
+                master_usage[master_path].append(index)
+                if master_path not in master_cache:
+                    master_cache[master_path] = {
+                        "root": master_root,
+                        "rels": master_rels,
+                        "theme_path": theme_path,
+                    }
+
             slide_records.append(
                 SlideRecord(
                     index=index,
@@ -410,6 +515,33 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
         for slide in slide_records:
             page_type_map[slide.page_type].append(slide.index)
 
+        layout_records = [
+            summarize_part_record(
+                part_path=layout_path,
+                root=layout_cache[layout_path]["root"],
+                rels=layout_cache[layout_path]["rels"],
+                copied_assets=copied_assets,
+                used_by_slides=layout_usage[layout_path],
+                parent_path=layout_cache[layout_path]["master_path"],
+            )
+            for layout_path in sorted(layout_cache.keys())
+        ]
+        master_records = [
+            summarize_part_record(
+                part_path=master_path,
+                root=master_cache[master_path]["root"],
+                rels=master_cache[master_path]["rels"],
+                copied_assets=copied_assets,
+                used_by_slides=master_usage[master_path],
+                theme_path=master_cache[master_path]["theme_path"],
+            )
+            for master_path in sorted(master_cache.keys())
+        ]
+        structure_refs = {
+            "layouts": [item for item in layout_records if item],
+            "masters": [item for item in master_records if item],
+        }
+
         manifest = {
             "source": {
                 "pptx": str(pptx_path),
@@ -421,6 +553,12 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 "exportDir": "assets",
                 "commonAssets": common_assets,
                 "allAssets": sorted(copied_assets.values()),
+            },
+            "referenceStructures": {
+                "json": "master_layout_refs.json",
+                "analysis": "master_layout_analysis.md",
+                "layoutCount": len(structure_refs["layouts"]),
+                "masterCount": len(structure_refs["masters"]),
             },
             "pageTypeCandidates": dict(sorted(page_type_map.items())),
             "slides": [
@@ -450,6 +588,11 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             slide_records,
             common_assets,
         )
+        (output_dir / "master_layout_refs.json").write_text(
+            json.dumps(structure_refs, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        write_structure_analysis(output_dir / "master_layout_analysis.md", structure_refs)
         return manifest
 
 
