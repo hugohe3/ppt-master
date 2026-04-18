@@ -18,6 +18,8 @@ When the workflow provides a PPTX reference source, the effective input package 
 
 - finalized template brief
 - `manifest.json`
+- `master_layout_refs.json`
+- `master_layout_analysis.md`
 - `analysis.md`
 - `normalized_assets.json`
 - exported `assets/`
@@ -28,12 +30,14 @@ When the workflow provides a PPTX reference source, the effective input package 
 Input priority for PPTX-backed template creation:
 
 1. `manifest.json` for factual metadata
-2. `normalized_assets.json` for canonical asset decisions
-3. exported `assets/` for reusable visual resources
-4. `analysis.md` for page-type guidance
-5. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
-6. cleaned slide SVG references for composition, spacing, and fixed decorative cues
-7. screenshots / original PPTX only for style verification
+2. `master_layout_refs.json` for unique layout/master structure and inheritance
+3. `master_layout_analysis.md` for fast structural review
+4. `normalized_assets.json` for canonical asset decisions
+5. exported `assets/` for reusable visual resources
+6. `analysis.md` for page-type guidance
+7. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
+8. cleaned slide SVG references for composition, spacing, and fixed decorative cues
+9. screenshots / original PPTX only for style verification
 
 ---
 

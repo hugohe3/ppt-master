@@ -60,13 +60,15 @@ This helper performs the full PPTX reference preparation in one workspace:
 - extracts reusable assets and style metadata
 - generates `manifest.json`
 - generates `analysis.md`
+- generates `master_layout_refs.json`
+- generates `master_layout_analysis.md`
 - exports each slide to `svg/`
 - externalizes large inline bitmap payloads into `assets/`
 - generates `reference_svg_selection.json`
 
 It is still a reconstruction aid, not a final direct template conversion.
 
-Use the generated `manifest.json`, `analysis.md`, exported `assets/`, and `svg/` slide references as internal reference material for template reconstruction.
+Use the generated `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, exported `assets/`, and `svg/` slide references as internal reference material for template reconstruction.
 
 Then perform an **AI-only asset normalization step** before template generation:
 
@@ -86,15 +88,19 @@ Recommended fields in `normalized_assets.json`:
 When the reference source is `.pptx`, use the following internal priority order during template creation:
 
 1. `manifest.json`
-2. `analysis.md`
-3. `normalized_assets.json`
-4. exported `assets/`
-5. cleaned slide SVG references from `svg/`
-6. user-provided screenshots or the original PPTX only for visual cross-checking
+2. `master_layout_refs.json`
+3. `master_layout_analysis.md`
+4. `analysis.md`
+5. `normalized_assets.json`
+6. exported `assets/`
+7. cleaned slide SVG references from `svg/`
+8. user-provided screenshots or the original PPTX only for visual cross-checking
 
 Interpretation rule:
 
 - `manifest.json` is the source of truth for slide size, theme colors, fonts, background inheritance, and reusable asset inventory
+- `master_layout_refs.json` is the source of truth for unique layout/master structure, inherited backgrounds, and slide reuse relationships
+- `master_layout_analysis.md` is the compact human-readable summary for quickly understanding reusable master/layout motifs
 - `analysis.md` is the compact human-readable summary used to guide page-type selection
 - `normalized_assets.json` is the source of truth for which imported assets are canonical and which `inline_*` assets are only derived helpers
 - exported `assets/` remain the raw import pool and should not be consumed blindly once normalization exists
@@ -146,6 +152,8 @@ If the reference source is `.pptx`, pass the following internal package to the r
 
 - finalized template brief from Step 1
 - `manifest.json`
+- `master_layout_refs.json`
+- `master_layout_analysis.md`
 - `analysis.md`
 - `normalized_assets.json`
 - exported `assets/`

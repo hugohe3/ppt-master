@@ -92,7 +92,7 @@ Notes:
 - Extracts reusable media assets from `ppt/media/`
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
-- Generates `manifest.json`, `analysis.md`, `assets/`, cleaned slide SVGs, and `reference_svg_selection.json`
+- Generates `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, `assets/`, cleaned slide SVGs, and `reference_svg_selection.json`
 - Native SVG export is Windows-only because it uses installed Microsoft PowerPoint
 - On macOS, the script falls back to exporting PDF via Keynote and then converts PDF pages to SVG
 - Writes cleaned SVG files to `svg/` after externalizing inline Base64 image payloads
