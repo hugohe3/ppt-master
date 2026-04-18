@@ -1,16 +1,16 @@
 {
   "meta": {
-    "total": 20,
+    "total": 21,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "standardFiles": ["design_spec.md", "01_cover.svg", "02_toc.svg", "02_chapter.svg", "03_content.svg", "04_ending.svg"],
     "standardPageTypes": ["cover", "toc", "chapter", "content", "ending"],
-    "updated": "2026-04-10"
+    "updated": "2026-04-18"
   },
   "categories": {
     "brand": {
       "label": "Brand Style Templates",
-      "layouts": ["google_style", "mckinsey", "anthropic", "中汽研_常规", "中汽研_商务", "中汽研_现代", "中国电建_常规", "中国电建_现代", "招商银行"]
+      "layouts": ["google_style", "mckinsey", "anthropic", "china_telecom_template", "中汽研_常规", "中汽研_商务", "中汽研_现代", "中国电建_常规", "中国电建_现代", "招商银行"]
     },
     "general": {
       "label": "General Style Templates",
@@ -32,8 +32,8 @@
   "quickLookup": {
     "strategy": ["exhibit", "mckinsey"],
     "board": ["exhibit", "mckinsey", "招商银行"],
-    "general_business": ["科技蓝商务", "smart_red", "exhibit"],
-    "technology": ["anthropic", "google_style", "smart_red", "ai_ops"],
+    "general_business": ["科技蓝商务", "smart_red", "exhibit", "china_telecom_template"],
+    "technology": ["anthropic", "google_style", "smart_red", "ai_ops", "china_telecom_template"],
     "government": ["government_red", "government_blue", "ai_ops"],
     "academic": ["academic_defense", "重庆大学"],
     "medical": ["medical_university"],
@@ -65,6 +65,14 @@
       "tone": "Tech-forward, professional, modern, conclusion-first",
       "themeMode": "Hybrid theme (dark cover/chapter + light content pages)",
       "keywords": ["AI", "LLM", "Developer", "Technology"]
+    },
+    "china_telecom_template": {
+      "label": "中国电信模板",
+      "summary": "A China Telecom style template for telecom solution proposals, digital transformation plans, and government-enterprise briefings",
+      "tone": "Authoritative, structured, restrained, telecom enterprise style",
+      "themeMode": "Light theme (white background + telecom red title bar + silver-gray lane)",
+      "assets": ["logo.png", "top_emblem.png", "footer_ribbon.png", "header_brand.png", "slogan_red.png", "skyline_bg.png"],
+      "keywords": ["China Telecom", "Telecom", "Digital transformation", "Government-enterprise", "Briefing"]
     },
     "exhibit": {
       "label": "Exhibit Style Template",
