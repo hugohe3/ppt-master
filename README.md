@@ -69,6 +69,28 @@ This project is my attempt to bridge the gap between **domain expertise** and **
 
 ---
 
+## Support This Project
+
+PPT Master is built and maintained by one person, fully self-funded. Every new template, bug fix, and documentation update runs through AI models that cost real money — and right now those token bills come out of my own pocket.
+
+If PPT Master has been helpful to you, consider chipping in. Sponsorship directly funds more templates, faster fixes, and keeps this project free and open-source.
+
+**Individual sponsorship**
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
+
+<img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="220" />
+
+Any amount is appreciated.
+
+**Enterprise / Custom work**
+
+Need a custom industry template, private deployment, or integration consulting? I take on a limited number of paid engagements each quarter.
+
+📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
+
+---
+
 ## Quick Start
 
 ### 1. Prerequisites
@@ -238,14 +260,13 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 
 - 💬 **Questions & sharing** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
 - 🐛 **Bug reports & feature requests** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
-- 📧 **Business & consulting inquiries** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
 - 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
+
+> For enterprise / consulting / custom-template work, see the **[Support This Project](#support-this-project)** section above.
 
 ---
 
 ## Star History
-
-If this project helps you, please give it a ⭐!
 
 <a href="https://star-history.com/#hugohe3/ppt-master&Date">
  <picture>
@@ -268,20 +289,6 @@ If this project helps you, please give it a ⭐!
 
 ---
 
-## Sponsor
-
-If this project saves you time, consider buying me a coffee!
-
-**PayPal**
-
-<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
-
-**Alipay / 支付宝**
-
-<img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="250" />
-
----
-
-Made with ❤️ by [Hugo He](https://www.hehugo.com/)
+Made with ❤️ by [Hugo He](https://www.hehugo.com/) — if this project helps you, please give it a ⭐ and consider [sponsoring](#support-this-project).
 
 [⬆ Back to Top](#ppt-master--ai-generates-natively-editable-pptx-from-any-document)

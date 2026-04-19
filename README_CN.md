@@ -69,6 +69,28 @@ PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每
 
 ---
 
+## 支持这个项目
+
+PPT Master 由我一个人开发和维护，完全自费。每个新模板、Bug 修复、文档更新背后都要跑 AI 模型，这些 token 费用目前全部是我自掏腰包。
+
+如果 PPT Master 帮到了你，欢迎赞助一点。这些钱会直接用于制作更多模板、更快修复问题，以及让这个项目持续免费开源。
+
+**个人赞助**
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
+
+<img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="220" />
+
+金额随意，心意最重要。
+
+**企业合作 / 定制服务**
+
+需要定制行业模板、私有化部署、或集成咨询？我每季度承接少量付费项目。
+
+📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
+
+---
+
 ## 快速开始
 
 ### 1. 前置条件
@@ -242,14 +264,13 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 - 💬 **提问与分享** — [GitHub Discussions](https://github.com/hugohe3/ppt-master/discussions)
 - 🐛 **Bug 反馈与功能建议** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
-- 📧 **商务 / 咨询 / 定制合作** — [heyug3@gmail.com](mailto:heyug3@gmail.com)
 - 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
+
+> 企业合作 / 咨询 / 定制模板请见上方 **[支持这个项目](#支持这个项目)** 板块。
 
 ---
 
 ## Star History
-
-如果这个项目对你有帮助，请给一个 ⭐！
 
 <a href="https://star-history.com/#hugohe3/ppt-master&Date">
  <picture>
@@ -272,20 +293,6 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 ---
 
-## 赞助
-
-如果这个项目帮你省了时间，欢迎请我喝杯咖啡！
-
-**PayPal**
-
-<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
-
-**支付宝**
-
-<img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="250" />
-
----
-
-Made with ❤️ by [何雨果 Hugo He](https://www.hehugo.com/)
+Made with ❤️ by [何雨果 Hugo He](https://www.hehugo.com/) — 如果这个项目对你有帮助，请给一个 ⭐，也欢迎[赞助支持](#支持这个项目)。
 
 [⬆ 回到顶部](#ppt-master--ai-生成原生可编辑-pptx支持任意文档输入)
