@@ -21,6 +21,10 @@ English | [中文](./README_CN.md)
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
+> **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
+>
+> **What you'll do**: install Python, install an AI IDE, drop in your material. First-time setup is about 15 minutes. Each deck takes ~10–20 minutes of back-and-forth with the AI.
+
 **[Why PPT Master?](./docs/why-ppt-master.md)**
 
 There's no shortage of AI presentation tools — what's missing is one where the output is **actually usable as a real PowerPoint file**. I build presentations every day, but most tools export images or web screenshots: they look nice but you can't edit anything. Others produce bare-bones text boxes and bullet lists. And they all want a monthly subscription, upload your files to their servers, and lock you into their platform.
