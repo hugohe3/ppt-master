@@ -27,10 +27,10 @@ from image_backends.backend_common import (
 )
 
 
-DEFAULT_ENDPOINT = "https://api.minimax.io/v1/image_generation"
+DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/image_generation"
 DEFAULT_MODEL = "image-01"
 
-# Domestic (China) fallback: set MINIMAX_BASE_URL=https://api.minimaxi.com if needed
+# International fallback: set MINIMAX_BASE_URL=https://api.minimax.io if needed
 
 ASPECT_RATIO_SIZE_MAP = {
     "512px": {
