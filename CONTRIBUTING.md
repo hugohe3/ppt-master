@@ -28,20 +28,56 @@ cd ppt-master
 pip install -r requirements.txt
 ```
 
+## Before You Open a PR
+
+PPT Master is solo-maintained with limited review bandwidth. To keep things healthy for everyone:
+
+- **Small fixes** (typos, clear bugs, doc corrections) — open a PR directly
+- **New features, new backends, new abstractions** — please open an issue first to discuss fit and direction. PRs submitted without prior discussion may be closed without detailed review
+- **Refactors or structural changes** — almost always need an issue first. The project deliberately stays close to its current shape
+
+This isn't gatekeeping — it protects your time. A 500-line PR that doesn't match the project direction is worse for you than a 10-line issue comment that clarifies it upfront.
+
+## What We Accept / What We Don't
+
+**Welcome:**
+- Bug fixes with clear reproduction
+- New layout templates, chart templates, icons
+- Documentation clarifications and translations
+- Additional image backends that follow the existing `image_backends/` pattern
+- SVG quality improvements that stay within the declared constraints
+
+**Not a fit (please don't open PRs for these):**
+- Introducing `uv`, `poetry`, or other tools as required dependencies — `pip + requirements.txt` is the only official install path
+- Adding CI, test frameworks, pre-commit hooks, or linting infrastructure — deliberately out of scope for a solo-maintained project
+- Repackaging the skill as a CLI, SaaS, desktop app, or installer — PPT Master is a chat-driven skill for AI IDEs by design
+- Architectural refactors or large-scale renames — incremental cleanup only
+- "Drive-by" cosmetic reformatting unrelated to a real fix
+
+If you're unsure, open an issue to ask — that's always welcome.
+
 ## Contribution Workflow
 
 1. **Fork** the repository and create a branch from `main`
-2. **Make your changes** — keep commits focused and descriptive
-3. **Test** your changes locally before submitting
-4. **Open a Pull Request** with a clear description of what you changed and why
+2. **One PR, one thing** — keep each PR focused on a single concern. If you notice unrelated improvements, open a separate PR
+3. **Write a useful PR description** — explain *what* changed and *why*, not just a diff summary. If your change fixes a bug, include reproduction steps
+4. **Test locally** before submitting — run the affected scripts and verify output
+5. **Don't overstate** — if your PR description claims tests or behavior changes, make sure the diff actually contains them
+
+## Review Process
+
+- Reviews are best-effort, usually within a few days. Ping the PR if it's been a week without response
+- Review feedback will be specific: what to change, and whether it's a blocker. If a PR needs more than ~2 rounds to converge, it may be closed with a note — reopening is fine once the direction is clearer
+- Small fixes may be merged as-is; larger contributions will usually be squash-merged to keep history readable
 
 ## SVG Guidelines
 
 If your contribution involves SVG files, follow the technical constraints documented in [CLAUDE.md](./CLAUDE.md):
 
-- Do not use: `clipPath`, `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `<animate*>`, `<script>`, `<symbol>+<use>`
+- Do not use: `mask`, `<style>`, `class`, external CSS, `<foreignObject>`, `<animate*>`, `<script>`, `<symbol>+<use>`
 - Use `fill-opacity` / `stroke-opacity` instead of `rgba()`
-- `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 for the constraints (must live in `<defs>`, `orient="auto"`, shape must be triangle / diamond / oval)
+- `marker-start` / `marker-end` are conditionally allowed — see `shared-standards.md` §1.1 (must live in `<defs>`, `orient="auto"`, shape must be triangle / diamond / oval)
+- `clipPath` on `<image>` is conditionally allowed — see `shared-standards.md` §1.2 (must live in `<defs>`, single shape child, only on `<image>` elements)
 - All SVGs must use the correct `viewBox` for the target canvas format
 
 ## Reporting Bugs
