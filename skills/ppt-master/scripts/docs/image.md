@@ -71,9 +71,9 @@ Example `.env` for MiniMax image backend:
 ```env
 IMAGE_BACKEND=minimax
 MINIMAX_API_KEY=your-api-key
-# Optional: override base URL (defaults to https://api.minimax.io)
-# Use https://api.minimaxi.com for domestic (China) access
-# MINIMAX_BASE_URL=https://api.minimaxi.com
+# Optional: override base URL (defaults to https://api.minimaxi.com, domestic China endpoint)
+# Use https://api.minimax.io for overseas access
+# MINIMAX_BASE_URL=https://api.minimax.io
 # MINIMAX_MODEL=image-01
 ```
 
