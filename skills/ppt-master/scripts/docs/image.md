@@ -66,6 +66,17 @@ Recommendation:
 - Use Extended only when you need a specific model style
 - Treat Experimental backends as opt-in
 
+Example `.env` for MiniMax image backend:
+
+```env
+IMAGE_BACKEND=minimax
+MINIMAX_API_KEY=your-api-key
+# Optional: override base URL (defaults to https://api.minimax.io)
+# Use https://api.minimaxi.com for domestic (China) access
+# MINIMAX_BASE_URL=https://api.minimaxi.com
+# MINIMAX_MODEL=image-01
+```
+
 ## `analyze_images.py`
 
 Analyze images in a project directory before writing the design spec or composing slide layouts.

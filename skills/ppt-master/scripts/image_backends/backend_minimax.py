@@ -30,6 +30,8 @@ from image_backends.backend_common import (
 DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/image_generation"
 DEFAULT_MODEL = "image-01"
 
+# International fallback: set MINIMAX_BASE_URL=https://api.minimax.io if needed
+
 ASPECT_RATIO_SIZE_MAP = {
     "512px": {
         "1:1": (512, 512),
@@ -75,10 +77,18 @@ ASPECT_RATIO_SIZE_MAP = {
 
 
 def _resolve_url(base_url: str) -> str:
-    """Resolve the MiniMax image generation endpoint."""
+    """Resolve the MiniMax image generation endpoint.
+
+    Accepts three forms of MINIMAX_BASE_URL:
+      - Full endpoint:  https://api.minimax.io/v1/image_generation  → used as-is
+      - Versioned base: https://api.minimax.io/v1                   → appends /image_generation
+      - Root base:      https://api.minimax.io                      → appends /v1/image_generation
+    """
     base = base_url.rstrip("/")
     if base.endswith("/image_generation"):
         return base
+    if base.endswith("/v1"):
+        return base + "/image_generation"
     return base + "/v1/image_generation"
 
 
