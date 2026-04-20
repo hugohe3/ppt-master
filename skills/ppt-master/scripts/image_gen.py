@@ -5,18 +5,19 @@ Unified Image Generation Tool
 Dispatches to the appropriate backend based on explicit provider configuration.
 
 Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment):
-  IMAGE_BACKEND=gemini     -> Gemini backend (google-genai SDK)
-  IMAGE_BACKEND=openai     -> OpenAI-compatible backend (openai SDK)
-  IMAGE_BACKEND=minimax    -> MiniMax image backend
-  IMAGE_BACKEND=stability  -> Stability AI backend
-  IMAGE_BACKEND=bfl        -> Black Forest Labs FLUX backend
-  IMAGE_BACKEND=ideogram   -> Ideogram backend
-  IMAGE_BACKEND=qwen       -> Alibaba Qwen image backend
-  IMAGE_BACKEND=zhipu      -> Zhipu GLM-Image backend
-  IMAGE_BACKEND=volcengine -> Volcengine Seedream backend
+  IMAGE_BACKEND=gemini      -> Gemini backend (google-genai SDK)
+  IMAGE_BACKEND=openai      -> OpenAI-compatible backend (openai SDK)
+  IMAGE_BACKEND=minimax     -> MiniMax image backend
+  IMAGE_BACKEND=stability   -> Stability AI backend
+  IMAGE_BACKEND=bfl         -> Black Forest Labs FLUX backend
+  IMAGE_BACKEND=ideogram    -> Ideogram backend
+  IMAGE_BACKEND=qwen        -> Alibaba Qwen image backend
+  IMAGE_BACKEND=zhipu       -> Zhipu GLM-Image backend
+  IMAGE_BACKEND=volcengine  -> Volcengine Seedream backend
   IMAGE_BACKEND=siliconflow -> SiliconFlow backend
-  IMAGE_BACKEND=fal        -> fal.ai backend
-  IMAGE_BACKEND=replicate  -> Replicate backend
+  IMAGE_BACKEND=fal         -> fal.ai backend
+  IMAGE_BACKEND=replicate   -> Replicate backend
+  IMAGE_BACKEND=openrouter  -> OpenRouter backend
 
 Configuration source:
   1. Current process environment variables
@@ -59,6 +60,7 @@ IMAGE_ENV_PREFIXES = (
     "SILICONFLOW_",
     "FAL_",
     "REPLICATE_",
+    "OPENROUTER_",
 )
 DEPRECATED_IMAGE_KEYS = {
     "IMAGE_API_KEY",
@@ -170,6 +172,13 @@ BACKEND_REGISTRY = {
         "label": "Replicate",
         "default_model": "black-forest-labs/flux-1.1-pro",
         "key_hint": "REPLICATE_API_TOKEN / REPLICATE_API_KEY",
+    },
+    "openrouter": {
+        "module": "backend_openrouter",
+        "tier": "experimental",
+        "label": "OpenRouter",
+        "default_model": "google/gemini-3.1-flash-image-preview",
+        "key_hint": "OPENROUTER_API_KEY",
     },
 }
 
