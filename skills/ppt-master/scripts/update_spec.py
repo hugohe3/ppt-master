@@ -71,13 +71,19 @@ def rewrite_lock(lock_path: Path, section: str, key: str, new_value: str) -> Non
     raise KeyError(f"key {key!r} not found under section {section!r} in {lock_path}")
 
 
-def replace_color_in_svgs(svg_dir: Path, old_hex: str, new_hex: str) -> list[Path]:
+def replace_color_in_svgs(
+    svg_dir: Path, old_hex: str, new_hex: str, *, dry_run: bool = False
+) -> list[Path]:
     """Replace old_hex with new_hex in every .svg under svg_dir. Returns changed files.
 
     Two-phase: plan all file updates in memory, then write to disk. If any
     exception is raised during planning (e.g. bad HEX, read failure), no files
     are touched. This keeps svg_output/ and the caller's spec_lock.md write
     in a consistent pair: either everything is applied or nothing is.
+
+    When dry_run=True, the planning phase still runs (so bad HEX still raises
+    and callers see which files would change), but no disk writes happen. The
+    returned list describes the would-change files.
     """
     if not HEX_RE.match(old_hex) or not HEX_RE.match(new_hex):
         raise ValueError(f"not a HEX color: old={old_hex!r} new={new_hex!r}")
@@ -88,12 +94,15 @@ def replace_color_in_svgs(svg_dir: Path, old_hex: str, new_hex: str) -> list[Pat
         new_text, n = pattern.subn(new_hex, text)
         if n > 0:
             planned.append((svg, new_text))
-    for svg, new_text in planned:
-        svg.write_text(new_text, encoding="utf-8")
+    if not dry_run:
+        for svg, new_text in planned:
+            svg.write_text(new_text, encoding="utf-8")
     return [p for p, _ in planned]
 
 
-def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
+def replace_font_family_in_svgs(
+    svg_dir: Path, new_value: str, *, dry_run: bool = False
+) -> list[Path]:
     """Replace the inner value of every `font-family="..."` / `font-family='...'`
     attribute in every .svg under svg_dir. Returns changed files.
 
@@ -103,6 +112,10 @@ def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
     Two-phase: plan all file updates in memory, then write to disk. The inner
     `_sub` may raise ValueError when the new value contains both quote kinds —
     when that happens in the planning phase, no files have been touched yet.
+
+    When dry_run=True, the planning phase still runs (so the ValueError still
+    fires and callers see which files would change), but no disk writes happen.
+    The returned list describes the would-change files.
     """
     def _sub(m: re.Match[str]) -> str:
         prefix, quote, _inner = m.group(1), m.group(2), m.group(3)
@@ -121,8 +134,9 @@ def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
         new_text, n = FONT_FAMILY_RE.subn(_sub, text)
         if n > 0 and new_text != text:
             planned.append((svg, new_text))
-    for svg, new_text in planned:
-        svg.write_text(new_text, encoding="utf-8")
+    if not dry_run:
+        for svg, new_text in planned:
+            svg.write_text(new_text, encoding="utf-8")
     return [p for p, _ in planned]
 
 
@@ -133,6 +147,12 @@ def main() -> int:
         "assignment",
         help="section.key=value (e.g. colors.primary=#0066AA, typography.font_family='\"Inter\", Arial, sans-serif'). "
         "Bare key=value is treated as colors.key=value.",
+    )
+    ap.add_argument(
+        "--dry-run",
+        "-n",
+        action="store_true",
+        help="preview which SVGs would change; do not write anything to disk.",
     )
     args = ap.parse_args()
 
@@ -184,18 +204,20 @@ def main() -> int:
         # avoids a state where lock claims new_value but SVGs still hold
         # old_value — that state silences re-runs (parse_lock would then
         # see new_value == old_value and exit early).
-        changed = replace_color_in_svgs(svg_dir, old_value, new_value)
-        rewrite_lock(lock, "colors", key, new_value)
+        changed = replace_color_in_svgs(svg_dir, old_value, new_value, dry_run=args.dry_run)
+        if not args.dry_run:
+            rewrite_lock(lock, "colors", key, new_value)
     elif section == "typography" and key == "font_family":
         if old_value == new_value:
             print(f"no change: typography.font_family already = {new_value}")
             return 0
         try:
-            changed = replace_font_family_in_svgs(svg_dir, new_value)
+            changed = replace_font_family_in_svgs(svg_dir, new_value, dry_run=args.dry_run)
         except ValueError as e:
             print(f"error: {e}", file=sys.stderr)
             return 2
-        rewrite_lock(lock, "typography", key, new_value)
+        if not args.dry_run:
+            rewrite_lock(lock, "typography", key, new_value)
     else:
         print(
             f"error: {section}.{key} is not supported by update_spec.py.\n"
@@ -205,8 +227,12 @@ def main() -> int:
         )
         return 2
 
-    print(f"spec_lock.md: {section}.{key}  {old_value} → {new_value}")
-    print(f"svg_output/:  {len(changed)} file(s) updated")
+    if args.dry_run:
+        print(f"[dry-run] spec_lock.md: {section}.{key}  {old_value} → {new_value}")
+        print(f"[dry-run] svg_output/:  {len(changed)} file(s) would be updated")
+    else:
+        print(f"spec_lock.md: {section}.{key}  {old_value} → {new_value}")
+        print(f"svg_output/:  {len(changed)} file(s) updated")
     for p in changed:
         print(f"  - {p.name}")
     return 0
