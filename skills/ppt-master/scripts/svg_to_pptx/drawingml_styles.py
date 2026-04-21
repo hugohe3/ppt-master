@@ -451,9 +451,12 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     """Build <a:effectLst> with <a:outerShdw> from SVG filter element.
 
     SVG-to-DrawingML shadow mapping notes:
-    - SVG feGaussianBlur stdDeviation (σ) maps to DrawingML blurRad.
-      There is no spec-defined exact σ→blurRad equivalence, so we use an
-      empirical 1.0 scale. A 2.0 scale consistently over-blurs in PowerPoint.
+    - SVG feGaussianBlur stdDeviation (σ) maps to DrawingML blurRad using a
+      2.0× scale. Rationale: σ is a standard deviation whose visual radius
+      is ~3σ, while DrawingML blurRad is an outer-spread pixel distance.
+      A 1.0× scale makes PowerPoint render sharp, concentrated shadows
+      ("heavy" visual). 2.0× matches the CSS drop-shadow↔box-shadow
+      convention and produces softer diffusion closer to the SVG preview.
     - The algn attribute is inferred from the offset direction so that
       the shadow aligns naturally with the shape edge.
     """
@@ -468,10 +471,13 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     if not p['has_offset']:
         dy = 4.0
 
-    blur_rad = px_to_emu(std_dev)
+    blur_rad = px_to_emu(std_dev * 2.0)
     dist = px_to_emu(math.sqrt(dx * dx + dy * dy))
     dir_angle = _shadow_dir_angle(dx, dy)
-    alpha_val = int(p['opacity'] * 100000)
+    # PowerPoint renders outerShdw alpha slightly heavier than SVG's filter
+    # composite (different blending path). Scale by 0.75 to match the SVG
+    # preview after blur has been corrected to 2.0× σ.
+    alpha_val = int(p['opacity'] * 75000)
     algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
