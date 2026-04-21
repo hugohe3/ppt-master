@@ -247,7 +247,7 @@ When content outline pages involve **data visualization or infographic-style str
 - File naming: Recommended to match SVG names (`01_cover.svg` → `notes/01_cover.md`), also compatible with `notes/slide01.md`
 - Fill in the Design Spec: total presentation duration, notes style (formal / conversational / interactive), presentation purpose (inform / persuade / inspire / instruct / report)
 - Split note files must NOT contain `#` heading lines (`notes/total.md` master document MUST use `#` heading lines)
-- **Generation**: Strategist does NOT hand-author `notes/total.md`. The Executor's `build_slides.py` produces it from the `notes_total()` function alongside the SVGs (see [build-slides-spec.md](build-slides-spec.md)). The Strategist's job here is only to fill in the Design Spec fields above so the Executor knows the target style/duration.
+- **Generation**: Strategist does NOT hand-author `notes/total.md`. The Executor writes it directly as Markdown in Step 6.C, after all SVGs are on disk (see [executor-base.md](executor-base.md) §8). The Strategist's job here is only to fill in the Design Spec fields above so the Executor knows the target style/duration.
 
 ---
 

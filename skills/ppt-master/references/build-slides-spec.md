@@ -1,15 +1,15 @@
 # build_slides.py Contract
 
-> A single Python file is the project's **source of truth**; the SVGs under `svg_output/` and `notes/total.md` are reproducible artifacts of it.
+> A single Python file is the project's **SVG source of truth**; the SVGs under `svg_output/` are reproducible artifacts of it.
 > To change an SVG, change the .py file — hand-edits to SVG files get overwritten on the next run.
+>
+> Speaker notes (`notes/total.md`) are **not** produced by `build_slides.py`. They are a separate hand-authored Markdown document written after all SVGs are finalized (see [executor-base.md](executor-base.md) §8).
 
 ## 1. File Location and Run
 
 - Location: `<project_path>/build_slides.py`
 - Run: `python3 <project_path>/build_slides.py`
-- Outputs:
-  - `<project_path>/svg_output/<NN>_<page_name>.svg`
-  - `<project_path>/notes/total.md`
+- Outputs: `<project_path>/svg_output/<NN>_<page_name>.svg`
 - Dependencies: pure stdlib (`html`, `textwrap`, `pathlib`); no third-party packages
 
 ## 2. File Structure
@@ -22,7 +22,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SVG_DIR = ROOT / "svg_output"
-NOTES_DIR = ROOT / "notes"
 
 # ── Top-level constants: style spec + asset registry ──
 PRIMARY = "#0B4EA2"               # primary color (from design_spec.md III. Visual Theme)
@@ -89,29 +88,9 @@ def page_01_cover() -> str:
 
 # ... page_02_toc, page_03_chapter, ..., page_NN_ending
 
-# ── Speaker notes generation ──
-def notes_total() -> str:
-    """Generate notes/total.md following executor-base.md §8 format."""
-    sections = [
-        ("01_Cover", "Opening script...", "Key points ① ② ③", "1 min"),
-        # ... one record per page
-    ]
-    parts = []
-    for heading, script, points, duration in sections:
-        parts.append(dedent(f"""
-            # {heading}
-
-            {script}
-
-            Key points: {points}
-            Duration: {duration}
-        """).strip())
-    return "\n\n---\n\n".join(parts) + "\n"
-
 # ── Single entry point ──
 def generate() -> None:
     SVG_DIR.mkdir(parents=True, exist_ok=True)
-    NOTES_DIR.mkdir(parents=True, exist_ok=True)
 
     pages = {
         "01_cover.svg":   page_01_cover(),
@@ -121,11 +100,11 @@ def generate() -> None:
     for filename, content in pages.items():
         (SVG_DIR / filename).write_text(content, encoding="utf-8")
 
-    (NOTES_DIR / "total.md").write_text(notes_total(), encoding="utf-8")
-
 if __name__ == "__main__":
     generate()
 ```
+
+> `build_slides.py` writes SVGs only. Speaker notes (`notes/total.md`) are authored directly as Markdown in a later step (see [executor-base.md](executor-base.md) §8); keeping them out of the .py file avoids two-layer quoting gymnastics on prose content.
 
 ## 3. Authoring Discipline (Executor must read)
 
@@ -167,6 +146,7 @@ The SVGs produced by build_slides.py must satisfy every constraint in [shared-st
 
 - Wrap every user-facing text string with `escape(...)` to prevent SVG injection
 - Use `textwrap.dedent(...)` on source blocks so .py indentation stays clean without polluting output
+- **Keep user-facing text in local variables, not inlined inside templates.** Author pattern: `title = '她说"好"'` → `f'<text>{escape(title)}</text>'`. Pick the string literal's quote style to match the content (single-quote literal when content contains `"`; double-quote when content contains `'`; triple-quoted for multi-line). Because f-string substitution happens after template parsing, literal `{` or `}` inside the variable value are safe — the fragility only arises when raw text is pasted inline
 
 ## 4. Workflow: Phase A → User Review → Phase B
 
@@ -195,18 +175,15 @@ loop {
   2. In build_slides.py:
      a. Add 5 new page_NN_*() function definitions
      b. Add the 5 entries to the pages dict in generate()
-     c. Append the 5 records to notes_total()
   3. python3 build_slides.py                    # validate immediately
   4. On failure → diagnose and fix; if unfixable, mv build_slides.py.bak build_slides.py to roll back this batch
   5. On success, move to the next batch
 }
 ```
 
-**Important**: each batch must add page functions + pages dict entries + notes records **together** in the same edit — never split (otherwise SVGs and speaker notes drift apart).
+### After Phase B — Speaker notes pass
 
-### After Phase B
-
-Once every page is on disk, proceed with the existing post-processing pipeline:
+Once every page is on disk, hand-author `notes/total.md` in one pass (per [executor-base.md](executor-base.md) §8), then run the existing post-processing pipeline:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
@@ -238,7 +215,7 @@ design_spec.md remains the human-readable design contract; build_slides.py is it
 | VI. Icon Usage (icon inventory) | ICONS dict |
 | VIII. Image Resource List | IMAGES dict |
 | IX. Content Outline | Drives page-function count, naming, and content |
-| X. Speaker Notes Requirements | Implemented by notes_total() |
+| X. Speaker Notes Requirements | Authored separately as `notes/total.md` — not part of build_slides.py |
 | XI. Technical Constraints | Satisfied by the SVG output itself, refer to shared-standards.md |
 
 ## 7. Compatibility With Existing Post-Processing Scripts
