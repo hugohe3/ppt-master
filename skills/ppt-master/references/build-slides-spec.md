@@ -170,19 +170,18 @@ The SVGs produced by build_slides.py must satisfy every constraint in [shared-st
 
 ## 4. Workflow: Phase A → User Review → Phase B
 
-### Phase A: representative sample (up to 5 pages)
+### Phase A: first 5 pages (01–05)
 
-The Executor writes build_slides.py per design_spec.md and produces **up to 5 representative sample pages** for user review. The goal is to lock down every distinct layout the deck will use, not to fill a fixed checklist.
+The Executor writes build_slides.py per design_spec.md and produces **the first 5 pages of the deck (01–05) in order** for user review. The purpose is a **preliminary style sanity check** — does the colorway / typography / icon usage / overall visual feel match the user's expectation? Phase A is **not** a layout contract: Phase B is free to introduce any new layouts the deck requires.
 
-How to pick the samples:
+- Decks > 5 pages: Phase A = pages 01–05; the rest land in Phase B
+- Decks ≤ 5 pages: Phase A contains all pages; Phase B is skipped entirely
 
-- Pick **one page per distinct layout** the deck will contain. A typical deck with cover / TOC / chapter divider / content body / ending naturally yields 5 — but **none of those page types is required**. A deck may have no TOC, no chapter divider, no formal cover; pick whatever layouts actually exist
-- For free-form decks where every page is unique (infographics, portfolios, short pitches), pick the 3–5 pages with the most visually distinct layouts as samples
-- For very short decks (≤5 pages total), Phase A simply contains all of them — Phase B is then skipped
+Rationale for sequential 01–05 (instead of cherry-picking representative layouts): Phase B then becomes a straight append from page 06 onward — no gaps, no re-ordering, no re-numbering risk. What Phase B inherits from Phase A is the **top-level constants** (colors, fonts, icon registry, image registry) and any helpers already extracted — not the set of layouts. New layouts introduced in Phase B are expected and do not require a second approval gate.
 
-Run `python3 build_slides.py` → SVGs land in svg_output/. Hand the samples to the user for review.
+Run `python3 build_slides.py` → SVGs land in svg_output/. Hand pages 01–05 to the user for review.
 
-⛔ **BLOCKING**: the user must explicitly confirm the style ("OK, continue" or similar) before Phase B may begin. This gate applies even when Phase A produced fewer than 5 pages.
+⛔ **BLOCKING**: the user must explicitly confirm the style ("OK, continue" or similar) before Phase B may begin. This gate applies even when the deck has fewer than 5 pages total.
 
 ### Phase B: append remaining pages in batches
 

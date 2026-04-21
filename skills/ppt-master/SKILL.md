@@ -24,7 +24,7 @@ description: >
 > 4. **GATE BEFORE ENTRY** — Each Step has prerequisites (🚧 GATE) listed at the top; these MUST be verified before starting that Step
 > 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing the Python generator during the Strategist phase)
 > 6. **NO SUB-AGENT BUILD_SLIDES.PY AUTHORING** — Executor Step 6 authoring of `build_slides.py` is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page function authoring to sub-agents is FORBIDDEN
-> 7. **TWO-PHASE BUILD WITH STYLE GATE** — In Executor Step 6, Executor first writes a `build_slides.py` containing **up to 5 representative sample page functions** (one per distinct layout the deck will use — cover / TOC / chapter / content / ending are common but none is required) and runs it. The rendered SVGs are presented to the user for **explicit style approval** (⛔ BLOCKING). Only after approval does Executor append the remaining page functions, **in batches of at most 5 pages**, running `build_slides.py` after each batch to validate before continuing. Decks ≤5 pages skip Phase B
+> 7. **TWO-PHASE BUILD WITH STYLE GATE** — In Executor Step 6, Executor first writes a `build_slides.py` containing the **first 5 page functions of the deck in order (page_01 through page_05)** and runs it. The rendered SVGs are presented to the user as a **preliminary style sanity check** and require **explicit style approval** (⛔ BLOCKING). Phase A is not a layout contract — Phase B may introduce any new layouts the deck requires. Only after approval does Executor append the remaining page functions starting at page_06, **in batches of at most 5 pages**, running `build_slides.py` after each batch to validate before continuing. Decks ≤5 pages skip Phase B
 
 > [!IMPORTANT]
 > ## 🌐 Language & Communication Rule
@@ -245,9 +245,11 @@ Read references/executor-consultant-top.md # Top consulting style (MBB level)
 
 > ⚠️ **Main-agent only rule**: Authoring `build_slides.py` MUST remain with the current main agent because page design depends on full upstream context (source content, design spec, template mapping, image decisions, and cross-page consistency). Do NOT delegate page function authoring to sub-agents.
 
-#### Step 6.A — Sample-Page Build (up to 5 representative pages)
+#### Step 6.A — Sample-Page Build (pages 01–05)
 
-Author `<project_path>/build_slides.py` with **one page function per distinct layout the deck will use**, capped at 5 pages total. A typical deck yields a mix among cover / TOC / chapter / content / ending — but **none of these page types is required**; pick whatever layouts the deck actually contains. For free-form decks (infographics, portfolios, short pitches), pick the 3–5 most visually distinct pages. For decks ≤5 pages total, Phase A simply contains all of them. Top-of-file constants (`STYLE`, `ICONS`, `IMAGES`, color constants) capture the design spec. See [build-slides-spec.md](references/build-slides-spec.md) for the full contract.
+Author `<project_path>/build_slides.py` with page functions for the **first 5 pages of the deck in order** (`page_01_*` through `page_05_*`). For decks ≤5 pages total, Phase A simply contains all of them. Top-of-file constants (`STYLE`, `ICONS`, `IMAGES`, color constants) capture the design spec. See [build-slides-spec.md](references/build-slides-spec.md) for the full contract.
+
+Phase A is a **preliminary style sanity check** — the user judges whether colorway / typography / icon usage / overall visual feel matches expectation. It is **not** a layout contract: Phase B is free to introduce any new layouts the remaining pages require. What Phase B inherits is the top-level constants and already-extracted helpers, not the layout inventory.
 
 Run the generator:
 ```bash
