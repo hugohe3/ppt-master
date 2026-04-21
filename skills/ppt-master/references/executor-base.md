@@ -44,6 +44,8 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 
 **Hard rule**: Before generating **each** SVG page, `read_file <project_path>/spec_lock.md`. Use the values from this file — not values you remember from earlier in the conversation. If the context was auto-compacted, `read_file <project_path>/design_spec.md` too (for the current page's §IX brief).
 
+**If `spec_lock.md` is missing**: Before generating each page, emit the literal line `warning: spec_lock.md missing — generating without execution lock` and proceed using `design_spec.md` narrative values. Do not silently skip. A missing lock is expected only for legacy projects predating this feature; for new projects the Strategist MUST produce it (see [strategist.md](strategist.md) §6, step 4).
+
 **Forbidden — values outside the lock**:
 
 - Color values (fill / stroke / stop-color) MUST come from `colors` in `spec_lock.md`
