@@ -19,7 +19,7 @@ from .drawingml_utils import (
 )
 from .drawingml_styles import (
     build_solid_fill, build_gradient_fill,
-    build_fill_xml, build_stroke_xml, build_effect_xml,
+    build_fill_xml, build_stroke_xml, build_effect_xml, classify_filter_effect,
     get_fill_opacity, get_stroke_opacity,
 )
 from .drawingml_paths import (
@@ -688,6 +688,7 @@ def _build_run_xml(
     run: dict[str, Any],
     default_fonts: dict[str, str],
     ctx: ConvertContext | None = None,
+    effect_xml: str = '',
 ) -> str:
     """Build a single <a:r> XML from a run dict. Supports gradient fills on text."""
     text = run['text']
@@ -722,6 +723,7 @@ def _build_run_xml(
     return f'''<a:r>
 <a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
 {fill_xml}
+{effect_xml}
 <a:latin typeface="{_xml_escape(fonts['latin'])}"/>
 <a:ea typeface="{_xml_escape(fonts['ea'])}"/>
 <a:cs typeface="{_xml_escape(fonts['latin'])}"/>
@@ -805,15 +807,21 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     algn = algn_map.get(text_anchor, 'l')
 
     # Shadow effect
-    effect_xml = ''
+    shape_effect_xml = ''
+    text_effect_xml = ''
     filt_id = get_effective_filter_id(elem, ctx)
     if filt_id and filt_id in ctx.defs:
-        effect_xml = build_effect_xml(ctx.defs[filt_id])
+        filter_elem = ctx.defs[filt_id]
+        effect_kind = classify_filter_effect(filter_elem)
+        if effect_kind == 'glow':
+            text_effect_xml = build_effect_xml(filter_elem)
+        else:
+            shape_effect_xml = build_effect_xml(filter_elem)
 
     shape_id = ctx.next_id()
     rot_attr = f' rot="{text_rot}"' if text_rot else ''
 
-    runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx) for r in runs)
+    runs_xml = '\n'.join(_build_run_xml(r, fonts, ctx, text_effect_xml) for r in runs)
     off_x = px_to_emu(box_x)
     off_y = px_to_emu(box_y)
     ext_cx = px_to_emu(box_w)
@@ -830,7 +838,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
 <a:noFill/>
 <a:ln><a:noFill/></a:ln>
-{effect_xml}
+{shape_effect_xml}
 </p:spPr>
 <p:txBody>
 <a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t" anchorCtr="0">
