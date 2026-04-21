@@ -5,8 +5,10 @@
 > After SVG generation begins, this file is the canonical source for color / font / icon / image values. Modifications should go through `scripts/update_spec.py` so both this file and the generated SVGs stay in sync.
 
 ## canvas
-- viewBox: {canvas_info['viewbox']}
-- format: {canvas_info['name']}
+- viewBox: 0 0 1280 720
+- format: PPT 16:9
+
+> Strategist: fill the viewBox and format for the chosen canvas. Common values: `0 0 1280 720` (PPT 16:9), `0 0 1024 768` (PPT 4:3), `0 0 1242 1660` (Xiaohongshu), `0 0 1080 1080` (WeChat Moments), `0 0 1080 1920` (Story).
 
 ## colors
 - bg: #FFFFFF
