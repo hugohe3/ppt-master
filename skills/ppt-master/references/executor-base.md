@@ -38,6 +38,23 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 
 **Why is this step mandatory?** Prevents the "spec says one thing, execution does another" disconnect.
 
+### 2.1 Per-page spec_lock re-read (Mandatory)
+
+> Long decks + streaming generation = attention drift and context compression. By mid-deck, the Executor has often drifted off the color palette or icon inventory declared in `design_spec.md`. `spec_lock.md` is the short form of those decisions and is the Executor's **canonical execution reference** during generation.
+
+**Hard rule**: Before generating **each** SVG page, `read_file <project_path>/spec_lock.md`. Use the values from this file — not values you remember from earlier in the conversation. If the context was auto-compacted, `read_file <project_path>/design_spec.md` too (for the current page's §IX brief).
+
+**Forbidden — values outside the lock**:
+
+- Color values (fill / stroke / stop-color) MUST come from `colors` in `spec_lock.md`
+- Icons MUST come from the `icons.inventory` list; icon library MUST equal `icons.library`
+- Font family MUST equal `typography.font_family`; font sizes MUST match one of `typography.*` values
+- Images MUST reference files listed under `images`; no invented filenames
+
+If a page genuinely needs a value not in `spec_lock.md`, stop and surface it — do not silently invent one. Either request the user to extend the lock, or revise the page to stay within it.
+
+**Rationale**: Tool-result re-reads bypass model memory (which compression can corrupt). Every page gets a fresh ground truth pinned to the most recent turn in context.
+
 ---
 
 ## 3. Execution Guidelines
