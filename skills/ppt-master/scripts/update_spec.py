@@ -73,8 +73,13 @@ def rewrite_lock(lock_path: Path, section: str, key: str, new_value: str) -> Non
 
 def replace_color_in_svgs(
     svg_dir: Path, old_hex: str, new_hex: str, *, dry_run: bool = False
-) -> list[Path]:
-    """Replace old_hex with new_hex in every .svg under svg_dir. Returns changed files.
+) -> list[tuple[Path, int]]:
+    """Replace old_hex with new_hex in every .svg under svg_dir.
+
+    Returns a list of (path, replacement_count) for each changed file. The
+    count comes straight from re.subn so callers can spot anomalies —
+    e.g. one file with 50 hits when the rest have 4-8 is likely a stray
+    HEX literal inside <text> content rather than a styling attribute.
 
     Two-phase: plan all file updates in memory, then write to disk. If any
     exception is raised during planning (e.g. bad HEX, read failure), no files
@@ -88,23 +93,25 @@ def replace_color_in_svgs(
     if not HEX_RE.match(old_hex) or not HEX_RE.match(new_hex):
         raise ValueError(f"not a HEX color: old={old_hex!r} new={new_hex!r}")
     pattern = re.compile(re.escape(old_hex), re.IGNORECASE)
-    planned: list[tuple[Path, str]] = []
+    planned: list[tuple[Path, str, int]] = []
     for svg in sorted(svg_dir.glob("*.svg")):
         text = svg.read_text(encoding="utf-8")
         new_text, n = pattern.subn(new_hex, text)
         if n > 0:
-            planned.append((svg, new_text))
+            planned.append((svg, new_text, n))
     if not dry_run:
-        for svg, new_text in planned:
+        for svg, new_text, _ in planned:
             svg.write_text(new_text, encoding="utf-8")
-    return [p for p, _ in planned]
+    return [(p, n) for p, _, n in planned]
 
 
 def replace_font_family_in_svgs(
     svg_dir: Path, new_value: str, *, dry_run: bool = False
-) -> list[Path]:
+) -> list[tuple[Path, int]]:
     """Replace the inner value of every `font-family="..."` / `font-family='...'`
-    attribute in every .svg under svg_dir. Returns changed files.
+    attribute in every .svg under svg_dir.
+
+    Returns a list of (path, replacement_count) for each changed file.
 
     Preserves the outer quote character when possible; if the new value contains
     that same quote type, switches the outer quote to the other kind.
@@ -128,16 +135,16 @@ def replace_font_family_in_svgs(
                 )
         return f"{prefix}{outer}{new_value}{outer}"
 
-    planned: list[tuple[Path, str]] = []
+    planned: list[tuple[Path, str, int]] = []
     for svg in sorted(svg_dir.glob("*.svg")):
         text = svg.read_text(encoding="utf-8")
         new_text, n = FONT_FAMILY_RE.subn(_sub, text)
         if n > 0 and new_text != text:
-            planned.append((svg, new_text))
+            planned.append((svg, new_text, n))
     if not dry_run:
-        for svg, new_text in planned:
+        for svg, new_text, _ in planned:
             svg.write_text(new_text, encoding="utf-8")
-    return [p for p, _ in planned]
+    return [(p, n) for p, _, n in planned]
 
 
 def main() -> int:
@@ -233,8 +240,9 @@ def main() -> int:
     else:
         print(f"spec_lock.md: {section}.{key}  {old_value} → {new_value}")
         print(f"svg_output/:  {len(changed)} file(s) updated")
-    for p in changed:
-        print(f"  - {p.name}")
+    for p, n in changed:
+        suffix = "replacement" if n == 1 else "replacements"
+        print(f"  - {p.name} ({n} {suffix})")
     return 0
 
 
