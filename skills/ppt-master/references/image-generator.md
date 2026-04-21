@@ -265,7 +265,7 @@ python3 scripts/image_gen.py "your prompt" \
 | `--image_size` | - | Size (`1K`/`2K`/`4K`) | `1K` |
 | `--output` | `-o` | Output directory | Current directory |
 | `--filename` | `-f` | Output filename (no extension) | Auto-named |
-| `--backend` | `-b` | Override backend (`gemini`/`openai`/`stability`/`bfl`/`ideogram`/`qwen`/`zhipu`/`volcengine`/`siliconflow`/`fal`/`replicate`) | None |
+| `--backend` | `-b` | Override backend (see `--list-backends` for options) | None |
 | `--model` | `-m` | Model name | Backend default |
 | `--list-backends` | - | Print support tiers and exit | `false` |
 
@@ -279,21 +279,18 @@ Precedence:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `IMAGE_BACKEND` | Required | `gemini` / `openai` / `stability` / `bfl` / `ideogram` / `qwen` / `zhipu` / `volcengine` / `siliconflow` / `fal` / `replicate` |
+| `IMAGE_BACKEND` | Required | Backend identifier; run `image_gen.py --list-backends` for the current set |
 | `{PROVIDER}_API_KEY` | Required | Provider-specific API key, e.g. `GEMINI_API_KEY`, `ZHIPU_API_KEY` |
 | `{PROVIDER}_BASE_URL` | Optional | Provider-specific custom endpoint |
 | `{PROVIDER}_MODEL` | Optional | Provider-specific model override |
 
-> Use provider-specific names only: `GEMINI_API_KEY`, `OPENAI_API_KEY`, `STABILITY_API_KEY`, `BFL_API_KEY`, `IDEOGRAM_API_KEY`, `QWEN_API_KEY` / `DASHSCOPE_API_KEY`, `ZHIPU_API_KEY` / `BIGMODEL_API_KEY`, `VOLCENGINE_API_KEY` / `ARK_API_KEY`, `SILICONFLOW_API_KEY`, `FAL_KEY`, and `REPLICATE_API_TOKEN`.
+> Use provider-specific names only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` for the full set per backend.
 
 > `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
 
 > If `.env` or the current environment contains multiple provider configs, `IMAGE_BACKEND` explicitly selects the active one.
 
-**Support tiers (recommended usage)**:
-- Core: `gemini`, `openai`, `qwen`, `zhipu`, `volcengine`
-- Extended: `stability`, `bfl`, `ideogram`
-- Experimental: `siliconflow`, `fal`, `replicate`
+**Support tiers (recommended usage)**: Core / Extended / Experimental. Run `image_gen.py --list-backends` for the current assignments.
 
 **Generation pacing (mandatory)**:
 - Execute only one generation command at a time; wait for file confirmation before the next

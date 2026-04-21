@@ -223,9 +223,7 @@ GEMINI_API_KEY=your-api-key
 GEMINI_MODEL=gemini-3.1-flash-image-preview
 ```
 
-支持的后端：`gemini` · `openai` · `qwen` · `zhipu` · `volcengine` · `stability` · `bfl` · `ideogram` · `siliconflow` · `fal` · `replicate`
-
-运行 `python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看分级。环境变量优先于 `.env`。使用各家独立的 Key（`GEMINI_API_KEY`、`OPENAI_API_KEY` 等）——不支持全局 `IMAGE_API_KEY`。
+支持多家后端，按 Core / Extended / Experimental 分级。运行 `python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整清单。环境变量优先于 `.env`。使用各家独立的 Key（`GEMINI_API_KEY`、`OPENAI_API_KEY` 等）——不支持全局 `IMAGE_API_KEY`。
 
 > **建议：** 高质量图片推荐在 [Gemini](https://gemini.google.com/) 中生成并选择 **Download full size**。去水印可用 `scripts/gemini_watermark_remover.py`。
 
