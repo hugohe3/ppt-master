@@ -19,6 +19,16 @@ English | [中文](./README_CN.md)
 
 ---
 
+<p align="center">
+  <img src="docs/assets/hero-liziqi-colors.gif" alt="Demo: generating a 12-page PPT from a WeChat article with Claude Opus 4.7" width="860" />
+</p>
+
+<p align="center">
+  <sub>↑ A 12-page natively editable deck, generated end-to-end from <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">a single WeChat article URL</a> using Claude Opus 4.7. No manual design. No image export. Every shape, text box, and chart is clickable and editable in PowerPoint.</sub>
+</p>
+
+---
+
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
 > **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
