@@ -51,3 +51,7 @@ python3 skills/ppt-master/scripts/update_spec.py projects/acme_ppt169_20260301 \
 - `font-family` substitution is scoped to the attribute; the outer quote character is preserved, and switched automatically if the new value contains the same quote
 - The tool refuses non-HEX inputs, unknown keys, and unsupported sections
 - No backups are created — the project folder should be under git so you can diff / revert
+
+### Note on first `font-family` update
+
+The script writes the `spec_lock.md` value verbatim into every SVG's `font-family` attribute. If the Executor generated SVGs with quote-flattened font names (e.g. `font-family="Microsoft YaHei, Arial, sans-serif"`) while `spec_lock.md` holds the quoted form (`"Microsoft YaHei", Arial, sans-serif`), the **first** substitution will normalize every SVG to match the `spec_lock.md` literal (e.g. `font-family='"Microsoft YaHei", Arial, sans-serif'`). The two forms are semantically equivalent (CSS and DrawingML parse them identically), but the normalization produces byte-level diffs across every SVG that contains text. Subsequent updates only touch files where the value actually changes.
