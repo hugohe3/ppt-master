@@ -22,9 +22,9 @@ description: >
 > 2. **BLOCKING = HARD STOP** — Steps marked ⛔ BLOCKING require a full stop; the AI MUST wait for an explicit user response before proceeding and MUST NOT make any decisions on behalf of the user
 > 3. **NO CROSS-PHASE BUNDLING** — Cross-phase bundling is FORBIDDEN. (Note: the Eight Confirmations in Step 4 are ⛔ BLOCKING — the AI MUST present recommendations and wait for explicit user confirmation before proceeding. Once the user confirms, all subsequent non-BLOCKING steps — design spec output, SVG generation, speaker notes, and post-processing — may proceed automatically without further user confirmation)
 > 4. **GATE BEFORE ENTRY** — Each Step has prerequisites (🚧 GATE) listed at the top; these MUST be verified before starting that Step
-> 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing SVG code during the Strategist phase)
-> 6. **NO SUB-AGENT SVG GENERATION** — Executor Step 6 SVG generation is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page SVG generation to sub-agents is FORBIDDEN
-> 7. **SEQUENTIAL PAGE GENERATION ONLY** — In Executor Step 6, after the global design context is confirmed, SVG pages MUST be generated sequentially page by page in one continuous pass. Grouped page batches (for example, 5 pages at a time) are FORBIDDEN
+> 5. **NO SPECULATIVE EXECUTION** — "Pre-preparing" content for subsequent Steps is FORBIDDEN (e.g., writing the Python generator during the Strategist phase)
+> 6. **NO SUB-AGENT BUILD_SLIDES.PY AUTHORING** — Executor Step 6 authoring of `build_slides.py` is context-dependent and MUST be completed by the current main agent end-to-end. Delegating page function authoring to sub-agents is FORBIDDEN
+> 7. **TWO-PHASE BUILD WITH STYLE GATE** — In Executor Step 6, Executor first writes a `build_slides.py` containing **up to 5 representative sample page functions** (one per distinct layout the deck will use — cover / TOC / chapter / content / ending are common but none is required) and runs it. The rendered SVGs are presented to the user for **explicit style approval** (⛔ BLOCKING). Only after approval does Executor append the remaining page functions, **in batches of at most 5 pages**, running `build_slides.py` after each batch to validate before continuing. Decks ≤5 pages skip Phase B
 
 > [!IMPORTANT]
 > ## 🌐 Language & Communication Rule
@@ -233,27 +233,51 @@ Read `references/image-generator.md`
 Read the role definition based on the selected style:
 ```
 Read references/executor-base.md          # REQUIRED: common guidelines
+Read references/build-slides-spec.md      # REQUIRED: build_slides.py contract
 Read references/executor-general.md       # General flexible style
 Read references/executor-consultant.md    # Consulting style
 Read references/executor-consultant-top.md # Top consulting style (MBB level)
 ```
 
-> Only need to read executor-base + one style file.
+> Only need to read executor-base + build-slides-spec + one style file.
 
-**Design Parameter Confirmation (Mandatory)**: Before generating the first SVG, the Executor MUST review and output key design parameters from the Design Specification (canvas dimensions, color scheme, font plan, body font size) to ensure spec adherence. See executor-base.md Section 2 for details.
+**Design Parameter Confirmation (Mandatory)**: Before writing `build_slides.py`, the Executor MUST review and output key design parameters from the Design Specification (canvas dimensions, color scheme, font plan, body font size) to ensure spec adherence. See executor-base.md Section 2 for details.
 
-> ⚠️ **Main-agent only rule**: SVG generation in Step 6 MUST remain with the current main agent because page design depends on full upstream context (source content, design spec, template mapping, image decisions, and cross-page consistency). Do NOT delegate any slide SVG generation to sub-agents.
-> ⚠️ **Generation rhythm rule**: After confirming the global design parameters, the Executor MUST generate pages sequentially, one page at a time, while staying in the same continuous main-agent context. Do NOT split Step 6 into grouped page batches such as 5 pages per batch.
+> ⚠️ **Main-agent only rule**: Authoring `build_slides.py` MUST remain with the current main agent because page design depends on full upstream context (source content, design spec, template mapping, image decisions, and cross-page consistency). Do NOT delegate page function authoring to sub-agents.
 
-**Visual Construction Phase**:
-- Generate SVG pages sequentially, one page at a time, in one continuous pass → `<project_path>/svg_output/`
+#### Step 6.A — Sample-Page Build (up to 5 representative pages)
 
-**Logic Construction Phase**:
-- Generate speaker notes → `<project_path>/notes/total.md`
+Author `<project_path>/build_slides.py` with **one page function per distinct layout the deck will use**, capped at 5 pages total. A typical deck yields a mix among cover / TOC / chapter / content / ending — but **none of these page types is required**; pick whatever layouts the deck actually contains. For free-form decks (infographics, portfolios, short pitches), pick the 3–5 most visually distinct pages. For decks ≤5 pages total, Phase A simply contains all of them. Top-of-file constants (`STYLE`, `ICONS`, `IMAGES`, color constants) capture the design spec. See [build-slides-spec.md](references/build-slides-spec.md) for the full contract.
+
+Run the generator:
+```bash
+python3 <project_path>/build_slides.py
+```
+
+Verify the sample SVGs appear in `<project_path>/svg_output/`.
+
+⛔ **BLOCKING — Style Gate**: Present the rendered SVGs to the user and **wait for explicit style approval** ("OK，继续" / "approved" / equivalent) before entering Step 6.B. The user may request style adjustments — apply them by editing the top-of-file constants or the page functions and re-running, until the user approves. This gate applies even when Phase A produced fewer than 5 pages.
+
+#### Step 6.B — Batched Append of Remaining Pages
+
+Skip this step entirely if Phase A already covered every page in the deck.
+
+Otherwise, append the remaining page functions to the same `build_slides.py`, **in batches of at most 5 pages** (split by chapter when chapters exist; by page-number ranges otherwise). For each batch:
+
+1. `cp <project_path>/build_slides.py <project_path>/build_slides.py.bak` (rollback point)
+2. In `build_slides.py`: append 5 new `page_NN_*()` functions, add their entries to the `pages` dict in `generate()`, and append the 5 corresponding speaker-notes entries to `notes_total()`
+3. `python3 <project_path>/build_slides.py` to validate the batch
+4. If validation fails: fix the issue and re-run; if unrecoverable, `mv <project_path>/build_slides.py.bak <project_path>/build_slides.py` to roll back this batch and re-plan it
+5. If validation passes: continue to the next batch
+
+After all batches succeed, all SVGs are in `svg_output/` and `notes/total.md` is generated.
+
+> ⚠️ **Source of truth rule**: After Step 6.A, `build_slides.py` is the source of truth. Hand-editing individual SVG files in `svg_output/` will be overwritten on the next run. All visual changes must go through `build_slides.py`.
 
 **✅ Checkpoint — Confirm all SVGs and notes are fully generated. Proceed directly to Step 7 post-processing**:
 ```markdown
 ## ✅ Executor Phase Complete
+- [x] build_slides.py authored and validated end-to-end
 - [x] All SVGs generated to svg_output/
 - [x] Speaker notes generated at notes/total.md
 ```

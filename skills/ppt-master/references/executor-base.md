@@ -45,17 +45,17 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 - **Proximity principle**: Place related elements close together to form visual groups; increase spacing between unrelated groups to reinforce logical structure
 - **Absolute spec adherence**: Strictly follow the color, layout, canvas format, and typography parameters in the spec
 - **Follow template structure**: If templates exist, inherit the template's visual framework
-- **Main-agent ownership**: SVG generation must be performed by the current main agent, not delegated to sub-agents, because each page depends on shared upstream context and cross-page visual continuity
-- **Generation rhythm**: First lock the global design context, then generate pages sequentially one by one in the same continuous context; grouped page batches (for example, 5 pages at a time) are not allowed
-- **Phased batch generation** (recommended):
-  1. **Visual Construction Phase**: Generate all SVG pages continuously in sequential page order, ensuring high consistency in design style and layout coordinates (Visual Consistency)
-  2. **Logic Construction Phase**: After all SVGs are finalized, batch-generate speaker notes to ensure narrative coherence (Narrative Continuity)
-- **Technical specifications**: See [shared-standards.md](shared-standards.md) for SVG technical constraints and PPT compatibility rules
+- **Main-agent ownership**: Authoring `build_slides.py` must be performed by the current main agent, not delegated to sub-agents, because each page depends on shared upstream context and cross-page visual continuity
+- **Generation flow — read [build-slides-spec.md](build-slides-spec.md)**: All SVG generation goes through a single Python file `<project_path>/build_slides.py` that is the source of truth. The flow is:
+  1. **Step 6.A — Sample build (up to 5 representative pages)**: Author `build_slides.py` with one page function per distinct layout the deck will use (typically a mix among cover / TOC / chapter / content / ending — but none of these page types is required; pick whatever layouts actually exist in this deck). Cap the sample at 5 pages. Run it, present the rendered SVGs to the user, and wait for explicit style approval (⛔ BLOCKING). For decks ≤5 pages total, Phase A simply contains all of them and Phase B is skipped
+  2. **Step 6.B — Batched append**: After approval, append remaining page functions in batches of at most 5 pages, validating after each batch (skip entirely if Phase A already covered every page)
+- **Source of truth rule**: After Step 6.A, `build_slides.py` is the source of truth. Hand-editing individual SVG files will be overwritten on the next run. All visual changes go through the .py file. This is what enables batch edits like "change all body text from 18px to 22px" and a centralized icon/asset registry that survives context compression
+- **Technical specifications**: See [shared-standards.md](shared-standards.md) for SVG technical constraints and PPT compatibility rules — the SVG output by `build_slides.py` must satisfy all of them
 - **Visual depth**: Use filter shadows, glow effects, gradient fills, dashed strokes, and gradient overlays from shared-standards.md to create layered depth — flat pages without elevation or emphasis look unfinished
 
 ### SVG File Naming Convention
 
-File naming format: `<number>_<page_name>.svg`
+`build_slides.py` writes each page to a file named `<number>_<page_name>.svg` (the `pages` dict in `generate()` controls these filenames):
 
 - **Chinese content** → Chinese naming: `01_封面.svg`, `02_目录.svg`, `03_核心优势.svg`
 - **English content** → English naming: `01_cover.svg`, `02_agenda.svg`, `03_key_benefits.svg`
@@ -184,11 +184,13 @@ Apply corresponding fonts for different text roles based on the font plan in the
 
 ### Task 1. Generate Complete Speaker Notes Document
 
-After **all SVG pages are generated and finalized**, enter the "Logic Construction Phase" and generate the complete speaker notes document in `notes/total.md`.
+Speaker notes are produced by the `notes_total()` function inside `build_slides.py` (see [build-slides-spec.md](build-slides-spec.md) §2 and §4). When you append a batch of 5 page functions in Step 6.B, you **must also** append the corresponding 5 entries to `notes_total()` in the same edit — the .py file is the single source of truth for both SVGs and notes, so they cannot drift out of sync.
 
-**Why not generate page-by-page?** Batch-writing notes allows planning transitions like a script, ensuring coherent presentation logic.
+Running `python3 build_slides.py` writes both `svg_output/*.svg` and `notes/total.md` in one pass.
 
-**Format**: Each page starts with `# <number>_<page_title>`, separated by `---` between pages. Each page includes: script text (2-5 sentences), `Key points: ① ② ③`, `Duration: X minutes`. Except for the first page, each page's text starts with a `[Transition]` phrase.
+**Why is this better than writing notes page-by-page in chat?** The .py file holds all page entries as data, so transitions between pages can be planned coherently across the whole deck (script-like flow), and the notes never desync from the SVGs they describe.
+
+**Format produced by `notes_total()`**: Each page starts with `# <number>_<page_title>`, separated by `---` between pages. Each page includes: script text (2-5 sentences), `Key points: ① ② ③`, `Duration: X minutes`. Except for the first page, each page's text starts with a `[Transition]` phrase.
 
 **Basic stage direction markers** (common to all styles):
 
@@ -234,7 +236,7 @@ Automatically split `notes/total.md` into individual speaker note files in the `
 
 ## 9. Next Steps After Completion
 
-> **Auto-continuation**: After Visual Construction Phase (all SVG pages) and Logic Construction Phase (all notes) are complete, the Executor proceeds directly to the post-processing pipeline.
+> **Auto-continuation**: After all batches of `build_slides.py` validate successfully (all SVGs in `svg_output/`, `notes/total.md` written), the Executor proceeds directly to the post-processing pipeline. The post-processing scripts treat `build_slides.py`-generated SVGs identically to hand-authored ones — no behavior change downstream.
 
 **Post-processing & Export** (see [shared-standards.md](shared-standards.md)):
 

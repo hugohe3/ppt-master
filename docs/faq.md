@@ -77,7 +77,7 @@ This is almost always a model capability issue, not a bug in PPT Master. SVG lay
 
 ## Q: How long does a presentation take to generate?
 
-A typical 10–15 page presentation takes about **10–20 minutes** with a fast model. Generation is **intentionally serial** (one page at a time) to maintain visual consistency across slides — parallel generation was tested and produced inconsistent styles.
+A typical 10–15 page presentation takes about **10–20 minutes** with a fast model. Generation goes through a single Python generator (`build_slides.py`) in two phases — a 5-page sample for style approval, then the rest in 5-page batches — to keep style centralized and consistent across slides.
 
 If generation feels slow, check your model's token throughput. The bottleneck is usually the model's output speed, not the scripts.
 
