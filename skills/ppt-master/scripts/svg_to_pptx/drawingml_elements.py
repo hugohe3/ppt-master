@@ -815,7 +815,7 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         effect_kind = classify_filter_effect(filter_elem)
         if effect_kind == 'glow':
             text_effect_xml = build_effect_xml(filter_elem)
-        else:
+        elif effect_kind == 'shadow':
             shape_effect_xml = build_effect_xml(filter_elem)
 
     shape_id = ctx.next_id()
