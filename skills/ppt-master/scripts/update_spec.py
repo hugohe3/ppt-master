@@ -72,18 +72,25 @@ def rewrite_lock(lock_path: Path, section: str, key: str, new_value: str) -> Non
 
 
 def replace_color_in_svgs(svg_dir: Path, old_hex: str, new_hex: str) -> list[Path]:
-    """Replace old_hex with new_hex in every .svg under svg_dir. Returns changed files."""
+    """Replace old_hex with new_hex in every .svg under svg_dir. Returns changed files.
+
+    Two-phase: plan all file updates in memory, then write to disk. If any
+    exception is raised during planning (e.g. bad HEX, read failure), no files
+    are touched. This keeps svg_output/ and the caller's spec_lock.md write
+    in a consistent pair: either everything is applied or nothing is.
+    """
     if not HEX_RE.match(old_hex) or not HEX_RE.match(new_hex):
         raise ValueError(f"not a HEX color: old={old_hex!r} new={new_hex!r}")
     pattern = re.compile(re.escape(old_hex), re.IGNORECASE)
-    changed: list[Path] = []
+    planned: list[tuple[Path, str]] = []
     for svg in sorted(svg_dir.glob("*.svg")):
         text = svg.read_text(encoding="utf-8")
         new_text, n = pattern.subn(new_hex, text)
         if n > 0:
-            svg.write_text(new_text, encoding="utf-8")
-            changed.append(svg)
-    return changed
+            planned.append((svg, new_text))
+    for svg, new_text in planned:
+        svg.write_text(new_text, encoding="utf-8")
+    return [p for p, _ in planned]
 
 
 def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
@@ -92,9 +99,11 @@ def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
 
     Preserves the outer quote character when possible; if the new value contains
     that same quote type, switches the outer quote to the other kind.
-    """
-    changed: list[Path] = []
 
+    Two-phase: plan all file updates in memory, then write to disk. The inner
+    `_sub` may raise ValueError when the new value contains both quote kinds —
+    when that happens in the planning phase, no files have been touched yet.
+    """
     def _sub(m: re.Match[str]) -> str:
         prefix, quote, _inner = m.group(1), m.group(2), m.group(3)
         outer = quote
@@ -106,13 +115,15 @@ def replace_font_family_in_svgs(svg_dir: Path, new_value: str) -> list[Path]:
                 )
         return f"{prefix}{outer}{new_value}{outer}"
 
+    planned: list[tuple[Path, str]] = []
     for svg in sorted(svg_dir.glob("*.svg")):
         text = svg.read_text(encoding="utf-8")
         new_text, n = FONT_FAMILY_RE.subn(_sub, text)
         if n > 0 and new_text != text:
-            svg.write_text(new_text, encoding="utf-8")
-            changed.append(svg)
-    return changed
+            planned.append((svg, new_text))
+    for svg, new_text in planned:
+        svg.write_text(new_text, encoding="utf-8")
+    return [p for p, _ in planned]
 
 
 def main() -> int:
@@ -169,18 +180,22 @@ def main() -> int:
         if old_value == new_value:
             print(f"no change: colors.{key} already = {new_value}")
             return 0
-        rewrite_lock(lock, "colors", key, new_value)
+        # SVGs first (may raise on bad HEX), then lock. Writing lock last
+        # avoids a state where lock claims new_value but SVGs still hold
+        # old_value — that state silences re-runs (parse_lock would then
+        # see new_value == old_value and exit early).
         changed = replace_color_in_svgs(svg_dir, old_value, new_value)
+        rewrite_lock(lock, "colors", key, new_value)
     elif section == "typography" and key == "font_family":
         if old_value == new_value:
             print(f"no change: typography.font_family already = {new_value}")
             return 0
-        rewrite_lock(lock, "typography", key, new_value)
         try:
             changed = replace_font_family_in_svgs(svg_dir, new_value)
         except ValueError as e:
             print(f"error: {e}", file=sys.stderr)
             return 2
+        rewrite_lock(lock, "typography", key, new_value)
     else:
         print(
             f"error: {section}.{key} is not supported by update_spec.py.\n"
