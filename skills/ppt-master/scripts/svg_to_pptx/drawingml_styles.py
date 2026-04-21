@@ -409,8 +409,54 @@ def _parse_filter_params(
     }
 
 
+def _infer_shadow_alignment(dx: float, dy: float, threshold: float = 0.5) -> str:
+    """Infer outer shadow alignment from the SVG offset vector.
+
+    DrawingML applies alignment before blur/offset transforms, so we anchor the
+    shadow opposite to the dominant offset direction:
+    - diagonal offsets map to the opposite corner
+    - pure vertical offsets stay centered, matching common PPT shadow presets
+    - pure horizontal offsets anchor to the opposite side
+    """
+    if abs(dx) < threshold and abs(dy) < threshold:
+        return 'ctr'
+    if abs(dx) < threshold:
+        return 'ctr'
+    if abs(dy) < threshold:
+        return 'l' if dx > 0 else 'r'
+    if dx > 0 and dy > 0:
+        return 'tl'
+    if dx < 0 and dy > 0:
+        return 'tr'
+    if dx > 0 and dy < 0:
+        return 'bl'
+    return 'br'
+
+
+def _shadow_dir_angle(dx: float, dy: float) -> int:
+    """Convert an SVG offset vector to DrawingML clockwise angle units.
+
+    OOXML angles are expressed in 60,000ths of a degree, with positive angles
+    rotating clockwise toward the positive Y axis. SVG uses the same screen
+    coordinate orientation (positive Y points downward), so the raw screen-space
+    vector angle can be mapped directly with atan2(dy, dx).
+    """
+    if abs(dx) < 0.001 and abs(dy) < 0.001:
+        return 0
+    angle_deg = math.degrees(math.atan2(dy, dx)) % 360
+    return int(angle_deg * ANGLE_UNIT)
+
+
 def build_shadow_xml(filter_elem: ET.Element) -> str:
-    """Build <a:effectLst> with <a:outerShdw> from SVG filter element."""
+    """Build <a:effectLst> with <a:outerShdw> from SVG filter element.
+
+    SVG-to-DrawingML shadow mapping notes:
+    - SVG feGaussianBlur stdDeviation (σ) maps to DrawingML blurRad.
+      There is no spec-defined exact σ→blurRad equivalence, so we use an
+      empirical 1.0 scale. A 2.0 scale consistently over-blurs in PowerPoint.
+    - The algn attribute is inferred from the offset direction so that
+      the shadow aligns naturally with the shape edge.
+    """
     if filter_elem is None:
         return ''
 
@@ -422,13 +468,14 @@ def build_shadow_xml(filter_elem: ET.Element) -> str:
     if not p['has_offset']:
         dy = 4.0
 
-    blur_rad = px_to_emu(std_dev * 2)
+    blur_rad = px_to_emu(std_dev)
     dist = px_to_emu(math.sqrt(dx * dx + dy * dy))
-    dir_angle = int(((90 + math.degrees(math.atan2(dy, max(dx, 0.001)))) % 360) * ANGLE_UNIT)
+    dir_angle = _shadow_dir_angle(dx, dy)
     alpha_val = int(p['opacity'] * 100000)
+    algn = _infer_shadow_alignment(dx, dy)
 
     return f'''<a:effectLst>
-<a:outerShdw blurRad="{blur_rad}" dist="{dist}" dir="{dir_angle}" algn="tl" rotWithShape="0">
+<a:outerShdw blurRad="{blur_rad}" dist="{dist}" dir="{dir_angle}" algn="{algn}" rotWithShape="0">
 <a:srgbClr val="{p['color']}"><a:alpha val="{alpha_val}"/></a:srgbClr>
 </a:outerShdw>
 </a:effectLst>'''
@@ -444,7 +491,7 @@ def build_glow_xml(filter_elem: ET.Element) -> str:
         return ''
 
     p = _parse_filter_params(filter_elem)
-    rad = px_to_emu(p['std_dev'] * 2)
+    rad = px_to_emu(p['std_dev'])
     alpha_val = int(p['opacity'] * 100000)
 
     return f'''<a:effectLst>
@@ -452,6 +499,15 @@ def build_glow_xml(filter_elem: ET.Element) -> str:
 <a:srgbClr val="{p['color']}"><a:alpha val="{alpha_val}"/></a:srgbClr>
 </a:glow>
 </a:effectLst>'''
+
+
+def classify_filter_effect(filter_elem: ET.Element) -> str | None:
+    """Classify an SVG filter into a supported DrawingML effect kind."""
+    if filter_elem is None:
+        return None
+
+    p = _parse_filter_params(filter_elem)
+    return 'shadow' if p['has_offset'] else 'glow'
 
 
 def build_effect_xml(filter_elem: ET.Element) -> str:
@@ -464,10 +520,12 @@ def build_effect_xml(filter_elem: ET.Element) -> str:
     if filter_elem is None:
         return ''
 
-    p = _parse_filter_params(filter_elem)
-    if p['has_offset']:
+    effect_kind = classify_filter_effect(filter_elem)
+    if effect_kind == 'shadow':
         return build_shadow_xml(filter_elem)
-    return build_glow_xml(filter_elem)
+    if effect_kind == 'glow':
+        return build_glow_xml(filter_elem)
+    return ''
 
 
 def get_element_opacity(elem: ET.Element) -> float | None:
