@@ -24,6 +24,14 @@ except ImportError:
     CANVAS_FORMATS = {}
     ErrorHelper = None
 
+try:
+    from update_spec import parse_lock as _parse_spec_lock
+except ImportError:
+    _parse_spec_lock = None  # spec_lock drift check will be skipped
+
+
+HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
+
 
 class SVGQualityChecker:
     """SVG quality checker"""
@@ -37,6 +45,15 @@ class SVGQualityChecker:
             'errors': 0
         }
         self.issue_types = defaultdict(int)
+        # spec_lock drift state (populated only when _parse_spec_lock is available
+        # and a spec_lock.md is found near the SVG)
+        self._lock_cache: Dict[Path, Dict] = {}
+        self._drift_summary: Dict[str, Dict[str, set]] = {
+            'colors': defaultdict(set),
+            'fonts': defaultdict(set),
+            'sizes': defaultdict(set),
+        }
+        self._lock_seen = False  # True once we locate at least one spec_lock.md
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
         """
@@ -91,6 +108,9 @@ class SVGQualityChecker:
 
             # 6. Check image references (file existence and resolution)
             self._check_image_references(content, svg_path, result)
+
+            # 7. Check spec_lock drift (colors / font-family / font-size)
+            self._check_spec_lock_drift(content, svg_path, result)
 
             # Determine pass/fail
             result['passed'] = len(result['errors']) == 0
@@ -356,6 +376,111 @@ class SVGQualityChecker:
             except Exception:
                 pass  # Image unreadable, skip resolution check
 
+    def _get_spec_lock(self, svg_path: Path):
+        """Locate and parse spec_lock.md near the SVG. Returns dict or None.
+
+        Looks in svg_path.parent and svg_path.parent.parent (covers the two
+        common layouts: SVG directly under <project>/ or under
+        <project>/svg_output/). Results are cached per lock path.
+        """
+        if _parse_spec_lock is None:
+            return None
+        for candidate in (svg_path.parent / 'spec_lock.md',
+                          svg_path.parent.parent / 'spec_lock.md'):
+            if candidate in self._lock_cache:
+                return self._lock_cache[candidate]
+            if candidate.exists():
+                try:
+                    data = _parse_spec_lock(candidate)
+                except Exception:
+                    data = None
+                self._lock_cache[candidate] = data
+                if data is not None:
+                    self._lock_seen = True
+                return data
+        return None
+
+    def _check_spec_lock_drift(self, content: str, svg_path: Path, result: Dict):
+        """Detect values used in the SVG that fall outside spec_lock.md.
+
+        Covers colors (fill / stroke / stop-color), font-family, and font-size.
+        Emits per-file warnings summarising the drift counts; exact drifting
+        values are accumulated in self._drift_summary for the end-of-run
+        aggregation. When spec_lock.md is missing, silently skip (consistent
+        with executor-base.md §2.1's 'missing lock → warn and proceed' policy).
+        """
+        lock = self._get_spec_lock(svg_path)
+        if lock is None:
+            return
+
+        # Build allow-sets from the lock
+        allowed_colors = set()
+        for v in lock.get('colors', {}).values():
+            if HEX_VALUE_RE.fullmatch(v):
+                allowed_colors.add(v.upper())
+
+        typo = lock.get('typography', {})
+        allowed_font = typo.get('font_family', '').strip() if typo else ''
+        allowed_sizes = set()
+        for k, v in typo.items():
+            if k == 'font_family':
+                continue
+            allowed_sizes.add(self._normalize_size(v))
+
+        # Scan SVG for used values
+        color_drifts = set()
+        for attr in ('fill', 'stroke', 'stop-color'):
+            pattern = re.compile(rf'\b{attr}\s*=\s*["\'](#[0-9A-Fa-f]{{3,8}})["\']')
+            for m in pattern.finditer(content):
+                val = m.group(1).upper()
+                if val not in allowed_colors:
+                    color_drifts.add(val)
+
+        font_drifts = set()
+        for m in re.finditer(r'font-family\s*=\s*["\']([^"\']+)["\']', content):
+            val = m.group(1).strip()
+            if allowed_font and val != allowed_font:
+                font_drifts.add(val)
+
+        size_drifts = set()
+        for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
+            val = self._normalize_size(m.group(1))
+            if allowed_sizes and val not in allowed_sizes:
+                size_drifts.add(val)
+
+        # Record in run-wide aggregation
+        fname = svg_path.name
+        for v in color_drifts:
+            self._drift_summary['colors'][v].add(fname)
+        for v in font_drifts:
+            self._drift_summary['fonts'][v].add(fname)
+        for v in size_drifts:
+            self._drift_summary['sizes'][v].add(fname)
+
+        # Per-file warning (one condensed line; details live in summary)
+        parts = []
+        if color_drifts:
+            parts.append(f"{len(color_drifts)} color(s)")
+        if font_drifts:
+            parts.append(f"{len(font_drifts)} font-family value(s)")
+        if size_drifts:
+            parts.append(f"{len(size_drifts)} font-size value(s)")
+        if parts:
+            result['warnings'].append(
+                f"spec_lock drift: {', '.join(parts)} not in spec_lock.md "
+                "(see drift summary for details)"
+            )
+
+    @staticmethod
+    def _normalize_size(value: str) -> str:
+        """Normalize a font-size value for comparison: lowercase, strip spaces,
+        strip trailing 'px'. Other units (em / rem / %) are kept as-is so that
+        e.g. '1.5em' vs '24' stay distinct."""
+        v = value.strip().lower()
+        if v.endswith('px'):
+            v = v[:-2].strip()
+        return v
+
     def _categorize_issue(self, error_msg: str) -> str:
         """Categorize issue type"""
         if 'viewBox' in error_msg:
@@ -461,12 +586,50 @@ class SVGQualityChecker:
             for issue_type, count in sorted(self.issue_types.items(), key=lambda x: x[1], reverse=True):
                 print(f"  {issue_type}: {count}")
 
+        # spec_lock drift aggregation (only printed when a lock was found)
+        self._print_drift_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
             print(f"  1. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
             print(f"  2. foreignObject: Use <text> + <tspan> for manual line breaks")
             print(f"  3. Font issues: Use system UI font stack")
+
+    def _print_drift_summary(self):
+        """Print spec_lock drift aggregation if any was observed.
+
+        Values are sorted by file-count descending so frequent drift surfaces
+        first. Frequent drift usually means spec_lock.md is missing entries
+        the Strategist should have included; rare drift is more likely actual
+        Executor drift and warrants SVG review.
+        """
+        if not self._lock_seen:
+            return
+        has_drift = any(self._drift_summary[cat] for cat in self._drift_summary)
+        if not has_drift:
+            print("\n[OK] spec_lock drift: none — all colors, fonts, and sizes are anchored to spec_lock.md")
+            return
+
+        print("\nspec_lock drift — values used outside spec_lock.md:")
+        labels = [('colors', 'Colors'),
+                  ('fonts', 'Font families'),
+                  ('sizes', 'Font sizes')]
+        for category, label in labels:
+            items = self._drift_summary.get(category, {})
+            if not items:
+                continue
+            entries = sorted(items.items(), key=lambda x: (-len(x[1]), x[0]))
+            print(f"  {label}:")
+            for val, files in entries:
+                n = len(files)
+                suffix = "file" if n == 1 else "files"
+                print(f"    {val}  ({n} {suffix})")
+        print(
+            "Tip: frequent out-of-lock values usually mean spec_lock.md is missing\n"
+            "     entries — extend the lock (scripts/update_spec.py or manual edit).\n"
+            "     Rare ones are likely Executor drift — review the affected SVGs."
+        )
 
     def _percentage(self, count: int) -> int:
         """Calculate percentage"""
