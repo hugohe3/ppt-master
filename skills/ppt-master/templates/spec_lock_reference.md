@@ -41,6 +41,26 @@
 
 > One entry per image file actually used. Remove the section entirely if the deck uses no images.
 
+## page_rhythm
+- P01: anchor
+- P02: dense
+- P03: breathing
+- P04: dense
+- P05: dense
+- P06: breathing
+- P07: anchor
+
+> One entry per page. Key format: `P<NN>` (zero-padded two-digit page index matching `§IX Content Outline` in `design_spec.md`). Value is one of the three rhythm tags below. This field exists to break the "every page looks the same" pattern — Executor reads it per page and applies the tag's layout discipline.
+>
+> **Vocabulary** (exactly these three values):
+> - `anchor` — Structural pages (cover / chapter opener / TOC / ending). Follow the corresponding template as-is.
+> - `dense` — Information-heavy pages (data, KPIs, comparisons, multi-point lists). Card grids, multi-column layouts, tables, and charts are all permitted.
+> - `breathing` — Low-density pages (single concept, hero quote, big image + caption, section transition). **No card containers** — use naked text blocks or full-bleed imagery. Whitespace ≥ 40% of canvas. Asymmetric layout (e.g., 2:8, 3:7) and figure-text overlap are encouraged.
+>
+> **Rhythm follows narrative** (for Strategist when filling this section): `breathing` pages appear where the narrative genuinely pauses — section transitions, a single argument worth standalone emphasis, a deliberate stop after a dense sequence. A high-density data briefing or consulting analysis may legitimately be nearly all `dense` — **do not invent filler pages** to pad the rhythm. Validation: every `breathing` page must answer "what independent thing is this page saying?".
+>
+> **Missing or empty section** → Executor falls back to `dense` for every page (current pre-rhythm behavior). Remove the whole section only for legacy decks; new decks authored by Strategist MUST fill it.
+
 ## forbidden
 - Mixing icon libraries
 - rgba()
