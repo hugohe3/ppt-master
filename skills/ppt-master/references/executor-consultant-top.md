@@ -117,18 +117,7 @@ Horizontal table; own row highlighted in theme color, others in gray. Leading in
 
 Start → increase/decrease factors → End. Positive factors green bars, negative factors red bars, start/end points dark bars, cumulative line as dashed connector.
 
-### Break-the-grid Patterns (for `breathing` pages)
-
-> MBB-level decks deliberately use `breathing` pages as narrative leverage — an SCQA "Question" bridge, a single conclusion that needs to land without distraction, a strategic-implication moment between analytical chapters. These pages use **non-grid** patterns (see also `strategist.md` §4 Layout Pattern Library).
-
-| Pattern | MBB-level use |
-|---------|--------------|
-| **Negative-space-driven** | Single executive takeaway in 60%+ whitespace — the most authoritative form for a C-suite audience |
-| **Asymmetric split (2:8)** | Dominant chart + one-sentence strategic implication; one hero metric + decomposition list |
-| **Full-bleed + floating text** | Chapter opener framing market context or board decision moment |
-| **Figure-text overlap** | Hero conclusion headline anchored against chart edge or photograph |
-
-**Rule**: When `page_rhythm = breathing` for the current page, **do NOT wrap content in rounded-rectangle cards** or KPI dashboards. Use naked takeaway text, dividers, and whitespace — the MBB aesthetic of "extreme simplicity" is *served* by breathing pages, not contradicted by them. Cards and dashboards belong to `dense` pages.
+> When `page_rhythm = breathing`, the MBB-appropriate form is **negative-space-driven**: a single takeaway statement on a near-empty canvas, or a dominant chart with one sentence of strategic implication (an asymmetric 2:8 degeneration of the standard chart+insight layout). The extreme-simplicity aesthetic of MBB is *served* by this — filler imagery and decorative overlap from marketing-style decks do NOT belong here. Universal rhythm discipline is in `executor-base.md §2.1`.
 
 ---
 

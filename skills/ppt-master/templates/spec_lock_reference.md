@@ -55,7 +55,7 @@
 > **Vocabulary** (exactly these three values):
 > - `anchor` — Structural pages (cover / chapter opener / TOC / ending). Follow the corresponding template as-is.
 > - `dense` — Information-heavy pages (data, KPIs, comparisons, multi-point lists). Card grids, multi-column layouts, tables, and charts are all permitted.
-> - `breathing` — Low-density pages (single concept, hero quote, big image + caption, section transition). **No card containers** — use naked text blocks or full-bleed imagery. Whitespace ≥ 40% of canvas. Asymmetric layout (e.g., 2:8, 3:7) and figure-text overlap are encouraged.
+> - `breathing` — Low-density pages (single concept, hero quote, big image + caption, section transition). Avoid **multi-card grid layouts** (multiple parallel rounded containers as the primary content structure); organize with naked text, dividers, whitespace, or full-bleed imagery instead. Single rounded visual elements (hero image corners, callouts, tags, one emphasis block) are fine. Proportions follow information weight — not a preset ratio menu.
 >
 > **Rhythm follows narrative** (for Strategist when filling this section): `breathing` pages appear where the narrative genuinely pauses — section transitions, a single argument worth standalone emphasis, a deliberate stop after a dense sequence. A high-density data briefing or consulting analysis may legitimately be nearly all `dense` — **do not invent filler pages** to pad the rhythm. Validation: every `breathing` page must answer "what independent thing is this page saying?".
 >
