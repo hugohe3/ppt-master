@@ -110,6 +110,19 @@ Insight area: x=780, y=120, w=460, h=480
   - Data source (12px, gray)
 ```
 
+### Break-the-grid Patterns (for `breathing` pages)
+
+> Consulting decks can and should include `breathing` pages — a single insight that deserves to land without a card around it, a data-backed headline moment, a transition between analytical chapters. These pages use the **non-grid** patterns below (see also `strategist.md` §4 Layout Pattern Library).
+
+| Pattern | Consulting use |
+|---------|----------------|
+| **Asymmetric split (3:7 / 2:8)** | One big chart + one sentence of takeaway; one large number + a list of drivers |
+| **Full-bleed + floating text** | Chapter openers, emotional framing of a market context |
+| **Negative-space-driven** | Single headline conclusion on a near-empty canvas — "Market share halved in 18 months" |
+| **Figure-text overlap** | Hero quote over portrait photo; big number anchored against chart edge |
+
+**Rule**: When `page_rhythm = breathing` for the current page, **do NOT wrap content in rounded-rectangle cards** (`<rect rx="...">` containers with padding). Use naked text, dividers, and whitespace instead. Cards are for `dense` pages.
+
 ---
 
 ## Professional Expression Standards
