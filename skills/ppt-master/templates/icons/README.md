@@ -17,13 +17,13 @@ This directory provides **6700+ high-quality SVG icons** across three libraries 
 Use placeholder syntax **during SVG generation**:
 
 ```xml
-<!-- chunk (default — solid, geometric, minimal) -->
+<!-- chunk (sharp, geometric — tech/engineering/enterprise tone) -->
 <use data-icon="chunk/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 
-<!-- tabler-filled (fallback when chunk doesn't have the icon) -->
+<!-- tabler-filled (rounded, organic — lifestyle/health/home tone) -->
 <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 
-<!-- tabler-outline (light, line-art style — screen-only decks) -->
+<!-- tabler-outline (light, line-art — refined screen-only showcases) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 ```
 
@@ -55,16 +55,22 @@ ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 
 ## Style Rules
 
-**Default: use `chunk`** — all paths built from straight-line commands only (M/L/H/V/Z), producing sharp, precise angles; structured and highly legible at any scale.
+**No default library — actively choose based on content tone.** Read the source material first, judge its character, then lock a library. Each library's visual language suits a different kind of content:
 
-**`tabler-filled`** uses bezier curves and arcs (C/A commands) throughout, giving every contour a smooth, rounded, organic quality — warmer and softer in tone.
+- **`chunk`** — **fill** style, built from straight-line commands only (M/L/H/V/Z); sharp, precise angles; structured and highly legible.
+- **`tabler-filled`** — **fill** style, built from bezier curves and arcs (C/A); smooth, rounded, organic contours — warmer and softer in tone.
+- **`tabler-outline`** — **stroke** style (line art); airy and refined.
+
+> `chunk` and `tabler-filled` are both filled — the real distinction is **straight-line vs. curved** geometry. `tabler-outline` is the only stroke-based library.
 
 **One presentation = one library.** Pick a library at the start and use it exclusively throughout. If the chosen library doesn't have an exact icon, find the closest available alternative within that same library — never cross libraries to fill a gap.
 
-| Library | When to use |
-|---------|-------------|
-| `chunk` ✅ **(default)** | Most scenarios — sharp geometry, structured, highly legible |
-| `tabler-filled` | When design calls for smooth, rounded, organic icon forms |
-| `tabler-outline` | Screen-only decks needing a light, elegant aesthetic |
+| Content tone | Recommended library |
+|--------------|---------------------|
+| Tech / engineering / enterprise / data | `chunk` |
+| Lifestyle / health / home / wellness | `tabler-filled` |
+| Light, refined, minimal showcases (screen-only) | `tabler-outline` |
+
+> The table above is a reference, not a hard rule. When content tone doesn't cleanly match a row, pick the library whose visual character best serves the deck and document the choice.
 
 ⚠️ Do **not** mix icons from different libraries in the same presentation — pick one and use it consistently throughout.

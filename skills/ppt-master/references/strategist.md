@@ -114,16 +114,16 @@ Built-in library contains 6700+ icons across three libraries:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
-| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | ✅ **Default** — most scenarios |
-| `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | When design calls for smooth, rounded, organic icon forms |
-| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
+| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | Sharp, structured, engineered feel |
+| `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | Warm, rounded, organic feel |
+| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Light, elegant, screen-only aesthetic |
 
 > **Mandatory rules when choosing C**:
-> 1. **Lock icon library first** — default to `chunk`; switch to `tabler-filled` only when the design calls for smooth, rounded, organic icon forms; use `tabler-outline` only for screen-only light aesthetic decks:
->    - **Sharp, rectilinear geometry** (default): use `chunk` — all paths use straight-line commands only (M/L/H/V/Z)
->    - **Smooth, rounded forms**: use `tabler-filled` — all contours built with bezier curves and arcs (C/A)
->    - **Outline/Stroke style** (screen-only, light aesthetic): use `tabler-outline`
->    - **Outline/Stroke style** (screen-only, light aesthetic): use `tabler-outline`
+> 1. **No default library — actively choose based on content tone.** Read the source material and judge its character before locking a library. Common mappings (reference, not rules):
+>    - **Tech / engineering / enterprise / data** → `chunk` — sharp, rectilinear geometry (M/L/H/V/Z only) matches the precise, structured tone
+>    - **Lifestyle / health / home / wellness** → `tabler-filled` — smooth bezier curves and arcs (C/A) match the warm, organic tone
+>    - **Light, refined, minimal showcases** (screen-only) → `tabler-outline` — stroke-only forms match the airy, elegant tone
+>    - When content tone doesn't cleanly match any row above, pick the library whose visual character best serves the deck — explain the choice in the Design Spec.
 >    - ⚠️ **One presentation = one library.** Mixing icons from different libraries is FORBIDDEN. If a chosen library lacks an exact icon, find the closest alternative **within that same library**.
 > 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
 > 3. Use the verified filename (without `.svg`) as the icon name
