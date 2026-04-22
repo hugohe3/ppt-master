@@ -2,8 +2,14 @@
 """
 Image Size Analysis Tool
 ========================
-Analyzes width, height, and aspect ratio of all images in a specified folder,
-and outputs PPT layout recommendations with computed dimensions.
+Reports objective parameters (width, height, aspect ratio, category) for all
+images in a folder. Intentionally does NOT prescribe a layout — the Strategist
+decides narrative intent (hero / atmosphere / side-by-side / accent) per
+references/strategist.md §h; this tool only supplies the numbers.
+
+When a canvas is specified, also reports the reference image/text area sizes
+that would apply *if* an image is placed side-by-side with body text. Those
+numbers are conditional on the Strategist picking the side-by-side intent.
 
 Usage:
     python scripts/analyze_images.py <images_folder_path>
@@ -215,7 +221,10 @@ def print_results(results: list[ImageAnalysis]) -> None:
     has_layout = 'layout_type' in results[0] if results else False
 
     if has_layout:
-        print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Category':<20} {'Layout':<12} {'ImgArea':<14} {'Filename'}")
+        print("\nNote: 'Img (SxS)' shows the image area *if* the Strategist chooses the")
+        print("side-by-side intent for this image. Decide narrative intent first — see")
+        print("references/strategist.md §h. Hero / atmosphere / accent intents ignore it.\n")
+        print(f"{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Category':<20} {'Img (SxS)':<14} {'Filename'}")
     else:
         print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Category':<20} {'Filename'}")
     print("-" * REPORT_WIDTH)
@@ -224,7 +233,7 @@ def print_results(results: list[ImageAnalysis]) -> None:
         base = f"{i:<4} {img['width']:<7} {img['height']:<7} {img['aspect_ratio']:<7.2f} {img['filesize_kb']:<10.1f}KB {img['layout_hint']:<20}"
         if has_layout:
             img_area = f"{img['image_w']}x{img['image_h']}"
-            print(f"{base} {img['layout_type']:<12} {img_area:<14} {img['filename'][:35]}")
+            print(f"{base} {img_area:<14} {img['filename'][:35]}")
         else:
             print(f"{base} {img['filename'][:40]}")
 
@@ -276,12 +285,17 @@ def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
 
     print(f"\n## Image Resource Inventory (Auto-scan Results — {fmt_name})\n")
 
+    print("> Decide narrative intent per image (hero / atmosphere / side-by-side /")
+    print("> accent) per `references/strategist.md` §h before filling the table. The")
+    print("> `Img Area (SxS)` / `Text Area (SxS)` columns only apply if the chosen")
+    print("> intent is side-by-side; ignore them for hero / atmosphere / accent intents.\n")
+
     if has_layout:
-        print("| Filename | Size | Ratio | Layout | Image Area | Text Area | Usage | Type | Status | Generation Description |")
-        print("|----------|------|-------|--------|------------|-----------|-------|------|--------|-----------------------|")
+        print("| Filename | Size | Ratio | Category | Img Area (SxS) | Text Area (SxS) | Intent | Usage | Type | Status | Generation Description |")
+        print("|----------|------|-------|----------|----------------|-----------------|--------|-------|------|--------|-----------------------|")
     else:
-        print("| Filename | Size | Ratio | Layout Suggestion | Usage | Type | Status | Generation Description |")
-        print("|----------|------|-------|-------------------|-------|------|--------|-----------------------|")
+        print("| Filename | Size | Ratio | Category | Intent | Usage | Type | Status | Generation Description |")
+        print("|----------|------|-------|----------|--------|-------|------|--------|-----------------------|")
 
     for img in results:
         ratio_str = f"{img['aspect_ratio']:.2f}"
@@ -289,20 +303,9 @@ def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
         if has_layout:
             img_area = f"{img['image_w']}x{img['image_h']}"
             text_area = f"{img['text_w']}x{img['text_h']}"
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_type']} | {img_area} | {text_area} | (to be filled) | | Existing | - |")
+            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | {img_area} | {text_area} | (to be filled) | (to be filled) | | Existing | - |")
         else:
-            layout_desc = img['layout_hint']
-            if img['aspect_ratio'] > 2.0:
-                layout_desc += " (top-bottom, full-width)"
-            elif img['aspect_ratio'] > 1.5:
-                layout_desc += " (top-bottom)"
-            elif img['aspect_ratio'] > 1.2:
-                layout_desc += " (left-right split)"
-            elif img['aspect_ratio'] > 0.8:
-                layout_desc += " (left-right split)"
-            else:
-                layout_desc += " (left-right, image on left)"
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {layout_desc} | (to be filled) | | Existing | - |")
+            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | (to be filled) | (to be filled) | | Existing | - |")
 
     print("\n" + "=" * REPORT_WIDTH + "\n")
 
@@ -311,11 +314,14 @@ def save_csv(results: list[ImageAnalysis], csv_path: str) -> None:
     """Save analysis results to a CSV file."""
     has_layout = 'layout_type' in results[0] if results else False
 
+    # NOTE: ImageArea_SxS / TextArea_SxS apply only if Strategist picks the
+    # side-by-side intent for this image (see strategist.md §h). The tool
+    # does not prescribe a layout.
     with open(csv_path, 'w', encoding='utf-8') as f:
         if has_layout:
-            f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Category,LayoutType,ImageArea,TextArea\n")
+            f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Category,ImageArea_SxS,TextArea_SxS\n")
             for i, img in enumerate(results, 1):
-                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img['filesize_kb']:.1f},{img['layout_hint']},{img['layout_type']},{img['image_w']}x{img['image_h']},{img['text_w']}x{img['text_h']}\n")
+                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img['filesize_kb']:.1f},{img['layout_hint']},{img['image_w']}x{img['image_h']},{img['text_w']}x{img['text_h']}\n")
         else:
             f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Category\n")
             for i, img in enumerate(results, 1):
