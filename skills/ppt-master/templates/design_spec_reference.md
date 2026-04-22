@@ -144,18 +144,33 @@
 
 ### Spacing Specification
 
-> Strategist may adjust based on project needs
+> Spacing defaults depend on **container type**. Cards are one option, not the universal default. The tables below split by container type; a page may use only one set (e.g., a `breathing` page with no cards only consults the universal and non-card entries).
+
+**Universal** (any container type):
+
+| Element | Recommended Range | Current Project |
+| ------- | ---------------- | --------------- |
+| Safe margin from canvas edge | 40-60px | [fill in] |
+| Content block gap | 24-40px | [fill in] |
+| Icon-text gap | 8-16px | [fill in] |
+
+**Card-based layouts** (consult only when the page uses cards — typically `dense` pages with parallel containers):
 
 | Element | Recommended Range | Current Project |
 | ------- | ---------------- | --------------- |
 | Card gap | 20-32px | [fill in] |
-| Content block gap | 24-40px | [fill in] |
 | Card padding | 20-32px | [fill in] |
 | Card border radius | 8-16px | [fill in] |
-| Icon-text gap | 8-16px | [fill in] |
 | Single-row card height | 530-600px | [fill in] |
 | Double-row card height | 265-295px each | [fill in] |
 | Three-column card width | 360-380px each | [fill in] |
+
+**Non-card containers** (naked text blocks / full-bleed imagery / divider-separated content — typical for `breathing` pages or minimalist designs):
+
+- Block-to-block vertical rhythm is carried by **whitespace**, not gutters — block gaps tend to run wider than card gaps since there is no container edge to help separate content.
+- **Line-height (leading)**: 1.4-1.6× body font size — standard typographic convention.
+- **Full-bleed text placement**: inset text away from the image's visual focal points; legibility over photographic backgrounds typically requires a gradient or opacity overlay layer.
+- **Content width** is driven by reading comfort and image composition, not by a card grid slot — avoid back-computing "column width" when there is no column.
 
 ---
 
