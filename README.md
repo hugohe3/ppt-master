@@ -28,7 +28,7 @@ English | [中文](./README_CN.md)
 </p>
 
 <p align="center">
-  <sub>🛡️ New: <a href="https://hugohe3.github.io/ppt-master/?project=ppt169_general_dark_tech_claude_code_auto_mode">10-page dark-tech deck</a> generated from <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic's Claude Code Auto Mode engineering blog</a> — see it in the <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">examples</a>.</sub>
+  <sub>🛡️ New: <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_general_dark_tech_claude_code_auto_mode">10-page dark-tech deck</a> generated from <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic's Claude Code Auto Mode engineering blog</a> — see it in the <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">examples</a>.</sub>
 </p>
 
 ---

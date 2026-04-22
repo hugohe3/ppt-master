@@ -28,7 +28,7 @@
 </p>
 
 <p align="center">
-  <sub>🛡️ 新增：根据 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic Claude Code Auto Mode 技术博文</a> 生成的 <a href="https://hugohe3.github.io/ppt-master/?project=ppt169_general_dark_tech_claude_code_auto_mode">10 页深色科技风演示</a> — 查看 <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">示例项目</a>。</sub>
+  <sub>🛡️ 新增：根据 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic Claude Code Auto Mode 技术博文</a> 生成的 <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_general_dark_tech_claude_code_auto_mode">10 页深色科技风演示</a> — 查看 <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">示例项目</a>。</sub>
 </p>
 
 ---
