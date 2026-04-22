@@ -4,19 +4,21 @@
 Examples:
     python3 update_spec.py <project_path> primary=#0066AA
     python3 update_spec.py <project_path> colors.text=#111111
-    python3 update_spec.py <project_path> typography.font_family='"Inter", Arial, sans-serif'
+    python3 update_spec.py <project_path> typography.font_family='"PingFang SC", "Microsoft YaHei", sans-serif'
 
 v2 scope:
 - `colors.*` — HEX value replacement across svg_output/*.svg (case-insensitive match).
 - `typography.font_family` — replaces the inner value of every `font-family="..."`
-  / `font-family='...'` attribute in svg_output/*.svg.
+  / `font-family='...'` attribute in svg_output/*.svg. This is a global replace:
+  every text element becomes the new family, regardless of role.
 
 Bare `key=value` (no dot) is treated as `colors.key=value` for backward compat.
 
-Other keys (typography sizes, icons, images, canvas, forbidden) are intentionally
-NOT supported — they involve attribute-scoped or semantic replacements whose
-risk/benefit does not warrant bulk propagation. Edit spec_lock.md and the
-affected SVGs by hand, or re-author the pages.
+Other keys (typography sizes, per-role `typography.*_family` overrides, icons,
+images, canvas, forbidden) are intentionally NOT supported — they involve
+attribute-scoped or semantic replacements whose risk/benefit does not warrant
+bulk propagation. For per-role family changes, edit spec_lock.md and re-author
+the affected pages.
 """
 from __future__ import annotations
 

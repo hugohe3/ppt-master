@@ -50,7 +50,8 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 
 - Color values (fill / stroke / stop-color) MUST come from `colors` in `spec_lock.md`
 - Icons MUST come from the `icons.inventory` list; icon library MUST equal `icons.library`
-- Font family MUST equal `typography.font_family`; font sizes MUST match one of `typography.*` values
+- Font family MUST come from the `typography` block: use the role-specific override (`title_family` / `body_family` / `emphasis_family` / `code_family`) if declared for that role, otherwise fall back to `font_family`.
+- Font sizes follow a **ramp anchored on `typography.body`**, not a closed menu. The slots listed in `spec_lock.md typography` (`title` / `subtitle` / `annotation` / any project-specific additions like `cover_title` / `hero_number`) are common anchors — use them directly when they fit. Executor MAY use an intermediate size (e.g., 40px hero number, 13px chart annotation, 72px cover headline) when the role calls for it, **provided** the size's ratio to `body` falls within the corresponding role's band in the design-spec ramp table (see `design_spec_reference.md §IV — Font Size Hierarchy`, also mirrored in `design_spec.md §IV` per project). Sizes outside every ramp band are still forbidden — surface the need and extend the lock instead of inventing one-off values.
 - Images MUST reference files listed under `images`; no invented filenames
 
 If a page genuinely needs a value not in `spec_lock.md`, stop and surface it — do not silently invent one. Either request the user to extend the lock, or revise the page to stay within it.

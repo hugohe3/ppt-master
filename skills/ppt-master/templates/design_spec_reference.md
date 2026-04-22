@@ -80,37 +80,45 @@
 
 ### Font Plan
 
-> Strategist should select a font preset based on content characteristics, or customize the font combination
-> Preset descriptions: P1=Modern business/tech | P2=Government docs | P3=Culture/arts | P4=Traditional/conservative | P5=English-primary
+> **Per-role families are expected, not optional.** Title / Body / Emphasis / Code may each use a different family — for example, a display serif for titles paired with a geometric sans for body. A deck is not required to stick to one family throughout. See [strategist.md §g — Font Combinations](../references/strategist.md) for common starting directions; you are free to propose a combination not in that list.
+>
+> **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores a single `typeface` per text run — no runtime fallback. Every stack below MUST end with a cross-platform pre-installed font (`"Microsoft YaHei", sans-serif` / `SimSun, serif` / `Arial, sans-serif` / `"Times New Roman", serif` / `Consolas, "Courier New", monospace`). Stacks that lead with a non-pre-installed font (Inter / Google Fonts families / brand typefaces) are only allowed when this spec explicitly notes the font-install or font-embedding requirement.
 
-**Recommended preset**: [Fill in preset code]
+**Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
 | Role | Chinese | English | Fallback |
 | ---- | ------- | ------- | -------- |
 | **Title** | [font name] | [font name] | [font name] |
 | **Body** | [font name] | [font name] | [font name] |
-| **Code** | - | Consolas | Monaco |
 | **Emphasis** | [font name] | [font name] | [font name] |
+| **Code** | - | [e.g., JetBrains Mono / Fira Code / Consolas] | [Monaco / monospace] |
 
-**Font stack**: `[Fill in CSS font-family string]`
+**Per-role font stacks** (CSS `font-family` strings — one per role if they differ, or a single stack if all roles share the same family):
+- Title: `[Fill in]`
+- Body: `[Fill in — may be the same as Title]`
+- Emphasis: `[Fill in or "same as Body"]`
+- Code: `[Fill in — typically a monospace stack]`
 
 ### Font Size Hierarchy
 
-> **Design principle**: Use body font size as baseline (1x), derive other levels proportionally
-> **Unit convention**: Use px uniformly (SVG native unit) to avoid pt/px conversion errors
-> **Selection principle**: Font size is based on **content density**, not design style
+> **Ramp discipline, not a fixed menu.** The `body` baseline is the single anchor; every other size is a ratio of it. The table below is a **ramp** — each row gives the allowed ratio band for that role, and Executor may pick any px value inside the band during generation (e.g., 40px hero number, 13px chart annotation, 72px cover headline) without having to pre-declare every intermediate value in `spec_lock.md`.
+> **Unit convention**: Use px uniformly (SVG native unit) to avoid pt/px conversion errors.
+> **Baseline selection**: Drive by **content density**, not design style.
 
 **Baseline**: Body font size = [fill in]px (choose 18-24px based on content density)
 
-| Purpose | Ratio | 24px baseline (relaxed) | 18px baseline (dense) | Weight |
-| ------- | ----- | ---------------------- | -------------------- | ------ |
-| Cover title | 2.5-3x | 60-72px | 45-54px | Bold |
-| Chapter title | 2-2.5x | 48-60px | 36-45px | Bold |
-| Content title | 1.5-2x | 36-48px | 27-36px | Bold |
+| Purpose | Ratio to body | 24px baseline (relaxed) | 18px baseline (dense) | Weight |
+| ------- | ------------- | ---------------------- | -------------------- | ------ |
+| Cover title (hero headline) | 2.5-5x | 60-120px | 45-90px | Bold / Heavy |
+| Chapter / section opener | 2-2.5x | 48-60px | 36-45px | Bold |
+| Page title | 1.5-2x | 36-48px | 27-36px | Bold |
+| Hero number (consulting KPIs) | 1.5-2x | 36-48px | 27-36px | Bold |
 | Subtitle | 1.2-1.5x | 29-36px | 22-27px | SemiBold |
 | **Body content** | **1x** | **24px** | **18px** | Regular |
-| Annotation | 0.75-0.85x | 18-20px | 14-15px | Regular |
-| Page number/date | 0.55-0.65x | 13-16px | 10-12px | Regular |
+| Annotation / caption | 0.7-0.85x | 17-20px | 13-15px | Regular |
+| Page number / footnote | 0.5-0.65x | 12-16px | 9-12px | Regular |
+
+> Sizes outside **every** band remain forbidden — surface the need and extend `spec_lock.md typography` (e.g., add `cover_title: 96`) rather than invent a one-off value.
 
 > **Tip**: Dense content (6+ points per page) use 18px; relaxed content (3-5 points per page) use 24px
 

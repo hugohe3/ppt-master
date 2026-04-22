@@ -89,7 +89,7 @@ When creating a global template, a `design_spec.md` must be generated, containin
 Templates must strictly follow the finalized template brief and the generated `design_spec.md`:
 - **Canvas dimensions**: viewBox matches the design spec
 - **Color scheme**: Uses primary, secondary, and accent colors from the spec
-- **Font plan**: Uses font presets from the spec
+- **Font plan**: Uses the per-role font families declared in the spec
 - **Layout principles**: Margins and spacing conform to the spec
 
 If PPTX import output exists:
