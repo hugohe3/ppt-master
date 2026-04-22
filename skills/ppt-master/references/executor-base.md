@@ -55,6 +55,22 @@ Must output confirmation including: canvas dimensions, body font size, color sch
 
 If a page genuinely needs a value not in `spec_lock.md`, stop and surface it — do not silently invent one. Either request the user to extend the lock, or revise the page to stay within it.
 
+**Per-page layout rhythm — `page_rhythm` section**:
+
+Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>` matching the page index in §IX of `design_spec.md`) and apply the corresponding layout discipline:
+
+| Tag | Layout discipline |
+|-----|-------------------|
+| `anchor` | Structural page (cover / chapter / TOC / ending). Follow the matching template verbatim. |
+| `dense` | Information-heavy. Card grids, multi-column layouts, KPI dashboards, tables, and charts are all permitted. This is the baseline behavior. |
+| `breathing` | Low-density impact page. **Do NOT use rounded-rectangle card containers** — use naked text blocks, dividers, or full-bleed imagery instead. Whitespace ≥ 40% of canvas. Prefer asymmetric splits (e.g., 2:8, 3:7) over symmetric ones. Figure-text overlap (text floating over a background image with an opacity overlay) is encouraged. Typical forms: hero quote, single large number with one-line interpretation, full-bleed image with floating caption, section transition. |
+
+**Why this matters**: Without rhythm variation, long decks default to "every page is a card grid" — the AI-generated look. The `page_rhythm` tag is the only lever that survives context compression (since Executor re-reads `spec_lock.md` per page); narrative guidance buried in `design_spec.md` does not.
+
+**Missing `page_rhythm` section** → fall back to `dense` for every page (pre-rhythm behavior). Emit the literal line `warning: spec_lock.md missing page_rhythm — defaulting all pages to dense` once, then proceed.
+
+**Tag not found for current page** → fall back to `dense` silently. Do not invent a tag.
+
 **Rationale**: Tool-result re-reads bypass model memory (which compression can corrupt). Every page gets a fresh ground truth pinned to the most recent turn in context.
 
 ---
