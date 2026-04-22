@@ -160,13 +160,15 @@ Built-in library contains 6700+ icons across three libraries:
 
 | Direction | Typical scenarios | Title stack | Body stack | Code stack |
 |-----------|-------------------|-------------|------------|------------|
-| **Modern CJK sans** (default) | Tech launches, enterprise reports, most contemporary decks | `"PingFang SC", "Microsoft YaHei", sans-serif` | same as Title | — |
-| **Government / 政务** | Government reports, party-building, formal briefings | `SimHei, "Microsoft YaHei", sans-serif` | `SimSun, "Songti SC", serif` | — |
-| **Academic serif** | Research, legal, theses, serious analysis | `Georgia, "Times New Roman", serif` | `"Times New Roman", "Songti SC", SimSun, serif` | — |
-| **Editorial display** | Magazine covers, luxury, finance, brand storytelling | `Georgia, "Times New Roman", "Songti SC", serif` (Bold/Heavy) | `"PingFang SC", "Microsoft YaHei", sans-serif` | — |
-| **Tech / developer** | Code-focused tech talks, developer docs, API / CLI explainers | `Arial, Helvetica, sans-serif` | same as Title | `Consolas, Menlo, Monaco, "Courier New", monospace` |
-| **International English** | English-primary decks, international audiences | `"Helvetica Neue", Helvetica, Arial, sans-serif` | same as Title | — |
-| **Impact / 海报** | Cover headlines, call-to-action, poster-style slides | `Impact, "Arial Black", "Microsoft YaHei", sans-serif` | `"PingFang SC", "Microsoft YaHei", sans-serif` | — |
+| **Modern CJK sans** (default) | Tech launches, enterprise reports, most contemporary decks | `"Microsoft YaHei", "PingFang SC", sans-serif` | same as Title | — |
+| **Government / 政务** | Government reports, party-building, formal briefings | `SimHei, "Microsoft YaHei", sans-serif` | `SimSun, serif` | — |
+| **Academic serif** | Research, legal, theses, serious analysis | `Georgia, "Times New Roman", serif` | `"Times New Roman", SimSun, serif` | — |
+| **Editorial display** | Magazine covers, luxury, finance, brand storytelling | `Georgia, SimSun, serif` (Bold/Heavy) | `"Microsoft YaHei", "PingFang SC", sans-serif` | — |
+| **Tech / developer** | Code-focused tech talks, developer docs, API / CLI explainers | `Arial, sans-serif` | same as Title | `Consolas, "Courier New", monospace` |
+| **International English** | English-primary decks, international audiences | `"Helvetica Neue", Arial, sans-serif` | same as Title | — |
+| **Impact / 海报** | Cover headlines, call-to-action, poster-style slides | `Impact, "Arial Black", "Microsoft YaHei", sans-serif` | `"Microsoft YaHei", "PingFang SC", sans-serif` | — |
+
+> **Stack length discipline (soft rule).** 3-4 fonts per stack is enough — more is waste. Converter behavior (see [`drawingml_utils.py parse_font_family`](../scripts/svg_to_pptx/drawingml_utils.py)) only picks the **first** Latin font and the **first** CJK font; everything after is silently dropped in PPTX. macOS-only families (`Songti SC` → SimSun; `Menlo` / `Monaco` → Consolas; `Helvetica` → Arial) are mapped via `FONT_FALLBACK_WIN`, so stacking both the macOS family and its Windows equivalent is redundant. Convention: lead with Windows-preinstalled fonts (Microsoft YaHei / SimSun / Arial / Georgia / Consolas) so PPT viewers see the intended typeface immediately; keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
 
 > **Directions that require font installation or embedding** (NOT in the safe seed table above):
 > - **Retro / pixel** — Press Start 2P / VT323 / Silkscreen (not pre-installed on any OS; degrades to a wildly different font without install)
