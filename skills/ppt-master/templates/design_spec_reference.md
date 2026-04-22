@@ -86,18 +86,32 @@
 
 **Typography direction**: [Fill in one phrase, e.g., "modern CJK sans" / "academic serif" / "brand-specific: McKinsey Bower (requires font install)"]
 
-| Role | Chinese | English | Fallback |
-| ---- | ------- | ------- | -------- |
-| **Title** | [font name] | [font name] | [font name] |
-| **Body** | [font name] | [font name] | [font name] |
-| **Emphasis** | [font name] | [font name] | [font name] |
-| **Code** | - | [e.g., JetBrains Mono / Fira Code / Consolas] | [Monaco / monospace] |
+Two views on the same font decisions — fill both, keep them consistent:
 
-**Per-role font stacks** (CSS `font-family` strings — one per role if they differ, or a single stack if all roles share the same family):
-- Title: `[Fill in]`
-- Body: `[Fill in — may be the same as Title]`
-- Emphasis: `[Fill in or "same as Body"]`
-- Code: `[Fill in — typically a monospace stack]`
+- **Role breakdown** (below table) — lists the *pieces* for each role: what CJK font, what Latin font, what CSS generic fallback. This is the human-readable design language.
+- **Per-role font stacks** (after the table) — the *ordered* CSS `font-family` strings that actually go into SVG `font-family=""` attributes and into `spec_lock.md`'s `*_family` lines. Order matters because it controls browser character rendering (Latin-led vs. CJK-led) — so this view is the **actual data**, not derivable from the table alone.
+
+| Role | Chinese | English | Fallback tail |
+| ---- | ------- | ------- | ------------- |
+| **Title** | [e.g., `"Microsoft YaHei"`, or `"Microsoft YaHei", "PingFang SC"` for macOS preview nicety] | [e.g., `Georgia`] | [e.g., `serif`] |
+| **Body** | [e.g., `"Microsoft YaHei", "PingFang SC"`] | [e.g., `Arial`] | [e.g., `sans-serif`] |
+| **Emphasis** | [e.g., `SimSun`, or `—` for Latin-only] | [e.g., `Georgia`] | [e.g., `serif`] |
+| **Code** | — | [e.g., `Consolas, "Courier New"`] | [e.g., `monospace`] |
+
+**Per-role font stacks** (CSS `font-family` strings, one per role — arrange the table's pieces in the order your design intends):
+
+- Title: `[Fill in stack, e.g. Georgia, "Microsoft YaHei", serif for Latin-led; or "Microsoft YaHei", "PingFang SC", Georgia, serif for CJK-led]`
+- Body: `[Fill in stack — may be same as Title]`
+- Emphasis: `[Fill in stack, or write "same as Body" to omit the override]`
+- Code: `[Fill in monospace stack, e.g. Consolas, "Courier New", monospace]`
+
+> **Stack ordering — why it matters**: CSS `font-family` falls back font-by-font (not char-by-char with all fonts parallel) — the browser uses the **first installed** font in the stack for everything it can render, and only skips to the next font when that font lacks a glyph for a specific character. So:
+> - `Georgia, "Microsoft YaHei", serif` → Latin characters render in Georgia (elegant serif), CJK characters fall through to Microsoft YaHei. **Use this when Latin typography is the primary design statement** (academic / editorial / Latin-heavy covers).
+> - `"Microsoft YaHei", Georgia, serif` → Everything renders in Microsoft YaHei (including Latin, using YaHei's Latin glyphs — a different design tone). **Use this when the deck is CJK-primary and Latin characters are incidental**.
+>
+> The converter (`drawingml_utils.py parse_font_family`) maps these to PPTX `<a:latin>` / `<a:ea>` typefaces regardless of order — but the browser preview and the SVG's native rendering reflect stack order, so pick the order that matches your design intent.
+
+> **Why two views**: the role breakdown is compact and shows font role assignment at a glance; the stacks carry the ordering information the breakdown can't encode. Keep the fonts consistent between the two — the table's cells should be exactly the fonts that appear in the stacks (in any order).
 
 ### Font Size Hierarchy
 

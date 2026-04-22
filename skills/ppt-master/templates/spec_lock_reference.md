@@ -25,27 +25,30 @@
 
 ## typography
 - font_family: "Microsoft YaHei", Arial, sans-serif
+- title_family: Georgia, SimSun, serif
+- body_family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif
+- emphasis_family: Georgia, SimSun, serif
+- code_family: Consolas, "Courier New", monospace
 - body: 22
 - title: 32
 - subtitle: 24
 - annotation: 14
 
-> Sizes are in px, matching SVG native units. `body` is the **required baseline anchor** — every other size in the deck is derived as a ratio of it (see ramp table in `design_spec_reference.md §IV`). `font_family` is a CSS font-stack string — used as the default family for every text role unless overridden below.
+> **All five family lines are listed explicitly** so Strategist considers every role when filling this block — easy to forget `code_family` or `emphasis_family` otherwise. In a real project's `spec_lock.md`:
+> - Keep any `*_family` whose role genuinely differs from `font_family`.
+> - **Omit** any `*_family` whose value would equal `font_family` — Executor falls back to `font_family` for missing roles, so writing it twice is noise. (Exception: keep `code_family` even if equal, since it's the conceptually distinct monospace role.)
+>
+> `font_family` is the default fallback for roles without an explicit override. Every declared family is a CSS font-stack string.
+>
+> **Source of these strings**: they are the *Per-role font stacks* list from `design_spec.md §IV Font Plan` — copy across verbatim. The breakdown table in `design_spec.md` (Chinese / English / Fallback columns) is the human-readable accompaniment; the ordered CSS stack strings live here (and in `design_spec.md`) and must match character-for-character. Stack **order** carries browser-rendering intent (Latin-led vs. CJK-led) that the breakdown table alone cannot encode — see the explainer in `design_spec.md §IV`.
+>
+> Sizes (`body` / `title` / etc.) are in px, matching SVG native units. `body` is the **required baseline anchor** — every other size in the deck is derived as a ratio of it (see ramp table in `design_spec_reference.md §IV`).
 >
 > **Size slots are anchors, not a closed menu.** The common slots (`title` / `subtitle` / `annotation`) cover frequent cases. Add role-specific slots (e.g. `cover_title: 72`, `hero_number: 48`, `chart_annotation: 13`) when a deck genuinely needs them — this is expected for cover-heavy decks, consulting-style hero numbers, and information-dense pages. Executor may use intermediate sizes as long as the size's ratio to `body` sits within the corresponding role's band in the ramp table.
 >
 > **⚠️ PPT-safe stack discipline (HARD rule).** PPTX stores one `typeface` per text run; there is no runtime fallback. Every stack here MUST end with a cross-platform pre-installed font: `"Microsoft YaHei", sans-serif` / `SimSun, serif` / `Arial, sans-serif` / `"Times New Roman", serif` / `Consolas, "Courier New", monospace`. Non-pre-installed fonts (Inter / Google Fonts / brand typefaces) may lead the stack only when the Design Spec explicitly notes the font-install or font-embedding requirement.
 >
-> **Optional per-role family overrides** — add only when a role needs a family different from the default (e.g., a display serif for titles while body stays a geometric sans). Omit any override that is not needed.
->
-> ```
-> - title_family: Georgia, "Times New Roman", "Songti SC", serif
-> - body_family: "PingFang SC", "Microsoft YaHei", sans-serif
-> - emphasis_family: same as body (omit if identical)
-> - code_family: Consolas, Menlo, Monaco, "Courier New", monospace
-> ```
->
-> When a `*_family` override is present, Executor MUST use that family for the matching role. When absent, that role falls back to `font_family`.
+> **Stack length discipline.** 3-4 fonts per stack is the sweet spot. Converter only writes the **first** Latin and **first** CJK font into PPTX — everything after is silently dropped. macOS-only families (`Songti SC`, `Menlo`, `Monaco`, `Helvetica`) are auto-mapped to their Windows equivalents via `FONT_FALLBACK_WIN` (see `scripts/svg_to_pptx/drawingml_utils.py`), so stacking both the macOS family and its Windows equivalent is redundant. Lead with Windows-preinstalled fonts (`Microsoft YaHei` / `SimSun` / `Arial` / `Georgia` / `Consolas`); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
 
 ## icons
 - library: chunk
