@@ -234,7 +234,7 @@
 
 #### Slide 02 - [Page Name]
 
-- **Layout**: [Choose layout mode]
+- **Layout**: [Choose a pattern from §V, combine two, or break the grid as the content demands]
 - **Title**: [Page title]
 - **Visualization**: [visualization_type] (see VII. Visualization Reference List)
 - **Content**:
