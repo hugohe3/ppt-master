@@ -27,6 +27,10 @@ English | [中文](./README_CN.md)
   <sub>↑ A 12-page natively editable deck, generated end-to-end from <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">a single WeChat article URL</a> using Claude Opus 4.7. No manual design. No image export. Every shape, text box, and chart is clickable and editable in PowerPoint.</sub>
 </p>
 
+<p align="center">
+  <sub>🛡️ New: <a href="https://hugohe3.github.io/ppt-master/?project=ppt169_general_dark_tech_claude_code_auto_mode">10-page dark-tech deck</a> generated from <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic's Claude Code Auto Mode engineering blog</a> — see it in the <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">examples</a>.</sub>
+</p>
+
 ---
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
