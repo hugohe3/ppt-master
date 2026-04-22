@@ -32,6 +32,16 @@ except ImportError:
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 
+# Ramp envelope for font-size drift detection.
+# From design_spec_reference.md §IV — Font Size Hierarchy: the ramp spans
+# from page-number floor (0.5x body) to cover-title ceiling (5.0x body).
+# Intermediate px values within this envelope are permitted per
+# executor-base.md §2.1 ("Executor may use an intermediate size ... provided
+# the size's ratio to body falls within the corresponding role's band"); only
+# values outside every band — i.e. outside this envelope — are drift.
+RAMP_MIN_RATIO = 0.5
+RAMP_MAX_RATIO = 5.0
+
 
 class SVGQualityChecker:
     """SVG quality checker"""
@@ -420,12 +430,36 @@ class SVGQualityChecker:
                 allowed_colors.add(v.upper())
 
         typo = lock.get('typography', {})
-        allowed_font = typo.get('font_family', '').strip() if typo else ''
+        # Font families: default `font_family` plus any per-role `*_family`
+        # override (title_family / body_family / emphasis_family / code_family,
+        # per spec_lock_reference.md). Any of these is a legitimate declared
+        # value; an SVG that uses any one of them is not drifting.
+        allowed_fonts = set()
+        if typo:
+            default_font = typo.get('font_family', '').strip()
+            if default_font:
+                allowed_fonts.add(default_font)
+            for k, v in typo.items():
+                if k == 'font_family' or not k.endswith('_family'):
+                    continue
+                v_clean = v.strip()
+                # Skip placeholder text like "same as body (omit if identical)"
+                if not v_clean or v_clean.lower().startswith('same as'):
+                    continue
+                allowed_fonts.add(v_clean)
+
+        # Sizes: declared slots are anchors; body is the ramp baseline.
         allowed_sizes = set()
+        body_px = None
         for k, v in typo.items():
-            if k == 'font_family':
+            if k == 'font_family' or k.endswith('_family'):
                 continue
             allowed_sizes.add(self._normalize_size(v))
+            if k == 'body':
+                try:
+                    body_px = float(self._normalize_size(v))
+                except (ValueError, TypeError):
+                    body_px = None
 
         # Scan SVG for used values
         color_drifts = set()
@@ -439,14 +473,24 @@ class SVGQualityChecker:
         font_drifts = set()
         for m in re.finditer(r'font-family\s*=\s*["\']([^"\']+)["\']', content):
             val = m.group(1).strip()
-            if allowed_font and val != allowed_font:
+            if allowed_fonts and val not in allowed_fonts:
                 font_drifts.add(val)
 
         size_drifts = set()
         for m in re.finditer(r'font-size\s*=\s*["\']([^"\']+)["\']', content):
             val = self._normalize_size(m.group(1))
-            if allowed_sizes and val not in allowed_sizes:
-                size_drifts.add(val)
+            if not allowed_sizes or val in allowed_sizes:
+                continue
+            # Intermediate values are allowed when they sit inside the ramp
+            # envelope (ratio to body within [RAMP_MIN_RATIO, RAMP_MAX_RATIO]).
+            if body_px and body_px > 0:
+                try:
+                    ratio = float(val) / body_px
+                    if RAMP_MIN_RATIO <= ratio <= RAMP_MAX_RATIO:
+                        continue
+                except ValueError:
+                    pass
+            size_drifts.add(val)
 
         # Record in run-wide aggregation
         fname = svg_path.name
