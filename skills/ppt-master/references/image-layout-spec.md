@@ -1,28 +1,32 @@
 > See shared-standards.md for common technical constraints.
 
-# Image Layout Specification (Mandatory)
+# Image Layout Specification
 
-Layout rules for pages containing images. Both the Strategist planning phase and Executor generation phase must follow these rules.
+Layout rules for pages where the image is placed **side-by-side with body text** as a container block. Both the Strategist planning phase and Executor generation phase must follow these rules when the image's narrative intent is *side-by-side*.
 
-**Core principle: Calculate layout based on the image's original aspect ratio, ensuring the image is displayed completely without excess whitespace or cropping.**
+**Core principle (side-by-side): Calculate container layout based on the image's original aspect ratio, ensuring the image is displayed completely without excess whitespace or cropping.**
+
+> **Scope note.** This spec applies to the *side-by-side* image intent — the most common case for content pages. For other intents (hero / full-bleed, atmosphere / background layer, accent / inline), container ratio alignment is not a constraint; see `references/strategist.md` §h "Image narrative intent" for how to decide between them. Hero and atmosphere intents intentionally use full-bleed placement (image fills canvas, cropping is expected); the ratio→split table below does NOT apply to them.
 
 ---
 
 ## Layout Decision Flow
 
 ```
-1. Get image original dimensions → Calculate ratio (width/height)
-2. Select layout type based on ratio
-3. Calculate maximum display size for the image
-4. Allocate remaining space for text area
-5. Fill results into the Design Specification's image resource list
+1. Decide narrative intent (hero / atmosphere / side-by-side / accent) — see strategist.md §h
+2. If intent = side-by-side: continue below. Otherwise: compose per narrative; this spec does not apply.
+3. Get image original dimensions → Calculate ratio (width/height)
+4. Select layout type based on ratio
+5. Calculate maximum display size for the image
+6. Allocate remaining space for text area
+7. Fill results into the Design Specification's image resource list
 ```
 
 **When to execute**: If the image approach includes "B) User-provided", after the Strategist completes the Eight Confirmations and before content analysis and outlining, the scan must be run and the image resource list populated.
 
 ---
 
-## Layout Type Selection (Mandatory)
+## Layout Type Selection (side-by-side intent)
 
 | Image Ratio | Layout Type | Image Position | Description |
 |-------------|-------------|----------------|-------------|

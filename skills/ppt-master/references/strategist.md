@@ -205,17 +205,28 @@ Selection principle: Font size is based on **content density**, not design style
 | Diagram | Flowcharts, architecture diagrams, concept relationship maps |
 | Decorative pattern | Partial decoration, textures, borders, divider elements |
 
-**Image-layout alignment principles** (detailed calculation rules in `references/image-layout-spec.md`):
+**Image narrative intent** (decide this *before* consulting the ratio table — it determines whether the image even lives in a container):
 
-| Image Ratio | Recommended Layout |
-|-------------|-------------------|
+| Intent | Form | When to use |
+|--------|------|-------------|
+| **Hero / full-bleed** | Image fills the canvas (or a dominant zone); title / caption floats over with a gradient or opacity overlay for legibility | Covers, chapter dividers, `breathing` impact pages — when the image *is* the message, not a companion to body copy |
+| **Atmosphere / background layer** | Image sits behind content as a low-contrast backdrop (reduced opacity or dark overlay); content reads against the treated layer | Section backgrounds, mood-setting pages — when the image sets tone but text carries the information |
+| **Side-by-side** | Image and text occupy adjacent blocks as coequal units — the ratio table below governs container sizing in this case | Most content pages — when image and explanation need to be read together |
+| **Accent / inline** | Small image tucked next to related text as an illustrative element, not a container; no forced ratio matching | Supporting visuals, spot illustrations, small diagrams explaining a term |
+
+> Intent is driven by **what the image is doing narratively**, not by image ratio. The same 16:9 photo can be a hero on one page and a side-by-side block on the next depending on the page's purpose. Do not default every image-bearing page to side-by-side.
+
+**Side-by-side ratio alignment** (consult only when the chosen intent is *side-by-side*; detailed calculation rules in `references/image-layout-spec.md`):
+
+| Image Ratio | Recommended Container Layout |
+|-------------|-----------------------------|
 | > 2.0 (ultra-wide) | Top-bottom split, top full-width |
 | 1.5-2.0 (wide) | Top-bottom split |
 | 1.2-1.5 (standard landscape) | Left-right split |
 | 0.8-1.2 (square) | Left-right split |
 | < 0.8 (portrait) | Left-right split, image on left |
 
-Core logic: The layout container's aspect ratio must closely match the image's original ratio. Never force a wide image into a square container or a portrait image into a narrow horizontal strip.
+Core logic (side-by-side only): the container's aspect ratio must closely match the image's original ratio. Never force a wide image into a square container or a portrait image into a narrow horizontal strip. For hero / atmosphere / accent intents, ratio alignment is not a constraint — composition is governed by the page's narrative, not the image's numeric ratio.
 
 > **Portrait canvases** (Xiaohongshu, Story): Layout rules differ — top-bottom is preferred for most ratios since left-right columns become too narrow. See "Portrait Canvas Override" in `references/image-layout-spec.md`.
 
