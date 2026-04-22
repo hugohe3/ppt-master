@@ -2,10 +2,10 @@
 
 Pre-built PPT page layout templates supporting multiple styles and use cases.
 
-- **Full Index**: [README.md](./README.md) (human browsing)
-- **JSON Index**: [layouts_index.json](./layouts_index.json) (AI / programmatic lookup — preferred)
+- **Full Index**: [README.md](./README.md) (human browsing — includes categories, primary colors, detailed tone)
+- **Slim Index**: [layouts_index.json](./layouts_index.json) (lightweight lookup — `label` / `summary` / `keywords` only)
 
-> **AI / Programmatic recommendation**: Prefer reading `layouts_index.json`; use this README for human browsing and quick comparison.
+> **Template selection is opt-in.** The main workflow defaults to free design and does NOT read `layouts_index.json` unless the user explicitly requests a template. See `SKILL.md` Step 3.
 
 ---
 
@@ -227,9 +227,9 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 4. All SVGs use `viewBox="0 0 1280 720"`
 5. Follow SVG technical constraints (see below)
 6. Validate the template directory with `python3 scripts/svg_quality_checker.py templates/layouts/<template_name> --format ppt169`
-7. Register the new template in `templates/layouts/layouts_index.json`
+7. Register the new template in `templates/layouts/layouts_index.json` with three fields: `label`, `summary`, `keywords`
 
-`layouts_index.json` is the primary machine-readable source for template discovery. A template folder without an index entry is considered incomplete.
+`layouts_index.json` is the lightweight lookup used when a user explicitly opts into the template flow. A template folder without an index entry will not be discoverable by that flow.
 
 ### SVG Technical Constraints (All Templates Must Comply)
 

@@ -1,204 +1,107 @@
 {
-  "meta": {
-    "total": 21,
-    "defaultViewBox": "0 0 1280 720",
-    "formats": ["ppt169"],
-    "standardFiles": ["design_spec.md", "01_cover.svg", "02_toc.svg", "02_chapter.svg", "03_content.svg", "04_ending.svg"],
-    "standardPageTypes": ["cover", "toc", "chapter", "content", "ending"],
-    "updated": "2026-04-18"
+  "academic_defense": {
+    "label": "Academic Defense Template",
+    "summary": "A standard template for academic defenses, research presentations, and project proposals",
+    "keywords": ["Academic", "Defense", "Research", "Standard"]
   },
-  "categories": {
-    "brand": {
-      "label": "Brand Style Templates",
-      "layouts": ["google_style", "mckinsey", "anthropic", "china_telecom_template", "中汽研_常规", "中汽研_商务", "中汽研_现代", "中国电建_常规", "中国电建_现代", "招商银行"]
-    },
-    "general": {
-      "label": "General Style Templates",
-      "layouts": ["exhibit", "科技蓝商务", "smart_red"]
-    },
-    "scenario": {
-      "label": "Scenario-Specific Templates",
-      "layouts": ["academic_defense", "psychology_attachment", "medical_university", "重庆大学"]
-    },
-    "government": {
-      "label": "Government/Enterprise Templates",
-      "layouts": ["government_red", "government_blue", "ai_ops"]
-    },
-    "special": {
-      "label": "Special Style Templates",
-      "layouts": ["pixel_retro"]
-    }
+  "ai_ops": {
+    "label": "Enterprise Digital Intelligence Template",
+    "summary": "For high-density scenarios such as telecom AI operations architecture, IT system overview, and digital transformation plans",
+    "keywords": ["Telecom", "AI operations", "Digital intelligence", "High density", "Architecture view"]
   },
-  "quickLookup": {
-    "strategy": ["exhibit", "mckinsey"],
-    "board": ["exhibit", "mckinsey", "招商银行"],
-    "general_business": ["科技蓝商务", "smart_red", "exhibit", "china_telecom_template"],
-    "technology": ["anthropic", "google_style", "smart_red", "ai_ops", "china_telecom_template"],
-    "government": ["government_red", "government_blue", "ai_ops"],
-    "academic": ["academic_defense", "重庆大学"],
-    "medical": ["medical_university"],
-    "psychology": ["psychology_attachment"],
-    "finance": ["招商银行", "exhibit", "mckinsey"],
-    "certification": ["中汽研_常规", "中汽研_商务", "中汽研_现代"],
-    "energy": ["中国电建_常规", "中国电建_现代"],
-    "creative": ["pixel_retro", "smart_red"]
+  "anthropic": {
+    "label": "Anthropic Style Template",
+    "summary": "A tech-oriented template for AI/LLM knowledge sharing and product launches",
+    "keywords": ["AI", "LLM", "Developer", "Technology"]
   },
-  "layouts": {
-    "academic_defense": {
-      "label": "Academic Defense Template",
-      "summary": "A standard template for academic defenses, research presentations, and project proposals",
-      "tone": "Professional, rigorous, research-oriented, clear hierarchy",
-      "themeMode": "Light theme (white background + dark blue title bar)",
-      "keywords": ["Academic", "Defense", "Research", "Standard"]
-    },
-    "ai_ops": {
-      "label": "Enterprise Digital Intelligence Template",
-      "summary": "For high-density scenarios such as telecom AI operations architecture, IT system overview, and digital transformation plans",
-      "tone": "Information-dense, structured, modular layout, telecom/government-enterprise style",
-      "themeMode": "Light theme (white background + red/blue accents + warm gray panels)",
-      "assets": ["reference_style.svg"],
-      "keywords": ["Telecom", "AI operations", "Digital intelligence", "High density", "Architecture view"]
-    },
-    "anthropic": {
-      "label": "Anthropic Style Template",
-      "summary": "A tech-oriented template for AI/LLM knowledge sharing and product launches",
-      "tone": "Tech-forward, professional, modern, conclusion-first",
-      "themeMode": "Hybrid theme (dark cover/chapter + light content pages)",
-      "keywords": ["AI", "LLM", "Developer", "Technology"]
-    },
-    "china_telecom_template": {
-      "label": "中国电信模板",
-      "summary": "A China Telecom style template for telecom solution proposals, digital transformation plans, and government-enterprise briefings",
-      "tone": "Authoritative, structured, restrained, telecom enterprise style",
-      "themeMode": "Light theme (white background + telecom red title bar + silver-gray lane)",
-      "assets": ["logo.png", "top_emblem.png", "footer_ribbon.png", "header_brand.png", "slogan_red.png", "skyline_bg.png"],
-      "keywords": ["China Telecom", "Telecom", "Digital transformation", "Government-enterprise", "Briefing"]
-    },
-    "exhibit": {
-      "label": "Exhibit Style Template",
-      "summary": "Conclusion-first layout with Exhibit takeaway bars for data-driven strategic reports and executive presentations",
-      "tone": "Premium, refined, authoritative, data-driven, conclusion-first",
-      "themeMode": "Dark theme (dark background + gradient accent + gold highlights)",
-      "keywords": ["Exhibit", "Board", "Executive", "Strategy", "Conclusion-first"]
-    },
-    "google_style": {
-      "label": "Google Style Template",
-      "summary": "A Google-branded template for annual reports and technical sharing",
-      "tone": "Professional, modern, clean and restrained, data-driven, ample whitespace",
-      "themeMode": "Light theme (white/light gray background + Google brand color accents)",
-      "keywords": ["Google", "Brand style", "Technical sharing", "Annual report"]
-    },
-    "government_blue": {
-      "label": "Government Blue Template",
-      "summary": "A blue government-themed template for smart governance and digital transformation reports",
-      "tone": "Grand, tech-forward, modernized, professional government style",
-      "themeMode": "Light theme (white background + blue gradient decorations)",
-      "keywords": ["Government affairs", "Government blue", "Smart city", "Digitalization"]
-    },
-    "government_red": {
-      "label": "Government Red Template",
-      "summary": "A red government-themed template for government reports and party-building scenarios",
-      "tone": "Authoritative, solemn, professional, modernized government style",
-      "themeMode": "Light theme (white background + government red/blue accents)",
-      "keywords": ["Government affairs", "Party building", "Government red", "Authoritative"]
-    },
-    "mckinsey": {
-      "label": "McKinsey Style Template",
-      "summary": "A McKinsey-style template for strategic consulting and investment analysis",
-      "tone": "Data-driven, structured thinking, professional whitespace, minimalist premium",
-      "themeMode": "Light theme (white background + McKinsey Blue accent)",
-      "keywords": ["McKinsey", "Consulting", "Structured", "Executive presentation"]
-    },
-    "medical_university": {
-      "label": "Hospital/Medical University Template",
-      "summary": "A professional template for medical reports, case discussions, and research presentations",
-      "tone": "Professional, rigorous, life-affirming, tech-forward, trustworthy",
-      "themeMode": "Light theme (white background + medical blue title bar + life green accents)",
-      "keywords": ["Medical", "Hospital", "Case study", "Research"]
-    },
-    "pixel_retro": {
-      "label": "Pixel Retro Template",
-      "summary": "A pixel-art template for tech sharing and gaming-themed content",
-      "tone": "Retro gaming, neon cyber, geek tech, 8-bit style",
-      "themeMode": "Dark theme (deep space black background + neon accents)",
-      "keywords": ["Pixel art", "Retro gaming", "Cyberpunk", "Technology"]
-    },
-    "psychology_attachment": {
-      "label": "Psychology Healing Template",
-      "summary": "A warm and professional template for psychotherapy training and counseling lectures",
-      "tone": "Professional, warm, healing, trustworthy",
-      "themeMode": "Light theme (cloud white background + blue-green gradient accent + colorful semantic colors)",
-      "keywords": ["Psychology", "Healing", "Counseling", "Warm"]
-    },
-    "smart_red": {
-      "label": "Smart Red-Orange Business Template",
-      "summary": "A vibrant business template for tech company introductions and education solutions",
-      "tone": "Modern, vibrant, professional, geometric",
-      "themeMode": "Hybrid theme (dark/colorful cover + light content pages)",
-      "keywords": ["Red-orange business", "Tech enterprise", "Education", "Vibrant"]
-    },
-    "中国电建_常规": {
-      "label": "PowerChina Standard Template",
-      "summary": "A solid brand template for engineering construction and state-owned enterprise reports",
-      "tone": "Professional, steady, international, state-owned enterprise style",
-      "themeMode": "Light theme (white background + PowerChina blue accent)",
-      "assets": ["中国水务logo.png", "华东院logo.png", "水电三局logo.png", "电建logo.png"],
-      "keywords": ["PowerChina", "State-owned enterprise", "Engineering", "Energy"]
-    },
-    "中国电建_现代": {
-      "label": "PowerChina Modern Template",
-      "summary": "A modern engineering template for major projects and international business presentations",
-      "tone": "Grand narrative, modern precision, digital technology, international vision",
-      "themeMode": "Deep blue tech gradient + precision grid texture",
-      "assets": ["中国水务logo.png", "华东院logo.png", "水电三局logo.png", "电建logo.png"],
-      "keywords": ["PowerChina", "International engineering", "Modern engineering", "Technology"]
-    },
-    "中汽研_商务": {
-      "label": "CATARC Business Template",
-      "summary": "A CATARC brand template for certification showcase and high-end business presentations",
-      "tone": "Modern tech, authoritative professional, composed and grand",
-      "themeMode": "Deep blue tech gradient + clean white content pages",
-      "assets": ["右上角 logo.png", "大型 logo.png"],
-      "keywords": ["CATARC", "Certification", "Business", "Technology"]
-    },
-    "中汽研_常规": {
-      "label": "CATARC Standard Template",
-      "summary": "A standard CATARC template for certification and testing scenarios",
-      "tone": "Professional, authoritative, trustworthy, consulting style",
-      "themeMode": "Light theme (white background + dark blue accent)",
-      "assets": ["右上角 logo.png", "大型 logo.png"],
-      "keywords": ["CATARC", "Certification", "Testing", "Authoritative"]
-    },
-    "中汽研_现代": {
-      "label": "CATARC Modern Template",
-      "summary": "A futuristic tech template for cutting-edge technology showcase and premium launches",
-      "tone": "Futuristic, tech-forward, deep, refined",
-      "themeMode": "Immersive dark cover/transition pages + clean light gray content pages",
-      "assets": ["右上角 logo.png", "大型 logo.png"],
-      "keywords": ["CATARC", "Future tech", "Cutting-edge technology", "Launch event"]
-    },
-    "招商银行": {
-      "label": "China Merchants Bank Transaction Banking Template",
-      "summary": "A transaction-banking template for sales collection solutions, product pitches, and branch training",
-      "tone": "Brand-consistent, structured, product-focused, refined finance",
-      "themeMode": "Hybrid theme (brand-red cover/chapter/ending + light content pages)",
-      "assets": ["cover_bg.png", "logo_white.png", "logo_dark.png", "page_header_bg.png", "logo_crm_banner.png", "ref_content_bg.png"],
-      "keywords": ["China Merchants Bank", "Transaction banking", "Sales collection", "Finance", "Training"]
-    },
-    "科技蓝商务": {
-      "label": "Tech Blue Business Template",
-      "summary": "A tech-business template for corporate reports and solution proposals",
-      "tone": "Tech-forward, business, professional, clean",
-      "themeMode": "Hybrid theme (dark blue/tech blue cover + light content pages)",
-      "keywords": ["Tech blue", "Business", "Solution proposal", "Corporate report"]
-    },
-    "重庆大学": {
-      "label": "Chongqing University Template",
-      "summary": "A university-exclusive template for academic defenses and research presentations",
-      "tone": "Academically composed, mountain-city essence, modern minimalist",
-      "themeMode": "Academic blue primary + mountain-city layered imagery",
-      "assets": ["重庆大学logo.png", "重庆大学logo2.png"],
-      "keywords": ["Chongqing University", "Academic", "Defense", "University"]
-    }
+  "china_telecom_template": {
+    "label": "中国电信模板",
+    "summary": "A China Telecom style template for telecom solution proposals, digital transformation plans, and government-enterprise briefings",
+    "keywords": ["China Telecom", "Telecom", "Digital transformation", "Government-enterprise", "Briefing"]
+  },
+  "exhibit": {
+    "label": "Exhibit Style Template",
+    "summary": "Conclusion-first layout with Exhibit takeaway bars for data-driven strategic reports and executive presentations",
+    "keywords": ["Exhibit", "Board", "Executive", "Strategy", "Conclusion-first"]
+  },
+  "google_style": {
+    "label": "Google Style Template",
+    "summary": "A Google-branded template for annual reports and technical sharing",
+    "keywords": ["Google", "Brand style", "Technical sharing", "Annual report"]
+  },
+  "government_blue": {
+    "label": "Government Blue Template",
+    "summary": "A blue government-themed template for smart governance and digital transformation reports",
+    "keywords": ["Government affairs", "Government blue", "Smart city", "Digitalization"]
+  },
+  "government_red": {
+    "label": "Government Red Template",
+    "summary": "A red government-themed template for government reports and party-building scenarios",
+    "keywords": ["Government affairs", "Party building", "Government red", "Authoritative"]
+  },
+  "mckinsey": {
+    "label": "McKinsey Style Template",
+    "summary": "A McKinsey-style template for strategic consulting and investment analysis",
+    "keywords": ["McKinsey", "Consulting", "Structured", "Executive presentation"]
+  },
+  "medical_university": {
+    "label": "Hospital/Medical University Template",
+    "summary": "A professional template for medical reports, case discussions, and research presentations",
+    "keywords": ["Medical", "Hospital", "Case study", "Research"]
+  },
+  "pixel_retro": {
+    "label": "Pixel Retro Template",
+    "summary": "A pixel-art template for tech sharing and gaming-themed content",
+    "keywords": ["Pixel art", "Retro gaming", "Cyberpunk", "Technology"]
+  },
+  "psychology_attachment": {
+    "label": "Psychology Healing Template",
+    "summary": "A warm and professional template for psychotherapy training and counseling lectures",
+    "keywords": ["Psychology", "Healing", "Counseling", "Warm"]
+  },
+  "smart_red": {
+    "label": "Smart Red-Orange Business Template",
+    "summary": "A vibrant business template for tech company introductions and education solutions",
+    "keywords": ["Red-orange business", "Tech enterprise", "Education", "Vibrant"]
+  },
+  "中国电建_常规": {
+    "label": "PowerChina Standard Template",
+    "summary": "A solid brand template for engineering construction and state-owned enterprise reports",
+    "keywords": ["PowerChina", "State-owned enterprise", "Engineering", "Energy"]
+  },
+  "中国电建_现代": {
+    "label": "PowerChina Modern Template",
+    "summary": "A modern engineering template for major projects and international business presentations",
+    "keywords": ["PowerChina", "International engineering", "Modern engineering", "Technology"]
+  },
+  "中汽研_商务": {
+    "label": "CATARC Business Template",
+    "summary": "A CATARC brand template for certification showcase and high-end business presentations",
+    "keywords": ["CATARC", "Certification", "Business", "Technology"]
+  },
+  "中汽研_常规": {
+    "label": "CATARC Standard Template",
+    "summary": "A standard CATARC template for certification and testing scenarios",
+    "keywords": ["CATARC", "Certification", "Testing", "Authoritative"]
+  },
+  "中汽研_现代": {
+    "label": "CATARC Modern Template",
+    "summary": "A futuristic tech template for cutting-edge technology showcase and premium launches",
+    "keywords": ["CATARC", "Future tech", "Cutting-edge technology", "Launch event"]
+  },
+  "招商银行": {
+    "label": "China Merchants Bank Transaction Banking Template",
+    "summary": "A transaction-banking template for sales collection solutions, product pitches, and branch training",
+    "keywords": ["China Merchants Bank", "Transaction banking", "Sales collection", "Finance", "Training"]
+  },
+  "科技蓝商务": {
+    "label": "Tech Blue Business Template",
+    "summary": "A tech-business template for corporate reports and solution proposals",
+    "keywords": ["Tech blue", "Business", "Solution proposal", "Corporate report"]
+  },
+  "重庆大学": {
+    "label": "Chongqing University Template",
+    "summary": "A university-exclusive template for academic defenses and research presentations",
+    "keywords": ["Chongqing University", "Academic", "Defense", "University"]
   }
 }
