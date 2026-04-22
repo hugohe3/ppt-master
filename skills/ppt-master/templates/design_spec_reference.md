@@ -124,16 +124,23 @@
 - **Content area**: [Height and content description]
 - **Footer area**: [Height and content description]
 
-### Common Layout Modes
+### Layout Pattern Library (combine or break as content demands)
 
-| Mode | Suitable Scenarios |
-| ---- | ----------------- |
+> **Principle — proportion follows information weight, not preset ratios.** The table below is a **pattern library**, not a menu. Executor may combine two patterns on one page, break the grid entirely for a `breathing` page, or propose a pattern not listed here when the content calls for it. Defaulting every page to a symmetric grid is what produces the "AI-generated" look — vary intentionally.
+
+| Pattern | Suitable Scenarios |
+| ------- | ----------------- |
 | **Single column centered** | Covers, conclusions, key points |
-| **Left-right split (5:5)** | Comparisons, dual concepts |
-| **Left-right split (4:6)** | Image-text mix |
-| **Top-bottom split** | Processes, timelines |
-| **Three/four column cards** | Feature lists, team introductions |
-| **Matrix grid** | Comparative analysis, classifications |
+| **Symmetric split (5:5)** | Comparisons where two sides carry equal weight |
+| **Asymmetric split (3:7 / 2:8)** | One side dominates — data chart vs. brief takeaway, image vs. caption |
+| **Top-bottom split** | Processes, timelines, ultra-wide image + text |
+| **Three/four column cards** | Feature lists, parallel points, team intros |
+| **Matrix grid (2×2)** | Two-axis classifications, strategic quadrants |
+| **Z-pattern / waterfall** | Storytelling, case studies — content blocks alternate left/right guiding the eye |
+| **Center-radiating** | Core concept + surrounding nodes, ecosystem / stakeholder maps |
+| **Full-bleed + floating text** | `breathing` / feature pages — image fills canvas, text floats with opacity overlay |
+| **Figure-text overlap** | Hero moments — headline / big number sits over or against an image edge instead of beside it |
+| **Negative-space-driven** | A single element in 40-60% whitespace — lets one idea land with weight |
 
 ### Spacing Specification
 
