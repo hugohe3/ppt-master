@@ -27,6 +27,10 @@
   <sub>↑ 一份 12 页的原生可编辑 PPT，端到端由 <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">一个微信公众号链接</a> 通过 Claude Opus 4.7 生成。无需人工设计，不走图片导出——每一个形状、文本框、图表都可以在 PowerPoint 里直接点击编辑。</sub>
 </p>
 
+<p align="center">
+  <sub>🛡️ 新增：根据 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic Claude Code Auto Mode 技术博文</a> 生成的 <a href="https://hugohe3.github.io/ppt-master/?project=ppt169_general_dark_tech_claude_code_auto_mode">10 页深色科技风演示</a> — 查看 <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">示例项目</a>。</sub>
+</p>
+
 ---
 
 丢进一份 PDF、DOCX、网址或 Markdown，拿回一份**原生可编辑的 PowerPoint**——真正的形状、真正的文本框、真正的图表，不是图片。点击任何元素即可编辑。
