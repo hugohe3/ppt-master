@@ -35,7 +35,7 @@ Confirm the following with the user:
 | Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
 | Design style | Optional | Additional style notes, decorative language, brand cues |
 | Assets list | Optional | Logos / background textures / reference images to include in the template package |
-| Quick lookup tags | Optional | Tags used in `layouts_index.json > quickLookup`, such as `technology`, `finance`, `academic` |
+| Keywords | Yes | 3–5 short tags for `layouts_index.json` lookup (e.g., `McKinsey`, `Consulting`, `Structured`) |
 
 **Required outcome of Step 1**:
 
@@ -209,17 +209,19 @@ This step is a **hard gate**. Do not register the template into the library inde
 
 ## Step 6: Register Template in Library Index
 
-Update `skills/ppt-master/templates/layouts/layouts_index.json`:
+Add a top-level entry to `skills/ppt-master/templates/layouts/layouts_index.json`. The file is a flat map of `template_id → { label, summary, keywords }`:
 
-- `meta.total`
-- `meta.updated`
-- the correct `categories.<category>.layouts` entry
-- the appropriate `quickLookup` entries
-- the new `layouts.<template_id>` metadata block
+```json
+"<template_id>": {
+  "label": "<Human-readable Name>",
+  "summary": "<One-sentence description of what this template is for>",
+  "keywords": ["<Tag1>", "<Tag2>", "<Tag3>"]
+}
+```
 
-`layouts_index.json` is the **source of truth** for template discovery in the main PPT generation workflow. A template directory that is not registered here is considered incomplete.
+`layouts_index.json` is the lightweight lookup used when a user explicitly opts into the template flow. The main workflow defaults to free design and does not read this file unless a template trigger fires (see `SKILL.md` Step 3). A template directory that is not registered here will not be discoverable by that flow.
 
-If the human-facing `templates/layouts/README.md` summary table is maintained manually, sync it after updating the JSON index. The JSON index takes priority.
+Also sync the summary table in `templates/layouts/README.md` (the human-facing index with categories, primary colors, and detailed tone).
 
 ---
 
@@ -264,6 +266,6 @@ If the human-facing `templates/layouts/README.md` summary table is maintained ma
 1. **SVG technical constraints**: See the technical constraints section in [template-designer.md](../references/template-designer.md)
 2. **Color consistency**: All SVG files must use the same color scheme
 3. **Placeholder convention**: Use `{{}}` format and the canonical new-template placeholder contract above
-4. **Discovery requirement**: New templates must be added to `layouts_index.json`, otherwise the main workflow cannot recommend them
+4. **Discovery requirement**: New templates must be added to `layouts_index.json`, otherwise they will not be discoverable when a user opts into the template flow
 
 > **Detailed specification**: See [template-designer.md](../references/template-designer.md)

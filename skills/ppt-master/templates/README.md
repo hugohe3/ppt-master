@@ -19,7 +19,7 @@ The `layouts/` directory contains pre-built page layout templates organized by d
 - **Academic Defense**: Academic defense style, research-oriented
 
 - **Human browsing**: [layouts/README.md](./layouts/README.md)
-- **AI / Programmatic lookup**: [layouts/layouts_index.json](./layouts/layouts_index.json)
+- **Slim lookup (opt-in)**: [layouts/layouts_index.json](./layouts/layouts_index.json) — only consulted when the user explicitly opts into the template flow
 
 ## Visualization Templates
 

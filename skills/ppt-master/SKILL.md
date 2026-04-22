@@ -125,27 +125,20 @@ Import source content (choose based on the situation):
 
 ---
 
-### Step 3: Template Selection
+### Step 3: Template Option
 
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
-⛔ **BLOCKING**: If the user has not yet clearly expressed whether to use a template, you MUST present options and **wait for an explicit user response** before proceeding. If the user has previously stated "no template" or specified a particular template, skip this prompt and proceed directly.
+**Default path — free design, no question asked.** Proceed directly to Step 4. Do NOT query `layouts_index.json` and do NOT ask the user an A/B template-vs-free-design question. Free design is the standard mode: the AI tailors structure and style to the specific content.
 
-**⚡ Early-exit**: If the user has already stated "no template" / "不使用模板" / "自由设计" (or equivalent) at any prior point in the conversation, **do NOT query `layouts_index.json`** — skip directly to Step 4. This avoids unnecessary token consumption.
+**Template flow is opt-in.** Enter it only when one of these explicit triggers appears in the user's prior messages:
 
-**Template recommendation flow** (only when the user has NOT yet decided):
-Query `${SKILL_DIR}/templates/layouts/layouts_index.json` to list available templates and their style descriptions.
-**When presenting options, you MUST provide a professional recommendation based on the current PPT topic and content** (recommend a specific template or free design, with reasoning). By default, **lean toward free design** unless the content clearly benefits from a fixed structural preset (e.g., consulting report, annual report, academic paper). Then ask the user:
+1. User names a specific template (e.g., "用 mckinsey 模板" / "use the academic_defense template")
+2. User names a style / brand reference that maps to a template (e.g., "McKinsey 那种" / "Google style" / "学术答辩样式")
+3. User explicitly asks what templates exist (e.g., "有哪些模板可以用")
 
-> 💡 **AI Recommendation**: Based on your content topic (brief summary), I recommend **[specific template / free design]** because...
->
-> Note: Both options produce fully-designed output. A template is a validated **"structure + style" preset** (e.g., McKinsey-style, Google-style); free design lets the AI tailor structure and style to your specific content — usually yielding a more content-fitting result.
->
-> Which approach would you prefer?
-> **A) Use an existing template** — apply a validated structure+style preset (please specify template name or style preference)
-> **B) Free design** (recommended for most cases) — AI tailors structure and style to your content
+Only when a trigger fires: read `${SKILL_DIR}/templates/layouts/layouts_index.json`, resolve the match (or list available options for trigger 3), and copy template files to the project directory:
 
-After the user confirms option A, copy template files to the project directory:
 ```bash
 cp ${SKILL_DIR}/templates/layouts/<template_name>/*.svg <project_path>/templates/
 cp ${SKILL_DIR}/templates/layouts/<template_name>/design_spec.md <project_path>/templates/
@@ -153,17 +146,21 @@ cp ${SKILL_DIR}/templates/layouts/<template_name>/*.png <project_path>/images/ 2
 cp ${SKILL_DIR}/templates/layouts/<template_name>/*.jpg <project_path>/images/ 2>/dev/null || true
 ```
 
-After the user confirms option B (free design), proceed directly to Step 4.
+**Soft hint (non-blocking, optional).** Before Step 4, if the user's content is an obvious strong match for an existing template (e.g., clearly an academic defense, a government report, a McKinsey-style consulting deck) AND the user has given no template signal, the AI MAY emit a single-sentence notice and continue without waiting:
+
+> Note: the library has a template `<name>` that matches this scenario closely. Say the word if you want to use it; otherwise I'll continue with free design.
+
+This is a hint, not a question — do NOT block, do NOT require an answer. Skip the hint entirely when the match is weak or ambiguous.
 
 > To create a new global template, read `workflows/create-template.md`
 
-**✅ Checkpoint — User has responded with template selection, template files copied (if option A). Proceed to Step 4.**
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If a template trigger fired, template files are copied before advancing.**
 
 ---
 
 ### Step 4: Strategist Phase (MANDATORY — cannot be skipped)
 
-🚧 **GATE**: Step 3 complete; user has confirmed template selection.
+🚧 **GATE**: Step 3 complete; default free-design path taken, or (if triggered) template files copied into the project.
 
 First, read the role definition:
 ```
@@ -174,7 +171,7 @@ Read references/strategist.md
 
 **Must complete the Eight Confirmations** (full template structure in `templates/design_spec_reference.md`):
 
-⛔ **BLOCKING**: The Eight Confirmations MUST be presented to the user as a bundled set of recommendations, and you MUST **wait for the user to confirm or modify** before outputting the Design Specification & Content Outline. This is one of only two core confirmation points in the workflow (the other is template selection). Once confirmed, all subsequent script execution and slide generation should proceed fully automatically.
+⛔ **BLOCKING**: The Eight Confirmations MUST be presented to the user as a bundled set of recommendations, and you MUST **wait for the user to confirm or modify** before outputting the Design Specification & Content Outline. This is the single core confirmation point in the workflow. Once confirmed, all subsequent script execution and slide generation should proceed fully automatically.
 
 1. Canvas format
 2. Page count range
