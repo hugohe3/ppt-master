@@ -134,31 +134,73 @@ Built-in library contains 6700+ icons across three libraries:
 
 ### g. Typography Plan Confirmation (Font + Size)
 
-#### Font Presets
+#### Font Combinations
 
-| Scenario | Preset | Title | Body | Emphasis |
-|----------|--------|-------|------|----------|
-| Modern business, tech | P1 | Microsoft YaHei / Arial | Microsoft YaHei / Calibri | SimHei |
-| Government documents, reports | P2 | SimHei | SimSun / Times | SimSun |
-| Culture, arts, humanities | P3 | KaiTi / Georgia | Microsoft YaHei | SimHei |
-| Traditional, conservative | P4 | SimSun | Microsoft YaHei / Arial | SimSun |
-| English-primary | P5 | Arial / Impact | Calibri / Georgia | Arial Black |
+> **Starting points, not a menu.** Each row below is one common direction — pick the closest match and adapt, or propose a new combination when the content tone calls for it. Per-role assignment is expected: `title` / `body` / `emphasis` / `code` may each use a different family. A deck is not required to stick to one family throughout.
+>
+> **⚠️ PPT-safe font discipline (HARD rule).** PPTX stores a single `typeface` per text run — there is no runtime fallback stack. On a machine that lacks the declared font, PowerPoint substitutes with its own default (typically Calibri), breaking the design. Therefore every CSS `font-family` stack declared in the spec MUST end with a cross-platform pre-installed font:
+> - CJK-capable stacks → end with `"Microsoft YaHei", sans-serif` (sans) or `SimSun, serif` (serif)
+> - Latin-only stacks → end with `Arial, sans-serif` or `"Times New Roman", serif`
+> - Monospace stacks → end with `Consolas, "Courier New", monospace`
+>
+> Any stack that *leads* with a non-pre-installed font (Inter / HarmonyOS Sans / any Google Fonts family / any brand-specific typeface like McKinsey Bower) is only acceptable when the Design Spec explicitly notes "requires the target machine to have this font installed, or the PPTX to embed it." Never leave a non-safe font as the final fallback.
 
-#### Font Size Baseline (all sizes in px)
+**Cross-platform pre-installed reference** (Windows + Mac out of the box):
 
-Selection principle: Font size is based on **content density**, not design style.
+| Category | Safe families |
+|----------|--------------|
+| CJK sans | Microsoft YaHei, SimHei, PingFang SC, Heiti SC |
+| CJK serif | SimSun, FangSong, KaiTi, Songti SC, STSong |
+| Latin sans | Arial, Calibri, Segoe UI, Verdana, Helvetica, Helvetica Neue |
+| Latin serif | Times New Roman, Georgia, Cambria, Times, Palatino |
+| Monospace | Consolas, Courier New, Menlo, Monaco |
+| Display | Impact, Arial Black |
+
+**Seed combinations** (all stacks are PPT-safe — end on pre-installed fonts):
+
+| Direction | Typical scenarios | Title stack | Body stack | Code stack |
+|-----------|-------------------|-------------|------------|------------|
+| **Modern CJK sans** (default) | Tech launches, enterprise reports, most contemporary decks | `"PingFang SC", "Microsoft YaHei", sans-serif` | same as Title | — |
+| **Government / 政务** | Government reports, party-building, formal briefings | `SimHei, "Microsoft YaHei", sans-serif` | `SimSun, "Songti SC", serif` | — |
+| **Academic serif** | Research, legal, theses, serious analysis | `Georgia, "Times New Roman", serif` | `"Times New Roman", "Songti SC", SimSun, serif` | — |
+| **Editorial display** | Magazine covers, luxury, finance, brand storytelling | `Georgia, "Times New Roman", "Songti SC", serif` (Bold/Heavy) | `"PingFang SC", "Microsoft YaHei", sans-serif` | — |
+| **Tech / developer** | Code-focused tech talks, developer docs, API / CLI explainers | `Arial, Helvetica, sans-serif` | same as Title | `Consolas, Menlo, Monaco, "Courier New", monospace` |
+| **International English** | English-primary decks, international audiences | `"Helvetica Neue", Helvetica, Arial, sans-serif` | same as Title | — |
+| **Impact / 海报** | Cover headlines, call-to-action, poster-style slides | `Impact, "Arial Black", "Microsoft YaHei", sans-serif` | `"PingFang SC", "Microsoft YaHei", sans-serif` | — |
+
+> **Directions that require font installation or embedding** (NOT in the safe seed table above):
+> - **Retro / pixel** — Press Start 2P / VT323 / Silkscreen (not pre-installed on any OS; degrades to a wildly different font without install)
+> - **Rounded friendly** — Nunito / Quicksand / M PLUS Rounded / OPPO Sans (no true cross-platform rounded pre-installed; closest safe substitutes are `Trebuchet MS` / `Verdana` but they are not truly rounded)
+> - **Modern web sans** — Inter / HarmonyOS Sans / Source Han Sans / Noto Sans (not pre-installed; viewers without the font see Calibri)
+> - **Brand-specific typography** — McKinsey Bower, Anthropic house fonts, corporate VI typefaces
+>
+> Only declare these when the deck runs on controlled machines (all viewers install the font first) or when the PPTX embeds the font. Always note the constraint in the Design Spec.
+>
+> **Guidance for the Strategist**: state the intended direction in one phrase (e.g., "modern CJK sans"), then list the actual families per role in the design spec. The spec is the source of truth; the table above is only a quick pick.
+
+#### Font Size Ramp (all sizes in px)
+
+> **Ramp discipline, not a fixed menu.** Every size in the deck is derived from the `body` baseline as a ratio. The `spec_lock.md typography` block declares `body` as the anchor plus whichever common slots this deck actually uses (`title` / `subtitle` / `annotation` by default; add `cover_title` / `hero_number` / `chart_annotation` etc. when the content calls for them). Executor may use intermediate sizes during generation as long as the size's ratio to `body` lands within the corresponding role's band below — the list is a ramp, not an allowed-values enumeration.
+
+Selection principle: Baseline choice is driven by **content density**, not design style.
 
 | Content Density | Points per Page | Body Baseline | Suitable Scenarios |
 |----------------|----------------|---------------|-------------------|
 | Relaxed | 3-5 items | 24px | Keynote-style, training materials |
 | Dense | 6+ items | 18px | Data reports, consulting analysis |
 
-| Level | Ratio | 24px Baseline | 18px Baseline |
-|-------|-------|---------------|---------------|
-| Cover title | 2.5-3x | 60-72px | 45-54px |
+| Level | Ratio to body | 24px baseline | 18px baseline |
+|-------|---------------|---------------|---------------|
+| Cover title (hero headline) | 2.5-5x | 60-120px | 45-90px |
+| Chapter / section opener | 2-2.5x | 48-60px | 36-45px |
 | Page title | 1.5-2x | 36-48px | 27-36px |
+| Hero number (consulting KPIs) | 1.5-2x | 36-48px | 27-36px |
+| Subtitle | 1.2-1.5x | 29-36px | 22-27px |
 | **Body** | **1x** | **24px** | **18px** |
-| Annotation | 0.75x | 18px | 14px |
+| Annotation / caption | 0.7-0.85x | 17-20px | 13-15px |
+| Page number / footnote | 0.5-0.65x | 12-16px | 9-12px |
+
+> Executor may pick any px value within a role's band (e.g., 40px hero number, 13px chart annotation, 72px cover headline) without having to pre-declare every intermediate value in `spec_lock.md`. Values outside **every** band remain forbidden — those need the lock extended first.
 
 ### h. Image Usage Confirmation
 
@@ -388,7 +430,7 @@ The Strategist should make professional judgments on the template basis generate
 | I. Project Information | Project name, canvas format, page count, style, audience, scenario, date |
 | II. Canvas Specification | Format, dimensions, viewBox, margins, content area |
 | III. Visual Theme | Style description, light/dark theme, tone, color scheme (with HEX table), gradient scheme |
-| IV. Typography System | Font plan (P1-P5), font size hierarchy (H1-Code, 7 levels) |
+| IV. Typography System | Font plan (per-role families — title / body / emphasis / code), font size hierarchy |
 | V. Layout Principles | Page structure (header/content/footer zones), layout pattern library (combine/break as content demands), spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
 | VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |
