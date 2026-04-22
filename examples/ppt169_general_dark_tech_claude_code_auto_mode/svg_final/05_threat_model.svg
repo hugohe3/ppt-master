@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow5" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="5" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574" />
+      <stop offset="100%" stop-color="#60A5FA" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+
+  
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574" />
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">THREAT MODEL</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Why Agents Take Dangerous Actions</text>
+    <rect x="60" y="115" width="240" height="3" fill="url(#titleBar5)" />
+  </g>
+
+  
+  
+  <g id="card-overeager">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)" d="M72,145 H613 A12,12 0 0 1 625,157 V363 A12,12 0 0 1 613,375 H72 A12,12 0 0 1 60,363 V157 A12,12 0 0 1 72,145 Z" />
+    <path fill="#F97316" d="M62,145 H623 A2,2 0 0 1 625,147 V147 A2,2 0 0 1 623,149 H62 A2,2 0 0 1 60,147 V147 A2,2 0 0 1 62,145 Z" />
+    
+  <g transform="translate(84.0, 170.0) scale(2.25)" fill="#F97316">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0V2H13L16 8.5L13 15H3L0 8.5L3 2H7V0H9ZM4.59794 11.7384L8 12.2618L11.4021 11.7384L11.0979 9.76163L8 10.2382L4.90206 9.76163L4.59794 11.7384ZM7 6.75C7 7.44036 6.44036 8 5.75 8C5.05964 8 4.5 7.44036 4.5 6.75C4.5 6.05964 5.05964 5.5 5.75 5.5C6.44036 5.5 7 6.05964 7 6.75ZM10.25 8C10.9404 8 11.5 7.44036 11.5 6.75C11.5 6.05964 10.9404 5.5 10.25 5.5C9.55964 5.5 9 6.05964 9 6.75C9 7.44036 9.55964 8 10.25 8Z" />
+  </g>
+    <text x="132" y="196" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Overeager Behavior</text>
+    <text x="84" y="232" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent genuinely tries to help but takes</text>
+    <text x="84" y="254" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">initiative beyond what user would approve.</text>
+    <text x="84" y="285" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Example: Uses a credential it found, deletes</text>
+    <text x="84" y="305" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">something it judged to be in the way.</text>
+    <path fill="#F97316" fill-opacity="0.15" d="M88,328 H170 A4,4 0 0 1 174,332 V346 A4,4 0 0 1 170,350 H88 A4,4 0 0 1 84,346 V332 A4,4 0 0 1 88,328 Z" />
+    <text x="93" y="344" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#F97316">Tricky to catch</text>
+  </g>
+
+  
+  <g id="card-mistakes">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)" d="M667,145 H1208 A12,12 0 0 1 1220,157 V363 A12,12 0 0 1 1208,375 H667 A12,12 0 0 1 655,363 V157 A12,12 0 0 1 667,145 Z" />
+    <path fill="#60A5FA" d="M657,145 H1218 A2,2 0 0 1 1220,147 V147 A2,2 0 0 1 1218,149 H657 A2,2 0 0 1 655,147 V147 A2,2 0 0 1 657,145 Z" />
+    
+  <g transform="translate(679.0, 170.0) scale(2.25)" fill="#60A5FA">
+    <path d="M7 0V1.60002C7.32311 1.53443 7.65753 1.5 8 1.5C8.34247 1.5 8.67689 1.53443 9 1.60002V0H11V2.49963C11.8265 3.12041 12.4543 3.99134 12.7711 5H3.2289C3.5457 3.99134 4.17354 3.12041 5 2.49963V0H7Z" />
+    <path d="M0 7V9H3V10.4957L0.225279 11.2885L0.774721 13.2115L3.23189 12.5095C3.87194 14.5331 5.76467 16 8 16C10.2353 16 12.1281 14.5331 12.7681 12.5095L15.2253 13.2115L15.7747 11.2885L13 10.4957V9H16V7H9V12H7V7H0Z" />
+  </g>
+    <text x="727" y="196" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Honest Mistakes</text>
+    <text x="679" y="232" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent misunderstands the blast radius</text>
+    <text x="679" y="254" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">of its actions.</text>
+    <text x="679" y="285" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Example: Thinks a resource is test-scoped</text>
+    <text x="679" y="305" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">when it's shared, or a branch is its own.</text>
+    <path fill="#60A5FA" fill-opacity="0.15" d="M683,328 H785 A4,4 0 0 1 789,332 V346 A4,4 0 0 1 785,350 H683 A4,4 0 0 1 679,346 V332 A4,4 0 0 1 683,328 Z" />
+    <text x="688" y="344" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#60A5FA">Misread context</text>
+  </g>
+
+  
+  <g id="card-injection">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)" d="M72,400 H613 A12,12 0 0 1 625,412 V618 A12,12 0 0 1 613,630 H72 A12,12 0 0 1 60,618 V412 A12,12 0 0 1 72,400 Z" />
+    <path fill="#D4A574" d="M62,400 H623 A2,2 0 0 1 625,402 V402 A2,2 0 0 1 623,404 H62 A2,2 0 0 1 60,402 V402 A2,2 0 0 1 62,400 Z" />
+    
+  <g transform="translate(84.0, 425.0) scale(2.25)" fill="#D4A574">
+    <path d="M8.01005 0.858582L6.01005 14.8586L7.98995 15.1414L9.98995 1.14142L8.01005 0.858582Z" />
+    <path d="M12.5 11.5L11.0858 10.0858L13.1716 8L11.0858 5.91422L12.5 4.5L16 8L12.5 11.5Z" />
+    <path d="M2.82843 8L4.91421 10.0858L3.5 11.5L0 8L3.5 4.5L4.91421 5.91422L2.82843 8Z" />
+  </g>
+    <text x="132" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Prompt Injection</text>
+    <text x="84" y="487" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Instructions planted in files, webpages,</text>
+    <text x="84" y="509" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">or tool output hijack the agent.</text>
+    <text x="84" y="540" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Redirects agent from user's task toward</text>
+    <text x="84" y="560" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">the attacker's goals.</text>
+    <path fill="#D4A574" fill-opacity="0.15" d="M88,583 H180 A4,4 0 0 1 184,587 V601 A4,4 0 0 1 180,605 H88 A4,4 0 0 1 84,601 V587 A4,4 0 0 1 88,583 Z" />
+    <text x="93" y="599" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#D4A574">External threat</text>
+  </g>
+
+  
+  <g id="card-misalignment">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)" d="M667,400 H1208 A12,12 0 0 1 1220,412 V618 A12,12 0 0 1 1208,630 H667 A12,12 0 0 1 655,618 V412 A12,12 0 0 1 667,400 Z" />
+    <path fill="#34D399" d="M657,400 H1218 A2,2 0 0 1 1220,402 V402 A2,2 0 0 1 1218,404 H657 A2,2 0 0 1 655,402 V402 A2,2 0 0 1 657,400 Z" />
+    
+  <g transform="translate(679.0, 425.0) scale(2.25)" fill="#34D399">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4C5.79086 4 4 5.79086 4 8C4 10.2091 5.79086 12 8 12C10.2091 12 12 10.2091 12 8C12 5.79086 10.2091 4 8 4ZM6 8C6 6.89543 6.89543 6 8 6C9.10457 6 10 6.89543 10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8Z" />
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0ZM2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8Z" />
+  </g>
+    <text x="727" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Misalignment</text>
+    <text x="679" y="487" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent pursues a goal of its own,</text>
+    <text x="679" y="509" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">beyond what the user intended.</text>
+    <text x="679" y="540" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Not currently observed in practice, but</text>
+    <text x="679" y="560" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">carefully evaluated for every model release.</text>
+    <path fill="#34D399" fill-opacity="0.15" d="M683,583 H795 A4,4 0 0 1 799,587 V601 A4,4 0 0 1 795,605 H683 A4,4 0 0 1 679,601 V587 A4,4 0 0 1 683,583 Z" />
+    <text x="688" y="599" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#34D399">Not yet observed</text>
+  </g>
+
+  
+  <g id="defense-note">
+    <text x="640" y="665" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#D4A574">In all four cases, the defense is the same: block the action.</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">05 / 10</text>
+  </g>
+</svg>

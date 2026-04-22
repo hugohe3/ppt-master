@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="p2glow" cx="50%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#D4A574" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="statGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#D4A574" flood-opacity="0.4" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  <rect width="1280" height="720" fill="url(#p2glow)"/>
+
+  <!-- Page title with accent bar -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="75" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">THE PROBLEM</text>
+  </g>
+
+  <!-- Big stat number -->
+  <g id="hero-stat">
+    <text x="640" y="260" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="120" font-weight="bold" fill="#D4A574" filter="url(#statGlow)">93%</text>
+    <text x="640" y="310" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="24" fill="#E6EDF3">of permission prompts are approved anyway</text>
+  </g>
+
+  <!-- Divider -->
+  <rect x="540" y="340" width="200" height="1" fill="#30363D"/>
+
+  <!-- Explanation text -->
+  <g id="explanation">
+    <text x="640" y="385" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">Users click "approve" so often that they stop paying attention.</text>
+    <text x="640" y="413" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">This leads to approval fatigue — a real security risk.</text>
+  </g>
+
+  <!-- Two options comparison -->
+  <g id="option-left">
+    <use data-icon="chunk/shield-check" x="310" y="460" width="36" height="36" fill="#34D399"/>
+    <text x="358" y="482" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#34D399">Sandbox Mode</text>
+    <text x="310" y="510" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Safe but high-maintenance.</text>
+    <text x="310" y="530" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Breaks on network / host access.</text>
+  </g>
+
+  <rect x="630" y="460" width="1" height="80" fill="#30363D"/>
+
+  <g id="option-right">
+    <use data-icon="chunk/lock-closed" x="680" y="460" width="36" height="36" fill="#F97316"/>
+    <text x="728" y="482" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#F97316">--dangerously-skip-permissions</text>
+    <text x="680" y="510" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Zero maintenance, zero protection.</text>
+    <text x="680" y="530" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Unsafe in most situations.</text>
+  </g>
+
+  <!-- Incident examples -->
+  <g id="incidents">
+    <rect x="180" y="580" width="920" height="60" rx="8" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+    <text x="210" y="608" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#F97316">⚠ Real incidents:</text>
+    <text x="340" y="608" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Deleting remote branches · Uploading auth tokens · Production DB migrations</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">02 / 10</text>
+  </g>
+</svg>

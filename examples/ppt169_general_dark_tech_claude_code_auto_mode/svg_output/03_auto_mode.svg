@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="p3glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accentLine3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  <rect width="1280" height="720" fill="url(#p3glow)"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="75" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">INTRODUCING</text>
+  </g>
+
+  <!-- Title -->
+  <g id="title">
+    <text x="640" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Auto Mode</text>
+    <text x="640" y="195" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="20" fill="#D4A574">Classifier-Delegated Approvals</text>
+  </g>
+
+  <!-- Central definition block -->
+  <g id="definition">
+    <rect x="160" y="230" width="960" height="2" fill="url(#accentLine3)" fill-opacity="0.4"/>
+    <text x="640" y="280" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">A new mode for Claude Code that delegates permission decisions</text>
+    <text x="640" y="308" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">to model-based classifiers — a middle ground between</text>
+    <text x="640" y="336" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">manual review and no guardrails.</text>
+    <rect x="160" y="360" width="960" height="2" fill="url(#accentLine3)" fill-opacity="0.4"/>
+  </g>
+
+  <!-- Three pillars — no cards, just icon + text blocks separated by vertical dividers -->
+  <g id="pillar-1">
+    <use data-icon="chunk/filter" x="230" y="420" width="40" height="40" fill="#D4A574"/>
+    <text x="250" y="490" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#E6EDF3">Catch Danger</text>
+    <text x="250" y="518" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Block actions misaligned</text>
+    <text x="250" y="538" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">with user intent</text>
+  </g>
+
+  <rect x="420" y="420" width="1" height="130" fill="#30363D"/>
+
+  <g id="pillar-2">
+    <use data-icon="chunk/bolt" x="620" y="420" width="40" height="40" fill="#60A5FA"/>
+    <text x="640" y="490" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#E6EDF3">Stay Fast</text>
+    <text x="640" y="518" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Let safe actions run</text>
+    <text x="640" y="538" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">without approval prompts</text>
+  </g>
+
+  <rect x="860" y="420" width="1" height="130" fill="#30363D"/>
+
+  <g id="pillar-3">
+    <use data-icon="chunk/robot" x="1010" y="420" width="40" height="40" fill="#34D399"/>
+    <text x="1030" y="490" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#E6EDF3">Keep Autonomy</text>
+    <text x="1030" y="518" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Reduce friction without</text>
+    <text x="1030" y="538" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">sacrificing safety</text>
+  </g>
+
+  <!-- Bottom tagline -->
+  <g id="tagline">
+    <rect x="380" y="620" width="520" height="40" rx="20" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+    <text x="640" y="646" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#D4A574">Get started: claude auto-mode defaults</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">03 / 10</text>
+  </g>
+</svg>

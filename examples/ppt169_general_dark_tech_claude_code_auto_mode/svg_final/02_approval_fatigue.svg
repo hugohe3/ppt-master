@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="p2glow" cx="50%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#D4A574" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0" />
+    </radialGradient>
+    <filter id="statGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
+      <feFlood flood-color="#D4A574" flood-opacity="0.4" result="glowColor" />
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+  <rect width="1280" height="720" fill="url(#p2glow)" />
+
+  
+  <g id="header">
+    <rect x="60" y="50" width="4" height="30" fill="#D4A574" />
+    <text x="76" y="75" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">THE PROBLEM</text>
+  </g>
+
+  
+  <g id="hero-stat">
+    <text x="640" y="260" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="120" font-weight="bold" fill="#D4A574" filter="url(#statGlow)">93%</text>
+    <text x="640" y="310" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="24" fill="#E6EDF3">of permission prompts are approved anyway</text>
+  </g>
+
+  
+  <rect x="540" y="340" width="200" height="1" fill="#30363D" />
+
+  
+  <g id="explanation">
+    <text x="640" y="385" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">Users click "approve" so often that they stop paying attention.</text>
+    <text x="640" y="413" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">This leads to approval fatigue — a real security risk.</text>
+  </g>
+
+  
+  <g id="option-left">
+    
+  <g transform="translate(310.0, 460.0) scale(2.25)" fill="#34D399">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16L4.35009 13.3929C2.24773 11.8912 1 9.46667 1 6.88306V3L8 0L15 3V6.88306C15 9.46667 13.7523 11.8912 11.6499 13.3929L8 16ZM12.2071 5.70711L10.7929 4.29289L7 8.08579L5.20711 6.29289L3.79289 7.70711L7 10.9142L12.2071 5.70711Z" />
+  </g>
+    <text x="358" y="482" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#34D399">Sandbox Mode</text>
+    <text x="310" y="510" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Safe but high-maintenance.</text>
+    <text x="310" y="530" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Breaks on network / host access.</text>
+  </g>
+
+  <rect x="630" y="460" width="1" height="80" fill="#30363D" />
+
+  <g id="option-right">
+    
+  <g transform="translate(680.0, 460.0) scale(2.25)" fill="#F97316">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M4 6V4C4 1.79086 5.79086 0 8 0C10.2091 0 12 1.79086 12 4V6H14V16H2V6H4ZM6 4C6 2.89543 6.89543 2 8 2C9.10457 2 10 2.89543 10 4V6H6V4ZM7 13V9H9V13H7Z" />
+  </g>
+    <text x="728" y="482" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#F97316">--dangerously-skip-permissions</text>
+    <text x="680" y="510" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Zero maintenance, zero protection.</text>
+    <text x="680" y="530" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Unsafe in most situations.</text>
+  </g>
+
+  
+  <g id="incidents">
+    <path fill="#161B22" stroke="#30363D" stroke-width="1" d="M188,580 H1092 A8,8 0 0 1 1100,588 V632 A8,8 0 0 1 1092,640 H188 A8,8 0 0 1 180,632 V588 A8,8 0 0 1 188,580 Z" />
+    <text x="210" y="608" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#F97316">⚠ Real incidents:</text>
+    <text x="340" y="608" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Deleting remote branches · Uploading auth tokens · Production DB migrations</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">02 / 10</text>
+  </g>
+</svg>

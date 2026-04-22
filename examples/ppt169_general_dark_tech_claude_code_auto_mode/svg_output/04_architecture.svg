@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow4" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
+      <feOffset dx="0" dy="6" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="accentBar4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">ARCHITECTURE</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Two Layers of Defense</text>
+    <rect x="60" y="115" width="180" height="3" fill="url(#accentBar4)"/>
+  </g>
+
+  <!-- Image area (left side) — Fig.2 System Architecture -->
+  <g id="architecture-image">
+    <rect x="60" y="145" width="530" height="520" rx="12" fill="#161B22" stroke="#30363D" stroke-width="1" filter="url(#cardShadow4)"/>
+    <image href="../images/image_1.png" x="70" y="155" width="510" height="500" preserveAspectRatio="xMidYMid meet"/>
+    <text x="325" y="685" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">Figure 2: System Architecture</text>
+  </g>
+
+  <!-- Text content (right side) -->
+  <g id="content-right">
+    <!-- Input Layer -->
+    <g id="input-layer">
+      <use data-icon="chunk/eye" x="630" y="150" width="32" height="32" fill="#60A5FA"/>
+      <text x="672" y="174" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#60A5FA">Input Layer</text>
+      <text x="630" y="205" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">Prompt-injection probe scans tool</text>
+      <text x="630" y="228" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">outputs before they enter context.</text>
+      <text x="630" y="256" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Adds warnings when content looks like</text>
+      <text x="630" y="276" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">an attempt to hijack behavior.</text>
+    </g>
+
+    <rect x="630" y="300" width="580" height="1" fill="#30363D"/>
+
+    <!-- Output Layer -->
+    <g id="output-layer">
+      <use data-icon="chunk/filter" x="630" y="320" width="32" height="32" fill="#D4A574"/>
+      <text x="672" y="344" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#D4A574">Output Layer</text>
+      <text x="630" y="378" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">Transcript classifier (Sonnet 4.6)</text>
+      <text x="630" y="401" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">evaluates each action before execution.</text>
+      <text x="630" y="429" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Acts as a substitute for a human approver.</text>
+    </g>
+
+    <rect x="630" y="455" width="580" height="1" fill="#30363D"/>
+
+    <!-- Two-stage filter -->
+    <g id="two-stage">
+      <use data-icon="chunk/layers" x="630" y="475" width="32" height="32" fill="#34D399"/>
+      <text x="672" y="499" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#34D399">Two-Stage Filter</text>
+      <text x="630" y="533" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">Stage 1: Fast single-token yes/no filter</text>
+      <text x="630" y="558" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#E6EDF3">Stage 2: Chain-of-thought reasoning</text>
+      <text x="630" y="586" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Reasoning tokens spent only where needed.</text>
+    </g>
+
+    <!-- Subagent note -->
+    <g id="subagent-note">
+      <rect x="630" y="615" width="580" height="40" rx="6" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+      <use data-icon="chunk/server" x="642" y="621" width="28" height="28" fill="#8B949E"/>
+      <text x="680" y="641" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Subagents run the same pipeline recursively</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">04 / 10</text>
+  </g>
+</svg>

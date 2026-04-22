@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow8" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar8" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+    <filter id="metricGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/>
+      <feFlood flood-color="#34D399" flood-opacity="0.35" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">RESULTS</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">The Honest Numbers</text>
+    <rect x="60" y="115" width="180" height="3" fill="url(#titleBar8)"/>
+  </g>
+
+  <!-- Three dataset cards (top) -->
+  <g id="dataset-1">
+    <rect x="60" y="140" width="370" height="90" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <use data-icon="chunk/chart-bar" x="80" y="160" width="28" height="28" fill="#60A5FA"/>
+    <text x="118" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Real Traffic</text>
+    <text x="118" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 10,000 actual tool calls</text>
+    <text x="370" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#60A5FA">10K</text>
+  </g>
+
+  <g id="dataset-2">
+    <rect x="455" y="140" width="370" height="90" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <use data-icon="chunk/gauge-high" x="475" y="160" width="28" height="28" fill="#F97316"/>
+    <text x="513" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Real Overeager</text>
+    <text x="513" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 52 curated dangerous actions</text>
+    <text x="765" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#F97316">52</text>
+  </g>
+
+  <g id="dataset-3">
+    <rect x="850" y="140" width="370" height="90" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <use data-icon="chunk/shield-check" x="870" y="160" width="28" height="28" fill="#D4A574"/>
+    <text x="908" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Synthetic Exfil</text>
+    <text x="908" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 1,000 obfuscated attempts</text>
+    <text x="1160" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#D4A574">1K</text>
+  </g>
+
+  <!-- Results table -->
+  <g id="results-table">
+    <!-- Table header -->
+    <rect x="60" y="260" width="1160" height="45" rx="8" fill="#161B22"/>
+    <text x="260" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#8B949E">Stage</text>
+    <text x="570" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#60A5FA">Real Traffic FPR</text>
+    <text x="810" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#F97316">Overeager FNR</text>
+    <text x="1050" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#D4A574">Exfil FNR</text>
+
+    <!-- Row 1: Stage 1 -->
+    <rect x="60" y="310" width="1160" height="55" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <text x="260" y="344" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Stage 1 (fast filter)</text>
+    <text x="570" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#60A5FA">8.5%</text>
+    <text x="810" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#34D399">6.6%</text>
+    <text x="1050" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#34D399">1.8%</text>
+
+    <!-- Row 2: Full pipeline -->
+    <rect x="60" y="370" width="1160" height="55" fill="#161B22" stroke="#D4A574" stroke-width="1"/>
+    <text x="260" y="404" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="16" font-weight="bold" fill="#D4A574">Full Pipeline</text>
+    <text x="570" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#34D399" filter="url(#metricGlow)">0.4%</text>
+    <text x="810" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#F97316">17%</text>
+    <text x="1050" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#D4A574">5.7%</text>
+  </g>
+
+  <!-- Key takeaway -->
+  <g id="takeaway">
+    <rect x="60" y="460" width="1160" height="120" rx="12" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="60" y="460" width="1160" height="4" rx="2" fill="#F97316"/>
+
+    <text x="90" y="498" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#F97316">17% FNR — The Honest Number</text>
+
+    <text x="90" y="530" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">The classifier correctly identifies the danger but misreads whether the user's consent</text>
+    <text x="90" y="552" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">signal actually covers this action. "Clean up the PR" doesn't authorize force-pushing.</text>
+  </g>
+
+  <!-- Context line -->
+  <g id="context">
+    <text x="90" y="615" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">If you run </text>
+    <text x="168" y="615" font-family="Consolas, Monaco, monospace" font-size="14" fill="#F97316">--dangerously-skip-permissions</text>
+    <text x="480" y="615" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">, this is a substantial improvement.</text>
+    <text x="90" y="642" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">Auto mode is not a drop-in replacement for careful human review on high-stakes infrastructure.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">08 / 10</text>
+  </g>
+</svg>

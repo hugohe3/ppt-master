@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow8" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="5" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar8" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574" />
+      <stop offset="100%" stop-color="#60A5FA" />
+    </linearGradient>
+    <filter id="metricGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" />
+      <feFlood flood-color="#34D399" flood-opacity="0.35" result="glowColor" />
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0D1117" />
+
+  
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574" />
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">RESULTS</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">The Honest Numbers</text>
+    <rect x="60" y="115" width="180" height="3" fill="url(#titleBar8)" />
+  </g>
+
+  
+  <g id="dataset-1">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" d="M70,140 H420 A10,10 0 0 1 430,150 V220 A10,10 0 0 1 420,230 H70 A10,10 0 0 1 60,220 V150 A10,10 0 0 1 70,140 Z" />
+    
+  <g transform="translate(80.0, 160.0) scale(1.75)" fill="#60A5FA">
+    <path d="M16 1H12V15H16V1Z" />
+    <path d="M6 5H10V15H6V5Z" />
+    <path d="M0 9H4V15H0V9Z" />
+  </g>
+    <text x="118" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Real Traffic</text>
+    <text x="118" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 10,000 actual tool calls</text>
+    <text x="370" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#60A5FA">10K</text>
+  </g>
+
+  <g id="dataset-2">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" d="M465,140 H815 A10,10 0 0 1 825,150 V220 A10,10 0 0 1 815,230 H465 A10,10 0 0 1 455,220 V150 A10,10 0 0 1 465,140 Z" />
+    
+  <g transform="translate(475.0, 160.0) scale(1.75)" fill="#F97316">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.75463 14C0.656718 12.6304 0 10.8919 0 9C0 4.58172 3.58172 1 8 1C12.4183 1 16 4.58172 16 9C16 10.8919 15.3433 12.6304 14.2454 14H9.20171L12.7343 10.1789L11.2657 8.82118L6.47798 14H1.75463ZM7 4C7 4.55228 7.44771 5 8 5C8.55228 5 9 4.55228 9 4C9 3.44772 8.55228 3 8 3C7.44771 3 7 3.44772 7 4ZM11.5 6.5C10.9477 6.5 10.5 6.05228 10.5 5.5C10.5 4.94772 10.9477 4.5 11.5 4.5C12.0523 4.5 12.5 4.94772 12.5 5.5C12.5 6.05228 12.0523 6.5 11.5 6.5ZM2 9C2 9.55229 2.44771 10 3 10C3.55229 10 4 9.55229 4 9C4 8.44772 3.55229 8 3 8C2.44771 8 2 8.44772 2 9ZM4.5 6.5C3.94772 6.5 3.5 6.05228 3.5 5.5C3.5 4.94772 3.94772 4.5 4.5 4.5C5.05229 4.5 5.5 4.94772 5.5 5.5C5.5 6.05228 5.05229 6.5 4.5 6.5Z" />
+  </g>
+    <text x="513" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Real Overeager</text>
+    <text x="513" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 52 curated dangerous actions</text>
+    <text x="765" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#F97316">52</text>
+  </g>
+
+  <g id="dataset-3">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" d="M860,140 H1210 A10,10 0 0 1 1220,150 V220 A10,10 0 0 1 1210,230 H860 A10,10 0 0 1 850,220 V150 A10,10 0 0 1 860,140 Z" />
+    
+  <g transform="translate(870.0, 160.0) scale(1.75)" fill="#D4A574">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16L4.35009 13.3929C2.24773 11.8912 1 9.46667 1 6.88306V3L8 0L15 3V6.88306C15 9.46667 13.7523 11.8912 11.6499 13.3929L8 16ZM12.2071 5.70711L10.7929 4.29289L7 8.08579L5.20711 6.29289L3.79289 7.70711L7 10.9142L12.2071 5.70711Z" />
+  </g>
+    <text x="908" y="180" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#E6EDF3">Synthetic Exfil</text>
+    <text x="908" y="202" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">n = 1,000 obfuscated attempts</text>
+    <text x="1160" y="180" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#D4A574">1K</text>
+  </g>
+
+  
+  <g id="results-table">
+    
+    <path fill="#161B22" d="M68,260 H1212 A8,8 0 0 1 1220,268 V297 A8,8 0 0 1 1212,305 H68 A8,8 0 0 1 60,297 V268 A8,8 0 0 1 68,260 Z" />
+    <text x="260" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#8B949E">Stage</text>
+    <text x="570" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#60A5FA">Real Traffic FPR</text>
+    <text x="810" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#F97316">Overeager FNR</text>
+    <text x="1050" y="289" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#D4A574">Exfil FNR</text>
+
+    
+    <rect x="60" y="310" width="1160" height="55" fill="#1C2333" stroke="#30363D" stroke-width="1" />
+    <text x="260" y="344" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Stage 1 (fast filter)</text>
+    <text x="570" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#60A5FA">8.5%</text>
+    <text x="810" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#34D399">6.6%</text>
+    <text x="1050" y="344" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#34D399">1.8%</text>
+
+    
+    <rect x="60" y="370" width="1160" height="55" fill="#161B22" stroke="#D4A574" stroke-width="1" />
+    <text x="260" y="404" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="16" font-weight="bold" fill="#D4A574">Full Pipeline</text>
+    <text x="570" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#34D399" filter="url(#metricGlow)">0.4%</text>
+    <text x="810" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#F97316">17%</text>
+    <text x="1050" y="404" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="bold" fill="#D4A574">5.7%</text>
+  </g>
+
+  
+  <g id="takeaway">
+    <path fill="#1C2333" stroke="#30363D" stroke-width="1" d="M72,460 H1208 A12,12 0 0 1 1220,472 V568 A12,12 0 0 1 1208,580 H72 A12,12 0 0 1 60,568 V472 A12,12 0 0 1 72,460 Z" />
+    <path fill="#F97316" d="M62,460 H1218 A2,2 0 0 1 1220,462 V462 A2,2 0 0 1 1218,464 H62 A2,2 0 0 1 60,462 V462 A2,2 0 0 1 62,460 Z" />
+
+    <text x="90" y="498" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#F97316">17% FNR — The Honest Number</text>
+
+    <text x="90" y="530" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">The classifier correctly identifies the danger but misreads whether the user's consent</text>
+    <text x="90" y="552" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">signal actually covers this action. "Clean up the PR" doesn't authorize force-pushing.</text>
+  </g>
+
+  
+  <g id="context">
+    <text x="90" y="615" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">If you run </text>
+    <text x="168" y="615" font-family="Consolas, Monaco, monospace" font-size="14" fill="#F97316">--dangerously-skip-permissions</text>
+    <text x="480" y="615" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">, this is a substantial improvement.</text>
+    <text x="90" y="642" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#8B949E">Auto mode is not a drop-in replacement for careful human review on high-stakes infrastructure.</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">08 / 10</text>
+  </g>
+</svg>

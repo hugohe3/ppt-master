@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow7" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar7" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">CLASSIFIER</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Reasoning-Blind by Design</text>
+    <rect x="60" y="115" width="200" height="3" fill="url(#titleBar7)"/>
+  </g>
+
+  <!-- Image area (left side) — Fig.3 What the classifier sees -->
+  <g id="classifier-image">
+    <rect x="60" y="145" width="530" height="465" rx="12" fill="#161B22" stroke="#30363D" stroke-width="1" filter="url(#cardShadow7)"/>
+    <image href="../images/image_2.png" x="70" y="155" width="510" height="445" preserveAspectRatio="xMidYMid meet"/>
+    <text x="325" y="628" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">Figure 3: What the Classifier Sees</text>
+  </g>
+
+  <!-- Right side content -->
+  <!-- What's stripped -->
+  <g id="stripped-section">
+    <use data-icon="chunk/eye-slash" x="630" y="150" width="30" height="30" fill="#F97316"/>
+    <text x="670" y="173" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#F97316">What Gets Stripped</text>
+
+    <rect x="630" y="195" width="580" height="36" rx="6" fill="#F97316" fill-opacity="0.08"/>
+    <text x="646" y="219" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#F97316">✕ Assistant text</text>
+    <text x="870" y="219" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">— can't "talk" classifier into bad calls</text>
+
+    <rect x="630" y="240" width="580" height="36" rx="6" fill="#F97316" fill-opacity="0.05"/>
+    <text x="646" y="264" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#F97316">✕ Tool results</text>
+    <text x="870" y="264" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">— primary prompt-injection defense</text>
+  </g>
+
+  <rect x="630" y="295" width="580" height="1" fill="#30363D"/>
+
+  <!-- What remains -->
+  <g id="remains-section">
+    <use data-icon="chunk/eye" x="630" y="315" width="30" height="30" fill="#34D399"/>
+    <text x="670" y="338" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#34D399">What Remains</text>
+
+    <rect x="630" y="360" width="580" height="36" rx="6" fill="#34D399" fill-opacity="0.08"/>
+    <text x="646" y="384" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#34D399">✓ User messages</text>
+    <text x="870" y="384" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">— the ground truth for intent</text>
+
+    <rect x="630" y="405" width="580" height="36" rx="6" fill="#34D399" fill-opacity="0.05"/>
+    <text x="646" y="429" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#34D399">✓ Tool call commands</text>
+    <text x="870" y="429" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">— the executable payload</text>
+  </g>
+
+  <rect x="630" y="460" width="580" height="1" fill="#30363D"/>
+
+  <!-- Key insight -->
+  <g id="insight">
+    <use data-icon="chunk/shield-check" x="630" y="480" width="30" height="30" fill="#60A5FA"/>
+    <text x="670" y="503" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#60A5FA">Why It Works</text>
+
+    <text x="630" y="535" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Judge what the agent did, not what it said.</text>
+    <text x="630" y="560" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Shorter transcript = easier to read, less room</text>
+    <text x="630" y="582" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">for agent framing to color the decision.</text>
+  </g>
+
+  <!-- Bottom insight bar -->
+  <g id="complementary-note">
+    <rect x="60" y="640" width="1160" height="40" rx="8" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <text x="640" y="666" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#D4A574">Action-level blocking is orthogonal to chain-of-thought monitoring — the two are complementary.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">07 / 10</text>
+  </g>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+    <radialGradient id="bgGlow1" cx="70%" cy="30%" r="45%">
+      <stop offset="0%" stop-color="#D4A574" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="30%" cy="70%" r="40%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="titleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#D4A574" flood-opacity="0.3" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  <rect width="1280" height="720" fill="url(#bgGlow1)"/>
+  <rect width="1280" height="720" fill="url(#bgGlow2)"/>
+
+  <!-- Decorative grid lines -->
+  <line x1="200" y1="0" x2="200" y2="720" stroke="#30363D" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="640" y1="0" x2="640" y2="720" stroke="#30363D" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="1080" y1="0" x2="1080" y2="720" stroke="#30363D" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="0" y1="240" x2="1280" y2="240" stroke="#30363D" stroke-width="0.5" stroke-opacity="0.3"/>
+  <line x1="0" y1="480" x2="1280" y2="480" stroke="#30363D" stroke-width="0.5" stroke-opacity="0.3"/>
+
+  <!-- Decorative circles -->
+  <circle cx="180" cy="150" r="60" fill="none" stroke="#D4A574" stroke-width="1" stroke-opacity="0.15"/>
+  <circle cx="180" cy="150" r="35" fill="none" stroke="#D4A574" stroke-width="0.5" stroke-opacity="0.1"/>
+  <circle cx="1100" cy="570" r="80" fill="none" stroke="#60A5FA" stroke-width="1" stroke-opacity="0.12"/>
+  <circle cx="1100" cy="570" r="50" fill="none" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.08"/>
+
+  <!-- Small decorative dots -->
+  <circle cx="320" cy="180" r="3" fill="#D4A574" fill-opacity="0.3"/>
+  <circle cx="960" cy="140" r="2" fill="#60A5FA" fill-opacity="0.25"/>
+  <circle cx="1150" cy="200" r="2.5" fill="#34D399" fill-opacity="0.2"/>
+  <circle cx="130" cy="520" r="2" fill="#60A5FA" fill-opacity="0.2"/>
+  <circle cx="400" cy="600" r="3" fill="#D4A574" fill-opacity="0.15"/>
+
+  <!-- Accent line top -->
+  <rect x="540" y="220" width="200" height="2" fill="url(#titleGrad)" fill-opacity="0.6"/>
+
+  <!-- Terminal icon -->
+  <g id="cover-icon">
+    <use data-icon="chunk/terminal" x="604" y="240" width="72" height="72" fill="#D4A574"/>
+  </g>
+
+  <!-- Main title -->
+  <g id="cover-title">
+    <text x="640" y="370" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="bold" fill="#E6EDF3" filter="url(#titleGlow)">Claude Code Auto Mode</text>
+  </g>
+
+  <!-- Subtitle -->
+  <g id="cover-subtitle">
+    <text x="640" y="420" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="24" fill="#D4A574">A Safer Way to Skip Permissions</text>
+  </g>
+
+  <!-- Divider line -->
+  <rect x="520" y="450" width="240" height="1" fill="#30363D"/>
+
+  <!-- Meta info -->
+  <g id="cover-meta">
+    <text x="640" y="490" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">Anthropic Engineering</text>
+    <text x="640" y="518" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#6E7681">Published March 2026 · By John Hughes</text>
+  </g>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="700" width="1280" height="20" fill="#161B22"/>
+  <rect x="440" y="700" width="400" height="3" fill="url(#titleGrad)" fill-opacity="0.5"/>
+</svg>

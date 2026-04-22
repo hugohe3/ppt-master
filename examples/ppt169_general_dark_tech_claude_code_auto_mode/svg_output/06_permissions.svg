@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow6" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar6" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">PERMISSIONS</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">How Permission Decisions Work</text>
+    <rect x="60" y="115" width="200" height="3" fill="url(#titleBar6)"/>
+  </g>
+
+  <!-- Image area (left side) — Fig.1 Permission modes -->
+  <g id="permissions-image">
+    <rect x="60" y="145" width="500" height="500" rx="12" fill="#161B22" stroke="#30363D" stroke-width="1" filter="url(#cardShadow6)"/>
+    <image href="../images/image.png" x="70" y="155" width="480" height="480" preserveAspectRatio="xMidYMid meet"/>
+    <text x="310" y="663" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">Figure 1: Permission Modes Tradeoff Space</text>
+  </g>
+
+  <!-- Three Tiers (right side) -->
+  <!-- Tier 1 -->
+  <g id="tier-1">
+    <rect x="600" y="145" width="620" height="150" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="600" y="145" width="5" height="150" rx="2" fill="#34D399"/>
+    <circle cx="635" cy="175" r="16" fill="#34D399" fill-opacity="0.15"/>
+    <text x="635" y="181" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#34D399">1</text>
+    <text x="662" y="180" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#34D399">Safe-Tool Allowlist</text>
+    <use data-icon="chunk/circle-checkmark" x="1170" y="158" width="28" height="28" fill="#34D399"/>
+    <text x="622" y="210" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Fixed allowlist: file reads, search, code navigation</text>
+    <text x="622" y="232" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">+ user-configured always-allow rules</text>
+    <text x="622" y="260" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Auto mode drops broad interpreter escapes (python, node, ruby)</text>
+  </g>
+
+  <!-- Tier 2 -->
+  <g id="tier-2">
+    <rect x="600" y="315" width="620" height="150" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="600" y="315" width="5" height="150" rx="2" fill="#60A5FA"/>
+    <circle cx="635" cy="345" r="16" fill="#60A5FA" fill-opacity="0.15"/>
+    <text x="635" y="351" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#60A5FA">2</text>
+    <text x="662" y="350" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#60A5FA">In-Project File Operations</text>
+    <use data-icon="chunk/lock-closed" x="1170" y="328" width="28" height="28" fill="#60A5FA"/>
+    <text x="622" y="380" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">File writes/edits inside the project directory</text>
+    <text x="622" y="402" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">allowed without classifier call</text>
+    <text x="622" y="430" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Reviewable via version control — no latency cost</text>
+  </g>
+
+  <!-- Tier 3 -->
+  <g id="tier-3">
+    <rect x="600" y="485" width="620" height="165" rx="10" fill="#1C2333" stroke="#D4A574" stroke-width="1"/>
+    <rect x="600" y="485" width="5" height="165" rx="2" fill="#D4A574"/>
+    <circle cx="635" cy="515" r="16" fill="#D4A574" fill-opacity="0.15"/>
+    <text x="635" y="521" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#D4A574">3</text>
+    <text x="662" y="520" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#D4A574">Transcript Classifier</text>
+    <use data-icon="chunk/filter" x="1170" y="498" width="28" height="28" fill="#D4A574"/>
+    <text x="622" y="550" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Shell commands, web fetches, external tools,</text>
+    <text x="622" y="572" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">subagent spawns, filesystem ops outside project</text>
+    <text x="622" y="602" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Stage 1: fast yes/no filter → Stage 2: chain-of-thought reasoning</text>
+    <rect x="622" y="620" width="200" height="20" rx="4" fill="#D4A574" fill-opacity="0.1"/>
+    <text x="632" y="635" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#D4A574">Only real downside potential reaches here</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">06 / 10</text>
+  </g>
+</svg>

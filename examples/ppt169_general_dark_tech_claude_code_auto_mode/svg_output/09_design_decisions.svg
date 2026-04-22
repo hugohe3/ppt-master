@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow9" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar9" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">DESIGN</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Design Decisions That Matter</text>
+    <rect x="60" y="115" width="220" height="3" fill="url(#titleBar9)"/>
+  </g>
+
+  <!-- Image area (left side) — Fig.4 Two-stage pipeline -->
+  <g id="pipeline-image">
+    <rect x="60" y="145" width="500" height="520" rx="12" fill="#161B22" stroke="#30363D" stroke-width="1" filter="url(#cardShadow9)"/>
+    <image href="../images/image_3.png" x="70" y="155" width="480" height="500" preserveAspectRatio="xMidYMid meet"/>
+    <text x="310" y="685" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">Figure 4: Two-Stage Pipeline</text>
+  </g>
+
+  <!-- Right side: Three design decisions -->
+  <!-- Decision 1: Two-stage classification -->
+  <g id="decision-1">
+    <rect x="600" y="145" width="620" height="170" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="600" y="145" width="5" height="170" rx="2" fill="#60A5FA"/>
+    <use data-icon="chunk/bolt" x="624" y="162" width="32" height="32" fill="#60A5FA"/>
+    <text x="666" y="186" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#60A5FA">Two-Stage Classification</text>
+    <text x="624" y="218" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Stage 1: Fast single-token filter, tuned to "err on the</text>
+    <text x="624" y="240" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">side of blocking" — accepts 8.5% FPR cost.</text>
+    <text x="624" y="268" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Stage 2: Chain-of-thought reasoning reduces</text>
+    <text x="624" y="290" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">FPR from 8.5% → 0.4%. Almost entirely cache-hit.</text>
+  </g>
+
+  <!-- Decision 2: Prompt-injection compound defense -->
+  <g id="decision-2">
+    <rect x="600" y="335" width="620" height="170" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="600" y="335" width="5" height="170" rx="2" fill="#34D399"/>
+    <use data-icon="chunk/shield-check" x="624" y="352" width="32" height="32" fill="#34D399"/>
+    <text x="666" y="376" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#34D399">Compound Injection Defense</text>
+    <text x="624" y="408" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Two layers that compound: injection must evade</text>
+    <text x="624" y="430" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">input-layer probe AND transcript classifier.</text>
+    <text x="624" y="458" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Second layer is blind to the payload that</text>
+    <text x="624" y="480" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">compromised the first — significantly harder.</text>
+  </g>
+
+  <!-- Decision 3: Deny-and-continue -->
+  <g id="decision-3">
+    <rect x="600" y="525" width="620" height="155" rx="10" fill="#1C2333" stroke="#30363D" stroke-width="1"/>
+    <rect x="600" y="525" width="5" height="155" rx="2" fill="#D4A574"/>
+    <use data-icon="chunk/target" x="624" y="542" width="32" height="32" fill="#D4A574"/>
+    <text x="666" y="566" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#D4A574">Deny-and-Continue</text>
+    <text x="624" y="598" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Blocked actions don't halt the session — agent</text>
+    <text x="624" y="620" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">retries with a safer approach.</text>
+    <text x="624" y="650" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Backstop: 3 consecutive or 20 total denials → escalate to human</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">09 / 10</text>
+  </g>
+</svg>

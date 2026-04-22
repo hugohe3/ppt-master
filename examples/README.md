@@ -171,20 +171,20 @@
 
 ---
 
-### ppt169_通用灵活+学术_重庆大学论文格式标准
+### ppt169_general_dark_tech_claude_code_auto_mode
 
-> **11 pages** - Academic standards guide
+> **10 pages** - AI safety engineering deep dive
 
 | Property | Details |
 |----------|---------|
 | **Canvas Format** | PPT 16:9 (1280x720) |
-| **Design Style** | General-purpose + Academic style |
-| **Color Scheme** | CQU Blue #1A5F9E + Orange accent #E07C24 |
-| **Target Audience** | Master's/PhD graduate students |
+| **Design Style** | General-purpose + Dark tech aesthetic |
+| **Color Scheme** | Deep space black #0D1117 + Amber #D4A574 + Sky blue #60A5FA + Emerald #34D399 |
+| **Target Audience** | Technical teams, AI safety engineers, developers |
 
-**Key Features**: Based on "Chongqing University Doctoral and Master's Thesis Formatting Standards and Requirements (2019 Revision)", academic, standardized, clear, and practical.
+**Key Features**: Based on Anthropic's engineering blog "Claude Code Auto Mode: A Safer Way to Skip Permissions". Covers system architecture, threat model, three-tier permission system, transcript classifier design, evaluation results with honest metrics, and key design decisions. Includes 4 original article figures. Dark theme with Anthropic brand-inspired color palette.
 
-[View Project](./ppt169_通用灵活+学术_重庆大学论文格式标准/) | [Design Spec](./ppt169_通用灵活+学术_重庆大学论文格式标准/design_spec.md)
+[View Project](./ppt169_general_dark_tech_claude_code_auto_mode/) | [Design Spec](./ppt169_general_dark_tech_claude_code_auto_mode/design_spec.md)
 
 ---
 

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="p10glow1" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#D4A574" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="p10glow2" cx="35%" cy="60%" r="35%">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="closingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+    <filter id="closingGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#34D399" flood-opacity="0.3" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+  <rect width="1280" height="720" fill="url(#p10glow1)"/>
+  <rect width="1280" height="720" fill="url(#p10glow2)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="200" cy="180" r="50" fill="none" stroke="#D4A574" stroke-width="0.5" stroke-opacity="0.12"/>
+  <circle cx="1080" cy="540" r="70" fill="none" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.1"/>
+  <circle cx="900" cy="150" r="30" fill="none" stroke="#34D399" stroke-width="0.5" stroke-opacity="0.08"/>
+
+  <!-- Shield icon -->
+  <g id="closing-icon">
+    <use data-icon="chunk/shield-check" x="604" y="200" width="72" height="72" fill="#34D399"/>
+  </g>
+
+  <!-- Title -->
+  <g id="closing-title">
+    <text x="640" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="bold" fill="#E6EDF3" filter="url(#closingGlow)">Substantially Safer</text>
+    <text x="640" y="375" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="bold" fill="#E6EDF3">Than No Guardrails</text>
+  </g>
+
+  <!-- Accent divider -->
+  <rect x="520" y="400" width="240" height="2" fill="url(#closingGrad)" fill-opacity="0.6"/>
+
+  <!-- Key points -->
+  <g id="closing-points">
+    <text x="640" y="445" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">The classifier doesn't need to be flawless to be valuable.</text>
+    <text x="640" y="475" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">The starting point is catching enough dangerous actions</text>
+    <text x="640" y="505" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="18" fill="#8B949E">to make autonomous operation substantially safer.</text>
+  </g>
+
+  <!-- Call to action -->
+  <g id="cta">
+    <rect x="440" y="545" width="400" height="44" rx="22" fill="#161B22" stroke="#D4A574" stroke-width="1"/>
+    <use data-icon="chunk/circle-checkmark" x="470" y="555" width="24" height="24" fill="#D4A574"/>
+    <text x="640" y="574" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#D4A574">Try it: claude auto-mode defaults</text>
+  </g>
+
+  <!-- Source -->
+  <g id="source">
+    <text x="640" y="630" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#6E7681">anthropic.com/engineering/claude-code-auto-mode</text>
+    <text x="640" y="655" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#6E7681">Written by John Hughes · Anthropic Engineering · March 2026</text>
+  </g>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="700" width="1280" height="20" fill="#161B22"/>
+  <rect x="440" y="700" width="400" height="3" fill="url(#closingGrad)" fill-opacity="0.5"/>
+</svg>

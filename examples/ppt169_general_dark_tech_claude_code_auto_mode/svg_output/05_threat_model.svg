@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow5" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="titleBar5" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0D1117"/>
+
+  <!-- Header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="30" fill="#D4A574"/>
+    <text x="76" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#8B949E" letter-spacing="3">THREAT MODEL</text>
+    <text x="60" y="105" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="bold" fill="#E6EDF3">Why Agents Take Dangerous Actions</text>
+    <rect x="60" y="115" width="240" height="3" fill="url(#titleBar5)"/>
+  </g>
+
+  <!-- 2x2 Grid -->
+  <!-- Card 1: Overeager Behavior -->
+  <g id="card-overeager">
+    <rect x="60" y="145" width="565" height="230" rx="12" fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)"/>
+    <rect x="60" y="145" width="565" height="4" rx="2" fill="#F97316"/>
+    <use data-icon="chunk/robot" x="84" y="170" width="36" height="36" fill="#F97316"/>
+    <text x="132" y="196" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Overeager Behavior</text>
+    <text x="84" y="232" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent genuinely tries to help but takes</text>
+    <text x="84" y="254" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">initiative beyond what user would approve.</text>
+    <text x="84" y="285" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Example: Uses a credential it found, deletes</text>
+    <text x="84" y="305" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">something it judged to be in the way.</text>
+    <rect x="84" y="328" width="90" height="22" rx="4" fill="#F97316" fill-opacity="0.15"/>
+    <text x="93" y="344" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#F97316">Tricky to catch</text>
+  </g>
+
+  <!-- Card 2: Honest Mistakes -->
+  <g id="card-mistakes">
+    <rect x="655" y="145" width="565" height="230" rx="12" fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)"/>
+    <rect x="655" y="145" width="565" height="4" rx="2" fill="#60A5FA"/>
+    <use data-icon="chunk/bug" x="679" y="170" width="36" height="36" fill="#60A5FA"/>
+    <text x="727" y="196" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Honest Mistakes</text>
+    <text x="679" y="232" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent misunderstands the blast radius</text>
+    <text x="679" y="254" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">of its actions.</text>
+    <text x="679" y="285" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Example: Thinks a resource is test-scoped</text>
+    <text x="679" y="305" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">when it's shared, or a branch is its own.</text>
+    <rect x="679" y="328" width="110" height="22" rx="4" fill="#60A5FA" fill-opacity="0.15"/>
+    <text x="688" y="344" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#60A5FA">Misread context</text>
+  </g>
+
+  <!-- Card 3: Prompt Injection -->
+  <g id="card-injection">
+    <rect x="60" y="400" width="565" height="230" rx="12" fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)"/>
+    <rect x="60" y="400" width="565" height="4" rx="2" fill="#D4A574"/>
+    <use data-icon="chunk/code" x="84" y="425" width="36" height="36" fill="#D4A574"/>
+    <text x="132" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Prompt Injection</text>
+    <text x="84" y="487" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Instructions planted in files, webpages,</text>
+    <text x="84" y="509" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">or tool output hijack the agent.</text>
+    <text x="84" y="540" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Redirects agent from user's task toward</text>
+    <text x="84" y="560" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">the attacker's goals.</text>
+    <rect x="84" y="583" width="100" height="22" rx="4" fill="#D4A574" fill-opacity="0.15"/>
+    <text x="93" y="599" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#D4A574">External threat</text>
+  </g>
+
+  <!-- Card 4: Misalignment -->
+  <g id="card-misalignment">
+    <rect x="655" y="400" width="565" height="230" rx="12" fill="#1C2333" stroke="#30363D" stroke-width="1" filter="url(#cardShadow5)"/>
+    <rect x="655" y="400" width="565" height="4" rx="2" fill="#34D399"/>
+    <use data-icon="chunk/target" x="679" y="425" width="36" height="36" fill="#34D399"/>
+    <text x="727" y="451" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#E6EDF3">Misalignment</text>
+    <text x="679" y="487" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">Agent pursues a goal of its own,</text>
+    <text x="679" y="509" font-family="Calibri, Arial, sans-serif" font-size="16" fill="#E6EDF3">beyond what the user intended.</text>
+    <text x="679" y="540" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">Not currently observed in practice, but</text>
+    <text x="679" y="560" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#8B949E">carefully evaluated for every model release.</text>
+    <rect x="679" y="583" width="120" height="22" rx="4" fill="#34D399" fill-opacity="0.15"/>
+    <text x="688" y="599" font-family="Calibri, Arial, sans-serif" font-size="12" fill="#34D399">Not yet observed</text>
+  </g>
+
+  <!-- Bottom note -->
+  <g id="defense-note">
+    <text x="640" y="665" text-anchor="middle" font-family="Calibri, Arial, sans-serif" font-size="14" fill="#D4A574">In all four cases, the defense is the same: block the action.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="Calibri, Arial, sans-serif" font-size="11" fill="#6E7681">05 / 10</text>
+  </g>
+</svg>
