@@ -25,6 +25,8 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 > **`marker-start` / `marker-end` is conditionally allowed** — see §1.1 for constraints. The converter maps qualifying markers to native DrawingML `<a:headEnd>` / `<a:tailEnd>`.
 >
 > **`clipPath` on `<image>` is conditionally allowed** — see §1.2 for constraints. The converter maps qualifying clip shapes to native DrawingML picture geometry (`<a:prstGeom>` or `<a:custGeom>`).
+>
+> **Replacing `<mask>` effects** — DrawingML has no continuous per-pixel alpha channel, so `<mask>` cannot be mapped. Route by effect type: image gradient overlays (vignette, fade, tint) → stacked `<rect>` with `<linearGradient>` / `<radialGradient>` (see §6 Image Overlay); non-rectangular image crop (circle, rounded, hexagon) → `clipPath` on `<image>` (see §1.2); inner glow / soft-edge → `<filter>` with `<feGaussianBlur>` (see §6 Glow Effect); drop shadow → filter shadow or layered rect (see §6 Shadow). Effects requiring true pixel-level alpha — text-knockout image fills, arbitrary alpha composites — have no PPT-side path and MUST be baked into the source image at the Image_Generator stage.
 
 ---
 
