@@ -262,27 +262,51 @@ class SVGQualityChecker:
             result['errors'].append("Detected forbidden <image opacity> (use overlay mask approach)")
 
     def _check_fonts(self, content: str, result: Dict):
-        """Check font usage"""
-        # Find font-family declarations
+        """Check font usage.
+
+        PPTX stores a single `typeface` per run with no runtime fallback, so every
+        stack must END with a cross-platform pre-installed family. See
+        strategist.md §g "PPT-safe font discipline".
+        """
         font_matches = re.findall(
             r'font-family[:\s]*["\']([^"\']+)["\']', content, re.IGNORECASE)
 
-        if font_matches:
-            result['info']['fonts'] = list(set(font_matches))
+        if not font_matches:
+            return
 
-            # Check if system UI font stack is used
-            recommended_fonts = [
-                'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI']
+        result['info']['fonts'] = list(set(font_matches))
 
-            for font_family in font_matches:
-                has_recommended = any(
-                    rec in font_family for rec in recommended_fonts)
+        # Pre-installed on Windows + macOS out of the box (plus their direct
+        # FONT_FALLBACK_WIN mappings). A stack whose last concrete family is in
+        # this set survives the PPTX round-trip on any viewer machine.
+        ppt_safe_tail = {
+            'microsoft yahei', 'simhei', 'simsun', 'kaiti', 'fangsong',
+            'pingfang sc', 'heiti sc', 'songti sc', 'stsong',
+            'arial', 'arial black', 'calibri', 'segoe ui', 'verdana',
+            'helvetica', 'helvetica neue', 'tahoma', 'trebuchet ms',
+            'times new roman', 'times', 'georgia', 'cambria', 'palatino',
+            'consolas', 'courier new', 'menlo', 'monaco',
+            'impact',
+        }
 
-                if not has_recommended:
-                    result['warnings'].append(
-                        f"Recommend using system UI font stack, current: {font_family}"
-                    )
-                    break  # Only warn once
+        for font_family in font_matches:
+            # Drop the generic CSS fallback (sans-serif / serif / monospace)
+            # and inspect the last concrete family.
+            parts = [p.strip().strip('"').strip("'").lower()
+                     for p in font_family.split(',')]
+            parts = [p for p in parts
+                     if p and p not in ('sans-serif', 'serif', 'monospace',
+                                        'cursive', 'fantasy', 'system-ui')]
+            if not parts:
+                continue
+            tail = parts[-1]
+            if tail not in ppt_safe_tail:
+                result['warnings'].append(
+                    f"Font stack does not end on a PPT-safe family "
+                    f"(expected e.g. Microsoft YaHei / SimSun / Arial / "
+                    f"Times New Roman / Consolas): {font_family}"
+                )
+                break
 
     def _check_dimensions(self, content: str, result: Dict):
         """Check width/height consistency with viewBox"""
@@ -638,7 +662,7 @@ class SVGQualityChecker:
             print(f"\n[TIP] Common fixes:")
             print(f"  1. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
             print(f"  2. foreignObject: Use <text> + <tspan> for manual line breaks")
-            print(f"  3. Font issues: Use system UI font stack")
+            print(f"  3. Font issues: end every font-family stack with a PPT-safe family (e.g. Microsoft YaHei / Arial / Consolas)")
 
     def _print_drift_summary(self):
         """Print spec_lock drift aggregation if any was observed.

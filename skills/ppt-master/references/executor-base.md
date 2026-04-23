@@ -205,14 +205,11 @@ Handle images based on their status in the Design Specification's "Image Resourc
 
 ## 7. Font Usage
 
-Apply corresponding fonts for different text roles based on the font plan in the Design Specification & Content Outline:
+Font family per role is governed by `spec_lock.md typography` — that file is the source of truth. Read `font_family` as the default, plus any `*_family` override (`title_family` / `body_family` / `emphasis_family` / `code_family` / etc.); roles without an explicit override fall back to `font_family`.
 
-| Role | Chinese Recommended | English Recommended |
-|------|--------------------|--------------------|
-| Title font | Microsoft YaHei / KaiTi / SimHei | Arial / Georgia |
-| Body font | Microsoft YaHei / SimSun | Calibri / Times |
-| Emphasis font | SimHei | Arial Black / Consolas |
-| Annotation font | Microsoft YaHei / SimSun | Arial / Times |
+If `spec_lock.md` is absent for any reason, consult the seed combinations and PPT-safe discipline in [`strategist.md`](strategist.md) §g "Typography Plan Confirmation" rather than inventing a stack.
+
+**Hard rule — never violate**: every `font-family` stack emitted into SVG MUST end with a cross-platform pre-installed family (Microsoft YaHei / SimHei / SimSun / Arial / Calibri / Segoe UI / Times New Roman / Georgia / Consolas / Courier New / Impact / Arial Black). PPTX stores a single `typeface` per run with no runtime fallback — a missing font silently degrades to Calibri on the viewer's machine.
 
 ---
 
