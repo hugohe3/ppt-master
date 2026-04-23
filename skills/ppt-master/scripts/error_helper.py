@@ -252,8 +252,8 @@ class ErrorHelper:
             'message': 'Forbidden web font (@font-face) detected',
             'solutions': [
                 'Remove @font-face declarations',
-                'Use the system font stack',
-                'font-family: system-ui, -apple-system, sans-serif'
+                'End every font-family stack with a PPT-safe pre-installed family',
+                'Example: font-family: "Microsoft YaHei", Arial, sans-serif'
             ],
             'severity': 'error'
         },
@@ -276,12 +276,13 @@ class ErrorHelper:
             'severity': 'error'
         },
         'invalid_font': {
-            'message': 'Non-standard font used',
+            'message': 'Font stack does not end on a PPT-safe family',
             'solutions': [
-                'Use the system UI font stack',
-                'font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-                'Avoid using specific font names (e.g. Arial, Helvetica)',
-                'Ensure cross-platform compatibility'
+                'End the stack with a cross-platform pre-installed family',
+                'CJK: "Microsoft YaHei", sans-serif  |  SimSun, serif',
+                'Latin: Arial, sans-serif  |  "Times New Roman", serif',
+                'Mono: Consolas, "Courier New", monospace',
+                'See strategist.md §g for the full PPT-safe discipline'
             ],
             'severity': 'warning'
         }
