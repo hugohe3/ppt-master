@@ -26,12 +26,14 @@ KPI cards are the most common element in consulting reports. Standard layout (12
 
 **Card internal structure** (top to bottom):
 
-| Area | Content | Font Size | Style |
+| Area | Content | Font Size (example @ body=18px) | Style |
 |------|---------|-----------|-------|
 | Icon row | data-icon icon | 32x32 | Theme color |
-| Metric name | "Monthly Active Users" | 14px | Gray #64748B |
-| Core number | "1.2M" | 36-42px | Bold, dark color |
-| Trend annotation | "+12.3% vs last month" | 12px | Green=up / Red=down |
+| Metric name | "Monthly Active Users" | 14px (~0.8x body) | Gray #64748B |
+| Core number | "1.2M" | 36-42px (~2x body, hero number band) | Bold, dark color |
+| Trend annotation | "+12.3% vs last month" | 12px (~0.65x body, annotation band) | Green=up / Red=down |
+
+> Px values assume the typical dense consulting baseline (`body` ≈ 18px). For a deck with a different `body` in `spec_lock.md`, apply the ratios in parentheses rather than copying the px figures.
 
 **Trend arrow conventions**:
 - Up: `arrow-trend-up` icon + green text
