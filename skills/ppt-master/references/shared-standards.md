@@ -172,7 +172,7 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 - **viewBox** must match the canvas dimensions (`width`/`height` must match `viewBox`)
 - **Background**: Use `<rect>` to define the page background color
 - **Line breaks**: Use `<tspan>` for manual line breaks; `<foreignObject>` is FORBIDDEN
-- **Fonts**: Use system fonts only (Microsoft YaHei, Arial, Calibri, etc.); `@font-face` is FORBIDDEN
+- **Fonts**: Every `font-family` stack MUST end with a cross-platform pre-installed family (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas / etc.); `@font-face` is FORBIDDEN. See [`strategist.md §g — PPT-safe font discipline`](strategist.md) for the full HARD rule and seed combinations.
 - **Styles**: Use inline styles only (`fill="..."` `font-size="..."`); `<style>` / `class` are FORBIDDEN (`id` inside `<defs>` is legitimate)
 - **Colors**: Use HEX values; for transparency use `fill-opacity` / `stroke-opacity`
 - **Image references**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`

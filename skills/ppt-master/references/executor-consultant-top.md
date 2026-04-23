@@ -70,11 +70,13 @@ Every MBB-level presentation follows the SCQA narrative structure:
   └───────┘  └───────┘  └───────┘
 ```
 
-| Level | Position | Font Size |
+| Level | Position | Font Size (example @ body=14px dense baseline) |
 |-------|----------|-----------|
-| Core conclusion | Takeaway Box | 16-18px bold |
-| Arguments | Content area body | 14-16px |
-| Supporting data | Charts / cards | 12-14px |
+| Core conclusion | Takeaway Box | 16-18px bold (~1.2x body) |
+| Arguments | Content area body | 14-16px (~1x body) |
+| Supporting data | Charts / cards | 12-14px (~0.85x body) |
+
+> MBB decks typically run on a dense `body` baseline (14-18px) for information density. The px ranges above assume that; if a particular consulting deck declares a different body size in `spec_lock.md`, multiply by the ratios listed above rather than taking the px figures literally.
 
 **Contrast**: Title "Market Research Results" (wrong) → "Metaverse needs 5-10 years to reach scale" (right); Body "We researched... and found..." (wrong) → "Three arguments: (1)... (2)... (3)..." (right)
 

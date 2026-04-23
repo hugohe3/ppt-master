@@ -63,11 +63,13 @@ The General style is not confined to fixed templates; layouts can be freely chos
 
 ### Typography Hierarchy
 
+Sizes follow the ramp anchored on the deck's `body` baseline from `spec_lock.md` — the px values below are **example figures for body ≈ 18px** (multiply by the ratio column for any other baseline: 0.7x annotation / 1x body / 1.2x subtitle / 1.6x title).
+
 ```
-Title layer   → 28-36px, bold, theme color or white
-Subtitle layer → 20-24px, medium weight, secondary color
-Body layer    → 16-18px, regular, dark gray
-Annotation layer → 12-14px, light gray, bottom-aligned
+Title layer   → ~1.5-2x body  (e.g., 28-36px @ body=18)   bold, theme color or white
+Subtitle layer → ~1.2x body   (e.g., 20-24px @ body=18)   medium weight, secondary color
+Body layer    → 1x body       (e.g., 16-18px @ body=18)   regular, dark gray
+Annotation layer → ~0.7-0.8x  (e.g., 12-14px @ body=18)   light gray, bottom-aligned
 ```
 
 ---
