@@ -119,10 +119,10 @@ Two views on the same font decisions — fill both, keep them consistent:
 > **Unit convention**: Use px uniformly (SVG native unit) to avoid pt/px conversion errors.
 > **Baseline selection**: Drive by **content density**, not design style.
 
-**Baseline**: Body font size = [fill in]px (choose 18-24px based on content density)
+**Baseline**: Body font size = [fill in]px (any reasonable integer — `18` and `24` are the two most commonly used values, but `16` for chart-heavy pages, `20`/`22` for medium density, `28-32` for poster / cover-like decks are all valid. Drive by content density, not design style.)
 
-| Purpose | Ratio to body | 24px baseline (relaxed) | 18px baseline (dense) | Weight |
-| ------- | ------------- | ---------------------- | -------------------- | ------ |
+| Purpose | Ratio to body | Example @ body=24 (relaxed) | Example @ body=18 (dense) | Weight |
+| ------- | ------------- | --------------------------- | ------------------------- | ------ |
 | Cover title (hero headline) | 2.5-5x | 60-120px | 45-90px | Bold / Heavy |
 | Chapter / section opener | 2-2.5x | 48-60px | 36-45px | Bold |
 | Page title | 1.5-2x | 36-48px | 27-36px | Bold |
@@ -132,9 +132,9 @@ Two views on the same font decisions — fill both, keep them consistent:
 | Annotation / caption | 0.7-0.85x | 17-20px | 13-15px | Regular |
 | Page number / footnote | 0.5-0.65x | 12-16px | 9-12px | Regular |
 
-> Sizes outside **every** band remain forbidden — surface the need and extend `spec_lock.md typography` (e.g., add `cover_title: 96`) rather than invent a one-off value.
+> The two px columns are illustrations for the most common baselines only. For any other `body` value, multiply by each row's ratio — the checker (`svg_quality_checker._check_spec_lock_drift`) reads the live `body` from `spec_lock.md` and applies the ratio bands, so no code change is needed to support a different baseline.
 
-> **Tip**: Dense content (6+ points per page) use 18px; relaxed content (3-5 points per page) use 24px
+> Sizes outside **every** band remain forbidden — surface the need and extend `spec_lock.md typography` (e.g., add `cover_title: 96`) rather than invent a one-off value.
 
 ---
 
