@@ -374,7 +374,11 @@ SVG_CONSTRAINTS = {
     # Forbidden elements - PPT incompatible
     'forbidden_elements': [
         # Clipping / Masking
-        'clipPath',
+        # Note: `clipPath` on <image> elements is conditionally allowed — the
+        # converter maps qualifying clip shapes to DrawingML picture geometry.
+        # See references/shared-standards.md §1.2. It is NOT listed here
+        # because this flat list has no per-parent-element semantics; the
+        # actual validation is in svg_quality_checker._check_forbidden_elements.
         'mask',
         # Style system
         'style',

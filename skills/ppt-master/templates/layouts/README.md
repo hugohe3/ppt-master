@@ -246,7 +246,7 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 | Banned Element | Alternative |
 |----------------|-------------|
 | `<foreignObject>` | Use `<text>` + `<tspan>` |
-| `clipPath` | Redesign layout |
+| `clipPath` on shapes / groups / text | Draw the target geometry directly with the matching native element (`<circle>` / `<ellipse>` / `<rect rx>` / `<polygon>` / `<path>`). `clipPath` on `<image>` elements is conditionally allowed — see shared-standards.md §1.2 |
 | `mask` | Use `fill-opacity` |
 | `<style>` / `class` | Use inline styles |
 | `textPath` | Use plain `<text>` |
