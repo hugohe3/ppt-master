@@ -289,9 +289,10 @@ Generate corresponding speaker note files for each page, saved to the `notes/` d
 2. Background uses `<rect>` elements
 3. Text wrapping uses `<tspan>` (`<foreignObject>` FORBIDDEN)
 4. Transparency uses `fill-opacity` / `stroke-opacity`; `rgba()` FORBIDDEN
-5. FORBIDDEN: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+5. FORBIDDEN: `mask`, `<style>`, `class`, `foreignObject`
 6. FORBIDDEN: `textPath`, `animate*`, `script`
 7. `marker-start` / `marker-end` conditionally allowed: `<marker>` must be in `<defs>`, `orient="auto"`, shape must be triangle / diamond / circle (see shared-standards.md §1.1)
+8. `clipPath` conditionally allowed **only on `<image>` elements**: `<clipPath>` in `<defs>`, single shape child (circle / ellipse / rect with rx,ry / path / polygon). Do NOT apply to shapes / groups / text — draw the target geometry directly with the matching native element (`<circle>` / `<ellipse>` / `<rect rx>` / `<polygon>` / `<path>`). See shared-standards.md §1.2
 
 ### PPT Compatibility Rules:
 

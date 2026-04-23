@@ -110,12 +110,21 @@ class ErrorHelper:
             ],
             'severity': 'error'
         },
-        'clippath_detected': {
-            'message': 'Forbidden <clipPath> element detected',
+        'clippath_on_non_image': {
+            'message': 'clip-path is only allowed on <image> elements',
             'solutions': [
-                'Remove <clipPath> elements',
-                'PPT does not support SVG clipping paths',
-                'Use basic shape combinations as an alternative to clipping'
+                'Remove clip-path from shapes / groups / text',
+                'Draw the target geometry directly with the matching native element: <circle> / <ellipse> / <rect rx="..."> / <polygon> / <path>. A rect clipped to a circle is just a <circle>.',
+                'clip-path on <image> is conditionally allowed — see references/shared-standards.md §1.2'
+            ],
+            'severity': 'error'
+        },
+        'clippath_def_missing': {
+            'message': 'clip-path references a <clipPath> id that does not exist in <defs>',
+            'solutions': [
+                'Define the referenced <clipPath id="..."> inside <defs>',
+                'The clipPath must contain exactly one shape child (circle / ellipse / rect with rx,ry / path / polygon)',
+                'Reference: references/shared-standards.md §1.2'
             ],
             'severity': 'error'
         },

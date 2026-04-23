@@ -155,11 +155,16 @@ project/
 └── svg_final/         # Final version (images embedded)
 ```
 
-### Rounded Corner Handling (clipPath Forbidden)
+### Rounded Corner / Non-rectangular Image Cropping
 
-Since `clipPath` is incompatible with PPT, clipping paths for image rounded corners are FORBIDDEN. Alternatives:
-- Process rounded corners during image generation (export PNG with rounded corners)
-- Or overlay a same-size rounded rectangle over the edges (visual simulation)
+`clipPath` **on `<image>` elements** is conditionally allowed — the converter maps qualifying clip shapes to native DrawingML picture geometry (`<a:prstGeom>` / `<a:custGeom>`), so rounded corners, circular avatars, hexagonal portraits, etc. are fully supported end-to-end.
+
+Constraints (see [shared-standards.md §1.2](shared-standards.md) for the authoritative list):
+- The `<clipPath>` must live inside `<defs>` and contain exactly **one** shape child — `circle`, `ellipse`, `rect` with `rx`/`ry`, `path`, or `polygon`.
+- `clip-path` may appear **only** on `<image>` elements. Using it on shapes / groups / text is an error — draw the target geometry directly with the matching native element (`<circle>` / `<ellipse>` / `<rect rx="...">` / `<polygon>` / `<path>`). A rect clipped to a circle is just a `<circle>`.
+- PowerPoint's own SVG renderer does not render `clipPath` correctly. The Native PPTX converter handles it, but the SVG reference version in the `_svg.pptx` backup will display the image uncropped.
+
+Alternative for the rare case where `clipPath` does not fit (e.g. shape needs clipping): bake the rounded corners into the source image (PNG with alpha) before embedding.
 
 ---
 
