@@ -284,12 +284,12 @@ Core logic (side-by-side only): the container's aspect ratio must closely match 
 
 When content outline pages involve **data visualization or infographic-style structured information design** (comparisons, trends, proportions, KPIs, flows, timelines, org structures, strategic frameworks, etc.), Strategist should select appropriate visualization types from the built-in template library.
 
-> **Mandatory first step**: At the beginning of content planning, **read the full `templates/charts/charts_index.json`** file. This index contains all available visualization templates (57 types across 9 categories), including each template's `summary`, `bestFor`, `avoidFor`, and `keywords`. Strategist must internalize the full catalog before making selections — do NOT rely on memory or partial lists.
+> **Mandatory first step**: At the beginning of content planning, **read the full `templates/charts/charts_index.json`** file. This index contains all available visualization templates (57 types across 9 categories), including each template's `label`, `summary`, and `keywords`. Strategist must internalize the full catalog before making selections — do NOT rely on memory or partial lists.
 
 > **Selection workflow**:
 > 1. Read and internalize the complete `templates/charts/charts_index.json`
 > 2. For each page in the content outline, determine whether it needs visualization based on its information structure
-> 3. Match page content against the `bestFor` / `avoidFor` / `keywords` fields across all 57 templates to find the best fit
+> 3. Match page content against the `summary` / `keywords` fields across all 57 templates to find the best fit
 > 4. Use `quickLookup` as a secondary cross-reference when multiple candidates seem suitable
 > 5. List all selected visualizations in Design Spec **section VII (Visualization Reference List)** as a centralized reference; in section IX Content Outline, each page only needs to note the visualization type name
 >
@@ -297,7 +297,13 @@ When content outline pages involve **data visualization or infographic-style str
 > - Strategist is responsible for **semantic selection** (which type fits the content), not detailed SVG styling
 > - One page may use at most one primary visualization type; complex pages may combine a chart with a supporting layout
 > - Prefer specificity: if `vertical_list` fits better than generic `numbered_steps`, choose the more specific template
-> - When no built-in template fits, note "custom layout" instead of forcing a poor match
+> - **Fallback when no template clearly fits**:
+>   1. First re-check: scan `categories` groups (not just keywords) and `quickLookup` — many chart concepts live under non-obvious category labels (e.g. "causal chain" is under `process` as `process_flow` / `sankey_chart`)
+>   2. If still no fit, pick by content nature:
+>      - **Data-driven content** (numbers, comparisons, proportions): fall back to a table layout — never force a near-miss chart that misrepresents the data
+>      - **Conceptual / illustrative content** (metaphor, scene, emotion): note "AI-generated image" and let Image_Generator handle it
+>      - **Structural content** (hierarchy, flow, grouping) without a matching template: note "custom layout"
+>   3. In Design Spec section VII, explicitly mark the page as `no-template-match` and state which fallback was chosen and why — do NOT silently substitute a close-but-wrong chart
 
 ### Speaker Notes Requirements (Default — no discussion needed)
 
