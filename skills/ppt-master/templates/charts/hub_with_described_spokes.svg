@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+    <!--
+    中心辐射带描述图模板 (Hub with Described Spokes)
+    用途: 核心模块 + 外围能力，且每个外围能力需要承载 1-2 行描述
+    适用场景: 中台能力、核心引擎 + 衍生服务、平台与生态关系
+    支持: 1 中心 + 4-6 辐射子模块 (推荐 6)
+    关键约定: 每个辐射卡 = 能力名 + 1 行能力描述；若只有能力名没有描述，应使用更简洁的 hub_spoke 模板而不是本模板
+    区别于 hub_spoke: 辐射卡更宽，强制承载描述段
+    -->
+
+    <defs>
+        <filter id="hdsShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="hdsHubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4A6FDC;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#2C4FB0;stop-opacity:1"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+
+    <!-- 标题 -->
+    <text x="640" y="52" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="700" fill="#1A252F">数据中台能力矩阵</text>
+    <text x="640" y="78" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="14" fill="#7F8C8D">Hub with Described Spokes · 核心引擎驱动六大能力域，每项能力附简要说明</text>
+
+    <!-- 辐射线：从中心(640,400)到各子卡边缘 -->
+    <line x1="640" y1="320" x2="640" y2="170" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="700" y1="360" x2="960" y2="210" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="700" y1="440" x2="960" y2="590" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="640" y1="480" x2="640" y2="630" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="580" y1="440" x2="320" y2="590" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line x1="580" y1="360" x2="320" y2="210" stroke="#B0B8C4" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+    <!-- 中心 Hub -->
+    <circle cx="640" cy="400" r="90" fill="url(#hdsHubGrad)" filter="url(#hdsShadow)"/>
+    <circle cx="640" cy="400" r="72" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.35"/>
+    <text x="640" y="390" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#FFFFFF">数据中台</text>
+    <text x="640" y="416" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#FFFFFF" fill-opacity="0.85">Data Platform Core</text>
+
+    <!-- 子卡 1: 正上 (数据采集) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="490" y="110" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1.5"/>
+        <rect x="490" y="110" width="6" height="90" fill="#4A6FDC"/>
+    </g>
+    <text x="516" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">数据采集</text>
+    <text x="516" y="162" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">统一埋点 SDK + 批流一体接入管道</text>
+    <text x="516" y="182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">覆盖 Web / App / IoT / 业务库</text>
+
+    <!-- 子卡 2: 右上 (数据治理) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="900" y="150" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1.5"/>
+        <rect x="900" y="150" width="6" height="90" fill="#2E9E4A"/>
+    </g>
+    <text x="926" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">数据治理</text>
+    <text x="926" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">元数据、血缘与质量规则集中管理</text>
+    <text x="926" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">保障准确性、一致性、可追溯性</text>
+
+    <!-- 子卡 3: 右下 (智能分析) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="900" y="560" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#F3DFB9" stroke-width="1.5"/>
+        <rect x="900" y="560" width="6" height="90" fill="#D48A1F"/>
+    </g>
+    <text x="926" y="588" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">智能分析</text>
+    <text x="926" y="612" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">BI 看板 + AI 归因 + 指标解释</text>
+    <text x="926" y="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">业务方可自助探索与下钻</text>
+
+    <!-- 子卡 4: 正下 (数据服务) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="490" y="600" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#E9C8D3" stroke-width="1.5"/>
+        <rect x="490" y="600" width="6" height="90" fill="#C24A6A"/>
+    </g>
+    <text x="516" y="628" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">数据服务</text>
+    <text x="516" y="652" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">统一 API 网关封装数据消费入口</text>
+    <text x="516" y="672" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">限流、鉴权、审计开箱即用</text>
+
+    <!-- 子卡 5: 左下 (指标管理) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="80" y="560" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#D5D2F1" stroke-width="1.5"/>
+        <rect x="80" y="560" width="6" height="90" fill="#6C5CE7"/>
+    </g>
+    <text x="106" y="588" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">指标管理</text>
+    <text x="106" y="612" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">统一指标定义与口径审核流程</text>
+    <text x="106" y="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">消除跨团队口径分歧</text>
+
+    <!-- 子卡 6: 左上 (数据安全) -->
+    <g filter="url(#hdsShadow)">
+        <rect x="80" y="150" width="300" height="90" rx="10" fill="#FFFFFF" stroke="#BBE3F1" stroke-width="1.5"/>
+        <rect x="80" y="150" width="6" height="90" fill="#1E88A8"/>
+    </g>
+    <text x="106" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#1A252F">数据安全</text>
+    <text x="106" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">分级分类、脱敏、访问审计一体化</text>
+    <text x="106" y="222" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#566573">合规对齐 GDPR / 等保 / 个保法</text>
+
+    <!-- 装饰性背景环 -->
+    <circle cx="640" cy="400" r="180" fill="none" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="5,4"/>
+    <circle cx="640" cy="400" r="125" fill="none" stroke="#E8E8E8" stroke-width="1" stroke-dasharray="3,3"/>
+</svg>

@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!--
+  分层架构图模板 (Layered Architecture)
+  用途: 系统/软件分层架构展示 (应用-服务-数据 / 前端-业务-基础设施)
+  适用场景: 技术架构概览、分层职责划分、纵向依赖关系、中台总体视图
+  支持: 3 层主干 + 左侧行标签 + 右侧能力出口列 + 底部基础支撑带
+  关键约定:
+    - 每个模块卡 = 模块标题 + 1 行能力描述；两段文本必须同时填写
+    - 左侧行标签给每一层起名（应用层/服务层/数据层）
+    - 红色编号徽章标注每一层的序号
+    - 右侧"能力输出"列承载跨层对外输出或开放能力
+    - 底部"基础支撑"带承载底层共用能力 (日志/监控/权限等)
+  -->
+
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 标题 -->
+  <rect x="30" y="22" width="10" height="40" fill="#C00000"/>
+  <text x="52" y="55" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#C00000">系统分层总体架构视图</text>
+
+  <!-- 副标题带 -->
+  <rect x="30" y="78" width="1220" height="46" fill="#F2F2F2"/>
+  <text x="640" y="99" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#1A252F">
+    <tspan x="640" dy="0">自上而下三层能力栈 + 右侧统一能力出口 + 底部共用支撑，上层依赖下层，跨层通过标准契约通信</tspan>
+    <tspan x="640" dy="22" fill="#7F8C8D" font-weight="400">每个模块卡 = 模块标题 + 1 行能力描述；缺任一段即退回 icon_grid 或 numbered_steps</tspan>
+  </text>
+
+  <!-- ==================== 层 1: 应用层 ==================== -->
+  <!-- 左侧行标签 + 编号 -->
+  <rect x="30" y="150" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="172" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">1</text>
+  <text x="32" y="218" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">应用</text>
+  <text x="32" y="244" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+
+  <!-- 主内容区 (左 x=100, 右 x=1050) -->
+  <rect x="100" y="150" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <rect x="100" y="150" width="950" height="28" fill="#EAF1F8"/>
+  <text x="575" y="169" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">面向终端用户与第三方的访问入口 · Presentation</text>
+
+  <!-- 模块卡 1.1 -->
+  <rect x="118" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="118" y="192" width="220" height="4" fill="#2E75B6"/>
+  <rect x="128" y="204" width="26" height="26" fill="#5B9BD5"/>
+  <text x="141" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">W</text>
+  <text x="162" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">Web 控制台</text>
+  <line x1="128" y1="238" x2="328" y2="238" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="128" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">React SPA · 管理与可视化界面</text>
+  <text x="128" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">HTTPS / WebSocket</text>
+
+  <!-- 模块卡 1.2 -->
+  <rect x="352" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="352" y="192" width="220" height="4" fill="#2E75B6"/>
+  <rect x="362" y="204" width="26" height="26" fill="#5B9BD5"/>
+  <text x="375" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">M</text>
+  <text x="396" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">移动端 App</text>
+  <line x1="362" y1="238" x2="562" y2="238" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="362" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">iOS / Android 原生客户端</text>
+  <text x="362" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">HTTP/2 · 支持离线缓存</text>
+
+  <!-- 模块卡 1.3 -->
+  <rect x="586" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="586" y="192" width="220" height="4" fill="#2E75B6"/>
+  <rect x="596" y="204" width="26" height="26" fill="#5B9BD5"/>
+  <text x="609" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">A</text>
+  <text x="630" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">开放 API</text>
+  <line x1="596" y1="238" x2="796" y2="238" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="596" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">REST / GraphQL · 对外集成</text>
+  <text x="596" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">OAuth2 · API Key</text>
+
+  <!-- 模块卡 1.4 -->
+  <rect x="820" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="820" y="192" width="220" height="4" fill="#2E75B6"/>
+  <rect x="830" y="204" width="26" height="26" fill="#5B9BD5"/>
+  <text x="843" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">C</text>
+  <text x="864" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">CLI 工具</text>
+  <line x1="830" y1="238" x2="1030" y2="238" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="830" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">命令行与自动化脚本入口</text>
+  <text x="830" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">面向 DevOps 与 CI/CD</text>
+
+  <!-- ==================== 层 2: 服务层 ==================== -->
+  <rect x="30" y="300" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="322" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">2</text>
+  <text x="32" y="368" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">服务</text>
+  <text x="32" y="394" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+
+  <rect x="100" y="300" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <rect x="100" y="300" width="950" height="28" fill="#EAF1F8"/>
+  <text x="575" y="319" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">核心业务逻辑与能力编排 · Service</text>
+
+  <rect x="118" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="118" y="342" width="220" height="4" fill="#2E75B6"/>
+  <rect x="128" y="354" width="26" height="26" fill="#5B9BD5"/>
+  <text x="141" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">G</text>
+  <text x="162" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">API 网关</text>
+  <line x1="128" y1="388" x2="328" y2="388" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="128" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">统一路由 · 鉴权 · 限流</text>
+  <text x="128" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">协议转换 · 日志注入</text>
+
+  <rect x="352" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="352" y="342" width="220" height="4" fill="#2E75B6"/>
+  <rect x="362" y="354" width="26" height="26" fill="#5B9BD5"/>
+  <text x="375" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">B</text>
+  <text x="396" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">业务微服务</text>
+  <line x1="362" y1="388" x2="562" y2="388" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="362" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">领域驱动 · 独立伸缩</text>
+  <text x="362" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">gRPC 内部互调</text>
+
+  <rect x="586" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="586" y="342" width="220" height="4" fill="#2E75B6"/>
+  <rect x="596" y="354" width="26" height="26" fill="#5B9BD5"/>
+  <text x="609" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">I</text>
+  <text x="630" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">身份认证</text>
+  <line x1="596" y1="388" x2="796" y2="388" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="596" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">OAuth2 / SSO · 集中式 IAM</text>
+  <text x="596" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">RBAC + ABAC</text>
+
+  <rect x="820" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="820" y="342" width="220" height="4" fill="#2E75B6"/>
+  <rect x="830" y="354" width="26" height="26" fill="#5B9BD5"/>
+  <text x="843" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Q</text>
+  <text x="864" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">消息队列</text>
+  <line x1="830" y1="388" x2="1030" y2="388" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="830" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">异步解耦 · 事件驱动</text>
+  <text x="830" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">Kafka · RocketMQ</text>
+
+  <!-- ==================== 层 3: 数据层 ==================== -->
+  <rect x="30" y="450" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="472" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">3</text>
+  <text x="32" y="518" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">数据</text>
+  <text x="32" y="544" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+
+  <rect x="100" y="450" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <rect x="100" y="450" width="950" height="28" fill="#EAF1F8"/>
+  <text x="575" y="469" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">持久化存储与底层数据能力 · Data</text>
+
+  <rect x="118" y="492" width="300" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="118" y="492" width="300" height="4" fill="#2E75B6"/>
+  <rect x="128" y="504" width="26" height="26" fill="#5B9BD5"/>
+  <text x="141" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">R</text>
+  <text x="162" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">关系型数据库</text>
+  <line x1="128" y1="538" x2="408" y2="538" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="128" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">PostgreSQL 主从 · 核心交易数据</text>
+  <text x="128" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">ACID · 强一致 · 同城灾备</text>
+
+  <rect x="432" y="492" width="300" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="432" y="492" width="300" height="4" fill="#2E75B6"/>
+  <rect x="442" y="504" width="26" height="26" fill="#5B9BD5"/>
+  <text x="455" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">K</text>
+  <text x="476" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">缓存 &amp; 会话</text>
+  <line x1="442" y1="538" x2="722" y2="538" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="442" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">Redis 集群 · 热点数据 / 临时状态</text>
+  <text x="442" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">毫秒级响应 · LRU 淘汰</text>
+
+  <rect x="746" y="492" width="294" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
+  <rect x="746" y="492" width="294" height="4" fill="#2E75B6"/>
+  <rect x="756" y="504" width="26" height="26" fill="#5B9BD5"/>
+  <text x="769" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">O</text>
+  <text x="790" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">对象存储</text>
+  <line x1="756" y1="538" x2="1030" y2="538" stroke="#E7E6E6" stroke-width="1"/>
+  <text x="756" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">S3 兼容 · 非结构化大文件</text>
+  <text x="756" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">冷热分层 · 归档压缩</text>
+
+  <!-- ==================== 右侧能力出口列 ==================== -->
+  <rect x="1070" y="150" width="180" height="440" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="2"/>
+  <rect x="1160" y="158" width="30" height="26" fill="#C00000"/>
+  <text x="1175" y="178" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">4</text>
+  <text x="1082" y="180" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">能力输出</text>
+  <line x1="1082" y1="194" x2="1238" y2="194" stroke="#F8CBAD" stroke-width="1"/>
+
+  <rect x="1090" y="210" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="235" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">统一门户</text>
+
+  <rect x="1090" y="260" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="285" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">开放 SDK</text>
+
+  <rect x="1090" y="310" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="335" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">运维控制台</text>
+
+  <rect x="1090" y="360" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="385" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">数据服务市场</text>
+
+  <rect x="1090" y="410" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="435" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">Webhook 通知</text>
+
+  <rect x="1090" y="460" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="485" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">合作伙伴门户</text>
+
+  <rect x="1090" y="510" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1160" y="535" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">数据大屏</text>
+
+  <text x="1160" y="570" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#C00000">对外统一收口</text>
+
+  <!-- ==================== 底部基础支撑带 ==================== -->
+  <rect x="30" y="610" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="632" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">5</text>
+  <text x="32" y="674" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">基础</text>
+  <text x="32" y="696" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">支撑</text>
+
+  <rect x="100" y="610" width="1150" height="90" fill="none" stroke="#E7E6E6" stroke-width="2"/>
+  <text x="675" y="628" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">三层共用的横切能力 · 不随业务变更，独立演进</text>
+  <line x1="120" y1="638" x2="1230" y2="638" stroke="#000000" stroke-width="1" stroke-dasharray="2 2"/>
+
+  <rect x="120" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="195" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">日志采集</text>
+
+  <rect x="280" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="355" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">监控告警</text>
+
+  <rect x="440" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="515" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">链路追踪</text>
+
+  <rect x="600" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="675" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">配置中心</text>
+
+  <rect x="760" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="835" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">CI / CD</text>
+
+  <rect x="920" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="995" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">安全合规</text>
+
+  <rect x="1080" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="1155" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">资源调度</text>
+</svg>

@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!--
+  模块组合图模板 (Module Composition)
+  用途: "一个大模块包含 N 个子模块，每个子模块有自己的描述" 的展示
+  适用场景: 功能拆解、子系统组成、引擎内部架构、核心产品三段式
+  支持: 父容器 1 个 + 子模块 3 个 (推荐) 或 4 个 (宽度均分)
+  关键约定:
+    - 每个子卡 = 编号徽章 + 子模块标题 + 职责定位副标题 + 2-3 条 bullet 描述 + 底部指标
+    - 左侧行标签明确父容器的角色 (如"推荐引擎")
+    - 红色编号徽章 01/02/03 按执行顺序标注
+    - 子卡之间的灰色箭头表示数据流向
+    - 若源内容仅有标题没有描述，应退回使用 numbered_steps 或 icon_grid
+  -->
+
+  <defs>
+    <marker id="mcArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#B0B8C4"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- 标题 -->
+  <rect x="30" y="22" width="10" height="40" fill="#C00000"/>
+  <text x="52" y="55" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#C00000">推荐引擎的三段式组成</text>
+
+  <!-- 副标题带 -->
+  <rect x="30" y="78" width="1220" height="46" fill="#F2F2F2"/>
+  <text x="640" y="99" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#1A252F">
+    <tspan x="640" dy="0">父容器声明"做什么"，每个子卡回答"如何做"—— 召回 → 排序 → 重排，三段协同缺一不可</tspan>
+    <tspan x="640" dy="22" fill="#7F8C8D" font-weight="400">每子卡 = 编号 + 标题 + 职责定位 + 描述要点 + 关键指标；仅有标题时请改用 numbered_steps</tspan>
+  </text>
+
+  <!-- ==================== 左侧行标签 ==================== -->
+  <rect x="30" y="150" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="172" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">★</text>
+  <text x="32" y="220" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">推荐</text>
+  <text x="32" y="246" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">引擎</text>
+  <text x="32" y="274" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#7F8C8D">Recommendation</text>
+  <text x="32" y="290" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#7F8C8D">Engine</text>
+
+  <!-- ==================== 父容器 ==================== -->
+  <rect x="100" y="150" width="1150" height="430" fill="none" stroke="#C00000" stroke-width="2" stroke-dasharray="6 4"/>
+  <rect x="100" y="150" width="1150" height="38" fill="#FDF3EB"/>
+  <text x="675" y="175" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#1A252F">父容器 · Recommendation Engine Pipeline · 输入用户与物品 → 输出最终曝光序列</text>
+
+  <!-- ==================== 子卡 1: 召回 ==================== -->
+  <rect x="120" y="208" width="360" height="352" fill="#FFFFFF" stroke="#2E75B6" stroke-width="1"/>
+  <rect x="120" y="208" width="360" height="48" fill="#2E75B6"/>
+  <rect x="132" y="218" width="28" height="28" fill="#FFFFFF"/>
+  <text x="146" y="238" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#2E75B6">01</text>
+  <text x="172" y="238" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">召回 · Recall</text>
+
+  <!-- 职责定位带 -->
+  <rect x="120" y="256" width="360" height="34" fill="#EAF1F8"/>
+  <text x="300" y="278" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">从海量物品中圈出候选集</text>
+
+  <!-- 描述要点 -->
+  <rect x="136" y="306" width="6" height="6" fill="#2E75B6"/>
+  <text x="150" y="314" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">多路并行触发</text>
+  <text x="150" y="334" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">覆盖协同过滤、热门、兴趣、地域</text>
+
+  <rect x="136" y="356" width="6" height="6" fill="#2E75B6"/>
+  <text x="150" y="364" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">双通道索引</text>
+  <text x="150" y="384" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">向量检索 + 倒排索引融合</text>
+
+  <rect x="136" y="406" width="6" height="6" fill="#2E75B6"/>
+  <text x="150" y="414" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">候选集规模</text>
+  <text x="150" y="434" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">单用户输出数百到数千候选</text>
+
+  <!-- 底部指标 -->
+  <rect x="136" y="474" width="328" height="72" fill="#F7F9FC"/>
+  <line x1="300" y1="486" x2="300" y2="534" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="218" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">典型耗时</text>
+  <text x="218" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#2E75B6">&lt; 50 ms</text>
+  <text x="382" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">候选规模</text>
+  <text x="382" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#2E75B6">~2,000</text>
+
+  <!-- ==================== 子卡 2: 排序 ==================== -->
+  <rect x="500" y="208" width="360" height="352" fill="#FFFFFF" stroke="#C00000" stroke-width="1"/>
+  <rect x="500" y="208" width="360" height="48" fill="#C00000"/>
+  <rect x="512" y="218" width="28" height="28" fill="#FFFFFF"/>
+  <text x="526" y="238" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#C00000">02</text>
+  <text x="552" y="238" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">排序 · Ranking</text>
+
+  <rect x="500" y="256" width="360" height="34" fill="#FDF3EB"/>
+  <text x="680" y="278" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#C00000">对候选精打分、择优输出</text>
+
+  <rect x="516" y="306" width="6" height="6" fill="#C00000"/>
+  <text x="530" y="314" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">深度模型预估</text>
+  <text x="530" y="334" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">多塔 DNN 预估 CTR / CVR / 时长</text>
+
+  <rect x="516" y="356" width="6" height="6" fill="#C00000"/>
+  <text x="530" y="364" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">多目标融合</text>
+  <text x="530" y="384" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">加权公式或 Pareto 前沿择优</text>
+
+  <rect x="516" y="406" width="6" height="6" fill="#C00000"/>
+  <text x="530" y="414" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">Top-K 精排</text>
+  <text x="530" y="434" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">输出 Top-K 的候选进入下一阶段</text>
+
+  <rect x="516" y="474" width="328" height="72" fill="#F7F9FC"/>
+  <line x1="680" y1="486" x2="680" y2="534" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="598" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">典型耗时</text>
+  <text x="598" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#C00000">&lt; 100 ms</text>
+  <text x="762" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">Top-K 规模</text>
+  <text x="762" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#C00000">~200</text>
+
+  <!-- ==================== 子卡 3: 重排 ==================== -->
+  <rect x="880" y="208" width="350" height="352" fill="#FFFFFF" stroke="#5B9BD5" stroke-width="1"/>
+  <rect x="880" y="208" width="350" height="48" fill="#5B9BD5"/>
+  <rect x="892" y="218" width="28" height="28" fill="#FFFFFF"/>
+  <text x="906" y="238" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#5B9BD5">03</text>
+  <text x="932" y="238" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">重排 · Rerank</text>
+
+  <rect x="880" y="256" width="350" height="34" fill="#E9F2FA"/>
+  <text x="1055" y="278" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#5B9BD5">策略干预与多样性调优</text>
+
+  <rect x="896" y="306" width="6" height="6" fill="#5B9BD5"/>
+  <text x="910" y="314" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">多样性打散</text>
+  <text x="910" y="334" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">避免同质化堆叠，拉开类别与作者</text>
+
+  <rect x="896" y="356" width="6" height="6" fill="#5B9BD5"/>
+  <text x="910" y="364" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">业务规则注入</text>
+  <text x="910" y="384" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">扶持 / 过滤 / 定向置顶</text>
+
+  <rect x="896" y="406" width="6" height="6" fill="#5B9BD5"/>
+  <text x="910" y="414" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">最终曝光序列</text>
+  <text x="910" y="434" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">生成用户可见的最终排列顺序</text>
+
+  <rect x="896" y="474" width="318" height="72" fill="#F7F9FC"/>
+  <line x1="1055" y1="486" x2="1055" y2="534" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="975" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">典型耗时</text>
+  <text x="975" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#5B9BD5">&lt; 30 ms</text>
+  <text x="1135" y="498" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">最终曝光</text>
+  <text x="1135" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#5B9BD5">~20</text>
+
+  <!-- 子模块之间的流向箭头 -->
+  <line x1="482" y1="384" x2="496" y2="384" stroke="#B0B8C4" stroke-width="2.5" marker-end="url(#mcArrow)"/>
+  <line x1="862" y1="384" x2="876" y2="384" stroke="#B0B8C4" stroke-width="2.5" marker-end="url(#mcArrow)"/>
+
+  <!-- ==================== 底部输入输出摘要 ==================== -->
+  <rect x="30" y="610" width="30" height="30" fill="#C00000"/>
+  <text x="45" y="632" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">▸</text>
+  <text x="32" y="674" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">输入</text>
+  <text x="32" y="696" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">输出</text>
+
+  <rect x="100" y="610" width="1150" height="90" fill="none" stroke="#E7E6E6" stroke-width="2"/>
+  <text x="675" y="628" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">端到端数据流向 · 上游行为日志 → 引擎内部三段处理 → 下游曝光与点击回流</text>
+  <line x1="120" y1="638" x2="1230" y2="638" stroke="#000000" stroke-width="1" stroke-dasharray="2 2"/>
+
+  <rect x="120" y="650" width="200" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="220" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">用户行为日志</text>
+
+  <rect x="340" y="650" width="200" height="40" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="440" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#C00000">用户画像 + 物品特征</text>
+
+  <rect x="560" y="650" width="200" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="660" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">Feed 曝光流</text>
+
+  <rect x="780" y="650" width="200" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
+  <text x="880" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">点击 / 停留回流</text>
+
+  <rect x="1000" y="650" width="230" height="40" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="1"/>
+  <text x="1115" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#C00000">实验平台 A/B 指标</text>
+</svg>
