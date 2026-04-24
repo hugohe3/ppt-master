@@ -1,6 +1,6 @@
-# SVG Visualization Template Library (52 Types)
+# SVG Visualization Template Library (57 Types)
 
-This directory provides **52 standardized SVG visualization templates** for use as structured visualization selection references in PPT Master.
+This directory provides **57 standardized SVG visualization templates** for use as structured visualization selection references in PPT Master.
 
 > For backward compatibility, the directory remains `templates/charts/`, but the library scope includes charts, infographics, process diagrams, relationship diagrams, and strategic frameworks.
 
@@ -102,3 +102,15 @@ Before generating chart pages, review the corresponding template file to underst
 |----------|---------|-----------|
 | `swot_analysis.svg` | SWOT four-quadrant analysis | Strategic planning, competitive analysis |
 | `porter_five_forces.svg` | Porter's Five Forces model | Industry analysis, market entry assessment |
+
+### System Architecture
+
+Use this family when source content describes a system with named modules **and** per-module descriptions — not just labels. Each template forces "title + description" pairs per node, which is what the plain `org_chart` / `hub_spoke` / `process_flow` templates do not enforce.
+
+| Filename | Purpose | Use Cases |
+|----------|---------|-----------|
+| `layered_architecture.svg` | 3-4 horizontal layers × 2-4 module cards per layer, each card with title + 1-line description | Technical stack overview, application/service/data layering |
+| `module_composition.svg` | Parent container + 3-N child cards, each child with title + 2-3 bullet descriptions | "Feature X contains 3 parts, each has its own description" — the canonical composition case |
+| `hub_with_described_spokes.svg` | Central core + 4-6 radiating cards, each spoke with capability name + 1-2 line description | Data platform capability matrix, core engine + peripheral services |
+| `pipeline_with_stages.svg` | 3-5 horizontal stages, each stage with title + description + output artifact, arrows between | Data pipeline, ETL flow, build pipeline with named outputs |
+| `client_server_flow.svg` | Left client group + right server group + labeled bidirectional arrows between | Request-response architecture, front/back-end interaction, C/S protocol stack |

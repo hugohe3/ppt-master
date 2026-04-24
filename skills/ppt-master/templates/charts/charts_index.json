@@ -1,11 +1,11 @@
 {
   "meta": {
-    "total": 52,
+    "total": 57,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
     "libraryPositioning": "Visualization template library covering charts, infographics, diagrams, and strategic frameworks. The `charts/` path is retained for backward compatibility.",
-    "updated": "2026-04-11"
+    "updated": "2026-04-24"
   },
   "categories": {
     "comparison": {
@@ -36,6 +36,10 @@
       "label": "Strategic Frameworks",
       "charts": ["swot_analysis", "porter_five_forces"]
     },
+    "architecture": {
+      "label": "System Architecture",
+      "charts": ["layered_architecture", "module_composition", "hub_with_described_spokes", "pipeline_with_stages", "client_server_flow"]
+    },
     "infographic": {
       "label": "Infographics",
       "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "comparison_table", "snake_flow", "roadmap_vertical", "sector_diagram", "word_cloud", "concentric_circles", "chevron_process", "comparison_columns", "fishbone_diagram", "hub_spoke", "vertical_list"]
@@ -60,7 +64,8 @@
     "cause_effect": ["fishbone_diagram", "process_flow"],
     "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
     "pricing": ["comparison_columns", "comparison_table"],
-    "brainstorm": ["mind_map", "word_cloud", "hub_spoke"]
+    "brainstorm": ["mind_map", "word_cloud", "hub_spoke"],
+    "architecture": ["layered_architecture", "module_composition", "hub_with_described_spokes", "pipeline_with_stages", "client_server_flow"]
   },
   "charts": {
     "area_chart": {
@@ -322,6 +327,31 @@
       "label": "Vertical List",
       "summary": "Numbered vertical list with detail cards (3-6 key points/advantages)",
       "keywords": ["vertical list", "numbered list", "advantages", "features", "key points", "strengths"]
+    },
+    "layered_architecture": {
+      "label": "Layered Architecture",
+      "summary": "Technical/system architecture in 3-4 horizontal layers (e.g. presentation / service / data), each layer holding 2-4 module cards. Each module card carries BOTH a title AND a 1-line capability description — do not omit the description even when source text is brief.",
+      "keywords": ["architecture", "架构图", "系统架构", "分层架构", "layered", "tech stack", "分层", "模块", "technical architecture", "system design"]
+    },
+    "module_composition": {
+      "label": "Module Composition",
+      "summary": "One parent container wrapping 3-N child module cards; each child card carries title + 2-3 bullet descriptions. Direct fit for 'Feature X contains 3 parts, each part has its own description'. If source provides only labels without descriptions, fall back to numbered_steps or icon_grid instead.",
+      "keywords": ["architecture", "架构图", "module composition", "模块组合", "子模块", "组成", "composition", "包含", "sub-modules", "父子结构", "engine components"]
+    },
+    "hub_with_described_spokes": {
+      "label": "Hub with Described Spokes",
+      "summary": "Central core module + 4-6 radiating sub-modules, each spoke card carries capability name + 1-2 line description. Use when source has both the central concept AND descriptions for each peripheral capability; if spokes have labels only, use the simpler hub_spoke template instead.",
+      "keywords": ["architecture", "架构图", "中台", "核心能力", "capability matrix", "能力矩阵", "platform architecture", "hub with descriptions", "核心引擎", "surrounding capabilities"]
+    },
+    "pipeline_with_stages": {
+      "label": "Pipeline with Stages",
+      "summary": "Horizontal 3-5 stage pipeline where each stage carries title + 1-line description + output artifact, connected by directional arrows. For data pipelines / ETL / build pipelines where each stage consumes the previous stage's output. Each stage must have title, description, and artifact — omitting any field means falling back to process_flow or numbered_steps.",
+      "keywords": ["architecture", "架构图", "pipeline", "管道", "ETL", "数据处理流水线", "data pipeline", "build pipeline", "stages with output", "流水线", "处理流程"]
+    },
+    "client_server_flow": {
+      "label": "Client-Server Flow",
+      "summary": "Left-side client modules + right-side server modules, with labeled bidirectional arrows in between showing key interactions (request / response / push). Each module card = name + 1-line description; each arrow = action label. Never draw an arrow without an action label.",
+      "keywords": ["architecture", "架构图", "client server", "客户端-服务端", "request response", "API 调用", "前后端交互", "C/S architecture", "interaction diagram", "通信架构"]
     }
   }
 }
