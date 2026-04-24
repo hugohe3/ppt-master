@@ -8,7 +8,7 @@ Used by image_gen.py as a backend module.
 Configuration keys:
   OPENAI_API_KEY   (required) API key
   OPENAI_BASE_URL  (optional) Custom API endpoint (e.g. http://127.0.0.1:3000/v1)
-  OPENAI_MODEL     (optional) Model name (default: gpt-image-1)
+  OPENAI_MODEL     (optional) Model name (default: gpt-image-2)
 
 Dependencies:
   pip install openai Pillow
@@ -18,10 +18,12 @@ import base64
 import os
 import time
 import threading
+from collections.abc import Mapping
 
 from openai import OpenAI
 from image_backends.backend_common import (
     MAX_RETRIES,
+    download_image,
     is_rate_limit_error,
     normalize_image_size,
     resolve_output_path,
@@ -34,9 +36,9 @@ from image_backends.backend_common import (
 # ║  Constants                                                      ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-# Aspect ratio -> OpenAI size mapping
-# Covers common PPT/social media ratios
-ASPECT_RATIO_TO_SIZE = {
+# Aspect ratio -> DALL-E 3 / legacy compatible size mapping.
+# Unknown OpenAI-compatible models use this table to preserve old behavior.
+LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE = {
     "1:1":  "1024x1024",
     "16:9": "1792x1024",
     "9:16": "1024x1792",
@@ -49,7 +51,57 @@ ASPECT_RATIO_TO_SIZE = {
     "21:9": "1792x1024",   # closest wide format
 }
 
-VALID_ASPECT_RATIOS = list(ASPECT_RATIO_TO_SIZE.keys())
+# GPT Image 1/1.5/mini officially support only square, landscape, portrait, or auto.
+GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE = {
+    "1:1":  "1024x1024",
+    "16:9": "1536x1024",
+    "9:16": "1024x1536",
+    "3:2":  "1536x1024",
+    "2:3":  "1024x1536",
+    "4:3":  "1536x1024",
+    "3:4":  "1024x1536",
+    "4:5":  "1024x1536",
+    "5:4":  "1536x1024",
+    "21:9": "1536x1024",
+}
+
+# GPT Image 2 supports flexible sizes when both edges are multiples of 16,
+# the edge ratio is <= 3:1, and the total pixels are within model limits.
+GPT_IMAGE_2_SIZES = {
+    "512px": {
+        "1:1": "1024x1024", "16:9": "1152x648", "9:16": "648x1152",
+        "3:2": "1248x832", "2:3": "832x1248", "4:3": "1024x768",
+        "3:4": "768x1024", "4:5": "896x1120", "5:4": "1120x896",
+        "21:9": "1280x544",
+    },
+    "1K": {
+        "1:1": "1024x1024", "16:9": "1152x648", "9:16": "648x1152",
+        "3:2": "1248x832", "2:3": "832x1248", "4:3": "1024x768",
+        "3:4": "768x1024", "4:5": "896x1120", "5:4": "1120x896",
+        "21:9": "1280x544",
+    },
+    "2K": {
+        "1:1": "2048x2048", "16:9": "2048x1152", "9:16": "1152x2048",
+        "3:2": "2016x1344", "2:3": "1344x2016", "4:3": "1920x1440",
+        "3:4": "1440x1920", "4:5": "1600x2000", "5:4": "2000x1600",
+        "21:9": "2560x1088",
+    },
+    "4K": {
+        "1:1": "2880x2880", "16:9": "3840x2160", "9:16": "2160x3840",
+        "3:2": "3520x2352", "2:3": "2352x3520", "4:3": "3264x2448",
+        "3:4": "2448x3264", "4:5": "2560x3200", "5:4": "3200x2560",
+        "21:9": "3840x1648",
+    },
+}
+
+DALL_E_2_SIZE_BY_IMAGE_SIZE = {
+    "512px": "512x512",
+    "1K": "1024x1024",
+    "2K": "1024x1024",
+    "4K": "1024x1024",
+}
+
+VALID_ASPECT_RATIOS = list(LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE.keys())
 
 # image_size -> quality mapping
 IMAGE_SIZE_TO_QUALITY = {
@@ -59,7 +111,46 @@ IMAGE_SIZE_TO_QUALITY = {
     "4K":    "high",
 }
 
-DEFAULT_MODEL = "gpt-image-1"
+DEFAULT_MODEL = "gpt-image-2"
+
+
+def _field(value, name: str):
+    """Read a response field from either an SDK object or a dict."""
+    if isinstance(value, Mapping):
+        return value.get(name)
+    return getattr(value, name, None)
+
+
+def _normalized_model(model: str) -> str:
+    return (model or "").strip().lower()
+
+
+def _is_gpt_image_model(model: str) -> bool:
+    return _normalized_model(model).startswith("gpt-image-")
+
+
+def _is_gpt_image_2(model: str) -> bool:
+    return _normalized_model(model).startswith("gpt-image-2")
+
+
+def _is_dall_e_2(model: str) -> bool:
+    return _normalized_model(model) == "dall-e-2"
+
+
+def _select_size(model: str, aspect_ratio: str, image_size: str) -> str:
+    """Select a model-compatible size while preserving legacy fallbacks."""
+    if _is_gpt_image_2(model):
+        return GPT_IMAGE_2_SIZES[image_size][aspect_ratio]
+    if _is_gpt_image_model(model):
+        return GPT_IMAGE_LEGACY_ASPECT_RATIO_TO_SIZE[aspect_ratio]
+    if _is_dall_e_2(model):
+        return DALL_E_2_SIZE_BY_IMAGE_SIZE[image_size]
+    return LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE[aspect_ratio]
+
+
+def _supports_response_format(model: str) -> bool:
+    """GPT Image models always return base64; DALL-E/compatible models may need this."""
+    return not _is_gpt_image_model(model)
 
 
 # ╔══════════════════════════════════════════════════════════════════╗
@@ -89,7 +180,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         final_prompt += f"\n\nAvoid the following: {negative_prompt}"
 
     # Map parameters
-    size = ASPECT_RATIO_TO_SIZE.get(aspect_ratio, "1024x1024")
+    size = _select_size(model, aspect_ratio, image_size)
     quality = IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
 
     mode_label = f"Proxy: {base_url}" if base_url else "OpenAI API"
@@ -117,14 +208,17 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     hb_thread.start()
 
     try:
-        resp = client.images.generate(
-            prompt=final_prompt,
-            model=model,
-            size=size,
-            quality=quality,
-            n=1,
-            response_format="b64_json",
-        )
+        request = {
+            "prompt": final_prompt,
+            "model": model,
+            "size": size,
+            "quality": quality,
+            "n": 1,
+        }
+        if _supports_response_format(model):
+            request["response_format"] = "b64_json"
+
+        resp = client.images.generate(**request)
     finally:
         heartbeat_stop.set()
         hb_thread.join(timeout=1)
@@ -132,10 +226,17 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     elapsed = time.time() - start_time
     print(f"\n  [DONE] Image generated ({elapsed:.1f}s)")
 
-    if resp is not None and resp.data:
+    data = _field(resp, "data") if resp is not None else None
+    if data:
         path = resolve_output_path(prompt, output_dir, filename, ".png")
-        image_data = base64.b64decode(resp.data[0].b64_json)
-        return save_image_bytes(image_data, path)
+        first_image = data[0]
+        b64_json = _field(first_image, "b64_json")
+        image_url = _field(first_image, "url")
+        if b64_json:
+            image_data = base64.b64decode(b64_json)
+            return save_image_bytes(image_data, path)
+        if image_url:
+            return download_image(image_url, path)
 
     raise RuntimeError("No image was generated. The server may have refused the request.")
 
@@ -163,7 +264,7 @@ def generate(prompt: str, negative_prompt: str = None,
         image_size: Image size, mapped to OpenAI quality
         output_dir: Output directory
         filename: Output filename (without extension)
-        model: Model name (default: gpt-image-1)
+        model: Model name (default: gpt-image-2)
         max_retries: Maximum number of retries
 
     Returns:
@@ -182,8 +283,8 @@ def generate(prompt: str, negative_prompt: str = None,
 
     image_size = normalize_image_size(image_size)
 
-    if aspect_ratio not in ASPECT_RATIO_TO_SIZE:
-        supported = list(ASPECT_RATIO_TO_SIZE.keys())
+    if aspect_ratio not in LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE:
+        supported = list(LEGACY_COMPAT_ASPECT_RATIO_TO_SIZE.keys())
         raise ValueError(
             f"Unsupported aspect ratio '{aspect_ratio}' for OpenAI backend. "
             f"Supported: {supported}"
