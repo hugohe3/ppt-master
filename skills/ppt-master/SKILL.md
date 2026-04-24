@@ -219,12 +219,15 @@ Read `references/image-generator.md`
    python3 ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
    ```
 
-**✅ Checkpoint — Confirm all images are ready, proceed to Step 6**:
+**✅ Checkpoint — Confirm image generation attempted for every row, proceed to Step 6**:
 ```markdown
 ## ✅ Image_Generator Phase Complete
 - [x] Prompt document created
-- [x] All images saved to images/
+- [x] Each image: status is either `Generated` (file present in images/) or `Needs-Manual` (reported to user with filename + reason)
+- [x] No row remains `Pending`
 ```
+
+> On generation failure, do NOT halt — follow the Failure Handling rule in `references/image-generator.md` §4.3: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
 
 ---
 
