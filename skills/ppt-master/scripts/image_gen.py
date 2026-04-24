@@ -33,8 +33,8 @@ Supported keys:
     ZHIPU_API_KEY / ZHIPU_MODEL / ZHIPU_BASE_URL
 
 Usage:
-  python3 image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o images/
-  python3 image_gen.py --list-backends
+  uv run image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o images/
+  uv run image_gen.py --list-backends
 """
 
 import os
@@ -292,7 +292,7 @@ def _load_backend(canonical_name: str) -> tuple[object, str]:
         print(
             f"Error: backend '{canonical_name}' needs a package that is not installed.\n"
             f"Missing: {exc.name}\n"
-            f"Run: pip install {pip_name}",
+            f"Run: uv add {pip_name}",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -393,6 +393,10 @@ def main() -> None:
         "--list-backends", action="store_true",
         help="List available backends grouped by support tier and exit."
     )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Do not generate the image. Instead, export the prompt payload to image_prompts.json in the output directory."
+    )
 
     args = parser.parse_args()
 
@@ -412,6 +416,42 @@ def main() -> None:
         os.environ["IMAGE_BACKEND"] = args.backend
 
     backend, backend_name = _resolve_backend()
+
+    if args.dry_run:
+        import json
+        import time
+        import uuid
+        
+        out_dir = Path(args.output) if args.output else Path.cwd()
+        out_dir.mkdir(parents=True, exist_ok=True)
+        json_path = out_dir / "image_prompts.json"
+        
+        data = []
+        if json_path.exists():
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except json.JSONDecodeError:
+                pass
+                
+        fname = args.filename or f"img_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+        data.append({
+            "prompt": args.prompt,
+            "negative_prompt": args.negative_prompt,
+            "aspect_ratio": args.aspect_ratio,
+            "image_size": args.image_size,
+            "filename": fname,
+            "backend": backend_name,
+            "model": args.model
+        })
+        
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            
+        print(f"[DRY-RUN] Exported prompt to {json_path}")
+        print(f"          Expected image filename: {fname}.png/.jpg")
+        return
+
     print(f"Using backend: {backend_name}\n")
 
     try:

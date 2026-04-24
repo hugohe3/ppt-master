@@ -83,16 +83,23 @@ def get_head_revision() -> str:
 
 
 def sync_python_dependencies() -> None:
-    if not REQUIREMENTS_FILE.exists():
-        print("requirements.txt not found; skipping Python dependency sync.")
-        return
-
-    print("requirements.txt changed. Syncing Python dependencies...")
-    result = run_command([sys.executable, "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)])
-    if result.stdout.strip():
-        print(result.stdout.strip())
-    if result.stderr.strip():
-        print(result.stderr.strip())
+    print("Syncing Python dependencies with uv...")
+    try:
+        result = run_command(["uv", "sync"])
+        if result.stdout.strip():
+            print(result.stdout.strip())
+        if result.stderr.strip():
+            print(result.stderr.strip())
+    except Exception as e:
+        print(f"uv sync failed: {e}. Falling back to pip...")
+        if not REQUIREMENTS_FILE.exists():
+            print("requirements.txt not found; skipping fallback sync.")
+            return
+        result = run_command([sys.executable, "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)])
+        if result.stdout.strip():
+            print(result.stdout.strip())
+        if result.stderr.strip():
+            print(result.stderr.strip())
 
 
 def main() -> int:

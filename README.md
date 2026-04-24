@@ -113,9 +113,10 @@ Need a custom industry template, private deployment, or integration consulting? 
 
 | Dependency | Required? | What it does |
 |------------|:---------:|--------------|
-| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — the only thing you actually need to install |
+| [uv](https://github.com/astral-sh/uv) | ✅ **Yes** | Project & dependency manager — highly recommended |
+| [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime |
 
-> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations.
+> **TL;DR** — Install `uv`, run `uv sync`, and you're ready to generate presentations.
 
 <details open>
 <summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
@@ -124,20 +125,16 @@ Windows requires a few extra steps (PATH setup, execution policy, etc.). We wrot
 
 **📖 [Windows Installation Guide](./docs/windows-installation.md)** — from zero to a working presentation in 10 minutes.
 
-Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → `pip install -r requirements.txt` → done.
+Quick version: download Python from [python.org](https://www.python.org/downloads/) → **check "Add to PATH"** during install → install `uv` → `uv sync` → done.
 </details>
 
 <details>
 <summary><strong>macOS / Linux</strong> — install and go</summary>
 
 ```bash
-# macOS
-brew install python
-pip install -r requirements.txt
-
-# Ubuntu / Debian
-sudo apt install python3 python3-pip
-pip install -r requirements.txt
+# macOS / Linux / Windows
+curl -LsSf https://astral.sh/uv/install.sh | sh  # or use brew install uv
+uv sync
 ```
 </details>
 
@@ -184,10 +181,10 @@ cd ppt-master
 Then install dependencies:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
-To update later (Option B only): `python3 skills/ppt-master/scripts/update_repo.py`
+To update later (Option B only): `uv run skills/ppt-master/scripts/update_repo.py`
 
 ### 4. Create
 

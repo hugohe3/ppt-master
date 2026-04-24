@@ -87,12 +87,12 @@ When the user provides non-Markdown content, convert immediately:
 
 | User Provides | Command |
 |---------------|---------|
-| PDF file | `python3 ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file>` |
-| DOCX / Word / Office document | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| PPTX / PowerPoint deck | `python3 ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <file>` |
-| EPUB / HTML / LaTeX / RST / other | `python3 ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
-| Web link | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` |
-| WeChat / high-security site | `python3 ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` (requires `curl_cffi`; falls back to `node web_to_md.cjs <URL>` only if that package is unavailable) |
+| PDF file | `uv run ${SKILL_DIR}/scripts/source_to_md/pdf_to_md.py <file>` |
+| DOCX / Word / Office document | `uv run ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
+| PPTX / PowerPoint deck | `uv run ${SKILL_DIR}/scripts/source_to_md/ppt_to_md.py <file>` |
+| EPUB / HTML / LaTeX / RST / other | `uv run ${SKILL_DIR}/scripts/source_to_md/doc_to_md.py <file>` |
+| Web link | `uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` |
+| WeChat / high-security site | `uv run ${SKILL_DIR}/scripts/source_to_md/web_to_md.py <URL>` (requires `curl_cffi`; falls back to `node web_to_md.cjs <URL>` only if that package is unavailable) |
 | Markdown | Read directly |
 
 **✅ Checkpoint — Confirm source content is ready, proceed to Step 2.**
@@ -104,7 +104,7 @@ When the user provides non-Markdown content, convert immediately:
 🚧 **GATE**: Step 1 complete; source content is ready (Markdown file, user-provided text, or requirements described in conversation are all valid).
 
 ```bash
-python3 ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
+uv run ${SKILL_DIR}/scripts/project_manager.py init <project_name> --format <format>
 ```
 
 Format options: `ppt169` (default), `ppt43`, `xhs`, `story`, etc. For the full format list, see `references/canvas-formats.md`.
@@ -113,7 +113,7 @@ Import source content (choose based on the situation):
 
 | Situation | Action |
 |-----------|--------|
-| Has source files (PDF/MD/etc.) | `python3 ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files...> --move` |
+| Has source files (PDF/MD/etc.) | `uv run ${SKILL_DIR}/scripts/project_manager.py import-sources <project_path> <source_files...> --move` |
 | User provided text directly in conversation | No import needed — content is already in conversation context; subsequent steps can reference it directly |
 
 > ⚠️ **MUST use `--move`**: All source files (original PDF / MD / images) MUST be **moved** (not copied) into `sources/` for archiving.
@@ -184,7 +184,7 @@ Read references/strategist.md
 
 If the user has provided images, run the analysis script **before outputting the design spec** (do NOT directly read/open image files — use the script output only):
 ```bash
-python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
+uv run ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```
 
 > ⚠️ **Image handling rule**: The AI must NEVER directly read, open, or view image files (`.jpg`, `.png`, etc.). All image information must come from the `analyze_images.py` script output or the Design Specification's Image Resource List.
@@ -216,7 +216,7 @@ Read `references/image-generator.md`
 2. Generate prompt document → `<project_path>/images/image_prompts.md`
 3. Generate images (CLI tool recommended):
    ```bash
-   python3 ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
+   uv run ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
    ```
 
 **✅ Checkpoint — Confirm all images are ready, proceed to Step 6**:
@@ -282,12 +282,12 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 
 **Step 7.1** — Split speaker notes:
 ```bash
-python3 ${SKILL_DIR}/scripts/total_md_split.py <project_path>
+uv run ${SKILL_DIR}/scripts/total_md_split.py <project_path>
 ```
 
 **Step 7.2** — SVG post-processing (icon embedding / image crop & embed / text flattening / rounded rect to path):
 ```bash
-python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
+uv run ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 ```
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
@@ -330,5 +330,5 @@ Before switching roles, you **MUST first read** the corresponding reference file
 ## Notes
 
 - Do NOT add extra flags like `--only` to the post-processing commands — run them as-is
-- Local preview: `python3 -m http.server -d <project_path>/svg_final 8000`
+- Local preview: `uv run python -m http.server -d <project_path>/svg_final 8000`
 - **Troubleshooting**: If the user encounters issues during generation (layout overflow, export errors, blank images, etc.), recommend checking `docs/faq.md` — it contains known solutions sourced from real user reports and is continuously updated
