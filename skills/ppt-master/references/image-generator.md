@@ -35,7 +35,7 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
 | Prompt document | `project/images/image_prompts.md` | **Must** be saved using file write tool — cannot just be output in conversation |
 | Optimized prompts | Individual prompt per image | Directly usable with AI image generation tools; doubles as alt text |
 | Image files | `project/images/` directory | Named per the resource list filenames |
-| Updated list | Status changes | "Pending" → "Generated" |
+| Updated list | Status changes | `Pending` → `Generated` (success) or `Pending` → `Needs-Manual` (generation attempted and failed) |
 
 ---
 
@@ -247,7 +247,16 @@ For each image with "Pending" status:
 
 > Prerequisite: Section 4.2 must be complete; `images/image_prompts.md` must exist
 
-#### Method 1: Unified CLI Tool (Recommended)
+#### Path Selection (Deterministic)
+
+| Trigger | Path | Mechanism |
+|---------|------|-----------|
+| **Default** — no explicit override from the user | **Path A**: `image_gen.py` CLI | Uses `.env` `IMAGE_BACKEND` configuration |
+| **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation", "use Antigravity's image tool") | **Path B**: Host-native tool | Agent invokes the host's own image generation capability and saves outputs to `project/images/` |
+
+Agent must NOT silently switch paths based on perceived host capability. Path B is triggered only by an explicit user instruction for this project or this generation batch. In the absence of such instruction, Path A is the unconditional default.
+
+#### Path A — `image_gen.py` CLI (Default)
 
 ```bash
 python3 scripts/image_gen.py "your prompt" \
@@ -295,28 +304,38 @@ Precedence:
 **Generation pacing (mandatory)**:
 - Execute only one generation command at a time; wait for file confirmation before the next
 - Recommend 2-5 second intervals between images to avoid concurrency failures
-- If failure/no output occurs, halt the queue, check `IMAGE_BACKEND`, provider-specific credentials, and the output directory, then resume
 
-#### Method 2: Auto-generation
+#### Path B — Host-Native Image Tool (On Explicit User Request)
 
-Directly call image generation API, download and save to `project/images/` directory.
+Triggered only when the user explicitly asks the skill to use the host's built-in image generation (e.g. Codex, Antigravity, or any other host that provides a native image tool).
 
-#### Method 3: Gemini Web Interface
+- Agent invokes the host's native image tool directly; prompts come from the same `image_prompts.md`
+- Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
+- Executor downstream is path-agnostic — no spec change required between Path A and Path B
 
-1. Generate images in [Gemini](https://gemini.google.com/)
-2. Select **Download full size** for high-resolution version
-3. Remove watermark: `python3 scripts/gemini_watermark_remover.py <image_path>`
-4. Place processed images in `project/images/` directory
+#### Failure Handling (Applies to Both Paths)
 
-#### Method 4: Manual Generation (Other AI Platforms)
+If generation fails for a given image:
 
-Prompts are saved in `images/image_prompts.md`; inform the user of the file location. User generates on Midjourney, DALL-E, Stable Diffusion, etc. and places images in `project/images/` directory.
+1. **Retry once.** If the retry also fails, stop attempting that image — do not loop further.
+2. **Do NOT halt the pipeline.** Report the failures to the user: list the affected filenames and the error reason, and ask the user to generate those images manually and place them at `project/images/<filename>` with the exact filename from the resource list.
+3. **Mark the affected rows** in the Image Resource List as `Needs-Manual` (not `Generated`).
+4. **Proceed to the Executor phase.** Executor consumes whatever is in `project/images/` at its runtime; missing files are handled downstream (placeholder or user prompt), not by blocking here.
+
+If the user chooses to generate manually on a platform that watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py` as a utility.
+
+#### Guardrails (Both Paths)
+
+- Agent must NOT claim an image is generated without producing an actual file at the expected path
+- Agent must NOT mark an image as `Needs-Manual` without a real generation attempt having failed
+- Status transitions are evidence-driven: `Pending` → `Generated` (file exists at expected path) or `Pending` → `Needs-Manual` (generation attempted and failed after one retry)
 
 ### 4.4 Verification Phase
 
-- Confirm all images are saved to `images/` directory
+- Confirm all successfully generated images are saved to `images/` directory
 - Check filenames match the resource list
-- Update image resource list status to "Generated"
+- Update image resource list: `Generated` for files present at the expected path, `Needs-Manual` for rows whose generation failed after one retry
+- Any `Needs-Manual` rows must have been reported to the user with filename and error reason before this phase completes
 
 ---
 
