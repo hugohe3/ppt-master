@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 60,
+    "total": 70,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
@@ -30,11 +30,11 @@
     },
     "process": {
       "label": "Project Management / Relationships",
-      "charts": ["gantt_chart", "timeline", "process_flow", "org_chart", "sankey_chart"]
+      "charts": ["gantt_chart", "timeline", "process_flow", "org_chart", "sankey_chart", "okr_tree"]
     },
     "strategy": {
       "label": "Strategic Frameworks",
-      "charts": ["swot_analysis", "porter_five_forces"]
+      "charts": ["swot_analysis", "porter_five_forces", "pest_analysis", "value_chain", "bcg_matrix", "ansoff_matrix"]
     },
     "architecture": {
       "label": "System Architecture",
@@ -42,11 +42,11 @@
     },
     "infographic": {
       "label": "Infographics",
-      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "snake_flow", "roadmap_vertical", "word_cloud", "concentric_circles", "chevron_process", "fishbone_diagram", "hub_spoke", "vertical_list"]
+      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "snake_flow", "roadmap_vertical", "word_cloud", "concentric_circles", "chevron_process", "fishbone_diagram", "hub_spoke", "vertical_list", "team_roster", "journey_map", "agenda_list", "flywheel_diagram"]
     },
     "table": {
       "label": "Tables",
-      "charts": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns"]
+      "charts": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns", "harvey_balls_table"]
     }
   },
   "quickLookup": {
@@ -61,13 +61,13 @@
     "roadmap": ["gantt_chart", "timeline", "process_flow"],
     "relationship": ["org_chart", "sankey_chart", "matrix_2x2"],
     "flow": ["process_flow", "sankey_chart", "waterfall_chart"],
-    "strategy": ["swot_analysis", "porter_five_forces", "matrix_2x2"],
-    "hierarchy": ["pyramid_chart", "isometric_stairs", "org_chart", "concentric_circles"],
-    "infographic": ["icon_grid", "numbered_steps", "cycle_diagram", "venn_diagram", "pros_cons_chart", "mind_map", "hub_spoke", "word_cloud", "vertical_list"],
+    "strategy": ["swot_analysis", "porter_five_forces", "pest_analysis", "value_chain", "bcg_matrix", "ansoff_matrix", "matrix_2x2"],
+    "hierarchy": ["pyramid_chart", "isometric_stairs", "org_chart", "concentric_circles", "okr_tree"],
+    "infographic": ["icon_grid", "numbered_steps", "cycle_diagram", "venn_diagram", "pros_cons_chart", "mind_map", "hub_spoke", "word_cloud", "vertical_list", "team_roster", "agenda_list", "journey_map", "flywheel_diagram"],
     "pros_cons": ["pros_cons_chart", "butterfly_chart", "swot_analysis", "comparison_table", "comparison_columns"],
     "cause_effect": ["fishbone_diagram", "process_flow"],
-    "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
-    "table": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns"],
+    "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process", "journey_map"],
+    "table": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns", "harvey_balls_table"],
     "pricing": ["comparison_columns", "comparison_table"],
     "brainstorm": ["mind_map", "word_cloud", "hub_spoke"],
     "architecture": ["layered_architecture", "module_composition", "pipeline_with_stages", "client_server_flow"]
@@ -159,9 +159,9 @@
       "keywords": ["trend", "line chart", "growth", "time series"]
     },
     "matrix_2x2": {
-      "label": "2x2 Matrix",
-      "summary": "Dual-dimension positioning and priority quadrant analysis",
-      "keywords": ["matrix", "quadrant", "priority", "positioning"]
+      "label": "Action Priority Matrix",
+      "summary": "4-quadrant bubble matrix mapping Business Impact vs Implementation Effort.",
+      "keywords": ["matrix", "quadrant", "priority", "effort", "impact", "features"]
     },
     "org_chart": {
       "label": "Organization Chart",
@@ -372,6 +372,56 @@
       "label": "Feature Matrix Table",
       "summary": "Competitive capability checklist using checkmarks and highlighted columns.",
       "keywords": ["table", "matrix", "feature comparison", "competitor", "checklist"]
+    },
+    "harvey_balls_table": {
+      "label": "Harvey Balls Matrix",
+      "summary": "Qualitative assessment grid replacing text/checkmarks with Harvey balls (0-100% completion circles).",
+      "keywords": ["table", "matrix", "harvey balls", "qualitative", "scoring", "evaluation"]
+    },
+    "team_roster": {
+      "label": "Team Roster",
+      "summary": "Executive/leadership profile cards displaying photo, name, title, and short bio.",
+      "keywords": ["team", "roster", "profile", "bio", "leadership", "cards"]
+    },
+    "pest_analysis": {
+      "label": "PEST Analysis",
+      "summary": "Macro-environmental framework analyzing Political, Economic, Social, and Technological factors.",
+      "keywords": ["strategy", "pest", "pestle", "macro", "environmental", "framework"]
+    },
+    "value_chain": {
+      "label": "Value Chain",
+      "summary": "Michael Porter's framework mapping primary and support activities to profit margin.",
+      "keywords": ["strategy", "value chain", "operations", "margin", "competitive advantage"]
+    },
+    "journey_map": {
+      "label": "Customer Journey Map",
+      "summary": "Multi-phase UX matrix tracking user actions, emotional curves, and pain points.",
+      "keywords": ["journey", "ux", "customer", "experience", "marketing", "funnel"]
+    },
+    "agenda_list": {
+      "label": "Agenda List",
+      "summary": "Clean, large-number structural list for table of contents, meeting agendas, and section dividers.",
+      "keywords": ["agenda", "table of contents", "toc", "divider", "list", "meeting"]
+    },
+    "bcg_matrix": {
+      "label": "BCG Matrix",
+      "summary": "Classic Growth-Share Matrix (Stars, Cash Cows, Question Marks, Dogs).",
+      "keywords": ["strategy", "bcg matrix", "portfolio", "growth-share", "product lifecycle"]
+    },
+    "ansoff_matrix": {
+      "label": "Ansoff Matrix",
+      "summary": "Growth strategy framework mapping Existing/New Markets vs Existing/New Products.",
+      "keywords": ["strategy", "ansoff", "growth", "expansion", "market development"]
+    },
+    "flywheel_diagram": {
+      "label": "Flywheel Diagram",
+      "summary": "Circular self-reinforcing momentum cycle (e.g., Attract, Engage, Delight).",
+      "keywords": ["process", "flywheel", "cycle", "growth loop", "momentum"]
+    },
+    "okr_tree": {
+      "label": "OKR Goal Tree",
+      "summary": "Top-down hierarchical tree connecting Objectives to Key Results and Initiatives.",
+      "keywords": ["okr", "goals", "hierarchy", "tree", "planning", "alignment"]
     }
   }
 }
