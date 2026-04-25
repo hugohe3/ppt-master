@@ -190,7 +190,7 @@ Logically related elements **MUST** be wrapped in `<g>` tags. This produces Powe
 
 | Grouping Unit | Contains |
 |---------------|----------|
-| Card / panel | Background rect + shadow + icon + title + body text |
+| Card / panel | Background rect + (optional shadow only if the card floats over a photo/colored panel — see §6) + icon + title + body text |
 | Process step | Number circle + icon + label + description |
 | List item | Bullet / number + icon + title + description |
 | Icon-text combo | Icon element + adjacent label |
@@ -202,6 +202,7 @@ Logically related elements **MUST** be wrapped in `<g>` tags. This produces Powe
 
 ```xml
 <g id="card-benefits-1">
+  <!-- This card floats over a colored panel — shadow is appropriate. On a flat white canvas, omit the filter. -->
   <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
   <use data-icon="bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
   <text x="105" y="270" font-size="56" font-weight="bold" fill="#0071E3">10×</text>
@@ -245,6 +246,57 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 
 ### Shadow
 
+> **Shadow is an aesthetic ingredient, not a default treatment.** Restraint, not abundance, produces the "designed" feel. The principles below override any temptation to add shadow "for depth" — read them before reaching for any shadow filter.
+
+#### When to use shadow
+
+Add shadow ONLY when the element genuinely floats above another layer:
+- A card / quote bubble / annotation **sitting on a photo or colored panel**
+- The single primary CTA or "recommended" item that needs to be **picked out from peers**
+- An overlay layer (callout, tooltip, modal-style emphasis)
+- A floating image card on a textured background
+
+#### When NOT to use shadow
+
+Skip shadow entirely on:
+- **Background panels / section dividers / decorative bars** — they are the floor, the floor doesn't lift
+- **Equal peer cards in a 2/3/4-up grid** — if all are lifted, none are; keep all flat
+- **Containers that already have a visible border, gradient fill, or strong background tint** — the "this is a container" job is done; adding shadow is redundant and reads as PPT-template clutter
+- **Body-text paragraph containers** — reading surfaces should sit on the floor, lifting them disrupts scan rhythm
+- **Decorative lines / dividers / icons themselves** — they are symbols, not objects
+- **Pages with only one content container** — there is no second layer to lift above
+- **Dark backgrounds** — black shadows vanish on dark; use a 1px low-opacity white stroke or subtle outer glow instead
+
+**Per-page budget**: at most 2–3 shadowed elements per slide. If you find yourself adding shadow to a 4th element, something else needs to lose its shadow first.
+
+#### Single light source per page
+
+All `feOffset` values on a single page must share the same `dx` and `dy` direction. Real shadows obey one sun. Mixing dy=+6 on some cards and dy=-4 on others looks broken even when the viewer can't articulate why. Default: `dx="0"` with `dy="4"` to `dy="8"` (light from upper front).
+
+#### Restraint over visibility
+
+The high-end aesthetic standard is **"the shadow is felt, not seen."** If a viewer notices "there's a shadow here," it is already too strong.
+- Default `flood-opacity`: **0.06–0.12** for resting cards
+- Maximum `flood-opacity`: **0.20** for genuinely raised elements (CTA, overlay)
+- Above 0.20 = Office 2007 hard-shadow look — avoid
+- Color: near-black with low opacity, OR a darker tint of the page background. Brand-colored shadow only on accent elements that share that hue family.
+
+#### Two-tier elevation maximum
+
+A page may have at most two non-floor elevation levels. More tiers fragment visual hierarchy.
+
+| Tier | When | dy | stdDeviation | flood-opacity |
+|------|------|----|--------------|---------------|
+| Floor (no shadow) | Backgrounds, peer-grid cards, dividers, body-text containers | — | — | — |
+| Resting | Cards on photos/panels, secondary callouts | 2–4 | 4–8 | 0.06–0.10 |
+| Raised | Primary CTA, focused/recommended card, overlay | 6–10 | 10–16 | 0.12–0.20 |
+
+#### Don't stack visual-weight tools
+
+A container's "look at me" budget is small. Pick **one** of: shadow, visible border, gradient fill, strong background tint. Stacking shadow + border + rounded + gradient = instant template look.
+
+---
+
 #### Filter Soft Shadow — Recommended
 
 Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter automatically converts `feGaussianBlur` + `feOffset` into native PPTX `<a:outerShdw>`.
@@ -254,7 +306,7 @@ Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter
   <filter id="softShadow" x="-15%" y="-15%" width="140%" height="140%">
     <feGaussianBlur in="SourceAlpha" stdDeviation="12"/>
     <feOffset dx="0" dy="6" result="offsetBlur"/>
-    <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
+    <feFlood flood-color="#000000" flood-opacity="0.10" result="shadowColor"/>
     <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
     <feMerge>
       <feMergeNode in="shadow"/>
@@ -265,12 +317,14 @@ Best for: cards, floating panels, elevated elements. The `svg_to_pptx` converter
 <rect x="60" y="60" width="400" height="240" rx="12" fill="#FFFFFF" filter="url(#softShadow)"/>
 ```
 
-Recommended parameters:
+Recommended parameters (see "Two-tier elevation maximum" above for tier guidance):
 ```
-stdDeviation:   10–16    (smaller = crisper, larger = softer)
-flood-opacity:  0.12–0.20  (too low will be invisible in PPTX)
-dy:             4–8      (vertical > horizontal for natural top-light)
-dx:             0–2
+stdDeviation:   4–16       (resting cards: 4–8;  raised elements: 10–16)
+flood-opacity:  0.06–0.12  (resting cards — default)
+                0.12–0.20  (raised elements only — primary CTA, overlay)
+                NEVER     > 0.20  (Office 2007 hard-shadow look)
+dy:             2–10       (resting: 2–4;  raised: 6–10)
+dx:             0–2        (must match every other shadow on the page — single light source)
 ```
 
 #### Colored Shadow
@@ -290,7 +344,7 @@ Best for: accent buttons, brand-colored cards. Use the element's own color famil
 </filter>
 ```
 
-Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.15–0.25.
+Replace `flood-color` with the element's brand color; keep `flood-opacity` between 0.12–0.20 (above 0.20 reads as Office 2007 hard-shadow). Reserve colored shadow for the **single primary CTA / accent element per page** — using it on every button defeats the "this one is special" cue.
 
 #### Glow Effect
 
@@ -397,8 +451,10 @@ Best for: slides needing strong visual brand identity.
 
 | Scenario | Recommended Technique | Avoid |
 |----------|-----------------------|-------|
-| Card / panel shadow | Filter soft shadow (`flood-opacity` ≤ 0.12) | Hard black shadow |
-| Accent / CTA button | Colored shadow (same hue family) | Generic gray shadow |
+| Card / panel shadow (only when floating over photo/colored panel) | Filter soft shadow (`flood-opacity` 0.06–0.12, single light source) | Hard black shadow, full-page abundance |
+| Equal peer cards in a grid | All flat (no shadow) | Lifting every card uniformly |
+| Page-section background panel | Flat fill, no shadow | Treating panels as floating cards |
+| Accent / CTA button (one per page) | Colored shadow (same hue family, `flood-opacity` 0.12–0.20) | Generic gray shadow, applying to every button |
 | Title / metric highlight | Glow filter (brand color, no offset) | Overuse on body text |
 | Text over image | Linear gradient overlay (direction matches text side) | Uniform flat opacity over whole image |
 | Cover / full-image slide | Bottom gradient bar + brand color | Solid black overlay |
