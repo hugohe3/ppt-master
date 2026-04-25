@@ -10,14 +10,13 @@
     
     <defs>
         <!-- 数据点阴影 -->
-        <filter id="dotShadow">
+        <filter id="dotShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-            <feOffset dx="0" dy="1"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.3"/>
-            </feComponentTransfer>
+            <feOffset dx="0" dy="1" result="offsetBlur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.15" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
             <feMerge>
-                <feMergeNode/>
+                <feMergeNode in="shadow"/>
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
         </filter>
@@ -36,16 +35,16 @@
     </defs>
     
     <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FAFBFC"/>
+    <rect width="1280" height="720" fill="#F8FAFC"/>
     
     <!-- 标题 -->
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="bold" fill="#1A252F">
+          font-size="34" font-weight="bold" fill="#0F172A">
         <tspan>温湿度测试循环曲线</tspan>
     </text>
     
     <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" fill="#7F8C8D">
+          font-size="16" fill="#64748B">
         <tspan>环境测试 · 总时长：720分钟（12小时）</tspan>
     </text>
     
@@ -58,22 +57,22 @@
     
     <!-- 阶段文字标注 -->
     <text x="219" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" font-weight="600" fill="#C0392B" text-anchor="middle">
+          font-size="13" font-weight="600" fill="#DC2626" text-anchor="middle">
         <tspan>1.升温(60min)</tspan>
     </text>
     
     <text x="416.5" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" font-weight="600" fill="#C0392B" text-anchor="middle">
+          font-size="13" font-weight="600" fill="#DC2626" text-anchor="middle">
         <tspan>2.高温保持(240min)</tspan>
     </text>
     
     <text x="614" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" font-weight="600" fill="#2471A3" text-anchor="middle">
+          font-size="13" font-weight="600" fill="#2563EB" text-anchor="middle">
         <tspan>3.降温(120min)</tspan>
     </text>
     
     <text x="811.5" y="155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" font-weight="600" fill="#2471A3" text-anchor="middle">
+          font-size="13" font-weight="600" fill="#2563EB" text-anchor="middle">
         <tspan>4.低温保持(240min)</tspan>
     </text>
     
@@ -92,18 +91,18 @@
         <rect x="930" y="190" width="158" height="390" fill="#6C5CE7" fill-opacity="0.03"/>
 
         <!-- 阶段分隔线 -->
-        <line x1="298" y1="190" x2="298" y2="580" stroke="#BDC3C7" stroke-width="1" stroke-dasharray="5,5"/>
-        <line x1="535" y1="190" x2="535" y2="580" stroke="#BDC3C7" stroke-width="1" stroke-dasharray="5,5"/>
-        <line x1="693" y1="190" x2="693" y2="580" stroke="#BDC3C7" stroke-width="1" stroke-dasharray="5,5"/>
-        <line x1="930" y1="190" x2="930" y2="580" stroke="#BDC3C7" stroke-width="1" stroke-dasharray="5,5"/>
+        <line x1="298" y1="190" x2="298" y2="580" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="5,5"/>
+        <line x1="535" y1="190" x2="535" y2="580" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="5,5"/>
+        <line x1="693" y1="190" x2="693" y2="580" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="5,5"/>
+        <line x1="930" y1="190" x2="930" y2="580" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="5,5"/>
         
         <!-- 水平网格线（与刻度精确对齐）-->
-        <line x1="140" y1="580" x2="1088" y2="580" stroke="#D5D8DC" stroke-width="1.5"/>
-        <line x1="140" y1="502" x2="1088" y2="502" stroke="#EAECEE" stroke-width="1" stroke-dasharray="4,4"/>
-        <line x1="140" y1="424" x2="1088" y2="424" stroke="#EAECEE" stroke-width="1" stroke-dasharray="4,4"/>
-        <line x1="140" y1="346" x2="1088" y2="346" stroke="#EAECEE" stroke-width="1" stroke-dasharray="4,4"/>
-        <line x1="140" y1="268" x2="1088" y2="268" stroke="#EAECEE" stroke-width="1" stroke-dasharray="4,4"/>
-        <line x1="140" y1="190" x2="1088" y2="190" stroke="#D5D8DC" stroke-width="1.5"/>
+        <line x1="140" y1="580" x2="1088" y2="580" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="140" y1="502" x2="1088" y2="502" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="424" x2="1088" y2="424" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="346" x2="1088" y2="346" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="268" x2="1088" y2="268" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="140" y1="190" x2="1088" y2="190" stroke="#CBD5E1" stroke-width="1.5"/>
         
         <!-- 左Y轴 - 温度刻度 (°C) -->
         <text x="50" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -170,39 +169,39 @@
         </text>
         
         <!-- 坐标轴 -->
-        <line x1="140" y1="190" x2="140" y2="580" stroke="#ABB2B9" stroke-width="2"/>
-        <line x1="140" y1="580" x2="1088" y2="580" stroke="#ABB2B9" stroke-width="2"/>
-        <line x1="1088" y1="190" x2="1088" y2="580" stroke="#ABB2B9" stroke-width="2"/>
+        <line x1="140" y1="190" x2="140" y2="580" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="140" y1="580" x2="1088" y2="580" stroke="#94A3B8" stroke-width="2"/>
+        <line x1="1088" y1="190" x2="1088" y2="580" stroke="#94A3B8" stroke-width="2"/>
         
         <!-- X轴时间标签 -->
         <text x="140" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>0</tspan>
         </text>
         <text x="298" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>60</tspan>
         </text>
         <text x="535" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>300</tspan>
         </text>
         <text x="693" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>420</tspan>
         </text>
         <text x="930" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>660</tspan>
         </text>
         <text x="1088" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
+              font-size="13" fill="#475569" text-anchor="middle">
             <tspan>720</tspan>
         </text>
         
         <!-- X轴标题 -->
         <text x="614" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#5D6D7E" text-anchor="middle">
+              font-size="16" font-weight="bold" fill="#475569" text-anchor="middle">
             <tspan>时间 (min)</tspan>
         </text>
         
@@ -243,63 +242,63 @@
         <!-- 起始点 - 温度 20℃ -->
         <rect x="148" y="354" width="46" height="22" fill="#E17055" rx="4"/>
         <text x="171" y="369" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>20℃</tspan>
         </text>
         
         <!-- 起始点 - 湿度 65% -->
         <rect x="148" y="304" width="46" height="22" fill="#0984E3" rx="4"/>
         <text x="171" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>65%</tspan>
         </text>
         
         <!-- 高温点 - 温度 85℃ -->
         <rect x="306" y="184" width="46" height="22" fill="#E17055" rx="4"/>
         <text x="329" y="199" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>85℃</tspan>
         </text>
         
         <!-- 高湿点 - 湿度 85% -->
         <rect x="395" y="229" width="46" height="22" fill="#0984E3" rx="4"/>
         <text x="418" y="244" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>85%</tspan>
         </text>
         
         <!-- 低温点 - 温度 -40℃ -->
         <rect x="700" y="510" width="52" height="22" fill="#E17055" rx="4"/>
         <text x="726" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>-40℃</tspan>
         </text>
         
         <!-- 低湿点 - 湿度 30% -->
         <rect x="790" y="445" width="46" height="22" fill="#0984E3" rx="4"/>
         <text x="813" y="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>30%</tspan>
         </text>
         
         <!-- 复位点 - 温度 20℃ -->
         <rect x="1018" y="354" width="46" height="22" fill="#E17055" rx="4"/>
         <text x="1041" y="369" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>20℃</tspan>
         </text>
         
         <!-- 复位点 - 湿度 65% -->
         <rect x="1018" y="304" width="46" height="22" fill="#0984E3" rx="4"/>
         <text x="1041" y="319" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
             <tspan>65%</tspan>
         </text>
     </g>
     
     <!-- 图例 -->
     <g id="legend">
-        <rect x="420" y="660" width="440" height="45" fill="#FFFFFF" stroke="#E5E8EB" stroke-width="1.5" rx="10"/>
+        <rect x="420" y="660" width="440" height="45" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" rx="10"/>
         
         <!-- 温度图例（珊瑚色实线+圆点）-->
         <line x1="450" y1="682" x2="490" y2="682" stroke="#E17055" stroke-width="3"/>
