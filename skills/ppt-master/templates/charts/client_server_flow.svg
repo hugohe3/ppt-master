@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!--
-    客户端-服务端交互图模板 (Client-Server Flow)
-    用途: 左侧客户端群 + 右侧服务端群，中间用双向箭头标注关键交互动作
-    适用场景: 请求-响应架构、前后端交互图、C/S 协议栈、API 调用关系
-    支持: 左侧 2-3 个客户端模块 + 右侧 2-4 个服务端模块 + 中间 3-5 条关键交互
-    关键约定: 每个模块卡 = 模块名 + 1 行描述；每条交互箭头 = 动作标签 (例如 "Login" / "Return JWT")；切勿只画箭头不写动作
+    Client-Server Flow Template
+    Usage: Left clients + Right servers, bidirectional arrows for key interactions
+    Scenarios: Request-response architecture, Frontend-backend flow, C/S protocol stack, API calls
+    Supports: 2-3 client modules (left) + 2-4 server modules (right) + 3-5 key interactions (middle)
+    Key convention: Each module card = Name + 1 line description; Each arrow = Action label (e.g. "Login" / "Return JWT"); DO NOT draw arrows without labels
     -->
 
     <defs>
@@ -27,122 +27,122 @@
 
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
-    <!-- 标题 -->
+    <!-- Title -->
     <text x="60" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="28" font-weight="700" fill="#0F172A"><tspan>客户端-服务端交互</tspan></text>
+          font-size="28" font-weight="700" fill="#0F172A"><tspan>Client-Server Flow</tspan></text>
     <text x="60" y="84" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#64748B"><tspan>Client-Server Flow · 左侧终端发起请求，右侧服务端分层响应</tspan></text>
+          font-size="14" fill="#64748B"><tspan>Client-Server Flow · Left side initiates requests, right side responds hierarchically</tspan></text>
 
     <g id="client-group">
-    <!-- 左侧: Client 分组 -->
+    <!-- Left side: Client Group -->
     <rect x="60" y="130" width="320" height="520" rx="16" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
     <rect x="60" y="130" width="320" height="44" rx="16" fill="#3B82F6"/>
     <rect x="60" y="158" width="320" height="16" fill="#3B82F6"/>
     <text x="220" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="16" font-weight="700" fill="#FFFFFF"><tspan>CLIENT · 客户端</tspan></text>
+          font-size="16" font-weight="700" fill="#FFFFFF"><tspan>CLIENT</tspan></text>
 
     <g id="client-1">
-    <!-- 客户端模块 1: Web -->
+    <!-- Client Module 1: Web -->
     <g filter="url(#csShadow)">
         <rect x="90" y="200" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="200" width="6" height="100" fill="#3B82F6"/>
     <text x="112" y="226" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>Web 浏览器</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>Web Browser</tspan></text>
     <text x="112" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>React SPA，负责 UI 渲染与用户交互</tspan></text>
+          font-size="13" fill="#475569"><tspan>React SPA UI &amp; Interaction</tspan></text>
     <text x="112" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>通过 HTTPS + JWT 与后端通信</tspan></text>
+          font-size="13" fill="#475569"><tspan>HTTPS + JWT Auth</tspan></text>
     <text x="112" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="13" fill="#64748B"><tspan>协议: HTTPS / WebSocket</tspan></text>
+          font-size="13" fill="#64748B"><tspan>Protocol: HTTPS / WebSocket</tspan></text>
 
         </g>
     <g id="client-2">
-    <!-- 客户端模块 2: Mobile -->
+    <!-- Client Module 2: Mobile -->
     <g filter="url(#csShadow)">
         <rect x="90" y="320" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="320" width="6" height="100" fill="#3B82F6"/>
     <text x="112" y="346" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>移动端 App</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>Mobile App</tspan></text>
     <text x="112" y="372" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>iOS / Android 双端，支持离线缓存</tspan></text>
+          font-size="13" fill="#475569"><tspan>iOS/Android Native Client</tspan></text>
     <text x="112" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>关键接口通过 HTTP/2 多路复用</tspan></text>
+          font-size="13" fill="#475569"><tspan>Offline Cache Supported</tspan></text>
     <text x="112" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="13" fill="#64748B"><tspan>协议: HTTP/2 / Push</tspan></text>
+          font-size="13" fill="#64748B"><tspan>Protocol: HTTP/2 / Push</tspan></text>
 
         </g>
     <g id="client-3">
-    <!-- 客户端模块 3: Third-party -->
+    <!-- Client Module 3: Third-party -->
     <g filter="url(#csShadow)">
         <rect x="90" y="440" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#D4DFF7" stroke-width="1"/>
     </g>
     <rect x="90" y="440" width="6" height="100" fill="#3B82F6"/>
     <text x="112" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>第三方集成</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>3rd Party Client</tspan></text>
     <text x="112" y="492" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>合作方服务器通过开放 API 接入</tspan></text>
+          font-size="13" fill="#475569"><tspan>Open API Access</tspan></text>
     <text x="112" y="512" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>使用 API Key 或 OAuth2 客户端凭证</tspan></text>
+          font-size="13" fill="#475569"><tspan>OAuth2 / API Key Auth</tspan></text>
     <text x="112" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="13" fill="#64748B"><tspan>协议: HTTPS / Webhook</tspan></text>
+          font-size="13" fill="#64748B"><tspan>Protocol: HTTPS / Webhook</tspan></text>
 
         </g>
     </g>
 
     <g id="server-group">
-    <!-- 右侧: Server 分组 -->
+    <!-- Right side: Server Group -->
     <rect x="900" y="130" width="320" height="520" rx="16" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5"/>
     <rect x="900" y="130" width="320" height="44" rx="16" fill="#10B981"/>
     <rect x="900" y="158" width="320" height="16" fill="#10B981"/>
     <text x="1060" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="16" font-weight="700" fill="#FFFFFF"><tspan>SERVER · 服务端</tspan></text>
+          font-size="16" font-weight="700" fill="#FFFFFF"><tspan>SERVER</tspan></text>
 
     <g id="server-1">
-    <!-- 服务端模块 1: Gateway -->
+    <!-- Server Module 1: Gateway -->
     <g filter="url(#csShadow)">
         <rect x="930" y="200" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="200" width="6" height="100" fill="#10B981"/>
     <text x="952" y="226" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>API 网关</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>API Gateway</tspan></text>
     <text x="952" y="252" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>统一入口，负责鉴权、限流、路由</tspan></text>
+          font-size="13" fill="#475569"><tspan>Auth &amp; Rate Limiting</tspan></text>
     <text x="952" y="272" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>日志采集与链路追踪注入</tspan></text>
+          font-size="13" fill="#475569"><tspan>Routing &amp; Tracing</tspan></text>
     <text x="952" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" fill="#64748B"><tspan>Kong / Envoy</tspan></text>
 
         </g>
     <g id="server-2">
-    <!-- 服务端模块 2: Services -->
+    <!-- Server Module 2: Services -->
     <g filter="url(#csShadow)">
         <rect x="930" y="320" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="320" width="6" height="100" fill="#10B981"/>
     <text x="952" y="346" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>业务微服务</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>Microservices</tspan></text>
     <text x="952" y="372" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>按领域拆分的服务集群</tspan></text>
+          font-size="13" fill="#475569"><tspan>Domain Service Cluster</tspan></text>
     <text x="952" y="392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>内部通过 gRPC 互相调用</tspan></text>
+          font-size="13" fill="#475569"><tspan>gRPC Internal Comm.</tspan></text>
     <text x="952" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" fill="#64748B"><tspan>Go / Java / Node</tspan></text>
 
         </g>
     <g id="server-3">
-    <!-- 服务端模块 3: Data -->
+    <!-- Server Module 3: Data -->
     <g filter="url(#csShadow)">
         <rect x="930" y="440" width="260" height="100" rx="10" fill="#FFFFFF" stroke="#CDEAD3" stroke-width="1"/>
     </g>
     <rect x="930" y="440" width="6" height="100" fill="#10B981"/>
     <text x="952" y="466" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="700" fill="#0F172A"><tspan>数据存储</tspan></text>
+          font-size="18" font-weight="700" fill="#0F172A"><tspan>Database Layer</tspan></text>
     <text x="952" y="492" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>主库 + 只读副本 + 缓存三级结构</tspan></text>
+          font-size="13" fill="#475569"><tspan>Primary/Replica &amp; Cache</tspan></text>
     <text x="952" y="512" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#475569"><tspan>冷热分层，归档到对象存储</tspan></text>
+          font-size="13" fill="#475569"><tspan>Hot/Cold Data Tiering</tspan></text>
     <text x="952" y="530" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" fill="#64748B"><tspan>PostgreSQL / Redis / S3</tspan></text>
 
@@ -150,55 +150,55 @@
     </g>
 
     <g id="interactions">
-    <!-- 中间通信通道标签 -->
+    <!-- Middle Communication Channel Labels -->
     <text x="640" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#0F172A"><tspan>关键交互</tspan></text>
+          font-size="14" font-weight="700" fill="#0F172A"><tspan>Key Interactions</tspan></text>
     <text x="640" y="180" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" fill="#64748B"><tspan>Key Interactions</tspan></text>
 
     <g id="interaction-1">
-    <!-- 交互 1: 登录请求 -->
+    <!-- Interaction 1: Login Request -->
     <line x1="380" y1="250" x2="926" y2="250" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#csArrowRight)"/>
     <rect x="500" y="216" width="280" height="26" rx="11" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1"/>
     <text x="640" y="234" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#3B82F6"><tspan>① 登录请求 · POST /auth/login</tspan></text>
+          font-size="14" font-weight="700" fill="#3B82F6"><tspan>① Login Request · POST /auth/login</tspan></text>
 
         </g>
     <g id="interaction-2">
-    <!-- 交互 2: 返回 Token -->
+    <!-- Interaction 2: Return Token -->
     <line x1="926" y1="290" x2="384" y2="290" stroke="#10B981" stroke-width="2.5" marker-end="url(#csArrowLeft)"/>
     <rect x="500" y="302" width="280" height="26" rx="11" fill="#FFFFFF" stroke="#10B981" stroke-width="1"/>
     <text x="640" y="318" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#10B981"><tspan>② 返回 JWT Token · 2xx Response</tspan></text>
+          font-size="14" font-weight="700" fill="#10B981"><tspan>② Return JWT Token · 2xx Response</tspan></text>
 
         </g>
     <g id="interaction-3">
-    <!-- 交互 3: 业务调用 -->
+    <!-- Interaction 3: Business Call -->
     <line x1="380" y1="370" x2="926" y2="370" stroke="#3B82F6" stroke-width="2.5" marker-end="url(#csArrowRight)"/>
     <rect x="500" y="336" width="280" height="26" rx="11" fill="#FFFFFF" stroke="#3B82F6" stroke-width="1"/>
     <text x="640" y="354" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#3B82F6"><tspan>③ 业务调用 · GET /api/resources</tspan></text>
+          font-size="14" font-weight="700" fill="#3B82F6"><tspan>③ Business Call · GET /api/resources</tspan></text>
 
         </g>
     <g id="interaction-4">
-    <!-- 交互 4: 数据返回 -->
+    <!-- Interaction 4: Data Return -->
     <line x1="926" y1="410" x2="384" y2="410" stroke="#10B981" stroke-width="2.5" marker-end="url(#csArrowLeft)"/>
     <rect x="500" y="422" width="280" height="26" rx="11" fill="#FFFFFF" stroke="#10B981" stroke-width="1"/>
     <text x="640" y="438" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#10B981"><tspan>④ 数据返回 · JSON Payload</tspan></text>
+          font-size="14" font-weight="700" fill="#10B981"><tspan>④ Return Data · JSON Payload</tspan></text>
 
         </g>
     <g id="interaction-5">
-    <!-- 交互 5: 推送 -->
+    <!-- Interaction 5: Push -->
     <line x1="926" y1="490" x2="384" y2="490" stroke="#10B981" stroke-width="2.5" marker-end="url(#csArrowLeft)"/>
     <rect x="500" y="502" width="280" height="26" rx="11" fill="#FFFFFF" stroke="#10B981" stroke-width="1"/>
     <text x="640" y="518" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#10B981"><tspan>⑤ 实时推送 · WebSocket / SSE</tspan></text>
+          font-size="14" font-weight="700" fill="#10B981"><tspan>⑤ Real-time Push · WebSocket / SSE</tspan></text>
 
         </g>
     </g>
 
-    <!-- 底部注释 -->
+    <!-- Footer Note -->
     <text x="60" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#64748B"><tspan>蓝色箭头 = 客户端发起；绿色箭头 = 服务端响应；每条交互箭头必须带动作标签，不要只画线</tspan></text>
+          font-size="14" fill="#64748B"><tspan>Blue arrow = Client request; Green arrow = Server response; Every arrow MUST have an action label, do not draw bare lines</tspan></text>
 </svg>

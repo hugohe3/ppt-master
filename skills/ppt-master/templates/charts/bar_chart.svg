@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    柱状图模板
-    用途: 类别数据对比
-    适用场景: 销售额对比、区域排名、年度数据对比
-    支持: 6个柱子（可调整为3-8个）
+    Bar Chart Template
+    Usage: Category data comparison
+    Scenarios: Sales comparison, regional ranking, annual data comparison
+    Supports: 6 bars (adjustable to 3-8)
     -->
     
     <defs>
-        <!-- 柱状图渐变 -->
+        <!-- Bar gradient -->
         <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
             <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
@@ -23,7 +23,7 @@
             <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
         </linearGradient>
         
-        <!-- 阴影 -->
+        <!-- Shadow -->
         <filter id="barShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
             <feOffset dx="0" dy="1" result="offsetBlur"/>
@@ -36,30 +36,30 @@
         </filter>
     </defs>
     
-    <!-- 背景 -->
+    <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
     
-    <!-- 标题 -->
+    <!-- Title -->
     <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="34" font-weight="bold" fill="#0F172A">
-        <tspan>各区域销售额对比</tspan>
+        <tspan>Regional Sales Comparison</tspan>
     </text>
     
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">
-        <tspan>2025年第三季度 · 单位：百万元</tspan>
+        <tspan>Q3 2025 · Unit: Millions</tspan>
     </text>
     
-    <!-- 图表区域 -->
+    <!-- Chart Area -->
     <g id="chartArea">
-        <!-- Y轴网格线 -->
+        <!-- Y-axis Grid Lines -->
         <line x1="140" y1="550" x2="1160" y2="550" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="140" y1="450" x2="1160" y2="450" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="140" y1="350" x2="1160" y2="350" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="140" y1="250" x2="1160" y2="250" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="140" y1="150" x2="1160" y2="150" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         
-        <!-- Y轴刻度标签 -->
+        <!-- Y-axis Labels -->
         <text x="125" y="555" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B" text-anchor="end">
             <tspan>0</tspan>
@@ -81,13 +81,13 @@
             <tspan>200</tspan>
         </text>
         
-        <!-- X轴和Y轴 -->
+        <!-- X and Y axes -->
         <line x1="140" y1="150" x2="140" y2="550" stroke="#94A3B8" stroke-width="2"/>
         <line x1="140" y1="550" x2="1160" y2="550" stroke="#94A3B8" stroke-width="2"/>
         
-        <!-- 柱子数据 (柱宽50px, 间距130px, 总间距180px) -->
+        <!-- Bar Data (Bar width 50px, gap 130px, total gap 180px) -->
         
-        <!-- 柱子1: 华东 - 185M (370px高度, 每100M=200px) -->
+        <!-- Bar 1: East - 185M (370px height, 100M=200px) -->
         <g id="bar-1">
             <rect x="220" y="180" width="50" height="370" rx="4" fill="url(#barGrad1)" filter="url(#barShadow)"/>
             <text x="245" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -96,11 +96,11 @@
             </text>
             <text x="245" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>华东</tspan>
+                <tspan>East</tspan>
             </text>
         </g>
         
-        <!-- 柱子2: 华南 - 142M -->
+        <!-- Bar 2: South - 142M -->
         <g id="bar-2">
             <rect x="400" y="266" width="50" height="284" rx="4" fill="url(#barGrad1)" filter="url(#barShadow)"/>
             <text x="425" y="251" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -109,11 +109,11 @@
             </text>
             <text x="425" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>华南</tspan>
+                <tspan>South</tspan>
             </text>
         </g>
         
-        <!-- 柱子3: 华北 - 128M -->
+        <!-- Bar 3: North - 128M -->
         <g id="bar-3">
             <rect x="580" y="294" width="50" height="256" rx="4" fill="url(#barGrad1)" filter="url(#barShadow)"/>
             <text x="605" y="279" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -122,11 +122,11 @@
             </text>
             <text x="605" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>华北</tspan>
+                <tspan>North</tspan>
             </text>
         </g>
         
-        <!-- 柱子4: 西南 - 96M -->
+        <!-- Bar 4: Southwest - 96M -->
         <g id="bar-4">
             <rect x="760" y="358" width="50" height="192" rx="4" fill="url(#barGrad2)" filter="url(#barShadow)"/>
             <text x="785" y="343" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -135,11 +135,11 @@
             </text>
             <text x="785" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>西南</tspan>
+                <tspan>Southwest</tspan>
             </text>
         </g>
         
-        <!-- 柱子5: 华中 - 73M -->
+        <!-- Bar 5: Central - 73M -->
         <g id="bar-5">
             <rect x="940" y="404" width="50" height="146" rx="4" fill="url(#barGrad2)" filter="url(#barShadow)"/>
             <text x="965" y="389" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -148,11 +148,11 @@
             </text>
             <text x="965" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>华中</tspan>
+                <tspan>Central</tspan>
             </text>
         </g>
         
-        <!-- 柱子6: 东北 - 52M -->
+        <!-- Bar 6: Northeast - 52M -->
         <g id="bar-6">
             <rect x="1120" y="446" width="50" height="104" rx="4" fill="url(#barGrad3)" filter="url(#barShadow)"/>
             <text x="1145" y="431" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -161,18 +161,18 @@
             </text>
             <text x="1145" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="16" fill="#475569" text-anchor="middle">
-                <tspan>东北</tspan>
+                <tspan>Northeast</tspan>
             </text>
         </g>
     </g>
     
-    <!-- 图例 -->
+    <!-- Legend -->
     <g id="legend">
         <g id="legend-high">
             <rect x="920" y="620" width="16" height="16" rx="2" fill="url(#barGrad1)"/>
             <text x="945" y="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="14" fill="#475569">
-                <tspan>高增长区域 (&gt;100M)</tspan>
+                <tspan>High Growth Region (&gt;100M)</tspan>
             </text>
         </g>
         
@@ -180,7 +180,7 @@
             <rect x="920" y="645" width="16" height="16" rx="2" fill="url(#barGrad2)"/>
             <text x="945" y="657" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="14" fill="#475569">
-                <tspan>稳定区域 (50-100M)</tspan>
+                <tspan>Stable Region (50-100M)</tspan>
             </text>
         </g>
         
@@ -188,15 +188,15 @@
             <rect x="920" y="670" width="16" height="16" rx="2" fill="url(#barGrad3)"/>
             <text x="945" y="682" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="14" fill="#475569">
-                <tspan>潜力区域 (&lt;50M)</tspan>
+                <tspan>Potential Region (&lt;50M)</tspan>
             </text>
         </g>
     </g>
     
-    <!-- 数据来源 -->
+    <!-- Data Source -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="14" fill="#94A3B8">
-        <tspan>数据来源: 销售部门统计</tspan>
+        <tspan>Data Source: Sales Department Statistics</tspan>
     </text>
 </svg>
 

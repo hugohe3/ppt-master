@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    面积图模板
-    用途: 趋势变化、累积数据展示
-    适用场景: 流量趋势、销售累积、库存变化、用户增长
-    支持: 12个时间点 × 2系列（可调整）
-    与折线图区别: 填充面积，更强调量的累积和变化
+    Area Chart Template
+    Usage: Trend changes, cumulative data display
+    Scenarios: Traffic trends, cumulative sales, inventory changes, user growth
+    Supports: 12 time points × 2 series (adjustable)
+    Difference from Line Chart: Filled area emphasizes cumulative volume and changes
     -->
     
     <defs>
-        <!-- 面积填充渐变（蓝色系列） -->
+        <!-- Area fill gradient (Blue series) -->
         <linearGradient id="areaGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.6" />
             <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0.1" />
         </linearGradient>
         
-        <!-- 面积填充渐变（绿色系列） -->
+        <!-- Area fill gradient (Green series) -->
         <linearGradient id="areaGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.5" />
             <stop offset="100%" style="stop-color:#10B981;stop-opacity:0.05" />
         </linearGradient>
         
-        <!-- 数据点阴影 -->
+        <!-- Data point shadow -->
         <filter id="dotShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
             <feOffset dx="0" dy="1" result="offsetBlur"/>
@@ -33,47 +33,47 @@
         </filter>
     </defs>
     
-    <!-- 背景 -->
+    <!-- Background -->
     <rect width="1280" height="720" fill="#FFFFFF"/>
     
-    <!-- 标题 -->
+    <!-- Title -->
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="34" font-weight="bold" fill="#0F172A">
-        <tspan>网站流量趋势分析</tspan>
+        <tspan>Website Traffic Trend Analysis</tspan>
     </text>
     
     <text x="60" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="18" fill="#64748B">
-        <tspan>2025年度月度数据 · 单位：万次访问</tspan>
+        <tspan>2025 Monthly Data · Unit: 10K Visits</tspan>
     </text>
     
-    <!-- 图例 -->
+    <!-- Legend -->
     <g id="legend" transform="translate(950, 70)">
         <line x1="0" y1="10" x2="30" y2="10" stroke="#3B82F6" stroke-width="3"/>
         <circle cx="15" cy="10" r="5" fill="#3B82F6"/>
         <text x="40" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
               font-size="15" fill="#475569">
-            <tspan>PC端访问</tspan>
+            <tspan>PC Visits</tspan>
         </text>
         
         <line x1="150" y1="10" x2="180" y2="10" stroke="#10B981" stroke-width="3"/>
         <circle cx="165" cy="10" r="5" fill="#10B981"/>
         <text x="190" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
               font-size="15" fill="#475569">
-            <tspan>移动端访问</tspan>
+            <tspan>Mobile Visits</tspan>
         </text>
     </g>
     
-    <!-- 图表区域 -->
+    <!-- Chart Area -->
     <g id="chartArea">
-        <!-- Y轴网格线 -->
+        <!-- Y-axis Grid Lines -->
         <line x1="120" y1="560" x2="1200" y2="560" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="120" y1="470" x2="1200" y2="470" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="120" y1="380" x2="1200" y2="380" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="120" y1="290" x2="1200" y2="290" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         <line x1="120" y1="200" x2="1200" y2="200" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,4"/>
         
-        <!-- Y轴刻度标签 -->
+        <!-- Y-axis Labels -->
         <text x="105" y="565" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B" text-anchor="end">
             <tspan>0</tspan>
@@ -95,67 +95,67 @@
             <tspan>800</tspan>
         </text>
         
-        <!-- 坐标轴 -->
+        <!-- Axes -->
         <line x1="120" y1="160" x2="120" y2="560" stroke="#94A3B8" stroke-width="2"/>
         <line x1="120" y1="560" x2="1200" y2="560" stroke="#94A3B8" stroke-width="2"/>
         
-        <!-- X轴标签（12个月） -->
-        <!-- 每个月间距: (1200-120)/12 = 90px -->
+        <!-- X-axis Labels (12 months) -->
+        <!-- Distance between each month: (1200-120)/12 = 90px -->
         <text x="165" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>1月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Jan</tspan></text>
         <text x="255" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>2月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Feb</tspan></text>
         <text x="345" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>3月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Mar</tspan></text>
         <text x="435" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>4月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Apr</tspan></text>
         <text x="525" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>5月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>May</tspan></text>
         <text x="615" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>6月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Jun</tspan></text>
         <text x="705" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>7月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Jul</tspan></text>
         <text x="795" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>8月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Aug</tspan></text>
         <text x="885" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>9月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Sep</tspan></text>
         <text x="975" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>10月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Oct</tspan></text>
         <text x="1065" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>11月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Nov</tspan></text>
         <text x="1155" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#64748B" text-anchor="middle"><tspan>12月</tspan></text>
+              font-size="14" fill="#64748B" text-anchor="middle"><tspan>Dec</tspan></text>
         
         <!-- 
-        数据点计算：
+        Data Points Calculation:
         X: 165, 255, 345, 435, 525, 615, 705, 795, 885, 975, 1065, 1155
-        Y: 560 - (数值/200)*90  (每200单位=90px)
+        Y: 560 - (Value/200)*90  (Every 200 units=90px)
         
-        PC端数据: 320, 280, 350, 420, 480, 520, 580, 620, 550, 490, 460, 520
-        移动端数据: 180, 160, 210, 280, 350, 420, 480, 540, 500, 460, 430, 490
+        PC Data: 320, 280, 350, 420, 480, 520, 580, 620, 550, 490, 460, 520
+        Mobile Data: 180, 160, 210, 280, 350, 420, 480, 540, 500, 460, 430, 490
         -->
         
-        <!-- 面积1: PC端（蓝色） -->
+        <!-- Area 1: PC (Blue) -->
         <path d="M 165,560 
                  L 165,416 L 255,434 L 345,402.5 L 435,371 L 525,344 L 615,326 L 705,299 L 795,281 L 885,312.5 L 975,339.5 L 1065,353 L 1155,326 
                  L 1155,560 Z" 
               fill="url(#areaGrad1)"/>
         
-        <!-- 折线1: PC端 -->
+        <!-- Line 1: PC -->
         <path d="M 165,416 L 255,434 L 345,402.5 L 435,371 L 525,344 L 615,326 L 705,299 L 795,281 L 885,312.5 L 975,339.5 L 1065,353 L 1155,326" 
               fill="none" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         
-        <!-- 面积2: 移动端（绿色） -->
+        <!-- Area 2: Mobile (Green) -->
         <path d="M 165,560 
                  L 165,479 L 255,488 L 345,465.5 L 435,434 L 525,402.5 L 615,371 L 705,344 L 795,317 L 885,335 L 975,353 L 1065,366.5 L 1155,339.5 
                  L 1155,560 Z" 
               fill="url(#areaGrad2)"/>
         
-        <!-- 折线2: 移动端 -->
+        <!-- Line 2: Mobile -->
         <path d="M 165,479 L 255,488 L 345,465.5 L 435,434 L 525,402.5 L 615,371 L 705,344 L 795,317 L 885,335 L 975,353 L 1065,366.5 L 1155,339.5" 
               fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         
-        <!-- PC端数据点 -->
+        <!-- PC Data Points -->
         <circle cx="165" cy="416" r="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="255" cy="434" r="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="345" cy="402.5" r="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#dotShadow)"/>
@@ -169,7 +169,7 @@
         <circle cx="1065" cy="353" r="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="1155" cy="326" r="5" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#dotShadow)"/>
         
-        <!-- 移动端数据点 -->
+        <!-- Mobile Data Points -->
         <circle cx="165" cy="479" r="5" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="255" cy="488" r="5" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="345" cy="465.5" r="5" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#dotShadow)"/>
@@ -183,42 +183,42 @@
         <circle cx="1065" cy="366.5" r="5" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#dotShadow)"/>
         <circle cx="1155" cy="339.5" r="5" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#dotShadow)"/>
         
-        <!-- 峰值标注（8月） -->
+        <!-- Peak Label (Aug) -->
         <g>
             <rect x="755" y="225" width="80" height="45" rx="6" fill="#3B82F6"/>
             <text x="795" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-                <tspan>峰值</tspan>
+                <tspan>Peak</tspan>
             </text>
             <text x="795" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="13" fill="#FFFFFF" text-anchor="middle">
-                <tspan>620万</tspan>
+                <tspan>6.2M</tspan>
             </text>
             <path d="M 795,270 L 790,281 L 800,281 Z" fill="#3B82F6"/>
         </g>
     </g>
     
-    <!-- 统计卡片 -->
+    <!-- Stat Cards -->
     <g id="statsCards" transform="translate(60, 620)">
-        <!-- 卡片1: 总访问量 -->
+        <!-- Card 1: Total Visits -->
         <g id="card-total-visits">
             <rect x="0" y="0" width="200" height="70" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
             <text x="20" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#64748B">
-                <tspan>年度总访问量</tspan>
+                <tspan>Total Annual Visits</tspan>
             </text>
             <text x="20" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="24" font-weight="bold" fill="#0F172A">
-                <tspan>10,240万</tspan>
+                <tspan>102.4M</tspan>
             </text>
         </g>
         
-        <!-- 卡片2: PC端占比 -->
+        <!-- Card 2: PC Share -->
         <g id="card-pc-share">
             <rect x="220" y="0" width="180" height="70" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1"/>
             <text x="240" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#2563EB">
-                <tspan>PC端占比</tspan>
+                <tspan>PC Share</tspan>
             </text>
             <text x="240" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="24" font-weight="bold" fill="#3B82F6">
@@ -226,12 +226,12 @@
             </text>
         </g>
         
-        <!-- 卡片3: 移动端占比 -->
+        <!-- Card 3: Mobile Share -->
         <g id="card-mobile-share">
             <rect x="420" y="0" width="180" height="70" rx="8" fill="#ECFDF5" stroke="#34D399" stroke-width="1"/>
             <text x="440" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#059669">
-                <tspan>移动端占比</tspan>
+                <tspan>Mobile Share</tspan>
             </text>
             <text x="440" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="24" font-weight="bold" fill="#34D399">
@@ -239,12 +239,12 @@
             </text>
         </g>
         
-        <!-- 卡片4: 同比增长 -->
+        <!-- Card 4: YoY Growth -->
         <g id="card-yoy-growth">
             <rect x="620" y="0" width="180" height="70" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
             <text x="640" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
                   font-size="14" fill="#D97706">
-                <tspan>同比增长</tspan>
+                <tspan>YoY Growth</tspan>
             </text>
             <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
                   font-size="24" font-weight="bold" fill="#F59E0B">
@@ -253,10 +253,10 @@
         </g>
     </g>
     
-    <!-- 数据来源 -->
+    <!-- Data Source -->
     <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="14" fill="#94A3B8" text-anchor="end">
-        <tspan>数据来源: 网站分析平台</tspan>
+        <tspan>Data Source: Website Analytics Platform</tspan>
     </text>
 </svg>
 

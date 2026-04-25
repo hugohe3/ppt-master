@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!--
-    箭头链流程模板 (Chevron Process)
-    用途: 线性阶段流程、逐步推进、方法论展示、整块阶段箭头参考
-    适用场景: 销售漏斗阶段、项目阶段、方法论步骤
-    支持: 5阶段横向箭头 (推荐3-6)
-    复用建议:
-      - 当页面需要“整块粗箭头”表达阶段推进时，优先参考此模板中的 polygon 箭头结构
-      - 不要用 marker-end 模拟这类宽箭身箭头
+    Chevron Process Template
+    Usage: Linear stage process, step-by-step progression, methodology display
+    Scenarios: Sales funnel stages, project phases, methodology steps
+    Supports: 5-stage horizontal chevron (3-6 recommended)
+    Reuse tips:
+      - Use polygon arrow structure for block arrows indicating phase progression
+      - Do not use marker-end to simulate these wide arrows
 
-    可复用片段 1: 五边形 chevron（阶段箭头）
+    Reusable snippet 1: Pentagon chevron (phase arrow)
       <polygon points="40,0 220,0 260,48 220,96 40,96 80,48"
                fill="#4F46E5"/>
 
-    可复用片段 2: 带长箭头头部的 block arrow（结论指向）
+    Reusable snippet 2: Block arrow with long head (conclusion pointer)
       <path d="M60,10 H300 V-36 L470,80 L300,196 V150 H60 Z"
             fill="#5D96E4" stroke="#3F76C8" stroke-width="4"/>
     -->
@@ -33,7 +33,7 @@
             <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
 
-        <!-- 阶段渐变色 -->
+        <!-- Phase Gradients -->
         <linearGradient id="gradPhase1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
             <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:1" />
@@ -58,179 +58,179 @@
 
     <rect width="1280" height="720" fill="#FFFFFF"/>
 
-    <!-- 标题 -->
+    <!-- Title -->
     <text x="640" y="55" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="30" font-weight="700" fill="#1E293B"><tspan>数字化转型方法论</tspan></text>
+          font-size="30" font-weight="700" fill="#1E293B"><tspan>Digital Transformation Methodology</tspan></text>
     <text x="640" y="82" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#64748B"><tspan>Chevron Process · 五阶段递进推进框架</tspan></text>
+          font-size="14" fill="#64748B"><tspan>Chevron Process · Five-Stage Progressive Framework</tspan></text>
 
     <g id="main-content" transform="translate(75, -60)">
     <g id="chevrons">
-    <!-- 箭头1 (最左) -->
+    <!-- Chevron 1 (Leftmost) -->
     <g id="chevron-1">
     <polygon points="40,220 200,220 230,265 200,310 40,310" fill="url(#gradPhase1)" filter="url(#chevronShadow)"/>
     <text x="130" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>诊断评估</tspan></text>
+          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>Diagnostics</tspan></text>
     <text x="130" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#FFFFFF" fill-opacity="0.8"><tspan>PHASE 01</tspan></text>
 
         </g>
 
-    <!-- 箭头2 -->
+    <!-- Chevron 2 -->
     <g id="chevron-2">
     <polygon points="235,220 400,220 430,265 400,310 235,310 265,265" fill="url(#gradPhase2)" filter="url(#chevronShadow)"/>
     <text x="330" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>规划设计</tspan></text>
+          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>Planning &amp; Design</tspan></text>
     <text x="330" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#FFFFFF" fill-opacity="0.8"><tspan>PHASE 02</tspan></text>
 
         </g>
 
-    <!-- 箭头3 -->
+    <!-- Chevron 3 -->
     <g id="chevron-3">
     <polygon points="435,220 610,220 640,265 610,310 435,310 465,265" fill="url(#gradPhase3)" filter="url(#chevronShadow)"/>
     <text x="533" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>试点验证</tspan></text>
+          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>Pilot Validation</tspan></text>
     <text x="533" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#FFFFFF" fill-opacity="0.8"><tspan>PHASE 03</tspan></text>
 
         </g>
 
-    <!-- 箭头4 -->
+    <!-- Chevron 4 -->
     <g id="chevron-4">
     <polygon points="645,220 830,220 860,265 830,310 645,310 675,265" fill="url(#gradPhase4)" filter="url(#chevronShadow)"/>
     <text x="748" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>规模推广</tspan></text>
+          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>Scale &amp; Rollout</tspan></text>
     <text x="748" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#FFFFFF" fill-opacity="0.8"><tspan>PHASE 04</tspan></text>
 
         </g>
 
-    <!-- 箭头5 -->
+    <!-- Chevron 5 -->
     <g id="chevron-5">
     <polygon points="865,220 1060,220 1090,265 1060,310 865,310 895,265" fill="url(#gradPhase5)" filter="url(#chevronShadow)"/>
     <text x="973" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>持续优化</tspan></text>
+          font-size="14" font-weight="700" fill="#FFFFFF"><tspan>Optimization</tspan></text>
     <text x="973" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#FFFFFF" fill-opacity="0.8"><tspan>PHASE 05</tspan></text>
 
         </g>
     </g>
 
-    <!-- 阶段时长条 -->
+    <!-- Phase Timeline Bar -->
     <g id="timeline">
     <rect x="40" y="325" width="190" height="20" rx="4" fill="#4F46E5" fill-opacity="0.15"/>
     <text x="135" y="339" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="600" fill="#4F46E5"><tspan>2-4周</tspan></text>
+          font-size="12" font-weight="600" fill="#4F46E5"><tspan>2-4 Weeks</tspan></text>
     <rect x="245" y="325" width="195" height="20" rx="4" fill="#2563EB" fill-opacity="0.15"/>
     <text x="342" y="339" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="600" fill="#2563EB"><tspan>4-6周</tspan></text>
+          font-size="12" font-weight="600" fill="#2563EB"><tspan>4-6 Weeks</tspan></text>
     <rect x="450" y="325" width="195" height="20" rx="4" fill="#0284C7" fill-opacity="0.15"/>
     <text x="547" y="339" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="600" fill="#0284C7"><tspan>8-12周</tspan></text>
+          font-size="12" font-weight="600" fill="#0284C7"><tspan>8-12 Weeks</tspan></text>
     <rect x="655" y="325" width="210" height="20" rx="4" fill="#059669" fill-opacity="0.15"/>
     <text x="760" y="339" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="600" fill="#059669"><tspan>12-16周</tspan></text>
+          font-size="12" font-weight="600" fill="#059669"><tspan>12-16 Weeks</tspan></text>
     <rect x="875" y="325" width="215" height="20" rx="4" fill="#D97706" fill-opacity="0.15"/>
     <text x="982" y="339" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" font-weight="600" fill="#D97706"><tspan>持续</tspan></text>
+          font-size="12" font-weight="600" fill="#D97706"><tspan>Ongoing</tspan></text>
 
         </g>
 
-    <!-- 详情卡片行 -->
+    <!-- Detail Cards Row -->
     <g id="cards">
-    <!-- 卡片1 -->
+    <!-- Card 1 -->
     <g id="card-1">
     <g filter="url(#cardShadow)">
         <rect x="40" y="370" width="190" height="290" rx="10" fill="#FFFFFF"/>
         <rect x="40" y="370" width="190" height="5" rx="3" fill="#4F46E5"/>
         <text x="135" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="15" font-weight="700" fill="#1E293B"><tspan>诊断评估</tspan></text>
+              font-size="15" font-weight="700" fill="#1E293B"><tspan>Diagnostics</tspan></text>
         <line x1="65" y1="425" x2="205" y2="425" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="60" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 现状能力评估</tspan></text>
-        <text x="60" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 痛点问题识别</tspan></text>
-        <text x="60" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 成熟度测评</tspan></text>
-        <text x="60" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 目标差距分析</tspan></text>
+        <text x="60" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Current State Review</tspan></text>
+        <text x="60" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Identify Pain Points</tspan></text>
+        <text x="60" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Maturity Evaluation</tspan></text>
+        <text x="60" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Gap Analysis</tspan></text>
         <line x1="65" y1="560" x2="205" y2="560" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="60" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#4F46E5"><tspan>交付物:</tspan></text>
-        <text x="60" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>诊断报告</tspan></text>
-        <text x="60" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>能力成熟度评分卡</tspan></text>
+        <text x="60" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#4F46E5"><tspan>Deliverables:</tspan></text>
+        <text x="60" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Diagnostic Report</tspan></text>
+        <text x="60" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Maturity Scorecard</tspan></text>
     </g>
 
         </g>
-    <!-- 卡片2 -->
+    <!-- Card 2 -->
     <g id="card-2">
     <g filter="url(#cardShadow)">
         <rect x="250" y="370" width="190" height="290" rx="10" fill="#FFFFFF"/>
         <rect x="250" y="370" width="190" height="5" rx="3" fill="#2563EB"/>
         <text x="345" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="15" font-weight="700" fill="#1E293B"><tspan>规划设计</tspan></text>
+              font-size="15" font-weight="700" fill="#1E293B"><tspan>Planning &amp; Design</tspan></text>
         <line x1="275" y1="425" x2="415" y2="425" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="270" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 顶层架构设计</tspan></text>
-        <text x="270" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 技术选型评估</tspan></text>
-        <text x="270" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 路线图编制</tspan></text>
-        <text x="270" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 投资回报测算</tspan></text>
+        <text x="270" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Architecture Design</tspan></text>
+        <text x="270" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Tech Stack Eval.</tspan></text>
+        <text x="270" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Roadmap Dev.</tspan></text>
+        <text x="270" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· ROI Calculation</tspan></text>
         <line x1="275" y1="560" x2="415" y2="560" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="270" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2563EB"><tspan>交付物:</tspan></text>
-        <text x="270" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>转型蓝图</tspan></text>
-        <text x="270" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>ROI分析报告</tspan></text>
+        <text x="270" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2563EB"><tspan>Deliverables:</tspan></text>
+        <text x="270" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Strategic Blueprint</tspan></text>
+        <text x="270" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>ROI Analysis</tspan></text>
     </g>
 
         </g>
-    <!-- 卡片3 -->
+    <!-- Card 3 -->
     <g id="card-3">
     <g filter="url(#cardShadow)">
         <rect x="460" y="370" width="190" height="290" rx="10" fill="#FFFFFF"/>
         <rect x="460" y="370" width="190" height="5" rx="3" fill="#0284C7"/>
         <text x="555" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="15" font-weight="700" fill="#1E293B"><tspan>试点验证</tspan></text>
+              font-size="15" font-weight="700" fill="#1E293B"><tspan>Pilot Validation</tspan></text>
         <line x1="485" y1="425" x2="625" y2="425" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="480" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 选定试点场景</tspan></text>
-        <text x="480" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· MVP快速上线</tspan></text>
-        <text x="480" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 效果数据采集</tspan></text>
-        <text x="480" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 用户反馈迭代</tspan></text>
+        <text x="480" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Select Scenarios</tspan></text>
+        <text x="480" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Rapid MVP Launch</tspan></text>
+        <text x="480" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Performance Data</tspan></text>
+        <text x="480" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Feedback Iteration</tspan></text>
         <line x1="485" y1="560" x2="625" y2="560" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="480" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0284C7"><tspan>交付物:</tspan></text>
-        <text x="480" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>试点总结报告</tspan></text>
-        <text x="480" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>推广可行性评估</tspan></text>
+        <text x="480" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#0284C7"><tspan>Deliverables:</tspan></text>
+        <text x="480" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Pilot Summary</tspan></text>
+        <text x="480" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Feasibility Report</tspan></text>
     </g>
 
         </g>
-    <!-- 卡片4 -->
+    <!-- Card 4 -->
     <g id="card-4">
     <g filter="url(#cardShadow)">
         <rect x="670" y="370" width="190" height="290" rx="10" fill="#FFFFFF"/>
         <rect x="670" y="370" width="190" height="5" rx="3" fill="#059669"/>
         <text x="765" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="15" font-weight="700" fill="#1E293B"><tspan>规模推广</tspan></text>
+              font-size="15" font-weight="700" fill="#1E293B"><tspan>Scale &amp; Rollout</tspan></text>
         <line x1="695" y1="425" x2="835" y2="425" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="690" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 全业务线推广</tspan></text>
-        <text x="690" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 组织变革配套</tspan></text>
-        <text x="690" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 培训赋能计划</tspan></text>
-        <text x="690" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 标准化流程建设</tspan></text>
+        <text x="690" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Full-Scale Rollout</tspan></text>
+        <text x="690" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Org. Change Mgt.</tspan></text>
+        <text x="690" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Team Training</tspan></text>
+        <text x="690" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Build Standards</tspan></text>
         <line x1="695" y1="560" x2="835" y2="560" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="690" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#059669"><tspan>交付物:</tspan></text>
-        <text x="690" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>推广实施方案</tspan></text>
-        <text x="690" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>组织能力建设手册</tspan></text>
+        <text x="690" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#059669"><tspan>Deliverables:</tspan></text>
+        <text x="690" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Rollout Plan</tspan></text>
+        <text x="690" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Capability Playbook</tspan></text>
     </g>
 
         </g>
-    <!-- 卡片5 -->
+    <!-- Card 5 -->
     <g id="card-5">
     <g filter="url(#cardShadow)">
         <rect x="880" y="370" width="190" height="290" rx="10" fill="#FFFFFF"/>
         <rect x="880" y="370" width="190" height="5" rx="3" fill="#D97706"/>
         <text x="975" y="405" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-size="15" font-weight="700" fill="#1E293B"><tspan>持续优化</tspan></text>
+              font-size="15" font-weight="700" fill="#1E293B"><tspan>Optimization</tspan></text>
         <line x1="905" y1="425" x2="1045" y2="425" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="900" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 运营效果监测</tspan></text>
-        <text x="900" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 数据驱动优化</tspan></text>
-        <text x="900" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 技术迭代升级</tspan></text>
-        <text x="900" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" fill="#475569"><tspan>· 新场景拓展</tspan></text>
+        <text x="900" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Ops Monitoring</tspan></text>
+        <text x="900" y="478" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Data-Driven Opt.</tspan></text>
+        <text x="900" y="506" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Tech Upgrades</tspan></text>
+        <text x="900" y="534" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#475569"><tspan>· Scenario Expansion</tspan></text>
         <line x1="905" y1="560" x2="1045" y2="560" stroke="#F0F0F0" stroke-width="1"/>
-        <text x="900" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#D97706"><tspan>交付物:</tspan></text>
-        <text x="900" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>运营看板</tspan></text>
-        <text x="900" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" fill="#94A3B8"><tspan>季度优化报告</tspan></text>
+        <text x="900" y="585" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#D97706"><tspan>Deliverables:</tspan></text>
+        <text x="900" y="608" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Ops Dashboard</tspan></text>
+        <text x="900" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#94A3B8"><tspan>Quarterly Report</tspan></text>
     </g>
 
         </g>
@@ -238,7 +238,7 @@
 
     </g>
 
-    <!-- 底部注释 -->
+    <!-- Footer Note -->
     <text x="640" y="660" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#CBD5E1"><tspan>各阶段可根据企业实际情况灵活调整时长和交付物</tspan></text>
+          font-size="12" fill="#CBD5E1"><tspan>Phase durations and deliverables can be flexibly adjusted based on actual enterprise situations.</tspan></text>
 </svg>

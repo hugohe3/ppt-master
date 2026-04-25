@@ -7,7 +7,7 @@
     -->
     
     <defs>
-        <!-- 基础背景量程域 (专业级灰度) -->
+        <!-- Base Background Range (Professional Grayscale) -->
         <linearGradient id="bgFair" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:#F1F5F9;stop-opacity:1" />
             <stop offset="100%" style="stop-color:#E2E8F0;stop-opacity:1" />
@@ -21,7 +21,7 @@
             <stop offset="100%" style="stop-color:#94A3B8;stop-opacity:1" />
         </linearGradient>
         
-        <!-- 实际数据柱渐变 -->
+        <!-- Actual Data Bar Gradient -->
         <linearGradient id="actualBarBlue" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
             <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
@@ -39,7 +39,7 @@
             <stop offset="100%" style="stop-color:#F87171;stop-opacity:1" />
         </linearGradient>
         
-        <!-- 标准阴影滤镜 -->
+        <!-- Standard Shadow Filter -->
         <filter id="bulletShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
             <feOffset dx="0" dy="2" result="offsetBlur"/>
