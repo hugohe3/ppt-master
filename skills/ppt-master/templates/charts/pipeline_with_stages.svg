@@ -1,236 +1,219 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
   <!--
-  数据/处理管道图模板 (Pipeline with Stages)
-  用途: 水平依次经过的多个阶段，每个阶段承载标题 + 描述 + 输入输出
-  适用场景: 数据管道、ETL 流程、编译/构建流水线、审批流
-  支持: 3-5 阶段 (推荐 4-5)
-  关键约定:
-    - 每个阶段卡 = 编号徽章 + 阶段标题 + 职责定位 + 2 条要点描述 + 产物 / Output
-    - 阶段间用手绘三角箭头 (非 marker) 展示单向流动
-    - 左侧行标签 "流水阶段" 统一框住全部阶段
-    - 底部"产物流向"带用两个强调色块标出起点与终点
-    - 若阶段缺少"产物"或缺少描述，应退回 process_flow 或 numbered_steps
-  注意: 中文字符实际渲染宽度约 1em，卡片内文本按每卡 ≤ 12 个字符估算，超过请精简表达
+  Data/Process Pipeline Chart Template
+  Purpose: Multi-stage sequential pipeline with structured descriptions and outputs
+  Use cases: ETL pipelines, CI/CD flows, approval workflows
+  Supports: 5 stages (optimized for data processing flow)
   -->
 
-  <!-- 背景 -->
+  <defs>
+    <!-- Soft shadow for cards -->
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
   <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
 
-  <!-- 标题 -->
-  <rect x="30" y="22" width="10" height="40" fill="#C00000"/>
-  <text x="52" y="55" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#C00000">数据处理管道全流程</text>
+  <!-- ==================== Title Area ==================== -->
+  <rect x="30" y="30" width="8" height="32" rx="4" fill="#334155"/>
+  <text x="52" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#0F172A">End-to-End Data Pipeline Architecture</text>
 
-  <!-- 副标题带 -->
-  <rect x="30" y="78" width="1220" height="46" fill="#F2F2F2"/>
-  <text x="640" y="99" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#1A252F">
-    <tspan x="640" dy="0">从原始数据到业务产出的五阶段流水 · 每阶段的产物即下一阶段的输入</tspan>
-    <tspan x="640" dy="22" fill="#7F8C8D" font-weight="400">阶段卡 = 编号 + 标题 + 职责定位 + 要点描述 + 产物；缺产物或缺描述请改用 process_flow 或 numbered_steps</tspan>
+  <!-- Subtitle Area -->
+  <rect x="30" y="78" width="1220" height="46" rx="8" fill="#F8FAFC"/>
+  <text x="640" y="98" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#1E293B" letter-spacing="0.5">
+    FIVE-STAGE PIPELINE: FROM RAW DATA TO BUSINESS VALUE · EACH STAGE OUTPUT DRIVES THE NEXT
+  </text>
+  <text x="640" y="116" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">
+    Stage Layout: Step ID + Phase Name + Role + Key Steps + Deliverable
   </text>
 
-  <!-- ==================== 左侧行标签 ==================== -->
-  <rect x="30" y="150" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="172" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">⟶</text>
-  <text x="32" y="220" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">流水</text>
-  <text x="32" y="246" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">阶段</text>
-  <text x="32" y="272" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#7F8C8D">Pipeline</text>
-  <text x="32" y="288" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#7F8C8D">Stages</text>
+  <!-- ==================== Left Row Label (Stages) ==================== -->
+  <rect x="30" y="150" width="30" height="30" rx="6" fill="#334155"/>
+  <text x="45" y="171" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">→</text>
+  <text x="45" y="350" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" letter-spacing="4" transform="rotate(-90, 45, 350)">PIPELINE STAGES</text>
 
-  <!-- ==================== 流水线整体外框 ==================== -->
-  <rect x="100" y="150" width="1150" height="430" fill="none" stroke="#C00000" stroke-width="2" stroke-dasharray="6 4"/>
-  <rect x="100" y="150" width="1150" height="32" fill="#FDF3EB"/>
-  <text x="675" y="172" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">五阶段串行流水 · Raw → Clean → Wide → Enriched → Products</text>
+  <!-- ==================== Main Pipeline Frame ==================== -->
+  <rect x="100" y="150" width="1150" height="36" fill="#F8FAFC" rx="8"/>
+  <path d="M 100 176 L 1250 176 L 1250 186 L 100 186 Z" fill="#F8FAFC"/> 
+  <rect x="100" y="150" width="1150" height="430" rx="8" fill="none" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="675" y="173" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#475569" letter-spacing="1">SEQUENTIAL FLOW: RAW → CLEAN → WIDE → ENRICHED → PRODUCTS</text>
 
-  <!--
-  阶段卡布局计算:
-    可用宽: 1150 - 2*20 (内边距) = 1110
-    5 卡 + 4 箭头区, 每箭头区 40, 每卡 (1110 - 4*40) / 5 = 190
-    卡 x: 120, 350, 580, 810, 1040 (间距 230 = 卡 190 + 箭头区 40)
-    卡 y: 200 - 560, 高 360
-  -->
+  <!-- ==================== Stage 1: Ingest (Violet) ==================== -->
+  <rect x="120" y="200" width="190" height="360" rx="8" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <path d="M 120 208 A 8 8 0 0 1 128 200 L 302 200 A 8 8 0 0 1 310 208 L 310 250 L 120 250 Z" fill="#8B5CF6"/>
+  <rect x="132" y="210" width="30" height="30" rx="6" fill="#FFFFFF"/>
+  <text x="147" y="231" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">01</text>
+  <text x="174" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">Ingest</text>
+  
+  <rect x="120" y="250" width="190" height="36" fill="#F5F3FF"/>
+  <text x="215" y="273" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#6D28D9">Multi-source &amp; Real-time</text>
+  
+  <circle cx="140" cy="310" r="3" fill="#8B5CF6"/>
+  <text x="150" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Data Collection</text>
+  <text x="150" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">CDC &amp; File Sync</text>
+  
+  <circle cx="140" cy="360" r="3" fill="#8B5CF6"/>
+  <text x="150" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Unified Protocol</text>
+  <text x="150" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Queue &amp; Buffer</text>
+  
+  <circle cx="140" cy="410" r="3" fill="#8B5CF6"/>
+  <text x="150" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Elastic Scaling</text>
+  <text x="150" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Sharding &amp; Parallel</text>
+  
+  <line x1="120" y1="465" x2="310" y2="465" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="135" y="480" width="160" height="60" rx="6" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1"/>
+  <text x="215" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
+  <text x="215" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#6D28D9">Raw Events</text>
 
-  <!-- ==================== 阶段 1: 采集 ==================== -->
-  <rect x="120" y="200" width="190" height="360" fill="#FFFFFF" stroke="#2E75B6" stroke-width="1"/>
-  <rect x="120" y="200" width="190" height="48" fill="#2E75B6"/>
-  <rect x="132" y="210" width="28" height="28" fill="#FFFFFF"/>
-  <text x="146" y="230" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#2E75B6">01</text>
-  <text x="172" y="230" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">采集</text>
-  <text x="172" y="244" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.85">Ingest</text>
+  <!-- ==================== Stage 2: Validate (Blue) ==================== -->
+  <rect x="350" y="200" width="190" height="360" rx="8" fill="#FFFFFF" stroke="#93C5FD" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <path d="M 350 208 A 8 8 0 0 1 358 200 L 532 200 A 8 8 0 0 1 540 208 L 540 250 L 350 250 Z" fill="#3B82F6"/>
+  <rect x="362" y="210" width="30" height="30" rx="6" fill="#FFFFFF"/>
+  <text x="377" y="231" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">02</text>
+  <text x="404" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">Validate</text>
+  
+  <rect x="350" y="250" width="190" height="36" fill="#EFF6FF"/>
+  <text x="445" y="273" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#1D4ED8">Isolation &amp; Quality Check</text>
 
-  <rect x="120" y="248" width="190" height="30" fill="#EAF1F8"/>
-  <text x="215" y="268" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#2E75B6">多源接入与实时抓取</text>
+  <circle cx="370" cy="310" r="3" fill="#3B82F6"/>
+  <text x="380" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Format &amp; Bounds</text>
+  <text x="380" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Type &amp; Value Range</text>
 
-  <rect x="134" y="296" width="6" height="6" fill="#2E75B6"/>
-  <text x="148" y="304" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">多通道接入</text>
-  <text x="148" y="322" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">埋点 · CDC · 文件同步</text>
+  <circle cx="370" cy="360" r="3" fill="#3B82F6"/>
+  <text x="380" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Business Rules</text>
+  <text x="380" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Uniqueness &amp; Refs</text>
 
-  <rect x="134" y="344" width="6" height="6" fill="#2E75B6"/>
-  <text x="148" y="352" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">统一协议</text>
-  <text x="148" y="370" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">队列缓冲 · 背压控制</text>
+  <circle cx="370" cy="410" r="3" fill="#3B82F6"/>
+  <text x="380" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Anomaly Isolation</text>
+  <text x="380" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Dead-letter Queue</text>
 
-  <rect x="134" y="392" width="6" height="6" fill="#2E75B6"/>
-  <text x="148" y="400" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">弹性吞吐</text>
-  <text x="148" y="418" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">分片并行 · 自动扩缩</text>
+  <line x1="350" y1="465" x2="540" y2="465" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="365" y="480" width="160" height="60" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <text x="445" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
+  <text x="445" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#1D4ED8">Clean Events</text>
 
-  <rect x="134" y="460" width="162" height="82" fill="#F7F9FC"/>
-  <text x="215" y="478" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="10" fill="#7F8C8D">产物 · Output</text>
-  <line x1="148" y1="486" x2="282" y2="486" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="215" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#2E75B6">Raw Events</text>
-  <text x="215" y="530" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">原始事件流</text>
+  <!-- ==================== Stage 3: Transform (Emerald) ==================== -->
+  <rect x="580" y="200" width="190" height="360" rx="8" fill="#FFFFFF" stroke="#6EE7B7" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <path d="M 580 208 A 8 8 0 0 1 588 200 L 762 200 A 8 8 0 0 1 770 208 L 770 250 L 580 250 Z" fill="#10B981"/>
+  <rect x="592" y="210" width="30" height="30" rx="6" fill="#FFFFFF"/>
+  <text x="607" y="231" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#10B981">03</text>
+  <text x="634" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">Transform</text>
+  
+  <rect x="580" y="250" width="190" height="36" fill="#ECFDF5"/>
+  <text x="675" y="273" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#047857">Structure &amp; Alignment</text>
 
-  <!-- ==================== 阶段 2: 校验 ==================== -->
-  <rect x="350" y="200" width="190" height="360" fill="#FFFFFF" stroke="#2E75B6" stroke-width="1"/>
-  <rect x="350" y="200" width="190" height="48" fill="#2E75B6"/>
-  <rect x="362" y="210" width="28" height="28" fill="#FFFFFF"/>
-  <text x="376" y="230" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#2E75B6">02</text>
-  <text x="402" y="230" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">校验</text>
-  <text x="402" y="244" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.85">Validate</text>
+  <circle cx="600" cy="310" r="3" fill="#10B981"/>
+  <text x="610" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Denormalization</text>
+  <text x="610" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Metrics &amp; Grouping</text>
 
-  <rect x="350" y="248" width="190" height="30" fill="#EAF1F8"/>
-  <text x="445" y="268" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#2E75B6">规则校验与脏数据隔离</text>
+  <circle cx="600" cy="360" r="3" fill="#10B981"/>
+  <text x="610" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Derived Metrics</text>
+  <text x="610" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Unified Definitions</text>
 
-  <rect x="364" y="296" width="6" height="6" fill="#2E75B6"/>
-  <text x="378" y="304" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">格式与范围校验</text>
-  <text x="378" y="322" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">字段类型 · 取值域</text>
+  <circle cx="600" cy="410" r="3" fill="#10B981"/>
+  <text x="610" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Wide Table Build</text>
+  <text x="610" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Reusable Models</text>
 
-  <rect x="364" y="344" width="6" height="6" fill="#2E75B6"/>
-  <text x="378" y="352" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">业务规则校验</text>
-  <text x="378" y="370" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">唯一性 · 引用完整性</text>
+  <line x1="580" y1="465" x2="770" y2="465" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="595" y="480" width="160" height="60" rx="6" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1"/>
+  <text x="675" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
+  <text x="675" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#047857">Wide Tables</text>
 
-  <rect x="364" y="392" width="6" height="6" fill="#2E75B6"/>
-  <text x="378" y="400" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">异常隔离告警</text>
-  <text x="378" y="418" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">死信队列 · 触发重试</text>
+  <!-- ==================== Stage 4: Enrich (Amber) ==================== -->
+  <rect x="810" y="200" width="190" height="360" rx="8" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <path d="M 810 208 A 8 8 0 0 1 818 200 L 992 200 A 8 8 0 0 1 1000 208 L 1000 250 L 810 250 Z" fill="#F59E0B"/>
+  <rect x="822" y="210" width="30" height="30" rx="6" fill="#FFFFFF"/>
+  <text x="837" y="231" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#F59E0B">04</text>
+  <text x="864" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">Enrich</text>
+  
+  <rect x="810" y="250" width="190" height="36" fill="#FFFBEB"/>
+  <text x="905" y="273" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#B45309">AI Labels &amp; Semantics</text>
 
-  <rect x="364" y="460" width="162" height="82" fill="#F7F9FC"/>
-  <text x="445" y="478" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="10" fill="#7F8C8D">产物 · Output</text>
-  <line x1="378" y1="486" x2="512" y2="486" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="445" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#2E75B6">Clean Events</text>
-  <text x="445" y="530" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">合规事件流</text>
+  <circle cx="830" cy="310" r="3" fill="#F59E0B"/>
+  <text x="840" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">AI Inference</text>
+  <text x="840" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Profile &amp; Predict</text>
 
-  <!-- ==================== 阶段 3: 转换 ==================== -->
-  <rect x="580" y="200" width="190" height="360" fill="#FFFFFF" stroke="#C00000" stroke-width="1"/>
-  <rect x="580" y="200" width="190" height="48" fill="#C00000"/>
-  <rect x="592" y="210" width="28" height="28" fill="#FFFFFF"/>
-  <text x="606" y="230" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#C00000">03</text>
-  <text x="632" y="230" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">转换</text>
-  <text x="632" y="244" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.85">Transform</text>
+  <circle cx="830" cy="360" r="3" fill="#F59E0B"/>
+  <text x="840" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Knowledge Graph</text>
+  <text x="840" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Entities &amp; Relations</text>
 
-  <rect x="580" y="248" width="190" height="30" fill="#FDF3EB"/>
-  <text x="675" y="268" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#C00000">结构化与口径对齐</text>
+  <circle cx="830" cy="410" r="3" fill="#F59E0B"/>
+  <text x="840" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Semantic Tags</text>
+  <text x="840" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Business Ready</text>
 
-  <rect x="594" y="296" width="6" height="6" fill="#C00000"/>
-  <text x="608" y="304" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">反规范化建模</text>
-  <text x="608" y="322" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">维度补齐 · 粒度聚合</text>
+  <line x1="810" y1="465" x2="1000" y2="465" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="825" y="480" width="160" height="60" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="905" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
+  <text x="905" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#B45309">Enriched Set</text>
 
-  <rect x="594" y="344" width="6" height="6" fill="#C00000"/>
-  <text x="608" y="352" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">派生指标计算</text>
-  <text x="608" y="370" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">统一指标口径</text>
+  <!-- ==================== Stage 5: Serve (Rose) ==================== -->
+  <rect x="1040" y="200" width="190" height="360" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <path d="M 1040 208 A 8 8 0 0 1 1048 200 L 1222 200 A 8 8 0 0 1 1230 208 L 1230 250 L 1040 250 Z" fill="#F43F5E"/>
+  <rect x="1052" y="210" width="30" height="30" rx="6" fill="#FFFFFF"/>
+  <text x="1067" y="231" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#F43F5E">05</text>
+  <text x="1094" y="231" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">Serve</text>
+  
+  <rect x="1040" y="250" width="190" height="36" fill="#FFF1F2"/>
+  <text x="1135" y="273" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#BE123C">Services &amp; Access API</text>
 
-  <rect x="594" y="392" width="6" height="6" fill="#C00000"/>
-  <text x="608" y="400" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">主题宽表产出</text>
-  <text x="608" y="418" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">可复用 · 可下钻</text>
+  <circle cx="1060" cy="310" r="3" fill="#F43F5E"/>
+  <text x="1070" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">BI Dashboards</text>
+  <text x="1070" y="332" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Visual Decisions</text>
 
-  <rect x="594" y="460" width="162" height="82" fill="#F7F9FC"/>
-  <text x="675" y="478" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="10" fill="#7F8C8D">产物 · Output</text>
-  <line x1="608" y1="486" x2="742" y2="486" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="675" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#C00000">Wide Tables</text>
-  <text x="675" y="530" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">主题宽表</text>
+  <circle cx="1060" cy="360" r="3" fill="#F43F5E"/>
+  <text x="1070" y="364" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Data API</text>
+  <text x="1070" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">On-demand Fetch</text>
 
-  <!-- ==================== 阶段 4: 增强 ==================== -->
-  <rect x="810" y="200" width="190" height="360" fill="#FFFFFF" stroke="#5B9BD5" stroke-width="1"/>
-  <rect x="810" y="200" width="190" height="48" fill="#5B9BD5"/>
-  <rect x="822" y="210" width="28" height="28" fill="#FFFFFF"/>
-  <text x="836" y="230" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#5B9BD5">04</text>
-  <text x="862" y="230" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">增强</text>
-  <text x="862" y="244" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.85">Enrich</text>
+  <circle cx="1060" cy="410" r="3" fill="#F43F5E"/>
+  <text x="1070" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#1E293B">Pub/Sub Events</text>
+  <text x="1070" y="432" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#64748B">Webhook Triggers</text>
 
-  <rect x="810" y="248" width="190" height="30" fill="#E9F2FA"/>
-  <text x="905" y="268" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#5B9BD5">AI 标签与语义注入</text>
+  <line x1="1040" y1="465" x2="1230" y2="465" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <rect x="1055" y="480" width="160" height="60" rx="6" fill="#FFF1F2" stroke="#FECDD3" stroke-width="1"/>
+  <text x="1135" y="500" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">STAGE OUTPUT</text>
+  <text x="1135" y="525" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#BE123C">Products</text>
 
-  <rect x="824" y="296" width="6" height="6" fill="#5B9BD5"/>
-  <text x="838" y="304" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">AI 标签推理</text>
-  <text x="838" y="322" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">画像 · 意图 · 归因</text>
-
-  <rect x="824" y="344" width="6" height="6" fill="#5B9BD5"/>
-  <text x="838" y="352" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">知识图谱补充</text>
-  <text x="838" y="370" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">实体关联 · 关系扩展</text>
-
-  <rect x="824" y="392" width="6" height="6" fill="#5B9BD5"/>
-  <text x="838" y="400" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">语义标签落地</text>
-  <text x="838" y="418" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">可被业务直接消费</text>
-
-  <rect x="824" y="460" width="162" height="82" fill="#F7F9FC"/>
-  <text x="905" y="478" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="10" fill="#7F8C8D">产物 · Output</text>
-  <line x1="838" y1="486" x2="972" y2="486" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="905" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#5B9BD5">Enriched Set</text>
-  <text x="905" y="530" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">增强数据集</text>
-
-  <!-- ==================== 阶段 5: 输出 ==================== -->
-  <rect x="1040" y="200" width="190" height="360" fill="#FFFFFF" stroke="#2E75B6" stroke-width="1"/>
-  <rect x="1040" y="200" width="190" height="48" fill="#2E75B6"/>
-  <rect x="1052" y="210" width="28" height="28" fill="#FFFFFF"/>
-  <text x="1066" y="230" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#2E75B6">05</text>
-  <text x="1092" y="230" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">输出</text>
-  <text x="1092" y="244" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.85">Serve</text>
-
-  <rect x="1040" y="248" width="190" height="30" fill="#EAF1F8"/>
-  <text x="1135" y="268" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#2E75B6">数据服务与消费入口</text>
-
-  <rect x="1054" y="296" width="6" height="6" fill="#2E75B6"/>
-  <text x="1068" y="304" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">BI 看板</text>
-  <text x="1068" y="322" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">决策可视化</text>
-
-  <rect x="1054" y="344" width="6" height="6" fill="#2E75B6"/>
-  <text x="1068" y="352" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">数据 API</text>
-  <text x="1068" y="370" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">应用方按需调用</text>
-
-  <rect x="1054" y="392" width="6" height="6" fill="#2E75B6"/>
-  <text x="1068" y="400" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="700" fill="#1A252F">推送订阅</text>
-  <text x="1068" y="418" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#566573">变更事件触发</text>
-
-  <rect x="1054" y="460" width="162" height="82" fill="#F7F9FC"/>
-  <text x="1135" y="478" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="10" fill="#7F8C8D">产物 · Output</text>
-  <line x1="1068" y1="486" x2="1202" y2="486" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="1135" y="510" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#2E75B6">Products</text>
-  <text x="1135" y="530" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">业务可用产物</text>
-
-  <!-- ==================== 阶段间箭头 (手绘多边形, 不受 stroke 缩放影响) ==================== -->
-  <!-- 箭头位于 y=380, 卡片间隙内, 每个箭头宽 24, 由短尾线 + 三角头组成 -->
-  <g fill="#B0B8C4">
-    <rect x="315" y="378" width="16" height="4"/>
-    <polygon points="331,372 345,380 331,388"/>
-    <rect x="545" y="378" width="16" height="4"/>
-    <polygon points="561,372 575,380 561,388"/>
-    <rect x="775" y="378" width="16" height="4"/>
-    <polygon points="791,372 805,380 791,388"/>
-    <rect x="1005" y="378" width="16" height="4"/>
-    <polygon points="1021,372 1035,380 1021,388"/>
+  <!-- ==================== Stage Arrows ==================== -->
+  <g fill="#CBD5E1">
+    <path d="M 315 376 L 328 376 L 328 368 L 345 380 L 328 392 L 328 384 L 315 384 Z"/>
+    <path d="M 545 376 L 558 376 L 558 368 L 575 380 L 558 392 L 558 384 L 545 384 Z"/>
+    <path d="M 775 376 L 788 376 L 788 368 L 805 380 L 788 392 L 788 384 L 775 384 Z"/>
+    <path d="M 1005 376 L 1018 376 L 1018 368 L 1035 380 L 1018 392 L 1018 384 L 1005 384 Z"/>
   </g>
 
-  <!-- ==================== 底部产物流向带 ==================== -->
-  <rect x="30" y="610" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="632" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">▸</text>
-  <text x="32" y="674" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">端到</text>
-  <text x="32" y="696" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">端</text>
+  <!-- ==================== Bottom Flow Diagram ==================== -->
+  <rect x="30" y="610" width="30" height="30" rx="6" fill="#334155"/>
+  <text x="45" y="631" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">→</text>
+  <text x="45" y="675" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" transform="rotate(-90, 45, 675)">END TO END</text>
 
-  <rect x="100" y="610" width="1150" height="90" fill="none" stroke="#E7E6E6" stroke-width="2"/>
-  <text x="675" y="628" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">起点 · 原始数据 ——— 经五个阶段加工 ——— 终点 · 业务可消费产物</text>
-  <line x1="120" y1="638" x2="1230" y2="638" stroke="#000000" stroke-width="1" stroke-dasharray="2 2"/>
-
-  <rect x="120" y="650" width="200" height="40" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="220" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#C00000">起点 · 原始数据</text>
-
-  <rect x="340" y="650" width="160" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="420" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">Raw Events</text>
-
-  <rect x="520" y="650" width="160" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="600" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">Clean Events</text>
-
-  <rect x="700" y="650" width="160" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="780" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">Wide Tables</text>
-
-  <rect x="880" y="650" width="160" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="960" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">Enriched Set</text>
-
-  <rect x="1060" y="650" width="170" height="40" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1145" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#C00000">终点 · Products</text>
+  <rect x="100" y="610" width="1150" height="90" rx="8" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="675" y="632" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" letter-spacing="0.5">Origin: Raw Data ————— 5-Stage Processing ————— Destination: Business Products</text>
+  
+  <!-- Dashed connect line -->
+  <line x1="120" y1="665" x2="1230" y2="665" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="4 4"/>
+  
+  <!-- Flow Blocks -->
+  <rect x="120" y="645" width="200" height="40" rx="6" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+  <text x="220" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#6D28D9">Origin: Raw Data</text>
+  
+  <rect x="340" y="645" width="160" height="40" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="420" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Raw Events</text>
+  
+  <rect x="520" y="645" width="160" height="40" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="600" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Clean Events</text>
+  
+  <rect x="700" y="645" width="160" height="40" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="780" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Wide Tables</text>
+  
+  <rect x="880" y="645" width="160" height="40" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="960" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Enriched Set</text>
+  
+  <rect x="1060" y="645" width="170" height="40" rx="6" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="1.5"/>
+  <text x="1145" y="670" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#BE123C">Destination: Products</text>
 </svg>

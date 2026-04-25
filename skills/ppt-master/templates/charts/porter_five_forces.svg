@@ -2,245 +2,189 @@
     <!-- 
     Porter's Five Forces Chart Template
     Purpose: Industry competitive analysis, strategic planning
-    Use cases: Industry reports, market entry evaluation, competitive strategy, investment analysis
-    Supports: Five forces radial layout
+    Use cases: Industry reports, market entry evaluation, competitive strategy
+    Supports: Central + 4 peripheral layout (Classic Cross)
     -->
     
     <defs>
-        <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#2C3E50;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#34495E;stop-opacity:1" />
-        </linearGradient>
-        
-        <linearGradient id="forceGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
-        </linearGradient>
-        
-        <linearGradient id="forceGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#3498DB;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#2980B9;stop-opacity:1" />
-        </linearGradient>
-        
-        <linearGradient id="forceGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#2ECC71;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#27AE60;stop-opacity:1" />
-        </linearGradient>
-        
-        <linearGradient id="forceGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#8E44AD;stop-opacity:1" />
-        </linearGradient>
-        
-        <linearGradient id="forceGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#F39C12;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#E67E22;stop-opacity:1" />
-        </linearGradient>
-        
-        <filter id="forceShadow">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="3"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.25"/>
-            </feComponentTransfer>
-            <feMerge>
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+        <!-- Standard Card Shadow -->
+        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.08" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         
-        <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#7F8C8D"/>
+        <!-- Arrowhead Marker for Connecting Lines -->
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#94A3B8"/>
         </marker>
     </defs>
     
-    <rect width="1280" height="720" fill="#FAFBFC"/>
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8FAFC"/>
     
-    <text x="640" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
-        <tspan>Porter's Five Forces - Industry Analysis</tspan>
-    </text>
+    <!-- Title Area -->
+    <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="32" font-weight="800" fill="#0F172A" text-anchor="middle">Porter's Five Forces Analysis</text>
+    <text x="640" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5" text-anchor="middle">ENTERPRISE SAAS MARKET · COMPETITIVE LANDSCAPE ASSESSMENT 2025</text>
     
-    <text x="640" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="18" fill="#7F8C8D" text-anchor="middle">
-        <tspan>Enterprise SaaS Market - Competitive Landscape Assessment 2025</tspan>
-    </text>
-    
-    <!-- Center circle - Industry Competition -->
-    <circle cx="640" cy="380" r="90" fill="url(#centerGrad)" filter="url(#forceShadow)"/>
-    <text x="640" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Industry</tspan>
-    </text>
-    <text x="640" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Rivalry</tspan>
-    </text>
-    <text x="640" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" fill="#BDC3C7" text-anchor="middle">
-        <tspan>High</tspan>
-    </text>
-    
-    <!-- Force 1: Top - Threat of New Entrants -->
-    <g id="force1" transform="translate(640, 150)">
-        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad1)" filter="url(#forceShadow)"/>
-        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-            <tspan>Threat of New Entrants</tspan>
-        </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
-        <rect x="-120" y="-5" width="90" height="10" rx="5" fill="#FFFFFF"/>
-        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="bold" fill="#FFFFFF">
-            <tspan>Medium</tspan>
-        </text>
-        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
-            <tspan>Capital barriers, Tech accumulation needed</tspan>
-        </text>
+    <!-- ==================== Connecting Arrows ==================== -->
+    <g stroke="#94A3B8" stroke-width="3">
+        <!-- Top to Center -->
+        <line x1="640" y1="230" x2="640" y2="305" marker-end="url(#arrow)"/>
+        <!-- Bottom to Center -->
+        <line x1="640" y1="530" x2="640" y2="455" marker-end="url(#arrow)"/>
+        <!-- Left to Center -->
+        <line x1="440" y1="380" x2="495" y2="380" marker-end="url(#arrow)"/>
+        <!-- Right to Center -->
+        <line x1="840" y1="380" x2="785" y2="380" marker-end="url(#arrow)"/>
     </g>
-    <line x1="640" y1="210" x2="640" y2="290" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
+
+    <!-- ==================== The Five Forces ==================== -->
     
-    <!-- Force 2: Right - Buyer Power -->
-    <g id="force2" transform="translate(950, 380)">
-        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad2)" filter="url(#forceShadow)"/>
-        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-            <tspan>Bargaining Power of Buyers</tspan>
-        </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
-        <rect x="-120" y="-5" width="135" height="10" rx="5" fill="#FFFFFF"/>
-        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="bold" fill="#FFFFFF">
-            <tspan>High</tspan>
-        </text>
-        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
-            <tspan>Many choices, Low switching costs</tspan>
-        </text>
+    <!-- 1. Center Card: Industry Rivalry (Very High) -->
+    <g transform="translate(640, 380)">
+        <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2" filter="url(#cardShadow)"/>
+        <!-- Top Accent -->
+        <g>
+            <rect x="-129" y="-59" width="258" height="12" rx="11" fill="#BE123C"/>
+            <rect x="-129" y="-50" width="258" height="9" fill="#BE123C"/>
+        </g>
+        <!-- Title & Badge -->
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#881337" text-anchor="middle">Industry Rivalry</text>
+        <rect x="-40" y="-12" width="80" height="24" rx="6" fill="#FDA4AF"/>
+        <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#881337" text-anchor="middle">VERY HIGH</text>
+        <!-- Bullets -->
+        <circle cx="-100" cy="27" r="4" fill="#BE123C"/>
+        <text x="-85" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#4C0519">Many fierce competitors</text>
+        <circle cx="-100" cy="47" r="4" fill="#BE123C"/>
+        <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#4C0519">Price wars are common</text>
     </g>
-    <line x1="730" y1="380" x2="785" y2="380" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
-    
-    <!-- Force 3: Bottom - Threat of Substitutes -->
-    <g id="force3" transform="translate(640, 610)">
-        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad3)" filter="url(#forceShadow)"/>
-        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-            <tspan>Threat of Substitutes</tspan>
-        </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
-        <rect x="-120" y="-5" width="54" height="10" rx="5" fill="#FFFFFF"/>
-        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="bold" fill="#FFFFFF">
-            <tspan>Low</tspan>
-        </text>
-        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
-            <tspan>Few effective alternatives</tspan>
-        </text>
+
+    <!-- 2. Top Card: Threat of New Entrants (Medium) -->
+    <g transform="translate(640, 160)">
+        <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Top Accent -->
+        <g>
+            <rect x="-129" y="-59" width="258" height="12" rx="11" fill="#F59E0B"/>
+            <rect x="-129" y="-50" width="258" height="9" fill="#F59E0B"/>
+        </g>
+        <!-- Title & Badge -->
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">Threat of New Entrants</text>
+        <rect x="-35" y="-12" width="70" height="24" rx="6" fill="#FEF3C7"/>
+        <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#92400E" text-anchor="middle">MEDIUM</text>
+        <!-- Bullets -->
+        <circle cx="-100" cy="27" r="4" fill="#94A3B8"/>
+        <text x="-85" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">High capital barriers</text>
+        <circle cx="-100" cy="47" r="4" fill="#94A3B8"/>
+        <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Tech accumulation needed</text>
     </g>
-    <line x1="640" y1="470" x2="640" y2="540" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
-    
-    <!-- Force 4: Left - Supplier Power -->
-    <g id="force4" transform="translate(330, 380)">
-        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad4)" filter="url(#forceShadow)"/>
-        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-            <tspan>Bargaining Power of Suppliers</tspan>
-        </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
-        <rect x="-120" y="-5" width="108" height="10" rx="5" fill="#FFFFFF"/>
-        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="bold" fill="#FFFFFF">
-            <tspan>Medium-High</tspan>
-        </text>
-        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
-            <tspan>Cloud vendors concentrated</tspan>
-        </text>
+
+    <!-- 3. Bottom Card: Threat of Substitutes (Low) -->
+    <g transform="translate(640, 600)">
+        <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Top Accent -->
+        <g>
+            <rect x="-129" y="-59" width="258" height="12" rx="11" fill="#10B981"/>
+            <rect x="-129" y="-50" width="258" height="9" fill="#10B981"/>
+        </g>
+        <!-- Title & Badge -->
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">Threat of Substitutes</text>
+        <rect x="-30" y="-12" width="60" height="24" rx="6" fill="#D1FAE5"/>
+        <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#064E3B" text-anchor="middle">LOW</text>
+        <!-- Bullets -->
+        <circle cx="-100" cy="27" r="4" fill="#94A3B8"/>
+        <text x="-85" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Few effective alternatives</text>
+        <circle cx="-100" cy="47" r="4" fill="#94A3B8"/>
+        <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">High product differentiation</text>
     </g>
-    <line x1="550" y1="380" x2="495" y2="380" stroke="#7F8C8D" stroke-width="2" marker-end="url(#arrowHead)"/>
-    
-    <!-- Force 5: Top Right Corner - Competitive Rivalry Detail -->
-    <g id="force5" transform="translate(1050, 150)">
-        <rect x="-150" y="-55" width="300" height="90" rx="12" fill="url(#forceGrad5)" filter="url(#forceShadow)"/>
-        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-            <tspan>Competitive Rivalry</tspan>
-        </text>
-        <rect x="-120" y="-5" width="180" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.3"/>
-        <rect x="-120" y="-5" width="162" height="10" rx="5" fill="#FFFFFF"/>
-        <text x="70" y="3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="bold" fill="#FFFFFF">
-            <tspan>Very High</tspan>
-        </text>
-        <text x="0" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="11" fill="#FFFFFF" fill-opacity="0.9" text-anchor="middle">
-            <tspan>Many competitors, Price wars common</tspan>
-        </text>
+
+    <!-- 4. Left Card: Power of Suppliers (Medium-High) -->
+    <g transform="translate(300, 380)">
+        <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Top Accent -->
+        <g>
+            <rect x="-129" y="-59" width="258" height="12" rx="11" fill="#F97316"/>
+            <rect x="-129" y="-50" width="258" height="9" fill="#F97316"/>
+        </g>
+        <!-- Title & Badge -->
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">Power of Suppliers</text>
+        <rect x="-40" y="-12" width="80" height="24" rx="6" fill="#FFEDD5"/>
+        <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#9A3412" text-anchor="middle">MED-HIGH</text>
+        <!-- Bullets -->
+        <circle cx="-100" cy="27" r="4" fill="#94A3B8"/>
+        <text x="-85" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Cloud vendors concentrated</text>
+        <circle cx="-100" cy="47" r="4" fill="#94A3B8"/>
+        <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">High dependency on infra</text>
     </g>
-    
-    <!-- Info panels -->
-    <g id="infoPanel">
-        <rect x="60" y="520" width="200" height="100" rx="8" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1" filter="url(#forceShadow)"/>
-        <text x="160" y="545" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" font-weight="bold" fill="#2C3E50" text-anchor="middle">
-            <tspan>Overall Assessment</tspan>
-        </text>
-        <text x="160" y="575" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="28" font-weight="bold" fill="#E74C3C" text-anchor="middle">
-            <tspan>3.4 / 5</tspan>
-        </text>
-        <text x="160" y="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="12" fill="#7F8C8D" text-anchor="middle">
-            <tspan>High Competition Intensity</tspan>
-        </text>
+
+    <!-- 5. Right Card: Power of Buyers (High) -->
+    <g transform="translate(980, 380)">
+        <rect x="-130" y="-60" width="260" height="120" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Top Accent -->
+        <g>
+            <rect x="-129" y="-59" width="258" height="12" rx="11" fill="#F43F5E"/>
+            <rect x="-129" y="-50" width="258" height="9" fill="#F43F5E"/>
+        </g>
+        <!-- Title & Badge -->
+        <text x="0" y="-25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#0F172A" text-anchor="middle">Power of Buyers</text>
+        <rect x="-30" y="-12" width="60" height="24" rx="6" fill="#FFE4E6"/>
+        <text x="0" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="800" fill="#9F1239" text-anchor="middle">HIGH</text>
+        <!-- Bullets -->
+        <circle cx="-100" cy="27" r="4" fill="#94A3B8"/>
+        <text x="-85" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Many alternative choices</text>
+        <circle cx="-100" cy="47" r="4" fill="#94A3B8"/>
+        <text x="-85" y="51" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#475569">Low switching costs</text>
     </g>
+
+    <!-- ==================== Side Panels ==================== -->
     
-    <!-- Strategy recommendations -->
-    <g id="recommendations">
-        <rect x="60" y="110" width="200" height="120" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
-        <text x="160" y="135" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" font-weight="bold" fill="#2E7D32" text-anchor="middle">
-            <tspan>Strategic Advice</tspan>
-        </text>
-        <text x="75" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="12" fill="#5D6D7E">
-            <tspan>1. Build technical moats</tspan>
-        </text>
-        <text x="75" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="12" fill="#5D6D7E">
-            <tspan>2. Improve customer stickiness</tspan>
-        </text>
-        <text x="75" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="12" fill="#5D6D7E">
-            <tspan>3. Diversify supply chain</tspan>
-        </text>
-        <text x="75" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="12" fill="#5D6D7E">
-            <tspan>4. Focus on differentiation</tspan>
-        </text>
+    <!-- Top-Right: Overall Assessment -->
+    <rect x="1040" y="100" width="200" height="120" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="1140" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">Overall Intensity</text>
+    <text x="1140" y="170" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="36" font-weight="800" fill="#BE123C" text-anchor="middle">3.4 <tspan font-size="20" font-weight="600" fill="#94A3B8">/ 5</tspan></text>
+    <text x="1140" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#4C0519" text-anchor="middle">High Competition</text>
+    
+    <!-- Top-Left: Strategic Implications -->
+    <rect x="40" y="100" width="240" height="150" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" filter="url(#cardShadow)"/>
+    <text x="160" y="130" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">Strategic Implications</text>
+    
+    <circle cx="65" cy="155" r="4" fill="#3B82F6"/>
+    <text x="80" y="159" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#334155">Build technical moats</text>
+    
+    <circle cx="65" cy="180" r="4" fill="#3B82F6"/>
+    <text x="80" y="184" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#334155">Improve customer stickiness</text>
+
+    <circle cx="65" cy="205" r="4" fill="#3B82F6"/>
+    <text x="80" y="209" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#334155">Diversify supply chain</text>
+
+    <circle cx="65" cy="230" r="4" fill="#3B82F6"/>
+    <text x="80" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#334155">Focus on differentiation</text>
+    
+    <!-- Bottom-Left: Threat Legend -->
+    <g transform="translate(40, 630)">
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#64748B">Threat Levels:</text>
+        
+        <rect x="100" y="-10" width="12" height="12" rx="3" fill="#10B981"/>
+        <text x="120" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">Low</text>
+
+        <rect x="160" y="-10" width="12" height="12" rx="3" fill="#F59E0B"/>
+        <text x="180" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">Medium</text>
+
+        <rect x="245" y="-10" width="12" height="12" rx="3" fill="#F97316"/>
+        <text x="265" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">Med-High</text>
+
+        <rect x="345" y="-10" width="12" height="12" rx="3" fill="#F43F5E"/>
+        <text x="365" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">High</text>
+
+        <rect x="410" y="-10" width="12" height="12" rx="3" fill="#BE123C"/>
+        <text x="430" y="1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569">Very High</text>
     </g>
     
-    <!-- Legend -->
-    <g id="legend" transform="translate(60, 635)">
-        <text x="0" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#5D6D7E">
-            <tspan>Threat Level:</tspan>
-        </text>
-        <rect x="90" y="5" width="40" height="14" rx="7" fill="#4CAF50"/>
-        <text x="138" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#5D6D7E"><tspan>Low</tspan></text>
-        <rect x="165" y="5" width="60" height="14" rx="7" fill="#F39C12"/>
-        <text x="233" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#5D6D7E"><tspan>Medium</tspan></text>
-        <rect x="280" y="5" width="80" height="14" rx="7" fill="#E74C3C"/>
-        <text x="368" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#5D6D7E"><tspan>High</tspan></text>
-    </g>
-    
-    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="12" fill="#95A5A6" text-anchor="middle">
-        <tspan>Data Source: Industry Research Department - 2025 Market Competition Analysis Report</tspan>
-    </text>
+    <!-- Data Source -->
+    <text x="640" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="12" font-weight="600" fill="#94A3B8" text-anchor="middle">Data Source: Industry Research Department - 2025 Market Competition Analysis Report</text>
 </svg>

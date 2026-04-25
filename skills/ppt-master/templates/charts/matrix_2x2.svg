@@ -1,334 +1,208 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    矩阵图模板 (2×2) - CRAP 深度优化版
-    用途: 四象限分析
-    适用场景: 波士顿矩阵、风险评估、优先级分析
-    优化重点:
-      - 对齐: 网格化布局，统一边距
-      - 对比: 强化色彩层次和视觉重量
-      - 重复: 统一字体大小、间距、样式
-      - 亲密性: 优化元素分组和留白
+    Matrix 2x2 Chart Template
+    Usage: Four-quadrant analysis
+    Scenarios: BCG Matrix, risk assessment, priority analysis, strategic evaluation
     -->
     
     <defs>
-        <!-- 象限渐变背景 - 优化对比度和饱和度 -->
+        <!-- Quadrant Gradients -->
         <linearGradient id="quadrant1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#E8F5E9;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#C8E6C9;stop-opacity:1" />
+            <stop offset="0%" style="stop-color:#ECFDF5;stop-opacity:1" /> <!-- Emerald-50 -->
+            <stop offset="100%" style="stop-color:#D1FAE5;stop-opacity:1" /> <!-- Emerald-100 -->
         </linearGradient>
         
         <linearGradient id="quadrant2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FFF8E1;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#FFE082;stop-opacity:1" />
+            <stop offset="0%" style="stop-color:#FFFBEB;stop-opacity:1" /> <!-- Amber-50 -->
+            <stop offset="100%" style="stop-color:#FEF3C7;stop-opacity:1" /> <!-- Amber-100 -->
         </linearGradient>
         
         <linearGradient id="quadrant3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#FFEBEE;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#FFCDD2;stop-opacity:1" />
+            <stop offset="0%" style="stop-color:#FFF1F2;stop-opacity:1" /> <!-- Rose-50 -->
+            <stop offset="100%" style="stop-color:#FFE4E6;stop-opacity:1" /> <!-- Rose-100 -->
         </linearGradient>
         
         <linearGradient id="quadrant4" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+            <stop offset="0%" style="stop-color:#EFF6FF;stop-opacity:1" /> <!-- Blue-50 -->
+            <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" /> <!-- Blue-100 -->
         </linearGradient>
         
-        <!-- 整体背景渐变 -->
-        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#FAFBFC;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#F5F6F8;stop-opacity:1" />
-        </linearGradient>
-        
-        <!-- 数据点阴影 - 柔和深度感 -->
-        <filter id="bubbleShadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
-            <feOffset dx="0" dy="4"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.25"/>
-            </feComponentTransfer>
-            <feMerge>
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+        <!-- Drop Shadow for Cards & Bubbles -->
+        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.1" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
         
-        <!-- 坐标轴箭头标记 -->
+        <!-- Axis Arrows -->
         <marker id="arrowX" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
-            <path d="M 2,2 L 12,7 L 2,12 Z" fill="#1A252F"/>
+            <path d="M 2,2 L 12,7 L 2,12 Z" fill="#0F172A"/>
         </marker>
         <marker id="arrowY" markerWidth="14" markerHeight="14" refX="7" refY="2" orient="auto">
-            <path d="M 2,12 L 7,2 L 12,12 Z" fill="#1A252F"/>
+            <path d="M 2,12 L 7,2 L 12,12 Z" fill="#0F172A"/>
         </marker>
     </defs>
     
-    <!-- 背景 -->
-    <rect width="1280" height="720" fill="url(#bgGradient)"/>
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8FAFC"/>
     
-    <!-- 标题区域 - 增强层级 -->
+    <!-- Title Area -->
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="36" font-weight="700" fill="#1A252F" letter-spacing="-0.5">
-        <tspan>产品组合矩阵分析</tspan>
+          font-size="36" font-weight="800" fill="#0F172A" letter-spacing="-0.5">
+        <tspan>Product Portfolio Matrix Analysis</tspan>
     </text>
-    <text x="60" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="15" fill="#9AA0A6">
-        <tspan>Boston Matrix · Product Portfolio Analysis</tspan>
+    <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="600" fill="#64748B" letter-spacing="1">
+        <tspan>BCG MATRIX · STRATEGIC PRODUCT PORTFOLIO EVALUATION</tspan>
+    </text>
+    <text x="60" y="125" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+          font-size="14" font-weight="500" fill="#94A3B8">
+        <tspan>Market Growth Rate vs Relative Market Share · Bubble size represents Revenue</tspan>
     </text>
     
-    <text x="60" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="500" fill="#5F6368">
-        <tspan>市场增长率 vs 市场占有率 · 气泡大小代表营收规模</tspan>
-    </text>
-    
-    <!-- 矩阵主区域 - 优化布局，中心点 (565, 410) -->
+    <!-- Matrix Main Area -->
     <g id="matrixArea">
-        <!-- 象限背景 - 统一尺寸 480×240，增强边框对比 -->
-        <!-- 象限1: 右上 (高增长, 高份额) - 明星 -->
-        <rect x="565" y="170" width="480" height="240" fill="url(#quadrant1)" 
-              stroke="#FFFFFF" stroke-width="3" rx="2"/>
+        <!-- Quadrants -->
+        <!-- Q1: Top Right (Stars) -->
+        <rect x="565" y="170" width="480" height="240" fill="url(#quadrant1)" stroke="#FFFFFF" stroke-width="4" rx="4"/>
+        <!-- Q2: Top Left (Question Marks) -->
+        <rect x="85" y="170" width="480" height="240" fill="url(#quadrant2)" stroke="#FFFFFF" stroke-width="4" rx="4"/>
+        <!-- Q3: Bottom Left (Dogs) -->
+        <rect x="85" y="410" width="480" height="240" fill="url(#quadrant3)" stroke="#FFFFFF" stroke-width="4" rx="4"/>
+        <!-- Q4: Bottom Right (Cash Cows) -->
+        <rect x="565" y="410" width="480" height="240" fill="url(#quadrant4)" stroke="#FFFFFF" stroke-width="4" rx="4"/>
         
-        <!-- 象限2: 左上 (高增长, 低份额) - 问题 -->
-        <rect x="85" y="170" width="480" height="240" fill="url(#quadrant2)" 
-              stroke="#FFFFFF" stroke-width="3" rx="2"/>
+        <!-- Axes -->
+        <line x1="85" y1="410" x2="1055" y2="410" stroke="#0F172A" stroke-width="3" marker-end="url(#arrowX)"/>
+        <line x1="565" y1="160" x2="565" y2="650" stroke="#0F172A" stroke-width="3" marker-start="url(#arrowY)"/>
         
-        <!-- 象限3: 左下 (低增长, 低份额) - 瘦狗 -->
-        <rect x="85" y="410" width="480" height="240" fill="url(#quadrant3)" 
-              stroke="#FFFFFF" stroke-width="3" rx="2"/>
-        
-        <!-- 象限4: 右下 (低增长, 高份额) - 现金牛 -->
-        <rect x="565" y="410" width="480" height="240" fill="url(#quadrant4)" 
-              stroke="#FFFFFF" stroke-width="3" rx="2"/>
-        
-        <!-- 坐标轴 - 清晰有力 -->
-        <line x1="85" y1="410" x2="1045" y2="410" stroke="#1A252F" stroke-width="4" 
-              marker-end="url(#arrowX)"/>
-        <line x1="565" y1="170" x2="565" y2="650" stroke="#1A252F" stroke-width="4" 
-              marker-start="url(#arrowY)"/>
-        
-        <!-- X轴标签 - 统一样式层级 -->
-        <text x="565" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="600" fill="#1A252F" text-anchor="middle">
-            <tspan>市场占有率 Market Share</tspan>
+        <!-- X-Axis Labels -->
+        <text x="565" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle">
+            <tspan>Relative Market Share</tspan>
         </text>
-        <text x="220" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#5F6368" text-anchor="middle">
-            <tspan>低 Low</tspan>
-        </text>
-        <text x="910" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#5F6368" text-anchor="middle">
-            <tspan>高 High</tspan>
-        </text>
-        
-        <!-- Y轴标签 - 统一样式层级 -->
-        <text x="40" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="600" fill="#1A252F" text-anchor="middle" 
-              transform="rotate(-90, 40, 410)">
-            <tspan>市场增长率</tspan>
-        </text>
-        <text x="25" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#9AA0A6" text-anchor="middle" 
-              transform="rotate(-90, 25, 410)">
-            <tspan>Growth Rate</tspan>
-        </text>
-        <!-- Y轴端点标记 - 优化对齐 -->
-        <text x="50" y="655" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#5F6368">
-            <tspan>低</tspan>
-        </text>
-        <text x="50" y="668" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#9AA0A6">
+        <text x="220" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#64748B" text-anchor="middle">
             <tspan>Low</tspan>
         </text>
-        
-        <text x="50" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#5F6368">
-            <tspan>高</tspan>
-        </text>
-        <text x="50" y="193" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="11" fill="#9AA0A6">
+        <text x="910" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#64748B" text-anchor="middle">
             <tspan>High</tspan>
         </text>
         
-        <!-- 象限标签 - 对齐优化，统一间距 -->
-        <!-- 左上：问题产品 -->
-        <text x="105" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="20" font-weight="700" fill="#F57C00">
-            <tspan>问题产品</tspan>
-        </text>
-        <text x="105" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#E65100">
-            <tspan>Question Marks</tspan>
-        </text>
-        <text x="105" y="238" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#D84315">
-            <tspan>高投入 · 低回报</tspan>
+        <!-- Y-Axis Labels -->
+        <text x="40" y="410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle" transform="rotate(-90, 40, 410)">
+            <tspan>Market Growth Rate</tspan>
         </text>
         
-        <!-- 右上：明星产品 -->
-        <text x="585" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="20" font-weight="700" fill="#388E3C">
-            <tspan>明星产品</tspan>
+        <text x="60" y="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#64748B" text-anchor="end">
+            <tspan>Low</tspan>
         </text>
-        <text x="585" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#2E7D32">
-            <tspan>Stars</tspan>
-        </text>
-        <text x="585" y="238" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="500" fill="#1B5E20">
-            <tspan>高投入 · 高回报</tspan>
+        <text x="60" y="180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+              font-size="14" font-weight="600" fill="#64748B" text-anchor="end">
+            <tspan>High</tspan>
         </text>
         
-        <!-- 左下：瘦狗产品 -->
-        <text x="105" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="20" font-weight="700" fill="#D32F2F">
-            <tspan>瘦狗产品</tspan>
-        </text>
-        <text x="105" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#C62828">
-            <tspan>Dogs</tspan>
-        </text>
+        <!-- Quadrant Labels -->
+        <!-- Q2: Question Marks -->
+        <text x="110" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#B45309">Question Marks</text>
+        <text x="110" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#D97706" letter-spacing="1">HIGH GROWTH · LOW SHARE</text>
         
-        <!-- 右下：现金牛产品 -->
-        <text x="585" y="610" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="20" font-weight="700" fill="#1976D2">
-            <tspan>现金牛产品</tspan>
-        </text>
-        <text x="585" y="630" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" fill="#1565C0">
-            <tspan>Cash Cows</tspan>
-        </text>
+        <!-- Q1: Stars -->
+        <text x="590" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#047857">Stars</text>
+        <text x="590" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#059669" letter-spacing="1">HIGH GROWTH · HIGH SHARE</text>
         
-        <!-- 数据点 (气泡图) - 重新定位，统一样式 -->
-        <!-- 产品A: 明星 (市场份额: 高75%, 增长率: 高35%, 营收: 大) -->
-        <circle cx="879" cy="247" r="55" fill="#4CAF50" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="879" y="244" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="17" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品A</tspan>
-        </text>
-        <text x="879" y="263" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥3.2亿</tspan>
-        </text>
+        <!-- Q3: Dogs -->
+        <text x="110" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#BE123C">Dogs</text>
+        <text x="110" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#E11D48" letter-spacing="1">LOW GROWTH · LOW SHARE</text>
         
-        <!-- 产品B: 现金牛 (市场份额: 高80%, 增长率: 低8%, 营收: 最大) -->
-        <circle cx="935" cy="544" r="70" fill="#2196F3" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="935" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品B</tspan>
-        </text>
-        <text x="935" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥4.8亿</tspan>
-        </text>
+        <!-- Q4: Cash Cows -->
+        <text x="590" y="615" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="800" fill="#1D4ED8">Cash Cows</text>
+        <text x="590" y="635" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#2563EB" letter-spacing="1">LOW GROWTH · HIGH SHARE</text>
         
-        <!-- 产品C: 问题 (市场份额: 低25%, 增长率: 高40%, 营收: 中) -->
-        <circle cx="269" cy="228" r="42" fill="#FF9800" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="269" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品C</tspan>
-        </text>
-        <text x="269" y="243" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥1.6亿</tspan>
-        </text>
+        <!-- Product Data Bubbles -->
+        <!-- Product A: Star -->
+        <g filter="url(#cardShadow)">
+            <circle cx="879" cy="247" r="55" fill="#10B981" opacity="0.95"/>
+            <text x="879" y="243" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product A</text>
+            <text x="879" y="261" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">$320M</text>
+        </g>
         
-        <!-- 产品D: 问题 (市场份额: 低30%, 增长率: 高28%, 营收: 中) -->
-        <circle cx="325" cy="309" r="38" fill="#FF9800" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="325" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品D</tspan>
-        </text>
-        <text x="325" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥1.2亿</tspan>
-        </text>
+        <!-- Product B: Cash Cow -->
+        <g filter="url(#cardShadow)">
+            <circle cx="935" cy="544" r="70" fill="#3B82F6" opacity="0.95"/>
+            <text x="935" y="540" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product B</text>
+            <text x="935" y="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">$480M</text>
+        </g>
         
-        <!-- 产品E: 瘦狗 (市场份额: 低15%, 增长率: 低5%, 营收: 小) -->
-        <circle cx="195" cy="573" r="30" fill="#E74C3C" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="195" y="571" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品E</tspan>
-        </text>
-        <text x="195" y="587" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥0.5亿</tspan>
-        </text>
+        <!-- Product C: Question -->
+        <g filter="url(#cardShadow)">
+            <circle cx="269" cy="228" r="42" fill="#F59E0B" opacity="0.95"/>
+            <text x="269" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product C</text>
+            <text x="269" y="243" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">$160M</text>
+        </g>
         
-        <!-- 产品F: 现金牛 (市场份额: 中60%, 增长率: 低12%, 营收: 中) -->
-        <circle cx="741" cy="506" r="45" fill="#2196F3" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="741" y="503" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品F</tspan>
-        </text>
-        <text x="741" y="521" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥1.8亿</tspan>
-        </text>
+        <!-- Product D: Question -->
+        <g filter="url(#cardShadow)">
+            <circle cx="325" cy="309" r="38" fill="#F59E0B" opacity="0.95"/>
+            <text x="325" y="306" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product D</text>
+            <text x="325" y="323" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#FFFFFF" text-anchor="middle">$120M</text>
+        </g>
         
-        <!-- 产品G: 明星 (市场份额: 中55%, 增长率: 高30%, 营收: 中) -->
-        <circle cx="695" cy="285" r="40" fill="#4CAF50" opacity="0.9" filter="url(#bubbleShadow)"/>
-        <text x="695" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">
-            <tspan>产品G</tspan>
-        </text>
-        <text x="695" y="299" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">
-            <tspan>¥1.4亿</tspan>
-        </text>
+        <!-- Product E: Dog -->
+        <g filter="url(#cardShadow)">
+            <circle cx="195" cy="573" r="30" fill="#F43F5E" opacity="0.95"/>
+            <text x="195" y="571" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product E</text>
+            <text x="195" y="587" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#FFFFFF" text-anchor="middle">$50M</text>
+        </g>
+        
+        <!-- Product F: Cash Cow -->
+        <g filter="url(#cardShadow)">
+            <circle cx="741" cy="506" r="45" fill="#3B82F6" opacity="0.95"/>
+            <text x="741" y="503" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product F</text>
+            <text x="741" y="521" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">$180M</text>
+        </g>
+        
+        <!-- Product G: Star -->
+        <g filter="url(#cardShadow)">
+            <circle cx="695" cy="285" r="40" fill="#10B981" opacity="0.95"/>
+            <text x="695" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Product G</text>
+            <text x="695" y="299" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">$140M</text>
+        </g>
     </g>
     
-    <!-- 战略建议框 - 重新设计，优化亲密性与留白 -->
-    <g id="strategicRecommendations">
-        <!-- 背景卡片 -->
-        <rect x="1070" y="180" width="170" height="240" fill="#FFFFFF" 
-              stroke="#E0E0E0" stroke-width="1.5" rx="8" opacity="0.95"/>
+    <!-- Strategic Recommendations Card -->
+    <g id="strategicRecommendations" filter="url(#cardShadow)">
+        <rect x="1070" y="170" width="165" height="250" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" rx="12"/>
         
-        <!-- 标题 -->
-        <text x="1155" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="15" font-weight="700" fill="#1A252F" text-anchor="middle">
-            <tspan>战略建议</tspan>
-        </text>
+        <text x="1152" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A" text-anchor="middle">Strategic Actions</text>
+        <line x1="1085" y1="220" x2="1220" y2="220" stroke="#F1F5F9" stroke-width="2"/>
         
-        <!-- 分隔线 -->
-        <line x1="1085" y1="225" x2="1225" y2="225" stroke="#E0E0E0" stroke-width="1"/>
+        <!-- Stars -->
+        <circle cx="1090" cy="245" r="6" fill="#10B981"/>
+        <text x="1105" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#047857">Stars: Invest</text>
         
-        <!-- 明星产品 -->
-        <circle cx="1090" cy="250" r="6" fill="#4CAF50" opacity="0.9"/>
-        <text x="1105" y="254" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#388E3C">
-            <tspan>明星: 持续投资</tspan>
-        </text>
+        <!-- Question Marks -->
+        <circle cx="1090" cy="285" r="6" fill="#F59E0B"/>
+        <text x="1105" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#B45309">Questions: Analyze</text>
         
-        <!-- 问题产品 -->
-        <circle cx="1090" cy="285" r="6" fill="#FF9800" opacity="0.9"/>
-        <text x="1105" y="289" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#F57C00">
-            <tspan>问题: 选择性投资</tspan>
-        </text>
+        <!-- Cash Cows -->
+        <circle cx="1090" cy="325" r="6" fill="#3B82F6"/>
+        <text x="1105" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#1D4ED8">Cows: Harvest</text>
         
-        <!-- 现金牛产品 -->
-        <circle cx="1090" cy="320" r="6" fill="#2196F3" opacity="0.9"/>
-        <text x="1105" y="324" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#1976D2">
-            <tspan>现金牛: 收割</tspan>
-        </text>
+        <!-- Dogs -->
+        <circle cx="1090" cy="365" r="6" fill="#F43F5E"/>
+        <text x="1105" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#BE123C">Dogs: Divest</text>
         
-        <!-- 瘦狗产品 -->
-        <circle cx="1090" cy="355" r="6" fill="#E74C3C" opacity="0.9"/>
-        <text x="1105" y="359" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="12" font-weight="600" fill="#D32F2F">
-            <tspan>瘦狗: 撤资</tspan>
-        </text>
-        
-        <!-- 底部说明 -->
-        <text x="1155" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="10" fill="#9AA0A6" text-anchor="middle">
-            <tspan>气泡大小 = 营收规模</tspan>
-        </text>
+        <text x="1152" y="405" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#94A3B8" text-anchor="middle">Bubble Size = Revenue</text>
     </g>
     
-    <!-- 数据来源 - 优化样式 -->
-    <text x="60" y="705" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" fill="#9AA0A6">
-        <tspan>数据来源: 市场研究部门分析 | Source: Market Research Department</tspan>
+    <!-- Source Footer -->
+    <text x="60" y="700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="500" fill="#94A3B8">
+        <tspan>Source: Market Research Department</tspan>
     </text>
 </svg>
-

@@ -1,140 +1,141 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    优劣势对比模板
-    用途: 双向对比、利弊分析、方案评估
-    适用场景: 产品对比、方案优劣势、决策支持
-    支持: 左右对称 3+3 项 (推荐2-5项)
+    Pros vs Cons Analysis Chart
+    Purpose: Dual-sided comparison, advantage/disadvantage evaluation
+    Use cases: Product comparison, strategy evaluation, decision support
+    Supports: Symmetrical 3 vs 3 layout with central dividing axis
     -->
     
     <defs>
-        <!-- 卡片阴影 -->
-        <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.12"/>
-            </feComponentTransfer>
+        <!-- Modern Tailwind Shadow -->
+        <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+            <feOffset dx="0" dy="3" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
             <feMerge>
-                <feMergeNode/>
+                <feMergeNode in="shadow"/>
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
         </filter>
     </defs>
     
-    <!-- 背景 -->
-    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8FAFC"/>
     
-    <!-- 标题区域 -->
-    <text x="640" y="60" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="700" fill="#1A252F" letter-spacing="-0.5">方案优劣势对比</text>
-    <text x="640" y="90" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" fill="#7F8C8D">Pros vs Cons Analysis · 客观评估决策依据</text>
+    <!-- ==================== Header Area ==================== -->
+    <text x="640" y="60" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Pros vs Cons Analysis</text>
+    <text x="640" y="90" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">STRATEGIC EVALUATION · OBJECTIVE DECISION FRAMEWORK</text>
     
-    <!-- 中间分隔标签 -->
-    <rect x="588" y="120" width="104" height="40" rx="20" fill="#27AE60"/>
-    <text x="640" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="700" fill="#FFFFFF">PROS</text>
-    <polygon points="588,140 568,128 568,152" fill="#27AE60"/>
+    <!-- ==================== Column Headers ==================== -->
+    <!-- Left Header (PROS) -->
+    <rect x="60" y="130" width="560" height="48" rx="10" fill="#10B981" fill-opacity="0.1"/>
+    <text x="340" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#059669" text-anchor="middle" letter-spacing="1">PROS / ADVANTAGES</text>
 
-    <rect x="588" y="172" width="104" height="40" rx="20" fill="#E74C3C"/>
-    <text x="640" y="198" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="700" fill="#FFFFFF">CONS</text>
-    <polygon points="692,192 712,180 712,204" fill="#E74C3C"/>
+    <!-- Right Header (CONS) -->
+    <rect x="660" y="130" width="560" height="48" rx="10" fill="#F43F5E" fill-opacity="0.1"/>
+    <text x="940" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#BE123C" text-anchor="middle" letter-spacing="1">CONS / DISADVANTAGES</text>
+
+    <!-- ==================== Central Axis ==================== -->
+    <!-- Vertical Divider -->
+    <line x1="640" y1="200" x2="640" y2="580" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="6 6"/>
     
-    <!-- 左侧标题 (优势) -->
-    <text x="280" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="22" font-weight="700" fill="#27AE60">优势</text>
+    <!-- VS Badge -->
+    <circle cx="640" cy="390" r="24" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" filter="url(#cardShadow)"/>
+    <text x="640" y="396" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#64748B" text-anchor="middle">VS</text>
+
+    <!-- ==================== PROS Cards (Left) ==================== -->
     
-    <!-- 右侧标题 (劣势) -->
-    <text x="1000" y="146" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="22" font-weight="700" fill="#E74C3C">劣势</text>
-    
-    <!-- 优势卡片 1 -->
-    <g filter="url(#cardShadow)">
-        <rect x="60" y="230" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="60" y="230" width="6" height="100" rx="3" fill="#27AE60"/>
-        <circle cx="96" cy="268" r="18" fill="#27AE60" fill-opacity="0.12"/>
-        <text x="96" y="274" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#27AE60">✓</text>
-        <text x="128" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">产品质量领先</text>
-        <text x="128" y="296" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">核心技术自主可控，用户满意度持续高于行业均值15%</text>
+    <!-- PROS 1 -->
+    <g transform="translate(60, 200)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Accent Pill -->
+        <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+        <!-- Icon -->
+        <circle cx="48" cy="55" r="20" fill="#D1FAE5"/>
+        <path d="M38 55 L45 62 L58 48" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Texts -->
+        <text x="85" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">Superior Product Quality</text>
+        <text x="85" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Core technology is independently controlled.</text>
+        <text x="85" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">User satisfaction is 15% above industry average.</text>
     </g>
     
-    <!-- 优势卡片 2 -->
-    <g filter="url(#cardShadow)">
-        <rect x="60" y="348" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="60" y="348" width="6" height="100" rx="3" fill="#27AE60"/>
-        <circle cx="96" cy="386" r="18" fill="#27AE60" fill-opacity="0.12"/>
-        <text x="96" y="392" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#27AE60">✓</text>
-        <text x="128" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">品牌认知度高</text>
-        <text x="128" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">全渠道覆盖率85%，品牌知名度位列细分市场TOP3</text>
+    <!-- PROS 2 -->
+    <g transform="translate(60, 335)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="48" cy="55" r="20" fill="#D1FAE5"/>
+        <path d="M38 55 L45 62 L58 48" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <text x="85" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">High Brand Recognition</text>
+        <text x="85" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Omnichannel coverage reaches over 85%.</text>
+        <text x="85" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Brand awareness consistently ranks TOP3 in segment.</text>
     </g>
     
-    <!-- 优势卡片 3 -->
-    <g filter="url(#cardShadow)">
-        <rect x="60" y="466" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="60" y="466" width="6" height="100" rx="3" fill="#27AE60"/>
-        <circle cx="96" cy="504" r="18" fill="#27AE60" fill-opacity="0.12"/>
-        <text x="96" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#27AE60">✓</text>
-        <text x="128" y="504" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">用户生态完善</text>
-        <text x="128" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">用户留存率/分享率/复购率远超行业平均水平</text>
+    <!-- PROS 3 -->
+    <g transform="translate(60, 470)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <line x1="8" y1="25" x2="8" y2="85" stroke="#10B981" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="48" cy="55" r="20" fill="#D1FAE5"/>
+        <path d="M38 55 L45 62 L58 48" fill="none" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <text x="85" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">Robust User Ecosystem</text>
+        <text x="85" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Active community engagement with high sharing rates.</text>
+        <text x="85" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">User retention and repurchase far exceed averages.</text>
+    </g>
+
+    <!-- ==================== CONS Cards (Right) ==================== -->
+    
+    <!-- CONS 1 -->
+    <g transform="translate(660, 200)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <!-- Mirrored Accent Pill -->
+        <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
+        <!-- Mirrored Icon -->
+        <circle cx="512" cy="55" r="20" fill="#FFE4E6"/>
+        <path d="M504 47 L520 63 M520 47 L504 63" fill="none" stroke="#E11D48" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Mirrored Texts -->
+        <text x="475" y="42" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">Long Iteration Cycle</text>
+        <text x="475" y="68" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Takes 12 weeks from user feedback to launch.</text>
+        <text x="475" y="90" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Competitors average only 6-8 weeks per cycle.</text>
     </g>
     
-    <!-- 劣势卡片 1 -->
-    <g filter="url(#cardShadow)">
-        <rect x="710" y="230" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="1214" y="230" width="6" height="100" rx="3" fill="#E74C3C"/>
-        <circle cx="1184" cy="268" r="18" fill="#E74C3C" fill-opacity="0.12"/>
-        <text x="1184" y="274" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
-        <text x="730" y="268" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">产品迭代周期长</text>
-        <text x="730" y="296" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">从用户反馈到功能上线平均需12周，竞品仅需6-8周</text>
+    <!-- CONS 2 -->
+    <g transform="translate(660, 335)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="512" cy="55" r="20" fill="#FFE4E6"/>
+        <path d="M504 47 L520 63 M520 47 L504 63" fill="none" stroke="#E11D48" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <text x="475" y="42" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">Weak in Tier-3 Markets</text>
+        <text x="475" y="68" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Only 23% penetration in lower-tier cities.</text>
+        <text x="475" y="90" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Insufficient regional distributor network coverage.</text>
     </g>
     
-    <!-- 劣势卡片 2 -->
-    <g filter="url(#cardShadow)">
-        <rect x="710" y="348" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="1214" y="348" width="6" height="100" rx="3" fill="#E74C3C"/>
-        <circle cx="1184" cy="386" r="18" fill="#E74C3C" fill-opacity="0.12"/>
-        <text x="1184" y="392" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
-        <text x="730" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">下沉市场薄弱</text>
-        <text x="730" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">二三线城市渗透率仅23%，经销商网络覆盖不足</text>
+    <!-- CONS 3 -->
+    <g transform="translate(660, 470)">
+        <rect x="0" y="0" width="560" height="110" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+        <line x1="552" y1="25" x2="552" y2="85" stroke="#F43F5E" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="512" cy="55" r="20" fill="#FFE4E6"/>
+        <path d="M504 47 L520 63 M520 47 L504 63" fill="none" stroke="#E11D48" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <text x="475" y="42" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A">Slow Service Response</text>
+        <text x="475" y="68" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Average technical ticket response time is 48h.</text>
+        <text x="475" y="90" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Increases the risk of enterprise customer churn.</text>
     </g>
+
+    <!-- ==================== Strategic Recommendation ==================== -->
+    <rect x="60" y="615" width="1160" height="70" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
     
-    <!-- 劣势卡片 3 -->
-    <g filter="url(#cardShadow)">
-        <rect x="710" y="466" width="510" height="100" rx="10" fill="#FFFFFF"/>
-        <rect x="1214" y="466" width="6" height="100" rx="3" fill="#E74C3C"/>
-        <circle cx="1184" cy="504" r="18" fill="#E74C3C" fill-opacity="0.12"/>
-        <text x="1184" y="510" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#E74C3C">✗</text>
-        <text x="730" y="504" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="700" fill="#1A252F">服务响应待提升</text>
-        <text x="730" y="532" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D">售后工单平均响应时长48h，客户流失风险增大</text>
-    </g>
+    <!-- Info Icon -->
+    <circle cx="100" cy="650" r="16" fill="#EFF6FF"/>
+    <circle cx="100" cy="643" r="2.5" fill="#2563EB"/>
+    <path d="M100 648 L100 658" stroke="#2563EB" stroke-width="3" stroke-linecap="round"/>
     
-    <!-- 底部建议栏 -->
-    <rect x="60" y="610" width="1160" height="70" rx="10" fill="#F8F9FA"/>
-    <text x="640" y="642" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="15" font-weight="700" fill="#1A252F">建议策略</text>
-    <text x="640" y="665" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="13" fill="#7F8C8D">巩固产品与品牌优势，同步加速迭代节奏、拓展下沉渠道、强化售后响应体系</text>
+    <text x="135" y="646" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#0F172A">Strategic Recommendation</text>
+    <text x="135" y="668" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="500" fill="#475569">Consolidate product and brand advantages while accelerating iteration, expanding channels, and enhancing service response.</text>
     
-    <!-- 底部装饰条 -->
-    <rect x="60" y="696" width="580" height="4" rx="2" fill="#27AE60" fill-opacity="0.25"/>
-    <rect x="640" y="696" width="580" height="4" rx="2" fill="#E74C3C" fill-opacity="0.25"/>
+    <!-- ==================== Bottom Anchors ==================== -->
+    <rect x="60" y="705" width="576" height="6" rx="3" fill="#10B981" fill-opacity="0.9"/>
+    <rect x="644" y="705" width="576" height="6" rx="3" fill="#F43F5E" fill-opacity="0.9"/>
 </svg>
