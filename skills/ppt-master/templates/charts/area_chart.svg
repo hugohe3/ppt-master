@@ -21,14 +21,13 @@
         </linearGradient>
         
         <!-- 数据点阴影 -->
-        <filter id="dotShadow">
+        <filter id="dotShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-            <feOffset dx="0" dy="1"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.3"/>
-            </feComponentTransfer>
+            <feOffset dx="0" dy="1" result="offsetBlur"/>
+            <feFlood flood-color="#000000" flood-opacity="0.3" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
             <feMerge>
-                <feMergeNode/>
+                <feMergeNode in="shadow"/>
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
         </filter>
@@ -202,48 +201,56 @@
     <!-- 统计卡片 -->
     <g id="statsCards" transform="translate(60, 620)">
         <!-- 卡片1: 总访问量 -->
-        <rect x="0" y="0" width="200" height="70" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
-        <text x="20" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" fill="#7F8C8D">
-            <tspan>年度总访问量</tspan>
-        </text>
-        <text x="20" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="24" font-weight="bold" fill="#2C3E50">
-            <tspan>10,240万</tspan>
-        </text>
+        <g id="card-total-visits">
+            <rect x="0" y="0" width="200" height="70" rx="8" fill="#F8F9FA" stroke="#E0E0E0" stroke-width="1"/>
+            <text x="20" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#7F8C8D">
+                <tspan>年度总访问量</tspan>
+            </text>
+            <text x="20" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="24" font-weight="bold" fill="#2C3E50">
+                <tspan>10,240万</tspan>
+            </text>
+        </g>
         
         <!-- 卡片2: PC端占比 -->
-        <rect x="220" y="0" width="180" height="70" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
-        <text x="240" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" fill="#1976D2">
-            <tspan>PC端占比</tspan>
-        </text>
-        <text x="240" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="24" font-weight="bold" fill="#2196F3">
-            <tspan>55.8%</tspan>
-        </text>
+        <g id="card-pc-share">
+            <rect x="220" y="0" width="180" height="70" rx="8" fill="#E3F2FD" stroke="#2196F3" stroke-width="1"/>
+            <text x="240" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#1976D2">
+                <tspan>PC端占比</tspan>
+            </text>
+            <text x="240" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="24" font-weight="bold" fill="#2196F3">
+                <tspan>55.8%</tspan>
+            </text>
+        </g>
         
         <!-- 卡片3: 移动端占比 -->
-        <rect x="420" y="0" width="180" height="70" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
-        <text x="440" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" fill="#388E3C">
-            <tspan>移动端占比</tspan>
-        </text>
-        <text x="440" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="24" font-weight="bold" fill="#4CAF50">
-            <tspan>44.2%</tspan>
-        </text>
+        <g id="card-mobile-share">
+            <rect x="420" y="0" width="180" height="70" rx="8" fill="#E8F5E9" stroke="#4CAF50" stroke-width="1"/>
+            <text x="440" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#388E3C">
+                <tspan>移动端占比</tspan>
+            </text>
+            <text x="440" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="24" font-weight="bold" fill="#4CAF50">
+                <tspan>44.2%</tspan>
+            </text>
+        </g>
         
         <!-- 卡片4: 同比增长 -->
-        <rect x="620" y="0" width="180" height="70" rx="8" fill="#FFF3E0" stroke="#FF9800" stroke-width="1"/>
-        <text x="640" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="14" fill="#F57C00">
-            <tspan>同比增长</tspan>
-        </text>
-        <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="24" font-weight="bold" fill="#FF9800">
-            <tspan>+23.5%</tspan>
-        </text>
+        <g id="card-yoy-growth">
+            <rect x="620" y="0" width="180" height="70" rx="8" fill="#FFF3E0" stroke="#FF9800" stroke-width="1"/>
+            <text x="640" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
+                  font-size="14" fill="#F57C00">
+                <tspan>同比增长</tspan>
+            </text>
+            <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+                  font-size="24" font-weight="bold" fill="#FF9800">
+                <tspan>+23.5%</tspan>
+            </text>
+        </g>
     </g>
     
     <!-- 数据来源 -->
