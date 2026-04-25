@@ -23,7 +23,7 @@
         <filter id="barShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
             <feOffset dx="0" dy="2" result="offsetBlur"/>
-            <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.12" result="shadowColor"/>
             <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
             <feMerge>
                 <feMergeNode in="shadow"/>
@@ -37,12 +37,12 @@
     
     <!-- 标题 -->
     <text x="640" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+          font-size="34" font-weight="bold" fill="#0F172A" text-anchor="middle">
         <tspan>用户年龄分布对比</tspan>
     </text>
     
     <text x="640" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="18" fill="#7F8C8D" text-anchor="middle">
+          font-size="18" fill="#64748B" text-anchor="middle">
         <tspan>2025年度用户画像分析 · 样本量 N=50,000</tspan>
     </text>
     
@@ -50,13 +50,13 @@
     <g id="legend" transform="translate(480, 115)">
         <rect x="0" y="0" width="20" height="20" rx="3" fill="url(#leftGrad)"/>
         <text x="28" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="15" fill="#5D6D7E">
+              font-size="15" fill="#475569">
             <tspan>男性用户</tspan>
         </text>
         
         <rect x="140" y="0" width="20" height="20" rx="3" fill="url(#rightGrad)"/>
         <text x="168" y="15" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="15" fill="#5D6D7E">
+              font-size="15" fill="#475569">
             <tspan>女性用户</tspan>
         </text>
     </g>
@@ -68,23 +68,23 @@
         
         <!-- 左侧X轴刻度 -->
         <text x="120" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>20%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>20%</tspan></text>
         <text x="240" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>15%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>15%</tspan></text>
         <text x="360" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>10%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>10%</tspan></text>
         <text x="480" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>5%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>5%</tspan></text>
         
         <!-- 右侧X轴刻度 -->
         <text x="800" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>5%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>5%</tspan></text>
         <text x="920" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>10%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>10%</tspan></text>
         <text x="1040" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>15%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>15%</tspan></text>
         <text x="1160" y="645" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#7F8C8D" text-anchor="middle"><tspan>20%</tspan></text>
+              font-size="13" fill="#64748B" text-anchor="middle"><tspan>20%</tspan></text>
         
         <!-- 网格线 -->
         <line x1="120" y1="160" x2="120" y2="620" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="4,4"/>
@@ -113,7 +113,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>3%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>60+</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>60+</tspan></text>
             
             <rect x="680" y="0" width="96" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="786" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -127,7 +127,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>8%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>50-59</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>50-59</tspan></text>
             
             <rect x="680" y="0" width="240" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="930" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -141,7 +141,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>15%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>40-49</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>40-49</tspan></text>
             
             <rect x="680" y="0" width="408" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="1098" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -155,7 +155,7 @@
                   font-size="14" font-weight="bold" fill="#1D4ED8" text-anchor="end"><tspan>18%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>30-39</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>30-39</tspan></text>
             
             <rect x="680" y="0" width="360" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="1050" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -169,7 +169,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>16%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>25-29</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>25-29</tspan></text>
             
             <rect x="680" y="0" width="336" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="1026" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -183,7 +183,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>12%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>20-24</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>20-24</tspan></text>
             
             <rect x="680" y="0" width="240" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="930" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -197,7 +197,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>6%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>18-19</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>18-19</tspan></text>
             
             <rect x="680" y="0" width="120" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="810" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -211,7 +211,7 @@
                   font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end"><tspan>2%</tspan></text>
             
             <text x="640" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="15" font-weight="600" fill="#2C3E50" text-anchor="middle"><tspan>&lt;18</tspan></text>
+                  font-size="15" font-weight="600" fill="#0F172A" text-anchor="middle"><tspan>&lt;18</tspan></text>
             
             <rect x="680" y="0" width="72" height="50" rx="4" fill="url(#rightGrad)" filter="url(#barShadow)"/>
             <text x="762" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -240,7 +240,7 @@
     
     <!-- 数据来源 -->
     <text x="1220" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="14" fill="#95A5A6" text-anchor="end">
+          font-size="14" fill="#94A3B8" text-anchor="end">
         <tspan>数据来源: 用户数据分析平台</tspan>
     </text>
 </svg>

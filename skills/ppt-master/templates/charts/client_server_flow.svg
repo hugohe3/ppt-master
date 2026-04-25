@@ -152,7 +152,7 @@
     <g id="interactions">
     <!-- 中间通信通道标签 -->
     <text x="640" y="160" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#2C3E50"><tspan>关键交互</tspan></text>
+          font-size="14" font-weight="700" fill="#0F172A"><tspan>关键交互</tspan></text>
     <text x="640" y="180" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" fill="#64748B"><tspan>Key Interactions</tspan></text>
 

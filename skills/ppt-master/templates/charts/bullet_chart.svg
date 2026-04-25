@@ -43,7 +43,7 @@
         <filter id="bulletShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
             <feOffset dx="0" dy="2" result="offsetBlur"/>
-            <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.12" result="shadowColor"/>
             <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
             <feMerge>
                 <feMergeNode in="shadow"/>
@@ -55,12 +55,12 @@
     <rect width="1280" height="720" fill="#FFFFFF"/>
     
     <text x="640" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="32" font-weight="bold" fill="#2C3E50" text-anchor="middle">
+          font-size="34" font-weight="bold" fill="#0F172A" text-anchor="middle">
         <tspan>2025 Annual KPI Achievement Status</tspan>
     </text>
     
     <text x="640" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="18" fill="#7F8C8D" text-anchor="middle">
+          font-size="18" fill="#64748B" text-anchor="middle">
         <tspan>Target vs Actual - As of Q4</tspan>
     </text>
     
@@ -69,30 +69,30 @@
         <g id="legend-fair">
             <rect x="0" y="0" width="20" height="12" fill="url(#bgFair)" rx="2"/>
             <text x="28" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="12" fill="#5D6D7E"><tspan>Fair (0-60%)</tspan></text>
+                  font-size="12" fill="#475569"><tspan>Fair (0-60%)</tspan></text>
         </g>
         
         <g id="legend-good">
             <rect x="120" y="0" width="20" height="12" fill="url(#bgGood)" rx="2"/>
             <text x="148" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="12" fill="#5D6D7E"><tspan>Good (60-80%)</tspan></text>
+                  font-size="12" fill="#475569"><tspan>Good (60-80%)</tspan></text>
         </g>
         
         <g id="legend-excellent">
             <rect x="250" y="0" width="20" height="12" fill="url(#bgExcellent)" rx="2"/>
             <text x="278" y="10" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="12" fill="#5D6D7E"><tspan>Excellent (80-100%+)</tspan></text>
+                  font-size="12" fill="#475569"><tspan>Excellent (80-100%+)</tspan></text>
         </g>
     </g>
     
     <!-- Bullet 1: Sales Revenue 92% -->
     <g id="bullet1" transform="translate(80, 140)">
         <text x="0" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="18" font-weight="600" fill="#2C3E50">
+              font-size="18" font-weight="600" fill="#0F172A">
             <tspan>Sales Revenue</tspan>
         </text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#7F8C8D">
+              font-size="14" fill="#64748B">
             <tspan>Target: $100M</tspan>
         </text>
         
@@ -114,11 +114,11 @@
     <!-- Bullet 2: New Customers 97% -->
     <g id="bullet2" transform="translate(80, 240)">
         <text x="0" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="18" font-weight="600" fill="#2C3E50">
+              font-size="18" font-weight="600" fill="#0F172A">
             <tspan>New Customers</tspan>
         </text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#7F8C8D">
+              font-size="14" fill="#64748B">
             <tspan>Target: 500</tspan>
         </text>
         
@@ -140,11 +140,11 @@
     <!-- Bullet 3: Customer Satisfaction 98% -->
     <g id="bullet3" transform="translate(80, 340)">
         <text x="0" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="18" font-weight="600" fill="#2C3E50">
+              font-size="18" font-weight="600" fill="#0F172A">
             <tspan>Customer Satisfaction</tspan>
         </text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#7F8C8D">
+              font-size="14" fill="#64748B">
             <tspan>Target: 90%</tspan>
         </text>
         
@@ -166,11 +166,11 @@
     <!-- Bullet 4: Market Share 72% -->
     <g id="bullet4" transform="translate(80, 440)">
         <text x="0" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="18" font-weight="600" fill="#2C3E50">
+              font-size="18" font-weight="600" fill="#0F172A">
             <tspan>Market Share</tspan>
         </text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#7F8C8D">
+              font-size="14" fill="#64748B">
             <tspan>Target: 25%</tspan>
         </text>
         
@@ -192,11 +192,11 @@
     <!-- Bullet 5: Cost Control 119% (Over budget) -->
     <g id="bullet5" transform="translate(80, 540)">
         <text x="0" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-              font-size="18" font-weight="600" fill="#2C3E50">
+              font-size="18" font-weight="600" fill="#0F172A">
             <tspan>Cost Control</tspan>
         </text>
         <text x="0" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="14" fill="#7F8C8D">
+              font-size="14" fill="#64748B">
             <tspan>Budget: $80M</tspan>
         </text>
         
