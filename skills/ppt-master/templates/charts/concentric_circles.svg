@@ -139,5 +139,5 @@
 
     <!-- 底部注释 -->
     <text x="640" y="690" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#BDC3C7"><tspan>越靠近圆心优先级越高，资源投入越集中</tspan></text>
+          font-size="12" fill="#CBD5E1"><tspan>越靠近圆心优先级越高，资源投入越集中</tspan></text>
 </svg>
