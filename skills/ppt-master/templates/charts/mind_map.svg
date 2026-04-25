@@ -7,123 +7,174 @@
     -->
 
     <defs>
-        <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366F1"/>
+            <stop offset="100%" stop-color="#4338CA"/>
+        </linearGradient>
+        <radialGradient id="bgGlow" cx="50%" cy="50%" r="40%">
+            <stop offset="0%" stop-color="#EEF2FF" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="cardShadow" x="-15%" y="-25%" width="130%" height="155%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="centerShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+            <feOffset dx="0" dy="4"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="branchShadow" x="-20%" y="-25%" width="140%" height="150%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feOffset dx="0" dy="3"/>
             <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
             <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#F8F9FA;stop-opacity:1"/>
-            <stop offset="100%" style="stop-color:#EEF1F5;stop-opacity:1"/>
-        </linearGradient>
-        <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1"/>
-            <stop offset="100%" style="stop-color:#A29BFE;stop-opacity:1"/>
-        </linearGradient>
     </defs>
 
-    <rect width="1280" height="720" fill="url(#bgGrad)"/>
+    <!-- 背景 + 中心氛围 -->
+    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <circle cx="640" cy="360" r="300" fill="url(#bgGlow)"/>
 
     <!-- 标题 -->
-    <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="28" font-weight="700" fill="#1A252F">产品战略思维导图</text>
-    <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#7F8C8D">Mind Map · 核心战略四大维度拆解</text>
+    <text x="60" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="26" font-weight="700" fill="#0F172A">产品战略思维导图</text>
+    <text x="60" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="500" fill="#64748B" letter-spacing="2">MIND MAP  ·  核心战略四大维度拆解</text>
 
-    <!-- 连接线 (曲线) -->
-    <!-- 中心→右上(产品) -->
-    <path d="M 660,360 Q 780,280 870,210" stroke="#00B894" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <!-- 中心→右下(市场) -->
-    <path d="M 660,370 Q 790,430 870,500" stroke="#FDCB6E" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <!-- 中心→左上(技术) -->
-    <path d="M 580,350 Q 460,270 380,200" stroke="#74B9FF" stroke-width="3" fill="none" stroke-opacity="0.5"/>
-    <!-- 中心→左下(运营) -->
-    <path d="M 580,380 Q 450,440 370,510" stroke="#E17055" stroke-width="3" fill="none" stroke-opacity="0.5"/>
+    <!-- 装饰光环 -->
+    <circle cx="640" cy="360" r="112" fill="none" stroke="#6366F1" stroke-width="1" stroke-opacity="0.08"/>
+    <circle cx="640" cy="360" r="160" fill="none" stroke="#6366F1" stroke-width="1" stroke-opacity="0.05"/>
 
-    <!-- 分支→子节点 连接线 -->
-    <!-- 产品分支 -->
-    <line x1="970" y1="190" x2="1050" y2="140" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="970" y1="210" x2="1050" y2="210" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="970" y1="230" x2="1050" y2="280" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.35"/>
-    <!-- 市场分支 -->
-    <line x1="970" y1="490" x2="1050" y2="440" stroke="#FDCB6E" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="970" y1="510" x2="1050" y2="510" stroke="#FDCB6E" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="970" y1="530" x2="1050" y2="580" stroke="#FDCB6E" stroke-width="1.5" stroke-opacity="0.35"/>
-    <!-- 技术分支 -->
-    <line x1="280" y1="190" x2="200" y2="140" stroke="#74B9FF" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="280" y1="210" x2="200" y2="210" stroke="#74B9FF" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="280" y1="230" x2="200" y2="280" stroke="#74B9FF" stroke-width="1.5" stroke-opacity="0.35"/>
-    <!-- 运营分支 -->
-    <line x1="280" y1="500" x2="200" y2="450" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="280" y1="520" x2="200" y2="520" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.35"/>
-    <line x1="280" y1="540" x2="200" y2="590" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.35"/>
+    <!-- ===== 主干曲线: 中心 → 分支 ===== -->
+    <!-- 中心圆 cx=640 cy=360 r=70 -->
+    <!-- 分支中心: 右上(990,195) 右下(990,525) 左上(290,195) 左下(290,525) -->
+    <!-- 右上方向 atan2(-165,350)≈-25°, edge≈(703,330) → branch left(940,195) -->
+    <path d="M 703,330 C 795,280 880,225 940,200" stroke="#10B981" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+    <!-- 右下 edge≈(703,390) → branch left(940,520) -->
+    <path d="M 703,390 C 795,440 880,495 940,520" stroke="#F59E0B" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+    <!-- 左上 edge≈(577,330) → branch right(340,200) -->
+    <path d="M 577,330 C 485,280 400,225 340,200" stroke="#3B82F6" stroke-width="3" fill="none" stroke-opacity="0.35"/>
+    <!-- 左下 edge≈(577,390) → branch right(340,520) -->
+    <path d="M 577,390 C 485,440 400,495 340,520" stroke="#EF4444" stroke-width="3" fill="none" stroke-opacity="0.35"/>
 
-    <!-- 中心节点 -->
-    <circle cx="620" cy="365" r="65" fill="url(#centerGrad)" filter="url(#nodeShadow)"/>
-    <text x="620" y="358" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="800" fill="#FFFFFF">产品</text>
-    <text x="620" y="382" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="18" font-weight="800" fill="#FFFFFF">战略</text>
+    <!-- ===== 细连线: 分支 → 子项 ===== -->
+    <!-- 右上 产品 (center 990,195) branch right edge(1040,195) → sub left(1075,center_y) -->
+    <!-- Sub y: 139,183,227 → centers 156,200,244 -->
+    <line x1="1040" y1="195" x2="1075" y2="156" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="1040" y1="195" x2="1075" y2="200" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="1040" y1="195" x2="1075" y2="244" stroke="#10B981" stroke-width="1.5" stroke-opacity="0.25"/>
+    <!-- 右下 市场 (center 990,525) branch right(1040,525) → sub left(1075,center_y) -->
+    <!-- Sub y: 459,503,547 → centers 476,520,564 -->
+    <line x1="1040" y1="525" x2="1075" y2="476" stroke="#F59E0B" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="1040" y1="525" x2="1075" y2="520" stroke="#F59E0B" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="1040" y1="525" x2="1075" y2="564" stroke="#F59E0B" stroke-width="1.5" stroke-opacity="0.25"/>
+    <!-- 左上 技术 (center 290,195) branch left(240,195) → sub right(200,center_y) -->
+    <line x1="240" y1="195" x2="200" y2="156" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="240" y1="195" x2="200" y2="200" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="240" y1="195" x2="200" y2="244" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.25"/>
+    <!-- 左下 运营 (center 290,525) branch left(240,525) → sub right(200,center_y) -->
+    <line x1="240" y1="525" x2="200" y2="476" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="240" y1="525" x2="200" y2="520" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.25"/>
+    <line x1="240" y1="525" x2="200" y2="564" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.25"/>
 
-    <!-- 分支1: 产品 (右上) -->
-    <rect x="870" y="170" width="100" height="60" rx="30" fill="#00B894" filter="url(#nodeShadow)"/>
-    <text x="920" y="207" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <!-- ===== 子项卡片 ===== -->
+    <!-- 右侧 产品 子项 (x=1075, width=165) -->
+    <rect x="1075" y="139" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="139" width="5" height="34" rx="3" fill="#10B981"/>
+    <text x="1090" y="161" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">用户体验优化</text>
+
+    <rect x="1075" y="183" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="183" width="5" height="34" rx="3" fill="#10B981"/>
+    <text x="1090" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">功能迭代路线</text>
+
+    <rect x="1075" y="227" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="227" width="5" height="34" rx="3" fill="#10B981"/>
+    <text x="1090" y="249" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">质量标准体系</text>
+
+    <!-- 右侧 市场 子项 (x=1075, width=165) -->
+    <rect x="1075" y="459" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="459" width="5" height="34" rx="3" fill="#F59E0B"/>
+    <text x="1090" y="481" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">品牌定位策略</text>
+
+    <rect x="1075" y="503" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="503" width="5" height="34" rx="3" fill="#F59E0B"/>
+    <text x="1090" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">渠道拓展计划</text>
+
+    <rect x="1075" y="547" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="1075" y="547" width="5" height="34" rx="3" fill="#F59E0B"/>
+    <text x="1090" y="569" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">竞品分析跟踪</text>
+
+    <!-- 左侧 技术 子项 (x=40, width=165, accent on right x=200) -->
+    <rect x="40" y="139" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="139" width="5" height="34" rx="3" fill="#3B82F6"/>
+    <text x="55" y="161" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">架构升级方案</text>
+
+    <rect x="40" y="183" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="183" width="5" height="34" rx="3" fill="#3B82F6"/>
+    <text x="55" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">AI 能力集成</text>
+
+    <rect x="40" y="227" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="227" width="5" height="34" rx="3" fill="#3B82F6"/>
+    <text x="55" y="249" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">安全合规建设</text>
+
+    <!-- 左侧 运营 子项 (x=40, width=165, accent on right x=200) -->
+    <rect x="40" y="459" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="459" width="5" height="34" rx="3" fill="#EF4444"/>
+    <text x="55" y="481" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">用户增长策略</text>
+
+    <rect x="40" y="503" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="503" width="5" height="34" rx="3" fill="#EF4444"/>
+    <text x="55" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">供应链优化</text>
+
+    <rect x="40" y="547" width="165" height="34" rx="6" fill="#FFFFFF" filter="url(#cardShadow)"/>
+    <rect x="200" y="547" width="5" height="34" rx="3" fill="#EF4444"/>
+    <text x="55" y="569" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" font-weight="600" fill="#1F2937">数据驱动决策</text>
+
+    <!-- ===== 分支节点 ===== -->
+    <!-- 右上 产品 (center 990,195, pill 100x50) -->
+    <rect x="940" y="170" width="100" height="50" rx="25" fill="#10B981" filter="url(#branchShadow)"/>
+    <text x="990" y="201" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="15" font-weight="700" fill="#FFFFFF">产品</text>
-    <!-- 子节点 -->
-    <rect x="1050" y="122" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="122" width="5" height="36" rx="3" fill="#00B894"/>
-    <text x="1070" y="146" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">用户体验优化</text>
-    <rect x="1050" y="192" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="192" width="5" height="36" rx="3" fill="#00B894"/>
-    <text x="1070" y="216" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">功能迭代路线</text>
-    <rect x="1050" y="262" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="262" width="5" height="36" rx="3" fill="#00B894"/>
-    <text x="1070" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">质量标准体系</text>
 
-    <!-- 分支2: 市场 (右下) -->
-    <rect x="870" y="480" width="100" height="60" rx="30" fill="#D4A537" filter="url(#nodeShadow)"/>
-    <text x="920" y="517" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <!-- 右下 市场 (center 990,525) -->
+    <rect x="940" y="500" width="100" height="50" rx="25" fill="#F59E0B" filter="url(#branchShadow)"/>
+    <text x="990" y="531" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="15" font-weight="700" fill="#FFFFFF">市场</text>
-    <rect x="1050" y="422" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="422" width="5" height="36" rx="3" fill="#D4A537"/>
-    <text x="1070" y="446" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">品牌定位策略</text>
-    <rect x="1050" y="492" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="492" width="5" height="36" rx="3" fill="#D4A537"/>
-    <text x="1070" y="516" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">渠道拓展计划</text>
-    <rect x="1050" y="562" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="1050" y="562" width="5" height="36" rx="3" fill="#D4A537"/>
-    <text x="1070" y="586" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">竞品分析跟踪</text>
 
-    <!-- 分支3: 技术 (左上) -->
-    <rect x="280" y="170" width="100" height="60" rx="30" fill="#74B9FF" filter="url(#nodeShadow)"/>
-    <text x="330" y="207" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <!-- 左上 技术 (center 290,195) -->
+    <rect x="240" y="170" width="100" height="50" rx="25" fill="#3B82F6" filter="url(#branchShadow)"/>
+    <text x="290" y="201" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="15" font-weight="700" fill="#FFFFFF">技术</text>
-    <rect x="30" y="122" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="122" width="5" height="36" rx="3" fill="#74B9FF"/>
-    <text x="48" y="146" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">架构升级方案</text>
-    <rect x="30" y="192" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="192" width="5" height="36" rx="3" fill="#74B9FF"/>
-    <text x="48" y="216" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">AI能力集成</text>
-    <rect x="30" y="262" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="262" width="5" height="36" rx="3" fill="#74B9FF"/>
-    <text x="48" y="286" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">安全合规建设</text>
 
-    <!-- 分支4: 运营 (左下) -->
-    <rect x="280" y="490" width="100" height="60" rx="30" fill="#E17055" filter="url(#nodeShadow)"/>
-    <text x="330" y="527" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <!-- 左下 运营 (center 290,525) -->
+    <rect x="240" y="500" width="100" height="50" rx="25" fill="#EF4444" filter="url(#branchShadow)"/>
+    <text x="290" y="531" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="15" font-weight="700" fill="#FFFFFF">运营</text>
-    <rect x="30" y="432" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="432" width="5" height="36" rx="3" fill="#E17055"/>
-    <text x="48" y="456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">用户增长策略</text>
-    <rect x="30" y="502" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="502" width="5" height="36" rx="3" fill="#E17055"/>
-    <text x="48" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">供应链优化</text>
-    <rect x="30" y="572" width="170" height="36" rx="18" fill="#FFFFFF" filter="url(#nodeShadow)"/>
-    <rect x="195" y="572" width="5" height="36" rx="3" fill="#E17055"/>
-    <text x="48" y="596" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#2C3E50">数据驱动决策</text>
 
-    <!-- 底部注释 -->
-    <text x="640" y="690" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#BDC3C7">中心主题向四大维度发散，每个维度下展开细分子项</text>
+    <!-- ===== 中心节点 ===== -->
+    <circle cx="640" cy="360" r="70" fill="url(#centerGrad)" filter="url(#centerShadow)"/>
+    <text x="640" y="352" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#FFFFFF">产品</text>
+    <text x="640" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#FFFFFF">战略</text>
+
+    <!-- 底部说明 -->
+    <text x="640" y="698" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" fill="#94A3B8">中心主题向四大维度发散，每个维度下展开三项细分策略</text>
 </svg>
