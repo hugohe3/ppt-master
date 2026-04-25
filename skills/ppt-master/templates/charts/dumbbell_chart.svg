@@ -12,12 +12,12 @@
     <!-- Title -->
     <text x="60" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="34" font-weight="bold" fill="#0F172A">
-        <tspan>AI Economic Impact Index Rankings</tspan>
+        <tspan>Comprehensive Evaluation Score Rankings</tspan>
     </text>
     
     <text x="60" y="85" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="16" fill="#64748B">
-        <tspan>Potential to realize AI benefits by economy - 2025 Report</tspan>
+        <tspan>Multi-dimensional assessment across core business units - 2025</tspan>
     </text>
     
     <!-- Legend -->
@@ -31,19 +31,19 @@
         <circle cx="138" cy="8" r="6" fill="#EC4899"/>
         <text x="152" y="12" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="13" fill="#475569">
-            <tspan>Innovation</tspan>
+            <tspan>Metric A</tspan>
         </text>
         
         <circle cx="248" cy="8" r="6" fill="#06B6D4"/>
         <text x="262" y="12" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="13" fill="#475569">
-            <tspan>Diffusion</tspan>
+            <tspan>Metric B</tspan>
         </text>
         
         <circle cx="348" cy="8" r="6" fill="#F59E0B"/>
         <text x="362" y="12" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="13" fill="#475569">
-            <tspan>Adaptation</tspan>
+            <tspan>Metric C</tspan>
         </text>
     </g>
     
@@ -79,7 +79,7 @@
         <!-- Row 1: US - Overall:78 Innovation:68 Diffusion:75 Adaptation:80 -->
         <g id="row-us" transform="translate(0, 30)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>US</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division A</tspan></text>
             <line x1="812" y1="0" x2="920" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="812" cy="0" r="7" fill="#EC4899"/>
             <circle cx="875" cy="0" r="7" fill="#06B6D4"/>
@@ -90,7 +90,7 @@
         <!-- Row 2: Singapore - Overall:72 Innovation:55 Diffusion:68 Adaptation:75 -->
         <g id="row-singapore" transform="translate(0, 78)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Singapore</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division B</tspan></text>
             <line x1="695" y1="0" x2="875" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="695" cy="0" r="7" fill="#EC4899"/>
             <circle cx="812" cy="0" r="7" fill="#06B6D4"/>
@@ -101,7 +101,7 @@
         <!-- Row 3: UK - Overall:70 Innovation:52 Diffusion:65 Adaptation:78 -->
         <g id="row-uk" transform="translate(0, 126)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>UK</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division C</tspan></text>
             <line x1="668" y1="0" x2="902" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="668" cy="0" r="7" fill="#EC4899"/>
             <circle cx="785" cy="0" r="7" fill="#06B6D4"/>
@@ -112,7 +112,7 @@
         <!-- Row 4: Switzerland - Overall:68 Innovation:50 Diffusion:62 Adaptation:76 -->
         <g id="row-switzerland" transform="translate(0, 174)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Switzerland</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division D</tspan></text>
             <line x1="650" y1="0" x2="884" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="650" cy="0" r="7" fill="#EC4899"/>
             <circle cx="758" cy="0" r="7" fill="#06B6D4"/>
@@ -123,7 +123,7 @@
         <!-- Row 5: Sweden - Overall:65 Innovation:45 Diffusion:58 Adaptation:78 -->
         <g id="row-sweden" transform="translate(0, 222)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Sweden</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division E</tspan></text>
             <line x1="605" y1="0" x2="902" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="605" cy="0" r="7" fill="#EC4899"/>
             <circle cx="722" cy="0" r="7" fill="#06B6D4"/>
@@ -134,7 +134,7 @@
         <!-- Row 6: South Korea - Overall:62 Innovation:48 Diffusion:55 Adaptation:65 -->
         <g id="row-south-korea" transform="translate(0, 270)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>South Korea</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division F</tspan></text>
             <line x1="632" y1="0" x2="785" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="632" cy="0" r="7" fill="#EC4899"/>
             <circle cx="695" cy="0" r="7" fill="#06B6D4"/>
@@ -145,7 +145,7 @@
         <!-- Row 7: Germany - Overall:58 Innovation:42 Diffusion:52 Adaptation:68 -->
         <g id="row-germany" transform="translate(0, 318)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Germany</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division G</tspan></text>
             <line x1="578" y1="0" x2="812" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="578" cy="0" r="7" fill="#EC4899"/>
             <circle cx="668" cy="0" r="7" fill="#06B6D4"/>
@@ -156,7 +156,7 @@
         <!-- Row 8: China - Overall:52 Innovation:38 Diffusion:45 Adaptation:55 -->
         <g id="row-china" transform="translate(0, 366)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>China</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division H</tspan></text>
             <line x1="542" y1="0" x2="695" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="542" cy="0" r="7" fill="#EC4899"/>
             <circle cx="605" cy="0" r="7" fill="#06B6D4"/>
@@ -167,7 +167,7 @@
         <!-- Row 9: Brazil - Overall:35 Innovation:18 Diffusion:28 Adaptation:38 -->
         <g id="row-brazil" transform="translate(0, 414)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Brazil</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division I</tspan></text>
             <line x1="362" y1="0" x2="542" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="362" cy="0" r="7" fill="#EC4899"/>
             <circle cx="452" cy="0" r="7" fill="#06B6D4"/>
@@ -178,7 +178,7 @@
         <!-- Row 10: Argentina - Overall:28 Innovation:12 Diffusion:22 Adaptation:32 -->
         <g id="row-argentina" transform="translate(0, 462)">
             <text x="190" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Argentina</tspan></text>
+                  font-size="14" fill="#0F172A" text-anchor="end"><tspan>Division J</tspan></text>
             <line x1="308" y1="0" x2="488" y2="0" stroke="#CBD5E1" stroke-width="1.5"/>
             <circle cx="308" cy="0" r="7" fill="#EC4899"/>
             <circle cx="398" cy="0" r="7" fill="#06B6D4"/>
@@ -190,6 +190,6 @@
     <!-- Source -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
           font-size="13" fill="#64748B">
-        <tspan>Source: Capital Economics AI Economic Impact Index</tspan>
+        <tspan>Source: Internal Annual Performance Review Data</tspan>
     </text>
 </svg>
