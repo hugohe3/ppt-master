@@ -7,126 +7,177 @@
     -->
 
     <defs>
-        <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="140%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-            <feOffset dx="0" dy="2" result="offsetblur"/>
-            <feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer>
+            <feOffset dx="0" dy="2"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.10"/></feComponentTransfer>
             <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
+        <filter id="headGlow" x="-25%" y="-25%" width="150%" height="150%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+            <feOffset dx="0" dy="4"/>
+            <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="spineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ABB2B9;stop-opacity:1"/>
+            <stop offset="70%" style="stop-color:#5D6D7E;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="headGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1"/>
+            <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1"/>
+        </linearGradient>
     </defs>
 
-    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <rect width="1280" height="720" fill="#F8F9FA"/>
 
     <!-- 标题 -->
-    <text x="640" y="50" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="30" font-weight="700" fill="#1A252F">客户流失根因分析</text>
-    <text x="640" y="77" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" fill="#7F8C8D">Fishbone Diagram · 六大维度系统化诊断</text>
+    <text x="640" y="46" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="28" font-weight="700" fill="#1A252F">客户流失根因分析</text>
+    <text x="640" y="70" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="13" fill="#95A5A6">Fishbone / Ishikawa · 六大维度系统化诊断</text>
 
-    <!-- 主脊骨 (水平线) -->
-    <line x1="60" y1="380" x2="1120" y2="380" stroke="#2C3E50" stroke-width="4" stroke-linecap="round"/>
-    <!-- 鱼头 (右端三角+结果) -->
-    <polygon points="1120,380 1180,340 1180,420" fill="#E74C3C"/>
-    <rect x="1180" y="340" width="90" height="80" rx="6" fill="#E74C3C"/>
-    <text x="1225" y="374" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="800" fill="#FFFFFF">客户</text>
-    <text x="1225" y="396" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="800" fill="#FFFFFF">流失</text>
+    <!-- 主脊骨 -->
+    <line x1="90" y1="370" x2="1058" y2="370" stroke="#2C3E50" stroke-width="5" stroke-linecap="round"/>
 
-    <!-- 上方3根鱼骨 (斜向上) -->
-    <!-- 骨1: 产品 (x=240) -->
-    <line x1="240" y1="380" x2="160" y2="160" stroke="#6C5CE7" stroke-width="2.5"/>
-    <rect x="100" y="110" width="120" height="40" rx="20" fill="#6C5CE7" filter="url(#nodeShadow)"/>
-    <text x="160" y="136" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">产品</text>
-    <!-- 子因 -->
-    <line x1="212" y1="240" x2="160" y2="240" stroke="#6C5CE7" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="148" y="237" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">功能缺失</text>
-    <line x1="200" y1="290" x2="148" y2="290" stroke="#6C5CE7" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="136" y="287" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">体验差</text>
-    <line x1="223" y1="195" x2="171" y2="195" stroke="#6C5CE7" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="159" y="192" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">Bug太多</text>
+    <!-- 鱼头 -->
+    <polygon points="1048,370 1098,322 1098,418" fill="url(#headGrad)" filter="url(#headGlow)"/>
+    <rect x="1098" y="322" width="130" height="96" rx="12" fill="url(#headGrad)" filter="url(#headGlow)"/>
+    <text x="1163" y="362" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#FFFFFF">客户</text>
+    <text x="1163" y="390" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="20" font-weight="800" fill="#FFFFFF">流失</text>
 
-    <!-- 骨2: 服务 (x=520) -->
-    <line x1="520" y1="380" x2="440" y2="160" stroke="#00B894" stroke-width="2.5"/>
-    <rect x="380" y="110" width="120" height="40" rx="20" fill="#00B894" filter="url(#nodeShadow)"/>
-    <text x="440" y="136" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">服务</text>
-    <line x1="492" y1="240" x2="440" y2="240" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="428" y="237" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">响应慢</text>
-    <line x1="480" y1="290" x2="428" y2="290" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="416" y="287" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">态度差</text>
-    <line x1="503" y1="195" x2="451" y2="195" stroke="#00B894" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="439" y="192" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">流程繁琐</text>
+    <!-- ============ 骨1: 产品 (上左, 接入x=230) ============ -->
+    <!-- 主骨干 -->
+    <line x1="230" y1="370" x2="130" y2="130" stroke="#6C5CE7" stroke-width="3" stroke-linecap="round"/>
+    <!-- 分支标签 -->
+    <rect x="68" y="88" width="124" height="40" rx="20" fill="#6C5CE7" filter="url(#cardShadow)"/>
+    <text x="130" y="114" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">产品</text>
+    <!-- 小鱼刺: 从主骨干上的点水平延伸到左侧标签 -->
+    <line x1="210" y1="200" x2="168" y2="200" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"/>
+    <rect x="66" y="188" width="100" height="26" rx="13" fill="#6C5CE7" fill-opacity="0.08" stroke="#6C5CE7" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="116" y="206" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#6C5CE7">Bug 太多</text>
 
-    <!-- 骨3: 价格 (x=800) -->
-    <line x1="800" y1="380" x2="720" y2="160" stroke="#FDCB6E" stroke-width="2.5"/>
-    <rect x="660" y="110" width="120" height="40" rx="20" fill="#D4A537" filter="url(#nodeShadow)"/>
-    <text x="720" y="136" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">价格</text>
-    <line x1="772" y1="240" x2="720" y2="240" stroke="#D4A537" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="708" y="237" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">性价比低</text>
-    <line x1="760" y1="290" x2="708" y2="290" stroke="#D4A537" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="696" y="287" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">涨价频繁</text>
-    <line x1="783" y1="195" x2="731" y2="195" stroke="#D4A537" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="719" y="192" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">隐性收费</text>
+    <line x1="198" y1="258" x2="156" y2="258" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"/>
+    <rect x="46" y="246" width="108" height="26" rx="13" fill="#6C5CE7" fill-opacity="0.08" stroke="#6C5CE7" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="100" y="264" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#6C5CE7">功能缺失</text>
 
-    <!-- 下方3根鱼骨 (斜向下) -->
-    <!-- 骨4: 竞品 (x=240) -->
-    <line x1="240" y1="380" x2="160" y2="600" stroke="#0984E3" stroke-width="2.5"/>
-    <rect x="100" y="600" width="120" height="40" rx="20" fill="#0984E3" filter="url(#nodeShadow)"/>
-    <text x="160" y="626" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">竞品</text>
-    <line x1="212" y1="520" x2="160" y2="520" stroke="#0984E3" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="148" y="517" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">对手创新快</text>
-    <line x1="200" y1="470" x2="148" y2="470" stroke="#0984E3" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="136" y="467" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">切换成本低</text>
-    <line x1="223" y1="565" x2="171" y2="565" stroke="#0984E3" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="159" y="562" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">价格战</text>
+    <line x1="185" y1="316" x2="143" y2="316" stroke="#6C5CE7" stroke-width="2" stroke-linecap="round"/>
+    <rect x="46" y="304" width="95" height="26" rx="13" fill="#6C5CE7" fill-opacity="0.08" stroke="#6C5CE7" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="93" y="322" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#6C5CE7">体验差</text>
 
-    <!-- 骨5: 运营 (x=520) -->
-    <line x1="520" y1="380" x2="440" y2="600" stroke="#E17055" stroke-width="2.5"/>
-    <rect x="380" y="600" width="120" height="40" rx="20" fill="#E17055" filter="url(#nodeShadow)"/>
-    <text x="440" y="626" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">运营</text>
-    <line x1="492" y1="520" x2="440" y2="520" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="428" y="517" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">触达不足</text>
-    <line x1="480" y1="470" x2="428" y2="470" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="416" y="467" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">预警缺失</text>
-    <line x1="503" y1="565" x2="451" y2="565" stroke="#E17055" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="439" y="562" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">续费引导差</text>
+    <!-- ============ 骨2: 服务 (上中, 接入x=510) ============ -->
+    <line x1="510" y1="370" x2="410" y2="130" stroke="#00B894" stroke-width="3" stroke-linecap="round"/>
+    <rect x="348" y="88" width="124" height="40" rx="20" fill="#00B894" filter="url(#cardShadow)"/>
+    <text x="410" y="114" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">服务</text>
 
-    <!-- 骨6: 口碑 (x=800) -->
-    <line x1="800" y1="380" x2="720" y2="600" stroke="#A29BFE" stroke-width="2.5"/>
-    <rect x="660" y="600" width="120" height="40" rx="20" fill="#A29BFE" filter="url(#nodeShadow)"/>
-    <text x="720" y="626" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="14" font-weight="700" fill="#FFFFFF">口碑</text>
-    <line x1="772" y1="520" x2="720" y2="520" stroke="#A29BFE" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="708" y="517" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">负面评价多</text>
-    <line x1="760" y1="470" x2="708" y2="470" stroke="#A29BFE" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="696" y="467" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">社区维护差</text>
-    <line x1="783" y1="565" x2="731" y2="565" stroke="#A29BFE" stroke-width="1.5" stroke-opacity="0.5"/>
-    <text x="719" y="562" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-          font-size="12" fill="#5F6368">成功案例少</text>
+    <line x1="490" y1="200" x2="448" y2="200" stroke="#00B894" stroke-width="2" stroke-linecap="round"/>
+    <rect x="338" y="188" width="108" height="26" rx="13" fill="#00B894" fill-opacity="0.08" stroke="#00B894" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="392" y="206" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#00B894">流程繁琐</text>
+
+    <line x1="477" y1="258" x2="435" y2="258" stroke="#00B894" stroke-width="2" stroke-linecap="round"/>
+    <rect x="338" y="246" width="95" height="26" rx="13" fill="#00B894" fill-opacity="0.08" stroke="#00B894" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="385" y="264" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#00B894">响应慢</text>
+
+    <line x1="465" y1="316" x2="423" y2="316" stroke="#00B894" stroke-width="2" stroke-linecap="round"/>
+    <rect x="338" y="304" width="83" height="26" rx="13" fill="#00B894" fill-opacity="0.08" stroke="#00B894" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="379" y="322" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#00B894">态度差</text>
+
+    <!-- ============ 骨3: 价格 (上右, 接入x=790) ============ -->
+    <line x1="790" y1="370" x2="690" y2="130" stroke="#D4A537" stroke-width="3" stroke-linecap="round"/>
+    <rect x="628" y="88" width="124" height="40" rx="20" fill="#D4A537" filter="url(#cardShadow)"/>
+    <text x="690" y="114" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">价格</text>
+
+    <line x1="770" y1="200" x2="728" y2="200" stroke="#D4A537" stroke-width="2" stroke-linecap="round"/>
+    <rect x="618" y="188" width="108" height="26" rx="13" fill="#D4A537" fill-opacity="0.08" stroke="#D4A537" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="672" y="206" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#D4A537">隐性收费</text>
+
+    <line x1="757" y1="258" x2="715" y2="258" stroke="#D4A537" stroke-width="2" stroke-linecap="round"/>
+    <rect x="610" y="246" width="103" height="26" rx="13" fill="#D4A537" fill-opacity="0.08" stroke="#D4A537" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="661" y="264" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#D4A537">性价比低</text>
+
+    <line x1="745" y1="316" x2="703" y2="316" stroke="#D4A537" stroke-width="2" stroke-linecap="round"/>
+    <rect x="602" y="304" width="99" height="26" rx="13" fill="#D4A537" fill-opacity="0.08" stroke="#D4A537" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="651" y="322" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#D4A537">涨价频繁</text>
+
+    <!-- ============ 骨4: 竞品 (下左, 接入x=230) ============ -->
+    <line x1="230" y1="370" x2="130" y2="610" stroke="#0984E3" stroke-width="3" stroke-linecap="round"/>
+    <rect x="68" y="610" width="124" height="40" rx="20" fill="#0984E3" filter="url(#cardShadow)"/>
+    <text x="130" y="636" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">竞品</text>
+
+    <line x1="210" y1="425" x2="168" y2="425" stroke="#0984E3" stroke-width="2" stroke-linecap="round"/>
+    <rect x="38" y="413" width="128" height="26" rx="13" fill="#0984E3" fill-opacity="0.08" stroke="#0984E3" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="102" y="431" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#0984E3">切换成本低</text>
+
+    <line x1="198" y1="483" x2="156" y2="483" stroke="#0984E3" stroke-width="2" stroke-linecap="round"/>
+    <rect x="30" y="471" width="124" height="26" rx="13" fill="#0984E3" fill-opacity="0.08" stroke="#0984E3" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="92" y="489" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#0984E3">对手创新快</text>
+
+    <line x1="185" y1="541" x2="143" y2="541" stroke="#0984E3" stroke-width="2" stroke-linecap="round"/>
+    <rect x="50" y="529" width="91" height="26" rx="13" fill="#0984E3" fill-opacity="0.08" stroke="#0984E3" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="95" y="547" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#0984E3">价格战</text>
+
+    <!-- ============ 骨5: 运营 (下中, 接入x=510) ============ -->
+    <line x1="510" y1="370" x2="410" y2="610" stroke="#E17055" stroke-width="3" stroke-linecap="round"/>
+    <rect x="348" y="610" width="124" height="40" rx="20" fill="#E17055" filter="url(#cardShadow)"/>
+    <text x="410" y="636" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">运营</text>
+
+    <line x1="490" y1="425" x2="448" y2="425" stroke="#E17055" stroke-width="2" stroke-linecap="round"/>
+    <rect x="338" y="413" width="108" height="26" rx="13" fill="#E17055" fill-opacity="0.08" stroke="#E17055" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="392" y="431" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#E17055">触达不足</text>
+
+    <line x1="477" y1="483" x2="435" y2="483" stroke="#E17055" stroke-width="2" stroke-linecap="round"/>
+    <rect x="328" y="471" width="105" height="26" rx="13" fill="#E17055" fill-opacity="0.08" stroke="#E17055" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="380" y="489" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#E17055">预警缺失</text>
+
+    <line x1="465" y1="541" x2="423" y2="541" stroke="#E17055" stroke-width="2" stroke-linecap="round"/>
+    <rect x="308" y="529" width="113" height="26" rx="13" fill="#E17055" fill-opacity="0.08" stroke="#E17055" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="364" y="547" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#E17055">续费引导差</text>
+
+    <!-- ============ 骨6: 口碑 (下右, 接入x=790) ============ -->
+    <line x1="790" y1="370" x2="690" y2="610" stroke="#A29BFE" stroke-width="3" stroke-linecap="round"/>
+    <rect x="628" y="610" width="124" height="40" rx="20" fill="#A29BFE" filter="url(#cardShadow)"/>
+    <text x="690" y="636" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="15" font-weight="700" fill="#FFFFFF">口碑</text>
+
+    <line x1="770" y1="425" x2="728" y2="425" stroke="#A29BFE" stroke-width="2" stroke-linecap="round"/>
+    <rect x="610" y="413" width="116" height="26" rx="13" fill="#A29BFE" fill-opacity="0.08" stroke="#A29BFE" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="668" y="431" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#A29BFE">社区维护差</text>
+
+    <line x1="757" y1="483" x2="715" y2="483" stroke="#A29BFE" stroke-width="2" stroke-linecap="round"/>
+    <rect x="602" y="471" width="111" height="26" rx="13" fill="#A29BFE" fill-opacity="0.08" stroke="#A29BFE" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="657" y="489" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#A29BFE">负面评价多</text>
+
+    <line x1="745" y1="541" x2="703" y2="541" stroke="#A29BFE" stroke-width="2" stroke-linecap="round"/>
+    <rect x="596" y="529" width="105" height="26" rx="13" fill="#A29BFE" fill-opacity="0.08" stroke="#A29BFE" stroke-width="1.2" stroke-opacity="0.4"/>
+    <text x="648" y="547" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+          font-size="12" font-weight="600" fill="#A29BFE">成功案例少</text>
 
     <!-- 底部注释 -->
-    <text x="640" y="690" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    <text x="640" y="700" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="12" fill="#BDC3C7">鱼骨图（石川图）: 系统化梳理问题的各维度根因</text>
 </svg>
