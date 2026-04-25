@@ -221,6 +221,32 @@ A logical single line of text — **even with mixed colors, weights, or sizes** 
 
 Any `x` on a tspan starts a new line in `flatten_tspan`'s eyes, so the two columns become two independent `<text>` frames in PPT — fragile to edit as one row. For two-column layouts, write two `<text>` elements (or a real two-column structure) instead.
 
+**Default behavior — lift key information out of running text.** Body paragraphs and conclusions rendered as uniform-styled text waste the inline-run capability and read as walls of text. By default, wrap the following in `<tspan fill="..." font-weight="bold">`:
+
+- **Numerical results** — percentages, multipliers (`10x`), absolute amounts (`¥120万`)
+- **Contrasts** — gain/loss, before/after, target/actual
+- **One or two load-bearing nouns per sentence** — the term that carries the insight
+
+Do **NOT** highlight: connectives, common verbs, every noun, decorative adjectives, or structural text (footer / axis label / legend / page number / simple field labels).
+
+Color choice: prefer the deck's primary brand color for emphasis; reserve semantic green/red for text that genuinely encodes positive/negative.
+
+❌ **DON'T** — uniform-styled paragraph buries the insight:
+
+```xml
+<text x="80" y="200" font-size="20" fill="#333333">
+  2024年公司营收同比增长35%达到12亿元创历史新高
+</text>
+```
+
+✅ **DO** — same line, key data lifted:
+
+```xml
+<text x="80" y="200" font-size="20" fill="#333333">
+  2024年公司营收同比<tspan fill="#1A73E8" font-weight="bold">增长35%</tspan>达到<tspan fill="#1A73E8" font-weight="bold">12亿元</tspan>创历史新高
+</text>
+```
+
 ### Element Grouping (Mandatory)
 
 Logically related elements **MUST** be wrapped in `<g>` tags. This produces PowerPoint groups in the exported PPTX, making slides easier to select, move, and edit.
