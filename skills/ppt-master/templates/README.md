@@ -38,8 +38,8 @@ The `charts/` directory contains 57 standardized visualization templates. For ba
 - Org Chart
 - Layered Architecture / Module Composition / Hub with Described Spokes / Pipeline with Stages / Client-Server Flow
 
-- **Human browsing**: [charts/README.md](./charts/README.md)
-- **AI / Programmatic lookup**: [charts/charts_index.json](./charts/charts_index.json)
+- **Library index (single source of truth)**: [charts/charts_index.json](./charts/charts_index.json)
+- **Directory overview**: [charts/README.md](./charts/README.md)
 
 ## Icon Library
 

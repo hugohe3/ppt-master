@@ -360,7 +360,42 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 ---
 
-## 9. 检查清单
+## 9. 注册到 charts_index.json
+
+新增 SVG 模板后，**必须** 在 [`charts_index.json`](./charts_index.json) 中登记，否则 Strategist 选型时不会发现它。
+
+### 9.1 登记位置
+
+| 位置 | 是否必填 | 作用 |
+|------|---------|------|
+| `charts.<key>` | **必填** | 模板自身的元数据（label / summary / keywords） |
+| `categories.<group>.charts[]` | **必填** | 归入一个语义类别（comparison / trend / strategy 等） |
+| `quickLookup.<intent>[]` | 视情况 | 当模板能服务于某个高频意图时挂入对应桶（ranking / kpi / journey 等） |
+
+### 9.2 字段规范
+
+```json
+"<key>": {
+  "label": "<人类可读名称>",
+  "summary": "Pick for <内容形态 + 规模>. Skip if <反例 → 替代模板>.",
+  "keywords": ["<同义词 / 中英文别名 / 行业术语>"]
+}
+```
+
+- **`key`** = SVG 文件名去掉 `.svg`，下划线小写（如 `bullet_chart`）
+- **`summary`** 是**选型句**，不是描述句。语法见 `meta.summaryGrammar`：先说什么时候选它，再用 `Skip if ... (use <other_key>)` 指向最容易混淆的兄弟模板
+- **`keywords`** 用于关键词匹配，覆盖中英文别名与典型业务场景词
+
+### 9.3 反例
+
+❌ 只写"是什么"：`"summary": "Bidirectional comparison chart for two datasets"`
+✅ 写"何时选"：`"summary": "Pick for two mirrored datasets sharing a common axis (age pyramid, A/B). Skip for >2 sides (use grouped_bar_chart)."`
+
+❌ 只放进 `charts.<key>` 而忘记 `categories` —— 这样模板会"孤儿化"，Strategist 浏览类别时看不到它。
+
+---
+
+## 10. 检查清单
 
 新增或修改图表后，逐项检查：
 
@@ -390,6 +425,12 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）
 - [ ] 同页阴影 `dx`/`dy` 方向一致
 - [ ] 每页带阴影元素不超过 3 个
+
+### 注册（仅新增模板时）
+- [ ] `charts_index.json` 的 `charts.<key>` 已登记 label / summary / keywords
+- [ ] `summary` 写成选型句（`Pick for ... Skip if ... (use <other>)`），不是描述句
+- [ ] 已加入 `categories.<group>.charts[]` 中合适的类别
+- [ ] 若服务于高频意图，已加入 `quickLookup.<intent>[]`
 
 ### 验证命令
 ```bash
