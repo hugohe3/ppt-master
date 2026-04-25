@@ -635,6 +635,59 @@ def _normalize_text(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
+def _override_run_attrs(
+    parent_attrs: dict[str, Any],
+    tspan: ET.Element,
+) -> dict[str, Any]:
+    """Layer a tspan's styling attributes over the inherited run attrs."""
+    run_attrs = dict(parent_attrs)
+    if tspan.get('font-weight'):
+        run_attrs['font_weight'] = tspan.get('font-weight')
+    if tspan.get('fill'):
+        child_fill = tspan.get('fill')
+        run_attrs['fill_raw'] = child_fill
+        c = parse_hex_color(child_fill)
+        if c:
+            run_attrs['fill'] = c
+    if tspan.get('font-size'):
+        run_attrs['font_size'] = _f(tspan.get('font-size'), run_attrs['font_size'])
+    if tspan.get('font-family'):
+        run_attrs['font_family'] = tspan.get('font-family')
+    if tspan.get('font-style'):
+        run_attrs['font_style'] = tspan.get('font-style')
+    if tspan.get('text-decoration'):
+        run_attrs['text_decoration'] = tspan.get('text-decoration')
+    return run_attrs
+
+
+def _collect_tspan_runs(
+    tspan: ET.Element,
+    inherited_attrs: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
+
+    Order: tspan.text → (each nested child tspan's runs → that child's tail under THIS tspan's attrs).
+    """
+    runs: list[dict[str, Any]] = []
+    own_attrs = _override_run_attrs(inherited_attrs, tspan)
+
+    if tspan.text:
+        t = _normalize_text(tspan.text)
+        if t:
+            runs.append({**own_attrs, 'text': t})
+
+    for child in tspan:
+        child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
+        if child_tag == 'tspan':
+            runs.extend(_collect_tspan_runs(child, own_attrs))
+            if child.tail:
+                t = _normalize_text(child.tail)
+                if t:
+                    runs.append({**own_attrs, 'text': t})
+
+    return runs
+
+
 def _build_text_runs(
     elem: ET.Element,
     parent_attrs: dict[str, Any],
@@ -642,7 +695,8 @@ def _build_text_runs(
     """Build a list of text runs from a <text> element, handling <tspan> children.
 
     Each run is a dict with keys: text, fill, fill_raw, font_weight,
-    font_style, font_family, font_size.
+    font_style, font_family, font_size. Nested tspans are walked recursively so
+    inline format changes inside a tspan still produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
 
@@ -654,28 +708,7 @@ def _build_text_runs(
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            t = _normalize_text(''.join(child.itertext()))
-            if t:
-                run_attrs = dict(parent_attrs)
-                if child.get('font-weight'):
-                    run_attrs['font_weight'] = child.get('font-weight')
-                if child.get('fill'):
-                    child_fill = child.get('fill')
-                    run_attrs['fill_raw'] = child_fill
-                    c = parse_hex_color(child_fill)
-                    if c:
-                        run_attrs['fill'] = c
-                if child.get('font-size'):
-                    run_attrs['font_size'] = _f(child.get('font-size'), run_attrs['font_size'])
-                if child.get('font-family'):
-                    run_attrs['font_family'] = child.get('font-family')
-                if child.get('font-style'):
-                    run_attrs['font_style'] = child.get('font-style')
-                if child.get('text-decoration'):
-                    run_attrs['text_decoration'] = child.get('text-decoration')
-                runs.append({**run_attrs, 'text': t})
-
-            # Tail text after </tspan> belongs to parent
+            runs.extend(_collect_tspan_runs(child, parent_attrs))
             if child.tail:
                 t = _normalize_text(child.tail)
                 if t:
