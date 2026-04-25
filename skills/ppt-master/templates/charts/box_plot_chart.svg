@@ -30,14 +30,13 @@
         </linearGradient>
         
         <!-- 阴影 -->
-        <filter id="boxShadow">
+        <filter id="boxShadow" x="-15%" y="-15%" width="130%" height="130%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-            <feOffset dx="0" dy="1"/>
-            <feComponentTransfer>
-                <feFuncA type="linear" slope="0.2"/>
-            </feComponentTransfer>
+            <feOffset dx="0" dy="1" result="offsetBlur"/>
+            <feFlood flood-color="#000000" flood-opacity="0.2" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
             <feMerge>
-                <feMergeNode/>
+                <feMergeNode in="shadow"/>
                 <feMergeNode in="SourceGraphic"/>
             </feMerge>
         </filter>
