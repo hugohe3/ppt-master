@@ -42,7 +42,7 @@
     },
     "infographic": {
       "label": "Infographics",
-      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "comparison_table", "snake_flow", "roadmap_vertical", "sector_diagram", "word_cloud", "concentric_circles", "chevron_process", "comparison_columns", "fishbone_diagram", "hub_spoke", "vertical_list"]
+      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "comparison_table", "snake_flow", "roadmap_vertical", "word_cloud", "concentric_circles", "chevron_process", "comparison_columns", "fishbone_diagram", "hub_spoke", "vertical_list"]
     }
   },
   "quickLookup": {
@@ -59,7 +59,7 @@
     "flow": ["process_flow", "sankey_chart", "waterfall_chart"],
     "strategy": ["swot_analysis", "porter_five_forces", "matrix_2x2"],
     "hierarchy": ["pyramid_chart", "isometric_stairs", "org_chart", "concentric_circles"],
-    "infographic": ["icon_grid", "numbered_steps", "cycle_diagram", "venn_diagram", "pros_cons_chart", "mind_map", "hub_spoke", "sector_diagram", "word_cloud", "vertical_list"],
+    "infographic": ["icon_grid", "numbered_steps", "cycle_diagram", "venn_diagram", "pros_cons_chart", "mind_map", "hub_spoke", "word_cloud", "vertical_list"],
     "pros_cons": ["pros_cons_chart", "butterfly_chart", "swot_analysis", "comparison_table", "comparison_columns"],
     "cause_effect": ["fishbone_diagram", "process_flow"],
     "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
@@ -288,11 +288,6 @@
       "summary": "Vertical timeline with milestones and status tracking (4-8 nodes)",
       "keywords": ["roadmap", "vertical timeline", "milestones", "annual plan", "progress tracking"]
     },
-    "sector_diagram": {
-      "label": "Sector Diagram",
-      "summary": "Semi-circular radial layout around central topic (4-8 areas)",
-      "keywords": ["sector", "radial", "semi-circle", "ecosystem", "service architecture"]
-    },
     "word_cloud": {
       "label": "Word Cloud",
       "summary": "Keyword weight and frequency visualization (20-30 keywords)",
@@ -321,7 +316,7 @@
     "hub_spoke": {
       "label": "Hub & Spoke",
       "summary": "Central hub connected to surrounding capability nodes (1 core + 4-8 spokes); each spoke card can carry title only or title + 1-2 line description",
-      "keywords": ["hub spoke", "central", "radial", "platform", "ecosystem", "satellite", "capability matrix", "核心能力", "中台", "surrounding capabilities"]
+      "keywords": ["hub spoke", "central", "radial", "semi-circle", "platform", "ecosystem", "satellite", "capability matrix", "service architecture", "核心能力", "中台", "surrounding capabilities"]
     },
     "vertical_list": {
       "label": "Vertical List",
