@@ -1,303 +1,165 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
     <!-- 
-    Sankey Chart Template
-    Purpose: Data flow visualization, budget allocation, energy flow
+    Sankey Data Flow Chart Template
+    Purpose: Precise value flow visualization, budget allocation, process mapping
     Use cases: Budget distribution, energy consumption, resource allocation
-    Feature: All flows are complete - input total = output total
+    Feature: Mathematically exact paths (Total Input = Total Output)
     -->
     
     <defs>
-        <!-- Flow gradients: Source to Department -->
-        <linearGradient id="flowA1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowA2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#FF9800;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowA3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowA4" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#607D8B;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowB1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowB2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#FF9800;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowB3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#00BCD4;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowC1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#E91E63;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#FF9800;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowC2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#E91E63;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#607D8B;stop-opacity:0.7" />
-        </linearGradient>
-        
-        <!-- Flow gradients: Department to Expense -->
-        <linearGradient id="flowD1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowD2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#009688;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowE1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowE2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#F44336;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowF1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowF2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#009688;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowG1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#607D8B;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#3F51B5;stop-opacity:0.7" />
-        </linearGradient>
-        <linearGradient id="flowG2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#607D8B;stop-opacity:0.7" />
-            <stop offset="100%" style="stop-color:#795548;stop-opacity:0.7" />
-        </linearGradient>
+        <filter id="nodeShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.15" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge>
+                <feMergeNode in="shadow"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+
+        <!-- Layer 1 to Layer 2 Gradients -->
+        <linearGradient id="gPR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gPS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gPO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gPA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3B82F6" stop-opacity="0.45"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.45"/></linearGradient>
+
+        <linearGradient id="gSR" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gSS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gSO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#10B981" stop-opacity="0.45"/><stop offset="100%" stop-color="#F59E0B" stop-opacity="0.45"/></linearGradient>
+
+        <linearGradient id="gIS" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.45"/><stop offset="100%" stop-color="#F43F5E" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gIA" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366F1" stop-opacity="0.45"/><stop offset="100%" stop-color="#64748B" stop-opacity="0.45"/></linearGradient>
+
+        <!-- Layer 2 to Layer 3 Gradients -->
+        <linearGradient id="gRP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gRI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.45"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.45"/></linearGradient>
+
+        <linearGradient id="gSP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gSM" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F43F5E" stop-opacity="0.45"/><stop offset="100%" stop-color="#EC4899" stop-opacity="0.45"/></linearGradient>
+
+        <linearGradient id="gOP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gOI" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#14B8A6" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gOO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.45"/></linearGradient>
+
+        <linearGradient id="gAP" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.45"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0.45"/></linearGradient>
+        <linearGradient id="gAO" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#64748B" stop-opacity="0.45"/><stop offset="100%" stop-color="#78716C" stop-opacity="0.45"/></linearGradient>
     </defs>
     
-    <rect width="1280" height="720" fill="#FFFFFF"/>
+    <rect width="1280" height="720" fill="#F8FAFC"/>
     
-    <!-- Title -->
-    <text x="640" y="45" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="28" font-weight="bold" fill="#2C3E50" text-anchor="middle">
-        <tspan>Annual Budget Allocation Flow</tspan>
-    </text>
-    <text x="640" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" 
-          font-size="16" fill="#7F8C8D" text-anchor="middle">
-        <tspan>2025 FY - Total Budget: $100M (All flows complete)</tspan>
-    </text>
+    <!-- ==================== Header ==================== -->
+    <text x="640" y="50" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A" text-anchor="middle">Annual Budget Allocation Flow</text>
+    <text x="640" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="#64748B" letter-spacing="1" text-anchor="middle">2025 FY · TOTAL BUDGET: $100M · ZERO-LOSS SANKEY DISTRIBUTION</text>
     
     <!-- Column Labels -->
-    <text x="120" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="600" fill="#5D6D7E" text-anchor="middle">
-        <tspan>Revenue Source</tspan>
-    </text>
-    <text x="640" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="600" fill="#5D6D7E" text-anchor="middle">
-        <tspan>Department</tspan>
-    </text>
-    <text x="1160" y="105" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="600" fill="#5D6D7E" text-anchor="middle">
-        <tspan>Expense Type</tspan>
-    </text>
+    <text x="120" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="1" text-anchor="middle">REVENUE SOURCE</text>
+    <text x="640" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="1" text-anchor="middle">DEPARTMENT</text>
+    <text x="1160" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" letter-spacing="1" text-anchor="middle">EXPENSE TYPE</text>
     
+    <!-- ==================== FLOW PATHS (Background) ==================== -->
+    <g>
+        <!-- Layer 1 to Layer 2 -->
+        <!-- Product Sales flows -->
+        <path d="M 200 186.25 C 380 186.25, 380 186.25, 560 186.25" fill="none" stroke="url(#gPR)" stroke-width="112.5"/>
+        <path d="M 200 276.25 C 380 276.25, 380 341.25, 560 341.25" fill="none" stroke="url(#gPS)" stroke-width="67.5"/>
+        <path d="M 200 343.75 C 380 343.75, 380 496.25, 560 496.25" fill="none" stroke="url(#gPO)" stroke-width="67.5"/>
+        <path d="M 200 388.75 C 380 388.75, 380 606.25, 560 606.25" fill="none" stroke="url(#gPA)" stroke-width="22.5"/>
+        <!-- Service Revenue flows -->
+        <path d="M 200 442.5 C 380 442.5, 380 265, 560 265" fill="none" stroke="url(#gSR)" stroke-width="45"/>
+        <path d="M 200 487.5 C 380 487.5, 380 397.5, 560 397.5" fill="none" stroke="url(#gSS)" stroke-width="45"/>
+        <path d="M 200 532.5 C 380 532.5, 380 552.5, 560 552.5" fill="none" stroke="url(#gSO)" stroke-width="45"/>
+        <!-- Investment Income flows -->
+        <path d="M 200 586.25 C 380 586.25, 380 431.25, 560 431.25" fill="none" stroke="url(#gIS)" stroke-width="22.5"/>
+        <path d="M 200 608.75 C 380 608.75, 380 628.75, 560 628.75" fill="none" stroke="url(#gIA)" stroke-width="22.5"/>
+
+        <!-- Layer 2 to Layer 3 -->
+        <!-- R&D flows -->
+        <path d="M 720 193 C 900 193, 900 193, 1080 193" fill="none" stroke="url(#gRP)" stroke-width="126"/>
+        <path d="M 720 271.75 C 900 271.75, 900 500.75, 1080 500.75" fill="none" stroke="url(#gRI)" stroke-width="31.5"/>
+        <!-- Sales flows -->
+        <path d="M 720 330 C 900 330, 900 278.5, 1080 278.5" fill="none" stroke="url(#gSP)" stroke-width="45"/>
+        <path d="M 720 397.5 C 900 397.5, 900 420, 1080 420" fill="none" stroke="url(#gSM)" stroke-width="90"/>
+        <!-- Operations flows -->
+        <path d="M 720 485 C 900 485, 900 323.5, 1080 323.5" fill="none" stroke="url(#gOP)" stroke-width="45"/>
+        <path d="M 720 536.75 C 900 536.75, 900 545.75, 1080 545.75" fill="none" stroke="url(#gOI)" stroke-width="58.5"/>
+        <path d="M 720 569.5 C 900 569.5, 900 599.5, 1080 599.5" fill="none" stroke="url(#gOO)" stroke-width="9"/>
+        <!-- Admin flows -->
+        <path d="M 720 599.5 C 900 599.5, 900 350.5, 1080 350.5" fill="none" stroke="url(#gAP)" stroke-width="9"/>
+        <path d="M 720 622 C 900 622, 900 622, 1080 622" fill="none" stroke="url(#gAO)" stroke-width="36"/>
+    </g>
+
     <!-- ==================== LAYER 1: Revenue Sources ==================== -->
-    <!-- Product Sales: $60M (height=270) -->
-    <rect x="40" y="130" width="160" height="270" rx="4" fill="#2196F3"/>
-    <text x="120" y="250" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Product Sales</tspan>
-    </text>
-    <text x="120" y="275" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$60M</tspan>
-    </text>
-    
-    <!-- Service Revenue: $30M (height=135) -->
-    <rect x="40" y="420" width="160" height="135" rx="4" fill="#00BCD4"/>
-    <text x="120" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="15" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Service Revenue</tspan>
-    </text>
-    <text x="120" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$30M</tspan>
-    </text>
-    
-    <!-- Investment Income: $10M (height=45) -->
-    <rect x="40" y="575" width="160" height="45" rx="4" fill="#E91E63"/>
-    <text x="120" y="603" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Investment $10M</tspan>
-    </text>
-    
+    <g filter="url(#nodeShadow)">
+        <rect x="40" y="130" width="160" height="270" rx="4" fill="#3B82F6"/>
+        <text x="120" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Product Sales</text>
+        <text x="120" y="280" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$60M</text>
+        
+        <rect x="40" y="420" width="160" height="135" rx="4" fill="#10B981"/>
+        <text x="120" y="480" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Service Revenue</text>
+        <text x="120" y="505" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$30M</text>
+        
+        <rect x="40" y="575" width="160" height="45" rx="4" fill="#6366F1"/>
+        <text x="120" y="603" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Investment $10M</text>
+    </g>
+
     <!-- ==================== LAYER 2: Departments ==================== -->
-    <!-- R&D: $35M (height=157.5) -->
-    <rect x="560" y="130" width="160" height="157" rx="4" fill="#4CAF50"/>
-    <text x="640" y="200" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>R&amp;D</tspan>
-    </text>
-    <text x="640" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$35M</tspan>
-    </text>
-    
-    <!-- Sales & Marketing: $30M (height=135) -->
-    <rect x="560" y="307" width="160" height="135" rx="4" fill="#FF9800"/>
-    <text x="640" y="365" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Sales &amp; Marketing</tspan>
-    </text>
-    <text x="640" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$30M</tspan>
-    </text>
-    
-    <!-- Operations: $25M (height=112.5) -->
-    <rect x="560" y="462" width="160" height="112" rx="4" fill="#9C27B0"/>
-    <text x="640" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Operations</tspan>
-    </text>
-    <text x="640" y="535" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$25M</tspan>
-    </text>
-    
-    <!-- Admin: $10M (height=45) -->
-    <rect x="560" y="594" width="160" height="45" rx="4" fill="#607D8B"/>
-    <text x="640" y="622" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Admin $10M</tspan>
-    </text>
-    
+    <g filter="url(#nodeShadow)">
+        <rect x="560" y="130" width="160" height="157.5" rx="4" fill="#8B5CF6"/>
+        <text x="640" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">R&amp;D</text>
+        <text x="640" y="227" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$35M</text>
+        
+        <rect x="560" y="307.5" width="160" height="135" rx="4" fill="#F43F5E"/>
+        <text x="640" y="368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Sales &amp; Marketing</text>
+        <text x="640" y="393" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$30M</text>
+        
+        <rect x="560" y="462.5" width="160" height="112.5" rx="4" fill="#F59E0B"/>
+        <text x="640" y="512" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Operations</text>
+        <text x="640" y="537" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$25M</text>
+        
+        <rect x="560" y="595" width="160" height="45" rx="4" fill="#64748B"/>
+        <text x="640" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Admin $10M</text>
+    </g>
+
     <!-- ==================== LAYER 3: Expense Types ==================== -->
-    <!-- Personnel: $50M (height=225) -->
-    <rect x="1080" y="130" width="160" height="225" rx="4" fill="#3F51B5"/>
-    <text x="1160" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Personnel</tspan>
-    </text>
-    <text x="1160" y="255" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$50M</tspan>
-    </text>
-    
-    <!-- Marketing Expense: $20M (height=90) -->
-    <rect x="1080" y="375" width="160" height="90" rx="4" fill="#F44336"/>
-    <text x="1160" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Marketing</tspan>
-    </text>
-    <text x="1160" y="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$20M</tspan>
-    </text>
-    
-    <!-- Infrastructure: $20M (height=90) -->
-    <rect x="1080" y="485" width="160" height="90" rx="4" fill="#009688"/>
-    <text x="1160" y="525" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Infrastructure</tspan>
-    </text>
-    <text x="1160" y="550" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>$20M</tspan>
-    </text>
-    
-    <!-- Other: $10M (height=45) -->
-    <rect x="1080" y="595" width="160" height="45" rx="4" fill="#795548"/>
-    <text x="1160" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
-        <tspan>Other $10M</tspan>
-    </text>
-    
-    <!-- ==================== FLOW PATHS: Source to Department ==================== -->
-    <!-- Product Sales ($60M) flows to: R&D $25M, Sales $18M, Operations $12M, Admin $5M -->
-    <path d="M 200,175 C 380,175 380,175 560,175" fill="none" stroke="url(#flowA1)" stroke-width="56" opacity="0.6"/>
-    <path d="M 200,255 C 380,255 380,340 560,340" fill="none" stroke="url(#flowA2)" stroke-width="40" opacity="0.6"/>
-    <path d="M 200,320 C 380,320 380,490 560,490" fill="none" stroke="url(#flowA3)" stroke-width="27" opacity="0.6"/>
-    <path d="M 200,375 C 380,375 380,610 560,610" fill="none" stroke="url(#flowA4)" stroke-width="11" opacity="0.6"/>
-    
-    <!-- Service Revenue ($30M) flows to: R&D $10M, Sales $10M, Operations $10M -->
-    <path d="M 200,450 C 380,450 380,255 560,255" fill="none" stroke="url(#flowB1)" stroke-width="23" opacity="0.6"/>
-    <path d="M 200,490 C 380,490 380,400 560,400" fill="none" stroke="url(#flowB2)" stroke-width="23" opacity="0.6"/>
-    <path d="M 200,530 C 380,530 380,545 560,545" fill="none" stroke="url(#flowB3)" stroke-width="23" opacity="0.6"/>
-    
-    <!-- Investment Income ($10M) flows to: Sales $2M, Admin $8M --> 
-    <path d="M 200,590 C 380,590 380,430 560,430" fill="none" stroke="url(#flowC1)" stroke-width="5" opacity="0.6"/>
-    <path d="M 200,605 C 380,605 380,625 560,625" fill="none" stroke="url(#flowC2)" stroke-width="18" opacity="0.6"/>
-    
-    <!-- ==================== FLOW PATHS: Department to Expense ==================== -->
-    <!-- R&D ($35M) flows to: Personnel $28M, Infrastructure $7M -->
-    <path d="M 720,175 C 900,175 900,200 1080,200" fill="none" stroke="url(#flowD1)" stroke-width="63" opacity="0.6"/>
-    <path d="M 720,250 C 900,250 900,515 1080,515" fill="none" stroke="url(#flowD2)" stroke-width="16" opacity="0.6"/>
-    
-    <!-- Sales & Marketing ($30M) flows to: Personnel $10M, Marketing $20M -->
-    <path d="M 720,340 C 900,340 900,290 1080,290" fill="none" stroke="url(#flowE1)" stroke-width="23" opacity="0.6"/>
-    <path d="M 720,400 C 900,400 900,415 1080,415" fill="none" stroke="url(#flowE2)" stroke-width="45" opacity="0.6"/>
-    
-    <!-- Operations ($25M) flows to: Personnel $10M, Infrastructure $15M -->
-    <path d="M 720,490 C 900,490 900,330 1080,330" fill="none" stroke="url(#flowF1)" stroke-width="23" opacity="0.6"/>
-    <path d="M 720,545 C 900,545 900,550 1080,550" fill="none" stroke="url(#flowF2)" stroke-width="34" opacity="0.6"/>
-    
-    <!-- Admin ($10M) flows to: Personnel $2M, Other $8M -->
-    <path d="M 720,605 C 900,605 900,350 1080,350" fill="none" stroke="url(#flowG1)" stroke-width="5" opacity="0.6"/>
-    <path d="M 720,625 C 900,625 900,615 1080,615" fill="none" stroke="url(#flowG2)" stroke-width="18" opacity="0.6"/>
-    
-    <!-- Summary Stats -->
+    <g filter="url(#nodeShadow)">
+        <rect x="1080" y="130" width="160" height="225" rx="4" fill="#0EA5E9"/>
+        <text x="1160" y="235" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Personnel</text>
+        <text x="1160" y="260" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF" text-anchor="middle">$50M</text>
+        
+        <rect x="1080" y="375" width="160" height="90" rx="4" fill="#EC4899"/>
+        <text x="1160" y="413" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Marketing</text>
+        <text x="1160" y="438" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF" text-anchor="middle">$20M</text>
+        
+        <rect x="1080" y="485" width="160" height="90" rx="4" fill="#14B8A6"/>
+        <text x="1160" y="523" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">Infrastructure</text>
+        <text x="1160" y="548" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="800" fill="#FFFFFF" text-anchor="middle">$20M</text>
+        
+        <rect x="1080" y="595" width="160" height="45" rx="4" fill="#78716C"/>
+        <text x="1160" y="623" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle">Other $10M</text>
+    </g>
+
+    <!-- ==================== Summary Stats ==================== -->
     <g id="stats">
-        <rect x="40" y="655" width="1200" height="50" rx="6" fill="#F5F7FA" stroke="#E0E0E0" stroke-width="1"/>
+        <rect x="40" y="655" width="1200" height="50" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#nodeShadow)"/>
         
-        <text x="160" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
-            <tspan>Total Revenue</tspan>
-        </text>
-        <text x="160" y="697" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#2196F3" text-anchor="middle">
-            <tspan>$100M</tspan>
-        </text>
+        <!-- Total Budget -->
+        <text x="160" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">Total Budget</text>
+        <text x="260" y="686" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0F172A" text-anchor="middle">$100M</text>
+        <line x1="320" y1="665" x2="320" y2="695" stroke="#E2E8F0" stroke-width="1.5"/>
         
-        <text x="400" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
-            <tspan>Largest Dept</tspan>
-        </text>
-        <text x="400" y="697" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#4CAF50" text-anchor="middle">
-            <tspan>R&amp;D 35%</tspan>
-        </text>
+        <!-- Largest Dept -->
+        <text x="440" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">Largest Dept</text>
+        <text x="540" y="686" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#8B5CF6" text-anchor="middle">R&amp;D (35%)</text>
+        <line x1="620" y1="665" x2="620" y2="695" stroke="#E2E8F0" stroke-width="1.5"/>
         
-        <text x="640" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
-            <tspan>Personnel Cost</tspan>
-        </text>
-        <text x="640" y="697" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#3F51B5" text-anchor="middle">
-            <tspan>50%</tspan>
-        </text>
+        <!-- Top Expense -->
+        <text x="740" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">Top Expense</text>
+        <text x="860" y="686" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#0EA5E9" text-anchor="middle">Personnel (50%)</text>
+        <line x1="940" y1="665" x2="940" y2="695" stroke="#E2E8F0" stroke-width="1.5"/>
         
-        <text x="880" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
-            <tspan>Marketing Spend</tspan>
-        </text>
-        <text x="880" y="697" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#F44336" text-anchor="middle">
-            <tspan>20%</tspan>
-        </text>
-        
-        <text x="1120" y="680" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="13" fill="#5D6D7E" text-anchor="middle">
-            <tspan>Total Expense</tspan>
-        </text>
-        <text x="1120" y="697" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="16" font-weight="bold" fill="#2C3E50" text-anchor="middle">
-            <tspan>$100M</tspan>
-        </text>
+        <!-- Operational Ratio -->
+        <text x="1060" y="685" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#64748B" text-anchor="middle">Operational Ratio</text>
+        <text x="1170" y="686" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="800" fill="#F59E0B" text-anchor="middle">25%</text>
     </g>
 </svg>

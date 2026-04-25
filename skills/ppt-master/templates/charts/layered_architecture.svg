@@ -1,224 +1,244 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
-  <!--
-  分层架构图模板 (Layered Architecture)
-  用途: 系统/软件分层架构展示 (应用-服务-数据 / 前端-业务-基础设施)
-  适用场景: 技术架构概览、分层职责划分、纵向依赖关系、中台总体视图
-  支持: 3 层主干 + 左侧行标签 + 右侧能力出口列 + 底部基础支撑带
-  关键约定:
-    - 每个模块卡 = 模块标题 + 1 行能力描述；两段文本必须同时填写
-    - 左侧行标签给每一层起名（应用层/服务层/数据层）
-    - 红色编号徽章标注每一层的序号
-    - 右侧"能力输出"列承载跨层对外输出或开放能力
-    - 底部"基础支撑"带承载底层共用能力 (日志/监控/权限等)
-  -->
+    <!--
+    Layered Architecture Chart Template
+    Usage: System/software layered architecture visualization
+    Scenarios: Technical architecture overview, layer responsibilities, vertical dependencies
+    Supports: 3 Main Layers + Left Labels + Right Capability Output + Bottom Foundation
+    -->
 
-  <!-- 背景 -->
-  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF"/>
+    <defs>
+        <!-- Standard Drop Shadow -->
+        <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="0" dy="2" result="offsetblur"/>
+            <feFlood flood-color="#0F172A" flood-opacity="0.06" result="shadowColor"/>
+            <feComposite in="shadowColor" in2="offsetblur" operator="in" result="shadow"/>
+            <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+    </defs>
 
-  <!-- 标题 -->
-  <rect x="30" y="22" width="10" height="40" fill="#C00000"/>
-  <text x="52" y="55" font-family="Microsoft YaHei, sans-serif" font-size="30" font-weight="700" fill="#C00000">系统分层总体架构视图</text>
+    <!-- Background -->
+    <rect width="1280" height="720" fill="#F8FAFC"/>
 
-  <!-- 副标题带 -->
-  <rect x="30" y="78" width="1220" height="46" fill="#F2F2F2"/>
-  <text x="640" y="99" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="14" font-weight="700" fill="#1A252F">
-    <tspan x="640" dy="0">自上而下三层能力栈 + 右侧统一能力出口 + 底部共用支撑，上层依赖下层，跨层通过标准契约通信</tspan>
-    <tspan x="640" dy="22" fill="#7F8C8D" font-weight="400">每个模块卡 = 模块标题 + 1 行能力描述；缺任一段即退回 icon_grid 或 numbered_steps</tspan>
-  </text>
+    <!-- Title Area -->
+    <rect x="40" y="32" width="8" height="36" rx="4" fill="#3B82F6"/>
+    <text x="64" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Enterprise Layered Architecture</text>
 
-  <!-- ==================== 层 1: 应用层 ==================== -->
-  <!-- 左侧行标签 + 编号 -->
-  <rect x="30" y="150" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="172" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">1</text>
-  <text x="32" y="218" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">应用</text>
-  <text x="32" y="244" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+    <!-- Subtitle Band -->
+    <text x="64" y="90" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#64748B" letter-spacing="0.5">
+        THREE-TIER CAPABILITY STACK WITH UNIFIED OUTPUT AND SHARED FOUNDATIONAL INFRASTRUCTURE
+    </text>
 
-  <!-- 主内容区 (左 x=100, 右 x=1050) -->
-  <rect x="100" y="150" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <rect x="100" y="150" width="950" height="28" fill="#EAF1F8"/>
-  <text x="575" y="169" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">面向终端用户与第三方的访问入口 · Presentation</text>
+    <!-- ==================== Layer 1: App Layer ==================== -->
+    <rect x="40" y="140" width="40" height="140" rx="8" fill="#3B82F6"/>
+    <text x="60" y="218" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">01</text>
 
-  <!-- 模块卡 1.1 -->
-  <rect x="118" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="118" y="192" width="220" height="4" fill="#2E75B6"/>
-  <rect x="128" y="204" width="26" height="26" fill="#5B9BD5"/>
-  <text x="141" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">W</text>
-  <text x="162" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">Web 控制台</text>
-  <line x1="128" y1="238" x2="328" y2="238" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="128" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">React SPA · 管理与可视化界面</text>
-  <text x="128" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">HTTPS / WebSocket</text>
+    <rect x="96" y="140" width="950" height="140" rx="12" fill="#EFF6FF" fill-opacity="0.6" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="571" y="166" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#2563EB" letter-spacing="1">APP LAYER · USER INTERFACES &amp; EXTERNAL ACCESS POINTS</text>
 
-  <!-- 模块卡 1.2 -->
-  <rect x="352" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="352" y="192" width="220" height="4" fill="#2E75B6"/>
-  <rect x="362" y="204" width="26" height="26" fill="#5B9BD5"/>
-  <text x="375" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">M</text>
-  <text x="396" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">移动端 App</text>
-  <line x1="362" y1="238" x2="562" y2="238" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="362" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">iOS / Android 原生客户端</text>
-  <text x="362" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">HTTP/2 · 支持离线缓存</text>
+    <!-- Card 1.1 -->
+    <g filter="url(#cardShadow)">
+        <rect x="114" y="184" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="126" y="198" width="36" height="36" rx="8" fill="#EFF6FF"/>
+        <text x="144" y="222" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">W</text>
+        <text x="174" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Web Console</text>
+        <text x="174" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">React SPA</text>
+        <line x1="126" y1="244" x2="322" y2="244" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="126" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">HTTPS &amp; WebSocket interfaces</text>
+    </g>
 
-  <!-- 模块卡 1.3 -->
-  <rect x="586" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="586" y="192" width="220" height="4" fill="#2E75B6"/>
-  <rect x="596" y="204" width="26" height="26" fill="#5B9BD5"/>
-  <text x="609" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">A</text>
-  <text x="630" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">开放 API</text>
-  <line x1="596" y1="238" x2="796" y2="238" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="596" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">REST / GraphQL · 对外集成</text>
-  <text x="596" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">OAuth2 · API Key</text>
+    <!-- Card 1.2 -->
+    <g filter="url(#cardShadow)">
+        <rect x="346" y="184" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="358" y="198" width="36" height="36" rx="8" fill="#EFF6FF"/>
+        <text x="376" y="222" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">M</text>
+        <text x="406" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Mobile App</text>
+        <text x="406" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">iOS / Android</text>
+        <line x1="358" y1="244" x2="554" y2="244" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="358" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Native HTTP/2 client access</text>
+    </g>
 
-  <!-- 模块卡 1.4 -->
-  <rect x="820" y="192" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="820" y="192" width="220" height="4" fill="#2E75B6"/>
-  <rect x="830" y="204" width="26" height="26" fill="#5B9BD5"/>
-  <text x="843" y="222" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">C</text>
-  <text x="864" y="222" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">CLI 工具</text>
-  <line x1="830" y1="238" x2="1030" y2="238" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="830" y="256" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">命令行与自动化脚本入口</text>
-  <text x="830" y="270" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">面向 DevOps 与 CI/CD</text>
+    <!-- Card 1.3 -->
+    <g filter="url(#cardShadow)">
+        <rect x="578" y="184" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="590" y="198" width="36" height="36" rx="8" fill="#EFF6FF"/>
+        <text x="608" y="222" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">O</text>
+        <text x="638" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Open API</text>
+        <text x="638" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">API Gateway</text>
+        <line x1="590" y1="244" x2="786" y2="244" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="590" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">REST &amp; GraphQL for partners</text>
+    </g>
 
-  <!-- ==================== 层 2: 服务层 ==================== -->
-  <rect x="30" y="300" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="322" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">2</text>
-  <text x="32" y="368" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">服务</text>
-  <text x="32" y="394" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+    <!-- Card 1.4 -->
+    <g filter="url(#cardShadow)">
+        <rect x="810" y="184" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="822" y="198" width="36" height="36" rx="8" fill="#EFF6FF"/>
+        <text x="840" y="222" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#3B82F6">C</text>
+        <text x="870" y="214" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">CLI Tools</text>
+        <text x="870" y="230" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">DevOps</text>
+        <line x1="822" y1="244" x2="1018" y2="244" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="822" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Command-line automation &amp; CI</text>
+    </g>
 
-  <rect x="100" y="300" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <rect x="100" y="300" width="950" height="28" fill="#EAF1F8"/>
-  <text x="575" y="319" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">核心业务逻辑与能力编排 · Service</text>
 
-  <rect x="118" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="118" y="342" width="220" height="4" fill="#2E75B6"/>
-  <rect x="128" y="354" width="26" height="26" fill="#5B9BD5"/>
-  <text x="141" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">G</text>
-  <text x="162" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">API 网关</text>
-  <line x1="128" y1="388" x2="328" y2="388" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="128" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">统一路由 · 鉴权 · 限流</text>
-  <text x="128" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">协议转换 · 日志注入</text>
+    <!-- ==================== Layer 2: Service Layer ==================== -->
+    <rect x="40" y="296" width="40" height="140" rx="8" fill="#6366F1"/>
+    <text x="60" y="374" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">02</text>
 
-  <rect x="352" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="352" y="342" width="220" height="4" fill="#2E75B6"/>
-  <rect x="362" y="354" width="26" height="26" fill="#5B9BD5"/>
-  <text x="375" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">B</text>
-  <text x="396" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">业务微服务</text>
-  <line x1="362" y1="388" x2="562" y2="388" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="362" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">领域驱动 · 独立伸缩</text>
-  <text x="362" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">gRPC 内部互调</text>
+    <rect x="96" y="296" width="950" height="140" rx="12" fill="#EEF2FF" fill-opacity="0.6" stroke="#A5B4FC" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="571" y="322" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#4F46E5" letter-spacing="1">SERVICE LAYER · CORE BUSINESS LOGIC &amp; ORCHESTRATION</text>
 
-  <rect x="586" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="586" y="342" width="220" height="4" fill="#2E75B6"/>
-  <rect x="596" y="354" width="26" height="26" fill="#5B9BD5"/>
-  <text x="609" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">I</text>
-  <text x="630" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">身份认证</text>
-  <line x1="596" y1="388" x2="796" y2="388" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="596" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">OAuth2 / SSO · 集中式 IAM</text>
-  <text x="596" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">RBAC + ABAC</text>
+    <!-- Card 2.1 -->
+    <g filter="url(#cardShadow)">
+        <rect x="114" y="340" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="126" y="354" width="36" height="36" rx="8" fill="#EEF2FF"/>
+        <text x="144" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">G</text>
+        <text x="174" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Core Routing</text>
+        <text x="174" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">API Gateway</text>
+        <line x1="126" y1="400" x2="322" y2="400" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="126" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Traffic control &amp; rate limiting</text>
+    </g>
 
-  <rect x="820" y="342" width="220" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="820" y="342" width="220" height="4" fill="#2E75B6"/>
-  <rect x="830" y="354" width="26" height="26" fill="#5B9BD5"/>
-  <text x="843" y="372" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Q</text>
-  <text x="864" y="372" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">消息队列</text>
-  <line x1="830" y1="388" x2="1030" y2="388" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="830" y="406" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">异步解耦 · 事件驱动</text>
-  <text x="830" y="420" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">Kafka · RocketMQ</text>
+    <!-- Card 2.2 -->
+    <g filter="url(#cardShadow)">
+        <rect x="346" y="340" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="358" y="354" width="36" height="36" rx="8" fill="#EEF2FF"/>
+        <text x="376" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">M</text>
+        <text x="406" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Microservices</text>
+        <text x="406" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Domain Logic</text>
+        <line x1="358" y1="400" x2="554" y2="400" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="358" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Independent business services</text>
+    </g>
 
-  <!-- ==================== 层 3: 数据层 ==================== -->
-  <rect x="30" y="450" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="472" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">3</text>
-  <text x="32" y="518" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">数据</text>
-  <text x="32" y="544" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="700" fill="#1A252F">层</text>
+    <!-- Card 2.3 -->
+    <g filter="url(#cardShadow)">
+        <rect x="578" y="340" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="590" y="354" width="36" height="36" rx="8" fill="#EEF2FF"/>
+        <text x="608" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">I</text>
+        <text x="638" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">IAM Service</text>
+        <text x="638" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Auth &amp; Security</text>
+        <line x1="590" y1="400" x2="786" y2="400" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="590" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Centralized SSO and RBAC</text>
+    </g>
 
-  <rect x="100" y="450" width="950" height="140" fill="none" stroke="#2E75B6" stroke-width="1.5" stroke-dasharray="5 5"/>
-  <rect x="100" y="450" width="950" height="28" fill="#EAF1F8"/>
-  <text x="575" y="469" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#2E75B6">持久化存储与底层数据能力 · Data</text>
+    <!-- Card 2.4 -->
+    <g filter="url(#cardShadow)">
+        <rect x="810" y="340" width="220" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="822" y="354" width="36" height="36" rx="8" fill="#EEF2FF"/>
+        <text x="840" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#6366F1">E</text>
+        <text x="870" y="370" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Event Bus</text>
+        <text x="870" y="386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Message Queue</text>
+        <line x1="822" y1="400" x2="1018" y2="400" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="822" y="414" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Kafka-based async decoupling</text>
+    </g>
 
-  <rect x="118" y="492" width="300" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="118" y="492" width="300" height="4" fill="#2E75B6"/>
-  <rect x="128" y="504" width="26" height="26" fill="#5B9BD5"/>
-  <text x="141" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">R</text>
-  <text x="162" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">关系型数据库</text>
-  <line x1="128" y1="538" x2="408" y2="538" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="128" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">PostgreSQL 主从 · 核心交易数据</text>
-  <text x="128" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">ACID · 强一致 · 同城灾备</text>
 
-  <rect x="432" y="492" width="300" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="432" y="492" width="300" height="4" fill="#2E75B6"/>
-  <rect x="442" y="504" width="26" height="26" fill="#5B9BD5"/>
-  <text x="455" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">K</text>
-  <text x="476" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">缓存 &amp; 会话</text>
-  <line x1="442" y1="538" x2="722" y2="538" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="442" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">Redis 集群 · 热点数据 / 临时状态</text>
-  <text x="442" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">毫秒级响应 · LRU 淘汰</text>
+    <!-- ==================== Layer 3: Data Layer ==================== -->
+    <rect x="40" y="452" width="40" height="140" rx="8" fill="#8B5CF6"/>
+    <text x="60" y="530" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">03</text>
 
-  <rect x="746" y="492" width="294" height="82" fill="#FFFFFF" stroke="#C9D8E9" stroke-width="1"/>
-  <rect x="746" y="492" width="294" height="4" fill="#2E75B6"/>
-  <rect x="756" y="504" width="26" height="26" fill="#5B9BD5"/>
-  <text x="769" y="522" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">O</text>
-  <text x="790" y="522" font-family="Microsoft YaHei, sans-serif" font-size="15" font-weight="700" fill="#1A252F">对象存储</text>
-  <line x1="756" y1="538" x2="1030" y2="538" stroke="#E7E6E6" stroke-width="1"/>
-  <text x="756" y="556" font-family="Microsoft YaHei, sans-serif" font-size="12" fill="#566573">S3 兼容 · 非结构化大文件</text>
-  <text x="756" y="570" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#7F8C8D">冷热分层 · 归档压缩</text>
+    <rect x="96" y="452" width="950" height="140" rx="12" fill="#F5F3FF" fill-opacity="0.6" stroke="#C4B5FD" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="571" y="478" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="1">DATA LAYER · PERSISTENT STORAGE &amp; CAPABILITIES</text>
 
-  <!-- ==================== 右侧能力出口列 ==================== -->
-  <rect x="1070" y="150" width="180" height="440" fill="#FDF3EB" stroke="#F8CBAD" stroke-width="2"/>
-  <rect x="1160" y="158" width="30" height="26" fill="#C00000"/>
-  <text x="1175" y="178" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">4</text>
-  <text x="1082" y="180" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">能力输出</text>
-  <line x1="1082" y1="194" x2="1238" y2="194" stroke="#F8CBAD" stroke-width="1"/>
+    <!-- Card 3.1 -->
+    <g filter="url(#cardShadow)">
+        <rect x="114" y="496" width="300" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="126" y="510" width="36" height="36" rx="8" fill="#F5F3FF"/>
+        <text x="144" y="534" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">R</text>
+        <text x="174" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Relational DB</text>
+        <text x="174" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">PostgreSQL</text>
+        <line x1="126" y1="556" x2="398" y2="556" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="126" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">ACID compliant core data storage</text>
+    </g>
 
-  <rect x="1090" y="210" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="235" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">统一门户</text>
+    <!-- Card 3.2 -->
+    <g filter="url(#cardShadow)">
+        <rect x="430" y="496" width="300" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="442" y="510" width="36" height="36" rx="8" fill="#F5F3FF"/>
+        <text x="460" y="534" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">C</text>
+        <text x="490" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Cache Layer</text>
+        <text x="490" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">Redis Cluster</text>
+        <line x1="442" y1="556" x2="714" y2="556" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="442" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Sub-millisecond hot data access</text>
+    </g>
 
-  <rect x="1090" y="260" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="285" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">开放 SDK</text>
+    <!-- Card 3.3 -->
+    <g filter="url(#cardShadow)">
+        <rect x="746" y="496" width="284" height="82" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+        <rect x="758" y="510" width="36" height="36" rx="8" fill="#F5F3FF"/>
+        <text x="776" y="534" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="800" fill="#8B5CF6">O</text>
+        <text x="806" y="526" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="700" fill="#0F172A">Object Storage</text>
+        <text x="806" y="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#94A3B8">S3 Compatible</text>
+        <line x1="758" y1="556" x2="1014" y2="556" stroke="#F1F5F9" stroke-width="1"/>
+        <text x="758" y="570" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" fill="#475569">Scalable unstructured data</text>
+    </g>
 
-  <rect x="1090" y="310" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="335" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">运维控制台</text>
 
-  <rect x="1090" y="360" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="385" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">数据服务市场</text>
+    <!-- ==================== Right Column: Capabilities ==================== -->
+    <rect x="1200" y="140" width="40" height="452" rx="8" fill="#10B981"/>
+    <text x="1220" y="374" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">04</text>
 
-  <rect x="1090" y="410" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="435" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">Webhook 通知</text>
+    <rect x="1066" y="140" width="124" height="452" rx="12" fill="#ECFDF5" fill-opacity="0.6" stroke="#6EE7B7" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="1128" y="166" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="700" fill="#059669" letter-spacing="1">OUTPUT</text>
 
-  <rect x="1090" y="460" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="485" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">合作伙伴门户</text>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="186" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Unified Portal</text>
+    </g>
 
-  <rect x="1090" y="510" width="140" height="40" fill="#FFFFFF" stroke="#F8CBAD" stroke-width="1"/>
-  <text x="1160" y="535" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">数据大屏</text>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="252" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="276" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Open SDK</text>
+    </g>
 
-  <text x="1160" y="570" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="11" fill="#C00000">对外统一收口</text>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="318" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="342" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Ops Console</text>
+    </g>
 
-  <!-- ==================== 底部基础支撑带 ==================== -->
-  <rect x="30" y="610" width="30" height="30" fill="#C00000"/>
-  <text x="45" y="632" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">5</text>
-  <text x="32" y="674" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">基础</text>
-  <text x="32" y="696" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1A252F">支撑</text>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="384" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="408" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Data Market</text>
+    </g>
 
-  <rect x="100" y="610" width="1150" height="90" fill="none" stroke="#E7E6E6" stroke-width="2"/>
-  <text x="675" y="628" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" font-weight="700" fill="#1A252F">三层共用的横切能力 · 不随业务变更，独立演进</text>
-  <line x1="120" y1="638" x2="1230" y2="638" stroke="#000000" stroke-width="1" stroke-dasharray="2 2"/>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="450" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="474" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Webhooks</text>
+    </g>
 
-  <rect x="120" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="195" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">日志采集</text>
+    <g filter="url(#cardShadow)">
+        <rect x="1082" y="516" width="92" height="38" rx="6" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1"/>
+        <text x="1128" y="540" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#065F46">Partner API</text>
+    </g>
 
-  <rect x="280" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="355" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">监控告警</text>
 
-  <rect x="440" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="515" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">链路追踪</text>
+    <!-- ==================== Bottom: Foundation ==================== -->
+    <rect x="40" y="608" width="40" height="80" rx="8" fill="#64748B"/>
+    <text x="60" y="654" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">05</text>
 
-  <rect x="600" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="675" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">配置中心</text>
+    <rect x="96" y="608" width="1144" height="80" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="668" y="630" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="700" fill="#475569" letter-spacing="1">FOUNDATION · CROSS-CUTTING SHARED CAPABILITIES</text>
 
-  <rect x="760" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="835" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">CI / CD</text>
+    <!-- Foundation Modules -->
+    <rect x="116" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="188" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Log Aggregation</text>
 
-  <rect x="920" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="995" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">安全合规</text>
+    <rect x="272" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="344" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Metrics &amp; Alarms</text>
 
-  <rect x="1080" y="650" width="150" height="40" fill="#F2F2F2" stroke="#D9D9D9" stroke-width="1"/>
-  <text x="1155" y="675" text-anchor="middle" font-family="Microsoft YaHei, sans-serif" font-size="13" fill="#1A252F">资源调度</text>
+    <rect x="428" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="500" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Distributed Tracing</text>
+
+    <rect x="584" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="656" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Config Center</text>
+
+    <rect x="740" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="812" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">CI / CD Pipeline</text>
+
+    <rect x="896" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="968" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Security &amp; Audit</text>
+
+    <rect x="1052" y="640" width="144" height="34" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="1124" y="662" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#334155">Resource Mgt</text>
+
 </svg>
