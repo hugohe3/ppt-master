@@ -87,7 +87,6 @@ Being honest about limitations:
 | **Slower generation** | 10–20 min for a 10-page deck (serial page-by-page for cross-slide consistency). SaaS tools take seconds. |
 | **No collaboration** | Local files, no real-time co-editing, no share links. |
 | **No visual UI** | All interaction through AI chat — no drag-and-drop canvas. |
-| **Charts aren't data-bound** | Charts are visual shapes, not Excel-linked objects. Great-looking but not dynamically updatable. |
 
 **If you want zero-setup, instant slides in a browser** — Gamma and Canva are excellent choices.
 
