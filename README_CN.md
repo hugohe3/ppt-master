@@ -97,11 +97,12 @@ PPT Master 由我一个人开发和维护，完全自费。每个新模板、Bug
 
 金额随意，心意最重要。
 
-**企业合作 / 定制服务**
+**自定义模板**
 
-需要定制行业模板、私有化部署、或集成咨询？我每季度承接少量付费项目。
+想要一个贴合你品牌或行业的模板？两条路：
 
-📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
+- **自己做** — PPT Master 内置 `/create-template` 工作流。完整指引见 [FAQ — 如何制作自定义模板？](./docs/zh/faq.md#q-如何制作自定义模板)；流程规范见 [`workflows/create-template.md`](./skills/ppt-master/workflows/create-template.md)。
+- **找我做** — 复杂品牌体系、私有化部署、集成咨询，我每季度承接少量付费项目。📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
 
 ---
 
@@ -250,6 +251,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 | 🆚 | [为什么选 PPT Master](./docs/zh/why-ppt-master.md) | 与 Gamma、Copilot 等工具的对比 |
 | 🪟 | [Windows 安装指南](./docs/zh/windows-installation.md) | Windows 用户手把手安装教程 |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | 核心流程与规则 |
+| 🎨 | [创建自定义模板](./skills/ppt-master/workflows/create-template.md) | 独立工作流，构建你自己的品牌或行业模板 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
 | 💼 | [示例](./examples/README.md) | 15 个项目，229 页 |
@@ -278,7 +280,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 - 🐛 **Bug 反馈与功能建议** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
 
-> 企业合作 / 咨询 / 定制模板请见上方 **[支持这个项目](#支持这个项目)** 板块。
+> 想自己制作模板？请见 [FAQ — 自定义模板](./docs/zh/faq.md#q-如何制作自定义模板)。企业合作 / 咨询 / 定制开发请见上方 **[支持这个项目](#支持这个项目)** 板块。
 
 ---
 

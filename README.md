@@ -97,11 +97,12 @@ If PPT Master has been helpful to you, consider chipping in. Sponsorship directl
 
 Any amount is appreciated.
 
-**Enterprise / Custom work**
+**Custom templates**
 
-Need a custom industry template, private deployment, or integration consulting? I take on a limited number of paid engagements each quarter.
+Want a template that matches your brand or industry? Two paths:
 
-📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
+- **Do it yourself** — PPT Master ships with a built-in `/create-template` workflow. Walkthrough in [FAQ — How do I create a custom template?](./docs/faq.md#q-how-do-i-create-a-custom-template); spec in [`workflows/create-template.md`](./skills/ppt-master/workflows/create-template.md).
+- **Hire me** — for complex brand systems, private deployment, or integration consulting, I take on a limited number of paid engagements each quarter. 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
 
 ---
 
@@ -246,6 +247,7 @@ Multiple backends are supported across Core / Extended / Experimental tiers. Run
 | 🆚 | [Why PPT Master](./docs/why-ppt-master.md) | How it compares to Gamma, Copilot, and other AI tools |
 | 🪟 | [Windows Installation](./docs/windows-installation.md) | Step-by-step setup guide for Windows users |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | Core workflow and rules |
+| 🎨 | [Create a Custom Template](./skills/ppt-master/workflows/create-template.md) | Standalone workflow for building your own brand or industry template |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
 | 💼 | [Examples](./examples/README.md) | 15 projects, 229 pages |
@@ -274,7 +276,7 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 - 🐛 **Bug reports & feature requests** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
 
-> For enterprise / consulting / custom-template work, see the **[Support This Project](#support-this-project)** section above.
+> Want to build your own template? See [FAQ — custom templates](./docs/faq.md#q-how-do-i-create-a-custom-template). For paid brand / consulting work, see **[Support This Project](#support-this-project)**.
 
 ---
 
