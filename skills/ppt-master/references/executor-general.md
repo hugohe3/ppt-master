@@ -36,7 +36,7 @@ The General style is not confined to fixed templates; layouts can be freely chos
 | Element | Usage | Notes |
 |---------|-------|-------|
 | Gradient blocks | Background zones, title backing | Use `<linearGradient>` / `<radialGradient>`, limit to 2-3 colors |
-| Rounded rectangle cards | Content containers, feature modules | `rx="12"` with light shadow (simulate with lighter rect) |
+| Rounded rectangle cards | Content containers, feature modules | `rx="12"`; add light shadow ONLY if the card floats over a photo/colored panel (see shared-standards.md §6) |
 | Icon accents | List item prefixes, feature markers | Use `data-icon` placeholders, size 32-48px |
 | Numbered circles | Step flows, ranked lists | `<circle>` + centered `<text>`, theme color fill |
 | Divider lines | Content separation | `<line>` or `<rect height="2">`, opacity 0.2-0.3 |

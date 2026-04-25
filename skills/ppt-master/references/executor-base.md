@@ -88,7 +88,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
   2. **Quality Check Gate** (mandatory between phases): run `python3 scripts/svg_quality_checker.py <project_path>` against `svg_output/`. Any `error` (banned SVG features, viewBox mismatch, spec_lock color / font / size drift, non-PPT-safe font stack, etc.) MUST be fixed on the offending page before entering the Logic Construction Phase — re-generate that page and re-run the check. `warning` entries should be reviewed and fixed when straightforward; otherwise acknowledge and release. Do NOT defer this check to after `finalize_svg.py` — finalize rewrites SVG and some violations get masked.
   3. **Logic Construction Phase**: After SVGs pass the quality gate, batch-generate speaker notes to ensure narrative coherence (Narrative Continuity)
 - **Technical specifications**: See [shared-standards.md](shared-standards.md) for SVG technical constraints and PPT compatibility rules
-- **Visual depth**: Use filter shadows, glow effects, gradient fills, dashed strokes, and gradient overlays from shared-standards.md to create layered depth — flat pages without elevation or emphasis look unfinished
+- **Visual depth — through restraint, not abundance**: Layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from applying shadows everywhere. Use shadow on at most 2–3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep section panels, peer-grid cards, dividers, and body-text containers flat. Reach for typography weight, spacing, accent bars, and subtle background tints **before** adding shadow. See shared-standards.md §6 for full rules including single-light-source and elevation tiers.
 
 ### SVG File Naming Convention
 
