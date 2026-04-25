@@ -173,12 +173,34 @@ The following features are **absolutely forbidden** when generating SVGs — PPT
 
 - **viewBox** must match the canvas dimensions (`width`/`height` must match `viewBox`)
 - **Background**: Use `<rect>` to define the page background color
-- **Line breaks**: Use `<tspan>` for manual line breaks; `<foreignObject>` is FORBIDDEN
+- **`<tspan>` has two purposes**: (1) manual line breaks within a `<text>` (use `dy` / explicit `y`); (2) inline run formatting on the **same** line — local color, weight, size — without splitting the line into separate text frames. `<foreignObject>` is FORBIDDEN. See "Single logical line = single `<text>`" rule below.
 - **Fonts**: Every `font-family` stack MUST end with a cross-platform pre-installed family (Microsoft YaHei / SimSun / Arial / Times New Roman / Consolas / etc.); `@font-face` is FORBIDDEN. See [`strategist.md §g — PPT-safe font discipline`](strategist.md) for the full HARD rule and seed combinations.
 - **Styles**: Use inline styles only (`fill="..."` `font-size="..."`); `<style>` / `class` are FORBIDDEN (`id` inside `<defs>` is legitimate)
 - **Colors**: Use HEX values; for transparency use `fill-opacity` / `stroke-opacity`
 - **Image references**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`
 - **Icon placeholders**: `<use data-icon="chunk/name" x="" y="" width="48" height="48" fill="#HEX"/>` (default library); or `tabler-filled/name` / `tabler-outline/name` when that library is chosen for the deck. (auto-embedded during post-processing). Always include the library prefix. **One presentation = one library — never mix libraries.**
+
+### Inline Text Runs (Single Logical Line = Single `<text>`)
+
+A logical single line of text — **even with mixed colors, weights, or sizes** — MUST be one `<text>` element containing inline `<tspan>` children, **never** multiple adjacent `<text>` elements positioned side by side. The `svg_to_pptx` converter maps each inline `<tspan>` to a run (`<a:r>`) within the same PowerPoint text frame, preserving the formatting variation while keeping the line as **one editable shape** in PPT.
+
+✅ **DO** — one `<text>` → one text frame with three runs:
+
+```xml
+<text x="100" y="200" font-size="24" fill="#333333">
+  实现<tspan fill="#1A73E8" font-weight="bold">10倍</tspan>效率提升
+</text>
+```
+
+❌ **DON'T** — three side-by-side `<text>` elements become three separate text frames in PPT (breaks edit-as-one-line, risks alignment drift, makes spacing fragile):
+
+```xml
+<text x="100" y="200" font-size="24" fill="#333333">实现</text>
+<text x="160" y="200" font-size="24" fill="#1A73E8" font-weight="bold">10倍</text>
+<text x="240" y="200" font-size="24" fill="#333333">效率提升</text>
+```
+
+**⚠️ Inline tspans must NOT carry `x` / `y` / `dx` / `dy`.** Those attributes mark the tspan as a new line, and the post-processing `flatten_tspan` step will split it into a separate text frame — defeating the purpose. Only set position attributes on tspans that genuinely start a new line.
 
 ### Element Grouping (Mandatory)
 
