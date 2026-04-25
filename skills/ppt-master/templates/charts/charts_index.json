@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 56,
+    "total": 60,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
@@ -42,7 +42,11 @@
     },
     "infographic": {
       "label": "Infographics",
-      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "comparison_table", "snake_flow", "roadmap_vertical", "word_cloud", "concentric_circles", "chevron_process", "comparison_columns", "fishbone_diagram", "hub_spoke", "vertical_list"]
+      "charts": ["pyramid_chart", "venn_diagram", "pros_cons_chart", "cycle_diagram", "numbered_steps", "icon_grid", "isometric_stairs", "mind_map", "snake_flow", "roadmap_vertical", "word_cloud", "concentric_circles", "chevron_process", "fishbone_diagram", "hub_spoke", "vertical_list"]
+    },
+    "table": {
+      "label": "Tables",
+      "charts": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns"]
     }
   },
   "quickLookup": {
@@ -63,6 +67,7 @@
     "pros_cons": ["pros_cons_chart", "butterfly_chart", "swot_analysis", "comparison_table", "comparison_columns"],
     "cause_effect": ["fishbone_diagram", "process_flow"],
     "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
+    "table": ["basic_table", "consulting_table", "project_schedule_table", "financial_statement_table", "feature_matrix_table", "comparison_table", "comparison_columns"],
     "pricing": ["comparison_columns", "comparison_table"],
     "brainstorm": ["mind_map", "word_cloud", "hub_spoke"],
     "architecture": ["layered_architecture", "module_composition", "pipeline_with_stages", "client_server_flow"]
@@ -342,6 +347,31 @@
       "label": "Client-Server Flow",
       "summary": "Left-side client modules + right-side server modules, with labeled bidirectional arrows in between showing key interactions (request / response / push). Each module card = name + 1-line description; each arrow = action label. Never draw an arrow without an action label.",
       "keywords": ["architecture", "架构图", "client server", "客户端-服务端", "request response", "API 调用", "前后端交互", "C/S architecture", "interaction diagram", "通信架构"]
+    },
+    "basic_table": {
+      "label": "Basic Data Table",
+      "summary": "Standard text and numerical data grid with alternating backgrounds or fine grid lines.",
+      "keywords": ["table", "grid", "data table", "list", "metrics"]
+    },
+    "consulting_table": {
+      "label": "Consulting Data Table",
+      "summary": "High-density data presentation with embedded visual bars, optimized for consulting reports.",
+      "keywords": ["table", "visual table", "data bar", "consulting", "financial"]
+    },
+    "project_schedule_table": {
+      "label": "Project Schedule Table",
+      "summary": "Hybrid table and Gantt chart for tracking task ownership, status, and timelines.",
+      "keywords": ["table", "schedule", "gantt", "timeline", "project management"]
+    },
+    "financial_statement_table": {
+      "label": "Financial Statement Table",
+      "summary": "Strict tabular layout with right-aligned numerical data and strong bottom totals.",
+      "keywords": ["table", "financial", "income statement", "budget", "numbers"]
+    },
+    "feature_matrix_table": {
+      "label": "Feature Matrix Table",
+      "summary": "Competitive capability checklist using checkmarks and highlighted columns.",
+      "keywords": ["table", "matrix", "feature comparison", "competitor", "checklist"]
     }
   }
 }
