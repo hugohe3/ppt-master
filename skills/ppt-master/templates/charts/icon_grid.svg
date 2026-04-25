@@ -5,7 +5,6 @@
     Scenarios: Product feature highlights, team capabilities, pricing tiers
     Supports: 2×3 Grid (Recommended 4-9 items)
     -->
-
     <defs>
         <!-- Standard Drop Shadow -->
         <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
@@ -16,16 +15,13 @@
             <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
     </defs>
-
     <!-- Background -->
     <rect width="1280" height="720" fill="#F8FAFC"/>
-
     <!-- Title -->
     <text x="640" y="65" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="32" font-weight="700" fill="#0F172A">Core Product Features</text>
     <text x="640" y="95" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="13" font-weight="600" fill="#64748B" letter-spacing="2">SIX CAPABILITIES FOR A COMPLETE SOLUTION</text>
-
     <!-- ============ Card 1: Smart Analytics (50,130) - Blue ============ -->
     <g filter="url(#cardShadow)">
         <rect x="50" y="130" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -49,7 +45,6 @@
           font-size="14" fill="#475569">engine that automatically discovers trends</text>
     <text x="80" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">and anomalies for actionable insights.</text>
-
     <!-- ============ Card 2: Real-time Collaboration (455,130) - Emerald ============ -->
     <g filter="url(#cardShadow)">
         <rect x="455" y="130" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -73,7 +68,6 @@
           font-size="14" fill="#475569">real-time synchronization, built-in</text>
     <text x="485" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">comments, and complete version history.</text>
-
     <!-- ============ Card 3: Security & Compliance (860,130) - Amber ============ -->
     <g filter="url(#cardShadow)">
         <rect x="860" y="130" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -95,7 +89,6 @@
           font-size="14" fill="#475569">access control. Fully compliant with</text>
     <text x="890" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">SOC2 and GDPR with complete audit trails.</text>
-
     <!-- ============ Card 4: Workflow Automation (50,420) - Indigo ============ -->
     <g filter="url(#cardShadow)">
         <rect x="50" y="420" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -125,7 +118,6 @@
           font-size="14" fill="#475569">no-code trigger configurations to</text>
     <text x="80" y="644" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">eliminate repetitive manual operations.</text>
-
     <!-- ============ Card 5: Open API Integration (455,420) - Rose ============ -->
     <g filter="url(#cardShadow)">
         <rect x="455" y="420" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -148,7 +140,6 @@
           font-size="14" fill="#475569">support seamless integration with</text>
     <text x="485" y="644" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">mainstream SaaS, ERP, and CRM systems.</text>
-
     <!-- ============ Card 6: Smart Reporting Center (860,420) - Sky ============ -->
     <g filter="url(#cardShadow)">
         <rect x="860" y="420" width="370" height="260" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
@@ -174,5 +165,4 @@
           font-size="14" fill="#475569">dashboards and multi-dimensional reports</text>
     <text x="890" y="644" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
           font-size="14" fill="#475569">to support executive decision-making.</text>
-
 </svg>
