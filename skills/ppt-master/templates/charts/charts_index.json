@@ -1,6 +1,6 @@
 {
   "meta": {
-    "total": 57,
+    "total": 56,
     "defaultViewBox": "0 0 1280 720",
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
@@ -38,7 +38,7 @@
     },
     "architecture": {
       "label": "System Architecture",
-      "charts": ["layered_architecture", "module_composition", "hub_with_described_spokes", "pipeline_with_stages", "client_server_flow"]
+      "charts": ["layered_architecture", "module_composition", "pipeline_with_stages", "client_server_flow"]
     },
     "infographic": {
       "label": "Infographics",
@@ -65,7 +65,7 @@
     "journey": ["snake_flow", "timeline", "roadmap_vertical", "chevron_process"],
     "pricing": ["comparison_columns", "comparison_table"],
     "brainstorm": ["mind_map", "word_cloud", "hub_spoke"],
-    "architecture": ["layered_architecture", "module_composition", "hub_with_described_spokes", "pipeline_with_stages", "client_server_flow"]
+    "architecture": ["layered_architecture", "module_composition", "pipeline_with_stages", "client_server_flow"]
   },
   "charts": {
     "area_chart": {
@@ -320,8 +320,8 @@
     },
     "hub_spoke": {
       "label": "Hub & Spoke",
-      "summary": "Central hub connected to surrounding capability nodes (1 core + 4-8 spokes)",
-      "keywords": ["hub spoke", "central", "radial", "platform", "ecosystem", "satellite"]
+      "summary": "Central hub connected to surrounding capability nodes (1 core + 4-8 spokes); each spoke card can carry title only or title + 1-2 line description",
+      "keywords": ["hub spoke", "central", "radial", "platform", "ecosystem", "satellite", "capability matrix", "核心能力", "中台", "surrounding capabilities"]
     },
     "vertical_list": {
       "label": "Vertical List",
@@ -337,11 +337,6 @@
       "label": "Module Composition",
       "summary": "One parent container wrapping 3-N child module cards; each child card carries title + 2-3 bullet descriptions. Direct fit for 'Feature X contains 3 parts, each part has its own description'. If source provides only labels without descriptions, fall back to numbered_steps or icon_grid instead.",
       "keywords": ["architecture", "架构图", "module composition", "模块组合", "子模块", "组成", "composition", "包含", "sub-modules", "父子结构", "engine components"]
-    },
-    "hub_with_described_spokes": {
-      "label": "Hub with Described Spokes",
-      "summary": "Central core module + 4-6 radiating sub-modules, each spoke card carries capability name + 1-2 line description. Use when source has both the central concept AND descriptions for each peripheral capability; if spokes have labels only, use the simpler hub_spoke template instead.",
-      "keywords": ["architecture", "架构图", "中台", "核心能力", "capability matrix", "能力矩阵", "platform architecture", "hub with descriptions", "核心引擎", "surrounding capabilities"]
     },
     "pipeline_with_stages": {
       "label": "Pipeline with Stages",
