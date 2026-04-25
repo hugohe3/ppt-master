@@ -22,7 +22,7 @@
     
     <!-- 标题 -->
     <text x="60" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="32" font-weight="bold" fill="#0F172A">
+          font-size="34" font-weight="bold" fill="#0F172A">
         <tspan>产品线营收占比</tspan>
     </text>
     
@@ -141,7 +141,7 @@
         <line x1="375" y1="240" x2="340" y2="180" stroke="#CBD5E1" stroke-width="1.5"/>
         <circle cx="375" cy="240" r="3" fill="#CBD5E1"/>
         <text x="330" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="20" font-weight="600" fill="#CBD5E1" text-anchor="end">
+              font-size="20" font-weight="600" fill="#94A3B8" text-anchor="end">
             <tspan>5%</tspan>
         </text>
     </g>
@@ -150,11 +150,15 @@
     
     <!-- 右侧详细列表 -->
     <g id="detailList">
+        <!-- 列表背景卡片 -->
+        <rect x="730" y="195" width="475" height="410" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        
         <!-- 列表标题 -->
-        <text x="750" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        <text x="750" y="225" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="22" font-weight="600" fill="#0F172A">
             <tspan>详细数据</tspan>
         </text>
+        <line x1="750" y1="238" x2="1185" y2="238" stroke="#E2E8F0" stroke-width="1"/>
         
         <g id="list-items">
         <g id="item-1">
@@ -172,7 +176,7 @@
               font-size="18" fill="#3B82F6" text-anchor="end">
             <tspan>35%</tspan>
         </text>
-        
+        <line x1="750" y1="300" x2="1185" y2="300" stroke="#F1F5F9" stroke-width="1"/>
                 </g>
         <g id="item-2">
         <!-- 项目2: 消费电子 -->
@@ -189,7 +193,7 @@
               font-size="18" fill="#10B981" text-anchor="end">
             <tspan>28%</tspan>
         </text>
-        
+        <line x1="750" y1="360" x2="1185" y2="360" stroke="#F1F5F9" stroke-width="1"/>
                 </g>
         <g id="item-3">
         <!-- 项目3: 云计算 -->
@@ -206,7 +210,7 @@
               font-size="18" fill="#F59E0B" text-anchor="end">
             <tspan>20%</tspan>
         </text>
-        
+        <line x1="750" y1="420" x2="1185" y2="420" stroke="#F1F5F9" stroke-width="1"/>
                 </g>
         <g id="item-4">
         <!-- 项目4: 物联网 -->
@@ -223,7 +227,7 @@
               font-size="18" fill="#8B5CF6" text-anchor="end">
             <tspan>12%</tspan>
         </text>
-        
+        <line x1="750" y1="480" x2="1185" y2="480" stroke="#F1F5F9" stroke-width="1"/>
                 </g>
         <g id="item-5">
         <!-- 项目5: 其他 -->
@@ -237,7 +241,7 @@
             <tspan>¥0.26亿</tspan>
         </text>
         <text x="1180" y="510" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-              font-size="18" fill="#CBD5E1" text-anchor="end">
+              font-size="18" fill="#94A3B8" text-anchor="end">
             <tspan>5%</tspan>
         </text>
         
@@ -245,7 +249,7 @@
         </g>
         
         <!-- 分隔线 -->
-        <line x1="750" y1="550" x2="1180" y2="550" stroke="#E0E0E0" stroke-width="2"/>
+        <line x1="750" y1="550" x2="1185" y2="550" stroke="#E2E8F0" stroke-width="1.5"/>
         
         <!-- 合计 -->
         <text x="775" y="580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
@@ -264,7 +268,7 @@
     
     <!-- 数据来源 -->
     <text x="60" y="695" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-          font-size="14" fill="#CBD5E1">
+          font-size="14" fill="#94A3B8">
         <tspan>数据来源: 财务部门季度报告</tspan>
     </text>
 </svg>
