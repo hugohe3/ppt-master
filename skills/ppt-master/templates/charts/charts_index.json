@@ -5,7 +5,8 @@
     "formats": ["ppt169"],
     "filePattern": "{key}.svg",
     "libraryPositioning": "Visualization template library covering charts, infographics, diagrams, and strategic frameworks. The `charts/` path is retained for backward compatibility.",
-    "updated": "2026-04-24"
+    "summaryGrammar": "Each chart's `summary` is a selection rule, not a description. Format: 'Pick for <content shape + scale>. Skip if <reason → alternative>'. Read it as a decision aid: if the source content matches the Pick clause and does not match a Skip clause, the template fits.",
+    "updated": "2026-04-25"
   },
   "categories": {
     "comparison": {
@@ -75,352 +76,352 @@
   "charts": {
     "area_chart": {
       "label": "Area Chart",
-      "summary": "Trend changes and cumulative volume (1-2 series, continuous time axis)",
+      "summary": "Pick for 1-2 cumulative trend series emphasizing volume over time. Skip for >=3 series (use stacked_area_chart) or pure direction without volume (use line_chart).",
       "keywords": ["trend", "cumulative", "area chart", "time series"]
     },
     "bar_chart": {
       "label": "Bar Chart",
-      "summary": "Category value comparison (3-8 categories, single series)",
+      "summary": "Pick for single-series category value comparison, 3-8 categories. Skip for >12 long-label items (use horizontal_bar_chart) or multi-series (use grouped_bar_chart).",
       "keywords": ["comparison", "ranking", "category", "bar chart"]
     },
     "box_plot_chart": {
       "label": "Box Plot",
-      "summary": "Data distribution, median, dispersion and outlier analysis",
+      "summary": "Pick for distribution shape per group (median, quartiles, outliers). Skip if only the average per group matters (use bar_chart).",
       "keywords": ["distribution", "statistics", "outlier", "box plot"]
     },
     "bubble_chart": {
       "label": "Bubble Chart",
-      "summary": "Three-dimensional data visualization (x, y, size)",
+      "summary": "Pick for 3-axis data (x position, y position, size). Skip for plain x-y correlation (use scatter_chart).",
       "keywords": ["correlation", "three-dimensional", "bubble chart", "competitive"]
     },
     "bullet_chart": {
       "label": "Bullet Chart",
-      "summary": "Target vs actual value comparison; compact multi-metric dashboard",
+      "summary": "Pick for 3-7 KPIs each with explicit target + actual. Skip for single metric (use gauge_chart) or items with only completion % and no target baseline (use progress_bar_chart).",
       "keywords": ["target", "actual", "performance", "bullet chart"]
     },
     "butterfly_chart": {
       "label": "Butterfly Chart",
-      "summary": "Bidirectional mirror comparison of two datasets",
+      "summary": "Pick for two mirrored datasets sharing a common axis (age pyramid, A/B, income vs expense). Skip for >2 sides (use grouped_bar_chart).",
       "keywords": ["bidirectional comparison", "butterfly chart", "mirror", "demographics"]
     },
     "donut_chart": {
       "label": "Donut Chart",
-      "summary": "Proportion and composition (3-6 parts, center KPI emphasis)",
+      "summary": "Pick for 3-6 part proportions where a center KPI/total deserves emphasis. Skip if no center value to feature (use pie_chart).",
       "keywords": ["proportion", "composition", "donut chart", "share"]
     },
     "dual_axis_line_chart": {
       "label": "Dual-Axis Line Chart",
-      "summary": "Dual Y-axis trend comparison with different units (2 metrics)",
+      "summary": "Pick when 2 metrics with different units/scales must be compared over time. Skip if both metrics share the same unit (use line_chart).",
       "keywords": ["dual axis", "line chart", "trend", "unit of measure"]
     },
     "dumbbell_chart": {
       "label": "Dumbbell Chart",
-      "summary": "Before-after or two-group value difference comparison",
+      "summary": "Pick for before-vs-after or two-state difference across 5-10 items. Skip for single snapshot (use bar_chart) or 3+ states (use grouped_bar_chart).",
       "keywords": ["difference", "before-after comparison", "dumbbell chart", "evaluation"]
     },
     "funnel_chart": {
       "label": "Funnel Chart",
-      "summary": "Stage conversion and drop-off analysis (3-5 stages)",
+      "summary": "Pick for 3-5 sequential conversion stages with monotonic drop-off. Skip if flow branches/merges (use sankey_chart) or steps don't entail loss (use process_flow).",
       "keywords": ["conversion", "funnel", "drop-off", "stage"]
     },
     "gantt_chart": {
       "label": "Gantt Chart",
-      "summary": "Project scheduling with task spans and dependencies (6-12 tasks)",
+      "summary": "Pick for project schedule with 6-12 tasks, durations, and dependencies. Skip for simple milestones without duration (use timeline) or vertical roadmap (use roadmap_vertical).",
       "keywords": ["scheduling", "Gantt chart", "project", "roadmap"]
     },
     "gauge_chart": {
       "label": "Gauge Chart",
-      "summary": "Single-metric goal achievement visualization",
+      "summary": "Pick for one hero metric's goal achievement rate. Skip for multiple metrics (use bullet_chart for target+actual or progress_bar_chart for completion %).",
       "keywords": ["achievement", "gauge", "KPI", "progress"]
     },
     "grouped_bar_chart": {
       "label": "Grouped Bar Chart",
-      "summary": "Multi-series grouped comparison (2-4 series across categories)",
+      "summary": "Pick for 2-4 series side-by-side across the same categories (e.g. YoY/QoQ). Skip if showing composition within each category (use stacked_bar_chart).",
       "keywords": ["grouped", "multi-series", "bar chart", "year-over-year"]
     },
     "heatmap_chart": {
       "label": "Heatmap",
-      "summary": "Matrix intensity and pattern recognition (two-dimensional grid)",
+      "summary": "Pick for 2D matrix where each cell is an intensity value (activity grid, correlation matrix). Skip for ranked categories (use bar_chart).",
       "keywords": ["heatmap", "matrix", "correlation", "intensity"]
     },
     "horizontal_bar_chart": {
       "label": "Horizontal Bar Chart",
-      "summary": "Long-label ranking and category comparison (5-12 items)",
+      "summary": "Pick for ranking 5-12 items, especially with long labels. Skip if <=8 short-label items (use bar_chart).",
       "keywords": ["ranking", "horizontal bar chart", "long label", "comparison"]
     },
     "kpi_cards": {
       "label": "KPI Cards",
-      "summary": "Key numeric metrics overview (2×2 or 1×4 card layout)",
+      "summary": "Pick for 4-8 standalone numeric metrics shown as overview cards (2x2 or 1x4). Skip if metrics have target baselines (use bullet_chart) or single hero number (use gauge_chart).",
       "keywords": ["KPI", "metric card", "overview", "dashboard"]
     },
     "line_chart": {
       "label": "Line Chart",
-      "summary": "Time trend visualization (1-3 series, continuous axis)",
+      "summary": "Pick for 1-3 time-series on a continuous axis showing direction. Skip if cumulative volume matters (use area_chart) or different units (use dual_axis_line_chart).",
       "keywords": ["trend", "line chart", "growth", "time series"]
     },
     "matrix_2x2": {
       "label": "Action Priority Matrix",
-      "summary": "4-quadrant bubble matrix mapping Business Impact vs Implementation Effort.",
+      "summary": "Pick for items plotted on Impact x Effort or similar generic 2-axis prioritization. Skip for named-quadrant strategic frameworks (use bcg_matrix or swot_analysis).",
       "keywords": ["matrix", "quadrant", "priority", "effort", "impact", "features"]
     },
     "org_chart": {
       "label": "Organization Chart",
-      "summary": "Organizational hierarchy and reporting relationships (2-4 levels)",
+      "summary": "Pick for organizational hierarchy 2-4 levels deep with reporting lines. Skip for goal hierarchy (use okr_tree) or non-hierarchical team showcase (use team_roster).",
       "keywords": ["organization", "org chart", "hierarchy", "reporting relationship"]
     },
     "pareto_chart": {
       "label": "Pareto Chart",
-      "summary": "80/20 contribution analysis with cumulative bar-line combination",
+      "summary": "Pick to show 80/20 contribution: descending bars + cumulative line. Skip if cumulative line is not the message (use bar_chart).",
       "keywords": ["Pareto", "80/20", "cumulative contribution", "priority"]
     },
     "pie_chart": {
       "label": "Pie Chart",
-      "summary": "Basic proportion and composition (3-6 parts)",
+      "summary": "Pick for simple 3-6 part proportions of one whole. Skip for >=7 parts (use donut_chart or treemap_chart) or hierarchical composition (use treemap_chart).",
       "keywords": ["proportion", "pie chart", "composition", "share"]
     },
     "porter_five_forces": {
       "label": "Porter's Five Forces",
-      "summary": "Industry competitive structure strategic framework",
+      "summary": "Pick for industry-internal competitive structure (5 forces around central rivalry). Skip for macro environment (use pest_analysis).",
       "keywords": ["strategy", "five forces", "industry analysis", "competition"]
     },
     "process_flow": {
       "label": "Process Flow",
-      "summary": "Sequential process steps, connector arrows, and stage relationships (3-8 steps)",
+      "summary": "Pick for 3-8 sequential steps connected by simple arrows. Skip if cyclical (use cycle_diagram) or stages produce named outputs (use pipeline_with_stages).",
       "keywords": ["process", "steps", "flowchart", "methodology", "connector arrow", "line arrow", "marker arrow"]
     },
     "progress_bar_chart": {
       "label": "Progress Bar Chart",
-      "summary": "Multi-item completion rate and progress comparison",
+      "summary": "Pick for 3-8 items each with a completion %. Skip if items have explicit target+actual values (use bullet_chart).",
       "keywords": ["progress", "completion rate", "progress bar", "OKR"]
     },
     "radar_chart": {
       "label": "Radar Chart",
-      "summary": "Multi-dimensional capability assessment (4-8 dimensions)",
+      "summary": "Pick for 4-8 capability dimensions scored across 1-3 entities. Skip for >3 entities (becomes unreadable; use grouped_bar_chart) or <4 dimensions.",
       "keywords": ["radar chart", "multi-dimensional assessment", "capability", "competitive"]
     },
     "sankey_chart": {
       "label": "Sankey Diagram",
-      "summary": "Flow direction and resource allocation visualization (3-level)",
+      "summary": "Pick for 3-stage flow with magnitude (sources -> nodes -> sinks). Skip for simple linear conversion without splits (use funnel_chart).",
       "keywords": ["flow direction", "Sankey diagram", "conversion path", "resource allocation"]
     },
     "scatter_chart": {
       "label": "Scatter Plot",
-      "summary": "X/Y correlation, cluster and outlier analysis",
+      "summary": "Pick for x-y correlation, cluster, or outlier scan. Skip if a size dimension also matters (use bubble_chart).",
       "keywords": ["scatter plot", "correlation", "distribution", "outlier"]
     },
     "stacked_area_chart": {
       "label": "Stacked Area Chart",
-      "summary": "Multi-series stacked trend showing total and composition (2-4 series)",
+      "summary": "Pick for 2-4 series showing both total and composition over time. Skip if individual series matter more than total (use line_chart).",
       "keywords": ["stacked", "area chart", "trend", "composition change"]
     },
     "stacked_bar_chart": {
       "label": "Stacked Bar Chart",
-      "summary": "Composition and total side-by-side (2-4 composition parts per bar)",
+      "summary": "Pick when each category splits into 2-4 internal parts and total still matters. Skip if only comparing totals (use bar_chart).",
       "keywords": ["stacked bar chart", "composition", "contribution", "total"]
     },
     "swot_analysis": {
       "label": "SWOT Analysis",
-      "summary": "Strengths, weaknesses, opportunities and threats four-quadrant framework",
+      "summary": "Pick for SWOT four-quadrant strategic analysis (Strengths/Weaknesses/Opportunities/Threats). Skip for generic 2-axis prioritization (use matrix_2x2).",
       "keywords": ["SWOT", "strategy", "strengths and weaknesses", "opportunities and threats"]
     },
     "timeline": {
       "label": "Timeline",
-      "summary": "Milestones and historical evolution (3-8 key nodes)",
+      "summary": "Pick for 3-8 milestone events on a horizontal time axis (no duration). Skip for tasks with start/end ranges (use gantt_chart) or vertical layout (use roadmap_vertical).",
       "keywords": ["timeline", "milestone", "history", "evolution"]
     },
     "treemap_chart": {
       "label": "Treemap",
-      "summary": "Hierarchical area proportion display with grouping",
+      "summary": "Pick for hierarchical/grouped area proportion with many parts of varying size. Skip for flat 3-6 parts (use pie_chart or donut_chart).",
       "keywords": ["treemap", "area proportion", "hierarchy", "composition"]
     },
     "waterfall_chart": {
       "label": "Waterfall Chart",
-      "summary": "Incremental change decomposition showing positive/negative contributions",
+      "summary": "Pick for stepwise additive/subtractive breakdown bridging a starting value to an ending value. Skip if no running total (use bar_chart).",
       "keywords": ["waterfall chart", "change breakdown", "contribution", "bridge analysis"]
     },
     "pyramid_chart": {
       "label": "Pyramid Chart",
-      "summary": "Hierarchical structure and value layer progression (3-6 layers)",
+      "summary": "Pick for 3-6 stratified hierarchy layers (e.g. Maslow, maturity model). Skip for flat priority list (use vertical_list) or org reporting (use org_chart).",
       "keywords": ["pyramid", "hierarchy", "layers", "maturity model", "Maslow"]
     },
     "venn_diagram": {
       "label": "Venn Diagram",
-      "summary": "Set relationships and intersection analysis (2-3 overlapping domains)",
+      "summary": "Pick for 2-3 overlapping sets where the intersection is the message. Skip if no overlap exists (use icon_grid).",
       "keywords": ["Venn", "intersection", "overlap", "relationship", "synergy"]
     },
     "pros_cons_chart": {
       "label": "Pros & Cons Chart",
-      "summary": "Bilateral advantage vs disadvantage comparison (2-5 items per side)",
+      "summary": "Pick for bilateral pros/cons list, 2-5 items per side. Skip for full feature comparison (use comparison_table) or numeric A/B mirror data (use butterfly_chart).",
       "keywords": ["pros cons", "advantages", "disadvantages", "comparison", "evaluation"]
     },
     "cycle_diagram": {
       "label": "Cycle Diagram",
-      "summary": "Circular repeating process and closed-loop flow (4-6 stages)",
+      "summary": "Pick for 4-6 stage closed loop with no clear start/end (e.g. PDCA). Skip for self-reinforcing growth loop (use flywheel_diagram) or linear flow (use process_flow).",
       "keywords": ["cycle", "loop", "PDCA", "iteration", "circular process"]
     },
     "numbered_steps": {
       "label": "Numbered Steps",
-      "summary": "Horizontal sequential step-by-step process flow (3-6 steps)",
+      "summary": "Pick for 3-6 horizontal sequential steps with numeric emphasis. Skip if steps need connector arrows (use process_flow) or named output artifacts (use pipeline_with_stages).",
       "keywords": ["steps", "numbered", "sequential", "methodology", "implementation path"]
     },
     "icon_grid": {
       "label": "Icon Grid",
-      "summary": "Feature cards in grid layout with icons (4-9 items)",
+      "summary": "Pick for 4-9 parallel features/capabilities as icon cards. Skip for sequential ordering (use numbered_steps) or hierarchical layers (use pyramid_chart).",
       "keywords": ["grid", "cards", "features", "capabilities", "icon list"]
     },
     "isometric_stairs": {
       "label": "Isometric Stairs",
-      "summary": "3D staircase progression and maturity visualization (4-7 stages)",
+      "summary": "Pick for 4-7 ascending stages emphasizing growth/maturity progression visually. Skip for flat sequential steps (use numbered_steps) or formal hierarchy (use pyramid_chart).",
       "keywords": ["isometric", "3D stairs", "progression", "maturity", "growth stages"]
     },
     "mind_map": {
       "label": "Mind Map",
-      "summary": "Center-radiating topic decomposition (1 core + 3-6 branches)",
+      "summary": "Pick for one core topic radiating into 3-6 brainstorm branches. Skip for capability hub-and-spoke (use hub_spoke) or strict hierarchy (use okr_tree or org_chart).",
       "keywords": ["mind map", "brainstorm", "knowledge structure", "topic decomposition", "radial"]
     },
     "comparison_table": {
       "label": "Comparison Table",
-      "summary": "Multi-dimensional feature comparison matrix (2-4 plans/products)",
+      "summary": "Pick for 2-4 plans/products compared across many feature rows (dense matrix). Skip for pricing-tier marketing layout (use comparison_columns).",
       "keywords": ["comparison matrix", "feature comparison", "evaluation", "product selection", "scoring"]
     },
     "snake_flow": {
       "label": "Snake Flow",
-      "summary": "S-shaped winding multi-step process (6-10 steps, journey/lifecycle)",
+      "summary": "Pick for 6-10 winding sequential steps fitting a long journey/lifecycle on one slide. Skip for <=5 steps (use numbered_steps).",
       "keywords": ["snake", "S-flow", "journey", "lifecycle", "winding process"]
     },
     "roadmap_vertical": {
       "label": "Vertical Roadmap",
-      "summary": "Vertical timeline with milestones and status tracking (4-8 nodes)",
+      "summary": "Pick for 4-8 milestones on a vertical timeline with status indicators. Skip for horizontal time emphasis (use timeline) or tasks with durations (use gantt_chart).",
       "keywords": ["roadmap", "vertical timeline", "milestones", "annual plan", "progress tracking"]
     },
     "word_cloud": {
       "label": "Word Cloud",
-      "summary": "Keyword weight and frequency visualization (20-30 keywords)",
+      "summary": "Pick for 20-30 keywords sized by frequency/weight. Skip if individual keyword position carries meaning (use icon_grid).",
       "keywords": ["word cloud", "keywords", "tag cloud", "hot topics", "frequency"]
     },
     "concentric_circles": {
       "label": "Concentric Circles",
-      "summary": "Layered priority rings from core to periphery (3-5 layers)",
+      "summary": "Pick for 3-5 priority rings from core to periphery (bullseye/onion model). Skip for non-prioritized layers (use pyramid_chart).",
       "keywords": ["concentric", "bullseye", "target", "priority layers", "onion diagram"]
     },
     "chevron_process": {
       "label": "Chevron Process",
-      "summary": "Arrow-chain linear phase progression with chunky stage arrows and deliverables (3-6 phases)",
+      "summary": "Pick for 3-6 phase methodology with chunky arrow-chain progression and deliverables per phase. Skip for <=2 phases or non-linear flow (use process_flow).",
       "keywords": ["chevron", "arrow chain", "block arrow", "chunky arrow", "solid arrow", "phase", "methodology", "implementation"]
     },
     "comparison_columns": {
       "label": "Comparison Columns",
-      "summary": "Multi-column pricing or service tier comparison (2-4 tiers)",
+      "summary": "Pick for 2-4 pricing/service tier cards in side-by-side columns (marketing layout). Skip for dense feature comparison (use comparison_table).",
       "keywords": ["pricing", "columns", "service tiers", "membership", "subscription"]
     },
     "fishbone_diagram": {
       "label": "Fishbone Diagram",
-      "summary": "Cause-and-effect root cause analysis / Ishikawa (4-6 branches)",
+      "summary": "Pick for cause-and-effect root cause analysis with 4-6 cause branches (Ishikawa, 6M). Skip for sequential flow (use process_flow).",
       "keywords": ["fishbone", "Ishikawa", "cause effect", "root cause", "6M analysis"]
     },
     "hub_spoke": {
       "label": "Hub & Spoke",
-      "summary": "Central hub connected to surrounding capability nodes (1 core + 4-8 spokes); each spoke card can carry title only or title + 1-2 line description",
+      "summary": "Pick for 1 core capability + 4-8 surrounding capabilities (platform/ecosystem). Each spoke card carries title only or title + 1-2 line description. Skip if center is a system containing parts with their own descriptions (use module_composition).",
       "keywords": ["hub spoke", "central", "radial", "semi-circle", "platform", "ecosystem", "satellite", "capability matrix", "service architecture", "核心能力", "中台", "surrounding capabilities"]
     },
     "vertical_list": {
       "label": "Vertical List",
-      "summary": "Numbered vertical list with detail cards (3-6 key points/advantages)",
+      "summary": "Pick for 3-6 numbered key points each with a short description. Skip for icon-style cards (use icon_grid) or sequential steps (use numbered_steps).",
       "keywords": ["vertical list", "numbered list", "advantages", "features", "key points", "strengths"]
     },
     "layered_architecture": {
       "label": "Layered Architecture",
-      "summary": "Technical/system architecture in 3-4 horizontal layers (e.g. presentation / service / data), each layer holding 2-4 module cards. Each module card carries BOTH a title AND a 1-line capability description — do not omit the description even when source text is brief.",
+      "summary": "Pick for 3-4 horizontal architecture layers (e.g. presentation/service/data), 2-4 module cards per layer. Each module card MUST carry title + 1-line capability description — do not omit description even when source is brief. Skip if no per-module descriptions are available (use icon_grid) or no horizontal layering (use module_composition).",
       "keywords": ["architecture", "架构图", "系统架构", "分层架构", "layered", "tech stack", "分层", "模块", "technical architecture", "system design"]
     },
     "module_composition": {
       "label": "Module Composition",
-      "summary": "One parent container wrapping 3-N child module cards; each child card carries title + 2-3 bullet descriptions. Direct fit for 'Feature X contains 3 parts, each part has its own description'. If source provides only labels without descriptions, fall back to numbered_steps or icon_grid instead.",
+      "summary": "Pick for one parent container wrapping 3-N child module cards; each child = title + 2-3 bullet descriptions. Direct fit for 'Feature X contains 3 parts, each part has its own description'. Skip if source provides only labels without descriptions (use numbered_steps or icon_grid).",
       "keywords": ["architecture", "架构图", "module composition", "模块组合", "子模块", "组成", "composition", "包含", "sub-modules", "父子结构", "engine components"]
     },
     "pipeline_with_stages": {
       "label": "Pipeline with Stages",
-      "summary": "Horizontal 3-5 stage pipeline where each stage carries title + 1-line description + output artifact, connected by directional arrows. For data pipelines / ETL / build pipelines where each stage consumes the previous stage's output. Each stage must have title, description, and artifact — omitting any field means falling back to process_flow or numbered_steps.",
+      "summary": "Pick for 3-5 stage horizontal pipeline where each stage = title + 1-line description + output artifact, connected by directional arrows. For data pipelines / ETL / build pipelines where each stage consumes the previous stage's output. Skip if any stage lacks an artifact (use process_flow or numbered_steps).",
       "keywords": ["architecture", "架构图", "pipeline", "管道", "ETL", "数据处理流水线", "data pipeline", "build pipeline", "stages with output", "流水线", "处理流程"]
     },
     "client_server_flow": {
       "label": "Client-Server Flow",
-      "summary": "Left-side client modules + right-side server modules, with labeled bidirectional arrows in between showing key interactions (request / response / push). Each module card = name + 1-line description; each arrow = action label. Never draw an arrow without an action label.",
+      "summary": "Pick for left-side client modules + right-side server modules with labeled bidirectional arrows showing key interactions (request/response/push). Each module = name + 1-line description; each arrow MUST have an action label. Skip for non-distributed flows (use process_flow).",
       "keywords": ["architecture", "架构图", "client server", "客户端-服务端", "request response", "API 调用", "前后端交互", "C/S architecture", "interaction diagram", "通信架构"]
     },
     "basic_table": {
       "label": "Basic Data Table",
-      "summary": "Standard text and numerical data grid with alternating backgrounds or fine grid lines.",
+      "summary": "Pick for plain tabular text/number grid, 3-8 columns. Skip if cells need visual bars (use consulting_table) or qualitative scores (use harvey_balls_table).",
       "keywords": ["table", "grid", "data table", "list", "metrics"]
     },
     "consulting_table": {
       "label": "Consulting Data Table",
-      "summary": "High-density data presentation with embedded visual bars, optimized for consulting reports.",
+      "summary": "Pick for high-density tables with embedded micro bar visuals (consulting/financial reports). Skip for plain text data (use basic_table).",
       "keywords": ["table", "visual table", "data bar", "consulting", "financial"]
     },
     "project_schedule_table": {
       "label": "Project Schedule Table",
-      "summary": "Hybrid table and Gantt chart for tracking task ownership, status, and timelines.",
+      "summary": "Pick for table-style task tracker (task / owner / status / timeline). Skip for true Gantt with dependencies (use gantt_chart) or schedule without ownership (use roadmap_vertical).",
       "keywords": ["table", "schedule", "gantt", "timeline", "project management"]
     },
     "financial_statement_table": {
       "label": "Financial Statement Table",
-      "summary": "Strict tabular layout with right-aligned numerical data and strong bottom totals.",
+      "summary": "Pick for income statement / balance sheet style with right-aligned numbers and strong total rows. Skip for non-financial tabular data (use basic_table).",
       "keywords": ["table", "financial", "income statement", "budget", "numbers"]
     },
     "feature_matrix_table": {
       "label": "Feature Matrix Table",
-      "summary": "Competitive capability checklist using checkmarks and highlighted columns.",
+      "summary": "Pick for competitive feature checklist with checkmarks across products. Skip for qualitative scores (use harvey_balls_table) or pricing tier marketing (use comparison_columns).",
       "keywords": ["table", "matrix", "feature comparison", "competitor", "checklist"]
     },
     "harvey_balls_table": {
       "label": "Harvey Balls Matrix",
-      "summary": "Qualitative assessment grid replacing text/checkmarks with Harvey balls (0-100% completion circles).",
+      "summary": "Pick for qualitative scoring grid using 0-100% Harvey balls (vendor/skill assessment). Skip for binary checkmarks (use feature_matrix_table) or numeric values (use basic_table).",
       "keywords": ["table", "matrix", "harvey balls", "qualitative", "scoring", "evaluation"]
     },
     "team_roster": {
       "label": "Team Roster",
-      "summary": "Executive/leadership profile cards displaying photo, name, title, and short bio.",
+      "summary": "Pick for 3-12 leadership/team profile cards (photo + name + title + short bio). Skip for reporting hierarchy (use org_chart).",
       "keywords": ["team", "roster", "profile", "bio", "leadership", "cards"]
     },
     "pest_analysis": {
       "label": "PEST Analysis",
-      "summary": "Macro-environmental framework analyzing Political, Economic, Social, and Technological factors.",
+      "summary": "Pick for macro-environment scan: Political / Economic / Social / Technological. Skip for industry-internal forces (use porter_five_forces).",
       "keywords": ["strategy", "pest", "pestle", "macro", "environmental", "framework"]
     },
     "value_chain": {
       "label": "Value Chain",
-      "summary": "Michael Porter's framework mapping primary and support activities to profit margin.",
+      "summary": "Pick for Porter's primary + support activities mapped to margin. Skip for sequential workflow (use process_flow) or pipeline with artifacts (use pipeline_with_stages).",
       "keywords": ["strategy", "value chain", "operations", "margin", "competitive advantage"]
     },
     "journey_map": {
       "label": "Customer Journey Map",
-      "summary": "Multi-phase UX matrix tracking user actions, emotional curves, and pain points.",
+      "summary": "Pick for multi-phase customer experience matrix with actions, emotion curve, and pain points per phase. Skip for simple linear funnel (use funnel_chart).",
       "keywords": ["journey", "ux", "customer", "experience", "marketing", "funnel"]
     },
     "agenda_list": {
       "label": "Agenda List",
-      "summary": "Clean, large-number structural list for table of contents, meeting agendas, and section dividers.",
+      "summary": "Pick for table of contents, meeting agendas, or section dividers (large numbers, sparse content). Skip for substantive content lists (use vertical_list).",
       "keywords": ["agenda", "table of contents", "toc", "divider", "list", "meeting"]
     },
     "bcg_matrix": {
       "label": "BCG Matrix",
-      "summary": "Classic Growth-Share Matrix (Stars, Cash Cows, Question Marks, Dogs).",
+      "summary": "Pick for product portfolio in Growth x Share named quadrants (Stars / Cash Cows / Question Marks / Dogs). Skip for generic 2-axis prioritization (use matrix_2x2).",
       "keywords": ["strategy", "bcg matrix", "portfolio", "growth-share", "product lifecycle"]
     },
     "ansoff_matrix": {
       "label": "Ansoff Matrix",
-      "summary": "Growth strategy framework mapping Existing/New Markets vs Existing/New Products.",
+      "summary": "Pick for growth strategy: Existing/New Markets x Existing/New Products. Skip for portfolio analysis (use bcg_matrix).",
       "keywords": ["strategy", "ansoff", "growth", "expansion", "market development"]
     },
     "flywheel_diagram": {
       "label": "Flywheel Diagram",
-      "summary": "Circular self-reinforcing momentum cycle (e.g., Attract, Engage, Delight).",
+      "summary": "Pick for circular self-reinforcing growth loop where each stage compounds the next (e.g. Attract -> Engage -> Delight). Skip for non-compounding closed loop (use cycle_diagram).",
       "keywords": ["process", "flywheel", "cycle", "growth loop", "momentum"]
     },
     "okr_tree": {
       "label": "OKR Goal Tree",
-      "summary": "Top-down hierarchical tree connecting Objectives to Key Results and Initiatives.",
+      "summary": "Pick for top-down hierarchical tree connecting Objective -> Key Results -> Initiatives. Skip for organizational reporting (use org_chart).",
       "keywords": ["okr", "goals", "hierarchy", "tree", "planning", "alignment"]
     }
   }
