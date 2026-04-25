@@ -200,7 +200,26 @@ A logical single line of text — **even with mixed colors, weights, or sizes** 
 <text x="240" y="200" font-size="24" fill="#333333">效率提升</text>
 ```
 
-**⚠️ Inline tspans must NOT carry `x` / `y` / `dx` / `dy`.** Those attributes mark the tspan as a new line, and the post-processing `flatten_tspan` step will split it into a separate text frame — defeating the purpose. Only set position attributes on tspans that genuinely start a new line.
+**⚠️ Inline tspans must NOT carry `x` / `y` / `dy`.** Any of those marks the tspan as a new line, and the post-processing `flatten_tspan` step will split it into a separate text frame — defeating the purpose. `dx` is safe (used for kerning/spacing nudges and stays inline). Only set `x` / `y` / `dy` on tspans that genuinely start a new line.
+
+**Multi-line `<text>` with per-line inline emphasis is supported.** An outer line-break tspan (carrying `x` + `dy` or `y`) MAY contain nested inline tspans for color/weight/size — `flatten_tspan` and the converter both walk nested tspans and emit one run per styled segment:
+
+```xml
+<text x="80" y="190" font-size="18" fill="#333333">
+  <tspan x="80" dy="0">完成率<tspan fill="#4CAF50" font-weight="bold">98%</tspan>超预期</tspan>
+  <tspan x="80" dy="35">成本降低<tspan fill="#F44336" font-weight="bold">¥120万</tspan></tspan>
+</text>
+```
+
+❌ **DON'T** — same-line column jump via `<tspan x="...">`:
+
+```xml
+<text x="100" y="200" font-size="18" fill="#333333">
+  <tspan x="100">左列</tspan><tspan x="600" font-weight="bold">右列</tspan>
+</text>
+```
+
+Any `x` on a tspan starts a new line in `flatten_tspan`'s eyes, so the two columns become two independent `<text>` frames in PPT — fragile to edit as one row. For two-column layouts, write two `<text>` elements (or a real two-column structure) instead.
 
 ### Element Grouping (Mandatory)
 
