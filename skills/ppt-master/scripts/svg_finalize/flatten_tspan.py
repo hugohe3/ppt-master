@@ -292,6 +292,31 @@ def flatten_text_with_tspans(tree: ET.ElementTree) -> bool:
     return changed
 
 
+def _has_tspan_children(elem: ET.Element) -> bool:
+    """Return True if elem contains any nested <tspan> children (inline runs)."""
+    return any(c.tag == f"{{{SVG_NS}}}tspan" for c in list(elem))
+
+
+def _copy_inline_tspan(src: ET.Element, strip_line_attrs: bool) -> ET.Element:
+    """Deep-copy a tspan as an inline run, preserving nested tspan structure, head text, and tail text.
+
+    When strip_line_attrs is True, x/y/dy on the copied tspan are dropped because the
+    enclosing <text> now positions the line. dx is preserved (safe inline kerning).
+    Nested tspans are copied recursively without stripping (they are already inline-only).
+    """
+    new = ET.Element(f"{{{SVG_NS}}}tspan")
+    for k, v in src.attrib.items():
+        if strip_line_attrs and k in ("x", "y", "dy"):
+            continue
+        new.set(k, v)
+    new.text = src.text
+    for child in list(src):
+        if child.tag == f"{{{SVG_NS}}}tspan":
+            new.append(_copy_inline_tspan(child, strip_line_attrs=False))
+    new.tail = src.tail
+    return new
+
+
 def _create_text_element_from_line(
     text_el: ET.Element,
     lead_text: str | None,
@@ -301,71 +326,54 @@ def _create_text_element_from_line(
 ) -> ET.Element:
     """
     Create a text element from a line's content (may contain leading text and multiple tspans).
-    If there is only one tspan and no leading text, create a simple text element.
-    If there are multiple tspans or leading text, preserve the tspan structure.
+    If there is only one tspan with no nested tspan children and no leading text, the line
+    collapses to a plain <text>...</text>. Otherwise the tspan structure (including any
+    nested inline tspans) is preserved so per-run formatting survives the flatten step.
     """
     ne = ET.Element(f"{{{SVG_NS}}}text")
-    
+
     # Copy attrs from parent <text>
     copy_text_attrs(text_el, ne, exclude={"x", "y"})
     ne.set("x", format_number(x))
     ne.set("y", format_number(y))
-    
+
     # Transform
     p_tf = text_el.get("transform")
     if p_tf:
         ne.set("transform", p_tf)
-    
-    # If there is only one tspan and no leading text, create a simple text element
-    if not lead_text and len(tspans) == 1:
+
+    # Compact path: a single tspan with no nested inline runs collapses to <text>text</text>
+    if not lead_text and len(tspans) == 1 and not _has_tspan_children(tspans[0]):
         tspan = tspans[0]
         content = collect_text_content(tspan)
-        
+
         # Merge style
         merged_style = merge_styles(text_el.get("style"), tspan.get("style"))
         if merged_style:
             ne.set("style", merged_style)
-        
+
         # Override specific attributes from tspan
         for attr in TEXT_STYLE_ATTRS:
             cv = tspan.get(attr)
             if cv is not None:
                 ne.set(attr, cv)
-        
+
         # Combine transform
         c_tf = tspan.get("transform")
         if p_tf and c_tf:
             ne.set("transform", f"{p_tf} {c_tf}")
         elif c_tf:
             ne.set("transform", c_tf)
-        
+
         ne.text = content
     else:
-        # Preserve tspan structure
+        # Preserve tspan structure, including nested inline tspans and tail text
         if lead_text:
             ne.text = lead_text
-        
+
         for tspan in tspans:
-            # Create a new tspan, but remove position-related attributes
-            new_tspan = ET.SubElement(ne, f"{{{SVG_NS}}}tspan")
-            
-            # Copy style attributes
-            for attr in TEXT_STYLE_ATTRS:
-                cv = tspan.get(attr)
-                if cv is not None:
-                    new_tspan.set(attr, cv)
-            
-            # Copy style
-            if tspan.get("style"):
-                new_tspan.set("style", tspan.get("style"))
-            
-            # Copy text content
-            new_tspan.text = collect_text_content(tspan)
-            
-            # Copy tail (text following the tspan)
-            if tspan.tail:
-                new_tspan.tail = tspan.tail
-    
+            ne.append(_copy_inline_tspan(tspan, strip_line_attrs=True))
+
     return ne
 
 
