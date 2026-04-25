@@ -827,13 +827,33 @@ def convert_text(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         except ValueError:
             pass
 
-    # Text rotation
+    # Text rotation. SVG's rotate(angle [cx cy]) rotates around (cx, cy), but
+    # DrawingML's <a:xfrm rot="..."> rotates the shape around its own center.
+    # When a pivot is given (and differs from the box center), translate the
+    # box so its center lands where SVG would place the rotated visual center —
+    # otherwise rotated y-axis labels etc. drift to the wrong location.
     text_rot = 0
     text_transform = elem.get('transform', '')
     if text_transform:
-        rot_match = re.search(r'rotate\(\s*([-\d.]+)', text_transform)
+        rot_match = re.search(
+            r'rotate\(\s*([-\d.]+)(?:[\s,]+([-\d.]+)[\s,]+([-\d.]+))?',
+            text_transform,
+        )
         if rot_match:
-            text_rot = int(float(rot_match.group(1)) * ANGLE_UNIT)
+            angle_deg = float(rot_match.group(1))
+            text_rot = int(angle_deg * ANGLE_UNIT)
+            if rot_match.group(2) is not None:
+                pivot_x = ctx_x(float(rot_match.group(2)), ctx)
+                pivot_y = ctx_y(float(rot_match.group(3)), ctx)
+                cx_box = box_x + box_w / 2
+                cy_box = box_y + box_h / 2
+                rad = math.radians(angle_deg)
+                dx = cx_box - pivot_x
+                dy = cy_box - pivot_y
+                new_cx = pivot_x + dx * math.cos(rad) - dy * math.sin(rad)
+                new_cy = pivot_y + dx * math.sin(rad) + dy * math.cos(rad)
+                box_x = new_cx - box_w / 2
+                box_y = new_cy - box_h / 2
 
     # Alignment
     algn_map = {'start': 'l', 'middle': 'ctr', 'end': 'r'}
