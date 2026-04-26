@@ -50,7 +50,7 @@ PPT Master 不一样：
 - **数据不出本地** — 你的文件不应该为了做一份 PPT 就被上传到别人的服务器。除与 AI 模型的对话外，全流程在你的电脑上完成
 - **不锁定平台** — 你的工作流不应该被任何一家公司绑架。Claude Code、Cursor、VS Code Copilot 等均可驱动；Claude、GPT、Gemini、Kimi 等模型均可使用
 
-**[在线预览 →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 15 个项目，229 页
+**[在线预览 →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 个项目，309 页
 
 ## 效果展示
 
@@ -258,7 +258,7 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 | 🎨 | [创建自定义模板](./skills/ppt-master/workflows/create-template.md) | 独立工作流，构建你自己的品牌或行业模板 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
-| 💼 | [示例](./examples/README.md) | 15 个项目，229 页 |
+| 💼 | [示例](./examples/README.md) | 22 个项目，309 页 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |
 | ❓ | [常见问题](./docs/zh/faq.md) | 模型选择、费用、排版问题排查、自定义模板 |
 
