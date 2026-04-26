@@ -103,7 +103,7 @@ File naming format: `<number>_<page_name>.svg`
 
 ## 4. Icon Usage
 
-Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 6700+ icons, recommended) | **D: Custom** (user-specified)
+Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 8000+ icons, recommended) | **D: Custom** (user-specified)
 
 **Built-in icons — Placeholder method (recommended)**:
 
@@ -117,6 +117,9 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 <!-- tabler-outline (light, line-art style — screen-only decks) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587"/>
 
+<!-- phosphor-duotone (single color + 20% backplate — soft depth without solid weight) -->
+<use data-icon="phosphor-duotone/house" x="100" y="200" width="48" height="48" fill="#005587"/>
+
 <!-- tabler-outline with thin / bold stroke (stroke-style libraries only) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="1.5"/>
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="3"/>
@@ -126,13 +129,14 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 >
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
-**Three icon libraries**:
+**Four icon libraries**:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
 | `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | ✅ **Default** — most scenarios |
 | `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | When design calls for smooth, rounded, organic icon forms |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
+| `phosphor-duotone` | duotone · single color + 0.2-opacity backplate | 1200+ | `phosphor-duotone/` | Modern SaaS / fintech / product launches — soft depth without solid weight |
 
 > ⚠️ **One presentation = one library.** Never mix icons from different libraries. If the chosen library lacks an exact icon, find the closest available alternative **within that same library** — do not cross into another library to fill the gap.
 
@@ -141,6 +145,7 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 ls skills/ppt-master/templates/icons/chunk/ | grep home
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
+ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
 ```
 
 **Abstract concept → icon name** (names for `chunk`; tabler libraries use their own equivalents — verify with `ls | grep`):
