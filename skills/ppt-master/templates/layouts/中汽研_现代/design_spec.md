@@ -56,8 +56,8 @@
 
 ### Font Stack
 
-**Primary Font Stack**: `"Roboto", "Helvetica Neue", "Microsoft YaHei", "PingFang SC", sans-serif`
-*English and numbers are recommended to use Roboto or Arial for a tech geometric feel.*
+**Primary Font Stack**: `Arial, "Microsoft YaHei", sans-serif`
+*Use Arial for English and numbers by default. Roboto or DIN may be used only when the font is explicitly installed or embedded for the target environment.*
 
 ### Font Size Hierarchy
 
@@ -166,5 +166,5 @@
 ## XI. Usage Notes (Recommended)
 
 1. **Light & Shadow Effects**: All light and shadow effects are achieved via SVG gradients, with no dependency on external images.
-2. **Fonts**: For optimal tech aesthetics, numbers are recommended to use **Roboto** or **DIN** fonts.
+2. **Fonts**: Use Arial for numbers by default. Roboto or DIN may be used only with an explicit font-install or font-embedding requirement.
 3. **Backgrounds**: Dark backgrounds look excellent on projectors, but ensure the ambient lighting is as dim as possible.

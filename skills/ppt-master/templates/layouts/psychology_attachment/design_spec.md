@@ -91,9 +91,9 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ### Font Stack
 
-**Chinese Font Stack**: `"PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif`
+**Chinese Font Stack**: `"Microsoft YaHei", "PingFang SC", sans-serif`
 
-**English Font Stack**: `system-ui, -apple-system, sans-serif`
+**English Font Stack**: `Arial, sans-serif`
 
 ### Font Size Hierarchy
 
@@ -301,24 +301,26 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 ## IX. Icon Usage
 
+Use `tabler-outline` as the stylistic icon library for this template. It matches the professional, warm, low-noise psychology tone and avoids heavy filled symbols.
+
 ### Placeholder Format
 
 ```xml
-<use data-icon="icon-name" x="X" y="Y" width="32" height="32" fill="COLOR"/>
+<use data-icon="tabler-outline/icon-name" x="X" y="Y" width="32" height="32" fill="COLOR"/>
 ```
 
 ### Common Icon Mappings
 
 | Concept              | Icons                     |
 | -------------------- | ------------------------- |
-| Attachment/Bonding   | `heart`, `link`           |
-| Secure Base          | `home`, `shield-check`    |
-| Mentalization        | `brain`, `lightbulb`      |
-| Affect Regulation    | `activity`, `sliders`     |
-| Awareness            | `eye`, `compass`          |
-| Trauma               | `alert-triangle`, `zap`   |
-| Repair               | `refresh-cw`, `tool`      |
-| Development          | `trending-up`, `layers`   |
+| Attachment/Bonding   | `tabler-outline/heart`, `tabler-outline/link` |
+| Secure Base          | `tabler-outline/home`, `tabler-outline/shield-check` |
+| Mentalization        | `tabler-outline/brain`, `tabler-outline/bulb` |
+| Affect Regulation    | `tabler-outline/activity`, `tabler-outline/adjustments-horizontal` |
+| Awareness            | `tabler-outline/eye`, `tabler-outline/compass` |
+| Trauma               | `tabler-outline/alert-triangle`, `tabler-outline/bolt` |
+| Repair               | `tabler-outline/refresh`, `tabler-outline/tool` |
+| Development          | `tabler-outline/trending-up`, `tabler-outline/layers-linked` |
 
 ---
 
@@ -334,7 +336,7 @@ The design adopts "**Secure Base**" as the core visual metaphor:
 
 | Category           | Prohibited Items                        |
 | ------------------ | --------------------------------------- |
-| **Clipping/Masking** | `clipPath`, `mask`                    |
+| **Clipping/Masking** | `mask` is forbidden; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2 |
 | **Style System**   | `<style>`, `class` (`id` inside `<defs>` is allowed) |
 | **Structure/Nesting** | `<foreignObject>`                   |
 | **Text/Font**      | `textPath`, `@font-face`               |

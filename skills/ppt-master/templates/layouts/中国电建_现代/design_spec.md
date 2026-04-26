@@ -53,7 +53,7 @@
 
 ### Font Stack
 
-**Primary Font Stack**: `"Microsoft YaHei", "PingFang SC", "Heiti SC", "Segoe UI", Arial, sans-serif`
+**Primary Font Stack**: `"Microsoft YaHei", Arial, sans-serif`
 
 ### Font Size Hierarchy (Enhanced Contrast)
 
@@ -135,11 +135,11 @@
 1. **Gradients**: Use `<linearGradient>` to create metallic or light/shadow effects.
 2. **Grid**: Use `<pattern>` to define precision grid backgrounds with opacity controlled at 0.05-0.1.
 3. **Opacity**: Strictly use `fill-opacity` / `stroke-opacity`.
-4. **Forbidden**: No `clipPath`, `mask`.
+4. **Clipping/Masking**: `mask` is forbidden; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2.
 
 ### Forbidden Elements (Blacklist)
 
-- `clipPath`, `mask` (clipping/masking)
+- `mask` (masking); `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 - `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
 - `foreignObject` (foreign objects)
 - `textPath` (text on path)
@@ -174,4 +174,4 @@
 
 1. **Logo**: Recommend using white PNG Logo to suit dark backgrounds.
 2. **Background Images**: Cover background grid is embedded in SVG; no external images needed.
-3. **Fonts**: Prefer sans-serif fonts; Roboto or Arial recommended for English text.
+3. **Fonts**: Prefer PowerPoint-safe sans-serif fonts; use Arial for English text unless a custom font is explicitly installed or embedded.

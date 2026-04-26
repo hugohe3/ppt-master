@@ -170,7 +170,7 @@
 
 ### Forbidden Elements (Blacklist)
 
-- `clipPath`, `mask` (clipping/masking)
+- `mask` (masking); `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 - `<style>`, `class` (stylesheets; `id` within `<defs>` is allowed)
 - `foreignObject` (foreign objects)
 - `textPath` (text on path)

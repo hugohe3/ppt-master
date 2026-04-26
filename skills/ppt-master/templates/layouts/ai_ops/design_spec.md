@@ -296,7 +296,7 @@ This template emulates the visual language of telecom technical reports. The cor
 2. Use `<rect>` elements for backgrounds
 3. Use `<tspan>` for text wrapping (**`<foreignObject>` is strictly prohibited**)
 4. Use `fill-opacity` / `stroke-opacity` for transparency; `rgba()` is prohibited
-5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed)
+5. Prohibited: `mask`, `<style>`, `class`, `foreignObject` (`id` inside `<defs>` is allowed). `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 6. Prohibited: `textPath`, `animate*`, `script`
 7. Prohibited: `<symbol>+<use>`, `<iframe>`, `@font-face`
 8. Prohibited: `<g opacity="...">` (group opacity) — set opacity on each child element individually

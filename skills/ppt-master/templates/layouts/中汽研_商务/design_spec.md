@@ -134,9 +134,9 @@
 ### Mandatory Rules
 
 1. **Gradient Support**: Use `<linearGradient>` and `<radialGradient>` defined within `<defs>`.
-2. **Shadow Simulation**: PPT does not support SVG filter shadows. Use **semi-transparent black rectangles (`fill="#000000" fill-opacity="0.1"`)** with offset stacking to simulate card shadows.
+2. **Shadow Handling**: Use restrained shadows only when an element genuinely floats above another layer. Prefer filter soft shadows from `shared-standards.md` §6; use stacked semi-transparent rectangles only when maximum compatibility is required.
 3. **Opacity**: Strictly use `fill-opacity` / `stroke-opacity`.
-4. **Forbidden**: No `clipPath`, `mask`.
+4. **Clipping/Masking**: `mask` is forbidden; `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2.
 
 ---
 
@@ -161,6 +161,6 @@
 
 ## XI. Usage Notes (Recommended)
 
-1. **Shadow Handling**: All card shadows are simulated via vector rectangles, ensuring good compatibility and lossless scaling.
+1. **Shadow Handling**: Keep shadows subtle and sparse. Use shared-standards §6 as the authority; vector-rectangle shadows are the compatibility fallback.
 2. **Gradients**: To modify gradient colors, adjust `stop-color` values in the `<defs>` section.
 3. **Logo**: Recommend using transparent PNG. Use inverted (white) Logo for dark background pages.

@@ -169,7 +169,7 @@ A single offending character invalidates the whole file and aborts the deck expo
 - **Styles**: Use inline styles only (`fill="..."` `font-size="..."`); `<style>` / `class` are FORBIDDEN (`id` inside `<defs>` is legitimate)
 - **Colors**: Use HEX values; for transparency use `fill-opacity` / `stroke-opacity`
 - **Image references**: `<image href="../images/xxx.png" preserveAspectRatio="xMidYMid slice"/>`
-- **Icon placeholders**: `<use data-icon="chunk-filled/name" x="" y="" width="48" height="48" fill="#HEX"/>` (default library); or `tabler-filled/name` / `tabler-outline/name` when that library is chosen for the deck. (auto-embedded during post-processing). Always include the library prefix. **One presentation = one library — never mix libraries.**
+- **Icon placeholders**: `<use data-icon="<library>/<name>" x="" y="" width="48" height="48" fill="#HEX"/>` (auto-embedded during post-processing). Always include the library prefix. Generic icons must use exactly one stylistic library per presentation (`chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`); `simple-icons` may co-exist only for real company / product / service brand marks. See [`../templates/icons/README.md`](../templates/icons/README.md).
 
 ### Inline Text Runs (Single Logical Line = Single `<text>`)
 
@@ -262,7 +262,7 @@ Logically related elements **MUST** be wrapped in `<g>` tags. This produces Powe
 <g id="card-benefits-1">
   <!-- This card floats over a colored panel — shadow is appropriate. On a flat white canvas, omit the filter. -->
   <rect x="60" y="115" width="565" height="260" rx="20" fill="#FFFFFF" filter="url(#shadow)"/>
-  <use data-icon="bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
+  <use data-icon="chunk-filled/bolt" x="108" y="163" width="44" height="44" fill="#0071E3"/>
   <text x="105" y="270" font-size="56" font-weight="bold" fill="#0071E3">10×</text>
   <text x="250" y="270" font-size="30" font-weight="bold" fill="#1D1D1F">Faster</text>
   <text x="105" y="310" font-size="18" fill="#6E6E73">Reduce production time from days to hours.</text>
