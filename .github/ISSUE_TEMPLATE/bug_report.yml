@@ -15,7 +15,7 @@ body:
         - SVG generation / layout
         - PPTX export (svg_to_pptx.py)
         - Post-processing (finalize_svg.py / total_md_split.py)
-        - Source conversion (PDF / DOCX / URL to Markdown)
+        - Source conversion (PDF / DOCX / PPTX / URL to Markdown)
         - Template (create-template / template selection)
         - Image generation
         - Installation / dependencies
