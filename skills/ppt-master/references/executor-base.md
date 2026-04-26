@@ -103,7 +103,7 @@ File naming format: `<number>_<page_name>.svg`
 
 ## 4. Icon Usage
 
-Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 8000+ icons, recommended) | **D: Custom** (user-specified)
+Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG basic shapes) | **C: Built-in library** (`templates/icons/` 11000+ icons, recommended) | **D: Custom** (user-specified)
 
 **Built-in icons — Placeholder method (recommended)**:
 
@@ -120,6 +120,9 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 <!-- phosphor-duotone (single color + 20% backplate — soft depth without solid weight) -->
 <use data-icon="phosphor-duotone/house" x="100" y="200" width="48" height="48" fill="#005587"/>
 
+<!-- simple-icons (brand logos — used alongside the deck's primary library, only for real company/product marks) -->
+<use data-icon="simple-icons/github" x="100" y="200" width="48" height="48" fill="#181717"/>
+
 <!-- tabler-outline with thin / bold stroke (stroke-style libraries only) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="1.5"/>
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="3"/>
@@ -129,7 +132,7 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 >
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
-**Four icon libraries**:
+**Five icon libraries** — four stylistic + one brand-logo:
 
 | Library | Style | Count | Prefix | When to use |
 |---------|-------|-------|--------|-------------|
@@ -137,8 +140,11 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 | `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | When design calls for smooth, rounded, organic icon forms |
 | `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Screen-only decks needing a light, elegant aesthetic |
 | `phosphor-duotone` | duotone · single color + 0.2-opacity backplate | 1200+ | `phosphor-duotone/` | Modern SaaS / fintech / product launches — soft depth without solid weight |
+| `simple-icons` | **brand logos** (real company / product marks) | 3400+ | `simple-icons/` | Brand-logo inset — see exception rule below |
 
-> ⚠️ **One presentation = one library.** Never mix icons from different libraries. If the chosen library lacks an exact icon, find the closest available alternative **within that same library** — do not cross into another library to fill the gap.
+> ⚠️ **One presentation = one stylistic library** — pick `chunk` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` and use it exclusively for all generic icons (home, chart, users, etc.). If the chosen library lacks an exact icon, find the closest available alternative within that same library.
+>
+> **Brand-logo exception (`simple-icons`)**: `simple-icons` is NOT a stylistic library and does NOT participate in the "one library" rule. Use it **alongside** the chosen stylistic library, but **only** for real company / product / service brand marks (customer logos, tech-stack icons, social handles). Do **not** use `simple-icons` to substitute for a missing icon in the primary library — that's still a violation.
 
 **Searching for icons** — use terminal, zero token cost:
 ```bash
@@ -146,6 +152,7 @@ ls skills/ppt-master/templates/icons/chunk/ | grep home
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
+ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 ```
 
 **Abstract concept → icon name** (names for `chunk`; tabler libraries use their own equivalents — verify with `ls | grep`):
