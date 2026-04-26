@@ -20,9 +20,10 @@ After replacement:
     </g>
 
 Icon libraries (subdirectories of templates/icons/):
-    chunk/          - 640+ fill icons, 16x16 viewBox  (default, no prefix needed)
-    tabler-filled/  - 1000+ fill icons, 24x24 viewBox (use prefix: tabler-filled/name)
-    tabler-outline/ - 5000+ stroke icons, 24x24 viewBox (use prefix: tabler-outline/name)
+    chunk/             - 640+ fill icons, 16x16 viewBox  (default, no prefix needed)
+    tabler-filled/     - 1000+ fill icons, 24x24 viewBox (use prefix: tabler-filled/name)
+    tabler-outline/    - 5000+ stroke icons, 24x24 viewBox (use prefix: tabler-outline/name)
+    phosphor-duotone/  - 1200+ duotone icons, 256x256 viewBox (single color + 0.2-opacity backplate)
 
 Usage:
     python3 scripts/svg_finalize/embed_icons.py <svg_file> [svg_file2] ...
@@ -50,6 +51,7 @@ ICON_BASE_SIZES = {
     'chunk': 16,          # legacy
     'tabler-filled': 24,
     'tabler-outline': 24,
+    'phosphor-duotone': 256,
 }
 DEFAULT_ICON_BASE_SIZE = 24
 
