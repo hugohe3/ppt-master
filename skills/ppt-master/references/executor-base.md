@@ -128,6 +128,8 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="3"/>
 ```
 
+> ⚠️ **Icon Color Rule**: For `<use data-icon="...">` tags, ALWAYS use `fill="#HEX"` to set the color. NEVER use `stroke` or `fill="none"` on these placeholders, even for stroke-style libraries.
+>
 > Optional `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): default 2, pass 1.5 for thin, 3 for bold. Ignored on fill libraries (`chunk` / `tabler-filled`).
 >
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
