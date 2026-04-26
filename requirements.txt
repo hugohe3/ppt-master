@@ -49,6 +49,13 @@ mammoth>=1.6.0
 markdownify>=0.11.6
 ebooklib>=0.18
 nbconvert>=7.0.0
+
+# ─────────────────────────────────────────────────────────────
+# Excel to Markdown tool / Excel 转 Markdown 工具 (skills/ppt-master/scripts/source_to_md/excel_to_md.py)
+# ─────────────────────────────────────────────────────────────
+# Converts .xlsx/.xlsm workbooks to Markdown while preserving sheet structure.
+# 用于将 .xlsx/.xlsm 工作簿转换为 Markdown，并保留工作表结构。
+openpyxl>=3.1.0
 #
 # Fallback path — only needed for less common formats
 # (.doc .odt .rtf .tex/.latex .rst .org .typ).

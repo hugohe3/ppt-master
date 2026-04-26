@@ -5,7 +5,7 @@ This directory contains user-facing scripts for conversion, project setup, SVG p
 ## Directory Layout
 
 - Top-level `scripts/`: runnable entry scripts
-- `scripts/source_to_md/`: source-document → Markdown converters (`pdf_to_md.py`, `doc_to_md.py`, `ppt_to_md.py`, `web_to_md.py`, `web_to_md.cjs`)
+- `scripts/source_to_md/`: source-document → Markdown converters (`pdf_to_md.py`, `doc_to_md.py`, `excel_to_md.py`, `ppt_to_md.py`, `web_to_md.py`, `web_to_md.cjs`)
 - `scripts/image_backends/`: internal provider implementations used by `image_gen.py`
 - `scripts/template_import/`: internal PPTX reference-preparation helpers used by `pptx_template_import.py`
 - `scripts/svg_finalize/`: internal post-processing helpers used by `finalize_svg.py`
@@ -20,6 +20,7 @@ Typical end-to-end workflow:
 python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
 # or
 python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
+python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
 python3 scripts/project_manager.py init <project_name> --format ppt169
 python3 scripts/project_manager.py import-sources <project_path> <source_files...> --move
 python3 scripts/total_md_split.py <project_path>
@@ -37,7 +38,7 @@ python3 scripts/update_repo.py
 
 | Area | Primary scripts | Documentation |
 |------|-----------------|---------------|
-| Conversion | `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `source_to_md/web_to_md.cjs` | [docs/conversion.md](./docs/conversion.md) |
+| Conversion | `source_to_md/pdf_to_md.py`, `source_to_md/doc_to_md.py`, `source_to_md/excel_to_md.py`, `source_to_md/ppt_to_md.py`, `source_to_md/web_to_md.py`, `source_to_md/web_to_md.cjs` | [docs/conversion.md](./docs/conversion.md) |
 | Project management | `project_manager.py`, `batch_validate.py`, `generate_examples_index.py`, `error_helper.py`, `pptx_template_import.py` | [docs/project.md](./docs/project.md) |
 | SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
@@ -53,6 +54,7 @@ Conversion:
 python3 scripts/source_to_md/pdf_to_md.py <file.pdf>
 python3 scripts/source_to_md/ppt_to_md.py <deck.pptx>
 python3 scripts/source_to_md/doc_to_md.py <file.docx>
+python3 scripts/source_to_md/excel_to_md.py <workbook.xlsx>
 python3 scripts/source_to_md/web_to_md.py <url>
 ```
 

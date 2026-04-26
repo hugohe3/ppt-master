@@ -15,9 +15,9 @@ The generated PPTX is a **design draft**, not a finished product. Think of it li
 ## System Architecture
 
 ```
-User Input (PDF/DOCX/URL/Markdown)
+User Input (PDF/DOCX/XLSX/URL/Markdown)
     ↓
-[Source Content Conversion] → source_to_md/pdf_to_md.py / doc_to_md.py / ppt_to_md.py / web_to_md.py
+[Source Content Conversion] → source_to_md/pdf_to_md.py / doc_to_md.py / excel_to_md.py / ppt_to_md.py / web_to_md.py
     ↓
 [Create Project] → project_manager.py init <project_name> --format <format>
     ↓
