@@ -93,12 +93,11 @@ The built-in icon library contains multiple stylistic libraries plus a brand-log
 See [`../templates/icons/README.md`](../templates/icons/README.md) for the current library inventory, counts, prefixes, and SVG placeholder details.
 
 > **Mandatory rules when choosing C**:
-> 1. **Pick exactly one stylistic library based on content tone** (reference mappings — not hard rules):
->    - **Tech / engineering / enterprise / data** → `chunk-filled` — sharp, rectilinear geometry (M/L/H/V/Z only) matches the precise, structured tone
->    - **Lifestyle / health / home / wellness** → `tabler-filled` — smooth bezier curves and arcs (C/A) match the warm, organic tone
->    - **Light, refined, minimal showcases** (screen-only) → `tabler-outline` — stroke-only forms match the airy, elegant tone
->    - **Modern SaaS / fintech / product launches** → `phosphor-duotone` — soft depth via single-color backplate, more contemporary than flat fill
->    - When content tone doesn't cleanly match any row above, pick the library whose visual character best serves the deck — explain the choice in the Design Spec.
+> 1. **Pick exactly one stylistic library** — read the source material, then choose the library whose visual character best serves the deck:
+>    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
+>    - **`tabler-filled`** — fill, bezier curves and arcs (C/A); smooth, rounded, organic; medium weight, approachable
+>    - **`tabler-outline`** — stroke (line art); airy, refined, lightweight; best for screen-only (thin strokes may be hard to read in print)
+>    - **`phosphor-duotone`** — duotone; main shape + 20% opacity backplate; medium weight, layered, contemporary
 >    - ⚠️ **One presentation = one stylistic library** for generic icons (home, chart, users, etc.). Mixing `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` is FORBIDDEN. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
 >    - **Brand-logo exception**: `simple-icons` is NOT a stylistic library. Add it to the deck's icon inventory **only when** the deck genuinely contains real company / product / service brand marks (customer logos, tech-stack icons, social handles). Never substitute it for a missing generic icon.
 > 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
