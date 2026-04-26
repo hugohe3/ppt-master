@@ -16,9 +16,8 @@ Thank you for your interest in contributing! This guide will help you get starte
 
 ### Prerequisites
 
-- Python 3.10+
-- Node.js 18+ (optional, for WeChat page conversion)
-- Pandoc (optional, for DOCX/EPUB conversion)
+- **Python 3.10+** — the only required dependency
+- **Node.js 18+** and **Pandoc** are edge-case fallbacks that 99% of contributors never need; install only if you're working on the specific paths that require them. See the [README Quick Start](./README.md#1-prerequisites) for when each applies.
 
 ### Setup
 
