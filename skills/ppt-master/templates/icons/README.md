@@ -6,7 +6,7 @@ This directory provides **11000+ high-quality SVG icons** across five libraries 
 
 | Library | Style | Count | viewBox | Prefix |
 |---------|-------|-------|---------|--------|
-| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `0 0 16 16` | `chunk/` |
+| `chunk-filled` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `0 0 16 16` | `chunk-filled/` |
 | `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `0 0 24 24` | `tabler-filled/` |
 | `tabler-outline` | stroke / line | 5000+ | `0 0 24 24` | `tabler-outline/` |
 | `phosphor-duotone` | duotone · single color + 0.2 opacity backplate (soft depth) | 1200+ | `0 0 256 256` | `phosphor-duotone/` |
@@ -19,8 +19,8 @@ This directory provides **11000+ high-quality SVG icons** across five libraries 
 Use placeholder syntax **during SVG generation**:
 
 ```xml
-<!-- chunk (sharp, geometric — tech/engineering/enterprise tone) -->
-<use data-icon="chunk/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
+<!-- chunk-filled (sharp, geometric — tech/engineering/enterprise tone) -->
+<use data-icon="chunk-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
 
 <!-- tabler-filled (rounded, organic — lifestyle/health/home tone) -->
 <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
@@ -54,7 +54,7 @@ python3 scripts/svg_finalize/embed_icons.py svg_output/*.svg
 Use `ls | grep` — zero token cost:
 
 ```bash
-ls skills/ppt-master/templates/icons/chunk/ | grep home
+ls skills/ppt-master/templates/icons/chunk-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
@@ -67,30 +67,30 @@ ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 
 **No default library — actively choose based on content tone.** Read the source material first, judge its character, then lock a library. Each library's visual language suits a different kind of content:
 
-- **`chunk`** — **fill** style, built from straight-line commands only (M/L/H/V/Z); sharp, precise angles; structured and highly legible.
+- **`chunk-filled`** — **fill** style, built from straight-line commands only (M/L/H/V/Z); sharp, precise angles; structured and highly legible.
 - **`tabler-filled`** — **fill** style, built from bezier curves and arcs (C/A); smooth, rounded, organic contours — warmer and softer in tone.
 - **`tabler-outline`** — **stroke** style (line art); airy and refined.
 - **`phosphor-duotone`** — **duotone** style; main shape at full opacity plus a backplate of the same color at 20% opacity, producing a soft sense of depth without the heaviness of a solid fill.
 
-> The geometric / weight axes: `chunk` (straight fill) vs. `tabler-filled` (curved fill) vs. `tabler-outline` (stroke) vs. `phosphor-duotone` (single-color duotone with depth).
+> The geometric / weight axes: `chunk-filled` (straight fill) vs. `tabler-filled` (curved fill) vs. `tabler-outline` (stroke) vs. `phosphor-duotone` (single-color duotone with depth).
 
-**One presentation = one stylistic library.** Pick `chunk` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` at the start and use it exclusively throughout for generic icons (home, chart, users, etc.). If the chosen library doesn't have an exact icon, find the closest available alternative within that same library — never cross stylistic libraries to fill a gap.
+**One presentation = one stylistic library.** Pick `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` at the start and use it exclusively throughout for generic icons (home, chart, users, etc.). If the chosen library doesn't have an exact icon, find the closest available alternative within that same library — never cross stylistic libraries to fill a gap.
 
 **Brand-logo exception (`simple-icons`).** `simple-icons` is **not a stylistic library** and does not participate in the "one library" rule. Its job is brand recognition — Slack's purple, GitHub's cat, AWS's color — which is intentionally heterogeneous. Use it **alongside** the chosen stylistic library, but **only** for actual company / product / service brand marks. Do **not** reach for it as a substitute when the chosen stylistic library lacks a generic icon.
 
 | Use `simple-icons` for | Do NOT use `simple-icons` for |
 |------------------------|-------------------------------|
 | Customer / partner / ecosystem logos on a "trusted by" page | Generic concepts (home, chart, settings, etc.) |
-| Tech stack icons on architecture / integration diagrams | Replacing a missing icon in `chunk` / `tabler-*` / `phosphor-duotone` |
+| Tech stack icons on architecture / integration diagrams | Replacing a missing icon in `chunk-filled` / `tabler-*` / `phosphor-duotone` |
 | Social media handles in a footer | Decorative / illustrative purposes |
 
 | Content tone | Recommended library |
 |--------------|---------------------|
-| Tech / engineering / enterprise / data | `chunk` |
+| Tech / engineering / enterprise / data | `chunk-filled` |
 | Lifestyle / health / home / wellness | `tabler-filled` |
 | Light, refined, minimal showcases (screen-only) | `tabler-outline` |
 | Modern SaaS / fintech / product launches — depth without solid weight | `phosphor-duotone` |
 
 > The table above is a reference, not a hard rule. When content tone doesn't cleanly match a row, pick the library whose visual character best serves the deck and document the choice.
 
-⚠️ Do **not** mix icons from different **stylistic** libraries (`chunk` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`). `simple-icons` is the sole exception and may co-exist as a brand-logo inset — see the brand-logo exception above.
+⚠️ Do **not** mix icons from different **stylistic** libraries (`chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`). `simple-icons` is the sole exception and may co-exist as a brand-logo inset — see the brand-logo exception above.

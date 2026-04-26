@@ -51,10 +51,11 @@
 > **Stack length discipline.** 3-4 fonts per stack is the sweet spot. Converter only writes the **first** Latin and **first** CJK font into PPTX — everything after is silently dropped. macOS-only families (`Songti SC`, `Menlo`, `Monaco`, `Helvetica`) are auto-mapped to their Windows equivalents via `FONT_FALLBACK_WIN` (see `scripts/svg_to_pptx/drawingml_utils.py`), so stacking both the macOS family and its Windows equivalent is redundant. Lead with Windows-preinstalled fonts (`Microsoft YaHei` / `SimSun` / `Arial` / `Georgia` / `Consolas`); keep at most **one** macOS-exclusive family (typically `"PingFang SC"`) as a browser-preview nicety.
 
 ## icons
-- library: chunk
+- library: chunk-filled
+- brand_library: simple-icons
 - inventory: target, bolt, shield, users, chart-bar, lightbulb
 
-> `library` MUST be one of `chunk` / `tabler-filled` / `tabler-outline` (exactly one — mixing is forbidden). `inventory` lists the approved icon names (without library prefix); Executor may only use icons from this list.
+> `library` MUST be one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` (exactly one — mixing is forbidden). `brand_library: simple-icons` is optional — include it only when the deck genuinely uses company / product / service brand marks; omit the line entirely if no brand icons are needed. `inventory` lists the approved icon names (without library prefix); Executor may only use icons from this list.
 
 ## images
 - cover_bg: images/cover_bg.jpg
