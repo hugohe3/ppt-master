@@ -20,20 +20,20 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                            50: '#eef3ff',
+                            100: '#dde7ff',
+                            200: '#c0d2ff',
+                            300: '#9bb6ff',
+                            400: '#7da0ff',
+                            500: '#5b8def',
+                            600: '#4a7be0',
+                            700: '#3b65c2',
+                            800: '#2f4f99',
+                            900: '#243d75',
                         }
                     },
                     fontFamily: {
-                        sans: ['system-ui', '-apple-system', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
                     }
                 }
             }
@@ -45,51 +45,104 @@
 
     <!-- Favicon -->
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎴</text></svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32' fill='none' stroke='%235b8def' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='2' width='44' height='28' rx='2.5'/><line x1='9' y1='11' x2='22' y2='11'/><line x1='9' y1='17' x2='32' y2='17'/><line x1='9' y1='23' x2='26' y2='23'/></svg>">
 
     <style>
+        :root {
+            --primary: #5b8def;
+            --primary-light: #88aaff;
+            --darker: #0d0d0f;
+            --surface: #16161a;
+            --surface-hover: #1d1d20;
+            --border: #26262a;
+            --text: #e6e6e9;
+            --text-muted: #8a8a93;
+        }
+
         body {
-            font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--darker);
+            color: var(--text);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Subtle ambient glow at the top of the page */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -300px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1200px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(91, 141, 239, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--surface);
+            border: 1px solid var(--border);
             backdrop-filter: blur(10px);
         }
 
+        /* Override Tailwind utility colors for dark theme */
+        .text-gray-800,
+        .text-gray-700 { color: var(--text) !important; }
+        .text-gray-600,
+        .text-gray-500,
+        .text-gray-400 { color: var(--text-muted) !important; }
+        .bg-white { background: var(--surface) !important; }
+        .bg-gray-50 { background: var(--surface-hover) !important; }
+        .bg-gray-100 { background: var(--surface) !important; }
+        .border-gray-200,
+        .border-gray-100 { border-color: var(--border) !important; }
+        .hover\:bg-gray-50:hover { background: var(--surface-hover) !important; }
+        .bg-brand-50 { background: rgba(91, 141, 239, 0.08) !important; }
+        .drop-shadow-lg,
+        .drop-shadow { filter: none !important; }
+
+        kbd {
+            background: var(--surface) !important;
+            color: var(--text-muted) !important;
+            border: 1px solid var(--border) !important;
+        }
+
         .collection-card {
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            border: 1px solid var(--border);
         }
 
         .collection-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            border-color: #3a3a40;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
         }
 
         .slide-container {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease;
         }
 
         .thumbnail {
-            transition: all 0.2s ease;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
             cursor: pointer;
         }
 
         .thumbnail:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: scale(1.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         .nav-btn {
-            transition: all 0.2s ease;
+            transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
         }
 
         .nav-btn:hover:not(:disabled) {
-            transform: scale(1.1);
+            transform: scale(1.06);
         }
 
         .nav-btn:disabled {
@@ -104,13 +157,17 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--darker);
             border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
+            background: var(--border);
             border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a40;
         }
 
         .fade-in {
@@ -216,12 +273,12 @@
 
         /* View mode toggle button */
         .view-mode-btn {
-            transition: all 0.2s ease;
+            transition: background 0.18s ease, color 0.18s ease;
         }
 
         .view-mode-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--primary);
+            color: #fff;
         }
 
         /* SVG object styling */
@@ -294,11 +351,11 @@
     <main id="mainContent" class="max-w-7xl mx-auto px-4 py-8 transition-all duration-300">
         <!-- Library View (Collection Selection) -->
         <div id="libraryView">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">
-                    🎴 Slide Gallery
+            <div class="text-center mb-12 pt-6">
+                <h1 class="text-4xl font-bold mb-3" style="color: var(--text); letter-spacing: -0.025em;">
+                    Slide Gallery
                 </h1>
-                <p class="text-white/80 text-lg">
+                <p style="color: var(--text-muted);" class="text-lg">
                     Select a collection to start browsing
                 </p>
             </div>
@@ -310,9 +367,8 @@
 
             <!-- Empty State -->
             <div id="emptyState" class="hidden text-center py-20">
-                <div class="text-6xl mb-4">📭</div>
-                <h3 class="text-xl font-medium text-white/80">No slide collections found</h3>
-                <p class="text-white/60 mt-2">Please add slide configurations</p>
+                <h3 class="text-xl font-medium" style="color: var(--text);">No slide collections found</h3>
+                <p style="color: var(--text-muted);" class="mt-2">Please add slide configurations</p>
             </div>
         </div>
 
@@ -321,14 +377,17 @@
             <!-- Title Section -->
             <div class="text-center mb-8 slide-enter">
                 <button onclick="backToLibrary()"
-                    class="inline-flex items-center px-4 py-2 mb-4 text-white/80 hover:text-white transition-colors">
+                    class="inline-flex items-center px-4 py-2 mb-4 transition-colors"
+                    style="color: var(--text-muted);"
+                    onmouseover="this.style.color='var(--text)'"
+                    onmouseout="this.style.color='var(--text-muted)'">
                     <i class="fas fa-th-large mr-2"></i>
                     Back to Gallery
                 </button>
-                <h1 id="viewerTitle" class="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                <h1 id="viewerTitle" class="text-3xl font-bold mb-2" style="color: var(--text); letter-spacing: -0.02em;">
                     Slide Title
                 </h1>
-                <p id="viewerDescription" class="text-white/70">
+                <p id="viewerDescription" style="color: var(--text-muted);">
                     Slide Description
                 </p>
             </div>
@@ -395,8 +454,8 @@
 
             <!-- Slide Overview -->
             <div class="mt-12 slide-enter">
-                <h2 class="text-xl font-bold text-white mb-6 flex items-center drop-shadow">
-                    <i class="fas fa-list-ul mr-3"></i>
+                <h2 class="text-xl font-bold mb-6 flex items-center" style="color: var(--text); letter-spacing: -0.015em;">
+                    <i class="fas fa-list-ul mr-3" style="color: var(--text-muted);"></i>
                     Overview
                 </h2>
                 <div id="overviewGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -407,10 +466,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 py-6">
+    <footer class="mt-12 py-6" style="border-top: 1px solid var(--border);">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-white/60 text-sm">
-                PPT Master © 2025–2026 · Made with ❤️ by <a href="https://www.hehugo.com/" target="_blank" style="color: rgba(255,255,255,0.8); text-decoration: none;">Hugo He</a>
+            <p class="text-sm" style="color: var(--text-muted);">
+                PPT Master © 2025–2026 · Built by <a href="https://www.hehugo.com/" target="_blank" style="color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border);">Hugo He</a>
             </p>
         </div>
     </footer>
@@ -854,23 +913,22 @@
             grid.innerHTML = collections.map(collection => {
                 const coverPath = encodeURI(`examples/${collection.folder}/${collection.slides[0].file}`);
                 return `
-                <div class="collection-card glass rounded-2xl overflow-hidden" onclick='openCollection(${JSON.stringify(collection).replace(/'/g, "&#39;")})'>
-                    <div class="relative h-48 bg-gradient-to-br" style="background: linear-gradient(135deg, ${collection.color}22 0%, ${collection.color}44 100%)">
-                        <object data="${coverPath}" type="image/svg+xml" class="w-full h-full object-contain p-4" style="pointer-events:none">
-                            <div class="w-full h-full flex items-center justify-center text-4xl">${collection.icon}</div>
+                <div class="collection-card rounded-xl overflow-hidden" style="background: var(--surface);" onclick='openCollection(${JSON.stringify(collection).replace(/'/g, "&#39;")})'>
+                    <div class="relative" style="aspect-ratio: 16 / 9; background: var(--darker); border-bottom: 1px solid var(--border);">
+                        <object data="${coverPath}" type="image/svg+xml" class="w-full h-full object-contain" style="pointer-events:none">
+                            <div class="w-full h-full flex items-center justify-center text-3xl" style="opacity: 0.5;">${collection.icon}</div>
                         </object>
-                        <div class="absolute top-4 left-4 w-12 h-12 rounded-xl flex items-center justify-center text-2xl" 
-                             style="background: ${collection.color}22">
-                            ${collection.icon}
-                        </div>
-                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium text-white"
-                             style="background: ${collection.color}">
+                        <div class="absolute bottom-3 right-3 px-2.5 py-1 rounded-md text-xs font-medium"
+                             style="background: rgba(13, 13, 15, 0.85); color: var(--text); border: 1px solid var(--border); backdrop-filter: blur(8px);">
                             ${collection.slides.length} slides
                         </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="font-bold text-gray-800 text-lg mb-2">${collection.title}</h3>
-                        <p class="text-gray-500 text-sm line-clamp-2">${collection.description}</p>
+                    <div class="p-5" style="border-left: 3px solid ${collection.color};">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-base">${collection.icon}</span>
+                            <h3 class="font-semibold text-base" style="color: var(--text); letter-spacing: -0.01em;">${collection.title}</h3>
+                        </div>
+                        <p class="text-sm line-clamp-2" style="color: var(--text-muted); line-height: 1.55;">${collection.description}</p>
                     </div>
                 </div>
             `}).join('');
