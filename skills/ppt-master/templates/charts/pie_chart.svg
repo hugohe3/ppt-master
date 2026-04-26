@@ -4,6 +4,7 @@
     Purpose: Distribution and proportion analysis
     Use cases: Market share, budget allocation, demographic breakdown
     Supports: 5 segments (Recommended 3-6)
+    Convention: slices start at 12 o'clock and proceed clockwise
     -->
     <defs>
         <!-- Soft Shadow for Pie and Card -->
@@ -28,6 +29,7 @@
         Center: (420, 400)
         Radius: 200px
         Start Angle: -90° (12 o'clock)
+        Direction: Clockwise
         White stroke creates a modern separated-slice look
         -->
         <!-- Segment 1: Competitor A 35% (-90° to 36°) -->
