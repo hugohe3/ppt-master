@@ -4,11 +4,15 @@ SVG Icon Embedding Tool
 
 Replaces icon placeholders in SVG files with actual icon code.
 
-Placeholder syntax:
-    <use data-icon="rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
+Placeholder syntax (new SVGs must include a library prefix):
+    <use data-icon="chunk-filled/rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8" stroke-width="3"/>
+
+Legacy compatibility accepted by the resolver:
+    <use data-icon="rocket" .../> -> chunk-filled/rocket
+    <use data-icon="chunk/rocket" .../> -> chunk-filled/rocket
 
 Optional `stroke-width` (stroke-style libraries only — e.g. tabler-outline):
     Default 2 (matches the source). Pass 1.5 for thin, 3 for bold.

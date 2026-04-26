@@ -163,7 +163,7 @@
 ## IX. SVG Technical Constraints
 
 1. `viewBox` must remain `0 0 1280 720`
-2. Do not use `mask`, `clipPath`, `<style>`, `class`, `foreignObject`, or `rgba()`
+2. Do not use `mask`, `<style>`, `class`, `foreignObject`, or `rgba()`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 3. Use plain vector geometry and `<image>` references to packaged assets only
 4. Transparency must use `fill-opacity` / `stroke-opacity`
 5. Text wrapping should be handled with `<tspan>` if needed

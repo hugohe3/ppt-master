@@ -173,7 +173,7 @@
 2. Use `<rect>` elements for backgrounds
 3. Use `<tspan>` for text wrapping (**strictly no** `<foreignObject>`)
 4. Use `fill-opacity` / `stroke-opacity` for transparency
-5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+5. Prohibited: `mask`, `<style>`, `class`, `foreignObject`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 6. Prohibited: `textPath`, `animate*`, `script`
 7. Define gradients using `<defs>`
 

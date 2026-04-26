@@ -189,7 +189,7 @@
 2. Use `<rect>` elements for backgrounds
 3. Use `<tspan>` for text wrapping (no `<foreignObject>`)
 4. Use `fill-opacity` / `stroke-opacity` for transparency; no `rgba()`
-5. Prohibited: `clipPath`, `mask`, `<style>`, `class`, `foreignObject`
+5. Prohibited: `mask`, `<style>`, `class`, `foreignObject`. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 6. Prohibited: `textPath`, `animate*`, `script`
 7. `marker-start` / `marker-end` conditionally allowed (marker in `<defs>`, `orient="auto"`, shape = triangle/diamond/oval) — see shared-standards.md §1.1
 

@@ -200,14 +200,14 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 ### Source
 
-- **Built-in icon library**: `templates/icons/` (6700+ icons across three libraries)
-- **Usage method**: Placeholder format `{{icon:category/icon-name}}`
+- **Built-in icon library**: `templates/icons/` (11,600+ icons across five libraries; see `templates/icons/README.md`)
+- **Usage method**: SVG placeholder `<use data-icon="library/icon-name" .../>`; Design Spec should list approved `library/icon-name` entries for Executor.
 
 ### Recommended Icon List (fill as needed)
 
 | Purpose | Icon Path | Page |
 | ------- | --------- | ---- |
-| [example] | `{{icon:interface/check-circle}}` | Slide XX |
+| [example] | `chunk-filled/circle-checkmark` | Slide XX |
 
 ---
 

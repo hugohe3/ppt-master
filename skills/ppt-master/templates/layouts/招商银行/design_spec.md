@@ -123,7 +123,7 @@ Reference slides read before generation: `1, 2, 3, 4, 6, 9, 11, 13, 16, 18`.
 ## IX. SVG Technical Constraints
 
 1. `viewBox` must stay `0 0 1280 720`
-2. No `clipPath`, `mask`, `<style>`, `class`, `foreignObject`, `textPath`, or animation tags
+2. No `mask`, `<style>`, `class`, `foreignObject`, `textPath`, or animation tags. `clipPath` is allowed only on `<image>` under `shared-standards.md` §1.2
 3. Use plain hex colors with `fill-opacity` / `stroke-opacity`
 4. Keep image assets semantic and minimal
 5. Prefer vector reconstruction over embedding PPT-export fragments

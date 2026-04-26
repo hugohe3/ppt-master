@@ -43,7 +43,7 @@ The `charts/` directory contains 57 standardized visualization templates. For ba
 
 ## Icon Library
 
-The `icons/` directory contains 11,500+ vector icons across five libraries:
+The `icons/` directory contains 11,600+ vector icons across five libraries:
 
 | Library | Style | Count |
 |---------|-------|-------|
