@@ -65,14 +65,16 @@ ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 
 ## Style Rules
 
-**No default library — actively choose based on content tone.** Read the source material first, judge its character, then lock a library. Each library's visual language suits a different kind of content:
+**No default library — actively choose based on the deck's visual needs.** Read the source material first, then pick the library whose visual character best serves the presentation. Each library has a distinct visual personality:
 
-- **`chunk-filled`** — **fill** style, built from straight-line commands only (M/L/H/V/Z); sharp, precise angles; structured and highly legible.
-- **`tabler-filled`** — **fill** style, built from bezier curves and arcs (C/A); smooth, rounded, organic contours — warmer and softer in tone.
-- **`tabler-outline`** — **stroke** style (line art); airy and refined.
-- **`phosphor-duotone`** — **duotone** style; main shape at full opacity plus a backplate of the same color at 20% opacity, producing a soft sense of depth without the heaviness of a solid fill.
+- **`chunk-filled`** — **fill** style, built from straight-line commands only (M/L/H/V/Z). Sharp, precise right angles; rectilinear geometry; structured and highly legible at small sizes. Visual weight: heavy, solid, architectural.
+- **`tabler-filled`** — **fill** style, built from bezier curves and arcs (C/A). Smooth, rounded, organic contours; warmer and softer than `chunk-filled`. Visual weight: medium, approachable.
+- **`tabler-outline`** — **stroke** style (line art, default stroke-width 2). Airy, refined, lightweight; uses negative space. Visual weight: light, elegant. Best for screen-only viewing since thin strokes may become hard to read when printed or projected.
+- **`phosphor-duotone`** — **duotone** style; main shape at full opacity plus a backplate of the same color at 20% opacity, producing a soft sense of depth. Visual weight: medium, layered, contemporary.
 
-> The geometric / weight axes: `chunk-filled` (straight fill) vs. `tabler-filled` (curved fill) vs. `tabler-outline` (stroke) vs. `phosphor-duotone` (single-color duotone with depth).
+> **Two axes to consider when choosing**:
+> 1. **Geometry**: straight lines (`chunk-filled`) vs. curves (`tabler-filled` / `phosphor-duotone`) vs. open strokes (`tabler-outline`)
+> 2. **Visual weight**: heavy solid (`chunk-filled`) → medium solid (`tabler-filled`) → medium layered (`phosphor-duotone`) → light stroke (`tabler-outline`)
 
 **One presentation = one stylistic library.** Pick `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` at the start and use it exclusively throughout for generic icons (home, chart, users, etc.). If the chosen library doesn't have an exact icon, find the closest available alternative within that same library — never cross stylistic libraries to fill a gap.
 
@@ -83,14 +85,5 @@ ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 | Customer / partner / ecosystem logos on a "trusted by" page | Generic concepts (home, chart, settings, etc.) |
 | Tech stack icons on architecture / integration diagrams | Replacing a missing icon in `chunk-filled` / `tabler-*` / `phosphor-duotone` |
 | Social media handles in a footer | Decorative / illustrative purposes |
-
-| Content tone | Recommended library |
-|--------------|---------------------|
-| Tech / engineering / enterprise / data | `chunk-filled` |
-| Lifestyle / health / home / wellness | `tabler-filled` |
-| Light, refined, minimal showcases (screen-only) | `tabler-outline` |
-| Modern SaaS / fintech / product launches — depth without solid weight | `phosphor-duotone` |
-
-> The table above is a reference, not a hard rule. When content tone doesn't cleanly match a row, pick the library whose visual character best serves the deck and document the choice.
 
 ⚠️ Do **not** mix icons from different **stylistic** libraries (`chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone`). `simple-icons` is the sole exception and may co-exist as a brand-logo inset — see the brand-logo exception above.
