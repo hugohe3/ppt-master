@@ -215,6 +215,15 @@ Two views on the same font decisions — fill both, keep them consistent:
 
 > When the presentation includes data visualization or infographic-style structured information design, Strategist selects visualization types from `templates/charts/charts_index.json` and lists them here for the Executor to reference. The path remains under `templates/charts/` for backward compatibility.
 
+**Read-audit** (mandatory):
+
+```
+Catalog read: <N> templates / <M> categories
+Runners-up considered: <key_A> (rejected: <reason>), <key_B> (rejected: <reason>), <key_C> (rejected: <reason>)
+```
+
+Runners-up must be templates that were genuinely the second-best match for a page in this deck. If fewer than 3 visualization pages exist, list what exists and note "fewer than 3 viz pages".
+
 | Visualization Type | Reference Template | Used In |
 | ------------------ | ------------------ | ------- |
 | [e.g. grouped_bar_chart] | `templates/charts/grouped_bar_chart.svg` | Slide 05 |
