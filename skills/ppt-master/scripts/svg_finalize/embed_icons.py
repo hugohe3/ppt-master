@@ -8,6 +8,11 @@ Placeholder syntax:
     <use data-icon="rocket" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
     <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8"/>
+    <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#0076A8" stroke-width="3"/>
+
+Optional `stroke-width` (stroke-style libraries only — e.g. tabler-outline):
+    Default 2 (matches the source). Pass 1.5 for thin, 3 for bold.
+    Ignored on fill-style libraries.
 
 After replacement:
     <g transform="translate(100, 200) scale(3)" fill="#0076A8">
@@ -78,9 +83,12 @@ def _extract_shape_elements(content: str, color: str) -> list[str]:
 
     elements = []
     for tag, attrs in matches:
-        # Remove standalone fill/stroke color attrs so outer <g> controls color
+        # Remove standalone fill/stroke color attrs so outer <g> controls color.
+        # Also strip stroke-width so the outer <g> can override it (otherwise the
+        # icon's source stroke-width="2" would shadow any caller-specified value).
         attrs_clean = re.sub(r'\s*fill="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs)
         attrs_clean = re.sub(r'\s*stroke="(?:currentColor|#[0-9a-fA-F]{3,6}|none)"', '', attrs_clean)
+        attrs_clean = re.sub(r'\s*stroke-width="[^"]*"', '', attrs_clean)
         elements.append(f'<{tag}{attrs_clean}/>')
 
     return elements
@@ -158,7 +166,13 @@ def parse_use_element(use_match: str) -> dict[str, str | float]:
     fill_match = re.search(r'fill="([^"]+)"', use_match)
     if fill_match:
         attrs['fill'] = fill_match.group(1)
-    
+
+    # Extract optional stroke-width override (stroke-style icons only).
+    # Tabler-outline ships at stroke-width=2; passing 1.5 reads thin, 3 reads bold.
+    stroke_width_match = re.search(r'stroke-width="([^"]+)"', use_match)
+    if stroke_width_match:
+        attrs['stroke-width'] = stroke_width_match.group(1)
+
     return attrs
 
 
@@ -195,7 +209,11 @@ def generate_icon_group(attrs: dict[str, str | float], elements: list[str], styl
     elements_str = '\n    '.join(elements)
 
     if style == 'stroke':
-        color_attrs = f'fill="none" stroke="{color}"'
+        # Default to 2 — matches the source stroke-width baked into tabler-outline
+        # (and any other stroke library) so omitting the attribute reproduces
+        # pre-change visual output.
+        stroke_width = attrs.get('stroke-width', '2')
+        color_attrs = f'fill="none" stroke="{color}" stroke-width="{stroke_width}"'
     else:
         color_attrs = f'fill="{color}"'
 
