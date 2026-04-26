@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="imgOverlay08" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1A1714" stop-opacity="0.92"/>
+      <stop offset="50%" stop-color="#1A1714" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1A1714" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="tagGrad08" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C4A882"/>
+      <stop offset="100%" stop-color="#D4956A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Right side image -->
+  <image href="../images/cream_style.png" x="400" y="0" width="880" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="400" y="0" width="880" height="720" fill="url(#imgOverlay08)"/>
+
+  <!-- Chapter tag -->
+  <g id="p08-tag">
+    <use data-icon="tabler-filled/star" x="60" y="100" width="24" height="24" fill="#D4956A"/>
+    <text x="92" y="118" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      2026 流行风格
+    </text>
+  </g>
+
+  <!-- Title -->
+  <g id="p08-title">
+    <text x="60" y="195" font-family="Georgia, SimSun, serif" font-size="42" font-weight="bold" fill="#E8E0D4">
+      奶油风 2.0
+    </text>
+    <text x="60" y="240" font-family="Georgia, SimSun, serif" font-size="24" fill="#C4A882">
+      从公式化到细腻表达
+    </text>
+  </g>
+
+  <!-- Vertical accent -->
+  <rect x="60" y="265" width="60" height="3" fill="url(#tagGrad08)" rx="1.5"/>
+
+  <!-- Content -->
+  <g id="p08-content">
+    <text x="60" y="310" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="19" fill="#E8E0D4">
+      不再只是"米白色墙面 + 原木家具"的公式
+    </text>
+
+    <text x="60" y="365" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#C4A882" font-weight="bold">
+      颜色基底
+    </text>
+    <text x="60" y="392" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      奶油色 · 燕麦色 · 米白色 — 温暖中性色铺陈
+    </text>
+
+    <text x="60" y="435" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#D4956A" font-weight="bold">
+      材质点睛
+    </text>
+    <text x="60" y="462" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      羊毛 · 亚麻 · 天然结疤原木 · 手工拉坯陶瓷
+    </text>
+
+    <text x="60" y="505" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#8B7355" font-weight="bold">
+      纹理叠加
+    </text>
+    <text x="60" y="532" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      细节层层叠加，脱离"廉价网红感"
+    </text>
+  </g>
+
+  <!-- Bottom emphasis -->
+  <rect x="60" y="575" width="4" height="50" fill="#D4956A" rx="2"/>
+  <text x="78" y="598" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8E0D4" font-style="italic">
+    真正的治愈空间
+  </text>
+  <text x="78" y="622" font-family="Georgia, SimSun, serif" font-size="16" fill="#8B7355" font-style="italic">
+    可触摸 · 可感知
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    08 / 12
+  </text>
+</svg>

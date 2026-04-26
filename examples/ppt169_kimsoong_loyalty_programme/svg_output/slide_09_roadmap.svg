@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Quick Wins First, Then Systematic Service Transformation
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="45" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    A phased 12-month rollout — launch low-cost, high-data-value initiatives first, then scale to service and financial incentives as infrastructure matures.
+  </text>
+
+  <!-- ===== Timeline bar ===== -->
+  <rect x="80" y="158" width="1120" height="8" rx="4" fill="url(#timelineGrad)"/>
+
+  <!-- Phase markers (circles on timeline) -->
+  <circle cx="220" cy="162" r="14" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3"/>
+  <text x="220" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Q1</text>
+
+  <circle cx="500" cy="162" r="14" fill="#FFFFFF" stroke="#E8A838" stroke-width="3"/>
+  <text x="500" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#E8A838">Q2</text>
+
+  <circle cx="780" cy="162" r="14" fill="#FFFFFF" stroke="#2D8A4E" stroke-width="3"/>
+  <text x="780" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Q3</text>
+
+  <circle cx="1060" cy="162" r="14" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3"/>
+  <text x="1060" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Q4</text>
+
+  <!-- ===== Phase 1: Q1 — Quick Wins ===== -->
+  <rect x="80" y="195" width="260" height="250" rx="8" fill="#F4F6F8" stroke="#1A3A5C" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <rect x="80" y="195" width="260" height="40" rx="8" fill="#1A3A5C"/>
+  <rect x="80" y="227" width="260" height="8" fill="#1A3A5C"/>
+  <use data-icon="tabler-filled/sparkles" x="92" y="203" width="22" height="22" fill="#E8A838"/>
+  <text x="122" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 1: Quick Wins</text>
+
+  <use data-icon="tabler-filled/gift" x="95" y="255" width="20" height="20" fill="#2D8A4E"/>
+  <text x="125" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Launch Magazine</text>
+  <text x="125" y="288" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Monthly customer publication</text>
+  <text x="125" y="303" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">with owner stories</text>
+
+  <line x1="95" y1="315" x2="325" y2="315" stroke="#D5DDE5" stroke-width="0.5"/>
+
+  <use data-icon="tabler-filled/report-analytics" x="95" y="328" width="20" height="20" fill="#E8A838"/>
+  <text x="125" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Deploy Questionnaire</text>
+  <text x="125" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Incentive</text>
+  <text x="125" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Branded pen programme</text>
+  <text x="125" y="393" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">for data collection</text>
+
+  <rect x="95" y="415" width="230" height="22" rx="4" fill="#2D8A4E" fill-opacity="0.08"/>
+  <text x="105" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Cost: Very Low | Impact: Quick Data</text>
+
+  <!-- ===== Phase 2: Q2 — Service Uplift ===== -->
+  <rect x="360" y="195" width="260" height="250" rx="8" fill="#F4F6F8" stroke="#E8A838" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <rect x="360" y="195" width="260" height="40" rx="8" fill="#E8A838"/>
+  <rect x="360" y="227" width="260" height="8" fill="#E8A838"/>
+  <use data-icon="tabler-filled/shield-check" x="372" y="203" width="22" height="22" fill="#FFFFFF"/>
+  <text x="402" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 2: Service Uplift</text>
+
+  <use data-icon="tabler-filled/shield-check" x="375" y="255" width="20" height="20" fill="#E8A838"/>
+  <text x="405" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">3-Year Free After-</text>
+  <text x="405" y="288" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">sales Service</text>
+  <text x="405" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Roll out across all European</text>
+  <text x="405" y="325" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">franchise locations</text>
+
+  <text x="405" y="355" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Addresses 26% service churn</text>
+  <text x="405" y="373" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Staff training programme</text>
+
+  <rect x="375" y="415" width="230" height="22" rx="4" fill="#E8A838" fill-opacity="0.1"/>
+  <text x="385" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#E8A838">Cost: Med-High | Impact: Core Fix</text>
+
+  <!-- ===== Phase 3: Q3 — Financial Incentives ===== -->
+  <rect x="640" y="195" width="260" height="250" rx="8" fill="#F4F6F8" stroke="#2D8A4E" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <rect x="640" y="195" width="260" height="40" rx="8" fill="#2D8A4E"/>
+  <rect x="640" y="227" width="260" height="8" fill="#2D8A4E"/>
+  <use data-icon="tabler-filled/discount" x="652" y="203" width="22" height="22" fill="#FFFFFF"/>
+  <text x="682" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 3: Incentives</text>
+
+  <use data-icon="tabler-filled/discount" x="655" y="255" width="20" height="20" fill="#2D8A4E"/>
+  <text x="685" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">20% Loyalty Discount</text>
+  <text x="685" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">For existing customers on</text>
+  <text x="685" y="305" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">new model purchases</text>
+
+  <line x1="655" y1="317" x2="885" y2="317" stroke="#D5DDE5" stroke-width="0.5"/>
+
+  <use data-icon="tabler-filled/car" x="655" y="328" width="20" height="20" fill="#1A3A5C"/>
+  <text x="685" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Trade-in Programme</text>
+  <text x="685" y="363" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Generous trade-in offers for</text>
+  <text x="685" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">existing Kimsoong vehicles</text>
+
+  <rect x="655" y="415" width="230" height="22" rx="4" fill="#2D8A4E" fill-opacity="0.08"/>
+  <text x="665" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Cost: Medium | Impact: Retention</text>
+
+  <!-- ===== Phase 4: Q4 — Evaluate & Optimize ===== -->
+  <rect x="920" y="195" width="260" height="250" rx="8" fill="#F4F6F8" stroke="#1A3A5C" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <rect x="920" y="195" width="260" height="40" rx="8" fill="#1A3A5C"/>
+  <rect x="920" y="227" width="260" height="8" fill="#1A3A5C"/>
+  <use data-icon="tabler-filled/trophy" x="932" y="203" width="22" height="22" fill="#E8A838"/>
+  <text x="962" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 4: Evaluate</text>
+
+  <use data-icon="tabler-filled/chart-pie" x="935" y="255" width="20" height="20" fill="#1A3A5C"/>
+  <text x="965" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Measure KPIs</text>
+  <text x="965" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Track repeat rate, satisfaction,</text>
+  <text x="965" y="305" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">questionnaire return metrics</text>
+
+  <line x1="935" y1="317" x2="1165" y2="317" stroke="#D5DDE5" stroke-width="0.5"/>
+
+  <use data-icon="tabler-filled/rosette" x="935" y="328" width="20" height="20" fill="#E8A838"/>
+  <text x="965" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Adjust Programme</text>
+  <text x="965" y="363" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Refine based on data;</text>
+  <text x="965" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">prepare Year 2 plan</text>
+
+  <rect x="935" y="415" width="230" height="22" rx="4" fill="#1A3A5C" fill-opacity="0.06"/>
+  <text x="945" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Cost: Low | Impact: Optimization</text>
+
+  <!-- ===== KPI Target Cards ===== -->
+  <text x="60" y="480" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">12-Month KPI Targets</text>
+  <line x1="60" y1="490" x2="1220" y2="490" stroke="#D5DDE5" stroke-width="1"/>
+
+  <!-- KPI 1: Repeat Rate -->
+  <rect x="60" y="505" width="360" height="70" rx="6" fill="#F4F6F8"/>
+  <use data-icon="tabler-filled/rosette" x="75" y="518" width="24" height="24" fill="#E74C3C"/>
+  <text x="110" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Repeat Buyer Rate</text>
+  <text x="110" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">15%</text>
+  <text x="170" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="195" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">30%+</text>
+
+  <!-- KPI 2: Satisfaction -->
+  <rect x="440" y="505" width="360" height="70" rx="6" fill="#F4F6F8"/>
+  <use data-icon="tabler-filled/star" x="455" y="518" width="24" height="24" fill="#E8A838"/>
+  <text x="490" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Satisfaction (Good+)</text>
+  <text x="490" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">33%</text>
+  <text x="545" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="570" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">60%</text>
+
+  <!-- KPI 3: Questionnaire Return -->
+  <rect x="820" y="505" width="400" height="70" rx="6" fill="#F4F6F8"/>
+  <use data-icon="tabler-filled/report-analytics" x="835" y="518" width="24" height="24" fill="#2D8A4E"/>
+  <text x="870" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Questionnaire Return Rate</text>
+  <text x="870" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">40%</text>
+  <text x="925" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="950" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">70%</text>
+
+  <!-- ===== Progress arrow ===== -->
+  <rect x="60" y="600" width="1160" height="24" rx="12" fill="#F4F6F8"/>
+  <rect x="60" y="600" width="290" height="24" rx="12" fill="#1A3A5C"/>
+  <rect x="350" y="600" width="280" height="24" rx="0" fill="#E8A838"/>
+  <rect x="630" y="600" width="280" height="24" rx="0" fill="#2D8A4E"/>
+  <rect x="910" y="600" width="310" height="24" rx="12" fill="#1A3A5C" fill-opacity="0.6"/>
+  <text x="205" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">DATA FOUNDATION</text>
+  <text x="490" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">SERVICE TRANSFORMATION</text>
+  <text x="770" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">FINANCIAL INCENTIVES</text>
+  <text x="1065" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">OPTIMIZE</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Services — Implementation Plan</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">9</text>
+</svg>

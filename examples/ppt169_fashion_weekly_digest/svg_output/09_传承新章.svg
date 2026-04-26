@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="leftImg">
+      <rect x="50" y="120" width="560" height="280" rx="10"/>
+    </clipPath>
+    <clipPath id="rightImg">
+      <rect x="670" y="120" width="280" height="400" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <!-- Page title -->
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">传承新章</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">MAX MARA × CHLOÉ</text>
+
+  <!-- Vertical divider -->
+  <rect x="635" y="120" width="1" height="530" fill="#2A2520"/>
+
+  <!-- LEFT: Max Mara — wide image top, text bottom -->
+  <rect x="50" y="120" width="560" height="280" rx="10" fill="#1A1A1A"/>
+  <image href="../images/maxmara_show.jpg" x="50" y="120" width="560" height="280" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImg)"/>
+
+  <use data-icon="phosphor-duotone/scissors" x="50" y="420" width="26" height="26" fill="#C9A96E"/>
+  <text x="84" y="440" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">Max Mara</text>
+  <text x="210" y="440" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">75 周年</text>
+
+  <rect x="50" y="455" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="50" y="485">2027 早春系列全球首秀</tspan>
+    <tspan x="50" dy="24">2026年6月16日 · 上海龙美术馆</tspan>
+  </text>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="50" y="550">"THE MAX!" 75 周年品牌珍藏档案展</tspan>
+    <tspan x="50" dy="24">策展人 Olivier Saillard · 6月17日公众开放</tspan>
+  </text>
+
+  <!-- RIGHT: Chloé — portrait image + text -->
+  <rect x="670" y="120" width="280" height="400" rx="10" fill="#1A1A1A"/>
+  <image href="../images/chloe_tomato.jpg" x="670" y="120" width="280" height="400" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImg)"/>
+
+  <use data-icon="phosphor-duotone/sparkle" x="970" y="130" width="26" height="26" fill="#C9A96E"/>
+  <text x="970" y="185" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">Chloé</text>
+  <text x="970" y="210" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">× Poltronova</text>
+
+  <rect x="970" y="225" width="260" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="970" y="255">经典 Tomato 座椅</tspan>
+    <tspan x="970" dy="24">限量复刻版</tspan>
+    <tspan x="970" dy="30">1970年 Christian Adam</tspan>
+    <tspan x="970" dy="24">设计的标志性藏品</tspan>
+    <tspan x="970" dy="30">意大利激进设计运动</tspan>
+    <tspan x="970" dy="24">的历史见证</tspan>
+  </text>
+
+  <text x="970" y="440" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">奶油白 · 浅棕褐 · 沙色 · 黑色</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">09 / 16</text>
+</svg>

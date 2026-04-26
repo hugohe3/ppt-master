@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 02 · 被低估的学术先驱</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>学术贡献一览</tspan>
+  </text>
+  <text x="310" y="82" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#A0A0B0">
+    <tspan>—— 远超时代的远见与独创</tspan>
+  </text>
+
+  <!-- 贡献1 -->
+  <rect x="60" y="115" width="1160" height="100" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <circle cx="105" cy="165" r="22" fill="#C9A96E" fill-opacity="0.15" stroke="#C9A96E" stroke-width="1.5"/>
+  <text x="105" y="172" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1</tspan>
+  </text>
+  <use data-icon="chunk/pen-nib" x="145" y="137" width="28" height="28" fill="#C9A96E"/>
+  <text x="185" y="153" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>"建筑意"概念</tspan>
+  </text>
+  <text x="145" y="182" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>原创性的中国建筑美学理念 — 建筑不仅是技术与美的结合，还是历史和人情的凝聚</tspan>
+  </text>
+  <text x="145" y="202" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>在"诗意"和"画意"之外，提出"建筑意"——古建筑是有灵气的生命</tspan>
+  </text>
+
+  <!-- 贡献2 -->
+  <rect x="60" y="230" width="1160" height="100" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <circle cx="105" cy="280" r="22" fill="#C9A96E" fill-opacity="0.15" stroke="#C9A96E" stroke-width="1.5"/>
+  <text x="105" y="287" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>2</tspan>
+  </text>
+  <use data-icon="chunk/book-open" x="145" y="252" width="28" height="28" fill="#C9A96E"/>
+  <text x="185" y="268" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>《清式营造则例》绪论</tspan>
+  </text>
+  <text x="145" y="297" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>为梁思成著作所作绪论，较完整地归纳了中国建筑理论框架</tspan>
+  </text>
+  <text x="145" y="317" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>从大系统到实用美观统一，再到历史演变与现代建筑关联</tspan>
+  </text>
+
+  <!-- 贡献3 -->
+  <rect x="60" y="345" width="1160" height="100" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1" filter="url(#cardShadow)"/>
+  <circle cx="105" cy="395" r="22" fill="#C9A96E" fill-opacity="0.15" stroke="#C9A96E" stroke-width="1.5"/>
+  <text x="105" y="402" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>3</tspan>
+  </text>
+  <use data-icon="chunk/flag" x="145" y="367" width="28" height="28" fill="#E8D5B7"/>
+  <text x="185" y="383" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>民居研究先驱</tspan>
+  </text>
+  <text x="145" y="412" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>在中国建筑界率先提出保护民间建筑，强调保护住宅和店面</tspan>
+  </text>
+  <text x="145" y="432" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>"艺术从来有两个系统，一个是宫殿艺术，一个是民间艺术"</tspan>
+  </text>
+
+  <!-- 贡献4 -->
+  <rect x="60" y="460" width="1160" height="100" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <circle cx="105" cy="510" r="22" fill="#C9A96E" fill-opacity="0.15" stroke="#C9A96E" stroke-width="1.5"/>
+  <text x="105" y="517" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>4</tspan>
+  </text>
+  <use data-icon="chunk/globe" x="145" y="482" width="28" height="28" fill="#C9A96E"/>
+  <text x="185" y="498" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>《现代住宅设计的参考》</tspan>
+  </text>
+  <text x="145" y="527" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>1945年发表，远见性地提出战后中国应为普通人设计建筑</tspan>
+  </text>
+  <text x="145" y="547" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>介绍同期西方国家战后新型住宅小区建设情况</tspan>
+  </text>
+
+  <!-- 贡献5 -->
+  <rect x="60" y="575" width="1160" height="80" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <circle cx="105" cy="615" r="22" fill="#C9A96E" fill-opacity="0.15" stroke="#C9A96E" stroke-width="1.5"/>
+  <text x="105" y="622" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>5</tspan>
+  </text>
+  <use data-icon="chunk/star" x="145" y="597" width="28" height="28" fill="#C9A96E"/>
+  <text x="185" y="613" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>首开"住宅概论"课程</tspan>
+  </text>
+  <text x="145" y="642" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>1949年清华大学，首次系统教授现代住宅建筑设计理论</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>07 / 10</tspan>
+  </text>
+</svg>

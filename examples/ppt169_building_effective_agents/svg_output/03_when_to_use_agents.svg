@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="36" rx="2" fill="#D4845A"/>
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">When (and When Not) to Use Agents</text>
+  </g>
+
+  <!-- Top principle bar -->
+  <g id="principle-bar">
+    <rect x="60" y="110" width="1160" height="52" rx="10" fill="#1A1D27" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/lightbulb" x="80" y="122" width="28" height="28" fill="#E8B87D"/>
+    <text x="118" y="143" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8B87D" font-weight="bold">Core Principle:</text>
+    <text x="270" y="143" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Find the simplest solution possible, and only increase complexity when needed.</text>
+  </g>
+
+  <!-- Three-column decision cards -->
+  <!-- Card 1: Single LLM Calls -->
+  <g id="card-single-llm">
+    <rect x="60" y="185" width="360" height="285" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="60" y="185" width="360" height="6" rx="3" fill="#4ADE80"/>
+    <use data-icon="chunk/terminal" x="84" y="212" width="32" height="32" fill="#4ADE80"/>
+    <text x="128" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Single LLM Calls</text>
+    <text x="84" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#4ADE80" font-weight="bold">START HERE</text>
+
+    <rect x="84" y="290" width="312" height="1" fill="#2D3348" fill-opacity="0.5"/>
+    <text x="84" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Optimized prompts with retrieval</text>
+    <text x="84" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">and in-context examples</text>
+    <text x="84" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Lowest latency</text>
+    <text x="84" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Lowest cost</text>
+    <text x="84" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Sufficient for most apps</text>
+    <text x="84" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●○○</text>
+  </g>
+
+  <!-- Card 2: Workflows -->
+  <g id="card-workflows">
+    <rect x="450" y="185" width="360" height="285" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="450" y="185" width="360" height="6" rx="3" fill="#5B9BD5"/>
+    <use data-icon="chunk/code" x="474" y="212" width="32" height="32" fill="#5B9BD5"/>
+    <text x="518" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Workflows</text>
+
+    <text x="474" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5B9BD5" font-weight="bold">WHEN MORE COMPLEXITY IS WARRANTED</text>
+
+    <rect x="474" y="290" width="312" height="1" fill="#2D3348" fill-opacity="0.5"/>
+    <text x="474" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">LLMs + tools orchestrated</text>
+    <text x="474" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">through predefined code paths</text>
+    <text x="474" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Predictability</text>
+    <text x="474" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Consistency</text>
+    <text x="474" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Well-defined tasks</text>
+    <text x="474" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●●○</text>
+  </g>
+
+  <!-- Card 3: Agents -->
+  <g id="card-agents">
+    <rect x="840" y="185" width="380" height="285" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="840" y="185" width="380" height="6" rx="3" fill="#D4845A"/>
+    <use data-icon="chunk/robot" x="864" y="212" width="32" height="32" fill="#D4845A"/>
+    <text x="908" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Agents</text>
+
+    <text x="864" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A" font-weight="bold">WHEN FLEXIBILITY IS NEEDED</text>
+
+    <rect x="864" y="290" width="332" height="1" fill="#2D3348" fill-opacity="0.5"/>
+    <text x="864" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">LLMs dynamically direct their</text>
+    <text x="864" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">own processes and tool usage</text>
+    <text x="864" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Flexibility at scale</text>
+    <text x="864" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Model-driven decisions</text>
+    <text x="864" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Open-ended problems</text>
+    <text x="864" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●●●</text>
+  </g>
+
+  <!-- Flow arrows between cards -->
+  <polygon points="424,328 440,318 440,338" fill="#2D3348"/>
+  <polygon points="814,328 830,318 830,338" fill="#2D3348"/>
+
+  <!-- Bottom framework note -->
+  <g id="framework-note">
+    <rect x="60" y="500" width="1160" height="140" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/toolbox" x="84" y="524" width="28" height="28" fill="#E8B87D"/>
+    <text x="124" y="546" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8B87D">On Frameworks</text>
+    <text x="84" y="580" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Start by using LLM APIs directly — many patterns can be implemented in a few lines of code.</text>
+    <text x="84" y="606" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">If you do use a framework, ensure you understand the underlying code.</text>
+    <text x="84" y="624" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Incorrect assumptions about what's under the hood are a common source of customer error.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">03</text>
+  </g>
+</svg>

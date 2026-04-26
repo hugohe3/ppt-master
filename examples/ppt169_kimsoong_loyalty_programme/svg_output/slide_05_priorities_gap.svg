@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="dotShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    After-Sales Service: High Importance, Critically Low Satisfaction
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="45" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="100" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    <tspan x="80" dy="0">After-sales ranks #4 in customer priorities but only 33% rate it Good or above — the single largest gap between what customers want and</tspan>
+    <tspan x="80" dy="16">what they receive. This is the strategic intervention point.</tspan>
+  </text>
+
+  <!-- ===== 2×2 Matrix Area ===== -->
+  <!-- Axis lines -->
+  <line x1="160" y1="150" x2="160" y2="610" stroke="#1A3A5C" stroke-width="2"/>
+  <line x1="160" y1="610" x2="1000" y2="610" stroke="#1A3A5C" stroke-width="2"/>
+
+  <!-- Y-axis label -->
+  <text x="30" y="390" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C" text-anchor="middle" transform="rotate(-90, 30, 390)">Satisfaction Level (%)</text>
+  <text x="140" y="170" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">100%</text>
+  <text x="140" y="280" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">75%</text>
+  <text x="140" y="390" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">50%</text>
+  <text x="140" y="500" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">25%</text>
+  <text x="140" y="608" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">0%</text>
+
+  <!-- Grid lines -->
+  <line x1="160" y1="280" x2="1000" y2="280" stroke="#D5DDE5" stroke-width="0.5" stroke-dasharray="4,4"/>
+  <line x1="160" y1="390" x2="1000" y2="390" stroke="#D5DDE5" stroke-width="1" stroke-dasharray="6,3"/>
+  <line x1="160" y1="500" x2="1000" y2="500" stroke="#D5DDE5" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+  <!-- X-axis label -->
+  <text x="580" y="648" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C" text-anchor="middle">Customer Priority Ranking (1 = Highest)</text>
+  <text x="280" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#1</text>
+  <text x="400" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#2</text>
+  <text x="520" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#3</text>
+  <text x="640" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#4</text>
+  <text x="760" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#5</text>
+  <text x="880" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#6</text>
+
+  <!-- Quadrant shading -->
+  <!-- Top-left: High priority + High satisfaction (green) -->
+  <rect x="160" y="150" width="420" height="230" fill="#2D8A4E" fill-opacity="0.05"/>
+  <!-- Bottom-left: High priority + Low satisfaction (red — danger zone) -->
+  <rect x="160" y="380" width="420" height="230" fill="#E74C3C" fill-opacity="0.06"/>
+  <text x="370" y="590" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C" fill-opacity="0.4" text-anchor="middle">CRITICAL GAP ZONE</text>
+
+  <!-- Data points -->
+  <!-- #1 Economy — high satisfaction ~80% → y = 150 + (1-0.80)*460 = 242 -->
+  <circle cx="280" cy="242" r="30" fill="#2D8A4E" filter="url(#dotShadow)"/>
+  <text x="280" y="238" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Economy</text>
+  <text x="280" y="254" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~80%</text>
+
+  <!-- #2 Price — high satisfaction ~75% → y = 150 + (1-0.75)*460 = 265 -->
+  <circle cx="400" cy="265" r="28" fill="#2D8A4E" filter="url(#dotShadow)"/>
+  <text x="400" y="261" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Price</text>
+  <text x="400" y="277" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~75%</text>
+
+  <!-- #3 Reliability — good satisfaction ~70% → y = 150 + (1-0.70)*460 = 288 -->
+  <circle cx="520" cy="288" r="26" fill="#E8A838" filter="url(#dotShadow)"/>
+  <text x="520" y="284" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Reliability</text>
+  <text x="520" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~70%</text>
+
+  <!-- #4 After-sales — CRITICAL: 33% satisfaction → y = 150 + (1-0.33)*460 = 458 -->
+  <circle cx="640" cy="458" r="36" fill="#E74C3C" filter="url(#dotShadow)"/>
+  <text x="640" y="451" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">After-</text>
+  <text x="640" y="466" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Sales</text>
+  <text x="640" y="482" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#FFFFFF">33%</text>
+
+  <!-- Critical gap annotation arrow -->
+  <line x1="640" y1="288" x2="640" y2="420" stroke="#E74C3C" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="656" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">GAP</text>
+
+  <!-- #5 Warranty — medium satisfaction ~55% → y = 150 + (1-0.55)*460 = 357 -->
+  <circle cx="760" cy="357" r="22" fill="#5D6D7E" filter="url(#dotShadow)"/>
+  <text x="760" y="353" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Warranty</text>
+  <text x="760" y="367" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF">~55%</text>
+
+  <!-- #6 Performance — medium satisfaction ~60% → y = 150 + (1-0.60)*460 = 334 -->
+  <circle cx="880" cy="334" r="20" fill="#5D6D7E" filter="url(#dotShadow)"/>
+  <text x="880" y="330" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Perf.</text>
+  <text x="880" y="344" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF">~60%</text>
+
+  <!-- ===== Right panel — After-sales breakdown ===== -->
+  <rect x="1020" y="150" width="220" height="320" rx="8" fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1"/>
+  <text x="1130" y="180" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">After-Sales Rating</text>
+  <line x1="1035" y1="192" x2="1225" y2="192" stroke="#D5DDE5" stroke-width="1"/>
+
+  <!-- Ratings -->
+  <text x="1040" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Excellent</text>
+  <text x="1210" y="220" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">4%</text>
+  <rect x="1040" y="228" width="19" height="6" rx="3" fill="#27AE60"/>
+
+  <text x="1040" y="256" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Very Good</text>
+  <text x="1210" y="256" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">12%</text>
+  <rect x="1040" y="264" width="57" height="6" rx="3" fill="#27AE60"/>
+
+  <text x="1040" y="292" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Good</text>
+  <text x="1210" y="292" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8A838">17%</text>
+  <rect x="1040" y="300" width="81" height="6" rx="3" fill="#E8A838"/>
+
+  <line x1="1035" y1="316" x2="1225" y2="316" stroke="#E74C3C" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="1130" y="332" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#E74C3C" font-weight="bold">— 33% threshold —</text>
+
+  <text x="1040" y="358" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">Fair</text>
+  <text x="1210" y="358" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">61%</text>
+  <rect x="1040" y="366" width="170" height="6" rx="3" fill="#E74C3C"/>
+
+  <text x="1040" y="394" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">Poor</text>
+  <text x="1210" y="394" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">6%</text>
+  <rect x="1040" y="402" width="29" height="6" rx="3" fill="#E74C3C"/>
+
+  <!-- Summary -->
+  <rect x="1030" y="420" width="200" height="40" rx="4" fill="#E74C3C" fill-opacity="0.08"/>
+  <text x="1130" y="440" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">67% Dissatisfied</text>
+  <text x="1130" y="455" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">(Fair + Poor combined)</text>
+
+  <!-- Data quality warning -->
+  <rect x="1020" y="500" width="220" height="56" rx="6" fill="#E8A838" fill-opacity="0.08" stroke="#E8A838" stroke-width="1" stroke-opacity="0.3"/>
+  <use data-icon="tabler-filled/alert-triangle" x="1035" y="509" width="20" height="20" fill="#E8A838"/>
+  <text x="1062" y="523" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#E8A838">Data Quality Warning</text>
+  <text x="1035" y="543" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">Only 40% questionnaire return</text>
+  <text x="1035" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">rate — potential response bias</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Customer Priority Survey &amp; After-Sales Satisfaction Survey</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">5</text>
+</svg>

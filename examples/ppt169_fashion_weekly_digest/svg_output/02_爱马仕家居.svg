@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#C9A96E"/>
+      <stop offset="80%" stop-color="#E8D5B5"/>
+      <stop offset="100%" stop-color="#E8D5B5" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="imgClip">
+      <rect x="540" y="50" width="700" height="620" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Subtle decorative glow -->
+  <rect x="540" y="50" width="700" height="620" rx="12" fill="#1A1A1A"/>
+
+  <!-- Right side: Hero image -->
+  <image href="../images/hermes_home.jpg" x="540" y="50" width="700" height="620" preserveAspectRatio="xMidYMid slice" clip-path="url(#imgClip)"/>
+
+  <!-- Image overlay for depth -->
+  <rect x="540" y="50" width="700" height="620" rx="12" fill="#0A0A0A" fill-opacity="0.15"/>
+
+  <!-- Left column: Text content -->
+  <!-- Section label -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="460" height="1" fill="#2A2520"/>
+
+  <!-- Brand tag -->
+  <rect x="50" y="80" width="60" height="22" rx="3" fill="#C9A96E" fill-opacity="0.15"/>
+  <text x="80" y="96" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#C9A96E" text-anchor="middle">家居</text>
+
+  <!-- Icon -->
+  <use data-icon="phosphor-duotone/house" x="50" y="120" width="36" height="36" fill="#C9A96E"/>
+
+  <!-- Brand name -->
+  <text x="50" y="200" font-family="Georgia, SimSun, serif" font-size="36" fill="#F5F0EB" font-weight="bold">HERMÈS</text>
+  <text x="50" y="235" font-family="Georgia, SimSun, serif" font-size="24" fill="#E8D5B5">家居世界</text>
+
+  <!-- Decorative gold line -->
+  <rect x="50" y="255" width="120" height="2" fill="#C9A96E"/>
+
+  <!-- Body content -->
+  <text x="50" y="295" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#F5F0EB">
+    <tspan x="50" dy="0">米兰设计周期间，Hermès 发布全新</tspan>
+    <tspan x="50" dy="30">家居系列。三十根饰以木质几何图案</tspan>
+    <tspan x="50" dy="30">的矩形立柱构筑沉浸式布景。</tspan>
+  </text>
+
+  <text x="50" y="405" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#F5F0EB">
+    <tspan x="50" dy="0">金属于锻打中见柔韧，皮革于镶嵌中</tspan>
+    <tspan x="50" dy="30">显韵律，织物与大理石材于匠艺雕琢</tspan>
+    <tspan x="50" dy="30">间迸发异彩。</tspan>
+  </text>
+
+  <!-- Key phrase highlight -->
+  <rect x="50" y="520" width="460" height="48" rx="8" fill="#1A1A1A"/>
+  <rect x="50" y="520" width="3" height="48" fill="#C9A96E"/>
+  <text x="70" y="550" font-family="Georgia, SimSun, serif" font-size="16" fill="#E8D5B5" font-style="italic">延续匠心工艺与隽永美学的恒久追寻</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">02 / 16</text>
+</svg>

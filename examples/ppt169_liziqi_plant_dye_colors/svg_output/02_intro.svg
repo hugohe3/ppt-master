@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgGrad02" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7F2E8"/>
+      <stop offset="100%" stop-color="#EDE5D3"/>
+    </linearGradient>
+    <filter id="imgShadow02" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgGrad02)"/>
+
+  <g id="header">
+    <text x="60" y="60" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">PROLOGUE · 引子</text>
+    <line x1="60" y1="72" x2="200" y2="72" stroke="#C99E62" stroke-width="2"/>
+  </g>
+
+  <g id="main-image" transform="translate(80,110)">
+    <rect x="-6" y="-6" width="312" height="512" fill="#EDE5D3" stroke="#C99E62" stroke-width="1"/>
+    <image href="../images/640_4.png" x="0" y="0" width="300" height="500" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow02)"/>
+    <rect x="-6" y="500" width="312" height="30" fill="#3A3530"/>
+    <text x="150" y="520" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#F7F2E8" letter-spacing="2">李子柒 · 春晚战袍</text>
+  </g>
+
+  <g id="right-content" transform="translate(460,110)">
+    <text x="0" y="40" font-family="KaiTi, STKaiti, Georgia, serif" font-size="50" font-weight="bold" fill="#3A3530" letter-spacing="4">最动人的色彩</text>
+    <rect x="0" y="60" width="80" height="3" fill="#B04A5C"/>
+    <text x="0" y="105" font-family="KaiTi, STKaiti, Georgia, serif" font-size="26" fill="#6B9AAE" letter-spacing="2">不在潘通色卡里</text>
+    <text x="0" y="145" font-family="KaiTi, STKaiti, Georgia, serif" font-size="26" fill="#6F8F75" letter-spacing="2">而早已藏在山河草木之间</text>
+
+    <rect x="0" y="180" width="720" height="1" fill="#D7CEB9"/>
+
+    <g transform="translate(0,210)">
+      <use data-icon="tabler-filled/sparkles" x="0" y="0" width="28" height="28" fill="#C99E62"/>
+      <text x="44" y="22" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">2025 央视春晚《迎福》</text>
+      <text x="44" y="54" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="1">李子柒身穿黄、青渐变色长裙翩然起舞，</text>
+      <text x="44" y="82" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="1">化身「蝴蝶仙子」，惊艳亮相。</text>
+    </g>
+
+    <g transform="translate(0,320)">
+      <use data-icon="tabler-filled/leaf" x="0" y="0" width="28" height="28" fill="#6F8F75"/>
+      <text x="44" y="22" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">13 项非遗技艺集于一身</text>
+      <text x="44" y="54" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="1">植物染 · 青神竹编 · 螺钿 · 成都漆艺</text>
+      <text x="44" y="82" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="1">羌绣 · 英山缠花 …… 十三项非遗同辉。</text>
+    </g>
+
+    <g transform="translate(0,430)">
+      <use data-icon="tabler-filled/droplet" x="0" y="0" width="28" height="28" fill="#6B9AAE"/>
+      <text x="44" y="22" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">一袭战袍，染尽山河</text>
+      <text x="44" y="54" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="1">黄青渐变 · 寓意中华土地 · 生生不息。</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="670" x2="1220" y2="670" stroke="#D7CEB9" stroke-width="1"/>
+    <text x="60" y="695" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">裁云织月 · 草木成诗</text>
+    <text x="1220" y="695" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">02 / 12</text>
+  </g>
+</svg>

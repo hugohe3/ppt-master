@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgGrad01" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7F2E8"/>
+      <stop offset="100%" stop-color="#EDE5D3"/>
+    </linearGradient>
+    <linearGradient id="sealGrad01" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C99E62"/>
+      <stop offset="100%" stop-color="#6F8F75"/>
+    </linearGradient>
+    <radialGradient id="decor01" cx="85%" cy="15%" r="60%">
+      <stop offset="0%" stop-color="#6B9AAE" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#6B9AAE" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="imgShadow01" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="6"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgGrad01)"/>
+  <rect width="1280" height="720" fill="url(#decor01)"/>
+
+  <g id="bg-texture-dots">
+    <circle cx="120" cy="120" r="1.5" fill="#D7CEB9" fill-opacity="0.5"/>
+    <circle cx="220" cy="180" r="1" fill="#D7CEB9" fill-opacity="0.4"/>
+    <circle cx="380" cy="90" r="1.2" fill="#D7CEB9" fill-opacity="0.4"/>
+    <circle cx="520" cy="140" r="1" fill="#D7CEB9" fill-opacity="0.5"/>
+    <circle cx="1080" cy="640" r="1.5" fill="#D7CEB9" fill-opacity="0.4"/>
+    <circle cx="1180" cy="580" r="1" fill="#D7CEB9" fill-opacity="0.5"/>
+    <circle cx="980" cy="680" r="1.2" fill="#D7CEB9" fill-opacity="0.4"/>
+  </g>
+
+  <g id="top-bar">
+    <line x1="60" y1="80" x2="160" y2="80" stroke="#C99E62" stroke-width="2"/>
+    <text x="175" y="85" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">國色三百 · 草木成诗</text>
+  </g>
+
+  <g id="main-seal" transform="translate(80,180)">
+    <rect x="0" y="0" width="110" height="110" fill="url(#sealGrad01)" rx="4"/>
+    <rect x="8" y="8" width="94" height="94" fill="none" stroke="#F7F2E8" stroke-width="2" rx="2"/>
+    <text x="55" y="50" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="24" font-weight="bold" fill="#F7F2E8" letter-spacing="2">草木</text>
+    <text x="55" y="85" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="24" font-weight="bold" fill="#F7F2E8" letter-spacing="2">成诗</text>
+  </g>
+
+  <g id="title-group">
+    <text x="80" y="380" font-family="KaiTi, STKaiti, Georgia, serif" font-size="82" font-weight="bold" fill="#3A3530" letter-spacing="6">裁云织月</text>
+    <text x="80" y="470" font-family="KaiTi, STKaiti, Georgia, serif" font-size="82" font-weight="bold" fill="#6B9AAE" letter-spacing="6">草木成诗</text>
+    <rect x="80" y="500" width="120" height="3" fill="#C99E62"/>
+    <text x="80" y="545" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#7A7068" letter-spacing="3">揭秘李子柒春晚战袍背后</text>
+    <text x="80" y="580" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#7A7068" letter-spacing="3">植物染成的 300 种中国传统色</text>
+  </g>
+
+  <g id="cover-image" transform="translate(720,135)">
+    <rect x="-8" y="-8" width="496" height="296" fill="#F7F2E8" stroke="#C99E62" stroke-width="1"/>
+    <image href="../images/640.png" x="0" y="0" width="480" height="280" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow01)"/>
+    <text x="240" y="305" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="1">2025 央视春晚《迎福》视觉秀</text>
+  </g>
+
+  <g id="cover-tags" transform="translate(720,370)">
+    <rect x="0" y="0" width="150" height="38" rx="19" fill="none" stroke="#6B9AAE" stroke-width="1.5"/>
+    <text x="75" y="24" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#6B9AAE" letter-spacing="2">植物染 · 非遗</text>
+
+    <rect x="165" y="0" width="150" height="38" rx="19" fill="none" stroke="#C99E62" stroke-width="1.5"/>
+    <text x="240" y="24" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#C99E62" letter-spacing="2">东方 · 美学</text>
+
+    <rect x="330" y="0" width="150" height="38" rx="19" fill="none" stroke="#B04A5C" stroke-width="1.5"/>
+    <text x="405" y="24" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#B04A5C" letter-spacing="2">五方 · 正色</text>
+  </g>
+
+  <g id="bottom-decor">
+    <use data-icon="tabler-filled/leaf" x="720" y="480" width="32" height="32" fill="#6F8F75"/>
+    <text x="765" y="503" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#3A3530">一袭黄青，染尽山河</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="670" x2="1220" y2="670" stroke="#D7CEB9" stroke-width="1"/>
+    <text x="60" y="695" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B" letter-spacing="1">文字整理自凤凰空间 · 孙琬童</text>
+    <text x="1220" y="695" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B" letter-spacing="1">2026.04 · 文化分享</text>
+  </g>
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Prioritize Service and Data — Financial Incentives Follow
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="45" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    Lead with service; follow with incentives. The branded pen initiative has the highest ROI for data collection (projected 40% → 70% response rate).
+  </text>
+
+  <!-- Column headers -->
+  <text x="80" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">INITIATIVE</text>
+  <text x="680" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">IMPACT</text>
+  <text x="880" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">COST</text>
+  <text x="1040" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">ROI SIGNAL</text>
+  <line x1="60" y1="165" x2="1220" y2="165" stroke="#D5DDE5" stroke-width="1"/>
+
+  <!-- ===== Initiative 1 ⭐: 3-Year Free After-sales Service ===== -->
+  <rect x="60" y="175" width="1160" height="90" rx="6" fill="#E8A838" fill-opacity="0.06" stroke="#E8A838" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <!-- Priority badge -->
+  <rect x="72" y="185" width="28" height="28" rx="14" fill="#E8A838"/>
+  <text x="86" y="204" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1</text>
+  <use data-icon="tabler-filled/star" x="105" y="185" width="24" height="24" fill="#E8A838"/>
+  <!-- Content -->
+  <use data-icon="tabler-filled/shield-check" x="72" y="220" width="24" height="24" fill="#1A3A5C"/>
+  <text x="105" y="210" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">3-Year Free After-Sales Service</text>
+  <text x="105" y="240" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Directly addresses #1 pain point — transforms service from</text>
+  <text x="105" y="255" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">cost center to loyalty driver</text>
+  <!-- Impact -->
+  <rect x="680" y="195" width="80" height="24" rx="12" fill="#E74C3C" fill-opacity="0.12"/>
+  <text x="720" y="212" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">HIGH</text>
+  <!-- Cost -->
+  <text x="880" y="212" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Med-High</text>
+  <!-- ROI -->
+  <rect x="1040" y="190" width="160" height="40" rx="4" fill="#2D8A4E" fill-opacity="0.08"/>
+  <text x="1050" y="209" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="600">Reduces 26% service</text>
+  <text x="1050" y="224" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="600">churn → high CLV gain</text>
+
+  <!-- ===== Initiative 2: 20% Loyalty Discount ===== -->
+  <rect x="60" y="275" width="1160" height="85" rx="6" fill="#F4F6F8" filter="url(#cardShadow)"/>
+  <rect x="72" y="285" width="28" height="28" rx="14" fill="#1A3A5C"/>
+  <text x="86" y="304" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">2</text>
+  <use data-icon="tabler-filled/discount" x="72" y="318" width="24" height="24" fill="#E8A838"/>
+  <text x="105" y="306" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">20% Loyalty Discount</text>
+  <text x="105" y="333" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Financial incentive — directly lowers switching barrier for repeat buyers</text>
+  <!-- Impact -->
+  <rect x="680" y="293" width="80" height="24" rx="12" fill="#E74C3C" fill-opacity="0.12"/>
+  <text x="720" y="310" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">HIGH</text>
+  <!-- Cost -->
+  <text x="880" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Medium</text>
+  <!-- ROI -->
+  <rect x="1040" y="290" width="160" height="30" rx="4" fill="#E8A838" fill-opacity="0.08"/>
+  <text x="1050" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#E8A838" font-weight="600">Counters competitor pull</text>
+
+  <!-- ===== Initiative 3: Enhanced Trade-in Programme ===== -->
+  <rect x="60" y="370" width="1160" height="85" rx="6" fill="#F4F6F8" filter="url(#cardShadow)"/>
+  <rect x="72" y="380" width="28" height="28" rx="14" fill="#1A3A5C"/>
+  <text x="86" y="399" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">3</text>
+  <use data-icon="tabler-filled/car" x="72" y="413" width="24" height="24" fill="#1A3A5C"/>
+  <text x="105" y="401" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Enhanced Trade-in Programme</text>
+  <text x="105" y="428" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Generous trade-in offers reduce switching barrier and lock customers in ecosystem</text>
+  <!-- Impact -->
+  <rect x="680" y="388" width="80" height="24" rx="12" fill="#E8A838" fill-opacity="0.15"/>
+  <text x="720" y="405" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8A838">MEDIUM</text>
+  <!-- Cost -->
+  <text x="880" y="405" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Low-Med</text>
+  <!-- ROI -->
+  <rect x="1040" y="385" width="160" height="30" rx="4" fill="#1A3A5C" fill-opacity="0.06"/>
+  <text x="1050" y="405" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#1A3A5C" font-weight="600">Captures used car value</text>
+
+  <!-- ===== Initiative 4: Customer Magazine ===== -->
+  <rect x="60" y="465" width="1160" height="85" rx="6" fill="#F4F6F8" filter="url(#cardShadow)"/>
+  <rect x="72" y="475" width="28" height="28" rx="14" fill="#5D6D7E"/>
+  <text x="86" y="494" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">4</text>
+  <use data-icon="tabler-filled/heart" x="72" y="508" width="24" height="24" fill="#2D8A4E"/>
+  <text x="105" y="496" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Customer Magazine</text>
+  <text x="105" y="523" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Free monthly magazine with owner features — builds emotional connection and brand community</text>
+  <!-- Impact -->
+  <rect x="680" y="483" width="100" height="24" rx="12" fill="#D5DDE5"/>
+  <text x="730" y="500" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">LOW-MED</text>
+  <!-- Cost -->
+  <text x="880" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Low</text>
+  <!-- ROI -->
+  <rect x="1040" y="480" width="160" height="30" rx="4" fill="#1A3A5C" fill-opacity="0.06"/>
+  <text x="1050" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Brand affinity uplift</text>
+
+  <!-- ===== Initiative 5: Questionnaire Incentive ===== -->
+  <rect x="60" y="560" width="1160" height="85" rx="6" fill="#2D8A4E" fill-opacity="0.04" stroke="#2D8A4E" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="72" y="570" width="28" height="28" rx="14" fill="#2D8A4E"/>
+  <text x="86" y="589" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">5</text>
+  <use data-icon="tabler-filled/gift" x="72" y="603" width="24" height="24" fill="#2D8A4E"/>
+  <text x="105" y="591" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Questionnaire Incentive (Branded Pen)</text>
+  <text x="105" y="618" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Premium branded pen for completing lifestyle questionnaires — improves data quality (40% → 70%)</text>
+  <!-- Impact -->
+  <rect x="680" y="578" width="80" height="24" rx="12" fill="#E8A838" fill-opacity="0.15"/>
+  <text x="720" y="595" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8A838">MEDIUM</text>
+  <!-- Cost -->
+  <text x="880" y="595" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#2D8A4E">Very Low</text>
+  <!-- ROI -->
+  <rect x="1040" y="575" width="160" height="40" rx="4" fill="#2D8A4E" fill-opacity="0.08"/>
+  <text x="1050" y="594" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="bold">★ Highest ROI</text>
+  <text x="1050" y="609" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#2D8A4E">40% → 70% response rate</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Director A &amp; Director B Proposals — Consolidated &amp; Prioritized</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">8</text>
+</svg>

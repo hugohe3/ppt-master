@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="mainImg">
+      <rect x="430" y="60" width="810" height="600" rx="12"/>
+    </clipPath>
+    <clipPath id="smallImg">
+      <rect x="50" y="490" width="160" height="120" rx="8"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <!-- Right: Large image -->
+  <rect x="430" y="60" width="810" height="600" rx="12" fill="#1A1A1A"/>
+  <image href="../images/gucci_memoria1.jpg" x="430" y="60" width="810" height="600" preserveAspectRatio="xMidYMid slice" clip-path="url(#mainImg)"/>
+  <rect x="430" y="60" width="810" height="600" rx="12" fill="#0A0A0A" fill-opacity="0.1"/>
+
+  <!-- Left: Text content -->
+  <use data-icon="phosphor-duotone/palette" x="50" y="75" width="32" height="32" fill="#C9A96E"/>
+
+  <text x="50" y="140" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" letter-spacing="4">GUCCI</text>
+  <text x="50" y="180" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold">Gucci Memoria</text>
+
+  <rect x="50" y="198" width="80" height="2" fill="#C9A96E"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="50" y="235">米兰圣辛普利齐亚诺回廊</tspan>
+    <tspan x="50" dy="26">启幕沉浸式展览。</tspan>
+  </text>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="50" y="310">由 Demna 策划，追溯品牌</tspan>
+    <tspan x="50" dy="26">105 年发展历程。</tspan>
+  </text>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="50" y="385">十二幅挂毯凝练品牌关键</tspan>
+    <tspan x="50" dy="26">发展节点与历任创意总监</tspan>
+    <tspan x="50" dy="26">的设计愿景。</tspan>
+  </text>
+
+  <!-- Small accent image -->
+  <rect x="50" y="490" width="160" height="120" rx="8" fill="#1A1A1A"/>
+  <image href="../images/gucci_memoria2.jpg" x="50" y="490" width="160" height="120" preserveAspectRatio="xMidYMid slice" clip-path="url(#smallImg)"/>
+
+  <text x="230" y="530" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">
+    <tspan x="230" dy="0">Flora 花卉主题</tspan>
+    <tspan x="230" dy="20">花园装置</tspan>
+  </text>
+  <text x="230" y="588" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">手袋配饰专享预售</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">06 / 16</text>
+</svg>

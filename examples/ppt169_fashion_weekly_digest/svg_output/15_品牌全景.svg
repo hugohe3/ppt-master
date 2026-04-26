@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#C9A96E"/>
+      <stop offset="80%" stop-color="#E8D5B5"/>
+      <stop offset="100%" stop-color="#E8D5B5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <text x="640" y="90" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">本期品牌全景</text>
+  <text x="640" y="115" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="4">BRAND PANORAMA</text>
+
+  <!-- Row 1: 顶奢 -->
+  <use data-icon="phosphor-duotone/crown" x="50" y="160" width="28" height="28" fill="#C9A96E"/>
+  <text x="90" y="182" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">顶级奢侈品牌</text>
+
+  <rect x="50" y="200" width="1180" height="100" rx="10" fill="#1A1A1A"/>
+  <text x="140" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">HERMÈS</text>
+  <text x="360" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">CHANEL</text>
+  <text x="560" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">DIOR</text>
+  <text x="800" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">LOUIS VUITTON</text>
+  <text x="1060" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">GUCCI</text>
+
+  <!-- Dividers between brands -->
+  <rect x="250" y="230" width="1" height="40" fill="#2A2520"/>
+  <rect x="460" y="230" width="1" height="40" fill="#2A2520"/>
+  <rect x="660" y="230" width="1" height="40" fill="#2A2520"/>
+  <rect x="940" y="230" width="1" height="40" fill="#2A2520"/>
+
+  <!-- Row 2: 轻奢/设计师 -->
+  <use data-icon="phosphor-duotone/diamond" x="50" y="330" width="28" height="28" fill="#C9A96E"/>
+  <text x="90" y="352" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">轻奢 / 设计师品牌</text>
+
+  <rect x="50" y="370" width="1180" height="100" rx="10" fill="#1A1A1A"/>
+  <text x="147" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Vhernier</text>
+  <text x="340" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">CELINE</text>
+  <text x="530" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Bottega Veneta</text>
+  <text x="740" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">McQueen</text>
+  <text x="920" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Max Mara</text>
+  <text x="1100" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Chloé</text>
+
+  <rect x="243" y="410" width="1" height="30" fill="#2A2520"/>
+  <rect x="436" y="410" width="1" height="30" fill="#2A2520"/>
+  <rect x="636" y="410" width="1" height="30" fill="#2A2520"/>
+  <rect x="836" y="410" width="1" height="30" fill="#2A2520"/>
+  <rect x="1010" y="410" width="1" height="30" fill="#2A2520"/>
+
+  <!-- Row 3: 潮流/生活方式 -->
+  <use data-icon="phosphor-duotone/sparkle" x="50" y="500" width="28" height="28" fill="#C9A96E"/>
+  <text x="90" y="522" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">潮流 / 生活方式</text>
+
+  <rect x="50" y="540" width="1180" height="100" rx="10" fill="#1A1A1A"/>
+  <text x="100" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">TAD FAB</text>
+  <text x="230" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Apede Mod</text>
+  <text x="380" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">BOSS</text>
+  <text x="480" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">fresh</text>
+  <text x="570" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">JORYA</text>
+  <text x="670" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">ARKET</text>
+  <text x="780" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Steve Madden</text>
+  <text x="940" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Crocs</text>
+
+  <!-- Dots between -->
+  <text x="195" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="345" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="445" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="535" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="635" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="735" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="905" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">15 / 16</text>
+</svg>

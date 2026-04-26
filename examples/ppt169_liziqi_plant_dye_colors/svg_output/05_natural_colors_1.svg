@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="imgShadow05" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 02 · 草木之色（上）</text>
+    <line x1="60" y1="62" x2="290" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">染出自然万物 · 天光与报春</text>
+    <text x="60" y="140" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">古人师法自然 · 从风雨日月、四季草木、花鸟鱼虫中为颜色取名</text>
+  </g>
+
+  <line x1="640" y1="180" x2="640" y2="660" stroke="#D7CEB9" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <g id="color-yuguo" transform="translate(60,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#7AA4B6" stroke-width="1"/>
+      <image href="../images/640_5.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow05)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">宋 · 汝窑天青釉圆洗</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="260" height="200" rx="4" fill="#7AA4B6"/>
+      <rect x="10" y="10" width="240" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="130" y="78" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" font-weight="bold" fill="#F7F2E8" letter-spacing="6">雨过</text>
+      <text x="130" y="128" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" font-weight="bold" fill="#F7F2E8" letter-spacing="6">天青</text>
+      <text x="130" y="170" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#7AA4B6</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/quote" x="0" y="0" width="24" height="24" fill="#6B9AAE"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">雨过天青云破处</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">这般颜色做将来</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 宋徽宗 · 钦定青花瓷色</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="570" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/droplet" x="0" y="0" width="20" height="20" fill="#6B9AAE"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 蓝黄套染</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">土靛 95% + 黄芩 5%，清透带朦胧诗意</text>
+    </g>
+  </g>
+
+  <g id="color-canghuang" transform="translate(670,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#B29A55" stroke-width="1"/>
+      <image href="../images/640_6.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow05)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">苍黄 · 报春之色</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="240" height="200" rx="4" fill="#B29A55"/>
+      <rect x="10" y="10" width="220" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="120" y="105" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="72" font-weight="bold" fill="#F7F2E8" letter-spacing="4">苍黄</text>
+      <text x="120" y="160" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#B29A55</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/quote" x="0" y="0" width="24" height="24" fill="#C99E62"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">顾渚山中鸟如鸲鹆</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">苍黄色 · 曰「春起也」</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 宋李昉《太平广记》 · 报春鸟</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="550" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/leaf" x="0" y="0" width="20" height="20" fill="#C99E62"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 双法可得</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">大黄 + 苏木，蓝矾媒染；或赭石先染 + 黑茶套染</text>
+    </g>
+  </g>
+
+  <g id="bottom-strip" transform="translate(60,660)">
+    <rect x="0" y="0" width="1160" height="32" rx="16" fill="#EDE5D3"/>
+    <text x="30" y="21" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">古人采花果叶茎 · 浸染棉纱织布 · 每一种色彩，都源于大地</text>
+    <text x="1130" y="21" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">05 / 12</text>
+  </g>
+</svg>

@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <filter id="barShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.1" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    78% of Customer Loss Is Addressable — Competitors and Service Dominate
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V119 A4,4 0 0 1 1216,123 H64 A4,4 0 0 1 60,119 V82 A4,4 0 0 1 64,78 Z" />
+  <text font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" x="80" y="100">78% of churn is within Kimsoong's control. Service improvement and competitive positioning are the two levers. Only 13% of losses</text><text font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" x="80" y="116">(relocation + no longer driving) are truly uncontrollable.</text><text x="60" y="180" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Reason for Not Repurchasing</text>
+
+  
+  
+  <text x="60" y="235" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">Bought competitor's model</text>
+  <path fill="#E74C3C" filter="url(#barShadow)" d="M314,218 H774 A4,4 0 0 1 778,222 V242 A4,4 0 0 1 774,246 H314 A4,4 0 0 1 310,242 V222 A4,4 0 0 1 314,218 Z" />
+  <text x="790" y="238" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E74C3C">52%</text>
+  
+  <g transform="translate(835.0, 220.0)" fill="#E74C3C">
+    <path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
+  </g>
+
+  
+  <text x="60" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">Disappointed with service</text>
+  <path fill="#E8A838" filter="url(#barShadow)" d="M314,273 H540 A4,4 0 0 1 544,277 V297 A4,4 0 0 1 540,301 H314 A4,4 0 0 1 310,297 V277 A4,4 0 0 1 314,273 Z" />
+  <text x="556" y="293" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8A838">26%</text>
+
+  
+  <line x1="860" y1="218" x2="860" y2="306" stroke="#E74C3C" stroke-width="2" />
+  <line x1="850" y1="218" x2="860" y2="218" stroke="#E74C3C" stroke-width="2" />
+  <line x1="850" y1="306" x2="860" y2="306" stroke="#E74C3C" stroke-width="2" />
+  <path fill="#E74C3C" fill-opacity="0.08" stroke="#E74C3C" stroke-width="1" d="M874,245 H976 A4,4 0 0 1 980,249 V271 A4,4 0 0 1 976,275 H874 A4,4 0 0 1 870,271 V249 A4,4 0 0 1 874,245 Z" />
+  <text x="925" y="265" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">78% Addressable</text>
+
+  
+  <line x1="60" y1="320" x2="1000" y2="320" stroke="#D5DDE5" stroke-width="1" stroke-dasharray="6,4" />
+  <text x="1010" y="325" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">— uncontrollable —</text>
+
+  
+  <text x="60" y="357" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">Don't know</text>
+  <path fill="#95A5A6" fill-opacity="0.5" d="M314,340 H387 A4,4 0 0 1 391,344 V364 A4,4 0 0 1 387,368 H314 A4,4 0 0 1 310,364 V344 A4,4 0 0 1 314,340 Z" />
+  <text x="403" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">9%</text>
+
+  
+  <text x="60" y="407" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">Relocated</text>
+  <path fill="#95A5A6" fill-opacity="0.5" d="M314,390 H378 A4,4 0 0 1 382,394 V414 A4,4 0 0 1 378,418 H314 A4,4 0 0 1 310,414 V394 A4,4 0 0 1 314,390 Z" />
+  <text x="394" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">8%</text>
+
+  
+  <text x="60" y="457" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">No longer drive</text>
+  <path fill="#95A5A6" fill-opacity="0.5" d="M314,440 H351 A4,4 0 0 1 355,444 V464 A4,4 0 0 1 351,468 H314 A4,4 0 0 1 310,464 V444 A4,4 0 0 1 314,440 Z" />
+  <text x="367" y="460" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">5%</text>
+
+  
+  <text x="60" y="520" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Cumulative % of Addressable Churn</text>
+
+  
+  <path fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1" d="M72,538 H948 A12,12 0 0 1 960,550 V550 A12,12 0 0 1 948,562 H72 A12,12 0 0 1 60,550 V550 A12,12 0 0 1 72,538 Z" />
+  
+  <path fill="#E74C3C" d="M72,538 H516 A12,12 0 0 1 528,550 V550 A12,12 0 0 1 516,562 H72 A12,12 0 0 1 60,550 V550 A12,12 0 0 1 72,538 Z" />
+  
+  <rect x="528" y="538" width="234" height="24" rx="0" fill="#E8A838" />
+  
+  <path fill="#E8A838" d="M740,538 H750 A12,12 0 0 1 762,550 V550 A12,12 0 0 1 750,562 H740 A12,12 0 0 1 728,550 V550 A12,12 0 0 1 740,538 Z" />
+
+  
+  <text x="294" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Competitors: 52%</text>
+  <text x="630" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Service: 26%</text>
+
+  
+  <text x="800" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#95A5A6">Uncontrollable: 22%</text>
+
+  
+  <path fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1" d="M68,585 H1212 A8,8 0 0 1 1220,593 V659 A8,8 0 0 1 1212,667 H68 A8,8 0 0 1 60,659 V593 A8,8 0 0 1 68,585 Z" />
+  
+  <g transform="translate(80.0, 598.0) scale(1.1666666666666667)" fill="#1A3A5C">
+    <path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-8.997 6.83a1 1 0 0 0 -1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0 -1 -1m3 4a1 1 0 0 0 -1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0 -1 -1m3 -2a1 1 0 0 0 -1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0 -1 -1m-1 -11a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" />
+  </g>
+  <text x="118" y="618" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Strategic Implication</text>
+
+  <text font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50" x="80" y="645">Two levers control 78% of churn: (1) Competitive positioning — enhance value proposition to prevent switching;</text><text font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50" x="80" y="665">(2) Service excellence — address the #1 dissatisfaction driver. The loyalty programme must target both.</text><line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Services — Non-repurchase Reasons Analysis</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">6</text>
+</svg>

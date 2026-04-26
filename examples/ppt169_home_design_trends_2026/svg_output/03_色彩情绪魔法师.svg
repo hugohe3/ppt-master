@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow03" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="accentBar03" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C4A882"/>
+      <stop offset="100%" stop-color="#D4956A"/>
+    </linearGradient>
+    <clipPath id="colorWheelClip">
+      <rect x="60" y="110" width="420" height="540" rx="16"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p03-header">
+    <use data-icon="tabler-filled/palette" x="60" y="30" width="32" height="32" fill="#D4956A"/>
+    <text x="102" y="56" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      三大底层元素 · 壹
+    </text>
+    <rect x="60" y="75" width="50" height="3" fill="url(#accentBar03)" rx="1.5"/>
+  </g>
+
+  <!-- Left: Color wheel image -->
+  <g id="p03-image">
+    <image href="../images/color_wheel.png" x="60" y="110" width="420" height="540" preserveAspectRatio="xMidYMid slice" clip-path="url(#colorWheelClip)"/>
+  </g>
+
+  <!-- Right content area -->
+  <g id="p03-title">
+    <text x="520" y="155" font-family="Georgia, SimSun, serif" font-size="36" font-weight="bold" fill="#E8E0D4">
+      色彩
+    </text>
+    <text x="520" y="200" font-family="Georgia, SimSun, serif" font-size="26" fill="#C4A882">
+      空间的"情绪魔法师"
+    </text>
+  </g>
+
+  <rect x="520" y="220" width="40" height="2" fill="#3D362E"/>
+
+  <!-- Content points -->
+  <g id="p03-points">
+    <!-- Point 1 -->
+    <g id="p03-point1">
+      <rect x="520" y="248" width="700" height="80" rx="10" fill="#2A2520" filter="url(#cardShadow03)"/>
+      <rect x="520" y="248" width="4" height="80" rx="2" fill="#C4A882"/>
+      <text x="544" y="278" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E0D4">
+        第一印象
+      </text>
+      <text x="544" y="308" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+        色彩是空间给人的第一印象和最直观的感受
+      </text>
+    </g>
+
+    <!-- Point 2 -->
+    <g id="p03-point2">
+      <rect x="520" y="345" width="700" height="80" rx="10" fill="#2A2520" filter="url(#cardShadow03)"/>
+      <rect x="520" y="345" width="4" height="80" rx="2" fill="#D4956A"/>
+      <text x="544" y="375" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E0D4">
+        改变视觉尺度
+      </text>
+      <text x="544" y="405" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+        暖色调 → 温柔包裹感 ｜ 冷色调 → 开阔冷静
+      </text>
+    </g>
+
+    <!-- Point 3 -->
+    <g id="p03-point3">
+      <rect x="520" y="442" width="700" height="80" rx="10" fill="#2A2520" filter="url(#cardShadow03)"/>
+      <rect x="520" y="442" width="4" height="80" rx="2" fill="#8B7355"/>
+      <text x="544" y="472" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E0D4">
+        心理反应
+      </text>
+      <text x="544" y="502" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+        灰绿 → 平静专注 ｜ 咖色 → 阳光包裹 ｜ 跳色 → 个性活力
+      </text>
+    </g>
+  </g>
+
+  <!-- Small accent image bottom right -->
+  <image href="../images/brown_cozy.png" x="920" y="545" width="300" height="120" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="920" y="545" width="300" height="120" fill="#1A1714" fill-opacity="0.25"/>
+  <text x="935" y="652" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+    混色调棕色营造宁静与质朴
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    03 / 12
+  </text>
+</svg>

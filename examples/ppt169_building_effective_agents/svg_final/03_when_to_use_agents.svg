@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="4" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <linearGradient id="successGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#4ADE80" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0F1117" />
+
+  
+  <g id="header">
+    <path fill="#D4845A" d="M62,50 H62 A2,2 0 0 1 64,52 V84 A2,2 0 0 1 62,86 H62 A2,2 0 0 1 60,84 V52 A2,2 0 0 1 62,50 Z" />
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">When (and When Not) to Use Agents</text>
+  </g>
+
+  
+  <g id="principle-bar">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" d="M70,110 H1210 A10,10 0 0 1 1220,120 V152 A10,10 0 0 1 1210,162 H70 A10,10 0 0 1 60,152 V120 A10,10 0 0 1 70,110 Z" />
+    
+  <g transform="translate(80.0, 122.0) scale(1.75)" fill="#E8B87D">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z" />
+  </g>
+    <text x="118" y="143" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8B87D" font-weight="bold">Core Principle:</text>
+    <text x="270" y="143" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Find the simplest solution possible, and only increase complexity when needed.</text>
+  </g>
+
+  
+  
+  <g id="card-single-llm">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M72,185 H408 A12,12 0 0 1 420,197 V458 A12,12 0 0 1 408,470 H72 A12,12 0 0 1 60,458 V197 A12,12 0 0 1 72,185 Z" />
+    <path fill="#4ADE80" d="M63,185 H417 A3,3 0 0 1 420,188 V188 A3,3 0 0 1 417,191 H63 A3,3 0 0 1 60,188 V188 A3,3 0 0 1 63,185 Z" />
+    
+  <g transform="translate(84.0, 212.0) scale(2.0)" fill="#4ADE80">
+    <path d="M0.792725 12.2929L5.08562 8.00002L0.792725 3.70712L2.20694 2.29291L7.91405 8.00002L2.20694 13.7071L0.792725 12.2929Z" />
+    <path d="M7.00006 15H15.0001V13H7.00006V15Z" />
+  </g>
+    <text x="128" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Single LLM Calls</text>
+    <text x="84" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#4ADE80" font-weight="bold">START HERE</text>
+
+    <rect x="84" y="290" width="312" height="1" fill="#2D3348" fill-opacity="0.5" />
+    <text x="84" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Optimized prompts with retrieval</text>
+    <text x="84" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">and in-context examples</text>
+    <text x="84" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Lowest latency</text>
+    <text x="84" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Lowest cost</text>
+    <text x="84" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Sufficient for most apps</text>
+    <text x="84" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●○○</text>
+  </g>
+
+  
+  <g id="card-workflows">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M462,185 H798 A12,12 0 0 1 810,197 V458 A12,12 0 0 1 798,470 H462 A12,12 0 0 1 450,458 V197 A12,12 0 0 1 462,185 Z" />
+    <path fill="#5B9BD5" d="M453,185 H807 A3,3 0 0 1 810,188 V188 A3,3 0 0 1 807,191 H453 A3,3 0 0 1 450,188 V188 A3,3 0 0 1 453,185 Z" />
+    
+  <g transform="translate(474.0, 212.0) scale(2.0)" fill="#5B9BD5">
+    <path d="M8.01005 0.858582L6.01005 14.8586L7.98995 15.1414L9.98995 1.14142L8.01005 0.858582Z" />
+    <path d="M12.5 11.5L11.0858 10.0858L13.1716 8L11.0858 5.91422L12.5 4.5L16 8L12.5 11.5Z" />
+    <path d="M2.82843 8L4.91421 10.0858L3.5 11.5L0 8L3.5 4.5L4.91421 5.91422L2.82843 8Z" />
+  </g>
+    <text x="518" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Workflows</text>
+
+    <text x="474" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5B9BD5" font-weight="bold">WHEN MORE COMPLEXITY IS WARRANTED</text>
+
+    <rect x="474" y="290" width="312" height="1" fill="#2D3348" fill-opacity="0.5" />
+    <text x="474" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">LLMs + tools orchestrated</text>
+    <text x="474" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">through predefined code paths</text>
+    <text x="474" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Predictability</text>
+    <text x="474" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Consistency</text>
+    <text x="474" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Well-defined tasks</text>
+    <text x="474" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●●○</text>
+  </g>
+
+  
+  <g id="card-agents">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M852,185 H1208 A12,12 0 0 1 1220,197 V458 A12,12 0 0 1 1208,470 H852 A12,12 0 0 1 840,458 V197 A12,12 0 0 1 852,185 Z" />
+    <path fill="#D4845A" d="M843,185 H1217 A3,3 0 0 1 1220,188 V188 A3,3 0 0 1 1217,191 H843 A3,3 0 0 1 840,188 V188 A3,3 0 0 1 843,185 Z" />
+    
+  <g transform="translate(864.0, 212.0) scale(2.0)" fill="#D4845A">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0V2H13L16 8.5L13 15H3L0 8.5L3 2H7V0H9ZM4.59794 11.7384L8 12.2618L11.4021 11.7384L11.0979 9.76163L8 10.2382L4.90206 9.76163L4.59794 11.7384ZM7 6.75C7 7.44036 6.44036 8 5.75 8C5.05964 8 4.5 7.44036 4.5 6.75C4.5 6.05964 5.05964 5.5 5.75 5.5C6.44036 5.5 7 6.05964 7 6.75ZM10.25 8C10.9404 8 11.5 7.44036 11.5 6.75C11.5 6.05964 10.9404 5.5 10.25 5.5C9.55964 5.5 9 6.05964 9 6.75C9 7.44036 9.55964 8 10.25 8Z" />
+  </g>
+    <text x="908" y="237" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E8EC">Agents</text>
+
+    <text x="864" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A" font-weight="bold">WHEN FLEXIBILITY IS NEEDED</text>
+
+    <rect x="864" y="290" width="332" height="1" fill="#2D3348" fill-opacity="0.5" />
+    <text x="864" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">LLMs dynamically direct their</text>
+    <text x="864" y="340" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">own processes and tool usage</text>
+    <text x="864" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Flexibility at scale</text>
+    <text x="864" y="398" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Model-driven decisions</text>
+    <text x="864" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">✓  Open-ended problems</text>
+    <text x="864" y="450" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Complexity: ●●●</text>
+  </g>
+
+  
+  <polygon points="424,328 440,318 440,338" fill="#2D3348" />
+  <polygon points="814,328 830,318 830,338" fill="#2D3348" />
+
+  
+  <g id="framework-note">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" d="M72,500 H1208 A12,12 0 0 1 1220,512 V628 A12,12 0 0 1 1208,640 H72 A12,12 0 0 1 60,628 V512 A12,12 0 0 1 72,500 Z" />
+    
+  <g transform="translate(84.0, 524.0) scale(1.75)" fill="#E8B87D">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1H12V5H13.5L16 7.5V9H0V7.5L2.5 5H4V1ZM10 3V5H6V3H10Z" />
+    <path d="M0 11V15H16V11H0Z" />
+  </g>
+    <text x="124" y="546" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8B87D">On Frameworks</text>
+    <text x="84" y="580" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Start by using LLM APIs directly — many patterns can be implemented in a few lines of code.</text>
+    <text x="84" y="606" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">If you do use a framework, ensure you understand the underlying code.</text>
+    <text x="84" y="624" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Incorrect assumptions about what's under the hood are a common source of customer error.</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">03</text>
+  </g>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="leftImg"><rect x="50" y="120" width="560" height="290" rx="10"/></clipPath>
+    <clipPath id="rightImg"><rect x="670" y="120" width="560" height="290" rx="10"/></clipPath>
+  </defs>
+
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">跨界新风</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">JORYA × ARKET</text>
+
+  <rect x="635" y="120" width="1" height="530" fill="#2A2520"/>
+
+  <!-- LEFT: JORYA -->
+  <rect x="50" y="120" width="560" height="290" rx="10" fill="#1A1A1A"/>
+  <image href="../images/jorya_popup.jpg" x="50" y="120" width="560" height="290" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImg)"/>
+
+  <use data-icon="phosphor-duotone/star" x="50" y="430" width="26" height="26" fill="#C9A96E"/>
+  <text x="84" y="450" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">JORYA × YVMIN</text>
+  <text x="282" y="450" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">公主日记</text>
+
+  <rect x="50" y="465" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="50" y="495">成都万象城联名限定快闪</tspan>
+    <tspan x="50" dy="24">赵露思优雅亮相开幕现场</tspan>
+    <tspan x="50" dy="24">千金轻纱叠穿概念 · 重新定义当代公主格调</tspan>
+  </text>
+
+  <text x="50" y="590" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">限时开放至4月28日</text>
+
+  <!-- RIGHT: ARKET -->
+  <rect x="670" y="120" width="560" height="290" rx="10" fill="#1A1A1A"/>
+  <image href="../images/arket_gohar.jpg" x="670" y="120" width="560" height="290" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImg)"/>
+
+  <use data-icon="phosphor-duotone/handshake" x="670" y="430" width="26" height="26" fill="#C9A96E"/>
+  <text x="704" y="450" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">ARKET × Laila Gohar</text>
+
+  <rect x="670" y="465" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="670" y="495">米兰设计周公共艺术装置</tspan>
+    <tspan x="670" dy="24">十八世纪旋转木马极简改造</tspan>
+    <tspan x="670" dy="24">巨型蔬果雕塑 · 戏剧化表达 · 日常之美</tspan>
+  </text>
+
+  <text x="670" y="590" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">27款联名单品 · 4月23日登陆中国内地</text>
+
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">12 / 16</text>
+</svg>

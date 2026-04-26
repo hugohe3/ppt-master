@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow09" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="leftImgClip09">
+      <rect x="60" y="130" width="380" height="450" rx="12"/>
+    </clipPath>
+    <clipPath id="rightImgClip09">
+      <rect x="710" y="130" width="510" height="290" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p09-header">
+    <use data-icon="tabler-filled/star" x="60" y="25" width="24" height="24" fill="#D4956A"/>
+    <text x="92" y="44" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      2026 流行风格
+    </text>
+    <text x="60" y="95" font-family="Georgia, SimSun, serif" font-size="32" font-weight="bold" fill="#E8E0D4">
+      自由灵魂与时间记忆
+    </text>
+  </g>
+
+  <!-- Left: Bohemian image (portrait) -->
+  <g id="p09-bohemian" filter="url(#cardShadow09)">
+    <image href="../images/bohemian_style.png" x="60" y="130" width="380" height="450" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImgClip09)"/>
+    <rect x="60" y="510" width="380" height="70" fill="#1A1714" fill-opacity="0.75"/>
+    <text x="80" y="543" font-family="Georgia, SimSun, serif" font-size="20" font-weight="bold" fill="#D4956A">
+      波西米亚风
+    </text>
+    <text x="80" y="568" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#B0A08E">
+      有层次的不羁感
+    </text>
+  </g>
+
+  <!-- Middle: Bohemian description -->
+  <g id="p09-bohemian-desc">
+    <rect x="470" y="130" width="210" height="450" rx="10" fill="#2A2520"/>
+    <rect x="470" y="130" width="210" height="4" rx="2" fill="#D4956A"/>
+    <text x="490" y="170" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#D4956A" font-weight="bold">
+      波西米亚
+    </text>
+    <text x="490" y="200" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      大胆色彩
+    </text>
+    <text x="490" y="225" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      自由织物组合
+    </text>
+    <text x="490" y="250" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      手工编织挂毯
+    </text>
+    <text x="490" y="275" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      民族风靠垫
+    </text>
+    <text x="490" y="300" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      流苏窗帘灯罩
+    </text>
+    <rect x="490" y="325" width="170" height="1" fill="#3D362E"/>
+    <text x="490" y="355" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#C4A882" font-weight="bold">
+      怀旧复古
+    </text>
+    <text x="490" y="385" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      风化木材
+    </text>
+    <text x="490" y="410" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      略带锈迹的熟铁
+    </text>
+    <text x="490" y="435" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      岁月打磨的柳编
+    </text>
+    <text x="490" y="460" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      棉质面料 · 柔和色调
+    </text>
+    <text x="490" y="495" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">
+      材质本身就是
+    </text>
+    <text x="490" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">
+      故事的载体
+    </text>
+  </g>
+
+  <!-- Right: Retro image -->
+  <g id="p09-retro" filter="url(#cardShadow09)">
+    <image href="../images/retro_style.png" x="710" y="130" width="510" height="290" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImgClip09)"/>
+    <rect x="710" y="355" width="510" height="65" fill="#1A1714" fill-opacity="0.75"/>
+    <text x="730" y="388" font-family="Georgia, SimSun, serif" font-size="20" font-weight="bold" fill="#C4A882">
+      怀旧复古风
+    </text>
+    <text x="730" y="410" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#B0A08E">
+      加入个人记忆的重新演绎
+    </text>
+  </g>
+
+  <!-- Bottom shared insight -->
+  <g id="p09-insight">
+    <rect x="710" y="450" width="510" height="130" rx="10" fill="#2A2520"/>
+    <rect x="710" y="450" width="510" height="3" fill="#8B7355"/>
+    <text x="730" y="485" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="bold" fill="#E8E0D4">
+      共同特点
+    </text>
+    <text x="730" y="515" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      对真实与情感的深切渴望
+    </text>
+    <text x="730" y="545" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      让家成为安放记忆的容器
+    </text>
+    <text x="730" y="568" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" font-style="italic">
+      "自由，却绝不凌乱"
+    </text>
+  </g>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    09 / 12
+  </text>
+
+  <!-- Footer line -->
+  <rect x="60" y="660" width="1160" height="1" fill="#3D362E"/>
+  <text x="60" y="690" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+    图源：《空间的高级感》· unsplash
+  </text>
+</svg>

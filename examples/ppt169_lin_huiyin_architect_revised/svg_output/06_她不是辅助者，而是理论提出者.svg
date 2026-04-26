@@ -1,0 +1,65 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="header">
+    <text x="72" y="92" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">她不是辅助者，而是理论提出者</text>
+    <text x="72" y="121" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">1932 年那篇论文，已经在定义“中国建筑”的理论边界</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#D8CBB8" stroke-width="1.5"/>
+    <text x="1196" y="92" text-anchor="end" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">06</text>
+  </g>
+
+  <g id="left-image">
+    <rect x="72" y="174" width="374" height="444" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+    <image href="../images/first_paper.png" x="72" y="174" width="374" height="444" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="72" y="582" width="374" height="36" fill="#F6F1E8"/>
+    <text x="92" y="605" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#6A6258">《论中国建筑之几个特征》相关图像</text>
+  </g>
+
+  <g id="vertical-list-axis">
+    <line x1="526" y1="196" x2="526" y2="598" stroke="#D8CBB8" stroke-width="3"/>
+  </g>
+
+  <g id="item-1">
+    <circle cx="526" cy="224" r="18" fill="#A44A3F"/>
+    <text x="526" y="230" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="12" fill="#FFFFFF" font-weight="700">01</text>
+    <line x1="544" y1="224" x2="582" y2="224" stroke="#A44A3F" stroke-width="2"/>
+    <rect x="582" y="196" width="598" height="58" rx="10" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.2"/>
+    <text x="604" y="220" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16" font-weight="600">中国专业学者首次系统论述中国建筑</text>
+    <text x="604" y="242" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">这不是“补充说明”，而是学科话语的建立。</text>
+  </g>
+
+  <g id="item-2">
+    <circle cx="526" cy="314" r="18" fill="#6E7C80"/>
+    <text x="526" y="320" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="12" fill="#FFFFFF" font-weight="700">02</text>
+    <line x1="544" y1="314" x2="582" y2="314" stroke="#6E7C80" stroke-width="2"/>
+    <rect x="582" y="286" width="598" height="58" rx="10" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.2"/>
+    <text x="604" y="310" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16" font-weight="600">反驳西方知识框架中的误读</text>
+    <text x="604" y="332" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">她在为中国建筑争取解释权，而不只是做材料整理。</text>
+  </g>
+
+  <g id="item-3">
+    <circle cx="526" cy="404" r="18" fill="#B6915E"/>
+    <text x="526" y="410" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="12" fill="#FFFFFF" font-weight="700">03</text>
+    <line x1="544" y1="404" x2="582" y2="404" stroke="#B6915E" stroke-width="2"/>
+    <rect x="582" y="376" width="598" height="58" rx="10" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.2"/>
+    <text x="604" y="400" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16" font-weight="600">定义木构架体系的关键特征</text>
+    <text x="604" y="422" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">她从描述走向结构性概括，这正是理论工作的核心。</text>
+  </g>
+
+  <g id="item-4">
+    <circle cx="526" cy="494" r="18" fill="#A44A3F"/>
+    <text x="526" y="500" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="12" fill="#FFFFFF" font-weight="700">04</text>
+    <line x1="544" y1="494" x2="582" y2="494" stroke="#A44A3F" stroke-width="2"/>
+    <rect x="582" y="466" width="598" height="58" rx="10" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.2"/>
+    <text x="604" y="490" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16" font-weight="600">为后续中国建筑史叙述提供理论骨架</text>
+    <text x="604" y="512" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">她的工作影响了后来学术写作、教学与保护实践的语言方式。</text>
+  </g>
+
+  <g id="quote">
+    <rect x="582" y="554" width="598" height="64" rx="12" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.2"/>
+    <use data-icon="tabler-outline/globe" x="606" y="575" width="20" height="20" fill="#A44A3F"/>
+    <text x="638" y="578" font-family="SimSun" font-size="22" fill="#A44A3F" font-weight="700">她不是在“陪同研究”</text>
+    <text x="638" y="603" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">而是在参与塑造中国建筑被理解的方式。</text>
+  </g>
+</svg>

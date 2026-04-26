@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="coreShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="nodeShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Subtle radial decoration -->
+  <circle cx="640" cy="380" r="320" fill="#1A3A5C" fill-opacity="0.015"/>
+  <circle cx="640" cy="380" r="220" fill="#1A3A5C" fill-opacity="0.02"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    A Four-Pillar Framework to Transform Customer Relationships
+  </text>
+
+  <!-- Light subtitle -->
+  <text x="60" y="85" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#5D6D7E" font-style="italic">
+    From transactional sales to enduring loyalty — a strategic architecture for Kimsoong Europe
+  </text>
+
+  <!-- ===== Connection lines (behind nodes) ===== -->
+  <!-- Core center: (640, 380). Pillars at cardinal positions -->
+  <line x1="640" y1="380" x2="260" y2="260" stroke="#1A3A5C" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="6,4"/>
+  <line x1="640" y1="380" x2="1020" y2="260" stroke="#E8A838" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="6,4"/>
+  <line x1="640" y1="380" x2="260" y2="520" stroke="#2D8A4E" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="6,4"/>
+  <line x1="640" y1="380" x2="1020" y2="520" stroke="#1A3A5C" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="6,4"/>
+
+  <!-- ===== Central core ===== -->
+  <circle cx="640" cy="380" r="80" fill="url(#coreGrad)" filter="url(#coreShadow)"/>
+  <use data-icon="tabler-filled/heart" x="616" y="340" width="48" height="48" fill="#FFFFFF"/>
+  <text x="640" y="410" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Customer</text>
+  <text x="640" y="428" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Loyalty</text>
+  <text x="640" y="446" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#FFFFFF" fill-opacity="0.8">Programme</text>
+
+  <!-- ===== Pillar 1 — Top-Left: Build relationships ===== -->
+  <circle cx="260" cy="260" r="55" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3" filter="url(#nodeShadow)"/>
+  <use data-icon="tabler-filled/coin" x="238" y="228" width="44" height="44" fill="#1A3A5C"/>
+  <text x="260" y="295" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">RELATIONSHIPS</text>
+  <!-- Label below -->
+  <text x="260" y="335" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Build Long-term</text>
+  <text x="260" y="355" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Relationships</text>
+  <text x="260" y="375" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">→ Increase profits</text>
+
+  <!-- ===== Pillar 2 — Top-Right: Increase loyalty ===== -->
+  <circle cx="1020" cy="260" r="55" fill="#FFFFFF" stroke="#E8A838" stroke-width="3" filter="url(#nodeShadow)"/>
+  <use data-icon="tabler-filled/rosette" x="998" y="228" width="44" height="44" fill="#E8A838"/>
+  <text x="1020" y="295" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#E8A838">LOYALTY</text>
+  <!-- Label below -->
+  <text x="1020" y="335" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8A838">Increase Customer</text>
+  <text x="1020" y="355" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8A838">Loyalty</text>
+  <text x="1020" y="375" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">15% → 30%+ repeat rate</text>
+
+  <!-- ===== Pillar 3 — Bottom-Left: Data-driven ===== -->
+  <circle cx="260" cy="520" r="55" fill="#FFFFFF" stroke="#2D8A4E" stroke-width="3" filter="url(#nodeShadow)"/>
+  <use data-icon="tabler-filled/chart-pie" x="238" y="488" width="44" height="44" fill="#2D8A4E"/>
+  <text x="260" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">PROFILING</text>
+  <!-- Label below -->
+  <text x="260" y="595" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#2D8A4E">Accurate Buyer</text>
+  <text x="260" y="615" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#2D8A4E">Profiling</text>
+  <text x="260" y="635" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">→ Data-driven decisions</text>
+
+  <!-- ===== Pillar 4 — Bottom-Right: Staff engagement ===== -->
+  <circle cx="1020" cy="520" r="55" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3" filter="url(#nodeShadow)"/>
+  <use data-icon="tabler-filled/user" x="998" y="488" width="44" height="44" fill="#1A3A5C"/>
+  <text x="1020" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">ENGAGEMENT</text>
+  <!-- Label below -->
+  <text x="1020" y="595" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Staff</text>
+  <text x="1020" y="615" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Engagement</text>
+  <text x="1020" y="635" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">→ Service excellence</text>
+
+  <!-- Cost model annotation -->
+  <rect x="480" y="550" width="320" height="36" rx="18" fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1"/>
+  <use data-icon="tabler-filled/coin" x="495" y="557" width="20" height="20" fill="#E8A838"/>
+  <text x="525" y="573" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Cost model: </text>
+  <text x="612" y="573" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">50/50 shared with head office</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Services Department — Strategic Framework</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">7</text>
+</svg>

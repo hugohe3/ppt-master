@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="ringGlow07" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/>
+      <feFlood flood-color="#C4A882" flood-opacity="0.25" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardShadow07" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="accentGrad07" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C4A882"/>
+      <stop offset="100%" stop-color="#D4956A"/>
+    </linearGradient>
+    <radialGradient id="bgGlow07" cx="35%" cy="55%" r="40%">
+      <stop offset="0%" stop-color="#C4A882" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#C4A882" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+  <rect width="1280" height="720" fill="url(#bgGlow07)"/>
+
+  <!-- Header -->
+  <g id="p07-header">
+    <use data-icon="tabler-filled/sparkles" x="60" y="25" width="28" height="28" fill="#D4956A"/>
+    <text x="98" y="47" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      核心方法论
+    </text>
+    <text x="60" y="85" font-family="Georgia, SimSun, serif" font-size="32" font-weight="bold" fill="#E8E0D4">
+      CMT 体系
+    </text>
+    <text x="240" y="85" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" fill="#C4A882">
+      编织全方位感官体验
+    </text>
+  </g>
+
+  <!-- Concentric circles (center at 340, 400) -->
+  <!-- Outer ring: Texture -->
+  <circle cx="340" cy="410" r="230" fill="#D4956A" fill-opacity="0.06" stroke="#D4956A" stroke-width="1.5" stroke-opacity="0.2"/>
+  <text x="340" y="200" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="14" font-weight="bold" fill="#D4956A" fill-opacity="0.7">
+    纹理 Texture
+  </text>
+
+  <!-- Middle ring: Material -->
+  <circle cx="340" cy="410" r="155" fill="#C4A882" fill-opacity="0.08" stroke="#C4A882" stroke-width="1.5" stroke-opacity="0.25"/>
+  <text x="340" y="272" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="14" font-weight="bold" fill="#C4A882" fill-opacity="0.8">
+    材质 Material
+  </text>
+
+  <!-- Inner core: Colour -->
+  <circle cx="340" cy="410" r="75" fill="#C4A882" filter="url(#ringGlow07)"/>
+  <text x="340" y="402" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="20" font-weight="bold" fill="#1A1714">
+    色彩
+  </text>
+  <text x="340" y="425" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="14" fill="#2A2520">
+    Colour
+  </text>
+
+  <!-- Right side: explanation cards -->
+  <g id="p07-card-physical" filter="url(#cardShadow07)">
+    <rect x="650" y="120" width="580" height="105" rx="12" fill="#2A2520"/>
+    <rect x="650" y="120" width="5" height="105" rx="2" fill="#C4A882"/>
+    <text x="675" y="152" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#C4A882">
+      物理层感知
+    </text>
+    <text x="675" y="180" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      光滑 / 粗糙 · 透明 / 不透明 · 高光 / 亚光
+    </text>
+    <text x="675" y="206" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      柔软 / 坚硬 · 温暖 / 冰冷 · 轻盈 / 沉重
+    </text>
+  </g>
+
+  <g id="p07-card-psychological" filter="url(#cardShadow07)">
+    <rect x="650" y="245" width="580" height="105" rx="12" fill="#2A2520"/>
+    <rect x="650" y="245" width="5" height="105" rx="2" fill="#D4956A"/>
+    <text x="675" y="277" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#D4956A">
+      心理层联想
+    </text>
+    <text x="675" y="305" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      手工感 / 工业感 · 简朴 / 奢华 · 亲近 / 疏离
+    </text>
+    <text x="675" y="331" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      安慰 / 刺激 · 放松 / 兴奋 · 传统 / 现代
+    </text>
+  </g>
+
+  <!-- Case images -->
+  <g id="p07-case-images">
+    <image href="../images/cmt_neutral_mix.png" x="650" y="375" width="280" height="155" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="650" y="375" width="280" height="155" fill="#1A1714" fill-opacity="0.15"/>
+    <text x="660" y="520" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+      中性色 + 多材质层次
+    </text>
+
+    <image href="../images/dark_tone_luxury.png" x="950" y="375" width="280" height="155" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="950" y="375" width="280" height="155" fill="#1A1714" fill-opacity="0.15"/>
+    <text x="960" y="520" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+      深色调 + 镜面材质对比
+    </text>
+  </g>
+
+  <!-- Bottom quote -->
+  <g id="p07-quote">
+    <rect x="650" y="555" width="580" height="80" rx="10" fill="#2A2520"/>
+    <rect x="650" y="555" width="580" height="3" rx="1" fill="url(#accentGrad07)"/>
+    <text x="670" y="585" font-family="Georgia, SimSun, serif" font-size="17" fill="#C4A882" font-style="italic">
+      "CMT 不是三者的简单叠加，
+    </text>
+    <text x="670" y="612" font-family="Georgia, SimSun, serif" font-size="17" fill="#C4A882" font-style="italic">
+      而是一位指挥家，让色彩、材质、纹理在空间中和谐共鸣"
+    </text>
+  </g>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    07 / 12
+  </text>
+</svg>

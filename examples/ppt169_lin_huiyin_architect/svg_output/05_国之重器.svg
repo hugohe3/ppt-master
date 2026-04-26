@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="80%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="imgFade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0"/>
+      <stop offset="90%" stop-color="#1A1A2E" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 01 · 建筑师林徽因</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>国之重器上的建筑印记</tspan>
+  </text>
+
+  <!-- 左侧文字内容 -->
+  <!-- 八宝山革命公墓 -->
+  <rect x="60" y="120" width="640" height="130" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="120" width="4" height="130" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/building" x="84" y="138" width="28" height="28" fill="#C9A96E"/>
+  <text x="124" y="147" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E">
+    <tspan>1950</tspan>
+  </text>
+  <text x="124" y="172" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>八宝山革命公墓</tspan>
+  </text>
+  <text x="84" y="202" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>主体建筑格局由林徽因设计，在明代护国寺基础上改建</tspan>
+  </text>
+  <text x="84" y="224" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>融寺院园林与庭院绿化为一体的公园式陵园</tspan>
+  </text>
+
+  <!-- 人民英雄纪念碑 -->
+  <rect x="60" y="270" width="640" height="190" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <rect x="60" y="270" width="4" height="190" rx="2" fill="#E8D5B7"/>
+  <use data-icon="chunk/compass-drafting" x="84" y="290" width="28" height="28" fill="#E8D5B7"/>
+  <text x="124" y="299" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8D5B7">
+    <tspan>1952 · 核心贡献</tspan>
+  </text>
+  <text x="124" y="326" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>人民英雄纪念碑</tspan>
+  </text>
+  <text x="84" y="358" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>提出创造性修改方案：周圈台阶由一层改为两层</tspan>
+  </text>
+  <text x="84" y="380" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>扩大碑座尺寸，与天安门广场空间尺度更好配合</tspan>
+  </text>
+  <text x="84" y="406" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>以唐代风格为蓝本，亲自设计碑座全套饰纹</tspan>
+  </text>
+  <text x="84" y="428" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>特别是小须弥碑座上的花环浮雕</tspan>
+  </text>
+  <text x="84" y="450" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#C9A96E">
+    <tspan>生命最后岁月中参与的重要工作，建筑设计成就中的丰碑</tspan>
+  </text>
+
+  <!-- 墓碑铭文 -->
+  <rect x="60" y="480" width="640" height="100" rx="10" fill="#16213E" stroke="#8B6F47" stroke-width="1"/>
+  <rect x="60" y="480" width="4" height="100" rx="2" fill="#8B6F47"/>
+  <use data-icon="chunk/crown" x="84" y="498" width="28" height="28" fill="#8B6F47"/>
+  <text x="124" y="507" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#8B6F47">
+    <tspan>1955 · 永恒</tspan>
+  </text>
+  <text x="124" y="534" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>建筑师林徽因墓</tspan>
+  </text>
+  <text x="84" y="564" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>安葬于八宝山革命公墓，墓碑上只有七个字</tspan>
+  </text>
+
+  <!-- 右侧图片 - 人民英雄纪念碑 -->
+  <rect x="730" y="120" width="490" height="540" rx="12" fill="#16213E"/>
+  <image href="../images/monument.png" x="730" y="120" width="490" height="500" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="730" y="120" width="490" height="500" fill="url(#imgFade)"/>
+  <text x="975" y="640" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="middle">
+    <tspan>人民英雄纪念碑  图源：pixabay</tspan>
+  </text>
+
+  <!-- 底部装饰线 -->
+  <rect x="60" y="598" width="640" height="1" fill="#2A2A4A"/>
+
+  <!-- 底部引言 -->
+  <text x="60" y="630" font-family="'KaiTi', Georgia, serif" font-size="16" fill="#C9A96E" fill-opacity="0.7">
+    <tspan>"她在国徽和纪念碑上倾注了最后的心血"</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>05 / 10</tspan>
+  </text>
+</svg>

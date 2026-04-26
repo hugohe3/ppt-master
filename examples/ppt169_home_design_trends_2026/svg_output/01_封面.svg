@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1714" stop-opacity="0.35"/>
+      <stop offset="40%" stop-color="#1A1714" stop-opacity="0.15"/>
+      <stop offset="65%" stop-color="#1A1714" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#1A1714" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="titleAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C4A882"/>
+      <stop offset="100%" stop-color="#D4956A"/>
+    </linearGradient>
+    <filter id="titleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#C4A882" flood-opacity="0.3" result="glowColor"/>
+      <feComposite in="glowColor" in2="blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Hero image -->
+  <image href="../images/intro_living.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Gradient overlay -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#coverOverlay)"/>
+
+  <!-- Decorative line -->
+  <rect x="80" y="420" width="80" height="3" fill="url(#titleAccent)" rx="1.5"/>
+
+  <!-- Title group -->
+  <g id="cover-title">
+    <text x="80" y="500" font-family="Georgia, SimSun, serif" font-size="72" font-weight="bold" fill="#E8E0D4" filter="url(#titleGlow)">
+      2026 家居趋势
+    </text>
+    <text x="80" y="565" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="26" fill="#C4A882">
+      回归"人的尺度"
+    </text>
+    <text x="80" y="605" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#B0A08E">
+      让色彩、材质与纹理塑造"空间的高级感"
+    </text>
+  </g>
+
+  <!-- Bottom info -->
+  <g id="cover-footer">
+    <text x="80" y="668" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">
+      基于《空间的高级感——设计师的色彩、材质、纹理搭配指南》 · 宋文雯 著
+    </text>
+    <text x="1200" y="668" text-anchor="end" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">
+      2026
+    </text>
+  </g>
+
+  <!-- Decorative corner elements -->
+  <rect x="60" y="405" width="2" height="50" fill="#C4A882" fill-opacity="0.4"/>
+  <rect x="1200" y="60" width="30" height="2" fill="#C4A882" fill-opacity="0.2"/>
+  <rect x="1218" y="60" width="2" height="30" fill="#C4A882" fill-opacity="0.2"/>
+</svg>

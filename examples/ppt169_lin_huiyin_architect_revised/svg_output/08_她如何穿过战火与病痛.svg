@@ -1,0 +1,35 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="image-side">
+    <rect x="772" y="48" width="460" height="624" fill="#EFE7DA"/>
+    <image href="../images/lin_survey.png" x="820" y="92" width="360" height="432" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="820" y="92" width="360" height="432" fill="#F6F1E8" fill-opacity="0.08"/>
+    <image href="../images/lin_later.png" x="842" y="470" width="118" height="118" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="990" y="470" width="160" height="118" fill="#F6F1E8"/>
+    <text x="1010" y="510" font-family="SimSun" font-size="24" fill="#A44A3F" font-weight="700">“我还有好多事要做呢”</text>
+    <text x="1010" y="542" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">这不是修辞，</text>
+    <text x="1010" y="568" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">而是她对职业使命的真实表述。</text>
+  </g>
+
+  <g id="text-side">
+    <text x="86" y="96" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">她如何穿过战火与病痛</text>
+    <text x="86" y="124" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">她不是被动承受者，而是持续行动的专业实践者</text>
+    <line x1="86" y1="140" x2="712" y2="140" stroke="#D8CBB8" stroke-width="1.5"/>
+
+    <text x="86" y="228" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="24" fill="#A44A3F" font-weight="600">实地考察，不是陪伴性质的“同行”</text>
+    <text x="86" y="265" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">她翻山涉水、测绘记录，和梁思成一起进入最艰难的调查现场。</text>
+
+    <text x="86" y="340" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="24" fill="#A44A3F" font-weight="600">病痛与流亡，没有中断她的学术工作</text>
+    <text x="86" y="377" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">肺病、战乱、迁徙与家庭压力并行，但她仍继续写作、研究、教学。</text>
+
+    <text x="86" y="452" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="24" fill="#A44A3F" font-weight="600">她的“强”，来自明确的事业感</text>
+    <text x="86" y="489" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">她把个人生命压进中国建筑学术奠基的历史时刻，这才是其精神内核。</text>
+
+    <use data-icon="tabler-outline/heart" x="86" y="560" width="22" height="22" fill="#A44A3F"/>
+    <text x="120" y="578" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">她不是“传奇故事中的女性”，而是主动塑造历史进程的人。</text>
+
+    <text x="86" y="640" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">08</text>
+  </g>
+</svg>

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="huangluGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E0BC7E"/>
+      <stop offset="100%" stop-color="#C99E62"/>
+    </linearGradient>
+    <linearGradient id="malanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8BA998"/>
+      <stop offset="100%" stop-color="#6F8F75"/>
+    </linearGradient>
+    <linearGradient id="diaoyanVert" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C99E62" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#6F8F75" stop-opacity="0.9"/>
+    </linearGradient>
+    <filter id="cardShadow03" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 01 · 战袍解密</text>
+    <line x1="60" y1="62" x2="240" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">五方正色 · 手工吊染</text>
+    <text x="60" y="140" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#7A7068" letter-spacing="2">黄为土地 · 青为春天 · 一绳一染，成就水墨般的渐变</text>
+  </g>
+
+  <g id="color-huanglu" transform="translate(60,180)" filter="url(#cardShadow03)">
+    <rect x="0" y="0" width="360" height="300" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="360" height="110" rx="10" fill="url(#huangluGrad)"/>
+    <rect x="0" y="100" width="360" height="10" fill="url(#huangluGrad)"/>
+    <text x="24" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="34" font-weight="bold" fill="#F7F2E8" letter-spacing="4">黄栌黄</text>
+    <text x="24" y="86" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#F7F2E8" letter-spacing="3">HuangLu Yellow · #C99E62</text>
+    <g transform="translate(24,145)">
+      <use data-icon="tabler-filled/leaf" x="0" y="0" width="22" height="22" fill="#C99E62"/>
+      <text x="34" y="17" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">取自 · 湖北神农架黄栌</text>
+    </g>
+    <text x="24" y="198" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="1">五方正色之「土」</text>
+    <text x="24" y="226" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="1">象征广袤深厚的中华大地</text>
+    <rect x="24" y="248" width="312" height="1" fill="#D7CEB9"/>
+    <text x="24" y="275" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#9B948B" font-style="italic">黄帝制玄冠黄裳 · 以草木之汁染之</text>
+  </g>
+
+  <g id="color-malan" transform="translate(440,180)" filter="url(#cardShadow03)">
+    <rect x="0" y="0" width="360" height="300" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="360" height="110" rx="10" fill="url(#malanGrad)"/>
+    <rect x="0" y="100" width="360" height="10" fill="url(#malanGrad)"/>
+    <text x="24" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="34" font-weight="bold" fill="#F7F2E8" letter-spacing="4">马兰青</text>
+    <text x="24" y="86" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#F7F2E8" letter-spacing="3">MaLan Green · #6F8F75</text>
+    <g transform="translate(24,145)">
+      <use data-icon="tabler-filled/flower" x="0" y="0" width="22" height="22" fill="#6F8F75"/>
+      <text x="34" y="17" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">取自 · 江南初春的马兰草</text>
+    </g>
+    <text x="24" y="198" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="1">五方正色之「春」</text>
+    <text x="24" y="226" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="1">代表万物初生、生生不息</text>
+    <rect x="24" y="248" width="312" height="1" fill="#D7CEB9"/>
+    <text x="24" y="275" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#9B948B" font-style="italic">黄青渐变 · 寓中华土地 · 生生不息</text>
+  </g>
+
+  <g id="image-diaoyan" transform="translate(820,180)">
+    <rect x="-6" y="-6" width="412" height="312" fill="#EDE5D3" stroke="#C99E62" stroke-width="1"/>
+    <image href="../images/640.jpg" x="0" y="0" width="400" height="300" preserveAspectRatio="xMidYMid slice" filter="url(#cardShadow03)"/>
+    <rect x="-6" y="300" width="412" height="28" fill="#3A3530"/>
+    <text x="200" y="319" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#F7F2E8" letter-spacing="2">李子柒与黄荣华协作吊染</text>
+  </g>
+
+  <g id="diaoyan-process" transform="translate(60,520)">
+    <rect x="0" y="0" width="1160" height="136" rx="10" fill="#EDE5D3"/>
+
+    <g transform="translate(24,18)">
+      <use data-icon="tabler-filled/droplet" x="0" y="0" width="24" height="24" fill="#6B9AAE"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#3A3530" font-weight="bold">手工吊染 · 水墨般过渡</text>
+      <text x="800" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="2" text-anchor="end">容不得半点差错 · 耐心与技艺的双重考验</text>
+    </g>
+
+    <line x1="80" y1="85" x2="1080" y2="85" stroke="#D7CEB9" stroke-width="2"/>
+
+    <g transform="translate(80,85)">
+      <circle cx="0" cy="0" r="18" fill="#C99E62"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#F7F2E8">01</text>
+      <text x="0" y="34" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530" font-weight="bold">绳起布吊</text>
+    </g>
+    <g transform="translate(330,85)">
+      <circle cx="0" cy="0" r="18" fill="#C99E62"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#F7F2E8">02</text>
+      <text x="0" y="34" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530" font-weight="bold">浸入染料</text>
+    </g>
+    <g transform="translate(580,85)">
+      <circle cx="0" cy="0" r="18" fill="#C99E62"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#F7F2E8">03</text>
+      <text x="0" y="34" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530" font-weight="bold">30 秒拉 1 厘米</text>
+    </g>
+    <g transform="translate(830,85)">
+      <circle cx="0" cy="0" r="18" fill="#6F8F75"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#F7F2E8">04</text>
+      <text x="0" y="34" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530" font-weight="bold">多次升降</text>
+    </g>
+    <g transform="translate(1080,85)">
+      <circle cx="0" cy="0" r="18" fill="#6F8F75"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="#F7F2E8">05</text>
+      <text x="0" y="34" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530" font-weight="bold">丝滑渐变</text>
+    </g>
+
+    <polygon points="205,85 215,80 215,90" fill="#9B948B"/>
+    <polygon points="455,85 465,80 465,90" fill="#9B948B"/>
+    <polygon points="705,85 715,80 715,90" fill="#9B948B"/>
+    <polygon points="955,85 965,80 965,90" fill="#9B948B"/>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="690" x2="1220" y2="690" stroke="#D7CEB9" stroke-width="1"/>
+    <text x="60" y="710" font-family="KaiTi, STKaiti, Georgia, serif" font-size="12" fill="#9B948B">裁云织月 · 草木成诗</text>
+    <text x="1220" y="710" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="12" fill="#9B948B">03 / 12</text>
+  </g>
+</svg>

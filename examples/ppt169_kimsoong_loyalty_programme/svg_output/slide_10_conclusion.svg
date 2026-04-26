@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="closingOverlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A3A5C" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#0D1F33" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E8A838"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="glowSm">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background image -->
+  <image href="../images/roadmap_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Dark overlay -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#closingOverlay)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accentLine)"/>
+
+  <!-- Subtle decorative circle -->
+  <circle cx="640" cy="360" r="280" fill="#FFFFFF" fill-opacity="0.02"/>
+  <circle cx="640" cy="360" r="200" fill="#FFFFFF" fill-opacity="0.02"/>
+
+  <!-- Core message -->
+  <text x="640" y="170" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" letter-spacing="-0.5">
+    Customer Retention Is the Highest-ROI
+  </text>
+  <text x="640" y="218" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" letter-spacing="-0.5">
+    Growth Lever for Kimsoong Europe
+  </text>
+
+  <!-- Accent underline -->
+  <rect x="380" y="238" width="520" height="3" fill="url(#accentLine)"/>
+
+  <!-- Strategic statement -->
+  <text x="640" y="285" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#FFFFFF" fill-opacity="0.85" font-style="italic">
+    "Transforming 15% repeat buyers into 30%+ is achievable
+  </text>
+  <text x="640" y="312" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#FFFFFF" fill-opacity="0.85" font-style="italic">
+    within 12 months with a phased, data-driven loyalty programme."
+  </text>
+
+  <!-- Three imperatives -->
+  <rect x="170" y="355" width="940" height="200" rx="10" fill="#FFFFFF" fill-opacity="0.08"/>
+
+  <!-- Imperative 1 -->
+  <use data-icon="tabler-filled/shield-check" x="210" y="380" width="36" height="36" fill="#E8A838"/>
+  <text x="260" y="397" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8A838">1</text>
+  <text x="285" y="397" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">Fix after-sales service first</text>
+  <text x="260" y="420" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
+    It's the #1 reason customers leave — 26% churn is directly service-related
+  </text>
+
+  <!-- Divider -->
+  <line x1="210" y1="438" x2="1070" y2="438" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.15"/>
+
+  <!-- Imperative 2 -->
+  <use data-icon="tabler-filled/report-analytics" x="210" y="452" width="36" height="36" fill="#2D8A4E"/>
+  <text x="260" y="469" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#2D8A4E">2</text>
+  <text x="285" y="469" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">Build data capability</text>
+  <text x="260" y="492" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
+    40% questionnaire return rate is a strategic blind spot — the branded pen closes this gap at minimal cost
+  </text>
+
+  <!-- Divider -->
+  <line x1="210" y1="510" x2="1070" y2="510" stroke="#FFFFFF" stroke-width="0.5" stroke-opacity="0.15"/>
+
+  <!-- Imperative 3 -->
+  <use data-icon="tabler-filled/clock" x="210" y="524" width="36" height="36" fill="#FFFFFF"/>
+  <text x="260" y="541" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">3</text>
+  <text x="285" y="541" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF">Phase financial incentives after service foundation</text>
+  <text x="260" y="556" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
+    Discounts and trade-ins amplify — but cannot substitute for — a strong service experience
+  </text>
+
+  <!-- Call to action -->
+  <rect x="410" y="590" width="460" height="50" rx="25" fill="#E8A838" filter="url(#glowSm)"/>
+  <text x="640" y="621" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">
+    Approve Q1 Launch of Phase 1 Quick Wins
+  </text>
+
+  <!-- Footer -->
+  <line x1="60" y1="670" x2="1220" y2="670" stroke="#FFFFFF" stroke-width="0.3" stroke-opacity="0.2"/>
+  <text x="60" y="700" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.4">Kimsoong Customer Services Department | European Headquarters</text>
+  <text x="1100" y="700" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF" fill-opacity="0.3">CONFIDENTIAL</text>
+  <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF" fill-opacity="0.4">10</text>
+</svg>

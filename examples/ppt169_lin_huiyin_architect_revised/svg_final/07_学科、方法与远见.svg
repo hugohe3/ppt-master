@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#F6F1E8" />
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5" />
+
+  <g id="header">
+    <text x="72" y="92" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">学科、方法与远见</text>
+    <text x="72" y="121" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#6A6258">她真正留下的，不只是个别作品，而是一整套研究与教学方法</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#D8CBB8" stroke-width="1.5" />
+    <text x="1196" y="92" text-anchor="end" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="11" fill="#978C7E">07</text>
+  </g>
+
+  <g id="card-1">
+    <path fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.5" d="M86,182 H398 A14,14 0 0 1 412,196 V478 A14,14 0 0 1 398,492 H86 A14,14 0 0 1 72,478 V196 A14,14 0 0 1 86,182 Z" />
+    
+  <g transform="translate(98.0, 210.0)" fill="none" stroke="#A44A3F">
+    <path d="M8 16l2 -6l6 -2l-2 6l-6 2" />
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    <path d="M12 3l0 2" />
+    <path d="M12 19l0 2" />
+    <path d="M3 12l2 0" />
+    <path d="M19 12l2 0" />
+  </g>
+    <text x="134" y="228" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" fill="#1F1B16" font-weight="600">研究方法</text>
+    <text x="98" y="270" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1F1B16">测绘、考察、史料与类型分析并重</text>
+    <text x="98" y="304" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#6A6258">她把中国建筑研究从零散见闻推进为可验证、可比对、可教学的方法体系。</text>
+    <text x="98" y="372" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#978C7E">关键词</text>
+    <text x="98" y="399" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1F1B16">实测 · 图像记录 · 历史分析</text>
+  </g>
+
+  <g id="card-2">
+    <path fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5" d="M484,182 H796 A14,14 0 0 1 810,196 V478 A14,14 0 0 1 796,492 H484 A14,14 0 0 1 470,478 V196 A14,14 0 0 1 484,182 Z" />
+    
+  <g transform="translate(496.0, 210.0)" fill="none" stroke="#A44A3F">
+    <path d="M22 9l-10 -4l-10 4l10 4l10 -4v6" />
+    <path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" />
+  </g>
+    <text x="532" y="228" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" fill="#1F1B16" font-weight="600">学科建设</text>
+    <text x="496" y="270" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1F1B16">参与东北大学、清华大学建筑教育体系建设</text>
+    <text x="496" y="304" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#6A6258">她不是“参与者之一”，而是把中国现代建筑教育推向制度化的人之一。</text>
+    <text x="496" y="372" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#978C7E">关键词</text>
+    <text x="496" y="399" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1F1B16">建筑系 · 课程 · 住宅概论</text>
+  </g>
+
+  <g id="card-3">
+    <path fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.5" d="M882,182 H1194 A14,14 0 0 1 1208,196 V478 A14,14 0 0 1 1194,492 H882 A14,14 0 0 1 868,478 V196 A14,14 0 0 1 882,182 Z" />
+    
+  <g transform="translate(894.0, 210.0)" fill="none" stroke="#A44A3F">
+    <path d="M5 5a5 5 0 0 1 7 0a5 5 0 0 0 7 0v9a5 5 0 0 1 -7 0a5 5 0 0 0 -7 0v-9" />
+    <path d="M5 21v-7" />
+  </g>
+    <text x="930" y="228" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="22" fill="#1F1B16" font-weight="600">理论前瞻</text>
+    <text x="894" y="270" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="18" fill="#1F1B16">民居保护、普通人住宅与“建筑意”</text>
+    <text x="894" y="304" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#6A6258">她的远见在于：建筑不只属于宏大纪念物，也属于普通人的日常生活世界。</text>
+    <text x="894" y="372" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="14" fill="#978C7E">关键词</text>
+    <text x="894" y="399" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1F1B16">民居 · 住宅 · 建筑意</text>
+  </g>
+
+  <g id="bottom-band">
+    <path fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5" d="M86,528 H1194 A14,14 0 0 1 1208,542 V612 A14,14 0 0 1 1194,626 H86 A14,14 0 0 1 72,612 V542 A14,14 0 0 1 86,528 Z" />
+    
+  <g transform="translate(98.0, 558.0)" fill="none" stroke="#A44A3F">
+    <path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12" />
+    <path d="M19 16h-12a2 2 0 0 0 -2 2" />
+    <path d="M9 8h6" />
+  </g>
+    <text x="136" y="578" font-family="SimSun" font-size="24" fill="#A44A3F" font-weight="700">她留下的，是中国建筑如何被研究、被教授、被理解的一套方法。</text>
+    <text x="136" y="608" font-family="&quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif" font-size="16" fill="#1F1B16">这也是为什么她的意义，远不止于“某几件作品”或“某段传奇人生”。</text>
+  </g>
+</svg>

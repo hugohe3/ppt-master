@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="leftImg"><rect x="50" y="120" width="270" height="380" rx="10"/></clipPath>
+    <clipPath id="rightImg"><rect x="670" y="120" width="270" height="380" rx="10"/></clipPath>
+  </defs>
+
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">结构重塑</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">TAD FAB × APEDE MOD</text>
+
+  <rect x="635" y="120" width="1" height="530" fill="#2A2520"/>
+
+  <!-- LEFT: TAD FAB -->
+  <rect x="50" y="120" width="270" height="380" rx="10" fill="#1A1A1A"/>
+  <image href="../images/tadfab_bag.jpg" x="50" y="120" width="270" height="380" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImg)"/>
+
+  <use data-icon="phosphor-duotone/handbag" x="340" y="130" width="26" height="26" fill="#C9A96E"/>
+  <text x="340" y="185" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">TAD FAB</text>
+  <text x="340" y="208" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">极简克制美学</text>
+  <rect x="340" y="220" width="270" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="340" y="250">结构衔接与场景切换</tspan>
+    <tspan x="340" dy="24">经典锁扣 + 拉链设计语言</tspan>
+    <tspan x="340" dy="30">环绕拉链 Hobo 包</tspan>
+    <tspan x="340" dy="24">多功能背包 · 弧形拉链包</tspan>
+    <tspan x="340" dy="30">鞋履：晴雨长靴 · 乐福鞋</tspan>
+    <tspan x="340" dy="24">丝巾 · 收纳小物</tspan>
+  </text>
+
+  <rect x="340" y="460" width="270" height="36" rx="6" fill="#1A1A1A"/>
+  <rect x="340" y="460" width="3" height="36" fill="#C9A96E"/>
+  <text x="358" y="483" font-family="Georgia, SimSun, serif" font-size="13" fill="#E8D5B5" font-style="italic">松弛精致的都市日常格调</text>
+
+  <!-- RIGHT: Apede Mod -->
+  <rect x="670" y="120" width="270" height="380" rx="10" fill="#1A1A1A"/>
+  <image href="../images/apedemod_fold.jpg" x="670" y="120" width="270" height="380" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImg)"/>
+
+  <use data-icon="phosphor-duotone/sparkle" x="960" y="130" width="26" height="26" fill="#C9A96E"/>
+  <text x="960" y="185" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">Apede Mod</text>
+  <text x="960" y="208" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">十周年 · PF 2026</text>
+  <rect x="960" y="220" width="270" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">
+    <tspan x="960" y="250">折纸系列</tspan>
+    <tspan x="960" dy="24">以折叠结构重构设计内核</tspan>
+    <tspan x="960" dy="30">刻意留存自然折痕</tspan>
+    <tspan x="960" dy="24">利落折线 + 极简几何</tspan>
+    <tspan x="960" dy="30">首发款 Fold I</tspan>
+    <tspan x="960" dy="24">奠定系列基调</tspan>
+  </text>
+
+  <rect x="960" y="460" width="270" height="36" rx="6" fill="#1A1A1A"/>
+  <rect x="960" y="460" width="3" height="36" fill="#C9A96E"/>
+  <text x="978" y="483" font-family="Georgia, SimSun, serif" font-size="13" fill="#E8D5B5" font-style="italic">折叠隐喻女性自我塑形力量</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">10 / 16</text>
+</svg>

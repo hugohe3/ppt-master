@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="32" rx="2" fill="#5B9BD5"/>
+    <text x="78" y="66" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8E8EC">Workflow: Parallelization</text>
+  </g>
+
+  <!-- Diagram image — top area -->
+  <g id="diagram">
+    <image href="../images/image_3.png" x="80" y="88" width="1120" height="280" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Two-column below: Sectioning | Voting -->
+  <g id="sectioning-card">
+    <rect x="60" y="385" width="570" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="60" y="385" width="570" height="6" rx="3" fill="#5B9BD5"/>
+    <use data-icon="chunk/grid" x="84" y="412" width="24" height="24" fill="#5B9BD5"/>
+    <text x="118" y="432" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#5B9BD5">Sectioning</text>
+    <text x="84" y="460" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Break task into independent subtasks</text>
+    <text x="84" y="482" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">and run them in parallel.</text>
+
+    <rect x="84" y="500" width="522" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <use data-icon="chunk/shield-check" x="84" y="520" width="18" height="18" fill="#9CA3AF"/>
+    <text x="112" y="535" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Guardrails: one instance processes queries,</text>
+    <text x="112" y="553" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">another screens for inappropriate content</text>
+
+    <use data-icon="chunk/target" x="84" y="572" width="18" height="18" fill="#9CA3AF"/>
+    <text x="112" y="587" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Automated evals: each LLM evaluates a</text>
+    <text x="112" y="605" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">different aspect of model performance</text>
+
+    <text x="84" y="640" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Tends to perform better than single-call handling</text>
+  </g>
+
+  <g id="voting-card">
+    <rect x="660" y="385" width="560" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="660" y="385" width="560" height="6" rx="3" fill="#D4845A"/>
+    <use data-icon="chunk/layers" x="684" y="412" width="24" height="24" fill="#D4845A"/>
+    <text x="718" y="432" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#D4845A">Voting</text>
+    <text x="684" y="460" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Run the same task multiple times</text>
+    <text x="684" y="482" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">to get diverse outputs.</text>
+
+    <rect x="684" y="500" width="512" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <use data-icon="chunk/code" x="684" y="520" width="18" height="18" fill="#9CA3AF"/>
+    <text x="712" y="535" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Code vulnerability review with multiple</text>
+    <text x="712" y="553" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">prompts flagging issues independently</text>
+
+    <use data-icon="chunk/eye" x="684" y="572" width="18" height="18" fill="#9CA3AF"/>
+    <text x="712" y="587" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Content moderation with different vote</text>
+    <text x="712" y="605" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">thresholds balancing FP/FN rates</text>
+
+    <text x="684" y="640" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">Higher confidence through multiple perspectives</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">07</text>
+  </g>
+</svg>

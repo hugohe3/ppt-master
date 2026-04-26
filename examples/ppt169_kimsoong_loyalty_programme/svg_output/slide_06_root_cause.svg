@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="barShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.1"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    78% of Customer Loss Is Addressable — Competitors and Service Dominate
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="45" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="100" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    <tspan x="80" dy="0">78% of churn is within Kimsoong's control. Service improvement and competitive positioning are the two levers. Only 13% of losses</tspan>
+    <tspan x="80" dy="16">(relocation + no longer driving) are truly uncontrollable.</tspan>
+  </text>
+
+  <!-- Chart area -->
+  <!-- Y-axis labels -->
+  <text x="60" y="180" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Reason for Not Repurchasing</text>
+
+  <!-- ===== Horizontal bars (descending) ===== -->
+  <!-- Bar 1: Bought competitor — 52% (RED — largest) -->
+  <text x="60" y="235" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">Bought competitor's model</text>
+  <rect x="310" y="218" width="468" height="28" rx="4" fill="#E74C3C" filter="url(#barShadow)"/>
+  <text x="790" y="238" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E74C3C">52%</text>
+  <use data-icon="tabler-filled/alert-triangle" x="835" y="220" width="24" height="24" fill="#E74C3C"/>
+
+  <!-- Bar 2: Disappointed with service — 26% (ORANGE/ACCENT) -->
+  <text x="60" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">Disappointed with service</text>
+  <rect x="310" y="273" width="234" height="28" rx="4" fill="#E8A838" filter="url(#barShadow)"/>
+  <text x="556" y="293" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8A838">26%</text>
+
+  <!-- Cumulative bracket: 78% addressable -->
+  <line x1="860" y1="218" x2="860" y2="306" stroke="#E74C3C" stroke-width="2"/>
+  <line x1="850" y1="218" x2="860" y2="218" stroke="#E74C3C" stroke-width="2"/>
+  <line x1="850" y1="306" x2="860" y2="306" stroke="#E74C3C" stroke-width="2"/>
+  <rect x="870" y="245" width="110" height="30" rx="4" fill="#E74C3C" fill-opacity="0.08" stroke="#E74C3C" stroke-width="1"/>
+  <text x="925" y="265" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">78% Addressable</text>
+
+  <!-- Divider — addressable vs uncontrollable -->
+  <line x1="60" y1="320" x2="1000" y2="320" stroke="#D5DDE5" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="1010" y="325" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">— uncontrollable —</text>
+
+  <!-- Bar 3: Don't know — 9% (GRAY) -->
+  <text x="60" y="357" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">Don't know</text>
+  <rect x="310" y="340" width="81" height="28" rx="4" fill="#95A5A6" fill-opacity="0.5"/>
+  <text x="403" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">9%</text>
+
+  <!-- Bar 4: Relocated — 8% (GRAY) -->
+  <text x="60" y="407" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">Relocated</text>
+  <rect x="310" y="390" width="72" height="28" rx="4" fill="#95A5A6" fill-opacity="0.5"/>
+  <text x="394" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">8%</text>
+
+  <!-- Bar 5: No longer drive — 5% (GRAY) -->
+  <text x="60" y="457" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#5D6D7E">No longer drive</text>
+  <rect x="310" y="440" width="45" height="28" rx="4" fill="#95A5A6" fill-opacity="0.5"/>
+  <text x="367" y="460" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#95A5A6">5%</text>
+
+  <!-- ===== Cumulative line chart (right side) ===== -->
+  <text x="60" y="520" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Cumulative % of Addressable Churn</text>
+
+  <!-- Progress bar showing cumulative -->
+  <rect x="60" y="538" width="900" height="24" rx="12" fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1"/>
+  <!-- Competitor segment: 52% = 468px -->
+  <rect x="60" y="538" width="468" height="24" rx="12" fill="#E74C3C"/>
+  <!-- Service segment: 26% = 234px (total 702px) -->
+  <rect x="528" y="538" width="234" height="24" rx="0" fill="#E8A838"/>
+  <!-- Cap the right end -->
+  <rect x="728" y="538" width="34" height="24" rx="12" fill="#E8A838"/>
+
+  <!-- Labels on progress -->
+  <text x="294" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Competitors: 52%</text>
+  <text x="630" y="555" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Service: 26%</text>
+
+  <!-- Remaining -->
+  <text x="800" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#95A5A6">Uncontrollable: 22%</text>
+
+  <!-- ===== Strategic insight panel ===== -->
+  <rect x="60" y="585" width="1160" height="82" rx="8" fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1"/>
+  <use data-icon="tabler-filled/report-analytics" x="80" y="598" width="28" height="28" fill="#1A3A5C"/>
+  <text x="118" y="618" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Strategic Implication</text>
+
+  <text x="80" y="645" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50">
+    <tspan x="80" dy="0">Two levers control 78% of churn: (1) Competitive positioning — enhance value proposition to prevent switching;</tspan>
+    <tspan x="80" dy="20">(2) Service excellence — address the #1 dissatisfaction driver. The loyalty programme must target both.</tspan>
+  </text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Services — Non-repurchase Reasons Analysis</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">6</text>
+</svg>

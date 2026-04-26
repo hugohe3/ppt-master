@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow1" cx="70%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="bgGlow2" cx="25%" cy="75%" r="45%">
+      <stop offset="0%" stop-color="#5B9BD5" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#5B9BD5" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4845A" />
+      <stop offset="100%" stop-color="#E8B87D" />
+    </linearGradient>
+    <filter id="softShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+      <feOffset dx="0" dy="6" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0F1117" />
+  <rect width="1280" height="720" fill="url(#bgGlow1)" />
+  <rect width="1280" height="720" fill="url(#bgGlow2)" />
+
+  
+  <g id="grid-dots">
+    <circle cx="120" cy="120" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="200" cy="120" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="280" cy="120" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="360" cy="120" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="120" cy="200" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="200" cy="200" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="280" cy="200" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="360" cy="200" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="920" cy="520" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1000" cy="520" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1080" cy="520" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1160" cy="520" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="920" cy="600" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1000" cy="600" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1080" cy="600" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+    <circle cx="1160" cy="600" r="1.5" fill="#2D3348" fill-opacity="0.6" />
+  </g>
+
+  
+  <circle cx="1050" cy="180" r="80" fill="none" stroke="#D4845A" stroke-opacity="0.08" stroke-width="1" />
+  <circle cx="1050" cy="180" r="120" fill="none" stroke="#D4845A" stroke-opacity="0.05" stroke-width="1" />
+  <circle cx="230" cy="550" r="60" fill="none" stroke="#5B9BD5" stroke-opacity="0.06" stroke-width="1" />
+  <circle cx="230" cy="550" r="95" fill="none" stroke="#5B9BD5" stroke-opacity="0.04" stroke-width="1" />
+
+  
+  <g id="cover-icon">
+    
+  <g transform="translate(596.0, 200.0) scale(5.5)" fill="#D4845A">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0V2H13L16 8.5L13 15H3L0 8.5L3 2H7V0H9ZM4.59794 11.7384L8 12.2618L11.4021 11.7384L11.0979 9.76163L8 10.2382L4.90206 9.76163L4.59794 11.7384ZM7 6.75C7 7.44036 6.44036 8 5.75 8C5.05964 8 4.5 7.44036 4.5 6.75C4.5 6.05964 5.05964 5.5 5.75 5.5C6.44036 5.5 7 6.05964 7 6.75ZM10.25 8C10.9404 8 11.5 7.44036 11.5 6.75C11.5 6.05964 10.9404 5.5 10.25 5.5C9.55964 5.5 9 6.05964 9 6.75C9 7.44036 9.55964 8 10.25 8Z" />
+  </g>
+  </g>
+
+  
+  <path fill="url(#accentLine)" d="M542,310 H738 A2,2 0 0 1 740,312 V312 A2,2 0 0 1 738,314 H542 A2,2 0 0 1 540,312 V312 A2,2 0 0 1 542,310 Z" />
+
+  
+  <g id="cover-title">
+    <text x="640" y="375" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="60" font-weight="bold" fill="#E8E8EC">Building Effective</text>
+    <text x="640" y="440" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="60" font-weight="bold" fill="#D4845A">Agents</text>
+  </g>
+
+  
+  <text x="640" y="490" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#9CA3AF">Simple, composable patterns for LLM-based agentic systems</text>
+
+  
+  <g id="cover-footer">
+    <rect x="0" y="660" width="1280" height="1" fill="#2D3348" fill-opacity="0.5" />
+    <text x="60" y="692" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#6B7280">Anthropic Engineering</text>
+    <text x="1220" y="692" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#6B7280">December 2024</text>
+  </g>
+</svg>

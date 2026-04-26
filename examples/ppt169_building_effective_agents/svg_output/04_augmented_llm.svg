@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#5B9BD5" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#5B9BD5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="36" rx="2" fill="#D4845A"/>
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">Building Block: The Augmented LLM</text>
+    <text x="78" y="108" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">The foundational unit of all agentic systems</text>
+  </g>
+
+  <!-- Diagram image — top full-width (ultra-wide, breathing layout) -->
+  <g id="diagram">
+    <image href="../images/image.png" x="140" y="135" width="1000" height="417" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Key points below diagram — naked text, no cards (breathing) -->
+  <g id="key-points">
+    <rect x="60" y="570" width="1160" height="1" fill="#2D3348" fill-opacity="0.3"/>
+
+    <use data-icon="chunk/layers" x="80" y="592" width="24" height="24" fill="#D4845A"/>
+    <text x="116" y="611" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">LLM enhanced with <tspan font-weight="bold" fill="#D4845A">retrieval</tspan>, <tspan font-weight="bold" fill="#D4845A">tools</tspan>, and <tspan font-weight="bold" fill="#D4845A">memory</tspan></text>
+
+    <use data-icon="chunk/share-nodes" x="560" y="592" width="24" height="24" fill="#5B9BD5"/>
+    <text x="596" y="611" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Tailor capabilities to your <tspan font-weight="bold" fill="#5B9BD5">specific use case</tspan></text>
+
+    <use data-icon="chunk/link" x="940" y="592" width="24" height="24" fill="#E8B87D"/>
+    <text x="976" y="611" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC"><tspan font-weight="bold" fill="#E8B87D">MCP</tspan> for integration</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">04</text>
+  </g>
+</svg>

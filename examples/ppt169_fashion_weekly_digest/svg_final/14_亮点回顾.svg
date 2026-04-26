@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#0A0A0A" />
+
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520" />
+
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">本周亮点一览</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">WEEKLY HIGHLIGHTS</text>
+
+  
+  
+  <path fill="#1A1A1A" d="M62,130 H414 A12,12 0 0 1 426,142 V358 A12,12 0 0 1 414,370 H62 A12,12 0 0 1 50,358 V142 A12,12 0 0 1 62,130 Z" />
+  
+  <g transform="translate(74.0, 154.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M216,115.54V208a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V160a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v48a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V115.54a8,8,0,0,1,2.62-5.92l80-75.54a8,8,0,0,1,10.77,0l80,75.54A8,8,0,0,1,216,115.54Z" opacity="0.2" />
+    <path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z" />
+  </g>
+  <text x="74" y="210" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">HERMÈS</text>
+  <text x="74" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">家居世界 · 米兰设计周</text>
+  <text x="74" y="262" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">三十根矩形立柱构筑沉浸式布景</text>
+  <rect x="74" y="290" width="80" height="2" fill="#8B7355" />
+  <text x="74" y="320" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">匠心工艺 · 隽永美学</text>
+  <rect x="74" y="340" width="330" height="1" fill="#2A2520" />
+  <text x="74" y="358" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">家居 · 工艺 · 设计</text>
+
+  
+  <path fill="#1A1A1A" d="M464,130 H816 A12,12 0 0 1 828,142 V358 A12,12 0 0 1 816,370 H464 A12,12 0 0 1 452,358 V142 A12,12 0 0 1 464,130 Z" />
+  
+  <g transform="translate(476.0, 154.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M200,224H56a8,8,0,0,1-7.35-11.15L96,112,73.14,76.12a8,8,0,0,1,0-8.24L96,35.23,103,44a32,32,0,0,0,50,0l7-8.76,22.86,32.65a8,8,0,0,1,0,8.24L160,112l47.34,100.85A8,8,0,0,1,200,224Z" opacity="0.2" />
+    <path d="M214.7,209.7a1.89,1.89,0,0,0-.11-.25l-45.48-96.86,20.5-32.18.11-.18a16,16,0,0,0,0-16.46c-.09-.16-.2-.32-.3-.47L168,32.7V8a8,8,0,0,0-16,0V32.42L146.74,39a24,24,0,0,1-37.48,0L104,32.42V8A8,8,0,0,0,88,8V32.7L66.58,63.3c-.1.15-.21.31-.3.47a16,16,0,0,0,0,16.46l.11.18,20.5,32.18L41.41,209.45a1.89,1.89,0,0,0-.11.25A16,16,0,0,0,56,232H200a16,16,0,0,0,14.71-22.3ZM80,72,96.43,48.57l.33.42a40,40,0,0,0,62.48,0l.33-.42L176,72l-20.38,32H100.39ZM56,216l45.07-96h53.84L200,216Z" />
+  </g>
+  <text x="476" y="210" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">CHANEL</text>
+  <text x="476" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">COCO BEACH 2026</text>
+  <text x="476" y="262" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">上海限时精品店 · 度假别墅概念</text>
+  <rect x="476" y="290" width="80" height="2" fill="#8B7355" />
+  <text x="476" y="320" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">Matthieu Blazy 首个系列</text>
+  <rect x="476" y="340" width="330" height="1" fill="#2A2520" />
+  <text x="476" y="358" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">时装 · 零售 · 体验</text>
+
+  
+  <path fill="#1A1A1A" d="M866,130 H1218 A12,12 0 0 1 1230,142 V358 A12,12 0 0 1 1218,370 H866 A12,12 0 0 1 854,358 V142 A12,12 0 0 1 866,130 Z" />
+  
+  <g transform="translate(878.0, 154.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M200,128a72,72,0,1,1-72-72A72,72,0,0,1,200,128Z" opacity="0.2" />
+    <path d="M208,128a79.94,79.94,0,0,0-32.7-64.47l-6.24-34.38A16,16,0,0,0,153.32,16H102.68A16,16,0,0,0,86.94,29.15L80.7,63.53a79.9,79.9,0,0,0,0,128.94l6.24,34.38A16,16,0,0,0,102.68,240h50.64a16,16,0,0,0,15.74-13.15l6.24-34.38A79.94,79.94,0,0,0,208,128ZM102.68,32h50.64l3.91,21.55a79.75,79.75,0,0,0-58.46,0ZM64,128a64,64,0,1,1,64,64A64.07,64.07,0,0,1,64,128Zm89.32,96H102.68l-3.91-21.55a79.75,79.75,0,0,0,58.46,0ZM120,128V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16H128A8,8,0,0,1,120,128Z" />
+  </g>
+  <text x="878" y="210" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">DIOR</text>
+  <text x="878" y="238" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">双面魅力 · 时装与时计</text>
+  <text x="878" y="262" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">Coachella 亮相 · Chiffre Rouge</text>
+  <rect x="878" y="290" width="80" height="2" fill="#8B7355" />
+  <text x="878" y="320" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">三款限量腕表 · 4月底发售</text>
+  <rect x="878" y="340" width="330" height="1" fill="#2A2520" />
+  <text x="878" y="358" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">时装 · 腕表 · 明星</text>
+
+  
+  
+  <path fill="#1A1A1A" d="M62,395 H414 A12,12 0 0 1 426,407 V623 A12,12 0 0 1 414,635 H62 A12,12 0 0 1 50,623 V407 A12,12 0 0 1 62,395 Z" />
+  
+  <g transform="translate(74.0, 419.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M216,115.54V208a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V160a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v48a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V115.54a8,8,0,0,1,2.62-5.92l80-75.54a8,8,0,0,1,10.77,0l80,75.54A8,8,0,0,1,216,115.54Z" opacity="0.2" />
+    <path d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z" />
+  </g>
+  <text x="74" y="475" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">LOUIS VUITTON</text>
+  <text x="74" y="503" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">Objets Nomades · 旅行家居</text>
+  <text x="74" y="527" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">致敬 Art Deco · Pierre Legrain</text>
+  <rect x="74" y="555" width="80" height="2" fill="#8B7355" />
+  <text x="74" y="585" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">当代设计师联袂新作</text>
+  <rect x="74" y="605" width="330" height="1" fill="#2A2520" />
+  <text x="74" y="623" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">家居 · 设计 · 展览</text>
+
+  
+  <path fill="#1A1A1A" d="M464,395 H816 A12,12 0 0 1 828,407 V623 A12,12 0 0 1 816,635 H464 A12,12 0 0 1 452,623 V407 A12,12 0 0 1 464,395 Z" />
+  
+  <g transform="translate(476.0, 419.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M224,127.17a96.48,96.48,0,0,1-2.39,22.18A24,24,0,0,1,198.21,168H152a24,24,0,0,0-24,24,24,24,0,0,1-32,22.61C58.73,201.44,32,169.81,32,128a96,96,0,0,1,95-96C179.84,31.47,223.55,74.35,224,127.17Z" opacity="0.2" />
+    <path d="M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43,26.58,79.06,69.36,94.17A32,32,0,0,0,136,192a16,16,0,0,1,16-16h46.21a31.81,31.81,0,0,0,31.2-24.88,104.43,104.43,0,0,0,2.59-24A103.28,103.28,0,0,0,200.77,53.89Zm13,93.71A15.89,15.89,0,0,1,198.21,160H152a32,32,0,0,0-32,32,16,16,0,0,1-21.31,15.07C62.49,194.3,40,164,40,128a88,88,0,0,1,87.09-88h.9a88.35,88.35,0,0,1,88,87.25A88.86,88.86,0,0,1,213.81,147.6ZM140,76a12,12,0,1,1-12-12A12,12,0,0,1,140,76ZM96,100A12,12,0,1,1,84,88,12,12,0,0,1,96,100Zm0,56a12,12,0,1,1-12-12A12,12,0,0,1,96,156Zm88-56a12,12,0,1,1-12-12A12,12,0,0,1,184,100Z" />
+  </g>
+  <text x="476" y="475" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">GUCCI</text>
+  <text x="476" y="503" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">Gucci Memoria · 105年</text>
+  <text x="476" y="527" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">Demna 策划沉浸式展览</text>
+  <rect x="476" y="555" width="80" height="2" fill="#8B7355" />
+  <text x="476" y="585" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">十二幅挂毯 · Flora 花卉装置</text>
+  <rect x="476" y="605" width="330" height="1" fill="#2A2520" />
+  <text x="476" y="623" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">展览 · 艺术 · 遗产</text>
+
+  
+  <path fill="#1A1A1A" d="M866,395 H1218 A12,12 0 0 1 1230,407 V623 A12,12 0 0 1 1218,635 H866 A12,12 0 0 1 854,623 V407 A12,12 0 0 1 866,395 Z" />
+  
+  <g transform="translate(878.0, 419.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M208,64H176L160,40H96L80,64H48A16,16,0,0,0,32,80V192a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V80A16,16,0,0,0,208,64ZM128,168a36,36,0,1,1,36-36A36,36,0,0,1,128,168Z" opacity="0.2" />
+    <path d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z" />
+  </g>
+  <text x="878" y="475" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">McQUEEN</text>
+  <text x="878" y="503" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#F5F0EB">表象之下 · 上海首展</text>
+  <text x="878" y="527" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">Manta 手袋复刻 2010 经典</text>
+  <rect x="878" y="555" width="80" height="2" fill="#8B7355" />
+  <text x="878" y="585" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">Seán McGirr 创意总监首秀</text>
+  <rect x="878" y="605" width="330" height="1" fill="#2A2520" />
+  <text x="878" y="623" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355">展览 · 艺术 · 先锋</text>
+
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520" />
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">14 / 16</text>
+</svg>

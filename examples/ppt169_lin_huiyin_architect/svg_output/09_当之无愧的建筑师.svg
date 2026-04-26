@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="quoteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#8B6F47" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 03 · 强者与精神</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>当之无愧的建筑师</tspan>
+  </text>
+
+  <!-- 中央引言卡片 -->
+  <rect x="60" y="115" width="1160" height="130" rx="12" fill="url(#quoteGrad)" stroke="#C9A96E" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="60" y="115" width="4" height="130" rx="2" fill="#E8D5B7"/>
+  <!-- 引号装饰 -->
+  <text x="90" y="160" font-family="Georgia, serif" font-size="48" fill="#C9A96E" fill-opacity="0.3">
+    <tspan>"</tspan>
+  </text>
+  <text x="120" y="165" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8E8E8">
+    <tspan>我自己也到了相当年纪，也没有什么成就，眼看得机会愈少……</tspan>
+  </text>
+  <text x="120" y="192" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8E8E8">
+    <tspan>现在身体也不好，家常的负担也繁重，真是从此平庸处世，做妻生子地过一世！</tspan>
+  </text>
+  <text x="120" y="219" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#C9A96E">
+    <tspan>我禁不住伤心起来。</tspan>
+  </text>
+  <rect x="120" y="228" width="40" height="1" fill="#C9A96E" fill-opacity="0.3"/>
+  <text x="170" y="228" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#8B6F47">
+    <tspan>—— 28岁写给胡适的信</tspan>
+  </text>
+
+  <!-- 成就总结 - 四宫格 -->
+  <!-- 成就1 -->
+  <rect x="60" y="270" width="560" height="130" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="270" width="4" height="130" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/building" x="84" y="290" width="32" height="32" fill="#C9A96E"/>
+  <text x="130" y="306" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>共创建筑教育</tspan>
+  </text>
+  <text x="84" y="340" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>与梁思成共同创办东北大学、清华大学建筑系</tspan>
+  </text>
+  <text x="84" y="365" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>奠定中国现代建筑教育的基石</tspan>
+  </text>
+
+  <!-- 成就2 -->
+  <rect x="640" y="270" width="580" height="130" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="640" y="270" width="4" height="130" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/map" x="664" y="290" width="32" height="32" fill="#C9A96E"/>
+  <text x="710" y="306" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>一寸寸测量古建筑</tspan>
+  </text>
+  <text x="664" y="340" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>深入荒凉之地，用双手丈量中国古建筑</tspan>
+  </text>
+  <text x="664" y="365" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>为中国建筑史留下珍贵的第一手资料</tspan>
+  </text>
+
+  <!-- 成就3 -->
+  <rect x="60" y="420" width="560" height="130" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="420" width="4" height="130" rx="2" fill="#8B6F47"/>
+  <use data-icon="chunk/pen-nib" x="84" y="440" width="32" height="32" fill="#8B6F47"/>
+  <text x="130" y="456" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>战时书写建筑史</tspan>
+  </text>
+  <text x="84" y="490" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>在偏远小镇拖着病体一笔一笔书写中国建筑史</tspan>
+  </text>
+  <text x="84" y="515" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>学科的奠基者，思想上的先行者</tspan>
+  </text>
+
+  <!-- 成就4 -->
+  <rect x="640" y="420" width="580" height="130" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1.5"/>
+  <rect x="640" y="420" width="4" height="130" rx="2" fill="#E8D5B7"/>
+  <use data-icon="chunk/crown" x="664" y="440" width="32" height="32" fill="#E8D5B7"/>
+  <text x="710" y="456" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>国之重器的最后心血</tspan>
+  </text>
+  <text x="664" y="490" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>在国徽和人民英雄纪念碑上倾注生命最后的力量</tspan>
+  </text>
+  <text x="664" y="515" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#C9A96E">
+    <tspan>她用一生证明，她是当之无愧的建筑师</tspan>
+  </text>
+
+  <!-- 底部装饰引言 -->
+  <rect x="300" y="580" width="680" height="60" rx="8" fill="#16213E" stroke="#8B6F47" stroke-width="1"/>
+  <text x="640" y="605" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#C9A96E" text-anchor="middle">
+    <tspan>林徽因想要真正终生为之奋斗的</tspan>
+  </text>
+  <text x="640" y="630" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8D5B7" text-anchor="middle">
+    <tspan>是中国建筑学术事业</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>09 / 10</tspan>
+  </text>
+</svg>

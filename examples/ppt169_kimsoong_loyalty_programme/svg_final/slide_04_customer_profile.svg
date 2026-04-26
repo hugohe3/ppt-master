@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Young, Employed, Middle-Income — High Lifetime Value Potential
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V119 A4,4 0 0 1 1216,123 H64 A4,4 0 0 1 60,119 V82 A4,4 0 0 1 64,78 Z" />
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    75% of Kimsoong buyers are under 40 and employed — a demographic with 3-4 vehicle purchase cycles ahead. Gender split is near-even (52M / 48F).
+  </text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M68,140 H607 A8,8 0 0 1 615,148 V392 A8,8 0 0 1 607,400 H68 A8,8 0 0 1 60,392 V148 A8,8 0 0 1 68,140 Z" />
+  
+  <g transform="translate(80.0, 155.0) scale(0.9166666666666666)" fill="#1A3A5C">
+    <path d="M9.883 2.207a1.9 1.9 0 0 1 2.087 1.522l.025 .167l.005 .104v7a1 1 0 0 0 .883 .993l.117 .007h6.8a2 2 0 0 1 2 2a1 1 0 0 1 -.026 .226a10 10 0 1 1 -12.27 -11.933l.27 -.067l.11 -.02z" />
+    <path d="M14 3.5v5.5a1 1 0 0 0 1 1h5.5a1 1 0 0 0 .943 -1.332a10 10 0 0 0 -6.11 -6.111a1 1 0 0 0 -1.333 .943z" />
+  </g>
+  <text x="110" y="173" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Age Distribution</text>
+
+  
+  
+  
+  <path d="M 230,210 A 90,90 0 0,1 241.28,389.29 L 236.89,354.57 A 55,55 0 0,0 230,245 Z" fill="#1A3A5C" />
+  
+  <path d="M 241.28,389.29 A 90,90 0 0,1 140,300 L 175,300 A 55,55 0 0,0 236.89,354.57 Z" fill="#E8A838" />
+  
+  <path d="M 140,300 A 90,90 0 0,1 177.10,227.19 L 197.67,255.50 A 55,55 0 0,0 175,300 Z" fill="#2D8A4E" />
+  
+  <path d="M 177.10,227.19 A 90,90 0 0,1 230,210 L 230,245 A 55,55 0 0,0 197.67,255.50 Z" fill="#D5DDE5" />
+  
+  <circle cx="230" cy="300" r="55" fill="#FFFFFF" />
+  <text x="230" y="296" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#1A3A5C">75%</text>
+  <text x="230" y="316" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">Under 40</text>
+
+  
+  <path fill="#1A3A5C" d="M352,210 H360 A2,2 0 0 1 362,212 V220 A2,2 0 0 1 360,222 H352 A2,2 0 0 1 350,220 V212 A2,2 0 0 1 352,210 Z" />
+  <text x="370" y="221" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Under 30</text>
+  <text x="520" y="221" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">48%</text>
+
+  <path fill="#E8A838" d="M352,240 H360 A2,2 0 0 1 362,242 V250 A2,2 0 0 1 360,252 H352 A2,2 0 0 1 350,250 V242 A2,2 0 0 1 352,240 Z" />
+  <text x="370" y="251" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">31–40</text>
+  <text x="520" y="251" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8A838">27%</text>
+
+  <path fill="#2D8A4E" d="M352,270 H360 A2,2 0 0 1 362,272 V280 A2,2 0 0 1 360,282 H352 A2,2 0 0 1 350,280 V272 A2,2 0 0 1 352,270 Z" />
+  <text x="370" y="281" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">41–50</text>
+  <text x="520" y="281" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#2D8A4E">15%</text>
+
+  <path fill="#D5DDE5" d="M352,300 H360 A2,2 0 0 1 362,302 V310 A2,2 0 0 1 360,312 H352 A2,2 0 0 1 350,310 V302 A2,2 0 0 1 352,300 Z" />
+  <text x="370" y="311" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Over 50</text>
+  <text x="520" y="311" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#5D6D7E">10%</text>
+
+  
+  <path fill="#1A3A5C" fill-opacity="0.06" d="M354,345 H591 A4,4 0 0 1 595,349 V377 A4,4 0 0 1 591,381 H354 A4,4 0 0 1 350,377 V349 A4,4 0 0 1 354,345 Z" />
+  <text x="365" y="368" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#1A3A5C" font-weight="600">↑ Young base = long customer lifetime</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M643,140 H1212 A8,8 0 0 1 1220,148 V392 A8,8 0 0 1 1212,400 H643 A8,8 0 0 1 635,392 V148 A8,8 0 0 1 643,140 Z" />
+  
+  <g transform="translate(655.0, 155.0) scale(0.9166666666666666)" fill="#E8A838">
+    <path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 2.66a1 1 0 0 0 -1 1a3 3 0 1 0 0 6v2a1.024 1.024 0 0 1 -.866 -.398l-.068 -.101a1 1 0 0 0 -1.732 .998a3 3 0 0 0 2.505 1.5h.161a1 1 0 0 0 .883 .994l.117 .007a1 1 0 0 0 1 -1l.176 -.005a3 3 0 0 0 -.176 -5.995v-2c.358 -.012 .671 .14 .866 .398l.068 .101a1 1 0 0 0 1.732 -.998a3 3 0 0 0 -2.505 -1.501h-.161a1 1 0 0 0 -1 -1zm1 7a1 1 0 0 1 0 2v-2zm-2 -4v2a1 1 0 0 1 0 -2z" />
+  </g>
+  <text x="685" y="173" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Income Distribution</text>
+
+  
+  <text x="670" y="216" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Higher</text>
+  <path fill="#1A3A5C" fill-opacity="0.25" d="M763,202 H777 A3,3 0 0 1 780,205 V219 A3,3 0 0 1 777,222 H763 A3,3 0 0 1 760,219 V205 A3,3 0 0 1 763,202 Z" />
+  <text x="790" y="217" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">5%</text>
+
+  
+  <text x="670" y="260" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Middle</text>
+  <path fill="#E8A838" d="M763,246 H1085 A3,3 0 0 1 1088,249 V265 A3,3 0 0 1 1085,268 H763 A3,3 0 0 1 760,265 V249 A3,3 0 0 1 763,246 Z" />
+  <text x="1100" y="262" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8A838">82%</text>
+
+  
+  <text x="670" y="304" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Lower</text>
+  <path fill="#1A3A5C" fill-opacity="0.4" d="M763,290 H821 A3,3 0 0 1 824,293 V307 A3,3 0 0 1 821,310 H763 A3,3 0 0 1 760,307 V293 A3,3 0 0 1 763,290 Z" />
+  <text x="834" y="305" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">16%</text>
+
+  
+  <path fill="#E8A838" fill-opacity="0.08" d="M664,335 H1196 A4,4 0 0 1 1200,339 V381 A4,4 0 0 1 1196,385 H664 A4,4 0 0 1 660,381 V339 A4,4 0 0 1 664,335 Z" />
+  <text x="680" y="356" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#1A3A5C" font-weight="600">82% middle income — price-sensitive but financially stable.</text>
+  <text x="680" y="374" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Ideal for value-driven loyalty incentives (discounts, trade-ins).</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M68,420 H607 A8,8 0 0 1 615,428 V672 A8,8 0 0 1 607,680 H68 A8,8 0 0 1 60,672 V428 A8,8 0 0 1 68,420 Z" />
+  
+  <g transform="translate(80.0, 435.0) scale(0.9166666666666666)" fill="#1A3A5C">
+    <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+    <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
+  </g>
+  <text x="110" y="453" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Occupation Breakdown</text>
+
+  
+  <text x="80" y="498" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Employed</text>
+  <path fill="#1A3A5C" d="M203,484 H527 A3,3 0 0 1 530,487 V501 A3,3 0 0 1 527,504 H203 A3,3 0 0 1 200,501 V487 A3,3 0 0 1 203,484 Z" />
+  <text x="540" y="499" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">75%</text>
+
+  
+  <text x="80" y="534" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Self-employed</text>
+  <path fill="#E8A838" d="M203,520 H263 A3,3 0 0 1 266,523 V537 A3,3 0 0 1 263,540 H203 A3,3 0 0 1 200,537 V523 A3,3 0 0 1 203,520 Z" />
+  <text x="276" y="535" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8A838">15%</text>
+
+  
+  <text x="80" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Student</text>
+  <path fill="#2D8A4E" d="M203,554 H232 A3,3 0 0 1 235,557 V571 A3,3 0 0 1 232,574 H203 A3,3 0 0 1 200,571 V557 A3,3 0 0 1 203,554 Z" />
+  <text x="245" y="569" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2D8A4E">8%</text>
+
+  
+  <text x="80" y="602" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Retired</text>
+  <path fill="#D5DDE5" d="M203,588 H206 A3,3 0 0 1 209,591 V605 A3,3 0 0 1 206,608 H203 A3,3 0 0 1 200,605 V591 A3,3 0 0 1 203,588 Z" />
+  <text x="220" y="603" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#95A5A6">2%</text>
+
+  
+  <path fill="#1A3A5C" fill-opacity="0.06" d="M84,630 H591 A4,4 0 0 1 595,634 V658 A4,4 0 0 1 591,662 H84 A4,4 0 0 1 80,658 V634 A4,4 0 0 1 84,630 Z" />
+  <text x="95" y="651" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#1A3A5C" font-weight="600">90% are working professionals — active economic participants with purchasing power</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M643,420 H1212 A8,8 0 0 1 1220,428 V672 A8,8 0 0 1 1212,680 H643 A8,8 0 0 1 635,672 V428 A8,8 0 0 1 643,420 Z" />
+  
+  <g transform="translate(655.0, 435.0) scale(0.9166666666666666)" fill="#E74C3C">
+    <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+  </g>
+  <text x="685" y="453" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#1A3A5C">Customer Interests (Ranked)</text>
+
+  
+  <circle cx="672" cy="490" r="12" fill="#E8A838" />
+  <text x="672" y="495" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">1</text>
+  <text x="694" y="495" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50">Eating / Drinking</text>
+
+  <circle cx="672" cy="522" r="12" fill="#E8A838" />
+  <text x="672" y="527" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">2</text>
+  <text x="694" y="527" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50">Sport</text>
+
+  <circle cx="672" cy="554" r="12" fill="#E8A838" />
+  <text x="672" y="559" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">3</text>
+  <text x="694" y="559" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#2C3E50">Travel</text>
+
+  <circle cx="672" cy="586" r="12" fill="#2D8A4E" />
+  <text x="672" y="591" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">4</text>
+  <text x="694" y="591" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="bold" fill="#2D8A4E">Environment ★</text>
+
+  
+  <circle cx="880" cy="490" r="12" fill="#D5DDE5" />
+  <text x="880" y="495" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">5</text>
+  <text x="902" y="495" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#5D6D7E">Health / Fitness</text>
+
+  <circle cx="880" cy="522" r="12" fill="#D5DDE5" />
+  <text x="880" y="527" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">6</text>
+  <text x="902" y="527" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#5D6D7E">Reading</text>
+
+  <circle cx="880" cy="554" r="12" fill="#D5DDE5" />
+  <text x="880" y="559" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">7</text>
+  <text x="902" y="559" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#5D6D7E">The Arts</text>
+
+  <circle cx="880" cy="586" r="12" fill="#D5DDE5" />
+  <text x="880" y="591" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">8</text>
+  <text x="902" y="591" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#5D6D7E">Politics</text>
+
+  
+  <path fill="#2D8A4E" fill-opacity="0.08" d="M659,618 H1196 A4,4 0 0 1 1200,622 V659 A4,4 0 0 1 1196,663 H659 A4,4 0 0 1 655,659 V622 A4,4 0 0 1 659,618 Z" />
+  <text x="675" y="637" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2D8A4E" font-weight="600">Environment ranks #4 — aligns with Kimsoong's eco-brand.</text>
+  <text x="675" y="654" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Loyalty programme can leverage eco-positioning for deeper engagement.</text>
+
+  
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Questionnaire (n=40% response rate)</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">4</text>
+</svg>

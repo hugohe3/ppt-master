@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow06" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="leftImgClip06">
+      <rect x="60" y="190" width="540" height="310" rx="12"/>
+    </clipPath>
+    <clipPath id="rightImgClip06">
+      <rect x="640" y="190" width="580" height="310" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p06-header">
+    <use data-icon="tabler-filled/paint" x="60" y="30" width="28" height="28" fill="#D4956A"/>
+    <text x="98" y="52" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      三大底层元素 · 叁
+    </text>
+  </g>
+
+  <!-- Title -->
+  <g id="p06-title">
+    <text x="60" y="120" font-family="Georgia, SimSun, serif" font-size="36" font-weight="bold" fill="#E8E0D4">
+      纹理：赋予空间灵魂的细节
+    </text>
+    <text x="60" y="155" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#B0A08E">
+      纹理，就像是空间的"指纹"——赋予独一无二的辨识度
+    </text>
+  </g>
+
+  <!-- Two image comparison -->
+  <!-- Left: tactile texture -->
+  <g id="p06-left-image" filter="url(#cardShadow06)">
+    <image href="../images/texture_tactile.png" x="60" y="190" width="540" height="310" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImgClip06)"/>
+    <!-- Label -->
+    <rect x="60" y="440" width="540" height="60" fill="#1A1714" fill-opacity="0.75" rx="0"/>
+    <use data-icon="tabler-filled/eye" x="80" y="455" width="24" height="24" fill="#C4A882"/>
+    <text x="114" y="475" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+      触觉纹理
+    </text>
+    <text x="240" y="475" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      手指、脚或身体直接感知的表面特征
+    </text>
+  </g>
+
+  <!-- Right: visual texture -->
+  <g id="p06-right-image" filter="url(#cardShadow06)">
+    <image href="../images/texture_visual.png" x="640" y="190" width="580" height="310" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImgClip06)"/>
+    <!-- Label -->
+    <rect x="640" y="440" width="580" height="60" fill="#1A1714" fill-opacity="0.75" rx="0"/>
+    <use data-icon="tabler-filled/eye" x="660" y="455" width="24" height="24" fill="#D4956A"/>
+    <text x="694" y="475" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+      视觉纹理
+    </text>
+    <text x="820" y="475" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      由视觉引发的想象与感受
+    </text>
+  </g>
+
+  <!-- Bottom examples -->
+  <g id="p06-examples">
+    <rect x="60" y="530" width="560" height="110" rx="10" fill="#2A2520"/>
+    <rect x="60" y="530" width="4" height="110" rx="2" fill="#C4A882"/>
+    <text x="84" y="560" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="bold" fill="#C4A882">
+      触觉感知
+    </text>
+    <text x="84" y="590" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      赤脚踩在羊毛地毯上 → 柔软温暖
+    </text>
+    <text x="84" y="618" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      手指轻抚粗陶花瓶 → 凹凸不平的肌理
+    </text>
+
+    <rect x="660" y="530" width="560" height="110" rx="10" fill="#2A2520"/>
+    <rect x="660" y="530" width="4" height="110" rx="2" fill="#D4956A"/>
+    <text x="684" y="560" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" font-weight="bold" fill="#D4956A">
+      视觉感知
+    </text>
+    <text x="684" y="590" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      细腻图案的壁纸 → 眼睛"感受"到肌理
+    </text>
+    <text x="684" y="618" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      没有触摸，视觉已传递了质感信号
+    </text>
+  </g>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    06 / 12
+  </text>
+</svg>

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.25" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="quoteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#8B6F47" stop-opacity="0.05" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#1A1A2E" />
+  <rect width="1280" height="720" fill="url(#bgGlow)" />
+
+  
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 03 · 强者与精神</tspan>
+  </text>
+
+  
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E" />
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>当之无愧的建筑师</tspan>
+  </text>
+
+  
+  <path fill="url(#quoteGrad)" stroke="#C9A96E" stroke-width="1" filter="url(#cardShadow)" d="M72,115 H1208 A12,12 0 0 1 1220,127 V233 A12,12 0 0 1 1208,245 H72 A12,12 0 0 1 60,233 V127 A12,12 0 0 1 72,115 Z" />
+  <path fill="#E8D5B7" d="M62,115 H62 A2,2 0 0 1 64,117 V243 A2,2 0 0 1 62,245 H62 A2,2 0 0 1 60,243 V117 A2,2 0 0 1 62,115 Z" />
+  
+  <text x="90" y="160" font-family="Georgia, serif" font-size="48" fill="#C9A96E" fill-opacity="0.3">
+    <tspan>"</tspan>
+  </text>
+  <text x="120" y="165" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8E8E8">
+    <tspan>我自己也到了相当年纪，也没有什么成就，眼看得机会愈少……</tspan>
+  </text>
+  <text x="120" y="192" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8E8E8">
+    <tspan>现在身体也不好，家常的负担也繁重，真是从此平庸处世，做妻生子地过一世！</tspan>
+  </text>
+  <text x="120" y="219" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#C9A96E">
+    <tspan>我禁不住伤心起来。</tspan>
+  </text>
+  <rect x="120" y="228" width="40" height="1" fill="#C9A96E" fill-opacity="0.3" />
+  <text x="170" y="228" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#8B6F47">
+    <tspan>—— 28岁写给胡适的信</tspan>
+  </text>
+
+  
+  
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M70,270 H610 A10,10 0 0 1 620,280 V390 A10,10 0 0 1 610,400 H70 A10,10 0 0 1 60,390 V280 A10,10 0 0 1 70,270 Z" />
+  <path fill="#C9A96E" d="M62,270 H62 A2,2 0 0 1 64,272 V398 A2,2 0 0 1 62,400 H62 A2,2 0 0 1 60,398 V272 A2,2 0 0 1 62,270 Z" />
+  
+  <g transform="translate(84.0, 290.0) scale(2.0)" fill="#C9A96E">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0H2V16H6V12H10V16H14V0ZM5 3H7V5H5V3ZM7 7H5V9H7V7ZM9 3H11V5H9V3ZM11 7H9V9H11V7Z" />
+  </g>
+  <text x="130" y="306" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>共创建筑教育</tspan>
+  </text>
+  <text x="84" y="340" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>与梁思成共同创办东北大学、清华大学建筑系</tspan>
+  </text>
+  <text x="84" y="365" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>奠定中国现代建筑教育的基石</tspan>
+  </text>
+
+  
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M650,270 H1210 A10,10 0 0 1 1220,280 V390 A10,10 0 0 1 1210,400 H650 A10,10 0 0 1 640,390 V280 A10,10 0 0 1 650,270 Z" />
+  <path fill="#C9A96E" d="M642,270 H642 A2,2 0 0 1 644,272 V398 A2,2 0 0 1 642,400 H642 A2,2 0 0 1 640,398 V272 A2,2 0 0 1 642,270 Z" />
+  
+  <g transform="translate(664.0, 290.0) scale(2.0)" fill="#C9A96E">
+    <path d="M4 2L0 1V14L4 15V2Z" />
+    <path d="M16 2L12 1V14L16 15V2Z" />
+    <path d="M10 1L6 2V15L10 14V1Z" />
+  </g>
+  <text x="710" y="306" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>一寸寸测量古建筑</tspan>
+  </text>
+  <text x="664" y="340" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>深入荒凉之地，用双手丈量中国古建筑</tspan>
+  </text>
+  <text x="664" y="365" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>为中国建筑史留下珍贵的第一手资料</tspan>
+  </text>
+
+  
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M70,420 H610 A10,10 0 0 1 620,430 V540 A10,10 0 0 1 610,550 H70 A10,10 0 0 1 60,540 V430 A10,10 0 0 1 70,420 Z" />
+  <path fill="#8B6F47" d="M62,420 H62 A2,2 0 0 1 64,422 V548 A2,2 0 0 1 62,550 H62 A2,2 0 0 1 60,548 V422 A2,2 0 0 1 62,420 Z" />
+  
+  <g transform="translate(84.0, 440.0) scale(2.0)" fill="#8B6F47">
+    <path d="M11 0L16 5L14 7V12L3 16L2.20711 15.2071L6.48196 10.9323C6.64718 10.9764 6.82084 11 7 11C8.10457 11 9 10.1046 9 9C9 7.89543 8.10457 7 7 7C5.89543 7 5 7.89543 5 9C5 9.17916 5.02356 9.35282 5.06774 9.51804L0.792893 13.7929L0 13L4 2H9L11 0Z" />
+  </g>
+  <text x="130" y="456" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>战时书写建筑史</tspan>
+  </text>
+  <text x="84" y="490" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>在偏远小镇拖着病体一笔一笔书写中国建筑史</tspan>
+  </text>
+  <text x="84" y="515" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>学科的奠基者，思想上的先行者</tspan>
+  </text>
+
+  
+  <path fill="#16213E" stroke="#C9A96E" stroke-width="1.5" d="M650,420 H1210 A10,10 0 0 1 1220,430 V540 A10,10 0 0 1 1210,550 H650 A10,10 0 0 1 640,540 V430 A10,10 0 0 1 650,420 Z" />
+  <path fill="#E8D5B7" d="M642,420 H642 A2,2 0 0 1 644,422 V548 A2,2 0 0 1 642,550 H642 A2,2 0 0 1 640,548 V422 A2,2 0 0 1 642,420 Z" />
+  
+  <g transform="translate(664.0, 440.0) scale(2.0)" fill="#E8D5B7">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M2 15L0 4H2L5 7L7 1H9L11 7L14 4H16L14 15H2ZM7.5 9L6 11L7.5 13H8.5L10 11L8.5 9H7.5Z" />
+  </g>
+  <text x="710" y="456" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>国之重器的最后心血</tspan>
+  </text>
+  <text x="664" y="490" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>在国徽和人民英雄纪念碑上倾注生命最后的力量</tspan>
+  </text>
+  <text x="664" y="515" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#C9A96E">
+    <tspan>她用一生证明，她是当之无愧的建筑师</tspan>
+  </text>
+
+  
+  <path fill="#16213E" stroke="#8B6F47" stroke-width="1" d="M308,580 H972 A8,8 0 0 1 980,588 V632 A8,8 0 0 1 972,640 H308 A8,8 0 0 1 300,632 V588 A8,8 0 0 1 308,580 Z" />
+  <text x="640" y="605" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#C9A96E" text-anchor="middle">
+    <tspan>林徽因想要真正终生为之奋斗的</tspan>
+  </text>
+  <text x="640" y="630" font-family="'KaiTi', Georgia, serif" font-size="18" fill="#E8D5B7" text-anchor="middle">
+    <tspan>是中国建筑学术事业</tspan>
+  </text>
+
+  
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>09 / 10</tspan>
+  </text>
+</svg>

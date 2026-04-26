@@ -1,0 +1,225 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Quick Wins First, Then Systematic Service Transformation
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V119 A4,4 0 0 1 1216,123 H64 A4,4 0 0 1 60,119 V82 A4,4 0 0 1 64,78 Z" />
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    A phased 12-month rollout — launch low-cost, high-data-value initiatives first, then scale to service and financial incentives as infrastructure matures.
+  </text>
+
+  
+  <path fill="url(#timelineGrad)" d="M84,158 H1196 A4,4 0 0 1 1200,162 V162 A4,4 0 0 1 1196,166 H84 A4,4 0 0 1 80,162 V162 A4,4 0 0 1 84,158 Z" />
+
+  
+  <circle cx="220" cy="162" r="14" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3" />
+  <text x="220" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Q1</text>
+
+  <circle cx="500" cy="162" r="14" fill="#FFFFFF" stroke="#E8A838" stroke-width="3" />
+  <text x="500" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#E8A838">Q2</text>
+
+  <circle cx="780" cy="162" r="14" fill="#FFFFFF" stroke="#2D8A4E" stroke-width="3" />
+  <text x="780" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Q3</text>
+
+  <circle cx="1060" cy="162" r="14" fill="#FFFFFF" stroke="#1A3A5C" stroke-width="3" />
+  <text x="1060" y="167" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Q4</text>
+
+  
+  <path fill="#F4F6F8" stroke="#1A3A5C" stroke-width="1.5" filter="url(#cardShadow)" d="M88,195 H332 A8,8 0 0 1 340,203 V437 A8,8 0 0 1 332,445 H88 A8,8 0 0 1 80,437 V203 A8,8 0 0 1 88,195 Z" />
+  <path fill="#1A3A5C" d="M88,195 H332 A8,8 0 0 1 340,203 V227 A8,8 0 0 1 332,235 H88 A8,8 0 0 1 80,227 V203 A8,8 0 0 1 88,195 Z" />
+  <rect x="80" y="227" width="260" height="8" fill="#1A3A5C" />
+  
+  <g transform="translate(92.0, 203.0) scale(0.9166666666666666)" fill="#E8A838">
+    <path d="M16 19a1 1 0 0 1 0 -2a1 1 0 0 0 1 -1c0 -1.333 2 -1.333 2 0a1 1 0 0 0 1 1c1.333 0 1.333 2 0 2a1 1 0 0 0 -1 1c0 1.333 -2 1.333 -2 0a1 1 0 0 0 -1 -1" />
+    <path d="M3 11a5 5 0 0 0 5 -5c0 -1.333 2 -1.333 2 0a5 5 0 0 0 5 5c1.333 0 1.333 2 0 2a5 5 0 0 0 -5 5a1 1 0 0 1 -2 0a5 5 0 0 0 -5 -5c-1.333 0 -1.333 -2 0 -2" />
+    <path d="M16 7a1 1 0 0 1 0 -2a1 1 0 0 0 1 -1c0 -1.333 2 -1.333 2 0a1 1 0 0 0 1 1c1.333 0 1.333 2 0 2a1 1 0 0 0 -1 1c0 1.333 -2 1.333 -2 0a1 1 0 0 0 -1 -1" />
+  </g>
+  <text x="122" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 1: Quick Wins</text>
+
+  
+  <g transform="translate(95.0, 255.0) scale(0.8333333333333334)" fill="#2D8A4E">
+    <path d="M11 14v8h-4a3 3 0 0 1 -3 -3v-4a1 1 0 0 1 1 -1h6zm8 0a1 1 0 0 1 1 1v4a3 3 0 0 1 -3 3h-4v-8h6zm-2.5 -12a3.5 3.5 0 0 1 3.163 5h.337a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-7v-5h-2v5h-7a2 2 0 0 1 -2 -2v-1a2 2 0 0 1 2 -2h.337a3.486 3.486 0 0 1 -.337 -1.5c0 -1.933 1.567 -3.5 3.483 -3.5c1.755 -.03 3.312 1.092 4.381 2.934l.136 .243c1.033 -1.914 2.56 -3.114 4.291 -3.175l.209 -.002zm-9 2a1.5 1.5 0 0 0 0 3h3.143c-.741 -1.905 -1.949 -3.02 -3.143 -3zm8.983 0c-1.18 -.02 -2.385 1.096 -3.126 3h3.143a1.5 1.5 0 1 0 -.017 -3z" />
+  </g>
+  <text x="125" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Launch Magazine</text>
+  <text x="125" y="288" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Monthly customer publication</text>
+  <text x="125" y="303" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">with owner stories</text>
+
+  <line x1="95" y1="315" x2="325" y2="315" stroke="#D5DDE5" stroke-width="0.5" />
+
+  
+  <g transform="translate(95.0, 328.0) scale(0.8333333333333334)" fill="#E8A838">
+    <path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-8.997 6.83a1 1 0 0 0 -1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0 -1 -1m3 4a1 1 0 0 0 -1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0 -1 -1m3 -2a1 1 0 0 0 -1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0 -1 -1m-1 -11a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" />
+  </g>
+  <text x="125" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Deploy Questionnaire</text>
+  <text x="125" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Incentive</text>
+  <text x="125" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Branded pen programme</text>
+  <text x="125" y="393" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">for data collection</text>
+
+  <path fill="#2D8A4E" fill-opacity="0.08" d="M99,415 H321 A4,4 0 0 1 325,419 V433 A4,4 0 0 1 321,437 H99 A4,4 0 0 1 95,433 V419 A4,4 0 0 1 99,415 Z" />
+  <text x="105" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Cost: Very Low | Impact: Quick Data</text>
+
+  
+  <path fill="#F4F6F8" stroke="#E8A838" stroke-width="1.5" filter="url(#cardShadow)" d="M368,195 H612 A8,8 0 0 1 620,203 V437 A8,8 0 0 1 612,445 H368 A8,8 0 0 1 360,437 V203 A8,8 0 0 1 368,195 Z" />
+  <path fill="#E8A838" d="M368,195 H612 A8,8 0 0 1 620,203 V227 A8,8 0 0 1 612,235 H368 A8,8 0 0 1 360,227 V203 A8,8 0 0 1 368,195 Z" />
+  <rect x="360" y="227" width="260" height="8" fill="#E8A838" />
+  
+  <g transform="translate(372.0, 203.0) scale(0.9166666666666666)" fill="#FFFFFF">
+    <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />
+  </g>
+  <text x="402" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 2: Service Uplift</text>
+
+  
+  <g transform="translate(375.0, 255.0) scale(0.8333333333333334)" fill="#E8A838">
+    <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />
+  </g>
+  <text x="405" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">3-Year Free After-</text>
+  <text x="405" y="288" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">sales Service</text>
+  <text x="405" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Roll out across all European</text>
+  <text x="405" y="325" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">franchise locations</text>
+
+  <text x="405" y="355" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Addresses 26% service churn</text>
+  <text x="405" y="373" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Staff training programme</text>
+
+  <path fill="#E8A838" fill-opacity="0.1" d="M379,415 H601 A4,4 0 0 1 605,419 V433 A4,4 0 0 1 601,437 H379 A4,4 0 0 1 375,433 V419 A4,4 0 0 1 379,415 Z" />
+  <text x="385" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#E8A838">Cost: Med-High | Impact: Core Fix</text>
+
+  
+  <path fill="#F4F6F8" stroke="#2D8A4E" stroke-width="1.5" filter="url(#cardShadow)" d="M648,195 H892 A8,8 0 0 1 900,203 V437 A8,8 0 0 1 892,445 H648 A8,8 0 0 1 640,437 V203 A8,8 0 0 1 648,195 Z" />
+  <path fill="#2D8A4E" d="M648,195 H892 A8,8 0 0 1 900,203 V227 A8,8 0 0 1 892,235 H648 A8,8 0 0 1 640,227 V203 A8,8 0 0 1 648,195 Z" />
+  <rect x="640" y="227" width="260" height="8" fill="#2D8A4E" />
+  
+  <g transform="translate(652.0, 203.0) scale(0.9166666666666666)" fill="#FFFFFF">
+    <path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-2.5 9.66a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3m1.207 -4.707a1 1 0 0 0 -1.414 0l-6 6a1 1 0 0 0 1.414 1.414l6 -6a1 1 0 0 0 0 -1.414m-6.207 -.293a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3" />
+  </g>
+  <text x="682" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 3: Incentives</text>
+
+  
+  <g transform="translate(655.0, 255.0) scale(0.8333333333333334)" fill="#2D8A4E">
+    <path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-2.5 9.66a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3m1.207 -4.707a1 1 0 0 0 -1.414 0l-6 6a1 1 0 0 0 1.414 1.414l6 -6a1 1 0 0 0 0 -1.414m-6.207 -.293a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3" />
+  </g>
+  <text x="685" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">20% Loyalty Discount</text>
+  <text x="685" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">For existing customers on</text>
+  <text x="685" y="305" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">new model purchases</text>
+
+  <line x1="655" y1="317" x2="885" y2="317" stroke="#D5DDE5" stroke-width="0.5" />
+
+  
+  <g transform="translate(655.0, 328.0) scale(0.8333333333333334)" fill="#1A3A5C">
+    <path d="M14 5a1 1 0 0 1 .694 .28l.087 .095l3.699 4.625h.52a3 3 0 0 1 2.995 2.824l.005 .176v4a1 1 0 0 1 -1 1h-1.171a3.001 3.001 0 0 1 -5.658 0h-4.342a3.001 3.001 0 0 1 -5.658 0h-1.171a1 1 0 0 1 -1 -1v-6l.007 -.117l.008 -.056l.017 -.078l.012 -.036l.014 -.05l2.014 -5.034a1 1 0 0 1 .928 -.629zm-7 11a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m-6 -9h-5.324l-1.2 3h6.524zm2.52 0h-.52v3h2.92z" />
+  </g>
+  <text x="685" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Trade-in Programme</text>
+  <text x="685" y="363" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Generous trade-in offers for</text>
+  <text x="685" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">existing Kimsoong vehicles</text>
+
+  <path fill="#2D8A4E" fill-opacity="0.08" d="M659,415 H881 A4,4 0 0 1 885,419 V433 A4,4 0 0 1 881,437 H659 A4,4 0 0 1 655,433 V419 A4,4 0 0 1 659,415 Z" />
+  <text x="665" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#2D8A4E">Cost: Medium | Impact: Retention</text>
+
+  
+  <path fill="#F4F6F8" stroke="#1A3A5C" stroke-width="1.5" filter="url(#cardShadow)" d="M928,195 H1172 A8,8 0 0 1 1180,203 V437 A8,8 0 0 1 1172,445 H928 A8,8 0 0 1 920,437 V203 A8,8 0 0 1 928,195 Z" />
+  <path fill="#1A3A5C" d="M928,195 H1172 A8,8 0 0 1 1180,203 V227 A8,8 0 0 1 1172,235 H928 A8,8 0 0 1 920,227 V203 A8,8 0 0 1 928,195 Z" />
+  <rect x="920" y="227" width="260" height="8" fill="#1A3A5C" />
+  
+  <g transform="translate(932.0, 203.0) scale(0.9166666666666666)" fill="#E8A838">
+    <path d="M17 3a1 1 0 0 1 .993 .883l.007 .117v2.17a3 3 0 1 1 0 5.659v.171a6.002 6.002 0 0 1 -5 5.917v2.083h3a1 1 0 0 1 .117 1.993l-.117 .007h-8a1 1 0 0 1 -.117 -1.993l.117 -.007h3v-2.083a6.002 6.002 0 0 1 -4.996 -5.692l-.004 -.225v-.171a3 3 0 0 1 -3.996 -2.653l-.003 -.176l.005 -.176a3 3 0 0 1 3.995 -2.654l-.001 -2.17a1 1 0 0 1 1 -1h10zm-12 5a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m14 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2" />
+  </g>
+  <text x="962" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Phase 4: Evaluate</text>
+
+  
+  <g transform="translate(935.0, 255.0) scale(0.8333333333333334)" fill="#1A3A5C">
+    <path d="M9.883 2.207a1.9 1.9 0 0 1 2.087 1.522l.025 .167l.005 .104v7a1 1 0 0 0 .883 .993l.117 .007h6.8a2 2 0 0 1 2 2a1 1 0 0 1 -.026 .226a10 10 0 1 1 -12.27 -11.933l.27 -.067l.11 -.02z" />
+    <path d="M14 3.5v5.5a1 1 0 0 0 1 1h5.5a1 1 0 0 0 .943 -1.332a10 10 0 0 0 -6.11 -6.111a1 1 0 0 0 -1.333 .943z" />
+  </g>
+  <text x="965" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Measure KPIs</text>
+  <text x="965" y="290" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Track repeat rate, satisfaction,</text>
+  <text x="965" y="305" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">questionnaire return metrics</text>
+
+  <line x1="935" y1="317" x2="1165" y2="317" stroke="#D5DDE5" stroke-width="0.5" />
+
+  
+  <g transform="translate(935.0, 328.0) scale(0.8333333333333334)" fill="#E8A838">
+    <path d="M12.01 2.011a3.2 3.2 0 0 1 2.113 .797l.154 .145l.698 .698a1.2 1.2 0 0 0 .71 .341l.135 .008h1a3.2 3.2 0 0 1 3.195 3.018l.005 .182v1c0 .27 .092 .533 .258 .743l.09 .1l.697 .698a3.2 3.2 0 0 1 .147 4.382l-.145 .154l-.698 .698a1.2 1.2 0 0 0 -.341 .71l-.008 .135v1a3.2 3.2 0 0 1 -3.018 3.195l-.182 .005h-1a1.2 1.2 0 0 0 -.743 .258l-.1 .09l-.698 .697a3.2 3.2 0 0 1 -4.382 .147l-.154 -.145l-.698 -.698a1.2 1.2 0 0 0 -.71 -.341l-.135 -.008h-1a3.2 3.2 0 0 1 -3.195 -3.018l-.005 -.182v-1a1.2 1.2 0 0 0 -.258 -.743l-.09 -.1l-.697 -.698a3.2 3.2 0 0 1 -.147 -4.382l.145 -.154l.698 -.698a1.2 1.2 0 0 0 .341 -.71l.008 -.135v-1l.005 -.182a3.2 3.2 0 0 1 3.013 -3.013l.182 -.005h1a1.2 1.2 0 0 0 .743 -.258l.1 -.09l.698 -.697a3.2 3.2 0 0 1 2.269 -.944z" />
+  </g>
+  <text x="965" y="343" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Adjust Programme</text>
+  <text x="965" y="363" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Refine based on data;</text>
+  <text x="965" y="378" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">prepare Year 2 plan</text>
+
+  <path fill="#1A3A5C" fill-opacity="0.06" d="M939,415 H1161 A4,4 0 0 1 1165,419 V433 A4,4 0 0 1 1161,437 H939 A4,4 0 0 1 935,433 V419 A4,4 0 0 1 939,415 Z" />
+  <text x="945" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#1A3A5C">Cost: Low | Impact: Optimization</text>
+
+  
+  <text x="60" y="480" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">12-Month KPI Targets</text>
+  <line x1="60" y1="490" x2="1220" y2="490" stroke="#D5DDE5" stroke-width="1" />
+
+  
+  <path fill="#F4F6F8" d="M66,505 H414 A6,6 0 0 1 420,511 V569 A6,6 0 0 1 414,575 H66 A6,6 0 0 1 60,569 V511 A6,6 0 0 1 66,505 Z" />
+  
+  <g transform="translate(75.0, 518.0)" fill="#E74C3C">
+    <path d="M12.01 2.011a3.2 3.2 0 0 1 2.113 .797l.154 .145l.698 .698a1.2 1.2 0 0 0 .71 .341l.135 .008h1a3.2 3.2 0 0 1 3.195 3.018l.005 .182v1c0 .27 .092 .533 .258 .743l.09 .1l.697 .698a3.2 3.2 0 0 1 .147 4.382l-.145 .154l-.698 .698a1.2 1.2 0 0 0 -.341 .71l-.008 .135v1a3.2 3.2 0 0 1 -3.018 3.195l-.182 .005h-1a1.2 1.2 0 0 0 -.743 .258l-.1 .09l-.698 .697a3.2 3.2 0 0 1 -4.382 .147l-.154 -.145l-.698 -.698a1.2 1.2 0 0 0 -.71 -.341l-.135 -.008h-1a3.2 3.2 0 0 1 -3.195 -3.018l-.005 -.182v-1a1.2 1.2 0 0 0 -.258 -.743l-.09 -.1l-.697 -.698a3.2 3.2 0 0 1 -.147 -4.382l.145 -.154l.698 -.698a1.2 1.2 0 0 0 .341 -.71l.008 -.135v-1l.005 -.182a3.2 3.2 0 0 1 3.013 -3.013l.182 -.005h1a1.2 1.2 0 0 0 .743 -.258l.1 -.09l.698 -.697a3.2 3.2 0 0 1 2.269 -.944z" />
+  </g>
+  <text x="110" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Repeat Buyer Rate</text>
+  <text x="110" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">15%</text>
+  <text x="170" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="195" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">30%+</text>
+
+  
+  <path fill="#F4F6F8" d="M446,505 H794 A6,6 0 0 1 800,511 V569 A6,6 0 0 1 794,575 H446 A6,6 0 0 1 440,569 V511 A6,6 0 0 1 446,505 Z" />
+  
+  <g transform="translate(455.0, 518.0)" fill="#E8A838">
+    <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" />
+  </g>
+  <text x="490" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Satisfaction (Good+)</text>
+  <text x="490" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">33%</text>
+  <text x="545" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="570" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">60%</text>
+
+  
+  <path fill="#F4F6F8" d="M826,505 H1214 A6,6 0 0 1 1220,511 V569 A6,6 0 0 1 1214,575 H826 A6,6 0 0 1 820,569 V511 A6,6 0 0 1 826,505 Z" />
+  
+  <g transform="translate(835.0, 518.0)" fill="#2D8A4E">
+    <path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-8.997 6.83a1 1 0 0 0 -1 1v5a1 1 0 0 0 2 0v-5a1 1 0 0 0 -1 -1m3 4a1 1 0 0 0 -1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0 -1 -1m3 -2a1 1 0 0 0 -1 1v3a1 1 0 0 0 2 0v-3a1 1 0 0 0 -1 -1m-1 -11a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" />
+  </g>
+  <text x="870" y="530" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A3A5C">Questionnaire Return Rate</text>
+  <text x="870" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#E74C3C">40%</text>
+  <text x="925" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#5D6D7E">→</text>
+  <text x="950" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" font-weight="bold" fill="#27AE60">70%</text>
+
+  
+  <path fill="#F4F6F8" d="M72,600 H1208 A12,12 0 0 1 1220,612 V612 A12,12 0 0 1 1208,624 H72 A12,12 0 0 1 60,612 V612 A12,12 0 0 1 72,600 Z" />
+  <path fill="#1A3A5C" d="M72,600 H338 A12,12 0 0 1 350,612 V612 A12,12 0 0 1 338,624 H72 A12,12 0 0 1 60,612 V612 A12,12 0 0 1 72,600 Z" />
+  <rect x="350" y="600" width="280" height="24" rx="0" fill="#E8A838" />
+  <rect x="630" y="600" width="280" height="24" rx="0" fill="#2D8A4E" />
+  <path fill="#1A3A5C" fill-opacity="0.6" d="M922,600 H1208 A12,12 0 0 1 1220,612 V612 A12,12 0 0 1 1208,624 H922 A12,12 0 0 1 910,612 V612 A12,12 0 0 1 922,600 Z" />
+  <text x="205" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">DATA FOUNDATION</text>
+  <text x="490" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">SERVICE TRANSFORMATION</text>
+  <text x="770" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">FINANCIAL INCENTIVES</text>
+  <text x="1065" y="617" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">OPTIMIZE</text>
+
+  
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Services — Implementation Plan</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">9</text>
+</svg>

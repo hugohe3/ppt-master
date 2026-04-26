@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="imgOverlay10" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#1A1714" stop-opacity="0.05"/>
+      <stop offset="35%" stop-color="#1A1714" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1A1714" stop-opacity="0.95"/>
+    </linearGradient>
+    <radialGradient id="bgAccent10" cx="85%" cy="50%" r="45%">
+      <stop offset="0%" stop-color="#7BA37B" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#7BA37B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+  <rect width="1280" height="720" fill="url(#bgAccent10)"/>
+
+  <!-- Right side image -->
+  <image href="../images/sustainable_luxury.png" x="680" y="0" width="600" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="680" y="0" width="600" height="720" fill="url(#imgOverlay10)"/>
+
+  <!-- Tag -->
+  <g id="p10-tag">
+    <use data-icon="tabler-filled/leaf" x="80" y="120" width="28" height="28" fill="#7BA37B"/>
+    <text x="116" y="140" font-family="Georgia, SimSun, serif" font-size="14" fill="#7BA37B" letter-spacing="3">
+      2026 流行风格
+    </text>
+  </g>
+
+  <!-- Title -->
+  <g id="p10-title">
+    <text x="80" y="210" font-family="Georgia, SimSun, serif" font-size="42" font-weight="bold" fill="#E8E0D4">
+      可持续奢华
+    </text>
+    <text x="80" y="250" font-family="Georgia, SimSun, serif" font-size="22" fill="#7BA37B">
+      负责任的审美
+    </text>
+  </g>
+
+  <!-- Vertical accent -->
+  <rect x="80" y="275" width="50" height="3" fill="#7BA37B" rx="1.5"/>
+
+  <!-- Content -->
+  <g id="p10-content">
+    <text x="80" y="320" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="19" fill="#E8E0D4">
+      奢华不再是昂贵材料的堆砌
+    </text>
+
+    <text x="80" y="370" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      ● 环保饰面材料
+    </text>
+    <text x="80" y="398" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      ● 最大化利用自然光照
+    </text>
+    <text x="80" y="426" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      ● 再生木材 · 软木 · 黄麻纤维
+    </text>
+    <text x="80" y="454" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      ● 本地化可持续木材 · 植物染料回归
+    </text>
+  </g>
+
+  <!-- Bottom quote -->
+  <rect x="80" y="500" width="4" height="70" fill="#7BA37B" rx="2"/>
+  <text x="100" y="530" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8E0D4" font-style="italic">
+    从"炫耀性消费"
+  </text>
+  <text x="100" y="558" font-family="Georgia, SimSun, serif" font-size="20" fill="#7BA37B" font-style="italic">
+    转向"负责任的审美"
+  </text>
+
+  <!-- Closing thought -->
+  <text x="80" y="630" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#7A6E60">
+    与世界和谐共存的生活哲学
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    10 / 12
+  </text>
+</svg>

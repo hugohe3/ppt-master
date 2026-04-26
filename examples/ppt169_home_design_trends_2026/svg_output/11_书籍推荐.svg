@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow11" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="bookClip1">
+      <rect x="60" y="160" width="360" height="260" rx="10"/>
+    </clipPath>
+    <clipPath id="bookClip2">
+      <rect x="60" y="440" width="360" height="200" rx="10"/>
+    </clipPath>
+    <clipPath id="bookClip3">
+      <rect x="440" y="440" width="380" height="200" rx="10"/>
+    </clipPath>
+    <clipPath id="bookClip4">
+      <rect x="840" y="440" width="380" height="200" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p11-header">
+    <use data-icon="tabler-filled/book" x="60" y="25" width="28" height="28" fill="#D4956A"/>
+    <text x="98" y="47" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      推荐阅读
+    </text>
+  </g>
+
+  <!-- Title -->
+  <text x="60" y="110" font-family="Georgia, SimSun, serif" font-size="28" font-weight="bold" fill="#E8E0D4">
+    《空间的高级感》
+  </text>
+  <text x="60" y="140" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+    可拆解、可复制、可验证的空间美学体系
+  </text>
+
+  <!-- Main book cover image -->
+  <g id="p11-book-cover" filter="url(#cardShadow11)">
+    <image href="../images/book_cover1.png" x="60" y="160" width="360" height="260" preserveAspectRatio="xMidYMid slice" clip-path="url(#bookClip1)"/>
+  </g>
+
+  <!-- Author & info card -->
+  <g id="p11-author-card" filter="url(#cardShadow11)">
+    <rect x="440" y="160" width="380" height="260" rx="12" fill="#2A2520"/>
+    <rect x="440" y="160" width="380" height="4" rx="2" fill="#C4A882"/>
+
+    <text x="465" y="200" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" font-weight="bold" fill="#C4A882">
+      作者
+    </text>
+    <text x="465" y="228" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#E8E0D4">
+      宋文雯
+    </text>
+    <text x="465" y="253" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#B0A08E">
+      清华大学艺术与科学研究中心
+    </text>
+    <text x="465" y="273" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#B0A08E">
+      色彩研究所常务副所长
+    </text>
+    <text x="465" y="293" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#B0A08E">
+      英国利兹大学色彩学硕士
+    </text>
+
+    <rect x="465" y="310" width="330" height="1" fill="#3D362E"/>
+
+    <text x="465" y="338" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" font-weight="bold" fill="#D4956A">
+      核心创新
+    </text>
+    <text x="465" y="365" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      将工业设计 CMF 引入室内设计
+    </text>
+    <text x="465" y="390" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#B0A08E">
+      提出 CMT 体系方法论
+    </text>
+  </g>
+
+  <!-- Content chapters card -->
+  <g id="p11-chapters-card" filter="url(#cardShadow11)">
+    <rect x="840" y="160" width="380" height="260" rx="12" fill="#2A2520"/>
+    <rect x="840" y="160" width="380" height="4" rx="2" fill="#8B7355"/>
+
+    <text x="865" y="200" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8E0D4">
+      全书内容
+    </text>
+
+    <circle cx="880" cy="235" r="12" fill="#C4A882"/>
+    <text x="880" y="240" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="12" font-weight="bold" fill="#1A1714">1</text>
+    <text x="902" y="241" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#E8E0D4">色彩篇</text>
+    <text x="975" y="241" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">颜色本质·情感·搭配</text>
+
+    <circle cx="880" cy="275" r="12" fill="#D4956A"/>
+    <text x="880" y="280" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="12" font-weight="bold" fill="#1A1714">2</text>
+    <text x="902" y="281" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#E8E0D4">材料篇</text>
+    <text x="975" y="281" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">木材·金属·织物·塑料</text>
+
+    <circle cx="880" cy="315" r="12" fill="#8B7355"/>
+    <text x="880" y="320" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="12" font-weight="bold" fill="#1A1714">3</text>
+    <text x="902" y="321" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#E8E0D4">纹理篇</text>
+    <text x="975" y="321" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">纹理语言·图案表达</text>
+
+    <circle cx="880" cy="355" r="12" fill="#7BA37B"/>
+    <text x="880" y="360" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="12" font-weight="bold" fill="#1A1714">4</text>
+    <text x="902" y="361" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#E8E0D4">综合篇</text>
+    <text x="975" y="361" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">CMT搭配·风格解析</text>
+
+    <rect x="865" y="385" width="330" height="1" fill="#3D362E"/>
+    <text x="865" y="408" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#7A6E60">
+      适合：设计师提升 / 装修业主自学
+    </text>
+  </g>
+
+  <!-- Bottom image strip -->
+  <g id="p11-book-images">
+    <image href="../images/book_cover2.png" x="60" y="440" width="360" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#bookClip2)"/>
+    <image href="../images/book_inside1.png" x="440" y="440" width="380" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#bookClip3)"/>
+    <image href="../images/book_inside2.png" x="840" y="440" width="380" height="200" preserveAspectRatio="xMidYMid slice" clip-path="url(#bookClip4)"/>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="60" y="660" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+    出版社：江苏凤凰科学技术出版社
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    11 / 12
+  </text>
+</svg>

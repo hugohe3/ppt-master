@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <!-- 标题金色渐变 -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E"/>
+      <stop offset="100%" stop-color="#E8D5B7"/>
+    </linearGradient>
+    <!-- 背景叠加暗色渐变 -->
+    <linearGradient id="overlayGrad" x1="0%" y1="0%" x2="1%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#1A1A2E" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0.85"/>
+    </linearGradient>
+    <!-- 左侧深色渐变遮罩 -->
+    <linearGradient id="leftMask" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0.92"/>
+      <stop offset="60%" stop-color="#1A1A2E" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0.15"/>
+    </linearGradient>
+    <!-- 底部装饰渐变 -->
+    <linearGradient id="bottomDecor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#C9A96E" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </linearGradient>
+    <!-- 卡片阴影 -->
+    <filter id="shadow1">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景底色 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+
+  <!-- 背景图片 -->
+  <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- 暗色叠加层 -->
+  <rect width="1280" height="720" fill="url(#overlayGrad)"/>
+  <!-- 左侧文字区遮罩 -->
+  <rect width="1280" height="720" fill="url(#leftMask)"/>
+
+  <!-- 左上角装饰 - 金色竖线 -->
+  <rect x="60" y="160" width="4" height="120" fill="#C9A96E" fill-opacity="0.8"/>
+  <rect x="60" y="160" width="4" height="40" fill="#E8D5B7"/>
+
+  <!-- 副标题 / 引题 -->
+  <text x="80" y="190" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#A0A0B0" letter-spacing="6">
+    <tspan>逝世70周年 · 纪念专题</tspan>
+  </text>
+
+  <!-- 主标题 -->
+  <text x="80" y="260" font-family="'KaiTi', Georgia, serif" font-size="54" font-weight="bold" fill="url(#titleGrad)">
+    <tspan>林徽因</tspan>
+  </text>
+
+  <!-- 二级标题 -->
+  <text x="80" y="320" font-family="'KaiTi', Georgia, serif" font-size="36" fill="#E8E8E8">
+    <tspan>被文学光环遮蔽的</tspan>
+  </text>
+  <text x="80" y="370" font-family="'KaiTi', Georgia, serif" font-size="36" fill="#E8E8E8">
+    <tspan>建筑巨匠</tspan>
+  </text>
+
+  <!-- 引言 -->
+  <text x="80" y="430" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="20" fill="#C9A96E" fill-opacity="0.9">
+    <tspan>见证中国建筑史上的女性力量</tspan>
+  </text>
+
+  <!-- 分隔装饰线 -->
+  <rect x="80" y="460" width="200" height="1" fill="#C9A96E" fill-opacity="0.4"/>
+
+  <!-- 底部信息 -->
+  <text x="80" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#6B6B80">
+    <tspan>她是当之无愧的建筑师，也是中国第一位女建筑学家</tspan>
+  </text>
+
+  <!-- 右侧人物肖像 -->
+  <image href="../images/lin_portrait.png" x="780" y="80" width="420" height="560" preserveAspectRatio="xMidYMid slice" opacity="0.6"/>
+
+  <!-- 底部金色装饰带 -->
+  <rect x="0" y="680" width="1280" height="2" fill="url(#bottomDecor)"/>
+
+  <!-- 底部栏 -->
+  <text x="80" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80">
+    <tspan>凤凰空间 · 2025</tspan>
+  </text>
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>01 / 10</tspan>
+  </text>
+</svg>

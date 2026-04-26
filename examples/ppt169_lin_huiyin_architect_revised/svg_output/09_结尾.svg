@@ -1,0 +1,26 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="image-block">
+    <rect x="124" y="106" width="380" height="508" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+    <image href="../images/lin_tomb.png" x="124" y="106" width="380" height="508" preserveAspectRatio="xMidYMid slice"/>
+  </g>
+
+  <g id="closing-text">
+    <text x="586" y="164" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">墓碑上的七个字，已经足够准确</text>
+    <text x="586" y="218" font-family="SimSun" font-size="48" fill="#A44A3F" font-weight="700">建筑师林徽因墓</text>
+    <line x1="586" y1="242" x2="910" y2="242" stroke="#B6915E" stroke-width="3"/>
+
+    <text x="586" y="316" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16">重新认识她，不是从传奇回到八卦，</text>
+    <text x="586" y="348" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16">而是从八卦回到专业。</text>
+
+    <text x="586" y="412" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16">她是中国第一代建筑学人中的关键建构者，</text>
+    <text x="586" y="444" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16">留下的不只是作品，更是理解中国建筑的一套语言。</text>
+
+    <use data-icon="tabler-outline/building-monument" x="586" y="516" width="24" height="24" fill="#A44A3F"/>
+    <text x="622" y="535" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">当称谓被校正，历史位置也随之被校正。</text>
+
+    <text x="586" y="640" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">09</text>
+  </g>
+</svg>

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E"/>
+      <stop offset="100%" stop-color="#E8D5B7"/>
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#C9A96E" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#E8D5B7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#E8D5B7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="bottomLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#C9A96E" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 中央金色竖线装饰 -->
+  <rect x="638" y="100" width="3" height="440" fill="url(#lineGrad)"/>
+
+  <!-- 墓碑铭文 - 居中大字 -->
+  <text x="640" y="230" font-family="'KaiTi', Georgia, serif" font-size="54" font-weight="bold" fill="url(#titleGrad)" text-anchor="middle">
+    <tspan>建筑师林徽因墓</tspan>
+  </text>
+
+  <!-- 短横线装饰 -->
+  <rect x="560" y="260" width="160" height="1" fill="#C9A96E" fill-opacity="0.4"/>
+
+  <!-- 副标题 -->
+  <text x="640" y="310" font-family="'KaiTi', Georgia, serif" font-size="28" fill="#E8E8E8" text-anchor="middle">
+    <tspan>她用一生证明</tspan>
+  </text>
+  <text x="640" y="350" font-family="'KaiTi', Georgia, serif" font-size="28" fill="#E8D5B7" text-anchor="middle">
+    <tspan>她是当之无愧的建筑师</tspan>
+  </text>
+
+  <!-- 装饰短线 -->
+  <rect x="600" y="380" width="80" height="1" fill="#8B6F47" fill-opacity="0.5"/>
+
+  <!-- 生卒年 -->
+  <text x="640" y="420" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#A0A0B0" text-anchor="middle">
+    <tspan>1904 — 1955</tspan>
+  </text>
+
+  <!-- 贡献列表 -->
+  <text x="640" y="470" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#6B6B80" text-anchor="middle">
+    <tspan>中国第一位女建筑学家 · 中国营造学社核心成员</tspan>
+  </text>
+  <text x="640" y="495" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#6B6B80" text-anchor="middle">
+    <tspan>人民英雄纪念碑设计者 · 中国建筑理论奠基人</tspan>
+  </text>
+
+  <!-- 底部装饰线 -->
+  <rect x="200" y="560" width="880" height="1" fill="url(#bottomLine)"/>
+
+  <!-- 来源信息 -->
+  <text x="640" y="600" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#6B6B80" text-anchor="middle">
+    <tspan>内容来源 · 凤凰空间《林徽因谈中国建筑》</tspan>
+  </text>
+  <text x="640" y="625" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="middle" fill-opacity="0.6">
+    <tspan>参考资料：《林徽因谈中国建筑》《林徽因被追授建筑学学位》</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>10 / 10</tspan>
+  </text>
+</svg>

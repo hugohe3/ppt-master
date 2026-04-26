@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="accentBar11" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C99E62"/>
+      <stop offset="100%" stop-color="#E49AA5"/>
+    </linearGradient>
+    <filter id="imgShadow11" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 04 · 风雅可复刻</text>
+    <line x1="60" y1="62" x2="290" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="40" font-weight="bold" fill="#3A3530" letter-spacing="3">薛涛笺 · 千年风雅可复刻</text>
+    <rect x="60" y="120" width="120" height="3" fill="url(#accentBar11)"/>
+    <text x="60" y="156" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">一纸芙蓉红 · 千年还有魂</text>
+  </g>
+
+  <g id="left-image" transform="translate(60,190)">
+    <rect x="-6" y="-6" width="392" height="392" fill="#EDE5D3" stroke="#C99E62" stroke-width="1"/>
+    <image href="../images/640_17.png" x="0" y="0" width="380" height="380" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow11)"/>
+    <rect x="-6" y="380" width="392" height="30" fill="#3A3530"/>
+    <text x="190" y="400" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#F7F2E8" letter-spacing="2">电视剧《梦华录》· 薛涛笺意象</text>
+  </g>
+
+  <g id="middle-content" transform="translate(500,190)">
+    <rect x="0" y="0" width="440" height="400" rx="12" fill="#FFFFFF" stroke="#D7CEB9" stroke-width="1"/>
+
+    <g transform="translate(30,30)">
+      <use data-icon="tabler-filled/flower" x="0" y="0" width="28" height="28" fill="#E49AA5"/>
+      <text x="42" y="22" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" font-weight="bold" fill="#3A3530">芙蓉红 · 唐才女手作</text>
+    </g>
+
+    <line x1="30" y1="80" x2="410" y2="80" stroke="#D7CEB9" stroke-width="1"/>
+
+    <text x="30" y="118" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" letter-spacing="1">相传唐代才女薛涛</text>
+    <text x="30" y="150" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" letter-spacing="1">以浣花溪之水为引</text>
+    <text x="30" y="182" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" letter-spacing="1">取木芙蓉皮与芙蓉花</text>
+    <text x="30" y="214" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" letter-spacing="1">捣汁为浆，染成信笺</text>
+
+    <g transform="translate(30,240)">
+      <rect x="0" y="0" width="380" height="70" rx="6" fill="#EDE5D3"/>
+      <text x="20" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">新鲜花朵绞汁虽可染</text>
+      <text x="20" y="54" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">但量小工繁 · 仅宜体验</text>
+    </g>
+
+    <g transform="translate(30,325)">
+      <use data-icon="tabler-filled/sparkles" x="0" y="0" width="22" height="22" fill="#B04A5C"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#B04A5C" font-weight="bold">黄荣华复刻推荐</text>
+      <text x="0" y="54" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">苏木作染料 · 明矾作媒染剂 · 效果最佳</text>
+    </g>
+  </g>
+
+  <g id="right-image" transform="translate(980,190)">
+    <rect x="-6" y="-6" width="252" height="192" fill="#EDE5D3" stroke="#E49AA5" stroke-width="1"/>
+    <image href="../images/640_18.png" x="0" y="0" width="240" height="180" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow11)"/>
+    <text x="120" y="210" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">芙蓉红笺 · 复刻成品</text>
+
+    <g transform="translate(0,240)">
+      <rect x="0" y="0" width="240" height="160" rx="8" fill="#EDE5D3"/>
+      <text x="120" y="32" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" font-weight="bold" fill="#3A3530">不可控的美</text>
+      <line x1="50" y1="48" x2="190" y2="48" stroke="#C99E62" stroke-width="1"/>
+      <text x="20" y="78" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">手工效果有深有浅</text>
+      <text x="20" y="102" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">些许「瑕疵」却每一次</text>
+      <text x="20" y="126" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">都独一无二</text>
+      <text x="120" y="150" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#B04A5C" font-style="italic">工业染法所不能企及</text>
+    </g>
+  </g>
+
+  <g id="bottom-card" transform="translate(60,620)">
+    <rect x="0" y="0" width="1160" height="60" rx="30" fill="#3A3530"/>
+    <use data-icon="tabler-filled/book" x="30" y="18" width="24" height="24" fill="#C99E62"/>
+    <text x="70" y="38" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#F7F2E8" letter-spacing="2">从天地造化的草木之色 · 到流转千年的绢帛华章 · 中国传统色彩是一扇通往东方美学的窗</text>
+    <text x="1130" y="38" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">11 / 12</text>
+  </g>
+</svg>

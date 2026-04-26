@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="20%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 02 · 被低估的学术先驱</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>首篇建筑论文：技惊四座</tspan>
+  </text>
+
+  <!-- 左侧图片区 -->
+  <rect x="60" y="120" width="460" height="360" rx="12" fill="#16213E"/>
+  <image href="../images/first_paper.png" x="60" y="120" width="460" height="360" preserveAspectRatio="xMidYMid slice"/>
+  <text x="290" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#6B6B80" text-anchor="middle">
+    <tspan>《论中国建筑之几个特征》 · 1932年</tspan>
+  </text>
+
+  <!-- 左下角: 梁思成与林徽因合影 -->
+  <rect x="60" y="520" width="200" height="150" rx="8" fill="#16213E"/>
+  <image href="../images/liang_lin_together.png" x="60" y="520" width="200" height="150" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- 引言卡片 -->
+  <rect x="280" y="520" width="240" height="150" rx="8" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <text x="300" y="555" font-family="'KaiTi', Georgia, serif" font-size="14" fill="#C9A96E">
+    <tspan>"在与爹爹共同的</tspan>
+  </text>
+  <text x="300" y="577" font-family="'KaiTi', Georgia, serif" font-size="14" fill="#C9A96E">
+    <tspan>事业奋斗中……</tspan>
+  </text>
+  <text x="300" y="599" font-family="'KaiTi', Georgia, serif" font-size="14" fill="#C9A96E">
+    <tspan>她是灵魂人物"</tspan>
+  </text>
+  <rect x="300" y="616" width="30" height="1" fill="#C9A96E" fill-opacity="0.3"/>
+  <text x="300" y="638" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80">
+    <tspan>—— 梁再冰（女儿）</tspan>
+  </text>
+
+  <!-- 右侧内容 -->
+  <!-- 核心贡献1 -->
+  <rect x="560" y="120" width="660" height="130" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="560" y="120" width="4" height="130" rx="2" fill="#E8D5B7"/>
+  <use data-icon="chunk/book-open" x="584" y="140" width="28" height="28" fill="#E8D5B7"/>
+  <text x="624" y="148" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8D5B7">
+    <tspan>1932 · 首次登场，技惊四座</tspan>
+  </text>
+  <text x="584" y="178" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>《论中国建筑之几个特征》</tspan>
+  </text>
+  <text x="584" y="208" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>首次由中国专业学者发表的建筑理论文章</tspan>
+  </text>
+  <text x="584" y="230" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>针对西方学者误解，提出符合中国民族主义情结的价值判断</tspan>
+  </text>
+
+  <!-- 核心贡献2 -->
+  <rect x="560" y="270" width="660" height="110" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="560" y="270" width="4" height="110" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/globe" x="584" y="288" width="28" height="28" fill="#C9A96E"/>
+  <text x="624" y="296" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E">
+    <tspan>理论突破</tspan>
+  </text>
+  <text x="584" y="326" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>首次在理论上定义中国建筑木框架结构体系的基本特征</tspan>
+  </text>
+  <text x="584" y="352" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>描绘出关于中国建筑史的完整概念框架</tspan>
+  </text>
+
+  <!-- 核心贡献3 -->
+  <rect x="560" y="400" width="660" height="110" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="560" y="400" width="4" height="110" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/compass-drafting" x="584" y="418" width="28" height="28" fill="#C9A96E"/>
+  <text x="624" y="426" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E">
+    <tspan>反驳西方偏见</tspan>
+  </text>
+  <text x="584" y="456" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>西方学者曾认为中国古代建筑不过是"建筑之树"</tspan>
+  </text>
+  <text x="584" y="478" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>主干外的一片孤叶——林徽因以学术回击</tspan>
+  </text>
+
+  <!-- 底部关键引言 -->
+  <rect x="560" y="530" width="660" height="80" rx="10" fill="#16213E" stroke="#8B6F47" stroke-width="1"/>
+  <text x="580" y="565" font-family="'KaiTi', Georgia, serif" font-size="16" fill="#C9A96E">
+    <tspan>"她是真正对中国建筑历史与理论最早作出重要贡献的学者，</tspan>
+  </text>
+  <text x="580" y="592" font-family="'KaiTi', Georgia, serif" font-size="16" fill="#C9A96E">
+    <tspan>  是学科的奠基者，更是思想上的先行者"</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>06 / 10</tspan>
+  </text>
+</svg>

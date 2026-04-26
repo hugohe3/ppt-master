@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B6F47" />
+      <stop offset="100%" stop-color="#C9A96E" />
+    </linearGradient>
+    <linearGradient id="nodeGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C9A96E" />
+      <stop offset="100%" stop-color="#8B6F47" />
+    </linearGradient>
+    <filter id="nodeShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.35" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#1A1A2E" />
+  <rect width="1280" height="720" fill="url(#bgGlow)" />
+
+  
+  <rect x="60" y="40" width="4" height="36" fill="#C9A96E" />
+  <text x="80" y="70" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>建筑巨匠的一生</tspan>
+  </text>
+  <text x="80" y="98" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#A0A0B0">
+    <tspan>1904 — 1955 · 横跨半个世纪的建筑传奇</tspan>
+  </text>
+
+  
+  <line x1="80" y1="360" x2="1200" y2="360" stroke="#2A2A4A" stroke-width="3" stroke-linecap="round" />
+  
+  <line x1="80" y1="360" x2="1200" y2="360" stroke="url(#timelineGrad)" stroke-width="3" stroke-linecap="round" stroke-opacity="0.5" />
+
+  
+  <circle cx="120" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="120" y1="348" x2="120" y2="280" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M68,200 H172 A8,8 0 0 1 180,208 V270 A8,8 0 0 1 172,278 H68 A8,8 0 0 1 60,270 V208 A8,8 0 0 1 68,200 Z" />
+  <text x="120" y="225" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1904</tspan>
+  </text>
+  <text x="120" y="248" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>出生于杭州</tspan>
+  </text>
+  <text x="120" y="268" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>书香世家</tspan>
+  </text>
+
+  
+  <circle cx="260" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="260" y1="372" x2="260" y2="430" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M203,432 H317 A8,8 0 0 1 325,440 V502 A8,8 0 0 1 317,510 H203 A8,8 0 0 1 195,502 V440 A8,8 0 0 1 203,432 Z" />
+  <text x="260" y="457" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1924</tspan>
+  </text>
+  <text x="260" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>赴美留学</tspan>
+  </text>
+  <text x="260" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>宾夕法尼亚大学</tspan>
+  </text>
+
+  
+  <circle cx="400" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="400" y1="348" x2="400" y2="280" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M343,200 H457 A8,8 0 0 1 465,208 V270 A8,8 0 0 1 457,278 H343 A8,8 0 0 1 335,270 V208 A8,8 0 0 1 343,200 Z" />
+  <text x="400" y="225" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1928</tspan>
+  </text>
+  <text x="400" y="248" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>结婚归国</tspan>
+  </text>
+  <text x="400" y="268" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>与梁思成携手</tspan>
+  </text>
+
+  
+  <circle cx="540" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="540" y1="372" x2="540" y2="430" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M483,432 H597 A8,8 0 0 1 605,440 V502 A8,8 0 0 1 597,510 H483 A8,8 0 0 1 475,502 V440 A8,8 0 0 1 483,432 Z" />
+  <text x="540" y="457" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1930</tspan>
+  </text>
+  <text x="540" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>加入营造学社</tspan>
+  </text>
+  <text x="540" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>研究中国古建筑</tspan>
+  </text>
+
+  
+  <circle cx="680" cy="360" r="13" fill="url(#nodeGlow)" stroke="#E8D5B7" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="680" y1="345" x2="680" y2="280" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#C9A96E" stroke-width="1.5" d="M618,190 H742 A8,8 0 0 1 750,198 V270 A8,8 0 0 1 742,278 H618 A8,8 0 0 1 610,270 V198 A8,8 0 0 1 618,190 Z" />
+  <text x="680" y="217" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8D5B7" text-anchor="middle">
+    <tspan>1932</tspan>
+  </text>
+  <text x="680" y="240" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>首篇建筑论文</tspan>
+  </text>
+  <text x="680" y="260" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>《论中国建筑之</tspan>
+  </text>
+  <text x="680" y="274" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>几个特征》</tspan>
+  </text>
+
+  
+  <circle cx="820" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="820" y1="372" x2="820" y2="430" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M758,432 H882 A8,8 0 0 1 890,440 V502 A8,8 0 0 1 882,510 H758 A8,8 0 0 1 750,502 V440 A8,8 0 0 1 758,432 Z" />
+  <text x="820" y="457" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1937-1946</tspan>
+  </text>
+  <text x="820" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>战时流亡</tspan>
+  </text>
+  <text x="820" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>坚持建筑研究</tspan>
+  </text>
+
+  
+  <circle cx="960" cy="360" r="10" fill="url(#nodeGlow)" stroke="#1A1A2E" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="960" y1="348" x2="960" y2="280" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M903,200 H1017 A8,8 0 0 1 1025,208 V270 A8,8 0 0 1 1017,278 H903 A8,8 0 0 1 895,270 V208 A8,8 0 0 1 903,200 Z" />
+  <text x="960" y="225" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1949</tspan>
+  </text>
+  <text x="960" y="248" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>参与国徽设计</tspan>
+  </text>
+  <text x="960" y="268" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>病中坚持工作</tspan>
+  </text>
+
+  
+  <circle cx="1060" cy="360" r="13" fill="url(#nodeGlow)" stroke="#E8D5B7" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="1060" y1="372" x2="1060" y2="430" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#C9A96E" stroke-width="1.5" d="M998,432 H1122 A8,8 0 0 1 1130,440 V502 A8,8 0 0 1 1122,510 H998 A8,8 0 0 1 990,502 V440 A8,8 0 0 1 998,432 Z" />
+  <text x="1060" y="457" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8D5B7" text-anchor="middle">
+    <tspan>1952</tspan>
+  </text>
+  <text x="1060" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>纪念碑设计</tspan>
+  </text>
+  <text x="1060" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>生命最后的丰碑</tspan>
+  </text>
+
+  
+  <circle cx="1180" cy="360" r="12" fill="#8B6F47" stroke="#E8D5B7" stroke-width="2" filter="url(#nodeShadow)" />
+  <line x1="1180" y1="346" x2="1180" y2="280" stroke="#C9A96E" stroke-width="1" stroke-opacity="0.5" stroke-dasharray="4,3" />
+  <path fill="#16213E" stroke="#8B6F47" stroke-width="1.5" d="M1118,195 H1242 A8,8 0 0 1 1250,203 V271 A8,8 0 0 1 1242,279 H1118 A8,8 0 0 1 1110,271 V203 A8,8 0 0 1 1118,195 Z" />
+  <text x="1180" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8D5B7" text-anchor="middle">
+    <tspan>1955</tspan>
+  </text>
+  <text x="1180" y="243" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" fill="#E8E8E8" text-anchor="middle">
+    <tspan>逝世</tspan>
+  </text>
+  <text x="1180" y="263" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#A0A0B0" text-anchor="middle">
+    <tspan>墓碑刻：</tspan>
+  </text>
+  <text x="1180" y="276" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#C9A96E" text-anchor="middle">
+    <tspan>建筑师林徽因墓</tspan>
+  </text>
+
+  
+  <path fill="#16213E" stroke="#2A2A4A" stroke-width="1" d="M328,580 H952 A8,8 0 0 1 960,588 V632 A8,8 0 0 1 952,640 H328 A8,8 0 0 1 320,632 V588 A8,8 0 0 1 328,580 Z" />
+  <text x="640" y="600" font-family="'KaiTi', Georgia, serif" font-size="16" fill="#C9A96E" text-anchor="middle" fill-opacity="0.8">
+    <tspan>"从未在历史中走远，她的建筑精神穿越百年"</tspan>
+  </text>
+  <text x="640" y="626" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="middle">
+    <tspan>用51年的生命，书写中国建筑史上最动人的篇章</tspan>
+  </text>
+
+  
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>02 / 10</tspan>
+  </text>
+</svg>

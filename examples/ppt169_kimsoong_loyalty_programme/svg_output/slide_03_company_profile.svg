@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Strong Brand Assets Provide Foundation for Loyalty Strategy
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="45" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    Brand equity is high — the gap is in post-purchase experience, not product appeal. Kimsoong's eco-conscious image and value positioning are strategic differentiators.
+  </text>
+
+  <!-- Left: Image (4/10 = ~480px) -->
+  <rect x="60" y="145" width="460" height="380" rx="8" fill="#F4F6F8" filter="url(#cardShadow)"/>
+  <image href="../images/company_profile.png" x="60" y="145" width="460" height="380" preserveAspectRatio="xMidYMid slice" clip-path="inset(0 round 8px)"/>
+
+  <!-- Right: Structured content (6/10) -->
+  <!-- Brand Strengths -->
+  <use data-icon="tabler-filled/sparkles" x="555" y="150" width="28" height="28" fill="#E8A838"/>
+  <text x="592" y="172" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A3A5C">Brand Strengths</text>
+  <text x="592" y="198" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">
+    <tspan x="592" dy="0">• Reputation for reliability at competitive prices</tspan>
+    <tspan x="592" dy="24">• Standard "extras" included (competitors charge extra)</tspan>
+    <tspan x="592" dy="24">• Strong eco-conscious brand image</tspan>
+  </text>
+
+  <!-- European Footprint -->
+  <use data-icon="tabler-filled/car" x="555" y="270" width="28" height="28" fill="#1A3A5C"/>
+  <text x="592" y="292" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A3A5C">European Footprint</text>
+  <text x="592" y="318" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">
+    <tspan x="592" dy="0">• HQ near Paris; franchises across most EU countries</tspan>
+    <tspan x="592" dy="24">• Sales + Service + Tyres/Exhausts + Used Cars</tspan>
+    <tspan x="592" dy="24">• 10-year market share growth at lower end</tspan>
+  </text>
+
+  <!-- R&D Pipeline -->
+  <use data-icon="tabler-filled/rosette" x="555" y="390" width="28" height="28" fill="#2D8A4E"/>
+  <text x="592" y="412" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#1A3A5C">R&amp;D Pipeline</text>
+  <text x="592" y="438" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">
+    <tspan x="592" dy="0">• "Eco-car" with alternative power source in development</tspan>
+    <tspan x="592" dy="24">• Major donations to environmental groups</tspan>
+    <tspan x="592" dy="24">• Positions brand for future green regulation compliance</tspan>
+  </text>
+
+  <!-- Cost model note -->
+  <rect x="60" y="545" width="1160" height="55" rx="6" fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1"/>
+  <use data-icon="tabler-filled/coin" x="80" y="558" width="28" height="28" fill="#E8A838"/>
+  <text x="118" y="579" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">Loyalty Programme Cost Model: </text>
+  <text x="400" y="579" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#2C3E50">50/50 cost-sharing between head office and European franchises — minimises per-unit investment risk</text>
+
+  <!-- Pressure callout -->
+  <rect x="60" y="615" width="1160" height="40" rx="4" fill="#E74C3C" fill-opacity="0.08" stroke="#E74C3C" stroke-width="1" stroke-opacity="0.3"/>
+  <use data-icon="tabler-filled/alert-triangle" x="80" y="621" width="24" height="24" fill="#E74C3C"/>
+  <text x="112" y="641" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E74C3C" font-weight="bold">Key Constraint: </text>
+  <text x="240" y="641" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Profit pressure means objectives must be achieved at low cost — high-ROI initiatives are essential</text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong European HQ Briefing</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">3</text>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="75%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="imgOverlay" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0.6"/>
+      <stop offset="30%" stop-color="#1A1A2E" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 03 · 强者与精神</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>穿越战火的建筑斗士</tspan>
+  </text>
+
+  <!-- 左侧内容 -->
+  <!-- 引言高亮卡片 -->
+  <rect x="60" y="120" width="620" height="80" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1.5" filter="url(#cardShadow)"/>
+  <text x="80" y="152" font-family="'KaiTi', Georgia, serif" font-size="22" fill="#C9A96E">
+    <tspan>"什么美人不美人，好像一个女人</tspan>
+  </text>
+  <text x="80" y="180" font-family="'KaiTi', Georgia, serif" font-size="22" fill="#C9A96E">
+    <tspan>  没有什么事可做似的，我还有好多事要做呢！"</tspan>
+  </text>
+
+  <!-- 要点列表 -->
+  <rect x="60" y="220" width="620" height="90" rx="8" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="220" width="4" height="90" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/map" x="80" y="240" width="24" height="24" fill="#C9A96E"/>
+  <text x="116" y="250" font-family="'SimHei', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8D5B7">
+    <tspan>荒郊野谷考察古建筑</tspan>
+  </text>
+  <text x="80" y="278" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>风餐露宿，面临断粮、土匪打劫，丝毫没有退缩</tspan>
+  </text>
+  <text x="80" y="298" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>"只要梁先生敢爬敢上的，林先生就敢上"</tspan>
+  </text>
+
+  <rect x="60" y="325" width="620" height="75" rx="8" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="325" width="4" height="75" rx="2" fill="#8B6F47"/>
+  <use data-icon="chunk/heart" x="80" y="343" width="24" height="24" fill="#8B6F47"/>
+  <text x="116" y="353" font-family="'SimHei', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8D5B7">
+    <tspan>战乱中的坚韧</tspan>
+  </text>
+  <text x="80" y="381" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>流亡生活中肺炎发作，此后再未恢复健康，依然坚持研究</tspan>
+  </text>
+
+  <rect x="60" y="415" width="620" height="75" rx="8" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="415" width="4" height="75" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/flag" x="80" y="433" width="24" height="24" fill="#C9A96E"/>
+  <text x="116" y="443" font-family="'SimHei', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8D5B7">
+    <tspan>英雄气的母亲</tspan>
+  </text>
+  <text x="80" y="471" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>"做中国人要顶勇敢，什么都不怕，什么都顶有决心才好"</tspan>
+  </text>
+
+  <rect x="60" y="505" width="620" height="75" rx="8" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="60" y="505" width="4" height="75" rx="2" fill="#E8D5B7"/>
+  <use data-icon="chunk/pen-nib" x="80" y="523" width="24" height="24" fill="#E8D5B7"/>
+  <text x="116" y="533" font-family="'SimHei', Arial, sans-serif" font-size="16" font-weight="bold" fill="#E8D5B7">
+    <tspan>病榻上书写建筑史</tspan>
+  </text>
+  <text x="80" y="561" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>在偏远小镇一笔一笔书写中国建筑史，拖着病体坚持工作</tspan>
+  </text>
+
+  <!-- 底部引言 -->
+  <rect x="60" y="600" width="620" height="60" rx="8" fill="#16213E" stroke="#8B6F47" stroke-width="1"/>
+  <text x="80" y="627" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>她的生命中有比"小我"、比"一己之求"更为宏大的部分</tspan>
+  </text>
+  <text x="80" y="649" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#C9A96E">
+    <tspan>她想要真正终生为之奋斗的是中国建筑学术事业</tspan>
+  </text>
+
+  <!-- 右侧图片 -->
+  <rect x="720" y="120" width="500" height="540" rx="12" fill="#16213E"/>
+  <image href="../images/lin_survey.png" x="720" y="120" width="500" height="500" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="720" y="120" width="500" height="500" fill="url(#imgOverlay)"/>
+  <text x="970" y="640" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="middle">
+    <tspan>1933年，林徽因在河北正定开元寺钟楼梁架上</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>08 / 10</tspan>
+  </text>
+</svg>

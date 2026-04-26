@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="32" rx="2" fill="#5B9BD5"/>
+    <text x="78" y="66" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8E8EC">Workflow: Orchestrator-Workers</text>
+  </g>
+
+  <!-- Diagram image -->
+  <g id="diagram">
+    <image href="../images/image_4.png" x="80" y="88" width="1120" height="280" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Content: two-column -->
+  <g id="how-it-works">
+    <rect x="60" y="385" width="560" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/cog" x="84" y="410" width="24" height="24" fill="#5B9BD5"/>
+    <text x="118" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#5B9BD5">How It Works</text>
+
+    <text x="84" y="466" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">A central LLM dynamically:</text>
+
+    <rect x="100" y="484" width="8" height="8" rx="4" fill="#5B9BD5"/>
+    <text x="120" y="493" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Breaks down tasks into subtasks</text>
+
+    <rect x="100" y="512" width="8" height="8" rx="4" fill="#5B9BD5"/>
+    <text x="120" y="521" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Delegates to worker LLMs</text>
+
+    <rect x="100" y="540" width="8" height="8" rx="4" fill="#5B9BD5"/>
+    <text x="120" y="549" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Synthesizes their results</text>
+
+    <rect x="84" y="572" width="512" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <use data-icon="chunk/lightbulb" x="84" y="588" width="18" height="18" fill="#E8B87D"/>
+    <text x="112" y="603" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8B87D" font-weight="bold">Key difference from parallelization:</text>
+    <text x="112" y="623" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Subtasks are not pre-defined, but determined</text>
+    <text x="112" y="641" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">dynamically by the orchestrator based on input</text>
+  </g>
+
+  <g id="use-cases">
+    <rect x="650" y="385" width="570" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/cube" x="674" y="410" width="24" height="24" fill="#D4845A"/>
+    <text x="708" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#D4845A">Use Cases</text>
+
+    <text x="674" y="466" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Complex tasks where subtasks</text>
+    <text x="674" y="488" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">can't be predicted in advance.</text>
+
+    <rect x="674" y="510" width="522" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <!-- Example 1 -->
+    <rect x="674" y="530" width="522" height="68" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/code" x="690" y="548" width="20" height="20" fill="#D4845A"/>
+    <text x="720" y="558" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Multi-file Code Changes</text>
+    <text x="720" y="580" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9CA3AF">Number and nature of changes depend on the task</text>
+
+    <!-- Example 2 -->
+    <rect x="674" y="612" width="522" height="36" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/server" x="690" y="620" width="20" height="20" fill="#D4845A"/>
+    <text x="720" y="636" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Multi-source Search &amp; Analysis</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">08</text>
+  </g>
+</svg>

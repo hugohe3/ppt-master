@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.08" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Prioritize Service and Data — Financial Incentives Follow
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V119 A4,4 0 0 1 1216,123 H64 A4,4 0 0 1 60,119 V82 A4,4 0 0 1 64,78 Z" />
+  <text x="80" y="106" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    Lead with service; follow with incentives. The branded pen initiative has the highest ROI for data collection (projected 40% → 70% response rate).
+  </text>
+
+  
+  <text x="80" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">INITIATIVE</text>
+  <text x="680" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">IMPACT</text>
+  <text x="880" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">COST</text>
+  <text x="1040" y="155" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">ROI SIGNAL</text>
+  <line x1="60" y1="165" x2="1220" y2="165" stroke="#D5DDE5" stroke-width="1" />
+
+  
+  <path fill="#E8A838" fill-opacity="0.06" stroke="#E8A838" stroke-width="1.5" filter="url(#cardShadow)" d="M66,175 H1214 A6,6 0 0 1 1220,181 V259 A6,6 0 0 1 1214,265 H66 A6,6 0 0 1 60,259 V181 A6,6 0 0 1 66,175 Z" />
+  
+  <path fill="#E8A838" d="M86,185 H86 A14,14 0 0 1 100,199 V199 A14,14 0 0 1 86,213 H86 A14,14 0 0 1 72,199 V199 A14,14 0 0 1 86,185 Z" />
+  <text x="86" y="204" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">1</text>
+  
+  <g transform="translate(105.0, 185.0)" fill="#E8A838">
+    <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" />
+  </g>
+  
+  
+  <g transform="translate(72.0, 220.0)" fill="#1A3A5C">
+    <path d="M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z" />
+  </g>
+  <text x="105" y="210" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">3-Year Free After-Sales Service</text>
+  <text x="105" y="240" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Directly addresses #1 pain point — transforms service from</text>
+  <text x="105" y="255" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">cost center to loyalty driver</text>
+  
+  <path fill="#E74C3C" fill-opacity="0.12" d="M692,195 H748 A12,12 0 0 1 760,207 V207 A12,12 0 0 1 748,219 H692 A12,12 0 0 1 680,207 V207 A12,12 0 0 1 692,195 Z" />
+  <text x="720" y="212" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">HIGH</text>
+  
+  <text x="880" y="212" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Med-High</text>
+  
+  <path fill="#2D8A4E" fill-opacity="0.08" d="M1044,190 H1196 A4,4 0 0 1 1200,194 V226 A4,4 0 0 1 1196,230 H1044 A4,4 0 0 1 1040,226 V194 A4,4 0 0 1 1044,190 Z" />
+  <text x="1050" y="209" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="600">Reduces 26% service</text>
+  <text x="1050" y="224" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="600">churn → high CLV gain</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M66,275 H1214 A6,6 0 0 1 1220,281 V354 A6,6 0 0 1 1214,360 H66 A6,6 0 0 1 60,354 V281 A6,6 0 0 1 66,275 Z" />
+  <path fill="#1A3A5C" d="M86,285 H86 A14,14 0 0 1 100,299 V299 A14,14 0 0 1 86,313 H86 A14,14 0 0 1 72,299 V299 A14,14 0 0 1 86,285 Z" />
+  <text x="86" y="304" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">2</text>
+  
+  <g transform="translate(72.0, 318.0)" fill="#E8A838">
+    <path d="M17 3.34a10 10 0 1 1 -15 8.66l.005 -.324a10 10 0 0 1 14.995 -8.336m-2.5 9.66a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3m1.207 -4.707a1 1 0 0 0 -1.414 0l-6 6a1 1 0 0 0 1.414 1.414l6 -6a1 1 0 0 0 0 -1.414m-6.207 -.293a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0 -3" />
+  </g>
+  <text x="105" y="306" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">20% Loyalty Discount</text>
+  <text x="105" y="333" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Financial incentive — directly lowers switching barrier for repeat buyers</text>
+  
+  <path fill="#E74C3C" fill-opacity="0.12" d="M692,293 H748 A12,12 0 0 1 760,305 V305 A12,12 0 0 1 748,317 H692 A12,12 0 0 1 680,305 V305 A12,12 0 0 1 692,293 Z" />
+  <text x="720" y="310" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">HIGH</text>
+  
+  <text x="880" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Medium</text>
+  
+  <path fill="#E8A838" fill-opacity="0.08" d="M1044,290 H1196 A4,4 0 0 1 1200,294 V316 A4,4 0 0 1 1196,320 H1044 A4,4 0 0 1 1040,316 V294 A4,4 0 0 1 1044,290 Z" />
+  <text x="1050" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#E8A838" font-weight="600">Counters competitor pull</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M66,370 H1214 A6,6 0 0 1 1220,376 V449 A6,6 0 0 1 1214,455 H66 A6,6 0 0 1 60,449 V376 A6,6 0 0 1 66,370 Z" />
+  <path fill="#1A3A5C" d="M86,380 H86 A14,14 0 0 1 100,394 V394 A14,14 0 0 1 86,408 H86 A14,14 0 0 1 72,394 V394 A14,14 0 0 1 86,380 Z" />
+  <text x="86" y="399" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">3</text>
+  
+  <g transform="translate(72.0, 413.0)" fill="#1A3A5C">
+    <path d="M14 5a1 1 0 0 1 .694 .28l.087 .095l3.699 4.625h.52a3 3 0 0 1 2.995 2.824l.005 .176v4a1 1 0 0 1 -1 1h-1.171a3.001 3.001 0 0 1 -5.658 0h-4.342a3.001 3.001 0 0 1 -5.658 0h-1.171a1 1 0 0 1 -1 -1v-6l.007 -.117l.008 -.056l.017 -.078l.012 -.036l.014 -.05l2.014 -5.034a1 1 0 0 1 .928 -.629zm-7 11a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m10 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m-6 -9h-5.324l-1.2 3h6.524zm2.52 0h-.52v3h2.92z" />
+  </g>
+  <text x="105" y="401" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Enhanced Trade-in Programme</text>
+  <text x="105" y="428" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Generous trade-in offers reduce switching barrier and lock customers in ecosystem</text>
+  
+  <path fill="#E8A838" fill-opacity="0.15" d="M692,388 H748 A12,12 0 0 1 760,400 V400 A12,12 0 0 1 748,412 H692 A12,12 0 0 1 680,400 V400 A12,12 0 0 1 692,388 Z" />
+  <text x="720" y="405" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8A838">MEDIUM</text>
+  
+  <text x="880" y="405" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Low-Med</text>
+  
+  <path fill="#1A3A5C" fill-opacity="0.06" d="M1044,385 H1196 A4,4 0 0 1 1200,389 V411 A4,4 0 0 1 1196,415 H1044 A4,4 0 0 1 1040,411 V389 A4,4 0 0 1 1044,385 Z" />
+  <text x="1050" y="405" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#1A3A5C" font-weight="600">Captures used car value</text>
+
+  
+  <path fill="#F4F6F8" filter="url(#cardShadow)" d="M66,465 H1214 A6,6 0 0 1 1220,471 V544 A6,6 0 0 1 1214,550 H66 A6,6 0 0 1 60,544 V471 A6,6 0 0 1 66,465 Z" />
+  <path fill="#5D6D7E" d="M86,475 H86 A14,14 0 0 1 100,489 V489 A14,14 0 0 1 86,503 H86 A14,14 0 0 1 72,489 V489 A14,14 0 0 1 86,475 Z" />
+  <text x="86" y="494" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">4</text>
+  
+  <g transform="translate(72.0, 508.0)" fill="#2D8A4E">
+    <path d="M6.979 3.074a6 6 0 0 1 4.988 1.425l.037 .033l.034 -.03a6 6 0 0 1 4.733 -1.44l.246 .036a6 6 0 0 1 3.364 10.008l-.18 .185l-.048 .041l-7.45 7.379a1 1 0 0 1 -1.313 .082l-.094 -.082l-7.493 -7.422a6 6 0 0 1 3.176 -10.215z" />
+  </g>
+  <text x="105" y="496" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Customer Magazine</text>
+  <text x="105" y="523" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Free monthly magazine with owner features — builds emotional connection and brand community</text>
+  
+  <path fill="#D5DDE5" d="M692,483 H768 A12,12 0 0 1 780,495 V495 A12,12 0 0 1 768,507 H692 A12,12 0 0 1 680,495 V495 A12,12 0 0 1 692,483 Z" />
+  <text x="730" y="500" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#5D6D7E">LOW-MED</text>
+  
+  <text x="880" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#2C3E50">Low</text>
+  
+  <path fill="#1A3A5C" fill-opacity="0.06" d="M1044,480 H1196 A4,4 0 0 1 1200,484 V506 A4,4 0 0 1 1196,510 H1044 A4,4 0 0 1 1040,506 V484 A4,4 0 0 1 1044,480 Z" />
+  <text x="1050" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">Brand affinity uplift</text>
+
+  
+  <path fill="#2D8A4E" fill-opacity="0.04" stroke="#2D8A4E" stroke-width="1" filter="url(#cardShadow)" d="M66,560 H1214 A6,6 0 0 1 1220,566 V639 A6,6 0 0 1 1214,645 H66 A6,6 0 0 1 60,639 V566 A6,6 0 0 1 66,560 Z" />
+  <path fill="#2D8A4E" d="M86,570 H86 A14,14 0 0 1 100,584 V584 A14,14 0 0 1 86,598 H86 A14,14 0 0 1 72,584 V584 A14,14 0 0 1 86,570 Z" />
+  <text x="86" y="589" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">5</text>
+  
+  <g transform="translate(72.0, 603.0)" fill="#2D8A4E">
+    <path d="M11 14v8h-4a3 3 0 0 1 -3 -3v-4a1 1 0 0 1 1 -1h6zm8 0a1 1 0 0 1 1 1v4a3 3 0 0 1 -3 3h-4v-8h6zm-2.5 -12a3.5 3.5 0 0 1 3.163 5h.337a2 2 0 0 1 2 2v1a2 2 0 0 1 -2 2h-7v-5h-2v5h-7a2 2 0 0 1 -2 -2v-1a2 2 0 0 1 2 -2h.337a3.486 3.486 0 0 1 -.337 -1.5c0 -1.933 1.567 -3.5 3.483 -3.5c1.755 -.03 3.312 1.092 4.381 2.934l.136 .243c1.033 -1.914 2.56 -3.114 4.291 -3.175l.209 -.002zm-9 2a1.5 1.5 0 0 0 0 3h3.143c-.741 -1.905 -1.949 -3.02 -3.143 -3zm8.983 0c-1.18 -.02 -2.385 1.096 -3.126 3h3.143a1.5 1.5 0 1 0 -.017 -3z" />
+  </g>
+  <text x="105" y="591" font-family="'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="bold" fill="#1A3A5C">Questionnaire Incentive (Branded Pen)</text>
+  <text x="105" y="618" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5D6D7E">Premium branded pen for completing lifestyle questionnaires — improves data quality (40% → 70%)</text>
+  
+  <path fill="#E8A838" fill-opacity="0.15" d="M692,578 H748 A12,12 0 0 1 760,590 V590 A12,12 0 0 1 748,602 H692 A12,12 0 0 1 680,590 V590 A12,12 0 0 1 692,578 Z" />
+  <text x="720" y="595" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8A838">MEDIUM</text>
+  
+  <text x="880" y="595" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#2D8A4E">Very Low</text>
+  
+  <path fill="#2D8A4E" fill-opacity="0.08" d="M1044,575 H1196 A4,4 0 0 1 1200,579 V611 A4,4 0 0 1 1196,615 H1044 A4,4 0 0 1 1040,611 V579 A4,4 0 0 1 1044,575 Z" />
+  <text x="1050" y="594" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#2D8A4E" font-weight="bold">★ Highest ROI</text>
+  <text x="1050" y="609" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#2D8A4E">40% → 70% response rate</text>
+
+  
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Director A &amp; Director B Proposals — Consolidated &amp; Prioritized</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">8</text>
+</svg>

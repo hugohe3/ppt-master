@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="32" rx="2" fill="#5B9BD5"/>
+    <text x="78" y="66" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8E8EC">Workflow: Routing</text>
+  </g>
+
+  <!-- Diagram image — top area -->
+  <g id="diagram">
+    <image href="../images/image_2.png" x="80" y="88" width="1120" height="300" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Content: two-column below -->
+  <g id="when-to-use">
+    <rect x="60" y="400" width="560" height="260" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/route" x="84" y="422" width="24" height="24" fill="#5B9BD5"/>
+    <text x="118" y="442" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#5B9BD5">When to Use</text>
+
+    <text x="84" y="478" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Distinct categories that are better</text>
+    <text x="84" y="500" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">handled separately.</text>
+
+    <rect x="84" y="518" width="512" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <text x="84" y="546" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">• Classify input → direct to specialized task</text>
+    <text x="84" y="571" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">• Separation of concerns</text>
+    <text x="84" y="596" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">• More specialized prompts per category</text>
+    <text x="84" y="621" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">• Prevents cross-optimization interference</text>
+  </g>
+
+  <g id="examples">
+    <rect x="650" y="400" width="570" height="260" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/arrow-right" x="674" y="422" width="24" height="24" fill="#D4845A"/>
+    <text x="708" y="442" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#D4845A">Examples</text>
+
+    <!-- Example 1 -->
+    <rect x="674" y="470" width="522" height="72" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <text x="694" y="496" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Customer Service Query Routing</text>
+    <text x="694" y="520" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">General Q's → Refund requests → Technical support</text>
+
+    <!-- Example 2 -->
+    <rect x="674" y="558" width="522" height="80" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <text x="694" y="584" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Model Selection by Difficulty</text>
+    <text x="694" y="608" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Easy → Haiku (cost-efficient)</text>
+    <text x="694" y="626" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Hard → Sonnet (capable)</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">06</text>
+  </g>
+</svg>

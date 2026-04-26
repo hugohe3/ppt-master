@@ -1,0 +1,32 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="monument-panel">
+    <rect x="660" y="48" width="572" height="624" fill="#EFE7DA"/>
+    <image href="../images/monument.png" x="742" y="90" width="390" height="492" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="660" y="560" width="572" height="112" fill="#F6F1E8"/>
+    <text x="690" y="604" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#6A6258">人民英雄纪念碑与八宝山革命公墓，说明她的建筑实践进入了国家记忆空间。</text>
+  </g>
+
+  <g id="left-text">
+    <text x="86" y="96" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">国家尺度上的建筑参与</text>
+    <text x="86" y="124" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">不是边缘参与，而是关键性的空间判断与风格处理</text>
+    <line x1="86" y1="140" x2="612" y2="140" stroke="#D8CBB8" stroke-width="1.5"/>
+
+    <use data-icon="tabler-outline/building-monument" x="86" y="190" width="22" height="22" fill="#A44A3F"/>
+    <text x="122" y="208" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">八宝山革命公墓</text>
+    <text x="122" y="242" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">她负责主体建筑格局，将寺院、园林与纪念空间整合为新的国家纪念场所。</text>
+
+    <use data-icon="tabler-outline/building-monument" x="86" y="312" width="22" height="22" fill="#A44A3F"/>
+    <text x="122" y="330" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">人民英雄纪念碑</text>
+    <text x="122" y="364" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">她提出扩大碑座、调整台阶层级，让纪念碑与广场尺度更协调，并亲自设计纹样。</text>
+
+    <rect x="86" y="438" width="490" height="116" rx="14" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+    <text x="112" y="476" font-family="SimSun" font-size="28" fill="#A44A3F" font-weight="700">她不是“附属设计者”</text>
+    <text x="112" y="512" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">而是在国家纪念建筑的尺度、秩序与装饰语汇上</text>
+    <text x="112" y="540" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">留下了明确可辨识的判断。</text>
+
+    <text x="86" y="640" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">05</text>
+  </g>
+</svg>

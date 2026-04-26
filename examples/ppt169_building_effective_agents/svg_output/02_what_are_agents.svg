@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="dividerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#D4845A" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#D4845A" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="36" rx="2" fill="#D4845A"/>
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">What Are Agents?</text>
+    <text x="78" y="108" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">The key architectural distinction in agentic systems</text>
+  </g>
+
+  <!-- Central concept — breathing layout: two large blocks separated by vertical divider -->
+
+  <!-- Left block: Workflows -->
+  <g id="concept-workflows">
+    <use data-icon="chunk/arrow-right" x="140" y="220" width="48" height="48" fill="#5B9BD5"/>
+    <text x="140" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#5B9BD5">Workflows</text>
+    <text x="140" y="350" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">LLMs and tools orchestrated</text>
+    <text x="140" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">through predefined code paths.</text>
+    <text x="140" y="420" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Predictable · Consistent · Well-defined tasks</text>
+
+    <!-- Visual: linear flow arrows -->
+    <rect x="140" y="470" width="100" height="44" rx="8" fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="190" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 1</text>
+    <rect x="260" y="486" width="24" height="12" rx="2" fill="#5B9BD5" fill-opacity="0.3"/>
+    <polygon points="284,486 296,492 284,498" fill="#5B9BD5" fill-opacity="0.5"/>
+    <rect x="310" y="470" width="100" height="44" rx="8" fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="360" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 2</text>
+    <rect x="430" y="486" width="24" height="12" rx="2" fill="#5B9BD5" fill-opacity="0.3"/>
+    <polygon points="454,486 466,492 454,498" fill="#5B9BD5" fill-opacity="0.5"/>
+    <rect x="480" y="470" width="100" height="44" rx="8" fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="530" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 3</text>
+  </g>
+
+  <!-- Vertical divider -->
+  <rect x="638" y="200" width="3" height="340" rx="1.5" fill="url(#dividerGrad)"/>
+  <text x="640" y="190" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#D4845A">VS</text>
+
+  <!-- Right block: Agents -->
+  <g id="concept-agents">
+    <use data-icon="chunk/robot" x="720" y="220" width="48" height="48" fill="#D4845A"/>
+    <text x="720" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#D4845A">Agents</text>
+    <text x="720" y="350" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">LLMs dynamically direct their</text>
+    <text x="720" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">own processes and tool usage.</text>
+    <text x="720" y="420" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Flexible · Autonomous · Model-driven decisions</text>
+
+    <!-- Visual: dynamic loop -->
+    <circle cx="860" cy="495" r="40" fill="none" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="860" y="500" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#D4845A">LLM</text>
+    <rect x="940" y="475" width="72" height="36" rx="6" fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="976" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#D4845A">Tools</text>
+    <rect x="1040" y="475" width="72" height="36" rx="6" fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="1076" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#D4845A">Env</text>
+    <!-- Connecting lines -->
+    <line x1="900" y1="492" x2="938" y2="492" stroke="#D4845A" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="1012" y1="492" x2="1038" y2="492" stroke="#D4845A" stroke-width="1" stroke-opacity="0.4"/>
+    <!-- Return loop -->
+    <path d="M860,535 Q860,560 960,560 Q1076,560 1076,515" fill="none" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- Bottom insight -->
+  <g id="bottom-insight">
+    <rect x="60" y="590" width="1160" height="1" fill="#2D3348" fill-opacity="0.4"/>
+    <use data-icon="chunk/lightbulb" x="60" y="612" width="24" height="24" fill="#E8B87D"/>
+    <text x="96" y="632" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8B87D" font-weight="bold">Key Insight:</text>
+    <text x="220" y="632" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">All these variations are "agentic systems" — the spectrum matters more than the label.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">02</text>
+  </g>
+</svg>

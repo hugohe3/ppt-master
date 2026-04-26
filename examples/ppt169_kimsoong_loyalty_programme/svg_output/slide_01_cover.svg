@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="coverOverlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A3A5C" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0D1F33" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E8A838"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+    <filter id="shadowSm">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background image -->
+  <image href="../images/cover_bg.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Dark overlay -->
+  <rect x="0" y="0" width="1280" height="720" fill="url(#coverOverlay)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#accentLine)"/>
+
+  <!-- Left decorative vertical line -->
+  <rect x="80" y="180" width="4" height="280" fill="#E8A838" fill-opacity="0.8"/>
+
+  <!-- Main title -->
+  <text x="110" y="270" font-family="'Helvetica Neue', Arial, sans-serif" font-size="54" font-weight="bold" fill="#FFFFFF" letter-spacing="-0.5">
+    <tspan x="110" dy="0">Kimsoong Customer</tspan>
+    <tspan x="110" dy="64">Loyalty Programme</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="110" y="410" font-family="'Helvetica Neue', Arial, sans-serif" font-size="24" fill="#FFFFFF" fill-opacity="0.85">
+    Strategic Framework for Customer Retention &amp; Growth
+  </text>
+
+  <!-- Accent underline -->
+  <rect x="110" y="430" width="520" height="3" fill="url(#accentLine)"/>
+
+  <!-- Bottom info bar -->
+  <rect x="0" y="640" width="1280" height="80" fill="#0D1F33" fill-opacity="0.5"/>
+
+  <!-- Info items -->
+  <text x="110" y="680" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" fill-opacity="0.7">
+    <tspan>European Headquarters</tspan>
+    <tspan dx="40">|</tspan>
+    <tspan dx="40">Strategic Proposal</tspan>
+    <tspan dx="40">|</tspan>
+    <tspan dx="40">April 2026</tspan>
+  </text>
+
+  <!-- Car icon placeholder -->
+  <use data-icon="tabler-filled/car" x="1140" y="660" width="36" height="36" fill="#E8A838"/>
+
+  <!-- CONFIDENTIAL marking -->
+  <text x="1200" y="680" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF" fill-opacity="0.4" text-anchor="end">CONFIDENTIAL</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bottomFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#0A0A0A" stop-opacity="0.2"/>
+      <stop offset="80%" stop-color="#0A0A0A" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#0A0A0A" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Full-bleed hero image -->
+  <image href="../images/chanel_coco.jpg" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Top fade -->
+  <rect width="1280" height="200" fill="url(#topFade)"/>
+
+  <!-- Bottom fade -->
+  <rect width="1280" height="720" fill="url(#bottomFade)"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.8" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#C9A96E" fill-opacity="0.2"/>
+
+  <!-- Brand name — floating over image -->
+  <text x="80" y="560" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" letter-spacing="4">CHANEL</text>
+
+  <text x="80" y="600" font-family="Georgia, SimSun, serif" font-size="36" fill="#F5F0EB" font-weight="bold">COCO BEACH 2026</text>
+
+  <!-- Gold accent line -->
+  <rect x="80" y="615" width="80" height="2" fill="#C9A96E"/>
+
+  <!-- Caption text -->
+  <text x="80" y="648" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#E8D5B5">上海市中心限时精品店启幕 · 面朝花园的度假别墅</text>
+
+  <text x="80" y="678" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">Matthieu Blazy 创作的首个 COCO BEACH 系列 · 田园风光与黑色沙滩灵感</text>
+
+  <!-- Dress icon accent -->
+  <use data-icon="phosphor-duotone/dress" x="1180" y="560" width="32" height="32" fill="#C9A96E"/>
+
+  <!-- Page number -->
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">03 / 16</text>
+</svg>

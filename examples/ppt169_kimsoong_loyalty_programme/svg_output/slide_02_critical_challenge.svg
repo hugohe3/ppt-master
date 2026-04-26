@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#2D8A4E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- Gradient top bar -->
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)"/>
+
+  <!-- Page title — assertion-style -->
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Only 15% of Customers Return — A Critical Retention Gap
+  </text>
+
+  <!-- Takeaway box -->
+  <rect x="60" y="78" width="1160" height="50" rx="4" fill="#1A3A5C"/>
+  <text x="80" y="108" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    The cost of acquiring a new customer is 5-7x retaining an existing one. With only 15% repeat purchases, Kimsoong is leaving significant lifetime value on the table.
+  </text>
+
+  <!-- Three hero numbers — breathing layout, large numbers with ample whitespace -->
+  <!-- Hero 1: Repeat buyer rate -->
+  <text x="220" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#E74C3C">15%</text>
+  <text x="220" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Repeat Buyer Rate</text>
+  <text x="220" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">vs. industry benchmark ~40%</text>
+  <use data-icon="tabler-filled/alert-triangle" x="196" y="340" width="48" height="48" fill="#E74C3C"/>
+
+  <!-- Hero 2: After-sales dissatisfaction -->
+  <text x="640" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#E8A838">78%</text>
+  <text x="640" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Fair / Poor After-sales Rating</text>
+  <text x="640" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">Only 33% rate service as Good or above</text>
+  <use data-icon="tabler-filled/star" x="616" y="340" width="48" height="48" fill="#E8A838"/>
+
+  <!-- Hero 3: Lost to competitors -->
+  <text x="1060" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#1A3A5C">52%</text>
+  <text x="1060" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Lost to Competitors</text>
+  <text x="1060" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">Largest driver of customer churn</text>
+  <use data-icon="tabler-filled/rosette" x="1036" y="340" width="48" height="48" fill="#1A3A5C"/>
+
+  <!-- Divider line -->
+  <line x1="60" y1="430" x2="1220" y2="430" stroke="#D5DDE5" stroke-width="1"/>
+
+  <!-- Core insight text block — single column, breathing -->
+  <text x="640" y="490" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1A3A5C" font-style="italic">
+    "With 85% of customers not returning, every lost buyer represents
+  </text>
+  <text x="640" y="520" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1A3A5C" font-style="italic">
+    3-4 potential vehicle purchases over the next decade."
+  </text>
+
+  <!-- Supporting context -->
+  <text x="640" y="570" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">
+    Questionnaire return rate: only 40% — current customer data is incomplete and unreliable
+  </text>
+
+  <!-- Footer -->
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5"/>
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Service Department</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">2</text>
+</svg>

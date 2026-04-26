@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="imgOverlay02" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#1A1714" stop-opacity="0.1"/>
+      <stop offset="40%" stop-color="#1A1714" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1A1714" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="accentLine02" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C4A882"/>
+      <stop offset="100%" stop-color="#D4956A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Right side image -->
+  <image href="../images/space_overview.png" x="480" y="0" width="800" height="720" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="480" y="0" width="800" height="720" fill="url(#imgOverlay02)"/>
+
+  <!-- Decorative vertical accent line -->
+  <rect x="80" y="180" width="3" height="100" fill="url(#accentLine02)" rx="1.5"/>
+
+  <!-- Chapter number -->
+  <text x="80" y="170" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="4">
+    CHAPTER 01
+  </text>
+
+  <!-- Title -->
+  <g id="p02-title">
+    <text x="100" y="240" font-family="Georgia, SimSun, serif" font-size="38" font-weight="bold" fill="#E8E0D4">
+      从"网红风"
+    </text>
+    <text x="100" y="290" font-family="Georgia, SimSun, serif" font-size="38" font-weight="bold" fill="#C4A882">
+      到"人的尺度"
+    </text>
+  </g>
+
+  <!-- Divider -->
+  <rect x="100" y="315" width="60" height="2" fill="#3D362E"/>
+
+  <!-- Content -->
+  <g id="p02-content">
+    <text x="100" y="360" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" fill="#E8E0D4">
+      过去几年，我们见惯了各种家居"网红风"的迅速更迭。
+    </text>
+    <text x="100" y="410" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" fill="#B0A08E">
+      到了 2026 年，家居设计正悄然发生一场深刻的转变——
+    </text>
+    <text x="100" y="450" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" fill="#B0A08E">
+      从视觉符号的堆砌，回归到对人本身的关怀。
+    </text>
+  </g>
+
+  <!-- Quote block -->
+  <rect x="100" y="490" width="4" height="60" fill="#D4956A" rx="2"/>
+  <text x="120" y="515" font-family="Georgia, SimSun, serif" font-size="22" fill="#C4A882" font-style="italic">
+    "高级感的空间，是色彩、材质、纹理
+  </text>
+  <text x="120" y="545" font-family="Georgia, SimSun, serif" font-size="22" fill="#C4A882" font-style="italic">
+    的精妙搭配所营造出来的。"
+  </text>
+
+  <!-- Bottom tagline -->
+  <text x="100" y="620" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#7A6E60">
+    有颜值，更有温度与情感
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    02 / 12
+  </text>
+</svg>

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="32" rx="2" fill="#5B9BD5"/>
+    <text x="78" y="66" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8E8EC">Workflow: Evaluator-Optimizer</text>
+  </g>
+
+  <!-- Diagram image -->
+  <g id="diagram">
+    <image href="../images/image_5.png" x="80" y="88" width="1120" height="280" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Content: two-column -->
+  <g id="mechanism">
+    <rect x="60" y="385" width="560" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/arrows-repeat" x="84" y="410" width="24" height="24" fill="#5B9BD5"/>
+    <text x="118" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#5B9BD5">Mechanism</text>
+
+    <text x="84" y="466" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">One LLM generates a response,</text>
+    <text x="84" y="488" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">another evaluates in a feedback loop.</text>
+
+    <rect x="84" y="510" width="512" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <text x="84" y="540" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Two signs of good fit:</text>
+
+    <text x="100" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#4ADE80">①</text>
+    <text x="120" y="568" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8E8EC">Human feedback demonstrably</text>
+    <text x="120" y="586" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8E8EC">improves LLM responses</text>
+
+    <text x="100" y="616" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#4ADE80">②</text>
+    <text x="120" y="616" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8E8EC">The LLM itself can provide</text>
+    <text x="120" y="634" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#E8E8EC">such feedback reliably</text>
+  </g>
+
+  <g id="examples">
+    <rect x="650" y="385" width="570" height="275" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <use data-icon="chunk/eye" x="674" y="410" width="24" height="24" fill="#D4845A"/>
+    <text x="708" y="430" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="bold" fill="#D4845A">Examples</text>
+
+    <text x="674" y="466" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">Clear evaluation criteria and</text>
+    <text x="674" y="488" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8E8EC">measurable iterative refinement.</text>
+
+    <rect x="674" y="510" width="522" height="1" fill="#2D3348" fill-opacity="0.4"/>
+
+    <!-- Example 1 -->
+    <rect x="674" y="530" width="522" height="68" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/book-open" x="690" y="548" width="20" height="20" fill="#D4845A"/>
+    <text x="720" y="558" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Literary Translation</text>
+    <text x="720" y="580" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9CA3AF">Evaluator catches nuances the translator missed</text>
+
+    <!-- Example 2 -->
+    <rect x="674" y="612" width="522" height="42" rx="8" fill="#0F1117" stroke="#2D3348" stroke-width="1"/>
+    <use data-icon="chunk/target" x="690" y="622" width="20" height="20" fill="#D4845A"/>
+    <text x="720" y="640" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC" font-weight="bold">Complex Multi-round Search</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">09</text>
+  </g>
+</svg>

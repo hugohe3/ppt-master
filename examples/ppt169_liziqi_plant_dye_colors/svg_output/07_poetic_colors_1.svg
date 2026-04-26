@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="imgShadow07" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 03 · 诗意之色（上）</text>
+    <line x1="60" y1="62" x2="290" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">朝霞初染 · 饮酒颜酡</text>
+    <text x="60" y="140" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">植物染的魅力 · 不仅在于色彩 · 更在于其承载的东方意境</text>
+  </g>
+
+  <line x1="640" y1="180" x2="640" y2="660" stroke="#D7CEB9" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <g id="color-yinhong" transform="translate(60,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#E49AA5" stroke-width="1"/>
+      <image href="../images/640_10.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow07)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">黄荣华 · 银红丝巾</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="260" height="200" rx="4" fill="#E49AA5"/>
+      <rect x="10" y="10" width="240" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="130" y="78" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" font-weight="bold" fill="#F7F2E8" letter-spacing="6">银红</text>
+      <text x="130" y="130" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#F7F2E8" letter-spacing="2">又叫 · 霞影纱</text>
+      <text x="130" y="170" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#E49AA5</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/flower" x="0" y="0" width="24" height="24" fill="#E49AA5"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">朝霞初染 · 桃瓣含霜</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">黛玉窗前 · 霞影纱痕</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 《红楼梦》 · 绛珠仙草泪染胭脂</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="570" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/palette" x="0" y="0" width="20" height="20" fill="#B04A5C"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 三料配制</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">红花 + 苏木 + 朱砂，以明矾作媒染剂</text>
+    </g>
+  </g>
+
+  <g id="color-tuose" transform="translate(670,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#C86868" stroke-width="1"/>
+      <image href="../images/640_11.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow07)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">电影《霸王别姬》剧照</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="240" height="200" rx="4" fill="#C86868"/>
+      <rect x="10" y="10" width="220" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="120" y="85" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="56" font-weight="bold" fill="#F7F2E8" letter-spacing="4">酡色</text>
+      <text x="120" y="130" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#F7F2E8" letter-spacing="2">饮酒朱颜</text>
+      <text x="120" y="170" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#C86868</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/quote" x="0" y="0" width="24" height="24" fill="#C86868"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">美人欲醉朱颜酡</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">贵妃醉酒 · 何等妩媚</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 李白《前有一尊酒行》· 屈原《招魂》</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="550" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/palette" x="0" y="0" width="20" height="20" fill="#B04A5C"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 多物皆成</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">红蓝 / 苏木 / 茜草 / 五倍子 / 茶叶，明矾媒染</text>
+    </g>
+  </g>
+
+  <g id="bottom-strip" transform="translate(60,660)">
+    <rect x="0" y="0" width="1160" height="32" rx="16" fill="#EDE5D3"/>
+    <text x="30" y="21" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">《红楼梦》有言 · 软烟罗四色 · 雨过天青 · 秋香 · 松绿 · 银红</text>
+    <text x="1130" y="21" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">07 / 12</text>
+  </g>
+</svg>

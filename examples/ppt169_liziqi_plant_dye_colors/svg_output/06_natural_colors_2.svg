@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="imgShadow06" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 02 · 草木之色（下）</text>
+    <line x1="60" y1="62" x2="290" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">日暮云彩 · 露染青碧</text>
+    <text x="60" y="140" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">一缕霞光 · 一夜朝露 · 皆可为颜色起名</text>
+  </g>
+
+  <line x1="640" y1="180" x2="640" y2="660" stroke="#D7CEB9" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <g id="color-muyun" transform="translate(60,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#7D6E74" stroke-width="1"/>
+      <image href="../images/640_7.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow06)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">暮云灰 · 暗紫红之灰</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="260" height="200" rx="4" fill="#7D6E74"/>
+      <rect x="10" y="10" width="240" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="130" y="78" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" font-weight="bold" fill="#F7F2E8" letter-spacing="6">暮云</text>
+      <text x="130" y="128" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" font-weight="bold" fill="#F7F2E8" letter-spacing="6">灰</text>
+      <text x="130" y="170" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#7D6E74</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/moon" x="0" y="0" width="24" height="24" fill="#7D6E74"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">落日熔金 · 暮云合璧</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">千里烟波 · 暮霭沉沉</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 李清照 · 柳永 · 写尽日暮云情</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="570" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/palette" x="0" y="0" width="20" height="20" fill="#7D6E74"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 一染而成</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">苏木为染料，以蓝矾和少许皂矾作媒染剂</text>
+    </g>
+  </g>
+
+  <g id="color-tianshui" transform="translate(670,180)">
+    <g transform="translate(0,0)">
+      <rect x="-4" y="-4" width="288" height="208" fill="#EDE5D3" stroke="#8FB09A" stroke-width="1"/>
+      <image href="../images/640_8.png" x="0" y="0" width="280" height="200" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow06)"/>
+      <text x="140" y="220" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">天水碧 · 露染青碧</text>
+    </g>
+
+    <g transform="translate(310,0)">
+      <rect x="0" y="0" width="240" height="200" rx="4" fill="#8FB09A"/>
+      <rect x="10" y="10" width="220" height="180" fill="none" stroke="#F7F2E8" stroke-width="1" stroke-opacity="0.6"/>
+      <text x="120" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="56" font-weight="bold" fill="#F7F2E8" letter-spacing="4">天水</text>
+      <text x="120" y="140" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="56" font-weight="bold" fill="#F7F2E8" letter-spacing="4">碧</text>
+      <text x="120" y="175" text-anchor="middle" font-family="Arial" font-size="13" fill="#F7F2E8" letter-spacing="3">#8FB09A</text>
+    </g>
+
+    <g transform="translate(0,260)">
+      <use data-icon="tabler-filled/droplet" x="0" y="0" width="24" height="24" fill="#6F8F75"/>
+      <text x="34" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">南唐后主妃 · 露宿丝帛</text>
+      <text x="34" y="46" font-family="KaiTi, STKaiti, Georgia, serif" font-size="19" fill="#3A3530" font-weight="bold">一夜露色 · 青翠欲滴</text>
+      <text x="34" y="74" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#9B948B" font-style="italic">— 《宋史 · 南唐世家》 · 李煜命名</text>
+    </g>
+
+    <g transform="translate(0,370)">
+      <rect x="0" y="0" width="550" height="78" rx="6" fill="#EDE5D3"/>
+      <g transform="translate(20,20)">
+        <use data-icon="tabler-filled/sparkles" x="0" y="0" width="20" height="20" fill="#6F8F75"/>
+        <text x="30" y="16" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-weight="bold">配方 · 黄青之微</text>
+      </g>
+      <text x="20" y="64" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068" letter-spacing="1">蓝靛染月白或天青，再以极少植物黄色套染</text>
+    </g>
+  </g>
+
+  <g id="bottom-strip" transform="translate(60,660)">
+    <rect x="0" y="0" width="1160" height="32" rx="16" fill="#EDE5D3"/>
+    <text x="30" y="21" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">古人眼里 · 风雨日月 · 四季草木 · 皆可为色</text>
+    <text x="1130" y="21" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">06 / 12</text>
+  </g>
+</svg>

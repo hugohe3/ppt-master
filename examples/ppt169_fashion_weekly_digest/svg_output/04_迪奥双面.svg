@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="leftImg">
+      <rect x="50" y="120" width="280" height="280" rx="10"/>
+    </clipPath>
+    <clipPath id="rightImg">
+      <rect x="670" y="120" width="280" height="280" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <!-- Page title -->
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">Dior 双面魅力</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">HAUTE COUTURE · HAUTE HORLOGERIE</text>
+
+  <!-- LEFT COLUMN: Fashion -->
+  <!-- Image -->
+  <rect x="50" y="120" width="280" height="280" rx="10" fill="#1A1A1A"/>
+  <image href="../images/dior_fashion.jpg" x="50" y="120" width="280" height="280" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImg)"/>
+
+  <!-- Left text block -->
+  <use data-icon="phosphor-duotone/dress" x="50" y="420" width="28" height="28" fill="#C9A96E"/>
+  <text x="86" y="442" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">时装 · Coachella</text>
+
+  <rect x="50" y="458" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="50" y="490">Sabrina Carpenter 身着 Jonathan Anderson</tspan>
+    <tspan x="50" dy="26">匠心打造的多款礼服亮相 Coachella 音乐节，</tspan>
+    <tspan x="50" dy="26">传承与蜕变在光影间交汇。</tspan>
+  </text>
+
+  <!-- Vertical divider -->
+  <rect x="630" y="120" width="1" height="530" fill="#2A2520"/>
+
+  <!-- RIGHT COLUMN: Watches -->
+  <!-- Image -->
+  <rect x="670" y="120" width="280" height="280" rx="10" fill="#1A1A1A"/>
+  <image href="../images/dior_watch1.jpg" x="670" y="120" width="280" height="280" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImg)"/>
+
+  <!-- Right text block -->
+  <use data-icon="phosphor-duotone/watch" x="670" y="420" width="28" height="28" fill="#C9A96E"/>
+  <text x="706" y="442" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">时计 · Chiffre Rouge</text>
+
+  <rect x="670" y="458" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="670" y="490">Chiffre Rouge 腕表系列焕新归来，推出三</tspan>
+    <tspan x="670" dy="26">款限量臻品。醒目红色秒针，致敬迪奥先生</tspan>
+    <tspan x="670" dy="26">心中炽热浓烈的生命之色。</tspan>
+  </text>
+
+  <!-- Right side detail highlights -->
+  <rect x="670" y="580" width="560" height="44" rx="6" fill="#1A1A1A"/>
+  <rect x="670" y="580" width="3" height="44" fill="#C9A96E"/>
+  <text x="690" y="607" font-family="Georgia, SimSun, serif" font-size="14" fill="#9E9690">钟爱的数字 "8" 化作浪漫护身符 · 2026年4月底发售</text>
+
+  <!-- Left side detail highlights -->
+  <rect x="50" y="580" width="560" height="44" rx="6" fill="#1A1A1A"/>
+  <rect x="50" y="580" width="3" height="44" fill="#C9A96E"/>
+  <text x="70" y="607" font-family="Georgia, SimSun, serif" font-size="14" fill="#9E9690">创意总监 Jonathan Anderson · 高级订制精神的现代诠释</text>
+
+  <!-- Right image additional info -->
+  <text x="960" y="395" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="start">41mm 计时码表 · 38mm 玫瑰金</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">04 / 16</text>
+</svg>

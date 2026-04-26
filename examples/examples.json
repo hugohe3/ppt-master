@@ -1,0 +1,1996 @@
+{
+  "version": 1,
+  "updated": "2026-04-26",
+  "stats": {
+    "examples": 22,
+    "pages": 309,
+    "templates": 20
+  },
+  "projects": [
+    {
+      "id": "ppt169_building_effective_agents",
+      "title": "Building Effective Agents",
+      "description": "Anthropic 工程博客的 AI Agent 架构与工作流模式解析",
+      "icon": "🤖",
+      "color": "#D4845A",
+      "style": "general",
+      "styleName": "General + Dark Tech",
+      "desc": "Based on Anthropic's Building Effective Agents — augmented LLM、五类 workflow pattern 与 autonomous agent 实践。",
+      "tags": [
+        "Dark Theme",
+        "AI/ML",
+        "Anthropic"
+      ],
+      "isNew": true,
+      "folder": "ppt169_building_effective_agents/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "Cover",
+          "desc": "Cover"
+        },
+        {
+          "file": "02_what_are_agents.svg",
+          "title": "What Are Agents",
+          "desc": "What Are Agents"
+        },
+        {
+          "file": "03_when_to_use_agents.svg",
+          "title": "When To Use Agents",
+          "desc": "When To Use Agents"
+        },
+        {
+          "file": "04_augmented_llm.svg",
+          "title": "Augmented Llm",
+          "desc": "Augmented Llm"
+        },
+        {
+          "file": "05_prompt_chaining.svg",
+          "title": "Prompt Chaining",
+          "desc": "Prompt Chaining"
+        },
+        {
+          "file": "06_routing.svg",
+          "title": "Routing",
+          "desc": "Routing"
+        },
+        {
+          "file": "07_parallelization.svg",
+          "title": "Parallelization",
+          "desc": "Parallelization"
+        },
+        {
+          "file": "08_orchestrator_workers.svg",
+          "title": "Orchestrator Workers",
+          "desc": "Orchestrator Workers"
+        },
+        {
+          "file": "09_evaluator_optimizer.svg",
+          "title": "Evaluator Optimizer",
+          "desc": "Evaluator Optimizer"
+        },
+        {
+          "file": "10_agents.svg",
+          "title": "Agents",
+          "desc": "Agents"
+        },
+        {
+          "file": "11_agents_in_practice.svg",
+          "title": "Agents In Practice",
+          "desc": "Agents In Practice"
+        },
+        {
+          "file": "12_summary.svg",
+          "title": "Summary",
+          "desc": "Summary"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_fashion_weekly_digest",
+      "title": "时尚美学周鉴",
+      "description": "奢侈品与生活方式品牌新闻的杂志化周报",
+      "icon": "✨",
+      "color": "#C9A96E",
+      "style": "editorial",
+      "styleName": "Luxury Editorial",
+      "desc": "覆盖 Hermès、CHANEL、Dior、Louis Vuitton、Gucci 等品牌动态的高端杂志编辑风周报。",
+      "tags": [
+        "Luxury",
+        "Fashion",
+        "杂志风"
+      ],
+      "isNew": true,
+      "folder": "ppt169_fashion_weekly_digest/svg_final",
+      "cover": "01_封面.svg",
+      "slides": [
+        {
+          "file": "01_封面.svg",
+          "title": "封面",
+          "desc": "封面"
+        },
+        {
+          "file": "02_爱马仕家居.svg",
+          "title": "爱马仕家居",
+          "desc": "爱马仕家居"
+        },
+        {
+          "file": "03_香奈儿海滩.svg",
+          "title": "香奈儿海滩",
+          "desc": "香奈儿海滩"
+        },
+        {
+          "file": "04_迪奥双面.svg",
+          "title": "迪奥双面",
+          "desc": "迪奥双面"
+        },
+        {
+          "file": "05_路易威登家居.svg",
+          "title": "路易威登家居",
+          "desc": "路易威登家居"
+        },
+        {
+          "file": "06_古驰记忆.svg",
+          "title": "古驰记忆",
+          "desc": "古驰记忆"
+        },
+        {
+          "file": "07_珠宝灵韵.svg",
+          "title": "珠宝灵韵",
+          "desc": "珠宝灵韵"
+        },
+        {
+          "file": "08_艺术表达.svg",
+          "title": "艺术表达",
+          "desc": "艺术表达"
+        },
+        {
+          "file": "09_传承新章.svg",
+          "title": "传承新章",
+          "desc": "传承新章"
+        },
+        {
+          "file": "10_结构重塑.svg",
+          "title": "结构重塑",
+          "desc": "结构重塑"
+        },
+        {
+          "file": "11_感官新篇.svg",
+          "title": "感官新篇",
+          "desc": "感官新篇"
+        },
+        {
+          "file": "12_跨界新风.svg",
+          "title": "跨界新风",
+          "desc": "跨界新风"
+        },
+        {
+          "file": "13_潮流共振.svg",
+          "title": "潮流共振",
+          "desc": "潮流共振"
+        },
+        {
+          "file": "14_亮点回顾.svg",
+          "title": "亮点回顾",
+          "desc": "亮点回顾"
+        },
+        {
+          "file": "15_品牌全景.svg",
+          "title": "品牌全景",
+          "desc": "品牌全景"
+        },
+        {
+          "file": "16_结尾.svg",
+          "title": "结尾",
+          "desc": "结尾"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_home_design_trends_2026",
+      "title": "2026 家居设计趋势",
+      "description": "杂志编辑风的家居色彩、材质与纹理趋势解析",
+      "icon": "🏠",
+      "color": "#C4A882",
+      "style": "general",
+      "styleName": "Magazine Editorial",
+      "desc": "从色彩、材质、纹理到 CMT 体系，解读 2026 家居设计趋势与可持续奢华。",
+      "tags": [
+        "家居设计",
+        "杂志风",
+        "CMT"
+      ],
+      "isNew": true,
+      "folder": "ppt169_home_design_trends_2026/svg_final",
+      "cover": "01_封面.svg",
+      "slides": [
+        {
+          "file": "01_封面.svg",
+          "title": "封面",
+          "desc": "封面"
+        },
+        {
+          "file": "02_从网红风到人的尺度.svg",
+          "title": "从网红风到人的尺度",
+          "desc": "从网红风到人的尺度"
+        },
+        {
+          "file": "03_色彩情绪魔法师.svg",
+          "title": "色彩情绪魔法师",
+          "desc": "色彩情绪魔法师"
+        },
+        {
+          "file": "04_冷暖色调对比.svg",
+          "title": "冷暖色调对比",
+          "desc": "冷暖色调对比"
+        },
+        {
+          "file": "05_材质空间语言.svg",
+          "title": "材质空间语言",
+          "desc": "材质空间语言"
+        },
+        {
+          "file": "06_纹理空间灵魂.svg",
+          "title": "纹理空间灵魂",
+          "desc": "纹理空间灵魂"
+        },
+        {
+          "file": "07_CMT体系.svg",
+          "title": "CMT体系",
+          "desc": "CMT体系"
+        },
+        {
+          "file": "08_奶油风进化论.svg",
+          "title": "奶油风进化论",
+          "desc": "奶油风进化论"
+        },
+        {
+          "file": "09_波西米亚与复古.svg",
+          "title": "波西米亚与复古",
+          "desc": "波西米亚与复古"
+        },
+        {
+          "file": "10_可持续奢华.svg",
+          "title": "可持续奢华",
+          "desc": "可持续奢华"
+        },
+        {
+          "file": "11_书籍推荐.svg",
+          "title": "书籍推荐",
+          "desc": "书籍推荐"
+        },
+        {
+          "file": "12_结语.svg",
+          "title": "结语",
+          "desc": "结语"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_kimsoong_loyalty_programme",
+      "title": "Kimsoong Loyalty Programme",
+      "description": "MBB 风格汽车品牌客户忠诚度战略提案",
+      "icon": "💎",
+      "color": "#E8A838",
+      "style": "consulting",
+      "styleName": "Top Consulting",
+      "desc": "面向 Kimsoong 欧洲总部的客户忠诚度战略提案，覆盖根因分析、四支柱策略与实施路线图。",
+      "tags": [
+        "MBB 级",
+        "Loyalty",
+        "Automotive"
+      ],
+      "isNew": true,
+      "folder": "ppt169_kimsoong_loyalty_programme/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "Cover",
+          "desc": "Cover"
+        },
+        {
+          "file": "slide_02_critical_challenge.svg",
+          "title": "Critical Challenge",
+          "desc": "Critical Challenge"
+        },
+        {
+          "file": "slide_03_company_profile.svg",
+          "title": "Company Profile",
+          "desc": "Company Profile"
+        },
+        {
+          "file": "slide_04_customer_profile.svg",
+          "title": "Customer Profile",
+          "desc": "Customer Profile"
+        },
+        {
+          "file": "slide_05_priorities_gap.svg",
+          "title": "Priorities Gap",
+          "desc": "Priorities Gap"
+        },
+        {
+          "file": "slide_06_root_cause.svg",
+          "title": "Root Cause",
+          "desc": "Root Cause"
+        },
+        {
+          "file": "slide_07_strategic_pillars.svg",
+          "title": "Strategic Pillars",
+          "desc": "Strategic Pillars"
+        },
+        {
+          "file": "slide_08_initiatives.svg",
+          "title": "Initiatives",
+          "desc": "Initiatives"
+        },
+        {
+          "file": "slide_09_roadmap.svg",
+          "title": "Roadmap",
+          "desc": "Roadmap"
+        },
+        {
+          "file": "slide_10_conclusion.svg",
+          "title": "Conclusion",
+          "desc": "Conclusion"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_lin_huiyin_architect",
+      "title": "林徽因：当之无愧的建筑师",
+      "description": "深色建筑人文纪念风的林徽因建筑贡献梳理",
+      "icon": "🏛️",
+      "color": "#C9A96E",
+      "style": "editorial",
+      "styleName": "建筑人文纪念",
+      "desc": "从建筑实践、国家纪念碑到学术论文，重新审视林徽因作为建筑师的专业贡献。",
+      "tags": [
+        "建筑史",
+        "人文",
+        "深色主题"
+      ],
+      "isNew": true,
+      "folder": "ppt169_lin_huiyin_architect/svg_final",
+      "cover": "01_封面.svg",
+      "slides": [
+        {
+          "file": "01_封面.svg",
+          "title": "封面",
+          "desc": "封面"
+        },
+        {
+          "file": "02_人生轨迹.svg",
+          "title": "人生轨迹",
+          "desc": "人生轨迹"
+        },
+        {
+          "file": "03_归国初期建筑实践.svg",
+          "title": "归国初期建筑实践",
+          "desc": "归国初期建筑实践"
+        },
+        {
+          "file": "04_战火中的建筑理想.svg",
+          "title": "战火中的建筑理想",
+          "desc": "战火中的建筑理想"
+        },
+        {
+          "file": "05_国之重器.svg",
+          "title": "国之重器",
+          "desc": "国之重器"
+        },
+        {
+          "file": "06_首篇建筑论文.svg",
+          "title": "首篇建筑论文",
+          "desc": "首篇建筑论文"
+        },
+        {
+          "file": "07_学术贡献一览.svg",
+          "title": "学术贡献一览",
+          "desc": "学术贡献一览"
+        },
+        {
+          "file": "08_穿越战火的建筑斗士.svg",
+          "title": "穿越战火的建筑斗士",
+          "desc": "穿越战火的建筑斗士"
+        },
+        {
+          "file": "09_当之无愧的建筑师.svg",
+          "title": "当之无愧的建筑师",
+          "desc": "当之无愧的建筑师"
+        },
+        {
+          "file": "10_结尾.svg",
+          "title": "结尾",
+          "desc": "结尾"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_lin_huiyin_architect_revised",
+      "title": "重识林徽因建筑师身份",
+      "description": "浅色博物馆展陈风的林徽因建筑贡献修订版",
+      "icon": "🏛️",
+      "color": "#A44A3F",
+      "style": "editorial",
+      "styleName": "博物馆展陈风",
+      "desc": "以浅色展陈图录方式重构同一主题，强调建筑现场、国家尺度参与与方法论远见。",
+      "tags": [
+        "建筑史",
+        "展陈图录",
+        "修订版"
+      ],
+      "isNew": true,
+      "folder": "ppt169_lin_huiyin_architect_revised/svg_final",
+      "cover": "01_封面.svg",
+      "slides": [
+        {
+          "file": "01_封面.svg",
+          "title": "封面",
+          "desc": "封面"
+        },
+        {
+          "file": "02_为什么今天要重识林徽因.svg",
+          "title": "为什么今天要重识林徽因",
+          "desc": "为什么今天要重识林徽因"
+        },
+        {
+          "file": "03_建筑实践并不缺席.svg",
+          "title": "建筑实践并不缺席",
+          "desc": "建筑实践并不缺席"
+        },
+        {
+          "file": "04_作品现场：建筑不是抽象名词.svg",
+          "title": "作品现场：建筑不是抽象名词",
+          "desc": "作品现场：建筑不是抽象名词"
+        },
+        {
+          "file": "05_国家尺度上的建筑参与.svg",
+          "title": "国家尺度上的建筑参与",
+          "desc": "国家尺度上的建筑参与"
+        },
+        {
+          "file": "06_她不是辅助者，而是理论提出者.svg",
+          "title": "她不是辅助者，而是理论提出者",
+          "desc": "她不是辅助者，而是理论提出者"
+        },
+        {
+          "file": "07_学科、方法与远见.svg",
+          "title": "学科、方法与远见",
+          "desc": "学科、方法与远见"
+        },
+        {
+          "file": "08_她如何穿过战火与病痛.svg",
+          "title": "她如何穿过战火与病痛",
+          "desc": "她如何穿过战火与病痛"
+        },
+        {
+          "file": "09_结尾.svg",
+          "title": "结尾",
+          "desc": "结尾"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_liziqi_plant_dye_colors",
+      "title": "李子柒植物染色彩",
+      "description": "东方文化叙事下的传统色与植物染研究",
+      "icon": "🌿",
+      "color": "#6B9AAE",
+      "style": "editorial",
+      "styleName": "东方文化叙事",
+      "desc": "围绕李子柒春晚战袍背后的传统中国色，讲述五正色、植物染、诗意色名与手作疗愈。",
+      "tags": [
+        "传统色",
+        "植物染",
+        "东方美学"
+      ],
+      "isNew": true,
+      "folder": "ppt169_liziqi_plant_dye_colors/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "Cover",
+          "desc": "Cover"
+        },
+        {
+          "file": "02_intro.svg",
+          "title": "Intro",
+          "desc": "Intro"
+        },
+        {
+          "file": "03_zhanpao_decode.svg",
+          "title": "Zhanpao Decode",
+          "desc": "Zhanpao Decode"
+        },
+        {
+          "file": "04_history.svg",
+          "title": "History",
+          "desc": "History"
+        },
+        {
+          "file": "05_natural_colors_1.svg",
+          "title": "Natural Colors 1",
+          "desc": "Natural Colors 1"
+        },
+        {
+          "file": "06_natural_colors_2.svg",
+          "title": "Natural Colors 2",
+          "desc": "Natural Colors 2"
+        },
+        {
+          "file": "07_poetic_colors_1.svg",
+          "title": "Poetic Colors 1",
+          "desc": "Poetic Colors 1"
+        },
+        {
+          "file": "08_poetic_colors_2.svg",
+          "title": "Poetic Colors 2",
+          "desc": "Poetic Colors 2"
+        },
+        {
+          "file": "09_dye_plants.svg",
+          "title": "Dye Plants",
+          "desc": "Dye Plants"
+        },
+        {
+          "file": "10_diy_dyeing.svg",
+          "title": "Diy Dyeing",
+          "desc": "Diy Dyeing"
+        },
+        {
+          "file": "11_xuetaojian.svg",
+          "title": "Xuetaojian",
+          "desc": "Xuetaojian"
+        },
+        {
+          "file": "12_ending.svg",
+          "title": "Ending",
+          "desc": "Ending"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_顶级咨询风_心理治疗中的依恋",
+      "title": "心理治疗中的依恋",
+      "description": "探索依恋理论在心理治疗中的应用",
+      "icon": "🧠",
+      "color": "#6366f1",
+      "style": "consulting",
+      "styleName": "顶级咨询风格",
+      "desc": "螺旋上升结构，从 Bowlby → Ainsworth → Main → Fonagy 的理论演进，到临床实践的应用深化。",
+      "tags": [
+        "MBB 级",
+        "心理学",
+        "专业蓝系"
+      ],
+      "isNew": false,
+      "folder": "ppt169_顶级咨询风_心理治疗中的依恋/svg_final",
+      "cover": "P01_封面.svg",
+      "slides": [
+        {
+          "file": "P01_封面.svg",
+          "title": "封面",
+          "desc": "心理治疗中的依恋"
+        },
+        {
+          "file": "P02_目录导航.svg",
+          "title": "目录导航",
+          "desc": "内容概览"
+        },
+        {
+          "file": "P03_第一章引导页.svg",
+          "title": "第一章引导页",
+          "desc": "理论基础"
+        },
+        {
+          "file": "P04_依恋研究三大发现.svg",
+          "title": "依恋研究三大发现",
+          "desc": "核心发现"
+        },
+        {
+          "file": "P05_治疗关系作为发展熔炉.svg",
+          "title": "治疗关系作为发展熔炉",
+          "desc": "治疗关系"
+        },
+        {
+          "file": "P06_未经思考的已知.svg",
+          "title": "未经思考的已知",
+          "desc": "潜意识"
+        },
+        {
+          "file": "P07_心智化与觉察.svg",
+          "title": "心智化与觉察",
+          "desc": "心智化"
+        },
+        {
+          "file": "P08_第二章引导页.svg",
+          "title": "第二章引导页",
+          "desc": "依恋模式"
+        },
+        {
+          "file": "P09_Bowlby依恋行为系统.svg",
+          "title": "Bowlby依恋行为系统",
+          "desc": "Bowlby理论"
+        },
+        {
+          "file": "P10_Ainsworth四种依恋模式.svg",
+          "title": "Ainsworth四种依恋模式",
+          "desc": "依恋分类"
+        },
+        {
+          "file": "P11_MaryMain成人依恋访谈.svg",
+          "title": "MaryMain成人依恋访谈",
+          "desc": "AAI"
+        },
+        {
+          "file": "P12_Fonagy心智化与三种体验模式.svg",
+          "title": "Fonagy心智化",
+          "desc": "体验模式"
+        },
+        {
+          "file": "P13_第三章引导页.svg",
+          "title": "第三章引导页",
+          "desc": "神经生物学"
+        },
+        {
+          "file": "P14_自我发展层级.svg",
+          "title": "自我发展层级",
+          "desc": "发展阶段"
+        },
+        {
+          "file": "P15_依恋的神经生物学.svg",
+          "title": "依恋的神经生物学",
+          "desc": "神经科学"
+        },
+        {
+          "file": "P16_情感调节与依恋策略.svg",
+          "title": "情感调节与依恋策略",
+          "desc": "情感调节"
+        },
+        {
+          "file": "P17_发展的迫切需求物.svg",
+          "title": "发展的迫切需求物",
+          "desc": "发展需求"
+        },
+        {
+          "file": "P18_第四章引导页.svg",
+          "title": "第四章引导页",
+          "desc": "治疗应用"
+        },
+        {
+          "file": "P19_关系精神分析重新定义.svg",
+          "title": "关系精神分析重新定义",
+          "desc": "精神分析"
+        },
+        {
+          "file": "P20_冷漠型患者.svg",
+          "title": "冷漠型患者",
+          "desc": "回避型"
+        },
+        {
+          "file": "P21_迷恋型患者.svg",
+          "title": "迷恋型患者",
+          "desc": "焦虑型"
+        },
+        {
+          "file": "P22_未解决型患者.svg",
+          "title": "未解决型患者",
+          "desc": "混乱型"
+        },
+        {
+          "file": "P23_第五章引导页.svg",
+          "title": "第五章引导页",
+          "desc": "治疗技术"
+        },
+        {
+          "file": "P24_处理被唤起与活现.svg",
+          "title": "处理被唤起与活现",
+          "desc": "移情"
+        },
+        {
+          "file": "P25_与身体工作.svg",
+          "title": "与身体工作",
+          "desc": "躯体治疗"
+        },
+        {
+          "file": "P26_心理解放的双螺旋.svg",
+          "title": "心理解放的双螺旋",
+          "desc": "整合"
+        },
+        {
+          "file": "P27_培养觉察与心智化.svg",
+          "title": "培养觉察与心智化",
+          "desc": "技术"
+        },
+        {
+          "file": "P28_治疗师的贡献.svg",
+          "title": "治疗师的贡献",
+          "desc": "治疗师角色"
+        },
+        {
+          "file": "P29_核心概念速查表.svg",
+          "title": "核心概念速查表",
+          "desc": "概念总结"
+        },
+        {
+          "file": "P30_结语.svg",
+          "title": "结语",
+          "desc": "总结"
+        },
+        {
+          "file": "P31_推荐阅读.svg",
+          "title": "推荐阅读",
+          "desc": "参考文献"
+        },
+        {
+          "file": "P32_封底.svg",
+          "title": "封底",
+          "desc": "结束页"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213",
+      "title": "重庆市区域报告",
+      "description": "重庆市经济财政分析报告",
+      "icon": "🏙️",
+      "color": "#0ea5e9",
+      "style": "consulting",
+      "styleName": "顶级咨询风格",
+      "desc": "基于企业预警通数据，全面分析重庆市经济、财政债务、城投、银行业等七大模块。",
+      "tags": [
+        "MBB 级",
+        "政务财政",
+        "数据驱动"
+      ],
+      "isNew": true,
+      "folder": "ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213/svg_final",
+      "cover": "P01_封面.svg",
+      "slides": [
+        {
+          "file": "P01_封面.svg",
+          "title": "封面",
+          "desc": "重庆市区域报告"
+        },
+        {
+          "file": "P02_目录.svg",
+          "title": "目录",
+          "desc": "内容概览"
+        },
+        {
+          "file": "P03_章节_经济情况.svg",
+          "title": "经济情况",
+          "desc": "章节引导"
+        },
+        {
+          "file": "P04_区域经济发展.svg",
+          "title": "区域经济发展",
+          "desc": "经济分析"
+        },
+        {
+          "file": "P05_辖区经济对比.svg",
+          "title": "辖区经济对比",
+          "desc": "对比分析"
+        },
+        {
+          "file": "P06_产业与人口.svg",
+          "title": "产业与人口",
+          "desc": "产业分析"
+        },
+        {
+          "file": "P07_章节_财政债务.svg",
+          "title": "财政债务",
+          "desc": "章节引导"
+        },
+        {
+          "file": "P08_财政实力.svg",
+          "title": "财政实力",
+          "desc": "财政分析"
+        },
+        {
+          "file": "P09_债务负担.svg",
+          "title": "债务负担",
+          "desc": "债务分析"
+        },
+        {
+          "file": "P10_章节_区域城投.svg",
+          "title": "区域城投",
+          "desc": "章节引导"
+        },
+        {
+          "file": "P11_城投概览.svg",
+          "title": "城投概览",
+          "desc": "城投分析"
+        },
+        {
+          "file": "P12_城投债分析.svg",
+          "title": "城投债分析",
+          "desc": "债券分析"
+        },
+        {
+          "file": "P13_章节_银行业.svg",
+          "title": "银行业",
+          "desc": "章节引导"
+        },
+        {
+          "file": "P14_银行业详情.svg",
+          "title": "银行业详情",
+          "desc": "银行分析"
+        },
+        {
+          "file": "P15_区域融资.svg",
+          "title": "区域融资",
+          "desc": "融资分析"
+        },
+        {
+          "file": "P16_区域风险.svg",
+          "title": "区域风险",
+          "desc": "风险评估"
+        },
+        {
+          "file": "P17_重点企业.svg",
+          "title": "重点企业",
+          "desc": "企业分析"
+        },
+        {
+          "file": "P18_报告总结.svg",
+          "title": "报告总结",
+          "desc": "总结"
+        },
+        {
+          "file": "P19_指标说明.svg",
+          "title": "指标说明",
+          "desc": "附录"
+        },
+        {
+          "file": "P20_封底.svg",
+          "title": "封底",
+          "desc": "结束页"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_顶级咨询风_甘孜州经济财政分析",
+      "title": "甘孜州经济财政分析",
+      "description": "甘孜藏族自治州经济财政研究报告",
+      "icon": "🏔️",
+      "color": "#10b981",
+      "style": "consulting",
+      "styleName": "顶级咨询风格",
+      "desc": "基于 2024 年甘孜州决算数据，涵盖 GDP、财政收支、政府债务等多维分析。",
+      "tags": [
+        "MBB 级",
+        "政务蓝",
+        "藏区文化"
+      ],
+      "isNew": false,
+      "folder": "ppt169_顶级咨询风_甘孜州经济财政分析/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "甘孜州分析"
+        },
+        {
+          "file": "slide_02_toc.svg",
+          "title": "目录",
+          "desc": "内容概览"
+        },
+        {
+          "file": "slide_03_executive_summary.svg",
+          "title": "执行摘要",
+          "desc": "概述"
+        },
+        {
+          "file": "slide_04_economy_overview.svg",
+          "title": "经济概览",
+          "desc": "经济分析"
+        },
+        {
+          "file": "slide_05_gdp_analysis.svg",
+          "title": "GDP分析",
+          "desc": "GDP"
+        },
+        {
+          "file": "slide_06_population.svg",
+          "title": "人口",
+          "desc": "人口分析"
+        },
+        {
+          "file": "slide_07_fiscal_revenue.svg",
+          "title": "财政收入",
+          "desc": "收入分析"
+        },
+        {
+          "file": "slide_08_fiscal_expenditure.svg",
+          "title": "财政支出",
+          "desc": "支出分析"
+        },
+        {
+          "file": "slide_09_fiscal_balance.svg",
+          "title": "财政平衡",
+          "desc": "平衡分析"
+        },
+        {
+          "file": "slide_10_gov_fund.svg",
+          "title": "政府基金",
+          "desc": "基金分析"
+        },
+        {
+          "file": "slide_11_debt_overview.svg",
+          "title": "债务概览",
+          "desc": "债务分析"
+        },
+        {
+          "file": "slide_12_debt_capacity.svg",
+          "title": "债务能力",
+          "desc": "偿债能力"
+        },
+        {
+          "file": "slide_13_debt_risk.svg",
+          "title": "债务风险",
+          "desc": "风险评估"
+        },
+        {
+          "file": "slide_14_comprehensive.svg",
+          "title": "综合分析",
+          "desc": "综合评估"
+        },
+        {
+          "file": "slide_15_fund_acquisition.svg",
+          "title": "资金获取",
+          "desc": "融资分析"
+        },
+        {
+          "file": "slide_16_summary_table.svg",
+          "title": "汇总表",
+          "desc": "数据汇总"
+        },
+        {
+          "file": "slide_17_conclusion.svg",
+          "title": "结论",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_顶级咨询风_构建有效AI代理_Anthropic",
+      "title": "构建有效 AI 代理",
+      "description": "Anthropic AI 代理构建指南",
+      "icon": "🤖",
+      "color": "#8b5cf6",
+      "style": "consulting",
+      "styleName": "顶级咨询风格",
+      "desc": "基于 Anthropic 官方博客，涵盖 Workflows、Agents、工具设计原则等。",
+      "tags": [
+        "MBB 级",
+        "AI/LLM",
+        "Anthropic"
+      ],
+      "isNew": false,
+      "folder": "ppt169_顶级咨询风_构建有效AI代理_Anthropic/svg_final",
+      "cover": "P01_Cover.svg",
+      "slides": [
+        {
+          "file": "P01_Cover.svg",
+          "title": "封面",
+          "desc": "构建有效AI代理"
+        },
+        {
+          "file": "P02_Executive_Summary.svg",
+          "title": "执行摘要",
+          "desc": "概述"
+        },
+        {
+          "file": "P03_Agenda.svg",
+          "title": "议程",
+          "desc": "内容概览"
+        },
+        {
+          "file": "P04_What_Are_Agents.svg",
+          "title": "什么是代理",
+          "desc": "定义"
+        },
+        {
+          "file": "P05_When_To_Use.svg",
+          "title": "何时使用",
+          "desc": "应用场景"
+        },
+        {
+          "file": "P06_Building_Block.svg",
+          "title": "构建模块",
+          "desc": "基础组件"
+        },
+        {
+          "file": "P07_Workflow_Chaining.svg",
+          "title": "工作流链接",
+          "desc": "链式调用"
+        },
+        {
+          "file": "P08_Workflow_Routing.svg",
+          "title": "工作流路由",
+          "desc": "路由策略"
+        },
+        {
+          "file": "P09_Workflow_Parallelization.svg",
+          "title": "工作流并行",
+          "desc": "并行处理"
+        },
+        {
+          "file": "P10_Workflow_Advanced.svg",
+          "title": "高级工作流",
+          "desc": "进阶模式"
+        },
+        {
+          "file": "P11_Autonomous_Agents.svg",
+          "title": "自主代理",
+          "desc": "自主运行"
+        },
+        {
+          "file": "P12_When_To_Use_Agents.svg",
+          "title": "何时使用代理",
+          "desc": "决策指南"
+        },
+        {
+          "file": "P13_Case_Studies.svg",
+          "title": "案例研究",
+          "desc": "实践案例"
+        },
+        {
+          "file": "P14_Tool_Engineering.svg",
+          "title": "工具工程",
+          "desc": "工具设计"
+        },
+        {
+          "file": "P15_Summary.svg",
+          "title": "总结",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_高端咨询风_南欧江水电站战略评估",
+      "title": "南欧江水电站战略评估",
+      "description": "水电站项目战略分析报告",
+      "icon": "💧",
+      "color": "#06b6d4",
+      "style": "consulting",
+      "styleName": "高端咨询风格",
+      "desc": "老挝南欧江梯级水电站项目、主权债务危机与仲裁案全景分析。",
+      "tags": [
+        "战略评估",
+        "湄公河色系",
+        "流域危机"
+      ],
+      "isNew": false,
+      "folder": "ppt169_高端咨询风_南欧江水电站战略评估/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "战略评估"
+        },
+        {
+          "file": "slide_02_toc.svg",
+          "title": "目录",
+          "desc": "内容概览"
+        },
+        {
+          "file": "slide_03_executive_summary.svg",
+          "title": "执行摘要",
+          "desc": "概述"
+        },
+        {
+          "file": "slide_04_project_overview.svg",
+          "title": "项目概览",
+          "desc": "项目介绍"
+        },
+        {
+          "file": "slide_05_cascade_logic.svg",
+          "title": "级联逻辑",
+          "desc": "技术分析"
+        },
+        {
+          "file": "slide_06_technical_params.svg",
+          "title": "技术参数",
+          "desc": "参数详情"
+        },
+        {
+          "file": "slide_07_business_model.svg",
+          "title": "商业模式",
+          "desc": "商业分析"
+        },
+        {
+          "file": "slide_08_financing.svg",
+          "title": "融资",
+          "desc": "融资方案"
+        },
+        {
+          "file": "slide_09_arbitration_overview.svg",
+          "title": "仲裁概览",
+          "desc": "法律分析"
+        },
+        {
+          "file": "slide_10_claim_breakdown.svg",
+          "title": "索赔分解",
+          "desc": "索赔分析"
+        },
+        {
+          "file": "slide_11_macro_crisis.svg",
+          "title": "宏观危机",
+          "desc": "宏观分析"
+        },
+        {
+          "file": "slide_12_currency_collapse.svg",
+          "title": "货币崩溃",
+          "desc": "货币分析"
+        },
+        {
+          "file": "slide_13_edl_black_hole.svg",
+          "title": "EDL黑洞",
+          "desc": "风险分析"
+        },
+        {
+          "file": "slide_14_debt_equity_swap.svg",
+          "title": "债转股",
+          "desc": "重组方案"
+        },
+        {
+          "file": "slide_15_geopolitics.svg",
+          "title": "地缘政治",
+          "desc": "政治分析"
+        },
+        {
+          "file": "slide_16_env_social.svg",
+          "title": "环境社会",
+          "desc": "ESG"
+        },
+        {
+          "file": "slide_17_flood_event.svg",
+          "title": "洪水事件",
+          "desc": "风险事件"
+        },
+        {
+          "file": "slide_18_conclusions.svg",
+          "title": "结论",
+          "desc": "总结"
+        },
+        {
+          "file": "slide_19_outlook.svg",
+          "title": "展望",
+          "desc": "未来展望"
+        },
+        {
+          "file": "slide_20_appendix.svg",
+          "title": "附录",
+          "desc": "补充资料"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_高端咨询风_汽车认证五年战略规划",
+      "title": "汽车认证五年战略规划",
+      "description": "汽车认证行业战略规划报告",
+      "icon": "🚗",
+      "color": "#f59e0b",
+      "style": "consulting",
+      "styleName": "高端咨询风格",
+      "desc": "汽车及零部件领域自愿性产品认证 2026-2030 五年战略规划。",
+      "tags": [
+        "战略规划",
+        "新能源",
+        "绿色低碳"
+      ],
+      "isNew": false,
+      "folder": "ppt169_高端咨询风_汽车认证五年战略规划/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "战略规划"
+        },
+        {
+          "file": "slide_02_toc.svg",
+          "title": "目录",
+          "desc": "内容概览"
+        },
+        {
+          "file": "slide_03_executive_summary.svg",
+          "title": "执行摘要",
+          "desc": "概述"
+        },
+        {
+          "file": "slide_04_industry_overview.svg",
+          "title": "行业概览",
+          "desc": "行业分析"
+        },
+        {
+          "file": "slide_05_nev_trends.svg",
+          "title": "新能源趋势",
+          "desc": "NEV"
+        },
+        {
+          "file": "slide_06_icv_trends.svg",
+          "title": "智能网联趋势",
+          "desc": "ICV"
+        },
+        {
+          "file": "slide_07_intl_standards.svg",
+          "title": "国际标准",
+          "desc": "标准分析"
+        },
+        {
+          "file": "slide_08_digital_strategy.svg",
+          "title": "数字化战略",
+          "desc": "数字化"
+        },
+        {
+          "file": "slide_09_digital_platform.svg",
+          "title": "数字平台",
+          "desc": "平台建设"
+        },
+        {
+          "file": "slide_10_digital_tech.svg",
+          "title": "数字技术",
+          "desc": "技术应用"
+        },
+        {
+          "file": "slide_11_innovation_overview.svg",
+          "title": "创新概览",
+          "desc": "创新分析"
+        },
+        {
+          "file": "slide_12_green_certification.svg",
+          "title": "绿色认证",
+          "desc": "环保认证"
+        },
+        {
+          "file": "slide_13_safety_certification.svg",
+          "title": "安全认证",
+          "desc": "安全标准"
+        },
+        {
+          "file": "slide_14_intl_strategy.svg",
+          "title": "国际战略",
+          "desc": "国际化"
+        },
+        {
+          "file": "slide_15_intl_layout.svg",
+          "title": "国际布局",
+          "desc": "全球布局"
+        },
+        {
+          "file": "slide_16_policy_env.svg",
+          "title": "政策环境",
+          "desc": "政策分析"
+        },
+        {
+          "file": "slide_17_org_capability.svg",
+          "title": "组织能力",
+          "desc": "能力建设"
+        },
+        {
+          "file": "slide_18_roadmap.svg",
+          "title": "路线图",
+          "desc": "实施计划"
+        },
+        {
+          "file": "slide_19_kpi_targets.svg",
+          "title": "KPI目标",
+          "desc": "绩效指标"
+        },
+        {
+          "file": "slide_20_conclusion.svg",
+          "title": "结论",
+          "desc": "总结"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_麦肯锡风_kimsoong_customer_loyalty",
+      "title": "客户忠诚度计划分析",
+      "description": "麦肯锡风格客户忠诚度战略分析",
+      "icon": "💎",
+      "color": "#ec4899",
+      "style": "consulting",
+      "styleName": "麦肯锡风格",
+      "desc": "展示麦肯锡经典的结构化思维与图表矩阵设计。",
+      "tags": [
+        "McKinsey",
+        "MECE 原则",
+        "数据驱动"
+      ],
+      "isNew": false,
+      "folder": "ppt169_麦肯锡风_kimsoong_customer_loyalty/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "客户忠诚度"
+        },
+        {
+          "file": "slide_02_situation.svg",
+          "title": "现状分析",
+          "desc": "现状"
+        },
+        {
+          "file": "slide_03_customer_profile.svg",
+          "title": "客户画像",
+          "desc": "客户分析"
+        },
+        {
+          "file": "slide_04_priorities_matrix.svg",
+          "title": "优先级矩阵",
+          "desc": "优先级"
+        },
+        {
+          "file": "slide_05_root_cause.svg",
+          "title": "根因分析",
+          "desc": "原因分析"
+        },
+        {
+          "file": "slide_06_strategic_pillars.svg",
+          "title": "战略支柱",
+          "desc": "战略框架"
+        },
+        {
+          "file": "slide_07_initiatives.svg",
+          "title": "行动计划",
+          "desc": "实施方案"
+        },
+        {
+          "file": "slide_08_roadmap.svg",
+          "title": "路线图",
+          "desc": "时间规划"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_谷歌风_google_annual_report",
+      "title": "Google 年度工作汇报",
+      "description": "谷歌风格年度报告模板",
+      "icon": "🔍",
+      "color": "#4285f4",
+      "style": "consulting",
+      "styleName": "Google 品牌风格",
+      "desc": "Google 2025 年度工作汇报模板，融合 Google 设计语言与咨询专业度。",
+      "tags": [
+        "Google 色系",
+        "品牌一致",
+        "数据驱动"
+      ],
+      "isNew": false,
+      "folder": "ppt169_谷歌风_google_annual_report/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "年度报告"
+        },
+        {
+          "file": "slide_02_year_overview.svg",
+          "title": "年度概览",
+          "desc": "总览"
+        },
+        {
+          "file": "slide_03_projects_summary.svg",
+          "title": "项目汇总",
+          "desc": "项目"
+        },
+        {
+          "file": "slide_04_project_smart_scheduler.svg",
+          "title": "智能调度器",
+          "desc": "核心项目"
+        },
+        {
+          "file": "slide_05_projects_other.svg",
+          "title": "其他项目",
+          "desc": "项目列表"
+        },
+        {
+          "file": "slide_06_technical_growth.svg",
+          "title": "技术成长",
+          "desc": "技术"
+        },
+        {
+          "file": "slide_07_team_collaboration.svg",
+          "title": "团队协作",
+          "desc": "协作"
+        },
+        {
+          "file": "slide_08_impact_dashboard.svg",
+          "title": "影响仪表盘",
+          "desc": "成果"
+        },
+        {
+          "file": "slide_09_future_plans.svg",
+          "title": "未来计划",
+          "desc": "规划"
+        },
+        {
+          "file": "slide_10_thanks.svg",
+          "title": "感谢",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_通用灵活+代码_debug六步法",
+      "title": "Debug 六步法",
+      "description": "代码调试的系统方法论",
+      "icon": "🐛",
+      "color": "#ef4444",
+      "style": "general",
+      "styleName": "通用灵活 + 代码",
+      "desc": "深色科技风格，适合技术团队内部培训分享。",
+      "tags": [
+        "GitHub 暗色",
+        "程序员",
+        "技术培训"
+      ],
+      "isNew": false,
+      "folder": "ppt169_通用灵活+代码_debug六步法/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "调试方法"
+        },
+        {
+          "file": "slide_02_core_concept.svg",
+          "title": "核心概念",
+          "desc": "概述"
+        },
+        {
+          "file": "slide_03_step1_clarify_flow.svg",
+          "title": "第一步：理清流程",
+          "desc": "流程分析"
+        },
+        {
+          "file": "slide_04_step2_locate_bug.svg",
+          "title": "第二步：定位Bug",
+          "desc": "定位问题"
+        },
+        {
+          "file": "slide_05_step3_elimination.svg",
+          "title": "第三步：排除法",
+          "desc": "排除"
+        },
+        {
+          "file": "slide_06_step4_verify.svg",
+          "title": "第四步：验证",
+          "desc": "验证修复"
+        },
+        {
+          "file": "slide_07_step5_side_effects.svg",
+          "title": "第五步：副作用",
+          "desc": "检查影响"
+        },
+        {
+          "file": "slide_08_step6_test_document.svg",
+          "title": "第六步：测试文档",
+          "desc": "记录"
+        },
+        {
+          "file": "slide_09_summary.svg",
+          "title": "总结",
+          "desc": "回顾"
+        },
+        {
+          "file": "slide_10_end.svg",
+          "title": "结束",
+          "desc": "结束页"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_general_dark_tech_claude_code_auto_mode",
+      "title": "Claude Code Auto Mode",
+      "description": "Anthropic AI safety engineering — classifier-based permissions",
+      "icon": "🛡️",
+      "color": "#D4A574",
+      "style": "general",
+      "styleName": "General + Dark Tech",
+      "desc": "Based on Anthropic's engineering blog — classifier-based permission system for safer autonomous coding.",
+      "tags": [
+        "Dark Theme",
+        "AI Safety",
+        "Anthropic"
+      ],
+      "isNew": true,
+      "folder": "ppt169_general_dark_tech_claude_code_auto_mode/svg_final",
+      "cover": "01_cover.svg",
+      "slides": [
+        {
+          "file": "01_cover.svg",
+          "title": "Cover",
+          "desc": "Claude Code Auto Mode"
+        },
+        {
+          "file": "02_approval_fatigue.svg",
+          "title": "Approval Fatigue",
+          "desc": "93% approval rate problem"
+        },
+        {
+          "file": "03_auto_mode.svg",
+          "title": "Auto Mode",
+          "desc": "Classifier-delegated approvals"
+        },
+        {
+          "file": "04_architecture.svg",
+          "title": "Architecture",
+          "desc": "Two layers of defense"
+        },
+        {
+          "file": "05_threat_model.svg",
+          "title": "Threat Model",
+          "desc": "Four threat categories"
+        },
+        {
+          "file": "06_permissions.svg",
+          "title": "Permissions",
+          "desc": "Three-tier permission system"
+        },
+        {
+          "file": "07_classifier.svg",
+          "title": "Classifier",
+          "desc": "Reasoning-blind by design"
+        },
+        {
+          "file": "08_results.svg",
+          "title": "Results",
+          "desc": "Evaluation metrics"
+        },
+        {
+          "file": "09_design_decisions.svg",
+          "title": "Design Decisions",
+          "desc": "Key engineering choices"
+        },
+        {
+          "file": "10_closing.svg",
+          "title": "Closing",
+          "desc": "Substantially safer"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_通过灵活+代码_三大AI编程神器横向对比",
+      "title": "三大 AI 编程神器横向对比",
+      "description": "AI编程工具横向对比分析",
+      "icon": "⚡",
+      "color": "#7c3aed",
+      "style": "general",
+      "styleName": "通用灵活",
+      "desc": "OpenSpec vs ZCF vs Spec Kit 三大 AI 编程工具横向对比分析。",
+      "tags": [
+        "技术评测",
+        "科技蓝",
+        "AI 工具"
+      ],
+      "isNew": false,
+      "folder": "ppt169_通过灵活+代码_三大AI编程神器横向对比/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "AI工具对比"
+        },
+        {
+          "file": "slide_02_positioning.svg",
+          "title": "定位",
+          "desc": "工具定位"
+        },
+        {
+          "file": "slide_03_speckit.svg",
+          "title": "Speckit",
+          "desc": "工具介绍"
+        },
+        {
+          "file": "slide_04_openspec.svg",
+          "title": "OpenSpec",
+          "desc": "工具介绍"
+        },
+        {
+          "file": "slide_05_zcf.svg",
+          "title": "ZCF",
+          "desc": "工具介绍"
+        },
+        {
+          "file": "slide_06_comparison.svg",
+          "title": "对比",
+          "desc": "横向对比"
+        },
+        {
+          "file": "slide_07_efficiency.svg",
+          "title": "效率",
+          "desc": "效率分析"
+        },
+        {
+          "file": "slide_08_combination.svg",
+          "title": "组合使用",
+          "desc": "最佳实践"
+        },
+        {
+          "file": "slide_09_decision.svg",
+          "title": "决策",
+          "desc": "选择建议"
+        },
+        {
+          "file": "slide_10_table.svg",
+          "title": "对比表",
+          "desc": "汇总表"
+        },
+        {
+          "file": "slide_11_summary.svg",
+          "title": "总结",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_易理风_地山谦卦深度研究",
+      "title": "地山谦卦深度研究",
+      "description": "易经谦卦的深度解读与应用",
+      "icon": "☯️",
+      "color": "#78716c",
+      "style": "creative",
+      "styleName": "易理玄学风格",
+      "desc": "采用「阴阳爻变」设计语言，从象数理占到现代哲学的多维同构。",
+      "tags": [
+        "易经",
+        "阴阳对立",
+        "六爻结构"
+      ],
+      "isNew": false,
+      "folder": "ppt169_易理风_地山谦卦深度研究/svg_final",
+      "cover": "P01_封面.svg",
+      "slides": [
+        {
+          "file": "P01_封面.svg",
+          "title": "封面",
+          "desc": "谦卦研究"
+        },
+        {
+          "file": "P02_目录导航.svg",
+          "title": "目录导航",
+          "desc": "内容概览"
+        },
+        {
+          "file": "P03_谦卦总览.svg",
+          "title": "谦卦总览",
+          "desc": "卦象概述"
+        },
+        {
+          "file": "P04_字源解构.svg",
+          "title": "字源解构",
+          "desc": "文字分析"
+        },
+        {
+          "file": "P05_卦画物理图景.svg",
+          "title": "卦画物理图景",
+          "desc": "卦画解读"
+        },
+        {
+          "file": "P06_天道与地道.svg",
+          "title": "天道与地道",
+          "desc": "天地之道"
+        },
+        {
+          "file": "P07_鬼神与人道.svg",
+          "title": "鬼神与人道",
+          "desc": "鬼神人道"
+        },
+        {
+          "file": "P08_六爻总览.svg",
+          "title": "六爻总览",
+          "desc": "爻辞概述"
+        },
+        {
+          "file": "P09_初六谦谦君子.svg",
+          "title": "初六谦谦君子",
+          "desc": "初爻"
+        },
+        {
+          "file": "P10_六二鸣谦贞吉.svg",
+          "title": "六二鸣谦贞吉",
+          "desc": "二爻"
+        },
+        {
+          "file": "P11_九三劳谦君子.svg",
+          "title": "九三劳谦君子",
+          "desc": "三爻"
+        },
+        {
+          "file": "P12_六四与六五.svg",
+          "title": "六四与六五",
+          "desc": "四五爻"
+        },
+        {
+          "file": "P13_上六鸣谦行师.svg",
+          "title": "上六鸣谦行师",
+          "desc": "上爻"
+        },
+        {
+          "file": "P14_综卦与错卦.svg",
+          "title": "综卦与错卦",
+          "desc": "综错卦"
+        },
+        {
+          "file": "P15_交互卦雷水解.svg",
+          "title": "交互卦雷水解",
+          "desc": "互卦"
+        },
+        {
+          "file": "P16_第五级领导力.svg",
+          "title": "第五级领导力",
+          "desc": "现代应用"
+        },
+        {
+          "file": "P17_达克效应与品牌管理.svg",
+          "title": "达克效应与品牌管理",
+          "desc": "商业应用"
+        },
+        {
+          "file": "P18_真谦与伪谦.svg",
+          "title": "真谦与伪谦",
+          "desc": "辨析"
+        },
+        {
+          "file": "P19_核心洞见.svg",
+          "title": "核心洞见",
+          "desc": "总结"
+        },
+        {
+          "file": "P20_感谢页.svg",
+          "title": "感谢页",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_禅意风_金刚经第一品研究",
+      "title": "金刚经第一品研究",
+      "description": "金刚般若波罗蜜经法会因由分",
+      "icon": "🪷",
+      "color": "#a78bfa",
+      "style": "creative",
+      "styleName": "禅意学术风格",
+      "desc": "页面布局如同禅画，以留白营造意境，暗示「空」的智慧。",
+      "tags": [
+        "禅意",
+        "水墨留白",
+        "般若思想"
+      ],
+      "isNew": false,
+      "folder": "ppt169_禅意风_金刚经第一品研究/svg_final",
+      "cover": "P01_封面.svg",
+      "slides": [
+        {
+          "file": "P01_封面.svg",
+          "title": "封面",
+          "desc": "金刚经研究"
+        },
+        {
+          "file": "P02_目录导航.svg",
+          "title": "目录导航",
+          "desc": "内容概览"
+        },
+        {
+          "file": "P03_金刚经概述.svg",
+          "title": "金刚经概述",
+          "desc": "经典介绍"
+        },
+        {
+          "file": "P04_第一品研究意义.svg",
+          "title": "第一品研究意义",
+          "desc": "研究价值"
+        },
+        {
+          "file": "P05_场景与人物.svg",
+          "title": "场景与人物",
+          "desc": "背景"
+        },
+        {
+          "file": "P06_佛陀日常行为.svg",
+          "title": "佛陀日常行为",
+          "desc": "威仪"
+        },
+        {
+          "file": "P07_隐含的教法.svg",
+          "title": "隐含的教法",
+          "desc": "深意"
+        },
+        {
+          "file": "P08_序幕功能.svg",
+          "title": "序幕功能",
+          "desc": "结构分析"
+        },
+        {
+          "file": "P09_道在平常.svg",
+          "title": "道在平常",
+          "desc": "禅意"
+        },
+        {
+          "file": "P10_译本比较.svg",
+          "title": "译本比较",
+          "desc": "版本对比"
+        },
+        {
+          "file": "P11_注疏流变.svg",
+          "title": "注疏流变",
+          "desc": "历史演变"
+        },
+        {
+          "file": "P12_禅宗视角.svg",
+          "title": "禅宗视角",
+          "desc": "禅解"
+        },
+        {
+          "file": "P13_研究发现.svg",
+          "title": "研究发现",
+          "desc": "洞见"
+        },
+        {
+          "file": "P14_深层启示.svg",
+          "title": "深层启示",
+          "desc": "启发"
+        },
+        {
+          "file": "P15_结语.svg",
+          "title": "结语",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "ppt169_像素风_git_introduction",
+      "title": "Git 入门完全指南",
+      "description": "像素风格的 Git 版本控制入门",
+      "icon": "👾",
+      "color": "#22c55e",
+      "style": "creative",
+      "styleName": "像素复古游戏风",
+      "desc": "复古游戏像素风格，用「存档点」隐喻版本控制概念。",
+      "tags": [
+        "像素风",
+        "霓虹系",
+        "游戏感"
+      ],
+      "isNew": false,
+      "folder": "ppt169_像素风_git_introduction/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "Git入门"
+        },
+        {
+          "file": "slide_02_navigation.svg",
+          "title": "导航",
+          "desc": "目录"
+        },
+        {
+          "file": "slide_03_what_is_git.svg",
+          "title": "什么是Git",
+          "desc": "定义"
+        },
+        {
+          "file": "slide_04_vcs_features.svg",
+          "title": "VCS特性",
+          "desc": "版本控制"
+        },
+        {
+          "file": "slide_05_save_point.svg",
+          "title": "存档点",
+          "desc": "快照"
+        },
+        {
+          "file": "slide_06_version_hell.svg",
+          "title": "版本地狱",
+          "desc": "问题"
+        },
+        {
+          "file": "slide_07_workflow.svg",
+          "title": "工作流程",
+          "desc": "流程"
+        },
+        {
+          "file": "slide_08_history.svg",
+          "title": "历史",
+          "desc": "Git历史"
+        },
+        {
+          "file": "slide_09_git_vs_github.svg",
+          "title": "Git vs GitHub",
+          "desc": "对比"
+        },
+        {
+          "file": "slide_10_summary.svg",
+          "title": "总结",
+          "desc": "结束"
+        }
+      ]
+    },
+    {
+      "id": "demo_project_intro_ppt169_20251211",
+      "title": "PPT Master 官方介绍",
+      "description": "项目演示与功能介绍",
+      "icon": "🎯",
+      "color": "#f97316",
+      "style": "creative",
+      "styleName": "清新科技风格",
+      "desc": "PPT Master 项目官方介绍，展示系统架构与四大角色协作机制。",
+      "tags": [
+        "官方介绍",
+        "靛蓝渐变",
+        "系统架构"
+      ],
+      "isNew": false,
+      "folder": "demo_project_intro_ppt169_20251211/svg_final",
+      "cover": "slide_01_cover.svg",
+      "slides": [
+        {
+          "file": "slide_01_cover.svg",
+          "title": "封面",
+          "desc": "项目介绍"
+        },
+        {
+          "file": "slide_02_pain_points.svg",
+          "title": "痛点",
+          "desc": "问题背景"
+        },
+        {
+          "file": "slide_03_solution.svg",
+          "title": "解决方案",
+          "desc": "方案介绍"
+        },
+        {
+          "file": "slide_04_architecture.svg",
+          "title": "架构",
+          "desc": "系统架构"
+        },
+        {
+          "file": "slide_05_roles.svg",
+          "title": "角色",
+          "desc": "AI角色"
+        },
+        {
+          "file": "slide_06_features.svg",
+          "title": "功能",
+          "desc": "核心功能"
+        },
+        {
+          "file": "slide_07_formats.svg",
+          "title": "格式",
+          "desc": "支持格式"
+        },
+        {
+          "file": "slide_08_tools.svg",
+          "title": "工具",
+          "desc": "配套工具"
+        },
+        {
+          "file": "slide_09_quickstart.svg",
+          "title": "快速开始",
+          "desc": "入门指南"
+        },
+        {
+          "file": "slide_10_cta.svg",
+          "title": "行动号召",
+          "desc": "结束"
+        }
+      ]
+    }
+  ]
+}

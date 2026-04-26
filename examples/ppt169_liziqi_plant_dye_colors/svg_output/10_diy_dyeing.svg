@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="stepGrad10" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C99E62"/>
+      <stop offset="50%" stop-color="#6B9AAE"/>
+      <stop offset="100%" stop-color="#6F8F75"/>
+    </linearGradient>
+    <filter id="imgShadow10" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="header">
+    <text x="60" y="50" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="3">CHAPTER 04 · 亲手植物染</text>
+    <line x1="60" y1="62" x2="290" y2="62" stroke="#C99E62" stroke-width="2"/>
+    <text x="60" y="108" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">自我疗愈 · 与自然对话</text>
+    <text x="60" y="140" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">基础的植物染并不复杂 · 在家便可尝试一次染色</text>
+  </g>
+
+  <g id="left-image" transform="translate(60,180)">
+    <rect x="-6" y="-6" width="372" height="372" fill="#EDE5D3" stroke="#C99E62" stroke-width="1"/>
+    <image href="../images/640_15.png" x="0" y="0" width="360" height="360" preserveAspectRatio="xMidYMid slice" filter="url(#imgShadow10)"/>
+    <rect x="-6" y="360" width="372" height="36" fill="#3A3530"/>
+    <text x="180" y="384" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#F7F2E8" letter-spacing="2">时间沉淀出自然质朴的美</text>
+  </g>
+
+  <g id="right-steps" transform="translate(480,190)">
+
+    <g transform="translate(0,0)">
+      <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#C99E62" stroke-width="3"/>
+      <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#C99E62">01</text>
+      <text x="76" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">烧一锅水</text>
+      <text x="76" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">清水入锅 · 煮沸待用</text>
+    </g>
+    <line x1="30" y1="62" x2="30" y2="88" stroke="#D7CEB9" stroke-width="2" stroke-dasharray="3,3"/>
+
+    <g transform="translate(0,90)">
+      <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#6B9AAE" stroke-width="3"/>
+      <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#6B9AAE">02</text>
+      <text x="76" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">投入染料</text>
+      <text x="76" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">植物染料入锅 · 与水相融</text>
+    </g>
+    <line x1="30" y1="152" x2="30" y2="178" stroke="#D7CEB9" stroke-width="2" stroke-dasharray="3,3"/>
+
+    <g transform="translate(0,180)">
+      <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#6F8F75" stroke-width="3"/>
+      <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#6F8F75">03</text>
+      <text x="76" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">熬制染液</text>
+      <text x="76" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">1-2 小时 · 滤出澄澈染液</text>
+    </g>
+    <line x1="30" y1="242" x2="30" y2="268" stroke="#D7CEB9" stroke-width="2" stroke-dasharray="3,3"/>
+
+    <g transform="translate(0,270)">
+      <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#B04A5C" stroke-width="3"/>
+      <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#B04A5C">04</text>
+      <text x="76" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">布料浸入</text>
+      <text x="76" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">布料入染液 · 吸附色彩</text>
+    </g>
+    <line x1="30" y1="332" x2="30" y2="358" stroke="#D7CEB9" stroke-width="2" stroke-dasharray="3,3"/>
+
+    <g transform="translate(0,360)">
+      <circle cx="30" cy="30" r="26" fill="#FFFFFF" stroke="#C99E62" stroke-width="3"/>
+      <text x="30" y="38" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#C99E62">05</text>
+      <text x="76" y="28" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" font-weight="bold">阳光固色</text>
+      <text x="76" y="52" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#7A7068">晒暖定色 · 用时间沉淀质朴</text>
+    </g>
+  </g>
+
+  <g id="side-technique" transform="translate(880,190)">
+    <rect x="0" y="0" width="340" height="440" rx="12" fill="#EDE5D3"/>
+    <text x="170" y="40" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" font-weight="bold" fill="#3A3530">进阶 · 叠色法</text>
+    <line x1="50" y1="60" x2="290" y2="60" stroke="#C99E62" stroke-width="1"/>
+
+    <g transform="translate(30,90)">
+      <use data-icon="tabler-filled/paint" x="0" y="0" width="24" height="24" fill="#6B9AAE"/>
+      <text x="36" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">媒染</text>
+      <text x="36" y="42" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">明矾 / 皂矾 / 蓝矾</text>
+    </g>
+
+    <g transform="translate(30,160)">
+      <use data-icon="tabler-filled/sparkles" x="0" y="0" width="24" height="24" fill="#C99E62"/>
+      <text x="36" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">复染</text>
+      <text x="36" y="42" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">多次入染 · 颜色加深</text>
+    </g>
+
+    <g transform="translate(30,230)">
+      <use data-icon="tabler-filled/droplet" x="0" y="0" width="24" height="24" fill="#6F8F75"/>
+      <text x="36" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">氧化还原</text>
+      <text x="36" y="42" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">蓝草染蓝的关键</text>
+    </g>
+
+    <g transform="translate(30,300)">
+      <use data-icon="tabler-filled/palette" x="0" y="0" width="24" height="24" fill="#B04A5C"/>
+      <text x="36" y="18" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">套染</text>
+      <text x="36" y="42" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">两色叠加 · 变化万千</text>
+    </g>
+
+    <rect x="30" y="360" width="280" height="60" rx="6" fill="#FFFFFF"/>
+    <text x="170" y="385" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#7A7068">每一次染色 · 独一无二</text>
+    <text x="170" y="407" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" font-style="italic">不完美的「瑕疵」· 皆为真意</text>
+  </g>
+
+  <g id="bottom-quote" transform="translate(60,650)">
+    <use data-icon="tabler-filled/heart" x="0" y="0" width="26" height="26" fill="#B04A5C"/>
+    <text x="38" y="20" font-family="KaiTi, STKaiti, Georgia, serif" font-size="17" fill="#3A3530" font-style="italic">紧张焦虑的情绪 · 渐渐消失不见 — 在这个过程中，你能看见一个安静自在的自己。</text>
+    <text x="1160" y="20" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">10 / 12</text>
+  </g>
+</svg>

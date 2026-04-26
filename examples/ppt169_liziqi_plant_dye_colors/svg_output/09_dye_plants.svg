@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topOverlay09" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F7F2E8" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#F7F2E8" stop-opacity="0.95"/>
+    </linearGradient>
+    <filter id="cardShadow09" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.15"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="#F7F2E8"/>
+
+  <g id="top-banner">
+    <image href="../images/640_14.png" x="0" y="0" width="1280" height="200" preserveAspectRatio="xMidYMid slice"/>
+    <rect x="0" y="0" width="1280" height="200" fill="url(#topOverlay09)"/>
+  </g>
+
+  <g id="header">
+    <text x="60" y="45" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#EDE5D3" letter-spacing="3">CHAPTER 04 · 草木为染</text>
+    <line x1="60" y1="57" x2="220" y2="57" stroke="#C99E62" stroke-width="2"/>
+  </g>
+
+  <g id="title-overlay">
+    <text x="60" y="148" font-family="KaiTi, STKaiti, Georgia, serif" font-size="38" font-weight="bold" fill="#3A3530" letter-spacing="3">染料植物 · 四色皆取自草木</text>
+    <text x="60" y="178" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#7A7068" letter-spacing="2">花果叶茎皆可入染 · 喜庆 · 高贵 · 高雅 · 神秘</text>
+  </g>
+
+  <g id="card-red" transform="translate(60,240)" filter="url(#cardShadow09)">
+    <rect x="0" y="0" width="270" height="380" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="270" height="100" rx="10" fill="#B04A5C"/>
+    <rect x="0" y="90" width="270" height="10" fill="#B04A5C"/>
+    <circle cx="40" cy="50" r="26" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="tabler-filled/flower" x="24" y="34" width="32" height="32" fill="#FFFFFF"/>
+    <text x="88" y="44" font-family="KaiTi, STKaiti, Georgia, serif" font-size="30" font-weight="bold" fill="#FFFFFF" letter-spacing="6">红</text>
+    <text x="88" y="72" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#FFFFFF" letter-spacing="3">喜庆之色 · RED</text>
+
+    <g transform="translate(24,140)">
+      <circle cx="6" cy="10" r="4" fill="#B04A5C"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">茜草 · 根部</text>
+    </g>
+    <text x="44" y="188" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">古法红染 · 最为经典</text>
+
+    <g transform="translate(24,220)">
+      <circle cx="6" cy="10" r="4" fill="#B04A5C"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">苏木 · 茎秆</text>
+    </g>
+    <text x="44" y="268" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">色相丰富 · 红至紫红</text>
+
+    <g transform="translate(24,300)">
+      <circle cx="6" cy="10" r="4" fill="#B04A5C"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">红花 · 花瓣</text>
+    </g>
+    <text x="44" y="348" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">染银红 · 与朱砂相配</text>
+  </g>
+
+  <g id="card-yellow" transform="translate(350,240)" filter="url(#cardShadow09)">
+    <rect x="0" y="0" width="270" height="380" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="270" height="100" rx="10" fill="#C99E62"/>
+    <rect x="0" y="90" width="270" height="10" fill="#C99E62"/>
+    <circle cx="40" cy="50" r="26" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="tabler-filled/sparkles" x="24" y="34" width="32" height="32" fill="#FFFFFF"/>
+    <text x="88" y="44" font-family="KaiTi, STKaiti, Georgia, serif" font-size="30" font-weight="bold" fill="#FFFFFF" letter-spacing="6">黄</text>
+    <text x="88" y="72" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#FFFFFF" letter-spacing="3">高贵之色 · YELLOW</text>
+
+    <g transform="translate(24,140)">
+      <circle cx="6" cy="10" r="4" fill="#C99E62"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">槐花 · 花蕾</text>
+    </g>
+    <text x="44" y="188" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">君子之黄 · 雅致柔和</text>
+
+    <g transform="translate(24,220)">
+      <circle cx="6" cy="10" r="4" fill="#C99E62"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">栀子 · 果实</text>
+    </g>
+    <text x="44" y="268" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">染金黄 · 古代食染两用</text>
+
+    <g transform="translate(24,300)">
+      <circle cx="6" cy="10" r="4" fill="#C99E62"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">姜黄 · 根茎</text>
+    </g>
+    <text x="44" y="348" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">深厚浓郁 · 汉服常用色</text>
+  </g>
+
+  <g id="card-blue" transform="translate(640,240)" filter="url(#cardShadow09)">
+    <rect x="0" y="0" width="270" height="380" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="270" height="100" rx="10" fill="#6B9AAE"/>
+    <rect x="0" y="90" width="270" height="10" fill="#6B9AAE"/>
+    <circle cx="40" cy="50" r="26" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="tabler-filled/droplet" x="24" y="34" width="32" height="32" fill="#FFFFFF"/>
+    <text x="88" y="44" font-family="KaiTi, STKaiti, Georgia, serif" font-size="30" font-weight="bold" fill="#FFFFFF" letter-spacing="6">蓝</text>
+    <text x="88" y="72" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#FFFFFF" letter-spacing="3">高雅之色 · BLUE</text>
+
+    <g transform="translate(24,140)">
+      <circle cx="6" cy="10" r="4" fill="#6B9AAE"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">蓝草 · 全株</text>
+    </g>
+    <text x="44" y="188" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">青出于蓝 · 土靛来源</text>
+
+    <g transform="translate(24,220)">
+      <circle cx="6" cy="10" r="4" fill="#6B9AAE"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">鼠李 · 叶茎</text>
+    </g>
+    <text x="44" y="268" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">色调沉静 · 淡蓝淡青</text>
+
+    <g transform="translate(24,300)">
+      <circle cx="6" cy="10" r="4" fill="#6B9AAE"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">明清蓝靛所</text>
+    </g>
+    <text x="44" y="348" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">专司蓝染 · 官营规模化</text>
+  </g>
+
+  <g id="card-black" transform="translate(930,240)" filter="url(#cardShadow09)">
+    <rect x="0" y="0" width="290" height="380" rx="10" fill="#FFFFFF"/>
+    <rect x="0" y="0" width="290" height="100" rx="10" fill="#3A3530"/>
+    <rect x="0" y="90" width="290" height="10" fill="#3A3530"/>
+    <circle cx="40" cy="50" r="26" fill="#FFFFFF" fill-opacity="0.2"/>
+    <use data-icon="tabler-filled/leaf" x="24" y="34" width="32" height="32" fill="#FFFFFF"/>
+    <text x="88" y="44" font-family="KaiTi, STKaiti, Georgia, serif" font-size="30" font-weight="bold" fill="#FFFFFF" letter-spacing="6">黑</text>
+    <text x="88" y="72" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#FFFFFF" letter-spacing="3">神秘之色 · BLACK</text>
+
+    <g transform="translate(24,140)">
+      <circle cx="6" cy="10" r="4" fill="#3A3530"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">胡桃 · 果壳</text>
+    </g>
+    <text x="44" y="188" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">墨色深沉 · 耐久不褪</text>
+
+    <g transform="translate(24,220)">
+      <circle cx="6" cy="10" r="4" fill="#3A3530"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">板栗 · 果壳</text>
+    </g>
+    <text x="44" y="268" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">黑中带棕 · 古朴厚重</text>
+
+    <g transform="translate(24,300)">
+      <circle cx="6" cy="10" r="4" fill="#3A3530"/>
+      <text x="20" y="15" font-family="KaiTi, STKaiti, Georgia, serif" font-size="18" fill="#3A3530" font-weight="bold">皂矾媒染</text>
+    </g>
+    <text x="44" y="348" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">配合使用 · 染色更黑更牢</text>
+  </g>
+
+  <g id="bottom-strip" transform="translate(60,660)">
+    <rect x="0" y="0" width="1160" height="32" rx="16" fill="#EDE5D3"/>
+    <text x="30" y="21" font-family="KaiTi, STKaiti, Georgia, serif" font-size="15" fill="#7A7068">茜草 · 苏木 · 红花 · 槐花 · 栀子 · 姜黄 · 蓝草 · 胡桃 · 板栗 …… 皆为古人所用</text>
+    <text x="1130" y="21" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">09 / 12</text>
+  </g>
+</svg>

@@ -1,0 +1,72 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="header">
+    <text x="72" y="92" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">建筑实践并不缺席</text>
+    <text x="72" y="121" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">从墓碑、校园、车站到战时住宅，她的建筑实践有持续可见的轨迹</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#D8CBB8" stroke-width="1.5"/>
+    <text x="1196" y="92" text-anchor="end" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">03</text>
+  </g>
+
+  <g id="timeline-band">
+    <line x1="124" y1="210" x2="1152" y2="210" stroke="#D8CBB8" stroke-width="4"/>
+    <line x1="124" y1="210" x2="890" y2="210" stroke="#A44A3F" stroke-width="4"/>
+
+    <g id="t1">
+      <circle cx="170" cy="210" r="12" fill="#A44A3F"/>
+      <text x="170" y="180" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">1929</text>
+      <text x="170" y="245" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">墓碑</text>
+    </g>
+    <g id="t2">
+      <circle cx="465" cy="210" r="12" fill="#A44A3F"/>
+      <text x="465" y="180" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">1929</text>
+      <text x="465" y="245" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">校园</text>
+    </g>
+    <g id="t3">
+      <circle cx="760" cy="210" r="12" fill="#A44A3F"/>
+      <text x="760" y="180" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">1932—1940</text>
+      <text x="760" y="245" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">持续实践</text>
+    </g>
+    <g id="t4">
+      <circle cx="1055" cy="210" r="12" fill="#6E7C80"/>
+      <text x="1055" y="180" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">1950s</text>
+      <text x="1055" y="245" text-anchor="middle" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#1F1B16">国家尺度</text>
+    </g>
+  </g>
+
+  <g id="cards-row">
+    <g id="card-1">
+      <rect x="72" y="302" width="352" height="310" rx="14" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <use data-icon="tabler-outline/building" x="96" y="328" width="24" height="24" fill="#A44A3F"/>
+      <text x="132" y="346" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">归国起点</text>
+      <text x="96" y="388" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">梁启超墓碑</text>
+      <text x="96" y="417" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">学成归国后首个明确作品，说明她并非没有进入设计实践。</text>
+      <text x="96" y="468" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">石头楼等校园项目</text>
+      <text x="96" y="497" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">在事务所协作中，她进入现代校园建筑语境。</text>
+      <text x="96" y="566" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">关键词：归国、事务所、起步作品</text>
+    </g>
+
+    <g id="card-2">
+      <rect x="464" y="302" width="352" height="310" rx="14" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.5"/>
+      <use data-icon="tabler-outline/train" x="488" y="328" width="24" height="24" fill="#A44A3F"/>
+      <text x="524" y="346" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">公共建筑尺度</text>
+      <text x="488" y="388" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">吉海铁路总站</text>
+      <text x="488" y="417" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">哥特式站房与“雄狮初醒”的国家象征并置，体现公共建筑的表达意识。</text>
+      <text x="488" y="468" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">不是“作品数量”，而是“实践条件”问题</text>
+      <text x="488" y="497" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">教育、研究、战乱与家庭责任共同压缩了可落成作品数量。</text>
+      <text x="488" y="566" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">关键词：车站、象征、公共性</text>
+    </g>
+
+    <g id="card-3">
+      <rect x="856" y="302" width="352" height="310" rx="14" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <use data-icon="tabler-outline/timeline" x="880" y="328" width="24" height="24" fill="#A44A3F"/>
+      <text x="916" y="346" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">持续延伸</text>
+      <text x="880" y="388" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">北大、映秋院、西南联大、昆明自宅</text>
+      <text x="880" y="417" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">这些项目共同说明：她从未退出建筑实践，而是在更艰难的条件下继续回应具体问题。</text>
+      <text x="880" y="468" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#1F1B16">实践最终延伸到国家纪念建筑</text>
+      <text x="880" y="497" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">她的建筑工作，后来进入了更大的国家空间尺度。</text>
+      <text x="880" y="566" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">关键词：战时、持续性、转向国家层面</text>
+    </g>
+  </g>
+</svg>

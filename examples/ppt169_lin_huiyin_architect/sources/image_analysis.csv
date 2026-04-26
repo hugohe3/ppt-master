@@ -1,0 +1,30 @@
+No,Filename,Width,Height,AspectRatio,SizeKB,Category,LayoutType,ImageArea,TextArea
+1,640.jpg,1080,633,1.71,151.8,Wide landscape,left-right,812x476,328x600
+2,640.png,640,703,0.91,797.9,Near square,left-right,546x600,594x600
+3,640_1.jpg,449,634,0.71,38.1,Portrait,left-right,425x600,715x600
+4,640_1.png,640,429,1.49,494.8,Standard landscape,left-right,812x544,328x600
+5,640_10.png,1080,712,1.52,1166.3,Wide landscape,left-right,812x535,328x600
+6,640_11.png,1080,796,1.36,1109.4,Standard landscape,left-right,814x600,326x600
+7,640_12.png,1080,502,2.15,619.8,Ultra-wide,left-right,812x377,328x600
+8,640_13.png,960,1280,0.75,1393.6,Portrait,left-right,450x600,690x600
+9,640_14.png,1000,710,1.41,467.5,Standard landscape,left-right,845x600,295x600
+10,640_15.png,1080,810,1.33,822.9,Standard landscape,left-right,800x600,340x600
+11,640_16.png,1014,807,1.26,240.5,Standard landscape,left-right,754x600,386x600
+12,640_17.png,1080,676,1.60,826.1,Wide landscape,left-right,812x508,328x600
+13,640_18.png,1080,1145,0.94,971.6,Near square,left-right,566x600,574x600
+14,640_19.png,1056,1080,0.98,1140.6,Near square,left-right,587x600,553x600
+15,640_2.jpg,800,800,1.00,88.7,Near square,left-right,600x600,540x600
+16,640_2.png,1080,675,1.60,322.4,Wide landscape,left-right,812x508,328x600
+17,640_20.png,857,804,1.07,465.4,Near square,left-right,640x600,500x600
+18,640_21.png,525,686,0.77,327.3,Portrait,left-right,459x600,681x600
+19,640_22.png,640,640,1.00,130.7,Near square,left-right,600x600,540x600
+20,640_3.jpg,1080,801,1.35,124.7,Standard landscape,left-right,809x600,331x600
+21,640_3.png,670,346,1.94,301.3,Wide landscape,left-right,812x419,328x600
+22,640_4.jpg,1080,801,1.35,95.3,Standard landscape,left-right,809x600,331x600
+23,640_4.png,1080,608,1.78,1484.1,Wide landscape,left-right,812x457,328x600
+24,640_5.jpg,1080,801,1.35,132.9,Standard landscape,left-right,809x600,331x600
+25,640_5.png,745,414,1.80,275.5,Wide landscape,left-right,812x451,328x600
+26,640_6.png,792,606,1.31,771.3,Standard landscape,left-right,784x600,356x600
+27,640_7.png,709,500,1.42,285.0,Standard landscape,left-right,851x600,289x600
+28,640_8.png,1080,783,1.38,1457.2,Standard landscape,left-right,828x600,312x600
+29,640_9.png,690,367,1.88,672.1,Wide landscape,left-right,812x432,328x600

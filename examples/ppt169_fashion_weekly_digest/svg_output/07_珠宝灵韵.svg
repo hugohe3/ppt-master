@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <clipPath id="leftImg">
+      <rect x="50" y="120" width="560" height="310" rx="10"/>
+    </clipPath>
+    <clipPath id="rightImg">
+      <rect x="670" y="120" width="300" height="420" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520"/>
+
+  <!-- Page title -->
+  <text x="640" y="85" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">珠宝新境 · 法式灵韵</text>
+  <text x="640" y="105" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="2">VHERNIER × CELINE</text>
+
+  <!-- Vertical divider -->
+  <rect x="635" y="120" width="1" height="530" fill="#2A2520"/>
+
+  <!-- LEFT: Vhernier -->
+  <rect x="50" y="120" width="560" height="310" rx="10" fill="#1A1A1A"/>
+  <image href="../images/vhernier_jewelry.jpg" x="50" y="120" width="560" height="310" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImg)"/>
+
+  <use data-icon="phosphor-duotone/diamond" x="50" y="450" width="26" height="26" fill="#C9A96E"/>
+  <text x="84" y="470" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">Vhernier</text>
+  <text x="190" y="470" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">意大利高级珠宝</text>
+
+  <rect x="50" y="485" width="560" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="50" y="515">正式进驻中国内地市场</tspan>
+    <tspan x="50" dy="25">北京王府半岛 · 上海半岛双店同步开幕</tspan>
+    <tspan x="50" dy="25">创立于 1984 年，米兰纯粹设计为核心</tspan>
+    <tspan x="50" dy="25">雕塑感造型 · 精湛意大利手工 · 黄金标志性材质</tspan>
+  </text>
+
+  <!-- RIGHT: CELINE -->
+  <rect x="670" y="120" width="300" height="420" rx="10" fill="#1A1A1A"/>
+  <image href="../images/celine_summer.jpg" x="670" y="120" width="300" height="420" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImg)"/>
+
+  <!-- CELINE text right of image -->
+  <use data-icon="phosphor-duotone/sparkle" x="990" y="130" width="26" height="26" fill="#C9A96E"/>
+  <text x="990" y="185" font-family="Georgia, SimSun, serif" font-size="20" fill="#E8D5B5" font-weight="bold">CELINE</text>
+  <text x="990" y="210" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690">Été 夏日系列</text>
+
+  <rect x="990" y="225" width="240" height="1" fill="#2A2520"/>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#F5F0EB">
+    <tspan x="990" y="255">Été CELINE 广告大片</tspan>
+    <tspan x="990" dy="25">灵感源自海滨假日</tspan>
+    <tspan x="990" dy="25">尽显法式海岸</tspan>
+    <tspan x="990" dy="25">独有的随性魅力</tspan>
+  </text>
+
+  <rect x="990" y="380" width="240" height="40" rx="6" fill="#1A1A1A"/>
+  <rect x="990" y="380" width="3" height="40" fill="#C9A96E"/>
+  <text x="1010" y="405" font-family="Georgia, SimSun, serif" font-size="13" fill="#E8D5B5" font-style="italic">致敬法式生活美学</text>
+
+  <!-- Footer -->
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520"/>
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">07 / 16</text>
+</svg>

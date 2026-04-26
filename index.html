@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPT Master — AI generates natively editable PPTX from any document</title>
-    <meta name="description" content="Drop in a PDF, DOCX, URL, or Markdown — get back a natively editable PowerPoint with real shapes, not images. Open source, 20 templates, 15 live examples.">
+    <meta name="description" content="Drop in a PDF, DOCX, URL, or Markdown — get back a natively editable PowerPoint with real shapes, not images. Open source templates and live examples.">
     <meta property="og:title" content="PPT Master — AI generates natively editable PPTX">
     <meta property="og:description" content="Drop in any document, get back a natively editable PowerPoint with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.">
     <meta property="og:image" content="https://hugohe3.github.io/ppt-master/docs/assets/screenshots/preview_tech_claude_plans.png">
@@ -396,7 +396,8 @@
 
         .tag.style-consulting,
         .tag.style-general,
-        .tag.style-creative {
+        .tag.style-creative,
+        .tag.style-editorial {
             background: rgba(91, 141, 239, 0.08);
             color: var(--primary-light);
             border-color: rgba(91, 141, 239, 0.22);
@@ -513,15 +514,15 @@
             </div>
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-value">15</div>
+                    <div class="stat-value" id="examples-count">...</div>
                     <div class="stat-label">Examples</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">228</div>
+                    <div class="stat-value" id="pages-count">...</div>
                     <div class="stat-label">Pages</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">20</div>
+                    <div class="stat-value" id="templates-count">...</div>
                     <div class="stat-label">Templates</div>
                 </div>
             </div>
@@ -534,6 +535,7 @@
             <button class="nav-btn" data-filter="consulting">Consulting</button>
             <button class="nav-btn" data-filter="general">General</button>
             <button class="nav-btn" data-filter="creative">Creative</button>
+            <button class="nav-btn" data-filter="editorial">Editorial</button>
         </div>
     </nav>
 
@@ -554,174 +556,40 @@
     </footer>
 
     <script>
-        // Project data
-        const projects = [
-            {
-                id: 'ppt169_顶级咨询风_心理治疗中的依恋',
-                title: '心理治疗中的依恋',
-                pages: 32,
-                style: 'consulting',
-                styleName: '顶级咨询风格',
-                desc: '螺旋上升结构，从 Bowlby → Ainsworth → Main → Fonagy 的理论演进，到临床实践的应用深化。',
-                tags: ['MBB 级', '心理学', '专业蓝系'],
-                isNew: false,
-                cover: 'P01_封面.svg'
-            },
-            {
-                id: 'ppt169_顶级咨询风_重庆市区域报告_ppt169_20251213',
-                title: '重庆市区域报告',
-                pages: 20,
-                style: 'consulting',
-                styleName: '顶级咨询风格',
-                desc: '基于企业预警通数据，全面分析重庆市经济、财政债务、城投、银行业等七大模块。',
-                tags: ['MBB 级', '政务财政', '数据驱动'],
-                isNew: true,
-                cover: 'P01_封面.svg'
-            },
-            {
-                id: 'ppt169_顶级咨询风_甘孜州经济财政分析',
-                title: '甘孜州经济财政分析',
-                pages: 17,
-                style: 'consulting',
-                styleName: '顶级咨询风格',
-                desc: '基于 2024 年甘孜州决算数据，涵盖 GDP、财政收支、政府债务等多维分析。',
-                tags: ['MBB 级', '政务蓝', '藏区文化'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_顶级咨询风_构建有效AI代理_Anthropic',
-                title: '构建有效 AI 代理',
-                pages: 15,
-                style: 'consulting',
-                styleName: '顶级咨询风格',
-                desc: '基于 Anthropic 官方博客，涵盖 Workflows、Agents、工具设计原则等。',
-                tags: ['MBB 级', 'AI/LLM', 'Anthropic'],
-                isNew: false,
-                cover: 'P01_Cover.svg'
-            },
-            {
-                id: 'ppt169_高端咨询风_南欧江水电站战略评估',
-                title: '南欧江水电站战略评估',
-                pages: 20,
-                style: 'consulting',
-                styleName: '高端咨询风格',
-                desc: '老挝南欧江梯级水电站项目、主权债务危机与仲裁案全景分析。',
-                tags: ['战略评估', '湄公河色系', '流域危机'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_高端咨询风_汽车认证五年战略规划',
-                title: '汽车认证五年战略规划',
-                pages: 20,
-                style: 'consulting',
-                styleName: '高端咨询风格',
-                desc: '汽车及零部件领域自愿性产品认证 2026-2030 五年战略规划。',
-                tags: ['战略规划', '新能源', '绿色低碳'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_麦肯锡风_kimsoong_customer_loyalty',
-                title: '客户忠诚度计划分析',
-                pages: 8,
-                style: 'consulting',
-                styleName: '麦肯锡风格',
-                desc: '展示麦肯锡经典的结构化思维与图表矩阵设计。',
-                tags: ['McKinsey', 'MECE 原则', '数据驱动'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_谷歌风_google_annual_report',
-                title: 'Google 年度工作汇报',
-                pages: 10,
-                style: 'consulting',
-                styleName: 'Google 品牌风格',
-                desc: 'Google 2025 年度工作汇报模板，融合 Google 设计语言与咨询专业度。',
-                tags: ['Google 色系', '品牌一致', '数据驱动'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_通用灵活+代码_debug六步法',
-                title: 'Debug 六步法',
-                pages: 10,
-                style: 'general',
-                styleName: '通用灵活 + 代码',
-                desc: '深色科技风格，适合技术团队内部培训分享。',
-                tags: ['GitHub 暗色', '程序员', '技术培训'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_general_dark_tech_claude_code_auto_mode',
-                title: 'Claude Code Auto Mode',
-                pages: 10,
-                style: 'general',
-                styleName: 'General + Dark Tech',
-                desc: 'Based on Anthropic\'s engineering blog — classifier-based permission system for safer autonomous coding.',
-                tags: ['Dark Theme', 'AI Safety', 'Anthropic'],
-                isNew: true,
-                cover: '01_cover.svg'
-            },
-            {
-                id: 'ppt169_通过灵活+代码_三大AI编程神器横向对比',
-                title: '三大 AI 编程神器横向对比',
-                pages: 11,
-                style: 'general',
-                styleName: '通用灵活',
-                desc: 'OpenSpec vs ZCF vs Spec Kit 三大 AI 编程工具横向对比分析。',
-                tags: ['技术评测', '科技蓝', 'AI 工具'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'ppt169_易理风_地山谦卦深度研究',
-                title: '地山谦卦深度研究',
-                pages: 20,
-                style: 'creative',
-                styleName: '易理玄学风格',
-                desc: '采用「阴阳爻变」设计语言，从象数理占到现代哲学的多维同构。',
-                tags: ['易经', '阴阳对立', '六爻结构'],
-                isNew: false,
-                cover: 'P01_封面.svg'
-            },
-            {
-                id: 'ppt169_禅意风_金刚经第一品研究',
-                title: '金刚经第一品研究',
-                pages: 15,
-                style: 'creative',
-                styleName: '禅意学术风格',
-                desc: '页面布局如同禅画，以留白营造意境，暗示「空」的智慧。',
-                tags: ['禅意', '水墨留白', '般若思想'],
-                isNew: false,
-                cover: 'P01_封面.svg'
-            },
-            {
-                id: 'ppt169_像素风_git_introduction',
-                title: 'Git 入门完全指南',
-                pages: 10,
-                style: 'creative',
-                styleName: '像素复古游戏风',
-                desc: '复古游戏像素风格，用「存档点」隐喻版本控制概念。',
-                tags: ['像素风', '霓虹系', '游戏感'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
-            },
-            {
-                id: 'demo_project_intro_ppt169_20251211',
-                title: 'PPT Master 官方介绍',
-                pages: 10,
-                style: 'creative',
-                styleName: '清新科技风格',
-                desc: 'PPT Master 项目官方介绍，展示系统架构与四大角色协作机制。',
-                tags: ['官方介绍', '靛蓝渐变', '系统架构'],
-                isNew: false,
-                cover: 'slide_01_cover.svg'
+        const EXAMPLES_DATA_URL = 'examples/examples.json';
+        let projects = [];
+        let activeFilter = 'all';
+
+        async function initProjects() {
+            try {
+                const data = await loadExamplesData();
+                projects = data.projects || [];
+                updateStats(data.stats);
+                renderProjects(activeFilter);
+            } catch (error) {
+                showLoadError(error);
             }
-        ];
+        }
+
+        async function loadExamplesData() {
+            const response = await fetch(EXAMPLES_DATA_URL, { cache: 'no-cache' });
+            if (!response.ok) {
+                throw new Error(`Failed to load ${EXAMPLES_DATA_URL}: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        function updateStats(stats = {}) {
+            document.getElementById('examples-count').textContent = stats.examples ?? projects.length;
+            document.getElementById('pages-count').textContent = stats.pages ?? projects.reduce((sum, project) => sum + (project.slides?.length || 0), 0);
+            document.getElementById('templates-count').textContent = stats.templates ?? '...';
+        }
+
+        function showLoadError(error) {
+            console.error(error);
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '<div class="project-card"><div class="card-content"><h3 class="card-title">Unable to load examples</h3><p class="card-desc">Start a local web server or check examples/examples.json.</p></div></div>';
+        }
 
         // Render projects
         function renderProjects(filter = 'all') {
@@ -739,11 +607,12 @@
                     window.location.href = `viewer.html?project=${encodeURIComponent(project.id)}`;
                 };
 
-                const styleClass = project.style === 'consulting' ? 'style-consulting'
-                    : project.style === 'general' ? 'style-general'
-                        : 'style-creative';
-
-                const coverUrl = encodeURI(`examples/${project.id}/svg_final/${project.cover}`);
+                const styleClass = `style-${project.style || 'general'}`;
+                const tags = project.tags || [];
+                const pages = project.slides?.length || 0;
+                const cover = project.cover || project.slides?.[0]?.file || '';
+                const folder = project.folder || `${project.id}/svg_final`;
+                const coverUrl = encodeURI(`examples/${folder}/${cover}`);
                 const img = document.createElement('img');
                 img.src = coverUrl;
                 img.alt = project.title;
@@ -759,14 +628,14 @@
                     <div class="card-content">
                         <h3 class="card-title">${project.title}</h3>
                         <div class="card-meta">
-                            <span>${project.pages} pages</span>
+                            <span>${pages} pages</span>
                             <span>·</span>
                             <span>${project.styleName}</span>
                         </div>
                         <p class="card-desc">${project.desc}</p>
                         <div class="card-tags">
                             <span class="tag ${styleClass}">${project.styleName}</span>
-                            ${project.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                            ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
                         </div>
                     </div>
                 `;
@@ -784,12 +653,13 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                renderProjects(btn.dataset.filter);
+                activeFilter = btn.dataset.filter;
+                renderProjects(activeFilter);
             });
         });
 
         // Initial render
-        renderProjects();
+        initProjects();
     </script>
 </body>
 

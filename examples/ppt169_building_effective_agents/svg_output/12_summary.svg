@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow1" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="numberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4845A"/>
+      <stop offset="100%" stop-color="#E8B87D"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+  <rect width="1280" height="720" fill="url(#bgGlow1)"/>
+
+  <!-- Decorative rings -->
+  <circle cx="180" cy="600" r="70" fill="none" stroke="#D4845A" stroke-opacity="0.06" stroke-width="1"/>
+  <circle cx="1100" cy="140" r="90" fill="none" stroke="#5B9BD5" stroke-opacity="0.05" stroke-width="1"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <text x="640" y="80" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="bold" fill="#E8E8EC">Three Core Principles</text>
+    <rect x="570" y="95" width="140" height="4" rx="2" fill="url(#numberGrad)"/>
+  </g>
+
+  <!-- Three principle cards — horizontal -->
+  <!-- Principle 1: Simplicity -->
+  <g id="principle-1">
+    <rect x="60" y="140" width="370" height="310" rx="14" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <circle cx="245" cy="210" r="40" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1.5" stroke-opacity="0.4"/>
+    <text x="245" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#D4845A">1</text>
+
+    <use data-icon="chunk/star" x="221" y="268" width="48" height="48" fill="#D4845A"/>
+    <text x="245" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">Simplicity</text>
+    <text x="245" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Maintain simplicity in your</text>
+    <text x="245" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">agent's design. Build the right</text>
+    <text x="245" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">system, not the most sophisticated.</text>
+  </g>
+
+  <!-- Principle 2: Transparency -->
+  <g id="principle-2">
+    <rect x="455" y="140" width="370" height="310" rx="14" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <circle cx="640" cy="210" r="40" fill="#5B9BD5" fill-opacity="0.12" stroke="#5B9BD5" stroke-width="1.5" stroke-opacity="0.4"/>
+    <text x="640" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#5B9BD5">2</text>
+
+    <use data-icon="chunk/eye" x="616" y="268" width="48" height="48" fill="#5B9BD5"/>
+    <text x="640" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">Transparency</text>
+    <text x="640" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Prioritize transparency by</text>
+    <text x="640" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">explicitly showing the agent's</text>
+    <text x="640" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">planning steps.</text>
+  </g>
+
+  <!-- Principle 3: ACI Design -->
+  <g id="principle-3">
+    <rect x="850" y="140" width="370" height="310" rx="14" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <circle cx="1035" cy="210" r="40" fill="#E8B87D" fill-opacity="0.12" stroke="#E8B87D" stroke-width="1.5" stroke-opacity="0.4"/>
+    <text x="1035" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8B87D">3</text>
+
+    <use data-icon="chunk/toolbox" x="1011" y="268" width="48" height="48" fill="#E8B87D"/>
+    <text x="1035" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">ACI Design</text>
+    <text x="1035" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Craft your agent-computer</text>
+    <text x="1035" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">interface through thorough tool</text>
+    <text x="1035" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">documentation and testing.</text>
+  </g>
+
+  <!-- Bottom summary -->
+  <g id="summary">
+    <rect x="140" y="490" width="1000" height="100" rx="12" fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="640" y="533" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">Start with <tspan font-weight="bold" fill="#D4845A">simple prompts</tspan> → optimize with <tspan font-weight="bold" fill="#5B9BD5">comprehensive evaluation</tspan></text>
+    <text x="640" y="562" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">→ add agentic systems only when <tspan font-weight="bold" fill="#E8B87D">simpler solutions fall short</tspan></text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <rect x="0" y="660" width="1280" height="1" fill="#2D3348" fill-opacity="0.3"/>
+    <text x="60" y="692" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#6B7280">Anthropic Engineering · Building Effective Agents</text>
+    <text x="1220" y="692" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">12</text>
+  </g>
+</svg>

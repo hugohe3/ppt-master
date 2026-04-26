@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="lvOverlay" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#0A0A0A" stop-opacity="0.5"/>
+      <stop offset="70%" stop-color="#0A0A0A" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.96"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Full-bleed image -->
+  <image href="../images/lv_objets.jpg" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Left-side gradient overlay for text readability -->
+  <rect width="1280" height="720" fill="url(#lvOverlay)"/>
+
+  <!-- Top bar -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.8" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="500" height="1" fill="#C9A96E" fill-opacity="0.25"/>
+
+  <!-- Brand label -->
+  <text x="70" y="140" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" letter-spacing="4">LOUIS VUITTON</text>
+
+  <!-- Icon -->
+  <use data-icon="phosphor-duotone/house" x="70" y="160" width="32" height="32" fill="#C9A96E"/>
+
+  <!-- Title -->
+  <text x="70" y="240" font-family="Georgia, SimSun, serif" font-size="36" fill="#F5F0EB" font-weight="bold">Objets Nomades</text>
+  <text x="70" y="275" font-family="Georgia, SimSun, serif" font-size="22" fill="#E8D5B5">旅行家居系列</text>
+
+  <!-- Gold line -->
+  <rect x="70" y="295" width="100" height="2" fill="#C9A96E"/>
+
+  <!-- Body text -->
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" fill="#F5F0EB">
+    <tspan x="70" y="335">米兰设计周推出全新旅行家居系列，</tspan>
+    <tspan x="70" dy="28">以展览形式致敬 Art Deco 与当代设计。</tspan>
+  </text>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" fill="#F5F0EB">
+    <tspan x="70" y="415">聚焦 Pierre Legrain Hommage 系列，</tspan>
+    <tspan x="70" dy="28">重现装饰艺术大师的经典家具与配饰。</tspan>
+  </text>
+
+  <text font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="17" fill="#F5F0EB">
+    <tspan x="70" y="495">坎帕纳工作室、Raw Edges 及 Franck</tspan>
+    <tspan x="70" dy="28">Genser 等当代设计师联袂呈现新作。</tspan>
+  </text>
+
+  <!-- Key phrase -->
+  <rect x="70" y="575" width="440" height="2" fill="#2A2520"/>
+  <text x="70" y="608" font-family="Georgia, SimSun, serif" font-size="15" fill="#E8D5B5" font-style="italic">Collar 休闲椅 · Aqua 餐桌 · Flower Puzzle</text>
+  <text x="70" y="632" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="13" fill="#9E9690">精湛工艺与创意交融的生活艺术体验</text>
+
+  <!-- Footer -->
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">05 / 16</text>
+</svg>

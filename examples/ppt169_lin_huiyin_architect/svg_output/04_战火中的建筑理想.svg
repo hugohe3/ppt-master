@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="70%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="imgOverlay" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#1A1A2E" stop-opacity="0"/>
+      <stop offset="85%" stop-color="#1A1A2E" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#1A1A2E" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 01 · 建筑师林徽因</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>战火中的建筑理想</tspan>
+  </text>
+
+  <!-- 左侧图片区域 -->
+  <rect x="60" y="120" width="480" height="540" rx="12" fill="#16213E"/>
+  <image href="../images/kunming_site.png" x="60" y="120" width="480" height="340" preserveAspectRatio="xMidYMid slice"/>
+  <rect x="60" y="120" width="480" height="340" fill="url(#imgOverlay)"/>
+  <text x="80" y="480" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#6B6B80">
+    <tspan>林徽因（中）和梁从诫（左）在昆明自宅建筑工地</tspan>
+  </text>
+
+  <!-- 底部小图 -->
+  <image href="../images/yingqiu_院.png" x="60" y="500" width="230" height="160" preserveAspectRatio="xMidYMid slice"/>
+  <text x="80" y="655" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#6B6B80">
+    <tspan>映秋院历史照片</tspan>
+  </text>
+  <image href="../images/pku_geology.png" x="310" y="500" width="230" height="160" preserveAspectRatio="xMidYMid slice"/>
+  <text x="330" y="655" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#6B6B80">
+    <tspan>北大地质馆旧址</tspan>
+  </text>
+
+  <!-- 右侧内容区域 -->
+  <!-- 项目1 -->
+  <rect x="580" y="120" width="640" height="120" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="580" y="120" width="4" height="120" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/museum" x="604" y="140" width="28" height="28" fill="#C9A96E"/>
+  <text x="644" y="147" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E">
+    <tspan>1932</tspan>
+  </text>
+  <text x="644" y="170" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>北大地质馆与女生宿舍</tspan>
+  </text>
+  <text x="604" y="198" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>中国最早引入西方现代主义建筑风格的作品之一</tspan>
+  </text>
+  <text x="604" y="220" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>女生宿舍楼梯扶手特别细小——因为女生手小</tspan>
+  </text>
+
+  <!-- 项目2 -->
+  <rect x="580" y="260" width="640" height="120" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="580" y="260" width="4" height="120" rx="2" fill="#C9A96E"/>
+  <use data-icon="chunk/building" x="604" y="280" width="28" height="28" fill="#C9A96E"/>
+  <text x="644" y="287" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E">
+    <tspan>1938</tspan>
+  </text>
+  <text x="644" y="310" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>云南大学映秋院</tspan>
+  </text>
+  <text x="604" y="338" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>融合云南民间建筑，采用土、石、木材料</tspan>
+  </text>
+  <text x="604" y="360" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>使用游廊和望楼等中国民居传统元素</tspan>
+  </text>
+
+  <!-- 项目3 -->
+  <rect x="580" y="400" width="640" height="120" rx="10" fill="#16213E" stroke="#2A2A4A" stroke-width="1"/>
+  <rect x="580" y="400" width="4" height="120" rx="2" fill="#8B6F47"/>
+  <use data-icon="chunk/building" x="604" y="420" width="28" height="28" fill="#8B6F47"/>
+  <text x="644" y="427" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#8B6F47">
+    <tspan>1938</tspan>
+  </text>
+  <text x="644" y="450" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>西南联大校舍</tspan>
+  </text>
+  <text x="604" y="478" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>"一生中最痛苦、最委屈的设计"</tspan>
+  </text>
+  <text x="604" y="500" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>高楼变矮楼，砖墙变土墙，最终成了茅草屋</tspan>
+  </text>
+
+  <!-- 项目4 -->
+  <rect x="580" y="540" width="640" height="120" rx="10" fill="#16213E" stroke="#C9A96E" stroke-width="1"/>
+  <rect x="580" y="540" width="4" height="120" rx="2" fill="#E8D5B7"/>
+  <use data-icon="chunk/heart" x="604" y="560" width="28" height="28" fill="#E8D5B7"/>
+  <text x="644" y="567" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8D5B7">
+    <tspan>1940</tspan>
+  </text>
+  <text x="644" y="590" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>昆明自宅</tspan>
+  </text>
+  <text x="604" y="618" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#E8E8E8">
+    <tspan>两位建筑师一生中为自己设计的唯一一所房子</tspan>
+  </text>
+  <text x="604" y="640" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>土坯白墙，木结构青瓦，简单明快而雅洁</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>04 / 10</tspan>
+  </text>
+</svg>

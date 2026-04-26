@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C9A96E"/>
+      <stop offset="100%" stop-color="#E8D5B7"/>
+    </linearGradient>
+    <filter id="cardShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="bgGlow" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#1A1A2E"/>
+  <rect width="1280" height="720" fill="url(#bgGlow)"/>
+
+  <!-- 章节标记 -->
+  <text x="60" y="42" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#C9A96E" letter-spacing="3">
+    <tspan>PART 01 · 建筑师林徽因</tspan>
+  </text>
+
+  <!-- 标题 -->
+  <rect x="60" y="55" width="4" height="32" fill="#C9A96E"/>
+  <text x="80" y="82" font-family="'KaiTi', Georgia, serif" font-size="32" font-weight="bold" fill="#E8E8E8">
+    <tspan>归国初期的建筑实践</tspan>
+  </text>
+
+  <!-- 三列卡片 -->
+  <!-- 卡片1: 梁启超墓碑 -->
+  <rect x="60" y="130" width="370" height="530" rx="12" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <!-- 卡片顶部金色条 -->
+  <rect x="60" y="130" width="370" height="4" rx="2" fill="#C9A96E"/>
+  <!-- 年份标签 -->
+  <rect x="80" y="152" width="60" height="24" rx="12" fill="#C9A96E" fill-opacity="0.15"/>
+  <text x="110" y="169" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1929</tspan>
+  </text>
+  <!-- 图标 -->
+  <use data-icon="chunk/building" x="80" y="195" width="36" height="36" fill="#C9A96E"/>
+  <!-- 标题 -->
+  <text x="80" y="260" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>梁启超墓碑</tspan>
+  </text>
+  <!-- 描述 -->
+  <text x="80" y="290" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>学成归来后的</tspan>
+  </text>
+  <text x="80" y="312" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>第一个作品</tspan>
+  </text>
+  <rect x="80" y="328" width="40" height="1" fill="#C9A96E" fill-opacity="0.3"/>
+  <text x="80" y="355" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>梁思成和林徽因为父亲</tspan>
+  </text>
+  <text x="80" y="377" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>设计墓碑。大理石制成，</tspan>
+  </text>
+  <text x="80" y="399" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>高2.8米，宽1.7米，</tspan>
+  </text>
+  <text x="80" y="421" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>形状似榫，古朴庄重。</tspan>
+  </text>
+
+  <!-- 卡片2: 吉林石头楼 -->
+  <rect x="455" y="130" width="370" height="530" rx="12" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="455" y="130" width="370" height="4" rx="2" fill="#C9A96E"/>
+  <rect x="475" y="152" width="60" height="24" rx="12" fill="#C9A96E" fill-opacity="0.15"/>
+  <text x="505" y="169" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#C9A96E" text-anchor="middle">
+    <tspan>1929</tspan>
+  </text>
+  <use data-icon="chunk/castle" x="475" y="195" width="36" height="36" fill="#C9A96E"/>
+  <text x="475" y="260" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>吉林大学石头楼</tspan>
+  </text>
+  <text x="475" y="290" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>"梁陈童蔡"事务所</tspan>
+  </text>
+  <text x="475" y="312" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>联合设计</tspan>
+  </text>
+  <rect x="475" y="328" width="40" height="1" fill="#C9A96E" fill-opacity="0.3"/>
+  <text x="475" y="355" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>在东北大学期间，参与</tspan>
+  </text>
+  <text x="475" y="377" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>吉林大学校舍总体规划</tspan>
+  </text>
+  <text x="475" y="399" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>及教学楼设计，后归属</tspan>
+  </text>
+  <text x="475" y="421" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>东北电力大学。</tspan>
+  </text>
+
+  <!-- 卡片3: 吉海铁路总站 -->
+  <rect x="850" y="130" width="370" height="530" rx="12" fill="#16213E" stroke="#2A2A4A" stroke-width="1" filter="url(#cardShadow)"/>
+  <rect x="850" y="130" width="370" height="4" rx="2" fill="#E8D5B7"/>
+  <rect x="870" y="152" width="60" height="24" rx="12" fill="#E8D5B7" fill-opacity="0.15"/>
+  <text x="900" y="169" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E8D5B7" text-anchor="middle">
+    <tspan>1928</tspan>
+  </text>
+  <use data-icon="chunk/building" x="870" y="195" width="36" height="36" fill="#E8D5B7"/>
+  <text x="870" y="260" font-family="'KaiTi', Georgia, serif" font-size="22" font-weight="bold" fill="#E8D5B7">
+    <tspan>吉海铁路总站</tspan>
+  </text>
+  <text x="870" y="290" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>林徽因设计总体风貌</tspan>
+  </text>
+  <text x="870" y="312" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="16" fill="#E8E8E8">
+    <tspan>梁思成负责审定</tspan>
+  </text>
+  <rect x="870" y="328" width="40" height="1" fill="#E8D5B7" fill-opacity="0.3"/>
+  <text x="870" y="355" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>大型哥特式建筑，从空中</tspan>
+  </text>
+  <text x="870" y="377" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>俯瞰造型如雄狮伏卧，</tspan>
+  </text>
+  <text x="870" y="399" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>"狮尾"巧妙设计成钟塔，</tspan>
+  </text>
+  <text x="870" y="421" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="14" fill="#A0A0B0">
+    <tspan>寓意中国如雄狮初醒。</tspan>
+  </text>
+  <!-- 图片区域 -->
+  <rect x="870" y="440" width="330" height="180" rx="8" fill="#1A1A2E"/>
+  <image href="../images/jihai_station_old.png" x="870" y="440" width="330" height="180" preserveAspectRatio="xMidYMid slice"/>
+  <text x="1035" y="640" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="11" fill="#6B6B80" text-anchor="middle">
+    <tspan>吉海铁路总站历史照片</tspan>
+  </text>
+
+  <!-- 页码 -->
+  <text x="1200" y="700" font-family="'Microsoft YaHei', Arial, sans-serif" font-size="12" fill="#6B6B80" text-anchor="end">
+    <tspan>03 / 10</tspan>
+  </text>
+</svg>

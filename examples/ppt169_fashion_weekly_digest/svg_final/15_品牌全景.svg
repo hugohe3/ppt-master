@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0" />
+      <stop offset="20%" stop-color="#C9A96E" />
+      <stop offset="80%" stop-color="#E8D5B5" />
+      <stop offset="100%" stop-color="#E8D5B5" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="#0A0A0A" />
+
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+  <rect x="50" y="45" width="1180" height="1" fill="#2A2520" />
+
+  <text x="640" y="90" font-family="Georgia, SimSun, serif" font-size="30" fill="#F5F0EB" font-weight="bold" text-anchor="middle">本期品牌全景</text>
+  <text x="640" y="115" font-family="Georgia, SimSun, serif" font-size="14" fill="#C9A96E" text-anchor="middle" letter-spacing="4">BRAND PANORAMA</text>
+
+  
+  
+  <g transform="translate(50.0, 160.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M239.78,86.62,202.78,200S176,184,128,184s-74.78,16-74.78,16l-37-113.37a4.1,4.1,0,0,1,5.72-5l53.41,26.62a4.11,4.11,0,0,0,5.36-1.56L124.48,34a4.11,4.11,0,0,1,7,0l43.77,72.74a4.12,4.12,0,0,0,5.35,1.56l53.43-26.64A4.1,4.1,0,0,1,239.78,86.62Z" opacity="0.2" />
+    <path d="M243.84,76.19a12.08,12.08,0,0,0-13.34-1.7l-50.21,25L138.37,29.86a12.11,12.11,0,0,0-20.74,0L75.71,99.52l-50.19-25A12.11,12.11,0,0,0,8.62,89.12l37,113.36a8,8,0,0,0,11.68,4.4C57.55,206.73,83.12,192,128,192s70.45,14.73,70.68,14.87a8,8,0,0,0,11.71-4.39l37-113.33A12.06,12.06,0,0,0,243.84,76.19ZM198,188.83C186,183.74,162.08,176,128,176s-58,7.74-70,12.83L26.71,93l45.07,22.47a12.17,12.17,0,0,0,15.78-4.59L128,43.66l40.44,67.2a12.18,12.18,0,0,0,15.77,4.59L229.29,93Zm-22.13-32a8,8,0,0,1-7.87,6.61,8.36,8.36,0,0,1-1.4-.12,228.2,228.2,0,0,0-77.22,0,8,8,0,0,1-2.78-15.76,244.42,244.42,0,0,1,82.78,0A8,8,0,0,1,175.88,156.8Z" />
+  </g>
+  <text x="90" y="182" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">顶级奢侈品牌</text>
+
+  <path fill="#1A1A1A" d="M60,200 H1220 A10,10 0 0 1 1230,210 V290 A10,10 0 0 1 1220,300 H60 A10,10 0 0 1 50,290 V210 A10,10 0 0 1 60,200 Z" />
+  <text x="140" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">HERMÈS</text>
+  <text x="360" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">CHANEL</text>
+  <text x="560" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">DIOR</text>
+  <text x="800" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">LOUIS VUITTON</text>
+  <text x="1060" y="260" font-family="Georgia, SimSun, serif" font-size="22" fill="#F5F0EB" text-anchor="middle" font-weight="bold">GUCCI</text>
+
+  
+  <rect x="250" y="230" width="1" height="40" fill="#2A2520" />
+  <rect x="460" y="230" width="1" height="40" fill="#2A2520" />
+  <rect x="660" y="230" width="1" height="40" fill="#2A2520" />
+  <rect x="940" y="230" width="1" height="40" fill="#2A2520" />
+
+  
+  
+  <g transform="translate(50.0, 330.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M229.67,133.62l-96,96a7.94,7.94,0,0,1-11.24,0l-96-96a7.94,7.94,0,0,1,0-11.24l96.05-96a7.94,7.94,0,0,1,11.24,0l96,96.05A7.94,7.94,0,0,1,229.67,133.62Z" opacity="0.2" />
+    <path d="M235.33,116.72,139.28,20.66a16,16,0,0,0-22.56,0l-96,96.06a16,16,0,0,0,0,22.56l96.05,96.06h0a16,16,0,0,0,22.56,0l96.05-96.06a16,16,0,0,0,0-22.56ZM128,224h0L32,128,128,32,224,128Z" />
+  </g>
+  <text x="90" y="352" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">轻奢 / 设计师品牌</text>
+
+  <path fill="#1A1A1A" d="M60,370 H1220 A10,10 0 0 1 1230,380 V460 A10,10 0 0 1 1220,470 H60 A10,10 0 0 1 50,460 V380 A10,10 0 0 1 60,370 Z" />
+  <text x="147" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Vhernier</text>
+  <text x="340" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">CELINE</text>
+  <text x="530" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Bottega Veneta</text>
+  <text x="740" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">McQueen</text>
+  <text x="920" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Max Mara</text>
+  <text x="1100" y="430" font-family="Georgia, SimSun, serif" font-size="18" fill="#F5F0EB" text-anchor="middle">Chloé</text>
+
+  <rect x="243" y="410" width="1" height="30" fill="#2A2520" />
+  <rect x="436" y="410" width="1" height="30" fill="#2A2520" />
+  <rect x="636" y="410" width="1" height="30" fill="#2A2520" />
+  <rect x="836" y="410" width="1" height="30" fill="#2A2520" />
+  <rect x="1010" y="410" width="1" height="30" fill="#2A2520" />
+
+  
+  
+  <g transform="translate(50.0, 500.0) scale(0.109375)" fill="#C9A96E">
+    <path d="M194.82,151.43l-51.66,19a7.88,7.88,0,0,0-4.69,4.69l-19,51.66a7.92,7.92,0,0,1-14.86,0l-19-51.66a7.88,7.88,0,0,0-4.69-4.69l-51.66-19a7.92,7.92,0,0,1,0-14.86l51.66-19a7.88,7.88,0,0,0,4.69-4.69l19-51.66a7.92,7.92,0,0,1,14.86,0l19,51.66a7.88,7.88,0,0,0,4.69,4.69l51.66,19A7.92,7.92,0,0,1,194.82,151.43Z" opacity="0.2" />
+    <path d="M197.58,129.06l-51.61-19-19-51.65a15.92,15.92,0,0,0-29.88,0L78.07,110l-51.65,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0l19-51.61,51.65-19a15.92,15.92,0,0,0,0-29.88ZM140.39,163a15.87,15.87,0,0,0-9.43,9.43l-19,51.46L93,172.39A15.87,15.87,0,0,0,83.61,163h0L32.15,144l51.46-19A15.87,15.87,0,0,0,93,115.61l19-51.46,19,51.46a15.87,15.87,0,0,0,9.43,9.43l51.46,19ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z" />
+  </g>
+  <text x="90" y="522" font-family="Georgia, SimSun, serif" font-size="16" fill="#C9A96E" font-weight="bold">潮流 / 生活方式</text>
+
+  <path fill="#1A1A1A" d="M60,540 H1220 A10,10 0 0 1 1230,550 V630 A10,10 0 0 1 1220,640 H60 A10,10 0 0 1 50,630 V550 A10,10 0 0 1 60,540 Z" />
+  <text x="100" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">TAD FAB</text>
+  <text x="230" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Apede Mod</text>
+  <text x="380" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">BOSS</text>
+  <text x="480" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">fresh</text>
+  <text x="570" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">JORYA</text>
+  <text x="670" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">ARKET</text>
+  <text x="780" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Steve Madden</text>
+  <text x="940" y="600" font-family="Georgia, SimSun, serif" font-size="16" fill="#F5F0EB">Crocs</text>
+
+  
+  <text x="195" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="345" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="445" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="535" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="635" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="735" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+  <text x="905" y="600" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355">·</text>
+
+  <rect x="50" y="670" width="1180" height="1" fill="#2A2520" />
+  <text x="50" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690">NEWS Café · 美学周鉴</text>
+  <text x="1230" y="695" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">15 / 16</text>
+</svg>

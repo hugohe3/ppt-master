@@ -1,0 +1,41 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="header">
+    <text x="72" y="92" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">为什么今天要重识林徽因</text>
+    <line x1="72" y1="108" x2="1208" y2="108" stroke="#D8CBB8" stroke-width="1.5"/>
+    <text x="1196" y="92" text-anchor="end" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">02</text>
+  </g>
+
+  <g id="center-claim">
+    <use data-icon="tabler-outline/eye" x="114" y="186" width="32" height="32" fill="#A44A3F"/>
+    <text x="162" y="212" font-family="SimSun" font-size="24" fill="#A44A3F" font-weight="700">被看见的，常常不是她最重要的部分</text>
+    <text x="162" y="270" font-family="SimSun" font-size="48" fill="#1F1B16" font-weight="700">她被反复讲述</text>
+    <text x="162" y="328" font-family="SimSun" font-size="48" fill="#1F1B16" font-weight="700">却并不总被准确理解</text>
+    <line x1="162" y1="350" x2="520" y2="350" stroke="#B6915E" stroke-width="3"/>
+    <text x="162" y="392" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#6A6258">这次重识，不是补充一段轶事，而是把她放回建筑史与学术史的核心坐标。</text>
+  </g>
+
+  <g id="three-observations">
+    <g id="obs-1">
+      <text x="162" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">01</text>
+      <text x="194" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">公众记忆</text>
+      <text x="194" y="527" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">她常以“才女”“爱情叙事”进入大众语境</text>
+    </g>
+    <g id="obs-2">
+      <text x="528" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">02</text>
+      <text x="560" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">专业位置</text>
+      <text x="560" y="527" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">真正决定其地位的是建筑实践、理论建构与学科建设</text>
+    </g>
+    <g id="obs-3">
+      <text x="902" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">03</text>
+      <text x="934" y="494" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="22" fill="#1F1B16" font-weight="600">今天重看</text>
+      <text x="934" y="527" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="18" fill="#6A6258">是纠偏认知，也是重写知识坐标</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="72" y="652" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">从被遮蔽的形象，回到建筑师的专业身份</text>
+  </g>
+</svg>

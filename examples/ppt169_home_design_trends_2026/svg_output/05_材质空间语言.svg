@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow05" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="5" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.18" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="mainImgClip05">
+      <rect x="700" y="90" width="530" height="380" rx="14"/>
+    </clipPath>
+    <clipPath id="accentImgClip05">
+      <rect x="700" y="490" width="250" height="170" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p05-header">
+    <use data-icon="tabler-filled/diamond" x="60" y="30" width="28" height="28" fill="#D4956A"/>
+    <text x="98" y="52" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      三大底层元素 · 贰
+    </text>
+  </g>
+
+  <!-- Title -->
+  <g id="p05-title">
+    <text x="60" y="130" font-family="Georgia, SimSun, serif" font-size="36" font-weight="bold" fill="#E8E0D4">
+      材质
+    </text>
+    <text x="60" y="172" font-family="Georgia, SimSun, serif" font-size="26" fill="#C4A882">
+      触手可及的空间语言
+    </text>
+  </g>
+
+  <rect x="60" y="192" width="40" height="2" fill="#3D362E"/>
+
+  <!-- Left content cards -->
+  <g id="p05-points">
+    <g id="p05-card1">
+      <rect x="60" y="218" width="600" height="72" rx="10" fill="#2A2520" filter="url(#cardShadow05)"/>
+      <rect x="60" y="218" width="4" height="72" rx="2" fill="#C4A882"/>
+      <use data-icon="tabler-filled/sun" x="80" y="236" width="28" height="28" fill="#C4A882"/>
+      <text x="120" y="248" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+        物理基础
+      </text>
+      <text x="120" y="274" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+        材料决定空间的色彩呈现、光照效果与质感表现
+      </text>
+    </g>
+
+    <g id="p05-card2">
+      <rect x="60" y="308" width="600" height="72" rx="10" fill="#2A2520" filter="url(#cardShadow05)"/>
+      <rect x="60" y="308" width="4" height="72" rx="2" fill="#D4956A"/>
+      <text x="80" y="340" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+        材质语言
+      </text>
+      <text x="80" y="366" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+        原木 → 质朴温暖 ｜ 手工编织 → 慵懒松弛
+      </text>
+    </g>
+
+    <g id="p05-card3">
+      <rect x="60" y="398" width="600" height="72" rx="10" fill="#2A2520" filter="url(#cardShadow05)"/>
+      <rect x="60" y="398" width="4" height="72" rx="2" fill="#8B7355"/>
+      <text x="80" y="430" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+        光 = 一种材质
+      </text>
+      <text x="80" y="456" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+        不同材质在光线照射下呈现截然不同的质感
+      </text>
+    </g>
+
+    <g id="p05-card4">
+      <rect x="60" y="488" width="600" height="72" rx="10" fill="#2A2520" filter="url(#cardShadow05)"/>
+      <rect x="60" y="488" width="4" height="72" rx="2" fill="#7BA37B"/>
+      <text x="80" y="520" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" font-weight="bold" fill="#E8E0D4">
+        不依赖昂贵
+      </text>
+      <text x="80" y="546" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+        巧妙照明 + 色彩光影搭配 → 赋予空间高级感
+      </text>
+    </g>
+  </g>
+
+  <!-- Right: main image -->
+  <g id="p05-main-image">
+    <image href="../images/material_detail.png" x="700" y="90" width="530" height="380" preserveAspectRatio="xMidYMid slice" clip-path="url(#mainImgClip05)"/>
+  </g>
+
+  <!-- Right: accent image -->
+  <g id="p05-accent-image">
+    <image href="../images/light_material.png" x="700" y="490" width="250" height="170" preserveAspectRatio="xMidYMid slice" clip-path="url(#accentImgClip05)"/>
+    <text x="710" y="675" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="12" fill="#7A6E60">
+      光影下的材质质感
+    </text>
+  </g>
+
+  <!-- Bottom quote -->
+  <text x="980" y="580" font-family="Georgia, SimSun, serif" font-size="16" fill="#8B7355" font-style="italic">
+    "粗糙变得温柔，
+  </text>
+  <text x="980" y="604" font-family="Georgia, SimSun, serif" font-size="16" fill="#8B7355" font-style="italic">
+    平滑折射出深度"
+  </text>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    05 / 12
+  </text>
+</svg>

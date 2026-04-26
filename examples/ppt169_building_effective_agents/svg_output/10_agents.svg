@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="agentGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+  <rect width="1280" height="720" fill="url(#agentGlow)"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="50" width="4" height="36" rx="2" fill="#D4845A"/>
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">Agents: Autonomous LLM Systems</text>
+  </g>
+
+  <!-- Diagram: centered, breathing-style hero -->
+  <g id="diagram">
+    <image href="../images/image_6.png" x="200" y="110" width="880" height="367" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Key capability tags below diagram — horizontal strip, naked text -->
+  <g id="capabilities">
+    <rect x="60" y="500" width="1160" height="1" fill="#2D3348" fill-opacity="0.3"/>
+
+    <!-- Tag-style capabilities -->
+    <rect x="80" y="520" width="200" height="36" rx="18" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="180" y="544" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A">Complex Inputs</text>
+
+    <rect x="300" y="520" width="220" height="36" rx="18" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="410" y="544" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A">Reasoning &amp; Planning</text>
+
+    <rect x="540" y="520" width="200" height="36" rx="18" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="640" y="544" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A">Reliable Tool Use</text>
+
+    <rect x="760" y="520" width="200" height="36" rx="18" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="860" y="544" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A">Error Recovery</text>
+
+    <rect x="980" y="520" width="200" height="36" rx="18" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="1080" y="544" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#D4845A">Human Checkpoints</text>
+  </g>
+
+  <!-- Bottom insight text — breathing style, no cards -->
+  <g id="insight">
+    <text x="640" y="596" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">Implementation is often straightforward: <tspan font-weight="bold" fill="#E8B87D">LLMs using tools in a loop.</tspan></text>
+    <text x="640" y="628" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">Higher costs + compounding errors → extensive testing in sandboxed environments + guardrails.</text>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">10</text>
+  </g>
+</svg>

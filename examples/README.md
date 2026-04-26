@@ -1,6 +1,6 @@
 # PPT Master Example Projects
 
-> This directory contains **15 curated example projects** covering consulting style, general-purpose style, creative style, and other design paradigms, totaling **229 SVG presentation pages**.
+> This directory contains **22 curated example projects** covering consulting style, general-purpose style, creative style, magazine editorial style, and cultural narrative paradigms, totaling **309 SVG presentation pages**.
 
 **[Preview all example projects online](https://hugohe3.github.io/ppt-master/)**
 
@@ -8,9 +8,10 @@
 
 | Category | Projects | Total Pages | Highlights |
 |----------|----------|-------------|------------|
-| Consulting Style | 8 | 142 pages | Data-driven, structured, professional whitespace |
-| General-Purpose | 3 | 32 pages | Flexible layouts, diverse themes |
+| Consulting Style | 9 | 152 pages | Data-driven, structured, professional whitespace |
+| General-Purpose | 5 | 55 pages | Flexible layouts, diverse themes, dark tech |
 | Creative Style | 4 | 55 pages | Unique visual language, cultural aesthetics |
+| Magazine & Cultural Narrative | 4 | 47 pages | Photo-rich editorial, Eastern aesthetics |
 
 ---
 
@@ -135,6 +136,23 @@
 
 ---
 
+### ppt169_kimsoong_loyalty_programme
+
+> **10 pages** - MBB-level strategic proposal (English)
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | Top Consulting (MBB-level) |
+| **Color Scheme** | Navy #1A3A5C + Amber #E8A838 + Eco green #2D8A4E |
+| **Target Audience** | Senior management / board at Kimsoong European HQ |
+
+**Key Features**: Strategic customer loyalty programme proposal for an automotive brand's European operations. Covers customer demographics (75% under 40), root cause analysis (78% addressable churn), four-pillar strategy framework, five ranked initiatives, and a phased Q1-Q4 implementation roadmap with KPI targets. Features KPI dashboards, Pareto charts, 2×2 priority matrices, and hub-spoke diagrams.
+
+[View Project](./ppt169_kimsoong_loyalty_programme/) | [Design Spec](./ppt169_kimsoong_loyalty_programme/design_spec.md)
+
+---
+
 ### ppt169_谷歌风_google_annual_report
 
 > **10 pages** - Google brand style
@@ -149,6 +167,23 @@
 **Key Features**: Google 2025 annual work report template, blending Google design language with consulting professionalism.
 
 [View Project](./ppt169_谷歌风_google_annual_report/) | [Design Spec](./ppt169_谷歌风_google_annual_report/design_spec.md)
+
+---
+
+### ppt169_building_effective_agents
+
+> **12 pages** - Technical engineering talk (English)
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Dark theme |
+| **Color Scheme** | Anthropic coral #D4845A + Cool blue #5B9BD5 on deep dark #0F1117 |
+| **Target Audience** | Software engineers, AI/ML practitioners, technical leaders |
+
+**Key Features**: Based on Anthropic's "Building Effective Agents" engineering blog. Covers the augmented LLM building block, five workflow patterns (Prompt Chaining, Routing, Parallelization, Orchestrator-Workers, Evaluator-Optimizer), autonomous agent architecture, and practical application (coding agents, customer support). Includes 8 original article architecture diagrams with warm-on-dark aesthetic.
+
+[View Project](./ppt169_building_effective_agents/) | [Design Spec](./ppt169_building_effective_agents/design_spec.md)
 
 ---
 
@@ -202,6 +237,23 @@
 **Key Features**: Side-by-side comparison of three AI programming tools: OpenSpec vs ZCF vs Spec Kit.
 
 [View Project](./ppt169_通过灵活+代码_三大AI编程神器横向对比/) | [Design Spec](./ppt169_通过灵活+代码_三大AI编程神器横向对比/design_spec.md)
+
+---
+
+### ppt169_home_design_trends_2026
+
+> **12 pages** - Magazine-style home design trends
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Magazine editorial |
+| **Color Scheme** | Warm brown #C4A882 + Terracotta #D4956A on deep warm black #1A1714 |
+| **Target Audience** | Interior designers, home enthusiasts, renovation planners |
+
+**Key Features**: 2026 home design trends presentation inspired by the book "空间的高级感". Covers color theory, material language, texture details, the CMT (Colour-Material-Texture) system, cream style evolution, bohemian & vintage revival, and sustainable luxury. Rich photography with editorial typography using Georgia serif titles. 22+ curated interior photography images.
+
+[View Project](./ppt169_home_design_trends_2026/) | [Design Spec](./ppt169_home_design_trends_2026/design_spec.md)
 
 ---
 
@@ -275,6 +327,76 @@
 
 ---
 
+## Magazine & Cultural Narrative Examples
+
+### ppt169_liziqi_plant_dye_colors
+
+> **12 pages** - Eastern cultural narrative on plant dyeing
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Eastern cultural narrative |
+| **Color Scheme** | Rice paper white #F7F2E8 + Rain-washed sky blue #6B9AAE + Oriole yellow #C99E62 + Orchid grass green #6F8F75 |
+| **Target Audience** | Cultural enthusiasts, designers, museum/education professionals |
+
+**Key Features**: Explores the 300 traditional Chinese colors behind Li Ziqi's 2025 Spring Festival Gala costume. Covers the five cardinal colors, hand-dip dyeing technique, historical timeline from Emperor Huang Di to Ming-Qing dynasties, six named traditional colors with poetic origins (雨过天青, 苍黄, 暮云灰, 天水碧, 银红, 酡色), dyeing plant taxonomy, and the therapeutic art of plant dyeing. Uses KaiTi calligraphic titles on rice-paper-textured backgrounds. 17 curated photographs.
+
+[View Project](./ppt169_liziqi_plant_dye_colors/) | [Design Spec](./ppt169_liziqi_plant_dye_colors/design_spec.md)
+
+---
+
+### ppt169_lin_huiyin_architect
+
+> **10 pages** - Dark theme architectural tribute
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Chinese classical architecture × humanistic memorial |
+| **Color Scheme** | Deep navy #1A1A2E + Antique gold #C9A96E + Ivory #E8D5B7 |
+| **Target Audience** | Cultural enthusiasts, architecture followers, humanities readers |
+
+**Key Features**: A tribute to Lin Huiyin as a pioneering architect — reframing her beyond the literary celebrity persona. Covers her architectural works (Jihai Railway Station, PKU Geology Building, People's Heroes Monument), groundbreaking 1932 academic paper on Chinese architecture, original concepts (建筑意), and her enduring spirit through wartime adversity. Dark theme with antique gold accents and KaiTi calligraphic titles. 13 historical photographs.
+
+[View Project](./ppt169_lin_huiyin_architect/) | [Design Spec](./ppt169_lin_huiyin_architect/design_spec.md)
+
+---
+
+### ppt169_lin_huiyin_architect_revised
+
+> **9 pages** - Light theme museum-exhibition edition (revised)
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Museum exhibition, architectural atlas |
+| **Color Scheme** | Paper white #F6F1E8 + Brick red #A44A3F + Slate gray #6E7C80 + Bronze #B6915E |
+| **Target Audience** | Architecture & humanities audiences, cultural communicators |
+
+**Key Features**: Revised edition of the Lin Huiyin tribute, reimagined with a light-theme museum-exhibition aesthetic. Adopts restrained editorial typography (Georgia + Songti SC) on warm paper backgrounds. Covers the same architectural legacy through a "rediscovery" lens — from built works and national monuments to theoretical foundations and field methodology. Uses tabler-outline icons for a refined, contemporary feel. 13 historical photographs.
+
+[View Project](./ppt169_lin_huiyin_architect_revised/) | [Design Spec](./ppt169_lin_huiyin_architect_revised/design_spec.md)
+
+---
+
+### ppt169_fashion_weekly_digest
+
+> **16 pages** - Luxury fashion magazine editorial
+
+| Property | Details |
+|----------|---------|
+| **Canvas Format** | PPT 16:9 (1280×720) |
+| **Design Style** | General Versatile — Magazine Editorial |
+| **Color Scheme** | Deep black #0A0A0A + Gold #C9A96E + Light gold #E8D5B5 |
+| **Target Audience** | Fashion industry professionals, luxury enthusiasts, brand marketers |
+
+**Key Features**: Weekly fashion news digest covering 18+ luxury and lifestyle brands (Hermès, CHANEL, Dior, Louis Vuitton, Gucci, CELINE, BV, McQueen, Max Mara, Chloé, and more). Magazine editorial layouts with full-bleed photography, asymmetric splits, figure-text overlaps, and two-column brand comparisons. Uses phosphor-duotone icons for a modern dual-tone aesthetic. 21 brand photography images across topics including Milan Design Week, Coachella, flagship exhibitions, and brand collaborations.
+
+[View Project](./ppt169_fashion_weekly_digest/) | [Design Spec](./ppt169_fashion_weekly_digest/design_spec.md)
+
+---
+
 ## Project Structure
 
 Each example project follows this standard structure:
@@ -282,7 +404,10 @@ Each example project follows this standard structure:
 ```
 <project_name>/
 ├── design_spec.md               # Design specification document (required)
+├── spec_lock.md                 # Machine-readable execution contract (newer projects)
 ├── images/                      # Image assets (if any)
+├── sources/                     # Source materials (if any)
+├── notes/                       # Speaker notes (if any)
 ├── svg_output/                  # Original SVGs (with placeholders, as templates)
 │   ├── slide_01_xxx.svg
 │   └── ...
@@ -327,6 +452,9 @@ xdg-open examples/<project_name>/svg_final/slide_01_cover.svg
 3. **Complex Projects**: Explore `ppt169_顶级咨询风_心理治疗中的依恋` (32 pages) to understand large-scale project organization
 4. **Government Style**: Refer to `ppt169_顶级咨询风_甘孜州经济财政分析` (17 pages) to master data-driven analysis
 5. **Creative Exploration**: Study the I Ching or Zen style for unique visual languages
+6. **Cultural Narrative**: Explore `ppt169_liziqi_plant_dye_colors` for Eastern aesthetics with rich photography
+7. **Magazine Editorial**: Study `ppt169_fashion_weekly_digest` for luxury brand editorial layouts
+8. **Same Topic, Two Styles**: Compare `ppt169_lin_huiyin_architect` (dark) vs `ppt169_lin_huiyin_architect_revised` (light) to understand how theme choice transforms the same content
 
 ## Contributing Examples
 
@@ -352,4 +480,4 @@ We welcome your project contributions! Please ensure:
 
 ---
 
-*Last updated: 2025-12-13*
+*Last updated: 2026-04-26*

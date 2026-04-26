@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bgGrad12" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7F2E8" />
+      <stop offset="100%" stop-color="#EDE5D3" />
+    </linearGradient>
+    <radialGradient id="bgDecor12" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#6B9AAE" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#6B9AAE" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="palette12" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7AA4B6" />
+      <stop offset="14%" stop-color="#B29A55" />
+      <stop offset="28%" stop-color="#7D6E74" />
+      <stop offset="42%" stop-color="#8FB09A" />
+      <stop offset="56%" stop-color="#E49AA5" />
+      <stop offset="70%" stop-color="#C86868" />
+      <stop offset="84%" stop-color="#3D4A5A" />
+      <stop offset="100%" stop-color="#A69E98" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bgGrad12)" />
+  <rect width="1280" height="720" fill="url(#bgDecor12)" />
+
+  <g id="top-palette" transform="translate(60,90)">
+    <path fill="url(#palette12)" d="M8,0 H1152 A8,8 0 0 1 1160,8 V8 A8,8 0 0 1 1152,16 H8 A8,8 0 0 1 0,8 V8 A8,8 0 0 1 8,0 Z" />
+    <text x="580" y="44" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#9B948B" letter-spacing="8">雨过天青 · 苍黄 · 暮云灰 · 天水碧 · 银红 · 酡色 · 黛青 · 相思灰</text>
+  </g>
+
+  <g id="main-title" transform="translate(640,220)">
+    <text x="0" y="0" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="60" font-weight="bold" fill="#3A3530" letter-spacing="8">色彩不止于视觉</text>
+    <text x="0" y="78" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="44" fill="#6B9AAE" letter-spacing="6">更是文化记忆的承载者</text>
+  </g>
+
+  <g id="middle-quote" transform="translate(640,400)">
+    <line x1="-180" y1="0" x2="-40" y2="0" stroke="#C99E62" stroke-width="2" />
+    
+  <g transform="translate(-18.0, -14.0) scale(1.1666666666666667)" fill="#6F8F75">
+    <path d="M3.055 14.328l-.018 -.168l-.004 -.043a11 11 0 0 1 -.047 -1.12c.018 -6.29 4.29 -9.997 13 -9.997h4.014a1 1 0 0 1 1 1l-.002 2.057c-.498 8.701 -4.74 12.943 -11.998 12.943h-2.631a16 16 0 0 0 -.375 2.11a1 1 0 1 1 -1.988 -.22q .174 -1.568 .58 -2.947l-.118 -.146l-.208 -.28l-.157 -.229l-.182 -.293l-.098 -.171l-.065 -.122a6 6 0 0 1 -.397 -.941l-.072 -.237l-.085 -.327l-.057 -.268l-.043 -.242zm8.539 -4.242c-2.845 1.265 -4.854 3.13 -6.108 5.583q .098 .2 .218 .4l.185 .281l.07 .097q .12 .164 .258 .329l.197 .224h.649c1.037 -2.271 2.777 -3.946 5.343 -5.086a1 1 0 0 0 -.812 -1.828" />
+  </g>
+    <line x1="40" y1="0" x2="180" y2="0" stroke="#C99E62" stroke-width="2" />
+
+    <text x="0" y="50" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" letter-spacing="3">从天地造化的草木之色</text>
+    <text x="0" y="82" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="22" fill="#3A3530" letter-spacing="3">到流转千年的绢帛华章</text>
+    <text x="0" y="125" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="20" fill="#B04A5C" font-style="italic" letter-spacing="2">最动人的色彩，早已藏在山河草木之间</text>
+  </g>
+
+  <g id="reference" transform="translate(640,580)">
+    <path fill="#FFFFFF" stroke="#D7CEB9" stroke-width="1" d="M-270,-30 H270 A30,30 0 0 1 300,0 V0 A30,30 0 0 1 270,30 H-270 A30,30 0 0 1 -300,0 V0 A30,30 0 0 1 -270,-30 Z" />
+    
+  <g transform="translate(-272.0, -12.0)" fill="#C99E62">
+    <path d="M21.5 5.134a1 1 0 0 1 .493 .748l.007 .118v13a1 1 0 0 1 -1.5 .866a8 8 0 0 0 -7.5 -.266v-15.174a10 10 0 0 1 8.5 .708m-10.5 -.707l.001 15.174a8 8 0 0 0 -7.234 .117l-.327 .18l-.103 .044l-.049 .016l-.11 .026l-.061 .01l-.117 .006h-.042l-.11 -.012l-.077 -.014l-.108 -.032l-.126 -.056l-.095 -.056l-.089 -.067l-.06 -.056l-.073 -.082l-.064 -.089l-.022 -.036l-.032 -.06l-.044 -.103l-.016 -.049l-.026 -.11l-.01 -.061l-.004 -.049l-.002 -13.068a1 1 0 0 1 .5 -.866a10 10 0 0 1 8.5 -.707" />
+  </g>
+    <text x="-240" y="7" font-family="KaiTi, STKaiti, Georgia, serif" font-size="16" fill="#3A3530">参考书目</text>
+    <text x="-240" y="27" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#7A7068">《国色 300 色 · 染出经典里的中国传统色》黄荣华 著</text>
+  </g>
+
+  <g id="footer">
+    <line x1="60" y1="670" x2="1220" y2="670" stroke="#D7CEB9" stroke-width="1" />
+    <text x="60" y="695" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">裁云织月 · 草木成诗</text>
+    <text x="640" y="695" text-anchor="middle" font-family="KaiTi, STKaiti, Georgia, serif" font-size="14" fill="#3A3530" letter-spacing="8">— 感谢观看 —</text>
+    <text x="1220" y="695" text-anchor="end" font-family="KaiTi, STKaiti, Georgia, serif" font-size="13" fill="#9B948B">12 / 12</text>
+  </g>
+</svg>

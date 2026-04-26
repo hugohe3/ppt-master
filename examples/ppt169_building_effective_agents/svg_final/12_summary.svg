@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow1" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="numberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4845A" />
+      <stop offset="100%" stop-color="#E8B87D" />
+    </linearGradient>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="4" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0F1117" />
+  <rect width="1280" height="720" fill="url(#bgGlow1)" />
+
+  
+  <circle cx="180" cy="600" r="70" fill="none" stroke="#D4845A" stroke-opacity="0.06" stroke-width="1" />
+  <circle cx="1100" cy="140" r="90" fill="none" stroke="#5B9BD5" stroke-opacity="0.05" stroke-width="1" />
+
+  
+  <g id="header">
+    <text x="640" y="80" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="bold" fill="#E8E8EC">Three Core Principles</text>
+    <path fill="url(#numberGrad)" d="M572,95 H708 A2,2 0 0 1 710,97 V97 A2,2 0 0 1 708,99 H572 A2,2 0 0 1 570,97 V97 A2,2 0 0 1 572,95 Z" />
+  </g>
+
+  
+  
+  <g id="principle-1">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M74,140 H416 A14,14 0 0 1 430,154 V436 A14,14 0 0 1 416,450 H74 A14,14 0 0 1 60,436 V154 A14,14 0 0 1 74,140 Z" />
+    <circle cx="245" cy="210" r="40" fill="#D4845A" fill-opacity="0.12" stroke="#D4845A" stroke-width="1.5" stroke-opacity="0.4" />
+    <text x="245" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#D4845A">1</text>
+
+    
+  <g transform="translate(221.0, 268.0) scale(3.0)" fill="#D4845A">
+    <path d="M9.00001 0H7.00001L5.51292 4.57681L0.700554 4.57682L0.0825195 6.47893L3.97581 9.30756L2.48873 13.8843L4.10677 15.0599L8.00002 12.2313L11.8933 15.0599L13.5113 13.8843L12.0242 9.30754L15.9175 6.47892L15.2994 4.57681L10.4871 4.57681L9.00001 0Z" />
+  </g>
+    <text x="245" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">Simplicity</text>
+    <text x="245" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Maintain simplicity in your</text>
+    <text x="245" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">agent's design. Build the right</text>
+    <text x="245" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">system, not the most sophisticated.</text>
+  </g>
+
+  
+  <g id="principle-2">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M469,140 H811 A14,14 0 0 1 825,154 V436 A14,14 0 0 1 811,450 H469 A14,14 0 0 1 455,436 V154 A14,14 0 0 1 469,140 Z" />
+    <circle cx="640" cy="210" r="40" fill="#5B9BD5" fill-opacity="0.12" stroke="#5B9BD5" stroke-width="1.5" stroke-opacity="0.4" />
+    <text x="640" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#5B9BD5">2</text>
+
+    
+  <g transform="translate(616.0, 268.0) scale(3.0)" fill="#5B9BD5">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 8L3.07945 4.30466C4.29638 2.84434 6.09909 2 8 2C9.90091 2 11.7036 2.84434 12.9206 4.30466L16 8L12.9206 11.6953C11.7036 13.1557 9.90091 14 8 14C6.09909 14 4.29638 13.1557 3.07945 11.6953L0 8ZM8 11C9.65685 11 11 9.65685 11 8C11 6.34315 9.65685 5 8 5C6.34315 5 5 6.34315 5 8C5 9.65685 6.34315 11 8 11Z" />
+  </g>
+    <text x="640" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">Transparency</text>
+    <text x="640" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Prioritize transparency by</text>
+    <text x="640" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">explicitly showing the agent's</text>
+    <text x="640" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">planning steps.</text>
+  </g>
+
+  
+  <g id="principle-3">
+    <path fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)" d="M864,140 H1206 A14,14 0 0 1 1220,154 V436 A14,14 0 0 1 1206,450 H864 A14,14 0 0 1 850,436 V154 A14,14 0 0 1 864,140 Z" />
+    <circle cx="1035" cy="210" r="40" fill="#E8B87D" fill-opacity="0.12" stroke="#E8B87D" stroke-width="1.5" stroke-opacity="0.4" />
+    <text x="1035" y="222" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8B87D">3</text>
+
+    
+  <g transform="translate(1011.0, 268.0) scale(3.0)" fill="#E8B87D">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1H12V5H13.5L16 7.5V9H0V7.5L2.5 5H4V1ZM10 3V5H6V3H10Z" />
+    <path d="M0 11V15H16V11H0Z" />
+  </g>
+    <text x="1035" y="346" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="bold" fill="#E8E8EC">ACI Design</text>
+    <text x="1035" y="380" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Craft your agent-computer</text>
+    <text x="1035" y="400" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">interface through thorough tool</text>
+    <text x="1035" y="420" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">documentation and testing.</text>
+  </g>
+
+  
+  <g id="summary">
+    <path fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" d="M152,490 H1128 A12,12 0 0 1 1140,502 V578 A12,12 0 0 1 1128,590 H152 A12,12 0 0 1 140,578 V502 A12,12 0 0 1 152,490 Z" />
+    <text x="640" y="533" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">Start with <tspan font-weight="bold" fill="#D4845A">simple prompts</tspan> → optimize with <tspan font-weight="bold" fill="#5B9BD5">comprehensive evaluation</tspan></text>
+    <text x="640" y="562" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">→ add agentic systems only when <tspan font-weight="bold" fill="#E8B87D">simpler solutions fall short</tspan></text>
+  </g>
+
+  
+  <g id="footer">
+    <rect x="0" y="660" width="1280" height="1" fill="#2D3348" fill-opacity="0.3" />
+    <text x="60" y="692" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#6B7280">Anthropic Engineering · Building Effective Agents</text>
+    <text x="1220" y="692" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">12</text>
+  </g>
+</svg>

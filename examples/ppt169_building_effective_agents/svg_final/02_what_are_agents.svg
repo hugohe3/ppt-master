@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="dividerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D4845A" stop-opacity="0" />
+      <stop offset="30%" stop-color="#D4845A" stop-opacity="0.6" />
+      <stop offset="70%" stop-color="#D4845A" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#D4845A" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#0F1117" />
+  <rect width="1280" height="720" fill="url(#bgGlow)" />
+
+  
+  <g id="header">
+    <path fill="#D4845A" d="M62,50 H62 A2,2 0 0 1 64,52 V84 A2,2 0 0 1 62,86 H62 A2,2 0 0 1 60,84 V52 A2,2 0 0 1 62,50 Z" />
+    <text x="78" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="32" font-weight="bold" fill="#E8E8EC">What Are Agents?</text>
+    <text x="78" y="108" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">The key architectural distinction in agentic systems</text>
+  </g>
+
+  
+
+  
+  <g id="concept-workflows">
+    
+  <g transform="translate(140.0, 220.0) scale(3.0)" fill="#5B9BD5">
+    <path d="M8 6L8 2L10 2L16 8L10 14L8 14L8 10L-1.74845e-07 10L-3.01991e-07 6L8 6Z" />
+  </g>
+    <text x="140" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#5B9BD5">Workflows</text>
+    <text x="140" y="350" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">LLMs and tools orchestrated</text>
+    <text x="140" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">through predefined code paths.</text>
+    <text x="140" y="420" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Predictable · Consistent · Well-defined tasks</text>
+
+    
+    <path fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4" d="M148,470 H232 A8,8 0 0 1 240,478 V506 A8,8 0 0 1 232,514 H148 A8,8 0 0 1 140,506 V478 A8,8 0 0 1 148,470 Z" />
+    <text x="190" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 1</text>
+    <path fill="#5B9BD5" fill-opacity="0.3" d="M262,486 H282 A2,2 0 0 1 284,488 V496 A2,2 0 0 1 282,498 H262 A2,2 0 0 1 260,496 V488 A2,2 0 0 1 262,486 Z" />
+    <polygon points="284,486 296,492 284,498" fill="#5B9BD5" fill-opacity="0.5" />
+    <path fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4" d="M318,470 H402 A8,8 0 0 1 410,478 V506 A8,8 0 0 1 402,514 H318 A8,8 0 0 1 310,506 V478 A8,8 0 0 1 318,470 Z" />
+    <text x="360" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 2</text>
+    <path fill="#5B9BD5" fill-opacity="0.3" d="M432,486 H452 A2,2 0 0 1 454,488 V496 A2,2 0 0 1 452,498 H432 A2,2 0 0 1 430,496 V488 A2,2 0 0 1 432,486 Z" />
+    <polygon points="454,486 466,492 454,498" fill="#5B9BD5" fill-opacity="0.5" />
+    <path fill="#1A1D27" stroke="#5B9BD5" stroke-width="1" stroke-opacity="0.4" d="M488,470 H572 A8,8 0 0 1 580,478 V506 A8,8 0 0 1 572,514 H488 A8,8 0 0 1 480,506 V478 A8,8 0 0 1 488,470 Z" />
+    <text x="530" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#5B9BD5">Step 3</text>
+  </g>
+
+  
+  <path fill="url(#dividerGrad)" d="M639.50,200 H639.50 A1.50,1.50 0 0 1 641,201.50 V538.50 A1.50,1.50 0 0 1 639.50,540 H639.50 A1.50,1.50 0 0 1 638,538.50 V201.50 A1.50,1.50 0 0 1 639.50,200 Z" />
+  <text x="640" y="190" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#D4845A">VS</text>
+
+  
+  <g id="concept-agents">
+    
+  <g transform="translate(720.0, 220.0) scale(3.0)" fill="#D4845A">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M9 0V2H13L16 8.5L13 15H3L0 8.5L3 2H7V0H9ZM4.59794 11.7384L8 12.2618L11.4021 11.7384L11.0979 9.76163L8 10.2382L4.90206 9.76163L4.59794 11.7384ZM7 6.75C7 7.44036 6.44036 8 5.75 8C5.05964 8 4.5 7.44036 4.5 6.75C4.5 6.05964 5.05964 5.5 5.75 5.5C6.44036 5.5 7 6.05964 7 6.75ZM10.25 8C10.9404 8 11.5 7.44036 11.5 6.75C11.5 6.05964 10.9404 5.5 10.25 5.5C9.55964 5.5 9 6.05964 9 6.75C9 7.44036 9.55964 8 10.25 8Z" />
+  </g>
+    <text x="720" y="310" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#D4845A">Agents</text>
+    <text x="720" y="350" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">LLMs dynamically direct their</text>
+    <text x="720" y="375" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#E8E8EC">own processes and tool usage.</text>
+    <text x="720" y="420" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Flexible · Autonomous · Model-driven decisions</text>
+
+    
+    <circle cx="860" cy="495" r="40" fill="none" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" />
+    <text x="860" y="500" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#D4845A">LLM</text>
+    <path fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" d="M946,475 H1006 A6,6 0 0 1 1012,481 V505 A6,6 0 0 1 1006,511 H946 A6,6 0 0 1 940,505 V481 A6,6 0 0 1 946,475 Z" />
+    <text x="976" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#D4845A">Tools</text>
+    <path fill="#1A1D27" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" d="M1046,475 H1106 A6,6 0 0 1 1112,481 V505 A6,6 0 0 1 1106,511 H1046 A6,6 0 0 1 1040,505 V481 A6,6 0 0 1 1046,475 Z" />
+    <text x="1076" y="498" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#D4845A">Env</text>
+    
+    <line x1="900" y1="492" x2="938" y2="492" stroke="#D4845A" stroke-width="1" stroke-opacity="0.4" />
+    <line x1="1012" y1="492" x2="1038" y2="492" stroke="#D4845A" stroke-width="1" stroke-opacity="0.4" />
+    
+    <path d="M860,535 Q860,560 960,560 Q1076,560 1076,515" fill="none" stroke="#D4845A" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4,4" />
+  </g>
+
+  
+  <g id="bottom-insight">
+    <rect x="60" y="590" width="1160" height="1" fill="#2D3348" fill-opacity="0.4" />
+    
+  <g transform="translate(60.0, 612.0) scale(1.5)" fill="#E8B87D">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M5 11.5V14.5L6.5 16H9.5L11 14.5V11.5L12.2396 10.2604C13.3668 9.13324 14 7.60141 14 6.00736C14 2.69365 11.3137 0 8 0C4.68629 0 2 2.69365 2 6.00736C2 7.60141 2.63324 9.13324 3.76041 10.2604L5 11.5ZM7 9.87398V6H9V9.87398C10.7252 9.42994 12 7.86384 12 6C12 3.79086 10.2091 2 8 2C5.79086 2 4 3.79086 4 6C4 7.86384 5.27477 9.42994 7 9.87398Z" />
+  </g>
+    <text x="96" y="632" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#E8B87D" font-weight="bold">Key Insight:</text>
+    <text x="220" y="632" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9CA3AF">All these variations are "agentic systems" — the spectrum matters more than the label.</text>
+  </g>
+
+  
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">02</text>
+  </g>
+</svg>

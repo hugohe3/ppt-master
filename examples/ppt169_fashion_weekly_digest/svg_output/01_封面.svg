@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="coverOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0A0A" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#0A0A0A" stop-opacity="0.45"/>
+      <stop offset="75%" stop-color="#0A0A0A" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#0A0A0A" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#C9A96E" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#E8D5B5" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#E8D5B5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0A0A0A"/>
+
+  <!-- Hero image -->
+  <image href="../images/cover_hermes.jpg" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Dark gradient overlay -->
+  <rect width="1280" height="720" fill="url(#coverOverlay)"/>
+
+  <!-- Top accent line -->
+  <rect x="50" y="45" width="1180" height="1" fill="url(#goldLine)" fill-opacity="0.4"/>
+
+  <!-- Column label top-left -->
+  <text x="50" y="35" font-family="Georgia, SimSun, serif" font-size="11" fill="#C9A96E" fill-opacity="0.7" letter-spacing="3">NEWS CAFÉ</text>
+
+  <!-- Date top-right -->
+  <text x="1230" y="35" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="11" fill="#9E9690" text-anchor="end">2026年4月 · 第16期</text>
+
+  <!-- Crown icon -->
+  <use data-icon="phosphor-duotone/crown" x="580" y="390" width="40" height="40" fill="#C9A96E"/>
+
+  <!-- Main title CN -->
+  <text x="640" y="480" font-family="Georgia, SimSun, serif" font-size="60" fill="#F5F0EB" text-anchor="middle" font-weight="bold">美学周鉴</text>
+
+  <!-- Gold divider line -->
+  <rect x="440" y="500" width="400" height="1.5" fill="url(#goldLine)"/>
+
+  <!-- Subtitle -->
+  <text x="640" y="540" font-family="Georgia, SimSun, serif" font-size="24" fill="#E8D5B5" text-anchor="middle" letter-spacing="8">解 锁 潮 流 序 章</text>
+
+  <!-- Tagline -->
+  <text x="640" y="580" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="14" fill="#9E9690" text-anchor="middle">本周时尚热点已出炉，美美地看完很安心</text>
+
+  <!-- Bottom brand bar -->
+  <rect x="50" y="670" width="1180" height="1" fill="url(#goldLine)" fill-opacity="0.3"/>
+  <text x="640" y="695" font-family="Georgia, SimSun, serif" font-size="11" fill="#8B7355" text-anchor="middle" letter-spacing="2">HERMÈS · CHANEL · DIOR · LOUIS VUITTON · GUCCI · CELINE · BV · McQUEEN</text>
+</svg>

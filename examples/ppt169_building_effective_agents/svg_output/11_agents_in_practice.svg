@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#0F1117"/>
+
+  <!-- Page header -->
+  <g id="header">
+    <rect x="60" y="40" width="4" height="32" rx="2" fill="#D4845A"/>
+    <text x="78" y="66" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#E8E8EC">Agents in Practice</text>
+    <text x="78" y="92" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#9CA3AF">Two promising applications demonstrating practical value</text>
+  </g>
+
+  <!-- Left side: two application cards stacked -->
+  <!-- Customer Support -->
+  <g id="customer-support">
+    <rect x="60" y="115" width="550" height="248" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="60" y="115" width="6" height="248" rx="3" fill="#5B9BD5"/>
+    <text x="86" y="148" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#5B9BD5">A. Customer Support</text>
+
+    <text x="86" y="180" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Natural fit for open-ended agents:</text>
+
+    <use data-icon="chunk/share-nodes" x="86" y="200" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="214" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Conversation flow + external information access</text>
+
+    <use data-icon="chunk/toolbox" x="86" y="226" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="240" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Tools for customer data, orders, knowledge base</text>
+
+    <use data-icon="chunk/code" x="86" y="252" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="266" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Programmatic actions (refunds, ticket updates)</text>
+
+    <use data-icon="chunk/checkmark" x="86" y="278" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="292" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Measurable success via user-defined resolutions</text>
+
+    <rect x="86" y="310" width="500" height="1" fill="#2D3348" fill-opacity="0.4"/>
+    <text x="86" y="337" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#E8B87D">Usage-based pricing — charge only for successful resolutions</text>
+  </g>
+
+  <!-- Coding Agents -->
+  <g id="coding-agents">
+    <rect x="60" y="388" width="550" height="272" rx="12" fill="#1A1D27" stroke="#2D3348" stroke-width="1" filter="url(#cardShadow)"/>
+    <rect x="60" y="388" width="6" height="272" rx="3" fill="#D4845A"/>
+    <text x="86" y="421" font-family="'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="bold" fill="#D4845A">B. Coding Agents</text>
+
+    <text x="86" y="453" font-family="'Helvetica Neue', Arial, sans-serif" font-size="15" fill="#E8E8EC">Remarkable potential — agents are effective because:</text>
+
+    <use data-icon="chunk/badge-check" x="86" y="473" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="487" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Code solutions verifiable via automated tests</text>
+
+    <use data-icon="chunk/arrows-repeat" x="86" y="499" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="513" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Iterate using test results as feedback</text>
+
+    <use data-icon="chunk/layers" x="86" y="525" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="539" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Well-defined and structured problem space</text>
+
+    <use data-icon="chunk/target" x="86" y="551" width="16" height="16" fill="#9CA3AF"/>
+    <text x="112" y="565" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#9CA3AF">Output quality measured objectively</text>
+
+    <rect x="86" y="583" width="500" height="1" fill="#2D3348" fill-opacity="0.4"/>
+    <text x="86" y="606" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#E8B87D">SWE-bench: solving real GitHub issues from PR descriptions alone</text>
+    <text x="86" y="628" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#6B7280">More time optimizing tools than the overall prompt</text>
+  </g>
+
+  <!-- Right side: Coding agent flow diagram -->
+  <g id="coding-flow">
+    <image href="../images/image_7.png" x="640" y="115" width="580" height="545" preserveAspectRatio="xMidYMid meet"/>
+  </g>
+
+  <!-- Footer -->
+  <g id="footer">
+    <text x="1220" y="700" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#6B7280">11</text>
+  </g>
+</svg>

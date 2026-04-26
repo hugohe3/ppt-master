@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="imgShadow04" x="-10%" y="-10%" width="130%" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.2" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="leftImgClip04">
+      <rect x="60" y="140" width="560" height="400" rx="12"/>
+    </clipPath>
+    <clipPath id="rightImgClip04">
+      <rect x="660" y="140" width="560" height="400" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="720" fill="#1A1714"/>
+
+  <!-- Header -->
+  <g id="p04-header">
+    <use data-icon="tabler-filled/palette" x="60" y="30" width="28" height="28" fill="#D4956A"/>
+    <text x="98" y="52" font-family="Georgia, SimSun, serif" font-size="14" fill="#8B7355" letter-spacing="3">
+      色彩实践
+    </text>
+  </g>
+
+  <!-- Title -->
+  <text x="60" y="110" font-family="Georgia, SimSun, serif" font-size="32" font-weight="bold" fill="#E8E0D4">
+    冷暖色调的空间效果对比
+  </text>
+
+  <!-- Left image: light tone -->
+  <g id="p04-left" filter="url(#imgShadow04)">
+    <image href="../images/light_tone_room.png" x="60" y="140" width="560" height="400" preserveAspectRatio="xMidYMid slice" clip-path="url(#leftImgClip04)"/>
+    <!-- Label overlay -->
+    <rect x="60" y="480" width="560" height="60" fill="#1A1714" fill-opacity="0.7" rx="0"/>
+    <rect x="60" y="536" width="560" height="4" fill="#1A1714" fill-opacity="0.7" rx="0"/>
+    <text x="90" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E0D4">
+      浅色调
+    </text>
+    <text x="200" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      增大光线反射，空间显得宽敞
+    </text>
+  </g>
+
+  <!-- Right image: saturated -->
+  <g id="p04-right" filter="url(#imgShadow04)">
+    <image href="../images/saturated_room.png" x="660" y="140" width="560" height="400" preserveAspectRatio="xMidYMid slice" clip-path="url(#rightImgClip04)"/>
+    <!-- Label overlay -->
+    <rect x="660" y="480" width="560" height="60" fill="#1A1714" fill-opacity="0.7" rx="0"/>
+    <rect x="660" y="536" width="560" height="4" fill="#1A1714" fill-opacity="0.7" rx="0"/>
+    <text x="690" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="20" font-weight="bold" fill="#E8E0D4">
+      高饱和度
+    </text>
+    <text x="830" y="518" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="16" fill="#B0A08E">
+      房间紧凑小巧，色彩浓郁
+    </text>
+  </g>
+
+  <!-- VS divider -->
+  <circle cx="640" cy="340" r="24" fill="#2A2520" stroke="#3D362E" stroke-width="2"/>
+  <text x="640" y="347" text-anchor="middle" font-family="Georgia, SimSun, serif" font-size="16" font-weight="bold" fill="#C4A882">
+    VS
+  </text>
+
+  <!-- Bottom insight -->
+  <g id="p04-insight">
+    <rect x="60" y="570" width="1160" height="70" rx="10" fill="#2A2520"/>
+    <rect x="60" y="570" width="4" height="70" rx="2" fill="#D4956A"/>
+    <text x="84" y="598" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="18" fill="#E8E0D4">
+      色彩的魔力：同样的面积，不同色彩让空间感受截然不同
+    </text>
+    <text x="84" y="624" font-family="'Microsoft YaHei', 'PingFang SC', Arial, sans-serif" font-size="15" fill="#B0A08E">
+      灰绿 → 平静专注 ｜ 温暖咖色 → 阳光包裹的舒适感 ｜ 少量跳色 → 独特个性与活力
+    </text>
+  </g>
+
+  <!-- Page number -->
+  <text x="1210" y="690" text-anchor="end" font-family="Georgia, SimSun, serif" font-size="12" fill="#7A6E60">
+    04 / 12
+  </text>
+</svg>

@@ -1,0 +1,73 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" fill="#F6F1E8"/>
+  <rect x="48" y="48" width="1184" height="624" fill="none" stroke="#D8CBB8" stroke-width="1.5"/>
+
+  <g id="header">
+    <text x="72" y="92" font-family="SimSun" font-size="34" fill="#1F1B16" font-weight="700">作品现场：建筑不是抽象名词</text>
+    <text x="72" y="121" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#6A6258">四个现场，对应四种不同的问题意识与建筑回应</text>
+    <line x1="72" y1="136" x2="1208" y2="136" stroke="#D8CBB8" stroke-width="1.5"/>
+    <text x="1196" y="92" text-anchor="end" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="11" fill="#978C7E">04</text>
+  </g>
+
+  <g id="photo-grid">
+    <g id="img-1">
+      <rect x="72" y="170" width="252" height="182" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <image href="../images/jihai_station_new.png" x="72" y="170" width="252" height="182" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="72" y="316" width="252" height="36" fill="#F6F1E8"/>
+      <text x="88" y="339" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#1F1B16">吉海铁路总站</text>
+    </g>
+
+    <g id="img-2">
+      <rect x="348" y="170" width="252" height="182" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <image href="../images/pku_geology.png" x="348" y="170" width="252" height="182" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="348" y="316" width="252" height="36" fill="#F6F1E8"/>
+      <text x="364" y="339" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#1F1B16">北大地质馆旧址</text>
+    </g>
+
+    <g id="img-3">
+      <rect x="72" y="384" width="252" height="182" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <image href="../images/yingqiu_yuan.png" x="72" y="384" width="252" height="182" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="72" y="530" width="252" height="36" fill="#F6F1E8"/>
+      <text x="88" y="553" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#1F1B16">映秋院</text>
+    </g>
+
+    <g id="img-4">
+      <rect x="348" y="384" width="252" height="182" fill="#EFE7DA" stroke="#D8CBB8" stroke-width="1.5"/>
+      <image href="../images/kunming_site.png" x="348" y="384" width="252" height="182" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="348" y="530" width="252" height="36" fill="#F6F1E8"/>
+      <text x="364" y="553" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="15" fill="#1F1B16">昆明自宅与战时现场</text>
+    </g>
+  </g>
+
+  <g id="annotation-column">
+    <rect x="642" y="170" width="554" height="396" rx="14" fill="#FFFFFF" stroke="#D8CBB8" stroke-width="1.5"/>
+
+    <g id="note-1">
+      <use data-icon="tabler-outline/train" x="670" y="198" width="20" height="20" fill="#A44A3F"/>
+      <text x="702" y="214" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16" font-weight="600">公共建筑的象征表达</text>
+      <text x="702" y="244" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">吉海铁路总站不只是站房，更是把国家想象写进建筑形体。</text>
+    </g>
+
+    <g id="note-2">
+      <use data-icon="tabler-outline/school" x="670" y="288" width="20" height="20" fill="#A44A3F"/>
+      <text x="702" y="304" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16" font-weight="600">现代主义与使用者关怀</text>
+      <text x="702" y="334" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">北大地质馆与女生宿舍说明，她关注形式，也关注具体使用经验。</text>
+    </g>
+
+    <g id="note-3">
+      <use data-icon="tabler-outline/building" x="670" y="378" width="20" height="20" fill="#A44A3F"/>
+      <text x="702" y="394" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16" font-weight="600">地方性材料与民居经验</text>
+      <text x="702" y="424" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">映秋院借地方材料和院落组织回应现实条件，不是“简陋”，而是策略。</text>
+    </g>
+
+    <g id="note-4">
+      <use data-icon="tabler-outline/heart" x="670" y="468" width="20" height="20" fill="#A44A3F"/>
+      <text x="702" y="484" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="20" fill="#1F1B16" font-weight="600">战时自建，是职业选择的缩影</text>
+      <text x="702" y="514" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="16" fill="#6A6258">昆明自宅表面朴素，背后是两位建筑师在极端条件下仍坚持建造与生活秩序。</text>
+    </g>
+  </g>
+
+  <g id="footer">
+    <text x="72" y="652" font-family='"PingFang SC", "Microsoft YaHei", Arial, sans-serif' font-size="14" fill="#978C7E">四图并置的目的，是把“建筑师”从抽象标签还原为可见工作现场</text>
+  </g>
+</svg>

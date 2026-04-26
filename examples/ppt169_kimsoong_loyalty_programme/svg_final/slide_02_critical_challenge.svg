@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    Only 15% of Customers Return — A Critical Retention Gap
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V124 A4,4 0 0 1 1216,128 H64 A4,4 0 0 1 60,124 V82 A4,4 0 0 1 64,78 Z" />
+  <text x="80" y="108" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF">
+    The cost of acquiring a new customer is 5-7x retaining an existing one. With only 15% repeat purchases, Kimsoong is leaving significant lifetime value on the table.
+  </text>
+
+  
+  
+  <text x="220" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#E74C3C">15%</text>
+  <text x="220" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Repeat Buyer Rate</text>
+  <text x="220" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">vs. industry benchmark ~40%</text>
+  
+  <g transform="translate(196.0, 340.0) scale(2.0)" fill="#E74C3C">
+    <path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
+  </g>
+
+  
+  <text x="640" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#E8A838">78%</text>
+  <text x="640" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Fair / Poor After-sales Rating</text>
+  <text x="640" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">Only 33% rate service as Good or above</text>
+  
+  <g transform="translate(616.0, 340.0) scale(2.0)" fill="#E8A838">
+    <path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" />
+  </g>
+
+  
+  <text x="1060" y="260" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="bold" fill="#1A3A5C">52%</text>
+  <text x="1060" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#2C3E50">Lost to Competitors</text>
+  <text x="1060" y="325" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">Largest driver of customer churn</text>
+  
+  <g transform="translate(1036.0, 340.0) scale(2.0)" fill="#1A3A5C">
+    <path d="M12.01 2.011a3.2 3.2 0 0 1 2.113 .797l.154 .145l.698 .698a1.2 1.2 0 0 0 .71 .341l.135 .008h1a3.2 3.2 0 0 1 3.195 3.018l.005 .182v1c0 .27 .092 .533 .258 .743l.09 .1l.697 .698a3.2 3.2 0 0 1 .147 4.382l-.145 .154l-.698 .698a1.2 1.2 0 0 0 -.341 .71l-.008 .135v1a3.2 3.2 0 0 1 -3.018 3.195l-.182 .005h-1a1.2 1.2 0 0 0 -.743 .258l-.1 .09l-.698 .697a3.2 3.2 0 0 1 -4.382 .147l-.154 -.145l-.698 -.698a1.2 1.2 0 0 0 -.71 -.341l-.135 -.008h-1a3.2 3.2 0 0 1 -3.195 -3.018l-.005 -.182v-1a1.2 1.2 0 0 0 -.258 -.743l-.09 -.1l-.697 -.698a3.2 3.2 0 0 1 -.147 -4.382l.145 -.154l.698 -.698a1.2 1.2 0 0 0 .341 -.71l.008 -.135v-1l.005 -.182a3.2 3.2 0 0 1 3.013 -3.013l.182 -.005h1a1.2 1.2 0 0 0 .743 -.258l.1 -.09l.698 -.697a3.2 3.2 0 0 1 2.269 -.944z" />
+  </g>
+
+  
+  <line x1="60" y1="430" x2="1220" y2="430" stroke="#D5DDE5" stroke-width="1" />
+
+  
+  <text x="640" y="490" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1A3A5C" font-style="italic">
+    "With 85% of customers not returning, every lost buyer represents
+  </text>
+  <text x="640" y="520" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#1A3A5C" font-style="italic">
+    3-4 potential vehicle purchases over the next decade."
+  </text>
+
+  
+  <text x="640" y="570" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#5D6D7E">
+    Questionnaire return rate: only 40% — current customer data is incomplete and unreliable
+  </text>
+
+  
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Kimsoong Customer Service Department</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">2</text>
+</svg>

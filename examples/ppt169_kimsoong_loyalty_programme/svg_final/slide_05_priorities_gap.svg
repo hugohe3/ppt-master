@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="topBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A3A5C" />
+      <stop offset="100%" stop-color="#2D8A4E" />
+    </linearGradient>
+    <filter id="dotShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="2" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.2" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+  <rect x="0" y="0" width="1280" height="6" fill="url(#topBar)" />
+
+  
+  <text x="60" y="58" font-family="'Helvetica Neue', Arial, sans-serif" font-size="30" font-weight="bold" fill="#1A3A5C">
+    After-Sales Service: High Importance, Critically Low Satisfaction
+  </text>
+
+  
+  <path fill="#1A3A5C" d="M64,78 H1216 A4,4 0 0 1 1220,82 V119 A4,4 0 0 1 1216,123 H64 A4,4 0 0 1 60,119 V82 A4,4 0 0 1 64,78 Z" />
+  <text font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" x="80" y="100">After-sales ranks #4 in customer priorities but only 33% rate it Good or above — the single largest gap between what customers want and</text><text font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" fill="#FFFFFF" x="80" y="116">what they receive. This is the strategic intervention point.</text><line x1="160" y1="150" x2="160" y2="610" stroke="#1A3A5C" stroke-width="2" />
+  <line x1="160" y1="610" x2="1000" y2="610" stroke="#1A3A5C" stroke-width="2" />
+
+  
+  <text x="30" y="390" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C" text-anchor="middle" transform="rotate(-90, 30, 390)">Satisfaction Level (%)</text>
+  <text x="140" y="170" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">100%</text>
+  <text x="140" y="280" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">75%</text>
+  <text x="140" y="390" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">50%</text>
+  <text x="140" y="500" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">25%</text>
+  <text x="140" y="608" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">0%</text>
+
+  
+  <line x1="160" y1="280" x2="1000" y2="280" stroke="#D5DDE5" stroke-width="0.5" stroke-dasharray="4,4" />
+  <line x1="160" y1="390" x2="1000" y2="390" stroke="#D5DDE5" stroke-width="1" stroke-dasharray="6,3" />
+  <line x1="160" y1="500" x2="1000" y2="500" stroke="#D5DDE5" stroke-width="0.5" stroke-dasharray="4,4" />
+
+  
+  <text x="580" y="648" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C" text-anchor="middle">Customer Priority Ranking (1 = Highest)</text>
+  <text x="280" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#1</text>
+  <text x="400" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#2</text>
+  <text x="520" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#3</text>
+  <text x="640" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#4</text>
+  <text x="760" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#5</text>
+  <text x="880" y="632" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#5D6D7E">#6</text>
+
+  
+  
+  <rect x="160" y="150" width="420" height="230" fill="#2D8A4E" fill-opacity="0.05" />
+  
+  <rect x="160" y="380" width="420" height="230" fill="#E74C3C" fill-opacity="0.06" />
+  <text x="370" y="590" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C" fill-opacity="0.4" text-anchor="middle">CRITICAL GAP ZONE</text>
+
+  
+  
+  <circle cx="280" cy="242" r="30" fill="#2D8A4E" filter="url(#dotShadow)" />
+  <text x="280" y="238" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Economy</text>
+  <text x="280" y="254" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~80%</text>
+
+  
+  <circle cx="400" cy="265" r="28" fill="#2D8A4E" filter="url(#dotShadow)" />
+  <text x="400" y="261" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Price</text>
+  <text x="400" y="277" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~75%</text>
+
+  
+  <circle cx="520" cy="288" r="26" fill="#E8A838" filter="url(#dotShadow)" />
+  <text x="520" y="284" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF">Reliability</text>
+  <text x="520" y="300" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#FFFFFF">~70%</text>
+
+  
+  <circle cx="640" cy="458" r="36" fill="#E74C3C" filter="url(#dotShadow)" />
+  <text x="640" y="451" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">After-</text>
+  <text x="640" y="466" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">Sales</text>
+  <text x="640" y="482" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#FFFFFF">33%</text>
+
+  
+  <line x1="640" y1="288" x2="640" y2="420" stroke="#E74C3C" stroke-width="2" stroke-dasharray="6,3" />
+  <text x="656" y="360" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">GAP</text>
+
+  
+  <circle cx="760" cy="357" r="22" fill="#5D6D7E" filter="url(#dotShadow)" />
+  <text x="760" y="353" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Warranty</text>
+  <text x="760" y="367" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF">~55%</text>
+
+  
+  <circle cx="880" cy="334" r="20" fill="#5D6D7E" filter="url(#dotShadow)" />
+  <text x="880" y="330" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF">Perf.</text>
+  <text x="880" y="344" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#FFFFFF">~60%</text>
+
+  
+  <path fill="#F4F6F8" stroke="#D5DDE5" stroke-width="1" d="M1028,150 H1232 A8,8 0 0 1 1240,158 V462 A8,8 0 0 1 1232,470 H1028 A8,8 0 0 1 1020,462 V158 A8,8 0 0 1 1028,150 Z" />
+  <text x="1130" y="180" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="bold" fill="#1A3A5C">After-Sales Rating</text>
+  <line x1="1035" y1="192" x2="1225" y2="192" stroke="#D5DDE5" stroke-width="1" />
+
+  
+  <text x="1040" y="220" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Excellent</text>
+  <text x="1210" y="220" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">4%</text>
+  <path fill="#27AE60" d="M1043,228 H1056 A3,3 0 0 1 1059,231 V231 A3,3 0 0 1 1056,234 H1043 A3,3 0 0 1 1040,231 V231 A3,3 0 0 1 1043,228 Z" />
+
+  <text x="1040" y="256" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Very Good</text>
+  <text x="1210" y="256" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#27AE60">12%</text>
+  <path fill="#27AE60" d="M1043,264 H1094 A3,3 0 0 1 1097,267 V267 A3,3 0 0 1 1094,270 H1043 A3,3 0 0 1 1040,267 V267 A3,3 0 0 1 1043,264 Z" />
+
+  <text x="1040" y="292" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#2C3E50">Good</text>
+  <text x="1210" y="292" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E8A838">17%</text>
+  <path fill="#E8A838" d="M1043,300 H1118 A3,3 0 0 1 1121,303 V303 A3,3 0 0 1 1118,306 H1043 A3,3 0 0 1 1040,303 V303 A3,3 0 0 1 1043,300 Z" />
+
+  <line x1="1035" y1="316" x2="1225" y2="316" stroke="#E74C3C" stroke-width="1" stroke-dasharray="4,3" />
+  <text x="1130" y="332" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#E74C3C" font-weight="bold">— 33% threshold —</text>
+
+  <text x="1040" y="358" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">Fair</text>
+  <text x="1210" y="358" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">61%</text>
+  <path fill="#E74C3C" d="M1043,366 H1207 A3,3 0 0 1 1210,369 V369 A3,3 0 0 1 1207,372 H1043 A3,3 0 0 1 1040,369 V369 A3,3 0 0 1 1043,366 Z" />
+
+  <text x="1040" y="394" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">Poor</text>
+  <text x="1210" y="394" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="bold" fill="#E74C3C">6%</text>
+  <path fill="#E74C3C" d="M1043,402 H1066 A3,3 0 0 1 1069,405 V405 A3,3 0 0 1 1066,408 H1043 A3,3 0 0 1 1040,405 V405 A3,3 0 0 1 1043,402 Z" />
+
+  
+  <path fill="#E74C3C" fill-opacity="0.08" d="M1034,420 H1226 A4,4 0 0 1 1230,424 V456 A4,4 0 0 1 1226,460 H1034 A4,4 0 0 1 1030,456 V424 A4,4 0 0 1 1034,420 Z" />
+  <text x="1130" y="440" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="bold" fill="#E74C3C">67% Dissatisfied</text>
+  <text x="1130" y="455" text-anchor="middle" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">(Fair + Poor combined)</text>
+
+  
+  <path fill="#E8A838" fill-opacity="0.08" stroke="#E8A838" stroke-width="1" stroke-opacity="0.3" d="M1026,500 H1234 A6,6 0 0 1 1240,506 V550 A6,6 0 0 1 1234,556 H1026 A6,6 0 0 1 1020,550 V506 A6,6 0 0 1 1026,500 Z" />
+  
+  <g transform="translate(1035.0, 509.0) scale(0.8333333333333334)" fill="#E8A838">
+    <path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
+  </g>
+  <text x="1062" y="523" font-family="'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="bold" fill="#E8A838">Data Quality Warning</text>
+  <text x="1035" y="543" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">Only 40% questionnaire return</text>
+  <text x="1035" y="555" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#5D6D7E">rate — potential response bias</text>
+
+  
+  <line x1="60" y1="690" x2="1220" y2="690" stroke="#D5DDE5" stroke-width="0.5" />
+  <text x="60" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">Source: Customer Priority Survey &amp; After-Sales Satisfaction Survey</text>
+  <text x="1100" y="710" font-family="'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#95A5A6">CONFIDENTIAL</text>
+  <text x="1220" y="710" text-anchor="end" font-family="'Helvetica Neue', Arial, sans-serif" font-size="11" fill="#95A5A6">5</text>
+</svg>
