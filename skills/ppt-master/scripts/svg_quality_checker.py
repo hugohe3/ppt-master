@@ -15,6 +15,7 @@ import re
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import defaultdict
+from xml.etree import ElementTree as ET
 
 try:
     from project_utils import CANVAS_FORMATS
@@ -101,26 +102,30 @@ class SVGQualityChecker:
             with open(svg_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # 1. Check viewBox
-            self._check_viewbox(content, result, expected_format)
+            # 0. Check XML well-formedness — every other check assumes the file
+            # is valid XML.  Bail early on failure so the regex-based checks
+            # below don't produce misleading errors on a broken document.
+            if self._check_xml_well_formed(content, result):
+                # 1. Check viewBox
+                self._check_viewbox(content, result, expected_format)
 
-            # 2. Check forbidden elements
-            self._check_forbidden_elements(content, result)
+                # 2. Check forbidden elements
+                self._check_forbidden_elements(content, result)
 
-            # 3. Check fonts
-            self._check_fonts(content, result)
+                # 3. Check fonts
+                self._check_fonts(content, result)
 
-            # 4. Check width/height consistency with viewBox
-            self._check_dimensions(content, result)
+                # 4. Check width/height consistency with viewBox
+                self._check_dimensions(content, result)
 
-            # 5. Check text wrapping methods
-            self._check_text_elements(content, result)
+                # 5. Check text wrapping methods
+                self._check_text_elements(content, result)
 
-            # 6. Check image references (file existence and resolution)
-            self._check_image_references(content, svg_path, result)
+                # 6. Check image references (file existence and resolution)
+                self._check_image_references(content, svg_path, result)
 
-            # 7. Check spec_lock drift (colors / font-family / font-size)
-            self._check_spec_lock_drift(content, svg_path, result)
+                # 7. Check spec_lock drift (colors / font-family / font-size)
+                self._check_spec_lock_drift(content, svg_path, result)
 
             # Determine pass/fail
             result['passed'] = len(result['errors']) == 0
@@ -145,6 +150,30 @@ class SVGQualityChecker:
 
         self.results.append(result)
         return result
+
+    def _check_xml_well_formed(self, content: str, result: Dict) -> bool:
+        """Check that the SVG content parses as well-formed XML.
+
+        SVG is strict XML.  AI-generated decks frequently produce content that
+        looks fine in HTML5-tolerant previews but fails strict XML parsing —
+        common causes are HTML named entities (&nbsp; &mdash; &copy;…) and
+        bare XML reserved characters in text (R&D, error < 5%).  Such pages
+        cannot be exported to PPTX, so we surface them here as a hard error
+        before any downstream check looks at them.
+
+        Returns True when the document is well-formed; False otherwise.
+        """
+        try:
+            ET.fromstring(content)
+            return True
+        except ET.ParseError as e:
+            result['errors'].append(
+                f"Invalid XML: {e} — SVG must be well-formed XML. "
+                f"Use raw Unicode for typography (—, ©, →, NBSP); "
+                f"escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; "
+                f"(see references/shared-standards.md §1)."
+            )
+            return False
 
     def _check_viewbox(self, content: str, result: Dict, expected_format: str = None):
         """Check viewBox attribute"""
@@ -551,7 +580,9 @@ class SVGQualityChecker:
 
     def _categorize_issue(self, error_msg: str) -> str:
         """Categorize issue type"""
-        if 'viewBox' in error_msg:
+        if 'Invalid XML' in error_msg:
+            return 'XML well-formedness'
+        elif 'viewBox' in error_msg:
             return 'viewBox issues'
         elif 'foreignObject' in error_msg:
             return 'foreignObject'
@@ -660,9 +691,10 @@ class SVGQualityChecker:
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
-            print(f"  1. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
-            print(f"  2. foreignObject: Use <text> + <tspan> for manual line breaks")
-            print(f"  3. Font issues: end every font-family stack with a PPT-safe family (e.g. Microsoft YaHei / Arial / Consolas)")
+            print(f"  1. XML well-formedness: write typography as raw Unicode (—, ©, →, NBSP); escape XML reserved chars as &amp; &lt; &gt; &quot; &apos; — never use HTML named entities like &nbsp; &mdash; &copy;")
+            print(f"  2. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
+            print(f"  3. foreignObject: Use <text> + <tspan> for manual line breaks")
+            print(f"  4. Font issues: end every font-family stack with a PPT-safe family (e.g. Microsoft YaHei / Arial / Consolas)")
 
     def _print_drift_summary(self):
         """Print spec_lock drift aggregation if any was observed.
