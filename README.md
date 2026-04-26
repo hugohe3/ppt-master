@@ -50,6 +50,19 @@ PPT Master is different:
 - **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
 - **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
 
+**What category this tool belongs to**
+
+AI presentation tools roughly fall into four categories. PPT Master only does the last one:
+
+| Category | Output | Editable element-by-element in PowerPoint? |
+|---|---|:---:|
+| Template fill-in | PPTX built from a fixed template | Partially — limited by the template |
+| Image-based | One large image per slide, packed into PPTX | ❌ each slide is a picture |
+| HTML presentation | Web-based deck | ❌ not a PPTX |
+| **Native editable (PPT Master)** | **Real DrawingML shapes, text boxes, charts** | ✅ click any element to edit |
+
+If all you need is a deck that "looks usable," the first three are faster and cheaper. **PPT Master is for people who need to keep editing the deck in PowerPoint afterward** — incorporating it into formal materials, pitch decks, reports, etc. That positioning means each deck costs more to generate than template fill-in tools — not because the pipeline is unoptimized, but because the output itself is a more expensive artifact.
+
 **[See live examples →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 projects, 309 pages
 
 ## Gallery
