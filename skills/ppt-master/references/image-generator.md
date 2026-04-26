@@ -28,6 +28,8 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
   |----------|-----------|---------|------|--------|----------------------|
   | cover_bg.png | 1920x1080 | Cover background | Background | Pending | Modern tech abstract background, deep blue gradient |
 
+  Status values are defined in [`svg-image-embedding.md`](svg-image-embedding.md). Image_Generator consumes only `Pending` rows and changes them to `Generated` or `Needs-Manual`.
+
 ### Output
 
 | Deliverable | Path / Description | Requirements |
@@ -35,7 +37,7 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
 | Prompt document | `project/images/image_prompts.md` | **Must** be saved using file write tool — cannot just be output in conversation |
 | Optimized prompts | Individual prompt per image | Directly usable with AI image generation tools; doubles as alt text |
 | Image files | `project/images/` directory | Named per the resource list filenames |
-| Updated list | Status changes | `Pending` → `Generated` (success) or `Pending` → `Needs-Manual` (generation attempted and failed) |
+| Updated list | Status changes | `Pending` -> `Generated` (success) or `Pending` -> `Needs-Manual` (generation attempted and failed) |
 
 ---
 
@@ -328,7 +330,7 @@ If the user chooses to generate manually on a platform that watermarks outputs (
 
 - Agent must NOT claim an image is generated without producing an actual file at the expected path
 - Agent must NOT mark an image as `Needs-Manual` without a real generation attempt having failed
-- Status transitions are evidence-driven: `Pending` → `Generated` (file exists at expected path) or `Pending` → `Needs-Manual` (generation attempted and failed after one retry)
+- Status transitions are evidence-driven: `Pending` -> `Generated` (file exists at expected path) or `Pending` -> `Needs-Manual` (generation attempted and failed after one retry)
 
 ### 4.4 Verification Phase
 

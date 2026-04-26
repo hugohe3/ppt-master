@@ -88,15 +88,9 @@ Proactively provide a color scheme (HEX values) based on content characteristics
 | **C** | Built-in icon library | Professional scenarios (recommended) |
 | **D** | Custom icons | Has brand assets |
 
-Built-in library contains 11000+ icons across five libraries — four stylistic + one brand-logo:
+The built-in icon library contains multiple stylistic libraries plus a brand-logo library:
 
-| Library | Style | Count | Prefix | When to use |
-|---------|-------|-------|--------|-------------|
-| `chunk` | fill · straight-line geometry (sharp corners, rectilinear) | 640 | `chunk/` | Sharp, structured, engineered feel |
-| `tabler-filled` | fill · bezier-curve forms (smooth, rounded contours) | 1000+ | `tabler-filled/` | Warm, rounded, organic feel |
-| `tabler-outline` | stroke/line | 5000+ | `tabler-outline/` | Light, elegant, screen-only aesthetic |
-| `phosphor-duotone` | duotone · single color + 0.2-opacity backplate | 1200+ | `phosphor-duotone/` | Soft depth without solid weight — modern SaaS / fintech / product launches |
-| `simple-icons` | **brand logos** (real company / product marks) | 3400+ | `simple-icons/` | Brand-logo inset — coexists with the chosen stylistic library, never replaces it |
+See [`../templates/icons/README.md`](../templates/icons/README.md) for the current library inventory, counts, prefixes, and SVG placeholder details.
 
 > **Mandatory rules when choosing C**:
 > 1. **Pick exactly one stylistic library based on content tone** (reference mappings — not hard rules):
@@ -209,7 +203,7 @@ Selection principle: Baseline choice is driven by **content density**, not desig
 | Layout suggestion | e.g., `Wide landscape (suitable for full-screen/illustration)` |
 | Purpose | e.g., `Cover background` |
 | Type | Background / Photography / Illustration / Diagram / Decorative pattern |
-| Status | Pending generation / Existing / Placeholder |
+| Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | Generation description | Fill in detailed description for AI generation |
 
 **Generation description quality guide** — the description is the seed for Image_Generator's prompt, so specificity matters:
@@ -260,7 +254,7 @@ Core logic (side-by-side only): the container's aspect ratio must closely match 
 
 > **Multi-image slides**: When multiple images appear on one page, use the grid formulas in the "Multi-Image Layout" section of `references/image-layout-spec.md`.
 
-> **Pipeline handoff**: When C) AI generation is selected, after outputting the design spec, prompt the user to invoke Image_Generator. Once images are collected in `images/`, proceed to Executor.
+> **Pipeline handoff**: When C) AI generation is selected, Image_Generator consumes `Pending` rows and updates them to `Generated` or `Needs-Manual` before Executor proceeds. Status names are defined in [`svg-image-embedding.md`](svg-image-embedding.md).
 
 ### Visualization Reference (Non-blocking — Strategist recommends, no user confirmation needed)
 
