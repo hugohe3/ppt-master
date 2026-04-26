@@ -116,8 +116,14 @@ Four approaches: **A: Emoji** (`<text>🚀</text>`) | **B: AI-generated** (SVG b
 
 <!-- tabler-outline (light, line-art style — screen-only decks) -->
 <use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587"/>
+
+<!-- tabler-outline with thin / bold stroke (stroke-style libraries only) -->
+<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="1.5"/>
+<use data-icon="tabler-outline/home" x="100" y="200" width="48" height="48" fill="#005587" stroke-width="3"/>
 ```
 
+> Optional `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): default 2, pass 1.5 for thin, 3 for bold. Ignored on fill libraries (`chunk` / `tabler-filled`).
+>
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
 **Three icon libraries**:
