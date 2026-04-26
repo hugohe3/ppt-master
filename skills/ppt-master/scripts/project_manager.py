@@ -43,8 +43,11 @@ SKILL_DIR = TOOLS_DIR.parent
 REPO_ROOT = SKILL_DIR.parent.parent
 SOURCE_DIRNAME = "sources"
 TEXT_SOURCE_SUFFIXES = {".md", ".markdown", ".txt"}
+TABLE_TEXT_SUFFIXES = {".csv", ".tsv"}
 PDF_SUFFIXES = {".pdf"}
 PRESENTATION_SUFFIXES = {".pptx", ".pptm", ".ppsx", ".ppsm", ".potx", ".potm"}
+EXCEL_SUFFIXES = {".xlsx", ".xlsm"}
+LEGACY_EXCEL_SUFFIXES = {".xls"}
 DOC_SUFFIXES = {
     ".docx", ".doc", ".odt", ".rtf",          # Office documents
     ".epub",                                    # eBooks
@@ -258,6 +261,17 @@ class ProjectManager:
                 sys.executable,
                 str(TOOLS_DIR / "source_to_md" / "ppt_to_md.py"),
                 str(presentation_path),
+                "-o",
+                str(markdown_path),
+            ]
+        )
+
+    def _import_excel(self, excel_path: Path, markdown_path: Path) -> None:
+        self._run_tool(
+            [
+                sys.executable,
+                str(TOOLS_DIR / "source_to_md" / "excel_to_md.py"),
+                str(excel_path),
                 "-o",
                 str(markdown_path),
             ]
@@ -517,6 +531,34 @@ class ProjectManager:
                     summary["markdown"].append(str(markdown_path))
                 except Exception as exc:  # pragma: no cover - summary path
                     summary["skipped"].append(f"{item}: presentation conversion failed ({exc})")
+            elif suffix in EXCEL_SUFFIXES:
+                canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
+                if archived_path.stem in explicit_markdown_stems:
+                    summary["notes"].append(
+                        f"{item}: skipped Excel auto-conversion because a same-stem Markdown source was provided"
+                    )
+                    continue
+                if canonical_markdown_path.exists():
+                    summary["markdown"].append(str(canonical_markdown_path))
+                    summary["notes"].append(
+                        f"{item}: skipped Excel auto-conversion because {canonical_markdown_path.name} already exists"
+                    )
+                    continue
+                markdown_path = canonical_markdown_path
+                try:
+                    self._import_excel(archived_path, markdown_path)
+                    summary["markdown"].append(str(markdown_path))
+                except Exception as exc:  # pragma: no cover - summary path
+                    summary["skipped"].append(f"{item}: Excel conversion failed ({exc})")
+            elif suffix in LEGACY_EXCEL_SUFFIXES:
+                summary["notes"].append(
+                    f"{item}: archived only; legacy .xls is not converted automatically. "
+                    "Resave as .xlsx to generate Markdown."
+                )
+            elif suffix in TABLE_TEXT_SUFFIXES:
+                summary["notes"].append(
+                    f"{item}: archived as a plain-text table source; no Markdown conversion needed"
+                )
             elif suffix in DOC_SUFFIXES:
                 canonical_markdown_path = sources_dir / f"{archived_path.stem}.md"
                 if archived_path.stem in explicit_markdown_stems:
