@@ -3,8 +3,31 @@
 from __future__ import annotations
 
 import re
+from html.entities import html5 as _HTML5_ENTITIES
 from pathlib import Path
 from xml.etree import ElementTree as ET
+
+# AI-generated SVGs frequently contain HTML named entities such as &nbsp;
+# &mdash; &copy;.  SVG is strict XML, so ElementTree only recognises the five
+# XML reserved entities (lt/gt/amp/quot/apos) and raises ParseError on the
+# rest.  This pre-parse pass replaces unknown HTML entities with their Unicode
+# code-point equivalents (e.g. &nbsp; -> U+00A0); the five XML reserved
+# entities and numeric character references (&#160; / &#xa0;) are kept
+# verbatim, and any unrecognised entity is left untouched so the parser can
+# still surface a clear error.
+_XML_RESERVED_ENTITIES = {"lt", "gt", "amp", "quot", "apos"}
+_ENTITY_RE = re.compile(r"&([#a-zA-Z][a-zA-Z0-9]*);")
+
+
+def _sanitize_svg_text(text: str) -> str:
+    def _replace(match: re.Match[str]) -> str:
+        name = match.group(1)
+        if name in _XML_RESERVED_ENTITIES or name.startswith("#"):
+            return match.group(0)
+        char = _HTML5_ENTITIES.get(name + ";") or _HTML5_ENTITIES.get(name)
+        return char if char else match.group(0)
+
+    return _ENTITY_RE.sub(_replace, text)
 
 from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
@@ -212,7 +235,9 @@ def convert_svg_to_slide_shapes(
         - media_files: Dict of {filename: bytes} for media to write.
         - rel_entries: List of relationship entries to add.
     """
-    tree = ET.parse(str(svg_path))
+    raw_text = Path(svg_path).read_text(encoding="utf-8")
+    sanitized = _sanitize_svg_text(raw_text)
+    tree = ET.ElementTree(ET.fromstring(sanitized))
     root = tree.getroot()
 
     defs = collect_defs(root)
