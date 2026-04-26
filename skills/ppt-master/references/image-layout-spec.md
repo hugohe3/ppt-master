@@ -182,9 +182,22 @@ Image positions:
 
 ---
 
-## SVG Image Embedding Code
+## Handoff Fields
 
-### Complete Display (recommended for data charts)
+This spec only defines layout calculation. Write the computed layout fields into the Image Resource List defined in [`svg-image-embedding.md`](svg-image-embedding.md):
+
+| Field | Meaning |
+|-------|---------|
+| `Ratio` | Original image width / height |
+| `Layout plan` | Top-bottom / left-right / grid, including split ratio when relevant |
+| `Image area` | Computed display rectangle size |
+| `Text area` | Computed remaining text area size |
+
+For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external references, and Base64 embedding, use [`svg-image-embedding.md`](svg-image-embedding.md).
+
+### SVG Image Embedding Examples
+
+Complete display, recommended for data charts and side-by-side images where content must not be cropped:
 
 ```xml
 <image href="../images/xxx.png"
@@ -192,32 +205,13 @@ Image positions:
        preserveAspectRatio="xMidYMid meet"/>
 ```
 
-### Crop-to-Fill (backgrounds only)
+Crop-to-fill, for backgrounds and hero images only:
 
 ```xml
 <image href="../images/bg.png"
        x="0" y="0" width="1280" height="720"
        preserveAspectRatio="xMidYMid slice"/>
 ```
-
----
-
-## Image Resource List Template
-
-In the Design Specification & Content Outline, the image resource list must include:
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| Filename | Image filename | `p12_0.png` |
-| Original dimensions | Width x Height | 1524x968 |
-| Ratio | Width / Height | 1.57 |
-| Page | Usage page number | Page 5 |
-| Type | Visual type | Background / Photography / Illustration / Diagram / Decorative |
-| Layout plan | Top-bottom/Left-right + split ratio | Top-bottom 6:4 or Left-right 7:3 |
-| Image area | Image display dimensions | 1160x420 or 780x446 |
-| Text area | Remaining space dimensions | 1160x200 or 360x600 |
-
-**The Type field is used by Image_Generator to select the appropriate prompt strategy.**
 
 ---
 
