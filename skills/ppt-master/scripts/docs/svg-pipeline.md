@@ -84,19 +84,34 @@ Checks include:
 
 ## `svg_position_calculator.py`
 
-Analyze or pre-calculate chart coordinates.
+Analyze and review supported chart coordinates after SVG generation.
 
-Common commands:
+Use this after `svg_quality_checker.py` passes, and only for chart types supported by this script: `bar`, `pie` / `donut`, `radar`, `line` / `area` / `scatter`, and `grid`. Area charts do not have a separate calculator mode: use `calc line` for the upper boundary points, then close the filled region to the plot area's bottom baseline (`y_max`) in the SVG.
+
+### Calculate expected coordinates
+
+```bash
+python3 scripts/svg_position_calculator.py calc bar --data "A:185,B:142" --area "130,155,1200,480" --bar-width 120
+python3 scripts/svg_position_calculator.py calc line --data "0:50,10:80,20:120" --area "120,120,1200,600" --y-range "0,150"
+python3 scripts/svg_position_calculator.py calc pie --data "A:35,B:25,C:20" --center "420,400" --radius 200
+python3 scripts/svg_position_calculator.py calc grid --rows 2 --cols 3 --area "50,150,1230,670"
+```
+
+For an area chart, use the line output as the top boundary:
+
+```svg
+M first_x,first_y ... L last_x,last_y L last_x,y_max L first_x,y_max Z
+```
+
+Manually compare the calculator output with the coordinates already present in the generated SVG. If coordinates differ, update the SVG from the `calc` output, rerun `svg_quality_checker.py`, then repeat the coordinate review. The tool intentionally does not rewrite SVG files automatically.
+
+### Analyze (inspect existing SVG)
 
 ```bash
 python3 scripts/svg_position_calculator.py analyze <svg_file>
-python3 scripts/svg_position_calculator.py interactive
-python3 scripts/svg_position_calculator.py calc bar --data "East:185,South:142"
-python3 scripts/svg_position_calculator.py calc pie --data "A:35,B:25,C:20"
-python3 scripts/svg_position_calculator.py from-json config.json
 ```
 
-Use this when chart geometry needs to be verified before or after AI generation.
+Use this after SVG generation to inspect existing SVG geometry when manual comparison needs more context.
 
 ## Advanced Standalone Tools
 
