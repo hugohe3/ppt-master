@@ -4,6 +4,7 @@
     Usage: Proportion and composition analysis
     Scenarios: Market share, budget allocation, structural analysis
     Supports: 5 segments (3-6 recommended)
+    Convention: slices start at 12 o'clock and proceed clockwise
     -->
     <defs>
         <!-- Sector Shadow -->
@@ -29,6 +30,7 @@
         Outer Radius: 180px
         Inner Radius: 100px
         Start Angle: -90° (12 o'clock)
+        Direction: Clockwise
         Data:
         1. Enterprise Services: 35% (Blue #3B82F6) - Angle: 126°
         2. Consumer Electronics: 28% (Green #10B981) - Angle: 100.8°

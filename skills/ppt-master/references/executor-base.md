@@ -197,7 +197,7 @@ When the Design Spec includes a **VII. Visualization Reference List**, read the 
 
 **Workflow for chart pages after `svg_quality_checker.py` passes:**
 
-1. **Confirm the chart type is supported** — run this review only for chart types exposed by the calculator: `bar`, `pie` / `donut`, `radar`, `line` / `area` / `scatter`, and `grid`. Area charts do **not** have a separate calculator mode; use `calc line` for the upper boundary points, then close the filled area to the plot area's bottom baseline (`y_max`) in the SVG. Other visualizations (timeline, process, framework diagrams, maps, pictograms, etc.) are governed by normal visual/spec review unless they can be explicitly modeled by one of these calculator modes.
+1. **Confirm the chart type is supported** — run this review only for data chart types exposed by the calculator: `bar`, `pie` / `donut`, `radar`, and `line` / `area` / `scatter`. Area charts do **not** have a separate calculator mode; use `calc line` for the upper boundary points, then close the filled area to the plot area's bottom baseline (`y_max`) in the SVG. Grid layout calculation is optional layout assistance, not a mandatory chart calibration target. Other visualizations (timeline, process, framework diagrams, maps, pictograms, etc.) are governed by normal visual/spec review unless they can be explicitly modeled by one of these data chart modes.
 
 2. **Identify the chart plot area** — read it from the SVG layout or derive it from the existing chart frame. The plot area is the data drawing rectangle only; it excludes title, legend, axis labels, footnotes, and surrounding annotations.
 
@@ -219,9 +219,6 @@ When the Design Spec includes a **VII. Visualization Reference List**, read the 
    # Pie / donut chart
    python3 scripts/svg_position_calculator.py calc pie \
      --data "Slice1:Value1,Slice2:Value2" --center "cx,cy" --radius 200
-
-   # Grid layout (KPI cards, multi-column)
-   python3 scripts/svg_position_calculator.py calc grid --rows 2 --cols 2 --area "50,150,1230,670"
    ```
 
    For an area chart, use the line output as the top boundary. The filled SVG path should close to the plot area's bottom edge:
@@ -231,7 +228,7 @@ When the Design Spec includes a **VII. Visualization Reference List**, read the 
 
 4. **If coordinates differ** — manually update the SVG attributes from the calculator output, then rerun `svg_quality_checker.py` and repeat this coordinate review. Do NOT use regex or bulk text replacement to rewrite SVG coordinates automatically.
 
-**Why this matters**: AI models routinely introduce 10–50 px coordinate errors when mentally mapping data values to SVG pixel positions. These errors compound across bars, lines, and grid cells, producing charts where data proportions are visually wrong. The calculator eliminates this class of error entirely.
+**Why this matters**: AI models routinely introduce 10–50 px coordinate errors when mentally mapping data values to SVG pixel positions. These errors compound across bars, lines, and arcs, producing charts where data proportions are visually wrong. The calculator eliminates this class of error entirely.
 
 ---
 
