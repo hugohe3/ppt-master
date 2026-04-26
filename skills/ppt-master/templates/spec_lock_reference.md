@@ -56,6 +56,15 @@
 - inventory: target, bolt, shield, users, chart-bar, lightbulb
 
 > `library` MUST be one of `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` (exactly one — mixing is forbidden). `brand_library: simple-icons` is optional — include it only when the deck genuinely uses company / product / service brand marks; omit the line entirely if no brand icons are needed. `inventory` lists the approved icon names (without library prefix); Executor may only use icons from this list.
+>
+> **`stroke_width` (stroke-style libraries only)** — required when `library` is stroke-based (currently `tabler-outline`); allowed values `1.5` / `2` / `3`. Executor MUST apply this exact value to every `<use data-icon="...">` placeholder via the `stroke-width` attribute, deck-wide. Omit the field for non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone`); it is ignored there. Heavier weight is achieved by switching library, not by going beyond `3` — at 24×24 the strokes would merge and the icon stops reading as line art.
+>
+> Example for stroke-style libraries:
+> ```
+> - library: tabler-outline
+> - stroke_width: 2
+> - inventory: home, chart-bar, users, bulb
+> ```
 
 ## images
 - cover_bg: images/cover_bg.jpg

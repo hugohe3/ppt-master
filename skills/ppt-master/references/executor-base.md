@@ -130,7 +130,7 @@ Strategist chooses the icon approach and approved inventory. Executor only imple
 
 > ⚠️ **Icon Color Rule**: For `<use data-icon="...">` tags, ALWAYS use `fill="#HEX"` to set the color. NEVER use `stroke` or `fill="none"` on these placeholders, even for stroke-style libraries.
 >
-> Optional `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): default 2, pass 1.5 for thin, 3 for bold. Ignored on non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone` / `simple-icons`).
+> `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): allowed values `1.5` / `2` / `3`. **If `spec_lock.md icons` declares `stroke_width`, every placeholder MUST use that exact value, deck-wide.** If the field is absent (legacy decks), default to `2`. Ignored on non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone` / `simple-icons`). Values outside `{1.5, 2, 3}` are forbidden — heavier weight requires switching library, not thicker strokes.
 >
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 

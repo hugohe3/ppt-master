@@ -104,6 +104,8 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 > 3. Use the verified filename (without `.svg`) as the icon name
 > 4. Always include the library prefix (e.g., `chunk-filled/home` or `tabler-filled/home`)
 > 5. List the final icon inventory and chosen library in the Design Spec; Executor may only use icons from this list
+> 6. **Stroke weight lock (stroke-style libraries only)** — when the chosen library is stroke-based (currently `tabler-outline`; applies to any future stroke library too), pick exactly one deck-wide value from `{1.5, 2, 3}` and record it as `stroke_width` in `spec_lock.md icons`. Default is `2`; pick `1.5` for refined / editorial tone, `3` for bolder presence on dense decks. Non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone` / `simple-icons`) ignore this — omit the field entirely.
+>    - **Why not `4` or higher?** On Tabler's 24×24 viewBox a 4-px stroke is 1/6 of the icon width — adjacent strokes merge and inner negative space collapses, so the icon stops reading as line art. If you want heavier visual presence, **switch the library** (to `tabler-filled` or `chunk-filled`) instead of fattening the stroke; that is precisely why multiple stylistic libraries exist.
 >
 > **Do NOT preload any index file** — use `ls | grep` to search on demand with zero token cost.
 
