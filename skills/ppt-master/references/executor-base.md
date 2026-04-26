@@ -108,8 +108,8 @@ Strategist chooses the icon approach and approved inventory. Executor only imple
 **Built-in icons — Placeholder method (recommended)**:
 
 ```xml
-<!-- chunk (default — straight-line geometry, sharp corners, structured) -->
-<use data-icon="chunk/home" x="100" y="200" width="48" height="48" fill="#005587"/>
+<!-- chunk-filled (default — straight-line geometry, sharp corners, structured) -->
+<use data-icon="chunk-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
 
 <!-- tabler-filled (bezier-curve forms, smooth & rounded contours) -->
 <use data-icon="tabler-filled/home" x="100" y="200" width="48" height="48" fill="#005587"/>
@@ -130,22 +130,22 @@ Strategist chooses the icon approach and approved inventory. Executor only imple
 
 > ⚠️ **Icon Color Rule**: For `<use data-icon="...">` tags, ALWAYS use `fill="#HEX"` to set the color. NEVER use `stroke` or `fill="none"` on these placeholders, even for stroke-style libraries.
 >
-> Optional `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): default 2, pass 1.5 for thin, 3 for bold. Ignored on fill libraries (`chunk` / `tabler-filled`).
+> Optional `stroke-width` on the placeholder (stroke-style libraries only — currently `tabler-outline`): default 2, pass 1.5 for thin, 3 for bold. Ignored on fill libraries (`chunk-filled` / `tabler-filled`).
 >
 > No need to manually run `embed_icons.py`; `finalize_svg.py` post-processing tool will auto-embed icons.
 
 **Searching for icons** — use terminal, zero token cost:
 ```bash
-ls skills/ppt-master/templates/icons/chunk/ | grep home
+ls skills/ppt-master/templates/icons/chunk-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-filled/ | grep home
 ls skills/ppt-master/templates/icons/tabler-outline/ | grep chart
 ls skills/ppt-master/templates/icons/phosphor-duotone/ | grep house
 ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 ```
 
-**Abstract concept → icon name** (names for `chunk`; tabler libraries use their own equivalents — verify with `ls | grep`):
+**Abstract concept → icon name** (names for `chunk-filled`; tabler libraries use their own equivalents — verify with `ls | grep`):
 
-| Concept | chunk | tabler-filled / tabler-outline |
+| Concept | chunk-filled | tabler-filled / tabler-outline |
 |---------|-------|-------------------------------|
 | Growth / Increase | `arrow-trend-up` | same |
 | Decline / Decrease | `arrow-trend-down` | same |
@@ -168,7 +168,7 @@ ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 | Expand / Scale | `maximize` | same |
 | Problem / Issue | `bug` | same |
 
-> For self-evident names (home, user, file, search, arrow, etc.) — just `grep chunk/` directly without consulting the table.
+> For self-evident names (home, user, file, search, arrow, etc.) — just `grep chunk-filled/` directly without consulting the table.
 
 > ⚠️ **Icon validation rule**: If the Design Specification includes an icon inventory list, Executor may **only** use icons from that approved list. Before using any icon, verify it exists via `ls | grep` search. **Mixing icons from different libraries in the same presentation is FORBIDDEN** — use only the library specified in the Design Spec.
 
