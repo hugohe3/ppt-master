@@ -51,6 +51,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 
 ## SVG Technical Constraints (Non-negotiable)
 
+**Text characters (must be well-formed XML)**: typography & symbols (em dash, en dash, ©, ®, →, NBSP, full-width punctuation, emoji…) MUST be written as raw Unicode characters; HTML named entities like `&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` are forbidden. XML reserved characters (`&` `<` `>` `"` `'`) inside text or attribute values MUST be escaped as `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` (e.g. `R&amp;D`, `error &lt; 5%`). See `shared-standards.md` §1.0 for full rules.
+
 **Banned features**: `mask` | `<style>` | `class` | external CSS | `<foreignObject>` | `textPath` | `@font-face` | `<animate*>` | `<script>` | `<iframe>` | `<symbol>`+`<use>` (`id` inside `<defs>` is a legitimate reference and is NOT banned)
 
 **Conditionally allowed**: `marker-start` / `marker-end` — the referenced `<marker>` must live in `<defs>`, use `orient="auto"`, and its shape must be a triangle (3-vertex closed path/polygon), diamond (4-vertex), or circle/ellipse. The converter maps these to native DrawingML `<a:headEnd>` / `<a:tailEnd>`. See `shared-standards.md` §1.1 for full constraints.

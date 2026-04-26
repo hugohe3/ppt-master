@@ -278,6 +278,8 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 
 | 禁用特性 | 替代方案 |
 |---------|---------| 
+| HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` `&hellip;` `&bull;` …） | 直接写原生 Unicode 字符（`—` `–` `©` `®` `→` NBSP …） |
+| 文本/属性值中裸写 `& < > " '` | 必须写成 XML 实体 `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` |
 | `<style>` / `class` | 内联属性（`id` 在 `<defs>` 内合法） |
 | `<foreignObject>` | `<text>` + `<tspan>` |
 | `mask` | 叠加遮罩矩形 / gradient overlay |
@@ -420,6 +422,7 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 - [ ] 主要元素有语义化 `<g id="...">`
 - [ ] 无 `<style>`、`class`、`<foreignObject>`、`mask`、`rgba()`
 - [ ] `<g>` 标签无 `opacity` 属性
+- [ ] 文本字符为原生 Unicode（`—` `©` `→` NBSP 等），无 HTML 命名实体（`&nbsp;` `&mdash;` `&copy;` 等）；裸 `& < >` 已转义为 `&amp; &lt; &gt;`
 
 ### 阴影
 - [ ] 使用 `feFlood` 方案（非 `feComponentTransfer`）

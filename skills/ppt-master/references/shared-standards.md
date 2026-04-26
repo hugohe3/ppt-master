@@ -8,6 +8,19 @@ Common technical constraints for PPT Master, eliminating cross-role file duplica
 
 The following features are **absolutely forbidden** when generating SVGs — PPT export will break if any are used:
 
+### 1.0 Text characters: must be well-formed XML
+
+SVG is strict XML. Two rules apply to all text and attribute values:
+
+| Character category | Required form | Forbidden form |
+|---|---|---|
+| Typography & symbols (em dash, en dash, ©, ®, →, ·, NBSP, full-width punctuation, emoji…) | **Raw Unicode characters** — write `—` `–` `©` `®` `→` directly | HTML named entities — `&mdash;` `&ndash;` `&copy;` `&reg;` `&rarr;` `&middot;` `&nbsp;` `&hellip;` `&bull;` etc. |
+| XML reserved characters (`&`, `<`, `>`, `"`, `'`) | **XML entities only** — `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` (e.g. `R&amp;D`, `error &lt; 5%`) | Bare `&` `<` `>` (e.g. `R&D`, `error < 5%`) |
+
+A single offending character invalidates the whole file and aborts the deck export. Numeric character references (`&#160;` / `&#xa0;`) are XML-legal but discouraged.
+
+**Structural blacklist** (in addition to the character rules above):
+
 | Banned Feature | Description |
 |----------------|-------------|
 | `mask` | Masks |

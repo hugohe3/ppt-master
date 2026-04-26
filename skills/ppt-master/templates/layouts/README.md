@@ -245,6 +245,8 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 
 | Banned Element | Alternative |
 |----------------|-------------|
+| HTML named entities in text (`&nbsp;` `&mdash;` `&copy;` `&ndash;` `&reg;` …) | Write the raw Unicode character directly (`—` `–` `©` `®` `→` NBSP …); see shared-standards.md §1.0 |
+| Bare `&` `<` `>` `"` `'` in text or attribute values | Escape as XML entities `&amp;` `&lt;` `&gt;` `&quot;` `&apos;` (e.g. `R&amp;D`, `error &lt; 5%`) |
 | `<foreignObject>` | Use `<text>` + `<tspan>` |
 | `clipPath` on shapes / groups / text | Draw the target geometry directly with the matching native element (`<circle>` / `<ellipse>` / `<rect rx>` / `<polygon>` / `<path>`). `clipPath` on `<image>` elements is conditionally allowed — see shared-standards.md §1.2 |
 | `mask` | Use `fill-opacity` |
