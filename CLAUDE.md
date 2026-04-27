@@ -8,7 +8,7 @@ Before any PPT generation task, **you MUST first read [`skills/ppt-master/SKILL.
 
 PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
 
-**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist Eight Confirmations → [Image_Generator] → Executor → Post-processing → Export PPTX`
+**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist Eight Confirmations → [Image_Generator] → Executor → Quality Check → Chart Calibration → Post-processing → Export PPTX`
 
 ## Execution Requirements
 
@@ -45,6 +45,14 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
 python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+
+# Chart coordinate calibration (MANDATORY after quality check, before notes)
+# Step 1: find pages with charts
+grep -l "chart-plot-area" <project_path>/svg_output/*.svg
+# Step 2: run calculator per chart type and update SVG coordinates
+python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar --data "L1:V1,L2:V2" --area "x_min,y_min,x_max,y_max" --bar-width 120
+python3 skills/ppt-master/scripts/svg_position_calculator.py calc pie --data "A:35,B:25" --center "cx,cy" --radius 200
+python3 skills/ppt-master/scripts/svg_position_calculator.py calc line --data "x1:y1,x2:y2" --area "x_min,y_min,x_max,y_max" --y-range "0,max"
 
 # Post-processing pipeline: run sequentially, one command at a time
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
