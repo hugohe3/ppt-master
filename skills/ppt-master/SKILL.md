@@ -267,9 +267,16 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - `warning` entries (e.g., low-resolution image, non-PPT-safe font tail) should be reviewed and fixed when straightforward; may be acknowledged and released otherwise.
 - Running the checker against `svg_output/` is required — running it only after `finalize_svg.py` is too late (finalize rewrites SVG and some violations get masked).
 
-**Chart Coordinate Calibration** — after quality check passes, BEFORE Logic Construction:
+**Chart Coordinate Calibration (Mandatory)** — after quality check passes, BEFORE Logic Construction:
 
-For pages containing calculator-supported chart types (`bar`, `pie`/`donut`, `line`/`area`, `radar`), run `svg_position_calculator.py` to verify and correct data-driven coordinates. See `executor-base.md §5.1` for the full workflow. Do NOT skip this step — AI models routinely introduce 10-50px coordinate errors.
+1. Enumerate chart pages:
+   ```bash
+   grep -l "chart-plot-area" <project_path>/svg_output/*.svg
+   ```
+2. If non-empty: run `svg_position_calculator.py` per page and update SVG marks (see `executor-base.md §5.1`).
+3. If empty AND the deck contains any `bar` / `pie` / `donut` / `line` / `area` / `radar` visual: those pages are missing the REQUIRED `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` marker — go back, add the marker, then calibrate.
+
+> AI models routinely introduce 10-50 px coordinate errors. Do NOT skip.
 
 **Logic Construction Phase**:
 - Generate speaker notes → `<project_path>/notes/total.md`
@@ -279,6 +286,7 @@ For pages containing calculator-supported chart types (`bar`, `pie`/`donut`, `li
 ## ✅ Executor Phase Complete
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
+- [x] Chart calibration completed (or no calculator-supported charts present)
 - [x] Speaker notes generated at notes/total.md
 ```
 
