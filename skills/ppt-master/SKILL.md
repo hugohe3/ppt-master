@@ -262,7 +262,9 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
-**Chart Coordinate Calibration (Mandatory)** — after quality check passes, BEFORE Logic Construction:
+**Chart Coordinate Calibration Gate** ⚠️ (MANDATORY) — after quality check passes, BEFORE Logic Construction:
+
+> **STOP — This is a separate gate, not part of the quality check. Do NOT skip.**
 
 1. Enumerate chart pages:
    ```bash
@@ -280,7 +282,9 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ## ✅ Executor Phase Complete
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
-- [x] Chart calibration completed (or no calculator-supported charts present)
+- [x] Chart Calibration Gate: ran `grep -l "chart-plot-area"` → ran
+      `svg_position_calculator.py calc <type>` for each result and updated
+      SVG coordinates (or confirmed: no calculator-supported charts)
 - [x] Speaker notes generated at notes/total.md
 ```
 
