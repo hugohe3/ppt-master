@@ -2,11 +2,11 @@
 
 This file is the project entry point for Claude Code.
 
-Before executing any PPT generation task, **you MUST first read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md)**. That file is the authoritative workflow for project creation, role switching, strict serial execution, quality gates, post-processing, and export.
+Before any PPT generation task, **you MUST first read [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md)** — the authoritative workflow for project creation, role switching, serial execution, quality gates, post-processing, and export.
 
 ## Project Overview
 
-PPT Master is an AI-driven presentation generation system. Through multi-role collaboration (Strategist → Image_Generator → Executor), it converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
+PPT Master is an AI-driven presentation generation system. Multi-role collaboration (Strategist → Image_Generator → Executor) converts source documents (PDF/DOCX/URL/Markdown) into natively editable PPTX with real PowerPoint shapes (DrawingML).
 
 **Core Pipeline**: `Source Document → Create Project → Template Option → Strategist Eight Confirmations → [Image_Generator] → Executor → Post-processing → Export PPTX`
 
@@ -21,13 +21,13 @@ PPT Master is an AI-driven presentation generation system. Through multi-role co
 
 ## Compatibility Boundary
 
-- This repository is a workflow/skill package, not a conventional app or service scaffold.
-- Do NOT assume repository-local conventions such as `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them.
-- If a generic coding skill conflicts with this repository's instructions, prioritize [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) and this file for work inside this repository.
+- This repository is a workflow/skill package, not an app or service scaffold.
+- Do NOT assume conventions like `.worktrees/`, `tests/`, or mandatory branch setup unless the user explicitly requests them.
+- On conflict with a generic coding skill, prioritize [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md) and this file inside this repository.
 
 ## Command Quick Reference
 
-These commands are a convenience summary only. The full step-by-step workflow remains in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
+Convenience summary only — full workflow in [`skills/ppt-master/SKILL.md`](skills/ppt-master/SKILL.md).
 
 ```bash
 # Source content conversion
