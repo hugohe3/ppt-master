@@ -241,12 +241,13 @@ Read `references/image-generator.md`
 Read the role definition based on the selected style:
 ```
 Read references/executor-base.md          # REQUIRED: common guidelines
+Read references/shared-standards.md       # REQUIRED: SVG/PPT technical constraints
 Read references/executor-general.md       # General flexible style
 Read references/executor-consultant.md    # Consulting style
 Read references/executor-consultant-top.md # Top consulting style (MBB level)
 ```
 
-> Only need to read executor-base + one style file.
+> Only need to read executor-base + shared-standards + one style file.
 
 **Design Parameter Confirmation (Mandatory)**: Before generating the first SVG, the Executor MUST review and output key design parameters from the Design Specification (canvas dimensions, color scheme, font plan, body font size) to ensure spec adherence. See executor-base.md Section 2 for details.
 
@@ -265,6 +266,10 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - Any `error` (banned SVG features, viewBox mismatch, spec_lock drift, etc.) MUST be fixed on the offending page before proceeding — go back to Visual Construction, re-generate that page, re-run the check.
 - `warning` entries (e.g., low-resolution image, non-PPT-safe font tail) should be reviewed and fixed when straightforward; may be acknowledged and released otherwise.
 - Running the checker against `svg_output/` is required — running it only after `finalize_svg.py` is too late (finalize rewrites SVG and some violations get masked).
+
+**Chart Coordinate Calibration** — after quality check passes, BEFORE Logic Construction:
+
+For pages containing calculator-supported chart types (`bar`, `pie`/`donut`, `line`/`area`, `radar`), run `svg_position_calculator.py` to verify and correct data-driven coordinates. See `executor-base.md §5.1` for the full workflow. Do NOT skip this step — AI models routinely introduce 10-50px coordinate errors.
 
 **Logic Construction Phase**:
 - Generate speaker notes → `<project_path>/notes/total.md`
