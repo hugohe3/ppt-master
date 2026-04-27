@@ -78,7 +78,7 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
 - **Generation rhythm**: lock global design context first, then generate pages sequentially in one continuous context. No batched groups (e.g., 5 at a time).
 - **Phased batch generation** (recommended):
-  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Do NOT run `svg_position_calculator.py` during the initial draft — use layout judgment for chart marks.
+  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Do NOT run `svg_position_calculator.py` during the initial draft — use layout judgment for chart marks. On every page that draws a `bar` / `pie` / `donut` / `line` / `area` / `radar` chart, embed the REQUIRED `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` marker so §5.1 calibration can enumerate the page.
   2. **Quality Check Gate** (between phases): run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. After passing, run §5.1 chart coordinate calibration for calculator-supported chart types. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Logic Construction Phase**: after SVGs pass, batch-generate speaker notes for narrative continuity.
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
@@ -191,7 +191,7 @@ When the Design Spec includes **VII. Visualization Reference List**, read the re
 
 2. **Identify the plot area** — the data drawing rectangle only; excludes title, legend, axis labels, footnotes, annotations.
 
-   Recommended SVG marker when generating chart pages:
+   REQUIRED SVG marker on every calculator-supported chart page (added during initial Visual Construction, not retrofitted later) — calibration enumerates pages by `grep -l "chart-plot-area"`:
    ```xml
    <!-- chart-plot-area: x_min,y_min,x_max,y_max -->
    ```
