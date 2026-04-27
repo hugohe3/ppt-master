@@ -23,6 +23,7 @@
           font-size="34" font-weight="bold" fill="#0F172A">Product Line Revenue Share</text>
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="18" fill="#64748B">Q3 2025 · Total Revenue $520M</text>
+    <!-- chart-plot-area: donut | center: 400,410 | outer-radius: 180 | inner-radius: 100 -->
     <!-- Donut Chart Center -->
     <g id="donutChart" transform="translate(400, 410)">
         <!-- 

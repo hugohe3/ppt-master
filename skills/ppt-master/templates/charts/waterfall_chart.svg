@@ -66,6 +66,7 @@
         <text x="120" y="165" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="600" fill="#94A3B8" text-anchor="end">500</text>
         <!-- Y-Axis Vertical Line -->
         <line x1="140" y1="130" x2="140" y2="560" stroke="#CBD5E1" stroke-width="2"/>
+        <!-- chart-plot-area: 140,130,1200,560 -->
         <!-- Connection Lines -->
         <line x1="265" y1="336" x2="305" y2="336" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,4"/>
         <line x1="395" y1="240" x2="435" y2="240" stroke="#94A3B8" stroke-width="2" stroke-dasharray="4,4"/>

@@ -83,6 +83,7 @@
         Male data: 3%, 8%, 15%, 18%, 16%, 12%, 6%, 2%
         Female data: 4%, 10%, 17%, 15%, 14%, 10%, 5%, 3%
         -->
+        <!-- chart-plot-area: 120,160,1160,620 -->
         <!-- Age Group 1: 60+ -->
         <g id="row-1" transform="translate(0, 168)">
             <rect x="528" y="0" width="72" height="50" rx="4" fill="url(#leftGrad)" filter="url(#barShadow)"/>

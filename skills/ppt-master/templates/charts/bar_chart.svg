@@ -60,6 +60,7 @@
         <!-- X and Y axes -->
         <line x1="140" y1="150" x2="140" y2="550" stroke="#94A3B8" stroke-width="2"/>
         <line x1="140" y1="550" x2="1160" y2="550" stroke="#94A3B8" stroke-width="2"/>
+        <!-- chart-plot-area: 140,150,1160,550 -->
         <!-- Bar Data (Bar width 50px, gap 130px, total gap 180px) -->
         <!-- Bar 1: East - 185M (370px height, 100M=200px) -->
         <g id="bar-1">

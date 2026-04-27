@@ -435,6 +435,12 @@ font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Micr
 - [ ] 已加入 `categories.<group>.charts[]` 中合适的类别
 - [ ] 若服务于高频意图，已加入 `quickLookup.<intent>[]`
 
+### 坐标校准标记（calculator-supported 图表必填）
+- [ ] 矩形坐标系图表（bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly）包含 `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` 标记
+- [ ] Pie / donut / radar 图表包含 `<!-- chart-plot-area: <type> | center: cx,cy | radius: r -->` 标记
+- [ ] 标记位于 `<g id="chartArea">` 内、坐标轴之后、数据元素之前
+- [ ] 坐标值与轴线的实际 SVG 坐标一致
+
 ### 验证命令
 ```bash
 # 一键校验

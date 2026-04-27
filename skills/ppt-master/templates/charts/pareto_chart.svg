@@ -62,6 +62,7 @@
     <line x1="660" y1="130" x2="660" y2="580" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="6 4" stroke-opacity="0.8"/>
     <text x="645" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#64748B" text-anchor="end">VITAL FEW (84%)</text>
     <text x="675" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#94A3B8" text-anchor="start">TRIVIAL MANY (16%)</text>
+    <!-- chart-plot-area: 130,130,1150,580 -->
     <!-- ==================== Bar Data ==================== -->
     <!-- 1. Function Error: 350 (35%) - Cumulative 35% -->
     <rect x="180" y="230" width="80" height="350" fill="url(#vitalGrad)" rx="4"/>
