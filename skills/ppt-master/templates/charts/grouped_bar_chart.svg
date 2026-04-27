@@ -71,6 +71,7 @@
         <!-- Axes -->
         <line x1="140" y1="165" x2="140" y2="570" stroke="#94A3B8" stroke-width="2"/>
         <line x1="140" y1="570" x2="1180" y2="570" stroke="#94A3B8" stroke-width="2"/>
+        <!-- chart-plot-area: 140,165,1180,570 -->
         <!-- Q1 Group -->
         <!-- Q1 Div A: 120M (Height 216px) -->
         <rect x="170" y="354" width="60" height="216" rx="4" fill="url(#groupGrad1)" filter="url(#cardShadow)"/>

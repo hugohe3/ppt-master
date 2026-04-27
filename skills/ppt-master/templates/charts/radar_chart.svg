@@ -33,6 +33,7 @@
     <!-- ==================== Header ==================== -->
     <text x="60" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="800" fill="#0F172A">Comprehensive Capability Assessment</text>
     <text x="60" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="700" fill="#64748B" letter-spacing="1">PRODUCT A VS PRODUCT B · SIX-DIMENSIONAL ANALYSIS</text>
+    <!-- chart-plot-area: radar | center: 500,380 | radius: 220 -->
     <!-- ==================== Radar Chart ==================== -->
     <g id="radarChart" transform="translate(500, 380)">
         <!-- Concentric Background Grids (Zebra filled for contrast) -->

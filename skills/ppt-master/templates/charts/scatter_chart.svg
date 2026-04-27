@@ -71,6 +71,7 @@
         <!-- Main Axes Lines -->
         <line x1="120" y1="160" x2="120" y2="560" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="120" y1="560" x2="1020" y2="560" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- chart-plot-area: 120,160,1020,560 -->
         <!-- Confidence Interval Areas -->
         <polygon points="210,483 975,207 975,257 210,533" fill="#4F46E5" fill-opacity="0.08"/>
         <polygon points="228,456 1002,288 1002,328 228,496" fill="#E11D48" fill-opacity="0.08"/>

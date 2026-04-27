@@ -266,14 +266,17 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 
 > **STOP — This is a separate gate, not part of the quality check. Do NOT skip.**
 
-1. Enumerate chart pages:
+1. **Scan-1 — find marked chart pages**:
    ```bash
    grep -l "chart-plot-area" <project_path>/svg_output/*.svg
    ```
-2. If non-empty: run `svg_position_calculator.py` per page and update SVG marks (see `executor-base.md §5.1`).
-3. If empty AND the deck contains any `bar` / `pie` / `donut` / `line` / `area` / `radar` visual: those pages are missing the REQUIRED `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` marker — go back, add the marker, then calibrate.
-
-> AI models routinely introduce 10-50 px coordinate errors. Do NOT skip.
+2. **Scan-2 — independently verify chart-like structures exist** (catches pages where the marker was forgotten):
+   ```bash
+   grep -l "barGrad\|bar-[0-9]\|groupGrad\|stackShadow\|donut-sectors\|sector-[0-9]\|pieChart\|radarChart\|areaGrad\|lineGrad\|dotShadow\|pointShadow\|hbarGrad\|waterfallGrad\|paretoGrad" <project_path>/svg_output/*.svg
+   ```
+3. **If scan-2 finds pages NOT in scan-1**: those pages contain chart visuals but are MISSING the `<!-- chart-plot-area -->` marker. Go back, read the SVG's axis coordinates, add the marker per `executor-base.md §3.1`, then proceed to step 4.
+4. **If scan-1 is non-empty**: run `svg_position_calculator.py` per page and update SVG coordinates (see `executor-base.md §5.1`).
+5. **If both scans are empty**: no chart pages exist. Confirm and proceed.
 
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
 

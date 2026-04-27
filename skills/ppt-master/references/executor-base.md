@@ -78,10 +78,49 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
 - **Generation rhythm**: lock global design context first, then generate pages sequentially in one continuous context. No batched groups (e.g., 5 at a time).
 - **Phased batch generation** (recommended):
-  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Do NOT run `svg_position_calculator.py` during the initial draft — use layout judgment for chart marks. On every page that draws a `bar` / `pie` / `donut` / `line` / `area` / `radar` chart, embed the REQUIRED `<!-- chart-plot-area: x_min,y_min,x_max,y_max -->` marker so §5.1 calibration can enumerate the page.
+  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Do NOT run `svg_position_calculator.py` during the initial draft — use layout judgment for chart marks. **MUST embed calibration markers** per §3.1 below on every chart page.
   2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
   3. **Chart Calibration Gate** ⚠️ (MANDATORY, do NOT skip): after quality check passes, run `svg_position_calculator.py` for every page containing a `<!-- chart-plot-area -->` marker. See §5.1 for the full workflow: `grep → calc → compare → update SVG`. AI models routinely introduce 10–50 px coordinate errors; this gate eliminates that class of error. If no calculator-supported charts exist, explicitly confirm skip.
   4. **Logic Construction Phase**: after SVGs pass quality check AND calibration, batch-generate speaker notes for narrative continuity.
+
+### 3.1 Chart Plot-Area Marker (MANDATORY on every chart page)
+
+> ⚠️ **Without this marker, the Chart Calibration Gate (§5.1) cannot enumerate chart pages and calibration is silently skipped. This is the #1 root cause of inaccurate chart coordinates.**
+
+Every SVG page that contains a data visualization chart MUST include a calibration marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
+
+**Rectangular plot area** (bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly):
+
+```xml
+<!-- chart-plot-area: x_min,y_min,x_max,y_max -->
+```
+
+**Radial charts** (pie / donut / radar):
+
+```xml
+<!-- chart-plot-area: pie | center: cx,cy | radius: r -->
+<!-- chart-plot-area: donut | center: cx,cy | outer-radius: r1 | inner-radius: r2 -->
+<!-- chart-plot-area: radar | center: cx,cy | radius: r -->
+```
+
+**How to determine coordinate values**:
+
+| Value | Derivation |
+|-------|------------|
+| `x_min` | X coordinate of the Y-axis line (leftmost data boundary) |
+| `y_min` | Y coordinate of the topmost grid line (highest data boundary) |
+| `x_max` | X coordinate of the rightmost axis endpoint or grid line |
+| `y_max` | Y coordinate of the X-axis baseline |
+| `cx, cy` | Center point of pie/donut/radar (accounting for `transform="translate()"`) |
+| `r` | Outer radius of the chart |
+
+**Per-page verification** — after writing each chart SVG, confirm the marker exists:
+
+```bash
+grep "chart-plot-area" <project_path>/svg_output/<current_page>.svg
+```
+
+> All chart templates in `templates/charts/` include this marker as a reference. If you are drawing a chart and the marker is absent, you have a bug.
 - **Technical specs**: see [shared-standards.md](shared-standards.md) for SVG/PPT constraints
 - **Visual depth — through restraint**: layered depth comes from rhythm (flat vs lifted, dense vs spacious), not from shadows everywhere. Apply shadow to at most 2-3 genuinely floating elements per page (cards on photos, primary CTA, overlays); keep peer-grid cards, dividers, body containers flat. Reach for typography weight, spacing, accent bars, subtle tints **before** shadow. Full rules in shared-standards.md §6.
 

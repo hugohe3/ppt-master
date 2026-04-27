@@ -56,6 +56,7 @@
         <!-- Main Axes Lines -->
         <line x1="140" y1="150" x2="140" y2="550" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="140" y1="550" x2="1080" y2="550" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- chart-plot-area: 140,150,1080,550 -->
         <!-- ==================== Stacked Bars ==================== -->
         <!-- Q1'24 (Total: 300) -->
         <g filter="url(#stackShadow)">

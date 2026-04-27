@@ -60,6 +60,7 @@
         <!-- Y-Axis Baseline -->
         <line x1="300" y1="140" x2="300" y2="620" stroke="#94A3B8" stroke-width="2"/>
         <line x1="300" y1="620" x2="1200" y2="620" stroke="#94A3B8" stroke-width="2"/>
+        <!-- chart-plot-area: 300,140,1200,620 -->
         <!-- Bar Data (Height 36px, Spacing 24px, Total 60px) -->
         <!-- Bar 1: Brand A - 92% (Rank 1, Blue) -->
         <text x="290" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 

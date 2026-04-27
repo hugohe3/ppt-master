@@ -95,6 +95,7 @@
               font-size="14" fill="#64748B" text-anchor="middle">Nov</text>
         <text x="1155" y="590" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
               font-size="14" fill="#64748B" text-anchor="middle">Dec</text>
+        <!-- chart-plot-area: 120,160,1200,560 -->
         <!-- 
         Data Points Calculation:
         X: 165, 255, 345, 435, 525, 615, 705, 795, 885, 975, 1065, 1155

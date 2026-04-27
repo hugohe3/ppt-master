@@ -23,6 +23,7 @@
           font-size="32" font-weight="800" fill="#0F172A">Market Share Distribution</text>
     <text x="60" y="115" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
           font-size="14" font-weight="700" fill="#64748B" letter-spacing="1.5">Q3 2025 · TOTAL INDUSTRY MARKET SIZE: $12B</text>
+    <!-- chart-plot-area: pie | center: 420,400 | radius: 200 -->
     <!-- ==================== Pie Chart Graphic ==================== -->
     <g id="pieChart" transform="translate(420, 400)" filter="url(#softShadow)">
         <!-- 
