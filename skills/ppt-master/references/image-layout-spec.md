@@ -2,11 +2,11 @@
 
 # Image Layout Specification
 
-Layout rules for pages where the image is placed **side-by-side with body text** as a container block. Both the Strategist planning phase and Executor generation phase must follow these rules when the image's narrative intent is *side-by-side*.
+Layout rules for pages where the image is placed **side-by-side with body text** as a container block. Strategist and Executor both follow these rules when the image's narrative intent is *side-by-side*.
 
-**Core principle (side-by-side): Calculate container layout based on the image's original aspect ratio, ensuring the image is displayed completely without excess whitespace or cropping.**
+**Core principle (side-by-side)**: compute container layout from the image's original aspect ratio so the image displays completely — no excess whitespace, no cropping.
 
-> **Scope note.** This spec applies to the *side-by-side* image intent — the most common case for content pages. For other intents (hero / full-bleed, atmosphere / background layer, accent / inline), container ratio alignment is not a constraint; see `references/strategist.md` §h "Image narrative intent" for how to decide between them. Hero and atmosphere intents intentionally use full-bleed placement (image fills canvas, cropping is expected); the ratio→split table below does NOT apply to them.
+> **Scope**: this spec applies to *side-by-side* intent only. Other intents (hero / full-bleed, atmosphere / background, accent / inline) use full-bleed placement where ratio alignment is not a constraint and cropping is expected — the ratio→split table below does NOT apply. See `references/strategist.md` §h for intent selection.
 
 ---
 
@@ -22,7 +22,7 @@ Layout rules for pages where the image is placed **side-by-side with body text**
 7. Fill results into the Design Specification's image resource list
 ```
 
-**When to execute**: If the image approach includes "B) User-provided", after the Strategist completes the Eight Confirmations and before content analysis and outlining, the scan must be run and the image resource list populated.
+**When to run**: if image approach includes "B) User-provided", run the scan and populate the image resource list after the Strategist's Eight Confirmations and before content analysis / outlining.
 
 ---
 
@@ -36,7 +36,7 @@ Layout rules for pages where the image is placed **side-by-side with body text**
 | 0.8-1.2 (square) | Left-right split | Left | Image takes content area height, width proportional |
 | < 0.8 (portrait) | Left-right split | Left | Image height = content area height, width proportional |
 
-> Edge cases: When ratio is at a boundary (e.g., 1.5), decide based on text volume. More text → left-right; less text → top-bottom.
+> Boundary ratio (e.g., 1.5): decide by text volume — more text → left-right; less text → top-bottom.
 
 ---
 
@@ -53,7 +53,7 @@ Layout rules for pages where the image is placed **side-by-side with body text**
 | Story | 1080x1920 | 60, 120/180 | 960 x 1620 | 80px | 140px |
 | WeChat Article | 900x383 | 40, 40 | 820 x 303 | 40px | 50px |
 
-> In the formulas below, **W** = content area width, **H** = content area height (already excludes title). The PPT 16:9 example uses W=1160, H=600.
+> Below, **W** = content area width, **H** = content area height (excludes title). PPT 16:9 example: W=1160, H=600.
 
 ### Top-Bottom Layout Calculation
 
@@ -114,7 +114,7 @@ Switch to left-right: image 780x446 (left), text area 360x600 (right) → 7:3 le
 
 ## Portrait Canvas Override
 
-The default layout type selection table assumes a **landscape or square canvas**. For portrait canvases (height > width), the rules change because left-right splits make both columns too narrow.
+Default selection table assumes **landscape or square canvas**. For portrait canvases (height > width), left-right splits leave both columns too narrow — use the override below.
 
 | Canvas Orientation | Image Ratio | Recommended Layout | Reason |
 |-------------------|-------------|-------------------|--------|
@@ -124,13 +124,13 @@ The default layout type selection table assumes a **landscape or square canvas**
 | Portrait (Xiaohongshu, Story) | 0.5-0.8 (portrait) | Left-right | Portrait image on tall canvas works |
 | Portrait (Xiaohongshu, Story) | < 0.5 (extreme portrait) | Left-right | Image takes one side, text the other |
 
-> On square canvases (WeChat Moments 1:1), use the standard landscape canvas rules.
+> Square canvases (WeChat Moments 1:1): use the standard landscape rules.
 
 ---
 
 ## Multi-Image Layout
 
-When a slide contains multiple images, use these formulas to divide the content area evenly.
+For slides with multiple images, divide the content area evenly using the formulas below.
 
 ### Grid Formulas
 
@@ -165,7 +165,7 @@ Image positions:
   (60, 390)  570x290    (650, 390) 570x290
 ```
 
-> For multi-image slides, use `preserveAspectRatio="xMidYMid meet"` on all images to maintain consistent display within cells.
+> Multi-image slides: use `preserveAspectRatio="xMidYMid meet"` on all images for consistent in-cell display.
 
 ---
 
@@ -184,7 +184,7 @@ Image positions:
 
 ## Handoff Fields
 
-This spec only defines layout calculation. Write the computed layout fields into the Image Resource List defined in [`svg-image-embedding.md`](svg-image-embedding.md):
+This spec only defines layout calculation. Write computed fields into the Image Resource List defined in [`svg-image-embedding.md`](svg-image-embedding.md):
 
 | Field | Meaning |
 |-------|---------|
@@ -193,11 +193,11 @@ This spec only defines layout calculation. Write the computed layout fields into
 | `Image area` | Computed display rectangle size |
 | `Text area` | Computed remaining text area size |
 
-For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external references, and Base64 embedding, use [`svg-image-embedding.md`](svg-image-embedding.md).
+For SVG `<image>` syntax, path rules, `preserveAspectRatio`, external refs, and Base64 embedding: see [`svg-image-embedding.md`](svg-image-embedding.md).
 
 ### SVG Image Embedding Examples
 
-Complete display, recommended for data charts and side-by-side images where content must not be cropped:
+Complete display (data charts, side-by-side — must not crop):
 
 ```xml
 <image href="../images/xxx.png"
@@ -205,7 +205,7 @@ Complete display, recommended for data charts and side-by-side images where cont
        preserveAspectRatio="xMidYMid meet"/>
 ```
 
-Crop-to-fill, for backgrounds and hero images only:
+Crop-to-fill (backgrounds and hero images only):
 
 ```xml
 <image href="../images/bg.png"
@@ -223,7 +223,7 @@ python3 scripts/analyze_images.py <project_path>/images --canvas ppt43     # PPT
 python3 scripts/analyze_images.py <project_path>/images --canvas xiaohongshu  # Xiaohongshu
 ```
 
-The `--canvas` parameter selects the target canvas format (default `ppt169`). The tool computes layout type (top-bottom / left-right), image display area, and text area dimensions based on the formulas in this spec. Output includes a Markdown table that can be directly pasted into the image resource list.
+`--canvas` selects target format (default `ppt169`). The tool computes layout type (top-bottom / left-right), image display area, and text area per the formulas above. Output is a Markdown table — paste directly into the image resource list.
 
 ---
 
