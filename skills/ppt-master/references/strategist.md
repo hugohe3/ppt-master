@@ -93,6 +93,9 @@ The built-in icon library contains multiple stylistic libraries plus a brand-log
 See [`../templates/icons/README.md`](../templates/icons/README.md) for the current library inventory, counts, prefixes, and SVG placeholder details.
 
 > **Mandatory rules when choosing C**:
+>
+> **At the eight-confirmation stage — decide the library only. Do NOT run `ls | grep` yet.**
+>
 > 1. **Pick exactly one stylistic library** — read the source material, then choose the library whose visual character best serves the deck:
 >    - **`chunk-filled`** — fill, straight-line geometry (M/L/H/V/Z only); sharp right angles; heavy, solid, architectural
 >    - **`tabler-filled`** — fill, bezier curves and arcs (C/A); smooth, rounded, organic; medium weight, approachable
@@ -100,14 +103,16 @@ See [`../templates/icons/README.md`](../templates/icons/README.md) for the curre
 >    - **`phosphor-duotone`** — duotone; main shape + 20% opacity backplate; medium weight, layered, contemporary
 >    - ⚠️ **One presentation = one stylistic library** for generic icons (home, chart, users, etc.). Mixing `chunk-filled` / `tabler-filled` / `tabler-outline` / `phosphor-duotone` is FORBIDDEN. If the chosen library lacks an exact icon, find the closest alternative **within that same library**.
 >    - **Brand-logo exception**: `simple-icons` is NOT a stylistic library. Add it to the deck's icon inventory **only when** the deck genuinely contains real company / product / service brand marks (customer logos, tech-stack icons, social handles). Never substitute it for a missing generic icon.
-> 2. Search for icon availability: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
-> 3. Use the verified filename (without `.svg`) as the icon name
-> 4. Always include the library prefix (e.g., `chunk-filled/home` or `tabler-filled/home`)
-> 5. List the final icon inventory and chosen library in the Design Spec; Executor may only use icons from this list
-> 6. **Stroke weight lock (stroke-style libraries only)** — when the chosen library is stroke-based (currently `tabler-outline`; applies to any future stroke library too), pick exactly one deck-wide value from `{1.5, 2, 3}` and record it as `stroke_width` in `spec_lock.md icons`. Default is `2`; pick `1.5` for refined / editorial tone, `3` for bolder presence on dense decks. Non-stroke libraries (`chunk-filled` / `tabler-filled` / `phosphor-duotone` / `simple-icons`) ignore this — omit the field entirely.
->    - **Why not `4` or higher?** On Tabler's 24×24 viewBox a 4-px stroke is 1/6 of the icon width — adjacent strokes merge and inner negative space collapses, so the icon stops reading as line art. If you want heavier visual presence, **switch the library** (to `tabler-filled` or `chunk-filled`) instead of fattening the stroke; that is precisely why multiple stylistic libraries exist.
+> 2. **Stroke weight lock (stroke-style libraries only)** — for stroke-based libraries (currently `tabler-outline`), pick one deck-wide value from `{1.5, 2, 3}` (default `2`). For heavier presence, switch library instead of going above `3`.
 >
-> **Do NOT preload any index file** — use `ls | grep` to search on demand with zero token cost.
+> **After all eight confirmations are approved — when writing `design_spec.md` §VI / `spec_lock.md`**, then materialize the icon inventory:
+>
+> 3. Enumerate the concepts the deck actually needs (home, chart, users, …) based on the confirmed outline.
+> 4. Search for each concept's filename in the chosen library: `ls skills/ppt-master/templates/icons/<chosen-library>/ | grep <keyword>`
+> 5. Use the verified filename (without `.svg`) as the icon name; always include the library prefix (e.g., `chunk-filled/home`).
+> 6. List the final icon inventory and chosen library in `design_spec.md` §VI; record the same in `spec_lock.md icons` (including `stroke_width` for stroke-style libraries). Executor may only use icons from this list.
+>
+> **Do NOT preload any index file** — when the inventory step arrives, use `ls | grep` to search on demand with zero token cost.
 
 ### g. Typography Plan Confirmation (Font + Size)
 
