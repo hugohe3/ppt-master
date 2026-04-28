@@ -78,16 +78,15 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 - **Main-agent ownership**: SVG generation must run in the main agent (not sub-agents) — pages share upstream context for cross-page visual continuity
 - **Generation rhythm**: lock global design context first, then generate pages sequentially in one continuous context. No batched groups (e.g., 5 at a time).
 - **Phased batch generation** (recommended):
-  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Do NOT run `svg_position_calculator.py` during the initial draft — use layout judgment for chart marks. **MUST embed calibration markers** per §3.1 below on every chart page.
+  1. **Visual Construction Phase**: generate all SVG pages sequentially for visual consistency. Use layout judgment for chart marks during the draft. **MUST embed plot-area markers** per §3.1 below on every chart page — coordinate calibration is a post-generation step (see [`workflows/verify-charts.md`](../workflows/verify-charts.md)) that depends on these markers.
   2. **Quality Check Gate**: run `python3 scripts/svg_quality_checker.py <project_path>` on `svg_output/`. Any `error` (banned features, viewBox mismatch, spec_lock drift, non-PPT-safe font, etc.) MUST be fixed on the offending page before proceeding — regenerate and re-check. Address `warning`s when straightforward. Do NOT defer to after `finalize_svg.py` — finalize rewrites SVG and masks some violations.
-  3. **Chart Calibration Gate** ⚠️ (MANDATORY, do NOT skip): after quality check passes, run `svg_position_calculator.py` for every page containing a `<!-- chart-plot-area -->` marker. See §5.1 for the full workflow: `grep → calc → compare → update SVG`. AI models routinely introduce 10–50 px coordinate errors; this gate eliminates that class of error. If no calculator-supported charts exist, explicitly confirm skip.
-  4. **Logic Construction Phase**: after SVGs pass quality check AND calibration, batch-generate speaker notes for narrative continuity.
+  3. **Logic Construction Phase**: after SVGs pass the quality check, batch-generate speaker notes for narrative continuity.
 
 ### 3.1 Chart Plot-Area Marker (MANDATORY on every chart page)
 
-> ⚠️ **Without this marker, the Chart Calibration Gate (§5.1) cannot enumerate chart pages and calibration is silently skipped. This is the #1 root cause of inaccurate chart coordinates.**
+> The [`verify-charts`](../workflows/verify-charts.md) workflow enumerates chart pages from `design_spec.md §VII`, then reads each page's plot-area marker to feed `svg_position_calculator.py`. Missing marker → verify-charts has to re-derive the plot area from axis lines, paying the cost on every run.
 
-Every SVG page that contains a data visualization chart MUST include a calibration marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
+Every SVG page that contains a data visualization chart MUST include a plot-area marker inside `<g id="chartArea">`, placed **after axis lines** and **before the first data element** (bar, line, area, point).
 
 **Rectangular plot area** (bar / horizontal_bar / grouped_bar / stacked_bar / line / area / stacked_area / scatter / waterfall / pareto / butterfly):
 
@@ -221,44 +220,13 @@ When the Design Spec includes **VII. Visualization Reference List**, read the re
 
 > Templates: `templates/charts/` (70 types). Index: `templates/charts/charts_index.json`
 
-### 5.1 Chart Coordinate Calibration (After SVG Quality Checker)
+### 5.1 Chart Coordinate Calibration
 
-> For chart types supported by `svg_position_calculator.py`, run calibration **after** `svg_quality_checker.py` passes and **before** Logic Construction. Calibrates already-generated SVG against the plot area. Do NOT run during initial draft. Only applies to calculator-supported types.
+Coordinate calibration runs as a **standalone post-generation workflow**, not inside the executor pipeline. After SVG generation completes, if the deck contains data charts, run [`workflows/verify-charts.md`](../workflows/verify-charts.md) before post-processing.
 
-**Workflow after `svg_quality_checker.py` passes:**
+The executor's only obligation here is upstream: embed the `<!-- chart-plot-area ... -->` marker on every chart page during initial draft (§3.1). Verify-charts enumerates chart pages from `design_spec.md §VII` (authoritative deck plan) and uses the marker to feed `svg_position_calculator.py`.
 
-1. **Confirm chart type is supported** — calculator covers: `bar`, `pie`/`donut`, `radar`, `line`/`area`/`scatter`. Area has no separate mode — use `calc line` for the top boundary, then close to `y_max`. Grid layout is optional. Other visualizations (timeline, process, framework, maps, pictograms…) skip this step.
-
-2. **Identify the plot area** — the data drawing rectangle only; excludes title, legend, axis labels, footnotes, annotations.
-
-   REQUIRED SVG marker on every calculator-supported chart page (added during initial Visual Construction, not retrofitted later) — calibration enumerates pages by `grep -l "chart-plot-area"`:
-   ```xml
-   <!-- chart-plot-area: x_min,y_min,x_max,y_max -->
-   ```
-
-3. **Calculate the expected coordinates** — run the calculator for the chart type and manually compare the output with the SVG's existing mark coordinates:
-   ```bash
-   # Bar chart
-   python3 scripts/svg_position_calculator.py calc bar \
-     --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" --bar-width 120
-
-   # Line / area chart
-   python3 scripts/svg_position_calculator.py calc line \
-     --data "x1:y1,x2:y2,..." --area "x_min,y_min,x_max,y_max" --y-range "0,max"
-
-   # Pie / donut chart
-   python3 scripts/svg_position_calculator.py calc pie \
-     --data "Slice1:Value1,Slice2:Value2" --center "cx,cy" --radius 200
-   ```
-
-   For an area chart, use the line output as the top boundary. The filled SVG path should close to the plot area's bottom edge:
-   ```svg
-   M first_x,first_y ... L last_x,last_y L last_x,y_max L first_x,y_max Z
-   ```
-
-4. **If coordinates differ** — manually update SVG attributes from calculator output, rerun `svg_quality_checker.py`, repeat. Do NOT use regex or bulk replacement.
-
-> AI models routinely introduce 10-50 px errors when mapping data to pixel positions. Errors compound across bars/lines/arcs, distorting proportions. The calculator eliminates this class of error.
+> Do NOT run `svg_position_calculator.py` during the initial draft. The calculator calibrates already-generated SVGs against their declared plot areas; running it before the SVG exists has nothing to compare against.
 
 ---
 

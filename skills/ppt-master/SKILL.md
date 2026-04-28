@@ -74,6 +74,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 | Workflow | Path | Purpose |
 |----------|------|---------|
 | `create-template` | `workflows/create-template.md` | Standalone template creation workflow |
+| `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 
 ---
 
@@ -262,22 +263,6 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 - `warning` entries (low-res image, non-PPT-safe font tail, etc.): fix when straightforward, otherwise acknowledge and release.
 - Run against `svg_output/` (not after `finalize_svg.py` — finalize rewrites SVG and masks violations).
 
-**Chart Coordinate Calibration Gate** ⚠️ (MANDATORY) — after quality check passes, BEFORE Logic Construction:
-
-> **STOP — This is a separate gate, not part of the quality check. Do NOT skip.**
-
-1. **Scan-1 — find marked chart pages**:
-   ```bash
-   grep -l "chart-plot-area" <project_path>/svg_output/*.svg
-   ```
-2. **Scan-2 — independently verify chart-like structures exist** (catches pages where the marker was forgotten):
-   ```bash
-   grep -l "barGrad\|bar-[0-9]\|groupGrad\|stackShadow\|donut-sectors\|sector-[0-9]\|pieChart\|radarChart\|areaGrad\|lineGrad\|dotShadow\|pointShadow\|hbarGrad\|waterfallGrad\|paretoGrad" <project_path>/svg_output/*.svg
-   ```
-3. **If scan-2 finds pages NOT in scan-1**: those pages contain chart visuals but are MISSING the `<!-- chart-plot-area -->` marker. Go back, read the SVG's axis coordinates, add the marker per `executor-base.md §3.1`, then proceed to step 4.
-4. **If scan-1 is non-empty**: run `svg_position_calculator.py` per page and update SVG coordinates (see `executor-base.md §5.1`).
-5. **If both scans are empty**: no chart pages exist. Confirm and proceed.
-
 **Logic Construction Phase**: generate speaker notes → `<project_path>/notes/total.md`
 
 **✅ Checkpoint — Confirm all SVGs and notes are fully generated and quality-checked. Proceed directly to Step 7 post-processing**:
@@ -285,11 +270,10 @@ python3 ${SKILL_DIR}/scripts/svg_quality_checker.py <project_path>
 ## ✅ Executor Phase Complete
 - [x] All SVGs generated to svg_output/
 - [x] svg_quality_checker.py passed (0 errors)
-- [x] Chart Calibration Gate: ran `grep -l "chart-plot-area"` → ran
-      `svg_position_calculator.py calc <type>` for each result and updated
-      SVG coordinates (or confirmed: no calculator-supported charts)
 - [x] Speaker notes generated at notes/total.md
 ```
+
+> **Chart pages?** If this deck contains data charts (bar / line / pie / radar / etc.), run the standalone [`verify-charts`](workflows/verify-charts.md) workflow before Step 7 to calibrate coordinates. AI models routinely introduce 10–50 px errors when mapping data to pixel positions; verify-charts eliminates that class of error. Skip if no chart pages.
 
 ---
 
