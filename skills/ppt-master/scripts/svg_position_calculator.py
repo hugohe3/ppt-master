@@ -1336,6 +1336,7 @@ Common commands:
     bar_parser.add_argument('--area', help='Chart area "x_min,y_min,x_max,y_max"')
     bar_parser.add_argument('--bar-width', type=float, default=50, help='Bar width')
     bar_parser.add_argument('--horizontal', action='store_true', help='Horizontal bar chart')
+    bar_parser.add_argument('--value-range', help='Value axis range "min,max" (from axis tick labels; omit to auto-normalize)')
 
     # Pie chart
     pie_parser = calc_subparsers.add_parser('pie', help='Pie / donut chart')
@@ -1401,12 +1402,31 @@ Common commands:
             coord = CoordinateSystem(canvas, chart_area)
             calc = BarChartCalculator(coord)
             data = parse_data_string(args.data)
-            positions = calc.calculate(data, bar_width=args.bar_width, horizontal=args.horizontal)
+
+            # Parse value-range from axis tick labels (if provided)
+            v_min, v_max = 0, None
+            scale_source = 'auto (max*1.1)'
+            if hasattr(args, 'value_range') and args.value_range:
+                try:
+                    vr = parse_tuple(args.value_range)
+                except ValueError:
+                    parser.error('calc bar --value-range must be numeric "min,max"')
+                if len(vr) != 2:
+                    parser.error('calc bar --value-range must contain exactly two values: "min,max"')
+                v_min, v_max = vr[0], vr[1]
+                if v_max <= v_min:
+                    parser.error('calc bar --value-range max must be greater than min')
+                scale_source = f'axis ticks ({v_min}-{v_max})'
+
+            positions = calc.calculate(data, bar_width=args.bar_width,
+                                      horizontal=args.horizontal,
+                                      y_min=v_min, y_max=v_max)
 
             print(f"\n=== Bar Chart Coordinate Calculation ===")
             print(f"Canvas: {CANVAS_FORMATS.get(canvas, {}).get('dimensions', canvas)}")
             print(f"Chart area: ({coord.chart_area.x_min}, {coord.chart_area.y_min}) - "
                   f"({coord.chart_area.x_max}, {coord.chart_area.y_max})")
+            print(f"Value scale: {scale_source}")
             print()
             print(calc.format_table(positions))
 

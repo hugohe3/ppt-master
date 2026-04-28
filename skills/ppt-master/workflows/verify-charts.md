@@ -62,12 +62,15 @@ For each page in the Step 1 list:
    - Preferred: `<!-- chart-plot-area: ... -->` marker placed by Executor (see [executor-base.md §3.1](../references/executor-base.md)). Read coordinates directly.
    - If missing: derive the plot area from the SVG's axis lines (rectangular charts) or center/radius elements (radial charts). Then **add the marker back to the SVG** so future runs are not paying this cost again.
 3. Read the data series from the SVG's `<text>` label/value elements.
-4. Run the matching calculator command:
+4. **Read axis tick labels (bar charts only).** Locate the `<text>` elements along the value axis — these are the X-axis labels for horizontal bars, or Y-axis labels for vertical bars. Extract the first and last tick values to determine the axis range (e.g. `0%` to `120%` → range `0,120`). Pass this range as `--value-range "0,120"` to the calculator. If the SVG has no explicit tick labels (data labels only, no grid), omit `--value-range` and let the calculator auto-normalize — but flag the receipt as `scale=auto (no ticks)`.
+5. Run the matching calculator command:
 
    ```bash
    # bar_chart / horizontal_bar_chart (add --horizontal for the latter)
+   # IMPORTANT: always pass --value-range from axis tick labels (step 4)
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
-     --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" --bar-width 120
+     --data "Label1:Value1,Label2:Value2" --area "x_min,y_min,x_max,y_max" \
+     --bar-width 120 --value-range "0,axis_max"
 
    # line_chart / area_chart / scatter_chart — area uses line output as the top boundary, then closes to y_max
    python3 skills/ppt-master/scripts/svg_position_calculator.py calc line \
@@ -92,7 +95,7 @@ For each page in the Step 1 list:
    M first_x,first_y ... L last_x,last_y L last_x,y_max L first_x,y_max Z
    ```
 
-5. Compare calculator output against the SVG's existing coordinates. If they differ, update the SVG attributes by hand (do NOT use regex / bulk replacement — coordinates are positional and easy to swap incorrectly).
+6. **Scale-aware comparison.** Compare calculator output against the SVG's existing coordinates. Before declaring a mismatch, verify that the calculator output header shows `Value scale: axis ticks (...)` matching the SVG's drawn axis. If it shows `auto (max*1.1)` for a chart that has explicit axis ticks, the calculator was invoked without `--value-range` — go back to step 4 and re-run with the correct range. **Do NOT update the SVG with mismatched-scale output.** Only update SVG attributes when the scale is confirmed to match and coordinates genuinely differ. Update by hand (do NOT use regex / bulk replacement — coordinates are positional and easy to swap incorrectly).
 
 After updating any page, re-run the quality checker on the project to confirm nothing broke:
 
@@ -112,10 +115,12 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
 # Example: two-series stack at category "Q1" with bottom=30, top=20, plot area y from 100 to 500
 # Run 1 — bottom segment (origin = baseline)
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
-  --data "Q1:30,Q2:..." --area "x_min,100,x_max,500" --bar-width 80
+  --data "Q1:30,Q2:..." --area "x_min,100,x_max,500" \
+  --bar-width 80 --value-range "0,axis_max"
 # Run 2 — top segment (origin shifted up by bottom segment's height in pixels)
 python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar \
-  --data "Q1:20,Q2:..." --area "x_min,100,x_max,<500 - bottom_height_px>" --bar-width 80
+  --data "Q1:20,Q2:..." --area "x_min,100,x_max,<500 - bottom_height_px>" \
+  --bar-width 80 --value-range "0,axis_max"
 ```
 
 **Stacked area** — for N stacked series, run `calc line` N times on **cumulative** y-values (series 1 raw; series 2 = series1+series2; …). Each call yields the top boundary of one band. Each band's SVG path closes to the **previous** band's top boundary (not to `y_max`).
@@ -129,11 +134,11 @@ If a stack page's segment positions don't reduce to this recipe (e.g., negative 
 Output one line per page from the Step 1 list. Receipt count MUST equal Step 1 list length — that is the gate-closing artifact.
 
 ```
-verify-charts: 03_market_share.svg | type=bar          | calc=ran        | svg=updated
-verify-charts: 07_growth.svg       | type=line         | calc=ran        | svg=unchanged (already accurate)
-verify-charts: 11_share_split.svg  | type=pie          | calc=ran        | svg=updated | marker=added (was missing)
-verify-charts: 14_revenue_mix.svg  | type=stacked-bar  | calc=ran×3      | svg=updated (per Stacked recipe)
-verify-charts: 15_unit_economics.svg | type=stacked-area | manual-verify | reason=percent-stacked, recipe does not apply
+verify-charts: 03_market_share.svg | type=bar          | scale=0-100 (from ticks) | calc=ran | svg=updated
+verify-charts: 07_growth.svg       | type=line         | scale=N/A                | calc=ran | svg=unchanged (already accurate)
+verify-charts: 11_share_split.svg  | type=pie          | scale=N/A                | calc=ran | svg=updated | marker=added (was missing)
+verify-charts: 14_revenue_mix.svg  | type=stacked-bar  | scale=0-200 (from ticks) | calc=ran×3 | svg=updated (per Stacked recipe)
+verify-charts: 15_unit_economics.svg | type=stacked-area | scale=N/A | manual-verify | reason=percent-stacked, recipe does not apply
 ```
 
 ---
