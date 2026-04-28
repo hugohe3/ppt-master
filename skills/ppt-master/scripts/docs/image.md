@@ -36,18 +36,18 @@ The active backend must always be selected explicitly via `IMAGE_BACKEND`.
 Example `.env`:
 
 ```env
-IMAGE_BACKEND=gemini
-GEMINI_API_KEY=your-api-key
-GEMINI_BASE_URL=https://your-proxy-url.com/v1beta
-GEMINI_MODEL=gemini-3.1-flash-image-preview
+IMAGE_BACKEND=openai
+OPENAI_API_KEY=sk-xxx
+OPENAI_MODEL=gpt-image-2
+# OPENAI_BASE_URL=http://127.0.0.1:3000/v1   # optional proxy
 ```
 
 Example process environment:
 
 ```bash
-export IMAGE_BACKEND=gemini
-export GEMINI_API_KEY=your-api-key
-export GEMINI_MODEL=gemini-3.1-flash-image-preview
+export IMAGE_BACKEND=openai
+export OPENAI_API_KEY=sk-xxx
+export OPENAI_MODEL=gpt-image-2
 ```
 
 Current process environment wins over `.env`.

@@ -346,8 +346,8 @@ def _resolve_backend() -> tuple[object, str]:
         f"Supported backends: {supported}\n"
         "\n"
         "Example:\n"
-        "  IMAGE_BACKEND=gemini\n"
-        "  GEMINI_API_KEY=your-key\n"
+        "  IMAGE_BACKEND=openai\n"
+        "  OPENAI_API_KEY=sk-xxx\n"
     )
     sys.exit(1)
 

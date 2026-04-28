@@ -384,7 +384,7 @@ Abstract futuristic background with flowing digital waves...
 ## Usage Instructions
 
 1. Copy the "Prompt" above into an AI image generation tool
-2. Recommended platforms: Midjourney / DALL-E 3 / Gemini / Stable Diffusion
+2. Recommended platforms: gpt-image-2 / Midjourney / DALL-E 3 / Gemini / Stable Diffusion
 3. Rename generated images to the corresponding filenames
 4. Place in the `images/` directory
 ```

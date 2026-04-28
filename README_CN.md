@@ -220,14 +220,14 @@ cp .env.example .env    # 然后填入你的 API Key
 ```
 
 ```env
-IMAGE_BACKEND=gemini                        # 必填——必须显式指定
-GEMINI_API_KEY=your-api-key
-GEMINI_MODEL=gemini-3.1-flash-image-preview
+IMAGE_BACKEND=openai                        # 必填——必须显式指定
+OPENAI_API_KEY=sk-xxx
+OPENAI_MODEL=gpt-image-2
 ```
 
-支持多家后端，按 Core / Extended / Experimental 分级。运行 `python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整清单。环境变量优先于 `.env`。使用各家独立的 Key（`GEMINI_API_KEY`、`OPENAI_API_KEY` 等）——不支持全局 `IMAGE_API_KEY`。
+支持多家后端，按 Core / Extended / Experimental 分级。运行 `python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整清单。环境变量优先于 `.env`。使用各家独立的 Key（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等）——不支持全局 `IMAGE_API_KEY`。
 
-> **建议：** 高质量图片推荐在 [Gemini](https://gemini.google.com/) 中生成并选择 **Download full size**。去水印可用 `scripts/gemini_watermark_remover.py`。
+> **建议：** `gpt-image-2` 目前综合质量最佳。Gemini 同样支持——下载 full size 后可用 `scripts/gemini_watermark_remover.py` 去水印。
 
 ---
 
