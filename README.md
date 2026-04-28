@@ -15,20 +15,12 @@ English | [中文](./README_CN.md)
   <a href="mailto:heyug3@gmail.com"><strong>Contact</strong></a>
 </p>
 
-> **Official channels —** this project is published **only** on [GitHub](https://github.com/hugohe3/ppt-master) (primary) and [AtomGit](https://atomgit.com/hugohe3/ppt-master) (auto-synced mirror). Redistributions on any other platform are unofficial and not maintained by the author. Licensed under MIT — attribution required.
-
----
-
 <p align="center">
   <img src="docs/assets/hero-liziqi-colors.gif" alt="Demo: generating a 12-page PPT from a WeChat article with Claude Opus 4.7" width="860" />
 </p>
 
 <p align="center">
-  <sub>↑ A 12-page natively editable deck, generated end-to-end from <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">a single WeChat article URL</a> using Claude Opus 4.7. No manual design. No image export. Every shape, text box, and chart is clickable and editable in PowerPoint.</sub>
-</p>
-
-<p align="center">
-  <sub>🛡️ New: <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_general_dark_tech_claude_code_auto_mode">10-page dark-tech deck</a> generated from <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic's Claude Code Auto Mode engineering blog</a> — see it in the <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">examples</a>.</sub>
+  <sub>↑ A <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_liziqi_plant_dye_colors">12-page natively editable deck</a>, generated end-to-end from <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">a single WeChat article URL</a> using Claude Opus 4.7. No manual design. No image export. Every shape, text box, and chart is clickable and editable in PowerPoint.</sub>
 </p>
 
 ---
@@ -37,20 +29,14 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
 
 > **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
 >
-> **What you'll do**: install Python, install an AI IDE, drop in your material. First-time setup is about 15 minutes. Each deck takes ~10–20 minutes of back-and-forth with the AI.
-
-**[Why PPT Master?](./docs/why-ppt-master.md)**
-
-There's no shortage of AI presentation tools — what's missing is one where the output is **actually usable as a real PowerPoint file**. I build presentations every day, but most tools export images or web screenshots: they look nice but you can't edit anything. Others produce bare-bones text boxes and bullet lists. And they all want a monthly subscription, upload your files to their servers, and lock you into their platform.
+> **What you'll do**: install Python, install an AI IDE, drop in your material.
 
 PPT Master is different:
 
 - **Real PowerPoint** — if a file can't be opened and edited in PowerPoint, it shouldn't be called a PPT. Every element PPT Master outputs is directly clickable and editable
-- **Transparent, predictable cost** — the tool is free and open source; the only cost is your own AI editor, and you know exactly what you're paying. As low as **$0.08/deck** with VS Code Copilot
+- **Transparent, predictable cost** — the tool is free and open source; the only cost is your AI model usage. As AI tools move to usage-based billing, you pay exactly what you consume — no separate PPT subscription added on top
 - **Data stays local** — your files shouldn't have to be uploaded to someone else's server just to make a presentation. Apart from AI model communication, the entire pipeline runs on your machine
 - **No platform lock-in** — your workflow shouldn't be held hostage by any single company. Works with Claude Code, Cursor, VS Code Copilot, and more; supports Claude, GPT, Gemini, Kimi, and other models
-
-**What category this tool belongs to**
 
 AI presentation tools roughly fall into four categories. PPT Master only does the last one:
 
@@ -61,9 +47,7 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 | HTML presentation | Web-based deck | ❌ not a PPTX |
 | **Native editable (PPT Master)** | **Real DrawingML shapes, text boxes, charts** | ✅ click any element to edit |
 
-If all you need is a deck that "looks usable," the first three are faster and cheaper. **PPT Master is for people who need to keep editing the deck in PowerPoint afterward** — incorporating it into formal materials, pitch decks, reports, etc. That positioning means each deck costs more to generate than template fill-in tools — not because the pipeline is unoptimized, but because the output itself is a more expensive artifact.
-
-**[See live examples →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 projects, 309 pages
+**[See live examples →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 projects, 309 pages · **[Why PPT Master?](./docs/why-ppt-master.md)**
 
 ## Gallery
 
@@ -86,36 +70,9 @@ If all you need is a deck that "looks usable," the first three are faster and ch
 
 ## Built by Hugo He
 
-I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who got tired of spending hours on presentations that could be automated. So I built this.
-
-PPT Master started from a simple frustration: existing AI slide tools export images, not editable shapes. As someone who reviews and edits hundreds of slides in investment and consulting work, that was unacceptable. I wanted real DrawingML — click on any element and change it, just like you built it by hand.
-
-This project is my attempt to bridge the gap between **domain expertise** and **product engineering** — turning a complex professional pain point into an open-source tool that anyone can use.
+I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who reviews and edits hundreds of slides every week. I got tired of AI tools that output images instead of editable shapes — so I built this.
 
 🌐 [Personal website](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
-
----
-
-## Support This Project
-
-PPT Master is built and maintained by one person, fully self-funded. Every new template, bug fix, and documentation update runs through AI models that cost real money — and right now those token bills come out of my own pocket.
-
-If PPT Master has been helpful to you, consider chipping in. Sponsorship directly funds more templates, faster fixes, and keeps this project free and open-source.
-
-**Individual sponsorship**
-
-<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
-
-<img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="220" />
-
-Any amount is appreciated.
-
-**Custom templates**
-
-Want a template that matches your brand or industry? Two paths:
-
-- **Do it yourself** — PPT Master ships with a built-in `/create-template` workflow. Walkthrough in [FAQ — How do I create a custom template?](./docs/faq.md#q-how-do-i-create-a-custom-template); spec in [`workflows/create-template.md`](./skills/ppt-master/workflows/create-template.md).
-- **Hire me** — for complex brand systems, private deployment, or integration consulting, I take on a limited number of paid engagements each quarter. 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
 
 ---
 
@@ -293,8 +250,6 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 - 🐛 **Bug reports & feature requests** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 🌐 **Learn more about the author** — [www.hehugo.com](https://www.hehugo.com/)
 
-> Want to build your own template? See [FAQ — custom templates](./docs/faq.md#q-how-do-i-create-a-custom-template). For paid brand / consulting work, see **[Support This Project](#support-this-project)**.
-
 ---
 
 ## Star History
@@ -309,17 +264,31 @@ Looking to collaborate, integrate PPT Master into your workflow, or just have qu
 
 ---
 
-## Supported by DigitalOcean
+## Sponsors & Support
 
-<p>This project is supported by:</p>
-<p>
-  <a href="https://m.do.co/c/547f129aabe1">
-    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="201" />
-  </a>
-</p>
+PPT Master is currently built and maintained primarily by me. Every new template, bug fix, and documentation update takes ongoing resources — currently shared by the sponsors and individual supporters below.
+
+**Corporate sponsors**
+
+<table>
+  <tr>
+    <td width="220" align="center"><a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="180"></a></td>
+    <td>Cloud infrastructure support via the DigitalOcean Open Source Credits Program.</td>
+  </tr>
+</table>
+
+**Individual support**
+
+If PPT Master has been helpful to you, individual support of any amount helps keep the project moving and free.
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-Sponsor-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Sponsor via PayPal" /></a>
+
+<img src="docs/assets/alipay-qr.jpg" alt="Alipay QR Code" width="220" />
 
 ---
 
-Made with ❤️ by [Hugo He](https://www.hehugo.com/) — if this project helps you, please give it a ⭐ and consider [sponsoring](#support-this-project).
+Made with ❤️ by [Hugo He](https://www.hehugo.com/) — if this project helps you, please give it a ⭐ and consider [sponsoring](#sponsors--support).
+
+<sub>Official distribution: <a href="https://github.com/hugohe3/ppt-master">GitHub</a> (primary) · <a href="https://atomgit.com/hugohe3/ppt-master">AtomGit</a> (mirror). Redistributions on other platforms are unofficial. MIT licensed — attribution required.</sub>
 
 [⬆ Back to Top](#ppt-master--ai-generates-natively-editable-pptx-from-any-document)

@@ -10,25 +10,17 @@
 <p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>在线预览</strong></a> ·
   <a href="https://www.hehugo.com/"><strong>关于何雨果</strong></a> ·
-  <a href="./examples/"><strong>示例</strong></a> ·
+  <a href="./examples/"><strong>示例下载</strong></a> ·
   <a href="./docs/zh/faq.md"><strong>常见问题</strong></a> ·
   <a href="mailto:heyug3@gmail.com"><strong>联系我</strong></a>
 </p>
-
-> **官方渠道 —** 本项目**仅**在 [GitHub](https://github.com/hugohe3/ppt-master)（主仓库）和 [AtomGit](https://atomgit.com/hugohe3/ppt-master)（自动同步镜像）发布。其他平台上的转发版本均为非官方版本，不由作者维护。遵循 MIT 协议——使用需保留署名。
-
----
 
 <p align="center">
   <img src="docs/assets/hero-liziqi-colors.gif" alt="演示：用 Claude Opus 4.7 从一篇微信文章生成 12 页 PPT" width="860" />
 </p>
 
 <p align="center">
-  <sub>↑ 一份 12 页的原生可编辑 PPT，端到端由 <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">一个微信公众号链接</a> 通过 Claude Opus 4.7 生成。无需人工设计，不走图片导出——每一个形状、文本框、图表都可以在 PowerPoint 里直接点击编辑。</sub>
-</p>
-
-<p align="center">
-  <sub>🛡️ 新增：根据 <a href="https://www.anthropic.com/engineering/claude-code-auto-mode">Anthropic Claude Code Auto Mode 技术博文</a> 生成的 <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_general_dark_tech_claude_code_auto_mode">10 页深色科技风演示</a> — 查看 <a href="./examples/ppt169_general_dark_tech_claude_code_auto_mode/">示例项目</a>。</sub>
+  <sub>↑ <a href="https://hugohe3.github.io/ppt-master/viewer.html?project=ppt169_liziqi_plant_dye_colors">一份 12 页的原生可编辑 PPT</a>，端到端由 <a href="https://mp.weixin.qq.com/s/6ZmBl0uE3sOtD8TJcHfNAw">一个微信公众号链接</a> 通过 Claude Opus 4.7 生成。无需人工设计，不走图片导出——每一个形状、文本框、图表都可以在 PowerPoint 里直接点击编辑。</sub>
 </p>
 
 ---
@@ -37,20 +29,14 @@
 
 > **运作方式** —— PPT Master 是一套在 AI IDE（Claude Code / Cursor / VS Code + Copilot / Codebuddy 等）里运行的工作流（一个 "skill"）。你在 IDE 的对话框里跟 AI 说"用这份 PDF 做一份 PPT"，AI 按这套工作流在你本机生成一个真正可编辑的 `.pptx`。你不写任何代码——IDE 只是你和 AI 对话的地方。
 >
-> **你要做的**：装 Python、装一个 AI IDE、把资料放进来。第一次配置约 15 分钟；之后每做一份 PPT 大约 10–20 分钟的聊天。
-
-**[为什么选 PPT Master？](./docs/zh/why-ppt-master.md)**
-
-市面上不缺 AI PPT 工具——缺的是一个**生成出来的 PPT 能真正拿去用**的工具。我每天都在做 PPT，但大部分产品输出的是图片或网页截图，好看但改不了；要么就是基础到只有文本框和列表。你还得按月充会员，把文件传到别人的服务器上，被锁在某个平台里。
+> **你要做的**：装 Python、装一个 AI IDE、把资料放进来。
 
 PPT Master 不一样：
 
 - **真正的 PPT** — 如果一个文件在 PowerPoint 里打不开、不能编辑，它就不应该被叫做 PPT。PPT Master 输出的每个元素都能直接点击修改
-- **成本透明可控** — 工具免费开源，唯一成本是你自己的 AI 编辑器，花了多少钱你清清楚楚。VS Code Copilot 下最低 **$0.08/份**
+- **成本透明可控** — 工具免费开源，唯一成本是你自己的 AI 模型用量。当前主流 AI 工具都已转向按量计费，你用多少付多少——PPT Master 不在此之外增加任何额外订阅费用
 - **数据不出本地** — 你的文件不应该为了做一份 PPT 就被上传到别人的服务器。除与 AI 模型的对话外，全流程在你的电脑上完成
 - **不锁定平台** — 你的工作流不应该被任何一家公司绑架。Claude Code、Cursor、VS Code Copilot 等均可驱动；Claude、GPT、Gemini、Kimi 等模型均可使用
-
-**这工具属于哪一类**
 
 市面上的 AI PPT 工具大致分四类，PPT Master 只做最后一类：
 
@@ -61,9 +47,7 @@ PPT Master 不一样：
 | HTML 演示 | 网页演示 | ❌ 不是 PPTX |
 | **原生可编辑（PPT Master）** | **真 DrawingML 形状、文本框、图表** | ✅ 每个元素都能点开改 |
 
-如果你只要"看着能用"的演示稿，前几类更快更便宜。**PPT Master 是给需要后续在 PowerPoint 里继续改、继续套用到正式材料里的人用的**——这个定位决定了它每份的生成成本会比模板填空式工具高一截，不是流程没优化，是产物本身贵。
-
-**[在线预览 →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 个项目，309 页
+**[在线预览 →](https://hugohe3.github.io/ppt-master/)** · [`examples/`](./examples/) — 22 个项目，309 页 · **[为什么选 PPT Master？](./docs/zh/why-ppt-master.md)**
 
 ## 效果展示
 
@@ -86,36 +70,9 @@ PPT Master 不一样：
 
 ## 关于作者
 
-我是何雨果（Hugo He），一名投融资领域的专业人士（注册会计师 · 资产评估师 · 咨询工程师（投资）），同时也是一名开源产品实践者。
-
-PPT Master 源于一个真实的痛点：在投融资和咨询工作中，我每天都要制作和审阅大量 PPT，而市面上的 AI 幻灯片工具导出的都是图片，不是可编辑的元素。作为一个每天都需要点击进去修改内容的人，这完全不可接受。我需要的是真正的 DrawingML——点击任何元素都能直接编辑，就像手工搭建的一样。
-
-这个项目是我把**专业领域经验**和**产品工程能力**结合起来的一次实践——把一个复杂的专业痛点，变成一个任何人都能用的开源工具。
+我是何雨果（Hugo He），投融资领域从业者（注册会计师 · 资产评估师 · 咨询工程师（投资）），每周要审阅和修改大量 PPT。受够了 AI 工具只能导图片不能编辑——所以做了这个。
 
 🌐 [个人网站](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
-
----
-
-## 支持这个项目
-
-PPT Master 由我一个人开发和维护，完全自费。每个新模板、Bug 修复、文档更新背后都要跑 AI 模型，这些 token 费用目前全部是我自掏腰包。
-
-如果 PPT Master 帮到了你，欢迎赞助一点。这些钱会直接用于制作更多模板、更快修复问题，以及让这个项目持续免费开源。
-
-**个人赞助**
-
-<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
-
-<img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="220" />
-
-金额随意，心意最重要。
-
-**自定义模板**
-
-想要一个贴合你品牌或行业的模板？两条路：
-
-- **自己做** — PPT Master 内置 `/create-template` 工作流。完整指引见 [FAQ — 如何制作自定义模板？](./docs/zh/faq.md#q-如何制作自定义模板)；流程规范见 [`workflows/create-template.md`](./skills/ppt-master/workflows/create-template.md)。
-- **找我做** — 复杂品牌体系、私有化部署、集成咨询，我每季度承接少量付费项目。📧 [heyug3@gmail.com](mailto:heyug3@gmail.com)
 
 ---
 
@@ -297,8 +254,6 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 - 🐛 **Bug 反馈与功能建议** — [GitHub Issues](https://github.com/hugohe3/ppt-master/issues)
 - 🌐 **了解更多** — [www.hehugo.com](https://www.hehugo.com/)
 
-> 想自己制作模板？请见 [FAQ — 自定义模板](./docs/zh/faq.md#q-如何制作自定义模板)。企业合作 / 咨询 / 定制开发请见上方 **[支持这个项目](#支持这个项目)** 板块。
-
 ---
 
 ## Star History
@@ -313,17 +268,31 @@ GEMINI_MODEL=gemini-3.1-flash-image-preview
 
 ---
 
-## DigitalOcean Support
+## 赞助与支持
 
-<p>本项目获得 DigitalOcean Open Source Credits Program 支持：</p>
-<p>
-  <a href="https://m.do.co/c/547f129aabe1">
-    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="201" />
-  </a>
-</p>
+PPT Master 目前主要由我开发维护。每个新模板、Bug 修复、文档更新都需要持续的资源投入，目前由以下赞助方和个人支持者共同分担。
+
+**企业赞助方**
+
+<table>
+  <tr>
+    <td width="220" align="center"><a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="180"></a></td>
+    <td>本项目获得 DigitalOcean Open Source Credits Program 提供的云基础设施支持。</td>
+  </tr>
+</table>
+
+**个人赞助**
+
+如果 PPT Master 帮到了你，任何金额的个人赞助都能帮助项目持续更新、保持免费开源。
+
+<a href="https://paypal.me/hugohe3"><img src="https://img.shields.io/badge/PayPal-赞助-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="通过 PayPal 赞助" /></a>
+
+<img src="docs/assets/alipay-qr.jpg" alt="支付宝收款码" width="220" />
 
 ---
 
-Made with ❤️ by [何雨果 Hugo He](https://www.hehugo.com/) — 如果这个项目对你有帮助，请给一个 ⭐，也欢迎[赞助支持](#支持这个项目)。
+Made with ❤️ by [何雨果 Hugo He](https://www.hehugo.com/) — 如果这个项目对你有帮助，请给一个 ⭐，也欢迎[赞助支持](#赞助与支持)。
+
+<sub>官方发布渠道：<a href="https://github.com/hugohe3/ppt-master">GitHub</a>（主仓库）· <a href="https://atomgit.com/hugohe3/ppt-master">AtomGit</a>（镜像）。其他平台转发版本均为非官方版本。MIT 协议，使用需保留署名。</sub>
 
 [⬆ 回到顶部](#ppt-master--ai-生成原生可编辑-pptx支持任意文档输入)

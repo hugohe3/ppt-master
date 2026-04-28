@@ -26,18 +26,13 @@ In the exported PPTX, every shape, text box, gradient, and shadow is a native Po
 
 ---
 
-## 2. Predictable Cost — No Subscription Required
+## 2. Transparent Cost — You Pay Your AI Provider, Not Another Subscription
 
-PPT Master itself is free and open source. No subscriptions, no credits to purchase. The only cost comes from your own AI editor — and it's remarkably low:
+PPT Master itself is free and open source. The only cost is your own AI model usage.
 
-| Model | Requests per PPT | Cost |
-|---|:---:|:---:|
-| Sonnet | ~2 | ~$0.08 |
-| Opus | ~6 | ~$0.24 |
+AI tools across the industry are shifting to usage-based billing — you pay for what you actually consume. PPT Master works with this model naturally: there's no separate PPT subscription, no proprietary credits, no per-seat fee for a presentation platform on top of what you're already paying for AI.
 
-With VS Code Copilot ($10/month), producing dozens of presentations per month costs just a few dollars total. No credit limits, no seat fees, no getting locked out when "this month's quota" runs out.
-
-For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/month, and MS Copilot around $30/month — regardless of how much you actually use.
+For comparison, Gamma subscriptions run $8–20/month, Beautiful.ai $12–45/month — regardless of how much you actually use them. PPT Master adds zero cost on top of your existing AI spend.
 
 ---
 
