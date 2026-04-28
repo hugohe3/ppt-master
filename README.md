@@ -283,9 +283,9 @@ PPT Master is currently built and maintained primarily by me. Every new template
 
 **Corporate sponsors**
 
-<a href="https://www.packyapi.com/register?aff=ppt-master"><img src="https://img.shields.io/badge/PackyCode-AI_API_Relay-4A90E2?style=for-the-badge" alt="PackyCode" /></a>
+<a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" height="40" /></a>
 &nbsp;
-<a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="28" /></a>
+<a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="40" /></a>
 
 **Individual support**
 
