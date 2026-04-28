@@ -253,9 +253,9 @@ Side-by-side only: container ratio must match image ratio. Hero / atmosphere / a
 
 When content outline pages involve **data visualization or infographic-style structured information design** (comparisons, trends, proportions, KPIs, flows, timelines, org structures, strategic frameworks, etc.), Strategist should select appropriate visualization types from the built-in template library.
 
-> **Reading is mandatory; using is per-page judgment.**
-> - Fully read `templates/charts/charts_index.json` before content planning. Each `summary` is a selection rule (`"Pick for … Skip if …"`), not a description.
-> - Not every page needs a chart. But when a page's information structure matches a catalog entry, design with that template as reference — do not improvise.
+> **Reading is mandatory; the catalog is a starting point, not a copy target.**
+> - Fully read `templates/charts/charts_index.json` **before drafting the Eight Confirmations** — the read happens up front, not when you sit down to write Section VII. Each `summary` is a selection rule (`"Pick for … Skip if …"`), not a description.
+> - Not every page needs a chart. When a page's information structure matches a catalog entry, **use that template as a structural starting point** — keep the visualization type and core layout logic, then adapt composition, density, color, decoration, and accompanying elements to fit this deck's content and visual tone. Free adjustment is encouraged; what is forbidden is (a) generating without reading the catalog, and (b) blind verbatim mimicry that ignores the page's actual content weight.
 >
 > **Workflow**:
 > 1. Match each page against `summary` / `keywords` across all entries; use `quickLookup` for cross-check.
@@ -263,12 +263,21 @@ When content outline pages involve **data visualization or infographic-style str
 > 3. One primary visualization per page; a supporting layout may accompany it.
 > 4. List selections in Design Spec section VII; section IX only notes the visualization type name per page.
 >
-> **Read-audit (mandatory, written at the top of section VII)**:
+> **Read-audit (mandatory, written at the top of section VII)** — designed to make fabrication impossible:
 > ```
 > Catalog read: <N> templates / <M> categories
-> Runners-up considered: <key_A> (rejected: <reason>), <key_B> (rejected: <reason>), <key_C> (rejected: <reason>)
+>
+> Per-page selection (one row per viz page):
+>   P03 bar_chart      | summary-quote: "<paste the first sentence of the entry's `summary` field, verbatim>"
+>   P07 line_chart     | summary-quote: "<verbatim first sentence>"
+>   P11 pie_chart      | summary-quote: "<verbatim first sentence>"
+>
+> Runners-up considered (3 entries minimum, drawn from real second-best matches in this deck):
+>   <key_A> | rejected for P03: <reason citing this deck's specifics>
+>   <key_B> | rejected for P07: <reason>
+>   <key_C> | rejected for P11: <reason>
 > ```
-> Runners-up must be templates that were genuinely the second-best match for some page in this deck. If fewer than 3 visualization pages exist, list what exists and note "fewer than 3 viz pages".
+> The `summary-quote` must be copy-pasted from `charts_index.json` — paraphrasing or summarizing breaks the audit. Every `<key_*>` and selected key must `grep` cleanly inside `charts_index.json` (so misspelled or invented keys fail). If fewer than 3 visualization pages exist, list what exists and note "fewer than 3 viz pages"; runners-up still required for each page that does exist.
 >
 > **Fallback when no template fits**:
 > 1. Re-scan `categories` and `quickLookup` — concepts often live under non-obvious labels (e.g. "causal chain" → `process_flow` / `sankey_chart` under `process`).
