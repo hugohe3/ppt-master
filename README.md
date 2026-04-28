@@ -8,6 +8,17 @@
 English | [中文](./README_CN.md)
 
 <p align="center">
+  <sub>This project is kept free and open source with the support of <a href="https://www.packyapi.com/register?aff=ppt-master">PackyCode</a> and other sponsors.</sub>
+</p>
+
+<table>
+  <tr>
+    <td width="180"><a href="https://www.packyapi.com/register?aff=ppt-master"><img src="docs/assets/sponsors/packycode.png" alt="PackyCode" width="150"></a></td>
+    <td>Thanks to PackyCode for sponsoring this project! PackyCode is a reliable and efficient API relay service provider, offering relay services for Claude Code, Codex, Gemini, and more. PackyCode provides special discounts for our project users: register using <a href="https://www.packyapi.com/register?aff=ppt-master">this link</a> and enter the promo code <strong>ppt-master</strong> during recharge to get 10% off.</td>
+  </tr>
+</table>
+
+<p align="center">
   <a href="https://hugohe3.github.io/ppt-master/"><strong>Live Demo</strong></a> ·
   <a href="https://www.hehugo.com/"><strong>About Hugo He</strong></a> ·
   <a href="./examples/"><strong>Examples</strong></a> ·
@@ -145,6 +156,8 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 
 > **Model recommendation**: [Claude](https://claude.ai/) Opus / Sonnet works best and is most tested. Other mainstream models (GPT, Gemini, Kimi, MiniMax, etc.) also work, but SVG absolute-coordinate layout precision varies.
 
+**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsor **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** can help — whether you lack an API key, can't connect directly, have no way to subscribe, or just don't want to pay a full monthly fee for occasional use, PackyCode lets you call Claude, GPT, Gemini and more on a pay-as-you-go basis, no subscription required. Enter promo code **`ppt-master`** when topping up for 10% off.
+
 ### 3. Set Up
 
 **Option A — Download ZIP** (no Git required): click **Code → Download ZIP** on the [GitHub page](https://github.com/hugohe3/ppt-master), then unzip.
@@ -270,12 +283,9 @@ PPT Master is currently built and maintained primarily by me. Every new template
 
 **Corporate sponsors**
 
-<table>
-  <tr>
-    <td width="220" align="center"><a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" width="180"></a></td>
-    <td>Cloud infrastructure support via the DigitalOcean Open Source Credits Program.</td>
-  </tr>
-</table>
+<a href="https://www.packyapi.com/register?aff=ppt-master"><img src="https://img.shields.io/badge/PackyCode-AI_API_Relay-4A90E2?style=for-the-badge" alt="PackyCode" /></a>
+&nbsp;
+<a href="https://m.do.co/c/547f129aabe1"><img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" alt="Powered by DigitalOcean" height="28" /></a>
 
 **Individual support**
 
