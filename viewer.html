@@ -111,9 +111,12 @@
         }
 
         .collection-card {
+            display: block;
             transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
             border: 1px solid var(--border);
+            color: inherit;
+            text-decoration: none;
         }
 
         .collection-card:hover {
@@ -216,8 +219,14 @@
             justify-content: center;
         }
 
+        .fullscreen-overlay.hidden {
+            display: none;
+        }
+
         .fullscreen-overlay object,
         .fullscreen-overlay img {
+            width: 95vw;
+            height: 90vh;
             max-width: 95vw;
             max-height: 90vh;
             object-fit: contain;
@@ -562,8 +571,9 @@
             grid.innerHTML = collections.map(collection => {
                 const cover = collection.cover || collection.slides[0]?.file || '';
                 const coverPath = encodeURI(`examples/${collection.folder}/${cover}`);
+                const collectionUrl = `viewer.html?project=${encodeURIComponent(collection.id)}`;
                 return `
-                <div class="collection-card rounded-xl overflow-hidden" style="background: var(--surface);" onclick='openCollection(${JSON.stringify(collection).replace(/'/g, "&#39;")})'>
+                <a href="${collectionUrl}" data-collection-id="${collection.id}" class="collection-card rounded-xl overflow-hidden" style="background: var(--surface);">
                     <div class="relative" style="aspect-ratio: 16 / 9; background: var(--darker); border-bottom: 1px solid var(--border);">
                         <object data="${coverPath}" type="image/svg+xml" class="w-full h-full object-contain" style="pointer-events:none">
                             <div class="w-full h-full flex items-center justify-center text-3xl" style="opacity: 0.5;">${collection.icon}</div>
@@ -580,10 +590,26 @@
                         </div>
                         <p class="text-sm line-clamp-2" style="color: var(--text-muted); line-height: 1.55;">${collection.description}</p>
                     </div>
-                </div>
+                </a>
             `}).join('');
 
+            grid.querySelectorAll('.collection-card').forEach(card => {
+                card.addEventListener('click', handleCollectionCardClick);
+            });
+
             renderDropdown();
+        }
+
+        function handleCollectionCardClick(event) {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                return;
+            }
+
+            event.preventDefault();
+            const collection = collections.find(item => item.id === event.currentTarget.dataset.collectionId);
+            if (collection) {
+                openCollection(collection);
+            }
         }
 
         // Render dropdown menu

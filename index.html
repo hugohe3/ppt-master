@@ -288,12 +288,15 @@
         }
 
         .project-card {
+            display: block;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
             transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            color: inherit;
+            text-decoration: none;
         }
 
         .project-card:hover {
@@ -601,11 +604,9 @@
                 : projects.filter(p => p.style === filter);
 
             filtered.forEach(project => {
-                const card = document.createElement('div');
+                const card = document.createElement('a');
                 card.className = 'project-card';
-                card.onclick = () => {
-                    window.location.href = `viewer.html?project=${encodeURIComponent(project.id)}`;
-                };
+                card.href = `viewer.html?project=${encodeURIComponent(project.id)}`;
 
                 const styleClass = `style-${project.style || 'general'}`;
                 const tags = project.tags || [];
