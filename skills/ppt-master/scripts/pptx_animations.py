@@ -378,6 +378,10 @@ def create_sequence_timing_xml(
         outer_id = next_id
         next_id += 1
         inner_steps = []
+        with_wrapper_id = None
+        if trigger == 'with-previous':
+            with_wrapper_id = next_id
+            next_id += 1
         elapsed_ms = 0
         for i, target in enumerate(targets):
             shape_id, delay_ms, animation = target
@@ -427,6 +431,18 @@ def create_sequence_timing_xml(
                 </p:par>''')
 
         inner_xml = '\n                '.join(inner_steps)
+        if trigger == 'with-previous':
+            # Match PowerPoint's native "Start: With Previous" export:
+            # one delay=0 wrapper begins on slide entry, and all withEffect
+            # rows live under that wrapper so they truly start in parallel.
+            inner_xml = f'''<p:par>
+                      <p:cTn id="{with_wrapper_id}" fill="hold">
+                        <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                        <p:childTnLst>
+                          {inner_xml}
+                        </p:childTnLst>
+                      </p:cTn>
+                    </p:par>'''
         if trigger in ('with-previous', 'after-previous'):
             # Match PowerPoint's native slide-entry export: the wrapper waits
             # for mainSeq to begin, then child nodes resolve their Start modes.
