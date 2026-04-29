@@ -260,7 +260,7 @@ For each `Pending` row:
 |---------|------|
 | User explicitly requests web image search | `web` |
 | No image-generation API key and deck benefits from imagery, after user confirmation | `web` |
-| User provides image-generation API key and no web request | `ai` |
+| Image-generation API key present and no web request | `ai` |
 
 Agent must follow this table exactly when deciding between `ai` and `web`.
 
