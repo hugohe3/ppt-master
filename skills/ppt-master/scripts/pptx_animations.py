@@ -369,11 +369,16 @@ def create_sequence_timing_xml(
     else:
         # with-previous / after-previous: wrap the entire cascade in ONE
         # par so the sequence has a real trigger anchor under mainSeq.
-        # Inside that wrapper, each element is a sibling par whose cTn
-        # carries nodeType=withEffect or afterEffect.
+        #
+        # Native PowerPoint after-previous export uses two timing layers for
+        # each animation row: an outer wrapper owns the timeline offset, while
+        # the inner effect cTn stays nodeType="afterEffect" with delay="0".
+        # This keeps the animation pane editable as standard "After Previous"
+        # rows instead of exposing synthetic per-effect cumulative delays.
         outer_id = next_id
         next_id += 1
         inner_steps = []
+        elapsed_ms = 0
         for i, target in enumerate(targets):
             shape_id, delay_ms, animation = target
             if animation not in ANIMATIONS:
@@ -381,36 +386,50 @@ def create_sequence_timing_xml(
             anim_info = ANIMATIONS[animation]
             preset_id = anim_info.get('presetID', 1)
             preset_subtype = anim_info.get('presetSubtype', 0)
-            leaf_id = next_id
-            set_id = next_id + 1
-            eff_id = next_id + 2
-            next_id += 3
-            effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
 
             if trigger == 'with-previous':
-                node_type = 'withEffect'
-                delay = 0
-            else:
-                # after-previous: first element starts when the outer
-                # wrapper fires (withEffect, delay=0); subsequent elements
-                # chain via afterEffect with delay_ms spacing.
-                node_type = 'withEffect' if i == 0 else 'afterEffect'
-                delay = int(delay_ms)
-
-            inner_steps.append(f'''<p:par>
-                  <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="{node_type}">
-                    <p:stCondLst><p:cond delay="{delay}"/></p:stCondLst>
+                leaf_id = next_id
+                set_id = next_id + 1
+                eff_id = next_id + 2
+                next_id += 3
+                effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+                inner_steps.append(f'''<p:par>
+                  <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="withEffect">
+                    <p:stCondLst><p:cond delay="0"/></p:stCondLst>
                     <p:childTnLst>
                       {effect_xml}
                     </p:childTnLst>
                   </p:cTn>
                 </p:par>''')
+            else:
+                if i > 0:
+                    elapsed_ms += dur_ms + int(delay_ms)
+                wrapper_id = next_id
+                leaf_id = next_id + 1
+                set_id = next_id + 2
+                eff_id = next_id + 3
+                next_id += 4
+                effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+                inner_steps.append(f'''<p:par>
+                  <p:cTn id="{wrapper_id}" fill="hold">
+                    <p:stCondLst><p:cond delay="{elapsed_ms}"/></p:stCondLst>
+                    <p:childTnLst>
+                      <p:par>
+                        <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="afterEffect">
+                          <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                          <p:childTnLst>
+                            {effect_xml}
+                          </p:childTnLst>
+                        </p:cTn>
+                      </p:par>
+                    </p:childTnLst>
+                  </p:cTn>
+                </p:par>''')
 
         inner_xml = '\n                '.join(inner_steps)
-        if trigger == 'with-previous':
-            # Match PowerPoint's native "Start: With Previous" export:
-            # the wrapper waits for mainSeq to begin, while all child
-            # withEffect nodes start at delay=0 under that same anchor.
+        if trigger in ('with-previous', 'after-previous'):
+            # Match PowerPoint's native slide-entry export: the wrapper waits
+            # for mainSeq to begin, then child nodes resolve their Start modes.
             outer_start_conditions = (
                 '<p:cond delay="indefinite"/>'
                 '<p:cond evt="onBegin" delay="0"><p:tn val="2"/></p:cond>'
