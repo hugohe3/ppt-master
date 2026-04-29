@@ -11,7 +11,7 @@ description: >
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
-**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist → [Image_Generator] → Executor → Post-processing → Export`
+**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist → [Image Acquisition] → Executor → Post-processing → Export`
 
 > [!CAUTION]
 > ## 🚨 Global Execution Discipline (MANDATORY)
@@ -199,35 +199,34 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 - [x] Eight Confirmations completed (user confirmed)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
-- [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
+- [ ] **Next**: Auto-proceed to [Image Acquisition / Executor] phase
 ```
 
 ---
 
-### Step 5: Image_Generator Phase (Conditional)
+### Step 5: Image Acquisition Phase (Conditional)
 
 🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed.
 
-> **Trigger**: Image approach includes "AI generation". Otherwise skip to Step 6.
+> **Trigger**: Image approach includes non-user asset acquisition (`AI-generated` and/or `Web-sourced`). Otherwise skip to Step 6.
 
 Read `references/image-generator.md`
 
-1. Extract all images with status `Pending` from the design spec
-2. Generate prompt document → `<project_path>/images/image_prompts.md`
-3. Generate images (CLI tool recommended):
-   ```bash
-   python3 ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-   ```
+1. Extract all image resource rows whose `Acquire Via` is not `user` or `placeholder`
+2. Generate prompt document → `<project_path>/images/image_prompts.md` for `ai` rows
+3. Generate source manifest → `<project_path>/images/image_sources.json` for `web` rows
+4. Acquire images into `<project_path>/images/`
 
-**✅ Checkpoint — Confirm image generation attempted for every row, proceed to Step 6**:
+**✅ Checkpoint — Confirm image acquisition attempted for every row, proceed to Step 6**:
 ```markdown
-## ✅ Image_Generator Phase Complete
-- [x] Prompt document created
-- [x] Each image: status is either `Generated` (file present in images/) or `Needs-Manual` (reported to user with filename + reason)
+## ✅ Image Acquisition Phase Complete
+- [x] `image_prompts.md` created for `ai` rows when applicable
+- [x] `image_sources.json` created for `web` rows when applicable
+- [x] Each acquired image: status is either `Generated`, `Sourced`, or `Needs-Manual`
 - [x] No row remains `Pending`
 ```
 
-> On generation failure, do NOT halt — follow the Failure Handling rule in `references/image-generator.md` §4.3: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
+> On acquisition failure, do NOT halt — follow the Failure Handling rule in `references/image-generator.md` §4.3: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
 
 ---
 

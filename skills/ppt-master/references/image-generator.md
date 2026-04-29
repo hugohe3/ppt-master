@@ -4,14 +4,14 @@
 
 ## Core Mission
 
-Receive the "Image Resource List" from the Design Specification & Content Outline output by the Strategist, create optimized prompts for each image pending generation, generate images via AI tools, and save them to the project's `images/` directory.
+Receive the "Image Resource List" from the Design Specification & Content Outline output by the Strategist, acquire every non-user image asset required by the deck, and save the resulting files to the project's `images/` directory.
 
-**Trigger condition**: When AI image generation is needed (standalone use or invoked within pipeline)
+**Trigger condition**: When non-user image acquisition is needed (AI generation and/or web sourcing), whether standalone or invoked within the pipeline.
 
 | Mode | Trigger | Description |
 |------|---------|-------------|
-| **Standalone** | Directly describe image needs | Generate single or multiple AI images |
-| **In-pipeline** | `generate-ppt` with AI image generation selected | Batch-generate image assets for a project |
+| **Standalone** | Directly describe image needs | Acquire single or multiple non-user image assets |
+| **In-pipeline** | `generate-ppt` with AI generation or web sourcing selected | Batch-acquire image assets for a project |
 
 > Next step in pipeline: Executor generates SVGs
 
@@ -24,20 +24,21 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
 - **Design Specification & Content Outline** (from Strategist): project theme, target audience, design style, color scheme, canvas format
 - **Image Resource List** (key input):
 
-  | Filename | Dimensions | Purpose | Type | Status | Generation Description |
-  |----------|-----------|---------|------|--------|----------------------|
-  | cover_bg.png | 1920x1080 | Cover background | Background | Pending | Modern tech abstract background, deep blue gradient |
+  | Filename | Dimensions | Purpose | Type | Acquire Via | Status | Reference | Attribution |
+  |----------|-----------|---------|------|-------------|--------|-----------|-------------|
+  | cover_bg.png | 1920x1080 | Cover background | Background | ai | Pending | Modern tech abstract background, deep blue gradient | N/A |
 
-  Status values are defined in [`svg-image-embedding.md`](svg-image-embedding.md). Image_Generator consumes only `Pending` rows and changes them to `Generated` or `Needs-Manual`.
+  Status values are defined in [`svg-image-embedding.md`](svg-image-embedding.md). Image_Generator consumes only `Pending` rows whose `Acquire Via` is `ai` or `web`, and changes them to `Generated`, `Sourced`, or `Needs-Manual`.
 
 ### Output
 
 | Deliverable | Path / Description | Requirements |
 |------------|-------------------|--------------|
-| Prompt document | `project/images/image_prompts.md` | **Must** be saved using file write tool — cannot just be output in conversation |
-| Optimized prompts | Individual prompt per image | Directly usable with AI image generation tools; doubles as alt text |
+| Prompt document | `project/images/image_prompts.md` | Required for `ai` rows; **must** be saved using file write tool — cannot just be output in conversation |
+| Source manifest | `project/images/image_sources.json` | Required for `web` rows; records queries, chosen source, output filename, and attribution |
+| Optimized prompts | Individual prompt per AI image | Directly usable with AI image generation tools; doubles as alt text |
 | Image files | `project/images/` directory | Named per the resource list filenames |
-| Updated list | Status changes | `Pending` -> `Generated` (success) or `Pending` -> `Needs-Manual` (generation attempted and failed) |
+| Updated list | Status changes | `Pending` -> `Generated` (AI success), `Pending` -> `Sourced` (web success), or `Pending` -> `Needs-Manual` (acquisition attempted and failed) |
 
 ---
 
@@ -45,7 +46,7 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
 
 ### 2.1 Standard Output Format
 
-Every image must be output in the following format:
+Every AI image must be output in the following format:
 
 ```markdown
 ### Image N: {filename}
@@ -55,7 +56,7 @@ Every image must be output in the following format:
 | Purpose   | {which page / what function} |
 | Type      | {Background / Illustration / Photography / Diagram / Decorative} |
 | Dimensions | {width}x{height} ({aspect ratio}) |
-| Original description | {description provided by user in the list} |
+| Original description | {reference provided by Strategist for the `ai` row} |
 
 **Prompt**:
 {subject description}, {style directive}, {color directive}, {composition directive}, {quality directive}
@@ -118,7 +119,7 @@ Full directive: "color palette: deep navy blue (#1E3A5F), light gray (#F8F9FA), 
 
 ### 2.6 Multi-Image Coherence Strategy
 
-When generating multiple images for a single deck, visual coherence is critical. Use a **Deck Style Anchor** — a shared prefix of 15-25 words prepended to every image prompt.
+When generating multiple AI images for a single deck, visual coherence is critical. Use a **Deck Style Anchor** — a shared prefix of 15-25 words prepended to every image prompt.
 
 **Construction**: Combine style keywords (Section 2.3) + color directive (Section 2.4) + quality directive into one reusable prefix.
 
@@ -225,7 +226,7 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 
 ---
 
-## 4. Image Generation Workflow
+## 4. Image Acquisition Workflow
 
 ### 4.1 Analysis Phase
 
@@ -233,32 +234,37 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 2. Extract color scheme, canvas format, target audience
 3. Analyze each image in the resource list individually
 4. Determine each image's type (refer to Section 3)
+5. Separate rows by `Acquire Via`: `ai` rows require prompts, `web` rows require source search
 
-### 4.2 Prompt Generation Phase
+### 4.2 Prompt & Source Preparation Phase
 
-For each image with "Pending" status:
+For each `Pending` row:
 
 1. **Determine type** → Background / Photography / Illustration / Diagram / Decorative
 2. **Understand purpose** → Which page? What function?
-3. **Analyze original description** → Information from the user's "Generation description"
-4. **Apply type-specific key points** → Reference the corresponding type's table
-5. **Generate optimized prompt** → Use the 2.1 standard output format
-6. **Save prompt document** → **Must** write to `project/images/image_prompts.md`
+3. **Read `Reference`** → This drives either prompt writing or web search
+4. **Apply type-specific handling** → Reference the corresponding type's table
+5. **For `ai` rows** → Generate optimized prompt using the 2.1 standard output format
+6. **For `web` rows** → Prepare a source record containing query/source target, chosen file, and attribution
+7. **Save acquisition artifacts**:
+   - `project/images/image_prompts.md` for `ai` rows
+   - `project/images/image_sources.json` for `web` rows
 
-### 4.3 Image Generation Phase
+### 4.3 Image Acquisition Phase
 
-> Prerequisite: Section 4.2 must be complete; `images/image_prompts.md` must exist
+> Prerequisite: Section 4.2 must be complete. Create `images/image_prompts.md` for `ai` rows and `images/image_sources.json` for `web` rows when applicable.
 
 #### Path Selection (Deterministic)
 
-| Trigger | Path | Mechanism |
-|---------|------|-----------|
-| **Default** — no explicit override from the user | **Path A**: `image_gen.py` CLI | Uses `.env` `IMAGE_BACKEND` configuration |
-| **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation", "use Antigravity's image tool") | **Path B**: Host-native tool | Agent invokes the host's own image generation capability and saves outputs to `project/images/` |
+| Trigger | Path |
+|---------|------|
+| User explicitly requests web image search | `web` |
+| No image-generation API key and deck benefits from imagery, after user confirmation | `web` |
+| User provides image-generation API key and no web request | `ai` |
 
-Agent must NOT silently switch paths based on perceived host capability. Path B is triggered only by an explicit user instruction for this project or this generation batch. In the absence of such instruction, Path A is the unconditional default.
+Agent must follow this table exactly when deciding between `ai` and `web`.
 
-#### Path A — `image_gen.py` CLI (Default)
+#### AI Path — `image_gen.py`
 
 ```bash
 python3 scripts/image_gen.py "your prompt" \
@@ -296,9 +302,9 @@ Precedence:
 | `{PROVIDER}_MODEL` | Optional | Provider-specific model override |
 
 > Use provider-specific names only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` for the full set per backend.
-
+>
 > `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
-
+>
 > If `.env` or the current environment contains multiple provider configs, `IMAGE_BACKEND` explicitly selects the active one.
 
 **Support tiers (recommended usage)**: Core / Extended / Experimental. Run `image_gen.py --list-backends` for the current assignments.
@@ -307,36 +313,48 @@ Precedence:
 - Execute only one generation command at a time; wait for file confirmation before the next
 - Recommend 2-5 second intervals between images to avoid concurrency failures
 
-#### Path B — Host-Native Image Tool (On Explicit User Request)
+#### Web Path — `image_search.py`
 
-Triggered only when the user explicitly asks the skill to use the host's built-in image generation (e.g. Codex, Antigravity, or any other host that provides a native image tool).
+```bash
+python3 scripts/image_search.py "query or source target" \
+  --output project/images --filename office-team
+```
 
-- Agent invokes the host's native image tool directly; prompts come from the same `image_prompts.md`
-- Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
-- Executor downstream is path-agnostic — no spec change required between Path A and Path B
+- Use the `Reference` field as the search target or source hint
+- Save source-selection details to `project/images/image_sources.json`
+- Record attribution exactly as required by the chosen source
+- Outputs **must** land at `project/images/<filename-from-resource-list>`
 
 #### Failure Handling (Applies to Both Paths)
 
-If generation fails for a given image:
+If acquisition fails for a given image:
 
 1. **Retry once.** If the retry also fails, stop attempting that image — do not loop further.
-2. **Do NOT halt the pipeline.** Report the failures to the user: list the affected filenames and the error reason, and ask the user to generate those images manually and place them at `project/images/<filename>` with the exact filename from the resource list.
-3. **Mark the affected rows** in the Image Resource List as `Needs-Manual` (not `Generated`).
+2. **Do NOT halt the pipeline.** Report the failures to the user: list the affected filenames and the error reason, and ask the user to provide those images manually at `project/images/<filename>` with the exact filename from the resource list.
+3. **Mark the affected rows** in the Image Resource List as `Needs-Manual`.
 4. **Proceed to the Executor phase.** Executor consumes whatever is in `project/images/` at its runtime; missing files are handled downstream (placeholder or user prompt), not by blocking here.
 
-If the user chooses to generate manually on a platform that watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py` as a utility.
+If the user chooses to provide manually sourced files that need cleanup, the repository includes `scripts/gemini_watermark_remover.py` as a utility for watermark-bearing images.
 
 #### Guardrails (Both Paths)
 
-- Agent must NOT claim an image is generated without producing an actual file at the expected path
-- Agent must NOT mark an image as `Needs-Manual` without a real generation attempt having failed
-- Status transitions are evidence-driven: `Pending` -> `Generated` (file exists at expected path) or `Pending` -> `Needs-Manual` (generation attempted and failed after one retry)
+- Agent must NOT claim an image is acquired without producing an actual file at the expected path
+- Agent must NOT mark an image as `Needs-Manual` without a real acquisition attempt having failed
+- Status transitions are evidence-driven:
+  - `Pending` -> `Generated` when an AI-generated file exists at the expected path
+  - `Pending` -> `Sourced` when a web-sourced file exists at the expected path
+  - `Pending` -> `Needs-Manual` when acquisition was attempted and failed after one retry
 
 ### 4.4 Verification Phase
 
-- Confirm all successfully generated images are saved to `images/` directory
+- Confirm all successfully acquired images are saved to the `images/` directory
 - Check filenames match the resource list
-- Update image resource list: `Generated` for files present at the expected path, `Needs-Manual` for rows whose generation failed after one retry
+- Update image resource list:
+  - `Generated` for AI files present at the expected path
+  - `Sourced` for web files present at the expected path
+  - `Needs-Manual` for rows whose acquisition failed after one retry
+- Confirm `project/images/image_prompts.md` exists when `ai` rows were processed
+- Confirm `project/images/image_sources.json` exists when `web` rows were processed
 - Any `Needs-Manual` rows must have been reported to the user with filename and error reason before this phase completes
 
 ---
@@ -346,7 +364,7 @@ If the user chooses to generate manually on a platform that watermarks outputs (
 Use the following structure when creating `project/images/image_prompts.md`:
 
 ```markdown
-# Image Generation Prompts
+# Image Acquisition Prompts
 
 > Project: {project_name}
 > Generated: {date}
@@ -389,6 +407,21 @@ Abstract futuristic background with flowing digital waves...
 4. Place in the `images/` directory
 ```
 
+Use the following structure when creating `project/images/image_sources.json`:
+
+```json
+[
+  {
+    "filename": "office-team.jpg",
+    "query": "modern office collaboration team photo",
+    "reference": "Openverse search: modern office collaboration",
+    "selected_source": "https://example.org/source-page",
+    "attribution": "Photo by ...",
+    "status": "Sourced"
+  }
+]
+```
+
 ---
 
 ## 6. Negative Prompt Quick Reference
@@ -412,7 +445,7 @@ Abstract futuristic background with flowing digital waves...
 
 ## 7. Common Issues
 
-### Default Inference When No "Generation Description" Provided
+### Default Inference When No `Reference` Provided
 
 | Purpose | Default Inference |
 |---------|------------------|
@@ -424,19 +457,19 @@ Abstract futuristic background with flowing digital waves...
 
 ### When Images Are Unsatisfactory
 
-Diagnose the problem category and apply a targeted prompt fix:
+Diagnose the problem category and apply a targeted fix:
 
-| Problem | Diagnosis | Prompt Adjustment |
-|---------|-----------|-------------------|
-| Wrong style | Image looks photorealistic when flat design was intended | Change style directive: replace `photography` with `flat design illustration` |
-| Wrong colors | Colors don't match the design spec palette | Strengthen color directive: add explicit HEX codes, repeat color names |
-| Wrong composition | Subject is off-center or layout doesn't fit the slide | Adjust composition directive: add `centered composition`, `rule of thirds`, or `wide negative space on left` |
-| Wrong subject | Image depicts something different from what was described | Rewrite subject description with more specificity and concrete details |
-| Low quality | Image is blurry, has artifacts, or lacks detail | Add `highly detailed, sharp focus, professional quality, 8K resolution` |
+| Problem | Diagnosis | Adjustment |
+|---------|-----------|------------|
+| Wrong style | Image looks photorealistic when flat design was intended | Change style directive: replace `photography` with `flat design illustration`, or refine the web query/source target |
+| Wrong colors | Colors don't match the design spec palette | Strengthen color directive for AI, or choose a better-matched web source |
+| Wrong composition | Subject is off-center or layout doesn't fit the slide | Adjust composition directive or select a source with the required crop/negative space |
+| Wrong subject | Image depicts something different from what was described | Rewrite the prompt/query with more specificity and concrete details |
+| Low quality | Image is blurry, has artifacts, or lacks detail | Retry with higher quality prompt settings or choose a better source image |
 
 **Variant workflow**:
-1. Keep the original prompt as "Variant A" in `image_prompts.md`
-2. Create modified prompt as "Variant B" with targeted fixes from the table above
+1. Keep the original prompt or source choice as "Variant A"
+2. Create a modified prompt or alternate source as "Variant B"
 3. If needed, create "Variant C" with a different stylistic approach
 4. Label all variants clearly so the user can compare results
 
@@ -449,14 +482,14 @@ Diagnose the problem category and apply a targeted prompt fix:
 | Direction | Content |
 |-----------|---------|
 | Receives | Design Specification & Content Outline (with image resource list) |
-| Trigger condition | User selected "C) AI generation" in "Image usage" |
-| Key information | Color scheme, design style, canvas format |
+| Trigger condition | User selected "C) AI-generated" or "D) Web-sourced" in "Image usage" |
+| Key information | Color scheme, design style, canvas format, `Acquire Via`, `Reference`, `Attribution` |
 
 ### Handoff with Executor
 
 | Direction | Content |
 |-----------|---------|
-| Delivers | All images placed in `project/images/` directory |
+| Delivers | All acquired images placed in `project/images/` directory |
 | Executor reference | `<image href="../images/xxx.png" .../>` |
 | Path note | SVGs in `svg_output/`, images in `images/`; use relative path `../images/` |
 
@@ -466,30 +499,32 @@ Diagnose the problem category and apply a targeted prompt fix:
 
 ### Must-complete Items
 
-- [ ] Created prompt document `project/images/image_prompts.md`
-- [ ] Each image has: type determination + optimized prompt + negative prompt + Alt Text
-- [ ] Uses unified output format (2.1 standard format)
+- [ ] Created prompt document `project/images/image_prompts.md` for `ai` rows when applicable
+- [ ] Created source manifest `project/images/image_sources.json` for `web` rows when applicable
+- [ ] Each AI image has: type determination + optimized prompt + negative prompt + Alt Text
+- [ ] Each sourced image has: query/source target + selected source + attribution record
+- [ ] Updated image resource list statuses
 - [ ] Phase completion confirmation output
 
-### Image Readiness (at least one must be satisfied)
+### Image Readiness
 
-- [ ] All images saved to `project/images/` directory
-- [ ] Or: User clearly informed to self-generate using `image_prompts.md`
+- [ ] All acquired images saved to `project/images/` directory
+- [ ] Or: User clearly informed which rows are `Needs-Manual`
 
 ### Pipeline Flow
 
 - [ ] User prompted to proceed to next step (switch to Executor role)
 
-> **Critical check**: If `images/image_prompts.md` was not created, or the output format does not comply with 2.1 standard, the task is NOT complete.
+> **Critical check**: If `images/image_prompts.md` was required and not created, or if `images/image_sources.json` was required and not created, or if the status outputs do not match the resource list, the task is NOT complete.
 
 ### Completion Confirmation Output Format
 
 ```markdown
-## Image_Generator Phase Complete
+## Image Acquisition Phase Complete
 
-- [x] Created prompt document `project/images/image_prompts.md`
-- [x] Generated optimized prompts for X images
-- [x] All images saved to `images/` directory
+- [x] Created prompt document `project/images/image_prompts.md` for AI rows
+- [x] Created source manifest `project/images/image_sources.json` for web rows
+- [x] All acquired images saved to `images/` directory
 - [x] Updated image resource list status
 
 **Image Status Summary**:
@@ -497,6 +532,7 @@ Diagnose the problem category and apply a targeted prompt fix:
 | Filename | Type | Dimensions | Status |
 |----------|------|-----------|--------|
 | cover_bg.png | Background | 1920x1080 | Generated |
+| office-team.jpg | Photography | 1600x900 | Sourced |
 
 **Next step**: Switch to Executor role to begin SVG generation
 ```

@@ -11,20 +11,22 @@ Technical spec and workflow for adding images to SVG files.
 Defined in the Design Specification & Content Outline; each image carries a status annotation. This file is authoritative for status names and SVG embedding behavior. If image approach includes "B) User-provided": run `analyze_images.py` right after the Eight Confirmations and complete the list before outputting the design spec.
 
 ```markdown
-| Filename | Dimensions | Purpose | Type | Status | Generation Description |
-|----------|------------|---------|------|--------|------------------------|
-| cover_bg.png | 1280x720 | Cover background | Background | Pending | Modern tech abstract background, deep blue gradient |
-| product.png | 600x400 | Page 3 product photo | Photography | Existing | - |
-| team.png | 600x400 | Page 5 team scene | Illustration | Placeholder | Team collaboration scene to be added later |
+| Filename | Dimensions | Acquire Via | Purpose | Type | Status | Reference | Attribution |
+|----------|------------|-------------|---------|------|--------|-----------|-------------|
+| cover_bg.png | 1280x720 | ai | Cover background | Background | Pending | Modern tech abstract background, deep blue gradient | N/A |
+| office-team.jpg | 1600x900 | web | Page 3 team photo | Photography | Sourced | Openverse search: modern office collaboration | Photo by ... |
+| product.png | 600x400 | user | Page 4 product photo | Photography | Existing | Provided by user asset pack | User-owned |
+| team.png | 600x400 | placeholder | Page 5 team scene | Illustration | Placeholder | Team collaboration scene to be added later | Pending owner |
 ```
 
 ### Image Status Enum
 
 | Status | Meaning | Executor Handling |
 |--------|---------|-------------------|
-| **Pending** | Needs AI generation, has generation description | Image_Generator attempts generation before Executor; must not remain after Step 5 |
+| **Pending** | Awaiting acquisition by the Image Acquisition phase | Must not remain after Step 5 when `Acquire Via` is `ai` or `web` |
 | **Generated** | AI-generated file exists at expected path | Reference directly from `../images/` |
-| **Needs-Manual** | Generation attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
+| **Sourced** | Web-sourced file exists at expected path | Reference directly from `../images/`; preserve attribution from the resource list |
+| **Needs-Manual** | Acquisition attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
 | **Existing** | User already has image | Place in `images/`, reference with `<image>` |
 | **Placeholder** | Intentionally not prepared yet | Dashed border placeholder; replace later |
 

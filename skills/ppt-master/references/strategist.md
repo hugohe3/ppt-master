@@ -8,7 +8,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 | Previous Step | Current | Next Step |
 |--------------|---------|-----------|
-| Project creation + Template option confirmed | **Strategist**: Eight Confirmations + Design Spec | Image_Generator or Executor |
+| Project creation + Template option confirmed | **Strategist**: Eight Confirmations + Design Spec | Image Acquisition or Executor |
 
 ---
 
@@ -185,24 +185,29 @@ Baseline choice follows **content density**, not style. Common: `18px` (dense) /
 | **A** | No images | Data reports, process documentation |
 | **B** | User-provided | Has existing image assets |
 | **C** | AI-generated | Custom illustrations, backgrounds needed |
-| **D** | Placeholders | Images to be added later |
+| **D** | Web-sourced | Real-world reference imagery, editorial support, stock-style needs |
+| **E** | Placeholders | Images to be added later |
 
 **When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.
 
-**When B/C/D is selected**, add an image resource list to the spec:
+**When B/C/D/E is selected**, add an image resource list to the spec:
 
 | Column | Description |
 |--------|-------------|
 | Filename | e.g., `cover_bg.png` |
 | Dimensions | e.g., `1280x720` |
 | Ratio | e.g., `1.78` |
+| Acquire Via | `user`, `ai`, `web`, or `placeholder` |
 | Layout suggestion | e.g., `Wide landscape (suitable for full-screen/illustration)` |
 | Purpose | e.g., `Cover background` |
 | Type | Background / Photography / Illustration / Diagram / Decorative pattern |
-| Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
-| Generation description | Fill in detailed description for AI generation |
+| Status | Initial status must align with the acquisition path; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
+| Reference | User asset note, AI prompt seed, or web search/reference note |
+| Attribution | Source/credit requirement; use `N/A` only when no attribution is needed |
 
-**Generation description quality** — feeds Image_Generator's prompt; specify subject, count, setting, lighting, colors (HEX), composition. Avoid one-word descriptions like "team photo" / "tech background" / "chart".
+**When B/C/D/E is selected, every row must include `Acquire Via`, `Reference`, and `Attribution`.** Keep these three fields populated even when status is already `Existing` or `Placeholder`.
+
+**Reference quality** — this field drives downstream acquisition. For `ai`, specify subject, count, setting, lighting, colors (HEX), composition. For `web`, specify the search target or the known source/page. Avoid one-word references like "team photo" / "tech background" / "chart".
 
 | Good examples |
 |---------------|
@@ -247,7 +252,7 @@ Side-by-side only: container ratio must match image ratio. Hero / atmosphere / a
 
 > **Multi-image slides**: When multiple images appear on one page, use the grid formulas in the "Multi-Image Layout" section of `references/image-layout-spec.md`.
 
-> **Pipeline handoff**: When C) AI generation is selected, Image_Generator consumes `Pending` rows and updates them to `Generated` or `Needs-Manual` before Executor proceeds. Status names are defined in [`svg-image-embedding.md`](svg-image-embedding.md).
+> **Pipeline handoff**: When C) AI-generated or D) Web-sourced is selected, Image Acquisition consumes `Pending` rows and updates them to `Generated`, `Sourced`, or `Needs-Manual` before Executor proceeds. Status names are defined in [`svg-image-embedding.md`](svg-image-embedding.md).
 
 ### Visualization Reference (Non-blocking — Strategist recommends, no user confirmation needed)
 
@@ -407,7 +412,7 @@ Templates are starting points. The Strategist may adjust based on content and au
 | V. Layout Principles | Page structure (header/content/footer zones), layout pattern library (combine/break as content demands), spacing spec |
 | VI. Icon Usage Spec | Source description, placeholder syntax, recommended icon list |
 | VII. Visualization Reference List | Visualization type, reference template path, used-in pages, purpose |
-| VIII. Image Resource List | Filename, dimensions, ratio, purpose, status, generation description |
+| VIII. Image Resource List | Filename, dimensions, ratio, acquire via, purpose, type, status, reference, attribution |
 | IX. Content Outline | Grouped by chapter; each page includes layout, title, content points, visualization type (if applicable) |
 | X. Speaker Notes Requirements | File naming rules, content structure description |
 | XI. Technical Constraints Reminder | SVG generation rules, PPT compatibility rules |
@@ -443,8 +448,8 @@ After writing `design_spec.md` and `spec_lock.md`, output the next-step prompt b
 ```
 ✅ Design spec complete. Template ready.
 Next step:
-- Images include AI generation → Invoke Image_Generator
-- Images do not include AI generation → Invoke Executor
+- Images include AI generation or web sourcing → Invoke Image Acquisition
+- Images do not include non-user acquisition → Invoke Executor
 ```
 
 ### Template Option B (No template)
@@ -452,6 +457,6 @@ Next step:
 ```
 ✅ Design spec complete.
 Next step:
-- Images include AI generation → Invoke Image_Generator
-- Images do not include AI generation → Invoke Executor (free design for every page)
+- Images include AI generation or web sourcing → Invoke Image Acquisition
+- Images do not include non-user acquisition → Invoke Executor (free design for every page)
 ```

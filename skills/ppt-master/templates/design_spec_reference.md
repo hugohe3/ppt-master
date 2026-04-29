@@ -232,17 +232,27 @@ Runners-up must be genuine second-best matches for a page in this deck. If fewer
 
 ## VIII. Image Resource List (if needed)
 
-| Filename | Dimensions | Ratio | Purpose | Type | Status | Generation Description |
-| -------- | --------- | ----- | ------- | ---- | ------ | --------------------- |
-| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | [Background/Photography/Illustration/Diagram/Decorative] | [Pending/Existing/Placeholder] | [AI generation prompt] |
+| Filename | Dimensions | Ratio | Purpose | Type | Acquire Via | Status | Reference | Attribution |
+| -------- | --------- | ----- | ------- | ---- | ----------- | ------ | --------- | ----------- |
+| cover_bg.png | {canvas_info['dimensions']} | [ratio] | Cover background | [Background/Photography/Illustration/Diagram/Decorative] | [user/ai/web/placeholder] | [Pending/Existing/Generated/Sourced/Needs-Manual/Placeholder] | [Prompt seed, source query, or asset note] | [Required credit / license note / N/A] |
 
 **Status**:
 
-- **Pending** — needs AI generation, provide description
+- **Pending** — needs acquisition, provide `Acquire Via` + `Reference`
 - **Existing** — user-supplied, place in `images/`
+- **Generated** — AI-generated file exists at the expected path
+- **Sourced** — web-sourced file exists at the expected path
+- **Needs-Manual** — acquisition attempted and failed; user must provide manually
 - **Placeholder** — not yet processed, use dashed border in SVG
 
-**Type** (used by Image_Generator for prompt strategy):
+**Acquire Via**:
+
+- **user** — existing user-provided asset
+- **ai** — acquire through AI generation
+- **web** — acquire through web sourcing
+- **placeholder** — intentionally deferred asset
+
+**Type** (used by Image Acquisition for prompt/search strategy):
 
 - **Background** — full-page (covers / chapters); reserve text area
 - **Photography** — real scenes, people, products, architecture
