@@ -56,10 +56,11 @@ Transition effects (-t/--transition):
 
 Per-element entrance animation (-a/--animation, native shapes mode):
     {', '.join(animation_choices)}
-    Notes: applied to top-level <g id="..."> SVG groups in z-order.
-           --animation-trigger=click (default) → one presenter click per group.
-           --animation-trigger=auto → first group fires on slide entry, rest
-           cascade after previous with --animation-stagger spacing.
+    Notes: applied to top-level <g id="..."> SVG groups in z-order. Start mode set
+           by --animation-trigger, matching PowerPoint's Start dropdown:
+             on-click (default)    one presenter click per group
+             with-previous         all groups start together on slide entry
+             after-previous        cascade; gap = --animation-stagger seconds
            mixed uses a curated visible-effect sequence across the deck; random samples
            from the same visible-effect pool.
 
@@ -111,14 +112,16 @@ Speaker notes (enabled by default):
                              'element), "random", or "none" (default).')
     parser.add_argument('--animation-duration', type=float, default=0.3,
                         help='Per-element entrance duration in seconds (default: 0.3)')
-    parser.add_argument('--animation-trigger', type=str, choices=['click', 'auto'],
-                        default='click',
-                        help='How per-element animations advance: '
-                             '"click" (default, one click per element) or '
-                             '"auto" (cascade automatically on slide entry)')
+    parser.add_argument('--animation-trigger', type=str,
+                        choices=['on-click', 'with-previous', 'after-previous'],
+                        default='on-click',
+                        help='Per-element Start mode (matches PowerPoint Start dropdown): '
+                             '"on-click" (default, one click per element), '
+                             '"with-previous" (all start together on slide entry), '
+                             '"after-previous" (cascade after the previous element).')
     parser.add_argument('--animation-stagger', type=float, default=0.4,
-                        help='Delay between elements in --animation-trigger=auto '
-                             '(seconds, default 0.4). Ignored in click mode.')
+                        help='Delay between elements in --animation-trigger=after-previous '
+                             '(seconds, default 0.4). Ignored in other modes.')
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')

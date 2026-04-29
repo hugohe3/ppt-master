@@ -292,21 +292,23 @@ def _build_effect_xml(
 def create_sequence_timing_xml(
     targets: list,
     duration: float = 0.3,
-    trigger: str = 'click',
+    trigger: str = 'on-click',
 ) -> str:
     """Generate a multi-target entrance sequence.
 
     Args:
         targets: list of (shape_id, delay_ms, animation_name) tuples, in
-            the order they should play. ``delay_ms`` is the delay before
+            the order they should play. ``delay_ms`` is the gap before
             this element starts, measured from when the previous element
-            triggers (only used in ``auto`` mode; ignored in ``click``
-            mode where the presenter paces reveals).
+            triggers (only used in ``after-previous`` mode; ignored in
+            the other two).
         duration: per-element entrance duration in seconds.
-        trigger: ``'click'`` (one presenter click per element) or
-            ``'auto'`` (first element fires on slide entry, subsequent
-            elements fire after the previous one with ``delay_ms``
-            spacing).
+        trigger: PowerPoint-standard Start mode for each element.
+            ``'on-click'`` — one presenter click per element (default).
+            ``'with-previous'`` — all elements start together on slide
+            entry.
+            ``'after-previous'`` — first element fires on slide entry,
+            rest chain after the previous one with ``delay_ms`` spacing.
 
     Returns:
         A ``<p:timing>`` element string. Returns an empty string when
@@ -315,8 +317,8 @@ def create_sequence_timing_xml(
     if not targets:
         return ''
 
-    if trigger not in ('click', 'auto'):
-        trigger = 'click'
+    if trigger not in ('on-click', 'with-previous', 'after-previous'):
+        trigger = 'on-click'
 
     dur_ms = int(duration * 1000)
     steps = []
@@ -334,11 +336,16 @@ def create_sequence_timing_xml(
         next_id += 5
         effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
 
-        if trigger == 'click':
+        if trigger == 'on-click':
             wrapper_cond = '<p:cond delay="indefinite"/>'
             node_type = 'clickEffect'
+        elif trigger == 'with-previous':
+            # All elements share the slide-entry trigger; played in parallel.
+            wrapper_cond = '<p:cond delay="0"/>'
+            node_type = 'withEffect'
         else:
-            # auto: first element fires on slide entry, rest chain via afterEffect
+            # after-previous: first fires on slide entry, rest chain after
+            # the previous element with delay_ms spacing.
             wrapper_cond = f'<p:cond delay="{int(delay_ms)}"/>'
             node_type = 'withEffect' if i == 0 else 'afterEffect'
 

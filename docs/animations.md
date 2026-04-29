@@ -34,24 +34,28 @@ Flags:
 
 ## Per-Element Animations
 
-Off by default. When enabled, two trigger modes are available:
+Off by default. When enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
-- **`click`** (default) — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals.
-- **`auto`** — the first group fires automatically on slide entry, subsequent groups cascade after the previous one with `--animation-stagger` spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
+- **`on-click`** (default) — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals.
+- **`with-previous`** — all groups start together on slide entry, playing their entrance animation in parallel. Stagger ignored.
+- **`after-previous`** — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
 
 ```bash
-# Cascade every group with fade on click (recommended starting point)
+# On-click cascade with fade (recommended starting point)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
 # Auto-vary effects within a slide (title fades; later groups cycle a curated pool)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
 
-# Auto-cascade on slide entry, 0.4s gap between groups (default stagger)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger auto
+# After-previous cascade on slide entry, 0.4s gap between groups (default stagger)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger after-previous
 
-# Auto-cascade with custom pacing
+# After-previous with custom pacing
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
-        --animation-trigger auto --animation-stagger 0.6 --animation-duration 0.5
+        --animation-trigger after-previous --animation-stagger 0.6 --animation-duration 0.5
+
+# All groups animate in unison on slide entry
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger with-previous
 ```
 
 22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus two auto-vary modes:
@@ -64,9 +68,9 @@ The pool excludes `appear` because it has no visible motion.
 Flags:
 
 - `-a/--animation` — effect name, `mixed`, `random`, or `none`. Default: `none`.
-- `--animation-trigger` — `click` (default, presenter-paced) or `auto` (cascades automatically on slide entry).
+- `--animation-trigger` — Start mode (matches PowerPoint): `on-click` (default), `with-previous`, or `after-previous`.
 - `--animation-duration` — per-element entrance seconds, default `0.3`.
-- `--animation-stagger` — gap between elements in `auto` mode (seconds, default `0.4`). Ignored in `click` mode.
+- `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.4`). Ignored otherwise.
 
 ## Anchor Logic — Top-Level `<g id="...">`
 
@@ -97,10 +101,11 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 | Change transition effect | `-t push` (or any from the list above) |
 | Slower transition | `--transition-duration 0.8` |
 | Auto-play | `--auto-advance 5` |
-| Enable element animation (click) | `--animation fade` |
-| Auto-cascade without clicks | `--animation fade --animation-trigger auto` |
+| Enable element animation (on-click) | `--animation fade` |
+| Cascade without clicks | `--animation fade --animation-trigger after-previous` |
+| All groups animate together | `--animation fade --animation-trigger with-previous` |
 | Auto-vary element animation | `--animation mixed` |
 | Slower per-element reveal | `--animation-duration 0.5` |
-| Wider gap between auto reveals | `--animation-stagger 0.8` |
+| Wider gap in after-previous | `--animation-stagger 0.8` |
 
 See also: [`scripts/docs/svg-pipeline.md`](../skills/ppt-master/scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
