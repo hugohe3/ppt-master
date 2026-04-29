@@ -274,7 +274,7 @@ Wrap logically related elements in `<g>`. Produces PowerPoint groups in PPTX, ma
 </g>
 ```
 
-**Naming**: descriptive `id` on `<g>` (e.g., `card-1`, `step-discover`, `header`, `footer`). Optional but recommended.
+**Naming**: descriptive `id` on top-level `<g>` is **required** (e.g., `card-1`, `step-discover`, `header`, `footer`). Each top-level `<g id>` becomes one anchor for per-element entrance animation in PPTX export; without it, the exporter falls back to top-level primitives (capped) or skips animation on dense pages.
 
 ---
 

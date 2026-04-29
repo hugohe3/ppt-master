@@ -54,6 +54,45 @@ Charts are rendered as **custom-designed SVG graphics** converted to native Powe
 
 If your workflow specifically requires Excel-driven data editing, manually create a similar chart yourself in PowerPoint after export.
 
+## Q: Can I change page transitions and element animations?
+
+Yes. The exported PPTX supports both **page transitions** and **per-element entrance animations**, controlled via `svg_to_pptx.py` CLI flags.
+
+**Page transitions** (on by default, 0.4s `fade`)
+
+```bash
+# Pick a different effect: fade / push / wipe / split / strips / cover / random
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
+
+# Disable transitions
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
+
+# Auto-advance every 5 seconds
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+```
+
+**Per-element animations** (off by default — existing users see no behavior change)
+
+Enter a slide → click once → semantic groups cascade in by z-order. To enable:
+
+```bash
+# Cascade every element with fade (recommended starting point)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
+
+# Auto-vary effects within a slide (title fades, content rotates fly/zoom/wipe...)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
+
+# Slower pace: 0.5s per element, 0.2s gap between elements
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade \
+        --animation-duration 0.5 --animation-stagger 0.2
+```
+
+12 single effects: `appear / fade / fly / zoom / wipe / split / blinds / dissolve / peek / wheel / box / circle`, plus `mixed` and `random` auto-vary modes.
+
+**Anchor logic**: animations are anchored on top-level SVG `<g id="...">` groups (e.g. `<g id="cover-title">`, `<g id="card-1">`) — this is the cleanest cascade granularity. Slides whose root is flat `<rect>` / `<text>` / `<path>` (no top-level `<g>` wrappers) **fall back automatically**: if there are ≤20 top-level visible elements, each becomes one animation anchor; beyond 20 (typical of dense consulting pages / charts), animation is skipped on that slide — cascading dozens of atoms in series would just be noise. So Executors are recommended to wrap logical sections in `<g id>` regardless of animation, since it also improves PowerPoint's group-select / group-move ergonomics.
+
+**Note**: per-element animations only apply in native shapes mode (the default); `--only legacy` produces one image per slide and has no element anchors to animate.
+
 ## Q: Which AI model works best?
 
 **Claude** (Opus / Sonnet) is the recommended and most tested model. SVG layout requires precise absolute-coordinate calculations (font size x character count x container width), and Claude handles this significantly better than alternatives.
