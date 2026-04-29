@@ -1,12 +1,12 @@
-# Image_Generator Reference Manual
+# Image Acquisition Reference Manual
 
-> This file is the streamlined reference for the Image_Generator role. Common standards (SVG technical constraints, canvas formats, post-processing pipeline, etc.) are in [shared-standards.md](./shared-standards.md).
+> Compatibility note: this file keeps the filename `image-generator.md` for workflow compatibility, but the role it defines is Image Acquisition. Common standards (SVG technical constraints, canvas formats, post-processing pipeline, etc.) are in [shared-standards.md](./shared-standards.md).
 
 ## Core Mission
 
 Receive the "Image Resource List" from the Design Specification & Content Outline output by the Strategist, acquire every non-user image asset required by the deck, and save the resulting files to the project's `images/` directory.
 
-**Trigger condition**: When non-user image acquisition is needed (AI generation and/or web sourcing), whether standalone or invoked within the pipeline.
+**Trigger condition**: When one or more image rows need non-user acquisition (`Acquire Via: ai` and/or `Acquire Via: web`), whether standalone or invoked within the pipeline. A single acquisition phase may process a mixed resource list containing both `ai` and `web` rows.
 
 | Mode | Trigger | Description |
 |------|---------|-------------|
@@ -28,7 +28,7 @@ Receive the "Image Resource List" from the Design Specification & Content Outlin
   |----------|-----------|---------|------|-------------|--------|-----------|-------------|
   | cover_bg.png | 1920x1080 | Cover background | Background | ai | Pending | Modern tech abstract background, deep blue gradient | N/A |
 
-  Status values are defined in [`svg-image-embedding.md`](svg-image-embedding.md). Image_Generator consumes only `Pending` rows whose `Acquire Via` is `ai` or `web`, and changes them to `Generated`, `Sourced`, or `Needs-Manual`.
+  Status values are defined in [`svg-image-embedding.md`](svg-image-embedding.md). Image Acquisition consumes only `Pending` rows whose `Acquire Via` is `ai` or `web`, and changes them to `Generated`, `Sourced`, or `Needs-Manual`.
 
 ### Output
 
@@ -234,7 +234,7 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 2. Extract color scheme, canvas format, target audience
 3. Analyze each image in the resource list individually
 4. Determine each image's type (refer to Section 3)
-5. Separate rows by `Acquire Via`: `ai` rows require prompts, `web` rows require source search
+5. Separate rows by `Acquire Via`: `ai` rows require prompts, `web` rows require source search, and both may appear in the same deck
 
 ### 4.2 Prompt & Source Preparation Phase
 
@@ -256,13 +256,15 @@ For each `Pending` row:
 
 #### Path Selection (Deterministic)
 
+This table is the rule for choosing `Acquire Via` on rows that need non-user acquisition. It is evaluated per image row, not as a deck-wide exclusive mode.
+
 | Trigger | Path |
 |---------|------|
 | User explicitly requests web image search | `web` |
 | No image-generation API key and deck benefits from imagery, after user confirmation | `web` |
 | Image-generation API key present and no web request | `ai` |
 
-Agent must follow this table exactly when deciding between `ai` and `web`.
+Agent must follow this table exactly when deciding between `ai` and `web` for each row.
 
 #### AI Path — `image_gen.py`
 

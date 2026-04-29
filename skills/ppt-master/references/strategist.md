@@ -286,7 +286,7 @@ When content outline pages involve **data visualization or infographic-style str
 >
 > **Fallback when no template fits**:
 > 1. Re-scan `categories` and `quickLookup` — concepts often live under non-obvious labels (e.g. "causal chain" → `process_flow` / `sankey_chart` under `process`).
-> 2. If still no fit: data-driven content → table layout; conceptual/illustrative → "AI-generated image" (Image_Generator handles); structural → "custom layout".
+> 2. If still no fit: data-driven content → table layout; conceptual/illustrative → "AI-generated image" (Image Acquisition handles); structural → "custom layout".
 > 3. Mark the page `no-template-match` in section VII with the fallback chosen and why. Do NOT silently substitute a close-but-wrong chart.
 
 ### Speaker Notes Requirements (Default — no discussion needed)

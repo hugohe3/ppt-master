@@ -36,9 +36,9 @@ Defined in the Design Specification & Content Outline; each image carries a stat
 
 ```
 1. Strategist defines image needs → Add image resource list, annotate each status
-2. Image preparation (Pending / Existing) → Place available files in project/images/
+2. Image preparation (Pending / Existing / Generated / Sourced) → Place available files in project/images/
 3. Executor generates SVGs (svg_output/)
-   ├── Existing / Generated → <image href="../images/xxx.png" .../>
+   ├── Existing / Generated / Sourced → <image href="../images/xxx.png" .../>
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Post-processing & Export → follow shared-standards.md §5

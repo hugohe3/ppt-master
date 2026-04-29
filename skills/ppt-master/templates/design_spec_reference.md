@@ -238,6 +238,7 @@ Runners-up must be genuine second-best matches for a page in this deck. If fewer
 
 **Status**:
 
+- Strategist usually seeds the initial statuses before Step 5 (`Pending`, `Existing`, `Placeholder` as applicable). Later statuses such as `Generated`, `Sourced`, and `Needs-Manual` are acquisition-phase updates.
 - **Pending** — needs acquisition, provide `Acquire Via` + `Reference`
 - **Existing** — user-supplied, place in `images/`
 - **Generated** — AI-generated file exists at the expected path
