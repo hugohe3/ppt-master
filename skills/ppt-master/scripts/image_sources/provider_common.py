@@ -1,5 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 
 OPEN_LICENSE_TOKENS = (
@@ -33,19 +34,36 @@ PROVIDER_LICENSE_TOKENS = {
 @dataclass
 class ImageSearchRequest:
     query: str
+    purpose: str = ""
     orientation: str = ""
-    use_case: str = ""
+    min_width: int = 0
+    min_height: int = 0
+    filename: str = ""
+    slide: str = ""
+
+    @property
+    def use_case(self):
+        return self.purpose
+
+    @use_case.setter
+    def use_case(self, value):
+        self.purpose = value
 
 
 @dataclass
 class AssetCandidate:
     provider: str
-    asset_id: str
     title: str
-    width: int
-    height: int
+    source_page_url: str = ""
     license_name: str = ""
     license_url: str = ""
+    width: int = 0
+    height: int = 0
+    download_url: str = ""
+    author: str = ""
+    attribution_required: bool = False
+    raw: Any = field(default=None)
+    asset_id: str = ""
 
 
 def normalize_orientation(width, height):
@@ -97,9 +115,16 @@ def score_candidate(candidate, request):
         else:
             score -= 250
 
-    if (request.use_case or "").strip().lower() == "background":
+    if (request.purpose or "").strip().lower() == "background":
         if requested_orientation == "landscape" and candidate_orientation == "landscape":
             score += 250
+
+    min_width = max(int(request.min_width or 0), 0)
+    min_height = max(int(request.min_height or 0), 0)
+    if min_width and candidate.width < min_width:
+        score -= 500
+    if min_height and candidate.height < min_height:
+        score -= 500
 
     size_score = max(candidate.width, 0) * max(candidate.height, 0) / 1000.0
     score += min(size_score, 5000)
