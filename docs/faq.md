@@ -61,8 +61,9 @@ Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animatio
 ```bash
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade   # enable per-element
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade   # enable per-element (on-click)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed  # auto-vary effects
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger after-previous   # cascade without clicks
 ```
 
 Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](./animations.md).
