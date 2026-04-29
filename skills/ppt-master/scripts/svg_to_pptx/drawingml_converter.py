@@ -113,6 +113,15 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shapes_xml = '\n'.join(result.xml for result in child_results)
     group_id = ctx.next_id()
 
+    # Record top-level semantic groups (e.g. <g id="p02-title">) so the
+    # PPTX builder can emit per-element entrance timing. Only the outermost
+    # multi-child wrapper qualifies — flattened single-child groups have no
+    # <p:grpSp> to anchor a timing target on, and nested groups are
+    # ignored to keep the animation budget at ~per-section granularity.
+    elem_id = elem.get('id')
+    if ctx.depth == 0 and elem_id:
+        ctx.anim_targets.append((group_id, elem_id))
+
     group_effect = ''
     if filter_id and filter_id in ctx.defs:
         group_effect = build_effect_xml(ctx.defs[filter_id])
@@ -198,7 +207,7 @@ def convert_svg_to_slide_shapes(
     svg_path: Path,
     slide_num: int = 1,
     verbose: bool = False,
-) -> tuple[str, dict[str, bytes], list[dict[str, str]]]:
+) -> tuple[str, dict[str, bytes], list[dict[str, str]], list]:
     """Convert an SVG file to a complete DrawingML slide XML.
 
     Args:
@@ -207,10 +216,13 @@ def convert_svg_to_slide_shapes(
         verbose: Print progress info.
 
     Returns:
-        (slide_xml, media_files, rel_entries) where:
+        (slide_xml, media_files, rel_entries, anim_targets) where:
         - slide_xml: Complete slide XML string.
         - media_files: Dict of {filename: bytes} for media to write.
         - rel_entries: List of relationship entries to add.
+        - anim_targets: List of (shape_id, svg_id) tuples for top-level
+          semantic groups, in z-order; consumed by the builder's optional
+          per-element entrance timing emitter.
     """
     tree = ET.parse(str(svg_path))
     root = tree.getroot()
@@ -221,6 +233,9 @@ def convert_svg_to_slide_shapes(
     shapes: list[str] = []
     converted = 0
     skipped = 0
+    # Per-element shape ids of every top-level child, used as an animation
+    # fallback when no <g id="..."> groups are present at the root.
+    fallback_targets: list = []
 
     for child in root:
         tag = child.tag.replace(f'{{{SVG_NS}}}', '')
@@ -230,9 +245,22 @@ def convert_svg_to_slide_shapes(
         if result:
             shapes.append(result.xml)
             converted += 1
+            m = re.search(r'<p:cNvPr id="(\d+)"', result.xml)
+            if m:
+                fallback_targets.append((int(m.group(1)), tag))
         else:
             if tag not in _NON_VISUAL_TAGS:
                 skipped += 1
+
+    # Animation target fallback. Semantic <g id="..."> groups are the
+    # preferred anchors (set inside convert_g). When the SVG has none
+    # at the root we fall back to top-level primitives, but only when
+    # the count is reasonable — dense pages (consulting decks, charts,
+    # diagrams) routinely have 70–150 atoms at the root and animating
+    # each one is unusable, so we silently skip animation past the cap.
+    _ANIM_FALLBACK_CAP = 20
+    if not ctx.anim_targets and 0 < len(fallback_targets) <= _ANIM_FALLBACK_CAP:
+        ctx.anim_targets = fallback_targets
 
     if verbose:
         print(f'  Converted {converted} elements, skipped {skipped}')
@@ -259,4 +287,4 @@ def convert_svg_to_slide_shapes(
 <p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
 </p:sld>'''
 
-    return slide_xml, ctx.media_files, ctx.rel_entries
+    return slide_xml, ctx.media_files, ctx.rel_entries, ctx.anim_targets

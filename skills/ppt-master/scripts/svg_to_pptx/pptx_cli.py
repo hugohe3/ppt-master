@@ -13,12 +13,23 @@ from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
 from .pptx_slide_xml import TRANSITIONS
 
+try:
+    from pptx_animations import ANIMATIONS as _ANIMATIONS
+except ImportError:
+    _ANIMATIONS = {}
+
 
 def main() -> None:
     """CLI entry point for the SVG to PPTX conversion tool."""
     transition_choices = (
         ['none'] + (list(TRANSITIONS.keys()) if TRANSITIONS
                     else ['fade', 'push', 'wipe', 'split', 'strips', 'cover', 'random'])
+    )
+
+    animation_choices = (
+        ['none'] + (list(_ANIMATIONS.keys()) if _ANIMATIONS
+                    else ['fade', 'fly', 'zoom', 'appear'])
+        + ['mixed', 'random']
     )
 
     parser = argparse.ArgumentParser(
@@ -42,6 +53,11 @@ SVG source directory (-s):
 
 Transition effects (-t/--transition):
     {', '.join(transition_choices)}
+
+Per-element entrance animation (-a/--animation, native shapes mode):
+    {', '.join(animation_choices)}
+    Notes: applied to top-level <g id="..."> SVG groups in z-order.
+           First click triggers the cascade; --animation-stagger sets the gap.
 
 Compatibility mode (enabled by default):
     - Automatically generates PNG fallback images, SVG embedded as extension
@@ -83,6 +99,16 @@ Speaker notes (enabled by default):
                         help='Transition duration in seconds (default: 0.5)')
     parser.add_argument('--auto-advance', type=float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
+
+    parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
+                        default='none',
+                        help='Per-element entrance animation (native shapes mode '
+                             'only). Pick a single effect, "mixed" (auto-vary per '
+                             'element), "random", or "none" (default).')
+    parser.add_argument('--animation-duration', type=float, default=0.3,
+                        help='Per-element entrance duration in seconds (default: 0.3)')
+    parser.add_argument('--animation-stagger', type=float, default=0.1,
+                        help='Auto-cascade gap between elements in seconds (default: 0.1)')
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
@@ -149,6 +175,7 @@ Speaker notes (enabled by default):
         notes = find_notes_files(project_path, svg_files)
 
     transition = args.transition if args.transition != 'none' else None
+    animation = args.animation if args.animation != 'none' else None
 
     shared_kwargs = dict(
         svg_files=svg_files,
@@ -160,6 +187,9 @@ Speaker notes (enabled by default):
         use_compat_mode=not args.no_compat,
         notes=notes,
         enable_notes=enable_notes,
+        animation=animation,
+        animation_duration=args.animation_duration,
+        animation_stagger=args.animation_stagger,
     )
 
     success = True

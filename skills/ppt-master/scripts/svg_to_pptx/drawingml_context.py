@@ -36,6 +36,11 @@ class ConvertContext:
     rel_id_counter: int = 2  # rId1 reserved for slideLayout
     svg_dir: Path | None = None
     inherited_styles: dict[str, str] = field(default_factory=dict)
+    # Recursion depth — only the depth==0 (root) context records anim targets.
+    depth: int = 0
+    # Top-level <g id="..."> groups, recorded as (shape_id, svg_id) in z-order.
+    # Used by the PPTX builder to emit per-element entrance timing.
+    anim_targets: list = field(default_factory=list)
 
     def next_id(self) -> int:
         """Allocate the next shape ID."""
@@ -102,6 +107,9 @@ class ConvertContext:
             rel_id_counter=self.rel_id_counter,
             svg_dir=self.svg_dir,
             inherited_styles=merged,
+            depth=self.depth + 1,
+            # anim_targets is intentionally a fresh list on the child;
+            # only the root-level context's list is read by the builder.
         )
 
     def sync_from_child(self, child_ctx: ConvertContext) -> None:

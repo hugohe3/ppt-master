@@ -33,9 +33,15 @@ from .pptx_slide_xml import (
 
 # Re-import create_transition_xml only if available
 try:
-    from pptx_animations import create_transition_xml
+    from pptx_animations import (
+        create_transition_xml,
+        create_sequence_timing_xml,
+        pick_animation_effect,
+    )
 except ImportError:
     create_transition_xml = None
+    create_sequence_timing_xml = None
+    pick_animation_effect = None
 
 
 def _append_relationship(
@@ -75,6 +81,9 @@ def create_pptx_with_native_svg(
     notes: dict[str, str] | None = None,
     enable_notes: bool = True,
     use_native_shapes: bool = False,
+    animation: str | None = None,
+    animation_duration: float = 0.3,
+    animation_stagger: float = 0.1,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -90,6 +99,10 @@ def create_pptx_with_native_svg(
         notes: Notes dict, key is SVG stem, value is notes content.
         enable_notes: Whether to enable notes embedding.
         use_native_shapes: Convert SVG to native DrawingML shapes.
+        animation: Per-element entrance animation mode (single effect name,
+            'mixed', 'random', or None to disable). Native shapes mode only.
+        animation_duration: Per-element entrance duration in seconds.
+        animation_stagger: Auto-cascade gap between elements in seconds.
 
     Returns:
         Whether all slides were successfully created.
@@ -186,11 +199,16 @@ def create_pptx_with_native_svg(
             try:
                 # ---- Native shapes mode ----
                 if use_native_shapes:
-                    slide_xml, media_files_dict, rel_entries = convert_svg_to_slide_shapes(
-                        svg_path, slide_num=slide_num, verbose=verbose,
+                    slide_xml, media_files_dict, rel_entries, anim_targets = (
+                        convert_svg_to_slide_shapes(
+                            svg_path, slide_num=slide_num, verbose=verbose,
+                        )
                     )
 
-                    # Add transition if specified
+                    # Order matters: OOXML schema requires <p:transition>
+                    # to precede <p:timing> inside <p:sld>. Both use the same
+                    # </p:sld> string-replace anchor, so transition must be
+                    # injected first and timing second.
                     if transition and ANIMATIONS_AVAILABLE and create_transition_xml:
                         transition_xml = '\n' + create_transition_xml(
                             effect=transition,
@@ -200,6 +218,25 @@ def create_pptx_with_native_svg(
                         slide_xml = slide_xml.replace(
                             '</p:sld>',
                             transition_xml + '\n</p:sld>',
+                        )
+
+                    if (animation and animation != 'none'
+                            and create_sequence_timing_xml
+                            and pick_animation_effect
+                            and anim_targets):
+                        stagger_ms = int(animation_stagger * 1000)
+                        seq_targets = [
+                            (sid,
+                             0 if idx == 0 else stagger_ms,
+                             pick_animation_effect(animation, idx))
+                            for idx, (sid, _svg_id) in enumerate(anim_targets)
+                        ]
+                        timing_xml = '\n' + create_sequence_timing_xml(
+                            seq_targets, duration=animation_duration,
+                        )
+                        slide_xml = slide_xml.replace(
+                            '</p:sld>',
+                            timing_xml + '\n</p:sld>',
                         )
 
                     # Write slide XML
