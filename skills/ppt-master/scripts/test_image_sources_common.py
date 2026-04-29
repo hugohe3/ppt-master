@@ -37,6 +37,16 @@ class ImageSourcesCommonTests(unittest.TestCase):
         self.assertEqual(request.filename, "hero.png")
         self.assertEqual(request.slide, "3")
 
+    def test_image_search_request_supports_legacy_use_case_keyword(self):
+        request = ImageSearchRequest(
+            query="city skyline",
+            orientation="landscape",
+            use_case="background",
+        )
+
+        self.assertEqual(request.purpose, "background")
+        self.assertEqual(request.use_case, "background")
+
     def test_asset_candidate_supports_richer_provider_metadata(self):
         candidate = AssetCandidate(
             provider="wikimedia",
@@ -59,6 +69,28 @@ class ImageSourcesCommonTests(unittest.TestCase):
         self.assertEqual(candidate.author, "Example Author")
         self.assertTrue(candidate.attribution_required)
         self.assertEqual(candidate.raw, {"id": "abc123"})
+
+    def test_asset_candidate_supports_legacy_positional_construction(self):
+        candidate = AssetCandidate(
+            "wikimedia",
+            "legacy-id",
+            "Downtown skyline",
+            1920,
+            1080,
+            "CC BY 4.0",
+            "https://creativecommons.org/licenses/by/4.0/",
+        )
+
+        self.assertEqual(candidate.provider, "wikimedia")
+        self.assertEqual(candidate.asset_id, "legacy-id")
+        self.assertEqual(candidate.title, "Downtown skyline")
+        self.assertEqual(candidate.width, 1920)
+        self.assertEqual(candidate.height, 1080)
+        self.assertEqual(candidate.license_name, "CC BY 4.0")
+        self.assertEqual(
+            candidate.license_url,
+            "https://creativecommons.org/licenses/by/4.0/",
+        )
 
     def test_open_license_allows_cc_by_but_rejects_cc_by_nc(self):
         self.assertTrue(
@@ -149,6 +181,56 @@ class ImageSourcesCommonTests(unittest.TestCase):
         self.assertGreater(
             score_candidate(allowed, request),
             score_candidate(rejected, request),
+        )
+
+    def test_minimum_dimensions_penalize_candidates_below_thresholds(self):
+        request = ImageSearchRequest(
+            query="forest",
+            min_width=1600,
+            min_height=900,
+        )
+        baseline = AssetCandidate(
+            provider="wikimedia",
+            title="baseline",
+            source_page_url="https://example.com/base",
+            download_url="https://example.com/base.jpg",
+            width=1600,
+            height=900,
+            license_name="CC BY 4.0",
+            license_url="https://creativecommons.org/licenses/by/4.0/",
+        )
+        below_min_width = AssetCandidate(
+            provider="wikimedia",
+            title="too narrow",
+            source_page_url="https://example.com/narrow",
+            download_url="https://example.com/narrow.jpg",
+            width=1599,
+            height=900,
+            license_name="CC BY 4.0",
+            license_url="https://creativecommons.org/licenses/by/4.0/",
+        )
+        below_min_height = AssetCandidate(
+            provider="wikimedia",
+            title="too small",
+            source_page_url="https://example.com/small",
+            download_url="https://example.com/small.jpg",
+            width=1600,
+            height=899,
+            license_name="CC BY 4.0",
+            license_url="https://creativecommons.org/licenses/by/4.0/",
+        )
+
+        self.assertAlmostEqual(
+            score_candidate(baseline, request)
+            - score_candidate(below_min_width, request),
+            500.9,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            score_candidate(baseline, request)
+            - score_candidate(below_min_height, request),
+            501.6,
+            places=6,
         )
 
     def test_ensure_json_parent_creates_parent_directory(self):

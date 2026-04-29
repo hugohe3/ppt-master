@@ -31,7 +31,7 @@ PROVIDER_LICENSE_TOKENS = {
 }
 
 
-@dataclass
+@dataclass(init=False)
 class ImageSearchRequest:
     query: str
     purpose: str = ""
@@ -40,6 +40,30 @@ class ImageSearchRequest:
     min_height: int = 0
     filename: str = ""
     slide: str = ""
+
+    def __init__(
+        self,
+        query,
+        purpose="",
+        orientation="",
+        min_width=0,
+        min_height=0,
+        filename="",
+        slide="",
+        use_case=None,
+    ):
+        if use_case is not None:
+            if purpose and use_case != purpose:
+                raise TypeError("purpose and use_case must match when both are provided")
+            purpose = use_case
+
+        self.query = query
+        self.purpose = purpose
+        self.orientation = orientation
+        self.min_width = min_width
+        self.min_height = min_height
+        self.filename = filename
+        self.slide = slide
 
     @property
     def use_case(self):
@@ -50,7 +74,7 @@ class ImageSearchRequest:
         self.purpose = value
 
 
-@dataclass
+@dataclass(init=False)
 class AssetCandidate:
     provider: str
     title: str
@@ -64,6 +88,70 @@ class AssetCandidate:
     attribution_required: bool = False
     raw: Any = field(default=None)
     asset_id: str = ""
+
+    def __init__(
+        self,
+        *args,
+        provider=None,
+        title=None,
+        source_page_url="",
+        license_name="",
+        license_url="",
+        width=0,
+        height=0,
+        download_url="",
+        author="",
+        attribution_required=False,
+        raw=None,
+        asset_id="",
+    ):
+        if args:
+            if len(args) < 5 or len(args) > 7:
+                raise TypeError(
+                    "legacy AssetCandidate positional construction requires 5 to 7 arguments"
+                )
+            if any(
+                value is not None and value != default
+                for value, default in (
+                    (provider, None),
+                    (title, None),
+                    (source_page_url, ""),
+                    (license_name, ""),
+                    (license_url, ""),
+                    (width, 0),
+                    (height, 0),
+                    (download_url, ""),
+                    (author, ""),
+                    (attribution_required, False),
+                    (raw, None),
+                    (asset_id, ""),
+                )
+            ):
+                raise TypeError(
+                    "cannot mix legacy positional AssetCandidate arguments with new metadata keywords"
+                )
+
+            provider, asset_id, title, width, height = args[:5]
+            if len(args) >= 6:
+                license_name = args[5]
+            if len(args) == 7:
+                license_url = args[6]
+
+        if provider is None or title is None:
+            raise TypeError("provider and title are required")
+
+        self.provider = provider
+        self.title = title
+        self.source_page_url = source_page_url
+        self.license_name = license_name
+        self.license_url = license_url
+        self.width = width
+        self.height = height
+        self.download_url = download_url
+        self.author = author
+        self.attribution_required = attribution_required
+        self.raw = raw
+        self.asset_id = asset_id
 
 
 def normalize_orientation(width, height):
