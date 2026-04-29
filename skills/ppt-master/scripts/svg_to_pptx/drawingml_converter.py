@@ -113,11 +113,17 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if not child_results:
         return None
 
-    # Single child: flatten
-    if len(child_results) == 1:
+    elem_id = elem.get('id')
+    should_animate_group = ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id)
+
+    # Single-child non-semantic groups are flattened to reduce nesting. Top-level
+    # semantic groups are preserved so animations target the group, not its
+    # individual child shapes.
+    if len(child_results) == 1 and not should_animate_group:
         return child_results[0]
 
-    # Multiple children: wrap in <p:grpSp>
+    # Multiple children, or a top-level semantic one-child group: wrap in
+    # <p:grpSp> so PowerPoint can animate the group as one unit.
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
 
@@ -146,8 +152,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # multi-child wrapper qualifies — flattened single-child groups have no
     # <p:grpSp> to anchor a timing target on, and nested groups are
     # ignored to keep the animation budget at ~per-section granularity.
-    elem_id = elem.get('id')
-    if ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id):
+    if should_animate_group:
         ctx.anim_targets.append((group_id, elem_id))
 
     group_effect = ''

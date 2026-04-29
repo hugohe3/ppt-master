@@ -368,9 +368,9 @@ def create_sequence_timing_xml(
         all_steps = '\n              '.join(steps)
     else:
         # with-previous / after-previous: wrap the entire cascade in ONE
-        # auto-firing par so the sequence has a real trigger anchor under
-        # mainSeq. Inside that wrapper, each element is a sibling par
-        # whose cTn carries nodeType=withEffect or afterEffect.
+        # par so the sequence has a real trigger anchor under mainSeq.
+        # Inside that wrapper, each element is a sibling par whose cTn
+        # carries nodeType=withEffect or afterEffect.
         outer_id = next_id
         next_id += 1
         inner_steps = []
@@ -407,9 +407,19 @@ def create_sequence_timing_xml(
                 </p:par>''')
 
         inner_xml = '\n                '.join(inner_steps)
+        if trigger == 'with-previous':
+            # Match PowerPoint's native "Start: With Previous" export:
+            # the wrapper waits for mainSeq to begin, while all child
+            # withEffect nodes start at delay=0 under that same anchor.
+            outer_start_conditions = (
+                '<p:cond delay="indefinite"/>'
+                '<p:cond evt="onBegin" delay="0"><p:tn val="2"/></p:cond>'
+            )
+        else:
+            outer_start_conditions = '<p:cond delay="0"/>'
         all_steps = f'''<p:par>
                 <p:cTn id="{outer_id}" fill="hold">
-                  <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                  <p:stCondLst>{outer_start_conditions}</p:stCondLst>
                   <p:childTnLst>
                     {inner_xml}
                   </p:childTnLst>
