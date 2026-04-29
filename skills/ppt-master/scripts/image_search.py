@@ -3,6 +3,7 @@ import argparse
 import importlib
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 from image_sources.provider_common import ensure_json_parent
 
@@ -13,6 +14,8 @@ PROVIDER_REGISTRY = {
     "pexels": "image_sources.provider_pexels",
     "pixabay": "image_sources.provider_pixabay",
 }
+
+ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 
 LICENSE_VERIFICATION_NOTE = (
     "provider metadata used; manual review recommended for external delivery"
@@ -32,13 +35,35 @@ def build_parser():
     )
     parser.add_argument(
         "--filename",
+        required=True,
+        help="Deterministic local filename for the selected image.",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default=".",
+        help="Output directory for acquired images and the default manifest path.",
+    )
+    parser.add_argument(
+        "--slide",
         default="",
-        help="Preferred local filename for the selected image.",
+        help="Slide identifier associated with the requested image.",
+    )
+    parser.add_argument(
+        "--purpose",
+        default="",
+        help="Usage purpose for the requested image.",
+    )
+    parser.add_argument(
+        "--orientation",
+        choices=ORIENTATION_CHOICES,
+        default="any",
+        help="Preferred image orientation.",
     )
     parser.add_argument(
         "--manifest",
-        default="image_sources.json",
-        help="Output path for the sources manifest JSON file.",
+        default=None,
+        help="Optional explicit output path for the sources manifest JSON file.",
     )
     return parser
 
@@ -46,6 +71,10 @@ def build_parser():
 def load_provider(provider_name):
     module_name = PROVIDER_REGISTRY[provider_name]
     return importlib.import_module(module_name)
+
+
+def default_manifest_path(output_dir):
+    return Path(output_dir) / "image_sources.json"
 
 
 def write_sources_manifest(path, items):
@@ -62,18 +91,30 @@ def write_sources_manifest(path, items):
     return manifest_path
 
 
+def build_manifest_item(args):
+    return {
+        "filename": args.filename,
+        "provider": args.provider,
+        "search_query": args.query,
+        "slide": args.slide,
+        "purpose": args.purpose,
+        "orientation": args.orientation,
+        "source_page_url": "",
+        "download_url": "",
+        "author": "",
+        "license_name": "",
+        "license_url": "",
+        "attribution_required": False,
+        "attribution_text": "",
+    }
+
+
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    item = {
-        "query": args.query,
-        "provider": args.provider,
-    }
-    if args.filename:
-        item["filename"] = args.filename
-
-    write_sources_manifest(args.manifest, [item])
+    manifest_path = args.manifest or default_manifest_path(args.output)
+    write_sources_manifest(manifest_path, [build_manifest_item(args)])
     return 0
 
 

@@ -1,3 +1,4 @@
+import importlib
 import json
 import sys
 import tempfile
@@ -8,12 +9,38 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
-from image_search import build_parser, write_sources_manifest
-
 
 class ImageSearchCliTests(unittest.TestCase):
-    def test_parser_accepts_provider_and_filename(self):
-        parser = build_parser()
+    def setUp(self):
+        self._provider_module_names = [
+            "image_sources.provider_openverse",
+            "image_sources.provider_wikimedia",
+            "image_sources.provider_pexels",
+            "image_sources.provider_pixabay",
+        ]
+        self._saved_modules = {
+            name: sys.modules.get(name) for name in self._provider_module_names
+        }
+        for name in self._provider_module_names:
+            sys.modules.pop(name, None)
+
+        sys.modules.pop("image_search", None)
+        self.image_search = importlib.import_module("image_search")
+
+    def tearDown(self):
+        sys.modules.pop("image_search", None)
+        for name in self._provider_module_names:
+            sys.modules.pop(name, None)
+            saved_module = self._saved_modules[name]
+            if saved_module is not None:
+                sys.modules[name] = saved_module
+
+    def test_import_does_not_load_provider_modules(self):
+        for name in self._provider_module_names:
+            self.assertNotIn(name, sys.modules)
+
+    def test_parser_accepts_expected_options_and_defaults(self):
+        parser = self.image_search.build_parser()
 
         args = parser.parse_args(
             [
@@ -22,18 +49,49 @@ class ImageSearchCliTests(unittest.TestCase):
                 "wikimedia",
                 "--filename",
                 "hero.jpg",
+                "--output",
+                "projects/demo/images",
+                "--slide",
+                "3",
+                "--purpose",
+                "background",
+                "--orientation",
+                "landscape",
             ]
         )
 
         self.assertEqual(args.query, "city skyline")
         self.assertEqual(args.provider, "wikimedia")
         self.assertEqual(args.filename, "hero.jpg")
+        self.assertEqual(args.output, "projects/demo/images")
+        self.assertEqual(args.slide, "3")
+        self.assertEqual(args.purpose, "background")
+        self.assertEqual(args.orientation, "landscape")
+        self.assertIsNone(args.manifest)
 
-    def test_write_sources_manifest_writes_item_filename(self):
+    def test_parser_defaults_orientation_and_provider(self):
+        parser = self.image_search.build_parser()
+
+        args = parser.parse_args(
+            [
+                "city skyline",
+                "--filename",
+                "hero.jpg",
+            ]
+        )
+
+        self.assertEqual(args.provider, "openverse")
+        self.assertEqual(args.output, ".")
+        self.assertEqual(args.slide, "")
+        self.assertEqual(args.purpose, "")
+        self.assertEqual(args.orientation, "any")
+        self.assertIsNone(args.manifest)
+
+    def test_write_sources_manifest_writes_required_envelope(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "nested" / "image_sources.json"
 
-            write_sources_manifest(
+            self.image_search.write_sources_manifest(
                 path,
                 [
                     {
@@ -45,7 +103,52 @@ class ImageSearchCliTests(unittest.TestCase):
 
             data = json.loads(path.read_text(encoding="utf-8"))
 
+        self.assertEqual(
+            data["license_verification"],
+            self.image_search.LICENSE_VERIFICATION_NOTE,
+        )
+        self.assertIn("generated_at", data)
         self.assertEqual(data["items"][0]["filename"], "hero.jpg")
+
+    def test_main_writes_manifest_to_output_directory_when_manifest_omitted(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir) / "images"
+
+            exit_code = self.image_search.main(
+                [
+                    "city skyline",
+                    "--filename",
+                    "hero.jpg",
+                    "--output",
+                    str(output_dir),
+                    "--provider",
+                    "pixabay",
+                    "--slide",
+                    "2",
+                    "--purpose",
+                    "cover",
+                    "--orientation",
+                    "landscape",
+                ]
+            )
+
+            manifest_path = output_dir / "image_sources.json"
+            data = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(data["items"][0]["filename"], "hero.jpg")
+        self.assertEqual(data["items"][0]["provider"], "pixabay")
+        self.assertEqual(data["items"][0]["search_query"], "city skyline")
+        self.assertEqual(data["items"][0]["slide"], "2")
+        self.assertEqual(data["items"][0]["purpose"], "cover")
+        self.assertEqual(data["items"][0]["orientation"], "landscape")
+        self.assertEqual(data["items"][0]["source_page_url"], "")
+        self.assertEqual(data["items"][0]["download_url"], "")
+        self.assertEqual(data["items"][0]["author"], "")
+        self.assertEqual(data["items"][0]["license_name"], "")
+        self.assertEqual(data["items"][0]["license_url"], "")
+        self.assertFalse(data["items"][0]["attribution_required"])
+        self.assertEqual(data["items"][0]["attribution_text"], "")
 
 
 if __name__ == "__main__":
