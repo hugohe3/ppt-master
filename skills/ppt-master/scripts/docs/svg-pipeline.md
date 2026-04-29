@@ -38,7 +38,11 @@ python3 scripts/svg_to_pptx.py <project_path> -s final --auto-advance 3
 ```
 
 Behavior:
-- Default output: timestamped pair in `exports/` — `<project_name>_<timestamp>.pptx` (native editable) + `<project_name>_<timestamp>_svg.pptx` (SVG snapshot)
+- Default output:
+  - `exports/<project_name>_<timestamp>.pptx` — main native editable pptx
+  - `backup/<timestamp>/<project_name>_svg.pptx` — SVG snapshot for visual reference
+  - `backup/<timestamp>/svg_output/` — copy of Executor SVG source, so the pptx can be rebuilt via `finalize_svg → svg_to_pptx` without re-running the LLM
+- Explicit `-o/--output` keeps the legacy side-by-side `_svg.pptx` next to the chosen path and skips `backup/`
 - Recommended source directory: `svg_final/`
 - Speaker notes are embedded automatically unless `--no-notes` is used
 

@@ -38,9 +38,12 @@ User Input (PDF/DOCX/XLSX/URL/Markdown)
     ↓
 [Post-processing] → total_md_split.py (split notes) → finalize_svg.py → svg_to_pptx.py
     ↓
-Output: Two timestamped files saved to exports/:
-    ├── presentation_<timestamp>.pptx      ← Native shapes (DrawingML) — recommended for editing & delivery
-    └── presentation_<timestamp>_svg.pptx ← SVG snapshot — pixel-perfect visual reference backup
+Output:
+    exports/
+    └── presentation_<timestamp>.pptx          ← Native shapes (DrawingML) — recommended for editing & delivery
+    backup/<timestamp>/
+    ├── presentation_svg.pptx                  ← SVG snapshot — pixel-perfect visual reference backup
+    └── svg_output/                            ← Archived Executor SVG source (rerun finalize_svg → svg_to_pptx to rebuild)
 ```
 
 ---

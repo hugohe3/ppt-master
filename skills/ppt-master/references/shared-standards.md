@@ -291,7 +291,10 @@ python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX (from svg_final/, embeds speaker notes by default)
 python3 scripts/svg_to_pptx.py <project_path> -s final
-# Output: exports/<project_name>_<timestamp>.pptx + exports/<project_name>_<timestamp>_svg.pptx
+# Output:
+#   exports/<project_name>_<timestamp>.pptx           ← main native pptx
+#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot
+#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
 
 **Prohibited**:

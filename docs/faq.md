@@ -32,7 +32,7 @@ Yes. PPT Master includes a built-in image generation script that supports multip
 
 ## Q: Can I edit the generated presentations?
 
-Yes! Both files are saved to `exports/` with a timestamp. The native `.pptx` produces **native PowerPoint shapes** — all text, graphics, and colors are directly editable without any conversion. The `_svg.pptx` is an SVG snapshot kept as a visual reference backup. Requires **Office 2016** or later.
+Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colors directly editable without any conversion) is saved to `exports/` with a timestamp. The SVG snapshot `_svg.pptx` plus a copy of `svg_output/` (the Executor's raw SVG source) are archived to `backup/<timestamp>/`, so you can revisit the visual reference or rebuild the pptx via `finalize_svg → svg_to_pptx` without re-running the LLM. `backup/<timestamp>/` directories can be deleted manually when no longer needed. Requires **Office 2016** or later.
 
 ## Q: What's the difference between the three Executors?
 

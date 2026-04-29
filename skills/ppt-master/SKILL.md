@@ -299,7 +299,10 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
-# Output: exports/<project_name>_<timestamp>.pptx + exports/<project_name>_<timestamp>_svg.pptx
+# Output:
+#   exports/<project_name>_<timestamp>.pptx           ← main native pptx
+#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot
+#   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
