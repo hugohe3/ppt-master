@@ -14,6 +14,7 @@ PROVIDER_REGISTRY = {
     "pexels": "image_sources.provider_pexels",
     "pixabay": "image_sources.provider_pixabay",
 }
+AVAILABLE_PROVIDERS = ("openverse", "wikimedia")
 
 ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 
@@ -29,7 +30,7 @@ def build_parser():
     parser.add_argument("query", help="Search query for the external image provider.")
     parser.add_argument(
         "--provider",
-        choices=sorted(PROVIDER_REGISTRY),
+        choices=AVAILABLE_PROVIDERS,
         default="openverse",
         help="Provider to use for the search.",
     )

@@ -83,6 +83,15 @@ def _build_attribution_text(candidate):
     return " - ".join(parts)
 
 
+def _requires_attribution(license_name, license_url):
+    text = " ".join(
+        part.strip().lower()
+        for part in (license_name or "", license_url or "")
+        if part
+    )
+    return "cc0" not in text and "public domain" not in text and "/publicdomain/" not in text
+
+
 def parse_results(payload):
     candidates = []
     pages = payload.get("query", {}).get("pages", {})
@@ -119,7 +128,7 @@ def parse_results(payload):
                     height=_as_int(imageinfo.get("height")),
                     download_url=download_url,
                     author=author,
-                    attribution_required=license_name.lower() not in ("cc0", "public domain"),
+                    attribution_required=_requires_attribution(license_name, license_url),
                     raw=page,
                 )
             )
@@ -165,6 +174,7 @@ def search_and_download(
     best_candidate = max(candidates, key=lambda candidate: score_candidate(candidate, request))
 
     output_path = Path(output_dir) / filename
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     download_image = _load_download_image()
     download_image(best_candidate.download_url, str(output_path))
 

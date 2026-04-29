@@ -70,6 +70,15 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertEqual(args.orientation, "landscape")
         self.assertIsNone(args.manifest)
 
+    def test_parser_only_exposes_currently_implemented_providers(self):
+        parser = self.image_search.build_parser()
+        provider_action = parser._option_string_actions["--provider"]
+
+        self.assertEqual(
+            tuple(provider_action.choices),
+            ("openverse", "wikimedia"),
+        )
+
     def test_parser_defaults_orientation_and_provider(self):
         parser = self.image_search.build_parser()
 
