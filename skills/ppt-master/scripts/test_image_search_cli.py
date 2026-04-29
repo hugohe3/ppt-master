@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(SCRIPTS_DIR) not in sys.path:
@@ -110,45 +111,105 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertIn("generated_at", data)
         self.assertEqual(data["items"][0]["filename"], "hero.jpg")
 
-    def test_main_writes_manifest_to_output_directory_when_manifest_omitted(self):
+    def test_main_writes_provider_manifest_to_output_directory_when_manifest_omitted(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir) / "images"
+            manifest_item = {
+                "filename": "hero.jpg",
+                "provider": "openverse",
+                "search_query": "city skyline",
+                "slide": "2",
+                "purpose": "cover",
+                "source_page_url": "https://example.com/source",
+                "download_url": "https://example.com/hero.jpg",
+                "author": "Example Author",
+                "license_name": "CC BY 4.0",
+                "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                "attribution_required": True,
+                "attribution_text": "City skyline - by Example Author - CC BY 4.0",
+            }
 
-            exit_code = self.image_search.main(
-                [
-                    "city skyline",
-                    "--filename",
-                    "hero.jpg",
-                    "--output",
-                    str(output_dir),
-                    "--provider",
-                    "pixabay",
-                    "--slide",
-                    "2",
-                    "--purpose",
-                    "cover",
-                    "--orientation",
-                    "landscape",
-                ]
-            )
+            provider = mock.Mock()
+            provider.search_and_download.return_value = manifest_item
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ) as load_provider:
+                exit_code = self.image_search.main(
+                    [
+                        "city skyline",
+                        "--filename",
+                        "hero.jpg",
+                        "--output",
+                        str(output_dir),
+                        "--provider",
+                        "openverse",
+                        "--slide",
+                        "2",
+                        "--purpose",
+                        "cover",
+                        "--orientation",
+                        "landscape",
+                    ]
+                )
 
             manifest_path = output_dir / "image_sources.json"
             data = json.loads(manifest_path.read_text(encoding="utf-8"))
 
         self.assertEqual(exit_code, 0)
+        load_provider.assert_called_once_with("openverse")
+        provider.search_and_download.assert_called_once_with(
+            query="city skyline",
+            output_dir=str(output_dir),
+            filename="hero.jpg",
+            slide="2",
+            purpose="cover",
+            orientation="landscape",
+        )
         self.assertEqual(data["items"][0]["filename"], "hero.jpg")
-        self.assertEqual(data["items"][0]["provider"], "pixabay")
+        self.assertEqual(data["items"][0]["provider"], "openverse")
         self.assertEqual(data["items"][0]["search_query"], "city skyline")
         self.assertEqual(data["items"][0]["slide"], "2")
         self.assertEqual(data["items"][0]["purpose"], "cover")
-        self.assertEqual(data["items"][0]["orientation"], "landscape")
-        self.assertEqual(data["items"][0]["source_page_url"], "")
-        self.assertEqual(data["items"][0]["download_url"], "")
-        self.assertEqual(data["items"][0]["author"], "")
-        self.assertEqual(data["items"][0]["license_name"], "")
-        self.assertEqual(data["items"][0]["license_url"], "")
-        self.assertFalse(data["items"][0]["attribution_required"])
-        self.assertEqual(data["items"][0]["attribution_text"], "")
+        self.assertEqual(data["items"][0]["source_page_url"], "https://example.com/source")
+        self.assertEqual(data["items"][0]["download_url"], "https://example.com/hero.jpg")
+        self.assertEqual(data["items"][0]["author"], "Example Author")
+        self.assertEqual(data["items"][0]["license_name"], "CC BY 4.0")
+        self.assertEqual(
+            data["items"][0]["license_url"],
+            "https://creativecommons.org/licenses/by/4.0/",
+        )
+        self.assertTrue(data["items"][0]["attribution_required"])
+        self.assertEqual(
+            data["items"][0]["attribution_text"],
+            "City skyline - by Example Author - CC BY 4.0",
+        )
+
+    def test_main_raises_when_selected_provider_module_is_unavailable(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir) / "images"
+
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                side_effect=ModuleNotFoundError("missing provider"),
+            ):
+                with self.assertRaises(ModuleNotFoundError):
+                    self.image_search.main(
+                        [
+                            "city skyline",
+                            "--filename",
+                            "hero.jpg",
+                            "--output",
+                            str(output_dir),
+                            "--provider",
+                            "openverse",
+                        ]
+                    )
+
+            manifest_path = output_dir / "image_sources.json"
+            self.assertFalse(manifest_path.exists())
 
 
 if __name__ == "__main__":
