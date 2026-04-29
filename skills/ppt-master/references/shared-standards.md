@@ -306,10 +306,17 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
 
+**Optional animation flags** (only when the user asks):
+- `-t <effect>` — page transition (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`; default `fade`)
+- `-a <effect>` — per-element entrance animation (`fade` / `mixed` / `random` / one of 22 named effects; default off). Anchors on top-level `<g id="...">` groups.
+- `--auto-advance <seconds>` — kiosk-style auto-play
+
+Full reference: [`docs/animations.md`](../../../docs/animations.md).
+
 **Prohibited**:
 - NEVER use `cp` as a substitute for `finalize_svg.py`
 - NEVER export directly from `svg_output/` — MUST export from `svg_final/` (use `-s final`)
-- NEVER add extra flags like `--only`
+- NEVER use `--only` (it suppresses one of the two output files)
 
 **Re-run rule**: Any change to `svg_output/` after post-processing requires re-running Steps 2-3. Step 1 only re-runs if `notes/total.md` changed.
 

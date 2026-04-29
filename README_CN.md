@@ -38,6 +38,8 @@
 
 丢进一份 PDF、DOCX、网址或 Markdown，拿回一份**原生可编辑的 PowerPoint**——真正的形状、真正的文本框、真正的图表，不是图片。点击任何元素即可编辑。
 
+> **动画** —— 导出的 deck 支持**页间转场**和**页内元素入场动画**，输出为真正的 OOXML 动画（不是嵌入视频），在 PowerPoint 和 Keynote 中按点击逐次播放，无需额外工具。详见 [转场与动画使用指南 →](./docs/zh/animations.md)。
+
 > **运作方式** —— PPT Master 是一套在 AI IDE（Claude Code / Cursor / VS Code + Copilot / Codebuddy 等）里运行的工作流（一个 "skill"）。你在 IDE 的对话框里跟 AI 说"用这份 PDF 做一份 PPT"，AI 按这套工作流在你本机生成一个真正可编辑的 `.pptx`。你不写任何代码——IDE 只是你和 AI 对话的地方。
 >
 > **你要做的**：装 Python、装一个 AI IDE、把资料放进来。
@@ -240,6 +242,7 @@ OPENAI_MODEL=gpt-image-2
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | 核心流程与规则 |
 | 🎨 | [创建自定义模板](./skills/ppt-master/workflows/create-template.md) | 独立工作流，构建你自己的品牌或行业模板 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
+| 🎬 | [转场与动画](./docs/zh/animations.md) | 页间转场和页内元素入场动画 |
 | 🛠️ | [脚本与工具](./skills/ppt-master/scripts/README.md) | 所有脚本和命令 |
 | 💼 | [示例](./examples/README.md) | 22 个项目，309 页 |
 | 🏗️ | [技术路线](./docs/zh/technical-design.md) | 架构、设计哲学、为什么选 SVG |

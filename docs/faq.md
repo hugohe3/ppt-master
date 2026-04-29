@@ -56,46 +56,16 @@ If your workflow specifically requires Excel-driven data editing, manually creat
 
 ## Q: Can I change page transitions and element animations?
 
-Yes. The exported PPTX supports both **page transitions** and **per-element entrance animations**, controlled via `svg_to_pptx.py` CLI flags.
-
-**Page transitions** (on by default, 0.4s `fade`)
+Yes. Page transitions (`fade` 0.4s by default) and per-element entrance animations (off by default) are both controlled by `svg_to_pptx.py` flags — `-t/--transition` for page-level and `-a/--animation` for element-level. Common one-liners:
 
 ```bash
-# Pick a different effect: fade / push / wipe / split / strips / cover / random
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push --transition-duration 0.6
-
-# Disable transitions
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none
-
-# Auto-advance every 5 seconds
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t push       # different transition
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -t none       # disable transitions
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade   # enable per-element
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed  # auto-vary effects
 ```
 
-**Per-element animations** (off by default — existing users see no behavior change)
-
-Enter a slide → click once → semantic groups cascade in by z-order. To enable:
-
-```bash
-# Cascade every element with fade (recommended starting point)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
-
-# Auto-vary visible effects within a slide (title fades; content cycles through a curated pool)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
-
-# Slower pace: 0.5s per click-revealed element
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade \
-        --animation-duration 0.5 --animation-stagger 0.2
-```
-
-22 single effects: `appear / fade / fly / cut / zoom / wipe / split / blinds / checkerboard / dissolve / random_bars / peek / wheel / box / circle / diamond / plus / strips / wedge / stretch / expand / swivel`, plus `mixed` and `random` auto-vary modes.
-
-`mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck. `random` samples from the same visible-effect pool. The pool excludes `appear` because it is too subtle for presenter-controlled reveals.
-
-`--animation-stagger` is kept for backward compatibility but is ignored by click-by-click timing. Use `--animation-duration` to control how obvious each reveal feels.
-
-**Anchor logic**: animations are anchored on top-level SVG `<g id="...">` groups (e.g. `<g id="cover-title">`, `<g id="card-1">`) — this is the cleanest cascade granularity. Aim for 3–8 semantic groups per slide. Slides whose root is flat `<rect>` / `<text>` / `<path>` (no top-level `<g>` wrappers) **fall back automatically**: if there are ≤8 top-level visible elements, each becomes one animation anchor; beyond 8, animation is skipped on that slide. So Executors should wrap logical sections in `<g id>` regardless of animation, since it also improves PowerPoint's group-select / group-move ergonomics.
-
-**Note**: per-element animations only apply in native shapes mode (the default); `--only legacy` produces one image per slide and has no element anchors to animate.
+Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](./animations.md).
 
 ## Q: Which AI model works best?
 
