@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import shutil
 import argparse
 from datetime import datetime
 from pathlib import Path
@@ -122,6 +123,7 @@ Speaker notes (enabled by default):
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    backup_dir: Path | None = None
     if args.output:
         output_base = Path(args.output)
         native_path = output_base
@@ -131,9 +133,13 @@ Speaker notes (enabled by default):
         exports_dir = project_path / "exports"
         exports_dir.mkdir(parents=True, exist_ok=True)
         native_path = exports_dir / f"{project_name}_{timestamp}.pptx"
-        legacy_path = exports_dir / f"{project_name}_{timestamp}_svg.pptx"
+
+        backup_dir = project_path / "backup" / timestamp
+        backup_dir.mkdir(parents=True, exist_ok=True)
+        legacy_path = backup_dir / f"{project_name}_svg.pptx"
 
     native_path.parent.mkdir(parents=True, exist_ok=True)
+    legacy_path.parent.mkdir(parents=True, exist_ok=True)
 
     verbose = not args.quiet
 
@@ -194,5 +200,19 @@ Speaker notes (enabled by default):
             **shared_kwargs,
         )
         success = success and ok
+
+        if ok and backup_dir is not None:
+            svg_output_src = project_path / "svg_output"
+            if svg_output_src.is_dir():
+                svg_output_dst = backup_dir / "svg_output"
+                try:
+                    shutil.copytree(svg_output_src, svg_output_dst)
+                    if verbose:
+                        print(f"  svg_output backup: {svg_output_dst}")
+                except Exception as exc:
+                    if verbose:
+                        print(f"  [warn] svg_output backup skipped: {exc}")
+            elif verbose:
+                print(f"  [info] svg_output/ not found, backup skipped")
 
     sys.exit(0 if success else 1)
