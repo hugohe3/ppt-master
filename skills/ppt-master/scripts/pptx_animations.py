@@ -94,9 +94,9 @@ def create_transition_xml(
     element_name = trans_info['element']
     attrs = trans_info['attrs']
 
-    # Build dur attribute (milliseconds, precise control)
+    # Build dur attribute (milliseconds, precise control via Office 2010 extension)
     dur_ms = int(duration * 1000)
-    dur_attr = f' dur="{dur_ms}"'
+    dur_attr = f' p14:dur="{dur_ms}" xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main"'
 
     # Build auto-advance attribute
     adv_attr = ''
