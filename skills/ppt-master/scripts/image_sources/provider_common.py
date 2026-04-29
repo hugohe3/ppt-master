@@ -84,7 +84,10 @@ def score_candidate(candidate, request):
         candidate.license_url,
         provider=candidate.provider,
     )
-    score = 10000 if allowed else -10000
+    if not allowed:
+        return -1000000
+
+    score = 10000
 
     candidate_orientation = normalize_orientation(candidate.width, candidate.height)
     requested_orientation = (request.orientation or "").strip().lower()
@@ -98,7 +101,8 @@ def score_candidate(candidate, request):
         if requested_orientation == "landscape" and candidate_orientation == "landscape":
             score += 250
 
-    score += max(candidate.width, 0) * max(candidate.height, 0) / 1000.0
+    size_score = max(candidate.width, 0) * max(candidate.height, 0) / 1000.0
+    score += min(size_score, 5000)
     return score
 
 

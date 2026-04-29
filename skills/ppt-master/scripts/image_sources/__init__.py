@@ -3,7 +3,6 @@
 from .provider_common import (
     AssetCandidate,
     ImageSearchRequest,
-    ensure_json_parent,
     is_allowed_license,
     normalize_orientation,
     score_candidate,
@@ -12,7 +11,6 @@ from .provider_common import (
 __all__ = [
     "AssetCandidate",
     "ImageSearchRequest",
-    "ensure_json_parent",
     "is_allowed_license",
     "normalize_orientation",
     "score_candidate",

@@ -75,6 +75,36 @@ class ImageSourcesCommonTests(unittest.TestCase):
             score_candidate(portrait, request),
         )
 
+    def test_rejected_license_never_beats_allowed_candidate(self):
+        request = ImageSearchRequest(
+            query="forest",
+            orientation="landscape",
+            use_case="background",
+        )
+        allowed = AssetCandidate(
+            provider="wikimedia",
+            asset_id="allowed",
+            title="usable",
+            width=1600,
+            height=900,
+            license_name="CC BY 4.0",
+            license_url="https://creativecommons.org/licenses/by/4.0/",
+        )
+        rejected = AssetCandidate(
+            provider="wikimedia",
+            asset_id="rejected",
+            title="too restrictive",
+            width=20000,
+            height=12000,
+            license_name="CC BY-NC 4.0",
+            license_url="https://creativecommons.org/licenses/by-nc/4.0/",
+        )
+
+        self.assertGreater(
+            score_candidate(allowed, request),
+            score_candidate(rejected, request),
+        )
+
     def test_ensure_json_parent_creates_parent_directory(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "nested" / "image_sources.json"
