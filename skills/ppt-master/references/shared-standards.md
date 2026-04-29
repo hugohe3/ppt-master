@@ -245,9 +245,11 @@ Color: use the deck's primary brand color for emphasis. Reserve green/red for ac
 
 ### Element Grouping (Mandatory)
 
-Wrap logically related elements in `<g>`. Produces PowerPoint groups in PPTX, making slides easier to select/move/edit.
+Wrap logically related elements in top-level `<g id="...">` groups. Produces PowerPoint groups in PPTX, making slides easier to select/move/edit and providing stable anchors for optional click-by-click entrance animation.
 
 > ⚠️ Only `<g opacity="...">` is banned (§2). Plain `<g>` for grouping is required.
+
+**Animation-ready rule**: direct children of `<svg>` should be semantic groups, not raw drawing atoms. Aim for **3–8 top-level `<g id>` groups per slide**; each group should correspond to one presenter click if page-level animation is enabled.
 
 **What to group**:
 
@@ -260,6 +262,13 @@ Wrap logically related elements in `<g>`. Produces PowerPoint groups in PPTX, ma
 | Page header | Title + subtitle + accent decoration |
 | Page footer | Page number + branding |
 | Decorative cluster | Related decorative shapes (rings, orbs, dots) |
+
+**Do not**:
+
+- Put the whole slide into one giant `<g>`; that leaves only one animation step.
+- Leave many top-level `<rect>` / `<text>` / `<path>` elements ungrouped; fallback animation is capped at 8 primitives and dense flat pages may skip animation.
+- Split every icon, text line, or decorative mark into separate top-level groups; that creates too many click steps.
+- Use anonymous top-level groups. Every top-level semantic group needs a descriptive `id`.
 
 **Example**:
 
@@ -274,7 +283,7 @@ Wrap logically related elements in `<g>`. Produces PowerPoint groups in PPTX, ma
 </g>
 ```
 
-**Naming**: descriptive `id` on top-level `<g>` is **required** (e.g., `card-1`, `step-discover`, `header`, `footer`). Each top-level `<g id>` becomes one anchor for per-element entrance animation in PPTX export; without it, the exporter falls back to top-level primitives (capped) or skips animation on dense pages.
+**Naming**: descriptive `id` on top-level `<g>` is **required** (e.g., `card-1`, `step-discover`, `header`, `footer`). Each top-level `<g id>` becomes one anchor for per-element entrance animation in PPTX export; without it, the exporter falls back to at most 8 top-level primitives or skips animation on dense pages.
 
 ---
 

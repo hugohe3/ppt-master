@@ -14,13 +14,14 @@ Supported transition effects:
     - random: Random
 
 Supported entrance animations (per-element):
-    appear, fade, fly, zoom, wipe, split, blinds,
-    dissolve, peek, wheel, box, circle
+    appear, fade, fly, cut, zoom, wipe, split, blinds, checkerboard,
+    dissolve, random_bars, peek, wheel, box, circle, diamond, plus,
+    strips, wedge, stretch, expand, swivel
 
 Animation modes used by the builder:
     - single effect name (one of the above) — apply to every element
-    - 'mixed'  — first element fade, the rest cycle through a curated pool
-    - 'random' — pick a random effect per element
+    - 'mixed'  — first element fades, the rest cycle through a curated visible pool
+    - 'random' — pick a random effect from the same visible pool per element
 
 Dependencies: None (pure XML generation)
 """
@@ -124,24 +125,37 @@ def create_transition_xml(
 # Effects with filter=None render as plain "Appear" (visibility flip only).
 #
 ANIMATIONS: Dict[str, Dict[str, Any]] = {
-    'appear':   {'name': 'Appear',   'filter': None},
-    'fade':     {'name': 'Fade',     'filter': 'fade'},
-    'fly':      {'name': 'Fly In',   'filter': 'slide',    'prLst': 'from(b)'},
-    'zoom':     {'name': 'Zoom',     'filter': 'image'},
-    'wipe':     {'name': 'Wipe',     'filter': 'wipe',     'prLst': 'from(l)'},
-    'split':    {'name': 'Split',    'filter': 'barn',     'prLst': 'inHorizontal'},
-    'blinds':   {'name': 'Blinds',   'filter': 'blinds',   'prLst': 'horizontal'},
-    'dissolve': {'name': 'Dissolve', 'filter': 'dissolve'},
-    'peek':     {'name': 'Peek',     'filter': 'wipe',     'prLst': 'from(b)'},
-    'wheel':    {'name': 'Wheel',    'filter': 'wheel',    'prLst': 'spokes(1)'},
-    'box':      {'name': 'Box',      'filter': 'box',      'prLst': 'in'},
-    'circle':   {'name': 'Circle',   'filter': 'circle',   'prLst': 'in'},
+    'appear':   {'name': 'Appear',   'filter': None, 'presetID': 1, 'presetSubtype': 0},
+    'fade':     {'name': 'Fade',     'filter': 'fade', 'presetID': 10, 'presetSubtype': 0},
+    'fly':      {'name': 'Fly In',   'filter': 'slide(fromBottom)', 'presetID': 2, 'presetSubtype': 4},
+    'cut':      {'name': 'Cut In',   'filter': 'slide(fromLeft)', 'presetID': 42, 'presetSubtype': 8},
+    'zoom':     {'name': 'Zoom',     'filter': 'image', 'presetID': 23, 'presetSubtype': 0},
+    'wipe':     {'name': 'Wipe',     'filter': 'wipe(left)', 'presetID': 22, 'presetSubtype': 1},
+    'split':    {'name': 'Split',    'filter': 'barn(inVertical)', 'presetID': 16, 'presetSubtype': 21},
+    'blinds':   {'name': 'Blinds',   'filter': 'blinds(horizontal)', 'presetID': 3, 'presetSubtype': 10},
+    'checkerboard': {'name': 'Checkerboard', 'filter': 'checkerboard(across)', 'presetID': 5, 'presetSubtype': 6},
+    'dissolve': {'name': 'Dissolve', 'filter': 'dissolve', 'presetID': 9, 'presetSubtype': 0},
+    'random_bars': {'name': 'Random Bars', 'filter': 'randombar(horizontal)', 'presetID': 14, 'presetSubtype': 10},
+    'peek':     {'name': 'Peek',     'filter': 'wipe(down)', 'presetID': 12, 'presetSubtype': 4},
+    'wheel':    {'name': 'Wheel',    'filter': 'wheel(4)', 'presetID': 21, 'presetSubtype': 0},
+    'box':      {'name': 'Box',      'filter': 'box(in)', 'presetID': 4, 'presetSubtype': 0},
+    'circle':   {'name': 'Circle',   'filter': 'circle(in)', 'presetID': 6, 'presetSubtype': 0},
+    'diamond':  {'name': 'Diamond',  'filter': 'diamond(in)', 'presetID': 8, 'presetSubtype': 0},
+    'plus':     {'name': 'Plus',     'filter': 'plus(in)', 'presetID': 13, 'presetSubtype': 0},
+    'strips':   {'name': 'Strips',   'filter': 'strips(downRight)', 'presetID': 18, 'presetSubtype': 12},
+    'wedge':    {'name': 'Wedge',    'filter': 'wedge', 'presetID': 20, 'presetSubtype': 0},
+    'stretch':  {'name': 'Stretch',  'filter': 'stretch(across)', 'presetID': 17, 'presetSubtype': 0},
+    'expand':   {'name': 'Expand',   'filter': 'stretch(across)', 'presetID': 50, 'presetSubtype': 0},
+    'swivel':   {'name': 'Swivel',   'filter': 'wheel(1)', 'presetID': 19, 'presetSubtype': 0},
 }
 
-# Pool used by 'mixed' / 'random' modes.  Excludes 'appear' (no visible motion)
-# and keeps the first slot ('fade') for the title-like first element.
-_MIXED_POOL = ['fade', 'fly', 'zoom', 'wipe', 'peek', 'blinds',
-               'dissolve', 'split', 'wheel', 'box']
+# Pool used by 'mixed' / 'random' modes. Excludes 'appear' because it has no
+# visible motion; mixed handles the first title-like element as fade separately.
+_MIXED_POOL = [
+    'blinds', 'checkerboard', 'dissolve', 'fly', 'cut',
+    'random_bars', 'box', 'split', 'strips', 'wedge', 'wheel',
+    'wipe', 'expand', 'fade', 'swivel', 'zoom',
+]
 
 
 def create_timing_xml(
@@ -211,7 +225,7 @@ def create_timing_xml(
       <p:par>
         <p:cTn id="1" dur="indefinite" nodeType="tmRoot">
           <p:childTnLst>
-            <p:seq concurrent="1" nextAc="seek">
+            <p:seq concurrent="1" nextAc="none">
               <p:cTn id="2" dur="indefinite" nodeType="mainSeq">
                 <p:childTnLst>
                   <p:par>
@@ -247,7 +261,12 @@ def _build_effect_xml(
     set_id: int,
     eff_id: int,
 ) -> str:
-    """Inner <p:set>/<p:animEffect> pair for one target."""
+    """Inner effect block for one target.
+
+    Entrance effects are emitted as one animation pane row per target. Plain
+    Appear uses a visibility set; motion/filter effects use animEffect directly
+    to avoid duplicate rows for the same shape in PowerPoint.
+    """
     anim_info = ANIMATIONS.get(animation, ANIMATIONS['fade'])
     set_block = f'''<p:set>
   <p:cBhvr>
@@ -261,9 +280,8 @@ def _build_effect_xml(
 </p:set>'''
     if anim_info['filter'] is None:
         return set_block
-    pr_attr = f' prLst="{anim_info["prLst"]}"' if 'prLst' in anim_info else ''
     return set_block + f'''
-<p:animEffect transition="in" filter="{anim_info["filter"]}"{pr_attr}>
+<p:animEffect transition="in" filter="{anim_info["filter"]}">
   <p:cBhvr>
     <p:cTn id="{eff_id}" dur="{duration_ms}"/>
     <p:tgtEl><p:spTgt spid="{shape_id}"/></p:tgtEl>
@@ -275,14 +293,13 @@ def create_sequence_timing_xml(
     targets: list,
     duration: float = 0.3,
 ) -> str:
-    """Generate a multi-target entrance sequence triggered by one click.
+    """Generate a click-by-click multi-target entrance sequence.
 
     Args:
         targets: list of (shape_id, delay_ms, animation_name) tuples,
-            in the order they should play. The first element triggers on
-            click; subsequent elements use ``afterEffect`` chaining and
-            their ``delay_ms`` becomes the gap after the previous element
-            finishes.
+            in the order they should play. Each element is a separate
+            ``clickEffect`` so one presenter click reveals one semantic group.
+            ``delay_ms`` is ignored in this mode.
         duration: per-element entrance duration in seconds.
 
     Returns:
@@ -294,22 +311,35 @@ def create_sequence_timing_xml(
 
     dur_ms = int(duration * 1000)
     steps = []
+    next_id = 3
     for i, target in enumerate(targets):
-        shape_id, delay_ms, animation = target
+        shape_id, _delay_ms, animation = target
         if animation not in ANIMATIONS:
             animation = 'fade'
-        node_type = 'clickEffect' if i == 0 else 'afterEffect'
-        base = 3 + 4 * i
-        outer_id, inner_id, set_id, eff_id = base, base + 1, base + 2, base + 3
+        anim_info = ANIMATIONS[animation]
+        wrapper_id = next_id
+        inner_id = next_id + 1
+        click_id = next_id + 2
+        set_id = next_id + 3
+        eff_id = next_id + 4
+        next_id += 5
         effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
         steps.append(f'''<p:par>
-  <p:cTn id="{outer_id}" fill="hold" nodeType="{node_type}">
-    <p:stCondLst><p:cond delay="{delay_ms}"/></p:stCondLst>
+  <p:cTn id="{wrapper_id}" fill="hold">
+    <p:stCondLst><p:cond delay="indefinite"/></p:stCondLst>
     <p:childTnLst>
       <p:par>
         <p:cTn id="{inner_id}" fill="hold">
+          <p:stCondLst><p:cond delay="0"/></p:stCondLst>
           <p:childTnLst>
-            {effect_xml}
+            <p:par>
+              <p:cTn id="{click_id}" presetID="{anim_info.get('presetID', 1)}" presetClass="entr" presetSubtype="{anim_info.get('presetSubtype', 0)}" fill="hold" nodeType="clickEffect">
+                <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                <p:childTnLst>
+                  {effect_xml}
+                </p:childTnLst>
+              </p:cTn>
+            </p:par>
           </p:childTnLst>
         </p:cTn>
       </p:par>
@@ -324,7 +354,7 @@ def create_sequence_timing_xml(
     return f'''  <p:timing>
     <p:tnLst>
       <p:par>
-        <p:cTn id="1" dur="indefinite" nodeType="tmRoot">
+        <p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot">
           <p:childTnLst>
             <p:seq concurrent="1" nextAc="seek">
               <p:cTn id="2" dur="indefinite" nodeType="mainSeq">
@@ -332,6 +362,8 @@ def create_sequence_timing_xml(
               {all_steps}
                 </p:childTnLst>
               </p:cTn>
+              <p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst>
+              <p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst>
             </p:seq>
           </p:childTnLst>
         </p:cTn>
@@ -343,12 +375,12 @@ def create_sequence_timing_xml(
   </p:timing>'''
 
 
-def pick_animation_effect(mode: str, idx: int) -> str:
+def pick_animation_effect(mode: str, idx: int, offset: int = 0) -> str:
     """Resolve a per-element effect name from a mode string.
 
     - A specific animation name returns itself (no variation).
     - 'mixed': first element fixed to 'fade', rest cycle through ``_MIXED_POOL``
-      starting at index 1 (so titles stay calm while content varies).
+      plus ``offset`` (so titles stay calm while content varies across slides).
     - 'random': uniform random choice from ``_MIXED_POOL``.
     - Unknown mode falls back to 'fade'.
     """
@@ -357,7 +389,7 @@ def pick_animation_effect(mode: str, idx: int) -> str:
     if mode == 'mixed':
         if idx == 0:
             return 'fade'
-        return _MIXED_POOL[(idx - 1) % (len(_MIXED_POOL) - 1) + 1]
+        return _MIXED_POOL[(idx - 1 + offset) % len(_MIXED_POOL)]
     if mode == 'random':
         import random
         return random.choice(_MIXED_POOL)

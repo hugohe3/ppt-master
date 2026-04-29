@@ -35,6 +35,7 @@ python3 scripts/svg_to_pptx.py <project_path> -s final --only legacy
 python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> -s final --auto-advance 3
+python3 scripts/svg_to_pptx.py <project_path> -s final --animation mixed --animation-duration 0.8
 ```
 
 Behavior:
@@ -45,6 +46,11 @@ Behavior:
 - Explicit `-o/--output` keeps the legacy side-by-side `_svg.pptx` next to the chosen path and skips `backup/`
 - Recommended source directory: `svg_final/`
 - Speaker notes are embedded automatically unless `--no-notes` is used
+- Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
+- Per-element animation applies to top-level SVG `<g id="...">` groups in z-order, with one presenter click revealing one semantic group; aim for 3–8 groups per slide
+- Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
+- `mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck; `random` samples from that same pool
+- `--animation-stagger` is retained for old commands but ignored by click-by-click timing; use `--animation-duration` for reveal pacing
 
 Dependency:
 

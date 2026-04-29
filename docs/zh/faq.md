@@ -79,17 +79,21 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 # 全部元素淡入级联（推荐起步）
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
-# 同页内自动混搭多种效果（标题 fade，内容轮换 fly/zoom/wipe...）
+# 同页内自动混搭明显可见的效果（标题 fade，内容按精选池轮换）
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
 
-# 调慢节奏：每元素入场 0.5s、间隔 0.2s
+# 调慢节奏：每次点击出现的元素入场 0.5s
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade \
         --animation-duration 0.5 --animation-stagger 0.2
 ```
 
-12 种单效果可选：`appear / fade / fly / zoom / wipe / split / blinds / dissolve / peek / wheel / box / circle`，外加 `mixed`、`random` 两种自动混搭模式。
+22 种单效果可选：`appear / fade / fly / cut / zoom / wipe / split / blinds / checkerboard / dissolve / random_bars / peek / wheel / box / circle / diamond / plus / strips / wedge / stretch / expand / swivel`，外加 `mixed`、`random` 两种自动混搭模式。
 
-**锚点逻辑**：动画以 SVG 顶层 `<g id="语义名">` 分组为单位（如 `<g id="cover-title">`、`<g id="card-1">`），这是最干净的级联粒度。如果某页根节点是平铺的 `<rect>`/`<text>`/`<path>`（没有顶层 `<g>` 包裹），导出器会**自动降级**：当顶层可见元素 ≤20 个时，每个元素作为一个动画锚点；超过 20 个（典型如咨询风密集页/图表页）则跳过动画 —— 几十个图元串行入场会变成噪声，跳过比硬上更合理。所以 Executor 输出建议把逻辑组都用 `<g id>` 包起来，既利于动画，也利于 PowerPoint 里成组选择/移动。
+`mixed` 是确定性轮换：每页第一个动画组使用 `fade`，后续组按精选的明显效果池在整份 deck 内连续轮换。`random` 从同一个明显效果池中随机抽取。效果池会排除 `appear`，因为它对演示点击入场来说太不明显。
+
+`--animation-stagger` 仅保留作兼容旧命令，当前逐次点击入场逻辑会忽略它。需要让动画更明显时，使用 `--animation-duration` 调整每个入场效果的持续时间。
+
+**锚点逻辑**：动画以 SVG 顶层 `<g id="语义名">` 分组为单位（如 `<g id="cover-title">`、`<g id="card-1">`），这是最干净的级联粒度。建议每页控制在 3–8 个语义组。如果某页根节点是平铺的 `<rect>`/`<text>`/`<path>`（没有顶层 `<g>` 包裹），导出器会**自动降级**：当顶层可见元素 ≤8 个时，每个元素作为一个动画锚点；超过 8 个则跳过该页动画。所以 Executor 输出应该把逻辑组都用 `<g id>` 包起来，既利于动画，也利于 PowerPoint 里成组选择/移动。
 
 **注意**：页内动画只在 native shapes 模式（默认）生效，`--only legacy` 整页一张图无可锚定元素。
 

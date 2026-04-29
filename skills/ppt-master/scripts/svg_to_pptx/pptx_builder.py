@@ -6,6 +6,7 @@ import hashlib
 import re
 import shutil
 import tempfile
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -69,6 +70,57 @@ def _append_relationship(
     return next_rid
 
 
+def _expand_anim_targets_to_group_children(
+    slide_xml: str,
+    anim_targets: list[tuple[int, str]],
+) -> list[tuple[list[int], str]]:
+    """Expand top-level group animation targets to their concrete child shapes.
+
+    PowerPoint for Mac may list animations assigned to ``p:grpSp`` in the
+    animation pane but fail to consume slideshow clicks for those group targets.
+    Animating ordinary child shapes in the same click step preserves the visual
+    "one semantic block per click" behavior while avoiding group-target playback
+    quirks.
+    """
+    ns = {'p': 'http://schemas.openxmlformats.org/presentationml/2006/main'}
+    root = ET.fromstring(slide_xml)
+    expanded: list[tuple[list[int], str]] = []
+
+    for target_id, svg_id in anim_targets:
+        if isinstance(target_id, (list, tuple)):
+            expanded.append(([int(v) for v in target_id], svg_id))
+            continue
+
+        group = None
+        for candidate in root.findall('.//p:grpSp', ns):
+            c_nv_pr = candidate.find('./p:nvGrpSpPr/p:cNvPr', ns)
+            if c_nv_pr is not None and c_nv_pr.get('id') == str(target_id):
+                group = candidate
+                break
+
+        if group is None:
+            expanded.append(([target_id], svg_id))
+            continue
+
+        child_ids: list[int] = []
+        for child in list(group):
+            if child.tag == f'{{{ns["p"]}}}sp':
+                c_nv_pr = child.find('./p:nvSpPr/p:cNvPr', ns)
+            elif child.tag == f'{{{ns["p"]}}}pic':
+                c_nv_pr = child.find('./p:nvPicPr/p:cNvPr', ns)
+            else:
+                c_nv_pr = None
+            if c_nv_pr is None:
+                continue
+            child_id = c_nv_pr.get('id')
+            if child_id and child_id.isdigit():
+                child_ids.append(int(child_id))
+
+        expanded.append((child_ids or [target_id], svg_id))
+
+    return expanded
+
+
 def create_pptx_with_native_svg(
     svg_files: list[Path],
     output_path: Path,
@@ -102,7 +154,7 @@ def create_pptx_with_native_svg(
         animation: Per-element entrance animation mode (single effect name,
             'mixed', 'random', or None to disable). Native shapes mode only.
         animation_duration: Per-element entrance duration in seconds.
-        animation_stagger: Auto-cascade gap between elements in seconds.
+        animation_stagger: Legacy option ignored by click-by-click timing.
 
     Returns:
         Whether all slides were successfully created.
@@ -192,6 +244,7 @@ def create_pptx_with_native_svg(
         has_any_image = False
         media_cache: dict[tuple[str, str], str] = {}
         notes_slides_created: set[int] = set()
+        mixed_animation_offset = 0
 
         for i, svg_path in enumerate(svg_files, 1):
             slide_num = i
@@ -228,9 +281,13 @@ def create_pptx_with_native_svg(
                         seq_targets = [
                             (sid,
                              0 if idx == 0 else stagger_ms,
-                             pick_animation_effect(animation, idx))
+                             pick_animation_effect(
+                                 animation, idx, mixed_animation_offset,
+                             ))
                             for idx, (sid, _svg_id) in enumerate(anim_targets)
                         ]
+                        if animation == 'mixed':
+                            mixed_animation_offset += max(0, len(anim_targets) - 1)
                         timing_xml = '\n' + create_sequence_timing_xml(
                             seq_targets, duration=animation_duration,
                         )

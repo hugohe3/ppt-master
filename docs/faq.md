@@ -79,17 +79,21 @@ Enter a slide → click once → semantic groups cascade in by z-order. To enabl
 # Cascade every element with fade (recommended starting point)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
-# Auto-vary effects within a slide (title fades, content rotates fly/zoom/wipe...)
+# Auto-vary visible effects within a slide (title fades; content cycles through a curated pool)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
 
-# Slower pace: 0.5s per element, 0.2s gap between elements
+# Slower pace: 0.5s per click-revealed element
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade \
         --animation-duration 0.5 --animation-stagger 0.2
 ```
 
-12 single effects: `appear / fade / fly / zoom / wipe / split / blinds / dissolve / peek / wheel / box / circle`, plus `mixed` and `random` auto-vary modes.
+22 single effects: `appear / fade / fly / cut / zoom / wipe / split / blinds / checkerboard / dissolve / random_bars / peek / wheel / box / circle / diamond / plus / strips / wedge / stretch / expand / swivel`, plus `mixed` and `random` auto-vary modes.
 
-**Anchor logic**: animations are anchored on top-level SVG `<g id="...">` groups (e.g. `<g id="cover-title">`, `<g id="card-1">`) — this is the cleanest cascade granularity. Slides whose root is flat `<rect>` / `<text>` / `<path>` (no top-level `<g>` wrappers) **fall back automatically**: if there are ≤20 top-level visible elements, each becomes one animation anchor; beyond 20 (typical of dense consulting pages / charts), animation is skipped on that slide — cascading dozens of atoms in series would just be noise. So Executors are recommended to wrap logical sections in `<g id>` regardless of animation, since it also improves PowerPoint's group-select / group-move ergonomics.
+`mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck. `random` samples from the same visible-effect pool. The pool excludes `appear` because it is too subtle for presenter-controlled reveals.
+
+`--animation-stagger` is kept for backward compatibility but is ignored by click-by-click timing. Use `--animation-duration` to control how obvious each reveal feels.
+
+**Anchor logic**: animations are anchored on top-level SVG `<g id="...">` groups (e.g. `<g id="cover-title">`, `<g id="card-1">`) — this is the cleanest cascade granularity. Aim for 3–8 semantic groups per slide. Slides whose root is flat `<rect>` / `<text>` / `<path>` (no top-level `<g>` wrappers) **fall back automatically**: if there are ≤8 top-level visible elements, each becomes one animation anchor; beyond 8, animation is skipped on that slide. So Executors should wrap logical sections in `<g id>` regardless of animation, since it also improves PowerPoint's group-select / group-move ergonomics.
 
 **Note**: per-element animations only apply in native shapes mode (the default); `--only legacy` produces one image per slide and has no element anchors to animate.
 

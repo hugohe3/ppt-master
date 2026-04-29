@@ -57,7 +57,9 @@ Transition effects (-t/--transition):
 Per-element entrance animation (-a/--animation, native shapes mode):
     {', '.join(animation_choices)}
     Notes: applied to top-level <g id="..."> SVG groups in z-order.
-           First click triggers the cascade; --animation-stagger sets the gap.
+           Each animated group uses an independent on-click trigger.
+           mixed uses a curated visible-effect sequence across the deck; random samples
+           from the same visible-effect pool.
 
 Compatibility mode (enabled by default):
     - Automatically generates PNG fallback images, SVG embedded as extension
@@ -96,7 +98,7 @@ Speaker notes (enabled by default):
     parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default='fade',
                         help='Page transition effect (default: fade, use "none" to disable)')
     parser.add_argument('--transition-duration', type=float, default=0.4,
-                        help='Transition duration in seconds (default: 0.5)')
+                        help='Transition duration in seconds (default: 0.4)')
     parser.add_argument('--auto-advance', type=float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
 
@@ -108,7 +110,7 @@ Speaker notes (enabled by default):
     parser.add_argument('--animation-duration', type=float, default=0.3,
                         help='Per-element entrance duration in seconds (default: 0.3)')
     parser.add_argument('--animation-stagger', type=float, default=0.1,
-                        help='Auto-cascade gap between elements in seconds (default: 0.1)')
+                        help='Legacy option; ignored by click-by-click timing')
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')

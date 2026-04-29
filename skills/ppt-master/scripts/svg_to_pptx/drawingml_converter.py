@@ -255,10 +255,10 @@ def convert_svg_to_slide_shapes(
     # Animation target fallback. Semantic <g id="..."> groups are the
     # preferred anchors (set inside convert_g). When the SVG has none
     # at the root we fall back to top-level primitives, but only when
-    # the count is reasonable — dense pages (consulting decks, charts,
-    # diagrams) routinely have 70–150 atoms at the root and animating
-    # each one is unusable, so we silently skip animation past the cap.
-    _ANIM_FALLBACK_CAP = 20
+    # the count is reasonable. Presenter-click animation should reveal
+    # semantic blocks, not atomized drawing primitives, so fallback is
+    # intentionally capped at a low count.
+    _ANIM_FALLBACK_CAP = 8
     if not ctx.anim_targets and 0 < len(fallback_targets) <= _ANIM_FALLBACK_CAP:
         ctx.anim_targets = fallback_targets
 
