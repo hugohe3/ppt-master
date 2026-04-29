@@ -328,37 +328,31 @@ def create_sequence_timing_xml(
         if animation not in ANIMATIONS:
             animation = 'fade'
         anim_info = ANIMATIONS[animation]
-        wrapper_id = next_id
-        inner_id = next_id + 1
-        leaf_id = next_id + 2
-        set_id = next_id + 3
-        eff_id = next_id + 4
-        next_id += 5
-        effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+        preset_id = anim_info.get('presetID', 1)
+        preset_subtype = anim_info.get('presetSubtype', 0)
 
         if trigger == 'on-click':
-            wrapper_cond = '<p:cond delay="indefinite"/>'
-            node_type = 'clickEffect'
-        elif trigger == 'with-previous':
-            # All elements share the slide-entry trigger; played in parallel.
-            wrapper_cond = '<p:cond delay="0"/>'
-            node_type = 'withEffect'
-        else:
-            # after-previous: first fires on slide entry, rest chain after
-            # the previous element with delay_ms spacing.
-            wrapper_cond = f'<p:cond delay="{int(delay_ms)}"/>'
-            node_type = 'withEffect' if i == 0 else 'afterEffect'
-
-        steps.append(f'''<p:par>
+            # Three-level nesting: outer cTn waits for the click via
+            # delay="indefinite"; clickEffect+animation children sit on the
+            # innermost cTn. Flattening this confuses PowerPoint's click
+            # consumption, so on-click keeps the legacy structure.
+            wrapper_id = next_id
+            inner_id = next_id + 1
+            leaf_id = next_id + 2
+            set_id = next_id + 3
+            eff_id = next_id + 4
+            next_id += 5
+            effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+            steps.append(f'''<p:par>
   <p:cTn id="{wrapper_id}" fill="hold">
-    <p:stCondLst>{wrapper_cond}</p:stCondLst>
+    <p:stCondLst><p:cond delay="indefinite"/></p:stCondLst>
     <p:childTnLst>
       <p:par>
         <p:cTn id="{inner_id}" fill="hold">
           <p:stCondLst><p:cond delay="0"/></p:stCondLst>
           <p:childTnLst>
             <p:par>
-              <p:cTn id="{leaf_id}" presetID="{anim_info.get('presetID', 1)}" presetClass="entr" presetSubtype="{anim_info.get('presetSubtype', 0)}" fill="hold" nodeType="{node_type}">
+              <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="clickEffect">
                 <p:stCondLst><p:cond delay="0"/></p:stCondLst>
                 <p:childTnLst>
                   {effect_xml}
@@ -368,6 +362,34 @@ def create_sequence_timing_xml(
           </p:childTnLst>
         </p:cTn>
       </p:par>
+    </p:childTnLst>
+  </p:cTn>
+</p:par>''')
+            continue
+
+        # Non-click modes: nodeType MUST be on the cTn that is a direct
+        # child of mainSeq (the outer cTn), otherwise PowerPoint treats
+        # the children as default sequential and ignores the relationship.
+        leaf_id = next_id
+        set_id = next_id + 1
+        eff_id = next_id + 2
+        next_id += 3
+        effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+
+        if trigger == 'with-previous':
+            node_type = 'withEffect'
+            delay = 0
+        else:
+            # after-previous: first kicks off on slide entry, rest chain
+            # after the previous element with delay_ms spacing.
+            node_type = 'withEffect' if i == 0 else 'afterEffect'
+            delay = int(delay_ms)
+
+        steps.append(f'''<p:par>
+  <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="{node_type}">
+    <p:stCondLst><p:cond delay="{delay}"/></p:stCondLst>
+    <p:childTnLst>
+      {effect_xml}
     </p:childTnLst>
   </p:cTn>
 </p:par>''')
