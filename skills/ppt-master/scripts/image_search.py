@@ -113,8 +113,20 @@ def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    try:
+        provider = load_provider(args.provider)
+        manifest_item = provider.search_and_download(
+            query=args.query,
+            output_dir=args.output,
+            filename=args.filename,
+            slide=args.slide,
+            purpose=args.purpose,
+            orientation=args.orientation,
+        )
+    except ModuleNotFoundError:
+        manifest_item = build_manifest_item(args)
     manifest_path = args.manifest or default_manifest_path(args.output)
-    write_sources_manifest(manifest_path, [build_manifest_item(args)])
+    write_sources_manifest(manifest_path, [manifest_item])
     return 0
 
 
