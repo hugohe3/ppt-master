@@ -136,6 +136,7 @@ def create_pptx_with_native_svg(
     animation: str | None = None,
     animation_duration: float = 0.3,
     animation_stagger: float = 0.1,
+    animation_trigger: str = 'click',
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -154,7 +155,10 @@ def create_pptx_with_native_svg(
         animation: Per-element entrance animation mode (single effect name,
             'mixed', 'random', or None to disable). Native shapes mode only.
         animation_duration: Per-element entrance duration in seconds.
-        animation_stagger: Legacy option ignored by click-by-click timing.
+        animation_stagger: Delay between elements in ``auto`` trigger mode
+            (seconds). Ignored in ``click`` mode.
+        animation_trigger: ``'click'`` (default; one click per element) or
+            ``'auto'`` (cascade automatically on slide entry).
 
     Returns:
         Whether all slides were successfully created.
@@ -290,6 +294,7 @@ def create_pptx_with_native_svg(
                             mixed_animation_offset += max(0, len(anim_targets) - 1)
                         timing_xml = '\n' + create_sequence_timing_xml(
                             seq_targets, duration=animation_duration,
+                            trigger=animation_trigger,
                         )
                         slide_xml = slide_xml.replace(
                             '</p:sld>',

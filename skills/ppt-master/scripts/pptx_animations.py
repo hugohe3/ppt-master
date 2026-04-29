@@ -292,15 +292,21 @@ def _build_effect_xml(
 def create_sequence_timing_xml(
     targets: list,
     duration: float = 0.3,
+    trigger: str = 'click',
 ) -> str:
-    """Generate a click-by-click multi-target entrance sequence.
+    """Generate a multi-target entrance sequence.
 
     Args:
-        targets: list of (shape_id, delay_ms, animation_name) tuples,
-            in the order they should play. Each element is a separate
-            ``clickEffect`` so one presenter click reveals one semantic group.
-            ``delay_ms`` is ignored in this mode.
+        targets: list of (shape_id, delay_ms, animation_name) tuples, in
+            the order they should play. ``delay_ms`` is the delay before
+            this element starts, measured from when the previous element
+            triggers (only used in ``auto`` mode; ignored in ``click``
+            mode where the presenter paces reveals).
         duration: per-element entrance duration in seconds.
+        trigger: ``'click'`` (one presenter click per element) or
+            ``'auto'`` (first element fires on slide entry, subsequent
+            elements fire after the previous one with ``delay_ms``
+            spacing).
 
     Returns:
         A ``<p:timing>`` element string. Returns an empty string when
@@ -309,31 +315,43 @@ def create_sequence_timing_xml(
     if not targets:
         return ''
 
+    if trigger not in ('click', 'auto'):
+        trigger = 'click'
+
     dur_ms = int(duration * 1000)
     steps = []
     next_id = 3
     for i, target in enumerate(targets):
-        shape_id, _delay_ms, animation = target
+        shape_id, delay_ms, animation = target
         if animation not in ANIMATIONS:
             animation = 'fade'
         anim_info = ANIMATIONS[animation]
         wrapper_id = next_id
         inner_id = next_id + 1
-        click_id = next_id + 2
+        leaf_id = next_id + 2
         set_id = next_id + 3
         eff_id = next_id + 4
         next_id += 5
         effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+
+        if trigger == 'click':
+            wrapper_cond = '<p:cond delay="indefinite"/>'
+            node_type = 'clickEffect'
+        else:
+            # auto: first element fires on slide entry, rest chain via afterEffect
+            wrapper_cond = f'<p:cond delay="{int(delay_ms)}"/>'
+            node_type = 'withEffect' if i == 0 else 'afterEffect'
+
         steps.append(f'''<p:par>
   <p:cTn id="{wrapper_id}" fill="hold">
-    <p:stCondLst><p:cond delay="indefinite"/></p:stCondLst>
+    <p:stCondLst>{wrapper_cond}</p:stCondLst>
     <p:childTnLst>
       <p:par>
         <p:cTn id="{inner_id}" fill="hold">
           <p:stCondLst><p:cond delay="0"/></p:stCondLst>
           <p:childTnLst>
             <p:par>
-              <p:cTn id="{click_id}" presetID="{anim_info.get('presetID', 1)}" presetClass="entr" presetSubtype="{anim_info.get('presetSubtype', 0)}" fill="hold" nodeType="clickEffect">
+              <p:cTn id="{leaf_id}" presetID="{anim_info.get('presetID', 1)}" presetClass="entr" presetSubtype="{anim_info.get('presetSubtype', 0)}" fill="hold" nodeType="{node_type}">
                 <p:stCondLst><p:cond delay="0"/></p:stCondLst>
                 <p:childTnLst>
                   {effect_xml}

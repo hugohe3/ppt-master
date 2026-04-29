@@ -34,17 +34,24 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 
 ## 页内元素动画
 
-默认关闭。开启后：进入页面 → 第一次点击显示第一个语义组，后续每次点击按 z-order 显示下一个组。
+默认关闭。开启后有两种触发模式：
+
+- **`click`**（默认）—— 进入页面 → 第一次点击显示第一个语义组，后续每次点击按 z-order 显示下一个组。适合现场演讲，演讲者控制节奏。
+- **`auto`** —— 进入页面后第一组自动入场，后续按 `--animation-stagger` 间隔依次自动出现。适合展厅循环、录屏走查，或者只是想看流动效果不想点击。
 
 ```bash
-# 全部用 fade 入场（推荐起点）
+# 全部用 fade 点击入场（推荐起点）
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
 # 同页自动轮换效果（首组 fade，后续组在精选效果池中轮换）
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
 
-# 让每次入场放慢到 0.5 秒
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-duration 0.5
+# 进入页面自动级联，组间间隔 0.4 秒（默认 stagger）
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger auto
+
+# 自动级联，自定义节奏
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
+        --animation-trigger auto --animation-stagger 0.6 --animation-duration 0.5
 ```
 
 22 种单一效果：`appear`、`fade`、`fly`、`cut`、`zoom`、`wipe`、`split`、`blinds`、`checkerboard`、`dissolve`、`random_bars`、`peek`、`wheel`、`box`、`circle`、`diamond`、`plus`、`strips`、`wedge`、`stretch`、`expand`、`swivel`。再加两种自动轮换模式：
@@ -57,8 +64,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --an
 参数：
 
 - `-a/--animation` — 效果名、`mixed`、`random` 或 `none`。默认 `none`。
+- `--animation-trigger` — `click`（默认，演讲者点击触发）或 `auto`（进入页面后自动级联）。
 - `--animation-duration` — 单个元素入场秒数，默认 `0.3`。
-- `--animation-stagger` — 仅保留兼容旧命令；当前逐次点击入场逻辑会忽略它。
+- `--animation-stagger` — `auto` 模式下两组之间的间隔（秒，默认 `0.4`）。`click` 模式忽略。
 
 ## 锚点机制 — 顶层 `<g id="...">`
 
@@ -89,8 +97,10 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --an
 | 切换转场效果 | `-t push`（或上文列表中任一） |
 | 转场放慢 | `--transition-duration 0.8` |
 | 自动播放 | `--auto-advance 5` |
-| 启用元素动画 | `--animation fade` |
+| 启用元素动画（点击触发） | `--animation fade` |
+| 自动级联（不需要点击） | `--animation fade --animation-trigger auto` |
 | 元素动画自动轮换 | `--animation mixed` |
 | 元素入场放慢 | `--animation-duration 0.5` |
+| auto 模式拉大间隔 | `--animation-stagger 0.8` |
 
 完整 `svg_to_pptx.py` 参考：[`scripts/docs/svg-pipeline.md`](../../skills/ppt-master/scripts/docs/svg-pipeline.md)。
