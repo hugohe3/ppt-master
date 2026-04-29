@@ -321,21 +321,21 @@ def create_sequence_timing_xml(
         trigger = 'on-click'
 
     dur_ms = int(duration * 1000)
-    steps = []
     next_id = 3
-    for i, target in enumerate(targets):
-        shape_id, delay_ms, animation = target
-        if animation not in ANIMATIONS:
-            animation = 'fade'
-        anim_info = ANIMATIONS[animation]
-        preset_id = anim_info.get('presetID', 1)
-        preset_subtype = anim_info.get('presetSubtype', 0)
 
-        if trigger == 'on-click':
-            # Three-level nesting: outer cTn waits for the click via
-            # delay="indefinite"; clickEffect+animation children sit on the
-            # innermost cTn. Flattening this confuses PowerPoint's click
-            # consumption, so on-click keeps the legacy structure.
+    if trigger == 'on-click':
+        # Each element is an independent click-driven par directly under
+        # mainSeq. Three-level nesting per element: outer cTn holds for
+        # the click via delay="indefinite", innermost cTn owns the
+        # clickEffect + animation children. Each click advances the seq.
+        steps = []
+        for target in targets:
+            shape_id, _delay_ms, animation = target
+            if animation not in ANIMATIONS:
+                animation = 'fade'
+            anim_info = ANIMATIONS[animation]
+            preset_id = anim_info.get('presetID', 1)
+            preset_subtype = anim_info.get('presetSubtype', 0)
             wrapper_id = next_id
             inner_id = next_id + 1
             leaf_id = next_id + 2
@@ -365,39 +365,60 @@ def create_sequence_timing_xml(
     </p:childTnLst>
   </p:cTn>
 </p:par>''')
-            continue
+        all_steps = '\n              '.join(steps)
+    else:
+        # with-previous / after-previous: wrap the entire cascade in ONE
+        # auto-firing par so the sequence has a real trigger anchor under
+        # mainSeq. Inside that wrapper, each element is a sibling par
+        # whose cTn carries nodeType=withEffect or afterEffect.
+        outer_id = next_id
+        next_id += 1
+        inner_steps = []
+        for i, target in enumerate(targets):
+            shape_id, delay_ms, animation = target
+            if animation not in ANIMATIONS:
+                animation = 'fade'
+            anim_info = ANIMATIONS[animation]
+            preset_id = anim_info.get('presetID', 1)
+            preset_subtype = anim_info.get('presetSubtype', 0)
+            leaf_id = next_id
+            set_id = next_id + 1
+            eff_id = next_id + 2
+            next_id += 3
+            effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
 
-        # Non-click modes: nodeType MUST be on the cTn that is a direct
-        # child of mainSeq (the outer cTn), otherwise PowerPoint treats
-        # the children as default sequential and ignores the relationship.
-        leaf_id = next_id
-        set_id = next_id + 1
-        eff_id = next_id + 2
-        next_id += 3
-        effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+            if trigger == 'with-previous':
+                node_type = 'withEffect'
+                delay = 0
+            else:
+                # after-previous: first element starts when the outer
+                # wrapper fires (withEffect, delay=0); subsequent elements
+                # chain via afterEffect with delay_ms spacing.
+                node_type = 'withEffect' if i == 0 else 'afterEffect'
+                delay = int(delay_ms)
 
-        if trigger == 'with-previous':
-            node_type = 'withEffect'
-            delay = 0
-        else:
-            # after-previous: first kicks off on slide entry, rest chain
-            # after the previous element with delay_ms spacing.
-            node_type = 'withEffect' if i == 0 else 'afterEffect'
-            delay = int(delay_ms)
+            inner_steps.append(f'''<p:par>
+                  <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="{node_type}">
+                    <p:stCondLst><p:cond delay="{delay}"/></p:stCondLst>
+                    <p:childTnLst>
+                      {effect_xml}
+                    </p:childTnLst>
+                  </p:cTn>
+                </p:par>''')
 
-        steps.append(f'''<p:par>
-  <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="{node_type}">
-    <p:stCondLst><p:cond delay="{delay}"/></p:stCondLst>
-    <p:childTnLst>
-      {effect_xml}
-    </p:childTnLst>
-  </p:cTn>
-</p:par>''')
+        inner_xml = '\n                '.join(inner_steps)
+        all_steps = f'''<p:par>
+                <p:cTn id="{outer_id}" fill="hold">
+                  <p:stCondLst><p:cond delay="0"/></p:stCondLst>
+                  <p:childTnLst>
+                    {inner_xml}
+                  </p:childTnLst>
+                </p:cTn>
+              </p:par>'''
 
     bld_list = '\n    '.join(
         f'<p:bldP spid="{sid}" grpId="0"/>' for sid, _, _ in targets
     )
-    all_steps = '\n              '.join(steps)
     return f'''  <p:timing>
     <p:tnLst>
       <p:par>
