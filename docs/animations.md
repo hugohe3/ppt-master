@@ -62,9 +62,11 @@ Flags:
 
 ## Anchor Logic — Top-Level `<g id="...">`
 
-Per-element animations are anchored on **top-level `<g id="...">` groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). One group = one click reveal.
+Per-element animations are anchored on **top-level `<g id="...">` content groups** in the SVG (e.g. `<g id="cover-title">`, `<g id="card-1">`). One group = one click reveal.
 
-Aim for **3–8 semantic groups per slide**. This is also the granularity PowerPoint uses for group-select / group-move, so it improves editing ergonomics regardless of animation.
+Aim for **3–8 content groups per slide**. This is also the granularity PowerPoint uses for group-select / group-move, so it improves editing ergonomics regardless of animation.
+
+**Chrome groups skip the cascade automatically.** Top-level groups that look like page chrome (background, header/footer, decorations, watermark, page number) are excluded from the click sequence and appear together with the slide. Detection is done on the `id`: after splitting on `-` and `_`, if any token matches `background` / `bg` / `decoration` / `decorations` / `decor` / `header` / `footer` / `chrome` / `watermark` / `pagenumber` / `pagenum`, the group is treated as chrome. Examples that auto-skip: `<g id="background">`, `<g id="bg-texture">`, `<g id="cover-footer">`, `<g id="p03-header">`, `<g id="bottom-decor">`, `<g id="watermark">`. Examples that still animate: `<g id="card-1">`, `<g id="cover-title">`, `<g id="step-discover">`. Don't strip the `<g>` wrapper to avoid animation — keep it (PowerPoint group-select needs it) and just name it appropriately.
 
 **Fallback for flat SVGs** (no top-level `<g>` wrappers, only raw `<rect>` / `<text>` / `<path>` at the root):
 

@@ -21,6 +21,34 @@ from .drawingml_elements import (
 
 
 # ---------------------------------------------------------------------------
+# Animation anchor selection
+# ---------------------------------------------------------------------------
+
+# Tokens that mark a top-level <g id="..."> as page chrome rather than animated
+# content. When any token (after splitting id on '-' and '_') matches, the group
+# is excluded from the per-element entrance animation cascade so background,
+# header/footer, decorations etc. appear together with the slide instead of
+# requiring presenter clicks.
+_CHROME_ID_TOKENS = frozenset({
+    'background', 'bg',
+    'decoration', 'decorations', 'decor',
+    'header', 'footer',
+    'chrome', 'watermark',
+    'pagenumber', 'pagenum',
+})
+
+
+def _is_chrome_id(elem_id: str | None) -> bool:
+    if not elem_id:
+        return False
+    lower = elem_id.lower()
+    if lower.replace('-', '').replace('_', '') in _CHROME_ID_TOKENS:
+        return True
+    tokens = re.split(r'[-_]', lower)
+    return any(t in _CHROME_ID_TOKENS for t in tokens if t)
+
+
+# ---------------------------------------------------------------------------
 # Transform & layout helpers
 # ---------------------------------------------------------------------------
 
@@ -119,7 +147,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # <p:grpSp> to anchor a timing target on, and nested groups are
     # ignored to keep the animation budget at ~per-section granularity.
     elem_id = elem.get('id')
-    if ctx.depth == 0 and elem_id:
+    if ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id):
         ctx.anim_targets.append((group_id, elem_id))
 
     group_effect = ''

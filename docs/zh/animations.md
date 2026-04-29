@@ -62,9 +62,11 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --an
 
 ## 锚点机制 — 顶层 `<g id="...">`
 
-页内动画锚定在 SVG 的**顶层 `<g id="...">` 组**上（如 `<g id="cover-title">`、`<g id="card-1">`），一个组对应一次点击入场。
+页内动画锚定在 SVG 的**顶层 `<g id="...">` 内容组**上（如 `<g id="cover-title">`、`<g id="card-1">`），一个组对应一次点击入场。
 
-每页建议 **3–8 个语义组**。这同时也是 PowerPoint 框选 / 整体移动的颗粒度，与是否启用动画无关，都能改善编辑体验。
+每页建议 **3–8 个内容组**。这同时也是 PowerPoint 框选 / 整体移动的颗粒度，与是否启用动画无关，都能改善编辑体验。
+
+**装饰类分组自动跳过。** 顶层中看起来属于页面装饰的组（背景、页头页脚、装饰元素、水印、页码）会被排除在点击序列外，跟随页面立即显示。识别基于 `id`：按 `-` 和 `_` 切分后，若任一 token 命中 `background` / `bg` / `decoration` / `decorations` / `decor` / `header` / `footer` / `chrome` / `watermark` / `pagenumber` / `pagenum`，则视为装饰类。会自动跳过的例子：`<g id="background">`、`<g id="bg-texture">`、`<g id="cover-footer">`、`<g id="p03-header">`、`<g id="bottom-decor">`、`<g id="watermark">`。仍会动画的例子：`<g id="card-1">`、`<g id="cover-title">`、`<g id="step-discover">`。**不要为了规避动画去掉 `<g>` 包裹**——保留分组（PowerPoint 框选需要），只要给个合适的 id 即可。
 
 **扁平 SVG 的回退逻辑**（顶层没有 `<g>`，只有裸 `<rect>` / `<text>` / `<path>`）：
 
