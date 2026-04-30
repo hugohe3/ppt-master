@@ -7,7 +7,7 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 | Layer | Default | Why |
 |---|---|---|
 | Page transition | `fade`, 0.4s | Calm baseline that suits most decks |
-| Per-element animation | `mixed` effect + `after-previous` trigger | Groups cascade in automatically on slide entry — zero interaction, the full animation capability is visible the moment a viewer opens the deck |
+| Per-element animation | `mixed` effect + `after-previous` trigger, 0.4s duration + 0.5s stagger | Groups cascade in automatically on slide entry — zero interaction, with a measured pace for typical content decks |
 
 To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation off entirely, pass `-a none`.
 
@@ -55,7 +55,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger o
 
 # Custom pacing
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
-        --animation-stagger 0.6 --animation-duration 0.5
+        --animation-stagger 0.7 --animation-duration 0.5
 
 # All groups animate in unison on slide entry
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
@@ -72,8 +72,8 @@ Flags:
 
 - `-a/--animation` — effect name, `mixed`, `random`, or `none`. Default: `mixed`.
 - `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
-- `--animation-duration` — per-element entrance seconds, default `0.3`.
-- `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.4`). Ignored otherwise.
+- `--animation-duration` — per-element entrance seconds, default `0.4`.
+- `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.
 
 ## Anchor Logic — Top-Level `<g id="...">`
 
@@ -109,6 +109,6 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 | Use a single effect instead of mixed | `--animation fade` |
 | All groups animate together | `--animation-trigger with-previous` |
 | Slower per-element reveal | `--animation-duration 0.5` |
-| Wider gap in after-previous | `--animation-stagger 0.8` |
+| Wider gap in after-previous | `--animation-stagger 0.7` |
 
 See also: [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.

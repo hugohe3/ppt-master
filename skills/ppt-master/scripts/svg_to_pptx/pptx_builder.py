@@ -134,8 +134,8 @@ def create_pptx_with_native_svg(
     enable_notes: bool = True,
     use_native_shapes: bool = False,
     animation: str | None = None,
-    animation_duration: float = 0.3,
-    animation_stagger: float = 0.1,
+    animation_duration: float = 0.4,
+    animation_stagger: float = 0.5,
     animation_trigger: str = 'after-previous',
 ) -> bool:
     """Create a PPTX file with native SVG.

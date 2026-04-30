@@ -112,8 +112,8 @@ Speaker notes (enabled by default):
                         help='Per-element entrance animation (native shapes mode '
                              'only). Pick a single effect, "mixed" (auto-vary per '
                              'element, default), "random", or "none" to disable.')
-    parser.add_argument('--animation-duration', type=float, default=0.3,
-                        help='Per-element entrance duration in seconds (default: 0.3)')
+    parser.add_argument('--animation-duration', type=float, default=0.4,
+                        help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
                         choices=['on-click', 'with-previous', 'after-previous'],
                         default='after-previous',
@@ -121,9 +121,9 @@ Speaker notes (enabled by default):
                              '"on-click" (one click per element), '
                              '"with-previous" (all start together on slide entry), '
                              '"after-previous" (default, cascade after the previous element).')
-    parser.add_argument('--animation-stagger', type=float, default=0.4,
+    parser.add_argument('--animation-stagger', type=float, default=0.5,
                         help='Delay between elements in --animation-trigger=after-previous '
-                             '(seconds, default 0.4). Ignored in other modes.')
+                             '(seconds, default 0.5). Ignored in other modes.')
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
