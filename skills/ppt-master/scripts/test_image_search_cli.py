@@ -76,7 +76,7 @@ class ImageSearchCliTests(unittest.TestCase):
 
         self.assertEqual(
             tuple(provider_action.choices),
-            ("openverse", "wikimedia"),
+            ("openverse", "wikimedia", "pexels", "pixabay"),
         )
 
     def test_parser_defaults_orientation_and_provider(self):
