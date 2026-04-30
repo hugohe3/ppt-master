@@ -14,7 +14,7 @@ PROVIDER_REGISTRY = {
     "pexels": "image_sources.provider_pexels",
     "pixabay": "image_sources.provider_pixabay",
 }
-AVAILABLE_PROVIDERS = ("openverse", "wikimedia")
+AVAILABLE_PROVIDERS = ("openverse", "wikimedia", "pexels", "pixabay")
 
 ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 
