@@ -56,21 +56,6 @@ python3 skills/ppt-master/scripts/finalize_svg.py <project_path>
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final
 ```
 
-### Chart calibration (standalone — run on demand, not part of main pipeline)
-
-For decks containing data charts. Full workflow: [`workflows/verify-charts.md`](skills/ppt-master/workflows/verify-charts.md).
-
-```bash
-# Step 1: enumerate chart pages by their plot-area markers
-grep -l "chart-plot-area" <project_path>/svg_output/*.svg
-
-# Step 2: run calculator per page (chart type drives the subcommand)
-python3 skills/ppt-master/scripts/svg_position_calculator.py calc bar   --data "L1:V1,L2:V2" --area "x_min,y_min,x_max,y_max" --bar-width 120
-python3 skills/ppt-master/scripts/svg_position_calculator.py calc line  --data "x1:y1,x2:y2" --area "x_min,y_min,x_max,y_max" --y-range "0,max"
-python3 skills/ppt-master/scripts/svg_position_calculator.py calc pie   --data "A:35,B:25" --center "cx,cy" --radius 200 [--inner-radius 120]
-python3 skills/ppt-master/scripts/svg_position_calculator.py calc radar --data "D1:V1,D2:V2,D3:V3" --center "cx,cy" --radius 200
-```
-
 ## Architecture
 
 - `skills/ppt-master/SKILL.md` — main workflow authority.
