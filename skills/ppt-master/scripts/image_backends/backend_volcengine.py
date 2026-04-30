@@ -155,7 +155,7 @@ def generate(prompt: str, negative_prompt: str = None,
     api_key = require_api_key(
         "VOLCENGINE_API_KEY",
         "ARK_API_KEY",
-        message="No API key found. Set VOLCENGINE_API_KEY or ARK_API_KEY in the current environment or the project-root .env.",
+        message="No API key found. Set VOLCENGINE_API_KEY or ARK_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("VOLCENGINE_BASE_URL") or DEFAULT_ENDPOINT
     resolved_model = model or os.environ.get("VOLCENGINE_MODEL") or DEFAULT_MODEL

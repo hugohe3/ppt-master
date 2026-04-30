@@ -311,7 +311,7 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 - `--animation-trigger {on-click,with-previous,after-previous}` — Start mode (matches PowerPoint's animation-pane Start dropdown). Default `on-click`. Use `after-previous` (with `--animation-stagger`) for click-free cascade, or `with-previous` for all-at-once.
 - `--auto-advance <seconds>` — kiosk-style auto-play.
 
-Full effect list, anchor logic, and limits: [`docs/animations.md`](../../docs/animations.md).
+Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)

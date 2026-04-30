@@ -120,7 +120,7 @@ def generate(prompt: str, negative_prompt: str = None,
     """Generate an image with retries using the Ideogram backend."""
     api_key = require_api_key(
         "IDEOGRAM_API_KEY",
-        message="No API key found. Set IDEOGRAM_API_KEY in the current environment or the project-root .env.",
+        message="No API key found. Set IDEOGRAM_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("IDEOGRAM_BASE_URL") or DEFAULT_BASE_URL
     resolved_model = model or os.environ.get("IDEOGRAM_MODEL") or DEFAULT_MODEL

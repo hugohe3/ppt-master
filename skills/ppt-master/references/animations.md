@@ -108,4 +108,4 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 | Slower per-element reveal | `--animation-duration 0.5` |
 | Wider gap in after-previous | `--animation-stagger 0.8` |
 
-See also: [`scripts/docs/svg-pipeline.md`](../skills/ppt-master/scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.
+See also: [`scripts/docs/svg-pipeline.md`](../scripts/docs/svg-pipeline.md) for the full `svg_to_pptx.py` reference.

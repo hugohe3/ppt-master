@@ -66,7 +66,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed  # 
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger after-previous   # cascade without clicks
 ```
 
-Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](./animations.md).
+Full effect list, anchor logic (top-level `<g id="...">`), fallback behavior, and limitations: see [Animations & Transitions](../skills/ppt-master/references/animations.md).
 
 ## Q: Which AI model works best?
 

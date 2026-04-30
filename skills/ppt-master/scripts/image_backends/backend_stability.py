@@ -111,7 +111,7 @@ def generate(prompt: str, negative_prompt: str = None,
     """Generate an image with retries using the Stability backend."""
     api_key = require_api_key(
         "STABILITY_API_KEY",
-        message="No API key found. Set STABILITY_API_KEY in the current environment or the project-root .env.",
+        message="No API key found. Set STABILITY_API_KEY in the current environment or a .env file.",
     )
     base_url = os.environ.get("STABILITY_BASE_URL") or DEFAULT_BASE_URL
     resolved_model = model or os.environ.get("STABILITY_MODEL") or DEFAULT_MODEL

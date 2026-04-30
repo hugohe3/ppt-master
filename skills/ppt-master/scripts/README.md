@@ -110,6 +110,6 @@ python3 scripts/update_repo.py --skip-pip
 - [SVG Pipeline Tools](./docs/svg-pipeline.md)
 - [Image Tools](./docs/image.md)
 - [Troubleshooting](./docs/troubleshooting.md)
-- [AGENTS Guide](../../../AGENTS.md)
+- [Skill Entry](../SKILL.md)
 
 _Last updated: 2026-04-09_

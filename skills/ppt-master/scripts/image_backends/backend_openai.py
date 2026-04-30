@@ -252,7 +252,7 @@ def generate(prompt: str, negative_prompt: str = None,
     """
     OpenAI-compatible image generation with automatic retry.
 
-    Reads credentials from the current process environment or the project-root `.env`:
+    Reads credentials from the current process environment or a `.env` file:
       OPENAI_API_KEY
       OPENAI_BASE_URL
       OPENAI_MODEL (optional override)
@@ -275,7 +275,7 @@ def generate(prompt: str, negative_prompt: str = None,
 
     if not api_key:
         raise ValueError(
-            "No API key found. Set OPENAI_API_KEY in the current environment or the project-root .env."
+            "No API key found. Set OPENAI_API_KEY in the current environment or a .env file."
         )
 
     if model is None:

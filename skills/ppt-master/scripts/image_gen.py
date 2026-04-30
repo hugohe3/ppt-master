@@ -19,9 +19,12 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=replicate   -> Replicate backend
   IMAGE_BACKEND=openrouter  -> OpenRouter backend
 
-Configuration source:
+Configuration source (process env wins, `.env` is the fallback layer):
   1. Current process environment variables
-  2. Project-root `.env` as a fallback layer
+  2. The first `.env` found among:
+     - Current working directory
+     - Repo root (when running from a clone)
+     - `~/.ppt-master/.env` (user-level config)
 
 Supported keys:
   IMAGE_BACKEND    (required) backend name
@@ -42,7 +45,25 @@ import sys
 import argparse
 from pathlib import Path
 
-ENV_PATH = Path(__file__).resolve().parents[3] / ".env"
+def _resolve_env_path() -> Path:
+    """
+    Locate a `.env` file across the deploy modes PPT Master supports.
+
+    Returns the first existing candidate; if none exist, returns the CWD path
+    (used purely as a non-existent fallback so `_load_image_env_file` no-ops).
+    """
+    candidates = [
+        Path.cwd() / ".env",                              # working directory (skill mode)
+        Path(__file__).resolve().parents[3] / ".env",     # repo root (clone mode)
+        Path.home() / ".ppt-master" / ".env",             # user-level config
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
+ENV_PATH = _resolve_env_path()
 IMAGE_ENV_PREFIXES = (
     "IMAGE_",
     "GEMINI_",
@@ -200,7 +221,7 @@ def _strip_env_quotes(value: str) -> str:
 
 def _load_image_env_file() -> None:
     """
-    Load image generation config from the project-root `.env` as a fallback layer.
+    Load image generation config from the resolved `.env` as a fallback layer.
 
     Existing process environment variables win over `.env`.
     """
