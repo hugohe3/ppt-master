@@ -157,44 +157,21 @@ MBB-level color usage is extremely restrained — color serves information:
 
 Targeting **executives / decision-makers**. Pyramid structure — every sentence carries information. Composed, authoritative, and insightful tone.
 
-### Stage Direction Markers
-
-| Marker | Purpose | Example |
-|--------|---------|---------|
-| `[Pause]` | Silence after key insight, let executives absorb | "This means we are missing a billion-dollar market. [Pause]" |
-| `[Scan Room]` | Observe decision-makers' reactions, decide whether to elaborate | "[Scan Room] If there are questions, I can elaborate." |
-| `[Data]` | Conversational number delivery | "[Data] 63% → nearly two-thirds" |
-| `[Benchmark]` | Emphasize comparison baseline | "[Benchmark] Compared to the industry average of 12%, our 23% is nearly double" |
-| `[Transition]` | Bridge from previous page, at start of each page's text | "[Transition] Building on the strategic framework, let's drill into the implementation path." |
-
 ### Notes Writing Guidelines
 
-- **Pyramid structure**: Conclusion → Arguments → Details
-- **Data contextualization**: Every number has a comparison reference
-- **Executive language**: "The strategic implication is...", "The core insight is..."
-- **Flex mechanism**: Annotate "content that can be skipped if time is tight" for flexible duration
-- **Key points structure**: `Key points: (1) Core insight (2) Data support (3) Strategic implication`
+Notes are pure spoken narration (TTS). No bracketed markers, no `Key points:` / `Duration:` / `Flex:` lines — see [executor-base.md §8](executor-base.md#8-speaker-notes-generation-framework).
+
+- **Pyramid structure**: Conclusion → Arguments → Details, written as flowing prose.
+- **Data contextualization**: Every number is paired with a comparison reference in the same sentence ("twenty-three percent — nearly double the industry average of twelve").
+- **Executive language**: "The strategic implication is…", "The core insight is…".
+- **Natural transitions**: Open each page after the first with a sentence that bridges from the prior page.
 
 ### Notes Example
 
 ```markdown
 # 03_strategic_path
 
-[Transition] Having clarified the problem and the opportunity, now comes the most critical part — our response path.
-
-We recommend a three-phase strategy. [Pause]
-
-Phase one: Focus. Over the next six months, concentrate resources on conquering the Eastern China market.
-[Data] Eastern China contributes nearly two-thirds of industry growth, [Benchmark] yet our penetration rate is only half of Competitor A's. [Pause]
-
-Phase two: Expand. Use Eastern China as a template, replicate to Southern and Northern China.
-Phase three: Scale. Leverage a digital platform for nationwide coverage.
-
-[Scan Room] The resource allocation for phase one is in the appendix — would you like me to walk through it now?
-
-Key points: (1) Focus-Expand-Scale three-phase approach (2) Data-backed Eastern China priority (3) 18-month full deployment
-Duration: 3 minutes
-Flex: [If time is tight, skip phase two and three details and go straight to financial impact]
+Having clarified the problem and the opportunity, we arrive at the most critical part — our response path. The recommendation is a three-phase strategy: focus, expand, and scale. In phase one, over the next six months, we concentrate resources on conquering Eastern China, which contributes nearly two-thirds of industry growth yet sees our penetration rate at only half of Competitor A's. Phase two replicates that template to Southern and Northern China, and phase three leverages a digital platform for nationwide coverage over an eighteen-month horizon.
 ```
 
 ---
@@ -218,5 +195,5 @@ Flex: [If time is tight, skip phase two and three details and go straight to fin
 ### Notes Level
 
 - [ ] **Pyramid structure**: Every page is conclusion-first
-- [ ] **Stage markers complete**: [Pause] and [Scan Room] at key positions
-- [ ] **Flex content annotated**: Supports flexible duration
+- [ ] **Pure spoken prose**: No bracketed stage markers, no `Key points:` / `Duration:` / `Flex:` meta-lines (TTS reads everything verbatim)
+- [ ] **Data contextualized in prose**: Every number is paired with a comparison reference in the same sentence

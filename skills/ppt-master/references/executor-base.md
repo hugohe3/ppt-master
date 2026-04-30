@@ -263,62 +263,36 @@ If `spec_lock.md` is absent, consult [`strategist.md`](strategist.md) §g — do
 
 After all SVG pages are finalized, enter Logic Construction Phase and write the full notes to `notes/total.md`. Batch-writing (not per-page) lets transitions plan coherently.
 
-**Language rule (read first)**: all structural labels and stage direction markers MUST match the deck's content language. Never mix English labels with non-English body text. Pick the matching example block below; do not copy across languages.
+**Pure spoken narration**: notes are read aloud verbatim by `notes_to_audio.py` (TTS). Write only what should be spoken. No visible markers, no labeled meta-lines, no enumerated key-point lists, no duration annotations — anything you write outside the heading will be vocalized.
 
-**Per-page structure**: `# <number>_<page_title>` heading, pages separated by `---`. Each page contains:
-- A 2–5 sentence script (conversational tone, highlights the page's core info).
-- A `Key points` line listing 1–3 concrete points numbered ①②③ — fill in real content, do not leave the circled numbers as placeholders.
-- A `Duration` line with a single concrete number (e.g. `2分钟` / `2 minutes`), not a range and not the literal `X`.
-- Every page after the first opens with a `[Transition]` (or its localized form) standalone phrase that bridges from the previous page.
+**Per-page structure**: `# <number>_<page_title>` heading (the `#` heading line is the only thing stripped before TTS), pages separated by `---`. Body is 2–5 natural sentences carrying the page's core message. Page-to-page transitions live inside the opening sentence as natural prose ("接下来……" / "Having framed X, let's turn to Y") — no bracketed `[过渡]` / `[Transition]` tags.
 
-**Concrete examples — copy the one matching your deck language.**
+**Concrete examples** — same shape applies to any language; just write naturally in that language.
 
-中文 deck（标签必须本地化）：
+中文 deck：
 
 ```
 # 02_市场格局
 
-[过渡] 在明确了行业背景之后，我们来看具体的市场格局。
-当前线上零售集中度持续上升，前三大平台合计份额已达 68%。腰部玩家正在被快速挤压，留给新进入者的窗口期不超过 18 个月。这意味着我们的策略必须聚焦，而不是铺开。
-
-要点：① 集中度 68% 的事实 ② 18 个月窗口期 ③ 聚焦优于铺开
-时长：2分钟
+在明确了行业背景之后，我们来看具体的市场格局。当前线上零售集中度持续上升，前三大平台合计份额已经达到百分之六十八，腰部玩家正在被快速挤压，留给新进入者的窗口期不超过十八个月。这意味着我们的策略必须聚焦，而不是铺开。
 ```
 
-英文 deck（labels stay English）：
+英文 deck：
 
 ```
 # 02_market_landscape
 
-[Transition] Having framed the industry backdrop, let's look at the actual market landscape.
-Online retail concentration keeps rising — the top three platforms now hold 68% combined share. Mid-tier players are being squeezed fast, and the window for new entrants is under 18 months. This means our strategy has to focus, not spread.
-
-Key points: ① The 68% concentration fact ② The 18-month window ③ Focus beats breadth
-Duration: 2 minutes
+Having framed the industry backdrop, let's look at the actual market landscape. Online retail concentration keeps rising — the top three platforms now hold sixty-eight percent of combined share, mid-tier players are being squeezed fast, and the window for new entrants is under eighteen months. This means our strategy has to focus, not spread.
 ```
 
-> 日本語 / 한국어 / 其他语言：照搬上方结构，但所有标签换成对应语言的自然表达。**不要把英文标签留在非英文正文里。**
+> 日本語 / 한국어 / 其他语言：照搬同样的结构，用对应语言自然书写即可。
 
-**Marker reference table** (for translation; not a format template):
-
-| Marker | Purpose | 中文 | 日本語 | 한국어 |
-|--------|---------|------|--------|--------|
-| `[Transition]` | Standalone bridge phrase opening each page after the first | `[过渡]` | `[つなぎ]` | `[전환]` |
-| `[Pause]` | Whitespace after key content, letting the audience absorb | `[停顿]` | `[間]` | `[멈춤]` |
-| `[Interactive]` | Prompt audience interaction | `[互动]` | `[問いかけ]` | `[상호작용]` |
-| `[Data]` | Call out a data point | `[数据]` | `[データ]` | `[데이터]` |
-| `[Scan Room]` | Observe room/audience | `[观察]` | `[観察]` | `[관찰]` |
-| `[Benchmark]` | Reference a benchmark | `[对标]` | `[ベンチマーク]` | `[벤치마크]` |
-| `Key points:` | Numbered key points line | `要点：` | `要点：` | `핵심 포인트:` |
-| `Duration:` | Concrete time spent on the page | `时长：` | `所要時間：` | `소요 시간:` |
-| `Flex:` | Optional flex/adjust note | `弹性：` | `調整：` | `조정:` |
-
-> Each style may extend with additional markers — see `executor-{style}.md`. For languages not listed, translate each label to the natural term in that language.
+**Number readability**: TTS reads digits and symbols literally. Prefer fully-spelled forms in the language being spoken when literal pronunciation would be awkward (e.g. Chinese "百分之六十八" reads better than "68%"; "1-2分钟" reads as "一减二分钟"). Plain integers and percentages in English are fine as-is.
 
 **Common mistakes to avoid**:
-- Copying `① ② ③` verbatim without filling in real points.
-- Writing `Duration: X minutes` or a range like `1-2 minutes` instead of one concrete number.
-- Leaving `[Transition]` / `Key points:` / `Duration:` in English while the body is Chinese (or any other language mismatch).
+- Leaving any bracketed stage marker (`[过渡]` / `[Transition]` / `[Pause]` / `[Data]` / `[Scan Room]` / `[Interactive]` / `[Benchmark]` etc.) in the text — they will be read aloud literally.
+- Adding `要点：① …` / `Key points: (1) …` / `时长：2分钟` / `Duration: 2 minutes` / `Flex: …` lines — TTS will speak "要点 一 …".
+- Mixing languages within one deck's notes.
 
 ### Task 2. Split Into Per-Page Note Files
 

@@ -156,37 +156,22 @@ Text: 14-16px, one-sentence summary of the page's core takeaway
 
 Consultant-style speaker notes use a **conclusion-driven** approach — state the conclusion first, then present supporting evidence. Professional, concise, and persuasive tone.
 
-### Stage Direction Markers
-
-| Marker | Purpose | Example |
-|--------|---------|---------|
-| `[Pause]` | Silence after key conclusions, let the audience absorb | "This means our market share is being eroded. [Pause]" |
-| `[Data]` | Cue to verbalize numbers conversationally | "[Data] 85% → more than eight out of ten customers reported this issue" |
-| `[Transition]` | Bridge from previous page, must be at start of each page's text | "[Transition] Based on that analysis, let's look at specific recommendations." |
-
 ### Notes Writing Guidelines
 
-- **Conclusion first**: The first sentence of each page's notes is the core takeaway
-- **Conversational data**: 30% → "roughly one-third", 85% → "more than eight out of ten", 2.5x → "two and a half times"
-- **Evidence follows immediately**: After the conclusion, provide 2-3 supporting data points/facts
-- **Professional terminology**: Use terms like "insight", "driver", "key lever" etc.
-- **Key points structure**: `Key points: (1) Core conclusion (2) Supporting data (3) Next steps`
+Notes are pure spoken narration (TTS). No bracketed markers, no `Key points:` / `Duration:` lines — see [executor-base.md §8](executor-base.md#8-speaker-notes-generation-framework).
+
+- **Conclusion first**: The first sentence of each page's notes is the core takeaway.
+- **Conversational data**: 30% → "roughly one-third", 85% → "more than eight out of ten", 2.5x → "two and a half times". Spell out percentages as words when the spoken form is more natural.
+- **Evidence follows immediately**: After the conclusion, provide 2-3 supporting data points or facts in flowing prose.
+- **Natural transitions**: Open each page after the first with a sentence that bridges from the prior page ("Building on that scan…", "Based on those findings…").
+- **Professional terminology**: Use terms like "insight", "driver", "key lever".
 
 ### Notes Example
 
 ```markdown
 # 03_key_findings
 
-[Transition] Based on our market scan, we have distilled three key findings.
-
-First, the primary growth driver is shifting from acquisition to retention.
-[Data] New customer acquisition cost rose nearly 40% year-over-year, yet improved repurchase rates contributed over 60% of revenue growth. [Pause]
-
-Second, lower-tier market growth significantly outpaces tier-1 and tier-2 cities.
-Third, the 25-35 female user segment has an ARPU 1.8x the overall average.
-
-Key points: (1) Growth engine shifting from acquisition to retention (2) Lower-tier market opportunity window (3) High-value user persona
-Duration: 2 minutes
+Based on our market scan, we have distilled three key findings, and the most important is that the growth engine is shifting from acquisition to retention. New customer acquisition cost rose nearly forty percent year-over-year, yet improved repurchase rates contributed more than sixty percent of revenue growth. On top of that, lower-tier market growth significantly outpaces tier-one and tier-two cities, and the twenty-five to thirty-five female user segment now carries an ARPU nearly twice the overall average.
 ```
 
 ---
@@ -199,3 +184,4 @@ Duration: 2 minutes
 - [ ] KPI cards have trend arrows and comparison annotations
 - [ ] Chart colors are unified, using monochromatic scheme rather than rainbow
 - [ ] Notes are conclusion-first with conversational data
+- [ ] Notes contain no bracketed stage markers and no `Key points:` / `Duration:` meta-lines (TTS reads everything verbatim)
