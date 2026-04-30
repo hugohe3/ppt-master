@@ -2,6 +2,7 @@
 import argparse
 import importlib
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -105,12 +106,15 @@ def infer_project_root(output_dir):
     output_path = Path(output_dir)
     if output_path.name == "images":
         return output_path.parent
-    return output_path
+    return None
 
 
 def note_path_for_slide(project_root, slide):
     slide_name = Path(str(slide)).name
-    if not slide_name.endswith(".md"):
+    slide_stem = Path(slide_name).stem
+    if re.fullmatch(r"\d+", slide_stem):
+        slide_name = f"slide{int(slide_stem):02d}.md"
+    elif not slide_name.endswith(".md"):
         slide_name = f"{slide_name}.md"
     return Path(project_root) / "notes" / slide_name
 
@@ -119,6 +123,12 @@ def write_note_attribution(output_dir, slide, attribution_text):
     if not slide or not attribution_text:
         return None
     project_root = infer_project_root(output_dir)
+    if project_root is None:
+        _print_cli_error(
+            "Skipping note attribution: --output must point to the project's "
+            f"'images' directory, got {output_dir!r}"
+        )
+        return None
     note_path = note_path_for_slide(project_root, slide)
     return append_image_credits(note_path, [attribution_text])
 

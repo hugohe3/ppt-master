@@ -28,6 +28,8 @@ import argparse
 import re
 from pathlib import Path
 
+from image_sources.notes_writer import append_image_credits, split_image_credits
+
 HEADING_RE = re.compile(r'^(#{1,6})\s*(.+?)\s*$')
 HR_RE = re.compile(r'^\s*[-*]{3,}\s*$')
 
@@ -227,6 +229,39 @@ def check_svg_note_mapping(svg_files: list[Path], notes: dict[str, str]) -> tupl
     return len(missing_notes) == 0, missing_notes
 
 
+def legacy_note_path(output_dir: Path, title: str) -> Path | None:
+    """Build the legacy slideNN.md note path for a titled slide when possible."""
+    slide_number = extract_leading_number(title)
+    if slide_number is None:
+        return None
+    return output_dir / f"slide{slide_number:02d}.md"
+
+
+def collect_existing_image_credits(output_dir: Path, title: str) -> list[str]:
+    """Collect existing image credit lines from exact and legacy note filenames."""
+    credit_lines: list[str] = []
+    seen = set()
+    candidate_paths = [output_dir / f"{title}.md"]
+
+    legacy_path = legacy_note_path(output_dir, title)
+    if legacy_path is not None and legacy_path not in candidate_paths:
+        candidate_paths.append(legacy_path)
+
+    for candidate_path in candidate_paths:
+        if not candidate_path.exists():
+            continue
+        _, existing_credit_lines = split_image_credits(
+            candidate_path.read_text(encoding='utf-8')
+        )
+        for line in existing_credit_lines:
+            if line in seen:
+                continue
+            seen.add(line)
+            credit_lines.append(line)
+
+    return credit_lines
+
+
 def split_notes(notes: dict[str, str], output_dir: Path, verbose: bool = True) -> bool:
     """
     Split and save notes dictionary into multiple files
@@ -250,10 +285,13 @@ def split_notes(notes: dict[str, str], output_dir: Path, verbose: bool = True) -
     for title, content in notes.items():
         # Generate output filename (same name as SVG file, with .md extension)
         output_path = output_dir / f"{title}.md"
+        existing_credit_lines = collect_existing_image_credits(output_dir, title)
 
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(content)
+            if existing_credit_lines:
+                append_image_credits(output_path, existing_credit_lines)
 
             if verbose:
                 print(f"  Generated: {output_path.name}")

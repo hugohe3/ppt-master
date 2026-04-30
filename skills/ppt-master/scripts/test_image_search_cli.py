@@ -153,6 +153,24 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertIn("- Credit one\n", content)
         self.assertIn("- Credit two\n", content)
 
+    def test_append_image_credits_does_not_duplicate_identical_credit_lines(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            note_path = Path(tmpdir) / "notes" / "01_cover.md"
+
+            self.notes_writer.append_image_credits(
+                note_path,
+                ["Credit one"],
+            )
+            self.notes_writer.append_image_credits(
+                note_path,
+                ["- Credit one"],
+            )
+
+            content = note_path.read_text(encoding="utf-8")
+
+        self.assertEqual(content.count("Image Credits"), 1)
+        self.assertEqual(content.count("- Credit one\n"), 1)
+
     def test_main_writes_provider_manifest_to_output_directory_when_manifest_omitted(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir) / "images"
@@ -277,6 +295,102 @@ class ImageSearchCliTests(unittest.TestCase):
             "- City skyline - by Example Author - CC BY 4.0\n",
             note_content,
         )
+
+    def test_main_writes_numeric_slide_notes_to_legacy_slide_filename(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir) / "demo"
+            output_dir = project_root / "images"
+            manifest_item = {
+                "filename": "hero.jpg",
+                "provider": "openverse",
+                "search_query": "city skyline",
+                "slide": "2",
+                "purpose": "cover",
+                "source_page_url": "https://example.com/source",
+                "download_url": "https://example.com/hero.jpg",
+                "author": "Example Author",
+                "license_name": "CC BY 4.0",
+                "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                "attribution_required": True,
+                "attribution_text": "City skyline - by Example Author - CC BY 4.0",
+            }
+
+            provider = mock.Mock()
+            provider.search_and_download.return_value = manifest_item
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ):
+                exit_code = self.image_search.main(
+                    [
+                        "city skyline",
+                        "--filename",
+                        "hero.jpg",
+                        "--output",
+                        str(output_dir),
+                        "--provider",
+                        "openverse",
+                        "--slide",
+                        "2",
+                    ]
+                )
+
+            legacy_note_path = project_root / "notes" / "slide02.md"
+            legacy_note_exists = legacy_note_path.exists()
+            numeric_note_exists = (project_root / "notes" / "2.md").exists()
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(legacy_note_exists)
+        self.assertFalse(numeric_note_exists)
+
+    def test_main_warns_and_skips_note_write_for_noncanonical_output_dir(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir) / "downloaded-assets"
+            stderr = io.StringIO()
+            manifest_item = {
+                "filename": "hero.jpg",
+                "provider": "openverse",
+                "search_query": "city skyline",
+                "slide": "01_cover.md",
+                "purpose": "cover",
+                "source_page_url": "https://example.com/source",
+                "download_url": "https://example.com/hero.jpg",
+                "author": "Example Author",
+                "license_name": "CC BY 4.0",
+                "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                "attribution_required": True,
+                "attribution_text": "City skyline - by Example Author - CC BY 4.0",
+            }
+
+            provider = mock.Mock()
+            provider.search_and_download.return_value = manifest_item
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ):
+                with redirect_stderr(stderr):
+                    exit_code = self.image_search.main(
+                        [
+                            "city skyline",
+                            "--filename",
+                            "hero.jpg",
+                            "--output",
+                            str(output_dir),
+                            "--provider",
+                            "openverse",
+                            "--slide",
+                            "01_cover.md",
+                        ]
+                    )
+
+            stray_note_path = output_dir / "notes" / "01_cover.md"
+            stray_note_exists = stray_note_path.exists()
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("Skipping note attribution", stderr.getvalue())
+        self.assertFalse(stray_note_exists)
 
     def test_main_returns_cli_error_when_selected_provider_module_is_unavailable(self):
         with tempfile.TemporaryDirectory() as tmpdir:
