@@ -28,10 +28,13 @@ class ImageSearchCliTests(unittest.TestCase):
             sys.modules.pop(name, None)
 
         sys.modules.pop("image_search", None)
+        sys.modules.pop("image_sources.notes_writer", None)
         self.image_search = importlib.import_module("image_search")
+        self.notes_writer = importlib.import_module("image_sources.notes_writer")
 
     def tearDown(self):
         sys.modules.pop("image_search", None)
+        sys.modules.pop("image_sources.notes_writer", None)
         for name in self._provider_module_names:
             sys.modules.pop(name, None)
             saved_module = self._saved_modules[name]
@@ -131,6 +134,25 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertIn("generated_at", data)
         self.assertEqual(data["items"][0]["filename"], "hero.jpg")
 
+    def test_append_image_credits_writes_heading_only_once_across_repeated_calls(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            note_path = Path(tmpdir) / "notes" / "01_cover.md"
+
+            self.notes_writer.append_image_credits(
+                note_path,
+                ["Credit one"],
+            )
+            self.notes_writer.append_image_credits(
+                note_path,
+                ["- Credit two"],
+            )
+
+            content = note_path.read_text(encoding="utf-8")
+
+        self.assertEqual(content.count("Image Credits"), 1)
+        self.assertIn("- Credit one\n", content)
+        self.assertIn("- Credit two\n", content)
+
     def test_main_writes_provider_manifest_to_output_directory_when_manifest_omitted(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir) / "images"
@@ -204,6 +226,56 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertEqual(
             data["items"][0]["attribution_text"],
             "City skyline - by Example Author - CC BY 4.0",
+        )
+
+    def test_main_writes_note_attribution_when_slide_is_supplied(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir) / "demo"
+            output_dir = project_root / "images"
+            manifest_item = {
+                "filename": "hero.jpg",
+                "provider": "openverse",
+                "search_query": "city skyline",
+                "slide": "01_cover.md",
+                "purpose": "cover",
+                "source_page_url": "https://example.com/source",
+                "download_url": "https://example.com/hero.jpg",
+                "author": "Example Author",
+                "license_name": "CC BY 4.0",
+                "license_url": "https://creativecommons.org/licenses/by/4.0/",
+                "attribution_required": True,
+                "attribution_text": "City skyline - by Example Author - CC BY 4.0",
+            }
+
+            provider = mock.Mock()
+            provider.search_and_download.return_value = manifest_item
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ):
+                exit_code = self.image_search.main(
+                    [
+                        "city skyline",
+                        "--filename",
+                        "hero.jpg",
+                        "--output",
+                        str(output_dir),
+                        "--provider",
+                        "openverse",
+                        "--slide",
+                        "01_cover.md",
+                    ]
+                )
+
+            note_path = project_root / "notes" / "01_cover.md"
+            note_content = note_path.read_text(encoding="utf-8")
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(note_content.count("Image Credits"), 1)
+        self.assertIn(
+            "- City skyline - by Example Author - CC BY 4.0\n",
+            note_content,
         )
 
     def test_main_returns_cli_error_when_selected_provider_module_is_unavailable(self):

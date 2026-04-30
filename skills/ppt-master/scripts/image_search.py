@@ -6,6 +6,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from image_sources.notes_writer import append_image_credits
 from image_sources.provider_common import ensure_json_parent
 
 
@@ -100,6 +101,28 @@ def write_sources_manifest(path, items):
     return manifest_path
 
 
+def infer_project_root(output_dir):
+    output_path = Path(output_dir)
+    if output_path.name == "images":
+        return output_path.parent
+    return output_path
+
+
+def note_path_for_slide(project_root, slide):
+    slide_name = Path(str(slide)).name
+    if not slide_name.endswith(".md"):
+        slide_name = f"{slide_name}.md"
+    return Path(project_root) / "notes" / slide_name
+
+
+def write_note_attribution(output_dir, slide, attribution_text):
+    if not slide or not attribution_text:
+        return None
+    project_root = infer_project_root(output_dir)
+    note_path = note_path_for_slide(project_root, slide)
+    return append_image_credits(note_path, [attribution_text])
+
+
 def build_manifest_item(args):
     return {
         "filename": args.filename,
@@ -141,6 +164,11 @@ def main(argv=None):
 
     manifest_path = args.manifest or default_manifest_path(args.output)
     write_sources_manifest(manifest_path, [manifest_item])
+    write_note_attribution(
+        output_dir=args.output,
+        slide=args.slide,
+        attribution_text=manifest_item.get("attribution_text", ""),
+    )
     return 0
 
 
