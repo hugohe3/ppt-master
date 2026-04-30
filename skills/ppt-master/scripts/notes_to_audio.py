@@ -119,8 +119,8 @@ def main() -> int:
     parser.add_argument("-o", "--output", type=Path, default=None)
     parser.add_argument(
         "--voice",
-        default="zh-CN-XiaoxiaoNeural",
-        help="edge-tts voice name (default: zh-CN-XiaoxiaoNeural)",
+        default=None,
+        help="edge-tts voice ShortName (required). Run --list-voices --locale <locale> to discover voices, or follow the generate-audio workflow for a locale-aware recommendation.",
     )
     parser.add_argument(
         "--rate",
@@ -146,6 +146,13 @@ def main() -> int:
 
     if args.project_path is None:
         parser.error("project_path is required unless --list-voices or --list-common-voices is used")
+
+    if not args.voice:
+        parser.error(
+            "--voice is required. Run --list-voices --locale <locale> to discover voices "
+            "(e.g. --locale zh-CN), or follow skills/ppt-master/workflows/generate-audio.md "
+            "for an AI-curated recommendation."
+        )
 
     project = args.project_path
     notes_dir = project / "notes"

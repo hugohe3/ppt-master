@@ -312,14 +312,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 - `--auto-advance <seconds>` — kiosk-style auto-play.
 
 **Optional recorded narration** (only when the user asks for narrated/video export):
-```bash
-python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
-```
 
-- `notes_to_audio.py` reads split `notes/*.md` files and writes one MP3 per slide to `audio/`.
-- `--recorded-narration audio` embeds the matching audio files, keeps speaker notes, and uses audio duration for slide auto-advance timings.
-- Use this for PowerPoint video export with recorded timings and narrations.
+Run the standalone [`generate-audio`](workflows/generate-audio.md) workflow. The AI picks voice candidates from the locale-filtered `edge-tts` catalog, asks the user once (voice + rate + embed-or-not, all with recommended values), then executes `notes_to_audio.py` and (if chosen) re-exports the PPTX with `--recorded-narration audio`.
+
+Do NOT call `notes_to_audio.py` directly without going through the workflow — `--voice` is required and the workflow produces the locale-aware recommendation that makes the choice meaningful.
 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 
