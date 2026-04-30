@@ -263,34 +263,62 @@ If `spec_lock.md` is absent, consult [`strategist.md`](strategist.md) §g — do
 
 After all SVG pages are finalized, enter Logic Construction Phase and write the full notes to `notes/total.md`. Batch-writing (not per-page) lets transitions plan coherently.
 
-**Format**: Each page: `# <number>_<page_title>` heading, separated by `---`. Each contains 2-5 sentence script, `Key points: ① ② ③`, `Duration: X minutes`. Every page after the first starts with a `[Transition]` phrase.
+**Language rule (read first)**: all structural labels and stage direction markers MUST match the deck's content language. Never mix English labels with non-English body text. Pick the matching example block below; do not copy across languages.
 
-**Basic stage direction markers** (common to all styles):
+**Per-page structure**: `# <number>_<page_title>` heading, pages separated by `---`. Each page contains:
+- A 2–5 sentence script (conversational tone, highlights the page's core info).
+- A `Key points` line listing 1–3 concrete points numbered ①②③ — fill in real content, do not leave the circled numbers as placeholders.
+- A `Duration` line with a single concrete number (e.g. `2分钟` / `2 minutes`), not a range and not the literal `X`.
+- Every page after the first opens with a `[Transition]` (or its localized form) standalone phrase that bridges from the previous page.
 
-| Marker | Purpose |
-|--------|---------|
-| `[Pause]` | Whitespace after key content, letting the audience absorb |
-| `[Transition]` | Standalone paragraph at the start of each page's text, bridging from the previous page |
+**Concrete examples — copy the one matching your deck language.**
 
-> Each style may extend with additional markers (`[Interactive]`/`[Data]`/`[Scan Room]`/`[Benchmark]` etc.), see `executor-{style}.md`.
+中文 deck（标签必须本地化）：
 
-**Language consistency**: structural labels and stage direction markers MUST match the deck's content language. Localize all labels — do NOT mix English labels with non-English content.
+```
+# 02_市场格局
 
-| English | 中文 | 日本語 | 한국어 |
-|---------|------|--------|--------|
-| `[Transition]` | `[过渡]` | `[つなぎ]` | `[전환]` |
-| `[Pause]` | `[停顿]` | `[間]` | `[멈춤]` |
-| `[Interactive]` | `[互动]` | `[問いかけ]` | `[상호작용]` |
-| `[Data]` | `[数据]` | `[データ]` | `[데이터]` |
-| `[Scan Room]` | `[观察]` | `[観察]` | `[관찰]` |
-| `[Benchmark]` | `[对标]` | `[ベンチマーク]` | `[벤치마크]` |
-| `Key points:` | `要点：` | `要点：` | `핵심 포인트:` |
-| `Duration:` | `时长：` | `所要時間：` | `소요 시간:` |
-| `Flex:` | `弹性：` | `調整：` | `조정:` |
+[过渡] 在明确了行业背景之后，我们来看具体的市场格局。
+当前线上零售集中度持续上升，前三大平台合计份额已达 68%。腰部玩家正在被快速挤压，留给新进入者的窗口期不超过 18 个月。这意味着我们的策略必须聚焦，而不是铺开。
 
-> For languages not listed above, translate each label to the corresponding natural term in that language.
+要点：① 集中度 68% 的事实 ② 18 个月窗口期 ③ 聚焦优于铺开
+时长：2分钟
+```
 
-**Requirements**: conversational tone; highlight each page's core info and key points; users may edit/override in `notes/`.
+英文 deck（labels stay English）：
+
+```
+# 02_market_landscape
+
+[Transition] Having framed the industry backdrop, let's look at the actual market landscape.
+Online retail concentration keeps rising — the top three platforms now hold 68% combined share. Mid-tier players are being squeezed fast, and the window for new entrants is under 18 months. This means our strategy has to focus, not spread.
+
+Key points: ① The 68% concentration fact ② The 18-month window ③ Focus beats breadth
+Duration: 2 minutes
+```
+
+> 日本語 / 한국어 / 其他语言：照搬上方结构，但所有标签换成对应语言的自然表达。**不要把英文标签留在非英文正文里。**
+
+**Marker reference table** (for translation; not a format template):
+
+| Marker | Purpose | 中文 | 日本語 | 한국어 |
+|--------|---------|------|--------|--------|
+| `[Transition]` | Standalone bridge phrase opening each page after the first | `[过渡]` | `[つなぎ]` | `[전환]` |
+| `[Pause]` | Whitespace after key content, letting the audience absorb | `[停顿]` | `[間]` | `[멈춤]` |
+| `[Interactive]` | Prompt audience interaction | `[互动]` | `[問いかけ]` | `[상호작용]` |
+| `[Data]` | Call out a data point | `[数据]` | `[データ]` | `[데이터]` |
+| `[Scan Room]` | Observe room/audience | `[观察]` | `[観察]` | `[관찰]` |
+| `[Benchmark]` | Reference a benchmark | `[对标]` | `[ベンチマーク]` | `[벤치마크]` |
+| `Key points:` | Numbered key points line | `要点：` | `要点：` | `핵심 포인트:` |
+| `Duration:` | Concrete time spent on the page | `时长：` | `所要時間：` | `소요 시간:` |
+| `Flex:` | Optional flex/adjust note | `弹性：` | `調整：` | `조정:` |
+
+> Each style may extend with additional markers — see `executor-{style}.md`. For languages not listed, translate each label to the natural term in that language.
+
+**Common mistakes to avoid**:
+- Copying `① ② ③` verbatim without filling in real points.
+- Writing `Duration: X minutes` or a range like `1-2 minutes` instead of one concrete number.
+- Leaving `[Transition]` / `Key points:` / `Duration:` in English while the body is Chinese (or any other language mismatch).
 
 ### Task 2. Split Into Per-Page Note Files
 
