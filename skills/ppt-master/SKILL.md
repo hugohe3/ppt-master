@@ -311,6 +311,16 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 - `--animation-trigger {on-click,with-previous,after-previous}` — Start mode (matches PowerPoint's animation-pane Start dropdown). Default `after-previous` (click-free cascade; pace via `--animation-stagger`). Use `on-click` for presenter-paced reveals, or `with-previous` for all-at-once.
 - `--auto-advance <seconds>` — kiosk-style auto-play.
 
+**Optional recorded narration** (only when the user asks for narrated/video export):
+```bash
+python3 ${SKILL_DIR}/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
+```
+
+- `notes_to_audio.py` reads split `notes/*.md` files and writes one MP3 per slide to `audio/`.
+- `--recorded-narration audio` embeds the matching audio files, keeps speaker notes, and uses audio duration for slide auto-advance timings.
+- Use this for PowerPoint video export with recorded timings and narrations.
+
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps

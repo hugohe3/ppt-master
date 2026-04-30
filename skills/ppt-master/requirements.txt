@@ -16,6 +16,11 @@
 # 默认使用 Office 兼容模式（PNG + SVG 双格式），支持所有 Office 版本
 python-pptx>=0.6.21
 
+# Recorded narration / 录制计时和旁白
+# notes_to_audio.py generates per-slide narration audio on macOS/Linux/Windows.
+# notes_to_audio.py 用于在 macOS/Linux/Windows 上生成逐页旁白音频。
+edge-tts>=7.2.8
+
 # Office compatibility dependencies (choose one, CairoSVG preferred)
 # Office 兼容模式依赖（二选一，优先使用 cairosvg）
 # Converts SVG to PNG fallback images for Office LTSC 2021 etc.

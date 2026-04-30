@@ -27,6 +27,17 @@ from .pptx_notes import (
     markdown_to_plain_text,
     create_notes_slide_xml, create_notes_slide_rels_xml,
 )
+from .pptx_narration import (
+    AUDIO_CONTENT_TYPES,
+    AUDIO_REL_TYPE,
+    IMAGE_REL_TYPE,
+    MEDIA_REL_TYPE,
+    TRANSPARENT_PNG_BYTES,
+    apply_recorded_timing,
+    inject_narration,
+    next_shape_id,
+    probe_audio_duration,
+)
 from .pptx_slide_xml import (
     ANIMATIONS_AVAILABLE, TRANSITIONS,
     create_slide_xml_with_svg, create_slide_rels_xml,
@@ -68,6 +79,15 @@ def _append_relationship(
         f.write(rels_content)
 
     return next_rid
+
+
+def _add_default_content_type(content_types: str, extension: str, content_type: str) -> str:
+    """Add a Default content type if it is not already present."""
+    ext = extension.lstrip(".")
+    if f'Extension="{ext}"' in content_types:
+        return content_types
+    entry = f'  <Default Extension="{ext}" ContentType="{content_type}"/>'
+    return content_types.replace('</Types>', entry + '\n</Types>')
 
 
 def _expand_anim_targets_to_group_children(
@@ -137,6 +157,9 @@ def create_pptx_with_native_svg(
     animation_duration: float = 0.4,
     animation_stagger: float = 0.5,
     animation_trigger: str = 'after-previous',
+    narration_audio: dict[str, Path] | None = None,
+    use_narration_timings: bool = False,
+    narration_padding: float = 0.5,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -159,6 +182,9 @@ def create_pptx_with_native_svg(
             trigger mode (seconds). Ignored otherwise.
         animation_trigger: PowerPoint Start mode — ``'after-previous'`` (default),
             ``'on-click'``, or ``'with-previous'``.
+        narration_audio: Optional dict mapping SVG stem to narration audio file.
+        use_narration_timings: Whether to set slide auto-advance from audio duration.
+        narration_padding: Extra seconds added after each narration before advancing.
 
     Returns:
         Whether all slides were successfully created.
@@ -248,6 +274,8 @@ def create_pptx_with_native_svg(
         has_any_image = False
         media_cache: dict[tuple[str, str], str] = {}
         notes_slides_created: set[int] = set()
+        narration_slides_created: set[int] = set()
+        audio_exts_used: set[str] = set()
         mixed_animation_offset = 0
 
         for i, svg_path in enumerate(svg_files, 1):
@@ -433,6 +461,63 @@ def create_pptx_with_native_svg(
                         )
                         notes_slides_created.add(slide_num)
 
+                # --- Process narration audio (shared between native and legacy mode) ---
+                svg_stem = svg_path.stem
+                audio_path = narration_audio.get(svg_stem) if narration_audio else None
+                if audio_path:
+                    slide_xml_path = extract_dir / 'ppt' / 'slides' / f'slide{slide_num}.xml'
+                    rels_path = extract_dir / 'ppt' / 'slides' / '_rels' / f'slide{slide_num}.xml.rels'
+
+                    ext = audio_path.suffix.lower()
+                    media_name = f'narration{slide_num}{ext}'
+                    shutil.copy2(audio_path, media_dir / media_name)
+                    audio_exts_used.add(ext)
+
+                    poster_name = 'narration_poster.png'
+                    poster_path = media_dir / poster_name
+                    if not poster_path.exists():
+                        poster_path.write_bytes(TRANSPARENT_PNG_BYTES)
+                    has_any_image = True
+
+                    media_rid = _append_relationship(
+                        rels_path,
+                        MEDIA_REL_TYPE,
+                        f'../media/{media_name}',
+                    )
+                    audio_rid = _append_relationship(
+                        rels_path,
+                        AUDIO_REL_TYPE,
+                        f'../media/{media_name}',
+                    )
+                    poster_rid = _append_relationship(
+                        rels_path,
+                        IMAGE_REL_TYPE,
+                        f'../media/{poster_name}',
+                    )
+
+                    slide_xml = slide_xml_path.read_text(encoding='utf-8')
+                    narration_shape_id = next_shape_id(slide_xml)
+                    slide_xml = inject_narration(
+                        slide_xml,
+                        shape_id=narration_shape_id,
+                        shape_name=media_name,
+                        audio_rid=audio_rid,
+                        media_rid=media_rid,
+                        poster_rid=poster_rid,
+                    )
+
+                    if use_narration_timings:
+                        duration = probe_audio_duration(audio_path)
+                        if duration:
+                            slide_xml = apply_recorded_timing(
+                                slide_xml,
+                                advance_after=duration + narration_padding,
+                                transition_duration=transition_duration,
+                                transition_effect=transition or 'fade',
+                            )
+                    slide_xml_path.write_text(slide_xml, encoding='utf-8')
+                    narration_slides_created.add(slide_num)
+
                 if verbose:
                     if use_native_shapes:
                         mode_str = " (Native)"
@@ -442,7 +527,8 @@ def create_pptx_with_native_svg(
                         mode_str = " (SVG)"
                     has_notes = slide_num in notes_slides_created
                     notes_str = " +notes" if has_notes else ""
-                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}")
+                    narration_str = " +narration" if slide_num in narration_slides_created else ""
+                    print(f"  [{i}/{len(svg_files)}] {svg_path.name}{mode_str}{notes_str}{narration_str}")
 
                 success_count += 1
 
@@ -470,6 +556,16 @@ def create_pptx_with_native_svg(
             content_types = content_types.replace(
                 '</Types>', '\n'.join(types_to_add) + '\n</Types>',
             )
+            with open(content_types_path, 'w', encoding='utf-8') as f:
+                f.write(content_types)
+
+        if audio_exts_used:
+            for ext in sorted(audio_exts_used):
+                content_type = AUDIO_CONTENT_TYPES.get(ext)
+                if content_type:
+                    content_types = _add_default_content_type(content_types, ext, content_type)
+            if 'Extension="png"' not in content_types:
+                content_types = _add_default_content_type(content_types, 'png', 'image/png')
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
 

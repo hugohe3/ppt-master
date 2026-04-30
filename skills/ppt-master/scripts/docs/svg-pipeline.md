@@ -1,6 +1,6 @@
 # SVG Pipeline Tools
 
-These tools cover post-processing, SVG validation, speaker notes, and PPTX export.
+These tools cover post-processing, SVG validation, speaker notes, recorded narration, and PPTX export.
 
 ## Recommended Pipeline
 
@@ -36,6 +36,8 @@ python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
 python3 scripts/svg_to_pptx.py <project_path> -s final --auto-advance 3
 python3 scripts/svg_to_pptx.py <project_path> -s final --animation mixed --animation-duration 0.8
+python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
+python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
 ```
 
 Behavior:
@@ -46,6 +48,12 @@ Behavior:
 - Explicit `-o/--output` keeps the legacy side-by-side `_svg.pptx` next to the chosen path and skips `backup/`
 - Recommended source directory: `svg_final/`
 - Speaker notes are embedded automatically unless `--no-notes` is used
+- Recorded narration is opt-in:
+  - `notes_to_audio.py` uses the cross-platform Python package `edge-tts` and generates one MP3 file per slide into `audio/`
+  - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
+  - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
+  - This is intended for PowerPoint's video export option "Use recorded timings and narrations"
+  - Voice choices can be listed with `python3 scripts/notes_to_audio.py --list-common-voices` or `python3 scripts/notes_to_audio.py --list-voices --locale zh-CN`
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
 - Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Page chrome (background / header / footer / decorations / watermark / page number, by id token) is skipped automatically
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)

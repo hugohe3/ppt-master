@@ -314,6 +314,16 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 - `--animation-trigger {on-click,with-previous,after-previous}` — Start mode matching PowerPoint's animation-pane Start dropdown. Default `after-previous` (cascade on slide entry; pace via `--animation-stagger <seconds>`); `on-click` advances per click; `with-previous` plays all groups together.
 - `--auto-advance <seconds>` — kiosk-style auto-play
 
+**Optional recorded narration** (only when the user asks for narrated/video export):
+
+```bash
+python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
+python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
+```
+
+- `notes_to_audio.py` reads split `notes/*.md` files and writes one MP3 per slide to `audio/`.
+- `--recorded-narration audio` embeds matching audio, keeps speaker notes, and sets slide timings from audio duration.
+
 Full reference: [`animations.md`](animations.md).
 
 **Prohibited**:

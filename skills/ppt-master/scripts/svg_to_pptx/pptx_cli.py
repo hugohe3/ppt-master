@@ -11,6 +11,7 @@ from pathlib import Path
 from .pptx_dimensions import CANVAS_FORMATS, get_project_info
 from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
+from .pptx_narration import find_narration_files
 from .pptx_slide_xml import TRANSITIONS
 
 try:
@@ -79,6 +80,13 @@ Speaker notes (enabled by default):
       1. Match by filename (recommended): 01_cover.md corresponds to 01_cover.svg
       2. Match by index: slide01.md corresponds to the 1st SVG (backward compatible)
     - Use --no-notes to disable
+
+Recorded narration:
+    %(prog)s examples/ppt169_demo -s final --recorded-narration audio
+    - Keeps speaker notes when enabled
+    - Embeds per-slide audio matched by SVG filename / slide number
+    - Sets slide auto-advance from audio duration so video export can use
+      "recorded timings and narrations"
 ''',
     )
 
@@ -127,6 +135,14 @@ Speaker notes (enabled by default):
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
+    parser.add_argument('--narration-audio-dir', type=str, default=None,
+                        help='Embed per-slide narration audio from this directory')
+    parser.add_argument('--use-narration-timings', action='store_true',
+                        help='Set slide auto-advance timings from narration audio durations')
+    parser.add_argument('--recorded-narration', type=str, default=None,
+                        help='Shortcut: embed narration audio and use its durations as recorded timings')
+    parser.add_argument('--narration-padding', type=float, default=0.5,
+                        help='Seconds to add after each narration before auto-advance (default: 0.5)')
 
     args = parser.parse_args()
 
@@ -189,6 +205,18 @@ Speaker notes (enabled by default):
     if enable_notes:
         notes = find_notes_files(project_path, svg_files)
 
+    narration_audio: dict[str, Path] = {}
+    narration_audio_dir_arg = args.recorded_narration or args.narration_audio_dir
+    use_narration_timings = args.use_narration_timings or bool(args.recorded_narration)
+    if narration_audio_dir_arg:
+        narration_audio_dir = Path(narration_audio_dir_arg)
+        if not narration_audio_dir.is_absolute():
+            narration_audio_dir = project_path / narration_audio_dir
+        narration_audio = find_narration_files(narration_audio_dir, svg_files)
+        if verbose:
+            print(f"  Narration audio directory: {narration_audio_dir}")
+            print(f"  Narration audio matched: {len(narration_audio)}/{len(svg_files)} slide(s)")
+
     transition = args.transition if args.transition != 'none' else None
     animation = args.animation if args.animation != 'none' else None
 
@@ -206,6 +234,9 @@ Speaker notes (enabled by default):
         animation_duration=args.animation_duration,
         animation_stagger=args.animation_stagger,
         animation_trigger=args.animation_trigger,
+        narration_audio=narration_audio,
+        use_narration_timings=use_narration_timings,
+        narration_padding=args.narration_padding,
     )
 
     success = True
