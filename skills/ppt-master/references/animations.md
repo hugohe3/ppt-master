@@ -7,9 +7,9 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 | Layer | Default | Why |
 |---|---|---|
 | Page transition | `fade`, 0.4s | Calm baseline that suits most decks |
-| Per-element animation | off | Existing users see no behavior change |
+| Per-element animation | `mixed` effect + `after-previous` trigger | Groups cascade in automatically on slide entry — zero interaction, the full animation capability is visible the moment a viewer opens the deck |
 
-To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM.
+To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation off entirely, pass `-a none`.
 
 ## Page Transitions
 
@@ -34,28 +34,31 @@ Flags:
 
 ## Per-Element Animations
 
-Off by default. When enabled, three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
+Enabled by default (`mixed` effect + `after-previous` trigger). Three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
-- **`on-click`** (default) — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals.
+- **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals.
 - **`with-previous`** — all groups start together on slide entry, playing their entrance animation in parallel. Stagger ignored.
-- **`after-previous`** — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
+- **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
 
 ```bash
-# On-click cascade with fade (recommended starting point)
+# Default behavior (no flags needed): mixed effect + after-previous cascade
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+
+# Disable per-element animation entirely
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> -a none
+
+# Use a single effect (still cascades via the default after-previous trigger)
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade
 
-# Auto-vary effects within a slide (title fades; later groups cycle a curated pool)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed
+# Switch to on-click for live presentations (presenter controls pacing)
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click
 
-# After-previous cascade on slide entry, 0.4s gap between groups (default stagger)
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger after-previous
-
-# After-previous with custom pacing
+# Custom pacing
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation mixed \
-        --animation-trigger after-previous --animation-stagger 0.6 --animation-duration 0.5
+        --animation-stagger 0.6 --animation-duration 0.5
 
 # All groups animate in unison on slide entry
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade --animation-trigger with-previous
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger with-previous
 ```
 
 22 single effects: `appear`, `fade`, `fly`, `cut`, `zoom`, `wipe`, `split`, `blinds`, `checkerboard`, `dissolve`, `random_bars`, `peek`, `wheel`, `box`, `circle`, `diamond`, `plus`, `strips`, `wedge`, `stretch`, `expand`, `swivel`. Plus two auto-vary modes:
@@ -67,8 +70,8 @@ The pool excludes `appear` because it has no visible motion.
 
 Flags:
 
-- `-a/--animation` — effect name, `mixed`, `random`, or `none`. Default: `none`.
-- `--animation-trigger` — Start mode (matches PowerPoint): `on-click` (default), `with-previous`, or `after-previous`.
+- `-a/--animation` — effect name, `mixed`, `random`, or `none`. Default: `mixed`.
+- `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
 - `--animation-duration` — per-element entrance seconds, default `0.3`.
 - `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.4`). Ignored otherwise.
 
@@ -101,10 +104,10 @@ Executors should wrap logical sections in `<g id>` regardless of whether you pla
 | Change transition effect | `-t push` (or any from the list above) |
 | Slower transition | `--transition-duration 0.8` |
 | Auto-play | `--auto-advance 5` |
-| Enable element animation (on-click) | `--animation fade` |
-| Cascade without clicks | `--animation fade --animation-trigger after-previous` |
-| All groups animate together | `--animation fade --animation-trigger with-previous` |
-| Auto-vary element animation | `--animation mixed` |
+| Disable element animation | `-a none` |
+| Switch to on-click trigger | `--animation-trigger on-click` |
+| Use a single effect instead of mixed | `--animation fade` |
+| All groups animate together | `--animation-trigger with-previous` |
 | Slower per-element reveal | `--animation-duration 0.5` |
 | Wider gap in after-previous | `--animation-stagger 0.8` |
 

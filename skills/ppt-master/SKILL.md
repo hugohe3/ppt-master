@@ -305,10 +305,10 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
 
-**Optional animation flags** (add to the command above when the user asks for them; otherwise omit):
+**Optional animation flags** (the defaults already enable rich entrance animations — adjust only when the user asks for something different):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
-- `-a <effect>` — per-element entrance animation. Default off. Common picks: `fade` (every group fades in), `mixed` (auto-vary across the deck). Requires top-level `<g id="...">` groups (already required by Executor).
-- `--animation-trigger {on-click,with-previous,after-previous}` — Start mode (matches PowerPoint's animation-pane Start dropdown). Default `on-click`. Use `after-previous` (with `--animation-stagger`) for click-free cascade, or `with-previous` for all-at-once.
+- `-a <effect>` — per-element entrance animation. Default `mixed` (auto-vary across the deck). Pass `none` to disable, or pick a specific effect like `fade`. Requires top-level `<g id="...">` groups (already required by Executor).
+- `--animation-trigger {on-click,with-previous,after-previous}` — Start mode (matches PowerPoint's animation-pane Start dropdown). Default `after-previous` (click-free cascade; pace via `--animation-stagger`). Use `on-click` for presenter-paced reveals, or `with-previous` for all-at-once.
 - `--auto-advance <seconds>` — kiosk-style auto-play.
 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).

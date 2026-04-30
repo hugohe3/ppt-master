@@ -48,7 +48,7 @@ Behavior:
 - Speaker notes are embedded automatically unless `--no-notes` is used
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
 - Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Page chrome (background / header / footer / decorations / watermark / page number, by id token) is skipped automatically
-- Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `on-click` (default, presenter-paced), `with-previous` (all together on slide entry), `after-previous` (cascade with `--animation-stagger` spacing)
+- Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
 - Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
 - `mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck; `random` samples from that same pool
 - `--animation-duration` controls per-element entrance length; `--animation-stagger` adds gap between elements in `after-previous` mode

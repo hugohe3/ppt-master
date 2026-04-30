@@ -310,8 +310,8 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 
 **Optional animation flags** (only when the user asks):
 - `-t <effect>` — page transition (`fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`; default `fade`)
-- `-a <effect>` — per-element entrance animation (`fade` / `mixed` / `random` / one of 22 named effects; default off). Anchors on top-level `<g id="...">` groups.
-- `--animation-trigger {on-click,with-previous,after-previous}` — Start mode matching PowerPoint's animation-pane Start dropdown. Default `on-click`; `after-previous` cascades on slide entry (pace via `--animation-stagger <seconds>`); `with-previous` plays all groups together.
+- `-a <effect>` — per-element entrance animation (`fade` / `mixed` / `random` / one of 22 named effects / `none`; default `mixed`). Anchors on top-level `<g id="...">` groups.
+- `--animation-trigger {on-click,with-previous,after-previous}` — Start mode matching PowerPoint's animation-pane Start dropdown. Default `after-previous` (cascade on slide entry; pace via `--animation-stagger <seconds>`); `on-click` advances per click; `with-previous` plays all groups together.
 - `--auto-advance <seconds>` — kiosk-style auto-play
 
 Full reference: [`animations.md`](animations.md).

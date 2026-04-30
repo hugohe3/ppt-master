@@ -292,7 +292,7 @@ def _build_effect_xml(
 def create_sequence_timing_xml(
     targets: list,
     duration: float = 0.3,
-    trigger: str = 'on-click',
+    trigger: str = 'after-previous',
 ) -> str:
     """Generate a multi-target entrance sequence.
 
@@ -304,11 +304,12 @@ def create_sequence_timing_xml(
             the other two).
         duration: per-element entrance duration in seconds.
         trigger: PowerPoint-standard Start mode for each element.
-            ``'on-click'`` — one presenter click per element (default).
+            ``'after-previous'`` — first element fires on slide entry,
+            rest chain after the previous one with ``delay_ms`` spacing
+            (default).
+            ``'on-click'`` — one presenter click per element.
             ``'with-previous'`` — all elements start together on slide
             entry.
-            ``'after-previous'`` — first element fires on slide entry,
-            rest chain after the previous one with ``delay_ms`` spacing.
 
     Returns:
         A ``<p:timing>`` element string. Returns an empty string when

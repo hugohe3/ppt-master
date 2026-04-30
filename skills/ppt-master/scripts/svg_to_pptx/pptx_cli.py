@@ -56,13 +56,15 @@ Transition effects (-t/--transition):
 
 Per-element entrance animation (-a/--animation, native shapes mode):
     {', '.join(animation_choices)}
-    Notes: applied to top-level <g id="..."> SVG groups in z-order. Start mode set
-           by --animation-trigger, matching PowerPoint's Start dropdown:
-             on-click (default)    one presenter click per group
+    Notes: applied to top-level <g id="..."> SVG groups in z-order. Default is
+           "mixed" (auto-vary effects per group). Start mode set by
+           --animation-trigger, matching PowerPoint's Start dropdown:
+             on-click              one presenter click per group
              with-previous         all groups start together on slide entry
-             after-previous        cascade; gap = --animation-stagger seconds
+             after-previous (default)  cascade on slide entry;
+                                       gap = --animation-stagger seconds
            mixed uses a curated visible-effect sequence across the deck; random samples
-           from the same visible-effect pool.
+           from the same visible-effect pool. Use "-a none" to disable.
 
 Compatibility mode (enabled by default):
     - Automatically generates PNG fallback images, SVG embedded as extension
@@ -106,19 +108,19 @@ Speaker notes (enabled by default):
                         help='Auto-advance interval in seconds (default: manual advance)')
 
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
-                        default='none',
+                        default='mixed',
                         help='Per-element entrance animation (native shapes mode '
                              'only). Pick a single effect, "mixed" (auto-vary per '
-                             'element), "random", or "none" (default).')
+                             'element, default), "random", or "none" to disable.')
     parser.add_argument('--animation-duration', type=float, default=0.3,
                         help='Per-element entrance duration in seconds (default: 0.3)')
     parser.add_argument('--animation-trigger', type=str,
                         choices=['on-click', 'with-previous', 'after-previous'],
-                        default='on-click',
+                        default='after-previous',
                         help='Per-element Start mode (matches PowerPoint Start dropdown): '
-                             '"on-click" (default, one click per element), '
+                             '"on-click" (one click per element), '
                              '"with-previous" (all start together on slide entry), '
-                             '"after-previous" (cascade after the previous element).')
+                             '"after-previous" (default, cascade after the previous element).')
     parser.add_argument('--animation-stagger', type=float, default=0.4,
                         help='Delay between elements in --animation-trigger=after-previous '
                              '(seconds, default 0.4). Ignored in other modes.')
