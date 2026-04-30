@@ -2,6 +2,7 @@
 import argparse
 import importlib
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,13 +15,16 @@ PROVIDER_REGISTRY = {
     "pexels": "image_sources.provider_pexels",
     "pixabay": "image_sources.provider_pixabay",
 }
-AVAILABLE_PROVIDERS = ("openverse", "wikimedia", "pexels", "pixabay")
 
 ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 
 LICENSE_VERIFICATION_NOTE = (
     "provider metadata used; manual review recommended for external delivery"
 )
+
+
+def available_providers():
+    return tuple(PROVIDER_REGISTRY)
 
 
 def build_parser():
@@ -30,7 +34,7 @@ def build_parser():
     parser.add_argument("query", help="Search query for the external image provider.")
     parser.add_argument(
         "--provider",
-        choices=AVAILABLE_PROVIDERS,
+        choices=available_providers(),
         default="openverse",
         help="Provider to use for the search.",
     )
@@ -74,6 +78,10 @@ def load_provider(provider_name):
     return importlib.import_module(module_name)
 
 
+def _print_cli_error(message):
+    print(message, file=sys.stderr)
+
+
 def default_manifest_path(output_dir):
     return Path(output_dir) / "image_sources.json"
 
@@ -114,15 +122,23 @@ def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    provider = load_provider(args.provider)
-    manifest_item = provider.search_and_download(
-        query=args.query,
-        output_dir=args.output,
-        filename=args.filename,
-        slide=args.slide,
-        purpose=args.purpose,
-        orientation=args.orientation,
-    )
+    try:
+        provider = load_provider(args.provider)
+        manifest_item = provider.search_and_download(
+            query=args.query,
+            output_dir=args.output,
+            filename=args.filename,
+            slide=args.slide,
+            purpose=args.purpose,
+            orientation=args.orientation,
+        )
+    except ModuleNotFoundError as exc:
+        _print_cli_error(f"Provider '{args.provider}' is unavailable: {exc}")
+        return 1
+    except RuntimeError as exc:
+        _print_cli_error(f"Image search failed for provider '{args.provider}': {exc}")
+        return 1
+
     manifest_path = args.manifest or default_manifest_path(args.output)
     write_sources_manifest(manifest_path, [manifest_item])
     return 0

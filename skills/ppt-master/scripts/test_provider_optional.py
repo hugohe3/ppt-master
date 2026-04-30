@@ -61,6 +61,36 @@ class PexelsProviderTests(unittest.TestCase):
                             filename="hero.jpg",
                         )
 
+    def test_search_and_download_raises_clear_error_when_all_results_are_unusable(self):
+        response = mock.Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "photos": [
+                {
+                    "id": 11,
+                    "width": 2400,
+                    "height": 1600,
+                    "url": "https://www.pexels.com/photo/city-skyline-11/",
+                    "photographer": "Jane Doe",
+                    "src": {},
+                    "alt": "City skyline without image source",
+                }
+            ]
+        }
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with mock.patch.dict(os.environ, {"PEXELS_API_KEY": "pexels-key"}, clear=True):
+                with mock.patch.object(provider_pexels.requests, "get", return_value=response):
+                    with self.assertRaisesRegex(
+                        RuntimeError,
+                        "No acceptable Pexels candidates found",
+                    ):
+                        provider_pexels.search_and_download(
+                            query="city skyline",
+                            output_dir=tmpdir,
+                            filename="hero.jpg",
+                        )
+
     def test_search_and_download_downloads_selected_image_and_returns_manifest(self):
         response = mock.Mock()
         response.raise_for_status.return_value = None
@@ -148,6 +178,35 @@ class PixabayProviderTests(unittest.TestCase):
         response = mock.Mock()
         response.raise_for_status.return_value = None
         response.json.return_value = {"hits": []}
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with mock.patch.dict(os.environ, {"PIXABAY_API_KEY": "pixabay-key"}, clear=True):
+                with mock.patch.object(provider_pixabay.requests, "get", return_value=response):
+                    with self.assertRaisesRegex(
+                        RuntimeError,
+                        "No acceptable Pixabay candidates found",
+                    ):
+                        provider_pixabay.search_and_download(
+                            query="forest trail",
+                            output_dir=tmpdir,
+                            filename="hero.jpg",
+                        )
+
+    def test_search_and_download_raises_clear_error_when_all_results_are_unusable(self):
+        response = mock.Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "hits": [
+                {
+                    "id": 21,
+                    "pageURL": "https://pixabay.com/photos/forest-trail-21/",
+                    "user": "John Doe",
+                    "tags": "forest trail, nature",
+                    "imageWidth": 2400,
+                    "imageHeight": 1600,
+                }
+            ]
+        }
 
         with tempfile.TemporaryDirectory() as tmpdir:
             with mock.patch.dict(os.environ, {"PIXABAY_API_KEY": "pixabay-key"}, clear=True):

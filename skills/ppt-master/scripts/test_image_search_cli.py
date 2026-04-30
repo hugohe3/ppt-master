@@ -1,8 +1,10 @@
 import importlib
 import json
+import io
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from pathlib import Path
 from unittest import mock
 
@@ -77,6 +79,15 @@ class ImageSearchCliTests(unittest.TestCase):
         self.assertEqual(
             tuple(provider_action.choices),
             ("openverse", "wikimedia", "pexels", "pixabay"),
+        )
+
+    def test_parser_choices_match_provider_registry(self):
+        parser = self.image_search.build_parser()
+        provider_action = parser._option_string_actions["--provider"]
+
+        self.assertEqual(
+            tuple(provider_action.choices),
+            tuple(self.image_search.PROVIDER_REGISTRY),
         )
 
     def test_parser_defaults_orientation_and_provider(self):
@@ -195,17 +206,18 @@ class ImageSearchCliTests(unittest.TestCase):
             "City skyline - by Example Author - CC BY 4.0",
         )
 
-    def test_main_raises_when_selected_provider_module_is_unavailable(self):
+    def test_main_returns_cli_error_when_selected_provider_module_is_unavailable(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = Path(tmpdir) / "images"
+            stderr = io.StringIO()
 
             with mock.patch.object(
                 self.image_search,
                 "load_provider",
                 side_effect=ModuleNotFoundError("missing provider"),
             ):
-                with self.assertRaises(ModuleNotFoundError):
-                    self.image_search.main(
+                with redirect_stderr(stderr):
+                    exit_code = self.image_search.main(
                         [
                             "city skyline",
                             "--filename",
@@ -218,7 +230,69 @@ class ImageSearchCliTests(unittest.TestCase):
                     )
 
             manifest_path = output_dir / "image_sources.json"
+            self.assertEqual(exit_code, 1)
+            self.assertIn("Provider 'openverse' is unavailable", stderr.getvalue())
             self.assertFalse(manifest_path.exists())
+
+    def test_main_returns_cli_error_when_provider_search_fails(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir) / "images"
+            stderr = io.StringIO()
+            provider = mock.Mock()
+            provider.search_and_download.side_effect = RuntimeError(
+                "No acceptable Pexels candidates found for query: city skyline"
+            )
+
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ):
+                with redirect_stderr(stderr):
+                    exit_code = self.image_search.main(
+                        [
+                            "city skyline",
+                            "--filename",
+                            "hero.jpg",
+                            "--output",
+                            str(output_dir),
+                            "--provider",
+                            "pexels",
+                        ]
+                    )
+
+            manifest_path = output_dir / "image_sources.json"
+            self.assertEqual(exit_code, 1)
+            self.assertIn(
+                "Image search failed for provider 'pexels': "
+                "No acceptable Pexels candidates found for query: city skyline",
+                stderr.getvalue(),
+            )
+            self.assertFalse(manifest_path.exists())
+
+    def test_main_still_propagates_unexpected_errors(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_dir = Path(tmpdir) / "images"
+            provider = mock.Mock()
+            provider.search_and_download.side_effect = ValueError("unexpected")
+
+            with mock.patch.object(
+                self.image_search,
+                "load_provider",
+                return_value=provider,
+            ):
+                with self.assertRaises(ValueError):
+                    self.image_search.main(
+                        [
+                            "city skyline",
+                            "--filename",
+                            "hero.jpg",
+                            "--output",
+                            str(output_dir),
+                            "--provider",
+                            "openverse",
+                        ]
+                    )
 
 
 if __name__ == "__main__":
