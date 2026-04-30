@@ -40,6 +40,8 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
 
 > **Animations** — exported decks support **page transitions** and **per-element entrance animations** as real OOXML, not embedded video. By default, elements cascade in automatically on slide entry — no clicking needed. Plays natively in PowerPoint and Keynote, no extra tooling. See [Animations & Transitions →](./skills/ppt-master/references/animations.md).
 
+> **Narration & Video** — generate per-slide voice narration from the speaker notes (90+ locales via `edge-tts`), embed the audio back into the PPTX, and let PowerPoint export the deck as an MP4 video — synced narration + transitions, no third-party tools. See [Audio Narration & Video Export →](./docs/audio-narration.md).
+
 > **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
 >
 > **What you'll do**: install Python, install an AI IDE, drop in your material.
@@ -239,6 +241,7 @@ Multiple backends are supported across Core / Extended / Experimental tiers. Run
 | 🎨 | [Create a Custom Template](./skills/ppt-master/workflows/create-template.md) | Standalone workflow for building your own brand or industry template |
 | 📐 | [Canvas Formats](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9, Xiaohongshu, WeChat, and 10+ formats |
 | 🎬 | [Animations & Transitions](./skills/ppt-master/references/animations.md) | Page transitions and per-element entrance animations |
+| 🎙️ | [Audio Narration & Video Export](./docs/audio-narration.md) | TTS narration in 90+ locales, embed audio, export as MP4 |
 | 🛠️ | [Scripts & Tools](./skills/ppt-master/scripts/README.md) | All scripts and commands |
 | 💼 | [Examples](./examples/README.md) | 22 projects, 309 pages |
 | 🏗️ | [Technical Design](./docs/technical-design.md) | Architecture, design philosophy, why SVG |
