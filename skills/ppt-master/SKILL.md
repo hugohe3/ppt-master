@@ -336,11 +336,10 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-**Step 7.4: SVG Editor (Optional)**
+**Step 7.4: SVG Editor — MUST execute**
 
-After PPTX export, offer the SVG editor to the user for targeted editing.
+After PPTX export, **MUST** start the SVG editor for the user:
 
-To start the editor, run in the background:
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 ```
@@ -348,6 +347,8 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 Then tell the user:
 > SVG 编辑器已启动，请在浏览器打开: http://localhost:5000
 > 在浏览器中选择元素并添加批注，完成后在编辑器中点击"保存"，然后回来告诉我。
+
+**❌ NEVER skip Step 7.4.** After PPTX export, always start the editor. Do not ask the user whether they want it — just start it. The user decides whether to use it or ignore it.
 
 **Edit Loop (When User Requests Annotation-Based Editing):**
 
