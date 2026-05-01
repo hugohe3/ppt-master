@@ -28,18 +28,18 @@ Every accepted image is classified into one of two tiers. Anything else is rejec
 
 ---
 
-## 2. Two-Stage Search Strategy
+## 2. Search Strategy
 
-Default: prefer no-attribution images so the deck stays visually clean. Fall back to attribution-required only when the public domain has no match.
+Default: quality-first across all allowed license tiers. Do not prefer CC0 / Public Domain over a better CC BY / CC BY-SA image; rely on the manifest's `license_tier` so Executor can add attribution only when needed.
 
 ```
-Stage 1: ALL providers, license filter = cc0,pdm,pexels,pixabay
-         → first hit wins, done.
-Stage 2: ALL providers, license filter += cc by, cc by-sa
-         → flag chosen item as attribution-required.
+Default: provider chain, license filter = cc0,pdm,pexels,pixabay,cc by,cc by-sa
+         → rank candidates across providers; first downloadable ranked hit wins.
+Strict:  provider chain, license filter = cc0,pdm,pexels,pixabay
+         → fail if no no-attribution image can be downloaded.
 ```
 
-`--strict-no-attribution` skips Stage 2 and exits non-zero if Stage 1 finds nothing. Use when the deck cannot tolerate any on-slide credit (corporate template, full-bleed hero).
+`--strict-no-attribution` is opt-in. Use it only when the deck cannot tolerate any on-slide credit (corporate template, full-bleed hero).
 
 ---
 
@@ -102,7 +102,7 @@ python3 scripts/image_search.py "<query>" \
 | `--purpose` | no | `""` | `background` / `hero` / `side` / `accent` |
 | `--orientation` | no | `any` | `any` / `landscape` / `portrait` / `square` |
 | `--provider` | no | (chain) | Pin one provider |
-| `--strict-no-attribution` | no | off | Skip Stage 2; refuse CC BY / CC BY-SA |
+| `--strict-no-attribution` | no | off | Restrict to no-attribution licenses; refuse CC BY / CC BY-SA |
 | `--manifest` | no | (default) | Override manifest path |
 
 **Pacing (mandatory)**: one search at a time. Wikimedia/Openverse expect identifying User-Agent and reasonable rate (~1 req/sec). Default pacing is fine.
@@ -125,7 +125,7 @@ Every successful download appends or replaces one entry keyed on `filename`:
       "search_query": "executive boardroom meeting",
       "orientation": "landscape",
       "provider": "openverse",
-      "stage": "no-attribution-only",
+      "stage": "all",
       "title": "Untitled",
       "author": "",
       "source_page_url": "https://www.rawpixel.com/...",
@@ -155,7 +155,7 @@ Every successful download appends or replaces one entry keyed on `filename`:
 | `license_tier` | Drives Executor's attribution decision. Only `no-attribution` / `attribution-required`. |
 | `attribution_required` | Boolean alias of `license_tier == "attribution-required"`. |
 | `attribution_text` | Pre-rendered canonical credit string. **Use as-is; do not regenerate.** |
-| `stage` | `no-attribution-only` or `all`. Useful for auditing fallbacks. |
+| `stage` | `all` by default, or `no-attribution-only` when strict mode is used. |
 
 > Manifest is **idempotent on `filename`**. Rerunning the CLI replaces that entry; other entries are preserved.
 
@@ -237,6 +237,8 @@ Executor reads `image_sources.json` per slide that uses a Sourced image. For eac
 
 Executor does not interpret raw license strings — `license_tier` is sufficient.
 
+`svg_quality_checker.py` verifies this handoff before post-processing: if an attribution-required image is referenced without visible `CC BY` / `CC BY-SA` credit text, the SVG fails the quality gate.
+
 ---
 
 ## 11. Task Completion Checkpoint
@@ -245,5 +247,6 @@ In addition to the shared checkpoint in [`image-base.md`](./image-base.md) §10:
 
 - [ ] Every web row has a downloaded file at `project/images/<filename>` OR is marked `Needs-Manual`
 - [ ] Each `Sourced` row has a manifest entry with valid `license_tier` and non-empty `attribution_text`
+- [ ] Any `attribution-required` image has visible inline credit text in the corresponding SVG
 - [ ] `metadata_dimensions` warnings surfaced when downloaded preview is much smaller than upstream-claimed size
 - [ ] `Needs-Manual` rows include the failure reason

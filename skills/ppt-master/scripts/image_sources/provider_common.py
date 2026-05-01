@@ -367,11 +367,6 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
 
     score = relevance * 10000.0
 
-    # No-attribution preference is a tie-breaker, not a steamroller —
-    # keeping it small lets a strongly-relevant CC BY beat an irrelevant CC0.
-    if candidate.license_tier == LICENSE_TIER_NO_ATTRIBUTION:
-        score += 500.0
-
     candidate_orientation = normalize_orientation(candidate.width, candidate.height)
     requested = (request.orientation or "").strip().lower()
     if requested:

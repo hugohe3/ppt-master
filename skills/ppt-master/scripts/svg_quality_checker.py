@@ -12,6 +12,8 @@ Usage:
 
 import sys
 import re
+import json
+import html
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import defaultdict
@@ -65,6 +67,7 @@ class SVGQualityChecker:
             'sizes': defaultdict(set),
         }
         self._lock_seen = False  # True once we locate at least one spec_lock.md
+        self._source_manifest_cache: Dict[Path, Dict] = {}
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
         """
@@ -126,6 +129,9 @@ class SVGQualityChecker:
 
                 # 7. Check spec_lock drift (colors / font-family / font-size)
                 self._check_spec_lock_drift(content, svg_path, result)
+
+                # 8. Check web-sourced image attribution
+                self._check_sourced_image_attribution(content, svg_path, result)
 
             # Determine pass/fail
             result['passed'] = len(result['errors']) == 0
@@ -567,6 +573,70 @@ class SVGQualityChecker:
                 f"spec_lock drift: {', '.join(parts)} not in spec_lock.md "
                 "(see drift summary for details)"
             )
+
+    def _find_image_sources_manifest(self, svg_path: Path) -> Path | None:
+        """Locate image_sources.json for a project SVG.
+
+        Quality checks run primarily on <project>/svg_output/*.svg, but this
+        also supports SVGs checked from project root or svg_final.
+        """
+        bases = (svg_path.parent, svg_path.parent.parent, svg_path.parent.parent.parent)
+        for base in bases:
+            candidate = base / 'images' / 'image_sources.json'
+            if candidate.exists():
+                return candidate
+        return None
+
+    def _load_image_sources_manifest(self, svg_path: Path) -> Dict:
+        manifest_path = self._find_image_sources_manifest(svg_path)
+        if manifest_path is None:
+            return {}
+        if manifest_path in self._source_manifest_cache:
+            return self._source_manifest_cache[manifest_path]
+        try:
+            payload = json.loads(manifest_path.read_text(encoding='utf-8'))
+        except (OSError, json.JSONDecodeError):
+            payload = {}
+        self._source_manifest_cache[manifest_path] = payload
+        return payload
+
+    def _check_sourced_image_attribution(self, content: str, svg_path: Path, result: Dict):
+        """Require visible credit text for attribution-required web images.
+
+        image_search.py records the legal tier in images/image_sources.json;
+        Executor must render compact credit text into the SVG. This check
+        prevents a quality-first CC BY / CC BY-SA image from silently reaching
+        export without attribution.
+        """
+        manifest = self._load_image_sources_manifest(svg_path)
+        items = manifest.get('items') or []
+        if not items:
+            return
+
+        text_content = html.unescape(re.sub(r'<[^>]+>', ' ', content))
+        text_content = re.sub(r'\s+', ' ', text_content)
+        svg_stem = svg_path.stem
+
+        for item in items:
+            if not item.get('attribution_required') and item.get('license_tier') != 'attribution-required':
+                continue
+
+            filename = Path(str(item.get('filename') or '')).name
+            slide = str(item.get('slide') or '').strip()
+            referenced = bool(filename and filename in content)
+            same_slide = bool(slide and slide == svg_stem)
+            if not referenced and not same_slide:
+                continue
+
+            license_name = str(item.get('license_name') or '').upper()
+            license_token = 'CC BY-SA' if 'BY-SA' in license_name else 'CC BY'
+            has_credit = license_token in text_content.upper()
+            if not has_credit:
+                result['errors'].append(
+                    f"Missing inline attribution for sourced image {filename or '(unknown)'} "
+                    f"({license_token}). Add compact credit text per "
+                    f"references/image-searcher.md §7."
+                )
 
     @staticmethod
     def _normalize_size(value: str) -> str:

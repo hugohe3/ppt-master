@@ -223,7 +223,7 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 **A) AI 生图** — `image_gen.py`。`cp .env.example .env`，设置 `IMAGE_BACKEND` 和对应 `*_API_KEY`（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等），流程会自动调用。`python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整后端清单。`gpt-image-2` 目前综合质量最佳。
 
-**B) 网络图片搜索** — `image_search.py`。**零配置**、无需 API Key。在 Openverse 和 Wikimedia Commons 中搜索开放许可可商用图片；默认只搜 CC0 / 公有领域以保持视觉干净。只有公有领域找不到合适图时才回落到 CC BY / CC BY-SA，并由 Executor 在该幻灯片自动添加小字署名。可选的 `PEXELS_API_KEY` / `PIXABAY_API_KEY`（都免费申请）能扩展搜索范围。
+**B) 网络图片搜索** — `image_search.py`。**零配置**、无需 API Key。在 Openverse 和 Wikimedia Commons 中搜索开放许可可商用图片；如果配置了 `PEXELS_API_KEY` / `PIXABAY_API_KEY`（都免费申请），默认搜索链会继续追加 Pexels / Pixabay。默认以图片质量和匹配度优先，直接把 CC0、公有领域、Pexels / Pixabay 免署名许可、CC BY、CC BY-SA 一起纳入候选；如果选中的图片需要署名，Executor 会在该幻灯片自动添加小字署名。只有明确不能出现署名时，才使用 `--strict-no-attribution` 限制为免署名图片。注意：网络搜索图片适合作为快速兜底，但画质、尺寸、构图和主题匹配度取决于开放图库本身，整体质量通常不如用户自带高清素材或 AI 生图；对视觉要求高的封面、产品图、人物图和品牌场景，建议优先提供原始图片或使用 AI 生图。
 
 > 完整说明：[`image-generator.md`](./skills/ppt-master/references/image-generator.md)（AI）·[`image-searcher.md`](./skills/ppt-master/references/image-searcher.md)（网络）。
 

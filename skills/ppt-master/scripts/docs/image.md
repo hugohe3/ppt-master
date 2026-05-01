@@ -105,11 +105,10 @@ Providers (Openverse and Wikimedia work with no key; Pexels and Pixabay are opti
 
 Default search chain (when `--provider` is unset): zero-config providers first, then keyed providers whose API key is set in the environment. Keyed providers without a key are silently skipped.
 
-Two-stage license filter:
+License filter:
 
-- **Stage 1 (default)**: search all providers with `cc0,pdm,pexels,pixabay` filter — no on-slide attribution needed.
-- **Stage 2 (fallback)**: re-run with `cc by, cc by-sa` added; the chosen image is flagged `attribution-required` so the Executor adds an inline credit on the slide.
-- `--strict-no-attribution` skips Stage 2 — useful for full-bleed hero images or templates that cannot host a credit element.
+- **Default**: search all providers with `cc0,pdm,pexels,pixabay,cc by,cc by-sa` allowed together. The chosen image may be `no-attribution` or `attribution-required`; Executor adds an inline credit only when needed.
+- `--strict-no-attribution` restricts the search to `cc0,pdm,pexels,pixabay` — useful for full-bleed hero images or templates that cannot host a credit element.
 
 Pin a provider, refuse attribution, or override the manifest path:
 
@@ -119,7 +118,7 @@ python3 scripts/image_search.py "Olympics opening ceremony" \
   --filename event.jpg --provider wikimedia \
   --orientation landscape -o projects/demo/images
 
-# Strict mode — refuse CC BY / CC BY-SA, fail rather than fall back
+# Strict mode — refuse CC BY / CC BY-SA
 python3 scripts/image_search.py "abstract gradient" \
   --filename hero.jpg --strict-no-attribution \
   -o projects/demo/images

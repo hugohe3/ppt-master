@@ -7,21 +7,20 @@ single best match.
 
 Workflow:
     1. Build an :class:`ImageSearchRequest` from CLI args.
-    2. Two-stage license-tier search:
-       - Stage 1: ask each provider for ``no-attribution-only`` matches
-         (CC0, Public Domain, Pexels, Pixabay). If any provider returns
-         candidates, pick the highest-scoring one and stop.
-       - Stage 2 (only if stage 1 yielded nothing AND
-         ``--strict-no-attribution`` was NOT set): retry with the ``all``
-         filter, accepting CC BY / CC BY-SA. The chosen image is recorded
-         with ``license_tier == "attribution-required"`` so the Executor
-         knows to add an inline credit on the slide.
+    2. Quality-first license search:
+       - Default: ask each provider for ``all`` allowed matches (CC0,
+         Public Domain, Pexels, Pixabay, CC BY, CC BY-SA), pick the
+         highest-scoring downloadable candidate, and record whether it
+         needs attribution.
+       - Strict mode: when ``--strict-no-attribution`` is set, ask only
+         for ``no-attribution-only`` matches and fail if none can be
+         downloaded.
     3. Download the chosen image into ``--output``.
     4. Append a record to ``image_sources.json`` (the single source of
        truth for downstream credit rendering).
 
 Examples:
-    # Default: zero-config, prefers no-attribution images
+    # Default: zero-config, quality-first across allowed licenses
     python3 scripts/image_search.py "offshore wind farm" \
         --filename cover_bg.jpg --slide 01_cover \
         --orientation landscape -o projects/demo/images
@@ -116,8 +115,8 @@ def _load_provider(name: str):
 
 
 def _is_keyed_provider_unconfigured(provider_name: str, exc: Exception) -> bool:
-    """Treat 'API key missing' as a non-fatal skip (so default fallback
-    can keep going through the other providers)."""
+    """Treat 'API key missing' as a non-fatal skip so the default provider
+    chain can keep going."""
     if provider_name not in KEYED_PROVIDERS:
         return False
     return "API_KEY" in str(exc)
@@ -147,7 +146,7 @@ def _try_provider(
         return None
 
 
-def two_stage_search(
+def search_and_download(
     providers: list[str],
     request: ImageSearchRequest,
     *,
@@ -156,55 +155,62 @@ def two_stage_search(
 ) -> tuple[Optional[AssetCandidate], Optional[str], Optional[str]]:
     """Find a candidate AND successfully download it.
 
-    Iterates ``stages × providers × ranked candidates`` and returns the
-    first candidate whose ``download_url`` actually transfers. A candidate
-    that 403s, 404s, or otherwise fails to download is skipped and the
-    next-best one is tried — so a single dead asset cannot fail the whole
-    request.
+    Iterates ``filters × providers``, ranks all candidates returned in the
+    same filter globally, then returns the first candidate whose
+    ``download_url`` actually transfers. A candidate that 403s, 404s, or
+    otherwise fails to download is skipped and the next-best one is tried —
+    so a single dead asset cannot fail the whole request.
 
     Returns ``(candidate, provider_name, stage)`` for the successfully
     downloaded image, or ``(None, None, None)`` if every combination
     failed.
     """
-    stages: list[str] = ["no-attribution-only"]
-    if not strict_no_attribution:
-        stages.append("all")
+    license_filters: list[str] = (
+        ["no-attribution-only"] if strict_no_attribution else ["all"]
+    )
 
-    for stage in stages:
+    for stage in license_filters:
+        ranked: list[tuple[float, str, AssetCandidate]] = []
         for provider_name in providers:
             print(f"  -> trying {provider_name} ({stage}) ...", file=sys.stderr)
             candidates = _try_provider(provider_name, request, stage)
             if not candidates:
                 continue
 
-            # Score and rank; drop candidates rejected by score_candidate
+            # Score candidates; drop candidates rejected by score_candidate
             # (score == -inf — typically zero relevance against the query).
-            scored = [(score_candidate(c, request), c) for c in candidates]
-            ranked = [
-                c for s, c in sorted(scored, key=lambda sc: sc[0], reverse=True)
-                if s != float("-inf")
+            provider_ranked = [
+                (score_candidate(c, request), provider_name, c) for c in candidates
             ]
-            if not ranked:
+            provider_ranked = [
+                item for item in provider_ranked if item[0] != float("-inf")
+            ]
+            if not provider_ranked:
                 print(
                     f"    no candidate matched the query; trying next provider/stage",
                     file=sys.stderr,
                 )
                 continue
+            ranked.extend(provider_ranked)
 
-            for candidate in ranked:
-                try:
-                    download_image(
-                        candidate.download_url,
-                        str(output_path),
-                        headers={"User-Agent": USER_AGENT},
-                    )
-                    return candidate, provider_name, stage
-                except (requests.RequestException, OSError, RuntimeError, ValueError) as exc:
-                    print(
-                        f"    download failed for {candidate.title!r}: {exc}",
-                        file=sys.stderr,
-                    )
-                    continue
+        for _score, provider_name, candidate in sorted(
+            ranked,
+            key=lambda item: item[0],
+            reverse=True,
+        ):
+            try:
+                download_image(
+                    candidate.download_url,
+                    str(output_path),
+                    headers={"User-Agent": USER_AGENT},
+                )
+                return candidate, provider_name, stage
+            except (requests.RequestException, OSError, RuntimeError, ValueError) as exc:
+                print(
+                    f"    download failed for {candidate.title!r}: {exc}",
+                    file=sys.stderr,
+                )
+                continue
 
     return None, None, None
 
@@ -392,8 +398,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--strict-no-attribution",
         action="store_true",
         help=(
-            "Refuse CC BY / CC BY-SA results. If no CC0/Public Domain match is "
-            "found, exit non-zero rather than falling back to attribution-required."
+            "Refuse CC BY / CC BY-SA results. If no attribution-free match is "
+            "downloadable, exit non-zero."
         ),
     )
     parser.add_argument(
@@ -436,7 +442,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     output_path = output_dir / args.filename
 
     print(f"Searching providers: {', '.join(providers)}", file=sys.stderr)
-    candidate, provider_name, stage = two_stage_search(
+    candidate, provider_name, stage = search_and_download(
         providers,
         request,
         output_path=output_path,
@@ -446,8 +452,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     if candidate is None:
         print(
             "No acceptable candidates could be downloaded across all "
-            "providers/stages. Try a shorter query, drop "
-            "--strict-no-attribution, or set an API key for a keyed provider.",
+            "providers/filters. Try a shorter query, use default attribution "
+            "mode if strict mode is enabled, or set an API key for a keyed provider.",
             file=sys.stderr,
         )
         return 1

@@ -259,6 +259,8 @@ The credit text is **not** rendered by post-processing or export — it must be 
 
 Use `attribution_text` from the manifest entry as the **starting point**, then compress for the small-text constraint (drop URL, drop filename, keep "via Provider / License"). For CC0/PD images that landed in the `attribution-required` tier only because of upstream metadata quirks (rare), credits are still safe to render.
 
+`svg_quality_checker.py` treats missing CC BY / CC BY-SA inline attribution as an **error**. Fix the offending SVG before post-processing.
+
 **The manifest is the single source of truth for credits.** Do not duplicate license info into speaker notes or any other artifact.
 
 ---
