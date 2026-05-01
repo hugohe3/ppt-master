@@ -186,6 +186,9 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         if not isinstance(element_id, str) or not isinstance(annotation, str):
             return jsonify({'error': 'element_id and annotation must be strings'}), 400
 
+        if len(element_id) > 200:
+            return jsonify({'error': 'element_id too long (max 200 chars)'}), 400
+
         if len(annotation) > 10000:
             return jsonify({'error': 'Annotation too long (max 10000 chars)'}), 400
 
@@ -231,6 +234,11 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
                 continue
 
             assign_temp_ids(root)
+
+            # Clear all existing annotations from the file before writing current state
+            for elem in root.iter():
+                elem.attrib.pop('data-edit-target', None)
+                elem.attrib.pop('data-edit-annotation', None)
 
             for element_id, annotation_text in anns.items():
                 set_annotation(root, element_id, annotation_text)
