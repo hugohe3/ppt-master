@@ -8,35 +8,42 @@ Technical spec and workflow for adding images to SVG files.
 
 ## Image Resource List Format
 
-Defined in the Design Specification & Content Outline; each image carries a status annotation. This file is authoritative for status names and SVG embedding behavior. If image approach includes "B) User-provided": run `analyze_images.py` right after the Eight Confirmations and complete the list before outputting the design spec.
+Defined in the Design Specification & Content Outline; each image carries an `Acquire Via` field plus a status annotation. This file is authoritative for status names and SVG embedding behavior. If image approach includes "B) User-provided": run `analyze_images.py` right after the Eight Confirmations and complete the list before outputting the design spec.
 
 ```markdown
-| Filename | Dimensions | Purpose | Type | Status | Generation Description |
-|----------|------------|---------|------|--------|------------------------|
-| cover_bg.png | 1280x720 | Cover background | Background | Pending | Modern tech abstract background, deep blue gradient |
-| product.png | 600x400 | Page 3 product photo | Photography | Existing | - |
-| team.png | 600x400 | Page 5 team scene | Illustration | Placeholder | Team collaboration scene to be added later |
+| Filename | Dimensions | Purpose | Type | Acquire Via | Status | Reference |
+|----------|------------|---------|------|-------------|--------|-----------|
+| cover_bg.png | 1280x720 | Cover background | Background | ai | Pending | Modern tech abstract, deep blue gradient |
+| team.jpg | 800x600 | Team photo | Photography | web | Pending | Diverse engineering team in modern office |
+| product.png | 600x400 | Page 3 product photo | Photography | user | Existing | - |
+| chart.png | 600x400 | Page 5 placeholder | Illustration | placeholder | Placeholder | Team collaboration scene to be added later |
 ```
 
 ### Image Status Enum
 
 | Status | Meaning | Executor Handling |
 |--------|---------|-------------------|
-| **Pending** | Needs AI generation, has generation description | Image_Generator attempts generation before Executor; must not remain after Step 5 |
-| **Generated** | AI-generated file exists at expected path | Reference directly from `../images/` |
-| **Needs-Manual** | Generation attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
-| **Existing** | User already has image | Place in `images/`, reference with `<image>` |
-| **Placeholder** | Intentionally not prepared yet | Dashed border placeholder; replace later |
+| **Pending** | Acquisition needed (`Acquire Via: ai` or `web`); not yet attempted | Image Acquisition Phase (Step 5) consumes this; must not remain after Step 5 |
+| **Generated** | AI-generated file exists at expected path | Reference from `../images/`; no on-slide credit needed |
+| **Sourced** | Web-sourced file exists at expected path | Reference from `../images/`; check `image_sources.json` for `license_tier` — if `attribution-required`, render an inline credit element on the slide (see [executor-base.md §6](./executor-base.md) and [image-searcher.md §7](./image-searcher.md) for the visual spec) |
+| **Needs-Manual** | Acquisition attempted once + one retry, failed | Dashed placeholder unless user has manually supplied the file |
+| **Existing** | User already has image (`Acquire Via: user`) | Place in `images/`, reference with `<image>` |
+| **Placeholder** | Intentionally not prepared yet (`Acquire Via: placeholder`) | Dashed border placeholder; replace later |
 
 ---
 
 ## Workflow
 
 ```
-1. Strategist defines image needs → Add image resource list, annotate each status
-2. Image preparation (Pending / Existing) → Place available files in project/images/
+1. Strategist defines image needs → Add image resource list with Acquire Via + Status per row
+2. Image Acquisition (Step 5):
+   - Pending + ai  → Image_Generator runs image_gen.py     → Generated
+   - Pending + web → Image_Searcher runs image_search.py   → Sourced
+   - user / placeholder rows are skipped
 3. Executor generates SVGs (svg_output/)
    ├── Existing / Generated → <image href="../images/xxx.png" .../>
+   ├── Sourced + license_tier=no-attribution → <image href=...> only
+   ├── Sourced + license_tier=attribution-required → <image href=...> + small <text> credit element on the slide
    └── Placeholder / Needs-Manual without file → Dashed border + description text
 4. Preview: python3 -m http.server -d <project_path> 8000 → /svg_output/<filename>.svg
 5. Post-processing & Export → follow shared-standards.md §5

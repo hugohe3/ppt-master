@@ -204,30 +204,43 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 ---
 
-### Step 5: Image_Generator Phase (Conditional)
+### Step 5: Image Acquisition Phase (Conditional)
 
 🚧 **GATE**: Step 4 complete; Design Specification & Content Outline generated and user confirmed.
 
-> **Trigger**: Image approach includes "AI generation". Otherwise skip to Step 6.
+> **Trigger**: At least one row in the resource list has `Acquire Via: ai` and/or `Acquire Via: web`. If every row is `user` or `placeholder`, skip to Step 6.
 
-Read `references/image-generator.md`
+**Always load the common framework**:
 
-1. Extract all images with status `Pending` from the design spec
-2. Generate prompt document → `<project_path>/images/image_prompts.md`
-3. Generate images (CLI tool recommended):
-   ```bash
-   python3 ${SKILL_DIR}/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
-   ```
-
-**✅ Checkpoint — Confirm image generation attempted for every row, proceed to Step 6**:
-```markdown
-## ✅ Image_Generator Phase Complete
-- [x] Prompt document created
-- [x] Each image: status is either `Generated` (file present in images/) or `Needs-Manual` (reported to user with filename + reason)
-- [x] No row remains `Pending`
+```
+Read references/image-base.md
 ```
 
-> On generation failure, do NOT halt — follow the Failure Handling rule in `references/image-generator.md` §4.3: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
+Then **lazy-load the path-specific reference** for each row that actually needs it:
+
+| Acquire Via | Load reference (only if any such row exists) | Run |
+|---|---|---|
+| `ai` | `references/image-generator.md` | `python3 ${SKILL_DIR}/scripts/image_gen.py ...` |
+| `web` | `references/image-searcher.md` | `python3 ${SKILL_DIR}/scripts/image_search.py ...` |
+| `user` / `placeholder` | (skip) | (skip) |
+
+A deck with only `ai` rows never loads `image-searcher.md`; a deck with only `web` rows never loads `image-generator.md`. A mixed deck loads both, processes each row through its own path, and writes both `image_prompts.md` and `image_sources.json`.
+
+Workflow:
+
+1. Extract all rows with `Status: Pending` and `Acquire Via ∈ {ai, web}` from the design spec
+2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](references/image-base.md) §2 dispatch table
+3. Verify every row reaches a terminal status: `Generated` (ai success), `Sourced` (web success), or `Needs-Manual`
+
+**✅ Checkpoint — Confirm acquisition attempted for every row, proceed to Step 6**:
+```markdown
+## ✅ Image Acquisition Phase Complete
+- [x] image_prompts.md created (when any ai rows processed)
+- [x] image_sources.json created (when any web rows processed)
+- [x] Each row: status is `Generated` / `Sourced` / `Needs-Manual` (no `Pending` remaining)
+```
+
+> On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
 
 ---
 
