@@ -302,12 +302,7 @@
     // ================================================================
     // 10.  Save all  -- POST /api/save-all
     // ================================================================
-    var SAVE_MODAL_MSG =
-        "标注已保存到 SVG 文件。\n\n" +
-        "请回到你的 AI IDE，输入：\n" +
-        "\"读取标注并修改\"\n\n" +
-        "AI 会运行 check_annotations.py 检测标注并执行修改。\n" +
-        "修改完成后会询问你是否需要继续标注。";
+    var SAVE_MODAL_MSG = "标注已提交\n请告诉AI你已经提交标注，继续修改";
 
     btnSave.addEventListener("click", function () {
         fetch("/api/save-all", {
