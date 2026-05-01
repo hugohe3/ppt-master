@@ -1,6 +1,6 @@
 # Image Tools
 
-Image tools cover prompt-based generation, image inspection, and Gemini watermark removal.
+Image tools cover prompt-based AI generation, web image search, image inspection, and Gemini watermark removal.
 
 ## `image_gen.py`
 
@@ -83,6 +83,57 @@ python3 scripts/analyze_images.py <project_path>/images
 ```
 
 Use this instead of opening image files directly when following the project workflow.
+
+## `image_search.py`
+
+Zero-config web image search across openly-licensed providers. Sister tool to `image_gen.py` — used when the resource list row has `Acquire Via: web`.
+
+```bash
+python3 scripts/image_search.py "offshore wind farm" \
+  --filename cover_bg.jpg --slide 01_cover \
+  --orientation landscape -o projects/demo/images
+```
+
+Providers (Openverse and Wikimedia work with no key; Pexels and Pixabay are optional):
+
+| Provider | Config | Strength |
+|---|---|---|
+| `openverse` | zero-config | aggregator: Wikimedia + Flickr + museums + rawpixel |
+| `wikimedia` | zero-config | educational, scientific, geographic, historical |
+| `pexels` | needs `PEXELS_API_KEY` | modern stock photography |
+| `pixabay` | needs `PIXABAY_API_KEY` | broad type coverage including illustrations |
+
+Default search chain (when `--provider` is unset): zero-config providers first, then keyed providers whose API key is set in the environment. Keyed providers without a key are silently skipped.
+
+Two-stage license filter:
+
+- **Stage 1 (default)**: search all providers with `cc0,pdm,pexels,pixabay` filter — no on-slide attribution needed.
+- **Stage 2 (fallback)**: re-run with `cc by, cc by-sa` added; the chosen image is flagged `attribution-required` so the Executor adds an inline credit on the slide.
+- `--strict-no-attribution` skips Stage 2 — useful for full-bleed hero images or templates that cannot host a credit element.
+
+Pin a provider, refuse attribution, or override the manifest path:
+
+```bash
+# Pin Wikimedia
+python3 scripts/image_search.py "Olympics opening ceremony" \
+  --filename event.jpg --provider wikimedia \
+  --orientation landscape -o projects/demo/images
+
+# Strict mode — refuse CC BY / CC BY-SA, fail rather than fall back
+python3 scripts/image_search.py "abstract gradient" \
+  --filename hero.jpg --strict-no-attribution \
+  -o projects/demo/images
+```
+
+Output:
+
+- Image saved to the specified output directory (auto-converts webp → jpg via Pillow when the filename extension demands)
+- `image_sources.json` manifest with full provenance (provider, license, license_tier, author, source URL, dimensions, attribution_text)
+- Manifest is idempotent on `filename` — rerunning replaces that entry only
+
+Allowed licenses (default): CC0, Public Domain, Pexels License, Pixabay Content License, CC BY, CC BY-SA. Auto-rejected: CC BY-NC, CC BY-ND, CC BY-NC-SA, CC BY-NC-ND, all rights reserved, unknown.
+
+The full role-level reference (intent → query translation, on-slide attribution visual specification) is in [`references/image-searcher.md`](../../references/image-searcher.md).
 
 ## `gemini_watermark_remover.py`
 

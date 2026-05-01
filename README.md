@@ -213,21 +213,15 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 > **Something went wrong?** Check the **[FAQ](./docs/faq.md)** — it covers model selection, layout issues, export problems, and more. Continuously updated from real user reports.
 
-### 5. AI Image Generation (Optional)
+### 5. Image Acquisition (Optional)
 
-```bash
-cp .env.example .env    # then edit with your API key
-```
+Two paths for non-user images, mixable per row in the same deck:
 
-```env
-IMAGE_BACKEND=openai                        # required — must be set explicitly
-OPENAI_API_KEY=sk-xxx
-OPENAI_MODEL=gpt-image-2
-```
+**A) AI generation** — `image_gen.py`. Copy `.env.example` to `.env`, set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
 
-Multiple backends are supported across Core / Extended / Experimental tiers. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` to see the full list. Environment variables override `.env`. Use provider-specific keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.) — global `IMAGE_API_KEY` is not supported.
+**B) Web image search** — `image_search.py`. **Zero-config**, no API key. Searches openly-licensed images across Openverse and Wikimedia Commons; defaults to CC0 / Public Domain so the deck stays clean. Falls back to CC BY / CC BY-SA only when nothing in the public domain matches — Executor then adds a small inline credit on those slides. Optional `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) broaden the chain.
 
-> **Tip:** `gpt-image-2` currently delivers the best overall quality. Gemini is also supported — download full size and remove the watermark with `scripts/gemini_watermark_remover.py`.
+> Full reference: [`image-generator.md`](./skills/ppt-master/references/image-generator.md) (AI) · [`image-searcher.md`](./skills/ppt-master/references/image-searcher.md) (web).
 
 ---
 

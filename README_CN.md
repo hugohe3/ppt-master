@@ -217,21 +217,15 @@ AI 全程处理——内容分析、视觉设计、SVG 生成、PPTX 导出。
 
 > **遇到问题？** 查看 **[常见问题](./docs/zh/faq.md)** — 涵盖模型选择、排版问题、导出异常等，基于真实用户反馈持续更新。
 
-### 5. AI 生图配置（可选）
+### 5. 图片获取（可选）
 
-```bash
-cp .env.example .env    # 然后填入你的 API Key
-```
+非用户自带图片有两条路径，可在同一份 deck 里按行混用：
 
-```env
-IMAGE_BACKEND=openai                        # 必填——必须显式指定
-OPENAI_API_KEY=sk-xxx
-OPENAI_MODEL=gpt-image-2
-```
+**A) AI 生图** — `image_gen.py`。`cp .env.example .env`，设置 `IMAGE_BACKEND` 和对应 `*_API_KEY`（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等），流程会自动调用。`python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整后端清单。`gpt-image-2` 目前综合质量最佳。
 
-支持多家后端，按 Core / Extended / Experimental 分级。运行 `python3 skills/ppt-master/scripts/image_gen.py --list-backends` 查看完整清单。环境变量优先于 `.env`。使用各家独立的 Key（`OPENAI_API_KEY`、`GEMINI_API_KEY` 等）——不支持全局 `IMAGE_API_KEY`。
+**B) 网络图片搜索** — `image_search.py`。**零配置**、无需 API Key。在 Openverse 和 Wikimedia Commons 中搜索开放许可可商用图片；默认只搜 CC0 / 公有领域以保持视觉干净。只有公有领域找不到合适图时才回落到 CC BY / CC BY-SA，并由 Executor 在该幻灯片自动添加小字署名。可选的 `PEXELS_API_KEY` / `PIXABAY_API_KEY`（都免费申请）能扩展搜索范围。
 
-> **建议：** `gpt-image-2` 目前综合质量最佳。Gemini 同样支持——下载 full size 后可用 `scripts/gemini_watermark_remover.py` 去水印。
+> 完整说明：[`image-generator.md`](./skills/ppt-master/references/image-generator.md)（AI）·[`image-searcher.md`](./skills/ppt-master/references/image-searcher.md)（网络）。
 
 ---
 
