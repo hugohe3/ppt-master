@@ -229,6 +229,14 @@ Multiple backends are supported across Core / Extended / Experimental tiers. Run
 
 > **Tip:** `gpt-image-2` currently delivers the best overall quality. Gemini is also supported — download full size and remove the watermark with `scripts/gemini_watermark_remover.py`.
 
+### 6. Web Image Search (Optional, Zero-Config)
+
+If you don't have an image generation API key, PPT Master can search for legally reusable images from the web at no cost — no API key required.
+
+Supported sources: **Openverse** (openly licensed images) and **Wikimedia Commons** (educational, scientific, historical imagery). Optional keyed providers (**Pexels**, **Pixabay**) offer higher quality for commercial presentations.
+
+Attribution metadata is captured automatically and written into speaker notes. See [Image Search docs](./skills/ppt-master/scripts/docs/image-search.md) for details.
+
 ---
 
 ## Documentation

@@ -30,6 +30,14 @@ PPT Master works with any AI coding agent that can read files and run shell comm
 
 Yes. PPT Master includes a built-in image generation script that supports multiple providers (Gemini, OpenAI, FLUX, Qwen, Zhipu, etc.). During the Strategist phase, if you choose "AI generation" for the image approach, the pipeline will automatically generate images based on your content. You can also provide your own images — just place them in the project's `images/` folder.
 
+## Q: Can I use web images without an API key?
+
+Yes. PPT Master supports zero-config web image sourcing from **Openverse** and **Wikimedia Commons** — no API key required. These sources provide legally reusable images under open licenses (CC BY, CC BY-SA, CC0, Public Domain).
+
+During the Strategist phase, if you don't have an image generation API key and the deck benefits from imagery, you'll be asked whether to enable web image search. Attribution metadata is captured automatically and written into speaker notes.
+
+Optional keyed providers (**Pexels**, **Pixabay**) are also available for higher quality commercial imagery — set `PEXELS_API_KEY` or `PIXABAY_API_KEY` in your `.env` to enable them.
+
 ## Q: Can I edit the generated presentations?
 
 Yes. The main `.pptx` (native PowerPoint shapes — all text, graphics, and colors directly editable without any conversion) is saved to `exports/` with a timestamp. The SVG snapshot `_svg.pptx` plus a copy of `svg_output/` (the Executor's raw SVG source) are archived to `backup/<timestamp>/`, so you can revisit the visual reference or rebuild the pptx via `finalize_svg → svg_to_pptx` without re-running the LLM. `backup/<timestamp>/` directories can be deleted manually when no longer needed. Requires **Office 2016** or later.

@@ -43,6 +43,7 @@ python3 scripts/update_repo.py
 | SVG pipeline | `finalize_svg.py`, `svg_to_pptx.py`, `total_md_split.py`, `svg_quality_checker.py`, `notes_to_audio.py` | [docs/svg-pipeline.md](./docs/svg-pipeline.md) |
 | Spec maintenance | `update_spec.py` | [docs/update_spec.md](./docs/update_spec.md) |
 | Image tools | `image_gen.py`, `analyze_images.py`, `gemini_watermark_remover.py` | [docs/image.md](./docs/image.md) |
+| Web image search | `image_search.py` | [docs/image-search.md](./docs/image-search.md) |
 | Repo maintenance | `update_repo.py` | README install/update section |
 | Troubleshooting | validation, preview, export, dependency issues | [docs/troubleshooting.md](./docs/troubleshooting.md) |
 
@@ -87,6 +88,7 @@ Image generation:
 python3 scripts/image_gen.py "A modern futuristic workspace"
 python3 scripts/image_gen.py --list-backends
 python3 scripts/analyze_images.py <project_path>/images
+python3 scripts/image_search.py "offshore wind farm" --provider openverse -o projects/demo/images --filename cover_bg.jpg --slide 01_cover --purpose "Cover background" --orientation landscape
 ```
 
 Repository update:
@@ -102,6 +104,8 @@ python3 scripts/update_repo.py --skip-pip
 - Move provider-specific or helper internals into subdirectories
 - Prefer the unified entry points `project_manager.py`, `finalize_svg.py`, and `image_gen.py`
 - Prefer `svg_final/` over `svg_output/` when exporting
+- `image_search.py`: zero-config web image sourcing with attribution metadata
+- `images/image_sources.json`: acquisition manifest for web-sourced images
 
 ## Related Docs
 
@@ -109,6 +113,7 @@ python3 scripts/update_repo.py --skip-pip
 - [Project Tools](./docs/project.md)
 - [SVG Pipeline Tools](./docs/svg-pipeline.md)
 - [Image Tools](./docs/image.md)
+- [Web Image Search](./docs/image-search.md)
 - [Troubleshooting](./docs/troubleshooting.md)
 - [Skill Entry](../SKILL.md)
 

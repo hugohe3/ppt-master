@@ -84,6 +84,30 @@ python3 scripts/analyze_images.py <project_path>/images
 
 Use this instead of opening image files directly when following the project workflow.
 
+## `image_search.py`
+
+Search legally reusable web images, filter them by license, and download them into `project/images/`.
+
+```bash
+python3 scripts/image_search.py "offshore wind farm" --provider openverse -o projects/demo/images --filename cover_bg.jpg --slide 01_cover --purpose "Cover background" --orientation landscape
+python3 scripts/image_search.py "executive team meeting" --provider wikimedia -o projects/demo/images --filename team.jpg --slide 03_team --purpose "Leadership photo" --orientation landscape
+```
+
+Zero-config providers (no API key required):
+- `openverse`
+- `wikimedia`
+
+Optional keyed providers:
+- `pexels` (requires `PEXELS_API_KEY`)
+- `pixabay` (requires `PIXABAY_API_KEY`)
+
+Output:
+- Image file in the specified output directory
+- `image_sources.json` acquisition manifest
+- Attribution written into slide notes when `--slide` is provided
+
+See [image-search.md](./image-search.md) for full documentation.
+
 ## `gemini_watermark_remover.py`
 
 Remove Gemini watermark assets after manual download.

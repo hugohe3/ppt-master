@@ -233,6 +233,14 @@ OPENAI_MODEL=gpt-image-2
 
 > **建议：** `gpt-image-2` 目前综合质量最佳。Gemini 同样支持——下载 full size 后可用 `scripts/gemini_watermark_remover.py` 去水印。
 
+### 6. 网络图片搜索（可选，无需配置）
+
+如果没有图片生成 API Key，PPT Master 可以从网络搜索合法可复用的图片——完全免费，无需 API Key。
+
+支持来源：**Openverse**（开放授权图片）和 **Wikimedia Commons**（教育、科学、历史类图片）。可选的密钥供应商（**Pexels**、**Pixabay**）可提供更高质量的商业演示图片。
+
+授权元数据会自动采集并写入演讲者备注。详见 [图片搜索文档](./skills/ppt-master/scripts/docs/image-search.md)。
+
 ---
 
 ## 文档导航
