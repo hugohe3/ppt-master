@@ -175,6 +175,8 @@ def create_app(project_dir: str) -> Flask:
             except ET.ParseError:
                 continue
 
+            assign_temp_ids(root)
+
             for element_id, annotation_text in anns.items():
                 set_annotation(root, element_id, annotation_text)
 

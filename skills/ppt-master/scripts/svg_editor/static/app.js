@@ -1,0 +1,359 @@
+/* ============================================================
+   PPT Master - SVG Editor  |  app.js
+   Vanilla JS, IIFE pattern
+   ============================================================ */
+(function () {
+    "use strict";
+
+    // ---- DOM refs ---------------------------------------------------
+    var slideListEl       = document.getElementById("slide-list");
+    var svgPlaceholder    = document.getElementById("svg-placeholder");
+    var svgContent        = document.getElementById("svg-content");
+    var selectedElementEl = document.getElementById("selected-element");
+    var annotationInput   = document.getElementById("annotation-input");
+    var annotationText    = document.getElementById("annotation-text");
+    var btnAddAnnotation  = document.getElementById("btn-add-annotation");
+    var annotationsEl     = document.getElementById("annotations");
+    var btnSave           = document.getElementById("btn-save");
+    var modalOverlay      = document.getElementById("modal-overlay");
+    var modalMessage      = document.getElementById("modal-message");
+    var modalClose        = document.getElementById("modal-close");
+
+    // ---- State ------------------------------------------------------
+    var currentSlide      = null;   // filename, e.g. "slide_01.svg"
+    var selectedElementId = null;   // id attr of the clicked SVG element
+    var slideAnnotations  = {};     // {element_id: annotation_text} for current slide
+
+    // ================================================================
+    //  1.  loadSlides  -- GET /api/slides
+    // ================================================================
+    function loadSlides() {
+        fetch("/api/slides")
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                slideListEl.innerHTML = "";
+                (data.slides || []).forEach(function (s) {
+                    var item = document.createElement("div");
+                    item.className = "slide-item" + (s.name === currentSlide ? " active" : "");
+                    item.setAttribute("data-name", s.name);
+
+                    var nameSpan = document.createElement("span");
+                    nameSpan.className = "slide-name";
+                    nameSpan.textContent = s.name;
+                    item.appendChild(nameSpan);
+
+                    if (s.annotation_count > 0) {
+                        var badge = document.createElement("span");
+                        badge.className = "badge";
+                        badge.textContent = s.annotation_count;
+                        item.appendChild(badge);
+                    }
+
+                    item.addEventListener("click", function () {
+                        selectSlide(s.name, item);
+                    });
+                    slideListEl.appendChild(item);
+                });
+            })
+            .catch(function (err) {
+                console.error("loadSlides:", err);
+            });
+    }
+
+    // ================================================================
+    //  2.  selectSlide  -- GET /api/slide/{name}
+    // ================================================================
+    function selectSlide(name, el) {
+        // Update active class in sidebar
+        document.querySelectorAll(".slide-item").forEach(function (it) {
+            it.classList.remove("active");
+        });
+        if (el) el.classList.add("active");
+
+        currentSlide = name;
+        selectedElementId = null;
+        slideAnnotations = {};
+
+        // Reset right panel
+        clearSelection();
+
+        fetch("/api/slide/" + encodeURIComponent(name))
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.error) {
+                    console.error("selectSlide:", data.error);
+                    return;
+                }
+                // Render SVG
+                svgPlaceholder.style.display = "none";
+                svgContent.style.display = "block";
+                svgContent.innerHTML = data.content;
+
+                // Build annotations map from response
+                (data.annotations || []).forEach(function (a) {
+                    slideAnnotations[a.element_id] = a.annotation;
+                });
+
+                setupSvgInteraction();
+                refreshAnnotationVisuals();
+                updateAnnotationList();
+            })
+            .catch(function (err) {
+                console.error("selectSlide:", err);
+            });
+    }
+
+    // ================================================================
+    //  3.  setupSvgInteraction
+    // ================================================================
+    var SKIP_TAGS = ["defs", "style", "title", "desc"];
+
+    function setupSvgInteraction() {
+        var svg = svgContent.querySelector("svg");
+        if (!svg) return;
+
+        var allEls = svg.querySelectorAll("*");
+        allEls.forEach(function (el) {
+            var tag = el.tagName.toLowerCase();
+            if (SKIP_TAGS.indexOf(tag) !== -1) return;
+            if (el === svg) return;
+
+            el.classList.add("svg-selectable");
+
+            el.addEventListener("click", function (e) {
+                e.stopPropagation();
+                selectElement(el);
+            });
+        });
+
+        // Click on blank area clears selection
+        svg.addEventListener("click", function (e) {
+            if (e.target === svg) clearSelection();
+        });
+    }
+
+    // ================================================================
+    //  4.  selectElement
+    // ================================================================
+    function selectElement(elem) {
+        // Remove old highlight
+        if (selectedElementId) {
+            var old = svgContent.querySelector("#" + CSS.escape(selectedElementId));
+            if (old) old.classList.remove("svg-selected");
+        }
+
+        selectedElementId = elem.id || null;
+        elem.classList.add("svg-selected");
+
+        // Update right panel info
+        selectedElementEl.classList.remove("empty");
+        var tag = elem.tagName.toLowerCase();
+        var id  = elem.id || "(no id)";
+        selectedElementEl.innerHTML =
+            '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
+            '<span class="el-id">' + escapeHtml(id) + '</span>';
+
+        // Show annotation input, pre-fill if annotation already exists
+        annotationInput.style.display = "block";
+        annotationText.value = slideAnnotations[selectedElementId] || "";
+        annotationText.focus();
+    }
+
+    // ================================================================
+    //  5.  clearSelection
+    // ================================================================
+    function clearSelection() {
+        if (selectedElementId) {
+            var el = svgContent.querySelector("#" + CSS.escape(selectedElementId));
+            if (el) el.classList.remove("svg-selected");
+        }
+        selectedElementId = null;
+        selectedElementEl.classList.add("empty");
+        selectedElementEl.innerHTML = "点击 SVG 元素进行选择";
+        annotationInput.style.display = "none";
+        annotationText.value = "";
+    }
+
+    // ================================================================
+    //  6.  Add annotation  -- POST /api/slide/{name}/annotate
+    // ================================================================
+    btnAddAnnotation.addEventListener("click", function () {
+        if (!currentSlide || !selectedElementId) return;
+
+        var text = annotationText.value.trim();
+        if (!text) return;
+
+        fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                element_id: selectedElementId,
+                annotation: text
+            })
+        })
+            .then(function (res) { return res.json(); })
+            .then(function () {
+                slideAnnotations[selectedElementId] = text;
+                refreshAnnotationVisuals();
+                updateAnnotationList();
+                annotationText.value = "";
+                // Reload slide list to update badge counts
+                loadSlides();
+            })
+            .catch(function (err) {
+                console.error("addAnnotation:", err);
+            });
+    });
+
+    // ================================================================
+    //  7.  removeAnnotation  -- DELETE /api/slide/{name}/annotate/{id}
+    // ================================================================
+    function removeAnnotation(elementId) {
+        if (!currentSlide) return;
+
+        fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate/" + encodeURIComponent(elementId), {
+            method: "DELETE"
+        })
+            .then(function (res) { return res.json(); })
+            .then(function () {
+                delete slideAnnotations[elementId];
+                refreshAnnotationVisuals();
+                updateAnnotationList();
+                loadSlides();
+            })
+            .catch(function (err) {
+                console.error("removeAnnotation:", err);
+            });
+    }
+
+    // ================================================================
+    //  8.  refreshAnnotationVisuals
+    // ================================================================
+    function refreshAnnotationVisuals() {
+        // Clear all annotated marks
+        svgContent.querySelectorAll(".svg-annotated").forEach(function (el) {
+            el.classList.remove("svg-annotated");
+        });
+        // Apply marks
+        Object.keys(slideAnnotations).forEach(function (eid) {
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (el) el.classList.add("svg-annotated");
+        });
+    }
+
+    // ================================================================
+    //  9.  updateAnnotationList
+    // ================================================================
+    function updateAnnotationList() {
+        annotationsEl.innerHTML = "";
+
+        var ids = Object.keys(slideAnnotations);
+        if (ids.length === 0) {
+            annotationsEl.innerHTML = '<div class="annotations-empty">暂无标注</div>';
+            return;
+        }
+
+        ids.forEach(function (eid) {
+            var item = document.createElement("div");
+            item.className = "annotation-item";
+
+            // Try to resolve tag from live SVG
+            var tag = "";
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (el) tag = el.tagName.toLowerCase();
+
+            var header = document.createElement("div");
+            header.className = "ann-header";
+
+            var leftSpan = document.createElement("span");
+            if (tag) {
+                var tagSpan = document.createElement("span");
+                tagSpan.className = "ann-tag";
+                tagSpan.textContent = "<" + tag + ">";
+                leftSpan.appendChild(tagSpan);
+            }
+            var idSpan = document.createElement("span");
+            idSpan.className = "ann-id";
+            idSpan.textContent = eid;
+            leftSpan.appendChild(idSpan);
+
+            header.appendChild(leftSpan);
+
+            var removeBtn = document.createElement("button");
+            removeBtn.className = "ann-remove";
+            removeBtn.innerHTML = "&times;";
+            removeBtn.title = "删除标注";
+            removeBtn.addEventListener("click", function () {
+                removeAnnotation(eid);
+            });
+            header.appendChild(removeBtn);
+
+            item.appendChild(header);
+
+            var textDiv = document.createElement("div");
+            textDiv.className = "ann-text";
+            textDiv.textContent = slideAnnotations[eid];
+            item.appendChild(textDiv);
+
+            annotationsEl.appendChild(item);
+        });
+    }
+
+    // ================================================================
+    // 10.  Save all  -- POST /api/save-all
+    // ================================================================
+    var SAVE_MODAL_MSG =
+        "标注已保存到 SVG 文件。\n\n" +
+        "请回到你的 AI IDE，输入：\n" +
+        "\"读取标注并修改\"\n\n" +
+        "AI 会运行 check_annotations.py 检测标注并执行修改。\n" +
+        "修改完成后会询问你是否需要继续标注。";
+
+    btnSave.addEventListener("click", function () {
+        fetch("/api/save-all", {
+            method: "POST"
+        })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data.error) {
+                    modalMessage.textContent = "保存失败：" + data.error;
+                } else {
+                    modalMessage.textContent = SAVE_MODAL_MSG;
+                }
+                modalOverlay.style.display = "flex";
+            })
+            .catch(function (err) {
+                console.error("saveAll:", err);
+                modalMessage.textContent = "保存失败：" + err;
+                modalOverlay.style.display = "flex";
+            });
+    });
+
+    // ================================================================
+    // 11.  Modal close
+    // ================================================================
+    modalClose.addEventListener("click", function () {
+        modalOverlay.style.display = "none";
+    });
+
+    // Close modal on overlay click
+    modalOverlay.addEventListener("click", function (e) {
+        if (e.target === modalOverlay) {
+            modalOverlay.style.display = "none";
+        }
+    });
+
+    // ================================================================
+    //  Utility
+    // ================================================================
+    function escapeHtml(str) {
+        var d = document.createElement("div");
+        d.appendChild(document.createTextNode(str));
+        return d.innerHTML;
+    }
+
+    // ================================================================
+    //  Boot
+    // ================================================================
+    loadSlides();
+})();
