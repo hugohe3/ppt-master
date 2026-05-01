@@ -43,7 +43,7 @@ except ImportError:
     )
 
 
-def create_app(project_dir: str, idle_timeout: int = 1800) -> Flask:
+def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     """
     Create and configure the Flask app.
 
@@ -232,7 +232,7 @@ Examples:
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
     parser.add_argument('--port', type=int, default=5000, help='Port to listen on (default: 5000)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
-    parser.add_argument('--timeout', type=int, default=1800, help='Idle timeout in seconds (default: 1800 = 30min)')
+    parser.add_argument('--timeout', type=int, default=900, help='Idle timeout in seconds (default: 900 = 15min)')
     args = parser.parse_args()
 
     project_path = Path(args.project_dir).resolve()
