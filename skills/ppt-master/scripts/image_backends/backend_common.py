@@ -12,9 +12,17 @@ if __name__ == "__main__" and any(arg in {"-h", "--help", "help"} for arg in sys
 
 import io
 import os
+import ssl
+import subprocess
 import time
 
 import requests
+
+try:
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except (ImportError, AttributeError):
+    pass
 
 try:
     from PIL import Image as PILImage
@@ -182,18 +190,85 @@ def retry_delay(attempt: int, rate_limited: bool) -> int:
     return 5
 
 
+def _is_ssl_error(exc: Exception) -> bool:
+    """Check whether the exception is an SSL-related error."""
+    if isinstance(exc, (ssl.SSLError, requests.exceptions.SSLError)):
+        return True
+    err_str = str(exc).lower()
+    return "ssl" in err_str or "certificate" in err_str
+
+
+def resilient_get(url: str, **kwargs) -> requests.Response:
+    """requests.get with automatic SSL retry on Windows conda environments."""
+    try:
+        return requests.get(url, **kwargs)
+    except Exception as exc:
+        if not _is_ssl_error(exc):
+            raise
+        print(f"  SSL error during API request, retrying without verification: {exc}")
+        kwargs.setdefault("timeout", 30)
+        return requests.get(url, verify=False, **kwargs)
+
+
+def _download_via_curl(url: str, path: str, headers: dict = None, timeout: int = 180) -> str:
+    """Fallback: download image via subprocess curl (bypasses Python SSL stack)."""
+    cmd = ["curl", "-sS", "-L", "-o", path, "--max-time", str(timeout)]
+    if headers:
+        for key, value in headers.items():
+            cmd += ["-H", f"{key}: {value}"]
+    else:
+        cmd += ["-H", "User-Agent: PPTMaster/1.0 (https://github.com/hugohe3/ppt-master)"]
+    cmd.append(url)
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout + 30)
+    if result.returncode != 0:
+        raise RuntimeError(f"curl download failed (exit {result.returncode}): {result.stderr.strip()}")
+    print(f"  File saved to: {path} (via curl fallback)")
+    report_resolution(path)
+    return path
+
+
 def download_image(url: str, path: str, headers: dict = None, timeout: int = 180) -> str:
-    """Download an image URL and save it to disk."""
+    """Download an image URL and save it to disk.
+
+    On SSL errors (common in Windows conda environments), retries with SSL
+    verification disabled, then falls back to subprocess curl as a last resort.
+    """
     default_headers = {"User-Agent": "PPTMaster/1.0 (https://github.com/hugohe3/ppt-master)"}
     if headers:
         default_headers.update(headers)
-    response = requests.get(url, headers=default_headers, timeout=timeout)
-    response.raise_for_status()
-    return save_image_bytes(
-        response.content,
-        path,
-        content_type=response.headers.get("Content-Type"),
-    )
+
+    # Attempt 1: normal request with full SSL verification
+    try:
+        response = requests.get(url, headers=default_headers, timeout=timeout)
+        response.raise_for_status()
+        return save_image_bytes(
+            response.content,
+            path,
+            content_type=response.headers.get("Content-Type"),
+        )
+    except Exception as exc:
+        if not _is_ssl_error(exc):
+            raise
+        print(f"  SSL error: {exc}")
+
+    # Attempt 2: retry with SSL verification disabled
+    print("  Retrying with SSL verification disabled...")
+    try:
+        response = requests.get(url, headers=default_headers, timeout=timeout, verify=False)
+        response.raise_for_status()
+        return save_image_bytes(
+            response.content,
+            path,
+            content_type=response.headers.get("Content-Type"),
+        )
+    except Exception as exc:
+        if not _is_ssl_error(exc):
+            raise
+        print(f"  Retry failed: {exc}")
+
+    # Attempt 3: curl fallback (bypasses Python SSL entirely)
+    print("  Falling back to curl...")
+    return _download_via_curl(url, path, headers=headers, timeout=timeout)
 
 
 def require_api_key(*candidates: str, message: str) -> str:

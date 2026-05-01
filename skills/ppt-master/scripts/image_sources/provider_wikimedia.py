@@ -5,6 +5,7 @@ import types
 
 import requests
 
+from image_backends.backend_common import resilient_get
 from image_sources.provider_common import (
     AssetCandidate,
     ImageSearchRequest,
@@ -204,7 +205,7 @@ def search_and_download(
             "prop": "imageinfo",
             "iiprop": "url|size|extmetadata",
         }
-        response = requests.get(API_URL, params=params, headers=headers, timeout=timeout)
+        response = resilient_get(API_URL, params=params, headers=headers, timeout=timeout)
         response.raise_for_status()
         candidates = parse_results(response.json())
         if candidates:

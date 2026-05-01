@@ -3,6 +3,7 @@ import types
 
 import requests
 
+from image_backends.backend_common import resilient_get
 from image_sources.provider_common import (
     AssetCandidate,
     ImageSearchRequest,
@@ -168,7 +169,7 @@ def search_and_download(
         }
         if clean_orientation in orientation_to_aspect:
             params["aspect_ratio"] = orientation_to_aspect[clean_orientation]
-        response = requests.get(API_URL, params=params, timeout=timeout)
+        response = resilient_get(API_URL, params=params, timeout=timeout)
         response.raise_for_status()
         candidates = parse_results(response.json())
         if candidates:
