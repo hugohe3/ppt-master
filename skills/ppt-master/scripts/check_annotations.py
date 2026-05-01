@@ -43,15 +43,15 @@ def scan_svg_file(svg_path: Path) -> list[dict]:
             if '}' in tag:
                 tag = tag.split('}', 1)[1]
 
-            content = ''
+            content_preview = ''
             if tag == 'text' and elem.text:
-                content = elem.text.strip()[:50]
+                content_preview = elem.text.strip()[:50]
 
             annotations.append({
                 'element_id': elem.get('id', '(no id)'),
                 'tag': tag,
                 'annotation': elem.get('data-edit-annotation', ''),
-                'content': content,
+                'content_preview': content_preview,
             })
 
     return annotations
@@ -79,16 +79,19 @@ def scan_directory(dir_path: Path) -> dict[str, list[dict]]:
 def print_results(results: dict[str, list[dict]]) -> None:
     """Print annotation results in human-readable format."""
     if not results:
-        print("✓ No annotations found.")
+        print("[OK] No annotations found.")
         return
 
     total = sum(len(anns) for anns in results.values())
-    print(f"Found {total} annotations in {len(results)} files:\n")
+    file_count = len(results)
+    ann_word = "annotation" if total == 1 else "annotations"
+    file_word = "file" if file_count == 1 else "files"
+    print(f"Found {total} {ann_word} in {file_count} {file_word}:\n")
 
     for filename, annotations in results.items():
         print(f"{filename}")
         for i, ann in enumerate(annotations, 1):
-            content = f' "{ann["content"]}"' if ann['content'] else ''
+            content = f' "{ann["content_preview"]}"' if ann['content_preview'] else ''
             print(f"  [{i}] <{ann['tag']} id=\"{ann['element_id']}\">{content}")
             print(f"      → {ann['annotation']}")
         print()
