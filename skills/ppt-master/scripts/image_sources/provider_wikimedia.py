@@ -18,6 +18,29 @@ DEFAULT_SEARCH_LIMIT = 20
 TAG_RE = re.compile(r"<[^>]+>")
 WHITESPACE_RE = re.compile(r"\s+")
 
+# Words that won't match image metadata in keyword-based search APIs.
+_NOISE_WORDS = frozenset({
+    "claude", "openai", "gpt", "gemini", "copilot", "chatgpt", "midjourney",
+    "stable", "diffusion", "dall-e", "cursor", "anthropic", "microsoft",
+    "google", "apple", "meta", "nvidia", "tesla",
+    "ai", "code", "software", "system", "digital", "platform", "solution",
+    "application", "interface", "framework", "algorithm", "api", "sdk",
+    "assistant", "tool", "service", "technology", "tech", "program",
+    "using", "with", "from", "that", "this", "have", "been", "will",
+    "into", "more", "also", "very", "some", "than", "them", "other",
+})
+
+
+def _simplify_query(query: str, max_words: int = 4) -> str:
+    """Simplify a verbose query for keyword-based image search APIs."""
+    cleaned = re.sub(r"#[0-9a-fA-F]{3,8}", "", query)
+    cleaned = re.sub(r"\([^)]*\)", "", cleaned)
+    words = cleaned.split()
+    filtered = [w for w in words if w.lower() not in _NOISE_WORDS and len(w) > 2]
+    if len(filtered) <= max_words:
+        return " ".join(filtered)
+    return " ".join(filtered[:max_words])
+
 
 def _load_download_image():
     try:
@@ -87,11 +110,21 @@ def _requires_attribution(license_name, license_url):
     return "cc0" not in text and "public domain" not in text and "/publicdomain/" not in text
 
 
+_IMAGE_EXTENSIONS = frozenset({".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff", ".tif"})
+
+
 def parse_results(payload):
     candidates = []
     pages = payload.get("query", {}).get("pages", {})
     for page in pages.values():
         for imageinfo in page.get("imageinfo", []):
+            download_url = (imageinfo.get("url") or imageinfo.get("thumburl") or "").strip()
+            if not download_url:
+                continue
+            # Skip non-image files (PDFs, SVGs, DJVU, etc.)
+            url_path = download_url.split("?")[0].lower()
+            if not any(url_path.endswith(ext) for ext in _IMAGE_EXTENSIONS):
+                continue
             extmetadata = imageinfo.get("extmetadata") or {}
             license_name = _extract_metadata(extmetadata, "LicenseShortName")
             license_url = _extract_metadata(extmetadata, "LicenseUrl")
@@ -107,9 +140,6 @@ def parse_results(payload):
                 _extract_metadata(extmetadata, "Artist")
                 or _extract_metadata(extmetadata, "Credit")
             )
-            download_url = (imageinfo.get("url") or imageinfo.get("thumburl") or "").strip()
-            if not download_url:
-                continue
 
             candidates.append(
                 AssetCandidate(
@@ -141,21 +171,20 @@ def search_and_download(
     timeout=30,
     search_limit=DEFAULT_SEARCH_LIMIT,
 ):
-    params = {
-        "action": "query",
-        "format": "json",
-        "generator": "search",
-        "gsrsearch": query,
-        "gsrnamespace": 6,
-        "gsrlimit": search_limit,
-        "prop": "imageinfo",
-        "iiprop": "url|size|extmetadata",
-    }
-    headers = {"User-Agent": "PPTMaster/1.0 (https://github.com/hugohe3/ppt-master; heyug3@gmail.com)"}
-    response = requests.get(API_URL, params=params, headers=headers, timeout=timeout)
-    response.raise_for_status()
-
     clean_orientation = (orientation or "").strip().lower()
+
+    # Try progressively simpler queries: original → simplified → first 3 words
+    queries_to_try = [query]
+    simplified = _simplify_query(query)
+    if simplified != query:
+        queries_to_try.append(simplified)
+    words = simplified.split()
+    if len(words) > 3:
+        short = " ".join(words[:3])
+        if short != simplified:
+            queries_to_try.append(short)
+
+    headers = {"User-Agent": "PPTMaster/1.0 (https://github.com/hugohe3/ppt-master; heyug3@gmail.com)"}
     request = ImageSearchRequest(
         query=query,
         purpose=purpose,
@@ -163,7 +192,23 @@ def search_and_download(
         filename=filename,
         slide=slide,
     )
-    candidates = parse_results(response.json())
+    candidates = []
+    for q in queries_to_try:
+        params = {
+            "action": "query",
+            "format": "json",
+            "generator": "search",
+            "gsrsearch": q,
+            "gsrnamespace": 6,
+            "gsrlimit": search_limit,
+            "prop": "imageinfo",
+            "iiprop": "url|size|extmetadata",
+        }
+        response = requests.get(API_URL, params=params, headers=headers, timeout=timeout)
+        response.raise_for_status()
+        candidates = parse_results(response.json())
+        if candidates:
+            break
     if not candidates:
         raise RuntimeError(f"No acceptable Wikimedia candidates found for query: {query}")
 

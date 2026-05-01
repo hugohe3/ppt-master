@@ -14,6 +14,39 @@ from image_sources.provider_common import (
 API_URL = "https://api.openverse.org/v1/images/"
 DEFAULT_PAGE_SIZE = 20
 
+# Words that won't match image metadata in keyword-based search APIs.
+# Includes brand names, abstract tech terms, and generic filler.
+_NOISE_WORDS = frozenset({
+    # Brand/product names
+    "claude", "openai", "gpt", "gemini", "copilot", "chatgpt", "midjourney",
+    "stable", "diffusion", "dall-e", "cursor", "anthropic", "microsoft",
+    "google", "apple", "meta", "nvidia", "tesla",
+    # Abstract tech terms that rarely appear in image metadata
+    "ai", "code", "software", "system", "digital", "platform", "solution",
+    "application", "interface", "framework", "algorithm", "api", "sdk",
+    "assistant", "tool", "service", "technology", "tech", "program",
+    # Generic filler
+    "using", "with", "from", "that", "this", "have", "been", "will",
+    "into", "more", "also", "very", "some", "than", "them", "other",
+})
+
+
+def _simplify_query(query: str, max_words: int = 4) -> str:
+    """Simplify a verbose query for keyword-based image search APIs.
+
+    Openverse does full-text keyword matching on image metadata, not semantic search.
+    Long queries with brand names, HEX codes, and composition notes return zero results.
+    This extracts the most searchable keywords — concrete nouns and visual descriptors.
+    """
+    import re
+    cleaned = re.sub(r"#[0-9a-fA-F]{3,8}", "", query)
+    cleaned = re.sub(r"\([^)]*\)", "", cleaned)
+    words = cleaned.split()
+    filtered = [w for w in words if w.lower() not in _NOISE_WORDS and len(w) > 2]
+    if len(filtered) <= max_words:
+        return " ".join(filtered)
+    return " ".join(filtered[:max_words])
+
 
 def _load_download_image():
     try:
@@ -104,17 +137,19 @@ def search_and_download(
     timeout=30,
     page_size=DEFAULT_PAGE_SIZE,
 ):
-    params = {
-        "q": query,
-        "page_size": page_size,
-    }
     clean_orientation = (orientation or "").strip().lower()
     orientation_to_aspect = {"landscape": "wide", "portrait": "tall", "square": "square"}
-    if clean_orientation in orientation_to_aspect:
-        params["aspect_ratio"] = orientation_to_aspect[clean_orientation]
 
-    response = requests.get(API_URL, params=params, timeout=timeout)
-    response.raise_for_status()
+    # Try progressively simpler queries: original → simplified → first 3 words
+    queries_to_try = [query]
+    simplified = _simplify_query(query)
+    if simplified != query:
+        queries_to_try.append(simplified)
+    words = simplified.split()
+    if len(words) > 3:
+        short = " ".join(words[:3])
+        if short != simplified:
+            queries_to_try.append(short)
 
     request = ImageSearchRequest(
         query=query,
@@ -123,7 +158,21 @@ def search_and_download(
         filename=filename,
         slide=slide,
     )
-    candidates = parse_results(response.json())
+    candidates = []
+    for q in queries_to_try:
+        params = {
+            "q": q,
+            "page_size": page_size,
+            "license": "by,by-sa,cc0,pdm",
+            "size": "large",
+        }
+        if clean_orientation in orientation_to_aspect:
+            params["aspect_ratio"] = orientation_to_aspect[clean_orientation]
+        response = requests.get(API_URL, params=params, timeout=timeout)
+        response.raise_for_status()
+        candidates = parse_results(response.json())
+        if candidates:
+            break
     if not candidates:
         raise RuntimeError(f"No acceptable Openverse candidates found for query: {query}")
 

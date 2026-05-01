@@ -207,13 +207,30 @@ Baseline choice follows **content density**, not style. Common: `18px` (dense) /
 
 **When B/C/D/E is selected, every row must include `Acquire Via`, `Reference`, and `Attribution`.** Keep these three fields populated even when status is already `Existing` or `Placeholder`.
 
-**Reference quality** — this field drives downstream acquisition. For `ai`, specify subject, count, setting, lighting, colors (HEX), composition. For `web`, specify the search target or the known source/page. Avoid one-word references like "team photo" / "tech background" / "chart".
+**Reference quality** — this field drives downstream acquisition.
 
-| Good examples |
-|---------------|
+**For `ai` rows:** Specify subject, count, setting, lighting, colors (HEX), composition. The AI image generator uses this as a detailed prompt.
+
+**For `web` rows:** Write a **short, keyword-based search query** (2–5 words). Web image search APIs match against image metadata keywords, not semantic meaning. Long, detailed descriptions with brand names, HEX codes, and composition notes will return zero results.
+
+| Good `ai` examples |
+|---------------------|
 | "Professional team of 4 diverse people collaborating at a modern office desk, natural lighting, laptop visible" |
 | "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" |
 | "Clean flowchart showing 4 sequential steps connected by arrows, flat design, light gray background, blue accent nodes" |
+
+| Good `web` examples | Why it works |
+|----------------------|-------------|
+| "team meeting office" | 3 keywords, high match probability |
+| "ocean sunset landscape" | Simple subject + setting |
+| "data visualization chart" | Concrete nouns that appear in image metadata |
+| "mountain forest nature" | Broad terms with high coverage |
+
+| Bad `web` examples | Why it fails |
+|---------------------|-------------|
+| "Claude Code terminal AI assistant dark tech background amber orange lighting" | Brand names, too many keywords — zero results |
+| "Professional team of 4 diverse people collaborating at a modern office desk" | Full sentence — no image has all these words in metadata |
+| "Abstract flowing digital waves in deep navy (#1E3A5F) gradient" | HEX codes and abstract concepts — not searchable |
 
 **Image type descriptions**:
 

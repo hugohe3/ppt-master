@@ -322,10 +322,14 @@ python3 scripts/image_search.py "query or source target" \
   --output project/images --filename office-team
 ```
 
-- Use the `Reference` field as the search target or source hint
+- **Query construction**: The `Reference` field from the strategist may be a detailed description. Before passing it to `image_search.py`, simplify it to **2–5 searchable keywords**. Web image APIs do keyword matching on image metadata, not semantic search. Remove brand names, HEX codes, composition notes, and adjectives. Keep concrete nouns and broad descriptors.
+  - Example: strategist writes "Claude Code terminal AI assistant dark tech background amber orange lighting" → search with `"dark tech background"` or `"terminal code editor"`
+  - Example: strategist writes "Professional team of 4 diverse people collaborating at modern office desk" → search with `"team meeting office"` or `"office collaboration"`
+- If the first search returns no results or low-quality images, retry with a **shorter query** (first 2–3 keywords only)
 - Save source-selection details to `project/images/image_sources.json`
 - Record attribution exactly as required by the chosen source
 - Outputs **must** land at `project/images/<filename-from-resource-list>`
+- **Resolution guidance**: Prefer Wikimedia provider for higher-resolution images (typically 2000–6000px). Openverse results from non-Wikimedia sources are often capped at 1024px.
 
 #### Failure Handling (Applies to Both Paths)
 
