@@ -336,6 +336,28 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
+**Step 7.4: SVG Editor (Optional)**
+
+After PPTX export, inform the user that they can annotate slides for targeted editing:
+
+> SVG 编辑器已可用。如需对幻灯片进行局部标注编辑，可运行：
+> `python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path>`
+> 在浏览器中选择元素并添加批注，保存后告诉我"读取标注并修改"。
+
+**Edit Loop (When User Requests Annotation-Based Editing):**
+
+When the user says "读取标注并修改" or similar:
+
+1. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
+2. If no annotations found, inform the user and stop
+3. Read each annotated SVG file from `svg_output/`
+4. For each annotation: modify the target SVG element per the user's instruction
+5. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
+6. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
+7. Ask the user: "标注已处理完毕，PPT 已重新生成。是否需要继续标注编辑？"
+   - If yes: prompt the user to reopen the SVG editor or add more annotations, then return to step 1
+   - If no: editing loop ends
+
 ---
 
 ## Role Switching Protocol
