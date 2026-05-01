@@ -60,32 +60,32 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     # In-memory annotation store: {filename: {element_id: annotation_text}}
     app.config['ANNOTATIONS'] = {}
 
-    # Idle timeout: auto-shutdown when browser closes (no heartbeat)
-    app.config['LAST_HEARTBEAT'] = 0  # 0 = browser never connected
-    app.config['BROWSER_CONNECTED'] = False
+    # Idle timeout: auto-shutdown if no one connects within idle_timeout seconds
+    app.config['LAST_REQUEST_TIME'] = time.time()
 
     @app.before_request
     def _update_activity():
-        app.config['LAST_HEARTBEAT'] = time.time()
-
-    @app.route('/api/heartbeat', methods=['POST'])
-    def heartbeat():
-        app.config['BROWSER_CONNECTED'] = True
-        app.config['LAST_HEARTBEAT'] = time.time()
-        return jsonify({'status': 'ok'})
+        app.config['LAST_REQUEST_TIME'] = time.time()
 
     def _idle_watchdog():
         while True:
             time.sleep(10)
-            if not app.config['BROWSER_CONNECTED']:
-                continue  # No browser yet — keep waiting
-            elapsed = time.time() - app.config['LAST_HEARTBEAT']
-            if elapsed > 30:  # 30s without heartbeat = browser closed
-                print("Browser disconnected, shutting down.")
+            elapsed = time.time() - app.config['LAST_REQUEST_TIME']
+            if elapsed > idle_timeout:
+                print(f"SVG Editor idle for {idle_timeout}s, shutting down.")
                 os._exit(0)
 
     watchdog = threading.Thread(target=_idle_watchdog, daemon=True)
     watchdog.start()
+
+    @app.route('/api/shutdown', methods=['POST'])
+    def shutdown():
+        def _stop():
+            time.sleep(0.5)
+            print("SVG Editor shutting down (user saved annotations).")
+            os._exit(0)
+        threading.Thread(target=_stop, daemon=True).start()
+        return jsonify({'status': 'ok'})
 
     @app.route('/')
     def index():

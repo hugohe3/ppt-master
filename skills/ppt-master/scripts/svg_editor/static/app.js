@@ -312,10 +312,13 @@
             .then(function (data) {
                 if (data.error) {
                     modalMessage.textContent = "保存失败：" + data.error;
+                    modalOverlay.style.display = "flex";
                 } else {
                     modalMessage.textContent = SAVE_MODAL_MSG;
+                    modalOverlay.style.display = "flex";
+                    // Shut down server after saving — port released for AI to restart
+                    fetch("/api/shutdown", { method: "POST" }).catch(function () {});
                 }
-                modalOverlay.style.display = "flex";
             })
             .catch(function (err) {
                 console.error("saveAll:", err);
@@ -346,13 +349,6 @@
         d.appendChild(document.createTextNode(str));
         return d.innerHTML;
     }
-
-    // ================================================================
-    //  Heartbeat — server auto-shuts down when browser closes
-    // ================================================================
-    setInterval(function () {
-        fetch("/api/heartbeat", { method: "POST" }).catch(function () {});
-    }, 5000);
 
     // ================================================================
     //  Boot

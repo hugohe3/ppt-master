@@ -352,22 +352,20 @@ Then tell the user:
 
 **Edit Loop (When User Requests Annotation-Based Editing):**
 
-The SVG editor server stays running throughout the entire editing loop — never stop or restart it.
-
 When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", "改好了", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
 
-1. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
-2. If no annotations found, inform the user and stop
-3. Read each annotated SVG file from `svg_output/`
-4. For each annotation: modify the target SVG element per the user's instruction
-5. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
-6. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
-7. Tell the user: "标注已处理，PPT 已更新。编辑器即将重新启动。"
-8. Re-start the SVG editor server (the previous instance will have shut down after the browser closed):
+1. The server will have auto-shut down after the user saved (port is released). If it's still running, kill it.
+2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
+3. If no annotations found, inform the user and stop
+4. Read each annotated SVG file from `svg_output/`
+5. For each annotation: modify the target SVG element per the user's instruction
+6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
+7. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
+8. Re-start the SVG editor server:
    ```bash
    python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
    ```
-9. Tell the user: "编辑器已重启，请刷新浏览器页面继续标注: http://localhost:5000 。无需标注时告诉我即可。"
+9. Tell the user: "标注已处理，PPT 已更新。编辑器已重启: http://localhost:5000 。无需标注时告诉我即可。"
 10. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
 
 ---
