@@ -422,20 +422,42 @@ html, body {
     text-align: left;
 }
 
-#modal-close {
+#modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+#modal-confirm {
     padding: 10px 32px;
     font-size: 14px;
     font-weight: 600;
     color: #1a1a2e;
-    background: #4a9eff;
+    background: #f5c542;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.15s;
 }
 
-#modal-close:hover {
-    background: #3a8eef;
+#modal-confirm:hover {
+    background: #e5b532;
+}
+
+#modal-cancel {
+    padding: 10px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #a0a0c0;
+    background: transparent;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#modal-cancel:hover {
+    background: #2a2a4a;
 }
 
 /* ======================== UTILITY ======================== */

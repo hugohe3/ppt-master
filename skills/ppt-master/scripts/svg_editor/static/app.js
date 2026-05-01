@@ -17,7 +17,8 @@
     var btnSave           = document.getElementById("btn-save");
     var modalOverlay      = document.getElementById("modal-overlay");
     var modalMessage      = document.getElementById("modal-message");
-    var modalClose        = document.getElementById("modal-close");
+    var modalConfirm      = document.getElementById("modal-confirm");
+    var modalCancel       = document.getElementById("modal-cancel");
 
     // ---- State ------------------------------------------------------
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
@@ -300,37 +301,40 @@
     }
 
     // ================================================================
-    // 10.  Save all  -- POST /api/save-all
+    // 10.  Save all  -- two-step: confirm then save + shutdown
     // ================================================================
-    var SAVE_MODAL_MSG = "标注已提交\n请告诉AI你已经提交标注，继续修改";
+    var CONFIRM_MSG = "点击提交后页面将关闭，请确认已完成所有批注。";
+    var SUCCESS_MSG = "标注已提交\n\n请告诉AI你已经提交标注，继续修改";
 
     btnSave.addEventListener("click", function () {
-        fetch("/api/save-all", {
-            method: "POST"
-        })
+        // Step 1: show confirmation
+        modalMessage.textContent = CONFIRM_MSG;
+        modalConfirm.style.display = "";
+        modalCancel.style.display = "";
+        modalOverlay.style.display = "flex";
+    });
+
+    modalConfirm.addEventListener("click", function () {
+        // Step 2: save + shutdown
+        modalConfirm.style.display = "none";
+        modalCancel.style.display = "none";
+
+        fetch("/api/save-all", { method: "POST" })
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data.error) {
                     modalMessage.textContent = "保存失败：" + data.error;
-                    modalOverlay.style.display = "flex";
                 } else {
-                    modalMessage.textContent = SAVE_MODAL_MSG;
-                    modalOverlay.style.display = "flex";
-                    // Shut down server after saving — port released for AI to restart
+                    modalMessage.textContent = SUCCESS_MSG;
                     fetch("/api/shutdown", { method: "POST" }).catch(function () {});
                 }
             })
             .catch(function (err) {
-                console.error("saveAll:", err);
                 modalMessage.textContent = "保存失败：" + err;
-                modalOverlay.style.display = "flex";
             });
     });
 
-    // ================================================================
-    // 11.  Modal close
-    // ================================================================
-    modalClose.addEventListener("click", function () {
+    modalCancel.addEventListener("click", function () {
         modalOverlay.style.display = "none";
     });
 
