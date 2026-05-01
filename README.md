@@ -85,7 +85,7 @@ AI presentation tools roughly fall into four categories. PPT Master only does th
 
 ## Built by Hugo He
 
-I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who reviews and edits hundreds of slides every week. I got tired of AI tools that output images instead of editable shapes — so I built this.
+I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who regularly reviews and edits presentation decks. I wanted AI-generated slides to remain editable in PowerPoint, not flattened into images — so I built this.
 
 🌐 [Personal website](https://www.hehugo.com/) · 📧 [heyug3@gmail.com](mailto:heyug3@gmail.com) · 🐙 [@hugohe3](https://github.com/hugohe3)
 
