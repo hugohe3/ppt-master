@@ -17,7 +17,10 @@ Dependencies:
 """
 
 import argparse
+import os
 import sys
+import threading
+import time
 import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -40,7 +43,7 @@ except ImportError:
     )
 
 
-def create_app(project_dir: str) -> Flask:
+def create_app(project_dir: str, idle_timeout: int = 1800) -> Flask:
     """
     Create and configure the Flask app.
 
@@ -56,6 +59,24 @@ def create_app(project_dir: str) -> Flask:
 
     # In-memory annotation store: {filename: {element_id: annotation_text}}
     app.config['ANNOTATIONS'] = {}
+
+    # Idle timeout: auto-shutdown after no requests for idle_timeout seconds
+    app.config['LAST_REQUEST_TIME'] = time.time()
+
+    @app.before_request
+    def _update_activity():
+        app.config['LAST_REQUEST_TIME'] = time.time()
+
+    def _idle_watchdog():
+        while True:
+            time.sleep(60)
+            elapsed = time.time() - app.config['LAST_REQUEST_TIME']
+            if elapsed > idle_timeout:
+                print(f"SVG Editor idle for {idle_timeout}s, shutting down.")
+                os._exit(0)
+
+    watchdog = threading.Thread(target=_idle_watchdog, daemon=True)
+    watchdog.start()
 
     @app.route('/')
     def index():
@@ -211,6 +232,7 @@ Examples:
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
     parser.add_argument('--port', type=int, default=5000, help='Port to listen on (default: 5000)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
+    parser.add_argument('--timeout', type=int, default=1800, help='Idle timeout in seconds (default: 1800 = 30min)')
     args = parser.parse_args()
 
     project_path = Path(args.project_dir).resolve()
@@ -218,7 +240,7 @@ Examples:
         print(f"Error: {project_path / 'svg_output'} does not exist", file=sys.stderr)
         sys.exit(1)
 
-    app = create_app(str(project_path))
+    app = create_app(str(project_path), idle_timeout=args.timeout)
 
     url = f'http://localhost:{args.port}'
     if not args.no_browser:
