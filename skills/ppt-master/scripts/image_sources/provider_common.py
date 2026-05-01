@@ -246,7 +246,17 @@ _SOFT_NOISE_WORDS = frozenset({
     "ai", "code", "software", "system", "digital", "platform", "solution",
     "application", "interface", "framework", "algorithm", "api", "sdk",
     "assistant", "tool", "service", "technology", "tech", "program",
+    # Visual-quality / usage terms. These are helpful in the full provider
+    # query, but should not consume the 3-4 keyword fallback budget or
+    # dominate relevance scoring over the real subject.
+    "professional", "editorial", "commercial", "premium", "stock",
+    "photo", "photograph", "photography", "image", "picture", "visual",
+    "background", "hero", "cover", "banner", "wallpaper",
+    "high", "quality", "resolution", "sharp", "clean", "cinematic",
+    "dramatic", "lighting", "light", "modern", "natural", "visible",
 })
+
+_TOKEN_STRIP_CHARS = ".,;:!?\"'()[]{}，。；：！？、"
 
 
 def simplify_query(query: str, max_words: int = 4) -> str:
@@ -262,7 +272,8 @@ def simplify_query(query: str, max_words: int = 4) -> str:
     """
     cleaned = re.sub(r"#[0-9a-fA-F]{3,8}", "", query)
     cleaned = re.sub(r"\([^)]*\)", "", cleaned)
-    words = [w for w in cleaned.split() if len(w) > 2]
+    words = [w.strip(_TOKEN_STRIP_CHARS) for w in cleaned.split()]
+    words = [w for w in words if len(w) > 2]
 
     after_hard = [w for w in words if w.lower() not in _NOISE_WORDS]
     after_soft = [w for w in after_hard if w.lower() not in _SOFT_NOISE_WORDS]
@@ -321,7 +332,8 @@ def _query_tokens(query: str) -> list[str]:
     """
     cleaned = re.sub(r"#[0-9a-fA-F]{3,8}", "", query.lower())
     cleaned = re.sub(r"\([^)]*\)", "", cleaned)
-    words = [w for w in cleaned.split() if len(w) > 2 and w.isascii()]
+    words = [w.strip(_TOKEN_STRIP_CHARS) for w in cleaned.split()]
+    words = [w for w in words if len(w) > 2 and w.isascii()]
     if not words:
         return []
     after_hard = [w for w in words if w not in _NOISE_WORDS]

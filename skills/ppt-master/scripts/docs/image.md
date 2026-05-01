@@ -105,6 +105,14 @@ Providers (Openverse and Wikimedia work with no key; Pexels and Pixabay are opti
 
 Default search chain (when `--provider` is unset): zero-config providers first, then keyed providers whose API key is set in the environment. Keyed providers without a key are silently skipped.
 
+Query guidance:
+
+| Case | Pattern |
+|---|---|
+| Generic stock concept | `boardroom meeting, professional editorial photography, natural light` |
+| China-specific landmark | Official Chinese place name + concrete scene |
+| Avoid | Negative prompt wording such as `not tourist snapshot` |
+
 License filter:
 
 - **Default**: search all providers with `cc0,pdm,pexels,pixabay,cc by,cc by-sa` allowed together. The chosen image may be `no-attribution` or `attribution-required`; Executor adds an inline credit only when needed.

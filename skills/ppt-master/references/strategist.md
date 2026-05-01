@@ -206,24 +206,37 @@ Selections may be mixed at the row level — e.g. a deck can use C for hero illu
 | Status | Initial status must be `Pending`, `Existing`, or `Placeholder`; see [`svg-image-embedding.md`](svg-image-embedding.md) for the full status enum |
 | **Reference** | Free-form **intent description** (NOT a search query); feeds Image_Generator (ai) or Image_Searcher (web) |
 
-**Reference field — write intent, not mechanics**:
+**Reference field**: Write visual intent, not provider mechanics.
 
-This field is consumed by either Image_Generator (which expands it into an AI prompt) or Image_Searcher (which simplifies it into 2–5 keywords). The Strategist's job is to describe the **visual intent**:
+| ✅ Intent description | ❌ Avoid |
+|---|---|
+| "Diverse engineering team collaborating around a laptop, modern office, natural light" | "team laptop office" |
+| "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" | "use openverse, search 'office'" |
+| "Sunlit forest path in autumn" | "team photo" |
 
-- ✅ "Diverse engineering team collaborating around a laptop, modern office, natural light"
-- ✅ "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay"
-- ✅ "Sunlit forest path in autumn"
-- ❌ "team laptop office" (already keyword-shaped — let Image_Searcher do that)
-- ❌ "use openverse, search 'office'" (provider mechanics are not a Strategist concern)
-- ❌ "team photo" (too thin)
+**Per-row Reference grammar**:
 
-For `ai` rows, include subject + style + colors (HEX) + composition. For `web` rows, prioritize concrete nouns and visual descriptors — but you can still write the description naturally; `simplify_query` strips noise words automatically.
+| Acquire Via | Reference pattern |
+|---|---|
+| `ai` | Subject + style + colors (HEX) + composition |
+| `web` | Concrete subject/place/object first, then 1-3 quality descriptors |
 
-| Good examples (work for both ai and web) |
-|---------------|
-| "Professional team of 4 diverse people collaborating at a modern office desk, natural lighting, laptop visible" |
-| "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" |
-| "Clean flowchart showing 4 sequential steps connected by arrows, flat design, light gray background, blue accent nodes" |
+**Allowed web quality descriptors**:
+
+| Descriptor | Use |
+|---|---|
+| `professional editorial photography` | Stock-style photography |
+| `clean composition` | Covers, section dividers, image-text layouts |
+| `natural light` | People, workplace, travel, lifestyle scenes |
+| `high-resolution` | Large visual areas |
+
+**Forbidden — web negative prompts**: `not tourist snapshot`, `no phone photo`, `avoid amateur style`.
+
+| Mode | Good Reference |
+|---|---|
+| `web` | "Diverse team collaborating at a modern office desk, professional editorial photography, natural light, laptop visible" |
+| `ai` | "Abstract flowing digital waves in deep navy (#1E3A5F) to midnight blue gradient, subtle particle effects, clean center area for text overlay" |
+| `ai` | "Clean flowchart showing 4 sequential steps connected by arrows, flat design, light gray background, blue accent nodes" |
 
 **Image type descriptions**:
 

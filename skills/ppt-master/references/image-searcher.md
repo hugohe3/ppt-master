@@ -68,17 +68,29 @@ Web image APIs match keywords against image metadata, not semantic embeddings. `
 
 1. Strips HEX color codes (`#1E3A5F`) and parentheticals (`(corporate vibe)`)
 2. Drops hard-noise words: brand names, generic filler
-3. Drops soft-noise words (`ai`, `tech`, `platform`, `system`, `digital`) — only when concrete nouns remain
+3. Drops soft-noise words (`ai`, `tech`, `platform`, `professional`, `editorial`, `photo`, `background`) — only when concrete nouns remain
 4. Caps at 4 words
 5. **Fail-open**: if filtering empties the query, return the original
 
 Then `build_query_progression` tries: original → simplified (4 words) → simplified (3 words). First non-empty hit wins.
 
+**Per-row web Reference grammar**:
+
+| Segment | Rule |
+|---|---|
+| Subject | Put the concrete subject/place/object first: `offshore wind farm`, `Xiamen skyline`, `boardroom meeting` |
+| Quality cues | Add 1-3 cues after the subject: `professional editorial photography`, `clean composition`, `natural light`, `high-resolution` |
+| Language | Use official Chinese names for China-specific landmarks; use English nouns for generic stock concepts |
+
+**Forbidden — web negative prompts**: `not tourist snapshot`, `no amateur photo`, `avoid low quality`.
+
+> Note: Keyword APIs search negative words literally.
+
 | ✅ Good Reference (intent) | ❌ Avoid |
 |---|---|
-| "Aerial view of offshore wind farm at dusk" | "aerial offshore wind 4 keywords" (already keyword-shaped) |
-| "Diverse engineering team collaborating around a laptop" | "use Openverse, search 'team'" (provider mechanics) |
-| "Sunlit forest path in autumn" | "Hero image, dramatic lighting" (composition jargon, no subject) |
+| "Offshore wind farm at dusk, aerial view, professional editorial photography" | "professional editorial photography background" |
+| "Diverse engineering team collaborating around a laptop, modern office, natural light" | "use Openverse, search 'team'" |
+| "Sunlit forest path in autumn, clean composition, high-resolution photography" | "Hero image, dramatic lighting" |
 
 ---
 
