@@ -352,6 +352,8 @@ Then tell the user:
 
 **Edit Loop (When User Requests Annotation-Based Editing):**
 
+The SVG editor server stays running throughout the entire editing loop — never stop or restart it.
+
 When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", "改好了", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
 
 1. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
@@ -360,9 +362,8 @@ When the user indicates they have submitted annotations (e.g. "已提交标注",
 4. For each annotation: modify the target SVG element per the user's instruction
 5. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
 6. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
-7. Ask the user: "标注已处理完毕，PPT 已重新生成。是否需要继续标注编辑？"
-   - If yes: prompt the user to reopen the SVG editor or add more annotations, then return to step 1
-   - If no: editing loop ends
+7. Tell the user: "标注已处理，PPT 已更新。请刷新浏览器页面继续标注。无需标注时告诉我即可。"
+8. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
 
 ---
 
