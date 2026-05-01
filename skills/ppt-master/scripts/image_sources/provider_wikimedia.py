@@ -72,15 +72,10 @@ def _page_title_to_label(title):
     return clean_title
 
 
-def _build_attribution_text(candidate):
-    parts = []
-    if candidate.title:
-        parts.append(candidate.title)
-    if candidate.author:
-        parts.append(f"by {candidate.author}")
-    if candidate.license_name:
-        parts.append(candidate.license_name)
-    return " - ".join(parts)
+def _build_attribution_text(filename, candidate):
+    title_part = f'"{candidate.title}"' if candidate.title else ""
+    author_part = f"by {candidate.author}" if candidate.author else ""
+    return f"{filename} — {title_part} {author_part}, via Wikimedia Commons, source: {candidate.source_page_url}, license: {candidate.license_name} {candidate.license_url}".strip()
 
 
 def _requires_attribution(license_name, license_url):
@@ -156,7 +151,8 @@ def search_and_download(
         "prop": "imageinfo",
         "iiprop": "url|size|extmetadata",
     }
-    response = requests.get(API_URL, params=params, timeout=timeout)
+    headers = {"User-Agent": "PPTMaster/1.0 (https://github.com/hugohe3/ppt-master; heyug3@gmail.com)"}
+    response = requests.get(API_URL, params=params, headers=headers, timeout=timeout)
     response.raise_for_status()
 
     clean_orientation = (orientation or "").strip().lower()
@@ -190,5 +186,6 @@ def search_and_download(
         "license_name": best_candidate.license_name,
         "license_url": best_candidate.license_url,
         "attribution_required": best_candidate.attribution_required,
-        "attribution_text": _build_attribution_text(best_candidate),
+        "orientation": orientation,
+        "attribution_text": _build_attribution_text(filename, best_candidate),
     }

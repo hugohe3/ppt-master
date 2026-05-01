@@ -156,7 +156,7 @@ class PexelsProviderTests(unittest.TestCase):
         self.assertFalse(result["attribution_required"])
         self.assertEqual(
             result["attribution_text"],
-            "City skyline at dusk - by Jane Doe - Pexels License",
+            'hero.jpg — "City skyline at dusk" by Jane Doe, via Pexels, source: https://www.pexels.com/photo/city-skyline-10/, license: Pexels License https://www.pexels.com/license/',
         )
 
 
@@ -284,7 +284,7 @@ class PixabayProviderTests(unittest.TestCase):
         self.assertFalse(result["attribution_required"])
         self.assertEqual(
             result["attribution_text"],
-            "forest trail, nature - by John Doe - Pixabay Content License",
+            'hero.jpg — "forest trail, nature" by John Doe, via Pixabay, source: https://pixabay.com/photos/forest-trail-20/, license: Pixabay Content License https://pixabay.com/service/license-summary/',
         )
 
 

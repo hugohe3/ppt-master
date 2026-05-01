@@ -184,7 +184,10 @@ def retry_delay(attempt: int, rate_limited: bool) -> int:
 
 def download_image(url: str, path: str, headers: dict = None, timeout: int = 180) -> str:
     """Download an image URL and save it to disk."""
-    response = requests.get(url, headers=headers or {}, timeout=timeout)
+    default_headers = {"User-Agent": "PPTMaster/1.0 (https://github.com/hugohe3/ppt-master)"}
+    if headers:
+        default_headers.update(headers)
+    response = requests.get(url, headers=default_headers, timeout=timeout)
     response.raise_for_status()
     return save_image_bytes(
         response.content,

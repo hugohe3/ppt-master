@@ -52,15 +52,10 @@ def _as_int(value):
         return 0
 
 
-def _build_attribution_text(candidate):
-    parts = []
-    if candidate.title:
-        parts.append(candidate.title)
-    if candidate.author:
-        parts.append(f"by {candidate.author}")
-    if candidate.license_name:
-        parts.append(candidate.license_name)
-    return " - ".join(parts)
+def _build_attribution_text(filename, candidate):
+    title_part = f'"{candidate.title}"' if candidate.title else ""
+    author_part = f"by {candidate.author}" if candidate.author else ""
+    return f"{filename} — {title_part} {author_part}, via Pixabay, source: {candidate.source_page_url}, license: {candidate.license_name} {candidate.license_url}".strip()
 
 
 def parse_results(payload):
@@ -156,5 +151,6 @@ def search_and_download(
         "license_name": best_candidate.license_name,
         "license_url": best_candidate.license_url,
         "attribution_required": best_candidate.attribution_required,
-        "attribution_text": _build_attribution_text(best_candidate),
+        "orientation": orientation,
+        "attribution_text": _build_attribution_text(filename, best_candidate),
     }
