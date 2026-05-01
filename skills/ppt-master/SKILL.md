@@ -338,15 +338,20 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 
 **Step 7.4: SVG Editor (Optional)**
 
-After PPTX export, inform the user that they can annotate slides for targeted editing:
+After PPTX export, offer the SVG editor to the user for targeted editing.
 
-> SVG 编辑器已可用。如需对幻灯片进行局部标注编辑，可运行：
-> `python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path>`
-> 在浏览器中选择元素并添加批注，保存后告诉我你已提交标注。
+To start the editor, run in the background:
+```bash
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
+```
+
+Then tell the user:
+> SVG 编辑器已启动，请在浏览器打开: http://localhost:5000
+> 在浏览器中选择元素并添加批注，完成后在编辑器中点击"保存"，然后回来告诉我。
 
 **Edit Loop (When User Requests Annotation-Based Editing):**
 
-When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
+When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", "改好了", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
 
 1. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
 2. If no annotations found, inform the user and stop

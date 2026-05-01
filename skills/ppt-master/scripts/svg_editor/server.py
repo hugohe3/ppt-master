@@ -24,12 +24,20 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory
 
-from .annotations import (
-    assign_temp_ids,
-    parse_annotations,
-    set_annotation,
-    remove_annotation,
-)
+try:
+    from .annotations import (
+        assign_temp_ids,
+        parse_annotations,
+        set_annotation,
+        remove_annotation,
+    )
+except ImportError:
+    from annotations import (
+        assign_temp_ids,
+        parse_annotations,
+        set_annotation,
+        remove_annotation,
+    )
 
 
 def create_app(project_dir: str) -> Flask:
