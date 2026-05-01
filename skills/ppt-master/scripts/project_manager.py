@@ -676,6 +676,10 @@ def main() -> None:
         sys.exit(1)
 
     command = sys.argv[1]
+    if command in {"-h", "--help", "help"}:
+        print_usage()
+        sys.exit(0)
+
     manager = ProjectManager()
 
     try:

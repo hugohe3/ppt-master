@@ -442,7 +442,14 @@ if __name__ == '__main__':
     # Test code
     import sys
 
+    def print_usage() -> None:
+        print("Usage: python3 project_utils.py <project_path>")
+
     if len(sys.argv) > 1:
+        if sys.argv[1] in {'-h', '--help', 'help'}:
+            print_usage()
+            sys.exit(0)
+
         project_path = sys.argv[1]
         info = get_project_info(project_path)
 
@@ -472,4 +479,4 @@ if __name__ == '__main__':
         if is_valid and not warnings:
             print("[OK] Project structure is complete, no issues found")
     else:
-        print("Usage: python3 project_utils.py <project_path>")
+        print_usage()

@@ -205,6 +205,10 @@ def main() -> None:
     examples_dir = 'examples'
 
     if len(sys.argv) > 1:
+        if sys.argv[1] in {'-h', '--help', 'help'}:
+            print(__doc__)
+            sys.exit(0)
+
         examples_dir = sys.argv[1]
 
     print("=" * 80)

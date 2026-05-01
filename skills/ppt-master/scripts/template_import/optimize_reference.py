@@ -15,12 +15,17 @@ import argparse
 import json
 import math
 import re
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
-from .externalize_images import discover_svg_files
+try:
+    from .externalize_images import discover_svg_files
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from externalize_images import discover_svg_files  # type: ignore
 
 
 SVG_NS = "http://www.w3.org/2000/svg"

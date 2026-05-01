@@ -3,6 +3,13 @@
 Shared helpers for image generation backends.
 """
 
+import sys
+
+if __name__ == "__main__" and any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]):
+    print(__doc__)
+    print("This is an internal helper module used by image_gen.py backends.")
+    raise SystemExit(0)
+
 import io
 import os
 import time

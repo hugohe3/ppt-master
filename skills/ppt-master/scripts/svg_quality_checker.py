@@ -775,19 +775,33 @@ class SVGQualityChecker:
         print(f"\n[REPORT] Check report exported: {output_file}")
 
 
+def print_usage() -> None:
+    """Print CLI usage information."""
+    print("PPT Master - SVG Quality Check Tool\n")
+    print("Usage:")
+    print("  python3 scripts/svg_quality_checker.py <svg_file>")
+    print("  python3 scripts/svg_quality_checker.py <directory>")
+    print("  python3 scripts/svg_quality_checker.py --all examples")
+    print("\nExamples:")
+    print("  python3 scripts/svg_quality_checker.py examples/project/svg_output/slide_01.svg")
+    print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
+    print("  python3 scripts/svg_quality_checker.py examples/project")
+
+
 def main() -> None:
     """Run the CLI entry point."""
     if len(sys.argv) < 2:
-        print("PPT Master - SVG Quality Check Tool\n")
-        print("Usage:")
-        print("  python3 scripts/svg_quality_checker.py <svg_file>")
-        print("  python3 scripts/svg_quality_checker.py <directory>")
-        print("  python3 scripts/svg_quality_checker.py --all examples")
-        print("\nExamples:")
-        print("  python3 scripts/svg_quality_checker.py examples/project/svg_output/slide_01.svg")
-        print("  python3 scripts/svg_quality_checker.py examples/project/svg_output")
-        print("  python3 scripts/svg_quality_checker.py examples/project")
+        print_usage()
         sys.exit(0)
+
+    if sys.argv[1] in {"-h", "--help", "help"}:
+        print_usage()
+        sys.exit(0)
+
+    if sys.argv[1].startswith("--") and sys.argv[1] not in {"--all"}:
+        print(f"[ERROR] Missing target before option: {sys.argv[1]}")
+        print_usage()
+        sys.exit(1)
 
     checker = SVGQualityChecker()
 

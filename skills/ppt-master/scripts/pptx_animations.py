@@ -24,8 +24,13 @@ Animation modes used by the builder:
     - 'random' — pick a random effect from the same visible pool per element
 
 Dependencies: None (pure XML generation)
+
+Usage:
+    python3 scripts/pptx_animations.py --demo
+    python3 scripts/pptx_animations.py --list
 """
 
+import argparse
 from typing import Optional, Dict, Any
 
 
@@ -536,10 +541,32 @@ def get_animation_help() -> str:
     return '\n'.join(lines)
 
 
+def main() -> None:
+    """Run the CLI entry point."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--demo", action="store_true", help="print sample XML for a fade transition and animation")
+    parser.add_argument("--list", action="store_true", help="list available transitions and entrance animations")
+    args = parser.parse_args()
+
+    if args.list:
+        print(get_transition_help())
+        print()
+        print(get_animation_help())
+        return
+
+    if args.demo:
+        print("=== Transition Effect XML Example (fade, 500ms) ===")
+        print(create_transition_xml('fade', 0.5))
+        print()
+        print("=== Entrance Animation XML Example (fade) ===")
+        print(create_timing_xml('fade', 1.0))
+        return
+
+    parser.print_help()
+
+
 if __name__ == '__main__':
-    # Test output
-    print("=== Transition Effect XML Example (fade, 500ms) ===")
-    print(create_transition_xml('fade', 0.5))
-    print()
-    print("=== Entrance Animation XML Example (fade) ===")
-    print(create_timing_xml('fade', 1.0))
+    main()

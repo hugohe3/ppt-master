@@ -254,19 +254,28 @@ class BatchValidator:
         print(f"\n[REPORT] Validation report exported: {output_file}")
 
 
+def print_usage() -> None:
+    """Print CLI usage information."""
+    print("PPT Master - Batch Project Validation Tool\n")
+    print("Usage:")
+    print("  python3 scripts/batch_validate.py <directory>")
+    print("  python3 scripts/batch_validate.py <dir1> <dir2> ...")
+    print("  python3 scripts/batch_validate.py --all")
+    print("\nExamples:")
+    print("  python3 scripts/batch_validate.py examples")
+    print("  python3 scripts/batch_validate.py projects")
+    print("  python3 scripts/batch_validate.py examples projects")
+    print("  python3 scripts/batch_validate.py --all")
+
+
 def main() -> None:
     """Run the CLI entry point."""
     if len(sys.argv) < 2:
-        print("PPT Master - Batch Project Validation Tool\n")
-        print("Usage:")
-        print("  python3 scripts/batch_validate.py <directory>")
-        print("  python3 scripts/batch_validate.py <dir1> <dir2> ...")
-        print("  python3 scripts/batch_validate.py --all")
-        print("\nExamples:")
-        print("  python3 scripts/batch_validate.py examples")
-        print("  python3 scripts/batch_validate.py projects")
-        print("  python3 scripts/batch_validate.py examples projects")
-        print("  python3 scripts/batch_validate.py --all")
+        print_usage()
+        sys.exit(0)
+
+    if sys.argv[1] in {"-h", "--help", "help"}:
+        print_usage()
         sys.exit(0)
 
     validator = BatchValidator()

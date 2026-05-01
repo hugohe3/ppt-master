@@ -425,6 +425,10 @@ def main() -> None:
 
     if len(sys.argv) > 1:
         error_type = sys.argv[1]
+        if error_type in {'-h', '--help', 'help'}:
+            ErrorHelper.print_help()
+            return
+
         context = {}
 
         # Parse context parameters

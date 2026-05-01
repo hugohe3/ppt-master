@@ -578,21 +578,29 @@ class Config:
 # Command Line Interface
 # ============================================================
 
+def print_usage() -> None:
+    """Print CLI usage information."""
+    print("PPT Master - Configuration Management Tool\n")
+    print("Usage:")
+    print("  python3 scripts/config.py list-formats     # List all canvas formats")
+    print("  python3 scripts/config.py list-colors      # List all color schemes")
+    print("  python3 scripts/config.py list-industries  # List all industry colors")
+    print("  python3 scripts/config.py export           # Export configuration to JSON")
+    print("  python3 scripts/config.py format <key>     # View a specific canvas format")
+
+
 def main() -> None:
     """Command line entry point."""
     import sys
 
     if len(sys.argv) < 2:
-        print("PPT Master - Configuration Management Tool\n")
-        print("Usage:")
-        print("  python3 scripts/config.py list-formats     # List all canvas formats")
-        print("  python3 scripts/config.py list-colors      # List all color schemes")
-        print("  python3 scripts/config.py list-industries  # List all industry colors")
-        print("  python3 scripts/config.py export           # Export configuration to JSON")
-        print("  python3 scripts/config.py format <key>     # View a specific canvas format")
+        print_usage()
         return
 
     command = sys.argv[1]
+    if command in {"-h", "--help", "help"}:
+        print_usage()
+        return
 
     if command == 'list-formats':
         print("\nCanvas Format List:\n")

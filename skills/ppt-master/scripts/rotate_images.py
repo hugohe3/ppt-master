@@ -8,6 +8,7 @@ and batch image rotation functionality.
 Usage:
     python3 scripts/rotate_images.py gen <images_directory>
     python3 scripts/rotate_images.py fix <fixes.json>
+    python3 scripts/rotate_images.py auto <images_directory>
 """
 
 
@@ -527,6 +528,10 @@ def main() -> None:
         sys.exit(1)
 
     command = sys.argv[1]
+    if command in {"-h", "--help", "help"}:
+        print(__doc__)
+        sys.exit(0)
+
     rotator = ImageRotator()
 
     if command == 'gen':

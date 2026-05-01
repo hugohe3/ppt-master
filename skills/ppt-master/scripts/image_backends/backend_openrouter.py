@@ -8,6 +8,13 @@ Configuration keys:
   OPENROUTER_MODEL     (optional)
 """
 
+import sys
+
+if __name__ == "__main__" and any(arg in {"-h", "--help", "help"} for arg in sys.argv[1:]):
+    print(__doc__)
+    print("Use via: python3 skills/ppt-master/scripts/image_gen.py \"prompt\" --backend openrouter")
+    raise SystemExit(0)
+
 import base64
 import os
 import time
