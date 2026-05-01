@@ -58,6 +58,7 @@
             })
             .catch(function (err) {
                 console.error("loadSlides:", err);
+                showError("Failed to load slides: " + err.message);
             });
     }
 
@@ -101,6 +102,7 @@
             })
             .catch(function (err) {
                 console.error("selectSlide:", err);
+                showError("Failed to load slide: " + err.message);
             });
     }
 
@@ -203,6 +205,7 @@
             })
             .catch(function (err) {
                 console.error("addAnnotation:", err);
+                showError("Failed to add annotation: " + err.message);
             });
     });
 
@@ -224,6 +227,7 @@
             })
             .catch(function (err) {
                 console.error("removeAnnotation:", err);
+                showError("Failed to remove annotation: " + err.message);
             });
     }
 
@@ -357,6 +361,15 @@
             });
         });
         return new XMLSerializer().serializeToString(doc.documentElement);
+    }
+
+    function showError(msg) {
+        var banner = document.createElement("div");
+        banner.style.cssText = "position:fixed;top:0;left:0;right:0;padding:10px 16px;background:#ef4444;color:#fff;font-size:13px;text-align:center;z-index:999;cursor:pointer;";
+        banner.textContent = msg;
+        banner.onclick = function () { banner.remove(); };
+        document.body.appendChild(banner);
+        setTimeout(function () { banner.remove(); }, 5000);
     }
 
     function escapeHtml(str) {

@@ -360,13 +360,14 @@ When the user indicates they have submitted annotations (e.g. "已提交标注",
 4. Read each annotated SVG file from `svg_output/`
 5. For each annotation: modify the target SVG element per the user's instruction
 6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
-7. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
-8. Re-start the SVG editor server:
+7. Remove temporary `_edit_N` id attributes from elements that did not have a user-assigned id originally
+8. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
+9. Re-start the SVG editor server:
    ```bash
    python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
    ```
-9. Tell the user: "标注已处理，PPT 已更新。编辑器已重启: http://localhost:5000 。无需标注时告诉我即可。"
-10. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
+10. Tell the user: "标注已处理，PPT 已更新。编辑器已重启: http://localhost:5000 。无需标注时告诉我即可。"
+11. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
 
 ---
 

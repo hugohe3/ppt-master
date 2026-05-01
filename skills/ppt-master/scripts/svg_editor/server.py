@@ -28,6 +28,7 @@ from typing import Optional
 
 from flask import Flask, jsonify, request, send_from_directory
 
+# Local — sys.path injection for sibling module (code-style.md §3)
 _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
@@ -65,6 +66,8 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
             elapsed = time.time() - app.config['LAST_REQUEST_TIME']
             if elapsed > idle_timeout:
                 print(f"SVG Editor idle for {idle_timeout}s, shutting down.")
+                # os._exit: Flask dev server has no clean shutdown mechanism;
+                # data is safe because idle timeout only fires when no requests are in flight.
                 os._exit(0)
 
     watchdog = threading.Thread(target=_idle_watchdog, daemon=True)
@@ -73,8 +76,9 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     @app.route('/api/shutdown', methods=['POST'])
     def shutdown():
         def _stop():
-            time.sleep(0.5)
+            time.sleep(0.5)  # Let HTTP response flush before killing the process
             print("SVG Editor shutting down (user saved annotations).")
+            # os._exit: save-all already wrote to disk; 0.5s delay ensures response is sent.
             os._exit(0)
         threading.Thread(target=_stop, daemon=True).start()
         return jsonify({'status': 'ok'})
@@ -113,7 +117,11 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         return jsonify({'slides': slides})
 
     def _safe_svg_path(name: str):
-        """Validate slide name and return safe path. Returns None if invalid."""
+        """Validate slide name and return safe path. Returns None if invalid.
+
+        The early string checks reject obvious bad inputs; the resolve()+startswith()
+        check is the authoritative path traversal guard.
+        """
         if '/' in name or '\\' in name or '..' in name:
             return None
         svg_file = (svg_dir / name).resolve()
@@ -174,6 +182,9 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
 
         element_id = data['element_id']
         annotation = data['annotation']
+
+        if not isinstance(element_id, str) or not isinstance(annotation, str):
+            return jsonify({'error': 'element_id and annotation must be strings'}), 400
 
         if len(annotation) > 10000:
             return jsonify({'error': 'Annotation too long (max 10000 chars)'}), 400

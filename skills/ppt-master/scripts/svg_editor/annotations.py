@@ -23,7 +23,16 @@ ET.register_namespace('', SVG_NS)
 
 
 def assign_temp_ids(root: ET.Element) -> None:
-    """Assign deterministic temp ids (_edit_0, _edit_1, ...) to elements without one."""
+    """Assign deterministic temp ids (_edit_0, _edit_1, ...) to elements without one.
+
+    Clears any leftover _edit_N ids from previous sessions first, to avoid
+    shifted numbering when elements are added/removed between sessions.
+    """
+    for elem in root.iter():
+        eid = elem.get('id', '')
+        if eid.startswith('_edit_'):
+            elem.attrib.pop('id', None)
+
     counter = 0
     for elem in root.iter():
         if elem is root:
