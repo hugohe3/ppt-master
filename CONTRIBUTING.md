@@ -31,11 +31,12 @@ pip install -r requirements.txt
 
 PPT Master is solo-maintained with limited review bandwidth. To keep things healthy for everyone:
 
-- **Small fixes** (typos, clear bugs, doc corrections) — open a PR directly
-- **New features, new backends, new abstractions** — please open an issue first to discuss fit and direction. PRs submitted without prior discussion may be closed without detailed review
-- **Refactors or structural changes** — almost always need an issue first. The project deliberately stays close to its current shape
+- **Tiny fixes** (typos, one-line usage/doc corrections, obvious small inconsistencies) — please open an issue instead of a PR. A clear report is usually faster for the maintainer to apply directly
+- **Focused bug fixes** — PRs are welcome when the fix is self-contained, has clear reproduction steps, and includes local verification
+- **Substantial features, new backends, or new abstractions** — please open an issue first to discuss fit and direction. PRs submitted without prior discussion may be closed without detailed review
+- **Refactors, structural changes, broad cleanup, or workflow changes** — open an issue first. The project deliberately stays close to its current shape
 
-This isn't gatekeeping — it protects your time. A 500-line PR that doesn't match the project direction is worse for you than a 10-line issue comment that clarifies it upfront.
+This isn't gatekeeping — it protects your time. A PR should be a meaningful, independently reviewable change, not just a few lines the maintainer could patch faster from an issue report. A 500-line PR that doesn't match the project direction is worse for you than a 10-line issue comment that clarifies it upfront.
 
 ## What We Accept / What We Don't
 
@@ -67,7 +68,7 @@ If you're unsure, open an issue to ask — that's always welcome.
 
 - Reviews are best-effort, usually within a few days. Ping the PR if it's been a week without response
 - Review feedback will be specific: what to change, and whether it's a blocker. If a PR needs more than ~2 rounds to converge, it may be closed with a note — reopening is fine once the direction is clearer
-- Small fixes may be merged as-is; larger contributions will usually be squash-merged to keep history readable
+- Focused fixes may be merged as-is; larger contributions will usually be squash-merged to keep history readable
 
 ## SVG Guidelines
 
