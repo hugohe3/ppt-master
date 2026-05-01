@@ -5,7 +5,6 @@ This script uses `edge-tts` for the same cross-platform behavior on macOS,
 Linux, and Windows.
 
 Usage:
-    python3 skills/ppt-master/scripts/notes_to_audio.py <project_path>
     python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
     python3 skills/ppt-master/scripts/notes_to_audio.py --list-common-voices
     python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale zh-CN
