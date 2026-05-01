@@ -49,7 +49,7 @@ def parse_annotations(root: ET.Element) -> list[dict]:
         if elem.get('data-edit-target') == 'true':
             annotations.append({
                 'element_id': elem.get('id', ''),
-                'tag': elem.tag.replace(f'{{{SVG_NS}}}', ''),
+                'tag': elem.tag.split('}', 1)[1] if '}' in elem.tag else elem.tag,
                 'annotation': elem.get('data-edit-annotation', ''),
             })
     return annotations

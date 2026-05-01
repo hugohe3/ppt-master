@@ -88,7 +88,7 @@
                 // Render SVG
                 svgPlaceholder.style.display = "none";
                 svgContent.style.display = "block";
-                svgContent.innerHTML = data.content;
+                svgContent.innerHTML = sanitizeSvg(data.content);
 
                 // Build annotations map from response
                 (data.annotations || []).forEach(function (a) {
@@ -348,6 +348,17 @@
     // ================================================================
     //  Utility
     // ================================================================
+    function sanitizeSvg(svgString) {
+        var doc = new DOMParser().parseFromString(svgString, "image/svg+xml");
+        doc.querySelectorAll("script,foreignObject").forEach(function (el) { el.remove(); });
+        doc.querySelectorAll("*").forEach(function (el) {
+            Array.from(el.attributes).forEach(function (attr) {
+                if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
+            });
+        });
+        return new XMLSerializer().serializeToString(doc.documentElement);
+    }
+
     function escapeHtml(str) {
         var d = document.createElement("div");
         d.appendChild(document.createTextNode(str));

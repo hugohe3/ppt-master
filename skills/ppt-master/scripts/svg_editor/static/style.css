@@ -369,7 +369,7 @@ html, body {
 }
 
 /* --- Save button --- */
-.btn-save {
+#btn-save {
     margin: 12px 16px 16px;
     padding: 11px 0;
     font-size: 14px;

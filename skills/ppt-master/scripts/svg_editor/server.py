@@ -120,9 +120,20 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
 
         return jsonify({'slides': slides})
 
+    def _safe_svg_path(name: str):
+        """Validate slide name and return safe path. Returns None if invalid."""
+        if '/' in name or '\\' in name or '..' in name:
+            return None
+        svg_file = (svg_dir / name).resolve()
+        if not str(svg_file).startswith(str(svg_dir.resolve())):
+            return None
+        return svg_file
+
     @app.route('/api/slide/<name>')
     def get_slide(name: str):
-        svg_file = app.config['SVG_DIR'] / name
+        svg_file = _safe_svg_path(name)
+        if svg_file is None:
+            return jsonify({'error': 'Invalid slide name'}), 400
         if not svg_file.exists():
             return jsonify({'error': 'Slide not found'}), 404
 
@@ -172,6 +183,9 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
         element_id = data['element_id']
         annotation = data['annotation']
 
+        if len(annotation) > 10000:
+            return jsonify({'error': 'Annotation too long (max 10000 chars)'}), 400
+
         if name not in app.config['ANNOTATIONS']:
             app.config['ANNOTATIONS'][name] = {}
 
@@ -203,8 +217,8 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
             if not anns:
                 continue
 
-            svg_file = svg_dir / filename
-            if not svg_file.exists():
+            svg_file = _safe_svg_path(filename)
+            if svg_file is None or not svg_file.exists():
                 continue
 
             try:
@@ -218,7 +232,7 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
             for element_id, annotation_text in anns.items():
                 set_annotation(root, element_id, annotation_text)
 
-            tree.write(str(svg_file), encoding='unicode', xml_declaration=True)
+            tree.write(str(svg_file), encoding='UTF-8', xml_declaration=True)
             modified.append(filename)
 
         app.config['ANNOTATIONS'] = {}
