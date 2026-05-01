@@ -342,11 +342,11 @@ After PPTX export, inform the user that they can annotate slides for targeted ed
 
 > SVG 编辑器已可用。如需对幻灯片进行局部标注编辑，可运行：
 > `python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path>`
-> 在浏览器中选择元素并添加批注，保存后告诉我"读取标注并修改"。
+> 在浏览器中选择元素并添加批注，保存后告诉我你已提交标注。
 
 **Edit Loop (When User Requests Annotation-Based Editing):**
 
-When the user says "读取标注并修改" or similar:
+When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
 
 1. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
 2. If no annotations found, inform the user and stop
