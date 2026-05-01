@@ -24,32 +24,24 @@ import time
 import webbrowser
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import Optional
 
 from flask import Flask, jsonify, request, send_from_directory
 
-try:
-    from .annotations import (
-        assign_temp_ids,
-        parse_annotations,
-        set_annotation,
-        remove_annotation,
-    )
-except ImportError:
-    from annotations import (
-        assign_temp_ids,
-        parse_annotations,
-        set_annotation,
-        remove_annotation,
-    )
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from annotations import (  # noqa: E402
+    assign_temp_ids,
+    parse_annotations,
+    set_annotation,
+    remove_annotation,
+)
 
 
 def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
-    """
-    Create and configure the Flask app.
-
-    Args:
-        project_dir: Path to the ppt-master project directory (contains svg_output/).
-    """
+    """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
 
@@ -242,26 +234,26 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     return app
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='PPT Master SVG Editor',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-    python3 scripts/svg_editor/server.py projects/my-project
-    python3 scripts/svg_editor/server.py projects/my-project --port 8080
-        """
     )
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
     parser.add_argument('--port', type=int, default=5000, help='Port to listen on (default: 5000)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument('--timeout', type=int, default=900, help='Idle timeout in seconds (default: 900 = 15min)')
-    args = parser.parse_args()
+    return parser
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
     project_path = Path(args.project_dir).resolve()
     if not (project_path / 'svg_output').exists():
         print(f"Error: {project_path / 'svg_output'} does not exist", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     app = create_app(str(project_path), idle_timeout=args.timeout)
 
@@ -272,7 +264,8 @@ Examples:
     print(f"SVG Editor running at {url}")
     print(f"Project: {project_path}")
     app.run(host='127.0.0.1', port=args.port, debug=False)
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

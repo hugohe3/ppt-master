@@ -21,14 +21,11 @@ import argparse
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import Optional
 
 
 def scan_svg_file(svg_path: Path) -> list[dict]:
-    """
-    Scan a single SVG file for annotations.
-
-    Returns list of dicts: element_id, tag, annotation, content_preview.
-    """
+    """Scan a single SVG file for edit annotations."""
     try:
         tree = ET.parse(svg_path)
     except ET.ParseError:
@@ -58,11 +55,7 @@ def scan_svg_file(svg_path: Path) -> list[dict]:
 
 
 def scan_directory(dir_path: Path) -> dict[str, list[dict]]:
-    """
-    Scan all SVG files in svg_output/ subdirectory.
-
-    Returns dict mapping filename -> list of annotation dicts.
-    """
+    """Scan all SVG files in svg_output/ for edit annotations."""
     svg_dir = dir_path / 'svg_output'
     if not svg_dir.exists():
         return {}
@@ -97,24 +90,24 @@ def print_results(results: dict[str, list[dict]]) -> None:
         print()
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description='Check SVG files for edit annotations',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-    python3 scripts/check_annotations.py projects/my-project
-    python3 scripts/check_annotations.py projects/my-project/svg_output/slide_01.svg
-        """
     )
     parser.add_argument('path', help='Project directory or single SVG file path')
-    args = parser.parse_args()
+    return parser
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
 
     target = Path(args.path).resolve()
 
     if not target.exists():
         print(f"Error: Path not found: {target}", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     if target.is_file() and target.suffix == '.svg':
         annotations = scan_svg_file(target)
@@ -123,10 +116,11 @@ Examples:
         results = scan_directory(target)
     else:
         print(f"Error: Expected a project directory or .svg file, got: {target}", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     print_results(results)
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

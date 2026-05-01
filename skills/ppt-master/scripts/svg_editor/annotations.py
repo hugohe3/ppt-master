@@ -1,8 +1,16 @@
+#!/usr/bin/env python3
 """
-SVG Annotation Utilities for ppt-master SVG Editor.
+PPT Master - SVG Annotation Utilities
 
-Handles reading, writing, and managing edit annotations in SVG files.
-Annotations are stored as custom XML attributes: data-edit-target, data-edit-annotation.
+Read, write, and manage edit annotations in SVG files.
+Annotations are stored as custom XML attributes (data-edit-target, data-edit-annotation)
+on SVG elements, enabling AI-driven targeted editing.
+
+Usage:
+    (library module — imported by server.py and check_annotations.py)
+
+Dependencies:
+    None (only uses standard library)
 """
 
 import xml.etree.ElementTree as ET
@@ -15,12 +23,7 @@ ET.register_namespace('', SVG_NS)
 
 
 def assign_temp_ids(root: ET.Element) -> None:
-    """
-    Assign temporary ids to SVG elements that don't have one.
-
-    Skips the root svg element and any element that already has an id.
-    Temp ids are deterministic based on element tree order: _edit_0, _edit_1, ...
-    """
+    """Assign deterministic temp ids (_edit_0, _edit_1, ...) to elements without one."""
     counter = 0
     for elem in root.iter():
         if elem is root:
@@ -39,11 +42,7 @@ def _find_by_id(root: ET.Element, element_id: str) -> Optional[ET.Element]:
 
 
 def parse_annotations(root: ET.Element) -> list[dict]:
-    """
-    Extract all annotations from an SVG element tree.
-
-    Returns list of dicts with keys: element_id, tag, annotation.
-    """
+    """Extract all annotations from an SVG element tree."""
     annotations = []
     for elem in root.iter():
         if elem.get('data-edit-target') == 'true':
@@ -56,11 +55,7 @@ def parse_annotations(root: ET.Element) -> list[dict]:
 
 
 def set_annotation(root: ET.Element, element_id: str, annotation: str) -> bool:
-    """
-    Add or update an annotation on an SVG element.
-
-    Returns True if element was found and annotated, False otherwise.
-    """
+    """Add or update an annotation on an SVG element. Returns True if found."""
     elem = _find_by_id(root, element_id)
     if elem is None:
         return False
@@ -70,11 +65,7 @@ def set_annotation(root: ET.Element, element_id: str, annotation: str) -> bool:
 
 
 def remove_annotation(root: ET.Element, element_id: str) -> bool:
-    """
-    Remove annotation attributes from an SVG element.
-
-    Returns True if element was found, False otherwise.
-    """
+    """Remove annotation attributes from an SVG element. Returns True if found."""
     elem = _find_by_id(root, element_id)
     if elem is None:
         return False
