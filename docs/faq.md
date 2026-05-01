@@ -32,9 +32,9 @@ Yes. PPT Master includes a built-in image generation script that supports multip
 
 ## Q: I don't have an image-generation API key — can I still get images?
 
-Yes — pick "Web-sourced" in the Strategist's Image Usage step. PPT Master ships a zero-config `image_search.py` that searches openly-licensed images across Openverse and Wikimedia Commons (no API key needed). It defaults to CC0 / Public Domain so the deck stays visually clean, and only falls back to CC BY / CC BY-SA when no public-domain match exists — in which case the Executor adds a small inline credit on the affected slide.
+Yes — pick "Web-sourced" in the Strategist's Image Usage step. PPT Master ships a zero-config `image_search.py` that searches openly-licensed images across Openverse and Wikimedia Commons (no API key needed). Zero-config search is a fallback: it works immediately, but quality can be uneven because many results are ordinary user uploads.
 
-You can mix the two paths in one deck (e.g. AI for hero illustrations, web for team photos). For better contemporary stock photography, set `PEXELS_API_KEY` or `PIXABAY_API_KEY` in `.env` (both are free) and the search will include them automatically.
+For better contemporary stock photography, set `PEXELS_API_KEY` and/or `PIXABAY_API_KEY` in `.env` (both are free). The search will include Pexels / Pixabay automatically, which usually improves people, workplace, lifestyle, product, and illustration images. You can mix paths in one deck (e.g. AI for hero illustrations, web for team photos). If a selected image requires attribution, Executor adds a small inline credit on the affected slide.
 
 ## Q: Can I edit the generated presentations?
 

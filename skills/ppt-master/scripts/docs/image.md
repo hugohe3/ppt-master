@@ -94,16 +94,16 @@ python3 scripts/image_search.py "offshore wind farm" \
   --orientation landscape -o projects/demo/images
 ```
 
-Providers (Openverse and Wikimedia work with no key; Pexels and Pixabay are optional):
+Providers (Openverse and Wikimedia work with no key; configure Pexels / Pixabay for better stock-photo quality):
 
 | Provider | Config | Strength |
 |---|---|---|
-| `openverse` | zero-config | aggregator: Wikimedia + Flickr + museums + rawpixel |
+| `openverse` | zero-config | fallback aggregator: Wikimedia + Flickr + museums + rawpixel |
 | `wikimedia` | zero-config | educational, scientific, geographic, historical |
-| `pexels` | needs `PEXELS_API_KEY` | modern stock photography |
-| `pixabay` | needs `PIXABAY_API_KEY` | broad type coverage including illustrations |
+| `pexels` | recommended: `PEXELS_API_KEY` | modern stock photography, people, workplace, lifestyle |
+| `pixabay` | recommended: `PIXABAY_API_KEY` | broad type coverage including photos and illustrations |
 
-Default search chain (when `--provider` is unset): zero-config providers first, then keyed providers whose API key is set in the environment. Keyed providers without a key are silently skipped.
+Default search chain (when `--provider` is unset): zero-config providers first, then keyed providers whose API key is set in the environment. Keyed providers without a key are silently skipped. For polished visual decks, configure at least one keyed provider.
 
 Query guidance:
 

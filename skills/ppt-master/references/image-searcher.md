@@ -47,10 +47,10 @@ Strict:  provider chain, license filter = cc0,pdm,pexels,pixabay
 
 | Provider | Config | Strength |
 |---|---|---|
-| Openverse | zero-config | aggregator: Wikimedia + Flickr + museums + rawpixel |
+| Openverse | zero-config | fallback aggregator: Wikimedia + Flickr + museums + rawpixel |
 | Wikimedia Commons | zero-config | educational, scientific, geographic, historical |
-| Pexels | `PEXELS_API_KEY` (free, [signup](https://www.pexels.com/api/)) | modern stock photography, people, scenes |
-| Pixabay | `PIXABAY_API_KEY` (free, [signup](https://pixabay.com/api/docs/)) | broad type coverage including illustrations |
+| Pexels | recommended: `PEXELS_API_KEY` (free, [signup](https://www.pexels.com/api/)) | modern stock photography, people, workplace, lifestyle |
+| Pixabay | recommended: `PIXABAY_API_KEY` (free, [signup](https://pixabay.com/api/docs/)) | broad type coverage including photos and illustrations |
 
 Default chain (when `--provider` is unset):
 
@@ -59,6 +59,8 @@ openverse → wikimedia → pexels (if PEXELS_API_KEY set) → pixabay (if PIXAB
 ```
 
 Keyed providers without an API key are silently skipped — not an error.
+
+**Validation**: For polished visual decks, configure at least one keyed provider before using `Acquire Via: web`.
 
 ---
 
