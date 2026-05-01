@@ -308,17 +308,69 @@ def normalize_orientation(width: int, height: int) -> str:
     return "square"
 
 
+def _query_tokens(query: str) -> list[str]:
+    """Extract ASCII keyword tokens from a query for relevance scoring.
+
+    Uses the same noise-word filtering as ``simplify_query`` so the
+    relevance signal lines up with the keywords we actually search by.
+    Non-ASCII tokens (CJK etc.) are dropped — image metadata is mostly
+    English even on multi-language providers, so substring matching CJK
+    against an English title is unreliable. When this leaves no tokens,
+    ``compute_relevance`` falls back to neutral (1.0) and lets the other
+    score dimensions decide.
+    """
+    cleaned = re.sub(r"#[0-9a-fA-F]{3,8}", "", query.lower())
+    cleaned = re.sub(r"\([^)]*\)", "", cleaned)
+    words = [w for w in cleaned.split() if len(w) > 2 and w.isascii()]
+    if not words:
+        return []
+    after_hard = [w for w in words if w not in _NOISE_WORDS]
+    after_soft = [w for w in after_hard if w not in _SOFT_NOISE_WORDS]
+    return after_soft if after_soft else after_hard
+
+
+def _candidate_text(candidate: AssetCandidate) -> str:
+    """Concatenate the candidate's matchable metadata fields for scoring."""
+    return " ".join(filter(None, (candidate.title, candidate.author))).lower()
+
+
+def compute_relevance(candidate: AssetCandidate, query: str) -> float:
+    """Fraction of query tokens that appear in the candidate's metadata.
+
+    Range ``[0.0, 1.0]``. Returns ``1.0`` (neutral) when the query has no
+    ASCII tokens to match — this lets non-English queries fall through
+    to license / size scoring without being unfairly rejected.
+    """
+    tokens = _query_tokens(query)
+    if not tokens:
+        return 1.0
+    text = _candidate_text(candidate)
+    if not text:
+        return 0.0
+    hits = sum(1 for t in tokens if t in text)
+    return hits / len(tokens)
+
+
 def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> float:
-    """Score a candidate against a request. Higher is better; -inf rejects."""
+    """Score a candidate against a request. Higher is better; -inf rejects.
+
+    Relevance dominates: a candidate whose metadata shares no query
+    tokens is rejected outright, so size / license / orientation cannot
+    rescue an irrelevant image from a permissive provider.
+    """
     if not candidate.license_tier:
         return float("-inf")
 
-    score = 10000.0
+    relevance = compute_relevance(candidate, request.query)
+    if relevance == 0.0:
+        return float("-inf")
 
-    # Strongly prefer no-attribution candidates so the deck stays clean
-    # even when both tiers are returned in the same search.
+    score = relevance * 10000.0
+
+    # No-attribution preference is a tie-breaker, not a steamroller —
+    # keeping it small lets a strongly-relevant CC BY beat an irrelevant CC0.
     if candidate.license_tier == LICENSE_TIER_NO_ATTRIBUTION:
-        score += 5000.0
+        score += 500.0
 
     candidate_orientation = normalize_orientation(candidate.width, candidate.height)
     requested = (request.orientation or "").strip().lower()

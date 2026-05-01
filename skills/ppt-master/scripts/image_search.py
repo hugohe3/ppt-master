@@ -177,11 +177,19 @@ def two_stage_search(
             if not candidates:
                 continue
 
-            ranked = sorted(
-                candidates,
-                key=lambda c: score_candidate(c, request),
-                reverse=True,
-            )
+            # Score and rank; drop candidates rejected by score_candidate
+            # (score == -inf — typically zero relevance against the query).
+            scored = [(score_candidate(c, request), c) for c in candidates]
+            ranked = [
+                c for s, c in sorted(scored, key=lambda sc: sc[0], reverse=True)
+                if s != float("-inf")
+            ]
+            if not ranked:
+                print(
+                    f"    no candidate matched the query; trying next provider/stage",
+                    file=sys.stderr,
+                )
+                continue
 
             for candidate in ranked:
                 try:
