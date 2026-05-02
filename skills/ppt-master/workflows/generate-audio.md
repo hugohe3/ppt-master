@@ -121,6 +121,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --elevenlabs-model eleven_multilingual_v2
 
 # 1C. Or generate audio with MiniMax
+# Defaults to the China endpoint; set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2 for overseas access.
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax --voice-id <chosen-voice-id> \
   --minimax-model speech-2.8-hd

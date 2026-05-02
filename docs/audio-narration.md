@@ -58,6 +58,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 # 2C. Or generate MP3s with MiniMax (supports system and cloned voice_id)
 export MINIMAX_API_KEY="your-minimax-api-key"
+# Defaults to the China endpoint. For overseas access, set MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2.
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax \
   --voice-id <minimax-voice-id> \

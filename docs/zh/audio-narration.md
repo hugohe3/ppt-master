@@ -51,6 +51,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
 
 # 2B. 用 MiniMax 生成 MP3（支持系统音色或复刻 voice_id）
 export MINIMAX_API_KEY="your-minimax-api-key"
+# 默认使用国内地址；海外访问可设置 MINIMAX_TTS_BASE_URL=https://api.minimax.io/v1/t2a_v2
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --provider minimax \
   --voice-id <minimax-voice-id> \

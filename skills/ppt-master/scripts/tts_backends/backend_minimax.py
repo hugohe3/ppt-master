@@ -9,8 +9,10 @@ from pathlib import Path
 from tts_backends.backend_common import extension_from_format, post_json, read_api_key
 
 
-DEFAULT_ENDPOINT = "https://api.minimax.io/v1/t2a_v2"
+DEFAULT_ENDPOINT = "https://api.minimaxi.com/v1/t2a_v2"
 DEFAULT_MODEL = "speech-2.8-hd"
+
+# International fallback: set MINIMAX_TTS_BASE_URL=https://api.minimax.io if needed.
 
 
 def output_extension(audio_format: str) -> str:
@@ -88,5 +90,4 @@ def generate(
 def print_voices() -> None:
     print("MiniMax TTS voices are selected by voice_id.")
     print("Use a system voice ID or a cloned voice_id from MiniMax Voice Clone.")
-    print("Example system voice from MiniMax docs: English_expressive_narrator")
-
+    print("Example domestic system voice from MiniMax docs: male-qn-qingse")
