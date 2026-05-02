@@ -80,9 +80,9 @@ Then `build_query_progression` tries: original → simplified (4 words) → simp
 
 | Segment | Rule |
 |---|---|
-| Subject | Put the concrete subject/place/object first: `offshore wind farm`, `Xiamen skyline`, `boardroom meeting` |
-| Quality cues | Add 1-3 cues after the subject: `professional editorial photography`, `clean composition`, `natural light`, `high-resolution` |
-| Language | Use official Chinese names for China-specific landmarks; use English nouns for generic stock concepts |
+| Subject | Use 1-2 concrete nouns only: `offshore wind farm`, `Xiamen skyline`, `boardroom meeting` |
+| Quality cues | **DO NOT ADD QUALITY CUES** like `professional editorial photography` or `clean composition`. These APIs use exact keyword matching; adding long adjectives will result in 0 matches. |
+| Language | For Chinese landmarks: use precise Chinese names (e.g., `磁器口古镇`) if specifically targeting `--provider wikimedia`. For general stock providers (Pexels/Pixabay), use simple English nouns (e.g., `Chongqing Jiefangbei`); do NOT use complex Chinese sentences or overly long English descriptive strings which fail on these platforms. |
 
 **Forbidden — web negative prompts**: `not tourist snapshot`, `no amateur photo`, `avoid low quality`.
 

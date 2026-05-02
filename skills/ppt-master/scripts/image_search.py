@@ -146,20 +146,117 @@ def _try_provider(
         return None
 
 
+# ---------------------------------------------------------------------------
+# Post-download quality validation
+# ---------------------------------------------------------------------------
+
+_MIN_DOWNLOAD_PIXELS = 800 * 600  # reject anything below ~480K px
+
+
+def _validate_downloaded_quality(path: Path) -> bool:
+    """Reject images that are too small after download.
+
+    Upstream metadata can be inaccurate (e.g. Openverse aggregates rawpixel
+    which only exposes a preview). This function checks what was actually
+    written to disk and rejects thumbnails / previews.
+    """
+    try:
+        from PIL import Image  # type: ignore
+    except ImportError:
+        return True  # can't check without Pillow; assume OK
+    try:
+        with Image.open(path) as im:
+            w, h = im.size
+            if w * h < _MIN_DOWNLOAD_PIXELS:
+                print(
+                    f"    rejected: downloaded image too small "
+                    f"({w}x{h} = {w*h:,} px < {_MIN_DOWNLOAD_PIXELS:,} px minimum)",
+                    file=sys.stderr,
+                )
+                return False
+            return True
+    except (OSError, ValueError):
+        return True  # unreadable image; let downstream handle it
+
+
+def _save_candidates_pool(
+    ranked: list[tuple[float, str, AssetCandidate]],
+    output_dir: Path,
+    stem: str,
+    selected_filename: str,
+    max_candidates: int = 8,
+) -> None:
+    """Download top-N candidates into ``candidates/<stem>/`` and write
+    a ``candidates.json`` manifest for manual review."""
+    cand_dir = output_dir / "candidates" / stem
+    cand_dir.mkdir(parents=True, exist_ok=True)
+
+    pool: list[dict] = []
+    idx = 0
+    for score, provider_name, candidate in ranked:
+        if idx >= max_candidates:
+            break
+        suffix = Path(candidate.download_url.split("?")[0]).suffix or ".jpg"
+        cand_filename = f"candidate_{idx + 1:02d}{suffix}"
+        cand_path = cand_dir / cand_filename
+        try:
+            download_image(
+                candidate.download_url,
+                str(cand_path),
+                headers={"User-Agent": USER_AGENT},
+            )
+            if not _validate_downloaded_quality(cand_path):
+                cand_path.unlink(missing_ok=True)
+                continue
+        except (requests.RequestException, OSError, RuntimeError, ValueError):
+            continue
+        idx += 1
+        actual_dim = _measure_actual_image(cand_path)
+        pool.append({
+            "rank": idx,
+            "score": round(score, 2),
+            "filename": cand_filename,
+            "provider": provider_name,
+            "title": candidate.title,
+            "author": candidate.author,
+            "source_page_url": candidate.source_page_url,
+            "download_url": candidate.download_url,
+            "license_name": candidate.license_name,
+            "license_url": candidate.license_url,
+            "license_tier": candidate.license_tier,
+            "attribution_required": candidate.license_tier == "attribution-required",
+            "width": actual_dim[0] if actual_dim else candidate.width,
+            "height": actual_dim[1] if actual_dim else candidate.height,
+        })
+
+    if pool:
+        meta = {
+            "target_filename": selected_filename,
+            "selected": pool[0]["filename"],
+            "searched_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "candidates": pool,
+        }
+        meta_path = cand_dir / "candidates.json"
+        meta_path.write_text(
+            json.dumps(meta, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        print(f"  candidates: {cand_dir}/ ({len(pool)} saved)", file=sys.stderr)
+
+
 def search_and_download(
     providers: list[str],
     request: ImageSearchRequest,
     *,
     output_path: Path,
     strict_no_attribution: bool,
+    save_candidates: bool = True,
+    max_candidates: int = 8,
 ) -> tuple[Optional[AssetCandidate], Optional[str], Optional[str]]:
     """Find a candidate AND successfully download it.
 
-    Iterates ``filters × providers``, ranks all candidates returned in the
-    same filter globally, then returns the first candidate whose
-    ``download_url`` actually transfers. A candidate that 403s, 404s, or
-    otherwise fails to download is skipped and the next-best one is tried —
-    so a single dead asset cannot fail the whole request.
+    When ``save_candidates`` is True (default), the top-N candidates are
+    also saved to ``candidates/<stem>/`` for manual review.
 
     Returns ``(candidate, provider_name, stage)`` for the successfully
     downloaded image, or ``(None, None, None)`` if every combination
@@ -177,8 +274,6 @@ def search_and_download(
             if not candidates:
                 continue
 
-            # Score candidates; drop candidates rejected by score_candidate
-            # (score == -inf — typically zero relevance against the query).
             provider_ranked = [
                 (score_candidate(c, request), provider_name, c) for c in candidates
             ]
@@ -193,17 +288,30 @@ def search_and_download(
                 continue
             ranked.extend(provider_ranked)
 
-        for _score, provider_name, candidate in sorted(
-            ranked,
-            key=lambda item: item[0],
-            reverse=True,
-        ):
+        sorted_ranked = sorted(ranked, key=lambda item: item[0], reverse=True)
+
+        # --- Save candidate pool (before picking the winner) ---
+        if save_candidates and sorted_ranked:
+            stem = Path(output_path).stem
+            _save_candidates_pool(
+                sorted_ranked, output_path.parent, stem, output_path.name,
+                max_candidates=max_candidates,
+            )
+
+        # --- Pick the best downloadable candidate ---
+        for _score, provider_name, candidate in sorted_ranked:
+            # If candidates were already saved, the file may already
+            # exist in the candidates dir — but we still need the
+            # primary copy at output_path.
             try:
                 download_image(
                     candidate.download_url,
                     str(output_path),
                     headers={"User-Agent": USER_AGENT},
                 )
+                if not _validate_downloaded_quality(output_path):
+                    output_path.unlink(missing_ok=True)
+                    continue
                 return candidate, provider_name, stage
             except (requests.RequestException, OSError, RuntimeError, ValueError) as exc:
                 print(
@@ -345,6 +453,94 @@ def write_sources_manifest(path: Path, item: dict) -> Path:
 
 
 # ---------------------------------------------------------------------------
+# Promote: replace primary image with a candidate
+# ---------------------------------------------------------------------------
+
+
+def promote_candidate(
+    output_dir: Path,
+    target_filename: str,
+    candidate_filename: str,
+    manifest_path: Optional[Path] = None,
+) -> int:
+    """Replace the primary image with a candidate from the pool.
+
+    Steps:
+        1. Copy ``candidates/<stem>/<candidate_filename>`` → ``<target_filename>``
+        2. Update ``candidates.json`` selected field
+        3. Update ``image_sources.json`` with the candidate's metadata
+    """
+    import shutil
+
+    stem = Path(target_filename).stem
+    cand_dir = output_dir / "candidates" / stem
+    cand_meta_path = cand_dir / "candidates.json"
+
+    if not cand_meta_path.exists():
+        print(f"Error: {cand_meta_path} not found.", file=sys.stderr)
+        return 1
+
+    meta = json.loads(cand_meta_path.read_text(encoding="utf-8"))
+    candidates = meta.get("candidates", [])
+
+    entry = next((c for c in candidates if c["filename"] == candidate_filename), None)
+    if entry is None:
+        names = [c["filename"] for c in candidates]
+        print(
+            f"Error: '{candidate_filename}' not found. Available: {', '.join(names)}",
+            file=sys.stderr,
+        )
+        return 1
+
+    src_path = cand_dir / candidate_filename
+    dst_path = output_dir / target_filename
+    if not src_path.exists():
+        print(f"Error: {src_path} does not exist on disk.", file=sys.stderr)
+        return 1
+
+    shutil.copy2(str(src_path), str(dst_path))
+    print(f"  promoted: {candidate_filename} → {target_filename}", file=sys.stderr)
+
+    # Update candidates.json
+    meta["selected"] = candidate_filename
+    cand_meta_path.write_text(
+        json.dumps(meta, indent=2, ensure_ascii=False) + "\n", encoding="utf-8",
+    )
+
+    # Update image_sources.json
+    mpath = manifest_path or default_manifest_path(str(output_dir))
+    actual_dim = _measure_actual_image(dst_path)
+    w = actual_dim[0] if actual_dim else entry.get("width", 0)
+    h = actual_dim[1] if actual_dim else entry.get("height", 0)
+
+    manifest = _read_existing_manifest(mpath)
+    items: list[dict] = list(manifest.get("items") or [])
+    for item in items:
+        if item.get("filename") == target_filename:
+            item["provider"] = entry["provider"]
+            item["title"] = entry["title"]
+            item["author"] = entry["author"]
+            item["source_page_url"] = entry["source_page_url"]
+            item["download_url"] = entry["download_url"]
+            item["license_name"] = entry["license_name"]
+            item["license_url"] = entry.get("license_url", "")
+            item["license_tier"] = entry["license_tier"]
+            item["attribution_required"] = entry.get("attribution_required", False)
+            item["width"] = w
+            item["height"] = h
+            item.pop("metadata_dimensions", None)
+            item["status"] = "promoted"
+            break
+    manifest["items"] = items
+    manifest["generated_at"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    mpath.write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8",
+    )
+    print(f"  manifest updated: {mpath}", file=sys.stderr)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -403,21 +599,54 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument(
+        "--min-width",
+        type=int,
+        default=1200,
+        help="Minimum acceptable image width in pixels (default: 1200).",
+    )
+    parser.add_argument(
+        "--min-height",
+        type=int,
+        default=800,
+        help="Minimum acceptable image height in pixels (default: 800).",
+    )
+    parser.add_argument(
         "--manifest",
         default=None,
         help="Override manifest path. Defaults to <output>/image_sources.json.",
+    )
+    parser.add_argument(
+        "--no-candidates",
+        action="store_true",
+        help="Disable candidate pool saving (only download the best match).",
+    )
+    parser.add_argument(
+        "--max-candidates",
+        type=int,
+        default=8,
+        help="Max number of candidates to save (default: 8).",
+    )
+    parser.add_argument(
+        "--promote",
+        default=None,
+        metavar="CANDIDATE_FILE",
+        help=(
+            "Promote a candidate to replace the primary image. "
+            "Example: --promote candidate_03.jpg --filename 05_wulong.jpg -o images/"
+        ),
     )
     return parser
 
 
 def _default_provider_chain() -> list[str]:
-    """Zero-config providers first; add keyed providers only if their key
-    is configured. This is the search order when ``--provider`` is unset."""
-    chain: list[str] = list(ZERO_CONFIG_PROVIDERS)
+    """Keyed high-quality providers first; zero-config providers as fallback.
+    This is the search order when ``--provider`` is unset."""
+    chain: list[str] = []
     if os.environ.get("PEXELS_API_KEY"):
         chain.append("pexels")
     if os.environ.get("PIXABAY_API_KEY"):
         chain.append("pixabay")
+    chain.extend(ZERO_CONFIG_PROVIDERS)
     return chain
 
 
@@ -427,17 +656,30 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    output_dir = Path(args.output)
+
+    # --- Promote mode ---
+    if args.promote:
+        return promote_candidate(
+            output_dir,
+            args.filename,
+            args.promote,
+            manifest_path=Path(args.manifest) if args.manifest else None,
+        )
+
+    # --- Search mode ---
     request = ImageSearchRequest(
         query=args.query,
         purpose=args.purpose,
         orientation="" if args.orientation == "any" else args.orientation,
         filename=args.filename,
         slide=args.slide,
+        min_width=args.min_width,
+        min_height=args.min_height,
     )
 
     providers = [args.provider] if args.provider else _default_provider_chain()
 
-    output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / args.filename
 
@@ -447,6 +689,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         request,
         output_path=output_path,
         strict_no_attribution=args.strict_no_attribution,
+        save_candidates=not args.no_candidates,
+        max_candidates=args.max_candidates,
     )
 
     if candidate is None:

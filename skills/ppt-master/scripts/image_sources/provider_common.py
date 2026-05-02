@@ -296,7 +296,13 @@ def build_query_progression(query: str) -> list[str]:
     """
     seen: set[str] = set()
     out: list[str] = []
-    for candidate in (query, simplify_query(query, max_words=4), simplify_query(query, max_words=3)):
+    for candidate in (
+        query,
+        simplify_query(query, max_words=4),
+        simplify_query(query, max_words=3),
+        simplify_query(query, max_words=2),
+        simplify_query(query, max_words=1),
+    ):
         candidate = candidate.strip()
         if candidate and candidate not in seen:
             seen.add(candidate)
@@ -378,6 +384,16 @@ def score_candidate(candidate: AssetCandidate, request: ImageSearchRequest) -> f
         return float("-inf")
 
     score = relevance * 10000.0
+
+    # Penalize infrastructure/transit metadata if the user didn't explicitly ask for it.
+    # This prevents high-res subway station photos from outranking actual tourist landmarks.
+    text = _candidate_text(candidate)
+    query_lower = request.query.lower()
+    infra_terms = ["station", "subway", "metro", "rail", "transit", "airport", "bus", "地铁", "站", "轨道"]
+    
+    if not any(t in query_lower for t in infra_terms):
+        if any(t in text for t in infra_terms):
+            score -= 5000.0
 
     candidate_orientation = normalize_orientation(candidate.width, candidate.height)
     requested = (request.orientation or "").strip().lower()

@@ -55,7 +55,7 @@ def parse_results(payload: dict) -> list[AssetCandidate]:
     candidates: list[AssetCandidate] = []
     for item in payload.get("photos", []) or []:
         src = item.get("src") or {}
-        download_url = (src.get("large2x") or src.get("large") or src.get("original") or "").strip()
+        download_url = (src.get("original") or src.get("large2x") or src.get("large") or "").strip()
         if not download_url:
             continue
 
