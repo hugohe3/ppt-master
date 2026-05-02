@@ -153,8 +153,7 @@ def generate(prompt: str, negative_prompt: str = None,
     resolved_model = model or os.environ.get("MODELSCOPE_MODEL") or DEFAULT_MODEL
 
     last_error = None
-    # for attempt in range(max_retries + 1):
-    for attempt in range( 1):
+    for attempt in range(max_retries + 1):
         try:
             return _generate_image(
                 api_key=api_key,
