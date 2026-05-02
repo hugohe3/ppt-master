@@ -130,8 +130,9 @@
             });
         });
 
-        // Click on blank area clears selection
+        // Click on blank area clears selection (skip after rubber band)
         svg.addEventListener("click", function (e) {
+            if (rubberBandUsed) { rubberBandUsed = false; return; }
             if (e.target === svg) clearSelection();
         });
     }
@@ -220,12 +221,12 @@
         annotationText.value = count === 1
             ? (slideAnnotations[selectedElementIds.values().next().value] || "")
             : "";
-        annotationText.focus();
     }
 
     // ---- Rubber band selection ----
     var rubberBandEl = null;
     var rubberBandStart = null;
+    var rubberBandUsed = false;
     var RUBBER_BAND_THRESHOLD = 5;
 
     function initRubberBand() {
@@ -236,13 +237,17 @@
             // Only left mouse button
             if (e.button !== 0) return;
 
-            // If clicking on a selectable SVG element, let its click handler deal with it
-            if (e.target.classList && e.target.classList.contains("svg-selectable")) {
+            // If clicking on a leaf SVG element (has a selectable ancestor that isn't
+            // the SVG root), let its click handler deal with selection.
+            var svg = svgContent.querySelector("svg");
+            var selectable = e.target.closest ? e.target.closest(".svg-selectable") : null;
+            if (selectable && selectable !== svg) {
                 return;
             }
 
-            // Starting rubber band on empty space
+            // Starting rubber band on empty space or SVG background
             rubberBandStart = { x: e.clientX, y: e.clientY };
+            rubberBandUsed = false;
             overlay.classList.add("active");
         });
 
@@ -288,6 +293,7 @@
 
             // Only process if drag was beyond threshold
             if (Math.abs(dx) >= RUBBER_BAND_THRESHOLD || Math.abs(dy) >= RUBBER_BAND_THRESHOLD) {
+                rubberBandUsed = true;
                 var rect = {
                     left: Math.min(rubberBandStart.x, e.clientX),
                     top: Math.min(rubberBandStart.y, e.clientY),
