@@ -40,7 +40,9 @@ Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPo
 
 > **Animations** — exported decks support **page transitions** and **per-element entrance animations** as real OOXML, not embedded video. By default, elements cascade in automatically on slide entry — no clicking needed. Plays natively in PowerPoint and Keynote, no extra tooling. See [Animations & Transitions →](./skills/ppt-master/references/animations.md).
 
-> **Narration & Video** — generate per-slide voice narration from the speaker notes (`edge-tts` by default, optional cloud TTS providers for high-quality or cloned voices), embed the audio back into the PPTX, and let PowerPoint export the deck as an MP4 video — synced narration + transitions, no third-party tools. See [Audio Narration & Video Export →](./docs/audio-narration.md).
+> **Narration & Video** — generate per-slide voice narration from the speaker notes (`edge-tts` by default, optional cloud TTS providers for high-quality narration), embed the audio back into the PPTX, and let PowerPoint export the deck as an MP4 video — synced narration + transitions, no third-party tools. See [Audio Narration & Video Export →](./docs/audio-narration.md).
+>
+> **Voice Cloning** — bring your own cloned voice from ElevenLabs / MiniMax / Qwen / CosyVoice and have the entire deck narrated in *your* voice (or a presenter's, with permission). Clone once in the provider's console, then pass the `voice_id` — PPT Master reads every slide's notes in that voice and embeds the result back into the PPTX. See [Use a cloned voice →](./docs/audio-narration.md#use-a-cloned-voice).
 
 > **How it works** — PPT Master is a workflow (a "skill") that works inside AI IDEs like Claude Code, Cursor, VS Code + Copilot, or Codebuddy. You chat with the AI — "make a deck from this PDF" — and it follows the workflow to produce a real editable `.pptx` on your computer. No coding on your side; the IDE is just where the conversation happens.
 >

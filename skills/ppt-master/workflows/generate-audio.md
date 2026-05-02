@@ -78,6 +78,8 @@ For each candidate, write a **one-line Chinese description** covering: 性别 ·
 
 Send a single message to the user that asks all three questions at once and provides a recommended value for each. Do NOT split into multiple rounds.
 
+**Cloned-voice fast path**: if the user mentioned a cloned voice / 克隆音色 / 复刻音色 / "my own voice" along with a `voice_id`, skip the voice-recommendation list — set the provider to whichever the user named (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`), pin the `voice_id` they gave you, and only confirm rate + embed-or-not.
+
 **Message template** (Chinese; translate to user's chat language if different):
 
 > 检测到 notes 主语言为 **<语言>**（locale: `<locale>`）。基于 deck 调性（<风格>），我推荐以下配置：

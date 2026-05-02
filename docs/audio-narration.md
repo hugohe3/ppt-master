@@ -95,6 +95,42 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list
 
 For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
 
+## Use a cloned voice
+
+Four cloud providers — **ElevenLabs**, **MiniMax**, **Qwen**, **CosyVoice** — let you clone a voice from a short sample and then synthesize new speech in that voice. PPT Master narrates the entire deck in your cloned voice as long as you can hand it a `voice_id`. (`edge` does not support cloning.)
+
+**The split of responsibilities**: voice cloning itself happens in the provider's console or API — you upload a sample (typically 10 s – a few minutes of clean audio) and the provider returns a `voice_id`. PPT Master is on the *consumption* side: it takes that `voice_id` and reads every slide's notes in that voice. PPT Master never uploads your sample anywhere.
+
+| Provider | Where to clone | Sample length |
+|---|---|---|
+| ElevenLabs | [elevenlabs.io](https://elevenlabs.io) → Voices → Add Voice → Instant / Professional Voice Cloning | 1 min (Instant) / 30 min+ (Professional) |
+| MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com) → 语音克隆 (Voice Clone) | ~10 s – 5 min |
+| Qwen TTS | [DashScope console](https://dashscope.console.aliyun.com) → 语音合成 → 声音复刻 | ~10 s – 5 min |
+| CosyVoice | [DashScope console](https://dashscope.console.aliyun.com) → 语音合成 → 音色复刻 | ~10 s – 5 min |
+
+**How to use it after cloning** — in chat, just say so. The AI will skip the voice-recommendation step and use your `voice_id` directly:
+
+```
+You: 用 MiniMax 我克隆的音色生成旁白，voice_id 是 xxxxxxx
+You: Generate the narration with my cloned ElevenLabs voice id abc123
+```
+
+Or call the script directly:
+
+```bash
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider minimax --voice-id <your-cloned-voice-id> \
+  --minimax-model speech-2.8-hd
+```
+
+Replace `--provider minimax` with `elevenlabs` / `qwen` / `cosyvoice` as needed; `--voice-id` accepts the cloned voice the same way it accepts a system voice.
+
+**Notes**:
+
+- **Authorization** — only clone voices you own or have explicit permission to use. Each provider's terms forbid impersonation.
+- **Language coverage** — the cloned voice inherits the speaker's accent. For multilingual decks (e.g. Chinese with English terms), pick a provider whose model handles your sample's language mix; ElevenLabs `eleven_multilingual_v2` and CosyVoice tend to be the most forgiving.
+- **One-time setup, reusable forever** — the `voice_id` doesn't expire. Clone once, narrate any number of decks.
+
 ## Dependency
 
 ```bash

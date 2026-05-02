@@ -79,6 +79,42 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
 
 edge 模式下 `--voice` 是必填项。云端 provider 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台/API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
 
+## 使用复刻音色
+
+四个云端 provider —— **ElevenLabs**、**MiniMax**、**Qwen**、**CosyVoice** —— 都支持用一段较短的音频样本复刻一个新音色，再用这个音色合成新语音。只要你能拿到 `voice_id`，PPT Master 就能用这个音色把整份 deck 念出来。（`edge` 不支持复刻。）
+
+**职责切分**：声音复刻本身在 provider 的控制台或 API 完成——你上传一段样本（一般 10 秒到几分钟的干净录音），平台给你返回一个 `voice_id`。PPT Master 在*消费*侧：拿到 `voice_id` 后用这个音色逐页朗读备注。PPT Master 不会把你的样本上传到任何地方。
+
+| Provider | 复刻入口 | 样本时长 |
+|---|---|---|
+| ElevenLabs | [elevenlabs.io](https://elevenlabs.io) → Voices → Add Voice → Instant / Professional Voice Cloning | 1 分钟（Instant）/ 30 分钟以上（Professional） |
+| MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com) → 语音克隆 | 10 秒 – 5 分钟 |
+| Qwen TTS | [DashScope 控制台](https://dashscope.console.aliyun.com) → 语音合成 → 声音复刻 | 10 秒 – 5 分钟 |
+| CosyVoice | [DashScope 控制台](https://dashscope.console.aliyun.com) → 语音合成 → 音色复刻 | 10 秒 – 5 分钟 |
+
+**复刻完之后怎么用** —— 在聊天里告诉 AI 即可，AI 会跳过音色推荐环节直接用你的 `voice_id`：
+
+```
+你: 用 MiniMax 我克隆的音色生成旁白，voice_id 是 xxxxxxx
+你: 用我在 ElevenLabs 复刻的 voice id abc123 生成
+```
+
+也可以直接跑脚本：
+
+```bash
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider minimax --voice-id <你的复刻 voice id> \
+  --minimax-model speech-2.8-hd
+```
+
+把 `--provider minimax` 换成 `elevenlabs` / `qwen` / `cosyvoice` 就能切到对应平台；`--voice-id` 接收复刻音色和接收系统音色的方式完全一样。
+
+**注意**：
+
+- **授权** —— 只复刻你自己拥有的、或拿到了明确授权的声音。每个 provider 的服务条款都禁止冒用他人声音。
+- **语言覆盖** —— 复刻出来的音色会继承说话人的口音。对中英混合等多语 deck，建议挑一个对你样本语言组合处理较好的 provider；ElevenLabs `eleven_multilingual_v2` 和 CosyVoice 通常最宽容。
+- **一次复刻、长期复用** —— `voice_id` 不过期。复刻一次，可以给任意多份 deck 配旁白。
+
 ## 依赖
 
 ```bash
