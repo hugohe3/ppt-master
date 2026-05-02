@@ -14,6 +14,7 @@ Backend selection (`IMAGE_BACKEND` in `.env` or the current process environment)
   IMAGE_BACKEND=qwen        -> Alibaba Qwen image backend
   IMAGE_BACKEND=zhipu       -> Zhipu GLM-Image backend
   IMAGE_BACKEND=volcengine  -> Volcengine Seedream backend
+  IMAGE_BACKEND=modelscope  -> ModelScope backend
   IMAGE_BACKEND=siliconflow -> SiliconFlow backend
   IMAGE_BACKEND=fal         -> fal.ai backend
   IMAGE_BACKEND=replicate   -> Replicate backend
@@ -78,6 +79,7 @@ IMAGE_ENV_PREFIXES = (
     "BIGMODEL_",
     "VOLCENGINE_",
     "ARK_",
+    "MODELSCOPE_",
     "SILICONFLOW_",
     "FAL_",
     "REPLICATE_",
@@ -147,6 +149,14 @@ BACKEND_REGISTRY = {
         "default_model": "doubao-seedream-4-5-251128",
         "key_hint": "VOLCENGINE_API_KEY / ARK_API_KEY",
         "aliases": ["ark", "doubao", "seedream"],
+    },
+    "modelscope": {
+        "module": "backend_modelscope",
+        "tier": "experimental",
+        "label": "ModelScope",
+        "default_model": "Tongyi-MAI/Z-Image-Turbo",
+        "key_hint": "MODELSCOPE_API_KEY",
+        "aliases": ["modelscope", "model-scope"]
     },
     "stability": {
         "module": "backend_stability",
