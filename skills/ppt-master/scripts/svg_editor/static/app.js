@@ -585,6 +585,11 @@
         doc.querySelectorAll("*").forEach(function (el) {
             Array.from(el.attributes).forEach(function (attr) {
                 if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
+                // Strip javascript: protocol from href/xlink:href
+                if ((attr.name === "href" || attr.name === "xlink:href") &&
+                    /^\s*javascript\s*:/i.test(attr.value)) {
+                    el.removeAttribute(attr.name);
+                }
             });
         });
         return new XMLSerializer().serializeToString(doc.documentElement);
