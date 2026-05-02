@@ -85,7 +85,7 @@ def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     return size
 
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
@@ -99,7 +99,6 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     payload = {
         "model": model,
         "prompt": prompt,
-        "negative_prompt":negative_prompt,
         "size": size.replace("*", "x"),
 
     }
@@ -130,7 +129,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     path = resolve_output_path(prompt, output_dir, filename, ".png")
     return download_image(data["output_images"][0], path)
     
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -148,7 +147,6 @@ def generate(prompt: str, negative_prompt: str = None,
             return _generate_image(
                 api_key=api_key,
                 prompt=prompt,
-                negative_prompt=negative_prompt,
                 aspect_ratio=aspect_ratio,
                 image_size=image_size,
                 output_dir=output_dir,

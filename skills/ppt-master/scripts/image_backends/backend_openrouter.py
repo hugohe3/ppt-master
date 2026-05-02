@@ -54,7 +54,7 @@ def _resolve_url(base_url: str) -> str:
     """Resolve the OpenRouter generation endpoint."""
     return base_url.rstrip("/") + "/chat/completions"
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
@@ -63,10 +63,6 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     """
 
     url = _resolve_url(base_url)
-
-    final_prompt = prompt
-    if negative_prompt:
-        final_prompt += f"\n\nAvoid the following: {negative_prompt}"
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -78,7 +74,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         "messages": [
             {
                 "role": "user",
-                "content": final_prompt
+                "content": prompt
             }
         ],
         "modalities": ["image", "text"],
@@ -90,7 +86,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 
     print(f"[OpenRouter]")
     print(f"  Model:        {model}")
-    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
     print(f"  Image Size:   {image_size}")
     print()
@@ -135,7 +131,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 # ║  Public Entry Point                                             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -169,7 +165,7 @@ def generate(prompt: str, negative_prompt: str = None,
     last_error = None
     for attempt in range(max_retries + 1):
         try:
-            return _generate_image(api_key, prompt, negative_prompt,
+            return _generate_image(api_key, prompt,
                                    aspect_ratio, image_size, output_dir,
                                    filename, model, base_url)
         except Exception as e:

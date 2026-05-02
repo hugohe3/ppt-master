@@ -121,16 +121,13 @@ def _extract_image_bytes(payload: dict) -> bytes | None:
     return None
 
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_ENDPOINT) -> str:
     """Generate one image with the MiniMax backend."""
     width, height = _resolve_dimensions(aspect_ratio, image_size)
     url = _resolve_url(base_url)
-    final_prompt = prompt
-    if negative_prompt:
-        final_prompt += f"\n\nAvoid the following: {negative_prompt}"
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -138,7 +135,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     }
     payload = {
         "model": model,
-        "prompt": final_prompt,
+        "prompt": prompt,
         "width": width,
         "height": height,
         "response_format": "base64",
@@ -147,7 +144,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 
     print("[MiniMax Image]")
     print(f"  Model:        {model}")
-    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
     print(f"  Resolution:   {width}x{height} (from image_size={image_size})")
     print()
@@ -174,7 +171,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     return save_image_bytes(image_bytes, path)
 
 
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -193,7 +190,6 @@ def generate(prompt: str, negative_prompt: str = None,
             return _generate_image(
                 api_key=api_key,
                 prompt=prompt,
-                negative_prompt=negative_prompt,
                 aspect_ratio=aspect_ratio,
                 image_size=normalized_size,
                 output_dir=output_dir,

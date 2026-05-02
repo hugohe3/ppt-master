@@ -164,7 +164,7 @@ def _supports_response_format(model: str) -> bool:
 # ║  Image Generation                                               ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = None) -> str:
@@ -181,11 +181,6 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     """
     client = OpenAI(api_key=api_key, base_url=base_url)
 
-    # Build prompt (OpenAI has no native negative_prompt, append to prompt)
-    final_prompt = prompt
-    if negative_prompt:
-        final_prompt += f"\n\nAvoid the following: {negative_prompt}"
-
     # Map parameters
     size = _select_size(model, aspect_ratio, image_size)
     quality = IMAGE_SIZE_TO_QUALITY.get(image_size, "auto")
@@ -193,7 +188,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     mode_label = f"Proxy: {base_url}" if base_url else "OpenAI API"
     print(f"[OpenAI - {mode_label}]")
     print(f"  Model:        {model}")
-    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Size:         {size} (from aspect_ratio={aspect_ratio})")
     print(f"  Quality:      {quality} (from image_size={image_size})")
     print()
@@ -216,7 +211,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 
     try:
         request = {
-            "prompt": final_prompt,
+            "prompt": prompt,
             "model": model,
             "size": size,
             "quality": quality,
@@ -252,7 +247,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 # ║  Public Entry Point                                             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -265,8 +260,7 @@ def generate(prompt: str, negative_prompt: str = None,
       OPENAI_MODEL (optional override)
 
     Args:
-        prompt: Positive prompt text
-        negative_prompt: Negative prompt text (appended to prompt as "Avoid...")
+        prompt: Prompt text
         aspect_ratio: Aspect ratio, mapped to OpenAI size
         image_size: Image size, mapped to OpenAI quality
         output_dir: Output directory
@@ -300,7 +294,7 @@ def generate(prompt: str, negative_prompt: str = None,
     last_error = None
     for attempt in range(max_retries + 1):
         try:
-            return _generate_image(api_key, prompt, negative_prompt,
+            return _generate_image(api_key, prompt,
                                    aspect_ratio, image_size, output_dir,
                                    filename, model, base_url)
         except Exception as e:

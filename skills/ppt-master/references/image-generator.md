@@ -27,9 +27,6 @@ Every image must be emitted into `image_prompts.md` in the following block forma
 **Prompt**:
 {subject description}, {style directive}, {color directive}, {composition directive}, {quality directive}
 
-**Negative Prompt**:
-{elements to exclude}
-
 **Alt Text**:
 > {Description for accessibility and image captions}
 ```
@@ -43,7 +40,6 @@ Every image must be emitted into `image_prompts.md` in the following block forma
 | Color directive | Color scheme | `color palette: navy blue (#1E3A5F), gold (#D4AF37)` |
 | Composition directive | Layout ratio | `16:9 aspect ratio`, `centered composition` |
 | Quality directive | Resolution quality | `high quality`, `4K resolution`, `sharp details` |
-| Negative prompt | Exclude elements | `text, watermark, blurry, low quality` |
 
 ### 1.3 Style Keywords Quick Reference
 
@@ -128,8 +124,6 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 
 **Template**: `Abstract {theme element} background, {style} style, {primary color} to {secondary color} gradient, subtle {decorative elements}, clean negative space in center for text overlay, {aspect ratio} aspect ratio, high resolution, professional presentation background`
 
-**Negative prompt**: `text, letters, watermark, faces, busy patterns, high contrast details`
-
 ### 2.2 Photography
 
 **Identifying characteristics**: Real scenes, people, products, architecture — photographic quality
@@ -142,8 +136,6 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 | People diversity | `diverse`, `professional attire` |
 
 **Template**: `{subject description}, professional photography, {lighting type} lighting, {background type} background, color grading matching {color scheme}, high quality, sharp focus, 8K resolution`
-
-**Negative prompt**: `watermark, text overlay, artificial, CGI, illustration, cartoon, distorted faces`
 
 ### 2.3 Illustration
 
@@ -158,8 +150,6 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 
 **Template**: `{subject description}, {illustration style} illustration style, {detail level} with clean lines, color palette: {color list}, {background type} background, professional {purpose} illustration`
 
-**Negative prompt**: `realistic, photography, 3D render, complex textures, watermark`
-
 ### 2.4 Diagram
 
 **Identifying characteristics**: Flowcharts, architecture diagrams, concept relationship maps, data visualizations
@@ -173,8 +163,6 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 
 **Template**: `{diagram type} diagram showing {content description}, {component description} connected by {connection method}, {style} style with {color scheme}, white background, clear labels, professional technical diagram`
 
-**Negative prompt**: `cluttered, messy, overlapping elements, dark background, realistic, photography`
-
 ### 2.5 Decorative Pattern
 
 **Identifying characteristics**: Partial decoration, textures, borders, divider elements
@@ -187,8 +175,6 @@ Image 3 prompt: [Deck Style Anchor], growth chart with upward trending line...
 | Small-size readability | Consider legibility at small dimensions |
 
 **Template**: `{pattern type} decorative pattern, {style} style, {color scheme}, {background type} background, subtle and elegant, suitable for {purpose}`
-
-**Negative prompt**: `busy, cluttered, high contrast, distracting, photorealistic`
 
 ---
 
@@ -230,8 +216,7 @@ python3 scripts/image_gen.py "your prompt" \
 
 | Parameter | Short | Description | Default |
 |-----------|-------|-------------|---------|
-| `prompt` | - | Positive prompt (positional arg) | - |
-| `--negative_prompt` | `-n` | Negative prompt | None |
+| `prompt` | - | Prompt (positional arg) | - |
 | `--aspect_ratio` | - | Image aspect ratio | `1:1` |
 | `--image_size` | - | Size (`1K`/`2K`/`4K`) | `1K` |
 | `--output` | `-o` | Output directory | Current directory |
@@ -342,26 +327,7 @@ Use the following structure when creating `project/images/image_prompts.md`:
 
 ---
 
-## 5. Negative Prompt Quick Reference
-
-### By Image Type
-
-| Type | Recommended Negative Prompt |
-|------|---------------------------|
-| Background | `text, letters, watermark, faces, busy patterns, high contrast details` |
-| Photography | `watermark, text overlay, artificial, CGI, illustration, cartoon, distorted faces` |
-| Illustration | `realistic, photography, 3D render, complex textures, watermark` |
-| Diagram | `cluttered, messy, overlapping elements, dark background, realistic` |
-| Decorative pattern | `busy, cluttered, high contrast, distracting, photorealistic` |
-
-### Universal Negative Prompts
-
-- **Standard**: `text, watermark, signature, blurry, distorted, low quality`
-- **Extended** (people scenarios): `text, watermark, signature, blurry, low quality, distorted, extra fingers, mutated hands, poorly drawn face, bad anatomy, extra limbs, disfigured, deformed`
-
----
-
-## 6. Common Issues
+## 5. Common Issues
 
 ### Default Inference When No `Reference` Provided
 
@@ -393,10 +359,9 @@ Diagnose the problem category and apply a targeted prompt fix:
 
 ---
 
-## 7. Forbidden
+## 6. Forbidden
 
 - Generating prompts for `web` rows — those go through [`image-searcher.md`](./image-searcher.md)
 - Brand names or HEX codes inside the subject description (degrades output)
-- Skipping the negative prompt
 - Mixed Deck Style Anchors across images in the same deck (breaks coherence)
 - Placing an image without updating `image_prompts.md` and the resource list status

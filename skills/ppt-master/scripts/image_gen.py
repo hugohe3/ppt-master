@@ -393,10 +393,6 @@ def main() -> None:
         help="The text prompt for image generation."
     )
     parser.add_argument(
-        "--negative_prompt", "-n", default=None,
-        help="Negative prompt to specify what to avoid."
-    )
-    parser.add_argument(
         "--aspect_ratio", default="1:1", choices=ALL_ASPECT_RATIOS,
         help=f"Aspect ratio. Default: 1:1."
     )
@@ -448,7 +444,6 @@ def main() -> None:
     try:
         backend.generate(
             prompt=args.prompt,
-            negative_prompt=args.negative_prompt,
             aspect_ratio=args.aspect_ratio,
             image_size=args.image_size,
             output_dir=args.output,

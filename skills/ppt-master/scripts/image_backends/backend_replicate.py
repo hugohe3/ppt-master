@@ -63,7 +63,7 @@ def _extract_output_url(payload: dict) -> str | None:
     return None
 
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
@@ -84,13 +84,9 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         "Prefer": "wait=60",
     }
 
-    final_prompt = prompt
-    if negative_prompt:
-        final_prompt += f"\n\nAvoid the following: {negative_prompt}"
-
     payload = {
         "input": {
-            "prompt": final_prompt,
+            "prompt": prompt,
             "aspect_ratio": aspect_ratio,
             "output_format": "png",
         }
@@ -98,7 +94,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 
     print("[Replicate]")
     print(f"  Model:        {model}")
-    print(f"  Prompt:       {final_prompt[:120]}{'...' if len(final_prompt) > 120 else ''}")
+    print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
     print()
     print("  [..] Generating...", end="", flush=True)
@@ -138,7 +134,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     return download_image(image_url, path)
 
 
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -157,7 +153,6 @@ def generate(prompt: str, negative_prompt: str = None,
             return _generate_image(
                 api_key=api_key,
                 prompt=prompt,
-                negative_prompt=negative_prompt,
                 aspect_ratio=aspect_ratio,
                 image_size=image_size,
                 output_dir=output_dir,

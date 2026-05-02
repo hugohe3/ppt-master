@@ -63,7 +63,7 @@ def _resolve_endpoint(model: str, image_size: str, base_url: str) -> tuple[str, 
     return normalized_model, base_url.rstrip("/") + endpoint
 
 
-def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
+def _generate_image(api_key: str, prompt: str,
                     aspect_ratio: str = "1:1", image_size: str = "1K",
                     output_dir: str = None, filename: str = None,
                     model: str = DEFAULT_MODEL, base_url: str = DEFAULT_BASE_URL) -> str:
@@ -84,8 +84,6 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
         "aspect_ratio": aspect_ratio,
         "output_format": "png",
     }
-    if negative_prompt:
-        data["negative_prompt"] = negative_prompt
 
     print("[Stability AI]")
     print(f"  Model:        {resolved_model}")
@@ -111,7 +109,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     return path
 
 
-def generate(prompt: str, negative_prompt: str = None,
+def generate(prompt: str,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
              model: str = None, max_retries: int = MAX_RETRIES) -> str:
@@ -129,7 +127,6 @@ def generate(prompt: str, negative_prompt: str = None,
             return _generate_image(
                 api_key=api_key,
                 prompt=prompt,
-                negative_prompt=negative_prompt,
                 aspect_ratio=aspect_ratio,
                 image_size=image_size,
                 output_dir=output_dir,
