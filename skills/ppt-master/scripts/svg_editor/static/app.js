@@ -76,7 +76,8 @@
         selectedElementIds.clear();
         slideAnnotations = {};
 
-        // Reset right panel
+        // Reset right panel and rubber band
+        cancelRubberBand();
         clearSelection();
 
         fetch("/api/slide/" + encodeURIComponent(name))
@@ -270,7 +271,6 @@
         document.addEventListener("mouseup", function (e) {
             if (!rubberBandStart) return;
 
-            var overlay = document.getElementById("rubber-band-overlay");
             overlay.classList.remove("active");
 
             var dx = e.clientX - rubberBandStart.x;
@@ -294,14 +294,27 @@
                     clearSelection();
                 }
 
-                selectByRubberBand(rect, e.ctrlKey || e.metaKey);
+                selectByRubberBand(rect);
+            } else {
+                // Below threshold: treat as click on empty space
+                clearSelection();
             }
 
             rubberBandStart = null;
         });
     }
 
-    function selectByRubberBand(screenRect, addToSelection) {
+    function cancelRubberBand() {
+        rubberBandStart = null;
+        if (rubberBandEl) {
+            rubberBandEl.remove();
+            rubberBandEl = null;
+        }
+        var ov = document.getElementById("rubber-band-overlay");
+        if (ov) ov.classList.remove("active");
+    }
+
+    function selectByRubberBand(screenRect) {
         var svg = svgContent.querySelector("svg");
         if (!svg) return;
 
