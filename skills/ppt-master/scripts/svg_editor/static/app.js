@@ -19,10 +19,11 @@
     var modalMessage      = document.getElementById("modal-message");
     var modalConfirm      = document.getElementById("modal-confirm");
     var modalCancel       = document.getElementById("modal-cancel");
+    var elementPropsEl    = document.getElementById("element-props");
 
     // ---- State ------------------------------------------------------
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
-    var selectedElementId = null;   // id attr of the clicked SVG element
+    var selectedElementIds = new Set(); // id attrs of selected SVG elements
     var slideAnnotations  = {};     // {element_id: annotation_text} for current slide
 
     // ================================================================
@@ -73,10 +74,11 @@
         if (el) el.classList.add("active");
 
         currentSlide = name;
-        selectedElementId = null;
+        selectedElementIds.clear();
         slideAnnotations = {};
 
-        // Reset right panel
+        // Reset right panel and rubber band
+        cancelRubberBand();
         clearSelection();
 
         fetch("/api/slide/" + encodeURIComponent(name))
@@ -125,12 +127,13 @@
 
             el.addEventListener("click", function (e) {
                 e.stopPropagation();
-                selectElement(el);
+                selectElement(el, e.ctrlKey || e.metaKey);
             });
         });
 
-        // Click on blank area clears selection
+        // Click on blank area clears selection (skip after rubber band)
         svg.addEventListener("click", function (e) {
+            if (rubberBandUsed) { rubberBandUsed = false; return; }
             if (e.target === svg) clearSelection();
         });
     }
@@ -138,69 +141,298 @@
     // ================================================================
     //  4.  selectElement
     // ================================================================
-    function selectElement(elem) {
-        // Remove old highlight
-        if (selectedElementId) {
-            var old = svgContent.querySelector("#" + CSS.escape(selectedElementId));
-            if (old) old.classList.remove("svg-selected");
+    function selectElement(elem, addToSelection) {
+        var eid = elem.id;
+        if (!eid) return;
+
+        if (addToSelection) {
+            // Ctrl+click: toggle this element
+            if (selectedElementIds.has(eid)) {
+                selectedElementIds.delete(eid);
+                elem.classList.remove("svg-selected");
+            } else {
+                selectedElementIds.add(eid);
+                elem.classList.add("svg-selected");
+            }
+        } else {
+            // Normal click: clear others, select only this one
+            selectedElementIds.forEach(function (id) {
+                if (id !== eid) {
+                    var old = svgContent.querySelector("#" + CSS.escape(id));
+                    if (old) old.classList.remove("svg-selected");
+                }
+            });
+            selectedElementIds.clear();
+            selectedElementIds.add(eid);
+            elem.classList.add("svg-selected");
         }
 
-        selectedElementId = elem.id || null;
-        elem.classList.add("svg-selected");
-
-        // Update right panel info
-        selectedElementEl.classList.remove("empty");
-        var tag = elem.tagName.toLowerCase();
-        var id  = elem.id || "(no id)";
-        selectedElementEl.innerHTML =
-            '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
-            '<span class="el-id">' + escapeHtml(id) + '</span>';
-
-        // Show annotation input, pre-fill if annotation already exists
-        annotationInput.style.display = "block";
-        annotationText.value = slideAnnotations[selectedElementId] || "";
-        annotationText.focus();
+        updateSelectionPanel();
     }
 
     // ================================================================
     //  5.  clearSelection
     // ================================================================
     function clearSelection() {
-        if (selectedElementId) {
-            var el = svgContent.querySelector("#" + CSS.escape(selectedElementId));
+        selectedElementIds.forEach(function (id) {
+            var el = svgContent.querySelector("#" + CSS.escape(id));
             if (el) el.classList.remove("svg-selected");
+        });
+        selectedElementIds.clear();
+        updateSelectionPanel();
+    }
+
+    function updateSelectionPanel() {
+        var propsEl = elementPropsEl;
+        var count = selectedElementIds.size;
+
+        if (count === 0) {
+            selectedElementEl.classList.add("empty");
+            selectedElementEl.innerHTML = "Click an element on the slide to select it";
+            annotationInput.style.display = "none";
+            annotationText.value = "";
+            propsEl.style.display = "none";
+            propsEl.innerHTML = "";
+            return;
         }
-        selectedElementId = null;
-        selectedElementEl.classList.add("empty");
-        selectedElementEl.innerHTML = "Click an element on the slide to select it";
-        annotationInput.style.display = "none";
-        annotationText.value = "";
+
+        selectedElementEl.classList.remove("empty");
+        propsEl.style.display = "block";
+
+        if (count === 1) {
+            var eid = selectedElementIds.values().next().value;
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (el) {
+                var tag = el.tagName.toLowerCase();
+                selectedElementEl.innerHTML =
+                    '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
+                    '<span class="el-id">' + escapeHtml(eid) + '</span>';
+                propsEl.innerHTML = renderPropertyTable(getElementProperties(el));
+            }
+        } else {
+            selectedElementEl.innerHTML =
+                '<span class="multi-count">' + count + ' elements selected</span>';
+            propsEl.innerHTML = renderMultiSelectSummary(Array.from(selectedElementIds));
+        }
+
+        annotationInput.style.display = "block";
+        annotationText.placeholder = count > 1
+            ? "Describe how to modify all " + count + " elements..."
+            : "Describe how the AI should modify this element...";
+        annotationText.value = count === 1
+            ? (slideAnnotations[selectedElementIds.values().next().value] || "")
+            : "";
+    }
+
+    // ---- Rubber band selection ----
+    var rubberBandEl = null;
+    var rubberBandStart = null;
+    var rubberBandUsed = false;
+    var RUBBER_BAND_THRESHOLD = 5;
+
+    function initRubberBand() {
+        var overlay = document.getElementById("rubber-band-overlay");
+        var container = document.getElementById("svg-container");
+
+        container.addEventListener("mousedown", function (e) {
+            // Only left mouse button
+            if (e.button !== 0) return;
+
+            // Always start tracking — rubber band only activates when
+            // mousemove exceeds the threshold. This allows clicking on any
+            // element (including SVG background rects) to still trigger
+            // the element's click handler for selection.
+            rubberBandStart = { x: e.clientX, y: e.clientY };
+            rubberBandUsed = false;
+        });
+
+        document.addEventListener("mousemove", function (e) {
+            if (!rubberBandStart) return;
+
+            var dx = e.clientX - rubberBandStart.x;
+            var dy = e.clientY - rubberBandStart.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < RUBBER_BAND_THRESHOLD) {
+                return;
+            }
+
+            // Threshold exceeded — this is a drag, not a click
+            if (!rubberBandUsed) {
+                rubberBandUsed = true;
+                overlay.classList.add("active");
+            }
+
+            if (!rubberBandEl) {
+                rubberBandEl = document.createElement("div");
+                rubberBandEl.id = "rubber-band";
+                document.body.appendChild(rubberBandEl);
+            }
+
+            var x = Math.min(rubberBandStart.x, e.clientX);
+            var y = Math.min(rubberBandStart.y, e.clientY);
+            var w = Math.abs(dx);
+            var h = Math.abs(dy);
+
+            rubberBandEl.style.left = x + "px";
+            rubberBandEl.style.top = y + "px";
+            rubberBandEl.style.width = w + "px";
+            rubberBandEl.style.height = h + "px";
+        });
+
+        document.addEventListener("mouseup", function (e) {
+            if (!rubberBandStart) return;
+
+            overlay.classList.remove("active");
+
+            var dx = e.clientX - rubberBandStart.x;
+            var dy = e.clientY - rubberBandStart.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (rubberBandEl) {
+                rubberBandEl.remove();
+                rubberBandEl = null;
+            }
+
+            // Only process if drag was beyond threshold
+            if (dist >= RUBBER_BAND_THRESHOLD) {
+                var rect = {
+                    left: Math.min(rubberBandStart.x, e.clientX),
+                    top: Math.min(rubberBandStart.y, e.clientY),
+                    right: Math.max(rubberBandStart.x, e.clientX),
+                    bottom: Math.max(rubberBandStart.y, e.clientY)
+                };
+
+                if (!e.ctrlKey && !e.metaKey) {
+                    clearSelection();
+                }
+
+                selectByRubberBand(rect);
+            } else {
+                // Below threshold: treat as click on empty space
+                if (!e.ctrlKey && !e.metaKey) {
+                    clearSelection();
+                }
+            }
+
+            rubberBandStart = null;
+        });
+    }
+
+    function cancelRubberBand() {
+        rubberBandStart = null;
+        if (rubberBandEl) {
+            rubberBandEl.remove();
+            rubberBandEl = null;
+        }
+        var ov = document.getElementById("rubber-band-overlay");
+        if (ov) ov.classList.remove("active");
+    }
+
+    function selectByRubberBand(screenRect) {
+        var svg = svgContent.querySelector("svg");
+        if (!svg) return;
+
+        var selectableEls = svg.querySelectorAll(".svg-selectable");
+        selectableEls.forEach(function (el) {
+            try {
+                var bbox = el.getBBox();
+                var ctm = el.getScreenCTM();
+                if (!ctm) return;
+
+                // Transform bbox corners to screen coordinates
+                var corners = [
+                    { x: bbox.x, y: bbox.y },
+                    { x: bbox.x + bbox.width, y: bbox.y },
+                    { x: bbox.x, y: bbox.y + bbox.height },
+                    { x: bbox.x + bbox.width, y: bbox.y + bbox.height }
+                ];
+
+                var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                corners.forEach(function (c) {
+                    var sx = c.x * ctm.a + c.y * ctm.c + ctm.e;
+                    var sy = c.x * ctm.b + c.y * ctm.d + ctm.f;
+                    if (sx < minX) minX = sx;
+                    if (sy < minY) minY = sy;
+                    if (sx > maxX) maxX = sx;
+                    if (sy > maxY) maxY = sy;
+                });
+
+                // AABB intersection
+                if (minX < screenRect.right && maxX > screenRect.left &&
+                    minY < screenRect.bottom && maxY > screenRect.top) {
+                    var eid = el.id;
+                    if (eid) {
+                        selectedElementIds.add(eid);
+                        el.classList.add("svg-selected");
+                    }
+                }
+            } catch (err) {
+                // getBBox can throw for elements with no geometry
+            }
+        });
+
+        updateSelectionPanel();
+    }
+
+    // ================================================================
+    //  Keyboard shortcuts
+    // ================================================================
+    function initKeyboardShortcuts() {
+        document.addEventListener("keydown", function (e) {
+            // Ctrl+A / Cmd+A: select all elements
+            if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+                // Don't intercept if focus is in textarea
+                if (document.activeElement === annotationText) return;
+
+                e.preventDefault();
+                var svg = svgContent.querySelector("svg");
+                if (!svg) return;
+
+                svg.querySelectorAll(".svg-selectable").forEach(function (el) {
+                    var eid = el.id;
+                    if (eid) {
+                        selectedElementIds.add(eid);
+                        el.classList.add("svg-selected");
+                    }
+                });
+                updateSelectionPanel();
+            }
+
+            // Escape: clear selection (skip if textarea is focused)
+            if (e.key === "Escape") {
+                if (document.activeElement === annotationText) return;
+                clearSelection();
+            }
+        });
     }
 
     // ================================================================
     //  6.  Add annotation  -- POST /api/slide/{name}/annotate
     // ================================================================
     btnAddAnnotation.addEventListener("click", function () {
-        if (!currentSlide || !selectedElementId) return;
+        if (!currentSlide || selectedElementIds.size === 0) return;
 
         var text = annotationText.value.trim();
         if (!text) return;
 
-        fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                element_id: selectedElementId,
-                annotation: text
-            })
-        })
-            .then(function (res) { return res.json(); })
+        var ids = Array.from(selectedElementIds);
+        var promises = ids.map(function (eid) {
+            return fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ element_id: eid, annotation: text })
+            }).then(function (res) { return res.json(); });
+        });
+
+        Promise.all(promises)
             .then(function () {
-                slideAnnotations[selectedElementId] = text;
+                ids.forEach(function (eid) {
+                    slideAnnotations[eid] = text;
+                });
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 annotationText.value = "";
-                // Reload slide list to update badge counts
                 loadSlides();
             })
             .catch(function (err) {
@@ -358,6 +590,12 @@
         doc.querySelectorAll("*").forEach(function (el) {
             Array.from(el.attributes).forEach(function (attr) {
                 if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
+                // Strip dangerous URI protocols from href/xlink:href
+                if ((attr.name === "href" || attr.name === "xlink:href") &&
+                    (/^\s*javascript\s*:/i.test(attr.value) ||
+                     /^\s*data\s*:/i.test(attr.value))) {
+                    el.removeAttribute(attr.name);
+                }
             });
         });
         return new XMLSerializer().serializeToString(doc.documentElement);
@@ -379,7 +617,130 @@
     }
 
     // ================================================================
+    //  Property extraction & rendering
+    // ================================================================
+    function getElementProperties(elem) {
+        var props = {};
+        var tag = elem.tagName.toLowerCase();
+        var style = window.getComputedStyle(elem);
+
+        // Position (common to all)
+        try {
+            var bbox = elem.getBBox();
+            props["position"] = Math.round(bbox.x) + ", " + Math.round(bbox.y);
+            props["size"] = Math.round(bbox.width) + " x " + Math.round(bbox.height);
+        } catch (e) {
+            // no geometry
+        }
+
+        if (tag === "text" || tag === "tspan") {
+            props["font"] = style.fontFamily || elem.getAttribute("font-family") || "";
+            props["font-size"] = style.fontSize || elem.getAttribute("font-size") || "";
+            props["font-weight"] = style.fontWeight || elem.getAttribute("font-weight") || "";
+            props["fill"] = style.fill || elem.getAttribute("fill") || "";
+            props["anchor"] = elem.getAttribute("text-anchor") || style.textAnchor || "";
+            var text = elem.textContent || "";
+            if (text.length > 50) text = text.substring(0, 50) + "...";
+            props["content"] = text;
+        } else if (tag === "rect") {
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        } else if (tag === "circle") {
+            props["r"] = elem.getAttribute("r") || "";
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        } else if (tag === "ellipse") {
+            props["rx"] = elem.getAttribute("rx") || "";
+            props["ry"] = elem.getAttribute("ry") || "";
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+        } else if (tag === "image") {
+            var href = elem.getAttribute("href") || elem.getAttribute("xlink:href") || "";
+            var parts = href.split("/");
+            props["file"] = parts[parts.length - 1] || href;
+        } else if (tag === "path") {
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        }
+
+        return props;
+    }
+
+    function isSafeColor(val) {
+        // Only allow values that look like CSS colors (hex, rgb, rgba, hsl, named).
+        // Reject anything with ; : url @ \ to prevent CSS injection.
+        return val.length < 100 && !/[;:@\\]|url\s*\(/i.test(val);
+    }
+
+    function renderPropertyTable(props) {
+        var html = '<table class="prop-table">';
+        Object.keys(props).forEach(function (key) {
+            var val = props[key];
+            if (!val) return;
+            html += '<tr><td class="prop-key">' + escapeHtml(key) + '</td><td class="prop-val">';
+            if ((key === "fill" || key === "stroke") && isSafeColor(val)) {
+                html += '<span class="prop-color" style="background:' + escapeHtml(val) + ';"></span>';
+            }
+            html += escapeHtml(val) + '</td></tr>';
+        });
+        html += '</table>';
+        return html;
+    }
+
+    function renderMultiSelectSummary(ids) {
+        var typeCounts = {};
+        var sharedFontSize = null;
+        var allHaveFontSize = true;
+
+        ids.forEach(function (eid) {
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (!el) return;
+            var tag = el.tagName.toLowerCase();
+            typeCounts[tag] = (typeCounts[tag] || 0) + 1;
+
+            if (tag === "text" || tag === "tspan") {
+                var fs = window.getComputedStyle(el).fontSize || el.getAttribute("font-size") || "";
+                if (sharedFontSize === null) {
+                    sharedFontSize = fs;
+                } else if (sharedFontSize !== fs) {
+                    sharedFontSize = "mixed";
+                }
+            } else {
+                allHaveFontSize = false;
+            }
+        });
+
+        var summary = '<div class="multi-summary">';
+        var parts = [];
+        Object.keys(typeCounts).forEach(function (tag) {
+            parts.push(typeCounts[tag] + " " + tag);
+        });
+        summary += parts.join(", ");
+
+        if (allHaveFontSize && sharedFontSize && sharedFontSize !== "mixed") {
+            summary += ' | font-size: ' + escapeHtml(sharedFontSize);
+        } else if (allHaveFontSize && sharedFontSize === "mixed") {
+            summary += ' | font-size: mixed';
+        }
+        summary += '</div>';
+
+        // Element list
+        summary += '<div class="multi-el-list">';
+        ids.forEach(function (eid) {
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (!el) return;
+            var tag = el.tagName.toLowerCase();
+            summary += '<div class="multi-el-item"><span class="el-tag">&lt;' +
+                escapeHtml(tag) + '&gt;</span>' + escapeHtml(eid) + '</div>';
+        });
+        summary += '</div>';
+
+        return summary;
+    }
+
+    // ================================================================
     //  Boot
     // ================================================================
     loadSlides();
+    initRubberBand();
+    initKeyboardShortcuts();
 })();
