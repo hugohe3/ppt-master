@@ -33,7 +33,7 @@ The server binds to `127.0.0.1:5050` and edits `<project_path>/svg_output/` in p
 After the server prints `SVG Editor running at http://localhost:5050`, tell the user (in their language) in a single message:
 
 - the editor is running at `http://localhost:5050`
-- they should open it in a browser, click the element they want changed, write the change as a short instruction, then click **保存 / Save**
+- they should open it in a browser, click the element they want changed, write the change as a short instruction, then click **Submit annotations**
 - after saving, the server auto-shuts and they should return to the conversation
 - if they'd rather just describe the edit in chat, they can say so and you'll apply it directly without the editor
 

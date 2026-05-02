@@ -172,7 +172,7 @@
         }
         selectedElementId = null;
         selectedElementEl.classList.add("empty");
-        selectedElementEl.innerHTML = "点击 SVG 元素进行选择";
+        selectedElementEl.innerHTML = "Click an element on the slide to select it";
         annotationInput.style.display = "none";
         annotationText.value = "";
     }
@@ -254,7 +254,7 @@
 
         var ids = Object.keys(slideAnnotations);
         if (ids.length === 0) {
-            annotationsEl.innerHTML = '<div class="annotations-empty">暂无标注</div>';
+            annotationsEl.innerHTML = '<div class="annotations-empty">No annotations yet</div>';
             return;
         }
 
@@ -287,7 +287,7 @@
             var removeBtn = document.createElement("button");
             removeBtn.className = "ann-remove";
             removeBtn.innerHTML = "&times;";
-            removeBtn.title = "删除标注";
+            removeBtn.title = "Remove annotation";
             removeBtn.addEventListener("click", function () {
                 removeAnnotation(eid);
             });
@@ -307,8 +307,8 @@
     // ================================================================
     // 10.  Save all  -- two-step: confirm then save + shutdown
     // ================================================================
-    var CONFIRM_MSG = "点击提交后页面将关闭，请确认已完成所有批注。";
-    var SUCCESS_MSG = "标注已提交\n\n请告诉AI你已经提交标注，继续修改";
+    var CONFIRM_MSG = "Submitting will close this page. Make sure you've added all the annotations you want.";
+    var SUCCESS_MSG = "Annotations submitted.\n\nReturn to the chat and tell the AI you're ready — it will apply your edits.";
 
     btnSave.addEventListener("click", function () {
         // Step 1: show confirmation
@@ -327,14 +327,14 @@
             .then(function (res) { return res.json(); })
             .then(function (data) {
                 if (data.error) {
-                    modalMessage.textContent = "保存失败：" + data.error;
+                    modalMessage.textContent = "Save failed: " + data.error;
                 } else {
                     modalMessage.textContent = SUCCESS_MSG;
                     fetch("/api/shutdown", { method: "POST" }).catch(function () {});
                 }
             })
             .catch(function (err) {
-                modalMessage.textContent = "保存失败：" + err;
+                modalMessage.textContent = "Save failed: " + err;
             });
     });
 
