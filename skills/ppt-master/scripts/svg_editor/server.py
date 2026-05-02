@@ -89,35 +89,6 @@ def _inline_icons(content: str) -> str:
     return new_content
 
 
-def derive_revised_project(source: Path) -> Path:
-    """Create a `<name>_revised_<timestamp>/` sibling and copy required subdirs.
-
-    Reserved for callers that explicitly want a derived copy. Not invoked by the
-    default editor flow — `svg_to_pptx` already snapshots `svg_output` into
-    `backup/<timestamp>/` on every export, which is enough for rollback.
-
-    Idempotent: returns `source` unchanged if it already looks like a revised copy.
-    Copies svg_output/ (required) and images/, sources/, metadata.json if present.
-    """
-    import shutil
-    from datetime import datetime
-    if '_revised_' in source.name:
-        return source
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    target = source.parent / f'{source.name}_revised_{timestamp}'
-    target.mkdir(parents=True, exist_ok=False)
-    shutil.copytree(source / 'svg_output', target / 'svg_output')
-    for sub in ('images', 'sources'):
-        sub_path = source / sub
-        if sub_path.exists():
-            shutil.copytree(sub_path, target / sub)
-    for f in ('metadata.json', 'README.md'):
-        fp = source / f
-        if fp.exists():
-            shutil.copy2(fp, target / f)
-    return target
-
-
 def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
