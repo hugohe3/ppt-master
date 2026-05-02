@@ -22,7 +22,7 @@
 
     // ---- State ------------------------------------------------------
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
-    var selectedElementId = null;   // id attr of the clicked SVG element
+    var selectedElementIds = new Set(); // id attrs of selected SVG elements
     var slideAnnotations  = {};     // {element_id: annotation_text} for current slide
 
     // ================================================================
@@ -73,7 +73,7 @@
         if (el) el.classList.add("active");
 
         currentSlide = name;
-        selectedElementId = null;
+        selectedElementIds.clear();
         slideAnnotations = {};
 
         // Reset right panel
@@ -125,7 +125,7 @@
 
             el.addEventListener("click", function (e) {
                 e.stopPropagation();
-                selectElement(el);
+                selectElement(el, e.ctrlKey || e.metaKey);
             });
         });
 
@@ -138,69 +138,109 @@
     // ================================================================
     //  4.  selectElement
     // ================================================================
-    function selectElement(elem) {
-        // Remove old highlight
-        if (selectedElementId) {
-            var old = svgContent.querySelector("#" + CSS.escape(selectedElementId));
-            if (old) old.classList.remove("svg-selected");
+    function selectElement(elem, addToSelection) {
+        var eid = elem.id;
+        if (!eid) return;
+
+        if (addToSelection) {
+            // Ctrl+click: toggle this element
+            if (selectedElementIds.has(eid)) {
+                selectedElementIds.delete(eid);
+                elem.classList.remove("svg-selected");
+            } else {
+                selectedElementIds.add(eid);
+                elem.classList.add("svg-selected");
+            }
+        } else {
+            // Normal click: clear others, select only this one
+            selectedElementIds.forEach(function (id) {
+                if (id !== eid) {
+                    var old = svgContent.querySelector("#" + CSS.escape(id));
+                    if (old) old.classList.remove("svg-selected");
+                }
+            });
+            selectedElementIds.clear();
+            selectedElementIds.add(eid);
+            elem.classList.add("svg-selected");
         }
 
-        selectedElementId = elem.id || null;
-        elem.classList.add("svg-selected");
-
-        // Update right panel info
-        selectedElementEl.classList.remove("empty");
-        var tag = elem.tagName.toLowerCase();
-        var id  = elem.id || "(no id)";
-        selectedElementEl.innerHTML =
-            '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
-            '<span class="el-id">' + escapeHtml(id) + '</span>';
-
-        // Show annotation input, pre-fill if annotation already exists
-        annotationInput.style.display = "block";
-        annotationText.value = slideAnnotations[selectedElementId] || "";
-        annotationText.focus();
+        updateSelectionPanel();
     }
 
     // ================================================================
     //  5.  clearSelection
     // ================================================================
     function clearSelection() {
-        if (selectedElementId) {
-            var el = svgContent.querySelector("#" + CSS.escape(selectedElementId));
+        selectedElementIds.forEach(function (id) {
+            var el = svgContent.querySelector("#" + CSS.escape(id));
             if (el) el.classList.remove("svg-selected");
+        });
+        selectedElementIds.clear();
+        updateSelectionPanel();
+    }
+
+    function updateSelectionPanel() {
+        var count = selectedElementIds.size;
+        if (count === 0) {
+            selectedElementEl.classList.add("empty");
+            selectedElementEl.innerHTML = "Click an element on the slide to select it";
+            annotationInput.style.display = "none";
+            annotationText.value = "";
+            return;
         }
-        selectedElementId = null;
-        selectedElementEl.classList.add("empty");
-        selectedElementEl.innerHTML = "Click an element on the slide to select it";
-        annotationInput.style.display = "none";
-        annotationText.value = "";
+
+        selectedElementEl.classList.remove("empty");
+
+        if (count === 1) {
+            // Single select — show tag + id (existing behavior)
+            var eid = selectedElementIds.values().next().value;
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (el) {
+                var tag = el.tagName.toLowerCase();
+                selectedElementEl.innerHTML =
+                    '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
+                    '<span class="el-id">' + escapeHtml(eid) + '</span>';
+            }
+        } else {
+            // Multi select — show count
+            selectedElementEl.innerHTML =
+                '<span class="multi-count">' + count + ' elements selected</span>';
+        }
+
+        annotationInput.style.display = "block";
+        annotationText.placeholder = count > 1
+            ? "Describe how to modify all " + count + " elements..."
+            : "Describe how the AI should modify this element...";
+        annotationText.value = slideAnnotations[Array.from(selectedElementIds)[0]] || "";
+        annotationText.focus();
     }
 
     // ================================================================
     //  6.  Add annotation  -- POST /api/slide/{name}/annotate
     // ================================================================
     btnAddAnnotation.addEventListener("click", function () {
-        if (!currentSlide || !selectedElementId) return;
+        if (!currentSlide || selectedElementIds.size === 0) return;
 
         var text = annotationText.value.trim();
         if (!text) return;
 
-        fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                element_id: selectedElementId,
-                annotation: text
-            })
-        })
-            .then(function (res) { return res.json(); })
+        var ids = Array.from(selectedElementIds);
+        var promises = ids.map(function (eid) {
+            return fetch("/api/slide/" + encodeURIComponent(currentSlide) + "/annotate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ element_id: eid, annotation: text })
+            }).then(function (res) { return res.json(); });
+        });
+
+        Promise.all(promises)
             .then(function () {
-                slideAnnotations[selectedElementId] = text;
+                ids.forEach(function (eid) {
+                    slideAnnotations[eid] = text;
+                });
                 refreshAnnotationVisuals();
                 updateAnnotationList();
                 annotationText.value = "";
-                // Reload slide list to update badge counts
                 loadSlides();
             })
             .catch(function (err) {
