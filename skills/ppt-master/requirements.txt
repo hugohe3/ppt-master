@@ -102,3 +102,10 @@ curl_cffi>=0.7.0
 google-genai>=1.0.0
 # OpenAI-compatible backend / OpenAI 兼容后端 (IMAGE_BACKEND=openai)
 openai>=1.0.0
+
+# ─────────────────────────────────────────────────────────────
+# SVG Editor / SVG 编辑器 (skills/ppt-master/scripts/svg_editor/server.py)
+# ─────────────────────────────────────────────────────────────
+# Localhost web editor for annotating SVG elements with edit instructions.
+# 本地 Web 编辑器，用于在 SVG 元素上添加编辑标注指令
+flask>=3.0.0

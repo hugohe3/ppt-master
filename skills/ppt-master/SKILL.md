@@ -336,6 +336,39 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
+**Step 7.4: SVG Editor — MUST execute**
+
+After PPTX export, **MUST** start the SVG editor for the user:
+
+```bash
+python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
+```
+
+Then tell the user:
+> SVG 编辑器已启动，请在浏览器打开: http://localhost:5000
+> 在浏览器中选择元素并添加批注，完成后在编辑器中点击"保存"，然后回来告诉我。
+
+**❌ NEVER skip Step 7.4.** After PPTX export, always start the editor. Do not ask the user whether they want it — just start it. The user decides whether to use it or ignore it.
+
+**Edit Loop (When User Requests Annotation-Based Editing):**
+
+When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", "改好了", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
+
+1. The server will have auto-shut down after the user saved (port is released). If it's still running, kill it.
+2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
+3. If no annotations found, inform the user and stop
+4. Read each annotated SVG file from `svg_output/`
+5. For each annotation: modify the target SVG element per the user's instruction
+6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
+7. Remove temporary `_edit_N` id attributes from elements that did not have a user-assigned id originally
+8. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
+9. Re-start the SVG editor server:
+   ```bash
+   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
+   ```
+10. Tell the user: "标注已处理，PPT 已更新。编辑器已重启: http://localhost:5000 。无需标注时告诉我即可。"
+11. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
+
 ---
 
 ## Role Switching Protocol
