@@ -15,13 +15,14 @@ import requests
 
 from image_backends.backend_common import (
     MAX_RETRIES,
-    save_image_bytes,
     http_error,
     is_rate_limit_error,
     normalize_image_size,
     require_api_key,
     resolve_output_path,
     retry_delay,
+    poll_json,
+    download_image
 )
 
 DEFAULT_ENDPOINT = "https://api-inference.modelscope.cn"
@@ -61,10 +62,10 @@ ASPECT_RATIO_SIZE_MAP = {
 
 def _resolve_url(base_url: str) -> str:
     """Resolve the ModelScope generation endpoint."""
-    base = base_url.rstrip("/").rstrip("/v1")
-    if base.endswith(".cn"):
-        return base
-    raise ValueError(f"Unsupported ModelScope endpoint: {base_url}")
+    base = base_url.rstrip("/")
+    if base.endswith("/v1"):
+        base = base.removesuffix("/v1")
+    return base
 
 def _resolve_size(aspect_ratio: str, image_size: str) -> str:
     """Resolve the target resolution for a ratio and logical size preset.
@@ -103,7 +104,7 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
 
     }
 
-    print(f"[ModelScope Models]")
+    print("[ModelScope Models]")
     print(f"  Model:        {model}")
     print(f"  Prompt:       {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
     print(f"  Aspect Ratio: {aspect_ratio}")
@@ -113,33 +114,22 @@ def _generate_image(api_key: str, prompt: str, negative_prompt: str = None,
     start = time.time()
     response = requests.post(url, headers={**common_headers,"X-ModelScope-Async-Mode": "true"}, json=payload, timeout=300)
     
-
-    # if response.status_code != 200:
-    #     raise http_error(response, "ModelScope image generation")
-    response.raise_for_status()
-
+    if (response.status_code != 200):
+        raise http_error(response, "ModelScope image generation")
     
     task_id = response.json()["task_id"]
-    while True:
-      result = requests.get(
-          f"{_resolve_url(base_url)}/v1/tasks/{task_id}",
-          headers={**common_headers, "X-ModelScope-Task-Type": "image_generation"},
-      )
-      result.raise_for_status()
-      data = result.json()
-
-      if data["task_status"] == "SUCCEED":
-          path = resolve_output_path(prompt, output_dir, filename, ".png")
-          save_image_bytes(requests.get(data["output_images"][0]).content, path)
-          elapsed = time.time() - start
-          print(f"\n  [DONE] Response received ({elapsed:.1f}s)")
-          break
-      elif data["task_status"] == "FAILED":
-          break
-      time.sleep(3)
+    data = poll_json(
+        url=f"{_resolve_url(base_url)}/v1/tasks/{task_id}",
+        headers={**common_headers, "X-ModelScope-Task-Type": "image_generation"},
+        status_label="task_status",
+        ready_values=["SUCCEED"],
+        failed_values=["FAILED"],
+    )
+    elapsed = time.time() - start
+    print(f"\n  [DONE] Response received ({elapsed:.1f}s)")
+    path = resolve_output_path(prompt, output_dir, filename, ".png")
+    return download_image(data["output_images"][0], path)
     
-
-
 def generate(prompt: str, negative_prompt: str = None,
              aspect_ratio: str = "1:1", image_size: str = "1K",
              output_dir: str = None, filename: str = None,
