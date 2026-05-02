@@ -555,8 +555,8 @@ html, body {
 
 #rubber-band {
     position: fixed;
-    border: 1px solid #4a9eff;
-    background: rgba(74, 158, 255, 0.12);
+    border: 2px dashed #4a9eff;
+    background: rgba(74, 158, 255, 0.15);
     pointer-events: none;
     z-index: 11;
 }
