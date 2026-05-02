@@ -1,10 +1,10 @@
 # Audio Narration & Video Export
 
-PPT Master can turn the speaker notes into per-slide MP3 narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs when you need higher-quality cloud narration. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
+PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs, MiniMax, Qwen TTS, and CosyVoice when you need higher-quality cloud narration or a cloned voice. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
 
 ## What you get
 
-- One MP3 per slide under `<project_path>/audio/`, named to match the SVG (`01_cover.mp3`, `02_market_landscape.mp3`, …).
+- One audio file per slide under `<project_path>/audio/`, named to match the SVG (`01_cover.mp3`, `02_market_landscape.mp3`, …).
 - Optional re-export: a new PPTX in `exports/` with each MP3 embedded into the matching slide and slide auto-advance timings set to the audio length, so kiosk/auto-play and video export work without manual timing.
 - The original speaker notes are preserved.
 
@@ -56,6 +56,28 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice-id <elevenlabs-voice-id> \
   --elevenlabs-model eleven_multilingual_v2
 
+# 2C. Or generate MP3s with MiniMax (supports system and cloned voice_id)
+export MINIMAX_API_KEY="your-minimax-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider minimax \
+  --voice-id <minimax-voice-id> \
+  --minimax-model speech-2.8-hd
+
+# 2D. Or generate audio with Qwen TTS (system voice or cloned voice)
+export DASHSCOPE_API_KEY="your-dashscope-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider qwen \
+  --voice-id <qwen-voice> \
+  --qwen-model qwen3-tts-flash \
+  --qwen-language-type Chinese
+
+# 2E. Or generate MP3s with CosyVoice (system voice or cloned/designed voice_id)
+export COSYVOICE_API_KEY="your-dashscope-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider cosyvoice \
+  --voice-id <cosyvoice-voice> \
+  --cosyvoice-model cosyvoice-v3-flash
+
 # 3. (Optional) Re-export PPTX with audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
   --recorded-narration audio
@@ -70,6 +92,8 @@ export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
 python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
 ```
 
+For MiniMax, Qwen, and CosyVoice, pass the provider-specific system voice or cloned voice ID/name with `--voice-id`. Voice cloning itself is performed in the provider's console/API first; `notes_to_audio.py` uses the resulting voice ID to generate per-slide narration.
+
 ## Dependency
 
 ```bash
@@ -78,7 +102,7 @@ python3 -m pip install edge-tts
 
 Already listed in `skills/ppt-master/requirements.txt`. `edge-tts` calls Microsoft's online TTS service — an internet connection is required at generation time. The MP3s themselves are local files; nothing about playback or PowerPoint export depends on the network afterwards.
 
-ElevenLabs does not require an extra Python package; it uses HTTPS directly. Configure `ELEVENLABS_API_KEY` in the current shell or in `.env` based on `.env.example`.
+Cloud TTS providers do not require extra Python packages; they use HTTPS directly. Configure the relevant API key in the current shell or in `.env` based on `.env.example`.
 
 ## Tips
 

@@ -321,7 +321,7 @@ python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
 python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
 ```
 
-- `notes_to_audio.py` reads split `notes/*.md` files and writes one MP3 per slide to `audio/`.
+- `notes_to_audio.py` reads split `notes/*.md` files and writes one audio file per slide to `audio/`. Default `edge` output is MP3; configured cloud providers may output MP3 or WAV depending on provider settings.
 - `--recorded-narration audio` embeds matching audio, keeps speaker notes, and sets slide timings from audio duration.
 
 Full reference: [`animations.md`](animations.md).

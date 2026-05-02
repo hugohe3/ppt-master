@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from urllib import error, request
+
+from tts_backends.backend_common import read_api_key
 
 
 API_BASE = "https://api.elevenlabs.io/v1"
 
 
-def read_api_key(env_name: str) -> str:
-    api_key = os.environ.get(env_name, "").strip()
-    if not api_key:
-        raise RuntimeError(f"Missing ElevenLabs API key. Set {env_name}=<key>.")
-    return api_key
+def read_elevenlabs_api_key(env_name: str) -> str:
+    return read_api_key(env_name, label="ElevenLabs")
 
 
 def output_extension(output_format: str) -> str:
@@ -108,4 +106,3 @@ def print_voices(api_key: str) -> None:
         name = item.get("name", "")
         category = item.get("category", "")
         print(f"{voice_id:<23} {name:<29} {category}")
-

@@ -327,9 +327,9 @@ python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
 
 **Optional recorded narration** (only when the user asks for narrated/video export):
 
-Run the standalone [`generate-audio`](workflows/generate-audio.md) workflow. The AI picks voice candidates from the locale-filtered `edge-tts` catalog, asks the user once (voice + rate + embed-or-not, all with recommended values), then executes `notes_to_audio.py` and (if chosen) re-exports the PPTX with `--recorded-narration audio`.
+Run the standalone [`generate-audio`](workflows/generate-audio.md) workflow. The AI picks a narration backend (`edge` by default, or a configured cloud provider such as ElevenLabs / MiniMax / Qwen / CosyVoice for high-quality or cloned voices), asks the user once (backend + voice + rate/settings + embed-or-not, all with recommended values), then executes `notes_to_audio.py` and (if chosen) re-exports the PPTX with `--recorded-narration audio`.
 
-Do NOT call `notes_to_audio.py` directly without going through the workflow — `--voice` is required and the workflow produces the locale-aware recommendation that makes the choice meaningful.
+Do NOT call `notes_to_audio.py` directly without going through the workflow — `--voice` / `--voice-id` is required and the workflow produces the locale/provider-aware recommendation that makes the choice meaningful.
 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 

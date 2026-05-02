@@ -1,19 +1,19 @@
 # 音频旁白与视频导出
 
-PPT Master 可以把演讲者备注转成逐页 MP3 旁白（基于 [`edge-tts`](https://github.com/rany2/edge-tts) —— 微软 Edge 的在线神经网络语音），再把音频嵌入回 PPTX，由 PowerPoint 自带的"导出视频"一键产出带旁白和转场的 MP4，全程无需第三方工具。
+PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edge-tts`](https://github.com/rany2/edge-tts) —— 微软 Edge 的在线神经网络语音；也可配置 ElevenLabs、MiniMax、Qwen TTS、CosyVoice 使用高质量或复刻音色），再把音频嵌入回 PPTX，由 PowerPoint 自带的"导出视频"一键产出带旁白和转场的 MP4，全程无需第三方工具。
 
 ## 你会得到什么
 
-- 每页一个 MP3 文件，存放于 `<project_path>/audio/`，文件名与 SVG 对齐（`01_cover.mp3`、`02_market_landscape.mp3` …）。
-- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 MP3 已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
+- 每页一个音频文件，存放于 `<project_path>/audio/`，文件名与 SVG 对齐（`01_cover.mp3`、`02_market_landscape.mp3` …）。
+- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
 - 演讲者备注原样保留。
 
 ## 它是怎么做到的
 
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
-2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）拉取该 locale 下的 `edge-tts` 音色清单，挑出 3–6 个候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速也会基于 notes 信息密度给出推荐值。
-3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——音色、语速、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
-4. **执行**。脚本写出 MP3 到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。
+2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速/风格也会基于 notes 信息密度给出推荐值。
+3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——生成模式、音色、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
+4. **执行**。脚本写出音频到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。
 
 完整流程见 [`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md)。
 
@@ -45,16 +45,38 @@ python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale ja-JP
 # 1. 确保备注已切分（后处理 Step 7.1）
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 
-# 2. 生成 MP3
+# 2A. 用 edge-tts 生成 MP3（默认，无需 API Key）
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
+
+# 2B. 用 MiniMax 生成 MP3（支持系统音色或复刻 voice_id）
+export MINIMAX_API_KEY="your-minimax-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider minimax \
+  --voice-id <minimax-voice-id> \
+  --minimax-model speech-2.8-hd
+
+# 2C. 用 Qwen TTS 生成音频（系统音色或复刻音色）
+export DASHSCOPE_API_KEY="your-dashscope-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider qwen \
+  --voice-id <qwen-voice> \
+  --qwen-model qwen3-tts-flash \
+  --qwen-language-type Chinese
+
+# 2D. 用 CosyVoice 生成 MP3（系统音色或复刻/设计音色）
+export COSYVOICE_API_KEY="your-dashscope-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider cosyvoice \
+  --voice-id <cosyvoice-voice> \
+  --cosyvoice-model cosyvoice-v3-flash
 
 # 3.（可选）重新导出 PPTX 嵌入音频
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
   --recorded-narration audio
 ```
 
-`--voice` 是必填项——脚本会拒绝未指定音色的调用。用 `--list-voices --locale <locale>` 查可用音色。
+edge 模式下 `--voice` 是必填项。云端 provider 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台/API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
 
 ## 依赖
 
@@ -62,7 +84,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
 python3 -m pip install edge-tts
 ```
 
-已写入 `skills/ppt-master/requirements.txt`。`edge-tts` 调用微软的在线 TTS 服务，**生成时**需要联网；生成后的 MP3 是本地文件，PowerPoint 播放和视频导出都不依赖网络。
+已写入 `skills/ppt-master/requirements.txt`。`edge-tts` 调用微软的在线 TTS 服务，**生成时**需要联网；生成后的音频是本地文件，PowerPoint 播放和视频导出都不依赖网络。云端 TTS provider 不需要额外 Python 包，直接通过 HTTPS 调用；按 `.env.example` 配置对应 API Key 即可。
 
 ## 经验值
 
