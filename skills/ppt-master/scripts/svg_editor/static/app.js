@@ -211,7 +211,9 @@
         annotationText.placeholder = count > 1
             ? "Describe how to modify all " + count + " elements..."
             : "Describe how the AI should modify this element...";
-        annotationText.value = slideAnnotations[Array.from(selectedElementIds)[0]] || "";
+        annotationText.value = count === 1
+        ? (slideAnnotations[selectedElementIds.values().next().value] || "")
+        : "";
         annotationText.focus();
     }
 

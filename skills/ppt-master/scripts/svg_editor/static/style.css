@@ -460,6 +460,13 @@ html, body {
     background: #2a2a4a;
 }
 
+/* --- Multi-select count --- */
+.multi-count {
+    color: #4a9eff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
 /* ======================== UTILITY ======================== */
 .visually-hidden {
     position: absolute;
