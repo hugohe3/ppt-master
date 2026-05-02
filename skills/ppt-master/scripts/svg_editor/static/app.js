@@ -19,6 +19,7 @@
     var modalMessage      = document.getElementById("modal-message");
     var modalConfirm      = document.getElementById("modal-confirm");
     var modalCancel       = document.getElementById("modal-cancel");
+    var elementPropsEl    = document.getElementById("element-props");
 
     // ---- State ------------------------------------------------------
     var currentSlide      = null;   // filename, e.g. "slide_01.svg"
@@ -182,7 +183,7 @@
     }
 
     function updateSelectionPanel() {
-        var propsEl = document.getElementById("element-props");
+        var propsEl = elementPropsEl;
         var count = selectedElementIds.size;
 
         if (count === 0) {
@@ -250,8 +251,9 @@
 
             var dx = e.clientX - rubberBandStart.x;
             var dy = e.clientY - rubberBandStart.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (Math.abs(dx) < RUBBER_BAND_THRESHOLD && Math.abs(dy) < RUBBER_BAND_THRESHOLD) {
+            if (dist < RUBBER_BAND_THRESHOLD) {
                 return;
             }
 
@@ -285,6 +287,7 @@
 
             var dx = e.clientX - rubberBandStart.x;
             var dy = e.clientY - rubberBandStart.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
 
             if (rubberBandEl) {
                 rubberBandEl.remove();
@@ -292,7 +295,7 @@
             }
 
             // Only process if drag was beyond threshold
-            if (Math.abs(dx) >= RUBBER_BAND_THRESHOLD || Math.abs(dy) >= RUBBER_BAND_THRESHOLD) {
+            if (dist >= RUBBER_BAND_THRESHOLD) {
                 var rect = {
                     left: Math.min(rubberBandStart.x, e.clientX),
                     top: Math.min(rubberBandStart.y, e.clientY),
@@ -307,7 +310,9 @@
                 selectByRubberBand(rect);
             } else {
                 // Below threshold: treat as click on empty space
-                clearSelection();
+                if (!e.ctrlKey && !e.metaKey) {
+                    clearSelection();
+                }
             }
 
             rubberBandStart = null;
@@ -585,9 +590,10 @@
         doc.querySelectorAll("*").forEach(function (el) {
             Array.from(el.attributes).forEach(function (attr) {
                 if (attr.name.indexOf("on") === 0) el.removeAttribute(attr.name);
-                // Strip javascript: protocol from href/xlink:href
+                // Strip dangerous URI protocols from href/xlink:href
                 if ((attr.name === "href" || attr.name === "xlink:href") &&
-                    /^\s*javascript\s*:/i.test(attr.value)) {
+                    (/^\s*javascript\s*:/i.test(attr.value) ||
+                     /^\s*data\s*:/i.test(attr.value))) {
                     el.removeAttribute(attr.name);
                 }
             });
@@ -659,13 +665,19 @@
         return props;
     }
 
+    function isSafeColor(val) {
+        // Only allow values that look like CSS colors (hex, rgb, rgba, hsl, named).
+        // Reject anything with ; : url @ \ to prevent CSS injection.
+        return val.length < 100 && !/[;:@\\]|url\s*\(/i.test(val);
+    }
+
     function renderPropertyTable(props) {
         var html = '<table class="prop-table">';
         Object.keys(props).forEach(function (key) {
             var val = props[key];
             if (!val) return;
             html += '<tr><td class="prop-key">' + escapeHtml(key) + '</td><td class="prop-val">';
-            if (key === "fill" || key === "stroke") {
+            if ((key === "fill" || key === "stroke") && isSafeColor(val)) {
                 html += '<span class="prop-color" style="background:' + escapeHtml(val) + ';"></span>';
             }
             html += escapeHtml(val) + '</td></tr>';

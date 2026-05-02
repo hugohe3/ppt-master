@@ -465,6 +465,8 @@ html, body {
 #element-props {
     margin-top: 10px;
     font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .prop-table {
