@@ -217,6 +217,136 @@
         annotationText.focus();
     }
 
+    // ---- Rubber band selection ----
+    var rubberBandEl = null;
+    var rubberBandStart = null;
+    var RUBBER_BAND_THRESHOLD = 5;
+
+    function initRubberBand() {
+        var overlay = document.getElementById("rubber-band-overlay");
+        var container = document.getElementById("svg-container");
+
+        container.addEventListener("mousedown", function (e) {
+            // Only left mouse button
+            if (e.button !== 0) return;
+
+            // If clicking on a selectable SVG element, let its click handler deal with it
+            if (e.target.classList && e.target.classList.contains("svg-selectable")) {
+                return;
+            }
+
+            // Starting rubber band on empty space
+            rubberBandStart = { x: e.clientX, y: e.clientY };
+            overlay.classList.add("active");
+        });
+
+        document.addEventListener("mousemove", function (e) {
+            if (!rubberBandStart) return;
+
+            var dx = e.clientX - rubberBandStart.x;
+            var dy = e.clientY - rubberBandStart.y;
+
+            if (Math.abs(dx) < RUBBER_BAND_THRESHOLD && Math.abs(dy) < RUBBER_BAND_THRESHOLD) {
+                return;
+            }
+
+            if (!rubberBandEl) {
+                rubberBandEl = document.createElement("div");
+                rubberBandEl.id = "rubber-band";
+                document.body.appendChild(rubberBandEl);
+            }
+
+            var x = Math.min(rubberBandStart.x, e.clientX);
+            var y = Math.min(rubberBandStart.y, e.clientY);
+            var w = Math.abs(dx);
+            var h = Math.abs(dy);
+
+            rubberBandEl.style.left = x + "px";
+            rubberBandEl.style.top = y + "px";
+            rubberBandEl.style.width = w + "px";
+            rubberBandEl.style.height = h + "px";
+        });
+
+        document.addEventListener("mouseup", function (e) {
+            if (!rubberBandStart) return;
+
+            var overlay = document.getElementById("rubber-band-overlay");
+            overlay.classList.remove("active");
+
+            var dx = e.clientX - rubberBandStart.x;
+            var dy = e.clientY - rubberBandStart.y;
+
+            if (rubberBandEl) {
+                rubberBandEl.remove();
+                rubberBandEl = null;
+            }
+
+            // Only process if drag was beyond threshold
+            if (Math.abs(dx) >= RUBBER_BAND_THRESHOLD || Math.abs(dy) >= RUBBER_BAND_THRESHOLD) {
+                var rect = {
+                    left: Math.min(rubberBandStart.x, e.clientX),
+                    top: Math.min(rubberBandStart.y, e.clientY),
+                    right: Math.max(rubberBandStart.x, e.clientX),
+                    bottom: Math.max(rubberBandStart.y, e.clientY)
+                };
+
+                if (!e.ctrlKey && !e.metaKey) {
+                    clearSelection();
+                }
+
+                selectByRubberBand(rect, e.ctrlKey || e.metaKey);
+            }
+
+            rubberBandStart = null;
+        });
+    }
+
+    function selectByRubberBand(screenRect, addToSelection) {
+        var svg = svgContent.querySelector("svg");
+        if (!svg) return;
+
+        var selectableEls = svg.querySelectorAll(".svg-selectable");
+        selectableEls.forEach(function (el) {
+            try {
+                var bbox = el.getBBox();
+                var ctm = el.getScreenCTM();
+                if (!ctm) return;
+
+                // Transform bbox corners to screen coordinates
+                var corners = [
+                    { x: bbox.x, y: bbox.y },
+                    { x: bbox.x + bbox.width, y: bbox.y },
+                    { x: bbox.x, y: bbox.y + bbox.height },
+                    { x: bbox.x + bbox.width, y: bbox.y + bbox.height }
+                ];
+
+                var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+                corners.forEach(function (c) {
+                    var sx = c.x * ctm.a + c.y * ctm.c + ctm.e;
+                    var sy = c.x * ctm.b + c.y * ctm.d + ctm.f;
+                    if (sx < minX) minX = sx;
+                    if (sy < minY) minY = sy;
+                    if (sx > maxX) maxX = sx;
+                    if (sy > maxY) maxY = sy;
+                });
+
+                // AABB intersection
+                if (minX < screenRect.right && maxX > screenRect.left &&
+                    minY < screenRect.bottom && maxY > screenRect.top) {
+                    var eid = el.id;
+                    if (eid) {
+                        selectedElementIds.add(eid);
+                        el.classList.add("svg-selected");
+                    }
+                }
+            } catch (err) {
+                // getBBox can throw for elements with no geometry
+            }
+        });
+
+        updateSelectionPanel();
+    }
+
     // ================================================================
     //  6.  Add annotation  -- POST /api/slide/{name}/annotate
     // ================================================================
@@ -424,4 +554,5 @@
     //  Boot
     // ================================================================
     loadSlides();
+    initRubberBand();
 })();
