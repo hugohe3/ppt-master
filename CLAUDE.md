@@ -13,6 +13,8 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 > Decks containing data charts: run the standalone [`verify-charts`](skills/ppt-master/workflows/verify-charts.md) workflow between the executor and post-processing steps to calibrate chart coordinates.
 >
 > Recorded narration / video export: run the standalone [`generate-audio`](skills/ppt-master/workflows/generate-audio.md) workflow after post-processing.
+>
+> Fine-grained edits after export: when (and only when) the user explicitly asks to refine specific elements, run the standalone [`visual-edit`](skills/ppt-master/workflows/visual-edit.md) workflow.
 
 ## Execution Requirements
 

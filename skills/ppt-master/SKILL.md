@@ -75,6 +75,7 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 |----------|------|---------|
 | `create-template` | `workflows/create-template.md` | Standalone template creation workflow |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
+| `visual-edit` | `workflows/visual-edit.md` | Browser-based visual editor for fine-grained edits — run only when the user explicitly requests it after export |
 
 ---
 
@@ -336,39 +337,7 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-**Step 7.4: SVG Editor — opt-in only**
-
-This step is **OPTIONAL**. Do **NOT** run it as part of the default flow. Run it **only** when the user explicitly asks for fine-grained visual edits (any wording — recognize intent, don't match keywords).
-
-When such an intent is detected, ask the user (in their language) whether they want to launch the visual editor.
-
-If the user confirms, start the editor. The editor edits the project's `svg_output/` in place; `svg_to_pptx` already snapshots it into `backup/<timestamp>/` on every export, so prior versions are recoverable from there:
-
-```bash
-python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
-```
-
-Inform the user (in their language) that:
-- the editor is running at `http://localhost:5050`
-- they should click an element in the browser, add an annotation, and save when done
-
-**Edit Loop (Triggered After User Submits Annotations):**
-
-When the user indicates (in any wording) that they have submitted annotations and want the AI to apply them:
-
-1. The server will have auto-shut down after the user saved (port is released). If it's still running, kill it.
-2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
-3. If no annotations found, inform the user and stop
-4. Read each annotated SVG file from `<project_path>/svg_output/`
-5. For each annotation: modify the target SVG element per the user's instruction
-6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
-7. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
-8. Re-start the SVG editor server:
-   ```bash
-   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
-   ```
-9. Inform the user (in their language) that annotations have been applied, the PPT has been updated, and the editor is running again at `http://localhost:5050`.
-10. Wait for the user's next message. If they indicate they are done, the editing loop ends. If they submit more annotations, return to step 1.
+> Fine-grained edits after export: when (and only when) the user explicitly asks to refine specific elements, run the standalone [`visual-edit`](workflows/visual-edit.md) workflow.
 
 ---
 
