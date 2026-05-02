@@ -337,7 +337,7 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-> Fine-grained edits after export: when (and only when) the user explicitly asks to refine specific elements, run the standalone [`visual-edit`](workflows/visual-edit.md) workflow.
+> Post-export iteration: whenever the user asks to change anything on a generated slide ("改一下", "调字号", "那里看着不对", "把图片换大点"), the [`visual-edit`](workflows/visual-edit.md) workflow is available — surface it as an option. If the user describes the change with enough specificity to apply directly ("第 3 页副标题字号改 32"), edit the SVG directly instead; if they're vaguely pointing at "somewhere" on the deck, run the workflow.
 
 ---
 

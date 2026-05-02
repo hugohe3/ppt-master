@@ -4,17 +4,21 @@ description: Launch a local browser-based visual editor so the user can pinpoint
 
 # Visual Edit Workflow
 
-> Standalone post-export step. Run when the user explicitly asks for fine-grained visual edits after PPTX export — e.g. "want to tweak something specific", "this part isn't right", "调一下这里" — any wording that signals they want to refine particular elements rather than regenerate. Do NOT run as part of the default flow.
+> Standalone post-export step. Whenever the user asks to change something on a generated slide — "改一下这里", "字号小了", "那张图不对", "把背景颜色调暖一点", or any similar wording — this workflow is the go-to **when the user can't precisely name what to change**. If the user describes the change concretely enough that you can edit the SVG directly (e.g. "第 3 页副标题字号改 32"), do that instead — don't force them through the editor.
 
 This workflow is **independent**: it operates on `<project_path>/svg_output/` and re-runs the same post-processing scripts the main pipeline uses. Safe to invoke in a fresh session as long as the project has reached Step 7.
 
 ## When to Run
 
 - The deck has been exported once (Steps 1–7 of the main workflow are complete).
-- The user explicitly requests fine-grained edits.
-- A browser is available on the host (Linux headless / containers without a display cannot use this workflow — fall back to direct SVG edits via conversation).
+- The user wants to change one or more specific visual elements **and either can't pinpoint them in words or would benefit from clicking the slide directly**.
+- A browser is available on the host (Linux headless / containers without a display: skip; apply edits directly via conversation instead).
 
-If the user's request is broad ("regenerate", "redo this slide"), use the main workflow instead — the editor is for surgical edits, not full rewrites.
+## When NOT to Run
+
+- The user gave a precise edit you can apply right now ("change page 3 title font-size to 32") — just edit the SVG.
+- The user wants a full regeneration ("redo this slide", "换个风格") — use the main workflow.
+- No browser available.
 
 ---
 
