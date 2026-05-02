@@ -361,6 +361,37 @@
     }
 
     // ================================================================
+    //  Keyboard shortcuts
+    // ================================================================
+    function initKeyboardShortcuts() {
+        document.addEventListener("keydown", function (e) {
+            // Ctrl+A / Cmd+A: select all elements
+            if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+                // Don't intercept if focus is in textarea
+                if (document.activeElement === annotationText) return;
+
+                e.preventDefault();
+                var svg = svgContent.querySelector("svg");
+                if (!svg) return;
+
+                svg.querySelectorAll(".svg-selectable").forEach(function (el) {
+                    var eid = el.id;
+                    if (eid) {
+                        selectedElementIds.add(eid);
+                        el.classList.add("svg-selected");
+                    }
+                });
+                updateSelectionPanel();
+            }
+
+            // Escape: clear selection
+            if (e.key === "Escape") {
+                clearSelection();
+            }
+        });
+    }
+
+    // ================================================================
     //  6.  Add annotation  -- POST /api/slide/{name}/annotate
     // ================================================================
     btnAddAnnotation.addEventListener("click", function () {
@@ -568,4 +599,5 @@
     // ================================================================
     loadSlides();
     initRubberBand();
+    initKeyboardShortcuts();
 })();
