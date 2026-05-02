@@ -18,13 +18,7 @@ If the user's request is broad ("regenerate", "redo this slide"), use the main w
 
 ---
 
-## Step 1: Confirm with the user
-
-Before launching anything, confirm in the user's language that you're about to start a local visual editor in their browser, and that they'll click elements to add written instructions. Wait for confirmation.
-
-If they decline or want a different approach (e.g. just describe the edit in chat), don't launch — apply the edit directly instead.
-
-## Step 2: Start the editor
+## Step 1: Start the editor
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
@@ -32,13 +26,16 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 
 The server binds to `127.0.0.1:5050` and edits `<project_path>/svg_output/` in place. `svg_to_pptx` already snapshots `svg_output` into `backup/<timestamp>/` on every export, so prior versions are recoverable from there.
 
-After the server prints `SVG Editor running at http://localhost:5050`, inform the user (in their language):
+After the server prints `SVG Editor running at http://localhost:5050`, tell the user (in their language) in a single message:
 
-- The editor is running at `http://localhost:5050`.
-- They should open it in a browser, click the element they want changed, write the change as a short instruction, then click **保存 / Save**.
-- After saving, the server auto-shuts and the user should return to the conversation.
+- the editor is running at `http://localhost:5050`
+- they should open it in a browser, click the element they want changed, write the change as a short instruction, then click **保存 / Save**
+- after saving, the server auto-shuts and they should return to the conversation
+- if they'd rather just describe the edit in chat, they can say so and you'll apply it directly without the editor
 
-## Step 3: Apply annotations (Edit Loop)
+Do **not** wait for the user to confirm before launching — they already asked for fine-grained edits, so launching is the response. The "describe in chat instead" line is the escape hatch.
+
+## Step 2: Apply annotations (Edit Loop)
 
 Triggered when the user signals (in any wording) that they have submitted annotations and want them applied.
 
@@ -57,7 +54,7 @@ Triggered when the user signals (in any wording) that they have submitted annota
    python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
    python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
    ```
-6. Restart the editor (same command as Step 2).
+6. Restart the editor (same command as Step 1).
 7. Tell the user (in their language) that annotations have been applied, the PPT is updated, and the editor is running again at `http://localhost:5050`.
 8. Wait for the user's next message:
    - If they indicate they're done, the loop ends.
