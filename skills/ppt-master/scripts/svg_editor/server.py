@@ -19,13 +19,11 @@ Dependencies:
 import argparse
 import os
 import re
-import shutil
 import sys
 import threading
 import time
 import webbrowser
 import xml.etree.ElementTree as ET
-from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -94,9 +92,15 @@ def _inline_icons(content: str) -> str:
 def derive_revised_project(source: Path) -> Path:
     """Create a `<name>_revised_<timestamp>/` sibling and copy required subdirs.
 
-    Idempotent: if `source` already looks like a revised copy, returns it as-is.
+    Reserved for callers that explicitly want a derived copy. Not invoked by the
+    default editor flow — `svg_to_pptx` already snapshots `svg_output` into
+    `backup/<timestamp>/` on every export, which is enough for rollback.
+
+    Idempotent: returns `source` unchanged if it already looks like a revised copy.
     Copies svg_output/ (required) and images/, sources/, metadata.json if present.
     """
+    import shutil
+    from datetime import datetime
     if '_revised_' in source.name:
         return source
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -365,11 +369,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('--port', type=int, default=5050, help='Port to listen on (default: 5050)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument('--timeout', type=int, default=900, help='Idle timeout in seconds (default: 900 = 15min)')
-    parser.add_argument(
-        '--no-derive',
-        action='store_true',
-        help='Edit svg_output in place instead of deriving a `<name>_revised_<timestamp>/` copy',
-    )
     return parser
 
 
@@ -381,12 +380,6 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not (project_path / 'svg_output').exists():
         print(f"Error: {project_path / 'svg_output'} does not exist", file=sys.stderr)
         return 1
-
-    if not args.no_derive:
-        derived = derive_revised_project(project_path)
-        if derived != project_path:
-            print(f"Derived revised project: {derived}")
-            project_path = derived
 
     app = create_app(str(project_path), idle_timeout=args.timeout)
 

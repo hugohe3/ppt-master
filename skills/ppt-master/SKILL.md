@@ -342,31 +342,30 @@ This step is **OPTIONAL**. Do **NOT** run it as part of the default flow. Run it
 
 When such an intent is detected, ask the user (in their language) whether they want to launch the visual editor.
 
-If the user confirms, start the editor. The server will automatically derive a `<project>_revised_<timestamp>/` copy beside the original project, so the original is preserved untouched:
+If the user confirms, start the editor. The editor edits the project's `svg_output/` in place; `svg_to_pptx` already snapshots it into `backup/<timestamp>/` on every export, so prior versions are recoverable from there:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 ```
 
-Read the printed `Derived revised project: <revised_path>` line, then inform the user (in their language) that:
+Inform the user (in their language) that:
 - the editor is running at `http://localhost:5050`
 - they should click an element in the browser, add an annotation, and save when done
-- changes will be written to the derived copy `<revised_path>`, not the original
 
 **Edit Loop (Triggered After User Submits Annotations):**
 
 When the user indicates (in any wording) that they have submitted annotations and want the AI to apply them:
 
 1. The server will have auto-shut down after the user saved (port is released). If it's still running, kill it.
-2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <revised_project_path>` to discover annotations
+2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
 3. If no annotations found, inform the user and stop
-4. Read each annotated SVG file from `<revised_project_path>/svg_output/`
+4. Read each annotated SVG file from `<project_path>/svg_output/`
 5. For each annotation: modify the target SVG element per the user's instruction
 6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
-7. Re-run Step 7 post-processing on the revised project: `finalize_svg.py` → `svg_to_pptx.py`
-8. Re-start the SVG editor server pointing at the **same** revised project (it already contains `_revised_` in the name, so no further derivation happens):
+7. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
+8. Re-start the SVG editor server:
    ```bash
-   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <revised_project_path> --no-browser
+   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
    ```
 9. Inform the user (in their language) that annotations have been applied, the PPT has been updated, and the editor is running again at `http://localhost:5050`.
 10. Wait for the user's next message. If they indicate they are done, the editing loop ends. If they submit more annotations, return to step 1.
