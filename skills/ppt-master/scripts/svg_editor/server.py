@@ -18,11 +18,14 @@ Dependencies:
 
 import argparse
 import os
+import re
+import shutil
 import sys
 import threading
 import time
 import webbrowser
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -33,18 +36,89 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+_FINALIZE_DIR = _SCRIPTS_DIR.parent / 'svg_finalize'
+if str(_FINALIZE_DIR) not in sys.path:
+    sys.path.insert(0, str(_FINALIZE_DIR))
+
 from annotations import (  # noqa: E402
     assign_temp_ids,
     parse_annotations,
     set_annotation,
     remove_annotation,
 )
+from embed_icons import (  # noqa: E402
+    parse_use_element,
+    resolve_icon_path,
+    extract_paths_from_icon,
+    generate_icon_group,
+)
+
+_ICONS_DIR = _SCRIPTS_DIR.parent.parent / 'templates' / 'icons'
+_USE_ICON_PATTERN = re.compile(r'<use\s+[^>]*data-icon="[^"]*"[^>]*/>')
+
+
+def _inline_icons(content: str) -> str:
+    """Replace <use data-icon="..."/> with rendered <g> for browser preview.
+
+    Preserves the original <use>'s id on the produced <g> so editor element
+    targeting (and AI-side annotation lookups against svg_output) stays consistent.
+    """
+    matches = list(_USE_ICON_PATTERN.finditer(content))
+    if not matches:
+        return content
+    new_content = content
+    for match in reversed(matches):
+        use_str = match.group(0)
+        try:
+            attrs = parse_use_element(use_str)
+            icon_name = attrs.get('icon')
+            if not icon_name:
+                continue
+            icon_path, _ = resolve_icon_path(str(icon_name), _ICONS_DIR)
+            color = str(attrs.get('fill', '#000000'))
+            elements, style, base_size = extract_paths_from_icon(icon_path, color)
+        except Exception:
+            continue
+        if not elements:
+            continue
+        replacement = generate_icon_group(attrs, elements, style, base_size)
+        id_match = re.search(r'\bid="([^"]+)"', use_str)
+        if id_match:
+            replacement = replacement.replace(
+                '<g ', f'<g id="{id_match.group(1)}" data-icon="{icon_name}" ', 1,
+            )
+        new_content = new_content[:match.start()] + replacement + new_content[match.end():]
+    return new_content
+
+
+def derive_revised_project(source: Path) -> Path:
+    """Create a `<name>_revised_<timestamp>/` sibling and copy required subdirs.
+
+    Idempotent: if `source` already looks like a revised copy, returns it as-is.
+    Copies svg_output/ (required) and images/, sources/, metadata.json if present.
+    """
+    if '_revised_' in source.name:
+        return source
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    target = source.parent / f'{source.name}_revised_{timestamp}'
+    target.mkdir(parents=True, exist_ok=False)
+    shutil.copytree(source / 'svg_output', target / 'svg_output')
+    for sub in ('images', 'sources'):
+        sub_path = source / sub
+        if sub_path.exists():
+            shutil.copytree(sub_path, target / sub)
+    for f in ('metadata.json', 'README.md'):
+        fp = source / f
+        if fp.exists():
+            shutil.copy2(fp, target / f)
+    return target
 
 
 def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     """Create and configure the Flask app for a given project directory."""
     project_path = Path(project_dir).resolve()
     svg_dir = project_path / 'svg_output'
+    images_dir = project_path / 'images'
 
     app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['PROJECT_PATH'] = project_path
@@ -86,6 +160,24 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
     @app.route('/')
     def index():
         return send_from_directory(app.static_folder, 'index.html')
+
+    @app.route('/images/<path:filename>')
+    def serve_image(filename: str):
+        """Serve images referenced by SVGs as `../images/*.png`.
+
+        Resolution against an absolute images_dir + relative_to() check is the
+        authoritative path-traversal guard.
+        """
+        if not images_dir.exists():
+            return jsonify({'error': 'images directory not found'}), 404
+        target = (images_dir / filename).resolve()
+        try:
+            target.relative_to(images_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'invalid path'}), 400
+        if not target.exists() or not target.is_file():
+            return jsonify({'error': 'not found'}), 404
+        return send_from_directory(str(images_dir), filename)
 
     @app.route('/api/slides')
     def get_slides():
@@ -167,6 +259,8 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
                 })
 
         content = ET.tostring(root, encoding='unicode', xml_declaration=False)
+        # Inline <use data-icon> placeholders so the browser can render icons.
+        content = _inline_icons(content)
 
         return jsonify({
             'name': name,
@@ -243,6 +337,15 @@ def create_app(project_dir: str, idle_timeout: int = 900) -> Flask:
             for element_id, annotation_text in anns.items():
                 set_annotation(root, element_id, annotation_text)
 
+            # Strip transient _edit_N ids from elements that are NOT user-annotated.
+            # Only annotated elements need to keep their id so the AI can locate them
+            # via check_annotations.py; the rest are pollution.
+            annotated_ids = set(anns.keys())
+            for elem in root.iter():
+                eid = elem.get('id', '')
+                if eid.startswith('_edit_') and eid not in annotated_ids:
+                    elem.attrib.pop('id', None)
+
             tree.write(str(svg_file), encoding='UTF-8', xml_declaration=True)
             modified.append(filename)
 
@@ -259,9 +362,14 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('project_dir', help='Path to project directory (contains svg_output/)')
-    parser.add_argument('--port', type=int, default=5000, help='Port to listen on (default: 5000)')
+    parser.add_argument('--port', type=int, default=5050, help='Port to listen on (default: 5050)')
     parser.add_argument('--no-browser', action='store_true', help='Do not auto-open browser')
     parser.add_argument('--timeout', type=int, default=900, help='Idle timeout in seconds (default: 900 = 15min)')
+    parser.add_argument(
+        '--no-derive',
+        action='store_true',
+        help='Edit svg_output in place instead of deriving a `<name>_revised_<timestamp>/` copy',
+    )
     return parser
 
 
@@ -273,6 +381,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     if not (project_path / 'svg_output').exists():
         print(f"Error: {project_path / 'svg_output'} does not exist", file=sys.stderr)
         return 1
+
+    if not args.no_derive:
+        derived = derive_revised_project(project_path)
+        if derived != project_path:
+            print(f"Derived revised project: {derived}")
+            project_path = derived
 
     app = create_app(str(project_path), idle_timeout=args.timeout)
 

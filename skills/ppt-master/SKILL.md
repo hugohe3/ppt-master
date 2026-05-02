@@ -336,38 +336,40 @@ Full effect list, anchor logic, and limits: [`references/animations.md`](referen
 > ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
-**Step 7.4: SVG Editor — MUST execute**
+**Step 7.4: SVG Editor — opt-in only**
 
-After PPTX export, **MUST** start the SVG editor for the user:
+This step is **OPTIONAL**. Do **NOT** run it as part of the default flow. Run it **only** when the user explicitly asks for fine-grained visual edits (any wording — recognize intent, don't match keywords).
+
+When such an intent is detected, ask the user (in their language) whether they want to launch the visual editor.
+
+If the user confirms, start the editor. The server will automatically derive a `<project>_revised_<timestamp>/` copy beside the original project, so the original is preserved untouched:
 
 ```bash
 python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 ```
 
-Then tell the user:
-> SVG 编辑器已启动，请在浏览器打开: http://localhost:5000
-> 在浏览器中选择元素并添加批注，完成后在编辑器中点击"保存"，然后回来告诉我。
+Read the printed `Derived revised project: <revised_path>` line, then inform the user (in their language) that:
+- the editor is running at `http://localhost:5050`
+- they should click an element in the browser, add an annotation, and save when done
+- changes will be written to the derived copy `<revised_path>`, not the original
 
-**❌ NEVER skip Step 7.4.** After PPTX export, always start the editor. Do not ask the user whether they want it — just start it. The user decides whether to use it or ignore it.
+**Edit Loop (Triggered After User Submits Annotations):**
 
-**Edit Loop (When User Requests Annotation-Based Editing):**
-
-When the user indicates they have submitted annotations (e.g. "已提交标注", "标注好了", "继续修改", "根据标注改", "帮我改", "改好了", or any similar intent — do NOT require exact wording, recognize the user's intent to have AI read and apply the saved annotations):
+When the user indicates (in any wording) that they have submitted annotations and want the AI to apply them:
 
 1. The server will have auto-shut down after the user saved (port is released). If it's still running, kill it.
-2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <project_path>` to discover annotations
+2. Run `python3 ${SKILL_DIR}/scripts/check_annotations.py <revised_project_path>` to discover annotations
 3. If no annotations found, inform the user and stop
-4. Read each annotated SVG file from `svg_output/`
+4. Read each annotated SVG file from `<revised_project_path>/svg_output/`
 5. For each annotation: modify the target SVG element per the user's instruction
 6. Remove `data-edit-target` and `data-edit-annotation` attributes from modified elements
-7. Remove temporary `_edit_N` id attributes from elements that did not have a user-assigned id originally
-8. Re-run Step 7 post-processing: `finalize_svg.py` → `svg_to_pptx.py`
-9. Re-start the SVG editor server:
+7. Re-run Step 7 post-processing on the revised project: `finalize_svg.py` → `svg_to_pptx.py`
+8. Re-start the SVG editor server pointing at the **same** revised project (it already contains `_revised_` in the name, so no further derivation happens):
    ```bash
-   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
+   python3 ${SKILL_DIR}/scripts/svg_editor/server.py <revised_project_path> --no-browser
    ```
-10. Tell the user: "标注已处理，PPT 已更新。编辑器已重启: http://localhost:5000 。无需标注时告诉我即可。"
-11. Wait for the user's next message. If they indicate they are done (e.g. "好了", "可以了", "不需要了", "结束"), the editing loop ends. If they submit more annotations, return to step 1.
+9. Inform the user (in their language) that annotations have been applied, the PPT has been updated, and the editor is running again at `http://localhost:5050`.
+10. Wait for the user's next message. If they indicate they are done, the editing loop ends. If they submit more annotations, return to step 1.
 
 ---
 
