@@ -181,19 +181,23 @@
     }
 
     function updateSelectionPanel() {
+        var propsEl = document.getElementById("element-props");
         var count = selectedElementIds.size;
+
         if (count === 0) {
             selectedElementEl.classList.add("empty");
             selectedElementEl.innerHTML = "Click an element on the slide to select it";
             annotationInput.style.display = "none";
             annotationText.value = "";
+            propsEl.style.display = "none";
+            propsEl.innerHTML = "";
             return;
         }
 
         selectedElementEl.classList.remove("empty");
+        propsEl.style.display = "block";
 
         if (count === 1) {
-            // Single select — show tag + id (existing behavior)
             var eid = selectedElementIds.values().next().value;
             var el = svgContent.querySelector("#" + CSS.escape(eid));
             if (el) {
@@ -201,11 +205,12 @@
                 selectedElementEl.innerHTML =
                     '<span class="el-tag">&lt;' + escapeHtml(tag) + '&gt;</span>' +
                     '<span class="el-id">' + escapeHtml(eid) + '</span>';
+                propsEl.innerHTML = renderPropertyTable(getElementProperties(el));
             }
         } else {
-            // Multi select — show count
             selectedElementEl.innerHTML =
                 '<span class="multi-count">' + count + ' elements selected</span>';
+            propsEl.innerHTML = renderMultiSelectSummary(Array.from(selectedElementIds));
         }
 
         annotationInput.style.display = "block";
@@ -213,8 +218,8 @@
             ? "Describe how to modify all " + count + " elements..."
             : "Describe how the AI should modify this element...";
         annotationText.value = count === 1
-        ? (slideAnnotations[selectedElementIds.values().next().value] || "")
-        : "";
+            ? (slideAnnotations[selectedElementIds.values().next().value] || "")
+            : "";
         annotationText.focus();
     }
 
@@ -592,6 +597,121 @@
         var d = document.createElement("div");
         d.appendChild(document.createTextNode(str));
         return d.innerHTML;
+    }
+
+    // ================================================================
+    //  Property extraction & rendering
+    // ================================================================
+    function getElementProperties(elem) {
+        var props = {};
+        var tag = elem.tagName.toLowerCase();
+        var style = window.getComputedStyle(elem);
+
+        // Position (common to all)
+        try {
+            var bbox = elem.getBBox();
+            props["position"] = Math.round(bbox.x) + ", " + Math.round(bbox.y);
+            props["size"] = Math.round(bbox.width) + " x " + Math.round(bbox.height);
+        } catch (e) {
+            // no geometry
+        }
+
+        if (tag === "text" || tag === "tspan") {
+            props["font"] = style.fontFamily || elem.getAttribute("font-family") || "";
+            props["font-size"] = style.fontSize || elem.getAttribute("font-size") || "";
+            props["font-weight"] = style.fontWeight || elem.getAttribute("font-weight") || "";
+            props["fill"] = style.fill || elem.getAttribute("fill") || "";
+            props["anchor"] = elem.getAttribute("text-anchor") || style.textAnchor || "";
+            var text = elem.textContent || "";
+            if (text.length > 50) text = text.substring(0, 50) + "...";
+            props["content"] = text;
+        } else if (tag === "rect") {
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        } else if (tag === "circle") {
+            props["r"] = elem.getAttribute("r") || "";
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        } else if (tag === "ellipse") {
+            props["rx"] = elem.getAttribute("rx") || "";
+            props["ry"] = elem.getAttribute("ry") || "";
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+        } else if (tag === "image") {
+            var href = elem.getAttribute("href") || elem.getAttribute("xlink:href") || "";
+            var parts = href.split("/");
+            props["file"] = parts[parts.length - 1] || href;
+        } else if (tag === "path") {
+            props["fill"] = elem.getAttribute("fill") || style.fill || "";
+            props["stroke"] = elem.getAttribute("stroke") || style.stroke || "";
+        }
+
+        return props;
+    }
+
+    function renderPropertyTable(props) {
+        var html = '<table class="prop-table">';
+        Object.keys(props).forEach(function (key) {
+            var val = props[key];
+            if (!val) return;
+            html += '<tr><td class="prop-key">' + escapeHtml(key) + '</td><td class="prop-val">';
+            if (key === "fill" || key === "stroke") {
+                html += '<span class="prop-color" style="background:' + escapeHtml(val) + ';"></span>';
+            }
+            html += escapeHtml(val) + '</td></tr>';
+        });
+        html += '</table>';
+        return html;
+    }
+
+    function renderMultiSelectSummary(ids) {
+        var typeCounts = {};
+        var sharedFontSize = null;
+        var allHaveFontSize = true;
+
+        ids.forEach(function (eid) {
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (!el) return;
+            var tag = el.tagName.toLowerCase();
+            typeCounts[tag] = (typeCounts[tag] || 0) + 1;
+
+            if (tag === "text" || tag === "tspan") {
+                var fs = window.getComputedStyle(el).fontSize || el.getAttribute("font-size") || "";
+                if (sharedFontSize === null) {
+                    sharedFontSize = fs;
+                } else if (sharedFontSize !== fs) {
+                    sharedFontSize = "mixed";
+                }
+            } else {
+                allHaveFontSize = false;
+            }
+        });
+
+        var summary = '<div class="multi-summary">';
+        var parts = [];
+        Object.keys(typeCounts).forEach(function (tag) {
+            parts.push(typeCounts[tag] + " " + tag);
+        });
+        summary += parts.join(", ");
+
+        if (allHaveFontSize && sharedFontSize && sharedFontSize !== "mixed") {
+            summary += ' | font-size: ' + escapeHtml(sharedFontSize);
+        } else if (allHaveFontSize && sharedFontSize === "mixed") {
+            summary += ' | font-size: mixed';
+        }
+        summary += '</div>';
+
+        // Element list
+        summary += '<div class="multi-el-list">';
+        ids.forEach(function (eid) {
+            var el = svgContent.querySelector("#" + CSS.escape(eid));
+            if (!el) return;
+            var tag = el.tagName.toLowerCase();
+            summary += '<div class="multi-el-item"><span class="el-tag">&lt;' +
+                escapeHtml(tag) + '&gt;</span>' + escapeHtml(eid) + '</div>';
+        });
+        summary += '</div>';
+
+        return summary;
     }
 
     // ================================================================

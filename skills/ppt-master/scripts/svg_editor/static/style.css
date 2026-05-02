@@ -461,6 +461,78 @@ html, body {
     background: #2a2a4a;
 }
 
+/* --- Element properties --- */
+#element-props {
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.prop-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.prop-table tr {
+    border-bottom: 1px solid #2a2a4a;
+}
+
+.prop-table tr:last-child {
+    border-bottom: none;
+}
+
+.prop-table td {
+    padding: 4px 0;
+    vertical-align: top;
+}
+
+.prop-table .prop-key {
+    color: #7a7a9a;
+    width: 80px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.prop-table .prop-val {
+    color: #c0c0d8;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.prop-table .prop-color {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border: 1px solid #3a3a5a;
+}
+
+.multi-el-list {
+    margin-top: 6px;
+    max-height: 100px;
+    overflow-y: auto;
+    font-size: 11px;
+}
+
+.multi-el-item {
+    padding: 2px 0;
+    color: #7a7a9a;
+}
+
+.multi-el-item .el-tag {
+    font-size: 10px;
+    margin-right: 4px;
+}
+
+.multi-summary {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #a0a0c0;
+}
+
 /* --- Multi-select count --- */
 .multi-count {
     color: #4a9eff;
