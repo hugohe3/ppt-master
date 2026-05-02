@@ -1,6 +1,6 @@
 # Audio Narration & Video Export
 
-PPT Master can turn the speaker notes into per-slide MP3 narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices), embed the audio back into the PPTX, and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
+PPT Master can turn the speaker notes into per-slide MP3 narration via [`edge-tts`](https://github.com/rany2/edge-tts) (Microsoft Edge's online neural voices) by default, or via ElevenLabs when you need higher-quality cloud narration. It can then embed the audio back into the PPTX and let PowerPoint export the deck as an MP4 video — with synced narration and slide transitions, no extra tools.
 
 ## What you get
 
@@ -11,7 +11,7 @@ PPT Master can turn the speaker notes into per-slide MP3 narration via [`edge-tt
 ## How it works
 
 1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
-2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the locale-filtered `edge-tts` voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "稳重男声，适合财报"). It also recommends a speaking rate based on notes density.
+2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "稳重男声，适合财报"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
 4. **Generation runs.** The script writes MP3s to `audio/`, then (if you kept embedding) re-exports the deck with audio attached.
 
@@ -45,16 +45,30 @@ If you want to skip the AI flow and call the script directly:
 # 1. Make sure speaker notes are split (post-processing Step 7.1):
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>
 
-# 2. Generate MP3s
+# 2A. Generate MP3s with edge-tts (default, no API key)
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice zh-CN-YunjianNeural --rate +0%
+
+# 2B. Or generate MP3s with ElevenLabs (requires ELEVENLABS_API_KEY)
+export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider elevenlabs \
+  --voice-id <elevenlabs-voice-id> \
+  --elevenlabs-model eleven_multilingual_v2
 
 # 3. (Optional) Re-export PPTX with audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
   --recorded-narration audio
 ```
 
-`--voice` is required — the script will error out if you forget it. Use `--list-voices --locale <locale>` to see what's available.
+For edge, `--voice` is required. Use `--list-voices --locale <locale>` to see what's available.
+
+For ElevenLabs, `--voice-id` is required. List voices from your ElevenLabs account with:
+
+```bash
+export ELEVENLABS_API_KEY="your-elevenlabs-api-key"
+python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+```
 
 ## Dependency
 
@@ -63,6 +77,8 @@ python3 -m pip install edge-tts
 ```
 
 Already listed in `skills/ppt-master/requirements.txt`. `edge-tts` calls Microsoft's online TTS service — an internet connection is required at generation time. The MP3s themselves are local files; nothing about playback or PowerPoint export depends on the network afterwards.
+
+ElevenLabs does not require an extra Python package; it uses HTTPS directly. Configure `ELEVENLABS_API_KEY` in the current shell or in `.env` based on `.env.example`.
 
 ## Tips
 

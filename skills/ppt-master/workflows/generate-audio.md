@@ -4,14 +4,15 @@ description: Generate per-slide narration audio with AI-recommended voice select
 
 # Generate Audio Workflow
 
-> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one MP3 per slide via `edge-tts`, then optionally re-exports the PPTX with the audio embedded and per-slide auto-advance timings.
+> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or ElevenLabs when the user chooses high-quality cloud narration, then optionally re-exports the PPTX with the audio embedded and per-slide auto-advance timings.
 
-This workflow is **independent**: it reads `notes/*.md` and queries the TTS voice catalog — no upstream conversation context required. Safe to invoke in a fresh session.
+This workflow is **independent**: it reads `notes/*.md` and queries the selected TTS voice catalog — no upstream conversation context required. Safe to invoke in a fresh session.
 
 ## When to Run
 
 - `notes/total.md` exists and has been split into per-page files at `notes/*.md` (post-processing Step 7.1 done).
-- `edge-tts` is installed (`python3 -m pip install edge-tts`).
+- Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
+- High-quality cloud mode: `ELEVENLABS_API_KEY` is set before using `--provider elevenlabs`.
 - The deck is in a single dominant language (mixed-language decks: pick the dominant one — the AI uses judgment, not a heuristic).
 
 If `notes/*.md` are missing, run `total_md_split.py <project_path>` first.
@@ -28,16 +29,27 @@ The AI already knows the deck's language from writing the notes. No detection sc
 
 ---
 
-## Step 2: Pull the voice catalog filtered by locale
+## Step 2: Choose audio backend and pull the voice catalog
+
+Default to **edge** unless the user explicitly asks for ElevenLabs / higher-quality cloud narration / custom ElevenLabs voice.
+
+**edge backend**:
 
 ```bash
 python3 skills/ppt-master/scripts/notes_to_audio.py --list-voices --locale <locale>
 ```
 
-The output is a flat list of all available voices for that locale. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
+**ElevenLabs backend**:
+
+```bash
+python3 skills/ppt-master/scripts/notes_to_audio.py --provider elevenlabs --list-voices
+```
+
+The output is a flat list of all available voices for the selected provider. From this list, the AI picks **3–6 candidates** to recommend, applying these rules:
 
 - **Cover both genders** when both exist for the locale.
-- **Prefer `COMMON_VOICES`-listed voices** (curated set inside `notes_to_audio.py`) when the locale has them — they are battle-tested.
+- **For edge**: prefer `COMMON_VOICES`-listed voices (curated set inside `notes_to_audio.py`) when the locale has them — they are battle-tested.
+- **For ElevenLabs**: prefer voices already present in the user's account; if the user provides a specific `voice_id`, do not override it.
 - **Match the deck's tone** — pick the strongest recommendation based on style:
   - Consultant / data-driven / 财报 → 稳重男声（如 `zh-CN-YunjianNeural`）or 清晰女声（如 `zh-CN-XiaoxiaoNeural`）
   - General / 教学 / 产品介绍 → 明亮女声 / 年轻男声（如 `zh-CN-XiaoyiNeural` / `zh-CN-YunxiNeural`）
@@ -45,7 +57,7 @@ The output is a flat list of all available voices for that locale. From this lis
   - English consultant deck → `en-US-GuyNeural` (steady) or `en-US-JennyNeural` (clear)
   - Japanese / Korean → pick from `ja-JP-*` / `ko-KR-*` neural voices, mark gender + tone
 
-For each candidate, write a **one-line Chinese description** covering: 性别 · 调性 · 适用场景。
+For each candidate, write a **one-line Chinese description** covering: 性别 · 调性 · 适用场景。For ElevenLabs, include the voice name and `voice_id`.
 
 ---
 
@@ -57,6 +69,8 @@ Send a single message to the user that asks all three questions at once and prov
 
 > 检测到 notes 主语言为 **<语言>**（locale: `<locale>`）。基于 deck 调性（<风格>），我推荐以下配置：
 >
+> **生成模式**：⭐ 推荐 `<edge|elevenlabs>`（理由：<一句话，如"无需配置，稳定生成"或"用户要求高质量云端音色">）。
+>
 > **音色**：
 > - **[1] <ShortName>** — <性别·调性·适用场景> ⭐ **推荐**
 > - [2] <ShortName> — <性别·调性·适用场景>
@@ -65,15 +79,16 @@ Send a single message to the user that asks all three questions at once and prov
 > - [5] <ShortName> — <性别·调性·适用场景>
 > - 也可直接输入清单中的其他 ShortName。
 >
-> **语速**：⭐ 推荐 `<rate>`（理由：<一句话，如"页均 2–3 句，正常语速听感最稳"或"页面信息密度高，建议 -5% 偏慢">）。
+> **语速/风格参数**：⭐ 推荐 `<rate or provider defaults>`（理由：<一句话，如"页均 2–3 句，正常语速听感最稳"或"ElevenLabs 默认 voice settings 保留音色原始表现最稳">）。
 >
 > **生成完是否重新导出嵌入音频的 PPTX**：⭐ 推荐 **是**（一次到位，自动按音频时长设页面停留）。
 >
-> 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"）。
+> 直接回"好"用全部推荐值，或告诉我想改的部分（如"音色 2，语速 -5%"或"用 ElevenLabs 的 voice_id xxx"）。
 
 **Recommended-value rules**:
+- 生成模式：默认 `edge`；当用户明确追求高质量云端音色或提供 ElevenLabs voice ID 时用 `elevenlabs`。
 - 音色：从 Step 2 候选里挑最贴合 deck 调性的那一个。
-- 语速：默认 `+0%`；notes 字数密集（页均 >4 句长句）建议 `-5%`；notes 简短紧凑建议 `+5%`；超出此范围需说明理由。
+- 语速：edge 默认 `+0%`；notes 字数密集（页均 >4 句长句）建议 `-5%`；notes 简短紧凑建议 `+5%`；超出此范围需说明理由。ElevenLabs 默认不传 voice settings，除非用户明确要更稳定/更夸张。
 - 嵌入：默认推荐"是"；除非用户已有定制 PPTX 不希望覆盖。
 
 ---
@@ -83,16 +98,21 @@ Send a single message to the user that asks all three questions at once and prov
 Run sequentially — do NOT bundle:
 
 ```bash
-# 1. Generate audio
+# 1A. Generate audio with edge (default)
 python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --voice <chosen-ShortName> --rate <chosen-rate>
+
+# 1B. Or generate audio with ElevenLabs
+python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
+  --provider elevenlabs --voice-id <chosen-voice-id> \
+  --elevenlabs-model eleven_multilingual_v2
 
 # 2. (If user kept embedding) Re-export PPTX with audio embedded
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
   --recorded-narration audio
 ```
 
-If `notes_to_audio.py` errors with a missing dependency, install `edge-tts` and re-run — do NOT swallow the error.
+If `notes_to_audio.py` errors with a missing dependency or missing `ELEVENLABS_API_KEY`, fix the prerequisite and re-run — do NOT swallow the error.
 
 ---
 
@@ -100,7 +120,7 @@ If `notes_to_audio.py` errors with a missing dependency, install `edge-tts` and 
 
 Output one summary block listing:
 
-- Number of MP3 files generated and their location (`<project_path>/audio/*.mp3`).
-- The voice + rate actually used.
+- Number of audio files generated and their location (`<project_path>/audio/*`).
+- The provider, voice, and rate/settings actually used.
 - (If embedded) the new narrated PPTX path under `<project_path>/exports/`.
 - (If skipped embedding) one-line hint on how to embed later: `python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio`.
