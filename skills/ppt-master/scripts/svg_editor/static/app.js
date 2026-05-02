@@ -131,9 +131,12 @@
             });
         });
 
-        // Click on blank area clears selection (skip after rubber band)
+        // Click on blank area clears selection (skip the synthetic click after rubber band)
         svg.addEventListener("click", function (e) {
-            if (rubberBandUsed) { rubberBandUsed = false; return; }
+            if (suppressNextSvgClick) {
+                suppressNextSvgClick = false;
+                return;
+            }
             if (e.target === svg) clearSelection();
         });
     }
@@ -228,6 +231,7 @@
     var rubberBandEl = null;
     var rubberBandStart = null;
     var rubberBandUsed = false;
+    var suppressNextSvgClick = false;
     var RUBBER_BAND_THRESHOLD = 5;
 
     function initRubberBand() {
@@ -308,6 +312,10 @@
                 }
 
                 selectByRubberBand(rect);
+                suppressNextSvgClick = true;
+                window.setTimeout(function () {
+                    suppressNextSvgClick = false;
+                }, 50);
             } else {
                 // Below threshold: treat as click on empty space
                 if (!e.ctrlKey && !e.metaKey) {
@@ -327,6 +335,7 @@
         }
         var ov = document.getElementById("rubber-band-overlay");
         if (ov) ov.classList.remove("active");
+        suppressNextSvgClick = false;
     }
 
     function selectByRubberBand(screenRect) {
@@ -422,7 +431,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ element_id: eid, annotation: text })
-            }).then(function (res) { return res.json(); });
+            }).then(jsonOrThrow);
         });
 
         Promise.all(promises)
@@ -614,6 +623,15 @@
         var d = document.createElement("div");
         d.appendChild(document.createTextNode(str));
         return d.innerHTML;
+    }
+
+    function jsonOrThrow(res) {
+        return res.json().then(function (data) {
+            if (!res.ok || data.error) {
+                throw new Error(data.error || ("Request failed with status " + res.status));
+            }
+            return data;
+        });
     }
 
     // ================================================================
