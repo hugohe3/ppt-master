@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 import math
 import re
 import base64
@@ -1077,6 +1078,107 @@ def _resolve_clip_geometry(
 # image
 # ---------------------------------------------------------------------------
 
+def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
+    """Read intrinsic image dimensions (width, height) from raw bytes.
+
+    Used by ``convert_image`` to translate SVG ``preserveAspectRatio`` into
+    DrawingML ``<a:srcRect>`` so the original image is preserved and remains
+    croppable inside PowerPoint.
+
+    Returns ``(None, None)`` on any failure — callers fall back to the
+    legacy stretch behaviour.
+    """
+    try:
+        from PIL import Image, UnidentifiedImageError  # type: ignore
+    except ImportError:
+        return (None, None)
+    try:
+        with Image.open(io.BytesIO(data)) as img:
+            return img.size
+    except (UnidentifiedImageError, OSError, ValueError):
+        return (None, None)
+
+
+def _compute_slice_src_rect(
+    img_w: float, img_h: float,
+    box_w: float, box_h: float,
+    align: str,
+) -> tuple[int, int, int, int] | None:
+    """Compute DrawingML ``<a:srcRect>`` (l, t, r, b) for SVG slice mode.
+
+    SVG ``preserveAspectRatio="<align> slice"`` means: scale the image so it
+    fully covers the box (CSS object-fit: cover) and crop the overflow at the
+    given alignment anchor. DrawingML ``srcRect`` expresses the same intent
+    by specifying which sub-rectangle of the source image to display, in
+    units of 1/1000 of a percent (0–100000).
+
+    Returns ``None`` when no cropping is required (image and box already
+    match) or when inputs are degenerate.
+    """
+    if img_w <= 0 or img_h <= 0 or box_w <= 0 or box_h <= 0:
+        return None
+
+    # Scale factor that makes the image cover the box (cover semantics).
+    scale = max(box_w / img_w, box_h / img_h)
+    visible_w = box_w / scale  # ≤ img_w
+    visible_h = box_h / scale  # ≤ img_h
+
+    if abs(visible_w - img_w) < 0.5 and abs(visible_h - img_h) < 0.5:
+        return None  # No crop needed
+
+    crop_w_total = max(0.0, img_w - visible_w)
+    crop_h_total = max(0.0, img_h - visible_h)
+
+    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
+    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+
+    crop_l = crop_w_total * x_anchor
+    crop_r = crop_w_total - crop_l
+    crop_t = crop_h_total * y_anchor
+    crop_b = crop_h_total - crop_t
+
+    l = max(0, min(100000, int(round(crop_l / img_w * 100000))))
+    t = max(0, min(100000, int(round(crop_t / img_h * 100000))))
+    r = max(0, min(100000, int(round(crop_r / img_w * 100000))))
+    b = max(0, min(100000, int(round(crop_b / img_h * 100000))))
+
+    return (l, t, r, b)
+
+
+def _resolve_image_src_rect(
+    elem: ET.Element,
+    img_data: bytes,
+    box_w: float, box_h: float,
+) -> str:
+    """Build ``<a:srcRect .../>`` XML for an SVG <image> based on its
+    preserveAspectRatio. Returns an empty string when no srcRect is needed
+    (meet mode, none mode, or already-aligned content).
+
+    Slice mode is resolved into a srcRect so the original image is embedded
+    intact and PowerPoint's crop tool / "Reset Picture" continue to work.
+    Meet mode falls through to the legacy stretch path for now (visual
+    behaviour unchanged from prior versions).
+    """
+    par = (elem.get('preserveAspectRatio') or 'xMidYMid meet').strip()
+    parts = par.split()
+    align = parts[0] if parts else 'xMidYMid'
+    mode = parts[1] if len(parts) > 1 else 'meet'
+
+    if align == 'none' or mode != 'slice':
+        return ''  # meet/none → keep legacy stretch
+
+    img_w, img_h = _read_image_size(img_data)
+    if img_w is None or img_h is None:
+        return ''
+
+    rect = _compute_slice_src_rect(float(img_w), float(img_h), box_w, box_h, align)
+    if rect is None:
+        return ''
+
+    l, t, r, b = rect
+    return f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
+
+
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     """Convert SVG <image> to DrawingML picture element.
 
@@ -1147,6 +1249,12 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # Resolve clip-path → DrawingML geometry
     clip_geom = _resolve_clip_geometry(elem, ctx, raw_x, raw_y, raw_w, raw_h)
 
+    # Resolve preserveAspectRatio="<align> slice" → DrawingML <a:srcRect>.
+    # This keeps the original image intact in the .pptx and lets users
+    # re-crop or reset the picture in PowerPoint, instead of permanently
+    # baking the crop into the embedded asset.
+    src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
+
     shape_id = ctx.next_id()
     off_x = px_to_emu(x)
     off_y = px_to_emu(y)
@@ -1161,7 +1269,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 </p:nvPicPr>
 <p:blipFill>
 <a:blip r:embed="{r_id}"/>
-<a:stretch><a:fillRect/></a:stretch>
+{src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
 <a:xfrm{rot_attr}><a:off x="{off_x}" y="{off_y}"/>
