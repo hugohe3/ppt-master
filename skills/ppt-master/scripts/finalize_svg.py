@@ -19,9 +19,10 @@ Examples:
 
 Processing options:
     embed-icons   - Replace <use data-icon="..."/> with actual icon SVG
-    crop-images   - Smart crop images based on preserveAspectRatio="slice"
-    fix-aspect    - Fix image aspect ratio (prevent stretching during PPT shape conversion)
-    embed-images  - Convert external images to Base64 embedded
+    align-images  - Align (slice/meet) and Base64-embed all <image> in one pass.
+                    Replaces the former crop-images + fix-aspect + embed-images
+                    trio. The old names remain accepted as aliases for the
+                    merged step, so existing --only invocations keep working.
     flatten-text  - Convert <tspan> to independent <text> (for special renderers)
     fix-rounded   - Convert <rect rx="..."/> to <path> (for PPT shape conversion)
 """
@@ -34,10 +35,8 @@ from pathlib import Path
 
 # Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
-from svg_finalize.crop_images import process_svg_images as crop_images_in_svg
+from svg_finalize.align_embed_images import align_and_embed_images_in_svg
 from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
-from svg_finalize.embed_images import embed_images_in_svg
-from svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
 
 
 def safe_print(text: str) -> None:
@@ -155,7 +154,7 @@ def finalize_project(
     # Step 2: Embed icons
     if options.get('embed_icons'):
         if not quiet:
-            safe_print("[1/6] Embedding icons...")
+            safe_print("[1/4] Embedding icons...")
         icons_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = embed_icons_in_file(svg_file, icons_dir, dry_run=False, verbose=False)
@@ -166,56 +165,40 @@ def finalize_project(
             else:
                 safe_print("      No icons")
 
-    # Step 3: Smart crop images (based on preserveAspectRatio="slice")
-    if options.get('crop_images'):
+    # Step 3: Align (slice/meet) and Base64-embed all <image> in one pass.
+    # Replaces the former crop-images / fix-aspect / embed-images trio: the
+    # spatial transform (slice → crop, meet → fit-box) and the asset embed
+    # are mutually exclusive branches per image, sequenced together so each
+    # SVG is only parsed and serialized once and each bitmap is only read
+    # from disk once.
+    if options.get('align_images'):
         if not quiet:
-            safe_print("[2/6] Smart cropping images...")
-        crop_count = 0
-        crop_errors = 0
+            safe_print("[2/4] Aligning + embedding images...")
+        img_count = 0
+        img_errors = 0
         for svg_file in svg_final.glob('*.svg'):
-            count, errors = crop_images_in_svg(str(svg_file), dry_run=False, verbose=False)
-            crop_count += count
-            crop_errors += errors
+            count, errs = align_and_embed_images_in_svg(
+                svg_file,
+                dry_run=False,
+                verbose=False,
+                compress=compress,
+                max_dimension=max_dimension,
+            )
+            img_count += count
+            img_errors += errs
         if not quiet:
-            if crop_count > 0:
-                safe_print(f"      {crop_count} image(s) cropped")
-            else:
-                safe_print("      No cropping needed (no images with slice attribute)")
-
-    # Step 4: Fix image aspect ratio (prevent stretching during PPT shape conversion)
-    if options.get('fix_aspect'):
-        if not quiet:
-            safe_print("[3/6] Fixing image aspect ratios...")
-        aspect_count = 0
-        for svg_file in svg_final.glob('*.svg'):
-            count = fix_image_aspect_in_svg(str(svg_file), dry_run=False, verbose=False)
-            aspect_count += count
-        if not quiet:
-            if aspect_count > 0:
-                safe_print(f"      {aspect_count} image(s) fixed")
-            else:
-                safe_print("      No images")
-
-    # Step 5: Embed images
-    if options.get('embed_images'):
-        if not quiet:
-            safe_print("[4/6] Embedding images...")
-        images_count = 0
-        for svg_file in svg_final.glob('*.svg'):
-            count, _ = embed_images_in_svg(str(svg_file), dry_run=False,
-                                           compress=compress,
-                                           max_dimension=max_dimension)
-            images_count += count
-        if not quiet:
-            if images_count > 0:
-                safe_print(f"      {images_count} image(s) embedded")
+            if img_count > 0:
+                msg = f"      {img_count} image(s) aligned + embedded"
+                if img_errors:
+                    msg += f"  ({img_errors} error(s))"
+                safe_print(msg)
             else:
                 safe_print("      No images")
 
-    # Step 6: Flatten text
+    # Step 4: Flatten text
     if options.get('flatten_text'):
         if not quiet:
-            safe_print("[5/6] Flattening text...")
+            safe_print("[3/4] Flattening text...")
         flatten_count = 0
         for svg_file in svg_final.glob('*.svg'):
             if process_flatten_text(svg_file, verbose=False):
@@ -226,10 +209,10 @@ def finalize_project(
             else:
                 safe_print("      No processing needed")
 
-    # Step 7: Convert rounded rects to Path
+    # Step 5: Convert rounded rects to Path
     if options.get('fix_rounded'):
         if not quiet:
-            safe_print("[6/6] Converting rounded rects to Path...")
+            safe_print("[4/4] Converting rounded rects to Path...")
         rounded_count = 0
         for svg_file in svg_final.glob('*.svg'):
             count = process_rounded_rect(svg_file, verbose=False)
@@ -246,7 +229,7 @@ def finalize_project(
         safe_print("[OK] Done!")
         print()
         print("Next steps:")
-        print(f"  python scripts/svg_to_pptx.py \"{project_dir}\" -s final")
+        print(f"  python scripts/svg_to_pptx.py \"{project_dir}\"")
 
     return True
 
@@ -264,18 +247,29 @@ Examples:
 
 Processing options (for --only):
   embed-icons   Embed icons
-  crop-images   Smart crop images (based on preserveAspectRatio)
-  fix-aspect    Fix image aspect ratio (prevent stretching during PPT shape conversion)
-  embed-images  Embed images
+  align-images  Align (slice/meet) + Base64-embed all <image> (single pass)
   flatten-text  Flatten text
   fix-rounded   Convert rounded rects to Path
+
+Aliases (still accepted):
+  crop-images, fix-aspect, embed-images  → all map to align-images
         '''
     )
 
     parser.add_argument('project_dir', type=Path, help='Project directory path')
-    parser.add_argument('--only', nargs='+', metavar='OPTION',
-                        choices=['embed-icons', 'crop-images', 'fix-aspect', 'embed-images', 'flatten-text', 'fix-rounded'],
-                        help='Execute only specified processing steps (default: all)')
+    parser.add_argument(
+        '--only', nargs='+', metavar='OPTION',
+        choices=[
+            'embed-icons',
+            'align-images',
+            # Backwards-compatible aliases — all three map to align-images now.
+            'crop-images', 'fix-aspect', 'embed-images',
+            'flatten-text', 'fix-rounded',
+        ],
+        help=('Execute only specified processing steps (default: all). '
+              'crop-images / fix-aspect / embed-images are accepted as '
+              'aliases for the merged align-images step.'),
+    )
     parser.add_argument('--dry-run', '-n', action='store_true',
                         help='Preview only, do not execute')
     parser.add_argument('--quiet', '-q', action='store_true',
@@ -291,24 +285,24 @@ Processing options (for --only):
         safe_print(f"[ERROR] Project directory does not exist: {args.project_dir}")
         sys.exit(1)
 
+    # Aliases: any of crop-images / fix-aspect / embed-images implies the
+    # merged align-images step. Older invocations stay valid.
+    _ALIGN_ALIASES = {'align-images', 'crop-images', 'fix-aspect', 'embed-images'}
+
     # Determine processing options
     if args.only:
-        # Execute only specified steps
+        only = set(args.only)
         options = {
-            'embed_icons': 'embed-icons' in args.only,
-            'crop_images': 'crop-images' in args.only,
-            'fix_aspect': 'fix-aspect' in args.only,
-            'embed_images': 'embed-images' in args.only,
-            'flatten_text': 'flatten-text' in args.only,
-            'fix_rounded': 'fix-rounded' in args.only,
+            'embed_icons': 'embed-icons' in only,
+            'align_images': bool(only & _ALIGN_ALIASES),
+            'flatten_text': 'flatten-text' in only,
+            'fix_rounded': 'fix-rounded' in only,
         }
     else:
         # Execute all by default
         options = {
             'embed_icons': True,
-            'crop_images': True,
-            'fix_aspect': True,
-            'embed_images': True,
+            'align_images': True,
             'flatten_text': True,
             'fix_rounded': True,
         }
