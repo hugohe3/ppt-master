@@ -773,10 +773,20 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | Non
 # ---------------------------------------------------------------------------
 
 def _normalize_text(text: str) -> str:
-    """Collapse internal whitespace/newlines into a single space, strip ends."""
+    """Collapse runs of whitespace into a single space; do NOT strip the ends.
+
+    Stripping at this layer would silently delete the inline boundary
+    spaces in nested-tspan structures like
+    ``<tspan>foo <tspan>bar</tspan> baz</tspan>``: the parent's text
+    ("foo ") and the child's tail (" baz") would each lose the only space
+    that separated them from the inner run, producing "foobarbaz".
+
+    The paragraph's overall leading / trailing whitespace is removed once
+    in ``_build_text_runs`` after all inline runs have been concatenated.
+    """
     if not text:
         return ''
-    return re.sub(r'\s+', ' ', text).strip()
+    return re.sub(r'\s+', ' ', text)
 
 
 def _override_run_attrs(
@@ -857,6 +867,14 @@ def _build_text_runs(
                 t = _normalize_text(child.tail)
                 if t:
                     runs.append({**parent_attrs, 'text': t})
+
+    # Strip the paragraph's overall leading / trailing whitespace once,
+    # while keeping every inline boundary space intact. Per-run normalize
+    # deliberately leaves boundary spaces (see `_normalize_text`).
+    if runs:
+        runs[0]['text'] = runs[0]['text'].lstrip(' ')
+        runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
+        runs = [r for r in runs if r['text']]
 
     return runs
 
