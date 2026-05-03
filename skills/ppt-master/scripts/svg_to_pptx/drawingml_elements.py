@@ -60,7 +60,15 @@ def _wrap_shape(
 # ---------------------------------------------------------------------------
 
 def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
-    """Convert SVG <rect> to DrawingML shape."""
+    """Convert SVG <rect> to DrawingML shape.
+
+    Symmetric rounded corners (rx == ry) are emitted as ``prstGeom roundRect``
+    so PowerPoint treats them as a native rounded-rectangle shape: the yellow
+    adjustment handle stays draggable, and "Reset Picture / Shape" works as
+    expected. Elliptical corners (rx != ry) fall back to plain rect geometry
+    for now — current corpora contain none, but the branch keeps callers from
+    silently producing distorted custom geometry if one ever appears.
+    """
     x = ctx_x(_f(elem.get('x')), ctx)
     y = ctx_y(_f(elem.get('y')), ctx)
     w = ctx_w(_f(elem.get('width')), ctx)
@@ -68,6 +76,20 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     if w <= 0 or h <= 0:
         return None
+
+    # SVG spec: when only one of rx/ry is specified, the other inherits its
+    # value. Real-world svg_output decks always write only `rx`, so ry must
+    # be inferred to keep round corners from collapsing to zero on one axis.
+    rx_attr = elem.get('rx')
+    ry_attr = elem.get('ry')
+    rx_raw = _f(rx_attr) if rx_attr is not None else 0.0
+    ry_raw = _f(ry_attr) if ry_attr is not None else 0.0
+    if rx_attr is not None and ry_attr is None:
+        ry_raw = rx_raw
+    elif ry_attr is not None and rx_attr is None:
+        rx_raw = ry_raw
+    rx = rx_raw * ctx.scale_x
+    ry = ry_raw * ctx.scale_y
 
     fill_op = get_fill_opacity(elem, ctx)
     stroke_op = get_stroke_opacity(elem, ctx)
@@ -86,7 +108,20 @@ def convert_rect(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
         if r_match:
             rot = int(float(r_match.group(1)) * ANGLE_UNIT)
 
-    geom = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+    if rx > 0 and abs(rx - ry) < 0.5:
+        # Native rounded-rect: adj is the corner radius as a fraction of the
+        # shorter side, in 1/1000-percent units, capped at 50000 (= radius
+        # equals half the shorter side, i.e. capsule end).
+        short_side = min(w, h)
+        radius = min(rx, short_side / 2)
+        adj = max(0, min(50000, int(round(radius / short_side * 100000))))
+        geom = (
+            '<a:prstGeom prst="roundRect">'
+            f'<a:avLst><a:gd name="adj" fmla="val {adj}"/></a:avLst>'
+            '</a:prstGeom>'
+        )
+    else:
+        geom = '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 
     shape_id = ctx.next_id()
     off_x = px_to_emu(x)
