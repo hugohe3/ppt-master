@@ -334,7 +334,7 @@ python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 # Output:
 #   exports/<project_name>_<timestamp>.pptx           ← main native pptx
 #   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot

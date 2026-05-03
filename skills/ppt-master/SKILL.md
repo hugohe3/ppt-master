@@ -312,12 +312,20 @@ python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
 
 **Step 7.3** — Export PPTX (embeds speaker notes by default):
 ```bash
-python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
+python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
 # Output:
-#   exports/<project_name>_<timestamp>.pptx           ← main native pptx
-#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot
+#   exports/<project_name>_<timestamp>.pptx           ← main native pptx (reads svg_output/, high fidelity)
+#   backup/<timestamp>/<project_name>_svg.pptx        ← SVG preview pptx (reads svg_final/)
 #   backup/<timestamp>/svg_output/                    ← Executor SVG source backup
 ```
+
+> The two products now read from different sources by design: native pptx
+> consumes `svg_output/` so the converter can preserve high-fidelity primitives
+> (icon `<use>` placeholders, image `preserveAspectRatio` → `srcRect`, rounded
+> rect `rx/ry` → `prstGeom roundRect`). The legacy/preview pptx still consumes
+> `svg_final/` because PowerPoint's internal SVG parser cannot handle those
+> primitives. Pass `-s output` or `-s final` to force a single source on both
+> products if you need the older single-source behaviour.
 
 **Optional animation flags** (the defaults already enable rich entrance animations — adjust only when the user asks for something different):
 - `-t <effect>` — page transition. Default `fade`. Options: `fade` / `push` / `wipe` / `split` / `strips` / `cover` / `random` / `none`.
@@ -334,7 +342,7 @@ Do NOT call `notes_to_audio.py` directly without going through the workflow — 
 Full effect list, anchor logic, and limits: [`references/animations.md`](references/animations.md).
 
 > ❌ **NEVER** substitute `cp` for `finalize_svg.py` — finalize performs multiple critical processing steps
-> ❌ **NEVER** export from `svg_output/` — MUST use `-s final` (exports from `svg_final/`)
+> ❌ **NEVER** force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). The default auto-split already gives native the high-fidelity source it needs without touching legacy.
 > ❌ **NEVER** use `--only` (it suppresses one of the two output files)
 
 > Post-export iteration: whenever the user asks to change anything on a generated slide ("改一下", "调字号", "那里看着不对", "把图片换大点"), the [`visual-edit`](workflows/visual-edit.md) workflow is available — surface it as an option. If the user describes the change with enough specificity to apply directly ("第 3 页副标题字号改 32"), edit the SVG directly instead; if they're vaguely pointing at "somewhere" on the deck, run the workflow.

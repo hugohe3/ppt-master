@@ -26,7 +26,7 @@ python3 scripts/project_manager.py init <project_name> --format ppt169
 python3 scripts/project_manager.py import-sources <project_path> <source_files...> --move
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 Repository update:
@@ -79,7 +79,7 @@ Post-processing and export:
 ```bash
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 Image generation:

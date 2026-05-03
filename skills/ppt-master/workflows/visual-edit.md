@@ -56,7 +56,7 @@ Triggered when the user signals (in any wording) that they have submitted annota
 5. Re-run post-processing:
    ```bash
    python3 ${SKILL_DIR}/scripts/finalize_svg.py <project_path>
-   python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path> -s final
+   python3 ${SKILL_DIR}/scripts/svg_to_pptx.py <project_path>
    ```
 6. Restart the editor (same command as Step 1).
 7. Tell the user (in their language) that annotations have been applied, the PPT is updated, and the editor is running again at `http://localhost:5050`.

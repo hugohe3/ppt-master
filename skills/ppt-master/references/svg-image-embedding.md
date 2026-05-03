@@ -125,7 +125,7 @@ Use the unified pipeline in [shared-standards.md §5](shared-standards.md). `fin
 
 ```bash
 python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 ### Standalone: embed_images.py (advanced)

@@ -41,7 +41,7 @@ Preferred sequence:
 ```bash
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 Do not export directly from `svg_output/` when `svg_final/` exists.
@@ -53,7 +53,7 @@ Do not export directly from `svg_output/` when `svg_final/` exists.
 
 ```bash
 python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
+python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
 
 If slide timings do not follow the narration, confirm `ffprobe` is available; without it, audio can still embed, but duration-based auto-advance is skipped.

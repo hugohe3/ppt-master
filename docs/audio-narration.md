@@ -80,7 +80,7 @@ python3 skills/ppt-master/scripts/notes_to_audio.py <project_path> \
   --cosyvoice-model cosyvoice-v3-flash
 
 # 3. (Optional) Re-export PPTX with audio embedded
-python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> -s final \
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
   --recorded-narration audio
 ```
 

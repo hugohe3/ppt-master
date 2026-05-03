@@ -92,8 +92,12 @@ Recorded narration:
 
     parser.add_argument('project_path', type=str, help='Project directory path')
     parser.add_argument('-o', '--output', type=str, default=None, help='Output file path')
-    parser.add_argument('-s', '--source', type=str, default='output',
-                        help='SVG source: output/final or any subdirectory name (recommended: final)')
+    parser.add_argument('-s', '--source', type=str, default=None,
+                        help='SVG source directory. Default: native reads '
+                             'svg_output/ (high-fidelity, preserves icons / '
+                             'preserveAspectRatio / rx-ry); legacy reads '
+                             'svg_final/ (PPT-internal SVG parser fallback). '
+                             'Pass output/final/<name> to force one source.')
     parser.add_argument('-f', '--format', type=str,
                         choices=list(CANVAS_FORMATS.keys()), default=None,
                         help='Specify canvas format')
@@ -163,12 +167,6 @@ Recorded narration:
     if canvas_format is None and detected_format and detected_format != 'unknown':
         canvas_format = detected_format
 
-    svg_files, source_dir_name = find_svg_files(project_path, args.source)
-
-    if not svg_files:
-        print("Error: No SVG files found")
-        sys.exit(1)
-
     # Determine which versions to generate
     only_mode = args.only
     gen_native = only_mode in (None, 'native')
@@ -177,6 +175,34 @@ Recorded narration:
     # --native flag (deprecated) maps to --only native
     if args.native and only_mode is None:
         gen_legacy = False
+
+    # Pipeline split: native pptx gets the high-fidelity svg_output/ source
+    # (icons, preserveAspectRatio, rounded-rect rx/ry are all preserved by the
+    # converter); legacy pptx still needs svg_final/ because PowerPoint's
+    # internal SVG parser cannot handle <use data-icon> or honour
+    # preserveAspectRatio. An explicit -s overrides both branches so callers
+    # can keep the previous single-source behaviour for unusual workflows.
+    explicit_source = args.source is not None
+    native_source = args.source if explicit_source else 'output'
+    legacy_source = args.source if explicit_source else 'final'
+
+    native_files: list[Path] = []
+    legacy_files: list[Path] = []
+    native_source_dir = ''
+    legacy_source_dir = ''
+
+    if gen_native:
+        native_files, native_source_dir = find_svg_files(project_path, native_source)
+    if gen_legacy:
+        legacy_files, legacy_source_dir = find_svg_files(project_path, legacy_source)
+
+    # Reference list for cross-product lookups (notes / narration matching).
+    # native_files and legacy_files share filenames because svg_final/ is
+    # copytree'd from svg_output/, so either list works for matching.
+    ref_files = native_files or legacy_files
+    if not ref_files:
+        print("Error: No SVG files found")
+        sys.exit(1)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -203,7 +229,7 @@ Recorded narration:
     enable_notes = not args.no_notes
     notes: dict[str, str] = {}
     if enable_notes:
-        notes = find_notes_files(project_path, svg_files)
+        notes = find_notes_files(project_path, ref_files)
 
     narration_audio: dict[str, Path] = {}
     narration_audio_dir_arg = args.recorded_narration or args.narration_audio_dir
@@ -212,16 +238,17 @@ Recorded narration:
         narration_audio_dir = Path(narration_audio_dir_arg)
         if not narration_audio_dir.is_absolute():
             narration_audio_dir = project_path / narration_audio_dir
-        narration_audio = find_narration_files(narration_audio_dir, svg_files)
+        narration_audio = find_narration_files(narration_audio_dir, ref_files)
         if verbose:
             print(f"  Narration audio directory: {narration_audio_dir}")
-            print(f"  Narration audio matched: {len(narration_audio)}/{len(svg_files)} slide(s)")
+            print(f"  Narration audio matched: {len(narration_audio)}/{len(ref_files)} slide(s)")
 
     transition = args.transition if args.transition != 'none' else None
     animation = args.animation if args.animation != 'none' else None
 
+    # svg_files is per-product (native vs legacy may now read different
+    # directories); everything else is shared.
     shared_kwargs = dict(
-        svg_files=svg_files,
         canvas_format=canvas_format,
         verbose=verbose,
         transition=transition,
@@ -247,13 +274,14 @@ Recorded narration:
             print("PPT Master - SVG to PPTX Tool")
             print("=" * 50)
             print(f"  Project path: {project_path}")
-            print(f"  SVG directory: {source_dir_name}")
+            print(f"  SVG directory: {native_source_dir}")
             print(f"  Output file: {native_path}")
             print()
 
         ok = create_pptx_with_native_svg(
             output_path=native_path,
             use_native_shapes=True,
+            svg_files=native_files,
             **shared_kwargs,
         )
         success = success and ok
@@ -267,13 +295,14 @@ Recorded narration:
             print("PPT Master - SVG to PPTX Tool (SVG Reference)")
             print("=" * 50)
             print(f"  Project path: {project_path}")
-            print(f"  SVG directory: {source_dir_name}")
+            print(f"  SVG directory: {legacy_source_dir}")
             print(f"  Output file: {legacy_path}")
             print()
 
         ok = create_pptx_with_native_svg(
             output_path=legacy_path,
             use_native_shapes=False,
+            svg_files=legacy_files,
             **shared_kwargs,
         )
         success = success and ok

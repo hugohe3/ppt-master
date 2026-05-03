@@ -9,7 +9,7 @@ Run these steps in order:
 ```bash
 python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 ```
 
 ## `finalize_svg.py`
@@ -29,15 +29,15 @@ It aggregates:
 Convert project SVGs into PPTX.
 
 ```bash
-python3 scripts/svg_to_pptx.py <project_path> -s final
-python3 scripts/svg_to_pptx.py <project_path> -s final --only native
-python3 scripts/svg_to_pptx.py <project_path> -s final --only legacy
-python3 scripts/svg_to_pptx.py <project_path> -s final --no-notes
+python3 scripts/svg_to_pptx.py <project_path>
+python3 scripts/svg_to_pptx.py <project_path> --only native
+python3 scripts/svg_to_pptx.py <project_path> --only legacy
+python3 scripts/svg_to_pptx.py <project_path> --no-notes
 python3 scripts/svg_to_pptx.py <project_path> -t none
-python3 scripts/svg_to_pptx.py <project_path> -s final --auto-advance 3
-python3 scripts/svg_to_pptx.py <project_path> -s final --animation mixed --animation-duration 0.8
+python3 scripts/svg_to_pptx.py <project_path> --auto-advance 3
+python3 scripts/svg_to_pptx.py <project_path> --animation mixed --animation-duration 0.8
 python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
+python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
 
 Behavior:

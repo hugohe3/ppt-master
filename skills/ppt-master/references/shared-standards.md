@@ -301,7 +301,7 @@ python3 scripts/total_md_split.py <project_path>
 python3 scripts/finalize_svg.py <project_path>
 
 # 3. Export PPTX (from svg_final/, embeds speaker notes by default)
-python3 scripts/svg_to_pptx.py <project_path> -s final
+python3 scripts/svg_to_pptx.py <project_path>
 # Output:
 #   exports/<project_name>_<timestamp>.pptx           ← main native pptx
 #   backup/<timestamp>/<project_name>_svg.pptx        ← SVG snapshot
@@ -318,7 +318,7 @@ python3 scripts/svg_to_pptx.py <project_path> -s final
 
 ```bash
 python3 scripts/notes_to_audio.py <project_path> --voice zh-CN-XiaoxiaoNeural
-python3 scripts/svg_to_pptx.py <project_path> -s final --recorded-narration audio
+python3 scripts/svg_to_pptx.py <project_path> --recorded-narration audio
 ```
 
 - `notes_to_audio.py` reads split `notes/*.md` files and writes one audio file per slide to `audio/`. Default `edge` output is MP3; configured cloud providers may output MP3 or WAV depending on provider settings.
@@ -328,8 +328,10 @@ Full reference: [`animations.md`](animations.md).
 
 **Prohibited**:
 - NEVER use `cp` as a substitute for `finalize_svg.py`
-- NEVER export directly from `svg_output/` — MUST export from `svg_final/` (use `-s final`)
+- NEVER force `-s output` for the legacy/preview pptx (PowerPoint's internal SVG parser drops icons and rounded corners). Default auto-split already gives native the high-fidelity source it needs without affecting legacy.
 - NEVER use `--only` (it suppresses one of the two output files)
+
+> Source-directory split: by default `svg_to_pptx.py` reads `svg_output/` for the native pptx (preserves icon `<use>`, image `preserveAspectRatio` → `srcRect`, rounded rect `rx/ry` → `prstGeom roundRect`) and `svg_final/` for the legacy/preview pptx (PowerPoint's internal SVG parser needs the flattened form). Pass `-s output` or `-s final` only when you specifically want both products to read from a single source.
 
 **Re-run rule**: Any change to `svg_output/` after post-processing requires re-running Steps 2-3. Step 1 only re-runs if `notes/total.md` changed.
 
