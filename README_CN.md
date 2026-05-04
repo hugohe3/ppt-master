@@ -187,7 +187,7 @@ pip install -r requirements.txt
 
 日常更新（方式 A / B）：`python3 skills/ppt-master/scripts/update_repo.py`
 
-> 🧪 **方式 C — Skill marketplace**（实验中，尚未端到端验证）：仓库已添加 `.claude-plugin/plugin.json` + `marketplace.json` 元数据，理论上可以通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：
+> 🧪 **方式 C — Skill marketplace**（`npx skills add` 已端到端实测可用；Claude Code 原生 `/plugin marketplace add` 路径尚未实测）：仓库已添加 `.claude-plugin/marketplace.json` 元数据，可通过 [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) 生态一行安装：
 >
 > ```bash
 > # 跨 agent CLI（Claude Code、Cursor、Codex 等）

@@ -183,7 +183,7 @@ pip install -r requirements.txt
 
 To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.py`
 
-> 🧪 **Option C — Skill marketplace** (experimental, not yet validated end-to-end): the repo ships `.claude-plugin/plugin.json` + `marketplace.json`, so it can in principle be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
+> 🧪 **Option C — Skill marketplace** (`npx skills add` validated end-to-end; Claude Code native `/plugin marketplace add` path still untested): the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
 >
 > ```bash
 > # Cross-agent CLI (Claude Code, Cursor, Codex, etc.)
