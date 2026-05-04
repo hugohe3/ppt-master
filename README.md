@@ -183,7 +183,7 @@ pip install -r requirements.txt
 
 To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.py`
 
-> 🧪 **Option C — Skill marketplace** (`npx skills add` validated end-to-end; Claude Code native `/plugin marketplace add` path still untested): the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
+> **Option C — Skill marketplace**: the repo ships `.claude-plugin/marketplace.json`, so it can be installed through the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem:
 >
 > ```bash
 > # Cross-agent CLI (Claude Code, Cursor, Codex, etc.)
@@ -194,7 +194,7 @@ To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.p
 > /plugin install ppt-master@ppt-master
 > ```
 >
-> The marketplace install only fetches the skill files; you still need to `pip install -r requirements.txt` from the installed location for the post-processing scripts to run. **Feedback welcome on whether this works in your agent setup.**
+> Both install paths above only fetch the skill files (not the full repo); you still need to `pip install -r requirements.txt` from the installed location for the post-processing scripts to run.
 
 ### 4. Create
 
