@@ -95,10 +95,9 @@ def _format_txt(block: dict) -> str:
         "",
         "Prompt:",
         prompt,
-        "",
-        "Alt Text:",
-        alt_text,
     ]
+    if alt_text:
+        lines.extend(["", "Alt Text:", alt_text])
     return "\n".join(lines) + "\n"
 
 
@@ -106,6 +105,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build the argument parser."""
     parser = argparse.ArgumentParser(
         description="Export image_prompts.md blocks to individual .txt files for AI image generators.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "project_path",
