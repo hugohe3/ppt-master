@@ -68,8 +68,9 @@
 
 ## images
 - cover_bg: images/cover_bg.jpg
+- q3_revenue_chart: images/q3_revenue.png | no-crop
 
-> One entry per image file used. Remove the section entirely if no images.
+> One entry per image file used. Append ` | no-crop` only for images that must not lose pixels (data screenshots, charts, certificates) — Executor will size the container to native ratio and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries default to croppable (`slice`). Remove the section entirely if no images.
 
 ## page_rhythm
 - P01: anchor

@@ -246,6 +246,8 @@ Handle images by their status in the Design Spec's Image Resource List. Status e
 
 **Placeholder**: Dashed border `<rect stroke-dasharray="8,4" .../>` + description text
 
+**`no-crop` images**: when a `spec_lock.md images` entry ends with ` | no-crop`, size the container to the image's native ratio (from `analyze_images.py` or file dims) and use `preserveAspectRatio="xMidYMid meet"`. Untagged entries are croppable — default to `slice`.
+
 ### 6.1 Inline Attribution for Sourced Images (web path)
 
 Whenever the slide uses an image with `Status: Sourced`, look up the corresponding entry in `project/images/image_sources.json` and act on `license_tier`:
