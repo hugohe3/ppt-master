@@ -1,5 +1,7 @@
 # Image Tools
 
+> Architecture rationale (multi-backend dispatcher design, why provider-specific keys only, license filter strategy, embedding strategy): see [docs/technical-design.md "Image Acquisition & Embedding"](../../../../docs/technical-design.md#image-acquisition--embedding).
+
 Image tools cover prompt-based AI generation, web image search, image inspection, and Gemini watermark removal.
 
 ## `image_gen.py`

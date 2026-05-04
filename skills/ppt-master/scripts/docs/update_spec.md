@@ -1,5 +1,7 @@
 # update_spec.py
 
+> Architecture rationale (why narrow scope, why no backups, the spec_lock as execution contract): see [docs/technical-design.md "Spec Propagation"](../../../../docs/technical-design.md#spec-propagation-spec_lockmd-as-execution-contract).
+
 Propagate a `spec_lock.md` value change to both the lock file and every `svg_output/*.svg`. The single edit surface for bulk style tweaks after generation.
 
 ## Usage

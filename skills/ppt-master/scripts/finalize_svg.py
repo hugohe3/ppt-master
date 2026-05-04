@@ -6,6 +6,12 @@ Processes SVG files from svg_output/ and outputs them to svg_final/.
 By default, all processing steps are executed. You can also specify
 individual steps via arguments.
 
+Architecture note: this module's outputs feed svg_final/ on disk AND its
+sub-modules (svg_finalize.embed_icons, svg_finalize.flatten_tspan, ...)
+are memory-reused by svg_to_pptx during native conversion. Deleting any
+step here may also break native pptx output, not just svg_final/.
+See docs/technical-design.md "Post-Processing Pipeline" before modifying.
+
 Usage:
     # Execute all processing steps (recommended)
     python3 scripts/finalize_svg.py <project_directory>
