@@ -54,6 +54,7 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
+from config import load_prefixed_env_file  # noqa: E402
 from image_backends.backend_common import download_image  # noqa: E402
 from image_sources.provider_common import (  # noqa: E402
     AssetCandidate,
@@ -86,23 +87,13 @@ ORIENTATION_CHOICES = ("any", "landscape", "portrait", "square")
 
 
 # ---------------------------------------------------------------------------
-# .env loading (lightweight; matches image_gen.py behavior)
+# .env loading
 # ---------------------------------------------------------------------------
 
 
-def _load_dotenv_if_available() -> None:
-    """Best-effort .env loading: cwd then repo root. Silently no-op if
-    python-dotenv isn't installed or no file is found."""
-    try:
-        from dotenv import load_dotenv  # type: ignore
-    except ImportError:
-        return
-    cwd_env = Path.cwd() / ".env"
-    if cwd_env.is_file():
-        load_dotenv(cwd_env, override=False)
-    repo_env = _SCRIPTS_DIR.parent.parent.parent / ".env"
-    if repo_env.is_file():
-        load_dotenv(repo_env, override=False)
+def _load_search_env_file() -> None:
+    """Load image-search keys from the shared PPT Master .env locations."""
+    load_prefixed_env_file(("PEXELS_", "PIXABAY_"))
 
 
 # ---------------------------------------------------------------------------
@@ -651,7 +642,7 @@ def _default_provider_chain() -> list[str]:
 
 
 def main(argv: Optional[list[str]] = None) -> int:
-    _load_dotenv_if_available()
+    _load_search_env_file()
 
     parser = build_parser()
     args = parser.parse_args(argv)

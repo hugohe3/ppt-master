@@ -232,7 +232,16 @@ The AI handles everything — content analysis, visual design, SVG generation, a
 
 Two paths for non-user images, mixable per row in the same deck:
 
-**A) AI generation** — `image_gen.py`. Copy `.env.example` to `.env`, set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
+For API-backed features, put credentials in `.env`. Clone installs can use `cp .env.example .env`; skill marketplace installs should use a persistent user config:
+
+```bash
+mkdir -p ~/.ppt-master
+cp /path/to/installed/ppt-master/.env.example ~/.ppt-master/.env
+```
+
+PPT Master reads the current process environment first, then the first `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`.
+
+**A) AI generation** — `image_gen.py`. Set `IMAGE_BACKEND` plus the provider's `*_API_KEY` (`OPENAI_API_KEY`, `GEMINI_API_KEY`, etc.), and the pipeline calls it automatically. Run `python3 skills/ppt-master/scripts/image_gen.py --list-backends` for the full backend list. `gpt-image-2` is currently the best default.
 
 **B) Web image search** — `image_search.py`. **Zero-config works**, but configure `PEXELS_API_KEY` / `PIXABAY_API_KEY` (both free) for higher-quality results. Without keys, search uses Openverse / Wikimedia Commons only; this is useful as a fallback, but image quality can be uneven because many results are ordinary user uploads. With keys, the default provider chain also appends Pexels / Pixabay, which materially improves modern stock photography, people, workplace, lifestyle, and illustration coverage. The default is quality-first: CC0, Public Domain, Pexels / Pixabay no-attribution licenses, CC BY, and CC BY-SA are considered together, and Executor adds a small inline credit whenever the selected image requires attribution. Use `--strict-no-attribution` only when a slide cannot tolerate any credit line. For high-impact covers, product shots, portraits, and branded scenes, prefer this order: user-provided high-resolution assets / AI generation > web search with Pexels / Pixabay keys > zero-config web search.
 

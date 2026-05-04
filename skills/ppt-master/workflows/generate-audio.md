@@ -17,6 +17,7 @@ This workflow is **independent**: it reads `notes/*.md` and queries the selected
   - MiniMax: `MINIMAX_API_KEY`
   - Qwen: `QWEN_API_KEY` or `DASHSCOPE_API_KEY`
   - CosyVoice: `COSYVOICE_API_KEY` or `DASHSCOPE_API_KEY`
+  - Keys may live in the current process environment or the first `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`
 - The deck is in a single dominant language (mixed-language decks: pick the dominant one — the AI uses judgment, not a heuristic).
 
 If `notes/*.md` are missing, run `total_md_split.py <project_path>` first.

@@ -30,6 +30,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from config import load_prefixed_env_file
 from tts_backends import (
     backend_cosyvoice,
     backend_edge,
@@ -47,42 +48,15 @@ class AudioBackend:
     voice_id: str = ""
 
 
-def _resolve_env_path() -> Path:
-    candidates = [
-        Path.cwd() / ".env",
-        Path(__file__).resolve().parents[3] / ".env",
-        Path.home() / ".ppt-master" / ".env",
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return candidates[0]
-
-
 def _load_tts_env_file() -> None:
     """Load TTS-related keys from the first .env file, without overriding shell env."""
-    env_path = _resolve_env_path()
-    if not env_path.exists():
-        return
-
-    prefixes = (
+    load_prefixed_env_file((
         "ELEVENLABS_",
         "MINIMAX_",
         "QWEN_",
         "DASHSCOPE_",
         "COSYVOICE_",
-    )
-    for raw in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        key = key.strip()
-        if not any(key.startswith(prefix) for prefix in prefixes):
-            continue
-        if key in os.environ:
-            continue
-        os.environ[key] = value.strip().strip("\"'")
+    ))
 
 
 def spoken_text(markdown: str) -> str:

@@ -242,7 +242,7 @@ python3 scripts/image_gen.py "your prompt" \
 
 **Configuration sources**:
 - Current process environment variables
-- Project-root `.env` as fallback
+- First `.env` found in this order: current working directory, clone repo root, `~/.ppt-master/.env`
 
 Precedence:
 - Current process environment wins
@@ -255,7 +255,7 @@ Precedence:
 | `{PROVIDER}_BASE_URL` | Optional | Provider-specific custom endpoint |
 | `{PROVIDER}_MODEL` | Optional | Provider-specific model override |
 
-> Use provider-specific names only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` for the full set per backend.
+> Use provider-specific names only (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`). See `.env.example` in clone mode or `${SKILL_DIR}/.env.example` in skill-install mode for the full set per backend.
 
 > `IMAGE_API_KEY`, `IMAGE_MODEL`, and `IMAGE_BASE_URL` are intentionally unsupported.
 

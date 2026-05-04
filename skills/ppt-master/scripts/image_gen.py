@@ -44,27 +44,10 @@ Usage:
 import os
 import sys
 import argparse
-from pathlib import Path
 
-def _resolve_env_path() -> Path:
-    """
-    Locate a `.env` file across the deploy modes PPT Master supports.
+from config import load_prefixed_env_file, resolve_env_path
 
-    Returns the first existing candidate; if none exist, returns the CWD path
-    (used purely as a non-existent fallback so `_load_image_env_file` no-ops).
-    """
-    candidates = [
-        Path.cwd() / ".env",                              # working directory (skill mode)
-        Path(__file__).resolve().parents[3] / ".env",     # repo root (clone mode)
-        Path.home() / ".ppt-master" / ".env",             # user-level config
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return candidates[0]
-
-
-ENV_PATH = _resolve_env_path()
+ENV_PATH = resolve_env_path()
 IMAGE_ENV_PREFIXES = (
     "IMAGE_",
     "GEMINI_",
@@ -217,64 +200,25 @@ TIER_ORDER = {"core": 0, "extended": 1, "experimental": 2}
 SUPPORTED_BACKENDS = tuple(sorted(BACKEND_REGISTRY))
 
 
-def _is_image_env_key(name: str) -> bool:
-    """Return whether an env var name belongs to image generation config."""
-    return name.startswith(IMAGE_ENV_PREFIXES)
-
-
-def _strip_env_quotes(value: str) -> str:
-    """Strip matching surrounding quotes from a `.env` value."""
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-        return value[1:-1]
-    return value
-
-
 def _load_image_env_file() -> None:
     """
     Load image generation config from the resolved `.env` as a fallback layer.
 
     Existing process environment variables win over `.env`.
     """
-    if not ENV_PATH.exists():
-        return
-
-    with ENV_PATH.open("r", encoding="utf-8") as fh:
-        for lineno, raw_line in enumerate(fh, start=1):
-            line = raw_line.strip()
-            if not line or line.startswith("#"):
-                continue
-
-            if line.startswith("export "):
-                line = line[7:].lstrip()
-
-            if "=" not in line:
-                raise ValueError(
-                    f"Invalid line in {ENV_PATH}:{lineno}. Expected KEY=VALUE."
-                )
-
-            key, value = line.split("=", 1)
-            key = key.strip()
-            if not key:
-                raise ValueError(
-                    f"Invalid line in {ENV_PATH}:{lineno}. Missing variable name."
-                )
-
-            if not _is_image_env_key(key):
-                continue
-
-            if key in DEPRECATED_IMAGE_KEYS:
-                replacement = {
-                    "IMAGE_API_KEY": "GEMINI_API_KEY / OPENAI_API_KEY / QWEN_API_KEY / ZHIPU_API_KEY / ...",
-                    "IMAGE_MODEL": "GEMINI_MODEL / OPENAI_MODEL / QWEN_MODEL / ZHIPU_MODEL / ...",
-                    "IMAGE_BASE_URL": "GEMINI_BASE_URL / OPENAI_BASE_URL / QWEN_BASE_URL / ZHIPU_BASE_URL / ...",
-                }[key]
-                raise ValueError(
-                    f"Unsupported key in {ENV_PATH}:{lineno}: {key}\n"
-                    "Global image config keys have been removed.\n"
-                    f"Use IMAGE_BACKEND plus provider-specific keys instead, such as {replacement}."
-                )
-
-            os.environ.setdefault(key, _strip_env_quotes(value.strip()))
+    replacements = {
+        "IMAGE_API_KEY": "GEMINI_API_KEY / OPENAI_API_KEY / QWEN_API_KEY / ZHIPU_API_KEY / ...",
+        "IMAGE_MODEL": "GEMINI_MODEL / OPENAI_MODEL / QWEN_MODEL / ZHIPU_MODEL / ...",
+        "IMAGE_BASE_URL": "GEMINI_BASE_URL / OPENAI_BASE_URL / QWEN_BASE_URL / ZHIPU_BASE_URL / ...",
+    }
+    deprecated_messages = {
+        key: (
+            "Global image config keys have been removed.\n"
+            f"Use IMAGE_BACKEND plus provider-specific keys instead, such as {replacement}."
+        )
+        for key, replacement in replacements.items()
+    }
+    load_prefixed_env_file(IMAGE_ENV_PREFIXES, deprecated_keys=deprecated_messages)
 
 
 def _validate_runtime_config() -> None:
