@@ -211,6 +211,22 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 
 > **Trigger**: At least one row in the resource list has `Acquire Via: ai` and/or `Acquire Via: web`. If every row is `user` or `placeholder`, skip to Step 6.
 
+> **Image strategy pre-check**:
+>
+> If the resource list contains rows with `Acquire Via: ai` AND the user
+> has NOT provided those images AND `IMAGE_BACKEND` is not configured in
+> environment or `.env`:
+>
+> Ask the user once (do not repeat):
+>   "图片生成 API 未配置。对于需要 AI 生成的图片，你想怎么处理？"
+>   1. 网络搜索 — 从免费图库自动搜索相关图片（零配置，立即可用）
+>   2. 导出 prompt 手动生成 — 我把每张图的 prompt 导出成文件，你拿去 ChatGPT / Midjourney 等工具生成后放回来
+>
+> - If user chooses 1: change those rows' `Acquire Via` to `web`, then proceed with the `web` path below
+> - If user chooses 2: keep `Acquire Via: ai`, load `image-generator.md`, and use Path C (prompt export)
+>
+> If `IMAGE_BACKEND` IS configured OR user provided all images: skip this check.
+
 **Always load the common framework**:
 
 ```
