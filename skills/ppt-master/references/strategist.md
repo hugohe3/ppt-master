@@ -188,6 +188,16 @@ Baseline choice follows **content density**, not style. Common: `18px` (dense) /
 | **D** | Web-sourced | Real-world reference imagery, editorial support, stock-style needs (no API key required for default providers) |
 | **E** | Placeholders | Images to be added later |
 
+**When recommending C** — surface its three implementation modes so the user knows "no API key" is a supported state:
+
+| Mode | Trigger | Mechanism |
+|---|---|---|
+| **Path A** | `IMAGE_BACKEND` configured (default) | `image_gen.py` runs in Step 5 |
+| **Path B** | User explicitly names host's image tool (Codex / Antigravity) | Host-native generation |
+| **Offline Manual** | Path A unavailable AND Path B not in use | Prompts written to `images/image_prompts.md`; user generates externally and places files in `project/images/` |
+
+Selection is automatic in Step 5 (A → B → Manual). Detailed contract: [`image-generator.md`](./image-generator.md) §3.2.
+
 Selections may be mixed at the row level — e.g. a deck can use C for hero illustrations while sourcing D for supporting team photos.
 
 **When selection includes B**, you must run `python3 scripts/analyze_images.py <project_path>/images` before outputting the spec, and integrate scan results into the image resource list.

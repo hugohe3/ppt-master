@@ -191,18 +191,32 @@ For each image with `Acquire Via: ai` and `Status: Pending`:
 5. **Generate optimized prompt** → Use the §1.1 standard output format
 6. **Save prompt document** → **Must** write to `project/images/image_prompts.md`
 
+> `image_prompts.md` is human-readable; each `### Image N:` block is paste-ready for ChatGPT / Gemini / Midjourney. See §3.2 Offline Manual Mode for the handoff.
+
 ### 3.2 Image Generation Phase
 
 > Prerequisite: §3.1 must be complete; `images/image_prompts.md` must exist.
 
 #### Path Selection (Deterministic)
 
-| Trigger | Path | Mechanism |
-|---------|------|-----------|
-| **Default** — no explicit override from the user | **Path A**: `image_gen.py` CLI | Uses `.env` `IMAGE_BACKEND` configuration |
-| **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation", "use Antigravity's image tool") | **Path B**: Host-native tool | Agent invokes the host's own image generation capability and saves outputs to `project/images/` |
+C (AI-generated) supports three implementation modes sharing one `image_prompts.md` source:
 
-Agent must NOT silently switch paths based on perceived host capability. Path B is triggered only by an explicit user instruction for this project or this generation batch. In the absence of such instruction, Path A is the unconditional default.
+| Trigger | Mode | Mechanism |
+|---|---|---|
+| **Default** — `IMAGE_BACKEND` configured | **Path A**: `image_gen.py` CLI | Agent runs the script; outputs land at `project/images/<filename>` |
+| **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation") | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
+| **Path A unavailable AND Path B not in use** (no `IMAGE_BACKEND`, no host-native instruction) | **Offline Manual Mode** | Agent writes prompts to `image_prompts.md`; user generates externally and places files at `project/images/<filename>` |
+
+**Selection logic** (automatic, no user prompting):
+
+1. User explicitly named Path B → use Path B
+2. Otherwise check `IMAGE_BACKEND` (env or `.env`)
+   - configured → use Path A; on twice-failure, fall through to Offline Manual Mode
+   - not configured → skip Path A, fall through to Offline Manual Mode
+
+**Hard rule**: Step 5 is execution, not re-decision. Never present an interactive choice between paths here — image strategy was locked in Strategist Step 4 h item.
+
+> All three modes share one output contract: file at `project/images/<filename>`. Step 6 SVG references are mode-agnostic.
 
 #### Path A — `image_gen.py` CLI (Default)
 
@@ -260,19 +274,42 @@ Triggered only when the user explicitly asks the skill to use the host's built-i
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
 - Executor downstream is path-agnostic — no spec change required between Path A and Path B
 
-#### AI-specific Failure Handling (extends image-base.md §5)
+#### Offline Manual Mode (C's third implementation mode)
 
-If a single backend fails twice in a row:
+**Trigger**: Path A unavailable (no `IMAGE_BACKEND`, or twice-failed) AND Path B not in use.
 
-1. Per the shared rule, mark the row `Needs-Manual` after one retry — do **not** silently switch backends
-2. Report the failure to the user: filename, prompt used, error message
-3. Suggest the user manually generate the image elsewhere and place it at `project/images/<filename>`. If the alternate platform watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py`
+**Workflow** (no user prompting; system enters this mode automatically):
 
-#### Guardrails (Both Paths)
+1. Verify `images/image_prompts.md` was generated in §3.1
+2. Set `Status: Needs-Manual` on every affected ai row per [`image-base.md`](./image-base.md) §6
+3. Continue to Step 6 — SVG references `images/<filename>` optimistically; Step 7 entry verifies presence
+4. Print one consolidated handoff to the user:
+   - Filenames awaiting manual generation
+   - Pointer to `images/image_prompts.md`: each `### Image N:` block is a paste-ready prompt for ChatGPT / Gemini / Midjourney
+   - Target placement: `project/images/<filename>` matching the resource list exactly
+   - Resume command: re-run Step 7 once all expected files exist
 
-- Agent must NOT claim an image is generated without producing an actual file at the expected path
-- Agent must NOT mark an image as `Needs-Manual` without a real generation attempt having failed
-- Status transitions are evidence-driven: `Pending` -> `Generated` (file exists at expected path) or `Pending` -> `Needs-Manual` (generation attempted and failed after one retry)
+**User-initiated**: When Strategist Step 4 captured "user wants manual generation" up front, Path A is skipped from the start; the workflow above runs as a planned mode.
+
+> The pipeline tolerates `Needs-Manual` rows end-to-end. The user can leave the project, generate offline at their own pace, then resume Step 7.
+
+#### AI-specific Failure Handling (extends image-base.md §6)
+
+If Path A's backend fails twice in a row:
+
+1. Mark the row `Needs-Manual` after one retry — do not silently switch backends
+2. Report to user: filename, prompt used, error message
+3. Fall through to **Offline Manual Mode** above
+
+> If the alternate platform watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py`.
+
+#### Guardrails (All Modes)
+
+**Hard rule**:
+
+- Do not claim an image is generated without an actual file at the expected path
+- `Needs-Manual` is set after a failed attempt OR on entering Offline Manual Mode — not as a way to skip work that automation could have done
+- Status transitions are evidence-driven: `Pending` → `Generated` (file exists) or `Pending` → `Needs-Manual` (no automation, or attempt failed once)
 
 ---
 
