@@ -204,15 +204,16 @@ C (AI-generated) supports three implementation modes sharing one `image_prompts.
 | Trigger | Mode | Mechanism |
 |---|---|---|
 | **Default** — `IMAGE_BACKEND` configured | **Path A**: `image_gen.py` CLI | Agent runs the script; outputs land at `project/images/<filename>` |
-| **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation") | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
-| **Path A unavailable AND Path B not in use** (no `IMAGE_BACKEND`, no host-native instruction) | **Offline Manual Mode** | Agent writes prompts to `image_prompts.md`; user generates externally and places files at `project/images/<filename>` |
+| **Path A unavailable/fails OR User explicitly names host tool** | **Path B**: Host-native tool | Agent invokes the host's image capability; outputs land at `project/images/<filename>` |
+| **Both Path A and Path B fail/unavailable** | **Offline Manual Mode** | Agent writes prompts to `image_prompts.md`; user generates externally and places files at `project/images/<filename>` |
 
 **Selection logic** (automatic, no user prompting):
 
 1. User explicitly named Path B → use Path B
 2. Otherwise check `IMAGE_BACKEND` (env or `.env`)
-   - configured → use Path A; on twice-failure, fall through to Offline Manual Mode
-   - not configured → skip Path A, fall through to Offline Manual Mode
+   - configured → use Path A. If Path A fails twice in a row, automatically fall back to Path B.
+   - not configured → skip Path A, automatically fall back to Path B.
+3. If Path B also fails or the host lacks native image generation → fall through to Offline Manual Mode.
 
 **Hard rule**: Step 5 is execution, not re-decision. Never present an interactive choice between paths here — image strategy was locked in Strategist Step 4 h item.
 
@@ -276,7 +277,7 @@ Triggered only when the user explicitly asks the skill to use the host's built-i
 
 #### Offline Manual Mode (C's third implementation mode)
 
-**Trigger**: Path A unavailable (no `IMAGE_BACKEND`, or twice-failed) AND Path B not in use.
+**Trigger**: Both Path A and Path B fail or are unavailable.
 
 **Workflow** (no user prompting; system enters this mode automatically):
 
@@ -297,9 +298,10 @@ Triggered only when the user explicitly asks the skill to use the host's built-i
 
 If Path A's backend fails twice in a row:
 
-1. Mark the row `Needs-Manual` after one retry — do not silently switch backends
-2. Report to user: filename, prompt used, error message
-3. Fall through to **Offline Manual Mode** above
+1. Do not halt. Automatically attempt to fall back to **Path B (Host-Native Tool)**.
+2. If Path B also fails or is unavailable, mark the row `Needs-Manual`.
+3. Report to user: filename, prompt used, error message.
+4. Fall through to **Offline Manual Mode** above.
 
 > If the alternate platform watermarks outputs (e.g. Gemini web), the repository includes `scripts/gemini_watermark_remover.py`.
 
