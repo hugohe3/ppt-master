@@ -201,8 +201,9 @@ For each image with `Acquire Via: ai` and `Status: Pending`:
 |---------|------|-----------|
 | **Default** — no explicit override from the user | **Path A**: `image_gen.py` CLI | Uses `.env` `IMAGE_BACKEND` configuration |
 | **User explicitly names the host's native image tool** (e.g. "use Codex's built-in image generation", "use Antigravity's image tool") | **Path B**: Host-native tool | Agent invokes the host's own image generation capability and saves outputs to `project/images/` |
+| **User chose "导出 prompt 手动生成" in Step 5 pre-check** OR explicitly requests manual generation | **Path C**: prompt export | `python3 ${SKILL_DIR}/scripts/dry_run_export.py <project_path>` — exports prompts to `.txt` files; user generates externally |
 
-Agent must NOT silently switch paths based on perceived host capability. Path B is triggered only by an explicit user instruction for this project or this generation batch. In the absence of such instruction, Path A is the unconditional default.
+Agent must NOT silently switch paths based on perceived host capability. Path B is triggered only by an explicit user instruction for this project or this generation batch. Path C is triggered when the user has no image generation API key and chooses to export prompts for manual generation.
 
 #### Path A — `image_gen.py` CLI (Default)
 
@@ -259,6 +260,31 @@ Triggered only when the user explicitly asks the skill to use the host's built-i
 - Agent invokes the host's native image tool directly; prompts come from the same `image_prompts.md`
 - Outputs **must** land at `project/images/<filename-from-resource-list>` with dimensions matching the Image Resource List
 - Executor downstream is path-agnostic — no spec change required between Path A and Path B
+
+#### Path C — Prompt Export for Manual Generation
+
+Triggered when the user chose "导出 prompt 手动生成" in the Step 5 pre-check, or explicitly requests manual image generation.
+
+```bash
+python3 ${SKILL_DIR}/scripts/dry_run_export.py <project_path>
+```
+
+**Output**: `<project_path>/images/dry-run/` directory with one `.txt` per image.
+
+**Workflow**:
+
+1. Confirm `images/image_prompts.md` exists (generated in §3.1)
+2. Run `dry_run_export.py <project_path>`
+3. Tell the user:
+   - "Prompt 文件已导出到 `project/images/dry-run/` 目录"
+   - "每个 `.txt` 文件包含一个图片的完整 prompt，可以直接复制内容发给 ChatGPT / Midjourney 等工具"
+   - "生成的图片请命名为对应的文件名，放到 `project/images/` 目录下"
+   - List each filename and its purpose
+4. Wait for user to place images
+5. Verify all expected files exist in `project/images/`
+6. Mark status as `Generated` for files that exist, `Needs-Manual` for missing ones
+
+**Fallback from Path A**: If `image_gen.py` fails (bad key, network error), ask: "要不要切换到导出 prompt 手动生成模式？" If yes, run `dry_run_export.py` instead.
 
 #### AI-specific Failure Handling (extends image-base.md §5)
 
