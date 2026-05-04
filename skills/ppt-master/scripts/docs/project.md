@@ -1,6 +1,6 @@
 # Project Tools
 
-> Architecture rationale (project directory shape, import-sources copy/move asymmetry, batch_validate role): see [docs/technical-design.md "Project Structure & Lifecycle"](../../../../docs/technical-design.md#project-structure--lifecycle).
+> Architecture rationale (why `import-sources` defaults are asymmetric for in-repo vs out-of-repo files): see [docs/technical-design.md "Project Structure & Lifecycle"](../../../../docs/technical-design.md#project-structure--lifecycle).
 
 Project tools create, validate, and inspect the standard PPT Master workspace.
 
