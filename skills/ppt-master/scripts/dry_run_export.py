@@ -6,9 +6,16 @@ Parses image_prompts.md and exports each image prompt to an individual
 .txt file optimized for feeding directly to AI image generators
 (ChatGPT, Midjourney, etc.).
 
+Part of Path C in the image acquisition pipeline.
+See references/image-generator.md §3.2 for the full workflow.
+
 Usage:
     python3 scripts/dry_run_export.py <project_path>
     python3 scripts/dry_run_export.py <project_path> --output-dir custom-dir
+
+Examples:
+    python3 scripts/dry_run_export.py projects/my-ppt
+    python3 scripts/dry_run_export.py projects/my-ppt --output-dir /tmp/prompts
 
 Dependencies:
     None (only uses standard library)
