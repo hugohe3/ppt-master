@@ -284,6 +284,8 @@ python3 ${SKILL_DIR}/scripts/dry_run_export.py <project_path>
 5. Verify all expected files exist in `project/images/`
 6. Mark status as `Generated` for files that exist, `Needs-Manual` for missing ones
 
+> ⚠️ All `Generated` images MUST be used in the Executor phase. Do not skip any verified image — include every one in the SVG output per the resource list.
+
 **Fallback from Path A**: If `image_gen.py` fails (bad key, network error), ask: "要不要切换到导出 prompt 手动生成模式？" If yes, run `dry_run_export.py` instead.
 
 #### AI-specific Failure Handling (extends image-base.md §5)
