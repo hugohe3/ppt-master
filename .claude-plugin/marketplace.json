@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "ppt-master",
+  "owner": {
+    "name": "Hugo He",
+    "email": "heyug3@gmail.com",
+    "url": "https://github.com/hugohe3"
+  },
+  "metadata": {
+    "description": "PPT Master skill — AI generates natively editable PPTX from any document",
+    "version": "2.5.0"
+  },
+  "plugins": [
+    {
+      "name": "ppt-master",
+      "source": "./",
+      "description": "Generate natively editable PPTX from PDF / DOCX / URL / Markdown — real DrawingML shapes, text boxes, charts, and animations. Note: this plugin ships only the skill files; you must also `pip install -r requirements.txt` from the project root for the Python post-processing scripts to run.",
+      "version": "2.5.0",
+      "author": {
+        "name": "Hugo He",
+        "email": "heyug3@gmail.com",
+        "url": "https://www.hehugo.com/"
+      },
+      "homepage": "https://github.com/hugohe3/ppt-master",
+      "repository": "https://github.com/hugohe3/ppt-master",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": [
+        "pptx",
+        "presentation",
+        "powerpoint",
+        "svg",
+        "drawingml",
+        "ai",
+        "skill",
+        "office",
+        "document-conversion"
+      ],
+      "strict": false,
+      "skills": [
+        "./skills/ppt-master"
+      ]
+    }
+  ]
+}
