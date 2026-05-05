@@ -20,7 +20,20 @@ Gather Brief -> Import PPTX References -> Create Directory -> Invoke Template_De
 
 ## Step 1: Gather Template Information
 
-Confirm the following with the user:
+**MANDATORY interactive confirmation — this step BLOCKS all subsequent steps.**
+
+Before any directory creation, file write, or `Template_Designer` invocation:
+
+1. List every Required item below to the user in one message
+2. Ask the user to confirm or fill them in
+3. Wait for the user's reply
+4. Echo back the finalized brief and emit the marker `[TEMPLATE_BRIEF_CONFIRMED]` on its own line
+
+Skipping this gate — including silently inferring values from the reference source, opened IDE file, or prior conversation — is a workflow violation. Even if the user provides a `.pptx` reference and says "用这个做模板", you MUST still surface the Required items and obtain explicit confirmation; the reference source does not substitute for the brief.
+
+Step 2 MUST NOT run until `[TEMPLATE_BRIEF_CONFIRMED]` has been emitted in the current conversation.
+
+Items to confirm with the user:
 
 | Item | Required | Description |
 |------|----------|-------------|
@@ -32,17 +45,21 @@ Confirm the following with the user:
 | Theme mode | Yes | Theme description for recommendation, such as `Light theme (white background + blue accent)` |
 | Canvas format | Yes | Default `ppt169`; if another format is needed, specify it explicitly before generation |
 | Replication mode | Yes | `standard` (default, 5-page roster) or `fidelity` (preserve every distinct layout from a `.pptx` source); `fidelity` requires a `.pptx` reference source |
+| Visual fidelity for fixed pages | Yes (when reference source exists) | `literal` (exact reproduction — preserve original geometry, decoration, sprite crops as-is; for cover / chapter / ending especially) or `adapted` (use the reference for tone/structure but allow design evolution). Ask the user explicitly; do not assume. Different page types may take different settings |
 | Reference source | Optional | Existing project, screenshot folder, or `.pptx` template file path |
 | Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
 | Design style | Optional | Additional style notes, decorative language, brand cues |
 | Assets list | Optional | Logos / background textures / reference images to include in the template package |
 | Keywords | Yes | 3–5 short tags for `layouts_index.json` lookup (e.g., `McKinsey`, `Consulting`, `Structured`) |
 
-**Required outcome of Step 1**:
+**Required outcome of Step 1** (all must be true before emitting `[TEMPLATE_BRIEF_CONFIRMED]`):
 
-- The template is clearly positioned as a **global library template**
-- The canvas format is fixed before SVG generation
-- The template metadata is complete enough to register into `layouts_index.json`
+- [ ] User has been asked the Required items above in the current conversation
+- [ ] User has replied with values or explicit acceptance of suggested defaults
+- [ ] The template is clearly positioned as a **global library template**
+- [ ] The canvas format is fixed before SVG generation
+- [ ] The template metadata is complete enough to register into `layouts_index.json`
+- [ ] Marker `[TEMPLATE_BRIEF_CONFIRMED]` emitted on its own line after the echoed brief
 
 **If a reference source is provided**, analyze its structure first:
 
@@ -97,6 +114,8 @@ Do **not** treat the imported PPTX or exported slide SVGs as direct final templa
 
 ## Step 2: Create Template Directory
 
+> **Precondition**: `[TEMPLATE_BRIEF_CONFIRMED]` was emitted in Step 1. If not, return to Step 1.
+
 ```bash
 mkdir -p "skills/ppt-master/templates/layouts/<template_id>"
 ```
@@ -123,6 +142,10 @@ If the reference source is `.pptx`, pass the following internal package to the r
 - optional screenshots, if available
 
 The role should use the import output to anchor objective facts such as theme colors, fonts, reusable backgrounds, and common branding assets, then rebuild the final SVG templates in a simplified, maintainable form.
+
+**Apply the visual-fidelity decision from Step 1**: pages marked `literal` (typically cover / chapter / ending) must reproduce the reference's geometry, decoration, and sprite-sheet crops as-is — "simplified, maintainable form" applies only to genuinely redundant structure, not to load-bearing layout. Pages marked `adapted` may use the reference for tone and structural rhythm but evolve the design.
+
+**Sprite-sheet preservation (do NOT simplify away)**: PPTX-exported assets are often sprite sheets — a single tall/large image referenced from multiple slides, each cropping a different region via nested `<svg ... viewBox="...">` wrappers around `<image width="1" height="1">`. This nesting is **load-bearing geometry**, not redundant structure. When rebuilding, preserve the exact `viewBox` crop and the outer `<svg>` placement for every image; do not flatten to a single `<image>` with direct `x/y/width/height`. Verify by sampling: if any asset's pixel dimensions don't match the on-page display aspect, it is a sprite and the wrapper must stay.
 
 1. **design_spec.md** — Design specification document, with §VI listing the page roster
 2. **Page roster** — `standard` mode: `01_cover`, `02_chapter`, `03_content`, `04_ending`; `fidelity` mode: standard set + variant pages (`02a_chapter_*`, `03a_content_*`, ...) and extension pages (`05_section_break`, `06_appendix`, ...) per `manifest.json` clusters
@@ -164,6 +187,7 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - [ ] SVG viewBox matches the chosen canvas format (for `ppt169`: `0 0 1280 720`)
 - [ ] Placeholder names are consistent with the new-template contract and `design_spec.md`
 - [ ] Asset files referenced by SVGs actually exist in the template package
+- [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
 
 This step is a **hard gate**. Do not register the template into the library index until validation passes.
 
