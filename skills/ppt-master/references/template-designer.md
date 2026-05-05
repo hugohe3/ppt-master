@@ -21,10 +21,8 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `master_layout_refs.json`
 - `master_layout_analysis.md`
 - `analysis.md`
-- `normalized_assets.json`
 - exported `assets/`
 - cleaned slide SVG references from `svg/`
-- `reference_svg_selection.json`
 - optional screenshots for visual cross-checking
 
 Input priority for PPTX-backed template creation:
@@ -32,16 +30,23 @@ Input priority for PPTX-backed template creation:
 1. `manifest.json` for factual metadata
 2. `master_layout_refs.json` for unique layout/master structure and inheritance
 3. `master_layout_analysis.md` for fast structural review
-4. `normalized_assets.json` for canonical asset decisions
+4. `analysis.md` for page-type guidance
 5. exported `assets/` for reusable visual resources
-6. `analysis.md` for page-type guidance
-7. `reference_svg_selection.json` for deciding which exported SVG pages to inspect first
-8. cleaned slide SVG references for composition, spacing, and fixed decorative cues
-9. screenshots / original PPTX only for style verification
+6. cleaned slide SVG references for composition, spacing, and fixed decorative cues
+7. screenshots / original PPTX only for style verification
 
 ---
 
-## Core Template Inventory
+## Page Roster
+
+The output page set is determined by **replication mode**, declared in the Step 1 brief:
+
+| Mode | When to use | Roster |
+|------|-------------|--------|
+| `standard` (default) | Most templates — clean, reusable, balanced coverage | `01_cover`, `02_chapter`, `03_content`, `04_ending`, optional `02_toc` |
+| `fidelity` | User explicitly wants strict replication of a source PPTX | Standard roster + one variant per distinct layout cluster found in `manifest.json` |
+
+### Standard mode
 
 | # | Filename | Purpose | Description |
 |---|----------|---------|-------------|
@@ -55,11 +60,28 @@ Input priority for PPTX-backed template creation:
 
 **Naming note**: TOC page keeps `02_toc.svg` naming for template library compatibility and sort order.
 
-### Optional Extension Pages (As Needed)
+### Fidelity mode
 
-- Transition / sub-section page (e.g., `05_section_break.svg`)
-- Appendix page (e.g., `06_appendix.svg`)
-- Disclaimer / confidentiality page (e.g., `07_disclaimer.svg`)
+When the brief sets `Replication mode: fidelity`, derive the page roster from `manifest.json` page-type clusters and emit one SVG per distinct visual cluster.
+
+**Variant naming**: append a lowercase letter suffix to the parent type's index, preserving sort order:
+
+| Parent type | Example variants |
+|-------------|------------------|
+| Chapter | `02a_chapter_full.svg`, `02b_chapter_minimal.svg` |
+| Content | `03a_content_two_col.svg`, `03b_content_data_card.svg`, `03c_content_quote.svg` |
+| Ending | `04a_ending_thanks.svg`, `04b_ending_contact.svg` |
+
+Extension page types beyond the canonical four (transition / appendix / disclaimer / divider) take the next free index: `05_section_break.svg`, `06_appendix.svg`, `07_disclaimer.svg`.
+
+**Roster decision**:
+
+- Cluster slides from `manifest.json` by `pageType` + visual structure (column count, hero-image vs. icon-grid vs. quote, etc.)
+- One SVG per cluster — do **not** emit a variant for a cluster represented by a single source slide unless that slide is structurally distinct from existing variants
+- Cap at 8 content variants per template; collapse near-duplicates into the closest existing variant
+- Record every emitted page in `design_spec.md §VI` and in the `pages` field of the `layouts_index.json` entry
+
+**Placeholder contract for variants**: variants reuse the parent type's placeholder set (every `03*_content*.svg` shares the content placeholder set). Do **not** introduce variant-specific placeholder families.
 
 ---
 
@@ -77,7 +99,7 @@ When creating a global template, a `design_spec.md` must be generated, containin
 ## III. Color Scheme (primary, secondary, accent HEX values)
 ## IV. Typography System (font stack, font size hierarchy)
 ## V. Page Structure (common layout, decorative design)
-## VI. Page Types (4 core page types)
+## VI. Page Roster (one row per emitted SVG, with replication mode and cluster source)
 ## VII. Layout Modes (recommended)
 ## VIII. Spacing Specification
 ## IX. SVG Technical Constraints
@@ -94,12 +116,12 @@ Templates must strictly follow the finalized template brief and the generated `d
 
 If PPTX import output exists:
 - Prefer imported theme colors and fonts over visually guessed values
-- Reuse canonical backgrounds and logos from `normalized_assets.json` where they are globally meaningful to the template
+- Reuse exported `assets/` images directly — `<image>` references in `svg/` already point at canonical files
 - Treat page-type candidates from `analysis.md` as hints, not guarantees
 
 **Precondition**:
 
-- If `reference_svg_selection.json` is provided, do not generate any template SVG or `design_spec.md` until all selected reference SVG files have been read
+- When PPTX import output is provided, do not generate any template SVG or `design_spec.md` until every file under `<import_workspace>/svg/` has been read
 - Before template generation begins, explicitly report the read slide indexes
 
 ### 2.1 PPTX Import Simplification Rule
@@ -111,25 +133,14 @@ Do:
 - rebuild the layout into a clean SVG structure aligned with PPT Master constraints
 - simplify repeated decorative fragments into a smaller number of maintainable SVG elements
 - use a background image asset when the original decorative layer is too complex to recreate cleanly
-- prefer original exported assets such as `image1.png` over matched `inline_*` assets whenever AI normalization determines they represent the same visible image
-- treat `inline_*` assets primarily as export-reference layers rather than final template asset names
 - use cleaned slide SVG references to inspect composition, spacing, text hierarchy, and fixed decorative structure only after factual metadata has been anchored
-- if there are `<= 10` cleaned SVG reference pages to inspect, read all of them; if there are more than `10`, read only `10` representative pages
+- read every cleaned SVG reference page under `svg/`, regardless of slide count — partial coverage drops template fidelity
+- rename adopted assets to semantic names (`cover_bg.png`, `brand_emblem.png`) rather than carrying raw `image3.png` into the final template
 
 Do not:
 - attempt 1:1 translation of every PowerPoint shape, group, shadow, or decorative fragment
 - mirror PPT-specific complexity when it makes the resulting SVG brittle or hard to edit
 - introduce dense low-value vector detail that does not materially improve template reuse
-- promote mask-only / alpha-helper `inline_*` assets into the final template package unless they are the only viable reusable representation
-
-### 2.2 Original-vs-Inline Asset Normalization
-
-When `normalized_assets.json` exists, follow these rules:
-
-1. If an original exported asset and an `inline_*` asset clearly correspond to the same visible image, use the **original exported asset** as the canonical template source.
-2. If an `inline_*` asset has no reliable original exported counterpart, it may be kept as a derived template asset.
-3. If an `inline_*` asset appears only as a mask, alpha helper, or other non-semantic support layer inside SVG export output, do not include it in the final template asset set by default.
-4. Final template asset names should be semantic, such as `cover_bg.png` or `brand_emblem.png`, rather than `image3.png` or `inline_abcd1234.png`.
 
 ### 3. Placeholder Markers
 
@@ -187,6 +198,8 @@ When rebuilding from imported PPTX references, placeholder insertion takes prior
 
 ### File Save Location
 
+Standard mode (default):
+
 ```
 templates/layouts/<template_name>/
 ├── design_spec.md     # Design specification (required)
@@ -196,6 +209,23 @@ templates/layouts/<template_name>/
 ├── 03_content.svg
 ├── 04_ending.svg
 └── *.png / *.jpg       # Image assets (if any)
+```
+
+Fidelity mode adds variants and extension pages, e.g.:
+
+```
+templates/layouts/<template_name>/
+├── design_spec.md
+├── 01_cover.svg
+├── 02a_chapter_full.svg
+├── 02b_chapter_minimal.svg
+├── 02_toc.svg
+├── 03a_content_two_col.svg
+├── 03b_content_data_card.svg
+├── 03c_content_quote.svg
+├── 04_ending.svg
+├── 05_section_break.svg
+└── *.png / *.jpg
 ```
 
 ### Template Preview
@@ -236,11 +266,10 @@ templates/layouts/
 ## Template_Designer Phase Complete
 
 - [x] Read `references/template-designer.md`
-- [x] Generated 4 core page templates
-- [ ] TOC page template (optional)
-- [ ] Optional extension pages (if needed)
-- [x] All templates saved to `templates/layouts/<template_name>/`
+- [x] Replication mode confirmed: `standard` | `fidelity`
+- [x] Every page listed in `design_spec.md §VI` saved to `templates/layouts/<template_name>/`
+- [x] Variant naming follows the letter-suffix convention; variants reuse parent placeholder contract
 - [x] Templates follow design spec (colors, fonts, layout)
 - [x] Placeholder markers are clear and standardized
-- [ ] **Next step**: Validate assets and register the template in `layouts_index.json`
+- [ ] **Next step**: Validate assets and register the template in `layouts_index.json` (include `pages` field)
 ```

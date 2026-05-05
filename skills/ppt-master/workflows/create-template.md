@@ -13,7 +13,7 @@ Generate a complete set of reusable PPT layout templates for the **global templa
 ## Process Overview
 
 ```
-Gather Brief -> Import PPTX References -> Normalize Assets -> Create Directory -> Invoke Template_Designer -> Validate Assets -> Register Index -> Output
+Gather Brief -> Import PPTX References -> Create Directory -> Invoke Template_Designer -> Validate Assets -> Register Index -> Output
 ```
 
 ---
@@ -31,6 +31,7 @@ Confirm the following with the user:
 | Tone summary | Yes | Short tone description for recommendation, such as `Modern, restrained, data-driven` |
 | Theme mode | Yes | Theme description for recommendation, such as `Light theme (white background + blue accent)` |
 | Canvas format | Yes | Default `ppt169`; if another format is needed, specify it explicitly before generation |
+| Replication mode | Yes | `standard` (default, 5-page roster) or `fidelity` (preserve every distinct layout from a `.pptx` source); `fidelity` requires a `.pptx` reference source |
 | Reference source | Optional | Existing project, screenshot folder, or `.pptx` template file path |
 | Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
 | Design style | Optional | Additional style notes, decorative language, brand cues |
@@ -55,35 +56,15 @@ If the reference source is a `.pptx` template file, use the unified preparation 
 python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.pptx>"
 ```
 
-This helper performs the full PPTX reference preparation in one workspace:
+This helper reads OOXML directly via `pptx_to_svg` and produces, in one workspace:
 
-- extracts reusable assets and style metadata
-- generates `manifest.json`
-- generates `analysis.md`
-- generates `master_layout_refs.json`
-- generates `master_layout_analysis.md`
-- exports each slide to `svg/`
-- externalizes large inline bitmap payloads into `assets/`
-- generates `reference_svg_selection.json`
+- `manifest.json` — slide size, theme colors, fonts, asset inventory
+- `analysis.md` — page-type guidance summary
+- `master_layout_refs.json` / `master_layout_analysis.md` — master/layout structure and inheritance
+- `assets/` — extracted reusable image assets
+- `svg/` — shape-level SVG per slide (real `<text>`, `<image>`, geometry)
 
-It is still a reconstruction aid, not a final direct template conversion.
-
-Use the generated `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, exported `assets/`, and `svg/` slide references as internal reference material for template reconstruction.
-
-Then perform an **AI-only asset normalization step** before template generation:
-
-- compare exported original assets such as `image1.png` with `inline_*` assets used by the cleaned slide SVGs
-- if an `inline_*` visible image corresponds to an original exported asset, treat the **original asset** as the canonical source
-- if an `inline_*` asset has no matching original exported asset, keep it as a derived candidate asset
-- if an `inline_*` asset is only used as a mask / alpha helper / auxiliary layer, do **not** promote it to the final template asset set by default
-- write the normalization result to `<import_workspace>/normalized_assets.json`
-
-Recommended fields in `normalized_assets.json`:
-
-- canonical asset path
-- matched `inline_*` references
-- role guess such as `cover_background`, `content_background`, `brand_overlay`, `mask_only`
-- whether the asset should enter the final template package
+It is a reconstruction aid, not a final direct template conversion.
 
 When the reference source is `.pptx`, use the following internal priority order during template creation:
 
@@ -91,10 +72,9 @@ When the reference source is `.pptx`, use the following internal priority order 
 2. `master_layout_refs.json`
 3. `master_layout_analysis.md`
 4. `analysis.md`
-5. `normalized_assets.json`
-6. exported `assets/`
-7. cleaned slide SVG references from `svg/`
-8. user-provided screenshots or the original PPTX only for visual cross-checking
+5. exported `assets/`
+6. cleaned slide SVG references from `svg/`
+7. user-provided screenshots or the original PPTX only for visual cross-checking
 
 Interpretation rule:
 
@@ -102,37 +82,20 @@ Interpretation rule:
 - `master_layout_refs.json` is the source of truth for unique layout/master structure, inherited backgrounds, and slide reuse relationships
 - `master_layout_analysis.md` is the compact human-readable summary for quickly understanding reusable master/layout motifs
 - `analysis.md` is the compact human-readable summary used to guide page-type selection
-- `normalized_assets.json` is the source of truth for which imported assets are canonical and which `inline_*` assets are only derived helpers
-- exported `assets/` remain the raw import pool and should not be consumed blindly once normalization exists
-- cleaned `svg/` slides are mandatory reference material for layout rhythm, page composition, and fixed decorative structure
-- if the remaining cleaned SVG reference pages are `<= 10`, read all of them; if they are `> 10`, read only `10` representative pages
+- exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
+- cleaned `svg/` slides are mandatory reference material for layout rhythm, page composition, and fixed decorative structure; read **every** exported page regardless of slide count
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
 **Hard gate**:
 
-- Before creating any template file, the agent MUST finish reading all SVG files listed in `reference_svg_selection.json`
+- Before creating any template file, the agent MUST finish reading every SVG file under `<import_workspace>/svg/`
 - The agent MUST explicitly report the read slide indexes before starting template generation
 
 Do **not** treat the imported PPTX or exported slide SVGs as direct final template assets. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
 
 ---
 
-## Step 2: Normalize Imported Assets
-
-When the reference source is `.pptx`, create the normalization artifact before generating the template.
-
-**Required outcome of Step 2**:
-
-- original exported assets and `inline_*` assets have been compared
-- canonical assets prefer original exported files when a reliable match exists
-- mask-only / helper-only `inline_*` assets are excluded from the final template asset shortlist by default
-- `normalized_assets.json` is available for downstream template generation
-
-If no `.pptx` source is involved, this step can be skipped.
-
----
-
-## Step 3: Create Template Directory
+## Step 2: Create Template Directory
 
 ```bash
 mkdir -p "skills/ppt-master/templates/layouts/<template_id>"
@@ -144,7 +107,7 @@ mkdir -p "skills/ppt-master/templates/layouts/<template_id>"
 
 ---
 
-## Step 4: Invoke Template_Designer Role
+## Step 3: Invoke Template_Designer Role
 
 **Switch to the Template_Designer role** and generate per role definition. The role input is the finalized template brief from Step 1, not a project design spec.
 
@@ -155,16 +118,14 @@ If the reference source is `.pptx`, pass the following internal package to the r
 - `master_layout_refs.json`
 - `master_layout_analysis.md`
 - `analysis.md`
-- `normalized_assets.json`
 - exported `assets/`
 - cleaned slide SVG references from `svg/`
-- `reference_svg_selection.json`
 - optional screenshots, if available
 
 The role should use the import output to anchor objective facts such as theme colors, fonts, reusable backgrounds, and common branding assets, then rebuild the final SVG templates in a simplified, maintainable form.
 
-1. **design_spec.md** — Design specification document
-2. **4 core templates** — Cover, chapter, content, ending pages
+1. **design_spec.md** — Design specification document, with §VI listing the page roster
+2. **Page roster** — `standard` mode: `01_cover`, `02_chapter`, `03_content`, `04_ending`; `fidelity` mode: standard set + variant pages (`02a_chapter_*`, `03a_content_*`, ...) and extension pages (`05_section_break`, `06_appendix`, ...) per `manifest.json` clusters
 3. **TOC page (optional)** — `02_toc.svg`
 4. **Template assets (optional)** — Logos / PNG / JPG / reference SVG needed by the template package
 
@@ -182,7 +143,7 @@ The role should use the import output to anchor objective facts such as theme co
 
 ---
 
-## Step 5: Validate Template Assets
+## Step 4: Validate Template Assets
 
 ```bash
 ls -la "skills/ppt-master/templates/layouts/<template_id>"
@@ -196,8 +157,9 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 
 **Checklist**:
 
-- [ ] `design_spec.md` contains complete design specification
-- [ ] All 4 core templates present
+- [ ] `design_spec.md` contains complete design specification, with §VI listing every emitted page
+- [ ] Every page declared in `design_spec.md §VI` exists as an SVG file in the template directory (and vice versa — no orphan files)
+- [ ] Variant filenames follow the letter-suffix convention (e.g. `03a_content_two_col.svg`); variants reuse the parent type's placeholder set
 - [ ] If TOC exists, placeholder pattern uses the canonical indexed form
 - [ ] SVG viewBox matches the chosen canvas format (for `ppt169`: `0 0 1280 720`)
 - [ ] Placeholder names are consistent with the new-template contract and `design_spec.md`
@@ -207,17 +169,20 @@ This step is a **hard gate**. Do not register the template into the library inde
 
 ---
 
-## Step 6: Register Template in Library Index
+## Step 5: Register Template in Library Index
 
-Add a top-level entry to `skills/ppt-master/templates/layouts/layouts_index.json`. The file is a flat map of `template_id → { label, summary, keywords }`:
+Add a top-level entry to `skills/ppt-master/templates/layouts/layouts_index.json`. The file is a flat map of `template_id → { label, summary, keywords, pages }`:
 
 ```json
 "<template_id>": {
   "label": "<Human-readable Name>",
   "summary": "<One-sentence description of what this template is for>",
-  "keywords": ["<Tag1>", "<Tag2>", "<Tag3>"]
+  "keywords": ["<Tag1>", "<Tag2>", "<Tag3>"],
+  "pages": ["01_cover", "02_chapter", "02_toc", "03_content", "04_ending"]
 }
 ```
+
+`pages` lists every layout SVG (without the `.svg` suffix) the template ships, so downstream consumers can see the full roster — especially for `fidelity`-mode templates that include variant pages such as `03a_content_two_col`.
 
 `layouts_index.json` is the lightweight lookup used when a user explicitly opts into the template flow. The main workflow defaults to free design and does not read this file unless a template trigger fires (see `SKILL.md` Step 3). A template directory that is not registered here will not be discoverable by that flow.
 
@@ -225,7 +190,7 @@ Also sync the summary table in `templates/layouts/README.md` (the human-facing i
 
 ---
 
-## Step 7: Output Confirmation
+## Step 6: Output Confirmation
 
 ```markdown
 ## Template Creation Complete

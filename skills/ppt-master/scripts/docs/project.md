@@ -86,18 +86,17 @@ Unified PPTX preparation entry point for `/create-template`.
 python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> -o <output_dir>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
-python3 scripts/pptx_template_import.py <template.pptx> --keep-raw
 python3 scripts/pptx_template_import.py <template.pptx> --skip-manifest
+python3 scripts/pptx_template_import.py <template.pptx> --embed-images
 ```
 
 Notes:
 - Extracts reusable media assets from `ppt/media/`
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
-- Generates `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, `assets/`, cleaned slide SVGs, and `reference_svg_selection.json`
-- Native SVG export is Windows-only because it uses installed Microsoft PowerPoint
-- On macOS, the script falls back to exporting PDF via Keynote and then converts PDF pages to SVG
-- Writes cleaned SVG files to `svg/` after externalizing inline Base64 image payloads
+- Generates `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, `assets/`, and shape-level slide SVGs under `svg/`
+- SVG export reads OOXML directly via `pptx_to_svg` — no PowerPoint or Keynote dependency, runs on any platform
+- `<image>` elements in `svg/` reference files in `assets/` directly; pass `--embed-images` to inline as data URIs instead
 - Required in `/create-template` whenever the reference source is `.pptx`
 - Default output directory is `<pptx_stem>_template_import/`
 - Use `--manifest-only` when you explicitly want only the lightweight import output without slide SVG export
