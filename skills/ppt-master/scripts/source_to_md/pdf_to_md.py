@@ -415,10 +415,23 @@ def clean_text(text: str) -> str:
 
 
 def merge_adjacent_formatting(text: str) -> str:
-    """Merge adjacent formatting markers, e.g. **text1****text2** -> **text1 text2**"""
-    text = re.sub(r'\*\*\s*\*\*', ' ', text)
-    text = re.sub(r'\*\s*\*', ' ', text)
-    text = re.sub(r'\*\*\*\s*\*\*\*', ' ', text)
+    """Merge adjacent same-style formatted spans split across PDF tokens.
+
+    PyMuPDF often emits a phrase as several spans, so per-span wrapping in
+    ``format_span_text`` produces ``**X****Y**`` (bold) or ``***X******Y***``
+    (bold-italic) where one phrase is intended. Collapse the abutting markers
+    so the run reads as a single phrase: ``**X Y**`` / ``***X Y***``.
+
+    Italic-italic adjacency (``*X**Y*``) is indistinguishable from a plain
+    bold span's open/close pair and is left alone — merging it would corrupt
+    every legitimate ``**bold**`` phrase on the page. The previous regexes
+    ``\\*\\s*\\*`` and ``\\*\\*\\*\\s*\\*\\*\\*`` did exactly that, deleting
+    all bold formatting from the converted Markdown.
+    """
+    # Bold-italic adjacency first so the inner ``******`` isn't half-eaten
+    # by the bold pass.
+    text = re.sub(r'\*{6}', ' ', text)
+    text = re.sub(r'\*{4}', ' ', text)
     return text
 
 
