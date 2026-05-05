@@ -110,9 +110,9 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger o
 
 **第一步 — 准备参考材料**
 
-最简单的方式是将参考 PPT 的关键页面类型分别截图保存：欢迎页、目录页、章节页、内容页、结尾页。将截图放到同一个文件夹中，并使用规范的文件名（如 `cover.png`、`toc.png`、`chapter.png`、`content.png`、`closing.png`）。
+**最推荐的方式是直接给原始 `.pptx` 文件**。当前的 PPTX 导入管线能做到接近高保真还原——PPT Master 会从 PPTX 中提取主题色、字体、母版/版式结构、可复用图片资源（包括精灵图裁剪关系），再用这些素材重建出干净可维护的模板。封面、章节、装饰繁复的页面都能稳定还原，这是目前最靠谱的派生路径。
 
-如果你已经有原始 `.pptx` 模板文件，也可以把它作为参考源一并提供。PPT Master 会先从 PPTX 中提取可复用的背景图、logo、主题色和字体信息，再把这些素材用于模板重建。
+没有源 PPTX 时，截图集也能跑（`cover.png` / `toc.png` / `chapter.png` / `content.png` / `closing.png`），但保真度会明显下降。建议优先找原始 PPTX。
 
 **第二步 — 让 AI 创建模板**
 

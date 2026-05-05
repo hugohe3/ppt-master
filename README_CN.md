@@ -38,6 +38,8 @@
 
 丢进一份 PDF、DOCX、网址或 Markdown，拿回一份**原生可编辑的 PowerPoint**——真正的形状、真正的文本框、真正的图表，不是图片。点击任何元素即可编辑。
 
+> **模板复刻** —— 把任何一份你喜欢的 `.pptx` 丢给 AI，一句"用 `/create-template` 复刻成模板"，就能拿到一套可被 PPT Master 直接调用的页面布局——主题色、字体、母版/版式结构、复用图片、甚至精灵图裁剪关系都按 OOXML 真实抽取，封面/章节/装饰繁复的页面都能稳定还原。从此你不再受限于内置模板：公司品牌 deck、客户中标模板、找的高质量参考稿，都能一键变成你的私人模板库。详见 [模板指南 →](./docs/zh/templates-guide.md)。
+
 > **动画** —— 导出的 deck 支持**页间转场**和**页内元素入场动画**，输出为真正的 OOXML 动画（不是嵌入视频）。默认进入页面后元素按顺序自动级联入场，无需点击；在 PowerPoint 和 Keynote 中原生播放，无需额外工具。详见 [转场与动画使用指南 →](./docs/zh/animations.md)。
 
 > **旁白与视频** —— 把演讲者备注按页生成语音旁白（默认 `edge-tts`，也可配置云端 TTS 获得高质量音色），把音频嵌回 PPTX，再用 PowerPoint 自带"导出视频"产出带旁白和转场的 MP4，全程无需第三方工具。详见 [音频旁白与视频导出 →](./docs/zh/audio-narration.md)。
@@ -260,7 +262,7 @@ PPT Master 会优先读取当前进程环境变量，然后按顺序读取第一
 | 🆚 | [为什么选 PPT Master](./docs/zh/why-ppt-master.md) | 与 Gamma、Copilot 等工具的对比 |
 | 🪟 | [Windows 安装指南](./docs/zh/windows-installation.md) | Windows 用户手把手安装教程 |
 | 📖 | [SKILL.md](./skills/ppt-master/SKILL.md) | 核心流程与规则 |
-| 🎨 | [创建自定义模板](./skills/ppt-master/workflows/create-template.md) | 独立工作流，构建你自己的品牌或行业模板 |
+| 🎨 | [模板指南](./docs/zh/templates-guide.md) | 选用、派生新模板（重点）、模板边界；含 standard / fidelity 模式选型 |
 | 📐 | [画布格式](./skills/ppt-master/references/canvas-formats.md) | PPT 16:9、小红书、朋友圈等 10+ 种格式 |
 | 🎬 | [转场与动画](./docs/zh/animations.md) | 页间转场和页内元素入场动画 |
 | 🎙️ | [音频旁白与视频导出](./docs/zh/audio-narration.md) | 90+ 语种 TTS 旁白、音频嵌入 PPTX、导出为 MP4 |
