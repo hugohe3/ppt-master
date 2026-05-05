@@ -156,6 +156,7 @@ _KIND_MAP = {
 def _walk_container(
     container: ET.Element,
     parent_group_xfrm: Xfrm | None,
+    placeholder_xfrms: dict[tuple[str | None, str | None], Xfrm] | None = None,
 ) -> list[ShapeNode]:
     """Walk a p:spTree or p:grpSp subtree. Children kept in document (z) order.
     """
@@ -172,6 +173,23 @@ def _walk_container(
         name, spid, hidden, ph = _read_nv_sp_pr(child, nv_tag)
         xfrm = parse_xfrm(_resolve_xfrm(child, kind))
 
+        # Placeholders without their own xfrm inherit geometry from a matching
+        # placeholder in the layout, then the master. This is what PowerPoint
+        # itself does when rendering the slide. Without this fallback such
+        # shapes get a 0×0 box and convert_txbody wraps every glyph onto its
+        # own line — visually a vertical strip of single characters.
+        if (ph is not None and placeholder_xfrms
+                and (xfrm.w == 0 and xfrm.h == 0)):
+            inherited = _lookup_placeholder_xfrm(ph, placeholder_xfrms)
+            if inherited is not None:
+                xfrm = Xfrm(
+                    x=inherited.x, y=inherited.y,
+                    w=inherited.w, h=inherited.h,
+                    rot=xfrm.rot, flip_h=xfrm.flip_h, flip_v=xfrm.flip_v,
+                    ch_x=xfrm.ch_x, ch_y=xfrm.ch_y,
+                    ch_w=xfrm.ch_w, ch_h=xfrm.ch_h,
+                )
+
         # If we're inside a group, remap to slide-absolute coordinates
         if parent_group_xfrm is not None:
             xfrm = _adjust_for_group(xfrm, parent_group_xfrm)
@@ -182,18 +200,91 @@ def _walk_container(
         )
 
         if kind == GROUP:
-            node.children = _walk_container(child, xfrm)
+            node.children = _walk_container(
+                child, xfrm, placeholder_xfrms=placeholder_xfrms,
+            )
 
         nodes.append(node)
     return nodes
 
 
-def walk_sp_tree(slide_xml: ET.Element) -> list[ShapeNode]:
-    """Top-level entry: return shape nodes for a slide / layout / master XML."""
+def _lookup_placeholder_xfrm(
+    ph: PlaceholderInfo,
+    table: dict[tuple[str | None, str | None], Xfrm],
+) -> Xfrm | None:
+    """Find an inherited xfrm for a placeholder. PowerPoint matches first by
+    (type, idx) exactly, then by type alone, then by idx alone — so a slide
+    body with idx="1" can pull from a layout body that omits idx, and a slide
+    title with no idx can pull from a master title that has idx="0"."""
+    for key in (
+        (ph.type, ph.idx),
+        (ph.type, None),
+        (None, ph.idx),
+    ):
+        hit = table.get(key)
+        if hit is not None and (hit.w > 0 or hit.h > 0):
+            return hit
+    return None
+
+
+def _build_placeholder_xfrm_table(
+    *parts: ET.Element | None,
+) -> dict[tuple[str | None, str | None], Xfrm]:
+    """Index placeholders that *do* have explicit geometry, in priority order.
+
+    Pass parts most-specific to least-specific (layout first, master second);
+    the first writer for a given key wins so layout overrides master, which is
+    what PowerPoint's inheritance chain expects.
+    """
+    table: dict[tuple[str | None, str | None], Xfrm] = {}
+    for part_xml in parts:
+        if part_xml is None:
+            continue
+        sp_tree = part_xml.find("p:cSld/p:spTree", NS)
+        if sp_tree is None:
+            continue
+        for sp in sp_tree.iter():
+            if not isinstance(sp.tag, str) or sp.tag.split("}", 1)[-1] != "sp":
+                continue
+            ph_elem = sp.find("p:nvSpPr/p:nvPr/p:ph", NS)
+            if ph_elem is None:
+                continue
+            xfrm_elem = sp.find("p:spPr/a:xfrm", NS)
+            if xfrm_elem is None:
+                continue
+            xfrm = parse_xfrm(xfrm_elem)
+            if xfrm.w <= 0 and xfrm.h <= 0:
+                continue
+            ph_type = ph_elem.attrib.get("type")
+            ph_idx = ph_elem.attrib.get("idx")
+            for key in ((ph_type, ph_idx),
+                        (ph_type, None),
+                        (None, ph_idx)):
+                table.setdefault(key, xfrm)
+    return table
+
+
+def walk_sp_tree(
+    slide_xml: ET.Element,
+    *,
+    layout_xml: ET.Element | None = None,
+    master_xml: ET.Element | None = None,
+) -> list[ShapeNode]:
+    """Top-level entry: return shape nodes for a slide / layout / master XML.
+
+    When ``slide_xml`` is a regular slide, pass its ``layout_xml`` and
+    ``master_xml`` so that placeholders without explicit geometry can inherit
+    from the layout/master. Layout and master walks pass neither — their own
+    placeholders are the source of truth.
+    """
     sp_tree = slide_xml.find("p:cSld/p:spTree", NS)
     if sp_tree is None:
         return []
-    return _walk_container(sp_tree, parent_group_xfrm=None)
+    placeholder_xfrms = _build_placeholder_xfrm_table(layout_xml, master_xml)
+    return _walk_container(
+        sp_tree, parent_group_xfrm=None,
+        placeholder_xfrms=placeholder_xfrms or None,
+    )
 
 
 def get_background(slide_xml: ET.Element) -> ET.Element | None:

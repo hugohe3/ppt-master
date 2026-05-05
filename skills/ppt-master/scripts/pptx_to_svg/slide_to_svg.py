@@ -38,6 +38,7 @@ from .shape_walker import (
     CONNECTOR, GRAPHIC, GROUP, PICTURE, SHAPE,
     ShapeNode, get_background, walk_sp_tree,
 )
+from .tbl_to_svg import convert_tbl
 from .txbody_to_svg import (
     TextResult,
     convert_txbody,
@@ -128,8 +129,13 @@ def assemble_slide(
             f"inheritance_mode must be 'flat' or 'layered', got {inheritance_mode!r}"
         )
 
-    # Walk shapes
-    nodes = walk_sp_tree(slide.part.xml)
+    # Walk shapes — placeholders without their own xfrm inherit geometry from
+    # layout, then master.
+    nodes = walk_sp_tree(
+        slide.part.xml,
+        layout_xml=slide.layout.xml if slide.layout else None,
+        master_xml=slide.master.xml if slide.master else None,
+    )
     for node in nodes:
         chunk = _convert_node(node, ctx, top_level=True)
         if chunk:
@@ -461,10 +467,30 @@ def _convert_group(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
 
 def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
                               *, top_level: bool) -> str:
-    """v1 fallback: render the bounding box with a dashed outline + label."""
-    # Detect what's inside (chart / table / smartArt) for the comment.
+    """Render a <p:graphicFrame> by dispatching on its graphicData uri.
+
+    Currently:
+    - ``...drawingml/2006/table`` → real table renderer (`convert_tbl`)
+    - ``...presentationml/2006/ole`` → render the ``mc:Fallback`` preview
+      bitmap that PowerPoint bakes alongside every embedded OLE object.
+      Visually identical to what PowerPoint shows for an unedited embed.
+    - everything else (chart / SmartArt / diagram) → labelled bounding
+      rectangle so the slide composition is preserved even though the inner
+      content can't be drawn yet.
+    """
     graphic_data = node.xml.find("a:graphic/a:graphicData", NS)
     uri = graphic_data.attrib.get("uri", "graphicFrame") if graphic_data is not None else "graphicFrame"
+
+    if uri == "http://schemas.openxmlformats.org/drawingml/2006/table":
+        rendered = _render_graphic_table(node, ctx, graphic_data)
+        if rendered:
+            return _wrap_shape_group(rendered, node, ctx, top_level=top_level)
+
+    if uri == "http://schemas.openxmlformats.org/presentationml/2006/ole":
+        rendered = _render_ole_preview(node, ctx)
+        if rendered:
+            return _wrap_shape_group(rendered, node, ctx, top_level=top_level)
+
     label = uri.rsplit("/", 1)[-1]
     placeholder = (
         f'<rect x="{fmt_num(node.xfrm.x)}" y="{fmt_num(node.xfrm.y)}" '
@@ -476,6 +502,75 @@ def _convert_graphic_fallback(node: ShapeNode, ctx: AssemblyContext,
         f"[{_xml_escape(label)}]</text>"
     )
     return _wrap_shape_group(placeholder, node, ctx, top_level=top_level)
+
+
+def _render_graphic_table(node: ShapeNode, ctx: AssemblyContext,
+                          graphic_data: ET.Element | None) -> str:
+    """Convert the <a:tbl> child of a graphicFrame to SVG, or return ''."""
+    if graphic_data is None:
+        return ""
+    tbl = graphic_data.find("a:tbl", NS)
+    if tbl is None:
+        return ""
+    result = convert_tbl(
+        tbl, node.xfrm, ctx.palette,
+        theme_fonts=ctx.theme_fonts,
+        id_prefix=f"tbl{ctx.shape_seq[0]}",
+        grad_seq=ctx.grad_seq,
+        marker_seq=ctx.marker_seq,
+    )
+    if result.defs:
+        ctx.defs.extend(result.defs)
+    return result.svg
+
+
+def _render_ole_preview(node: ShapeNode, ctx: AssemblyContext) -> str:
+    """Render an OLE-embedded object as its baked preview bitmap.
+
+    PowerPoint stores a static raster preview for every embedded OLE object
+    inside ``mc:AlternateContent``. The Fallback branch is required by spec
+    to be a plain ``p:pic`` (sometimes nested inside a stray ``p:oleObj``),
+    so any conformant viewer that can't speak OLE just paints the preview.
+    We do the same: locate that ``p:pic`` and run it through the regular
+    picture pipeline. The user sees what they'd see in PowerPoint without
+    double-clicking the chart, no live OLE editing required (which we
+    couldn't do in SVG anyway).
+
+    Falls back to '' when the deck has no Fallback pic (very old or
+    third-party authoring tools sometimes omit it). Caller then emits the
+    dashed placeholder.
+    """
+    ac = node.xml.find("a:graphic/a:graphicData/mc:AlternateContent", NS)
+    if ac is None:
+        return ""
+    pic = ac.find("mc:Fallback//p:pic", NS)
+    if pic is None:
+        # Some authoring tools put the preview directly in mc:Choice.
+        pic = ac.find("mc:Choice//p:pic", NS)
+        if pic is None:
+            return ""
+
+    # The inner pic carries its own absolute xfrm in this deck (and in every
+    # well-formed PPTX I've seen — PowerPoint copies the graphicFrame xfrm
+    # there during save). If it's missing, fall back to the graphicFrame's
+    # xfrm so the preview at least lands somewhere visible.
+    inner_xfrm = node.xfrm
+    pic_xfrm_elem = pic.find("p:spPr/a:xfrm", NS)
+    if pic_xfrm_elem is not None:
+        from .emu_units import parse_xfrm
+        parsed = parse_xfrm(pic_xfrm_elem)
+        if parsed.w > 0 and parsed.h > 0:
+            inner_xfrm = parsed
+
+    result = convert_picture(
+        pic, inner_xfrm, ctx.slide_part, ctx.pkg,
+        media_subdir=ctx.media_subdir,
+        embed_inline=ctx.embed_images,
+    )
+    if not result.svg:
+        return ""
+    ctx.media.update(result.media)
+    return result.svg
 
 
 # ---------------------------------------------------------------------------
