@@ -241,19 +241,34 @@ def parse_args() -> argparse.Namespace:
         help="Only extract manifest.json, analysis.md, and reusable assets without exporting slides to SVG",
     )
     parser.add_argument(
+        "--legacy-render",
+        action="store_true",
+        help=(
+            "Use the legacy renderer (PowerPoint COM on Windows, Keynote -> PDF "
+            "on macOS). Lossy: text becomes <path>, every cropped picture spawns "
+            "a new inline_*.png slice. The default semantic converter "
+            "(pptx_to_svg) reads OOXML directly and preserves shape primitives."
+        ),
+    )
+    parser.add_argument(
         "--keep-raw",
         action="store_true",
-        help="Keep raw PowerPoint-exported SVG files in svg_raw/",
+        help="(--legacy-render only) Keep raw PowerPoint-exported SVG files in svg_raw/",
     )
     parser.add_argument(
         "--no-externalize",
         action="store_true",
-        help="Skip inline image externalization and keep raw SVG output only",
+        help="(--legacy-render only) Skip inline image externalization",
     )
     parser.add_argument(
         "--no-optimize",
         action="store_true",
-        help="Skip the second-pass structural optimization for cleaned reference SVG files",
+        help="(--legacy-render only) Skip structural optimization of the cleaned reference SVGs",
+    )
+    parser.add_argument(
+        "--embed-images",
+        action="store_true",
+        help="(default renderer only) Inline images as data: URIs instead of writing files to assets/",
     )
     return parser.parse_args()
 
@@ -390,18 +405,82 @@ def main() -> int:
             print(f"Slides analyzed: {len(manifest['slides'])}")
         return 0
 
+    # ---------- Slide rendering ----------
+    if args.legacy_render:
+        export_mode, slide_count, total_in, total_out = _render_slides_legacy(
+            pptx_path, output_dir, args,
+        )
+    else:
+        export_mode, slide_count, total_in, total_out = _render_slides_native(
+            pptx_path, output_dir, args,
+        )
+
+    # reference_svg_selection.json (shared between both paths)
+    cleaned_dir = output_dir / "svg"
+    reference_selection = build_reference_svg_selection(
+        manifest, sorted(cleaned_dir.glob("*.svg")),
+    )
+    (output_dir / "reference_svg_selection.json").write_text(
+        json.dumps(reference_selection, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    print(f"Export mode: {export_mode}")
+    print(f"Exported SVG slides: {slide_count}")
+    if total_in is not None and total_out is not None:
+        print(f"SVG bytes: {total_in} -> {total_out}")
+    print(f"Reference SVG selection: {output_dir / 'reference_svg_selection.json'}")
+    print(f"Output directory: {output_dir}")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Slide rendering — default (native, semantic) path
+# ---------------------------------------------------------------------------
+
+def _render_slides_native(
+    pptx_path: Path,
+    output_dir: Path,
+    args: argparse.Namespace,
+) -> tuple[str, int, int | None, int | None]:
+    """Read OOXML directly via pptx_to_svg and emit shape-level SVGs.
+
+    This path preserves text as <text>, picture primitives as <image>, and
+    doesn't spawn inline_*.png crop slices. Default since stage G integration.
+    """
+    from pptx_to_svg import convert_pptx_to_svg
+    from pptx_to_svg.converter import ConvertOptions
+
+    options = ConvertOptions(
+        media_subdir="assets",
+        embed_images=args.embed_images,
+        keep_hidden=False,
+    )
+    result = convert_pptx_to_svg(pptx_path, output_dir, options)
+    total_bytes = sum(len(art.svg.encode("utf-8")) for art in result.slides)
+    return "pptx_to_svg-native", len(result.slides), total_bytes, total_bytes
+
+
+# ---------------------------------------------------------------------------
+# Slide rendering — legacy (PowerPoint COM / Keynote PDF) path
+# ---------------------------------------------------------------------------
+
+def _render_slides_legacy(
+    pptx_path: Path,
+    output_dir: Path,
+    args: argparse.Namespace,
+) -> tuple[str, int, int | None, int | None]:
+    """Original lossy renderer: rasterize via PowerPoint or Keynote->PDF, then
+    externalize/optimize. Preserved for cases where the new semantic converter
+    misbehaves; intentionally opt-in (--legacy-render).
+    """
     raw_dir = output_dir / "svg_raw"
-    try:
-        raw_svg_files, export_mode = export_pptx_slides_to_svg_with_fallback(pptx_path, raw_dir)
-    except Exception as exc:
-        print(f"Error: failed to export PPTX slides to SVG: {exc}")
-        return 1
+    raw_svg_files, export_mode = export_pptx_slides_to_svg_with_fallback(
+        pptx_path, raw_dir,
+    )
 
     if args.no_externalize:
-        print(f"Export mode: {export_mode}")
-        print(f"Exported raw SVG slides: {len(raw_svg_files)}")
-        print(f"Output directory: {output_dir}")
-        return 0
+        return export_mode, len(raw_svg_files), None, None
 
     cleaned_dir = output_dir / "svg"
     results = externalize_svg_batch(
@@ -412,7 +491,9 @@ def main() -> int:
     final_svg_bytes = sum(item.output_svg_bytes for item in results)
 
     if not args.no_optimize:
-        optimize_results, optimize_output_dir = optimize_reference_batch([str(cleaned_dir)], precision=2)
+        optimize_results, optimize_output_dir = optimize_reference_batch(
+            [str(cleaned_dir)], precision=2,
+        )
         before_opt = sum(item.original_bytes for item in optimize_results)
         after_opt = sum(item.optimized_bytes for item in optimize_results)
         final_svg_bytes = after_opt
@@ -423,24 +504,13 @@ def main() -> int:
     if not args.keep_raw:
         for svg_file in raw_dir.glob("*.svg"):
             svg_file.unlink(missing_ok=True)
-        raw_dir.rmdir()
-
-    reference_selection = build_reference_svg_selection(manifest, sorted(cleaned_dir.glob("*.svg")))
-    (output_dir / "reference_svg_selection.json").write_text(
-        json.dumps(reference_selection, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+        if raw_dir.exists():
+            raw_dir.rmdir()
 
     total_before = sum(item.original_svg_bytes for item in results)
     total_images = sum(item.images_externalized for item in results)
-
-    print(f"Export mode: {export_mode}")
-    print(f"Exported SVG slides: {len(results)}")
     print(f"Inline images externalized: {total_images}")
-    print(f"SVG bytes: {total_before} -> {final_svg_bytes}")
-    print(f"Reference SVG selection: {output_dir / 'reference_svg_selection.json'}")
-    print(f"Output directory: {output_dir}")
-    return 0
+    return export_mode, len(results), total_before, final_svg_bytes
 
 
 if __name__ == "__main__":
