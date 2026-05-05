@@ -80,9 +80,9 @@ def _read_nv_sp_pr(parent: ET.Element, nv_tag: str) -> tuple[str, str, bool, Pla
         if cnv.attrib.get("hidden") == "1":
             hidden = True
 
-    nv_sp_pr = container.find("p:nvSpPr", NS)
-    if nv_sp_pr is not None:
-        ph_elem = nv_sp_pr.find("p:ph", NS)
+    nv_pr = container.find("p:nvPr", NS)
+    if nv_pr is not None:
+        ph_elem = nv_pr.find("p:ph", NS)
         if ph_elem is not None:
             ph = PlaceholderInfo(
                 type=ph_elem.attrib.get("type"),

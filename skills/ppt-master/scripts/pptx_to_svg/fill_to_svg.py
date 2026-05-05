@@ -43,6 +43,7 @@ def resolve_fill(
     *,
     id_prefix: str = "g",
     id_seq: list[int] | None = None,
+    placeholder_hex: str | None = None,
 ) -> FillResult:
     """Inspect <p:spPr>'s fill children and emit an SVG fill descriptor.
 
@@ -62,16 +63,23 @@ def resolve_fill(
         return FillResult.inherit()
 
     # Direct child fill (in priority order: explicit -> derived).
-    for tag, handler in (
+    handlers = (
         ("noFill", _resolve_no_fill),
         ("solidFill", _resolve_solid_fill),
         ("gradFill", _resolve_grad_fill),
         ("blipFill", _resolve_blip_fill),
         ("pattFill", _resolve_patt_fill),
-    ):
+    )
+
+    local_name = sp_pr.tag.split("}", 1)[-1] if isinstance(sp_pr.tag, str) else ""
+    for tag, handler in handlers:
+        if local_name == tag:
+            return handler(sp_pr, palette, id_prefix, id_seq, placeholder_hex)
+
+    for tag, handler in handlers:
         elem = sp_pr.find(f"a:{tag}", NS)
         if elem is not None:
-            return handler(elem, palette, id_prefix, id_seq)
+            return handler(elem, palette, id_prefix, id_seq, placeholder_hex)
 
     return FillResult.inherit()
 
@@ -80,14 +88,14 @@ def resolve_fill(
 # Per-fill handlers
 # ---------------------------------------------------------------------------
 
-def _resolve_no_fill(_elem, _palette, _prefix, _seq) -> FillResult:
+def _resolve_no_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
     return FillResult.none_fill()
 
 
 def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
-                        _prefix: str, _seq) -> FillResult:
+                        _prefix: str, _seq, placeholder_hex: str | None) -> FillResult:
     color_elem = find_color_elem(elem)
-    hex_, alpha = resolve_color(color_elem, palette)
+    hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
     if hex_ is None:
         return FillResult.inherit()
     attrs: dict[str, str] = {"fill": hex_}
@@ -97,7 +105,7 @@ def _resolve_solid_fill(elem: ET.Element, palette: ColorPalette | None,
 
 
 def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
-                       prefix: str, seq) -> FillResult:
+                       prefix: str, seq, placeholder_hex: str | None) -> FillResult:
     """Convert <a:gradFill> to an SVG linearGradient or radialGradient."""
     if seq is None:
         seq = [0]
@@ -112,7 +120,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     for gs in gs_lst.findall("a:gs", NS):
         pos_pct = percent_to_ratio(gs.attrib.get("pos"), default=0.0)
         color_elem = find_color_elem(gs)
-        hex_, alpha = resolve_color(color_elem, palette)
+        hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
         if hex_ is None:
             continue
         opacity_attr = f' stop-opacity="{fmt_num(alpha, 4)}"' if alpha < 1.0 else ""
@@ -162,7 +170,7 @@ def _resolve_grad_fill(elem: ET.Element, palette: ColorPalette | None,
     )
 
 
-def _resolve_blip_fill(_elem, _palette, _prefix, _seq) -> FillResult:
+def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> FillResult:
     """blipFill on <p:spPr> means a shape filled with an image — handled at
     pic_to_svg level. For now mark as transparent so the shape's outline
     still draws and pic_to_svg can layer the image on top.
@@ -171,14 +179,14 @@ def _resolve_blip_fill(_elem, _palette, _prefix, _seq) -> FillResult:
 
 
 def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
-                       _prefix, _seq) -> FillResult:
+                       _prefix, _seq, placeholder_hex: str | None) -> FillResult:
     """Pattern fills (<a:pattFill prst="..."/> with fg/bg colors). Approximate
     with the foreground color so the shape isn't transparent. Future work:
     emit a real <pattern> in defs.
     """
     fg = elem.find("a:fgClr", NS)
     color_elem = find_color_elem(fg)
-    hex_, alpha = resolve_color(color_elem, palette)
+    hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
     if hex_ is None:
         return FillResult.inherit()
     attrs: dict[str, str] = {"fill": hex_}

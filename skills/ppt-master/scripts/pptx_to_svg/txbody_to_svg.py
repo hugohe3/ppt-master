@@ -88,6 +88,9 @@ class TextResult:
     defs: list[str] = field(default_factory=list)
 
 
+VERTICAL_TEXT_MODES = {"eaVert", "vert", "wordArtVert", "wordArtVertRtl"}
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -147,6 +150,84 @@ def convert_txbody(
         cursor_y += height + para.space_after_px
 
     return TextResult(svg="\n".join(text_blocks))
+
+
+def is_vertical_txbody(tx_body: ET.Element | None) -> bool:
+    if tx_body is None:
+        return False
+    body_pr = tx_body.find("a:bodyPr", NS)
+    if body_pr is None:
+        return False
+    return body_pr.attrib.get("vert") in VERTICAL_TEXT_MODES
+
+
+def convert_vertical_txbody(
+    tx_body: ET.Element | None,
+    xfrm: Xfrm,
+    palette: ColorPalette | None,
+    *,
+    theme_fonts: dict[str, str] | None = None,
+) -> TextResult:
+    """Render East Asian vertical text as upright stacked glyphs.
+
+    PowerPoint often combines ``bodyPr@vert=eaVert`` with a rotated text box.
+    Rendering the text inside the rotated shape group makes Chinese glyphs lie
+    sideways. This helper computes the final rotated box and places glyphs
+    upright in slide coordinates.
+    """
+    if tx_body is None:
+        return TextResult()
+
+    paragraphs = _parse_paragraphs(tx_body, palette, theme_fonts or {})
+    runs = [
+        run
+        for para in paragraphs
+        for run in para.runs
+        if not run.is_break and run.text
+    ]
+    if not runs:
+        return TextResult()
+
+    box_x, box_y, box_w, box_h = _rotated_bbox(xfrm)
+    center_x = box_x + box_w / 2.0
+
+    glyphs: list[tuple[str, TextRun]] = []
+    for run in runs:
+        for char in run.text:
+            if char in "\r\n":
+                continue
+            if char == " ":
+                continue
+            glyphs.append((char, run))
+
+    if not glyphs:
+        return TextResult()
+
+    advances = [glyph_run.font_size_px * 1.05 for _, glyph_run in glyphs]
+    total_h = sum(advances)
+    top_y = box_y + max(0.0, (box_h - total_h) / 2.0)
+
+    text_blocks: list[str] = []
+    cursor_y = top_y
+    for (char, run), advance in zip(glyphs, advances):
+        baseline_y = cursor_y + run.font_size_px * 0.85
+        attrs = _text_base_attrs(run, center_x, baseline_y, "middle")
+        tspan_attrs = _run_tspan_attrs(run)
+        text_blocks.append(
+            f"<text{attrs}><tspan{tspan_attrs}>{_xml_escape(char)}</tspan></text>"
+        )
+        cursor_y += advance
+
+    return TextResult(svg="\n".join(text_blocks))
+
+
+def _rotated_bbox(xfrm: Xfrm) -> tuple[float, float, float, float]:
+    rot = round(xfrm.rot) % 360
+    cx = xfrm.x + xfrm.w / 2.0
+    cy = xfrm.y + xfrm.h / 2.0
+    if rot in (90, 270):
+        return cx - xfrm.h / 2.0, cy - xfrm.w / 2.0, xfrm.h, xfrm.w
+    return xfrm.x, xfrm.y, xfrm.w, xfrm.h
 
 
 # ---------------------------------------------------------------------------
@@ -453,7 +534,11 @@ def _char_width(ch: str, font_size: float, bold: bool) -> float:
         w = font_size * 0.3
     else:
         w = font_size * 0.55
-    if bold:
+    # Bold Latin generally expands a little. CJK glyphs keep their em advance
+    # in common PPT fonts; applying the bold multiplier causes short Chinese
+    # titles such as "少年强国说" to wrap even though PowerPoint keeps them on
+    # one line.
+    if bold and not _is_cjk(ch):
         w *= 1.05
     return w
 
@@ -506,6 +591,9 @@ def _wrap_paragraph_into_lines(
     lines: list[list[TextRun]] = [[]]
     cur_w = 0.0
 
+    if _should_keep_single_line(para, max_width):
+        return [[_copy_run(run, text=run.text) for run in para.runs if not run.is_break and run.text]]
+
     if para.bullet_prefix and para.runs:
         first_run = next((r for r in para.runs if not r.is_break), None)
         if first_run is not None:
@@ -553,6 +641,28 @@ def _wrap_paragraph_into_lines(
                 cur_w = 0.0
 
     return lines
+
+
+def _should_keep_single_line(para: TextParagraph, max_width: float) -> bool:
+    if max_width == float("inf") or para.bullet_prefix:
+        return False
+    if any(run.is_break for run in para.runs):
+        return False
+
+    text_runs = [run for run in para.runs if run.text]
+    if not text_runs:
+        return False
+    text = "".join(run.text for run in text_runs)
+    non_space_count = sum(1 for ch in text if not ch.isspace())
+
+    # Short labels/titles are usually intentionally single-line in PPT. Let
+    # them overflow slightly rather than inventing a line break from imperfect
+    # font metrics or alignment spaces.
+    if non_space_count <= 18:
+        return True
+
+    estimated = sum(_estimate_run_width(run.text, run) for run in text_runs)
+    return estimated <= max_width * 1.12
 
 
 def _copy_run(run: TextRun, *, text: str) -> TextRun:
@@ -663,6 +773,7 @@ def _text_base_attrs(run: TextRun | None, x: float, y: float,
         f'x="{fmt_num(x)}"',
         f'y="{fmt_num(y)}"',
         f'text-anchor="{text_anchor}"',
+        'xml:space="preserve"',
     ]
     if run is None:
         return " " + " ".join(parts)

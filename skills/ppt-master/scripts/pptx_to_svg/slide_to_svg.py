@@ -25,7 +25,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
 
-from .color_resolver import ColorPalette
+from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
 from .emu_units import NS, fmt_num
@@ -38,7 +38,12 @@ from .shape_walker import (
     CONNECTOR, GRAPHIC, GROUP, PICTURE, SHAPE,
     ShapeNode, get_background, walk_sp_tree,
 )
-from .txbody_to_svg import TextResult, convert_txbody
+from .txbody_to_svg import (
+    TextResult,
+    convert_txbody,
+    convert_vertical_txbody,
+    is_vertical_txbody,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -56,6 +61,7 @@ class AssemblyContext:
     media_subdir: str = "assets"
     embed_images: bool = False
     keep_hidden: bool = False
+    group_id_prefix: str = ""
 
     # Sequence counters (single-element lists so handlers can mutate)
     grad_seq: list[int] = field(default_factory=lambda: [0])
@@ -100,6 +106,10 @@ def assemble_slide(
     bg_xml = _emit_background(slide, ctx, canvas_w, canvas_h)
     if bg_xml:
         body_parts.append(bg_xml)
+
+    # Inherited layout/master shapes render behind slide-local shapes. Skip
+    # placeholders; they define editable regions, not visible background.
+    body_parts.extend(_emit_inherited_shapes(slide, ctx))
 
     # Walk shapes
     nodes = walk_sp_tree(slide.part.xml)
@@ -156,10 +166,28 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
 
     # Text body (a:txBody)
     tx_body = node.xml.find("p:txBody", NS)
-    text_result = convert_txbody(
-        tx_body, node.xfrm, ctx.palette,
-        theme_fonts=ctx.theme_fonts,
-    ) if tx_body is not None else TextResult()
+    is_vertical = is_vertical_txbody(tx_body)
+    if tx_body is not None and is_vertical:
+        text_result = convert_vertical_txbody(
+            tx_body, node.xfrm, ctx.palette,
+            theme_fonts=ctx.theme_fonts,
+        )
+    else:
+        text_result = convert_txbody(
+            tx_body, node.xfrm, ctx.palette,
+            theme_fonts=ctx.theme_fonts,
+        ) if tx_body is not None else TextResult()
+
+    if is_vertical:
+        shape_xml = _wrap_shape_group(geom_xml, node, ctx, top_level=top_level)
+        if not text_result.svg:
+            return shape_xml
+        text_group = (
+            f'<g id="{ctx.group_id_prefix}shape-{node.spid or ctx.shape_seq[0]}-text"'
+            f' data-name="{_xml_escape(node.name)} text">\n'
+            f"{text_result.svg}\n</g>"
+        )
+        return f"{shape_xml}\n{text_group}"
 
     inner = (geom_xml + ("\n" + text_result.svg if text_result.svg else ""))
     return _wrap_shape_group(inner, node, ctx, top_level=top_level)
@@ -187,7 +215,9 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         # No geometry hint at all — render bounding rect
         geom = convert_prst_geom("rect", node.xfrm, None)
 
-    if geom is None or node.xfrm.w <= 0 or node.xfrm.h <= 0:
+    if geom is None:
+        return ""
+    if geom.tag != "line" and (node.xfrm.w <= 0 or node.xfrm.h <= 0):
         return ""
 
     # Fill / stroke / effect
@@ -309,10 +339,21 @@ def _emit_background(slide: SlideRef, ctx: AssemblyContext,
         if bg is None:
             continue
         bg_pr = bg.find("p:bgPr", NS)
+        bg_ref = bg.find("p:bgRef", NS)
+        placeholder_hex = None
+
+        if bg_pr is None and bg_ref is not None:
+            bg_pr = _theme_background_fill(slide, ctx, bg_ref)
+            color_elem = find_color_elem(bg_ref)
+            placeholder_hex, _ = resolve_color(color_elem, ctx.palette)
         if bg_pr is None:
             continue
-        fill = resolve_fill(bg_pr, ctx.palette,
-                            id_prefix="bg", id_seq=ctx.grad_seq)
+
+        fill = resolve_fill(
+            bg_pr, ctx.palette,
+            id_prefix="bg", id_seq=ctx.grad_seq,
+            placeholder_hex=placeholder_hex,
+        )
         ctx.defs.extend(fill.defs)
         if not fill.attrs:
             return ""
@@ -321,6 +362,66 @@ def _emit_background(slide: SlideRef, ctx: AssemblyContext,
         return (f'<rect x="0" y="0" width="{fmt_num(w)}" height="{fmt_num(h)}"'
                 f"{attrs_xml}/>")
     return ""
+
+
+def _theme_background_fill(
+    slide: SlideRef,
+    ctx: AssemblyContext,
+    bg_ref: ET.Element,
+) -> ET.Element | None:
+    """Resolve p:bgRef idx into the theme background fill style list."""
+    idx_raw = bg_ref.attrib.get("idx")
+    if not idx_raw:
+        return None
+    try:
+        idx = int(idx_raw)
+    except ValueError:
+        return None
+    # ECMA style matrix background fill references are 1001-based.
+    bg_fill_index = idx - 1001
+    if bg_fill_index < 0:
+        return None
+
+    theme = ctx.pkg.resolve_theme(slide.master)
+    if theme is None:
+        return None
+    fill_list = theme.xml.find(".//a:fmtScheme/a:bgFillStyleLst", NS)
+    if fill_list is None:
+        return None
+    fills = [child for child in list(fill_list) if isinstance(child.tag, str)]
+    if bg_fill_index >= len(fills):
+        return None
+    return fills[bg_fill_index]
+
+
+def _emit_inherited_shapes(slide: SlideRef, ctx: AssemblyContext) -> list[str]:
+    parts: list[str] = []
+    for prefix, part in (("master-", slide.master), ("layout-", slide.layout)):
+        if part is None:
+            continue
+        original_part = ctx.slide_part
+        original_prefix = ctx.group_id_prefix
+        ctx.slide_part = part
+        ctx.group_id_prefix = prefix
+        try:
+            for node in walk_sp_tree(part.xml):
+                if _is_placeholder_node(node):
+                    continue
+                chunk = _convert_node(node, ctx, top_level=True)
+                if chunk:
+                    parts.append(chunk)
+        finally:
+            ctx.slide_part = original_part
+            ctx.group_id_prefix = original_prefix
+    return parts
+
+
+def _is_placeholder_node(node: ShapeNode) -> bool:
+    if node.placeholder is not None:
+        return True
+    if node.kind == GROUP:
+        return all(_is_placeholder_node(child) for child in node.children)
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -338,7 +439,7 @@ def _wrap_shape_group(inner: str, node: ShapeNode, ctx: AssemblyContext,
     ctx.shape_seq[0] += 1
     seq = ctx.shape_seq[0]
     sid = node.spid or str(seq)
-    g_id = f"shape-{sid}"
+    g_id = f"{ctx.group_id_prefix}shape-{sid}"
 
     attrs: list[str] = [f'id="{g_id}"']
     if node.name:

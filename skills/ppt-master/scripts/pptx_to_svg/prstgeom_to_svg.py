@@ -83,6 +83,10 @@ def convert_prst_geom(
     Returns None if the preset has no v1 mapping; the caller can then choose
     to render a fallback rect.
     """
+    if prst == "line":
+        if xfrm.w == 0 and xfrm.h == 0:
+            return None
+        return _line(xfrm, sp_pr)
     if xfrm.w <= 0 or xfrm.h <= 0:
         return None
     handler = _PRESET_HANDLERS.get(prst)

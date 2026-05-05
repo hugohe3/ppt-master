@@ -772,7 +772,7 @@ def convert_polyline(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | Non
 # text
 # ---------------------------------------------------------------------------
 
-def _normalize_text(text: str) -> str:
+def _normalize_text(text: str, *, preserve_space: bool = False) -> str:
     """Collapse runs of whitespace into a single space; do NOT strip the ends.
 
     Stripping at this layer would silently delete the inline boundary
@@ -786,7 +786,14 @@ def _normalize_text(text: str) -> str:
     """
     if not text:
         return ''
+    if preserve_space:
+        return text
     return re.sub(r'\s+', ' ', text)
+
+
+def _preserves_space(elem: ET.Element) -> bool:
+    xml_space = elem.get('{http://www.w3.org/XML/1998/namespace}space') or elem.get('xml:space')
+    return xml_space == 'preserve'
 
 
 def _override_run_attrs(
@@ -817,6 +824,7 @@ def _override_run_attrs(
 def _collect_tspan_runs(
     tspan: ET.Element,
     inherited_attrs: dict[str, Any],
+    preserve_space: bool = False,
 ) -> list[dict[str, Any]]:
     """Recursively turn a tspan subtree into runs, propagating styling through nested tspans.
 
@@ -824,18 +832,19 @@ def _collect_tspan_runs(
     """
     runs: list[dict[str, Any]] = []
     own_attrs = _override_run_attrs(inherited_attrs, tspan)
+    child_preserve_space = preserve_space or _preserves_space(tspan)
 
     if tspan.text:
-        t = _normalize_text(tspan.text)
+        t = _normalize_text(tspan.text, preserve_space=child_preserve_space)
         if t:
             runs.append({**own_attrs, 'text': t})
 
     for child in tspan:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, own_attrs))
+            runs.extend(_collect_tspan_runs(child, own_attrs, child_preserve_space))
             if child.tail:
-                t = _normalize_text(child.tail)
+                t = _normalize_text(child.tail, preserve_space=child_preserve_space)
                 if t:
                     runs.append({**own_attrs, 'text': t})
 
@@ -853,25 +862,25 @@ def _build_text_runs(
     inline format changes inside a tspan still produce distinct runs.
     """
     runs: list[dict[str, Any]] = []
+    preserve_space = _preserves_space(elem)
 
     if elem.text:
-        t = _normalize_text(elem.text)
+        t = _normalize_text(elem.text, preserve_space=preserve_space)
         if t:
             runs.append({**parent_attrs, 'text': t})
 
     for child in elem:
         child_tag = child.tag.replace(f'{{{SVG_NS}}}', '')
         if child_tag == 'tspan':
-            runs.extend(_collect_tspan_runs(child, parent_attrs))
+            runs.extend(_collect_tspan_runs(child, parent_attrs, preserve_space))
             if child.tail:
-                t = _normalize_text(child.tail)
+                t = _normalize_text(child.tail, preserve_space=preserve_space)
                 if t:
                     runs.append({**parent_attrs, 'text': t})
 
-    # Strip the paragraph's overall leading / trailing whitespace once,
-    # while keeping every inline boundary space intact. Per-run normalize
-    # deliberately leaves boundary spaces (see `_normalize_text`).
-    if runs:
+    # Strip the paragraph's overall leading / trailing whitespace once unless
+    # xml:space="preserve" asks us to keep source indentation.
+    if runs and not preserve_space:
         runs[0]['text'] = runs[0]['text'].lstrip(' ')
         runs[-1]['text'] = runs[-1]['text'].rstrip(' ')
         runs = [r for r in runs if r['text']]
@@ -915,6 +924,8 @@ def _build_run_xml(
             alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
         fill_xml = f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
 
+    space_attr = ' xml:space="preserve"' if text != text.strip() or '  ' in text else ''
+
     return f'''<a:r>
 <a:rPr lang="zh-CN" sz="{sz}"{b_attr}{i_attr}{u_attr}{strike_attr} dirty="0">
 {fill_xml}
@@ -923,7 +934,7 @@ def _build_run_xml(
 <a:ea typeface="{_xml_escape(fonts['ea'])}"/>
 <a:cs typeface="{_xml_escape(fonts['latin'])}"/>
 </a:rPr>
-<a:t>{_xml_escape(text)}</a:t>
+<a:t{space_attr}>{_xml_escape(text)}</a:t>
 </a:r>'''
 
 
