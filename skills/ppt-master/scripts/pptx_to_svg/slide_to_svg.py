@@ -88,8 +88,19 @@ def assemble_slide(
     media_subdir: str = "assets",
     embed_images: bool = False,
     keep_hidden: bool = False,
+    inheritance_mode: str = "flat",
 ) -> tuple[str, dict[str, bytes]]:
-    """Convert one slide to a complete SVG string + media files map."""
+    """Convert one slide to a complete SVG string + media files map.
+
+    inheritance_mode controls how master/layout shapes are rendered:
+        - "flat" (default): emit master + layout non-placeholder shapes inline
+          inside the slide SVG. This is the historical behavior, used for
+          round-trip fidelity with svg_to_pptx.
+        - "layered": skip inherited shapes entirely. The slide SVG contains
+          only its own shapes. Callers (e.g. /create-template's PPTX import)
+          render master/layout once each as separate SVGs and record the
+          inheritance graph in inheritance.json.
+    """
     ctx = AssemblyContext(
         palette=palette,
         pkg=pkg,
@@ -108,9 +119,14 @@ def assemble_slide(
     if bg_xml:
         body_parts.append(bg_xml)
 
-    # Inherited layout/master shapes render behind slide-local shapes. Skip
-    # placeholders; they define editable regions, not visible background.
-    body_parts.extend(_emit_inherited_shapes(slide, ctx))
+    if inheritance_mode == "flat":
+        # Inherited layout/master shapes render behind slide-local shapes. Skip
+        # placeholders; they define editable regions, not visible background.
+        body_parts.extend(_emit_inherited_shapes(slide, ctx))
+    elif inheritance_mode != "layered":
+        raise ValueError(
+            f"inheritance_mode must be 'flat' or 'layered', got {inheritance_mode!r}"
+        )
 
     # Walk shapes
     nodes = walk_sp_tree(slide.part.xml)
@@ -120,6 +136,76 @@ def assemble_slide(
             body_parts.append(chunk)
 
     # Compose final SVG
+    defs_xml = "".join(ctx.defs) if ctx.defs else ""
+    defs_block = f"<defs>{defs_xml}</defs>" if defs_xml else ""
+
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" '
+        f'xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" '
+        f'width="{fmt_num(canvas_w)}" height="{fmt_num(canvas_h)}" '
+        f'viewBox="0 0 {fmt_num(canvas_w)} {fmt_num(canvas_h)}">'
+        f"{defs_block}"
+        + "\n".join(body_parts)
+        + "</svg>"
+    )
+    return svg, ctx.media
+
+
+def assemble_part_solo(
+    pkg: OoxmlPackage,
+    part: PartRef,
+    palette: ColorPalette | None,
+    *,
+    role: str,
+    theme_fonts: dict[str, str] | None = None,
+    media_subdir: str = "assets",
+    embed_images: bool = False,
+    keep_hidden: bool = False,
+) -> tuple[str, dict[str, bytes]]:
+    """Render a single slideMaster or slideLayout part as a standalone SVG.
+
+    Used by the layered export path. Skips placeholders the same way
+    `_emit_inherited_shapes` does, so the output represents the part's
+    decorative / structural shapes only — what the part *contributes* to its
+    descendants. The first ancestor's background (if any) is emitted as the
+    first body element so the output reads like a real slide.
+
+    Args:
+        role: 'master' or 'layout'. Used as the group_id_prefix to keep ids
+            unique when the workspace inlines multiple parts in a viewer.
+    """
+    if role not in {"master", "layout"}:
+        raise ValueError(f"role must be 'master' or 'layout', got {role!r}")
+
+    ctx = AssemblyContext(
+        palette=palette,
+        pkg=pkg,
+        slide_part=part,
+        theme_fonts=theme_fonts or {},
+        media_subdir=media_subdir,
+        embed_images=embed_images,
+        keep_hidden=keep_hidden,
+        group_id_prefix=f"{role}-",
+    )
+
+    canvas_w, canvas_h = pkg.slide_size_px
+
+    body_parts: list[str] = []
+
+    # Background: only meaningful if the part itself declares one.
+    fake_slide = SlideRef(index=0, part=part, layout=None, master=None)
+    bg_xml = _emit_background(fake_slide, ctx, canvas_w, canvas_h)
+    if bg_xml:
+        body_parts.append(bg_xml)
+
+    # Walk shapes, skipping placeholders (consistent with _emit_inherited_shapes).
+    for node in walk_sp_tree(part.xml):
+        if _is_placeholder_node(node):
+            continue
+        chunk = _convert_node(node, ctx, top_level=True)
+        if chunk:
+            body_parts.append(chunk)
+
     defs_xml = "".join(ctx.defs) if ctx.defs else ""
     defs_block = f"<defs>{defs_xml}</defs>" if defs_xml else ""
 

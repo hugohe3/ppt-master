@@ -88,13 +88,16 @@ python3 scripts/pptx_template_import.py <template.pptx> -o <output_dir>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --skip-manifest
 python3 scripts/pptx_template_import.py <template.pptx> --embed-images
+python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode flat
 ```
 
 Notes:
 - Extracts reusable media assets from `ppt/media/`
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
-- Generates `manifest.json`, `analysis.md`, `master_layout_refs.json`, `master_layout_analysis.md`, `assets/`, and shape-level slide SVGs under `svg/`
+- Generates `manifest.json` (single source of truth for slide size, theme, assets, layouts, masters, slides, page-type candidates), `summary.md` (short orientation digest), `assets/`, and shape-level SVGs under `svg/`
+- **SVG output is layered by default**: each unique master / layout is rendered once as `svg/master_*.svg` / `svg/layout_*.svg`; `svg/slide_NN.svg` contains only that slide's own shapes; `svg/inheritance.json` records which layout / master each slide consumes. This gives template designers a clear separation between shared visual language and per-slide content.
+- Pass `--inheritance-mode flat` only when you need self-contained slide SVGs (round-trip use cases). The default `layered` is what `/create-template` consumes.
 - SVG export reads OOXML directly via `pptx_to_svg` — no PowerPoint or Keynote dependency, runs on any platform
 - `<image>` elements in `svg/` reference files in `assets/` directly; pass `--embed-images` to inline as data URIs instead
 - Required in `/create-template` whenever the reference source is `.pptx`

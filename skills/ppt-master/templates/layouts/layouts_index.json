@@ -1,12 +1,12 @@
 {
   "academic_defense": {
-    "label": "Academic Defense Template",
-    "summary": "A standard template for academic defenses, research presentations, and project proposals",
+    "label": "academic_defense",
+    "summary": "For Thesis defense, academic presentations, research progress reports, grant applications.",
     "keywords": [
-      "Academic",
-      "Defense",
-      "Research",
-      "Standard"
+      "Professional",
+      "rigorous",
+      "research-oriented",
+      "clear hierarchy"
     ],
     "pages": [
       "01_cover",
@@ -17,31 +17,32 @@
     ]
   },
   "ai_ops": {
-    "label": "Enterprise Digital Intelligence Template",
-    "summary": "For high-density scenarios such as telecom AI operations architecture, IT system overview, and digital transformation plans",
+    "label": "Enterprise Digital Intelligence",
+    "summary": "For Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.",
     "keywords": [
-      "Telecom",
-      "AI operations",
-      "Digital intelligence",
-      "High density",
-      "Architecture view"
+      "Information-dense",
+      "structured",
+      "modular zoning",
+      "telecom",
+      "enterprise style"
     ],
     "pages": [
       "01_cover",
       "02_chapter",
       "02_toc",
       "03_content",
-      "04_ending"
+      "04_ending",
+      "reference_style"
     ]
   },
   "anthropic": {
     "label": "Anthropic Style Template",
-    "summary": "A tech-oriented template for AI/LLM knowledge sharing and product launches",
+    "summary": "For AI tech talks, developer conferences, technical training, product launches.",
     "keywords": [
-      "AI",
-      "LLM",
-      "Developer",
-      "Technology"
+      "Tech-forward",
+      "professional",
+      "modern",
+      "conclusion-first"
     ],
     "pages": [
       "01_cover",
@@ -53,13 +54,12 @@
   },
   "china_telecom_template": {
     "label": "中国电信模板",
-    "summary": "A China Telecom style template for telecom solution proposals, digital transformation plans, and government-enterprise briefings",
+    "summary": "For China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.",
     "keywords": [
-      "China Telecom",
-      "Telecom",
-      "Digital transformation",
-      "Government-enterprise",
-      "Briefing"
+      "Authoritative",
+      "structured",
+      "restrained",
+      "enterprise-government hybrid"
     ],
     "pages": [
       "01_cover",
@@ -71,13 +71,13 @@
   },
   "exhibit": {
     "label": "Exhibit Style Template",
-    "summary": "Conclusion-first layout with Exhibit takeaway bars for data-driven strategic reports and executive presentations",
+    "summary": "For Strategic planning, executive reports, investment analysis, board presentations.",
     "keywords": [
-      "Exhibit",
-      "Board",
-      "Executive",
-      "Strategy",
-      "Conclusion-first"
+      "Premium",
+      "refined",
+      "authoritative",
+      "data-driven",
+      "conclusion-first"
     ],
     "pages": [
       "01_cover",
@@ -89,12 +89,13 @@
   },
   "google_style": {
     "label": "Google Style Template",
-    "summary": "A Google-branded template for annual reports and technical sharing",
+    "summary": "For Annual work reports, technical sharing, project showcases, data-driven presentations.",
     "keywords": [
-      "Google",
-      "Brand style",
-      "Technical sharing",
-      "Annual report"
+      "Professional",
+      "modern",
+      "clean and restrained",
+      "data-driven",
+      "generous whitespace"
     ],
     "pages": [
       "01_cover",
@@ -106,12 +107,12 @@
   },
   "government_blue": {
     "label": "Government Blue Template",
-    "summary": "A blue government-themed template for smart governance and digital transformation reports",
+    "summary": "For Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.",
     "keywords": [
-      "Government affairs",
-      "Government blue",
-      "Smart city",
-      "Digitalization"
+      "Grand",
+      "tech-forward",
+      "modern",
+      "professional government style"
     ],
     "pages": [
       "01_cover",
@@ -123,12 +124,12 @@
   },
   "government_red": {
     "label": "Government Red Template",
-    "summary": "A red government-themed template for government reports and party-building scenarios",
+    "summary": "For Government briefings, policy interpretation, work summaries, project introductions, investment promotion.",
     "keywords": [
-      "Government affairs",
-      "Party building",
-      "Government red",
-      "Authoritative"
+      "Authoritative",
+      "dignified",
+      "professional",
+      "modern government style"
     ],
     "pages": [
       "01_cover",
@@ -140,12 +141,12 @@
   },
   "mckinsey": {
     "label": "McKinsey Style Template",
-    "summary": "A McKinsey-style template for strategic consulting and investment analysis",
+    "summary": "For Strategic consulting, executive briefings, investment analysis, business proposals.",
     "keywords": [
-      "McKinsey",
-      "Consulting",
-      "Structured",
-      "Executive presentation"
+      "Data-driven",
+      "structured thinking",
+      "professional whitespace",
+      "minimalist premium"
     ],
     "pages": [
       "01_cover",
@@ -156,13 +157,14 @@
     ]
   },
   "medical_university": {
-    "label": "Hospital/Medical University Template",
-    "summary": "A professional template for medical reports, case discussions, and research presentations",
+    "label": "Hospital / Medical University Template",
+    "summary": "For Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
     "keywords": [
-      "Medical",
-      "Hospital",
-      "Case study",
-      "Research"
+      "Professional",
+      "rigorous",
+      "life-affirming",
+      "tech-forward",
+      "trustworthy"
     ],
     "pages": [
       "01_cover",
@@ -174,12 +176,12 @@
   },
   "pixel_retro": {
     "label": "Pixel Retro Template",
-    "summary": "A pixel-art template for tech sharing and gaming-themed content",
+    "summary": "For Tech talks, programming tutorials, game introductions, geek-style showcases.",
     "keywords": [
-      "Pixel art",
       "Retro gaming",
-      "Cyberpunk",
-      "Technology"
+      "neon cyberpunk",
+      "geek tech",
+      "8-bit style"
     ],
     "pages": [
       "01_cover",
@@ -191,12 +193,12 @@
   },
   "psychology_attachment": {
     "label": "Psychology Healing Template",
-    "summary": "A warm and professional template for psychotherapy training and counseling lectures",
+    "summary": "For Psychotherapy training, academic lectures, counseling case analysis, professional sharing.",
     "keywords": [
-      "Psychology",
-      "Healing",
-      "Counseling",
-      "Warm"
+      "Professional",
+      "warm",
+      "healing",
+      "trustworthy"
     ],
     "pages": [
       "01_cover",
@@ -207,13 +209,13 @@
     ]
   },
   "smart_red": {
-    "label": "Smart Red-Orange Business Template",
-    "summary": "A vibrant business template for tech company introductions and education solutions",
+    "label": "Smart Red-Orange Business Style",
+    "summary": "For Company introductions, product launches, solution presentations, education industry courseware.",
     "keywords": [
-      "Red-orange business",
-      "Tech enterprise",
-      "Education",
-      "Vibrant"
+      "Modern",
+      "energetic",
+      "professional",
+      "geometric"
     ],
     "pages": [
       "01_cover",
@@ -224,13 +226,13 @@
     ]
   },
   "中国电建_常规": {
-    "label": "PowerChina Standard Template",
-    "summary": "A solid brand template for engineering construction and state-owned enterprise reports",
+    "label": "formerly powerchina",
+    "summary": "For Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.",
     "keywords": [
-      "PowerChina",
-      "State-owned enterprise",
-      "Engineering",
-      "Energy"
+      "Professional",
+      "composed",
+      "international",
+      "state-owned enterprise style"
     ],
     "pages": [
       "01_cover",
@@ -241,13 +243,13 @@
     ]
   },
   "中国电建_现代": {
-    "label": "PowerChina Modern Template",
-    "summary": "A modern engineering template for major projects and international business presentations",
+    "label": "formerly powerchina_v2",
+    "summary": "For Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations.",
     "keywords": [
-      "PowerChina",
-      "International engineering",
-      "Modern engineering",
-      "Technology"
+      "Grand narrative",
+      "modern precision",
+      "digital tech",
+      "international vision"
     ],
     "pages": [
       "01_cover",
@@ -258,13 +260,12 @@
     ]
   },
   "中汽研_商务": {
-    "label": "CATARC Business Template",
-    "summary": "A CATARC brand template for certification showcase and high-end business presentations",
+    "label": "formerly zhongqiyan_v2",
+    "summary": "For Product certification display, evaluation presentations, technology promotion, high-end business reporting.",
     "keywords": [
-      "CATARC",
-      "Certification",
-      "Business",
-      "Technology"
+      "Modern tech",
+      "authoritative & professional",
+      "composed & grand"
     ],
     "pages": [
       "01_cover",
@@ -275,13 +276,13 @@
     ]
   },
   "中汽研_常规": {
-    "label": "CATARC Standard Template",
-    "summary": "A standard CATARC template for certification and testing scenarios",
+    "label": "formerly zhongqiyan",
+    "summary": "For Product certification display, evaluation presentations, technology promotion, business visits.",
     "keywords": [
-      "CATARC",
-      "Certification",
-      "Testing",
-      "Authoritative"
+      "Professional",
+      "authoritative",
+      "trustworthy",
+      "consulting style"
     ],
     "pages": [
       "01_cover",
@@ -292,13 +293,12 @@
     ]
   },
   "中汽研_现代": {
-    "label": "CATARC Modern Template",
-    "summary": "A futuristic tech template for cutting-edge technology showcase and premium launches",
+    "label": "CATARC_Modern_Tech",
+    "summary": "For Forward-looking technology showcases, strategic releases, high-end business reporting.",
     "keywords": [
-      "CATARC",
-      "Future tech",
-      "Cutting-edge technology",
-      "Launch event"
+      "Futuristic",
+      "tech-forward",
+      "deep & refined"
     ],
     "pages": [
       "01_cover",
@@ -309,14 +309,13 @@
     ]
   },
   "招商银行": {
-    "label": "China Merchants Bank Transaction Banking Template",
-    "summary": "A transaction-banking template for sales collection solutions, product pitches, and branch training",
+    "label": "招商银行",
+    "summary": "For 交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.",
     "keywords": [
-      "China Merchants Bank",
-      "Transaction banking",
-      "Sales collection",
-      "Finance",
-      "Training"
+      "Brand-consistent",
+      "structured",
+      "product-focused",
+      "refined finance"
     ],
     "pages": [
       "01_cover",
@@ -327,13 +326,13 @@
     ]
   },
   "科技蓝商务": {
-    "label": "Tech Blue Business Template",
-    "summary": "A tech-business template for corporate reports and solution proposals",
+    "label": "科技蓝商务 / tech_blue_business",
+    "summary": "For Corporate reports, product launches, proposals, process standards, training materials.",
     "keywords": [
-      "Tech blue",
-      "Business",
-      "Solution proposal",
-      "Corporate report"
+      "Tech",
+      "business",
+      "professional",
+      "clean"
     ],
     "pages": [
       "01_cover",
@@ -344,13 +343,10 @@
     ]
   },
   "重庆大学": {
-    "label": "Chongqing University Template",
-    "summary": "A university-exclusive template for academic defenses and research presentations",
+    "label": "重庆大学",
+    "summary": "For Academic defense, research reports, teaching presentations, scholarly exchange.",
     "keywords": [
-      "Chongqing University",
-      "Academic",
-      "Defense",
-      "University"
+      "Academically grounded · Mountain City charm · Modern minimalism"
     ],
     "pages": [
       "01_cover",

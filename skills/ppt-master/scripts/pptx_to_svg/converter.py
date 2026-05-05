@@ -13,13 +13,15 @@ loads the package and reports basic per-slide structure to verify wiring.
 
 from __future__ import annotations
 
+import json
+import re
 from dataclasses import dataclass, field
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from .color_resolver import ColorPalette
 from .emu_units import NS
-from .ooxml_loader import OoxmlPackage, SlideRef
-from .slide_to_svg import assemble_slide
+from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
+from .slide_to_svg import assemble_part_solo, assemble_slide
 
 
 @dataclass
@@ -31,11 +33,29 @@ class ConvertOptions:
     embed_images: when True, base64-encode images inline instead of writing
         files. Default False (matches svg_to_pptx default of external images).
     keep_hidden: include shapes marked hidden="1". Default False.
+    inheritance_mode: how to render master/layout shapes inside each slide SVG.
+        - "flat" (default): inline inherited shapes into every slide. Used by
+          svg_to_pptx round-trip and any caller that wants self-contained slides.
+        - "layered": skip inherited shapes inside the slide. The orchestrator
+          additionally renders each unique master and layout to its own SVG and
+          writes svg/inheritance.json so the deck's reuse graph is explicit.
     """
 
     media_subdir: str = "assets"
     embed_images: bool = False
     keep_hidden: bool = False
+    inheritance_mode: str = "flat"
+
+
+@dataclass
+class PartArtifact:
+    """Result of converting a master or layout part to SVG (layered mode only)."""
+
+    role: str  # "master" | "layout"
+    part_path: str  # OOXML part path, e.g. "ppt/slideLayouts/slideLayout3.xml"
+    filename: str  # output svg filename, e.g. "layout_03_title.xml.svg"
+    svg: str
+    media_files: dict[str, bytes] = field(default_factory=dict)
 
 
 @dataclass
@@ -45,6 +65,8 @@ class SlideArtifact:
     index: int  # 1-based
     svg: str
     media_files: dict[str, bytes] = field(default_factory=dict)
+    layout_part_path: str | None = None
+    master_part_path: str | None = None
 
 
 @dataclass
@@ -55,6 +77,8 @@ class ConvertResult:
     canvas_px: tuple[float, float] = (1280.0, 720.0)
     theme_colors: dict[str, str] = field(default_factory=dict)
     theme_fonts: dict[str, str] = field(default_factory=dict)
+    layouts: list[PartArtifact] = field(default_factory=list)
+    masters: list[PartArtifact] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -78,6 +102,11 @@ def convert_pptx_to_svg(
         ConvertResult with per-slide SVG strings and resolved theme info.
     """
     options = options or ConvertOptions()
+    if options.inheritance_mode not in {"flat", "layered"}:
+        raise ValueError(
+            f"inheritance_mode must be 'flat' or 'layered', "
+            f"got {options.inheritance_mode!r}"
+        )
     result = ConvertResult()
 
     with OoxmlPackage(pptx_path) as pkg:
@@ -124,6 +153,10 @@ def convert_pptx_to_svg(
             artifact = _convert_slide(pkg, slide, palette, options, result.theme_fonts)
             result.slides.append(artifact)
 
+        # Layered mode: also render each unique master / layout once.
+        if options.inheritance_mode == "layered":
+            _convert_inheritance_parts(pkg, palette, options, result)
+
     if output_dir is not None:
         _write_artifacts(output_dir, result, options)
 
@@ -144,8 +177,75 @@ def _convert_slide(
         media_subdir=options.media_subdir,
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
+        inheritance_mode=options.inheritance_mode,
     )
-    return SlideArtifact(index=slide.index, svg=svg, media_files=media)
+    return SlideArtifact(
+        index=slide.index,
+        svg=svg,
+        media_files=media,
+        layout_part_path=slide.layout.path if slide.layout else None,
+        master_part_path=slide.master.path if slide.master else None,
+    )
+
+
+def _convert_inheritance_parts(
+    pkg: OoxmlPackage,
+    palette: ColorPalette,
+    options: ConvertOptions,
+    result: ConvertResult,
+) -> None:
+    """Render each unique master and layout to its own SVG (layered mode)."""
+    # Collect unique parts in slide-encounter order so output filenames are
+    # deterministic for a given .pptx.
+    seen_layouts: dict[str, PartRef] = {}
+    seen_masters: dict[str, PartRef] = {}
+    for slide in pkg.iter_slides():
+        if slide.layout is not None and slide.layout.path not in seen_layouts:
+            seen_layouts[slide.layout.path] = slide.layout
+        if slide.master is not None and slide.master.path not in seen_masters:
+            seen_masters[slide.master.path] = slide.master
+
+    for seq, part in enumerate(seen_masters.values(), start=1):
+        result.masters.append(_render_part(
+            pkg, part, palette, options, result.theme_fonts,
+            role="master", seq=seq,
+        ))
+    for seq, part in enumerate(seen_layouts.values(), start=1):
+        result.layouts.append(_render_part(
+            pkg, part, palette, options, result.theme_fonts,
+            role="layout", seq=seq,
+        ))
+
+
+def _render_part(
+    pkg: OoxmlPackage,
+    part: PartRef,
+    palette: ColorPalette,
+    options: ConvertOptions,
+    theme_fonts: dict[str, str],
+    *,
+    role: str,
+    seq: int,
+) -> PartArtifact:
+    """Render a master/layout part, returning a PartArtifact with output filename."""
+    svg, media = assemble_part_solo(
+        pkg, part, palette,
+        role=role,
+        theme_fonts=theme_fonts,
+        media_subdir=options.media_subdir,
+        embed_images=options.embed_images,
+        keep_hidden=options.keep_hidden,
+    )
+    stem = PurePosixPath(part.path).stem  # e.g. "slideLayout3"
+    safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", stem).strip("_") or role
+    filename = f"{role}_{seq:02d}_{safe_stem}.svg"
+    return PartArtifact(
+        role=role,
+        part_path=part.path,
+        filename=filename,
+        svg=svg,
+        media_files=media,
+    )
 
 
 def _write_artifacts(output_dir: Path, result: ConvertResult,
@@ -157,12 +257,68 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
     media_dir = output_dir / options.media_subdir
     media_written: set[str] = set()
 
-    for art in result.slides:
-        target = svg_dir / f"slide_{art.index:02d}.svg"
-        target.write_text(art.svg, encoding="utf-8")
-        for filename, blob in art.media_files.items():
+    def _write_media(media: dict[str, bytes]) -> None:
+        for filename, blob in media.items():
             if filename in media_written:
                 continue
             media_dir.mkdir(parents=True, exist_ok=True)
             (media_dir / filename).write_bytes(blob)
             media_written.add(filename)
+
+    # Layered mode: write masters and layouts first so they sort ahead of slides.
+    for art in result.masters:
+        (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
+        _write_media(art.media_files)
+    for art in result.layouts:
+        (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
+        _write_media(art.media_files)
+
+    # Slides
+    for art in result.slides:
+        target = svg_dir / f"slide_{art.index:02d}.svg"
+        target.write_text(art.svg, encoding="utf-8")
+        _write_media(art.media_files)
+
+    # Layered mode: dump the inheritance graph alongside the SVGs.
+    if options.inheritance_mode == "layered":
+        _write_inheritance_json(svg_dir, result)
+
+
+def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:
+    """Record which layout/master each slide consumes (layered mode only)."""
+    layout_by_path = {art.part_path: art.filename for art in result.layouts}
+    master_by_path = {art.part_path: art.filename for art in result.masters}
+    layout_to_master: dict[str, str | None] = {}
+    # We don't have the part->parent map from OoxmlPackage here directly, so
+    # derive it from slides.
+    for slide in result.slides:
+        if slide.layout_part_path and slide.layout_part_path not in layout_to_master:
+            layout_to_master[slide.layout_part_path] = slide.master_part_path
+
+    inheritance = {
+        "masters": [
+            {"file": art.filename, "partPath": art.part_path}
+            for art in result.masters
+        ],
+        "layouts": [
+            {
+                "file": art.filename,
+                "partPath": art.part_path,
+                "master": master_by_path.get(layout_to_master.get(art.part_path) or ""),
+            }
+            for art in result.layouts
+        ],
+        "slides": [
+            {
+                "file": f"slide_{slide.index:02d}.svg",
+                "index": slide.index,
+                "layout": layout_by_path.get(slide.layout_part_path or ""),
+                "master": master_by_path.get(slide.master_part_path or ""),
+            }
+            for slide in result.slides
+        ],
+    }
+    (svg_dir / "inheritance.json").write_text(
+        json.dumps(inheritance, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )

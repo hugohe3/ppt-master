@@ -17,22 +17,22 @@ Generate reusable page templates for the **global template library** based on a 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
 - finalized template brief
-- `manifest.json`
-- `master_layout_refs.json`
-- `master_layout_analysis.md`
-- `analysis.md`
+- `manifest.json` — single source of truth (slide size, theme, assets, layouts, masters, slides, page-type candidates)
+- `summary.md` — short orientation digest derived from manifest.json
 - exported `assets/`
-- cleaned slide SVG references from `svg/`
+- `svg/master_*.svg` / `svg/layout_*.svg` — each unique master / layout rendered once as standalone SVG (decorative + structural shapes only, no placeholders, no inlining of parent shapes)
+- `svg/slide_NN.svg` — each slide's own shapes only; master / layout decoration is **not** inlined
+- `svg/inheritance.json` — which layout / master each slide consumes
 - optional screenshots for visual cross-checking
 
 Input priority for PPTX-backed template creation:
 
-1. `manifest.json` for factual metadata
-2. `master_layout_refs.json` for unique layout/master structure and inheritance
-3. `master_layout_analysis.md` for fast structural review
-4. `analysis.md` for page-type guidance
-5. exported `assets/` for reusable visual resources
-6. cleaned slide SVG references for composition, spacing, and fixed decorative cues
+1. `manifest.json` for all factual metadata (theme, assets, unique layout/master structure, slide reuse, page-type guidance)
+2. `svg/master_*.svg` + `svg/layout_*.svg` — the **primary source for the deck's shared visual language**: backgrounds, page chrome, decorative bars, recurring brand motifs. These are what the new template's fixed structure should adopt or reinterpret. Read these before any slide SVG.
+3. `svg/inheritance.json` for confirming which slide uses which layout / master
+4. exported `assets/` for reusable visual resources
+5. `svg/slide_NN.svg` — each slide's unique content, useful for judging composition rhythm and content density (not for fixed structure)
+6. `summary.md` only as a fast scan; never as the canonical fact source
 7. screenshots / original PPTX only for style verification
 
 ---
@@ -79,9 +79,9 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 - Cluster slides from `manifest.json` by `pageType` + visual structure (column count, hero-image vs. icon-grid vs. quote, etc.)
 - One SVG per cluster — do **not** emit a variant for a cluster represented by a single source slide unless that slide is structurally distinct from existing variants
 - Cap at 8 content variants per template; collapse near-duplicates into the closest existing variant
-- Record every emitted page in `design_spec.md §VI` and in the `pages` field of the `layouts_index.json` entry
+- Record every emitted page in `design_spec.md §VI` and in the `pages` field of the `layouts_index.json` entry (auto-collected by `register_template.py`)
 
-**Placeholder contract for variants**: variants reuse the parent type's placeholder set (every `03*_content*.svg` shares the content placeholder set). Do **not** introduce variant-specific placeholder families.
+> Variants reuse the parent type's placeholder set — see §4 (Placeholder Reference) below.
 
 ---
 
@@ -117,11 +117,11 @@ Templates must strictly follow the finalized template brief and the generated `d
 If PPTX import output exists:
 - Prefer imported theme colors and fonts over visually guessed values
 - Reuse exported `assets/` images directly — `<image>` references in `svg/` already point at canonical files
-- Treat page-type candidates from `analysis.md` as hints, not guarantees
+- Treat page-type candidates from `manifest.pageTypeCandidates` as hints, not guarantees
 
 **Precondition**:
 
-- When PPTX import output is provided, do not generate any template SVG or `design_spec.md` until every file under `<import_workspace>/svg/` has been read
+- When PPTX import output is provided, do not generate any template SVG or `design_spec.md` until every file under `<import_workspace>/svg/` has been read — including `master_*.svg`, `layout_*.svg`, and every `slide_*.svg`
 - Before template generation begins, explicitly report the read slide indexes
 
 ### 2.1 PPTX Import Simplification Rule
@@ -134,7 +134,7 @@ Do:
 - simplify repeated decorative fragments into a smaller number of maintainable SVG elements
 - use a background image asset when the original decorative layer is too complex to recreate cleanly
 - use cleaned slide SVG references to inspect composition, spacing, text hierarchy, and fixed decorative structure only after factual metadata has been anchored
-- read every cleaned SVG reference page under `svg/`, regardless of slide count — partial coverage drops template fidelity
+- read every reference SVG under `svg/` — `master_*.svg`, `layout_*.svg`, and every `slide_*.svg` regardless of slide count. Master / layout files describe the deck's shared visual language (read first); slide files describe per-page content (read after). Partial coverage drops template fidelity.
 - rename adopted assets to semantic names (`cover_bg.png`, `brand_emblem.png`) rather than carrying raw `image3.png` into the final template
 
 Do not:
@@ -159,28 +159,39 @@ Use clear placeholder markers for replaceable content:
 </text>
 ```
 
-### 4. Placeholder Reference
+### 4. Placeholder Reference (canonical convention, overridable per template)
 
-| Placeholder | Purpose | Applicable Template |
-|------------|---------|-------------------|
-| `{{TITLE}}` | Main title | Cover |
-| `{{SUBTITLE}}` | Subtitle | Cover |
-| `{{DATE}}` | Date | Cover |
-| `{{AUTHOR}}` | Author / Organization | Cover |
-| `{{CHAPTER_NUM}}` | Chapter number | Chapter page |
-| `{{CHAPTER_TITLE}}` | Chapter title | Chapter page |
-| `{{CHAPTER_DESC}}` | Chapter description | Chapter page |
-| `{{PAGE_TITLE}}` | Page title | Content page |
-| `{{KEY_MESSAGE}}` | Key takeaway | Content page (consulting style) |
-| `{{CONTENT_AREA}}` | Content area | Content page |
-| `{{SECTION_NAME}}` | Section name | Content page footer |
-| `{{SOURCE}}` | Data source | Content page footer |
-| `{{PAGE_NUM}}` | Page number | Content page, ending page |
-| `{{THANK_YOU}}` | Thank-you message | Ending page |
-| `{{ENDING_SUBTITLE}}` | Ending subtitle | Ending page |
-| `{{CLOSING_MESSAGE}}` | Closing message | Ending page |
-| `{{CONTACT_INFO}}` | Contact info | Ending page |
-| `{{COPYRIGHT}}` | Copyright | Ending page |
+This is the **default vocabulary** used across the library. Newly created templates SHOULD prefer these names so projects that consume the library find familiar slots; designers MAY substitute or extend them when a style genuinely needs different vocabulary (e.g. consulting decks lead with `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`; a brand cover may need `{{BRAND_LOGO}}`).
+
+`svg_quality_checker.py --template-mode` emits **advisory warnings** when a page lacks the conventional placeholder for its type. To silence those warnings — and document the template's actual contract — declare a `placeholders:` map in `design_spec.md` frontmatter:
+
+```yaml
+placeholders:
+  01_cover: ["{{TITLE}}", "{{SUBTITLE}}", "{{BRAND_LOGO}}"]
+  03_content: ["{{KEY_MESSAGE}}", "{{CONTENT_AREA}}"]
+  03a_content_dual_col: []   # explicitly assert "no required placeholders"
+```
+
+| Placeholder | Purpose | Applicable page | Convention role |
+|------------|---------|-------------------|--------|
+| `{{TITLE}}` | Main title | Cover | Default |
+| `{{SUBTITLE}}` | Subtitle | Cover | Default |
+| `{{DATE}}` | Date | Cover | Default |
+| `{{AUTHOR}}` | Author / Organization | Cover | Default |
+| `{{CHAPTER_NUM}}` | Chapter number | Chapter page | Default |
+| `{{CHAPTER_TITLE}}` | Chapter title | Chapter page | Default |
+| `{{CHAPTER_DESC}}` | Chapter description | Chapter page | Optional |
+| `{{PAGE_TITLE}}` | Page title | Content page | Default |
+| `{{CONTENT_AREA}}` | Content area | Content page | Default |
+| `{{PAGE_NUM}}` | Page number | Content page, ending page | Default |
+| `{{KEY_MESSAGE}}` | Key takeaway | Content page (consulting style) | Style-specific |
+| `{{SECTION_NAME}}` | Section name | Content page footer | Optional |
+| `{{SOURCE}}` | Data source | Content page footer | Optional |
+| `{{THANK_YOU}}` | Thank-you message | Ending page | Default |
+| `{{CONTACT_INFO}}` | Contact info | Ending page | Default |
+| `{{ENDING_SUBTITLE}}` | Ending subtitle | Ending page | Optional |
+| `{{CLOSING_MESSAGE}}` | Closing message | Ending page | Style-specific |
+| `{{COPYRIGHT}}` | Copyright | Ending page | Optional |
 
 For TOC pages in **newly created library templates**, use indexed placeholders:
 
@@ -190,7 +201,9 @@ For TOC pages in **newly created library templates**, use indexed placeholders:
 
 Do **not** create new TOC placeholder families such as `{{CHAPTER_01_TITLE}}` for new templates. Existing templates may contain legacy placeholder variants, but new library assets should converge on the indexed TOC contract.
 
-When rebuilding from imported PPTX references, placeholder insertion takes priority over visual mimicry. If the original layout leaves insufficient room for canonical placeholders, adjust the layout instead of inventing one-off placeholder families.
+Variants reuse their parent type's placeholder set by default: every `03*_content*.svg` shares the content placeholder list above, unless the spec frontmatter declares an override for that specific stem.
+
+When rebuilding from imported PPTX references, placeholder insertion takes priority over visual mimicry. If the original layout leaves insufficient room for canonical placeholders, adjust the layout instead of inventing one-off placeholder families — or, if the deviation is intentional and meaningful, declare it in frontmatter.
 
 ---
 

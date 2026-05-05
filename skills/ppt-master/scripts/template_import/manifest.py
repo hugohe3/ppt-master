@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Internal helper: extract lightweight template assets and style metadata from a PPTX file.
 
 This helper is intentionally limited in scope:
@@ -8,11 +8,18 @@ This helper is intentionally limited in scope:
 - produce a compact manifest for downstream template reconstruction
 
 It does NOT try to convert arbitrary PPTX shapes into SVG templates.
+
+Output contract (single source of truth):
+    <workspace>/manifest.json   — all factual metadata (theme, assets, slides, layouts, masters)
+    <workspace>/summary.md      — short human-readable digest derived from manifest.json
+    <workspace>/assets/         — extracted reusable image assets
+
+This module is a pure library. The CLI entry point lives in
+``pptx_template_import.py`` at the scripts root.
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import posixpath
 import re
@@ -272,90 +279,63 @@ def choose_common_assets(asset_usage: Counter[str]) -> list[str]:
     return sorted(common)
 
 
-def write_analysis(
-    output_path: Path,
-    pptx_name: str,
-    slide_size: dict[str, int],
-    theme: dict[str, Any],
-    slides: list[SlideRecord],
-    common_assets: list[str],
-) -> None:
-    lines = [
-        f"# Template Import Analysis - {pptx_name}",
+def write_summary(output_path: Path, manifest: dict[str, Any]) -> None:
+    """Render a short human digest derived from manifest.json.
+
+    This intentionally stays terse: every fact already lives in manifest.json.
+    The digest exists only so a reviewer can scan the workspace at a glance
+    without parsing JSON.
+    """
+    source_name = manifest["source"]["name"]
+    slide_size = manifest["slideSize"]
+    theme = manifest["theme"]
+    slides = manifest["slides"]
+    layouts = manifest.get("layouts", [])
+    masters = manifest.get("masters", [])
+    common_assets = manifest["assets"]["commonAssets"]
+    page_type_map = manifest.get("pageTypeCandidates", {})
+
+    lines: list[str] = [
+        f"# Template Import Summary — {source_name}",
         "",
-        "## Summary",
-        f"- Slide size: {slide_size['width_px']} x {slide_size['height_px']} px",
+        "All facts are stored in `manifest.json`; this digest is for quick scanning only.",
+        "",
+        "## Canvas",
+        f"- Size: {slide_size['width_px']} × {slide_size['height_px']} px",
         f"- Theme colors: {', '.join(sorted(theme['colors'].keys())) or 'none detected'}",
         f"- Theme fonts: {', '.join(f'{k}={v}' for k, v in theme['fonts'].items()) or 'none detected'}",
-        f"- Common assets: {len(common_assets)}",
         "",
-        "## Slide Candidates",
+        "## Inventory",
+        f"- Slides: {len(slides)}",
+        f"- Layouts (unique): {len(layouts)}",
+        f"- Masters (unique): {len(masters)}",
+        f"- Reusable assets (used by ≥2 parts): {len(common_assets)}",
+        "",
+        "## Page-Type Candidates",
     ]
+    if page_type_map:
+        for ptype, indexes in page_type_map.items():
+            lines.append(f"- {ptype}: slides {', '.join(str(i) for i in indexes)}")
+    else:
+        lines.append("- (none classified)")
 
-    for slide in slides:
-        sample = " | ".join(slide.text_samples[:3]) if slide.text_samples else "(no text sample)"
-        lines.extend(
-            [
-                f"- Slide {slide.index}: {slide.page_type}",
-                f"  - Name: {slide.name}",
-                f"  - Background: {slide.background_asset or 'none'} ({slide.background_source or 'n/a'})",
-                f"  - Images: {len(slide.image_assets)}",
-                f"  - Text sample: {sample}",
-            ]
-        )
-
-    output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def write_structure_analysis(
-    output_path: Path,
-    structures: dict[str, Any],
-) -> None:
-    layouts = structures.get("layouts", [])
-    masters = structures.get("masters", [])
-
-    lines = [
-        "# Master/Layout Reference Analysis",
-        "",
-        "## Summary",
-        f"- Unique layouts: {len(layouts)}",
-        f"- Unique masters: {len(masters)}",
-        "",
-        "## Layouts",
-    ]
-
-    if not layouts:
+    lines.extend(["", "## Layout Reuse"])
+    if layouts:
+        for layout in layouts:
+            users = layout.get("usedBySlides", [])
+            users_str = ", ".join(str(i) for i in users) if users else "n/a"
+            lines.append(f"- {layout['name']} → slides {users_str}")
+    else:
         lines.append("- (none)")
-    for layout in layouts:
-        sample = " | ".join(layout.get("textSamples", [])[:3]) or "(no text sample)"
-        lines.extend(
-            [
-                f"- {layout['name']}",
-                f"  - Path: {layout['path']}",
-                f"  - Parent master: {layout.get('parentPath') or 'n/a'}",
-                f"  - Used by slides: {', '.join(str(i) for i in layout.get('usedBySlides', [])) or 'n/a'}",
-                f"  - Background asset: {layout.get('backgroundAsset') or 'none'}",
-                f"  - Image assets: {', '.join(layout.get('imageAssets', [])) or 'none'}",
-                f"  - Text sample: {sample}",
-            ]
-        )
 
-    lines.extend(["", "## Masters"])
-    if not masters:
+    lines.extend(["", "## Master Reuse"])
+    if masters:
+        for master in masters:
+            users = master.get("usedBySlides", [])
+            users_str = ", ".join(str(i) for i in users) if users else "n/a"
+            lines.append(f"- {master['name']} → slides {users_str}")
+    else:
         lines.append("- (none)")
-    for master in masters:
-        sample = " | ".join(master.get("textSamples", [])[:3]) or "(no text sample)"
-        lines.extend(
-            [
-                f"- {master['name']}",
-                f"  - Path: {master['path']}",
-                f"  - Theme path: {master.get('themePath') or 'n/a'}",
-                f"  - Used by slides: {', '.join(str(i) for i in master.get('usedBySlides', [])) or 'n/a'}",
-                f"  - Background asset: {master.get('backgroundAsset') or 'none'}",
-                f"  - Image assets: {', '.join(master.get('imageAssets', [])) or 'none'}",
-                f"  - Text sample: {sample}",
-            ]
-        )
 
     output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -537,10 +517,8 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             )
             for master_path in sorted(master_cache.keys())
         ]
-        structure_refs = {
-            "layouts": [item for item in layout_records if item],
-            "masters": [item for item in master_records if item],
-        }
+        layouts_top = [item for item in layout_records if item]
+        masters_top = [item for item in master_records if item]
 
         manifest = {
             "source": {
@@ -554,13 +532,9 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 "commonAssets": common_assets,
                 "allAssets": sorted(copied_assets.values()),
             },
-            "referenceStructures": {
-                "json": "master_layout_refs.json",
-                "analysis": "master_layout_analysis.md",
-                "layoutCount": len(structure_refs["layouts"]),
-                "masterCount": len(structure_refs["masters"]),
-            },
             "pageTypeCandidates": dict(sorted(page_type_map.items())),
+            "layouts": layouts_top,
+            "masters": masters_top,
             "slides": [
                 {
                     "index": slide.index,
@@ -580,72 +554,5 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             ],
         }
 
-        write_analysis(
-            output_dir / "analysis.md",
-            pptx_path.name,
-            slide_size,
-            theme_summary,
-            slide_records,
-            common_assets,
-        )
-        (output_dir / "master_layout_refs.json").write_text(
-            json.dumps(structure_refs, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        write_structure_analysis(output_dir / "master_layout_analysis.md", structure_refs)
+        write_summary(output_dir / "summary.md", manifest)
         return manifest
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Extract reusable assets and style metadata from a PPTX template source."
-    )
-    parser.add_argument("pptx_file", help="Path to the source .pptx file")
-    parser.add_argument(
-        "-o",
-        "--output",
-        help="Output directory (default: <pptx_stem>_template_import beside the source file)",
-    )
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
-    pptx_path = Path(args.pptx_file).expanduser().resolve()
-    if not pptx_path.exists():
-        print(f"Error: file does not exist: {pptx_path}")
-        return 1
-    if pptx_path.suffix.lower() != ".pptx":
-        print(f"Error: expected a .pptx file, got: {pptx_path.name}")
-        return 1
-
-    output_dir = (
-        Path(args.output).expanduser().resolve()
-        if args.output
-        else pptx_path.with_name(f"{pptx_path.stem}_template_import")
-    )
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    try:
-        manifest = build_manifest(pptx_path, output_dir)
-    except Exception as exc:
-        print(f"Error: failed to import template source: {exc}")
-        return 1
-
-    manifest_path = output_dir / "manifest.json"
-    manifest_path.write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-    print(f"Imported PPTX template source: {pptx_path.name}")
-    print(f"Output directory: {output_dir}")
-    print(f"Manifest: {manifest_path.name}")
-    print(f"Assets exported: {len(manifest['assets']['allAssets'])}")
-    print(f"Common assets: {len(manifest['assets']['commonAssets'])}")
-    print(f"Slides analyzed: {len(manifest['slides'])}")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
