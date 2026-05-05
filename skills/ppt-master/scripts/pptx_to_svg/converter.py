@@ -248,20 +248,23 @@ def _convert_inheritance_parts(
         if master.path not in seen_masters:
             seen_masters[master.path] = master
 
-    seen_layouts: dict[str, PartRef] = {}
-    for layout in pkg.iter_all_layouts():
-        if layout.path not in seen_layouts:
-            seen_layouts[layout.path] = layout
+    layouts_with_parent: list[tuple[PartRef, PartRef]] = []
+    seen_layout_paths: set[str] = set()
+    for layout, parent_master in pkg.iter_all_layouts_with_parent():
+        if layout.path in seen_layout_paths:
+            continue
+        seen_layout_paths.add(layout.path)
+        layouts_with_parent.append((layout, parent_master))
 
     for seq, part in enumerate(seen_masters.values(), start=1):
         result.masters.append(_render_part(
             pkg, part, palette, options, result.theme_fonts,
             role="master", seq=seq,
         ))
-    for seq, part in enumerate(seen_layouts.values(), start=1):
+    for seq, (layout, parent_master) in enumerate(layouts_with_parent, start=1):
         result.layouts.append(_render_part(
-            pkg, part, palette, options, result.theme_fonts,
-            role="layout", seq=seq,
+            pkg, layout, palette, options, result.theme_fonts,
+            role="layout", seq=seq, parent_master=parent_master,
         ))
 
 
@@ -274,11 +277,13 @@ def _render_part(
     *,
     role: str,
     seq: int,
+    parent_master: PartRef | None = None,
 ) -> PartArtifact:
     """Render a master/layout part, returning a PartArtifact with output filename."""
     svg, media = assemble_part_solo(
         pkg, part, palette,
         role=role,
+        parent_master=parent_master,
         theme_fonts=theme_fonts,
         media_subdir=options.media_subdir,
         embed_images=options.embed_images,

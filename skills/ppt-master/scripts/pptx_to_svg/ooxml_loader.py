@@ -337,6 +337,20 @@ class OoxmlPackage:
         """Yield every slideLayout reachable from any master, regardless of
         slide usage. Layouts live under ``master.sldLayoutIdLst`` in document
         order; we walk every master so the export reflects the full set.
+
+        See :meth:`iter_all_layouts_with_parent` when you need each layout's
+        owning master alongside the layout itself (e.g. for theme-fill
+        resolution during standalone rendering).
+        """
+        for layout, _master in self.iter_all_layouts_with_parent():
+            yield layout
+
+    def iter_all_layouts_with_parent(self) -> Iterator[tuple[PartRef, PartRef]]:
+        """Like :meth:`iter_all_layouts` but yields ``(layout, parent_master)``
+        pairs. The parent master is the one whose ``sldLayoutIdLst`` contains
+        the layout, which is the source of truth for theme-style resolution
+        (e.g. ``<p:bgRef idx=...>`` on the layout still hops through the
+        master's theme).
         """
         seen: set[str] = set()
         for master in self.iter_all_masters():
@@ -357,5 +371,5 @@ class OoxmlPackage:
                     if cached is None:
                         continue
                     self._layouts[target] = cached
-                yield cached
+                yield cached, master
 

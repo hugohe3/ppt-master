@@ -163,6 +163,7 @@ def assemble_part_solo(
     palette: ColorPalette | None,
     *,
     role: str,
+    parent_master: PartRef | None = None,
     theme_fonts: dict[str, str] | None = None,
     media_subdir: str = "assets",
     embed_images: bool = False,
@@ -179,6 +180,11 @@ def assemble_part_solo(
     Args:
         role: 'master' or 'layout'. Used as the group_id_prefix to keep ids
             unique when the workspace inlines multiple parts in a viewer.
+        parent_master: when ``role == "layout"``, pass the parent slide
+            master so theme-style background fills (``<p:bgRef idx=...>``)
+            can resolve via the theme attached to that master. For
+            ``role == "master"`` the master is its own parent and this
+            argument is ignored.
     """
     if role not in {"master", "layout"}:
         raise ValueError(f"role must be 'master' or 'layout', got {role!r}")
@@ -198,9 +204,24 @@ def assemble_part_solo(
 
     body_parts: list[str] = []
 
-    # Background: only meaningful if the part itself declares one.
-    fake_slide = SlideRef(index=0, part=part, layout=None, master=None)
-    bg_xml = _emit_background(fake_slide, ctx, canvas_w, canvas_h)
+    # Layered semantics: each part's standalone SVG must contain only that
+    # part's own contribution. The master gets its own bg, the layout gets
+    # its own bg only if it overrides the master's, and consumers re-stack
+    # the layers when they need a flat view. We therefore inspect <p:bg> on
+    # this part alone — never inherited from above. Theme-style fills
+    # (<p:bgRef idx=...>) still need the parent master's <a:fmtScheme> to
+    # resolve, hence the SlideRef.master plumbing below.
+    if role == "master":
+        master_for_theme: PartRef | None = part
+    else:
+        master_for_theme = parent_master
+    fake_slide = SlideRef(
+        index=0,
+        part=part,
+        layout=None,
+        master=master_for_theme,
+    )
+    bg_xml = _emit_part_background(fake_slide, ctx, canvas_w, canvas_h)
     if bg_xml:
         body_parts.append(bg_xml)
 
@@ -610,6 +631,44 @@ def _emit_background(slide: SlideRef, ctx: AssemblyContext,
         return (f'<rect x="0" y="0" width="{fmt_num(w)}" height="{fmt_num(h)}"'
                 f"{attrs_xml}/>")
     return ""
+
+
+def _emit_part_background(slide: SlideRef, ctx: AssemblyContext,
+                          w: float, h: float) -> str:
+    """Render the background declared on the part itself only.
+
+    Distinct from `_emit_background`, which walks the slide → layout →
+    master inheritance chain. Used by the layered solo renderer so each
+    standalone master / layout SVG carries only its own ``<p:bg>`` — the
+    inheritance is rebuilt by consumers re-stacking the layers, and we'd
+    rather output nothing than have master decoration leak into a layout
+    file.
+    """
+    bg = get_background(slide.part.xml)
+    if bg is None:
+        return ""
+    bg_pr = bg.find("p:bgPr", NS)
+    bg_ref = bg.find("p:bgRef", NS)
+    placeholder_hex = None
+
+    if bg_pr is None and bg_ref is not None:
+        bg_pr = _theme_background_fill(slide, ctx, bg_ref)
+        color_elem = find_color_elem(bg_ref)
+        placeholder_hex, _ = resolve_color(color_elem, ctx.palette)
+    if bg_pr is None:
+        return ""
+
+    fill = resolve_fill(
+        bg_pr, ctx.palette,
+        id_prefix="bg", id_seq=ctx.grad_seq,
+        placeholder_hex=placeholder_hex,
+    )
+    ctx.defs.extend(fill.defs)
+    if not fill.attrs:
+        return ""
+    attrs_xml = _attrs_to_xml(fill.attrs)
+    return (f'<rect x="0" y="0" width="{fmt_num(w)}" height="{fmt_num(h)}"'
+            f"{attrs_xml}/>")
 
 
 def _theme_background_fill(
