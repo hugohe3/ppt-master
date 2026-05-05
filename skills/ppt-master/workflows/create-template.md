@@ -80,12 +80,14 @@ This helper reads OOXML directly via `pptx_to_svg` and produces, in one workspac
 - `manifest.json` — single source of truth: slide size, theme colors, fonts, asset inventory, per-slide / per-layout / per-master metadata, page-type candidates
 - `summary.md` — short human-readable digest derived from manifest.json (for quick scanning only)
 - `assets/` — extracted reusable image assets
-- `svg/` — shape-level SVG, **layered by default**:
-  - `svg/master_*.svg` — each unique slide master rendered once (decorative / structural shapes, no placeholders)
-  - `svg/layout_*.svg` — each unique slide layout rendered once (its own contribution; master shapes do **not** repeat here)
-  - `svg/slide_NN.svg` — each slide's own shapes; master / layout shapes are **not** inlined
+- `svg/` — **primary view** (layered template view):
+  - `svg/master_*.svg` — every slide master in the deck rendered once, including masters that no sample slide currently uses (template packages routinely ship more masters than the visible samples reference)
+  - `svg/layout_*.svg` — every slide layout in the deck rendered once (its own contribution; master shapes do **not** repeat here)
+  - `svg/slide_NN.svg` — each slide's own shapes; master / layout shapes are **not** inlined here
   - `svg/inheritance.json` — which layout & master each slide consumes
-  - Pass `--inheritance-mode flat` only when you specifically want self-contained slide SVGs (round-trip use cases). The default is `layered` because every slide otherwise repeats the same master decoration, which makes it hard to tell what is shared vs. unique.
+- `svg-flat/` — **companion view** (one self-contained SVG per slide):
+  - `svg-flat/slide_NN.svg` — master + layout + slide painted into a single SVG so opening any slide on its own shows the full page like PowerPoint would. Use this for previews / screenshot pipelines / "what does the slide actually look like" sanity checks.
+- The default `--inheritance-mode both` emits both views. Pass `layered` to skip `svg-flat/`, or `flat` for round-trip use cases (legacy: `svg/` becomes self-contained slides without the master/layout/inheritance files).
 
 It is a reconstruction aid, not a final direct template conversion.
 

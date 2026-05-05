@@ -7,7 +7,13 @@ Reads OOXML directly via `pptx_to_svg` and writes a reusable reference workspace
   asset inventory, and per-slide / per-layout / per-master metadata
 - `summary.md` — short human-readable digest derived from manifest.json
 - `assets/` — extracted reusable image assets
-- `svg/` — shape-level SVG per slide (real <text>, <image>, geometry)
+- `svg/` — primary view: by default the layered template view (every master
+  and layout in the deck rendered once each as `master_*.svg` /
+  `layout_*.svg`, slides contain only their own shapes, and an
+  `inheritance.json` describes the reuse graph)
+- `svg-flat/` — companion view (default mode "both"): each `slide_NN.svg`
+  is self-contained — master/layout decoration is inlined — so opening any
+  one slide shows the full page like PowerPoint would
 """
 
 from __future__ import annotations
@@ -50,16 +56,17 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--inheritance-mode",
-        choices=("layered", "flat"),
-        default="layered",
+        choices=("both", "layered", "flat"),
+        default="both",
         help=(
-            "How to render master/layout shapes inside slide SVGs. "
-            "'layered' (default for /create-template): each slide SVG contains "
-            "only its own shapes; master/layout are rendered once each as "
-            "separate svg/master_*.svg / svg/layout_*.svg files plus "
-            "svg/inheritance.json. 'flat': inline inherited shapes inside every "
-            "slide (legacy behavior; pick this only when you need self-contained "
-            "slide SVGs)."
+            "How to render master/layout shapes for slide SVGs. "
+            "'both' (default): emit both views — svg/ holds the layered "
+            "renderings (template designers see master/layout/slide as "
+            "separate files plus svg/inheritance.json) and svg-flat/ holds "
+            "self-contained per-slide SVGs (each one renders correctly when "
+            "opened on its own). 'layered': only the svg/ tree, useful when "
+            "you don't need the flat view. 'flat': only self-contained slide "
+            "SVGs in svg/, the round-trip view used by svg_to_pptx."
         ),
     )
     return parser.parse_args()
@@ -128,11 +135,13 @@ def main() -> int:
 
     print(f"Inheritance mode: {args.inheritance_mode}")
     print(f"Exported SVG slides: {len(result.slides)}")
-    if args.inheritance_mode == "layered":
+    if args.inheritance_mode in {"layered", "both"}:
         print(f"Exported masters: {len(result.masters)}")
         print(f"Exported layouts: {len(result.layouts)}")
         print("Inheritance graph: svg/inheritance.json")
-    print(f"SVG bytes: {total_bytes}")
+    if result.flat_slides:
+        print(f"Flat companion slides: {len(result.flat_slides)} (svg-flat/)")
+    print(f"SVG bytes (primary): {total_bytes}")
     print(f"Output directory: {output_dir}")
     return 0
 

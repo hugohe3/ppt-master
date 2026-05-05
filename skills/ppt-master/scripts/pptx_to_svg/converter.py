@@ -33,18 +33,24 @@ class ConvertOptions:
     embed_images: when True, base64-encode images inline instead of writing
         files. Default False (matches svg_to_pptx default of external images).
     keep_hidden: include shapes marked hidden="1". Default False.
-    inheritance_mode: how to render master/layout shapes inside each slide SVG.
-        - "flat" (default): inline inherited shapes into every slide. Used by
-          svg_to_pptx round-trip and any caller that wants self-contained slides.
+    inheritance_mode: how to render master/layout shapes per slide SVG.
+        - "both" (default): emit both views — layered under svg/ for template
+          designers (master/layout/slide as separate files) and flat under
+          svg-flat/ for previewers (each slide self-contained). Costs roughly
+          1.3-1.5× converter time and ~1.6-2× disk vs. either single mode.
         - "layered": skip inherited shapes inside the slide. The orchestrator
-          additionally renders each unique master and layout to its own SVG and
-          writes svg/inheritance.json so the deck's reuse graph is explicit.
+          renders every master and layout to its own SVG, plus
+          svg/inheritance.json describing the reuse graph. Optimised for
+          template authors who need to see "what is shared vs. unique".
+        - "flat": inline inherited shapes into every slide. Used by
+          svg_to_pptx round-trip and any caller that wants self-contained
+          slides (preview pages, screenshot pipelines).
     """
 
     media_subdir: str = "assets"
     embed_images: bool = False
     keep_hidden: bool = False
-    inheritance_mode: str = "flat"
+    inheritance_mode: str = "both"
 
 
 @dataclass
@@ -71,7 +77,13 @@ class SlideArtifact:
 
 @dataclass
 class ConvertResult:
-    """Result of converting an entire .pptx."""
+    """Result of converting an entire .pptx.
+
+    ``slides`` holds the layered/primary view (or, in pure flat mode, the flat
+    view). ``flat_slides`` is populated only in ``"both"`` mode and contains
+    self-contained renderings of every slide; callers that don't care about
+    the flat view can ignore it.
+    """
 
     slides: list[SlideArtifact] = field(default_factory=list)
     canvas_px: tuple[float, float] = (1280.0, 720.0)
@@ -79,6 +91,7 @@ class ConvertResult:
     theme_fonts: dict[str, str] = field(default_factory=dict)
     layouts: list[PartArtifact] = field(default_factory=list)
     masters: list[PartArtifact] = field(default_factory=list)
+    flat_slides: list[SlideArtifact] = field(default_factory=list)
 
 
 # ---------------------------------------------------------------------------
@@ -102,11 +115,13 @@ def convert_pptx_to_svg(
         ConvertResult with per-slide SVG strings and resolved theme info.
     """
     options = options or ConvertOptions()
-    if options.inheritance_mode not in {"flat", "layered"}:
+    if options.inheritance_mode not in {"flat", "layered", "both"}:
         raise ValueError(
-            f"inheritance_mode must be 'flat' or 'layered', "
+            f"inheritance_mode must be 'flat', 'layered', or 'both', "
             f"got {options.inheritance_mode!r}"
         )
+    emit_layered = options.inheritance_mode in {"layered", "both"}
+    emit_flat = options.inheritance_mode in {"flat", "both"}
     result = ConvertResult()
 
     with OoxmlPackage(pptx_path) as pkg:
@@ -148,13 +163,26 @@ def convert_pptx_to_svg(
                     if cs is not None and cs.attrib.get("typeface"):
                         result.theme_fonts[f"{role_prefix}ComplexScript"] = cs.attrib["typeface"]
 
-        # Per-slide conversion
+        # Per-slide conversion. The primary view is layered when emitted
+        # (template designers care most about that one); the flat view is
+        # rendered alongside when needed.
+        primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
-            artifact = _convert_slide(pkg, slide, palette, options, result.theme_fonts)
+            artifact = _convert_slide(
+                pkg, slide, palette, options, result.theme_fonts,
+                inheritance_mode=primary_mode,
+            )
             result.slides.append(artifact)
+        if emit_layered and emit_flat:
+            for slide in pkg.iter_slides():
+                artifact = _convert_slide(
+                    pkg, slide, palette, options, result.theme_fonts,
+                    inheritance_mode="flat",
+                )
+                result.flat_slides.append(artifact)
 
-        # Layered mode: also render each unique master / layout once.
-        if options.inheritance_mode == "layered":
+        # Layered mode: also render each master / layout once.
+        if emit_layered:
             _convert_inheritance_parts(pkg, palette, options, result)
 
     if output_dir is not None:
@@ -169,15 +197,27 @@ def _convert_slide(
     palette: ColorPalette,
     options: ConvertOptions,
     theme_fonts: dict[str, str] | None = None,
+    *,
+    inheritance_mode: str | None = None,
 ) -> SlideArtifact:
-    """Convert a single slide via the full shape pipeline."""
+    """Convert a single slide via the full shape pipeline.
+
+    ``inheritance_mode`` overrides ``options.inheritance_mode`` so the
+    orchestrator can render the same slide twice (once layered, once flat)
+    when the user asked for ``"both"``. Pass ``"flat"`` or ``"layered"``;
+    ``None`` falls back to ``options.inheritance_mode`` (used by direct
+    callers that want a single mode).
+    """
+    mode = inheritance_mode or options.inheritance_mode
+    if mode == "both":
+        mode = "layered"  # primary view in both-mode
     svg, media = assemble_slide(
         pkg, slide, palette,
         theme_fonts=theme_fonts,
         media_subdir=options.media_subdir,
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
-        inheritance_mode=options.inheritance_mode,
+        inheritance_mode=mode,
     )
     return SlideArtifact(
         index=slide.index,
@@ -194,16 +234,24 @@ def _convert_inheritance_parts(
     options: ConvertOptions,
     result: ConvertResult,
 ) -> None:
-    """Render each unique master and layout to its own SVG (layered mode)."""
-    # Collect unique parts in slide-encounter order so output filenames are
+    """Render every master and layout in the deck to its own SVG (layered mode).
+
+    We deliberately render *all* masters / layouts, not only the ones a slide
+    references. Multi-style template packages routinely ship more design
+    surfaces than the embedded sample slides exercise, and dropping unused
+    ones discards the bulk of the template's design intent.
+    """
+    # Collect unique parts in document order so output filenames are
     # deterministic for a given .pptx.
-    seen_layouts: dict[str, PartRef] = {}
     seen_masters: dict[str, PartRef] = {}
-    for slide in pkg.iter_slides():
-        if slide.layout is not None and slide.layout.path not in seen_layouts:
-            seen_layouts[slide.layout.path] = slide.layout
-        if slide.master is not None and slide.master.path not in seen_masters:
-            seen_masters[slide.master.path] = slide.master
+    for master in pkg.iter_all_masters():
+        if master.path not in seen_masters:
+            seen_masters[master.path] = master
+
+    seen_layouts: dict[str, PartRef] = {}
+    for layout in pkg.iter_all_layouts():
+        if layout.path not in seen_layouts:
+            seen_layouts[layout.path] = layout
 
     for seq, part in enumerate(seen_masters.values(), start=1):
         result.masters.append(_render_part(
@@ -250,7 +298,13 @@ def _render_part(
 
 def _write_artifacts(output_dir: Path, result: ConvertResult,
                      options: ConvertOptions) -> None:
-    """Write SVG + media files to output_dir/svg and output_dir/<media_subdir>."""
+    """Write SVG + media files to output_dir.
+
+    Layout:
+      - ``svg/``        primary view (layered when emitted, otherwise flat)
+      - ``svg-flat/``   self-contained per-slide renders (only in "both" mode)
+      - ``<media_subdir>/`` shared image assets, referenced by both views
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     svg_dir = output_dir / "svg"
     svg_dir.mkdir(exist_ok=True)
@@ -273,15 +327,25 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
         (svg_dir / art.filename).write_text(art.svg, encoding="utf-8")
         _write_media(art.media_files)
 
-    # Slides
+    # Slides (primary view).
     for art in result.slides:
         target = svg_dir / f"slide_{art.index:02d}.svg"
         target.write_text(art.svg, encoding="utf-8")
         _write_media(art.media_files)
 
-    # Layered mode: dump the inheritance graph alongside the SVGs.
-    if options.inheritance_mode == "layered":
+    # Inheritance graph alongside the layered SVGs (only meaningful when we
+    # actually emitted a layered view).
+    if options.inheritance_mode in {"layered", "both"}:
         _write_inheritance_json(svg_dir, result)
+
+    # Flat companion view (only when result.flat_slides is populated).
+    if result.flat_slides:
+        flat_dir = output_dir / "svg-flat"
+        flat_dir.mkdir(exist_ok=True)
+        for art in result.flat_slides:
+            target = flat_dir / f"slide_{art.index:02d}.svg"
+            target.write_text(art.svg, encoding="utf-8")
+            _write_media(art.media_files)
 
 
 def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:

@@ -89,6 +89,7 @@ python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --skip-manifest
 python3 scripts/pptx_template_import.py <template.pptx> --embed-images
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode flat
+python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode layered
 ```
 
 Notes:
@@ -96,8 +97,10 @@ Notes:
 - Summarizes slide size, theme colors, and font metadata
 - Infers background image inheritance across slide, layout, and master
 - Generates `manifest.json` (single source of truth for slide size, theme, assets, layouts, masters, slides, page-type candidates), `summary.md` (short orientation digest), `assets/`, and shape-level SVGs under `svg/`
-- **SVG output is layered by default**: each unique master / layout is rendered once as `svg/master_*.svg` / `svg/layout_*.svg`; `svg/slide_NN.svg` contains only that slide's own shapes; `svg/inheritance.json` records which layout / master each slide consumes. This gives template designers a clear separation between shared visual language and per-slide content.
-- Pass `--inheritance-mode flat` only when you need self-contained slide SVGs (round-trip use cases). The default `layered` is what `/create-template` consumes.
+- **SVG output emits two views by default** (`--inheritance-mode both`):
+  - `svg/` — layered template view for designers: every master and layout in the deck rendered once as `svg/master_*.svg` / `svg/layout_*.svg` (including ones no sample slide currently references); `svg/slide_NN.svg` contains only that slide's own shapes; `svg/inheritance.json` records which layout / master each slide consumes.
+  - `svg-flat/` — companion view: each `slide_NN.svg` is self-contained (master + layout + slide painted into one file), so opening any slide in isolation shows the full page like PowerPoint would. Useful for previews, screenshots, and "did this slide actually render correctly" sanity checks.
+- Pass `--inheritance-mode layered` to skip `svg-flat/`, or `--inheritance-mode flat` for the legacy round-trip view (single self-contained `svg/` tree without master/layout/inheritance files).
 - SVG export reads OOXML directly via `pptx_to_svg` — no PowerPoint or Keynote dependency, runs on any platform
 - `<image>` elements in `svg/` reference files in `assets/` directly; pass `--embed-images` to inline as data URIs instead
 - Required in `/create-template` whenever the reference source is `.pptx`

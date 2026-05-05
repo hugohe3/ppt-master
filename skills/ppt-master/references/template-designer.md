@@ -20,9 +20,10 @@ When the workflow provides a PPTX reference source, the effective input package 
 - `manifest.json` — single source of truth (slide size, theme, assets, layouts, masters, slides, page-type candidates)
 - `summary.md` — short orientation digest derived from manifest.json
 - exported `assets/`
-- `svg/master_*.svg` / `svg/layout_*.svg` — each unique master / layout rendered once as standalone SVG (decorative + structural shapes only, no placeholders, no inlining of parent shapes)
-- `svg/slide_NN.svg` — each slide's own shapes only; master / layout decoration is **not** inlined
+- `svg/master_*.svg` / `svg/layout_*.svg` — every master / layout in the deck rendered once as standalone SVG, including ones no sample slide references (template packages often ship more design surfaces than the embedded samples exercise)
+- `svg/slide_NN.svg` — each slide's own shapes only; master / layout decoration is **not** inlined here
 - `svg/inheritance.json` — which layout / master each slide consumes
+- `svg-flat/slide_NN.svg` — companion view; each slide is self-contained so you can preview or screenshot a single page without losing the surrounding chrome. Use it as a sanity check for "what would PowerPoint actually show", not as an authoring source — the master/layout chrome will be duplicated across every flat slide.
 - optional screenshots for visual cross-checking
 
 Input priority for PPTX-backed template creation:

@@ -300,3 +300,62 @@ class OoxmlPackage:
         if 1 <= index <= len(self._slides):
             return self._slides[index - 1]
         return None
+
+    def iter_all_masters(self) -> Iterator[PartRef]:
+        """Yield every slideMaster declared in presentation.xml, regardless of
+        whether any slide currently uses it.
+
+        Template decks routinely ship more masters than the visible sample
+        slides reference (one master per "style"). The slide-driven traversal
+        in ``_load_slides`` only caches masters that are actually consumed by
+        a slide — fine for an authoring deck, but it drops 90% of the design
+        intent for a multi-style template package. This iterator hits the
+        presentation's ``sldMasterIdLst`` directly so callers (e.g. the
+        layered template export) can preserve the full template library.
+        """
+        if self.presentation is None:
+            return
+        master_id_lst = self.presentation.xml.find("p:sldMasterIdLst", NS)
+        if master_id_lst is None:
+            return
+        for master_id in master_id_lst.findall("p:sldMasterId", NS):
+            rid = master_id.attrib.get(f"{{{NS['r']}}}id")
+            if not rid:
+                continue
+            target = self.presentation.resolve_rel(rid)
+            if not target:
+                continue
+            cached = self._masters.get(target)
+            if cached is None:
+                cached = self._load_part(target)
+                if cached is None:
+                    continue
+                self._masters[target] = cached
+            yield cached
+
+    def iter_all_layouts(self) -> Iterator[PartRef]:
+        """Yield every slideLayout reachable from any master, regardless of
+        slide usage. Layouts live under ``master.sldLayoutIdLst`` in document
+        order; we walk every master so the export reflects the full set.
+        """
+        seen: set[str] = set()
+        for master in self.iter_all_masters():
+            layout_id_lst = master.xml.find("p:sldLayoutIdLst", NS)
+            if layout_id_lst is None:
+                continue
+            for layout_id in layout_id_lst.findall("p:sldLayoutId", NS):
+                rid = layout_id.attrib.get(f"{{{NS['r']}}}id")
+                if not rid:
+                    continue
+                target = master.resolve_rel(rid)
+                if not target or target in seen:
+                    continue
+                seen.add(target)
+                cached = self._layouts.get(target)
+                if cached is None:
+                    cached = self._load_part(target)
+                    if cached is None:
+                        continue
+                    self._layouts[target] = cached
+                yield cached
+
