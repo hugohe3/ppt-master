@@ -32,7 +32,7 @@ from .emu_units import NS, fmt_num
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
 from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
-from .pic_to_svg import convert_picture
+from .pic_to_svg import convert_blip_fill, convert_picture
 from .prstgeom_to_svg import GeomResult, convert_prst_geom
 from .shape_walker import (
     CONNECTOR, GRAPHIC, GROUP, PICTURE, SHAPE,
@@ -68,6 +68,7 @@ class AssemblyContext:
     marker_seq: list[int] = field(default_factory=lambda: [0])
     filter_seq: list[int] = field(default_factory=lambda: [0])
     shape_seq: list[int] = field(default_factory=lambda: [0])
+    clip_seq: list[int] = field(default_factory=lambda: [0])
 
     # Accumulated outputs
     defs: list[str] = field(default_factory=list)
@@ -161,8 +162,24 @@ def _convert_node(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> 
 def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) -> str:
     sp_pr = node.xml.find("p:spPr", NS)
 
-    # Geometry
-    geom_xml = _build_geometry_xml(node, sp_pr, ctx)
+    # Check for blipFill (image-filled shape, e.g. Canva exports where images
+    # are expressed as <p:sp> + <a:blipFill> rather than <p:pic>).
+    geom = _resolve_geometry(node, sp_pr)
+
+    blip_fill_elem = sp_pr.find("a:blipFill", NS) if sp_pr is not None else None
+    blip_image = ""
+    if blip_fill_elem is not None:
+        blip_result = convert_blip_fill(
+            blip_fill_elem, node.xfrm, ctx.slide_part, ctx.pkg,
+            media_subdir=ctx.media_subdir,
+            embed_inline=ctx.embed_images,
+        )
+        if blip_result.svg:
+            blip_image = _clip_blip_image(blip_result.svg, geom, ctx)
+            ctx.media.update(blip_result.media)
+
+    # Geometry (fill is "none" when blipFill is present, so only stroke draws)
+    geom_xml = _build_geometry_xml(node, sp_pr, ctx, geom=geom)
 
     # Text body (a:txBody)
     tx_body = node.xml.find("p:txBody", NS)
@@ -179,7 +196,9 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         ) if tx_body is not None else TextResult()
 
     if is_vertical:
-        shape_xml = _wrap_shape_group(geom_xml, node, ctx, top_level=top_level)
+        # Vertical text: geometry + image in one group, text in separate group
+        geom_inner = (blip_image + "\n" + geom_xml) if blip_image else geom_xml
+        shape_xml = _wrap_shape_group(geom_inner, node, ctx, top_level=top_level)
         if not text_result.svg:
             return shape_xml
         text_group = (
@@ -189,14 +208,20 @@ def _convert_shape(node: ShapeNode, ctx: AssemblyContext, *, top_level: bool) ->
         )
         return f"{shape_xml}\n{text_group}"
 
-    inner = (geom_xml + ("\n" + text_result.svg if text_result.svg else ""))
+    # Normal: image (behind) + geometry (stroke) + text (top)
+    inner_parts = []
+    if blip_image:
+        inner_parts.append(blip_image)
+    if geom_xml:
+        inner_parts.append(geom_xml)
+    if text_result.svg:
+        inner_parts.append(text_result.svg)
+    inner = "\n".join(inner_parts) if inner_parts else ""
     return _wrap_shape_group(inner, node, ctx, top_level=top_level)
 
 
-def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
-                        ctx: AssemblyContext) -> str:
-    """Build the SVG geometry element with fill/stroke/effect attributes."""
-    # Resolve geometry
+def _resolve_geometry(node: ShapeNode, sp_pr: ET.Element | None) -> GeomResult | None:
+    """Resolve a DrawingML shape geometry into an absolute SVG geometry model."""
     prst_geom = sp_pr.find("a:prstGeom", NS) if sp_pr is not None else None
     cust_geom = sp_pr.find("a:custGeom", NS) if sp_pr is not None else None
 
@@ -216,8 +241,19 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         geom = convert_prst_geom("rect", node.xfrm, None)
 
     if geom is None:
-        return ""
+        return None
     if geom.tag != "line" and (node.xfrm.w <= 0 or node.xfrm.h <= 0):
+        return None
+    return geom
+
+
+def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
+                        ctx: AssemblyContext,
+                        geom: GeomResult | None = None) -> str:
+    """Build the SVG geometry element with fill/stroke/effect attributes."""
+    if geom is None:
+        geom = _resolve_geometry(node, sp_pr)
+    if geom is None:
         return ""
 
     # Fill / stroke / effect
@@ -251,12 +287,43 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
         pass
 
     geom_attrs_xml = _attrs_to_xml({**geom.attrs, **attrs})
+    return _geom_to_svg(geom, geom_attrs_xml)
 
+
+def _geom_to_svg(geom: GeomResult, attrs_xml: str = "") -> str:
+    """Serialize a resolved geometry with optional SVG attributes."""
     if geom.tag == "path":
-        return f'<path d="{geom.path_d}"{geom_attrs_xml}/>'
+        return f'<path d="{geom.path_d}"{attrs_xml}/>'
     if geom.tag in ("polygon", "polyline"):
-        return f'<{geom.tag} points="{geom.points}"{geom_attrs_xml}/>'
-    return f"<{geom.tag}{geom_attrs_xml}/>"
+        return f'<{geom.tag} points="{geom.points}"{attrs_xml}/>'
+    return f"<{geom.tag}{attrs_xml}/>"
+
+
+def _clip_blip_image(image_xml: str, geom: GeomResult | None,
+                     ctx: AssemblyContext) -> str:
+    """Clip image fills to the owning shape geometry when it is not a plain rect."""
+    if geom is None or geom.tag == "line":
+        return image_xml
+    if geom.tag == "rect" and not geom.attrs.get("rx") and not geom.attrs.get("ry"):
+        return image_xml
+
+    ctx.clip_seq[0] += 1
+    clip_id = f"{ctx.group_id_prefix}clip{ctx.clip_seq[0]}"
+    clip_shape = _geom_to_svg(geom)
+    ctx.defs.append(
+        f'<clipPath id="{clip_id}" clipPathUnits="userSpaceOnUse">'
+        f'{clip_shape}</clipPath>'
+    )
+    return _inject_clip_path(image_xml, clip_id)
+
+
+def _inject_clip_path(image_xml: str, clip_id: str) -> str:
+    clip_attr = f' clip-path="url(#{clip_id})"'
+    if image_xml.startswith("<image"):
+        return image_xml.replace("<image", f"<image{clip_attr}", 1)
+    if image_xml.startswith("<svg"):
+        return image_xml.replace("<svg", f"<svg{clip_attr}", 1)
+    return image_xml
 
 
 # ---------------------------------------------------------------------------

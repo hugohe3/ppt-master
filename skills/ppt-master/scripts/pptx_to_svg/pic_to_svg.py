@@ -46,8 +46,8 @@ class PictureResult:
     media: dict[str, bytes] = field(default_factory=dict)
 
 
-def convert_picture(
-    pic_elem: ET.Element,
+def convert_blip_fill(
+    blip_fill_elem: ET.Element,
     xfrm: Xfrm,
     slide_part: PartRef,
     pkg: OoxmlPackage,
@@ -55,12 +55,13 @@ def convert_picture(
     media_subdir: str = "assets",
     embed_inline: bool = False,
 ) -> PictureResult:
-    """Translate <p:pic> to SVG <image> (or nested <svg>+<image> for cropping)."""
-    blip_fill = pic_elem.find("p:blipFill", NS)
-    if blip_fill is None:
-        return PictureResult()
+    """Convert an <a:blipFill> element to SVG <image>.
 
-    blip = blip_fill.find("a:blip", NS)
+    Handles image fill for both:
+    - <p:pic><p:blipFill> (standard picture elements)
+    - <p:sp><p:spPr><a:blipFill> (shape with image fill, e.g. Canva exports)
+    """
+    blip = blip_fill_elem.find("a:blip", NS)
     if blip is None:
         return PictureResult()
 
@@ -81,11 +82,11 @@ def convert_picture(
     href = _build_href(filename, img_bytes, media_subdir, embed_inline)
 
     # srcRect: l/t/r/b in 1/100000ths (so 50000 = 50%).
-    src_rect = blip_fill.find("a:srcRect", NS)
+    src_rect = blip_fill_elem.find("a:srcRect", NS)
     crop = _parse_src_rect(src_rect)
 
     # stretch / tile: default stretch+fillRect means "fill, ignore aspect ratio".
-    has_stretch = blip_fill.find("a:stretch") is not None
+    has_stretch = blip_fill_elem.find("a:stretch") is not None
     if not has_stretch:
         # tile mode is rare; for v1 fall back to plain image.
         pass
@@ -115,6 +116,27 @@ def convert_picture(
     if not embed_inline:
         media[filename] = img_bytes
     return PictureResult(svg=svg, media=media)
+
+
+def convert_picture(
+    pic_elem: ET.Element,
+    xfrm: Xfrm,
+    slide_part: PartRef,
+    pkg: OoxmlPackage,
+    *,
+    media_subdir: str = "assets",
+    embed_inline: bool = False,
+) -> PictureResult:
+    """Translate <p:pic> to SVG <image> (or nested <svg>+<image> for cropping)."""
+    blip_fill = pic_elem.find("p:blipFill", NS)
+    if blip_fill is None:
+        return PictureResult()
+
+    return convert_blip_fill(
+        blip_fill, xfrm, slide_part, pkg,
+        media_subdir=media_subdir,
+        embed_inline=embed_inline,
+    )
 
 
 # ---------------------------------------------------------------------------
