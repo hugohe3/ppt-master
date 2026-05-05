@@ -1317,8 +1317,9 @@ def _resolve_image_src_rect(
 
     Slice mode is resolved into a srcRect so the original image is embedded
     intact and PowerPoint's crop tool / "Reset Picture" continue to work.
-    Meet mode falls through to the legacy stretch path for now (visual
-    behaviour unchanged from prior versions).
+    Meet mode is handled separately by ``_resolve_image_meet_fit`` (which
+    shrinks the picture frame to match image aspect ratio); none mode keeps
+    the legacy stretch behaviour intentionally.
     """
     par = (elem.get('preserveAspectRatio') or 'xMidYMid meet').strip()
     parts = par.split()
@@ -1326,7 +1327,7 @@ def _resolve_image_src_rect(
     mode = parts[1] if len(parts) > 1 else 'meet'
 
     if align == 'none' or mode != 'slice':
-        return ''  # meet/none → keep legacy stretch
+        return ''  # meet handled by frame fit; none → stretch is correct per SVG spec
 
     img_w, img_h = _read_image_size(img_data)
     if img_w is None or img_h is None:
@@ -1338,6 +1339,57 @@ def _resolve_image_src_rect(
 
     l, t, r, b = rect
     return f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
+
+
+def _resolve_image_meet_fit(
+    elem: ET.Element,
+    img_data: bytes,
+    box_w: float, box_h: float,
+) -> tuple[float, float, float, float] | None:
+    """For SVG ``preserveAspectRatio="<align> meet"``, compute the letterboxed
+    sub-rectangle ``(dx, dy, fit_w, fit_h)`` inside the original box that
+    matches the image's intrinsic aspect ratio.
+
+    PowerPoint has no native ``meet`` semantic — ``<a:stretch><a:fillRect/>``
+    fills the entire frame and would distort the image whenever the SVG
+    container ratio differs from the source image ratio. The fix is to shrink
+    the ``<p:pic>`` frame itself (off + ext) so the frame and image share an
+    aspect ratio; the stretch then fills a correctly-shaped frame.
+
+    Returns ``None`` when the adjustment is not applicable:
+      - mode is ``slice`` (handled by srcRect path)
+      - align is ``none`` (SVG spec says: stretch — do not adjust)
+      - intrinsic image dimensions cannot be read
+      - frame already matches image ratio (no-op)
+    """
+    par = (elem.get('preserveAspectRatio') or 'xMidYMid meet').strip()
+    parts = par.split()
+    align = parts[0] if parts else 'xMidYMid'
+    mode = parts[1] if len(parts) > 1 else 'meet'
+
+    if align == 'none' or mode == 'slice':
+        return None
+
+    img_w, img_h = _read_image_size(img_data)
+    if img_w is None or img_h is None or img_w <= 0 or img_h <= 0:
+        return None
+    if box_w <= 0 or box_h <= 0:
+        return None
+
+    scale = min(box_w / img_w, box_h / img_h)
+    fit_w = img_w * scale
+    fit_h = img_h * scale
+
+    if abs(fit_w - box_w) < 0.5 and abs(fit_h - box_h) < 0.5:
+        return None  # already matches — no adjustment
+
+    x_anchor = {'xMin': 0.0, 'xMid': 0.5, 'xMax': 1.0}.get(align[:4], 0.5)
+    y_anchor = {'YMin': 0.0, 'YMid': 0.5, 'YMax': 1.0}.get(align[4:], 0.5)
+
+    dx = (box_w - fit_w) * x_anchor
+    dy = (box_h - fit_h) * y_anchor
+
+    return (dx, dy, fit_w, fit_h)
 
 
 def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
@@ -1416,11 +1468,25 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     # baking the crop into the embedded asset.
     src_rect_xml = _resolve_image_src_rect(elem, img_data, w, h)
 
+    # Resolve preserveAspectRatio="<align> meet" by shrinking the picture
+    # frame to match the image's aspect ratio. Skipped when a real clip-path
+    # is in effect: clip geometry is computed against the original-box
+    # coordinate space and would no longer line up after a frame shift.
+    has_clip = bool(elem.get('clip-path')) and elem.get('clip-path') != 'none'
+    meet_fit = None if has_clip else _resolve_image_meet_fit(elem, img_data, w, h)
+
     shape_id = ctx.next_id()
-    off_x = px_to_emu(x)
-    off_y = px_to_emu(y)
-    ext_cx = px_to_emu(w)
-    ext_cy = px_to_emu(h)
+    if meet_fit is not None:
+        dx, dy, fit_w, fit_h = meet_fit
+        off_x = px_to_emu(x + dx)
+        off_y = px_to_emu(y + dy)
+        ext_cx = px_to_emu(fit_w)
+        ext_cy = px_to_emu(fit_h)
+    else:
+        off_x = px_to_emu(x)
+        off_y = px_to_emu(y)
+        ext_cx = px_to_emu(w)
+        ext_cy = px_to_emu(h)
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
