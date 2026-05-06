@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import re
+import math
 from xml.etree import ElementTree as ET
 
-from .drawingml_context import ConvertContext
+from .drawingml_context import AffineMatrix, ConvertContext, IDENTITY_MATRIX
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -127,6 +128,140 @@ def _f(val: str | None, default: float = 0.0) -> float:
         return float(val)
     except (ValueError, TypeError):
         return default
+
+
+# ---------------------------------------------------------------------------
+# SVG transform matrix helpers
+# ---------------------------------------------------------------------------
+
+_TRANSFORM_RE = re.compile(r'([a-zA-Z]+)\(([^)]*)\)')
+_NUMBER_RE = re.compile(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?')
+
+
+def matrix_multiply(left: AffineMatrix, right: AffineMatrix) -> AffineMatrix:
+    """Compose two SVG affine matrices, applying ``right`` before ``left``."""
+    a1, b1, c1, d1, e1, f1 = left
+    a2, b2, c2, d2, e2, f2 = right
+    return (
+        a1 * a2 + c1 * b2,
+        b1 * a2 + d1 * b2,
+        a1 * c2 + c1 * d2,
+        b1 * c2 + d1 * d2,
+        a1 * e2 + c1 * f2 + e1,
+        b1 * e2 + d1 * f2 + f1,
+    )
+
+
+def _translate_matrix(tx: float, ty: float = 0.0) -> AffineMatrix:
+    return (1.0, 0.0, 0.0, 1.0, tx, ty)
+
+
+def _scale_matrix(sx: float, sy: float | None = None) -> AffineMatrix:
+    return (sx, 0.0, 0.0, sx if sy is None else sy, 0.0, 0.0)
+
+
+def _rotate_matrix(angle_deg: float, cx: float | None = None, cy: float | None = None) -> AffineMatrix:
+    rad = math.radians(angle_deg)
+    cos_a = math.cos(rad)
+    sin_a = math.sin(rad)
+    rot = (cos_a, sin_a, -sin_a, cos_a, 0.0, 0.0)
+    if cx is None or cy is None:
+        return rot
+    return matrix_multiply(
+        matrix_multiply(_translate_matrix(cx, cy), rot),
+        _translate_matrix(-cx, -cy),
+    )
+
+
+def parse_transform_matrix(transform_str: str) -> AffineMatrix:
+    """Parse an SVG transform list into one affine matrix."""
+    if not transform_str:
+        return IDENTITY_MATRIX
+
+    matrix = IDENTITY_MATRIX
+    for name, raw_args in _TRANSFORM_RE.findall(transform_str):
+        args = [float(n) for n in _NUMBER_RE.findall(raw_args)]
+        name = name.lower()
+        local = IDENTITY_MATRIX
+
+        if name == 'matrix' and len(args) >= 6:
+            local = (args[0], args[1], args[2], args[3], args[4], args[5])
+        elif name == 'translate' and args:
+            local = _translate_matrix(args[0], args[1] if len(args) > 1 else 0.0)
+        elif name == 'scale' and args:
+            local = _scale_matrix(args[0], args[1] if len(args) > 1 else None)
+        elif name == 'rotate' and args:
+            local = _rotate_matrix(
+                args[0],
+                args[1] if len(args) > 2 else None,
+                args[2] if len(args) > 2 else None,
+            )
+
+        matrix = matrix_multiply(matrix, local)
+
+    return matrix
+
+
+def transform_point(matrix: AffineMatrix, x: float, y: float) -> tuple[float, float]:
+    """Apply an SVG affine matrix to a point."""
+    a, b, c, d, e, f = matrix
+    return a * x + c * y + e, b * x + d * y + f
+
+
+def rect_to_dml_xfrm(
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    matrix: AffineMatrix,
+) -> tuple[str, int, int, int, int, tuple[int, int, int, int]]:
+    """Map a transformed SVG rectangle to DrawingML xfrm attributes.
+
+    DrawingML can represent rotated/flipped rectangles, but not arbitrary
+    shear. Template-import picture wrappers only use translate/rotate/scale,
+    so decomposing the transformed local X/Y axes is sufficient here.
+    """
+    p0 = transform_point(matrix, x, y)
+    p1 = transform_point(matrix, x + w, y)
+    p2 = transform_point(matrix, x + w, y + h)
+    p3 = transform_point(matrix, x, y + h)
+
+    ux = p1[0] - p0[0]
+    uy = p1[1] - p0[1]
+    vx = p3[0] - p0[0]
+    vy = p3[1] - p0[1]
+
+    rect_w = max(math.hypot(ux, uy), 0.001)
+    rect_h = max(math.hypot(vx, vy), 0.001)
+    cross = ux * vy - uy * vx
+
+    if cross < 0:
+        angle_deg = math.degrees(math.atan2(-uy, -ux))
+        flip_attr = ' flipH="1"'
+    else:
+        angle_deg = math.degrees(math.atan2(uy, ux))
+        flip_attr = ''
+
+    rot = round(angle_deg * ANGLE_UNIT)
+    rot_attr = f' rot="{rot}"' if rot else ''
+
+    center_x = (p0[0] + p2[0]) / 2
+    center_y = (p0[1] + p2[1]) / 2
+    off_x = px_to_emu(center_x - rect_w / 2)
+    off_y = px_to_emu(center_y - rect_h / 2)
+    ext_cx = px_to_emu(rect_w)
+    ext_cy = px_to_emu(rect_h)
+
+    xs = [p0[0], p1[0], p2[0], p3[0]]
+    ys = [p0[1], p1[1], p2[1], p3[1]]
+    bounds = (
+        px_to_emu(min(xs)),
+        px_to_emu(min(ys)),
+        px_to_emu(max(xs)),
+        px_to_emu(max(ys)),
+    )
+
+    return f'{flip_attr}{rot_attr}', off_x, off_y, ext_cx, ext_cy, bounds
 
 
 def _extract_inheritable_styles(elem: ET.Element) -> dict[str, str]:

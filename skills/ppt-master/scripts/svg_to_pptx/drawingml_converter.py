@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 from .drawingml_context import ConvertContext, ShapeResult
 from .drawingml_utils import (
     SVG_NS,
-    _extract_inheritable_styles, resolve_url_id,
+    _extract_inheritable_styles, parse_transform_matrix, resolve_url_id,
 )
 from .drawingml_styles import build_effect_xml
 from .drawingml_elements import (
@@ -100,7 +100,25 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     filter_id = resolve_url_id(elem.get('filter', ''))
     style_overrides = _extract_inheritable_styles(elem)
-    child_ctx = ctx.child(dx, dy, sx, sy, filter_id, style_overrides)
+
+    elem_id = elem.get('id')
+    should_animate_group = ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id)
+    visual_children = [
+        child for child in elem
+        if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
+    ]
+    matrix_supported = bool(transform) and visual_children and all(
+        _supports_matrix_transform(child) for child in visual_children
+    )
+    if matrix_supported:
+        child_ctx = ctx.child(
+            0, 0, 1.0, 1.0,
+            transform_matrix=parse_transform_matrix(transform),
+            filter_id=filter_id,
+            style_overrides=style_overrides,
+        )
+    else:
+        child_ctx = ctx.child(dx, dy, sx, sy, filter_id=filter_id, style_overrides=style_overrides)
 
     child_results: list[ShapeResult] = []
     for child in elem:
@@ -112,9 +130,6 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     if not child_results:
         return None
-
-    elem_id = elem.get('id')
-    should_animate_group = ctx.depth == 0 and elem_id and not _is_chrome_id(elem_id)
 
     # Single-child non-semantic groups are flattened to reduce nesting. Top-level
     # semantic groups are preserved so animations target the group, not its
@@ -159,7 +174,7 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     if filter_id and filter_id in ctx.defs:
         group_effect = build_effect_xml(ctx.defs[filter_id])
 
-    rot_emu = int(angle_deg * 60000)
+    rot_emu = 0 if matrix_supported else int(angle_deg * 60000)
     rot_attr = f' rot="{rot_emu}"' if rot_emu else ''
 
     return ShapeResult(xml=f'''<p:grpSp>
@@ -186,6 +201,30 @@ def convert_g(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 # ---------------------------------------------------------------------------
 
 _NON_VISUAL_TAGS = frozenset(('defs', 'title', 'desc', 'metadata', 'style'))
+
+
+def _supports_matrix_transform(elem: ET.Element) -> bool:
+    """Return whether this subtree can consume a full affine matrix directly."""
+    tag = elem.tag.replace(f'{{{SVG_NS}}}', '')
+    if tag == 'image':
+        return True
+    if tag == 'svg':
+        visual_children = [
+            child for child in elem
+            if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
+        ]
+        return len(visual_children) == 1 and (
+            visual_children[0].tag.replace(f'{{{SVG_NS}}}', '') == 'image'
+        )
+    if tag == 'g':
+        visual_children = [
+            child for child in elem
+            if child.tag.replace(f'{{{SVG_NS}}}', '') not in _NON_VISUAL_TAGS
+        ]
+        return bool(visual_children) and all(
+            _supports_matrix_transform(child) for child in visual_children
+        )
+    return False
 
 _CONVERTERS = {
     'rect': convert_rect,

@@ -14,6 +14,7 @@ from .drawingml_utils import (
     SVG_NS, XLINK_NS, ANGLE_UNIT, FONT_PX_TO_HUNDREDTHS_PT, DASH_PRESETS,
     px_to_emu, _f, _get_attr,
     ctx_x, ctx_y, ctx_w, ctx_h,
+    rect_to_dml_xfrm,
     parse_hex_color, resolve_url_id, get_effective_filter_id,
     parse_font_family, is_cjk_char, estimate_text_width,
     _xml_escape,
@@ -1250,6 +1251,28 @@ def _resolve_clip_geometry(
 # image
 # ---------------------------------------------------------------------------
 
+def _picture_xfrm_from_rect(
+    ctx: ConvertContext,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+) -> tuple[str, int, int, int, int, tuple[int, int, int, int]]:
+    """Build DrawingML xfrm data for a picture rectangle."""
+    if ctx.use_transform_matrix:
+        return rect_to_dml_xfrm(x, y, w, h, ctx.transform_matrix)
+
+    x_t = ctx_x(x, ctx)
+    y_t = ctx_y(y, ctx)
+    w_t = ctx_w(w, ctx)
+    h_t = ctx_h(h, ctx)
+    off_x = px_to_emu(x_t)
+    off_y = px_to_emu(y_t)
+    ext_cx = px_to_emu(w_t)
+    ext_cy = px_to_emu(h_t)
+    return '', off_x, off_y, ext_cx, ext_cy, (off_x, off_y, off_x + ext_cx, off_y + ext_cy)
+
+
 def _read_image_size(data: bytes) -> tuple[int | None, int | None]:
     """Read intrinsic image dimensions (width, height) from raw bytes.
 
@@ -1420,10 +1443,16 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     raw_w = _f(elem.get('width'))
     raw_h = _f(elem.get('height'))
 
-    x = ctx_x(raw_x, ctx)
-    y = ctx_y(raw_y, ctx)
-    w = ctx_w(raw_w, ctx)
-    h = ctx_h(raw_h, ctx)
+    if ctx.use_transform_matrix:
+        x = raw_x
+        y = raw_y
+        w = raw_w
+        h = raw_h
+    else:
+        x = ctx_x(raw_x, ctx)
+        y = ctx_y(raw_y, ctx)
+        w = ctx_w(raw_w, ctx)
+        h = ctx_h(raw_h, ctx)
 
     if w <= 0 or h <= 0:
         return None
@@ -1464,7 +1493,7 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 
     rot = 0
     transform = elem.get('transform')
-    if transform:
+    if transform and not ctx.use_transform_matrix:
         r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
         if r_match:
             rot = int(float(r_match.group(1)) * ANGLE_UNIT)
@@ -1489,15 +1518,15 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     shape_id = ctx.next_id()
     if meet_fit is not None:
         dx, dy, fit_w, fit_h = meet_fit
-        off_x = px_to_emu(x + dx)
-        off_y = px_to_emu(y + dy)
-        ext_cx = px_to_emu(fit_w)
-        ext_cy = px_to_emu(fit_h)
+        xfrm_attr, off_x, off_y, ext_cx, ext_cy, bounds_emu = _picture_xfrm_from_rect(
+            ctx, x + dx, y + dy, fit_w, fit_h,
+        )
     else:
-        off_x = px_to_emu(x)
-        off_y = px_to_emu(y)
-        ext_cx = px_to_emu(w)
-        ext_cy = px_to_emu(h)
+        xfrm_attr, off_x, off_y, ext_cx, ext_cy, bounds_emu = _picture_xfrm_from_rect(
+            ctx, x, y, w, h,
+        )
+    if rot_attr:
+        xfrm_attr += rot_attr
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
@@ -1510,11 +1539,11 @@ def convert_image(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
-<a:xfrm{rot_attr}><a:off x="{off_x}" y="{off_y}"/>
+<a:xfrm{xfrm_attr}><a:off x="{off_x}" y="{off_y}"/>
 <a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
 {clip_geom}
 </p:spPr>
-</p:pic>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+</p:pic>''', bounds_emu=bounds_emu)
 
 
 # ---------------------------------------------------------------------------
@@ -1603,10 +1632,16 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
     if svg_w <= 0 or svg_h <= 0:
         return None
 
-    x = ctx_x(svg_x, ctx)
-    y = ctx_y(svg_y, ctx)
-    w = ctx_w(svg_w, ctx)
-    h = ctx_h(svg_h, ctx)
+    if ctx.use_transform_matrix:
+        x = svg_x
+        y = svg_y
+        w = svg_w
+        h = svg_h
+    else:
+        x = ctx_x(svg_x, ctx)
+        y = ctx_y(svg_y, ctx)
+        w = ctx_w(svg_w, ctx)
+        h = ctx_h(svg_h, ctx)
 
     src_rect_xml = ''
     view_box = elem.get('viewBox', '')
@@ -1656,17 +1691,18 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
 
     rot = 0
     transform = elem.get('transform')
-    if transform:
+    if transform and not ctx.use_transform_matrix:
         r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
         if r_match:
             rot = int(float(r_match.group(1)) * ANGLE_UNIT)
     rot_attr = f' rot="{rot}"' if rot else ''
 
     shape_id = ctx.next_id()
-    off_x = px_to_emu(x)
-    off_y = px_to_emu(y)
-    ext_cx = px_to_emu(w)
-    ext_cy = px_to_emu(h)
+    xfrm_attr, off_x, off_y, ext_cx, ext_cy, bounds_emu = _picture_xfrm_from_rect(
+        ctx, x, y, w, h,
+    )
+    if rot_attr:
+        xfrm_attr += rot_attr
 
     return ShapeResult(xml=f'''<p:pic>
 <p:nvPicPr>
@@ -1679,8 +1715,8 @@ def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | N
 {src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
 </p:blipFill>
 <p:spPr>
-<a:xfrm{rot_attr}><a:off x="{off_x}" y="{off_y}"/>
+<a:xfrm{xfrm_attr}><a:off x="{off_x}" y="{off_y}"/>
 <a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
 <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
 </p:spPr>
-</p:pic>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))
+</p:pic>''', bounds_emu=bounds_emu)

@@ -6,6 +6,9 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 from dataclasses import dataclass, field
 
+AffineMatrix = tuple[float, float, float, float, float, float]
+IDENTITY_MATRIX: AffineMatrix = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+
 
 @dataclass
 class ShapeResult:
@@ -30,6 +33,8 @@ class ConvertContext:
     translate_y: float = 0.0
     scale_x: float = 1.0
     scale_y: float = 1.0
+    transform_matrix: AffineMatrix = IDENTITY_MATRIX
+    use_transform_matrix: bool = False
     filter_id: str | None = None
     media_files: dict[str, bytes] = field(default_factory=dict)
     rel_entries: list[dict[str, str]] = field(default_factory=list)
@@ -60,6 +65,7 @@ class ConvertContext:
         dy: float = 0,
         sx: float = 1.0,
         sy: float = 1.0,
+        transform_matrix: AffineMatrix | None = None,
         filter_id: str | None = None,
         style_overrides: dict[str, str] | None = None,
     ) -> ConvertContext:
@@ -70,9 +76,23 @@ class ConvertContext:
             dy: Y translation delta.
             sx: X scale factor.
             sy: Y scale factor.
+            transform_matrix: Full affine transform to accumulate for
+                converters that can faithfully map it to DrawingML.
             filter_id: Override filter ID.
             style_overrides: Style attribute overrides from child element.
         """
+        local_matrix = transform_matrix or IDENTITY_MATRIX
+        a1, b1, c1, d1, e1, f1 = self.transform_matrix
+        a2, b2, c2, d2, e2, f2 = local_matrix
+        combined_matrix: AffineMatrix = (
+            a1 * a2 + c1 * b2,
+            b1 * a2 + d1 * b2,
+            a1 * c2 + c1 * d2,
+            b1 * c2 + d1 * d2,
+            a1 * e2 + c1 * f2 + e1,
+            b1 * e2 + d1 * f2 + f1,
+        )
+
         merged = dict(self.inherited_styles)
 
         if style_overrides:
@@ -101,6 +121,8 @@ class ConvertContext:
             translate_y=self.translate_y + dy,
             scale_x=self.scale_x * sx,
             scale_y=self.scale_y * sy,
+            transform_matrix=combined_matrix,
+            use_transform_matrix=self.use_transform_matrix or transform_matrix is not None,
             filter_id=filter_id or self.filter_id,
             media_files=self.media_files,
             rel_entries=self.rel_entries,
