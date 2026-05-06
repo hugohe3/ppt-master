@@ -54,12 +54,50 @@ pip install -r requirements.txt
 
 Wait for it to finish. You should see `Successfully installed ...` at the end.
 
+### Alternative — uv (optional, full Git clone)
+
+If you cloned the **full** repository and want to use [uv](https://docs.astral.sh/uv/) (faster installs, reproducible lockfile via `uv.lock`):
+
+1. **Install uv** (PowerShell):
+
+   ```powershell
+   irm https://astral.sh/uv/install.ps1 | iex
+   ```
+
+   **Restart PowerShell**, then check: `uv --version`.
+
+2. **Python version:** `uv sync` must satisfy [`requires-python`](../pyproject.toml) in `pyproject.toml` (**>= 3.13** with the current lockfile). You can use your system Python if it qualifies, or let uv fetch one: `uv python install 3.13`.
+
+3. From the **repository root** (same folder as `pyproject.toml`):
+
+   ```powershell
+   cd C:\Users\YourName\ppt-master   # ← adjust to your actual path
+   uv sync
+   ```
+
+   On some setups the package cache and `.venv` sit on different drives; if uv warns about **hardlinks**, use copy mode once:
+
+   ```powershell
+   $env:UV_LINK_MODE = "copy"
+   uv sync
+   ```
+
+4. **Maintenance:** keep [`pyproject.toml`](../pyproject.toml) aligned with [`skills/ppt-master/requirements.txt`](../skills/ppt-master/requirements.txt); after dependency changes run **`uv lock`**. Avoid mixing ad-hoc **`uv pip install -r …`** with repeated **`uv sync`** in the same `.venv` — sync will remove undeclared packages.
+
+See also the **Optional: uv** section in the [main README](../README.md#1-prerequisites).
+
 ---
 
 ## Step 4 — Verify Your Setup
 
 ```powershell
 python -c "import pptx; import fitz; print('All core dependencies OK')"
+```
+
+If you use **uv**, run the same check inside the project environment:
+
+```powershell
+uv run python -c "import pptx; import fitz; print('All core dependencies OK')"
 ```
 
 ✅ Output: `All core dependencies OK` → you're good.

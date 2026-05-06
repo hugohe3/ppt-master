@@ -99,13 +99,33 @@ PPT Master 不一样：
 
 ### 1. 前置条件
 
-**只需装 Python 即可。** 其余依赖通过 `pip install -r requirements.txt` 一次装齐。
+**只需装 Python 即可。** 其余依赖可 **`pip install -r requirements.txt`** 一次装齐；若使用带 **`pyproject.toml` + `uv.lock`** 的完整仓库，也可选用 **[uv](https://docs.astral.sh/uv/)** 通过 **`uv sync`** 安装（可选）。
 
 | 依赖 | 是否必须 | 用途 |
 |------|:--------:|------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **必需** | 核心运行时——唯一真正需要安装的东西 |
 
-> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT 了。
+> **一句话总结** — 装好 Python，跑一行 `pip install -r requirements.txt`，就可以开始生成 PPT。（**完整 Git 克隆**的用户也可用 **`uv sync`**，见下文 **可选：uv**。）
+
+<details>
+<summary><strong>可选：uv</strong> — 更快安装、锁定版本（完整仓库克隆）</summary>
+
+若你克隆的是**完整**仓库且已安装 [uv](https://docs.astral.sh/uv/)：
+
+```bash
+cd ppt-master
+uv sync
+```
+
+会根据 `pyproject.toml` 与 `uv.lock` 安装到 `.venv`。`pyproject.toml` 中的直接依赖应与 [`skills/ppt-master/requirements.txt`](./skills/ppt-master/requirements.txt) 保持一致；若只改一边，请同步另一边并执行 **`uv lock`** 后再提交。
+
+**注意**
+
+- **不要混用**：在同一环境里先 `uv pip install -r …` 再反复 `uv sync`，`sync` 会把环境收敛到锁文件声明的依赖，可能卸掉未写入项目的包。
+- **Python 版本**：走 `uv sync` 时需满足 `pyproject.toml` 中的 `requires-python`（当前为 **>= 3.13**）。`pip install -r requirements.txt` 仍是 marketplace / 部分安装场景下的默认方式，也适用于 README 面向的较低 Python 版本（在 skill 支持的范围内）。
+- **Windows**：若缓存与 `.venv` 不在同一文件系统，可能出现硬链接回退提示，可设置环境变量 **`UV_LINK_MODE=copy`** 或使用 **`uv sync --link-mode=copy`**。
+- 运行脚本时用 **`uv run python …`**，或先激活 `.venv`，避免 IDE / Agent 用到错误解释器。
+</details>
 
 <details open>
 <summary><strong>Windows</strong> — 请看专门的手把手安装指南 ⚠️</summary>
@@ -186,6 +206,8 @@ cd ppt-master
 ```bash
 pip install -r requirements.txt
 ```
+
+**完整克隆 + uv：** 在仓库根目录也可执行 **`uv sync`** 代替上一行（说明见上文 **可选：uv**）。
 
 日常更新（方式 A / B）：`python3 skills/ppt-master/scripts/update_repo.py`
 

@@ -99,13 +99,33 @@ I'm a finance professional (CPA · CPV · Consulting Engineer (Investment)) who 
 
 ### 1. Prerequisites
 
-**You only need Python.** Everything else is installed via `pip install -r requirements.txt`.
+**You only need Python.** Everything else is installed via `pip install -r requirements.txt`, or via **`uv sync`** if you use the full repository with `pyproject.toml` + `uv.lock` (optional).
 
 | Dependency | Required? | What it does |
 |------------|:---------:|--------------|
 | [Python](https://www.python.org/downloads/) 3.10+ | ✅ **Yes** | Core runtime — the only thing you actually need to install |
 
-> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations.
+> **TL;DR** — Install Python, run `pip install -r requirements.txt`, and you're ready to generate presentations. (Full **Git clone** users may use **`uv sync`** instead — see **Optional: uv** below.)
+
+<details>
+<summary><strong>Optional: uv</strong> — fast installs &amp; locked versions (full repo clone)</summary>
+
+If you cloned the **full** repository and have [uv](https://docs.astral.sh/uv/) installed:
+
+```bash
+cd ppt-master
+uv sync
+```
+
+This installs into `.venv` from `pyproject.toml` and `uv.lock`. Direct dependencies are intended to stay aligned with [`skills/ppt-master/requirements.txt`](./skills/ppt-master/requirements.txt); if you change one, update the other and run **`uv lock`** before committing.
+
+**Notes**
+
+- **Avoid mixing** `uv sync` with ad-hoc `uv pip install -r …` in the same environment — `sync` reconciles the venv to the lockfile and may uninstall packages that are not declared in the project.
+- **Python version:** `uv sync` must satisfy [`requires-python`](./pyproject.toml) in `pyproject.toml` (currently **>= 3.13**). The `pip install -r requirements.txt` path remains the default for marketplace / partial installs and older Pythons where supported.
+- **Windows:** if the cache and `.venv` are on different filesystems, you may see a hardlink fallback warning — set `UV_LINK_MODE=copy` or use `uv sync --link-mode=copy`.
+- Run scripts with **`uv run python …`** or activate `.venv` first so the agent uses the same interpreter.
+</details>
 
 <details open>
 <summary><strong>Windows</strong> — see the dedicated step-by-step guide ⚠️</summary>
@@ -182,6 +202,8 @@ Then install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+**Full clone + uv:** from the repo root, you can run **`uv sync`** instead (see **Optional: uv** under [Prerequisites](#1-prerequisites)).
 
 To update later (Option A / B): `python3 skills/ppt-master/scripts/update_repo.py`
 

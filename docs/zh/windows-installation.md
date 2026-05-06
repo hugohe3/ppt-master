@@ -57,12 +57,50 @@ pip install -r requirements.txt
 
 等待安装完成，最后看到 `Successfully installed ...` 就行。
 
+### 可选 — uv（完整 Git 克隆）
+
+若你克隆的是**完整**仓库，并希望用 [uv](https://docs.astral.sh/uv/)（安装更快、由 `uv.lock` 锁定版本）：
+
+1. **安装 uv**（PowerShell）：
+
+   ```powershell
+   irm https://astral.sh/uv/install.ps1 | iex
+   ```
+
+   **重新打开 PowerShell** 后执行：`uv --version` 确认可用。
+
+2. **Python 版本**：`uv sync` 需满足仓库根目录 [`pyproject.toml`](../../pyproject.toml) 中的 `requires-python`（当前锁文件对应 **>= 3.13**）。若本机 Python 不够新，可用 uv 安装：`uv python install 3.13`。
+
+3. 在**仓库根目录**（与 `pyproject.toml` 同级）执行：
+
+   ```powershell
+   cd C:\Users\你的用户名\ppt-master   # ← 替换为你的实际路径
+   uv sync
+   ```
+
+   若缓存目录与 `.venv` 不在同一磁盘，可能出现**硬链接**相关警告，可临时改用复制模式：
+
+   ```powershell
+   $env:UV_LINK_MODE = "copy"
+   uv sync
+   ```
+
+4. **维护**：[`pyproject.toml`](../../pyproject.toml) 与 [`skills/ppt-master/requirements.txt`](../../skills/ppt-master/requirements.txt) 应保持同步；改依赖后执行 **`uv lock`**。尽量不要在同一 `.venv` 里反复 **`uv pip install -r …`** 再 **`uv sync`** —— `sync` 会卸掉未写入项目的包。
+
+更多说明见主文档 [README](../../README_CN.md) 中 **可选：uv**。
+
 ---
 
 ## Step 4 — 验证安装
 
 ```powershell
 python -c "import pptx; import fitz; print('All core dependencies OK')"
+```
+
+若使用 **uv**，在同一环境中检查：
+
+```powershell
+uv run python -c "import pptx; import fitz; print('All core dependencies OK')"
 ```
 
 ✅ 输出 `All core dependencies OK` → 核心环境没问题。
