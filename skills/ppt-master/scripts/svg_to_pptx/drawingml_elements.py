@@ -1563,3 +1563,124 @@ def convert_ellipse(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         ),
         bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy),
     )
+
+
+# ---------------------------------------------------------------------------
+# nested <svg> sprite (template-import round-trip)
+# ---------------------------------------------------------------------------
+
+# Inverse of pptx_to_svg/pic_to_svg.py:101-113 — that path writes a cropped
+# DrawingML picture as an outer <svg viewBox> wrapping a unit-rectangle <image>.
+# Without this converter, every cropped picture in a template-import SVG is
+# silently dropped on re-export.
+
+def convert_nested_svg(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
+    """Convert a nested <svg> sprite-crop wrapper to a DrawingML picture.
+
+    Pattern produced by pptx_to_svg::
+
+        <svg x="10" y="20" width="200" height="300" viewBox="0.5 0.3 0.5 0.7">
+          <image href="..." x="0" y="0" width="1" height="1" preserveAspectRatio="none"/>
+        </svg>
+
+    The viewBox crops the unit-rectangle inner image; that crop is mapped to a
+    DrawingML <a:srcRect> so PowerPoint can re-crop / "Reset Picture".
+    """
+    image_elem = elem.find(f'{{{SVG_NS}}}image')
+    if image_elem is None:
+        image_elem = elem.find('image')
+    if image_elem is None:
+        return None
+
+    href = image_elem.get('href') or image_elem.get(f'{{{XLINK_NS}}}href')
+    if not href:
+        return None
+
+    svg_x = _f(elem.get('x'))
+    svg_y = _f(elem.get('y'))
+    svg_w = _f(elem.get('width'))
+    svg_h = _f(elem.get('height'))
+    if svg_w <= 0 or svg_h <= 0:
+        return None
+
+    x = ctx_x(svg_x, ctx)
+    y = ctx_y(svg_y, ctx)
+    w = ctx_w(svg_w, ctx)
+    h = ctx_h(svg_h, ctx)
+
+    src_rect_xml = ''
+    view_box = elem.get('viewBox', '')
+    if view_box:
+        parts = view_box.strip().split()
+        if len(parts) == 4:
+            vb_x, vb_y, vb_w, vb_h = (float(p) for p in parts)
+            l = max(0, min(int(round(vb_x * 100000)), 100000))
+            t = max(0, min(int(round(vb_y * 100000)), 100000))
+            r = max(0, min(int(round((1.0 - vb_x - vb_w) * 100000)), 100000))
+            b = max(0, min(int(round((1.0 - vb_y - vb_h) * 100000)), 100000))
+            if l or t or r or b:
+                src_rect_xml = f'<a:srcRect l="{l}" t="{t}" r="{r}" b="{b}"/>'
+
+    if href.startswith('data:'):
+        match = re.match(r'data:image/(\w+);base64,(.+)', href, re.DOTALL)
+        if not match:
+            return None
+        img_format = match.group(1).lower()
+        if img_format == 'jpeg':
+            img_format = 'jpg'
+        img_data = base64.b64decode(match.group(2))
+    else:
+        if ctx.svg_dir is None:
+            return None
+        img_path = ctx.svg_dir / href
+        if not img_path.exists():
+            img_path = ctx.svg_dir.parent / href
+        if not img_path.exists():
+            print(f'  Warning: External image not found: {href}')
+            return None
+        img_format = img_path.suffix.lstrip('.').lower()
+        if img_format == 'jpeg':
+            img_format = 'jpg'
+        img_data = img_path.read_bytes()
+
+    img_idx = len(ctx.media_files) + 1
+    img_filename = f's{ctx.slide_num}_img{img_idx}.{img_format}'
+    ctx.media_files[img_filename] = img_data
+
+    r_id = ctx.next_rel_id()
+    ctx.rel_entries.append({
+        'id': r_id,
+        'type': 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/image',
+        'target': f'../media/{img_filename}',
+    })
+
+    rot = 0
+    transform = elem.get('transform')
+    if transform:
+        r_match = re.search(r'rotate\(\s*([-\d.]+)', transform)
+        if r_match:
+            rot = int(float(r_match.group(1)) * ANGLE_UNIT)
+    rot_attr = f' rot="{rot}"' if rot else ''
+
+    shape_id = ctx.next_id()
+    off_x = px_to_emu(x)
+    off_y = px_to_emu(y)
+    ext_cx = px_to_emu(w)
+    ext_cy = px_to_emu(h)
+
+    return ShapeResult(xml=f'''<p:pic>
+<p:nvPicPr>
+<p:cNvPr id="{shape_id}" name="Image {shape_id}"/>
+<p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>
+<p:nvPr/>
+</p:nvPicPr>
+<p:blipFill>
+<a:blip r:embed="{r_id}"/>
+{src_rect_xml}<a:stretch><a:fillRect/></a:stretch>
+</p:blipFill>
+<p:spPr>
+<a:xfrm{rot_attr}><a:off x="{off_x}" y="{off_y}"/>
+<a:ext cx="{ext_cx}" cy="{ext_cy}"/></a:xfrm>
+<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+</p:spPr>
+</p:pic>''', bounds_emu=(off_x, off_y, off_x + ext_cx, off_y + ext_cy))

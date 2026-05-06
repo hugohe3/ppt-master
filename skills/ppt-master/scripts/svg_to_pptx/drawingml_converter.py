@@ -16,7 +16,7 @@ from .drawingml_elements import (
     convert_rect, convert_circle, convert_ellipse,
     convert_line, convert_path,
     convert_polygon, convert_polyline,
-    convert_text, convert_image,
+    convert_text, convert_image, convert_nested_svg,
 )
 
 
@@ -198,6 +198,7 @@ _CONVERTERS = {
     'text': convert_text,
     'image': convert_image,
     'g': convert_g,
+    'svg': convert_nested_svg,
 }
 
 
