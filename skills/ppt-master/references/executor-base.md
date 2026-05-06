@@ -6,7 +6,18 @@
 
 ## 1. Template Adherence Rules
 
-If `templates/` exists in the project, follow the template structure:
+Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative). The legacy page-type table below is a **last-resort fallback** for legacy decks where `page_layouts` is missing.
+
+**Resolution order (per page):**
+
+1. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → load `templates/<chosen_template>/<basename>.svg` and inherit its structure.
+2. `page_layouts` exists but **no entry** for this page → **free design**, no template inheritance.
+3. `page_layouts` section absent (legacy deck) **and** `templates/` directory exists → fall back to the page-type table below, matching by SVG filename keyword (cover/chapter/content/ending/toc).
+4. No template at all → free design.
+
+> Note: `page_layouts` disambiguates the multiple content variants modern templates ship (e.g., `graduation_defense` has 8); the legacy table cannot.
+
+**Legacy fallback table** (used only when `page_layouts` is absent):
 
 | Page Type | Corresponding Template | Adherence Rules |
 |-----------|----------------------|-----------------|
@@ -21,7 +32,7 @@ If `templates/` exists in the project, follow the template structure:
 Before generating each page, output which template is used:
 
 ```
-📝 **Template mapping**: `templates/01_cover.svg` (or "None (free design)")
+📝 **Template mapping**: `templates/<chosen_template>/03a_content_image_text.svg` (or "None (free design)")
 🎯 **Adherence rules / layout strategy**: [specific description]
 ```
 
@@ -67,6 +78,24 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 **Missing `page_rhythm` section** → emit `warning: spec_lock.md missing page_rhythm — defaulting all pages to dense` once, fall back to `dense` for all pages.
 
 **Tag not found for current page** → fall back to `dense` silently. Do not invent a tag.
+
+**Per-page template lookup — `page_layouts` section**:
+
+Before drawing each page, look up its entry in `page_layouts`. The lookup result determines template inheritance per §1's resolution order:
+
+- Entry present (e.g., `P04: 03a_content_image_text`) → load `templates/<chosen_template>/03a_content_image_text.svg` and inherit it. The basename **must match** an actual file in the chosen template directory; if it doesn't, emit `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design` and proceed.
+- No entry for this page → free design, no inheritance. **Not an error** — Strategist intentionally left this page free.
+- Whole section absent → see §1 fallback (legacy page-type matching).
+
+Do **not** invent a layout entry, and do **not** assume a template just because `templates/` exists — if `page_layouts` is present but silent for this page, that silence is the instruction.
+
+**Per-page chart reference — `page_charts` section**:
+
+Before drawing each page, look up its entry in `page_charts`. The lookup result determines whether a `templates/charts/` reference is in play:
+
+- Entry present (e.g., `P09: timeline_horizontal`) → before laying out the chart, **read `templates/charts/timeline_horizontal.svg`** as the structural starting point. Adapt composition/density/color/decoration to fit this deck; do not blindly copy. Cross-reference `templates/charts/charts_index.json` if you need the chart's purpose summary.
+- No entry for this page → either no chart on this page, or a chart that didn't match any catalog template (Strategist's `no-template-match` fallback). Design the visualization from scratch using `design_spec.md §VII` for guidance.
+- Whole section absent → no chart pages in this deck.
 
 ---
 
