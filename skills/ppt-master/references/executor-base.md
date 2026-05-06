@@ -6,13 +6,33 @@
 
 ## 1. Template Adherence Rules
 
+### 1.0 Pre-generation Batch Read
+
+**Hard rule**: Before the first SVG page, batch-read every template SVG this deck will reference. Read once up front, never re-read during generation.
+
+| Source list | Read path |
+|---|---|
+| Every distinct `<basename>` in `spec_lock.md page_layouts` | `templates/<chosen_template>/<basename>.svg` |
+| Every distinct chart name in `spec_lock.md page_charts` | `templates/charts/<chart_name>.svg` |
+| Chart types in `design_spec.md §VII` not covered above | `templates/charts/<chart_name>.svg` |
+
+**Forbidden — re-reading during generation**:
+- Layout SVG already loaded in this batch
+- Chart SVG already loaded in this batch
+
+`spec_lock.md` is the only file re-read per page (§2.1).
+
+**Exception**: user mid-deck adds pages or swaps templates introducing a basename/chart absent from the original batch → read the new file once, continue.
+
+> Note: batched prefix reads stay in the cached prompt prefix; per-page `spec_lock.md` re-reads append below and benefit from that cache. Scattered on-demand reads of layout/chart SVGs would invalidate downstream cache and sit in the compression-vulnerable mid-context region.
+
 Resolve the per-page template SVG via `spec_lock.md page_layouts` (authoritative). The legacy page-type table below is a **last-resort fallback** for legacy decks where `page_layouts` is missing.
 
 **Resolution order (per page):**
 
-1. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → load `templates/<chosen_template>/<basename>.svg` and inherit its structure.
+1. `spec_lock.md page_layouts` has `P<NN>: <basename>` for this page → inherit the structure of `templates/<chosen_template>/<basename>.svg` (already in context from §1.0).
 2. `page_layouts` exists but **no entry** for this page → **free design**, no template inheritance.
-3. `page_layouts` section absent (legacy deck) **and** `templates/` directory exists → fall back to the page-type table below, matching by SVG filename keyword (cover/chapter/content/ending/toc).
+3. `page_layouts` section absent (legacy deck) **and** `templates/` directory exists → fall back to the page-type table below, matching by SVG filename keyword (cover/chapter/content/ending/toc). Read the matched file at first use if §1.0 batch did not cover it.
 4. No template at all → free design.
 
 > Note: `page_layouts` disambiguates the multiple content variants modern templates ship (e.g., `graduation_defense` has 8); the legacy table cannot.
@@ -81,9 +101,9 @@ Before drawing each page, look up its entry in `page_rhythm` (key format `P<NN>`
 
 **Per-page template lookup — `page_layouts` section**:
 
-Before drawing each page, look up its entry in `page_layouts`. The lookup result determines template inheritance per §1's resolution order:
+Before drawing each page, look up its entry in `page_layouts` to decide which basename to inherit (the SVG itself was loaded in §1.0):
 
-- Entry present (e.g., `P04: 03a_content_image_text`) → load `templates/<chosen_template>/03a_content_image_text.svg` and inherit it. The basename **must match** an actual file in the chosen template directory; if it doesn't, emit `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design` and proceed.
+- Entry present (e.g., `P04: 03a_content_image_text`) → inherit the corresponding SVG already in context. The basename **must match** an actual file in the chosen template directory; if it doesn't, emit `warning: page_layouts P<NN> references missing file <basename>.svg — falling back to free design` and proceed.
 - No entry for this page → free design, no inheritance. **Not an error** — Strategist intentionally left this page free.
 - Whole section absent → see §1 fallback (legacy page-type matching).
 
@@ -91,9 +111,9 @@ Do **not** invent a layout entry, and do **not** assume a template just because 
 
 **Per-page chart reference — `page_charts` section**:
 
-Before drawing each page, look up its entry in `page_charts`. The lookup result determines whether a `templates/charts/` reference is in play:
+Before drawing each page, look up its entry in `page_charts` to decide which chart structure applies (the SVG itself was loaded in §1.0):
 
-- Entry present (e.g., `P09: timeline_horizontal`) → before laying out the chart, **read `templates/charts/timeline_horizontal.svg`** as the structural starting point. Adapt composition/density/color/decoration to fit this deck; do not blindly copy. Cross-reference `templates/charts/charts_index.json` if you need the chart's purpose summary.
+- Entry present (e.g., `P09: timeline_horizontal`) → adapt the corresponding chart SVG already in context. Apply project colors/typography/density; do not copy verbatim. Cross-reference `templates/charts/charts_index.json` for the chart's purpose summary if needed.
 - No entry for this page → either no chart on this page, or a chart that didn't match any catalog template (Strategist's `no-template-match` fallback). Design the visualization from scratch using `design_spec.md §VII` for guidance.
 - Whole section absent → no chart pages in this deck.
 
@@ -235,11 +255,9 @@ ls skills/ppt-master/templates/icons/simple-icons/ | grep github
 
 ## 5. Visualization Reference
 
-When the Design Spec includes **VII. Visualization Reference List**, read the referenced templates from `templates/charts/` before drawing those pages.
+Chart SVGs referenced in **VII. Visualization Reference List** are loaded once via the §1.0 batch read. This section governs adaptation only.
 
-**Reading is mandatory; copying is not.** On first use of each visualization type listed in §VII, read `templates/charts/<chart_name>.svg`. Use as reference for layout, structure, spacing, visual logic — apply the project's colors, typography, content. Do not improvise from memory; do not replicate verbatim.
-
-> Re-read only when the visualization type changes; reuse for subsequent pages of the same type.
+**Hard rule**: adapt the loaded chart SVG; do not improvise from memory and do not replicate verbatim. Apply project colors, typography, content; preserve visualization type.
 
 **Adaptation rules**:
 - **Preserve**: visualization type (bar/line/pie/timeline/process/framework…) as specified
