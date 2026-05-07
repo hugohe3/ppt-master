@@ -52,7 +52,7 @@ PPT Master 的"模板"是一份**结构 + 风格**的预设包：包含若干页
 
 ### 第一步：准备参考材料
 
-**强烈推荐：直接给原始 `.pptx` 文件。** 当前的 PPTX 导入管线已经做到接近高保真还原——工作流会用 [`pptx_template_import.py`](../../skills/ppt-master/scripts/pptx_template_import.py) 直接读取 OOXML，提取主题色、字体、母版/版式结构、可复用图片资源（包括精灵图裁剪关系），再交给 Template_Designer 重建出干净可维护的 SVG。封面、章节、装饰繁复的页面都能稳定还原，这是目前最靠谱的派生路径。
+**强烈推荐：直接给原始 `.pptx` 文件。** 当前的 PPTX 导入管线已经做到接近高保真还原——工作流会用 [`pptx_template_import.py`](../../skills/ppt-master/scripts/pptx_template_import.py) 直接读取 OOXML，提取主题色、字体、每个 master 的主题摘要、母版/版式结构、placeholder 元数据和可复用图片资源。它会输出作为机器事实源的 layered `svg/`，以及用于视觉预览的自包含 `svg-flat/`，再交给 Template_Designer 重建出干净可维护的 SVG。封面、章节、装饰繁复的页面都能稳定还原，这是目前最靠谱的派生路径。
 
 也可以基于品牌指南从零设计：提供 logo、主色 HEX、字体、调性描述、几张氛围参考图，AI 会现场设计页面骨架。适合品牌方还没有成型 PPT、只有 VI 手册的场景。
 
