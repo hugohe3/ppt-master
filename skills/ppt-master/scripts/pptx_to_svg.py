@@ -4,13 +4,12 @@
 Usage:
     python3 pptx_to_svg.py <pptx_file> [-o <output_dir>] [--embed-images]
                                        [--media-subdir <name>] [--keep-hidden]
+                                       [--inheritance-mode {both,layered,flat}]
 
-Output structure:
+Output structure (default --inheritance-mode both):
     <output_dir>/
-        svg/
-            slide_01.svg
-            slide_02.svg
-            ...
+        svg/                    layered machine input: masters/layouts/slides
+        svg-flat/               self-contained visual preview slides
         <media_subdir>/         (default: assets/)
             image1.png
             image2.png
@@ -41,20 +40,35 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("pptx_file", help="Path to the source .pptx file")
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         help="Output directory (default: <pptx_stem>_pptx_to_svg beside source)",
     )
     parser.add_argument(
-        "--media-subdir", default="assets",
+        "--media-subdir",
+        default="assets",
         help="Subdirectory for extracted media (default: assets)",
     )
     parser.add_argument(
-        "--embed-images", action="store_true",
+        "--embed-images",
+        action="store_true",
         help="Base64-embed images inline instead of writing files",
     )
     parser.add_argument(
-        "--keep-hidden", action="store_true",
+        "--keep-hidden",
+        action="store_true",
         help='Include shapes marked hidden="1"',
+    )
+    parser.add_argument(
+        "--inheritance-mode",
+        choices=("both", "layered", "flat"),
+        default="both",
+        help=(
+            "How to render inheritance. 'both' (default) writes layered SVGs "
+            "under svg/ and complete preview slides under svg-flat/. "
+            "'layered' writes only svg/ plus inheritance.json. 'flat' writes "
+            "self-contained slides under svg/ for backward compatibility."
+        ),
     )
     return parser.parse_args()
 
@@ -66,12 +80,12 @@ def main() -> int:
         print(f"Error: file does not exist: {pptx_path}", file=sys.stderr)
         return 1
     if pptx_path.suffix.lower() != ".pptx":
-        print(f"Error: expected a .pptx file, got: {pptx_path.name}",
-              file=sys.stderr)
+        print(f"Error: expected a .pptx file, got: {pptx_path.name}", file=sys.stderr)
         return 1
 
     output_dir = (
-        Path(args.output).expanduser().resolve() if args.output
+        Path(args.output).expanduser().resolve()
+        if args.output
         else pptx_path.with_name(f"{pptx_path.stem}_pptx_to_svg")
     )
 
@@ -79,6 +93,7 @@ def main() -> int:
         media_subdir=args.media_subdir,
         embed_images=args.embed_images,
         keep_hidden=args.keep_hidden,
+        inheritance_mode=args.inheritance_mode,
     )
 
     result = convert_pptx_to_svg(pptx_path, output_dir, options)

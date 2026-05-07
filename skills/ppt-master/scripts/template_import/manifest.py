@@ -66,6 +66,8 @@ class SlideRecord:
     text_count: int
     shape_count: int
     page_type: str
+    svg_file: str
+    flat_svg_file: str
 
 
 def summarize_part_record(
@@ -77,6 +79,8 @@ def summarize_part_record(
     used_by_slides: list[int],
     parent_path: str | None = None,
     theme_path: str | None = None,
+    svg_file: str | None = None,
+    theme: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not part_path:
         return None
@@ -86,10 +90,13 @@ def summarize_part_record(
     return {
         "path": part_path,
         "name": PurePosixPath(part_path).name,
+        "svgFile": svg_file,
         "parentPath": parent_path,
         "themePath": theme_path,
+        "theme": theme,
         "backgroundAsset": copied_assets.get(bg_asset, PurePosixPath(bg_asset).name if bg_asset else None),
         "imageAssets": [copied_assets.get(target, PurePosixPath(target).name) for target in image_targets],
+        "placeholders": extract_placeholders(root),
         "textSamples": extract_text_samples(root),
         "textCount": len(root.findall(".//a:t", NS)) if root is not None else 0,
         "shapeCount": count_slide_shapes(root),
@@ -149,6 +156,98 @@ def emu_to_pixels(value: int) -> int:
 def sanitize_filename(value: str) -> str:
     value = re.sub(r"[^A-Za-z0-9._-]+", "_", value.strip())
     return value.strip("._") or "asset"
+
+
+def part_svg_filename(role: str, seq: int, part_path: str) -> str:
+    stem = PurePosixPath(part_path).stem
+    safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", stem).strip("_") or role
+    return f"{role}_{seq:02d}_{safe_stem}.svg"
+
+
+def slide_svg_filename(index: int) -> str:
+    return f"slide_{index:02d}.svg"
+
+
+def resolve_first_rel(
+    rels: dict[str, dict[str, str]],
+    rel_type: str,
+) -> str | None:
+    for rel in rels.values():
+        if rel["type"] == rel_type:
+            return rel["target"]
+    return None
+
+
+def parse_xfrm_record(sp: ET.Element) -> dict[str, int] | None:
+    xfrm = sp.find("p:spPr/a:xfrm", NS)
+    if xfrm is None:
+        return None
+    off = xfrm.find("a:off", NS)
+    ext = xfrm.find("a:ext", NS)
+    if off is None or ext is None:
+        return None
+    try:
+        x = int(off.attrib.get("x", "0"))
+        y = int(off.attrib.get("y", "0"))
+        w = int(ext.attrib.get("cx", "0"))
+        h = int(ext.attrib.get("cy", "0"))
+    except ValueError:
+        return None
+    return {
+        "x": emu_to_pixels(x),
+        "y": emu_to_pixels(y),
+        "width": emu_to_pixels(w),
+        "height": emu_to_pixels(h),
+    }
+
+
+def extract_placeholders(root: ET.Element | None) -> list[dict[str, Any]]:
+    if root is None:
+        return []
+    placeholders: list[dict[str, Any]] = []
+    for sp in root.findall(".//p:sp", NS):
+        ph = sp.find("p:nvSpPr/p:nvPr/p:ph", NS)
+        if ph is None:
+            continue
+        record: dict[str, Any] = {
+            "type": ph.attrib.get("type"),
+            "idx": ph.attrib.get("idx"),
+            "size": ph.attrib.get("sz"),
+            "orient": ph.attrib.get("orient"),
+            "geometry": parse_xfrm_record(sp),
+            "textSamples": extract_text_samples(sp, limit=2),
+        }
+        style = extract_placeholder_text_style(sp)
+        if style:
+            record["textStyle"] = style
+        placeholders.append(record)
+    return placeholders
+
+
+def extract_placeholder_text_style(sp: ET.Element) -> dict[str, Any]:
+    style: dict[str, Any] = {}
+    rpr = sp.find(".//a:rPr", NS) or sp.find(".//a:endParaRPr", NS)
+    if rpr is None:
+        return style
+    if rpr.attrib.get("sz"):
+        try:
+            style["fontSizePx"] = round(int(rpr.attrib["sz"]) / 75, 2)
+        except ValueError:
+            pass
+    if rpr.attrib.get("b") == "1":
+        style["bold"] = True
+    if rpr.attrib.get("i") == "1":
+        style["italic"] = True
+    latin = rpr.find("a:latin", NS)
+    ea = rpr.find("a:ea", NS)
+    if latin is not None and latin.attrib.get("typeface"):
+        style["latinFont"] = latin.attrib["typeface"]
+    if ea is not None and ea.attrib.get("typeface"):
+        style["eastAsiaFont"] = ea.attrib["typeface"]
+    color = rpr.find("a:solidFill/a:srgbClr", NS)
+    if color is not None and color.attrib.get("val"):
+        style["fill"] = f"#{color.attrib['val']}"
+    return style
 
 
 def extract_text_samples(root: ET.Element | None, limit: int = 6) -> list[str]:
@@ -366,6 +465,36 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
             if rel and rel["type"] == SLIDE_REL:
                 slide_parts.append(rel["target"])
 
+        master_parts: list[str] = []
+        for master_id in presentation_root.findall("p:sldMasterIdLst/p:sldMasterId", NS):
+            rel_id = master_id.attrib.get(f"{{{NS['r']}}}id")
+            rel = presentation_rels.get(rel_id or "")
+            if rel and rel["type"] == MASTER_REL and rel["target"] not in master_parts:
+                master_parts.append(rel["target"])
+
+        master_roots: dict[str, ET.Element | None] = {}
+        master_rels_map: dict[str, dict[str, dict[str, str]]] = {}
+        master_theme_path: dict[str, str | None] = {}
+        layout_parts: list[str] = []
+        layout_parent: dict[str, str | None] = {}
+        for master_path in master_parts:
+            master_root = load_xml_from_zip(zf, master_path)
+            master_rels = parse_relationships(zf, master_path)
+            master_roots[master_path] = master_root
+            master_rels_map[master_path] = master_rels
+            master_theme_path[master_path] = resolve_first_rel(master_rels, THEME_REL)
+            if master_root is None:
+                continue
+            for layout_id in master_root.findall("p:sldLayoutIdLst/p:sldLayoutId", NS):
+                rel_id = layout_id.attrib.get(f"{{{NS['r']}}}id")
+                rel = master_rels.get(rel_id or "")
+                if not rel or rel["type"] != LAYOUT_REL:
+                    continue
+                layout_path = rel["target"]
+                if layout_path not in layout_parent:
+                    layout_parent[layout_path] = master_path
+                    layout_parts.append(layout_path)
+
         asset_dir = output_dir / "assets"
         if asset_dir.exists():
             shutil.rmtree(asset_dir)
@@ -457,6 +586,9 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 asset_usage[asset_name] += 1
 
             if layout_path:
+                if layout_path not in layout_parent:
+                    layout_parent[layout_path] = master_path
+                    layout_parts.append(layout_path)
                 layout_usage[layout_path].append(index)
                 if layout_path not in layout_cache:
                     layout_cache[layout_path] = {
@@ -465,6 +597,11 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                         "master_path": master_path,
                     }
             if master_path:
+                if master_path not in master_parts:
+                    master_parts.append(master_path)
+                    master_roots[master_path] = master_root
+                    master_rels_map[master_path] = master_rels
+                    master_theme_path[master_path] = theme_path
                 master_usage[master_path].append(index)
                 if master_path not in master_cache:
                     master_cache[master_path] = {
@@ -487,10 +624,31 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                     text_count=len(texts),
                     shape_count=shape_count,
                     page_type=page_type,
+                    svg_file=slide_svg_filename(index),
+                    flat_svg_file=slide_svg_filename(index),
                 )
             )
 
-        common_assets = choose_common_assets(asset_usage)
+        for layout_path in layout_parts:
+            if layout_path in layout_cache:
+                continue
+            layout_root = load_xml_from_zip(zf, layout_path)
+            layout_rels = parse_relationships(zf, layout_path)
+            layout_cache[layout_path] = {
+                "root": layout_root,
+                "rels": layout_rels,
+                "master_path": layout_parent.get(layout_path),
+            }
+
+        for master_path in master_parts:
+            if master_path in master_cache:
+                continue
+            master_cache[master_path] = {
+                "root": master_roots.get(master_path),
+                "rels": master_rels_map.get(master_path, {}),
+                "theme_path": master_theme_path.get(master_path),
+            }
+
         page_type_map: dict[str, list[int]] = defaultdict(list)
         for slide in slide_records:
             page_type_map[slide.page_type].append(slide.index)
@@ -503,8 +661,10 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 copied_assets=copied_assets,
                 used_by_slides=layout_usage[layout_path],
                 parent_path=layout_cache[layout_path]["master_path"],
+                svg_file=part_svg_filename("layout", seq, layout_path),
             )
-            for layout_path in sorted(layout_cache.keys())
+            for seq, layout_path in enumerate(layout_parts, start=1)
+            if layout_path in layout_cache
         ]
         master_records = [
             summarize_part_record(
@@ -514,11 +674,40 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 copied_assets=copied_assets,
                 used_by_slides=master_usage[master_path],
                 theme_path=master_cache[master_path]["theme_path"],
+                svg_file=part_svg_filename("master", seq, master_path),
+                theme=parse_theme(load_xml_from_zip(zf, master_cache[master_path]["theme_path"]))
+                if master_cache[master_path]["theme_path"] else {"colors": {}, "fonts": {}},
             )
-            for master_path in sorted(master_cache.keys())
+            for seq, master_path in enumerate(master_parts, start=1)
+            if master_path in master_cache
         ]
         layouts_top = [item for item in layout_records if item]
         masters_top = [item for item in master_records if item]
+
+        layout_by_path = {item["path"]: item for item in layouts_top}
+        master_by_path = {item["path"]: item for item in masters_top}
+        asset_usage = Counter()
+        for slide in slide_records:
+            per_slide_assets: set[str] = set(slide.image_assets)
+            if slide.background_asset:
+                per_slide_assets.add(slide.background_asset)
+            layout_record = layout_by_path.get(slide.layout_path or "")
+            if layout_record:
+                if layout_record.get("backgroundAsset"):
+                    per_slide_assets.add(layout_record["backgroundAsset"])
+                per_slide_assets.update(layout_record.get("imageAssets", []))
+            master_record = master_by_path.get(slide.master_path or "")
+            if master_record:
+                if master_record.get("backgroundAsset"):
+                    per_slide_assets.add(master_record["backgroundAsset"])
+                per_slide_assets.update(master_record.get("imageAssets", []))
+            for asset in per_slide_assets:
+                if asset:
+                    asset_usage[asset] += 1
+
+        common_assets = choose_common_assets(asset_usage)
+        if not theme_summary["colors"] and not theme_summary["fonts"] and masters_top:
+            theme_summary = masters_top[0].get("theme") or {"colors": {}, "fonts": {}}
 
         manifest = {
             "source": {
@@ -531,6 +720,7 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 "exportDir": "assets",
                 "commonAssets": common_assets,
                 "allAssets": sorted(copied_assets.values()),
+                "assetMap": copied_assets,
             },
             "pageTypeCandidates": dict(sorted(page_type_map.items())),
             "layouts": layouts_top,
@@ -539,6 +729,8 @@ def build_manifest(pptx_path: Path, output_dir: Path) -> dict[str, Any]:
                 {
                     "index": slide.index,
                     "name": slide.name,
+                    "svgFile": slide.svg_file,
+                    "flatSvgFile": slide.flat_svg_file,
                     "slidePath": slide.slide_path,
                     "layoutPath": slide.layout_path,
                     "masterPath": slide.master_path,

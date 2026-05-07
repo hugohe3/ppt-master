@@ -31,7 +31,11 @@ import base64
 import hashlib
 import io
 import mimetypes
+import shutil
+import subprocess
+import tempfile
 from dataclasses import dataclass, field
+from pathlib import Path
 from xml.etree import ElementTree as ET
 
 try:
@@ -54,6 +58,10 @@ class PictureResult:
     media: dict[str, bytes] = field(default_factory=dict)
 
 
+class MediaResolutionError(RuntimeError):
+    """Raised when a PPTX media relationship cannot be reproduced as SVG."""
+
+
 def convert_blip_fill(
     blip_fill_elem: ET.Element,
     xfrm: Xfrm,
@@ -62,6 +70,7 @@ def convert_blip_fill(
     *,
     media_subdir: str = "assets",
     embed_inline: bool = False,
+    asset_name_map: dict[str, str] | None = None,
 ) -> PictureResult:
     """Convert an <a:blipFill> element to SVG <image>.
 
@@ -74,19 +83,25 @@ def convert_blip_fill(
         return PictureResult()
 
     rid = blip.attrib.get(f"{{{NS['r']}}}embed")
+    linked_rid = blip.attrib.get(f"{{{NS['r']}}}link")
     if not rid:
+        if linked_rid:
+            raise MediaResolutionError(
+                "Linked image relationships are not supported; embed the image in PowerPoint first"
+            )
         return PictureResult()
 
     target = slide_part.resolve_rel(rid)
     if not target:
-        return PictureResult()
+        raise MediaResolutionError(f"Image relationship {rid} cannot be resolved in {slide_part.path}")
 
     # Read the bytes
     img_bytes = pkg.read_media(target)
     if img_bytes is None:
-        return PictureResult()
+        raise MediaResolutionError(f"Embedded image part is missing: {target}")
 
-    filename = pkg.media_filename(target)
+    filename = (asset_name_map or {}).get(target, pkg.media_filename(target))
+    filename, img_bytes = _normalize_office_media(filename, img_bytes)
     filename, img_bytes = _apply_blip_image_effects(filename, img_bytes, blip)
     href = _build_href(filename, img_bytes, media_subdir, embed_inline)
 
@@ -135,6 +150,7 @@ def convert_picture(
     *,
     media_subdir: str = "assets",
     embed_inline: bool = False,
+    asset_name_map: dict[str, str] | None = None,
 ) -> PictureResult:
     """Translate <p:pic> to SVG <image> (or nested <svg>+<image> for cropping)."""
     blip_fill = pic_elem.find("p:blipFill", NS)
@@ -145,12 +161,59 @@ def convert_picture(
         blip_fill, xfrm, slide_part, pkg,
         media_subdir=media_subdir,
         embed_inline=embed_inline,
+        asset_name_map=asset_name_map,
     )
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+_OFFICE_VECTOR_EXTS = {".emf", ".wmf"}
+
+
+def _normalize_office_media(filename: str, img_bytes: bytes) -> tuple[str, bytes]:
+    """Convert Office-only vector image formats to browser-renderable PNG.
+
+    PPTX can contain EMF/WMF assets that PowerPoint renders natively but SVG
+    viewers generally do not. Keep the original asset in the manifest layer;
+    the SVG view uses a PNG preview when the local system can make one.
+    """
+    suffix = Path(filename).suffix.lower()
+    if suffix not in _OFFICE_VECTOR_EXTS:
+        return filename, img_bytes
+
+    converted = _convert_office_vector_to_png(filename, img_bytes)
+    if converted is None:
+        raise MediaResolutionError(
+            f"Unsupported Office vector media {filename}; convert it to PNG/SVG in PowerPoint first"
+        )
+    stem = Path(filename).stem
+    return f"{stem}_preview.png", converted
+
+
+def _convert_office_vector_to_png(filename: str, img_bytes: bytes) -> bytes | None:
+    magick = shutil.which("magick")
+    if not magick:
+        return None
+    suffix = Path(filename).suffix.lower() or ".bin"
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_dir = Path(tmp)
+        src = tmp_dir / f"source{suffix}"
+        dst = tmp_dir / "preview.png"
+        src.write_bytes(img_bytes)
+        try:
+            subprocess.run(
+                [magick, str(src), str(dst)],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except (OSError, subprocess.CalledProcessError):
+            return None
+        if not dst.exists():
+            return None
+        return dst.read_bytes()
 
 def _parse_src_rect(elem: ET.Element | None) -> tuple[float, float, float, float] | None:
     """Convert <a:srcRect l t r b="1/100000"/> to (x, y, w, h) in unit space."""

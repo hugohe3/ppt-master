@@ -323,17 +323,21 @@ class SVGQualityChecker:
         # ============================================================
 
         # Clipping / masking
-        # clipPath is ONLY allowed on <image> elements (converter maps to DrawingML
-        # picture geometry).  On shapes it is pointless (just draw the target shape)
-        # and breaks the SVG PPTX rendering.
+        # clipPath is allowed on <image> elements and on pptx_to_svg-generated
+        # nested crop <svg data-pptx-crop="1"> wrappers. Both map back to
+        # DrawingML picture geometry in the native converter.
         if '<clippath' in content_lower:
             # clip-path on non-image elements → error
             clip_on_non_image = re.search(
-                r'<(?!image\b)\w+[^>]*\bclip-path\s*=', content, re.IGNORECASE)
+                r'<(?!image\b)(?!svg\b[^>]*\bdata-pptx-crop\s*=\s*["\']1["\'])\w+[^>]*\bclip-path\s*=',
+                content,
+                re.IGNORECASE,
+            )
             if clip_on_non_image:
                 result['errors'].append(
-                    "clip-path is only allowed on <image> elements — "
-                    "for shapes, draw the target shape directly instead of clipping")
+                    "clip-path is only allowed on <image> elements or "
+                    "pptx_to_svg crop wrappers — for shapes, draw the target "
+                    "shape directly instead of clipping")
             # Check that every clip-path reference has a matching <clipPath> def
             clip_refs = re.findall(r'clip-path\s*=\s*["\']url\(#([^)]+)\)', content)
             for ref_id in clip_refs:

@@ -13,8 +13,8 @@ Strategy (v1):
   text frame plus lIns/rIns and the alignment.
 - No automatic word wrap (PPT's wrap is layout-time; v1 trusts the existing
   text frame width and emits text as-is). a:br produces an explicit linebreak.
-- Bullet points (a:buChar / a:buAutoNum) are NOT rendered as PPT bullet
-  glyphs — instead we prepend a literal '• ' / 'N. ' so the visual lands.
+- Bullet points (a:buChar / a:buAutoNum) are rendered as literal prefixes
+  so the visual lands without relying on PowerPoint list semantics.
 
 Color / font / size attributes propagate from a:rPr; missing attributes fall
 back to the paragraph's endParaRPr or to spec-default values.
@@ -278,9 +278,10 @@ def _parse_paragraphs(
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
+    autonum_state: dict[int, int] = {}
 
     for p_elem in tx_body.findall("a:p", NS):
-        para = _parse_paragraph(p_elem, palette, theme_fonts)
+        para = _parse_paragraph(p_elem, palette, theme_fonts, autonum_state)
         paragraphs.append(para)
 
     return paragraphs
@@ -290,6 +291,7 @@ def _parse_paragraph(
     p_elem: ET.Element,
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
+    autonum_state: dict[int, int],
 ) -> TextParagraph:
     para = TextParagraph()
 
@@ -329,8 +331,8 @@ def _parse_paragraph(
             except ValueError:
                 pass
 
-        # Bullet
-        para.bullet_prefix = _resolve_bullet_prefix(p_pr)
+        # Bullet / basic auto-numbering
+        para.bullet_prefix = _resolve_bullet_prefix(p_pr, para.level, autonum_state)
 
     # Default endParaRPr style (applies if a run has no rPr)
     end_rpr = p_elem.find("a:endParaRPr", NS)
@@ -500,10 +502,15 @@ def _quote_font(name: str) -> str:
     return name
 
 
-def _resolve_bullet_prefix(p_pr: ET.Element) -> str:
+def _resolve_bullet_prefix(
+    p_pr: ET.Element,
+    level: int,
+    autonum_state: dict[int, int],
+) -> str:
     """Render bullet glyphs / numbering as a literal text prefix."""
     bu_none = p_pr.find("a:buNone", NS)
     if bu_none is not None:
+        autonum_state.pop(level, None)
         return ""
     bu_char = p_pr.find("a:buChar", NS)
     if bu_char is not None:
@@ -511,10 +518,66 @@ def _resolve_bullet_prefix(p_pr: ET.Element) -> str:
         return f"{ch} "
     bu_auto = p_pr.find("a:buAutoNum", NS)
     if bu_auto is not None:
-        # Type-aware numbering (arabicPeriod / romanLcParenR / etc.) is too
-        # ambiguous without paragraph history; use a placeholder.
-        return "• "
+        start_at = bu_auto.attrib.get("startAt")
+        if start_at is not None:
+            try:
+                autonum_state[level] = int(start_at)
+            except ValueError:
+                autonum_state[level] = 1
+        else:
+            autonum_state[level] = autonum_state.get(level, 0) + 1
+        return _format_auto_number(
+            autonum_state[level],
+            bu_auto.attrib.get("type", "arabicPeriod"),
+        )
     return ""
+
+
+def _format_auto_number(value: int, kind: str) -> str:
+    lower = kind.lower()
+    if "alphalc" in lower:
+        token = _alpha_number(value, uppercase=False)
+    elif "alphauc" in lower:
+        token = _alpha_number(value, uppercase=True)
+    elif "romanlc" in lower:
+        token = _roman_number(value).lower()
+    elif "romanuc" in lower:
+        token = _roman_number(value).upper()
+    else:
+        token = str(value)
+
+    if "parenboth" in lower:
+        return f"({token}) "
+    if "parenr" in lower:
+        return f"{token}) "
+    if "period" in lower:
+        return f"{token}. "
+    return f"{token} "
+
+
+def _alpha_number(value: int, *, uppercase: bool) -> str:
+    value = max(1, value)
+    chars: list[str] = []
+    while value:
+        value -= 1
+        chars.append(chr(ord("A") + (value % 26)))
+        value //= 26
+    text = "".join(reversed(chars))
+    return text if uppercase else text.lower()
+
+
+def _roman_number(value: int) -> str:
+    value = max(1, min(value, 3999))
+    parts: list[str] = []
+    for n, token in (
+        (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"),
+        (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+        (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I"),
+    ):
+        while value >= n:
+            parts.append(token)
+            value -= n
+    return "".join(parts)
 
 
 # ---------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import mimetypes
 import re
 import shutil
 import tempfile
@@ -88,6 +89,27 @@ def _add_default_content_type(content_types: str, extension: str, content_type: 
         return content_types
     entry = f'  <Default Extension="{ext}" ContentType="{content_type}"/>'
     return content_types.replace('</Types>', entry + '\n</Types>')
+
+
+_IMAGE_CONTENT_TYPES = {
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+    'svg': 'image/svg+xml',
+    'bmp': 'image/bmp',
+    'tif': 'image/tiff',
+    'tiff': 'image/tiff',
+}
+
+
+def _content_type_for_extension(ext: str) -> str:
+    clean = ext.lower().lstrip('.')
+    content_type = _IMAGE_CONTENT_TYPES.get(clean) or mimetypes.guess_type(f'x.{clean}')[0]
+    if not content_type:
+        raise ValueError(f"Unknown media content type for extension: {ext}")
+    return content_type
 
 
 def _expand_anim_targets_to_group_children(
@@ -273,6 +295,7 @@ def create_pptx_with_native_svg(
         success_count = 0
         has_any_image = False
         media_cache: dict[tuple[str, str], str] = {}
+        image_exts_used: set[str] = set()
         notes_slides_created: set[int] = set()
         narration_slides_created: set[int] = set()
         audio_exts_used: set[str] = set()
@@ -343,7 +366,7 @@ def create_pptx_with_native_svg(
                         cached_name = media_cache.get(cache_key)
 
                         if cached_name is None:
-                            cached_name = media_name
+                            cached_name = f'image_{media_hash[:16]}.{ext}'
                             media_cache[cache_key] = cached_name
                             with open(media_dir / cached_name, 'wb') as f:
                                 f.write(media_data)
@@ -379,10 +402,11 @@ def create_pptx_with_native_svg(
                         f.write(rels_xml)
 
                     # Track image formats for Content_Types
-                    for media_name in media_files_dict:
+                    for media_name in media_name_map.values():
                         ext = media_name.rsplit('.', 1)[-1].lower()
-                        if ext in ('png', 'jpg', 'jpeg', 'gif', 'webp'):
-                            has_any_image = True
+                        _content_type_for_extension(ext)
+                        image_exts_used.add(ext)
+                        has_any_image = True
 
                 # ---- Legacy SVG embedding mode ----
                 else:
@@ -403,6 +427,7 @@ def create_pptx_with_native_svg(
                         if png_success:
                             slide_has_png = True
                             has_any_image = True
+                            image_exts_used.add('png')
                         else:
                             if verbose:
                                 print(f"  [{i}/{len(svg_files)}] {svg_path.name} - PNG generation failed, using pure SVG")
@@ -478,6 +503,7 @@ def create_pptx_with_native_svg(
                     if not poster_path.exists():
                         poster_path.write_bytes(TRANSPARENT_PNG_BYTES)
                     has_any_image = True
+                    image_exts_used.add('png')
 
                     media_rid = _append_relationship(
                         rels_path,
@@ -535,6 +561,8 @@ def create_pptx_with_native_svg(
             except Exception as e:
                 if verbose:
                     print(f"  [{i}/{len(svg_files)}] {svg_path.name} - Error: {e}")
+                if use_native_shapes:
+                    raise
 
         # Update [Content_Types].xml
         content_types_path = extract_dir / '[Content_Types].xml'
@@ -545,12 +573,11 @@ def create_pptx_with_native_svg(
         if not use_native_shapes:
             if 'Extension="svg"' not in content_types:
                 types_to_add.append('  <Default Extension="svg" ContentType="image/svg+xml"/>')
-        if has_any_image and 'Extension="png"' not in content_types:
-            types_to_add.append('  <Default Extension="png" ContentType="image/png"/>')
-        if use_native_shapes and 'Extension="jpg"' not in content_types:
-            types_to_add.append('  <Default Extension="jpg" ContentType="image/jpeg"/>')
-        if use_native_shapes and 'Extension="jpeg"' not in content_types:
-            types_to_add.append('  <Default Extension="jpeg" ContentType="image/jpeg"/>')
+        for ext in sorted(image_exts_used):
+            if f'Extension="{ext}"' not in content_types:
+                types_to_add.append(
+                    f'  <Default Extension="{ext}" ContentType="{_content_type_for_extension(ext)}"/>'
+                )
 
         if types_to_add:
             content_types = content_types.replace(
@@ -581,12 +608,15 @@ def create_pptx_with_native_svg(
             with open(content_types_path, 'w', encoding='utf-8') as f:
                 f.write(content_types)
 
-        # Repackage PPTX
-        with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        # Repackage PPTX to a temporary file first. The public output path is
+        # replaced only after every slide and relationship has succeeded.
+        temp_output_path = temp_dir / 'result.pptx'
+        with zipfile.ZipFile(temp_output_path, 'w', zipfile.ZIP_DEFLATED) as zf:
             for file_path in extract_dir.rglob('*'):
                 if file_path.is_file():
                     arcname = file_path.relative_to(extract_dir)
                     zf.write(file_path, arcname)
+        shutil.move(str(temp_output_path), str(output_path))
 
         if verbose:
             print()

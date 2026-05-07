@@ -20,6 +20,10 @@ from .drawingml_elements import (
 )
 
 
+class SvgNativeConversionError(RuntimeError):
+    """Raised when an SVG cannot be faithfully converted to native DrawingML."""
+
+
 # ---------------------------------------------------------------------------
 # Animation anchor selection
 # ---------------------------------------------------------------------------
@@ -240,6 +244,8 @@ _CONVERTERS = {
     'svg': convert_nested_svg,
 }
 
+_SUPPORTED_VISUAL_CHILD_TAGS = frozenset(('tspan',))
+
 
 def collect_defs(root: ET.Element) -> dict[str, ET.Element]:
     """Collect all <defs> children into an {id: element} dictionary."""
@@ -267,13 +273,38 @@ def convert_element(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None
         try:
             return converter(elem, ctx)
         except Exception as e:
-            print(f'  Warning: Failed to convert <{tag}>: {e}')
-            return None
+            raise SvgNativeConversionError(f'Failed to convert <{tag}>: {e}') from e
 
     if tag in _NON_VISUAL_TAGS:
         return None
 
-    return None
+    raise SvgNativeConversionError(f'Unsupported visual SVG element <{tag}>')
+
+
+def _local_tag(elem: ET.Element) -> str:
+    return elem.tag.split('}', 1)[-1] if isinstance(elem.tag, str) and '}' in elem.tag else str(elem.tag)
+
+
+def _collect_unsupported_visuals(root: ET.Element) -> list[str]:
+    issues: list[str] = []
+
+    def walk(elem: ET.Element, path: str, in_defs: bool = False) -> None:
+        tag = _local_tag(elem)
+        current = f'{path}/{tag}'
+        if in_defs:
+            return
+        if tag in _NON_VISUAL_TAGS:
+            return
+        if (tag not in _CONVERTERS
+                and tag not in _NON_VISUAL_TAGS
+                and tag not in _SUPPORTED_VISUAL_CHILD_TAGS):
+            issues.append(current)
+        for idx, child in enumerate(list(elem), start=1):
+            walk(child, f'{current}[{idx}]', in_defs=(tag == 'defs'))
+
+    for idx, child in enumerate(list(root), start=1):
+        walk(child, f'/svg[{idx}]')
+    return issues
 
 
 def convert_svg_to_slide_shapes(
@@ -321,6 +352,14 @@ def convert_svg_to_slide_shapes(
     from .tspan_flattener import flatten_positional_tspans
     if flatten_positional_tspans(tree) and verbose:
         print('  Flattened positional <tspan> into independent <text>')
+
+    unsupported = _collect_unsupported_visuals(root)
+    if unsupported:
+        preview = '; '.join(unsupported[:8])
+        suffix = '' if len(unsupported) <= 8 else f'; +{len(unsupported) - 8} more'
+        raise SvgNativeConversionError(
+            f'{svg_path.name}: unsupported visual SVG element(s): {preview}{suffix}'
+        )
 
     defs = collect_defs(root)
     ctx = ConvertContext(defs=defs, slide_num=slide_num, svg_dir=Path(svg_path).parent)

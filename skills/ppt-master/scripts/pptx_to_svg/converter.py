@@ -24,6 +24,46 @@ from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
 from .slide_to_svg import assemble_part_solo, assemble_slide
 
 
+def _extract_theme_info(
+    theme: PartRef,
+    palette: ColorPalette,
+) -> tuple[dict[str, str], dict[str, str]]:
+    from .color_resolver import find_color_elem, resolve_color
+
+    colors: dict[str, str] = {}
+    fonts: dict[str, str] = {}
+
+    scheme = theme.xml.find(".//a:clrScheme", NS)
+    if scheme is not None:
+        for child in list(scheme):
+            if not isinstance(child.tag, str):
+                continue
+            name = child.tag.split("}", 1)[-1]
+            color_elem = find_color_elem(child)
+            hex_, _ = resolve_color(color_elem, palette)
+            if hex_:
+                colors[name] = hex_
+
+    font_scheme = theme.xml.find(".//a:fontScheme", NS)
+    if font_scheme is not None:
+        for slot in ("majorFont", "minorFont"):
+            fnt = font_scheme.find(f"a:{slot}", NS)
+            if fnt is None:
+                continue
+            role_prefix = "major" if slot == "majorFont" else "minor"
+            latin = fnt.find("a:latin", NS)
+            if latin is not None and latin.attrib.get("typeface"):
+                fonts[f"{role_prefix}Latin"] = latin.attrib["typeface"]
+            ea = fnt.find("a:ea", NS)
+            if ea is not None and ea.attrib.get("typeface"):
+                fonts[f"{role_prefix}EastAsia"] = ea.attrib["typeface"]
+            cs = fnt.find("a:cs", NS)
+            if cs is not None and cs.attrib.get("typeface"):
+                fonts[f"{role_prefix}ComplexScript"] = cs.attrib["typeface"]
+
+    return colors, fonts
+
+
 @dataclass
 class ConvertOptions:
     """Convert behavior knobs.
@@ -51,6 +91,7 @@ class ConvertOptions:
     embed_images: bool = False
     keep_hidden: bool = False
     inheritance_mode: str = "both"
+    asset_name_map: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -62,6 +103,8 @@ class PartArtifact:
     filename: str  # output svg filename, e.g. "layout_03_title.xml.svg"
     svg: str
     media_files: dict[str, bytes] = field(default_factory=dict)
+    parent_master_part_path: str | None = None
+    theme_part_path: str | None = None
 
 
 @dataclass
@@ -92,6 +135,7 @@ class ConvertResult:
     layouts: list[PartArtifact] = field(default_factory=list)
     masters: list[PartArtifact] = field(default_factory=list)
     flat_slides: list[SlideArtifact] = field(default_factory=list)
+    master_themes: dict[str, dict[str, object]] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -127,63 +171,52 @@ def convert_pptx_to_svg(
     with OoxmlPackage(pptx_path) as pkg:
         result.canvas_px = pkg.slide_size_px
 
-        # Theme + palette built once (multi-master case rarely happens in
-        # template decks; if it does we re-resolve per slide).
+        # Default theme summary is kept for compatibility; conversion itself
+        # resolves palette/fonts per slide master.
         first_slide = pkg.get_slide(1)
-        master = first_slide.master if first_slide else None
-        theme = pkg.resolve_theme(master)
-        palette = ColorPalette(master, theme)
-        if theme is not None:
-            from .color_resolver import find_color_elem, resolve_color
-            # Surface theme colors / fonts onto the result (informational only).
-            scheme = theme.xml.find(".//a:clrScheme", NS)
-            if scheme is not None:
-                for child in list(scheme):
-                    if not isinstance(child.tag, str):
-                        continue
-                    name = child.tag.split("}", 1)[-1]
-                    color_elem = find_color_elem(child)
-                    hex_, _ = resolve_color(color_elem, palette)
-                    if hex_:
-                        result.theme_colors[name] = hex_
-            font_scheme = theme.xml.find(".//a:fontScheme", NS)
-            if font_scheme is not None:
-                for slot in ("majorFont", "minorFont"):
-                    fnt = font_scheme.find(f"a:{slot}", NS)
-                    if fnt is None:
-                        continue
-                    role_prefix = "major" if slot == "majorFont" else "minor"
-                    latin = fnt.find("a:latin", NS)
-                    if latin is not None and latin.attrib.get("typeface"):
-                        result.theme_fonts[f"{role_prefix}Latin"] = latin.attrib["typeface"]
-                    ea = fnt.find("a:ea", NS)
-                    if ea is not None and ea.attrib.get("typeface"):
-                        result.theme_fonts[f"{role_prefix}EastAsia"] = ea.attrib["typeface"]
-                    cs = fnt.find("a:cs", NS)
-                    if cs is not None and cs.attrib.get("typeface"):
-                        result.theme_fonts[f"{role_prefix}ComplexScript"] = cs.attrib["typeface"]
+        default_master = first_slide.master if first_slide else None
+        default_theme = pkg.resolve_theme(default_master)
+        palette = ColorPalette(default_master, default_theme)
+        if default_theme is not None:
+            result.theme_colors, result.theme_fonts = _extract_theme_info(default_theme, palette)
+
+        for master in pkg.iter_all_masters():
+            theme = pkg.resolve_theme(master) or default_theme
+            pal = ColorPalette(master, theme)
+            colors, fonts = _extract_theme_info(theme, pal) if theme is not None else ({}, {})
+            result.master_themes[master.path] = {
+                "themePath": theme.path if theme is not None else None,
+                "colors": colors,
+                "fonts": fonts,
+            }
 
         # Per-slide conversion. The primary view is layered when emitted
         # (template designers care most about that one); the flat view is
         # rendered alongside when needed.
         primary_mode = "layered" if emit_layered else "flat"
         for slide in pkg.iter_slides():
+            slide_theme = pkg.resolve_theme(slide.master) or default_theme
+            slide_palette = ColorPalette(slide.master, slide_theme)
+            _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
             artifact = _convert_slide(
-                pkg, slide, palette, options, result.theme_fonts,
+                pkg, slide, slide_palette, options, slide_fonts,
                 inheritance_mode=primary_mode,
             )
             result.slides.append(artifact)
         if emit_layered and emit_flat:
             for slide in pkg.iter_slides():
+                slide_theme = pkg.resolve_theme(slide.master) or default_theme
+                slide_palette = ColorPalette(slide.master, slide_theme)
+                _colors, slide_fonts = _extract_theme_info(slide_theme, slide_palette) if slide_theme is not None else ({}, result.theme_fonts)
                 artifact = _convert_slide(
-                    pkg, slide, palette, options, result.theme_fonts,
+                    pkg, slide, slide_palette, options, slide_fonts,
                     inheritance_mode="flat",
                 )
                 result.flat_slides.append(artifact)
 
         # Layered mode: also render each master / layout once.
         if emit_layered:
-            _convert_inheritance_parts(pkg, palette, options, result)
+            _convert_inheritance_parts(pkg, default_theme, options, result)
 
     if output_dir is not None:
         _write_artifacts(output_dir, result, options)
@@ -218,6 +251,7 @@ def _convert_slide(
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
         inheritance_mode=mode,
+        asset_name_map=options.asset_name_map,
     )
     return SlideArtifact(
         index=slide.index,
@@ -230,7 +264,7 @@ def _convert_slide(
 
 def _convert_inheritance_parts(
     pkg: OoxmlPackage,
-    palette: ColorPalette,
+    default_theme: PartRef | None,
     options: ConvertOptions,
     result: ConvertResult,
 ) -> None:
@@ -257,14 +291,21 @@ def _convert_inheritance_parts(
         layouts_with_parent.append((layout, parent_master))
 
     for seq, part in enumerate(seen_masters.values(), start=1):
+        theme = pkg.resolve_theme(part) or default_theme
+        palette = ColorPalette(part, theme)
+        _colors, fonts = _extract_theme_info(theme, palette) if theme is not None else ({}, result.theme_fonts)
         result.masters.append(_render_part(
-            pkg, part, palette, options, result.theme_fonts,
-            role="master", seq=seq,
+            pkg, part, palette, options, fonts,
+            role="master", seq=seq, theme_part=theme,
         ))
     for seq, (layout, parent_master) in enumerate(layouts_with_parent, start=1):
+        theme = pkg.resolve_theme(parent_master) or default_theme
+        palette = ColorPalette(parent_master, theme)
+        _colors, fonts = _extract_theme_info(theme, palette) if theme is not None else ({}, result.theme_fonts)
         result.layouts.append(_render_part(
-            pkg, layout, palette, options, result.theme_fonts,
+            pkg, layout, palette, options, fonts,
             role="layout", seq=seq, parent_master=parent_master,
+            theme_part=theme,
         ))
 
 
@@ -278,6 +319,7 @@ def _render_part(
     role: str,
     seq: int,
     parent_master: PartRef | None = None,
+    theme_part: PartRef | None = None,
 ) -> PartArtifact:
     """Render a master/layout part, returning a PartArtifact with output filename."""
     svg, media = assemble_part_solo(
@@ -288,6 +330,7 @@ def _render_part(
         media_subdir=options.media_subdir,
         embed_images=options.embed_images,
         keep_hidden=options.keep_hidden,
+        asset_name_map=options.asset_name_map,
     )
     stem = PurePosixPath(part.path).stem  # e.g. "slideLayout3"
     safe_stem = re.sub(r"[^A-Za-z0-9_-]+", "_", stem).strip("_") or role
@@ -298,6 +341,8 @@ def _render_part(
         filename=filename,
         svg=svg,
         media_files=media,
+        parent_master_part_path=parent_master.path if parent_master is not None else None,
+        theme_part_path=theme_part.path if theme_part is not None else None,
     )
 
 
@@ -321,7 +366,12 @@ def _write_artifacts(output_dir: Path, result: ConvertResult,
             if filename in media_written:
                 continue
             media_dir.mkdir(parents=True, exist_ok=True)
-            (media_dir / filename).write_bytes(blob)
+            target = media_dir / filename
+            if target.exists():
+                if target.read_bytes() != blob:
+                    raise RuntimeError(f"Asset filename collision with different bytes: {filename}")
+            else:
+                target.write_bytes(blob)
             media_written.add(filename)
 
     # Layered mode: write masters and layouts first so they sort ahead of slides.
@@ -357,23 +407,23 @@ def _write_inheritance_json(svg_dir: Path, result: ConvertResult) -> None:
     """Record which layout/master each slide consumes (layered mode only)."""
     layout_by_path = {art.part_path: art.filename for art in result.layouts}
     master_by_path = {art.part_path: art.filename for art in result.masters}
-    layout_to_master: dict[str, str | None] = {}
-    # We don't have the part->parent map from OoxmlPackage here directly, so
-    # derive it from slides.
-    for slide in result.slides:
-        if slide.layout_part_path and slide.layout_part_path not in layout_to_master:
-            layout_to_master[slide.layout_part_path] = slide.master_part_path
 
     inheritance = {
         "masters": [
-            {"file": art.filename, "partPath": art.part_path}
+            {
+                "file": art.filename,
+                "partPath": art.part_path,
+                "themePath": art.theme_part_path,
+            }
             for art in result.masters
         ],
         "layouts": [
             {
                 "file": art.filename,
                 "partPath": art.part_path,
-                "master": master_by_path.get(layout_to_master.get(art.part_path) or ""),
+                "master": master_by_path.get(art.parent_master_part_path or ""),
+                "parentPartPath": art.parent_master_part_path,
+                "themePath": art.theme_part_path,
             }
             for art in result.layouts
         ],

@@ -129,6 +129,7 @@ def main() -> int:
         embed_images=args.embed_images,
         keep_hidden=False,
         inheritance_mode=args.inheritance_mode,
+        asset_name_map=manifest.get("assets", {}).get("assetMap", {}) if manifest else {},
     )
     result = convert_pptx_to_svg(pptx_path, output_dir, options)
     total_bytes = sum(len(art.svg.encode("utf-8")) for art in result.slides)
