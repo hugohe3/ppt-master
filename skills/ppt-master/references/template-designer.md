@@ -17,14 +17,20 @@ Generate reusable page templates for the **global template library** based on a 
 When the workflow provides a PPTX reference source, the effective input package comes from the unified `pptx_template_import.py` preparation workspace and becomes:
 
 - finalized template brief
-- `manifest.json` — single source of truth (slide size, theme, assets, layouts, masters, slides, page-type candidates)
+- `manifest.json` — single source of truth (slide size, theme, per-master themes, assets, asset map, placeholders, layouts, masters, slides, SVG file paths, page-type candidates)
 - `summary.md` — short orientation digest derived from manifest.json
 - exported `assets/`
 - `svg/master_*.svg` / `svg/layout_*.svg` — every master / layout in the deck rendered once as standalone SVG, including ones no sample slide references (template packages often ship more design surfaces than the embedded samples exercise)
-- `svg/slide_NN.svg` — each slide's own shapes only; master / layout decoration is **not** inlined here
+- `svg/slide_NN.svg` — each slide's own shapes and slide-local background only; master / layout decoration and backgrounds are **not** inlined here
 - `svg/inheritance.json` — which layout / master each slide consumes
 - `svg-flat/slide_NN.svg` — companion view; each slide is self-contained so you can preview or screenshot a single page without losing the surrounding chrome. Use it as a sanity check for "what would PowerPoint actually show", not as an authoring source — the master/layout chrome will be duplicated across every flat slide.
 - optional screenshots for visual cross-checking
+
+PPTX import interpretation:
+
+- Placeholder guides in master / layout SVGs are layout signals. Use `manifest.json` placeholder records for type / index / geometry / base style; do not copy dashed guide boxes into final templates unless the visual design truly uses dashed boxes.
+- Charts, SmartArt, diagrams, and OLE objects may appear as typed placeholders in layered SVGs. In flat SVGs they may show preview images. Treat them as source intent markers, not reusable decorative assets.
+- The asset filenames referenced by SVGs are governed by the manifest asset map. Prefer those references over inventing duplicate asset names.
 
 Input priority for PPTX-backed template creation:
 

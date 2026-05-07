@@ -88,21 +88,27 @@ python3 scripts/pptx_template_import.py <template.pptx> -o <output_dir>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
 python3 scripts/pptx_template_import.py <template.pptx> --skip-manifest
 python3 scripts/pptx_template_import.py <template.pptx> --embed-images
+python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode flat
 python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode layered
 ```
 
 Notes:
 - Extracts reusable media assets from `ppt/media/`
-- Summarizes slide size, theme colors, and font metadata
-- Infers background image inheritance across slide, layout, and master
-- Generates `manifest.json` (single source of truth for slide size, theme, assets, layouts, masters, slides, page-type candidates), `summary.md` (short orientation digest), `assets/`, and shape-level SVGs under `svg/`
+- Summarizes slide size, theme colors, font metadata, and per-master theme metadata
+- Resolves slide / layout / master relationships from OOXML relationships; every master and layout is included even when no sample slide currently references it
+- Generates `manifest.json` (single source of truth for slide size, theme, per-master themes, assets, layouts, masters, placeholders, slides, SVG file paths, and page-type candidates), `summary.md` (short orientation digest), `assets/`, and shape-level SVGs under `svg/`
 - **SVG output emits two views by default** (`--inheritance-mode both`):
   - `svg/` — layered template view for designers: every master and layout in the deck rendered once as `svg/master_*.svg` / `svg/layout_*.svg` (including ones no sample slide currently references); `svg/slide_NN.svg` contains only that slide's own shapes; `svg/inheritance.json` records which layout / master each slide consumes.
   - `svg-flat/` — companion view: each `slide_NN.svg` is self-contained (master + layout + slide painted into one file), so opening any slide in isolation shows the full page like PowerPoint would. Useful for previews, screenshots, and "did this slide actually render correctly" sanity checks.
+- `manifest.json` records `svgFile` for slides / layouts / masters, `flatSvgFile` for slides when `svg-flat/` exists, placeholder type / index / geometry / base style, an asset map used by SVG `href` values, and common assets reused through slide / layout / master inheritance
+- Layered slide SVGs keep only the slide's own background; inherited master / layout backgrounds stay in the corresponding master / layout SVGs
+- Placeholder guides are intentionally lightweight in `svg/` master / layout files; `svg-flat/` hides those guides and is the visual preview source
+- Charts, SmartArt, diagrams, and OLE objects become typed placeholders in `svg/`; `svg-flat/` shows a preview image with a corner badge when one exists, otherwise a visible placeholder. Tables are converted into real SVG content.
 - Pass `--inheritance-mode layered` to skip `svg-flat/`, or `--inheritance-mode flat` for the legacy round-trip view (single self-contained `svg/` tree without master/layout/inheritance files).
 - SVG export reads OOXML directly via `pptx_to_svg` — no PowerPoint or Keynote dependency, runs on any platform
 - `<image>` elements in `svg/` reference files in `assets/` directly; pass `--embed-images` to inline as data URIs instead
+- External linked images and missing media are strict failures. Office vector media such as EMF / WMF are converted to PNG previews when the local toolchain can do so; otherwise the import fails instead of silently dropping content.
 - Required in `/create-template` whenever the reference source is `.pptx`
 - Default output directory is `<pptx_stem>_template_import/`
 - Use `--manifest-only` when you explicitly want only the lightweight import output without slide SVG export

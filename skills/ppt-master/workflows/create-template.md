@@ -77,17 +77,23 @@ python3 skills/ppt-master/scripts/pptx_template_import.py "<reference_template.p
 
 This helper reads OOXML directly via `pptx_to_svg` and produces, in one workspace:
 
-- `manifest.json` — single source of truth: slide size, theme colors, fonts, asset inventory, per-slide / per-layout / per-master metadata, page-type candidates
+- `manifest.json` — single source of truth: slide size, theme colors, fonts, per-master theme summaries, asset inventory, placeholder metadata, SVG file paths, per-slide / per-layout / per-master metadata, page-type candidates
 - `summary.md` — short human-readable digest derived from manifest.json (for quick scanning only)
-- `assets/` — extracted reusable image assets
+- `assets/` — extracted reusable image assets; `manifest.json` owns the asset-name mapping and SVG `href` values reuse that mapping
 - `svg/` — **primary view** (layered template view):
   - `svg/master_*.svg` — every slide master in the deck rendered once, including masters that no sample slide currently uses (template packages routinely ship more masters than the visible samples reference)
   - `svg/layout_*.svg` — every slide layout in the deck rendered once (its own contribution; master shapes do **not** repeat here)
-  - `svg/slide_NN.svg` — each slide's own shapes; master / layout shapes are **not** inlined here
+  - `svg/slide_NN.svg` — each slide's own shapes and slide-local background; master / layout shapes and backgrounds are **not** inlined here
   - `svg/inheritance.json` — which layout & master each slide consumes
 - `svg-flat/` — **companion view** (one self-contained SVG per slide):
   - `svg-flat/slide_NN.svg` — master + layout + slide painted into a single SVG so opening any slide on its own shows the full page like PowerPoint would. Use this for previews / screenshot pipelines / "what does the slide actually look like" sanity checks.
 - The default `--inheritance-mode both` emits both views. Pass `layered` to skip `svg-flat/`, or `flat` for round-trip use cases (legacy: `svg/` becomes self-contained slides without the master/layout/inheritance files).
+
+Import fidelity rules:
+
+- Placeholder metadata is recorded in `manifest.json`; master / layout SVGs show lightweight dashed guides with labels only in `svg/`, not in `svg-flat/`.
+- Charts, SmartArt, diagrams, and OLE objects are typed placeholders in `svg/`. In `svg-flat/`, they use a preview image with a small badge when one exists; otherwise they stay visible as placeholders. Tables are converted to real SVG.
+- Missing media and external linked images fail the import. EMF / WMF Office vector media are converted to PNG previews when supported by the local toolchain; otherwise the import fails.
 
 It is a reconstruction aid, not a final direct template conversion.
 
@@ -108,6 +114,7 @@ Interpretation rule:
 - exported `assets/` are the canonical reusable image pool — `<image>` references in `svg/` already point at these files directly
 - `svg/master_*.svg` / `svg/layout_*.svg` are the **primary source for fixed structural design** — recurring backgrounds, page chrome, decorative motifs that the template should preserve. The new template's `01_cover` / `02_chapter` / `03_content` / `04_ending` typically inherit elements from these layers.
 - `svg/slide_NN.svg` shows page-specific content — useful for judging composition rhythm and content density, not for fixed structure. Read every slide regardless of count.
+- `svg-flat/slide_NN.svg` is for human preview and screenshot comparison; do not treat duplicated master/layout chrome inside flat slides as separate reusable template structure.
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
 **Hard gate**:

@@ -72,6 +72,7 @@ Template source import:
 ```bash
 python3 scripts/pptx_template_import.py <template.pptx>
 python3 scripts/pptx_template_import.py <template.pptx> --manifest-only
+python3 scripts/pptx_template_import.py <template.pptx> --inheritance-mode both
 ```
 
 Post-processing and export:
