@@ -143,11 +143,18 @@ def convert_txbody(
     else:
         cursor_y = inner_y
 
+    bottom_y = inner_y + inner_h
     text_blocks: list[str] = []
     for para, lines, height in zip(paragraphs, para_lines, para_heights):
         cursor_y += para.space_before_px
-        text_blocks.append(_emit_paragraph(para, lines, inner_x, inner_w, cursor_y))
+        visible_lines = _clip_lines_to_bottom(para, lines, cursor_y, bottom_y)
+        if visible_lines:
+            text_blocks.append(
+                _emit_paragraph(para, visible_lines, inner_x, inner_w, cursor_y)
+            )
         cursor_y += height + para.space_after_px
+        if cursor_y >= bottom_y:
+            break
 
     return TextResult(svg="\n".join(text_blocks))
 
@@ -207,18 +214,35 @@ def convert_vertical_txbody(
     total_h = sum(advances)
     top_y = box_y + max(0.0, (box_h - total_h) / 2.0)
 
-    text_blocks: list[str] = []
+    bottom_y = box_y + box_h
+    spans: list[str] = []
     cursor_y = top_y
+    first_run: TextRun | None = None
+    first_baseline: float | None = None
+    previous_baseline: float | None = None
     for (char, run), advance in zip(glyphs, advances):
+        if cursor_y + advance > bottom_y:
+            break
         baseline_y = cursor_y + run.font_size_px * 0.85
-        attrs = _text_base_attrs(run, center_x, baseline_y, "middle")
         tspan_attrs = _run_tspan_attrs(run)
-        text_blocks.append(
-            f"<text{attrs}><tspan{tspan_attrs}>{_xml_escape(char)}</tspan></text>"
-        )
+        if first_run is None:
+            first_run = run
+            first_baseline = baseline_y
+            spans.append(f"<tspan{tspan_attrs}>{_xml_escape(char)}</tspan>")
+        else:
+            dy = baseline_y - (previous_baseline or baseline_y)
+            spans.append(
+                f'<tspan x="{fmt_num(center_x)}" dy="{fmt_num(dy)}"'
+                f"{tspan_attrs}>{_xml_escape(char)}</tspan>"
+            )
+        previous_baseline = baseline_y
         cursor_y += advance
 
-    return TextResult(svg="\n".join(text_blocks))
+    if first_run is None or first_baseline is None:
+        return TextResult()
+
+    attrs = _text_base_attrs(first_run, center_x, first_baseline, "middle")
+    return TextResult(svg=f"<text{attrs}>{''.join(spans)}</text>")
 
 
 def _rotated_bbox(xfrm: Xfrm) -> tuple[float, float, float, float]:
@@ -687,9 +711,31 @@ def _paragraph_height_from_lines(p: TextParagraph,
         return DEFAULT_FONT_SIZE_PX * p.line_height_ratio
     height = 0.0
     for line in lines:
-        max_font = max((r.font_size_px for r in line), default=DEFAULT_FONT_SIZE_PX)
-        height += max_font * p.line_height_ratio
+        height += _line_height(p, line)
     return height
+
+
+def _line_height(p: TextParagraph, line: list[TextRun]) -> float:
+    max_font = max((r.font_size_px for r in line), default=DEFAULT_FONT_SIZE_PX)
+    return max_font * p.line_height_ratio
+
+
+def _clip_lines_to_bottom(
+    para: TextParagraph,
+    lines: list[list[TextRun]],
+    top_y: float,
+    bottom_y: float,
+) -> list[list[TextRun]]:
+    """Return the leading display lines whose line boxes fit in the text frame."""
+    visible: list[list[TextRun]] = []
+    cursor_y = top_y
+    for line in lines:
+        line_h = _line_height(para, line)
+        if cursor_y + line_h > bottom_y:
+            break
+        visible.append(line)
+        cursor_y += line_h
+    return visible
 
 
 def _paragraph_height(p: TextParagraph) -> float:

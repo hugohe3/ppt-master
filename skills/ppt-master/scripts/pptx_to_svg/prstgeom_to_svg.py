@@ -137,6 +137,28 @@ def _round_rect(xfrm: Xfrm, sp_pr) -> GeomResult:
     )
 
 
+def _round_2_diag_rect(xfrm: Xfrm, sp_pr) -> GeomResult:
+    """Rectangle with two diagonal rounded corners.
+
+    DrawingML's round2DiagRect rounds the top-left and bottom-right corners.
+    SVG has no direct primitive for per-corner radii, so emit a native-friendly
+    path with quadratic curves.
+    """
+    adj = _adj_value(sp_pr, "adj", default_pct=0.16667)
+    r = min(adj * min(xfrm.w, xfrm.h), min(xfrm.w, xfrm.h) / 2.0)
+    x, y, w, h = xfrm.x, xfrm.y, xfrm.w, xfrm.h
+    d = (
+        f"M {fmt_num(x + r)} {fmt_num(y)} "
+        f"L {fmt_num(x + w)} {fmt_num(y)} "
+        f"L {fmt_num(x + w)} {fmt_num(y + h - r)} "
+        f"Q {fmt_num(x + w)} {fmt_num(y + h)} {fmt_num(x + w - r)} {fmt_num(y + h)} "
+        f"L {fmt_num(x)} {fmt_num(y + h)} "
+        f"L {fmt_num(x)} {fmt_num(y + r)} "
+        f"Q {fmt_num(x)} {fmt_num(y)} {fmt_num(x + r)} {fmt_num(y)} Z"
+    )
+    return GeomResult(tag="path", path_d=d)
+
+
 def _ellipse(xfrm: Xfrm, _sp_pr) -> GeomResult:
     cx = xfrm.x + xfrm.w / 2.0
     cy = xfrm.y + xfrm.h / 2.0
@@ -361,6 +383,27 @@ def _up_arrow(xfrm: Xfrm, sp_pr) -> GeomResult:
     ])
 
 
+# ---------- Decorative shapes ----------
+
+def _plaque(xfrm: Xfrm, sp_pr) -> GeomResult:
+    """Approximate DrawingML plaque with concave curved corner cuts."""
+    adj = _adj_value(sp_pr, "adj", default_pct=0.16667)
+    r = min(adj * min(xfrm.w, xfrm.h), min(xfrm.w, xfrm.h) / 2.0)
+    x, y, w, h = xfrm.x, xfrm.y, xfrm.w, xfrm.h
+    d = (
+        f"M {fmt_num(x + r)} {fmt_num(y)} "
+        f"L {fmt_num(x + w - r)} {fmt_num(y)} "
+        f"Q {fmt_num(x + w - r)} {fmt_num(y + r)} {fmt_num(x + w)} {fmt_num(y + r)} "
+        f"L {fmt_num(x + w)} {fmt_num(y + h - r)} "
+        f"Q {fmt_num(x + w - r)} {fmt_num(y + h - r)} {fmt_num(x + w - r)} {fmt_num(y + h)} "
+        f"L {fmt_num(x + r)} {fmt_num(y + h)} "
+        f"Q {fmt_num(x + r)} {fmt_num(y + h - r)} {fmt_num(x)} {fmt_num(y + h - r)} "
+        f"L {fmt_num(x)} {fmt_num(y + r)} "
+        f"Q {fmt_num(x + r)} {fmt_num(y + r)} {fmt_num(x + r)} {fmt_num(y)} Z"
+    )
+    return GeomResult(tag="path", path_d=d)
+
+
 # ---------- Pie / chord / arc (path-based) ----------
 
 def _pie(xfrm: Xfrm, sp_pr) -> GeomResult:
@@ -418,6 +461,7 @@ _PRESET_HANDLERS = {
     # Core 4 (svg_to_pptx round-trip)
     "rect": _rect,
     "roundRect": _round_rect,
+    "round2DiagRect": _round_2_diag_rect,
     "ellipse": _ellipse,
     "line": _line,
 
@@ -451,6 +495,9 @@ _PRESET_HANDLERS = {
     "leftArrow": _left_arrow,
     "downArrow": _down_arrow,
     "upArrow": _up_arrow,
+
+    # Decorative
+    "plaque": _plaque,
 
     # Pie / chord / arc
     "pie": _pie,

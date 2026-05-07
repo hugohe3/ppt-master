@@ -28,9 +28,17 @@ Strategy:
 from __future__ import annotations
 
 import base64
+import hashlib
+import io
 import mimetypes
 from dataclasses import dataclass, field
 from xml.etree import ElementTree as ET
+
+try:
+    from PIL import Image, ImageEnhance
+except ImportError:  # pragma: no cover - optional visual enhancement dependency
+    Image = None
+    ImageEnhance = None
 
 from .emu_units import NS, Xfrm, fmt_num
 from .ooxml_loader import OoxmlPackage, PartRef
@@ -79,6 +87,7 @@ def convert_blip_fill(
         return PictureResult()
 
     filename = pkg.media_filename(target)
+    filename, img_bytes = _apply_blip_image_effects(filename, img_bytes, blip)
     href = _build_href(filename, img_bytes, media_subdir, embed_inline)
 
     # srcRect: l/t/r/b in 1/100000ths (so 50000 = 50%).
@@ -163,6 +172,81 @@ def _parse_src_rect(elem: ET.Element | None) -> tuple[float, float, float, float
     if vb_w <= 0 or vb_h <= 0:
         return None
     return vb_x, vb_y, vb_w, vb_h
+
+
+def _apply_blip_image_effects(
+    filename: str,
+    img_bytes: bytes,
+    blip: ET.Element,
+) -> tuple[str, bytes]:
+    """Bake supported DrawingML blip effects into extracted image bytes.
+
+    Keeping the SVG as a plain <image> avoids introducing CSS filters that the
+    downstream native PPTX converter cannot reliably map back to DrawingML.
+    """
+    lum = blip.find("a:lum", NS)
+    if lum is None:
+        return filename, img_bytes
+
+    bright = _signed_pct_attr(lum, "bright")
+    contrast = _signed_pct_attr(lum, "contrast")
+    if bright is None and contrast is None:
+        return filename, img_bytes
+    if Image is None or ImageEnhance is None:
+        return filename, img_bytes
+
+    try:
+        image = Image.open(io.BytesIO(img_bytes))
+        output_format = image.format or _pil_format_from_filename(filename)
+        if image.mode not in ("RGB", "RGBA"):
+            image = image.convert("RGBA" if "A" in image.getbands() else "RGB")
+        if bright is not None:
+            image = ImageEnhance.Brightness(image).enhance(max(0.0, 1.0 + bright))
+        if contrast is not None:
+            image = ImageEnhance.Contrast(image).enhance(max(0.0, 1.0 + contrast))
+
+        out = io.BytesIO()
+        save_format = output_format or "PNG"
+        save_kwargs = {"quality": 95} if save_format.upper() in {"JPEG", "JPG"} else {}
+        image.save(out, format=save_format, **save_kwargs)
+        effect_key = f"lum-{bright}-{contrast}".encode("ascii")
+        digest = hashlib.sha1(effect_key).hexdigest()[:8]
+        return _effect_filename(filename, digest, save_format), out.getvalue()
+    except Exception:
+        return filename, img_bytes
+
+
+def _signed_pct_attr(elem: ET.Element, name: str) -> float | None:
+    val = elem.attrib.get(name)
+    if val is None:
+        return None
+    try:
+        return float(val) / 100000.0
+    except ValueError:
+        return None
+
+
+def _pil_format_from_filename(filename: str) -> str | None:
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+    if ext in {"jpg", "jpeg"}:
+        return "JPEG"
+    if ext == "png":
+        return "PNG"
+    if ext == "gif":
+        return "GIF"
+    if ext == "webp":
+        return "WEBP"
+    return None
+
+
+def _effect_filename(filename: str, digest: str, image_format: str) -> str:
+    stem, sep, ext = filename.rpartition(".")
+    if not sep:
+        ext = (image_format or "png").lower()
+        stem = filename
+    if ext.lower() == "jpg":
+        ext = "jpeg"
+    return f"{stem}_fx_{digest}.{ext}"
 
 
 def _pct_attr(elem: ET.Element, name: str) -> float:

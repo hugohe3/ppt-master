@@ -28,7 +28,7 @@ from xml.etree import ElementTree as ET
 from .color_resolver import ColorPalette, find_color_elem, resolve_color
 from .custgeom_to_svg import convert_custom_geom
 from .effect_to_svg import convert_effects
-from .emu_units import NS, fmt_num
+from .emu_units import NS, Xfrm, fmt_num
 from .fill_to_svg import resolve_fill
 from .ln_to_svg import resolve_stroke
 from .ooxml_loader import OoxmlPackage, PartRef, SlideRef
@@ -405,6 +405,8 @@ def _build_geometry_xml(node: ShapeNode, sp_pr: ET.Element | None,
 
 def _geom_to_svg(geom: GeomResult, attrs_xml: str = "") -> str:
     """Serialize a resolved geometry with optional SVG attributes."""
+    if not attrs_xml:
+        attrs_xml = _attrs_to_xml(geom.attrs)
     if geom.tag == "path":
         return f'<path d="{geom.path_d}"{attrs_xml}/>'
     if geom.tag in ("polygon", "polyline"):
@@ -618,6 +620,10 @@ def _emit_background(slide: SlideRef, ctx: AssemblyContext,
         if bg_pr is None:
             continue
 
+        bg_image = _emit_background_image(bg_pr, part, ctx, w, h)
+        if bg_image:
+            return bg_image
+
         fill = resolve_fill(
             bg_pr, ctx.palette,
             id_prefix="bg", id_seq=ctx.grad_seq,
@@ -658,6 +664,10 @@ def _emit_part_background(slide: SlideRef, ctx: AssemblyContext,
     if bg_pr is None:
         return ""
 
+    bg_image = _emit_background_image(bg_pr, slide.part, ctx, w, h)
+    if bg_image:
+        return bg_image
+
     fill = resolve_fill(
         bg_pr, ctx.palette,
         id_prefix="bg", id_seq=ctx.grad_seq,
@@ -669,6 +679,31 @@ def _emit_part_background(slide: SlideRef, ctx: AssemblyContext,
     attrs_xml = _attrs_to_xml(fill.attrs)
     return (f'<rect x="0" y="0" width="{fmt_num(w)}" height="{fmt_num(h)}"'
             f"{attrs_xml}/>")
+
+
+def _emit_background_image(
+    bg_pr: ET.Element,
+    source_part: PartRef,
+    ctx: AssemblyContext,
+    w: float,
+    h: float,
+) -> str:
+    """Render a slide/layout/master background image fill as a full-canvas image."""
+    blip_fill = bg_pr.find("a:blipFill", NS)
+    if blip_fill is None:
+        return ""
+
+    result = convert_blip_fill(
+        blip_fill,
+        Xfrm(0.0, 0.0, w, h),
+        source_part,
+        ctx.pkg,
+        media_subdir=ctx.media_subdir,
+        embed_inline=ctx.embed_images,
+    )
+    if result.media:
+        ctx.media.update(result.media)
+    return result.svg
 
 
 def _theme_background_fill(
