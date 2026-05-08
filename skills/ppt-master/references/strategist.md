@@ -24,7 +24,7 @@ As a top-tier AI presentation strategist, receive source documents, perform cont
 
 ⛔ **BLOCKING**: After the read, present professional recommendations for the eight items below as a bundled package and wait for explicit user confirmation.
 
-> **Execution discipline**: This is the last BLOCKING checkpoint (besides template selection). After confirmation, complete the Design Spec and proceed to image generation / SVG / post-processing without further pauses.
+> **Execution discipline**: This is the last BLOCKING checkpoint in the pipeline. After confirmation, complete the Design Spec and proceed to image generation / SVG / post-processing without further pauses.
 
 ### a. Canvas Format Confirmation
 
@@ -494,22 +494,22 @@ Save outputs to `projects/<project_name>_<format>_<YYYYMMDD>/design_spec.md`.
 
 ## 8. Complete Design Spec and Prompt Next Steps
 
-After writing `design_spec.md` and `spec_lock.md`, output the next-step prompt below based on template + image selection. This is a handoff instruction, not part of `design_spec.md`.
+After writing `design_spec.md` and `spec_lock.md`, output the next-step prompt below. This is a handoff instruction, not part of `design_spec.md`. Pick the variant by whether Step 3 copied a template into `<project_path>/templates/`.
 
-### Template Option A (Using existing template)
+### Template mode (template applied in Step 3)
 
 ```
 ✅ Design spec complete. Template ready.
 Next step:
 - Images include AI generation → Invoke Image_Generator
-- Images do not include AI generation → Invoke Executor
+- Otherwise → Invoke Executor
 ```
 
-### Template Option B (No template)
+### Free design (default, no template)
 
 ```
 ✅ Design spec complete.
 Next step:
 - Images include AI generation → Invoke Image_Generator
-- Images do not include AI generation → Invoke Executor (free design for every page)
+- Otherwise → Invoke Executor (free design for every page)
 ```

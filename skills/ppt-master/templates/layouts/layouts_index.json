@@ -1,359 +1,190 @@
 {
   "academic_defense": {
-    "label": "academic_defense",
-    "summary": "For Thesis defense, academic presentations, research progress reports, grant applications.",
+    "summary": "Thesis defense, academic presentations, research progress reports, grant applications.",
     "keywords": [
       "Professional",
       "rigorous",
       "research-oriented",
       "clear hierarchy"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "ai_ops": {
-    "label": "Enterprise Digital Intelligence",
-    "summary": "For Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.",
+    "summary": "Telecom AI operations architecture, IT system overviews, digital transformation proposals, smart infrastructure reports.",
     "keywords": [
       "Information-dense",
       "structured",
       "modular zoning",
       "telecom",
       "enterprise style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending",
-      "reference_style"
     ]
   },
   "anthropic": {
-    "label": "Anthropic Style Template",
-    "summary": "For AI tech talks, developer conferences, technical training, product launches.",
+    "summary": "AI tech talks, developer conferences, technical training, product launches.",
     "keywords": [
       "Tech-forward",
       "professional",
       "modern",
       "conclusion-first"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "china_telecom_template": {
-    "label": "中国电信模板",
-    "summary": "For China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.",
+    "summary": "China Telecom related briefings, 政企数字化方案, 转型规划, 内部汇报.",
     "keywords": [
       "Authoritative",
       "structured",
       "restrained",
       "enterprise-government hybrid"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "exhibit": {
-    "label": "Exhibit Style Template",
-    "summary": "For Strategic planning, executive reports, investment analysis, board presentations.",
+    "summary": "Strategic planning, executive reports, investment analysis, board presentations.",
     "keywords": [
       "Premium",
       "refined",
       "authoritative",
       "data-driven",
       "conclusion-first"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "google_style": {
-    "label": "Google Style Template",
-    "summary": "For Annual work reports, technical sharing, project showcases, data-driven presentations.",
+    "summary": "Annual work reports, technical sharing, project showcases, data-driven presentations.",
     "keywords": [
       "Professional",
       "modern",
       "clean and restrained",
       "data-driven",
       "generous whitespace"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "government_blue": {
-    "label": "Government Blue Template",
-    "summary": "For Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.",
+    "summary": "Key project briefings, Five-Year Plan presentations, work summaries, investment promotion, policy interpretation.",
     "keywords": [
       "Grand",
       "tech-forward",
       "modern",
       "professional government style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "government_red": {
-    "label": "Government Red Template",
-    "summary": "For Government briefings, policy interpretation, work summaries, project introductions, investment promotion.",
+    "summary": "Government briefings, policy interpretation, work summaries, project introductions, investment promotion.",
     "keywords": [
       "Authoritative",
       "dignified",
       "professional",
       "modern government style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "mckinsey": {
-    "label": "McKinsey Style Template",
-    "summary": "For Strategic consulting, executive briefings, investment analysis, business proposals.",
+    "summary": "Strategic consulting, executive briefings, investment analysis, business proposals.",
     "keywords": [
       "Data-driven",
       "structured thinking",
       "professional whitespace",
       "minimalist premium"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "medical_university": {
-    "label": "Hospital / Medical University Template",
-    "summary": "For Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
+    "summary": "Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
     "keywords": [
       "Professional",
       "rigorous",
       "life-affirming",
       "tech-forward",
       "trustworthy"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "pixel_retro": {
-    "label": "Pixel Retro Template",
-    "summary": "For Tech talks, programming tutorials, game introductions, geek-style showcases.",
+    "summary": "Tech talks, programming tutorials, game introductions, geek-style showcases.",
     "keywords": [
       "Retro gaming",
       "neon cyberpunk",
       "geek tech",
       "8-bit style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "psychology_attachment": {
-    "label": "Psychology Healing Template",
-    "summary": "For Psychotherapy training, academic lectures, counseling case analysis, professional sharing.",
+    "summary": "Psychotherapy training, academic lectures, counseling case analysis, professional sharing.",
     "keywords": [
       "Professional",
       "warm",
       "healing",
       "trustworthy"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "smart_red": {
-    "label": "Smart Red-Orange Business Style",
-    "summary": "For Company introductions, product launches, solution presentations, education industry courseware.",
+    "summary": "Company introductions, product launches, solution presentations, education industry courseware.",
     "keywords": [
       "Modern",
       "energetic",
       "professional",
       "geometric"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "中国电建_常规": {
-    "label": "formerly powerchina",
-    "summary": "For Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.",
+    "summary": "Engineering project reports, technical proposal presentations, business negotiations, corporate promotion, annual summaries.",
     "keywords": [
       "Professional",
       "composed",
       "international",
       "state-owned enterprise style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "中国电建_现代": {
-    "label": "formerly powerchina_v2",
-    "summary": "For Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations.",
+    "summary": "Major engineering reports, international market promotion, technology achievement showcases, high-end business negotiations.",
     "keywords": [
       "Grand narrative",
       "modern precision",
       "digital tech",
       "international vision"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "中汽研_商务": {
-    "label": "formerly zhongqiyan_v2",
-    "summary": "For Product certification display, evaluation presentations, technology promotion, high-end business reporting.",
+    "summary": "Product certification display, evaluation presentations, technology promotion, high-end business reporting.",
     "keywords": [
       "Modern tech",
       "authoritative & professional",
       "composed & grand"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "中汽研_常规": {
-    "label": "formerly zhongqiyan",
-    "summary": "For Product certification display, evaluation presentations, technology promotion, business visits.",
+    "summary": "Product certification display, evaluation presentations, technology promotion, business visits.",
     "keywords": [
       "Professional",
       "authoritative",
       "trustworthy",
       "consulting style"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "中汽研_现代": {
-    "label": "CATARC_Modern_Tech",
-    "summary": "For Forward-looking technology showcases, strategic releases, high-end business reporting.",
+    "summary": "Forward-looking technology showcases, strategic releases, high-end business reporting.",
     "keywords": [
       "Futuristic",
       "tech-forward",
       "deep & refined"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "招商银行": {
-    "label": "招商银行",
-    "summary": "For 交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.",
+    "summary": "交易银行产品介绍、销售收款方案汇报、客户案例拆解、分行培训材料.",
     "keywords": [
       "Brand-consistent",
       "structured",
       "product-focused",
       "refined finance"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "科技蓝商务": {
-    "label": "科技蓝商务 / tech_blue_business",
-    "summary": "For Corporate reports, product launches, proposals, process standards, training materials.",
+    "summary": "Corporate reports, product launches, proposals, process standards, training materials.",
     "keywords": [
       "Tech",
       "business",
       "professional",
       "clean"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   },
   "重庆大学": {
-    "label": "重庆大学",
-    "summary": "For Academic defense, research reports, teaching presentations, scholarly exchange.",
+    "summary": "Academic defense, research reports, teaching presentations, scholarly exchange.",
     "keywords": [
       "Academically grounded · Mountain City charm · Modern minimalism"
-    ],
-    "pages": [
-      "01_cover",
-      "02_chapter",
-      "02_toc",
-      "03_content",
-      "04_ending"
     ]
   }
 }

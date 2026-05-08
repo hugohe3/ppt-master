@@ -14,15 +14,40 @@ PPT Master 的"模板"是一份**结构 + 风格**的预设包：包含若干页
 
 ### 触发方式
 
-工作流**默认走自由设计**——不会主动问你要不要用模板。要进入模板流程，在对话里给出明确触发即可：
+工作流**默认走自由设计**——不会主动问你要不要用模板，也不会基于内容主动推荐模板。模板是 opt-in 的，**只接受精确 slug**。
 
-| 触发类型 | 例子 |
-|----------|------|
-| 直接点名 | "用 mckinsey 模板做这份报告" |
-| 风格类比 | "麦肯锡那种风格" / "Google style" / "学术答辩样式" |
-| 列清单 | "有哪些模板可以用？" |
+### 什么是 slug？
 
-命中后，AI 会读取 [`templates/layouts/layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json)，把对应模板的 SVG、`design_spec.md` 和素材复制到当前项目的 `templates/` 目录，再进入策略师阶段。
+slug 是模板的唯一标识——[`templates/layouts/`](../../skills/ppt-master/templates/layouts/) 下的目录名，同时也是 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json) 里的顶层 key，三者完全一致。例如：
+
+| slug | 目录 | 索引 key |
+|---|---|---|
+| `mckinsey` | `templates/layouts/mckinsey/` | `"mckinsey"` |
+| `academic_defense` | `templates/layouts/academic_defense/` | `"academic_defense"` |
+| `招商银行` | `templates/layouts/招商银行/` | `"招商银行"` |
+| `中国电建_常规` | `templates/layouts/中国电建_常规/` | `"中国电建_常规"` |
+
+slug 区分大小写，必须**一字不差**地出现在你的输入里才会触发模板流程。
+
+### 怎么触发模板流程
+
+在对话里把 slug 写进去（位置不重要，只要出现即可）：
+
+> "用 **mckinsey** 模板做这份报告" ✅
+> "做一份 **academic_defense** 模板的答辩 PPT" ✅
+> "做一份 **招商银行** 风格的产品介绍" ✅
+
+AI 会读取 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json)，把对应模板的 SVG、`design_spec.md` 和素材复制到项目目录，然后进入 Strategist 阶段。你也可以直接给出目录路径（`templates/layouts/mckinsey/`），AI 从路径里抽 slug。
+
+### 什么**不会**触发模板流程
+
+- **不是 slug 的风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
+- **不完整 / 有歧义的匹配**："中国电建"——库里有 `中国电建_常规` 和 `中国电建_现代` 两个，没有唯一对应 → 走自由设计。AI 不替你猜（你可以再说一次精确的那个 slug 重新触发）。
+- **模糊意图**："想用个模板" / "选一个吧"——没出现具体 slug → 走自由设计。
+
+这是有意的——AI 永远**不做模糊 / 解释性判断**，不替你决定模糊的描述对应哪个模板。要用模板，请用精确 slug 点名。
+
+想知道库里有哪些模板，问一句"有哪些模板可以用？"——AI 会从索引里列出 slug 清单。单纯列出并不进入模板流程，需要你再用其中一个 slug 重新说一次才会触发 Step 3。
 
 ### 现有模板一览
 

@@ -52,7 +52,7 @@ Items to confirm with the user:
 | Assets list | Optional | Logos / background textures / reference images to include in the template package |
 | Keywords | Yes | 3–5 short tags for `layouts_index.json` lookup (e.g., `McKinsey`, `Consulting`, `Structured`) |
 
-> **Persist the brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 3, declare a YAML frontmatter block at the top with the confirmed brief (`template_id`, `label`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `replication_mode`, etc.). `register_template.py` reads this in Step 5, so the brief flows directly into the index without the AI re-deriving it from prose. See Step 5 for the recommended frontmatter shape.
+> **Persist the brief into `design_spec.md`**. When the Template_Designer writes `design_spec.md` in Step 3, declare a YAML frontmatter block at the top with the confirmed brief (`template_id`, `category`, `summary`, `keywords`, `primary_color`, `canvas_format`, `replication_mode`, etc.). `register_template.py` reads this in Step 5, so the brief flows directly into the index without the AI re-deriving it from prose. See Step 5 for the recommended frontmatter shape.
 
 **Required outcome of Step 1** (all must be true before emitting `[TEMPLATE_BRIEF_CONFIRMED]`):
 
@@ -212,22 +212,21 @@ python3 skills/ppt-master/scripts/register_template.py <template_id>
 
 Outputs:
 
-- updates `skills/ppt-master/templates/layouts/layouts_index.json` — the flat `template_id → { label, summary, keywords, pages }` map
+- updates `skills/ppt-master/templates/layouts/layouts_index.json` — the flat `template_id → { summary, keywords }` map
 - refreshes the auto-managed Quick Index inside `skills/ppt-master/templates/layouts/README.md` (the surrounding category sections stay hand-edited)
 - prints a "Template Creation Complete" card you can use directly for Step 6
 
-`pages` is collected by globbing `*.svg` in the template directory, so `fidelity`-mode templates that include variant pages such as `03a_content_two_col` are listed automatically.
+The completion card's file roster is collected by globbing `*.svg` in the template directory, so `fidelity`-mode templates that include variant pages such as `03a_content_two_col` are listed automatically.
 
-`layouts_index.json` is the lightweight lookup used when a user explicitly opts into the template flow. The main workflow defaults to free design and does not read this file unless a template trigger fires (see `SKILL.md` Step 3). A template directory that has not been run through `register_template.py` will not be discoverable by that flow.
+`layouts_index.json` is the lightweight lookup used when a user explicitly names a template. The main workflow defaults to free design and does not read this file unless the user has named a template (see `SKILL.md` Step 3). A template directory that has not been run through `register_template.py` will not be discoverable by that flow.
 
 > **Recommended for new templates**: declare a YAML frontmatter block at the top of `design_spec.md`. The registrar prefers it over the §I table and lets you set `category`, `keywords`, `summary`, etc. without relying on prose extraction:
 >
 > ```yaml
 > ---
 > template_id: my_template
-> label: My Template
 > category: brand            # brand | general | scenario | government | special
-> summary: For ...
+> summary: Strategic consulting, executive briefings, ...
 > keywords: [tag1, tag2, tag3]
 > primary_color: "#005587"
 > canvas_format: ppt169

@@ -14,15 +14,40 @@ This guide answers three questions:
 
 ### How to trigger
 
-The workflow **defaults to free design** — it will not ask whether you want a template. To enter the template flow, give an explicit trigger in chat:
+The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **exact slug** only.
 
-| Trigger type | Example |
-|--------------|---------|
-| Name a specific template | "use the mckinsey template for this report" |
-| Name a style / brand reference | "McKinsey style" / "Google style" / "academic defense look" |
-| Ask for a list | "what templates are available?" |
+### What is a slug?
 
-On a hit, the AI reads [`templates/layouts/layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json), copies the matching template's SVGs, `design_spec.md`, and assets into the project's `templates/` directory, then proceeds to the Strategist phase.
+A slug is the unique identifier of a template — the directory name under [`templates/layouts/`](../skills/ppt-master/templates/layouts/) and equivalently the top-level key in [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json). All three are the same string. Examples:
+
+| Slug | Directory | Index key |
+|---|---|---|
+| `mckinsey` | `templates/layouts/mckinsey/` | `"mckinsey"` |
+| `academic_defense` | `templates/layouts/academic_defense/` | `"academic_defense"` |
+| `招商银行` | `templates/layouts/招商银行/` | `"招商银行"` |
+| `中国电建_常规` | `templates/layouts/中国电建_常规/` | `"中国电建_常规"` |
+
+Slugs are case-sensitive and must appear **verbatim** in your message to trigger the template flow.
+
+### How to enter the template flow
+
+Type a message that contains an exact slug, anywhere in the sentence:
+
+> "use the **mckinsey** template for this report" ✅
+> "用 **academic_defense** 模板做这份汇报" ✅
+> "做一份 **招商银行** 风格的产品介绍" ✅
+
+The AI reads [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json), copies the template's SVGs, `design_spec.md`, and assets into your project, then proceeds to the Strategist phase. You can also point at the directory (`templates/layouts/mckinsey/`) and the AI will extract the slug from the path.
+
+### What does NOT trigger the template flow
+
+- **Style descriptions** that aren't slugs: "McKinsey style" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
+- **Partial / ambiguous matches**: "中国电建" when the library has both `中国电建_常规` and `中国电建_现代` → free design. The AI does not guess; you can clarify which one if you wanted a template.
+- **Vague intent**: "想用个模板" / "I want a template" with no slug → free design.
+
+This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template. If you want a template, name it by its exact slug.
+
+To browse what's available, ask "what templates are available?" — the AI will list slugs from the index. Listing alone does not enter the template flow; you still need to repeat the chosen slug to trigger Step 3.
 
 ### Template catalog
 

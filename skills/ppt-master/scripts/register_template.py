@@ -130,11 +130,6 @@ def _clean_field_value(value: str) -> str:
     return value.strip()
 
 
-def _strip_paren_alias(value: str) -> str:
-    """Drop a trailing ``(... alias ...)`` if the slug appears at the start."""
-    return re.sub(r"\s*\([^)]*\)\s*$", "", value).strip()
-
-
 def _find_first_color(section: str) -> str | None:
     match = re.search(r"`(#[0-9A-Fa-f]{3,8})`", section)
     return match.group(1).upper() if match else None
@@ -167,7 +162,7 @@ def _summary_from_use_cases(use_cases: str | None) -> str | None:
     cleaned = use_cases.strip().rstrip(".")
     if not cleaned:
         return None
-    return f"For {cleaned}."
+    return f"{cleaned}."
 
 
 # ---------------------------------------------------------------------------
@@ -185,23 +180,6 @@ def _extract_entry(template_id: str, template_dir: Path) -> dict:
 
     frontmatter, body = _read_spec(spec_path)
     fm = frontmatter or {}
-
-    label = fm.get("label")
-    if not label:
-        raw = _extract_section_field(
-            body, "I. Template Overview", ["Template Name", "Name"]
-        )
-        if raw:
-            # Prefer the human-facing form when present, else fall back to id.
-            if "(" in raw and ")" in raw:
-                inner = _clean_field_value(
-                    raw[raw.find("(") + 1: raw.rfind(")")]
-                )
-                label = inner or _strip_paren_alias(raw) or template_id
-            else:
-                label = _strip_paren_alias(raw) or template_id
-        else:
-            label = template_id
 
     summary = fm.get("summary")
     if not summary:
@@ -239,13 +217,12 @@ def _extract_entry(template_id: str, template_dir: Path) -> dict:
     pages = _list_pages(template_dir)
 
     entry = OrderedDict(
-        label=label,
         summary=summary,
         keywords=keywords,
-        pages=pages,
     )
 
     extras = OrderedDict(
+        pages=pages,
         category=str(category),
         primary_color=str(primary_color or ""),
         use_cases=str(use_cases),
@@ -365,8 +342,7 @@ def _print_completion_card(template_id: str, entry: dict, extras: dict) -> None:
     print()
     print("## Template Creation Complete")
     print()
-    print(f"**Template Name**: {template_id}"
-          f" ({entry.get('label', template_id)})")
+    print(f"**Template Name**: {template_id}")
     print(f"**Template Path**: `templates/layouts/{template_id}/`")
     print(f"**Category**: {extras.get('category', 'general')}")
     primary = extras.get("primary_color") or "—"
@@ -377,7 +353,7 @@ def _print_completion_card(template_id: str, entry: dict, extras: dict) -> None:
     print()
     print("| File | Status |")
     print("|------|--------|")
-    for page in entry.get("pages", []):
+    for page in extras.get("pages", []):
         print(f"| `{page}.svg` | Done |")
     print()
 

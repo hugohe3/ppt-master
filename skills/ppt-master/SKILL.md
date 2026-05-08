@@ -11,7 +11,7 @@ description: >
 
 > AI-driven multi-format SVG content generation system. Converts source documents into high-quality SVG pages through multi-role collaboration and exports to PPTX.
 
-**Core Pipeline**: `Source Document → Create Project → Template Option → Strategist → [Image_Generator] → Executor → Post-processing → Export`
+**Core Pipeline**: `Source Document → Create Project → [Template] → Strategist → [Image_Generator] → Executor → Post-processing → Export`
 
 > [!CAUTION]
 > ## 🚨 Global Execution Discipline (MANDATORY)
@@ -134,32 +134,34 @@ Import source content (choose based on the situation):
 
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
-**Default — free design.** Proceed directly to Step 4. Do NOT query `layouts_index.json`. Do NOT ask the user an A/B template-vs-free-design question.
+**Default — free design.** Proceed directly to Step 4. Do NOT query `layouts_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content or vague style descriptions.
 
-**Template flow is opt-in.** Enter it only when an explicit trigger appears in the user's prior messages:
+**Template flow triggers ONLY on exact slug.** A "slug" is the directory name under `templates/layouts/` and equivalently a top-level key in `layouts_index.json` (e.g. `mckinsey`, `academic_defense`, `中国电建_常规`). The trigger rule is mechanical, not interpretive:
 
-1. Names a specific template (e.g., "用 mckinsey 模板" / "use the academic_defense template")
-2. Names a style / brand reference that maps to a template (e.g., "McKinsey 那种" / "Google style" / "学术答辩样式")
-3. Asks what templates exist (e.g., "有哪些模板可以用")
+| User input contains | Step 3 action |
+|---|---|
+| An exact slug as a substring ("用 mckinsey 模板" / "use the academic_defense template" / "用 招商银行 模板") | Resolve via `layouts_index.json`, copy the template (SVGs + design_spec + assets) into the project, advance |
+| A path under `templates/layouts/<slug>/` | Same as above — extract slug from path, copy, advance |
+| Anything else — including style descriptions ("麦肯锡风格" / "Google style"), partial matches ("中国电建" when the library has `中国电建_常规` and `中国电建_现代`), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
-When triggered: read `${SKILL_DIR}/templates/layouts/layouts_index.json`, resolve the match (or list options for trigger 3), and copy:
+The matcher is exact-slug substring matching — no semantic mapping, no near-name fuzzy matching, no AI judgment. If the user's text does not contain a slug verbatim, the template path does not trigger.
 
 ```bash
-cp ${SKILL_DIR}/templates/layouts/<template_name>/*.svg <project_path>/templates/
-cp ${SKILL_DIR}/templates/layouts/<template_name>/design_spec.md <project_path>/templates/
-cp ${SKILL_DIR}/templates/layouts/<template_name>/*.png <project_path>/images/ 2>/dev/null || true
-cp ${SKILL_DIR}/templates/layouts/<template_name>/*.jpg <project_path>/images/ 2>/dev/null || true
+cp ${SKILL_DIR}/templates/layouts/<slug>/*.svg <project_path>/templates/
+cp ${SKILL_DIR}/templates/layouts/<slug>/design_spec.md <project_path>/templates/
+cp ${SKILL_DIR}/templates/layouts/<slug>/*.png <project_path>/images/ 2>/dev/null || true
+cp ${SKILL_DIR}/templates/layouts/<slug>/*.jpg <project_path>/images/ 2>/dev/null || true
 ```
 
-**Soft hint (non-blocking).** When content is an obvious strong match for an existing template (e.g., academic defense, government report, McKinsey-style deck) AND no template trigger fired, emit a single-sentence notice and continue without waiting:
+> Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) are NOT slugs and never trigger Step 3. They flow naturally into Strategist's Eight Confirmations as part of the user's input — Strategist uses them as a style brief when proposing color / typography / tone in confirmations e and g.
 
-> Note: the library has a template `<name>` that matches this scenario closely. Say the word if you want to use it; otherwise I'll continue with free design.
+> Partial matches ("中国电建" alone) do not auto-pick among `中国电建_常规` / `中国电建_现代` — that's the user's choice. AI may ask which one as normal dialogue, but does not guess.
 
-Hint, not question — do NOT block. Skip entirely on weak/ambiguous match.
+> "What templates exist?" is out-of-band Q&A — answer by listing entries from `layouts_index.json`. Listing alone does not advance the pipeline; only an exact slug match triggers the Step 3 copy.
 
-> To create a new global template, read `workflows/create-template.md`
+> To create a new global template, read `workflows/create-template.md`.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If a template trigger fired, template files are copied before advancing.**
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an exact slug, that template is copied before advancing.**
 
 ---
 
