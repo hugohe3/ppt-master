@@ -161,7 +161,7 @@ The role should use the import output to anchor objective facts such as theme co
 
 **Expected outputs from this step** (full spec → [template-designer.md](../references/template-designer.md)):
 
-1. `design_spec.md` (with §VI page roster matching the actual SVG files; declare brief frontmatter for `register_template.py`)
+1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare brief frontmatter for `register_template.py`. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
 2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` vs `fidelity` mode, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
 4. Template assets (optional) — Logos / PNG / JPG / reference SVG bundled with the template package
@@ -189,8 +189,8 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 
 **Checklist**:
 
-- [ ] `design_spec.md` contains complete design specification, with §VI listing every emitted page
-- [ ] Every page declared in `design_spec.md §VI` exists as an SVG file in the template directory (and vice versa — no orphan files)
+- [ ] `design_spec.md` follows the personality-only skeleton (Overview / Color / Signature / Page Roster); generic constraints (SVG rules, pattern libraries, ratio bands, canonical placeholder table) are NOT restated. §V Page Roster lists every emitted page
+- [ ] Every page declared in `design_spec.md §V Page Roster` exists as an SVG file in the template directory (and vice versa — no orphan files)
 - [ ] Variant filenames follow the letter-suffix convention (e.g. `03a_content_two_col.svg`); variants typically reuse the parent type's placeholder set unless the spec frontmatter declares otherwise
 - [ ] If TOC exists, placeholder pattern uses the canonical indexed form
 - [ ] SVG viewBox matches the chosen canvas format (for `ppt169`: `0 0 1280 720`)
@@ -204,7 +204,7 @@ This step is a **hard gate**. Do not register the template into the library inde
 
 ## Step 5: Register Template in Library Index
 
-Run the unified registrar; it derives the `layouts_index.json` entry and refreshes the `README.md` Quick Index from `design_spec.md` (frontmatter when present, §I / §III tables otherwise) plus the actual SVG file list:
+Run the unified registrar; it derives the `layouts_index.json` entry and refreshes the `README.md` Quick Index from `design_spec.md` (frontmatter when present, prose fallback otherwise) plus the actual SVG file list:
 
 ```bash
 python3 skills/ppt-master/scripts/register_template.py <template_id>
@@ -294,8 +294,8 @@ For a standard-mode template the card looks like:
 
 ## Notes
 
-1. **SVG technical constraints**: See [template-designer.md → SVG Technical Constraints](../references/template-designer.md)
-2. **Color consistency**: All SVG files must use the same color scheme as `design_spec.md §III`
+1. **SVG technical constraints**: See [shared-standards.md](../references/shared-standards.md) — do not restate them in the template's `design_spec.md`
+2. **Color consistency**: All SVG files must use the same color scheme as `design_spec.md §II Color Scheme`
 3. **Placeholder convention**: `{{}}` format only; default names listed in [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). Override per template via `placeholders:` frontmatter when needed.
 4. **Discovery requirement**: A template directory is only discoverable after `register_template.py` has been run against it (Step 5)
 

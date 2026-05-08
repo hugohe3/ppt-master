@@ -2,7 +2,7 @@
 """Register a layout template into the global template index.
 
 Reads ``templates/layouts/<template_id>/design_spec.md`` (preferring its YAML
-frontmatter when present, falling back to the §I / §III table values) and
+frontmatter when present, falling back to prose section values) and
 synchronizes two derived indexes:
 
 - ``templates/layouts/layouts_index.json`` — slim machine-readable map
@@ -136,9 +136,9 @@ def _find_first_color(section: str) -> str | None:
 
 
 def _extract_primary_color(body: str) -> str | None:
-    """Pull the first hex color out of the §III Color Scheme section."""
+    """Pull the first hex color out of the Color Scheme section (any roman index)."""
     section_match = re.search(
-        r"^##\s+III\.\s+Color Scheme\b.*?(?=^##\s+|\Z)",
+        r"^##\s+[IVX]+\.\s+Color Scheme\b.*?(?=^##\s+|\Z)",
         body,
         re.MULTILINE | re.DOTALL,
     )

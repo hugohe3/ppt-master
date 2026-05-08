@@ -852,17 +852,17 @@ class SVGQualityChecker:
                 self._template_issues.append((
                     'error',
                     'roster_orphan',
-                    f"{page}.svg exists on disk but is not listed in design_spec.md §VI",
+                    f"{page}.svg exists on disk but is not listed in design_spec.md Page Roster",
                 ))
             for page in missing:
                 self._template_issues.append((
                     'error',
                     'roster_missing',
-                    f"design_spec.md §VI lists {page} but {page}.svg is missing on disk",
+                    f"design_spec.md Page Roster lists {page} but {page}.svg is missing on disk",
                 ))
         elif spec_path.exists():
-            # design_spec.md is present but §VI parser found nothing — surface
-            # as a warning. Legacy specs may not have an explicit roster table.
+            # design_spec.md is present but the roster parser found nothing —
+            # surface as a warning. Legacy specs may lack an explicit roster.
             self._template_issues.append((
                 'warning',
                 'roster_unknown',
@@ -957,26 +957,27 @@ class SVGQualityChecker:
     def _extract_spec_roster(spec_text: str) -> List[str]:
         """Best-effort: extract the page roster from design_spec.md.
 
-        Existing templates do not use a uniform section title — some declare a
-        formal "§VI. Page Roster" table, others bury the filenames under a
-        prose "§VII. Page Types" section as ``### N. Cover Page (01_cover.svg)``.
-        We try a focused §VI scan first, then fall back to scanning the whole
-        document for any backtick-wrapped ``<stem>.svg`` reference.
+        Templates do not share a uniform section index for the roster — the
+        personality-only skeleton puts it at §V "Page Roster"; legacy specs use
+        §VI "Page Roster" or bury filenames under §VII "Page Types" as
+        ``### N. Cover Page (01_cover.svg)``. We match by title (any roman
+        index), then fall back to scanning the whole document for any
+        backtick-wrapped ``<stem>.svg`` reference.
 
         Returns the deduplicated stem list in document order. Empty result
         means we can't determine the roster confidently — caller should treat
         that as "skip orphan/missing checks", not as "no pages declared".
         """
-        # Pass 1: explicit §VI section.
+        # Pass 1: explicit roster section, any roman numeral.
         section = re.search(
-            r"^##\s+VI\.\s+(?:Page Roster|Page Structure|Pages)\b.*?(?=^##\s+|\Z)",
+            r"^##\s+[IVX]+\.\s+(?:Page Roster|Page Structure|Pages|Page Types)\b.*?(?=^##\s+|\Z)",
             spec_text,
             re.MULTILINE | re.DOTALL | re.IGNORECASE,
         )
         scope = section.group(0) if section else None
 
         # Pass 2: full document. We *only* trust this scan when the explicit
-        # §VI scan came up empty (no `<stem>.svg` references inside it) —
+        # roster scan came up empty (no `<stem>.svg` references inside it) —
         # otherwise the explicit section's deliberate roster wins over loose
         # mentions elsewhere.
         if scope and re.search(r"[`\(][0-9A-Za-z_]+\.svg[`\)]", scope):
@@ -1241,7 +1242,7 @@ def print_usage() -> None:
     print("  --format <ppt169|ppt43|...>   Expected canvas format")
     print("  --template-mode               Validate a templates/layouts/<id> directory:")
     print("                                  glob *.svg directly, skip spec_lock checks,")
-    print("                                  enforce roster ↔ design_spec.md §VI consistency,")
+    print("                                  enforce roster ↔ design_spec.md Page Roster consistency,")
     print("                                  and emit advisory placeholder-convention warnings.")
 
 
