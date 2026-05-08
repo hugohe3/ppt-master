@@ -34,12 +34,23 @@ EA_FONTS = {
     'SimSun', 'SimHei', 'FangSong', 'KaiTi', 'STKaiti',
     'STHeiti', 'STSong', 'STFangsong', 'STXihei', 'STZhongsong',
     'Hiragino Sans', 'Hiragino Sans GB', 'Hiragino Mincho ProN',
+    'Hiragino Kaku Gothic ProN', 'Hiragino Kaku Gothic Pro',
+    'Hiragino Mincho Pro',
     'Noto Sans SC', 'Noto Sans TC', 'Noto Serif SC', 'Noto Serif TC',
+    'Noto Sans JP', 'Noto Serif JP', 'Noto Sans CJK JP',
     'Source Han Sans SC', 'Source Han Sans TC',
     'Source Han Serif SC', 'Source Han Serif TC',
+    'Source Han Sans JP', 'Source Han Serif JP',
     'WenQuanYi Micro Hei', 'WenQuanYi Zen Hei',
     'YouYuan', 'LiSu', 'HuaWenKaiTi',
     'Songti SC', 'Songti TC',
+    # Japanese fonts (Windows-available)
+    'Yu Gothic', 'Yu Gothic UI', 'Yu Mincho',
+    'Meiryo', 'Meiryo UI', 'メイリオ',
+    'MS Gothic', 'MS Mincho', 'MS PGothic', 'MS PMincho', 'MS UI Gothic',
+    # Korean
+    'Malgun Gothic', 'Gulim', 'Dotum', 'Batang',
+    'Noto Sans KR', 'Noto Serif KR',
 }
 SYSTEM_FONTS = {'system-ui', '-apple-system', 'BlinkMacSystemFont'}
 
@@ -63,10 +74,16 @@ FONT_FALLBACK_WIN = {
     'Noto Sans TC': 'Microsoft JhengHei',
     'Noto Serif SC': 'SimSun',
     'Noto Serif TC': 'SimSun',
+    # Japanese: keep as-is if user specified (PowerPoint will fallback if uninstalled)
+    # 'Noto Sans JP': → keep as 'Noto Sans JP' (do not map)
+    # 'メイリオ': → keep as 'メイリオ' (Meiryo alias)
+    'メイリオ': 'Meiryo',
     'Source Han Sans SC': 'Microsoft YaHei',
     'Source Han Sans TC': 'Microsoft JhengHei',
     'Source Han Serif SC': 'SimSun',
     'Source Han Serif TC': 'SimSun',
+    'Source Han Sans JP': 'Noto Sans JP',
+    'Source Han Serif JP': 'Noto Serif JP',
     'WenQuanYi Micro Hei': 'Microsoft YaHei',
     'WenQuanYi Zen Hei': 'Microsoft YaHei',
     # Latin fonts (macOS / Linux / Web -> Windows)
