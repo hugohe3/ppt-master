@@ -14,40 +14,27 @@ PPT Master 的"模板"是一份**结构 + 风格**的预设包：包含若干页
 
 ### 触发方式
 
-工作流**默认走自由设计**——不会主动问你要不要用模板，也不会基于内容主动推荐模板。模板是 opt-in 的，**只接受精确 slug**。
-
-### 什么是 slug？
-
-slug 是模板的唯一标识——[`templates/layouts/`](../../skills/ppt-master/templates/layouts/) 下的目录名，同时也是 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json) 里的顶层 key，三者完全一致。例如：
-
-| slug | 目录 | 索引 key |
-|---|---|---|
-| `mckinsey` | `templates/layouts/mckinsey/` | `"mckinsey"` |
-| `academic_defense` | `templates/layouts/academic_defense/` | `"academic_defense"` |
-| `招商银行` | `templates/layouts/招商银行/` | `"招商银行"` |
-| `中国电建_常规` | `templates/layouts/中国电建_常规/` | `"中国电建_常规"` |
-
-slug 区分大小写，必须**一字不差**地出现在你的输入里才会触发模板流程。
+工作流**默认走自由设计**——不会主动问你要不要用模板，也不会基于内容主动推荐模板。模板是 opt-in 的，**只接受显式目录路径**：你在第一条消息里把模板目录的路径写出来。
 
 ### 怎么触发模板流程
 
-在对话里把 slug 写进去（位置不重要，只要出现即可）：
+在对话里把模板目录的路径写进去（位置不重要，只要明确即可）：
 
-> "用 **mckinsey** 模板做这份报告" ✅
-> "做一份 **academic_defense** 模板的答辩 PPT" ✅
-> "做一份 **招商银行** 风格的产品介绍" ✅
+> "用这个模板做：`skills/ppt-master/templates/layouts/mckinsey/`" ✅
+> "用上次那个模板：`projects/last_deck/template/`" ✅
+> "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-AI 会读取 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json)，把对应模板的 SVG、`design_spec.md` 和素材复制到项目目录，然后进入 Strategist 阶段。你也可以直接给出目录路径（`templates/layouts/mckinsey/`），AI 从路径里抽 slug。
+AI 会把这个目录里的 SVG、`design_spec.md` 和素材复制到项目目录，然后进入 Strategist 阶段。路径可以是任意位置——内置库的 `skills/ppt-master/templates/layouts/` 下、上一个项目的 `template/` 文件夹、或者磁盘上其他任何地方都行。
 
 ### 什么**不会**触发模板流程
 
-- **不是 slug 的风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
-- **不完整 / 有歧义的匹配**："中国电建"——库里有 `中国电建_常规` 和 `中国电建_现代` 两个，没有唯一对应 → 走自由设计。AI 不替你猜（你可以再说一次精确的那个 slug 重新触发）。
-- **模糊意图**："想用个模板" / "选一个吧"——没出现具体 slug → 走自由设计。
+- **只写模板名、不给路径**："用 mckinsey 模板" / "做一份 academic_defense 模板的答辩 PPT" → 走自由设计。AI 不会替你把名字解析成路径。要用模板，请直接给路径。
+- **风格描述**："麦肯锡风格" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → 走自由设计。这些描述会顺着对话流到 Strategist 那边作为风格说明使用，但**不会复制任何模板文件**。
+- **模糊意图**："想用个模板" / "选一个吧"——没给路径 → 走自由设计。
 
-这是有意的——AI 永远**不做模糊 / 解释性判断**，不替你决定模糊的描述对应哪个模板。要用模板，请用精确 slug 点名。
+这是有意的——AI 永远**不做模糊 / 解释性判断**，不替你把名字解析成路径。要用模板，直接给路径。
 
-想知道库里有哪些模板，问一句"有哪些模板可以用？"——AI 会从索引里列出 slug 清单。单纯列出并不进入模板流程，需要你再用其中一个 slug 重新说一次才会触发 Step 3。
+想知道内置库里有哪些模板，问一句"有哪些模板可以用？"——AI 会从发现索引里列出名字和对应路径。单纯列出并不进入模板流程，需要你**把其中一条路径**再发回来才会触发 Step 3。
 
 ### 现有模板一览
 
@@ -61,16 +48,16 @@ AI 会读取 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/la
 
 ### 风格不是模板
 
-**风格**是一种描述（"极简风" / "Keynote 风" / "杂志风"）——你在对话里打几个字。**模板**是一份要复制粘贴的资产包（SVG + design_spec + 素材），只在你精确点出 slug 时由工作流安装到项目里。
+**风格**是一种描述（"极简风" / "Keynote 风" / "杂志风"）——你在对话里打几个字。**模板**是一份要复制粘贴的资产包（SVG + design_spec + 素材），只在你给出**显式目录路径**时由工作流安装到项目里。
 
 | | 模板 | 风格 |
 |---|---|---|
-| 怎么触发 | 消息里出现精确 slug | 消息里写自由描述 |
+| 怎么触发 | 消息里给出明确的目录路径 | 消息里写自由描述 |
 | 发生什么 | 文件复制到项目；layouts 继承自模板 SVG | 描述流到 Strategist；色彩 / 字体 / 调性在八项确认里推荐 |
 | 数值锁定 | 是 — 来源于模板的 `design_spec.md` | 否 — Strategist 现场推适合 deck 的具体值 |
 | 适用场景 | 品牌锁定的 deck；强视觉约定的场景 | 心里有感觉但没有具体品牌承诺 |
 
-风格描述可能看起来像模板名（比如 "麦肯锡风格" 看上去像 `mckinsey` slug），但走的是**两套机制**——slug 匹配是字面字符串检查，风格描述是解释性语言。同样的字，路径不同。
+风格描述可能看起来像模板名（比如 "麦肯锡风格" 听上去像 `mckinsey/` 模板目录），但走的是**两套机制**——模板需要你给一个真实可复制的路径，风格描述是解释性语言。字面接近，落地完全是两条路。
 
 ### 常见风格描述
 
@@ -108,7 +95,7 @@ AI 会读取 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/la
 | **孟菲斯/波普风** | 高饱和大色块、几何图形、80 年代 |
 | **赛博朋克/蒸汽波** | 霓虹紫粉、网格、迷幻 |
 
-你描述风格时，AI **不会基于这些词去挑模板**——它把这些词解释为对应的色彩 / 字体 / 版式建议，放到 Strategist 八项确认里 `d` 项的第二层（视觉风格），然后驱动 e/f/g/h（色彩 / 图标 / 字体 / 图片）。你可以确认或调整。如果你想要的风格刚好对上库里某个模板（如 `academic_defense` / `mckinsey` / `pixel_retro`），有两条路可选：用 slug 触发模板得到锁定值，或描述风格让 AI 现场推适配你内容的值。
+你描述风格时，AI **不会基于这些词去挑模板**——它把这些词解释为对应的色彩 / 字体 / 版式建议，放到 Strategist 八项确认里 `d` 项的第二层（视觉风格），然后驱动 e/f/g/h（色彩 / 图标 / 字体 / 图片）。你可以确认或调整。如果你想要的风格刚好对上库里某个模板（如 `academic_defense` / `mckinsey` / `pixel_retro`），有两条路可选：把模板的目录路径发出来锁定值，或描述风格让 AI 现场推适配你内容的值。
 
 ---
 
@@ -178,7 +165,7 @@ AI 会读取 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/la
 2. 把模板 ID 注册到 [`layouts_index.json`](../../skills/ppt-master/templates/layouts/layouts_index.json)
 3. 同步 [`templates/layouts/README.md`](../../skills/ppt-master/templates/layouts/README.md) 表格
 
-注册完毕，下次任何项目里你说"用 `<你的模板 ID>` 模板"，工作流就能找到它。
+注册让模板**可被发现**——下次有人问"有哪些模板可用？"时，AI 会从索引里把它列出来。要在新项目里用它，仍然按 SKILL.md Step 3 的规则：在第一条消息里把目录路径写出来，例如 `用这个模板：skills/ppt-master/templates/layouts/<your_template_id>/`。
 
 ### 派生后的目录长什么样
 

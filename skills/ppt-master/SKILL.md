@@ -134,34 +134,36 @@ Import source content (choose based on the situation):
 
 🚧 **GATE**: Step 2 complete; project directory structure is ready.
 
-**Default — free design.** Proceed directly to Step 4. Do NOT query `layouts_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content or vague style descriptions.
+**Default — free design.** Proceed directly to Step 4. Do NOT query `layouts_index.json` unless triggered. Do NOT ask the user. Do NOT proactively suggest, hint at, or fuzzy-match any template based on content, slug-like words, or vague style descriptions.
 
-**Template flow triggers ONLY on exact slug.** A "slug" is the directory name under `templates/layouts/` and equivalently a top-level key in `layouts_index.json` (e.g. `mckinsey`, `academic_defense`, `中国电建_常规`). The trigger rule is mechanical, not interpretive:
+**Template flow triggers ONLY on an explicit template directory path** supplied by the user in their initial message. The trigger rule is mechanical, not interpretive:
 
 | User input contains | Step 3 action |
 |---|---|
-| An exact slug as a substring ("用 mckinsey 模板" / "use the academic_defense template" / "用 招商银行 模板") | Resolve via `layouts_index.json`, copy the template (SVGs + design_spec + assets) into the project, advance |
-| A path under `templates/layouts/<slug>/` | Same as above — extract slug from path, copy, advance |
-| Anything else — including style descriptions ("麦肯锡风格" / "Google style"), partial matches ("中国电建" when the library has `中国电建_常规` and `中国电建_现代`), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
+| An explicit path to a template directory (e.g. `skills/ppt-master/templates/layouts/mckinsey/`, `projects/foo/template/`, or any other absolute / relative path that resolves to a directory containing `design_spec.md` and one or more page SVGs) | Copy that directory's SVGs + `design_spec.md` + assets into the project, advance |
+| Anything else — including bare template names ("用 mckinsey 模板"), style descriptions ("麦肯锡风格" / "Google style"), brand mentions ("招商银行风格"), vague intent ("想用个模板"), or silence | Skip Step 3, free design |
 
-The matcher is exact-slug substring matching — no semantic mapping, no near-name fuzzy matching, no AI judgment. If the user's text does not contain a slug verbatim, the template path does not trigger.
+There is no slug matching, no name lookup, no fuzzy resolution. A template name without a path does not trigger — the user must give a path the AI can `cd` into.
+
+The path may live anywhere — `skills/ppt-master/templates/layouts/<name>/` (the built-in library), `projects/<other_project>/template/` (reusing a previous project's templates), or any other location. Location is irrelevant; what matters is that the user named the path.
 
 ```bash
-cp ${SKILL_DIR}/templates/layouts/<slug>/*.svg <project_path>/templates/
-cp ${SKILL_DIR}/templates/layouts/<slug>/design_spec.md <project_path>/templates/
-cp ${SKILL_DIR}/templates/layouts/<slug>/*.png <project_path>/images/ 2>/dev/null || true
-cp ${SKILL_DIR}/templates/layouts/<slug>/*.jpg <project_path>/images/ 2>/dev/null || true
+TEMPLATE_DIR=<user-supplied path>
+cp ${TEMPLATE_DIR}/*.svg <project_path>/templates/
+cp ${TEMPLATE_DIR}/design_spec.md <project_path>/templates/
+cp ${TEMPLATE_DIR}/*.png <project_path>/images/ 2>/dev/null || true
+cp ${TEMPLATE_DIR}/*.jpg <project_path>/images/ 2>/dev/null || true
 ```
 
-> Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) are NOT slugs and never trigger Step 3. They flow naturally into Strategist's Eight Confirmations as part of the user's input — Strategist uses them as a style brief when proposing color / typography / tone in confirmations e and g.
+> Style descriptions ("麦肯锡风格" / "Keynote 风" / "极简风" / etc.) never trigger Step 3. They flow naturally into Strategist's Eight Confirmations as part of the user's input — Strategist uses them as a style brief when proposing color / typography / tone in confirmations e and g.
 
-> Partial matches ("中国电建" alone) do not auto-pick among `中国电建_常规` / `中国电建_现代` — that's the user's choice. AI may ask which one as normal dialogue, but does not guess.
+> Bare template names ("mckinsey", "招商银行") do NOT trigger Step 3 even if a folder by that name exists in the library. The user must give a path. AI must not "helpfully" resolve a name to a path.
 
-> "What templates exist?" is out-of-band Q&A — answer by listing entries from `layouts_index.json`. Listing alone does not advance the pipeline; only an exact slug match triggers the Step 3 copy.
+> "What templates exist?" is out-of-band Q&A — answer by listing entries from `layouts_index.json` together with their paths. Listing alone does not advance the pipeline; the user still has to send a path to trigger the Step 3 copy.
 
-> To create a new global template, read `workflows/create-template.md`.
+> To create a new template, read `workflows/create-template.md`.
 
-**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an exact slug, that template is copied before advancing.**
+**✅ Checkpoint — Default path proceeds to Step 4 without user interaction. If the user's input contains an explicit template directory path, that directory is copied before advancing.**
 
 ---
 

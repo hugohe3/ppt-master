@@ -218,7 +218,7 @@ Outputs:
 
 The completion card's file roster is collected by globbing `*.svg` in the template directory, so `fidelity`-mode templates that include variant pages such as `03a_content_two_col` are listed automatically.
 
-`layouts_index.json` is the lightweight lookup used when a user explicitly names a template. The main workflow defaults to free design and does not read this file unless the user has named a template (see `SKILL.md` Step 3). A template directory that has not been run through `register_template.py` will not be discoverable by that flow.
+`layouts_index.json` is a **discovery index** — it lets the AI answer "what templates are available?" by listing names and paths. It is **not** consulted to trigger Step 3. Step 3 triggers on an explicit directory path supplied by the user, regardless of whether that path is registered. A template directory that has not been run through `register_template.py` still works fine when the user gives its path; it just won't appear in discovery listings.
 
 > **Recommended for new templates**: declare a YAML frontmatter block at the top of `design_spec.md`. The registrar prefers it over the §I table and lets you set `category`, `keywords`, `summary`, etc. without relying on prose extraction:
 >

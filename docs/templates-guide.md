@@ -14,40 +14,27 @@ This guide answers three questions:
 
 ### How to trigger
 
-The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **exact slug** only.
-
-### What is a slug?
-
-A slug is the unique identifier of a template — the directory name under [`templates/layouts/`](../skills/ppt-master/templates/layouts/) and equivalently the top-level key in [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json). All three are the same string. Examples:
-
-| Slug | Directory | Index key |
-|---|---|---|
-| `mckinsey` | `templates/layouts/mckinsey/` | `"mckinsey"` |
-| `academic_defense` | `templates/layouts/academic_defense/` | `"academic_defense"` |
-| `招商银行` | `templates/layouts/招商银行/` | `"招商银行"` |
-| `中国电建_常规` | `templates/layouts/中国电建_常规/` | `"中国电建_常规"` |
-
-Slugs are case-sensitive and must appear **verbatim** in your message to trigger the template flow.
+The workflow **defaults to free design** — it will not ask whether you want a template and will not proactively suggest one. Templates are opt-in by **explicit directory path** only: name the path in your initial message.
 
 ### How to enter the template flow
 
-Type a message that contains an exact slug, anywhere in the sentence:
+Send a path to a template directory in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
-> "use the **mckinsey** template for this report" ✅
-> "用 **academic_defense** 模板做这份汇报" ✅
-> "做一份 **招商银行** 风格的产品介绍" ✅
+> "use this template: `skills/ppt-master/templates/layouts/mckinsey/`" ✅
+> "用这个模板做汇报：`projects/last_deck/template/`" ✅
+> "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
-The AI reads [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json), copies the template's SVGs, `design_spec.md`, and assets into your project, then proceeds to the Strategist phase. You can also point at the directory (`templates/layouts/mckinsey/`) and the AI will extract the slug from the path.
+The AI copies that directory's SVGs, `design_spec.md`, and assets into your project, then proceeds to the Strategist phase. The path can point to anywhere — the built-in library under `skills/ppt-master/templates/layouts/`, a previous project's `template/` folder, or any other location on disk.
 
 ### What does NOT trigger the template flow
 
-- **Style descriptions** that aren't slugs: "McKinsey style" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
-- **Partial / ambiguous matches**: "中国电建" when the library has both `中国电建_常规` and `中国电建_现代` → free design. The AI does not guess; you can clarify which one if you wanted a template.
-- **Vague intent**: "想用个模板" / "I want a template" with no slug → free design.
+- **A bare template name without a path**: "use the mckinsey template" / "用 mckinsey 模板" / "做一份 academic_defense 模板的答辩" → free design. The AI does not look the name up. You must give a path.
+- **Style descriptions**: "McKinsey style" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
+- **Vague intent**: "想用个模板" / "I want a template" with no path → free design.
 
-This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template. If you want a template, name it by its exact slug.
+This is intentional — the AI never makes a fuzzy / interpretive judgment about whether your wording maps to a template, and never resolves a name to a path on your behalf. If you want a template, give the path.
 
-To browse what's available, ask "what templates are available?" — the AI will list slugs from the index. Listing alone does not enter the template flow; you still need to repeat the chosen slug to trigger Step 3.
+To browse what's available in the built-in library, ask "what templates are available?" — the AI lists names and paths from the discovery index. Listing alone does not enter the template flow; you still need to send back a path to trigger Step 3.
 
 ### Template catalog
 
@@ -61,16 +48,16 @@ Free design is **not** "no style" — the AI designs a fresh visual system **for
 
 ### Styles are not templates
 
-A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you type a slug exactly.
+A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you give it an explicit directory path.
 
 | | Template | Style |
 |---|---|---|
-| How invoked | Exact slug in your message | Free-form description in your message |
+| How invoked | Explicit directory path in your message | Free-form description in your message |
 | What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Eight Confirmations |
 | Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
 | Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
 
-A style mention may resemble a template name (e.g., "McKinsey style" looks like the `mckinsey` slug), but they go through different machinery — the slug match is a literal string check, the style mention is interpretive language. Same words, different paths.
+A style mention may resemble a template name (e.g., "McKinsey style" sounds like the `mckinsey/` template directory), but they go through different machinery — a template requires a real path the AI can copy from, a style mention is interpretive language. Similar words, different paths in the most literal sense.
 
 ### Common styles you can describe
 
@@ -108,7 +95,7 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our templates exactly (e.g., `academic_defense` / `mckinsey` / `pixel_retro`), you have a choice: name the slug for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `mckinsey` / `pixel_retro`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
 
 ---
 
@@ -178,7 +165,7 @@ After generation, the workflow:
 2. Registers the template ID in [`layouts_index.json`](../skills/ppt-master/templates/layouts/layouts_index.json)
 3. Syncs the table in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md)
 
-Once registered, any future project can invoke it by saying "use the `<your_template_id>` template".
+Registration makes the template **discoverable** — when someone asks "what templates are available?", the AI lists it from the index. To use it in a new project, follow the SKILL.md Step 3 rule: name its directory path in your first message, e.g. `use this template: skills/ppt-master/templates/layouts/<your_template_id>/`.
 
 ### What a derived template looks like
 

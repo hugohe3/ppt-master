@@ -5,7 +5,7 @@ Pre-built PPT page layout templates supporting multiple styles and use cases.
 - **Full Index**: [README.md](./README.md) (human browsing — includes categories, primary colors, detailed tone)
 - **Slim Index**: [layouts_index.json](./layouts_index.json) (lightweight lookup — `summary` / `keywords` per template id)
 
-> **Template selection is opt-in.** The main workflow defaults to free design and does NOT read `layouts_index.json` unless the user explicitly requests a template. See `SKILL.md` Step 3.
+> **Template selection is opt-in by explicit path.** The main workflow defaults to free design. A template is only used when the user gives an explicit directory path (e.g. `skills/ppt-master/templates/layouts/mckinsey/` or any other path) in their initial message. Bare names like "mckinsey" do not trigger — `layouts_index.json` and this README are discovery aids for finding the path, not triggers in themselves. See `SKILL.md` Step 3.
 
 ---
 
@@ -196,20 +196,11 @@ Templates use `{{PLACEHOLDER}}` format to mark replaceable content:
 
 ## Usage
 
-### Copy from Template Library to Project
+To use a template, give the AI an explicit directory path in your initial message — e.g. "用 `skills/ppt-master/templates/layouts/mckinsey/` 这个模板做……". The Step 3 logic copies that directory's SVGs + `design_spec.md` + assets into your project before Strategist starts.
 
-```bash
-# Copy exhibit style template to project
-cp templates/layouts/exhibit/* projects/<project>/templates/
+The directory does not have to live under `templates/layouts/`. A template kept in `projects/<other_project>/template/` or any other location works the same way as long as you give the path.
 
-# Copy Google style template to project
-cp templates/layouts/google_style/* projects/<project>/templates/
-
-# Copy government style template to project (e.g., government red)
-cp templates/layouts/government_red/* projects/<project>/templates/
-```
-
-### After Copying
+After the copy:
 
 1. Read `design_spec.md` to understand the design specification
 2. Adjust colors based on project requirements (if needed)
@@ -230,7 +221,7 @@ cp templates/layouts/government_red/* projects/<project>/templates/
 6. Validate the template directory with `python3 scripts/svg_quality_checker.py templates/layouts/<template_name> --format ppt169`
 7. Register the new template by running `python3 scripts/register_template.py <template_id>` — it derives the `summary` and `keywords` index entry from `design_spec.md` and refreshes the Quick Index above
 
-`layouts_index.json` is the lightweight lookup used when a user explicitly opts into the template flow. A template folder without an index entry will not be discoverable by that flow.
+`layouts_index.json` is the lightweight lookup used to **discover** library templates (e.g. answering "what templates exist?"). It is not consulted when triggering Step 3 — Step 3 triggers on an explicit directory path the user supplied, regardless of whether that path is in the index. A template folder without an index entry still works fine if the user names its path; it just won't show up in discovery listings.
 
 ### SVG Technical Constraints (All Templates Must Comply)
 
