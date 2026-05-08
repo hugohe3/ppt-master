@@ -187,11 +187,14 @@ Read references/strategist.md
 7. Typography plan
 8. Image usage approach
 
-**Optional — split-mode hint** (not a ninth confirmation): when Phase A signals point to heavy downstream load — recommended page count is on the long side, source materials are bulky, or `topic-research` ran with substantial web-fetch accumulation — append a single short suggestion below the eight confirmations:
+**Mandatory — split-mode note** (not a ninth confirmation): after listing the eight confirmation details, you MUST append exactly one short line (rendered in the user's language, prefixed with 💡) about generation mode. Pick the variant by qualitative read of Phase A signals — recommended page count, source-material bulk, whether `topic-research` ran with substantial web-fetch accumulation:
 
-> 💡 本次预计生成 ~N 页、源材料体量较大，建议 Step 5 完成后切换至[拆分模式](workflows/resume-execute.md)：本对话停止，新窗口输入 `继续生成 projects/<project_name>` 进入 Phase B（SVG 生成 + 导出）。无回应或选择继续 = 默认连续模式。
+| Signal read | Line content |
+|---|---|
+| Heavy (long page count / bulky sources / heavy web-fetch accumulation) | State estimated page count and large source size; recommend switching to [split mode](workflows/resume-execute.md) after Step 5 — stop this chat, open a fresh window and input `继续生成 projects/<project_name>` to enter Phase B (SVG generation + export); no response or "continue" = default continuous mode. |
+| Normal (default) | State scale is moderate, default continuous mode generates in one go; if mid-way window switch is desired, input `继续生成 projects/<project_name>` after Step 5 to switch to [split mode](workflows/resume-execute.md). |
 
-This is a hint, not a confirmation item — the user may ignore it. When signals are normal, omit the hint entirely. Default behavior remains continuous mode.
+This line is required output every run — the user must always see the mode choice exists. Whether to act on it is the user's call.
 
 If the user provided images, run analysis **before outputting the design spec**:
 ```bash
@@ -208,6 +211,7 @@ python3 ${SKILL_DIR}/scripts/analyze_images.py <project_path>/images
 ```markdown
 ## ✅ Strategist Phase Complete
 - [x] Eight Confirmations completed (user confirmed)
+- [x] Split-mode note appended below the eight items (heavy or normal variant)
 - [x] Design Specification & Content Outline generated
 - [x] Execution lock (spec_lock.md) generated
 - [ ] **Next**: Auto-proceed to [Image_Generator / Executor] phase
