@@ -36,16 +36,6 @@
       "enterprise-government hybrid"
     ]
   },
-  "exhibit": {
-    "summary": "Strategic planning, executive reports, investment analysis, board presentations.",
-    "keywords": [
-      "Premium",
-      "refined",
-      "authoritative",
-      "data-driven",
-      "conclusion-first"
-    ]
-  },
   "google_style": {
     "summary": "Annual work reports, technical sharing, project showcases, data-driven presentations.",
     "keywords": [
@@ -74,15 +64,6 @@
       "modern government style"
     ]
   },
-  "mckinsey": {
-    "summary": "Strategic consulting, executive briefings, investment analysis, business proposals.",
-    "keywords": [
-      "Data-driven",
-      "structured thinking",
-      "professional whitespace",
-      "minimalist premium"
-    ]
-  },
   "medical_university": {
     "summary": "Medical academic reports, case discussions, research presentations, hospital work reports, medical education and training.",
     "keywords": [
@@ -109,15 +90,6 @@
       "warm",
       "healing",
       "trustworthy"
-    ]
-  },
-  "smart_red": {
-    "summary": "Company introductions, product launches, solution presentations, education industry courseware.",
-    "keywords": [
-      "Modern",
-      "energetic",
-      "professional",
-      "geometric"
     ]
   },
   "中国电建_常规": {
@@ -170,15 +142,6 @@
       "structured",
       "product-focused",
       "refined finance"
-    ]
-  },
-  "科技蓝商务": {
-    "summary": "Corporate reports, product launches, proposals, process standards, training materials.",
-    "keywords": [
-      "Tech",
-      "business",
-      "professional",
-      "clean"
     ]
   },
   "重庆大学": {

@@ -20,7 +20,7 @@ The workflow **defaults to free design** — it will not ask whether you want a 
 
 Send a path to a template directory in your initial message. Anywhere in the sentence is fine; the path just has to be unambiguous:
 
-> "use this template: `skills/ppt-master/templates/layouts/mckinsey/`" ✅
+> "use this template: `skills/ppt-master/templates/layouts/academic_defense/`" ✅
 > "用这个模板做汇报：`projects/last_deck/template/`" ✅
 > "做一份产品介绍，模板用 `/Users/me/Desktop/our_brand_v3/`" ✅
 
@@ -28,7 +28,7 @@ The AI copies that directory's SVGs, `design_spec.md`, and assets into your proj
 
 ### What does NOT trigger the template flow
 
-- **A bare template name without a path**: "use the mckinsey template" / "用 mckinsey 模板" / "做一份 academic_defense 模板的答辩" → free design. The AI does not look the name up. You must give a path.
+- **A bare template name without a path**: "use the academic_defense template" / "用 招商银行 模板" / "做一份 google_style 模板的答辩" → free design. The AI does not look the name up. You must give a path.
 - **Style descriptions**: "McKinsey style" / "Google style" / "麦肯锡那种" / "极简风" / "Keynote 风" → free design. The descriptive words flow into Strategist as a style brief, but no template is copied.
 - **Vague intent**: "想用个模板" / "I want a template" with no path → free design.
 
@@ -38,7 +38,7 @@ To browse what's available in the built-in library, ask "what templates are avai
 
 ### Template catalog
 
-Full index in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md), grouped by Brand / General / Scenario / Government / Special, with primary color and use cases per entry. 21 templates currently shipped, covering McKinsey, Google, Anthropic, China Merchants Bank, PowerChina, CATARC, government blue/red, medical, psychology, pixel-retro and more.
+Full index in [`templates/layouts/README.md`](../skills/ppt-master/templates/layouts/README.md), grouped by Brand / Scenario / Government / Special, with primary color and use cases per entry. 17 templates currently shipped, covering Google, Anthropic, China Merchants Bank, PowerChina, CATARC, government blue/red, medical, psychology, pixel-retro and more.
 
 ### Free design vs template
 
@@ -57,7 +57,7 @@ A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") �
 | Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
 | Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
 
-A style mention may resemble a template name (e.g., "McKinsey style" sounds like the `mckinsey/` template directory), but they go through different machinery — a template requires a real path the AI can copy from, a style mention is interpretive language. Similar words, different paths in the most literal sense.
+A style mention may resemble a template name (e.g., "Google style" sounds like the `google_style/` template directory), but they go through different machinery — a template requires a real path the AI can copy from, a style mention is interpretive language. Similar words, different paths in the most literal sense.
 
 ### Common styles you can describe
 
@@ -95,7 +95,7 @@ Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chine
 | **Memphis / pop** | High-saturation blocks, geometric, 80s |
 | **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
 
-When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `mckinsey` / `pixel_retro`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our built-in templates (e.g., `academic_defense` / `google_style` / `pixel_retro`), you have a choice: send the template's directory path for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
 
 ---
 

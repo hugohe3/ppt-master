@@ -273,9 +273,9 @@ This section describes downstream reuse. The `Template_Designer` role itself is 
 
 ```
 templates/layouts/
-├── exhibit/           # Exhibit style (conclusion-first, data-driven)
-├── 科技蓝商务/         # Tech blue business style
-└── smart_red/         # Smart red-orange style
+├── google_style/      # Google Material Design style
+├── academic_defense/  # Academic defense style
+└── 招商银行/          # China Merchants Bank brand style
 ```
 
 ---
