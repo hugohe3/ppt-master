@@ -59,6 +59,57 @@ Free design is **not** "no style" — the AI designs a fresh visual system **for
 
 > Rule of thumb: clear content direction + strong brand or scenario constraints (consulting reports, government briefings, defenses) → use a template. Essay-like content where atmosphere matters more (magazine, documentary narrative) → free design usually works better.
 
+### Styles are not templates
+
+A **style** is a description ("minimalist" / "Keynote-style" / "magazine 风") — a few words you type in chat. A **template** is a copy-and-paste asset bundle (SVGs + design_spec + assets) the workflow installs into your project when you type a slug exactly.
+
+| | Template | Style |
+|---|---|---|
+| How invoked | Exact slug in your message | Free-form description in your message |
+| What happens | Files copied into project; layouts inherit from template SVGs | Words flow to Strategist; color / typography / tone proposed in Eight Confirmations |
+| Locked values | Yes — values come from the template's `design_spec.md` | No — Strategist invents values that fit the deck |
+| Best for | Brand-locked decks; scenarios with strong visual conventions | When you have a feel in mind but no specific brand commitment |
+
+A style mention may resemble a template name (e.g., "McKinsey style" looks like the `mckinsey` slug), but they go through different machinery — the slug match is a literal string check, the style mention is interpretive language. Same words, different paths.
+
+### Common styles you can describe
+
+Three axes, freely combinable ("dark tech + minimalist" or "magazine + neo-Chinese"):
+
+**Aesthetic direction**
+
+| Style | One-line characterization |
+|---|---|
+| **Minimalist / 极简风** | High whitespace, 2-3 colors, single focal point per page |
+| **Information-dense / 信息密集** | McKinsey-style structured tables, high density, conclusion-first |
+| **Keynote-style** | Single-page hero text, premium whitespace, Apple-feel |
+| **Editorial / 杂志风** | Large hero images, asymmetric layouts, strong typography contrast |
+| **Editorial illustration / 文艺手绘** | Warm tones, hand-drawn feel, zine-like |
+
+**Scenario / Industry**
+
+| Style | One-line characterization |
+|---|---|
+| **Business consulting** | Data-driven, restrained, blue / grey palette |
+| **Academic defense** | Strict hierarchy, citation-heavy, clean |
+| **Government briefing** | Red / blue, formal, symmetric |
+| **Product launch** | Visually bold, marketing-driven, single hero per page |
+| **Education / training** | Clear hierarchy, friendly tone, bright palette |
+| **Pitch deck / BP** | Narrative-driven, conclusion-bold |
+
+**Visual character / atmosphere**
+
+| Style | One-line characterization |
+|---|---|
+| **Dark tech / 暗色科技** | Dark backgrounds, neon accents, futuristic |
+| **Pixel retro** | 8-bit, scanlines, gaming aesthetic |
+| **Neo-Chinese / 新中式** | Restrained traditional motifs, ink / vermilion |
+| **Scandinavian / 北欧极简** | Light, natural, restrained |
+| **Memphis / pop** | High-saturation blocks, geometric, 80s |
+| **Cyberpunk / vaporwave** | Neon purple-pink, grids, dreamlike |
+
+When you describe a style, the AI doesn't pick a template — it interprets the words and lands them in Layer 2 of confirmation `d` (Style Objective) inside Strategist's Eight Confirmations, which then drives e (color), f (icon), g (typography), and h (image). You confirm or refine. If the style you want happens to match one of our templates exactly (e.g., `academic_defense` / `mckinsey` / `pixel_retro`), you have a choice: name the slug for locked values, or describe the style for AI-interpreted values that adapt to your deck content.
+
 ---
 
 ## 2. Derive a new template (the focus)

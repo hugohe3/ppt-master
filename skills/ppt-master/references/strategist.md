@@ -40,13 +40,17 @@ Confirm target audience, usage occasion, and core message; provide initial asses
 
 ### d. Style Objective Confirmation
 
-| Style | Core Focus | Target Audience | One-line Description |
+Two layers. Output: `d. Style: <Mode> + <Visual style descriptor>`.
+
+#### Layer 1 — Communication mode
+
+| Mode | Core Focus | Target Audience | One-line Description |
 |-------|-----------|----------------|---------------------|
 | **A) General Versatile** | Visual impact first | Public / clients / trainees | "Catch the eye at a glance" |
 | **B) General Consulting** | Data clarity first | Teams / management | "Let data speak" |
 | **C) Top Consulting** | Logical persuasion first | Executives / board | "Lead with conclusions" |
 
-**Style selection decision tree**:
+Mode selection decision tree:
 
 ```
 Content characteristics?
@@ -59,6 +63,28 @@ Audience?
   ├── Teams / management ────────────→ B) General Consulting
   └── Executives / board / investors → C) Top Consulting
 ```
+
+#### Layer 2 — Visual style
+
+Anchors the downstream confirmations e (Color), f (Icon), g (Typography), h (Image).
+
+**Source**:
+- User named a style → record verbatim as a short descriptor (normalize multilingual phrasings to a single canonical form)
+- No user description → propose a default that fits the content (e.g., warm cultural tones for heritage content; clean minimalism for tech briefings; high-contrast editorial for magazine essays). Present as a recommendation; the user may override
+
+**Common descriptors** (free-form, combinable, not enums):
+
+| Axis | Examples |
+|---|---|
+| Aesthetic | minimalist / information-dense / Keynote / editorial / hand-drawn |
+| Scenario | business consulting / academic defense / government briefing / product launch / education / pitch deck |
+| Visual character | dark tech / pixel retro / neo-Chinese / Scandinavian / Memphis / cyberpunk / vaporwave |
+
+Accept user combinations and one-off coinages ("Scandinavian + slight industrial"). The list is for recall, not constraint.
+
+> **Slug overlap**: a style mention may resemble a template slug (`mckinsey` slug vs "McKinsey style" descriptor). Step 3 has already resolved any slug match upstream — if a template was triggered, files are in `<project_path>/templates/`. Layer 2 only handles descriptors that did NOT trigger a slug match.
+
+**Downstream effect**: e / f / g / h values realize the Layer 2 descriptor on top of the Layer 1 mode. Example: "A) Versatile + neo-Chinese" → e leans cinnabar / ink / rice-paper; g pairs serif (KaiTi-class) with sans body; f minimal line icons; h restrained traditional imagery with negative space.
 
 ### e. Color Scheme Recommendation
 
