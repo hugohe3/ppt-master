@@ -73,7 +73,9 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 
 | Workflow | Path | Purpose |
 |----------|------|---------|
+| `topic-research` | `workflows/topic-research.md` | Pre-pipeline — gather web sources when the user supplies only a topic with no source files |
 | `create-template` | `workflows/create-template.md` | Standalone template creation workflow |
+| `resume-execute` | `workflows/resume-execute.md` | Phase B entry — resume execution in a fresh chat after Phase A (Step 1–5) completed in another session (split mode) |
 | `verify-charts` | `workflows/verify-charts.md` | Chart coordinate calibration — run after SVG generation if the deck contains data charts |
 | `visual-edit` | `workflows/visual-edit.md` | Browser-based visual editor for fine-grained edits — run only when the user explicitly requests it after export |
 
@@ -84,6 +86,8 @@ For complete tool documentation, see `${SKILL_DIR}/scripts/README.md`.
 ### Step 1: Source Content Processing
 
 🚧 **GATE**: User has provided source material (PDF / DOCX / EPUB / URL / Markdown file / text description / conversation content — any form is acceptable).
+
+> **No source content?** When the user supplies only a topic name or requirements without any file or substantive description, run the [`topic-research`](workflows/topic-research.md) workflow first, then return here with its products as input.
 
 When the user provides non-Markdown content, convert immediately:
 
@@ -172,7 +176,7 @@ Read references/strategist.md
 
 **Eight Confirmations** (full template: `templates/design_spec_reference.md`):
 
-⛔ **BLOCKING**: present the Eight Confirmations as a bundled recommendation set and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. This is the single core confirmation point — once confirmed, all subsequent steps proceed automatically.
+⛔ **BLOCKING**: present the Eight Confirmations as a single bundled recommendation set and **wait for explicit user confirmation or modification** before outputting Design Specification & Content Outline. This is the single core confirmation point — once confirmed, all subsequent steps proceed automatically.
 
 1. Canvas format
 2. Page count range
@@ -182,6 +186,12 @@ Read references/strategist.md
 6. Icon usage approach
 7. Typography plan
 8. Image usage approach
+
+**Optional — split-mode hint** (not a ninth confirmation): when Phase A signals point to heavy downstream load — recommended page count is on the long side, source materials are bulky, or `topic-research` ran with substantial web-fetch accumulation — append a single short suggestion below the eight confirmations:
+
+> 💡 本次预计生成 ~N 页、源材料体量较大，建议 Step 5 完成后切换至[拆分模式](workflows/resume-execute.md)：本对话停止，新窗口输入 `继续生成 projects/<project_name>` 进入 Phase B（SVG 生成 + 导出）。无回应或选择继续 = 默认连续模式。
+
+This is a hint, not a confirmation item — the user may ignore it. When signals are normal, omit the hint entirely. Default behavior remains continuous mode.
 
 If the user provided images, run analysis **before outputting the design spec**:
 ```bash
@@ -233,7 +243,7 @@ Workflow:
 2. Generate prompts (ai rows) and/or run search (web rows) per [image-base.md](references/image-base.md) §2 dispatch table
 3. Verify every row reaches a terminal status: `Generated` (ai success), `Sourced` (web success), or `Needs-Manual`
 
-**✅ Checkpoint — Confirm acquisition attempted for every row, proceed to Step 6**:
+**✅ Checkpoint — Confirm acquisition attempted for every row**:
 ```markdown
 ## ✅ Image Acquisition Phase Complete
 - [x] image_prompts.md created (when any ai rows processed)
@@ -241,7 +251,16 @@ Workflow:
 - [x] Each row: status is `Generated` / `Sourced` / `Needs-Manual` (no `Pending` remaining)
 ```
 
-> On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to Step 6.
+**Default — auto-proceed to Step 6.** Only when the user's Step 4 response explicitly opted into split mode (in reply to the optional hint), output the Phase A hand-off below and stop this conversation:
+
+  ```markdown
+  ## ✅ Phase A Complete
+  - [x] Spec: `design_spec.md`, `spec_lock.md`
+  - [x] Resources: `sources/`, `images/`, `templates/`
+  - [ ] **Next**: open a fresh chat window and input `继续生成 projects/<project_name>` to enter Phase B via the [`resume-execute`](workflows/resume-execute.md) workflow.
+  ```
+
+> On acquisition failure, do NOT halt — follow the Failure Handling rule in [image-base.md](references/image-base.md) §5: retry once, then mark the row `Needs-Manual`, report to user, and continue to the checkpoint above.
 
 ---
 
