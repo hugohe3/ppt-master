@@ -86,7 +86,7 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 
 - Cluster slides from `manifest.json` by `pageType` + visual structure (column count, hero-image vs. icon-grid vs. quote, etc.)
 - One SVG per cluster — do **not** emit a variant for a cluster represented by a single source slide unless that slide is structurally distinct from existing variants
-- Cap at 8 content variants per template; collapse near-duplicates into the closest existing variant
+- One variant per visually distinct cluster — let the source's structural diversity drive the count. Collapse only **near-duplicates** (same column count, same hero element, same content density); do not collapse genuine structural differences just to keep the variant count down. If you find yourself wanting one variant per source slide, that is the signal the user should be in `mirror` mode, not `fidelity`
 - Record every emitted page in `design_spec.md §V Page Roster` and in the `pages` field of the `layouts_index.json` entry (auto-collected by `register_template.py`)
 
 > Variants reuse the parent type's placeholder set — see §4 (Placeholder Reference) below.
