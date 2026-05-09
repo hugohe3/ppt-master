@@ -51,7 +51,8 @@ The output page set is determined by **replication mode**, declared in the Step 
 | Mode | When to use | Roster |
 |------|-------------|--------|
 | `standard` (default) | Most templates — clean, reusable, balanced coverage | `01_cover`, `02_chapter`, `03_content`, `04_ending`, optional `02_toc` |
-| `fidelity` | User explicitly wants strict replication of a source PPTX | Standard roster + one variant per distinct layout cluster found in `manifest.json` |
+| `fidelity` | User explicitly wants strict replication of a source PPTX, but still wants the AI to clean / cluster / cap variants | Standard roster + one variant per distinct layout cluster found in `manifest.json` |
+| `mirror` | User wants every source slide preserved 1:1 as a reference page (someone else's polished deck used as a library template). Verbatim copy, no abstraction, no placeholders | One SVG per source slide, named `<NNN>_<page_type>.svg` by source order |
 
 ### Standard mode
 
@@ -90,6 +91,20 @@ Extension page types beyond the canonical four (transition / appendix / disclaim
 
 > Variants reuse the parent type's placeholder set — see §4 (Placeholder Reference) below.
 
+### Mirror mode
+
+When the brief sets `Replication mode: mirror`, the role does **not** abstract or reconstruct. Each source slide becomes one template page **byte-for-byte**:
+
+- Source: `<import_workspace>/svg-flat/slide_NN.svg` (the self-contained "what PowerPoint shows" view). Do **not** read or use `svg/master_*.svg`, `svg/layout_*.svg`, or `svg/inheritance.json` — chrome / content separation is irrelevant because mirror does not insert placeholders.
+- Output: `templates/layouts/<template_id>/<NNN>_<page_type>.svg`, where `<NNN>` is the zero-padded source slide index (3 digits) and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` — `cover` / `toc` / `chapter` / `content` / `ending`. When the page-type heuristic is ambiguous, fall back to `content`. Preserve source slide order via the numeric prefix.
+- Modifications allowed: **only** rewriting `<image href="...">` paths to point at the local `assets/` copy, and renaming asset files to semantic names. Everything else — geometry, decoration, sprite-sheet wrappers, original example text, chart placeholders, embedded fonts — is copied as-is.
+- Modifications forbidden: inserting `{{TITLE}}` / `{{CONTENT_AREA}}` / any other placeholder; "cleaning up" decorative complexity; merging similar slides; dropping master/layout chrome (it's already baked into the flat SVG, leave it).
+- `design_spec.md` §V Page Roster lists every emitted file with **a one-line description** of what the page contains and what content slot it suits — Strategist selects mirror pages purely from these descriptions, since the SVG itself carries no placeholder contract.
+
+**Why mirror has no placeholders**: it is consumed as a **visual reference** rather than a templated form. Executor's mirror path (see [executor-base.md](executor-base.md) §1.1) copies the chosen mirror page into the project and edits text elements in place against the project content — no `{{}}` substitution happens. This keeps the library asset 100% verbatim and lets the user re-discover the source deck by browsing `templates/layouts/<template_id>/` directly.
+
+**What mirror is not**: a pixel-perfect re-rendering pipeline test. Charts, SmartArt, OLE objects, and EMF / WMF media that fail to round-trip in `pptx_template_import.py` will fail the same way in mirror. If the import workspace has missing media or unsupported objects, mirror inherits those gaps — the user should be told before generation begins.
+
 ---
 
 ## Template Design Specifications
@@ -115,8 +130,9 @@ summary: <one-line tone & use case>
 keywords: [tag1, tag2, tag3]
 primary_color: "#......"
 canvas_format: ppt169
-replication_mode: standard | fidelity
-# Optional — only when this template overrides canonical placeholder vocabulary:
+replication_mode: standard | fidelity | mirror
+# Optional — only when this template overrides canonical placeholder vocabulary.
+# Omit entirely for `mirror` mode (mirror has no placeholders).
 # placeholders:
 #   01_cover: ["{{TITLE}}", "{{SUBTITLE}}", "{{BRAND_LOGO}}"]
 #   03_content: ["{{KEY_MESSAGE}}", "{{CONTENT_AREA}}"]
@@ -142,7 +158,7 @@ replication_mode: standard | fidelity
 - Optional XML snippet for any reusable component unique to this template
 
 ## V. Page Roster
-One row per emitted SVG describing what this template's version of cover / chapter / content / ending looks like (background treatment, decorative anchors, layout rhythm). For `fidelity` mode, also note the cluster source and visual differentiator. Roster entries must match the actual SVG files on disk.
+One row per emitted SVG describing what this template's version of cover / chapter / content / ending looks like (background treatment, decorative anchors, layout rhythm). For `fidelity` mode, also note the cluster source and visual differentiator. For `mirror` mode the roster is the **load-bearing artifact** — Strategist picks mirror pages purely from these descriptions, so each row must include enough detail to distinguish it from siblings (column count, hero element, content density, what kind of content slot it fits — "three-column KPI grid with large numbers, suits quarterly summary"). Roster entries must match the actual SVG files on disk.
 
 ## VI. Assets (omit when none)
 Logos, cover backgrounds, brand textures bundled with the template package — file name, dimensions, intended usage.
@@ -204,6 +220,8 @@ Do not:
 - introduce dense low-value vector detail that does not materially improve template reuse
 
 ### 3. Placeholder Markers
+
+> **Mirror mode skips this section entirely.** Mirror SVGs are verbatim copies of the source flat slides — they carry no `{{}}` markers. Executor reads them as visual references and edits text in place (see [executor-base.md](executor-base.md) §1.1). The rest of this section applies to `standard` and `fidelity` only.
 
 Use clear placeholder markers for replaceable content:
 
@@ -302,6 +320,25 @@ templates/layouts/<template_name>/
 └── *.png / *.jpg
 ```
 
+Mirror mode emits one SVG per source slide, named by source order:
+
+```
+templates/layouts/<template_name>/
+├── design_spec.md
+├── 001_cover.svg
+├── 002_toc.svg
+├── 003_content.svg
+├── 004_content.svg
+├── 005_chapter.svg
+├── 006_content.svg
+├── ...
+├── 049_content.svg
+├── 050_ending.svg
+└── *.png / *.jpg
+```
+
+Filenames preserve the source slide order via the 3-digit prefix; `<page_type>` is derived from `manifest.json` `pageTypeCandidates`. No `{{}}` placeholders appear in any mirror SVG.
+
 ### Template Preview
 
 After each template is generated, provide a brief summary table listing each template's status.
@@ -340,10 +377,10 @@ templates/layouts/
 ## Template_Designer Phase Complete
 
 - [x] Read `references/template-designer.md`
-- [x] Replication mode confirmed: `standard` | `fidelity`
+- [x] Replication mode confirmed: `standard` | `fidelity` | `mirror`
 - [x] Every page listed in `design_spec.md §V Page Roster` saved to `templates/layouts/<template_name>/`
-- [x] Variant naming follows the letter-suffix convention; variants reuse parent placeholder contract
+- [x] Naming convention applied (standard / fidelity: letter-suffix variants; mirror: `<NNN>_<page_type>.svg`)
 - [x] Templates follow design spec (colors, fonts, layout)
-- [x] Placeholder markers are clear and standardized
+- [x] Placeholder markers are clear and standardized (standard / fidelity); mirror SVGs contain **no** `{{}}` markers
 - [ ] **Next step**: Validate assets and register the template in `layouts_index.json` (include `pages` field)
 ```

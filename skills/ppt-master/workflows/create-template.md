@@ -44,8 +44,8 @@ Items to confirm with the user:
 | Tone summary | Yes | Short tone description for recommendation, such as `Modern, restrained, data-driven` |
 | Theme mode | Yes | Theme description for recommendation, such as `Light theme (white background + blue accent)` |
 | Canvas format | Yes | Default `ppt169`; if another format is needed, specify it explicitly before generation |
-| Replication mode | Yes | `standard` (default, 5-page roster) or `fidelity` (preserve every distinct layout from a `.pptx` source); `fidelity` requires a `.pptx` reference source |
-| Visual fidelity for fixed pages | Yes (when reference source exists) | `literal` (exact reproduction — preserve original geometry, decoration, sprite crops as-is; for cover / chapter / ending especially) or `adapted` (use the reference for tone/structure but allow design evolution). Ask the user explicitly; do not assume. Different page types may take different settings |
+| Replication mode | Yes | `standard` (default, 5-page roster), `fidelity` (one variant per visually distinct cluster from a `.pptx` source — count driven by the source), or `mirror` (1:1 verbatim copy of every source slide, no abstraction, no placeholders). `fidelity` and `mirror` both require a `.pptx` reference source |
+| Visual fidelity for fixed pages | Yes for `standard` / `fidelity` when reference source exists; **N/A for `mirror`** (mirror is implicitly literal) | `literal` (exact reproduction — preserve original geometry, decoration, sprite crops as-is; for cover / chapter / ending especially) or `adapted` (use the reference for tone/structure but allow design evolution). Ask the user explicitly; do not assume. Different page types may take different settings |
 | Reference source | Optional | Existing project, screenshot folder, or `.pptx` template file path |
 | Theme color | Optional | Primary color HEX value (can be auto-extracted from reference) |
 | Design style | Optional | Additional style notes, decorative language, brand cues |
@@ -117,12 +117,17 @@ Interpretation rule:
 - `svg-flat/slide_NN.svg` is for human preview and screenshot comparison; do not treat duplicated master/layout chrome inside flat slides as separate reusable template structure.
 - screenshots remain useful for judging composition and style, but should not override extracted factual metadata unless the import result is clearly incomplete
 
-**Hard gate**:
+**Hard gate** (`standard` / `fidelity` modes):
 
 - Before creating any template file, the agent MUST finish reading every `svg/master_*.svg`, `svg/layout_*.svg`, and `svg/slide_*.svg` file under `<import_workspace>/svg/`
 - The agent MUST explicitly report the read master / layout / slide filenames before starting template generation
 
 Do **not** treat the imported PPTX or exported slide SVGs as direct final template assets. The goal is to reconstruct a clean, maintainable PPT Master template package, not to perform 1:1 shape translation.
+
+> **Mirror-mode exception** — `mirror` mode skips the layered reading and reconstruction:
+> - Read **only** `svg-flat/slide_*.svg` (the self-contained, what-PowerPoint-shows view) and `manifest.json` (for theme colors, fonts, asset inventory).
+> - Do **not** read `svg/master_*.svg` / `svg/layout_*.svg` / `svg/inheritance.json` — chrome / content separation is irrelevant in mirror mode (no placeholder insertion happens).
+> - Mirror is explicitly a **verbatim copy** flow — every slide becomes a template page as-is. The "reconstruct, don't translate" rule applies to `standard` / `fidelity` only. Mirror's whole point is to preserve the source 1:1.
 
 ---
 
@@ -159,10 +164,19 @@ The role should use the import output to anchor objective facts such as theme co
 
 **Sprite-sheet preservation (do NOT simplify away)**: PPTX-exported assets are often sprite sheets — a single tall/large image referenced from multiple slides, each cropping a different region via nested `<svg ... viewBox="...">` wrappers around `<image width="1" height="1">`. This nesting is **load-bearing geometry**, not redundant structure. When rebuilding, preserve the exact `viewBox` crop and the outer `<svg>` placement for every image; do not flatten to a single `<image>` with direct `x/y/width/height`. Verify by sampling: if any asset's pixel dimensions don't match the on-page display aspect, it is a sprite and the wrapper must stay.
 
+**Mirror-mode override**: when `Replication mode: mirror`, Step 3 is a **verbatim copy** rather than a reconstruction. The Template_Designer role:
+
+1. Copies each `<import_workspace>/svg-flat/slide_NN.svg` into the template directory **without any modification** — no placeholder insertion, no decorative simplification, no chrome/content reorganization. The SVG that ships in the template is byte-for-byte the flat preview of the source slide (modulo file rename).
+2. Renames each file using the source-order-first convention: `<NNN>_<page_type>.svg`, where `<NNN>` is the source slide index zero-padded to 3 digits and `<page_type>` is derived from `manifest.json` `pageTypeCandidates` (typically `cover` / `toc` / `chapter` / `content` / `ending`; fall back to `content` when the type cannot be confidently classified). Examples: `001_cover.svg`, `002_toc.svg`, `003_content.svg`, ..., `050_ending.svg`.
+3. Copies bundled assets from `<import_workspace>/assets/` into the template directory and rewrites the `<image href="...">` paths inside each copied SVG to point at the local copies. Asset filenames may be renamed to semantic names (`brand_emblem.png` instead of `image3.png`) when it improves readability — but the rewrite must be consistent across every page.
+4. Writes `design_spec.md` per [template-designer.md](../references/template-designer.md) §1 — the **§V Page Roster description per page is the load-bearing artifact** because mirror has no placeholders to advertise the per-page contract; downstream Strategist selects pages purely from these descriptions.
+
+Mirror mode does **not** invoke the "reconstruct into clean SVG" pathway. The sprite-sheet preservation rule still applies (because the flat SVGs already contain the original sprite wrappers — do not flatten them when copying).
+
 **Expected outputs from this step** (full spec → [template-designer.md](../references/template-designer.md)):
 
 1. `design_spec.md` — **personality only**. Required sections: Template Overview, Color Scheme, Signature Design Elements, Page Roster (matching the actual SVG files on disk). Skip Typography / Assets / Placeholder Overrides when they would just restate defaults. Declare brief frontmatter for `register_template.py`. **Do not** restate generic SVG constraints, layout pattern libraries, font-size ratio bands, the canonical placeholder table, or content methodology — those are sourced from `shared-standards.md` / `design_spec_reference.md` / `strategist.md` and are already in the downstream reader's context. Full scope rule and skeleton: [template-designer.md §1](../references/template-designer.md#1-must-generate-design_specmd).
-2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` vs `fidelity` mode, variant naming, and TOC handling
+2. Page roster — see [Page Roster](../references/template-designer.md#page-roster) for `standard` / `fidelity` / `mirror` mode rosters, variant naming, and TOC handling
 3. Placeholder vocabulary — pages should adopt the conventional names (`{{TITLE}}`, `{{CONTENT_AREA}}`, ...) when they fit. Full reference: [Placeholder Reference](../references/template-designer.md#4-placeholder-reference-canonical-convention-overridable-per-template). When a template style legitimately needs different vocabulary (consulting → `{{KEY_MESSAGE}}`, branded cover → `{{BRAND_LOGO}}`), declare a `placeholders:` block in `design_spec.md` frontmatter so the registrar and quality checker treat it as the template's authoritative contract. **Avoid** one-off indexed families such as `{{CHAPTER_01_TITLE}}` — use the indexed TOC pattern instead.
 4. Template assets (optional) — Logos / PNG / JPG / reference SVG bundled with the template package
 
@@ -197,6 +211,7 @@ python3 skills/ppt-master/scripts/svg_quality_checker.py "skills/ppt-master/temp
 - [ ] Placeholder names follow the canonical convention where applicable; templates with intentionally different vocabularies (e.g. `{{KEY_MESSAGE}}` instead of `{{PAGE_TITLE}}`) should declare a `placeholders:` frontmatter block to silence advisory warnings
 - [ ] Asset files referenced by SVGs actually exist in the template package
 - [ ] For `fidelity` mode: every sprite-sheet asset retains its nested `<svg viewBox=...>` crop wrapper; no image whose file aspect differs from its on-page aspect was flattened to a bare `<image>`
+- [ ] For `mirror` mode: file count equals source slide count (`ls templates/layouts/<id>/*_*.svg | wc -l` matches `<import_workspace>/svg-flat/slide_*.svg | wc -l`); filenames follow the `<NNN>_<page_type>.svg` convention; **no `{{...}}` placeholder strings appear in any copied SVG** (`grep -l "{{" templates/layouts/<id>/*.svg` should return nothing); §V Page Roster in `design_spec.md` lists every emitted file with a one-line description of what the page contains and what content slot it suits
 
 This step is a **hard gate**. Do not register the template into the library index until validation passes.
 
@@ -230,12 +245,13 @@ The completion card's file roster is collected by globbing `*.svg` in the templa
 > keywords: [tag1, tag2, tag3]
 > primary_color: "#005587"
 > canvas_format: ppt169
-> replication_mode: standard
+> replication_mode: standard  # standard | fidelity | mirror
 > # Optional: per-page placeholder overrides. Templates that legitimately
 > # use a different vocabulary (e.g. consulting decks with {{KEY_MESSAGE}}
 > # in place of {{PAGE_TITLE}}, or content variants with bespoke slots)
 > # should declare them here so svg_quality_checker --template-mode does
 > # not flag them as conventional-placeholder gaps.
+> # Mirror-mode templates do not need this field — they have no placeholders.
 > placeholders:
 >   01_cover: ["{{TITLE}}", "{{SUBTITLE}}", "{{BRAND_LOGO}}"]
 >   03_content: ["{{KEY_MESSAGE}}", "{{CONTENT_AREA}}"]
