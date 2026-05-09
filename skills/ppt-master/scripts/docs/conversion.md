@@ -13,6 +13,11 @@ python3 scripts/source_to_md/pdf_to_md.py book.pdf
 python3 scripts/source_to_md/pdf_to_md.py book.pdf -o output.md
 python3 scripts/source_to_md/pdf_to_md.py ./pdfs
 python3 scripts/source_to_md/pdf_to_md.py ./pdfs -o ./markdown
+
+# Image extraction control (default: filtered)
+python3 scripts/source_to_md/pdf_to_md.py book.pdf --images filtered  # size/quality filters applied
+python3 scripts/source_to_md/pdf_to_md.py book.pdf --images all       # extract all images, no filtering
+python3 scripts/source_to_md/pdf_to_md.py book.pdf --images none      # skip all images (text only)
 ```
 
 Use cases:
