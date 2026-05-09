@@ -46,7 +46,7 @@ Input priority for PPTX-backed template creation:
 
 ## Page Roster
 
-The output page set is determined by **replication mode**, declared in the Step 1 brief:
+The output page set is determined by **replication mode**, declared in the finalized template brief:
 
 | Mode | When to use | Roster |
 |------|-------------|--------|
