@@ -133,11 +133,9 @@ pip install python-pptx
 
 Legacy `.ppt` is not parsed directly. Resave it as `.pptx` or export it to PDF first.
 
-## `source_to_md/web_to_md.py` / `source_to_md/web_to_md.cjs`
+## `source_to_md/web_to_md.py`
 
 Convert web pages to Markdown and download images locally.
-
-### Python version (preferred)
 
 ```bash
 python3 scripts/source_to_md/web_to_md.py https://example.com/article
@@ -152,18 +150,6 @@ fetch WeChat Official Accounts (`mp.weixin.qq.com`) and other sites that
 block Python's default TLS fingerprint. No extra flags needed. If
 `curl_cffi` is not available, it falls back to plain `requests`.
 
-### Node.js version (fallback)
-
-Retained as a backup for rare environments where `curl_cffi` can't be
-installed (e.g., uncommon Python + OS + CPU combinations without prebuilt
-wheels):
-
-```bash
-node scripts/source_to_md/web_to_md.cjs https://mp.weixin.qq.com/s/xxxx
-```
-
-For most users the Python version is sufficient — Node.js is no longer
-required for WeChat coverage.
 
 ## `rotate_images.py`
 

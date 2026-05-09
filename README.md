@@ -132,22 +132,15 @@ pip install -r requirements.txt
 </details>
 
 <details>
-<summary><strong>Edge-case fallbacks</strong> — 99% of users don't need these</summary>
+<summary><strong>Edge-case fallback</strong> — 99% of users don't need this</summary>
 
-Two external tools exist as fallbacks for edge cases. **Most users will never need them** — install only if you hit one of the specific scenarios below.
-
-| Fallback | Install only if… |
-|----------|-----------------|
-| [Node.js](https://nodejs.org/) 18+ | You need to import WeChat Official Account articles **and** `curl_cffi` (part of `requirements.txt`) has no prebuilt wheel for your Python + OS + CPU combination. In normal setups `web_to_md.py` handles WeChat directly through `curl_cffi`. |
-| [Pandoc](https://pandoc.org/) | You need to convert legacy formats: `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`, `.html`, `.epub`, `.ipynb` are handled natively by Python — no pandoc required. |
+**Pandoc** — only needed for legacy document formats: `.doc`, `.odt`, `.rtf`, `.tex`, `.rst`, `.org`, or `.typ`. `.docx`, `.html`, `.epub`, `.ipynb` are handled natively by Python — no pandoc required.
 
 ```bash
-# macOS (only if the above conditions apply)
-brew install node
+# macOS
 brew install pandoc
 
 # Ubuntu / Debian
-sudo apt install nodejs npm
 sudo apt install pandoc
 ```
 </details>

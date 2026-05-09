@@ -134,20 +134,13 @@ pip install -r requirements.txt
 <details>
 <summary><strong>边缘场景备用方案</strong> — 99% 的用户用不到</summary>
 
-下面两个外部程序只作为极端场景的兜底。**绝大多数用户根本不需要装**，只有遇到以下具体场景才装：
-
-| 备用方案 | 只在以下情况才装 |
-|---------|-----------------|
-| [Node.js](https://nodejs.org/) 18+ | 你需要抓取微信公众号文章，**且**你的 Python + 系统 + CPU 组合下 `curl_cffi`（`requirements.txt` 里已默认安装）没有预编译 wheel。正常安装下 `web_to_md.py` 已能通过 `curl_cffi` 直接抓微信。 |
-| [Pandoc](https://pandoc.org/) | 你需要转 `.doc`、`.odt`、`.rtf`、`.tex`、`.rst`、`.org`、`.typ` 这些小众格式。`.docx`、`.html`、`.epub`、`.ipynb` 已由 Python 原生处理，不需要 pandoc。 |
+**Pandoc** — 只在需要转小众格式时才装：`.doc`、`.odt`、`.rtf`、`.tex`、`.rst`、`.org`、`.typ`。`.docx`、`.html`、`.epub`、`.ipynb` 已由 Python 原生处理，不需要 pandoc。
 
 ```bash
-# macOS（仅在上述条件成立时才装）
-brew install node
+# macOS
 brew install pandoc
 
 # Ubuntu / Debian
-sudo apt install nodejs npm
 sudo apt install pandoc
 ```
 </details>

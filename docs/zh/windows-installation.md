@@ -90,7 +90,6 @@ python -c "import pptx; import fitz; print('All core dependencies OK')"
 | 增强项 | 只在以下情况才装 | 安装方式 | 验证 |
 |--------|-----------------|---------|------|
 | **CairoSVG** — 更高质量 PNG 后备图 | 你希望在不原生支持 SVG 的 Office 版本下获得更清晰的 PNG 后备图。`svglib`（已默认安装）足够大多数场景。 | 安装 [GTK3 Runtime](https://github.com/nickvdp/gtk3/releases) 后 `pip install cairosvg` | `python -c "import cairosvg"` |
-| **Node.js** 18+ — 微信备用 | 你需要抓微信公众号文章，**且** `curl_cffi`（`requirements.txt` 里已默认安装）在你的 Python 版本下没有预编译 wheel。正常安装下 `web_to_md.py` 已能通过 `curl_cffi` 直接抓微信。 | [nodejs.org](https://nodejs.org/) 下载 LTS 版安装 | `node --version` → v18+ |
 | **Pandoc** — 旧格式文档 | 你需要转 `.doc`、`.odt`、`.rtf`、`.tex`、`.rst`、`.org`、`.typ`。`.docx`/`.html`/`.epub`/`.ipynb` 已由 Python 原生处理。 | [pandoc.org](https://pandoc.org/installing.html) 下载 `.msi` 安装 | `pandoc --version` |
 
 ---
