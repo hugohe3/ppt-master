@@ -7,9 +7,9 @@ import mimetypes
 import re
 import shutil
 import tempfile
-import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
+from typing import Any
 
 from pptx import Presentation
 from pptx.util import Emu
@@ -112,55 +112,116 @@ def _content_type_for_extension(ext: str) -> str:
     return content_type
 
 
-def _expand_anim_targets_to_group_children(
-    slide_xml: str,
+def _as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
+
+
+def _to_float(value: Any, default: float) -> float:
+    if value is None:
+        return default
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return default
+    return number if number >= 0 else default
+
+
+def _slide_config(animation_config: dict[str, Any] | None, svg_stem: str) -> dict[str, Any]:
+    if not animation_config:
+        return {}
+    slides = _as_dict(animation_config.get('slides'))
+    return _as_dict(slides.get(svg_stem))
+
+
+def _slide_transition_settings(
+    slide_cfg: dict[str, Any],
+    transition: str | None,
+    duration: float,
+    auto_advance: float | None,
+    cli_overrides: dict[str, bool],
+) -> tuple[str | None, float, float | None]:
+    trans_cfg = _as_dict(slide_cfg.get('transition'))
+    effect = transition
+    if not cli_overrides.get('transition') and 'effect' in trans_cfg:
+        cfg_effect = str(trans_cfg.get('effect'))
+        effect = None if cfg_effect == 'none' else cfg_effect
+    if not cli_overrides.get('transition_duration'):
+        duration = _to_float(trans_cfg.get('duration'), duration)
+    if not cli_overrides.get('auto_advance') and 'auto_advance' in trans_cfg:
+        auto_advance = _to_float(trans_cfg.get('auto_advance'), auto_advance or 0)
+    return effect, duration, auto_advance
+
+
+def _slide_animation_settings(
+    slide_cfg: dict[str, Any],
+    animation: str | None,
+    duration: float,
+    stagger: float,
+    trigger: str,
+    cli_overrides: dict[str, bool],
+) -> tuple[str | None, float, float, str]:
+    anim_cfg = _as_dict(slide_cfg.get('animation'))
+    effect = animation
+    if not cli_overrides.get('animation') and 'effect' in anim_cfg:
+        cfg_effect = str(anim_cfg.get('effect'))
+        effect = None if cfg_effect == 'none' else cfg_effect
+    if not cli_overrides.get('animation_duration'):
+        duration = _to_float(anim_cfg.get('duration'), duration)
+    if not cli_overrides.get('animation_stagger'):
+        stagger = _to_float(anim_cfg.get('stagger'), stagger)
+    if not cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
+        trigger = str(anim_cfg.get('trigger'))
+    return effect, duration, stagger, trigger
+
+
+def _build_sequence_targets(
     anim_targets: list[tuple[int, str]],
-) -> list[tuple[list[int], str]]:
-    """Expand top-level group animation targets to their concrete child shapes.
-
-    PowerPoint for Mac may list animations assigned to ``p:grpSp`` in the
-    animation pane but fail to consume slideshow clicks for those group targets.
-    Animating ordinary child shapes in the same click step preserves the visual
-    "one semantic block per click" behavior while avoiding group-target playback
-    quirks.
-    """
-    ns = {'p': 'http://schemas.openxmlformats.org/presentationml/2006/main'}
-    root = ET.fromstring(slide_xml)
-    expanded: list[tuple[list[int], str]] = []
-
-    for target_id, svg_id in anim_targets:
-        if isinstance(target_id, (list, tuple)):
-            expanded.append(([int(v) for v in target_id], svg_id))
+    slide_cfg: dict[str, Any],
+    animation: str,
+    duration: float,
+    stagger: float,
+    mixed_animation_offset: int,
+) -> tuple[list[tuple[int, int, str, float]], int]:
+    groups_cfg = _as_dict(slide_cfg.get('groups'))
+    ordered: list[tuple[int, int, int, str, dict[str, Any]]] = []
+    for idx, (sid, svg_id) in enumerate(anim_targets):
+        group_cfg = _as_dict(groups_cfg.get(svg_id))
+        if str(group_cfg.get('effect', '')).lower() == 'none':
             continue
+        order_value = group_cfg.get('order')
+        try:
+            order = int(order_value)
+            has_order = 0
+        except (TypeError, ValueError):
+            order = idx
+            has_order = 1
+        group_entry = dict(group_cfg)
+        group_entry['_shape_id'] = sid
+        ordered.append((has_order, order, idx, svg_id, group_entry))
 
-        group = None
-        for candidate in root.findall('.//p:grpSp', ns):
-            c_nv_pr = candidate.find('./p:nvGrpSpPr/p:cNvPr', ns)
-            if c_nv_pr is not None and c_nv_pr.get('id') == str(target_id):
-                group = candidate
-                break
+    ordered.sort(key=lambda item: (item[0], item[1], item[2]))
 
-        if group is None:
-            expanded.append(([target_id], svg_id))
-            continue
+    seq_targets: list[tuple[int, int, str, float]] = []
+    for seq_idx, (_has_order, _order, _original_idx, _svg_id, group_cfg) in enumerate(ordered):
+        shape_id = int(group_cfg['_shape_id'])
+        raw_effect = group_cfg.get('effect')
+        if raw_effect in ('mixed', 'random'):
+            effect = pick_animation_effect(str(raw_effect), seq_idx, mixed_animation_offset)
+        else:
+            effect = str(raw_effect or pick_animation_effect(
+                animation, seq_idx, mixed_animation_offset,
+            ))
+        item_duration = _to_float(group_cfg.get('duration'), duration)
+        delay_seconds = _to_float(
+            group_cfg.get('delay'),
+            0 if seq_idx == 0 else stagger,
+        )
+        seq_targets.append((shape_id, int(delay_seconds * 1000), effect, item_duration))
 
-        child_ids: list[int] = []
-        for child in list(group):
-            if child.tag == f'{{{ns["p"]}}}sp':
-                c_nv_pr = child.find('./p:nvSpPr/p:cNvPr', ns)
-            elif child.tag == f'{{{ns["p"]}}}pic':
-                c_nv_pr = child.find('./p:nvPicPr/p:cNvPr', ns)
-            else:
-                c_nv_pr = None
-            if c_nv_pr is None:
-                continue
-            child_id = c_nv_pr.get('id')
-            if child_id and child_id.isdigit():
-                child_ids.append(int(child_id))
-
-        expanded.append((child_ids or [target_id], svg_id))
-
-    return expanded
+    mixed_count = 0
+    if animation == 'mixed':
+        mixed_count = sum(1 for _target in seq_targets[1:])
+    return seq_targets, mixed_count
 
 
 def create_pptx_with_native_svg(
@@ -179,6 +240,8 @@ def create_pptx_with_native_svg(
     animation_duration: float = 0.4,
     animation_stagger: float = 0.5,
     animation_trigger: str = 'after-previous',
+    animation_config: dict[str, Any] | None = None,
+    animation_cli_overrides: dict[str, bool] | None = None,
     narration_audio: dict[str, Path] | None = None,
     use_narration_timings: bool = False,
     narration_padding: float = 0.5,
@@ -204,6 +267,8 @@ def create_pptx_with_native_svg(
             trigger mode (seconds). Ignored otherwise.
         animation_trigger: PowerPoint Start mode — ``'after-previous'`` (default),
             ``'on-click'``, or ``'with-previous'``.
+        animation_config: Optional sidecar overrides loaded from animations.json.
+        animation_cli_overrides: Flags indicating explicit CLI overrides.
         narration_audio: Optional dict mapping SVG stem to narration audio file.
         use_narration_timings: Whether to set slide auto-advance from audio duration.
         narration_padding: Extra seconds added after each narration before advancing.
@@ -269,6 +334,8 @@ def create_pptx_with_native_svg(
             print(f"  Speaker notes: Disabled")
         print()
 
+    animation_cli_overrides = animation_cli_overrides or {}
+
     temp_dir = Path(tempfile.mkdtemp())
 
     try:
@@ -307,45 +374,67 @@ def create_pptx_with_native_svg(
             try:
                 # ---- Native shapes mode ----
                 if use_native_shapes:
+                    slide_cfg = _slide_config(animation_config, svg_path.stem)
                     slide_xml, media_files_dict, rel_entries, anim_targets = (
                         convert_svg_to_slide_shapes(
                             svg_path, slide_num=slide_num, verbose=verbose,
                         )
+                    )
+                    slide_transition, slide_transition_duration, slide_auto_advance = (
+                        _slide_transition_settings(
+                            slide_cfg,
+                            transition,
+                            transition_duration,
+                            auto_advance,
+                            animation_cli_overrides,
+                        )
+                    )
+                    (
+                        slide_animation,
+                        slide_animation_duration,
+                        slide_animation_stagger,
+                        slide_animation_trigger,
+                    ) = _slide_animation_settings(
+                        slide_cfg,
+                        animation,
+                        animation_duration,
+                        animation_stagger,
+                        animation_trigger,
+                        animation_cli_overrides,
                     )
 
                     # Order matters: OOXML schema requires <p:transition>
                     # to precede <p:timing> inside <p:sld>. Both use the same
                     # </p:sld> string-replace anchor, so transition must be
                     # injected first and timing second.
-                    if transition and ANIMATIONS_AVAILABLE and create_transition_xml:
+                    if slide_transition and ANIMATIONS_AVAILABLE and create_transition_xml:
                         transition_xml = '\n' + create_transition_xml(
-                            effect=transition,
-                            duration=transition_duration,
-                            advance_after=auto_advance,
+                            effect=slide_transition,
+                            duration=slide_transition_duration,
+                            advance_after=slide_auto_advance,
                         )
                         slide_xml = slide_xml.replace(
                             '</p:sld>',
                             transition_xml + '\n</p:sld>',
                         )
 
-                    if (animation and animation != 'none'
+                    if (slide_animation and slide_animation != 'none'
                             and create_sequence_timing_xml
                             and pick_animation_effect
                             and anim_targets):
-                        stagger_ms = int(animation_stagger * 1000)
-                        seq_targets = [
-                            (sid,
-                             0 if idx == 0 else stagger_ms,
-                             pick_animation_effect(
-                                 animation, idx, mixed_animation_offset,
-                             ))
-                            for idx, (sid, _svg_id) in enumerate(anim_targets)
-                        ]
-                        if animation == 'mixed':
-                            mixed_animation_offset += max(0, len(anim_targets) - 1)
+                        seq_targets, mixed_count = _build_sequence_targets(
+                            anim_targets,
+                            slide_cfg,
+                            slide_animation,
+                            slide_animation_duration,
+                            slide_animation_stagger,
+                            mixed_animation_offset,
+                        )
+                        if slide_animation == 'mixed':
+                            mixed_animation_offset += mixed_count
                         timing_xml = '\n' + create_sequence_timing_xml(
-                            seq_targets, duration=animation_duration,
-                            trigger=animation_trigger,
+                            seq_targets, duration=slide_animation_duration,
+                            trigger=slide_animation_trigger,
                         )
                         slide_xml = slide_xml.replace(
                             '</p:sld>',
@@ -410,6 +499,16 @@ def create_pptx_with_native_svg(
 
                 # ---- Legacy SVG embedding mode ----
                 else:
+                    slide_cfg = _slide_config(animation_config, svg_path.stem)
+                    slide_transition, slide_transition_duration, slide_auto_advance = (
+                        _slide_transition_settings(
+                            slide_cfg,
+                            transition,
+                            transition_duration,
+                            auto_advance,
+                            animation_cli_overrides,
+                        )
+                    )
                     svg_filename = f'image{i}.svg'
                     png_filename = f'image{i}.png'
                     png_rid = 'rId2'
@@ -438,9 +537,9 @@ def create_pptx_with_native_svg(
                         slide_num,
                         png_rid=png_rid, svg_rid=svg_rid,
                         width_emu=width_emu, height_emu=height_emu,
-                        transition=transition,
-                        transition_duration=transition_duration,
-                        auto_advance=auto_advance,
+                        transition=slide_transition,
+                        transition_duration=slide_transition_duration,
+                        auto_advance=slide_auto_advance,
                         use_compat_mode=(use_compat_mode and slide_has_png),
                     )
                     with open(slide_xml_path, 'w', encoding='utf-8') as f:
@@ -538,8 +637,8 @@ def create_pptx_with_native_svg(
                             slide_xml = apply_recorded_timing(
                                 slide_xml,
                                 advance_after=duration + narration_padding,
-                                transition_duration=transition_duration,
-                                transition_effect=transition or 'fade',
+                                transition_duration=slide_transition_duration,
+                                transition_effect=slide_transition or 'fade',
                             )
                     slide_xml_path.write_text(slide_xml, encoding='utf-8')
                     narration_slides_created.add(slide_num)

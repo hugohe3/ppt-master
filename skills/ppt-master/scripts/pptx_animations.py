@@ -302,7 +302,8 @@ def create_sequence_timing_xml(
     """Generate a multi-target entrance sequence.
 
     Args:
-        targets: list of (shape_id, delay_ms, animation_name) tuples, in
+        targets: list of (shape_id, delay_ms, animation_name) or
+            (shape_id, delay_ms, animation_name, duration_seconds) tuples, in
             the order they should play. ``delay_ms`` is the gap before
             this element starts, measured from when the previous element
             triggers (only used in ``after-previous`` mode; ignored in
@@ -326,8 +327,17 @@ def create_sequence_timing_xml(
     if trigger not in ('on-click', 'with-previous', 'after-previous'):
         trigger = 'on-click'
 
-    dur_ms = int(duration * 1000)
+    default_dur_ms = int(duration * 1000)
     next_id = 3
+
+    def _target_parts(target: tuple) -> tuple[int, int, str, int]:
+        shape_id, delay_ms, animation = target[:3]
+        if animation not in ANIMATIONS:
+            animation = 'fade'
+        item_dur_ms = default_dur_ms
+        if len(target) > 3 and target[3] is not None:
+            item_dur_ms = int(float(target[3]) * 1000)
+        return int(shape_id), int(delay_ms), str(animation), item_dur_ms
 
     if trigger == 'on-click':
         # Each element is an independent click-driven par directly under
@@ -336,9 +346,7 @@ def create_sequence_timing_xml(
         # clickEffect + animation children. Each click advances the seq.
         steps = []
         for target in targets:
-            shape_id, _delay_ms, animation = target
-            if animation not in ANIMATIONS:
-                animation = 'fade'
+            shape_id, _delay_ms, animation, item_dur_ms = _target_parts(target)
             anim_info = ANIMATIONS[animation]
             preset_id = anim_info.get('presetID', 1)
             preset_subtype = anim_info.get('presetSubtype', 0)
@@ -348,7 +356,7 @@ def create_sequence_timing_xml(
             set_id = next_id + 3
             eff_id = next_id + 4
             next_id += 5
-            effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+            effect_xml = _build_effect_xml(animation, shape_id, item_dur_ms, set_id, eff_id)
             steps.append(f'''<p:par>
   <p:cTn id="{wrapper_id}" fill="hold">
     <p:stCondLst><p:cond delay="indefinite"/></p:stCondLst>
@@ -389,10 +397,9 @@ def create_sequence_timing_xml(
             with_wrapper_id = next_id
             next_id += 1
         elapsed_ms = 0
+        prev_duration_ms = 0
         for i, target in enumerate(targets):
-            shape_id, delay_ms, animation = target
-            if animation not in ANIMATIONS:
-                animation = 'fade'
+            shape_id, delay_ms, animation, item_dur_ms = _target_parts(target)
             anim_info = ANIMATIONS[animation]
             preset_id = anim_info.get('presetID', 1)
             preset_subtype = anim_info.get('presetSubtype', 0)
@@ -402,7 +409,7 @@ def create_sequence_timing_xml(
                 set_id = next_id + 1
                 eff_id = next_id + 2
                 next_id += 3
-                effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+                effect_xml = _build_effect_xml(animation, shape_id, item_dur_ms, set_id, eff_id)
                 inner_steps.append(f'''<p:par>
                   <p:cTn id="{leaf_id}" presetID="{preset_id}" presetClass="entr" presetSubtype="{preset_subtype}" fill="hold" nodeType="withEffect">
                     <p:stCondLst><p:cond delay="0"/></p:stCondLst>
@@ -412,14 +419,16 @@ def create_sequence_timing_xml(
                   </p:cTn>
                 </p:par>''')
             else:
-                if i > 0:
-                    elapsed_ms += dur_ms + int(delay_ms)
+                if i == 0:
+                    elapsed_ms = int(delay_ms)
+                else:
+                    elapsed_ms += prev_duration_ms + int(delay_ms)
                 wrapper_id = next_id
                 leaf_id = next_id + 1
                 set_id = next_id + 2
                 eff_id = next_id + 3
                 next_id += 4
-                effect_xml = _build_effect_xml(animation, shape_id, dur_ms, set_id, eff_id)
+                effect_xml = _build_effect_xml(animation, shape_id, item_dur_ms, set_id, eff_id)
                 inner_steps.append(f'''<p:par>
                   <p:cTn id="{wrapper_id}" fill="hold">
                     <p:stCondLst><p:cond delay="{elapsed_ms}"/></p:stCondLst>
@@ -435,6 +444,7 @@ def create_sequence_timing_xml(
                     </p:childTnLst>
                   </p:cTn>
                 </p:par>''')
+                prev_duration_ms = item_dur_ms
 
         inner_xml = '\n                '.join(inner_steps)
         if trigger == 'with-previous':
@@ -468,7 +478,7 @@ def create_sequence_timing_xml(
               </p:par>'''
 
     bld_list = '\n    '.join(
-        f'<p:bldP spid="{sid}" grpId="0"/>' for sid, _, _ in targets
+        f'<p:bldP spid="{target[0]}" grpId="0"/>' for target in targets
     )
     return f'''  <p:timing>
     <p:tnLst>

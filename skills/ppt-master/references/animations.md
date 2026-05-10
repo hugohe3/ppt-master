@@ -11,6 +11,51 @@ PPT Master's exported PPTX supports **page transitions** (slide-to-slide) and **
 
 To regenerate a deck with different settings, rerun `svg_to_pptx.py` against the same `svg_output/` (or `svg_final/`) — no need to rerun the LLM. To turn per-element animation off entirely, pass `-a none`.
 
+## Custom Object-Level Animation
+
+Default animation is global. When a deck needs specific object timing — for example title first, chart second, annotation last — use the optional `animations.json` sidecar. The SVG remains static visual source; the sidecar only controls PPTX export behavior.
+
+Run the standalone [`customize-animations`](../workflows/customize-animations.md) workflow when the user asks to tune animation order, effects, timing, or object-level reveals.
+
+```bash
+# Build an editable scaffold from real top-level <g id> anchors
+python3 skills/ppt-master/scripts/animation_config.py scaffold <project>
+
+# Validate references before export
+python3 skills/ppt-master/scripts/animation_config.py validate <project>
+
+# Export reads <project>/animations.json automatically when present
+python3 skills/ppt-master/scripts/svg_to_pptx.py <project>
+```
+
+Minimal sidecar:
+
+```json
+{
+  "version": 1,
+  "slides": {
+    "03_market": {
+      "groups": {
+        "title": { "effect": "fade", "order": 1 },
+        "chart": { "effect": "wipe", "order": 2, "duration": 0.6 },
+        "insight": { "effect": "fly", "order": 3, "delay": 0.2 },
+        "footer": { "effect": "none" }
+      }
+    }
+  }
+}
+```
+
+Rules:
+
+- `slides` keys match SVG stems (`03_market.svg` → `03_market`).
+- `groups` keys match top-level `<g id="...">` anchors.
+- `effect: none` removes that group from the entrance sequence.
+- `order` changes animation order only; it does not change slide layering.
+- `delay` is seconds before that group starts in `after-previous` mode.
+- `duration` overrides the per-group entrance duration.
+- `--animation none` overrides the sidecar and disables all per-element animation.
+
 ## Page Transitions
 
 ```bash
@@ -74,6 +119,7 @@ Flags:
 - `--animation-trigger` — Start mode (matches PowerPoint): `on-click`, `with-previous`, or `after-previous` (default).
 - `--animation-duration` — per-element entrance seconds, default `0.4`.
 - `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.
+- `--animation-config` — sidecar path. Default: `<project>/animations.json` when present.
 
 ## Anchor Logic — Top-Level `<g id="...">`
 

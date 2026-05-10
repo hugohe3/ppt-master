@@ -13,6 +13,7 @@ from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
 from .pptx_narration import find_narration_files
 from .pptx_slide_xml import TRANSITIONS
+from .animation_config import load_animation_config, validate_animation_config
 
 try:
     from pptx_animations import ANIMATIONS as _ANIMATIONS
@@ -112,30 +113,42 @@ Recorded narration:
     mode_group.add_argument('--native', action='store_true', default=False,
                             help='(Deprecated, now default) Convert SVG to native DrawingML shapes')
 
-    parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default='fade',
+    def non_negative_float(value: str) -> float:
+        try:
+            number = float(value)
+        except ValueError as exc:
+            raise argparse.ArgumentTypeError(f"must be a number: {value}") from exc
+        if number < 0:
+            raise argparse.ArgumentTypeError("must be non-negative")
+        return number
+
+    parser.add_argument('-t', '--transition', type=str, choices=transition_choices, default=None,
                         help='Page transition effect (default: fade, use "none" to disable)')
-    parser.add_argument('--transition-duration', type=float, default=0.4,
+    parser.add_argument('--transition-duration', type=non_negative_float, default=None,
                         help='Transition duration in seconds (default: 0.4)')
-    parser.add_argument('--auto-advance', type=float, default=None,
+    parser.add_argument('--auto-advance', type=non_negative_float, default=None,
                         help='Auto-advance interval in seconds (default: manual advance)')
 
     parser.add_argument('-a', '--animation', type=str, choices=animation_choices,
-                        default='mixed',
+                        default=None,
                         help='Per-element entrance animation (native shapes mode '
                              'only). Pick a single effect, "mixed" (auto-vary per '
                              'element, default), "random", or "none" to disable.')
-    parser.add_argument('--animation-duration', type=float, default=0.4,
+    parser.add_argument('--animation-duration', type=non_negative_float, default=None,
                         help='Per-element entrance duration in seconds (default: 0.4)')
     parser.add_argument('--animation-trigger', type=str,
                         choices=['on-click', 'with-previous', 'after-previous'],
-                        default='after-previous',
+                        default=None,
                         help='Per-element Start mode (matches PowerPoint Start dropdown): '
                              '"on-click" (one click per element), '
                              '"with-previous" (all start together on slide entry), '
                              '"after-previous" (default, cascade after the previous element).')
-    parser.add_argument('--animation-stagger', type=float, default=0.5,
+    parser.add_argument('--animation-stagger', type=non_negative_float, default=None,
                         help='Delay between elements in --animation-trigger=after-previous '
                              '(seconds, default 0.5). Ignored in other modes.')
+    parser.add_argument('--animation-config', type=str, default=None,
+                        help='Optional per-slide/per-object animation config. '
+                             'Default: <project>/animations.json when present.')
 
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
@@ -243,8 +256,74 @@ Recorded narration:
             print(f"  Narration audio directory: {narration_audio_dir}")
             print(f"  Narration audio matched: {len(narration_audio)}/{len(ref_files)} slide(s)")
 
-    transition = args.transition if args.transition != 'none' else None
-    animation = args.animation if args.animation != 'none' else None
+    if args.animation_config:
+        config_path = Path(args.animation_config)
+        if not config_path.is_absolute():
+            config_path = project_path / config_path
+        if not config_path.exists():
+            print(f"Error: Animation config does not exist: {config_path}")
+            sys.exit(1)
+
+    try:
+        animation_config = load_animation_config(project_path, args.animation_config)
+    except Exception as exc:
+        print(f"Error: Failed to load animation config: {exc}")
+        sys.exit(1)
+    if animation_config and verbose:
+        config_label = args.animation_config or str(project_path / 'animations.json')
+        print(f"  Animation config: {config_label}")
+        for warning in validate_animation_config(project_path, animation_config):
+            print(f"  [warn] {warning}")
+
+    defaults = animation_config.get('defaults', {}) if animation_config else {}
+    transition_defaults = defaults.get('transition', {}) if isinstance(defaults, dict) else {}
+    animation_defaults = defaults.get('animation', {}) if isinstance(defaults, dict) else {}
+
+    transition_arg = args.transition
+    transition_effect = (
+        transition_arg
+        if transition_arg is not None
+        else transition_defaults.get('effect', 'fade')
+    )
+    transition = None if transition_effect == 'none' else transition_effect
+    transition_duration = (
+        args.transition_duration
+        if args.transition_duration is not None
+        else float(transition_defaults.get('duration', 0.4))
+    )
+
+    animation_arg = args.animation
+    animation_effect = (
+        animation_arg
+        if animation_arg is not None
+        else animation_defaults.get('effect', 'mixed')
+    )
+    animation = None if animation_effect == 'none' else animation_effect
+    animation_duration = (
+        args.animation_duration
+        if args.animation_duration is not None
+        else float(animation_defaults.get('duration', 0.4))
+    )
+    animation_stagger = (
+        args.animation_stagger
+        if args.animation_stagger is not None
+        else float(animation_defaults.get('stagger', 0.5))
+    )
+    animation_trigger = (
+        args.animation_trigger
+        if args.animation_trigger is not None
+        else animation_defaults.get('trigger', 'after-previous')
+    )
+
+    animation_cli_overrides = {
+        'transition': args.transition is not None,
+        'transition_duration': args.transition_duration is not None,
+        'auto_advance': args.auto_advance is not None,
+        'animation': args.animation is not None,
+        'animation_duration': args.animation_duration is not None,
+        'animation_stagger': args.animation_stagger is not None,
+        'animation_trigger': args.animation_trigger is not None,
+    }
 
     # svg_files is per-product (native vs legacy may now read different
     # directories); everything else is shared.
@@ -252,15 +331,17 @@ Recorded narration:
         canvas_format=canvas_format,
         verbose=verbose,
         transition=transition,
-        transition_duration=args.transition_duration,
+        transition_duration=transition_duration,
         auto_advance=args.auto_advance,
         use_compat_mode=not args.no_compat,
         notes=notes,
         enable_notes=enable_notes,
         animation=animation,
-        animation_duration=args.animation_duration,
-        animation_stagger=args.animation_stagger,
-        animation_trigger=args.animation_trigger,
+        animation_duration=animation_duration,
+        animation_stagger=animation_stagger,
+        animation_trigger=animation_trigger,
+        animation_config=animation_config,
+        animation_cli_overrides=animation_cli_overrides,
         narration_audio=narration_audio,
         use_narration_timings=use_narration_timings,
         narration_padding=args.narration_padding,

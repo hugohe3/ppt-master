@@ -18,6 +18,8 @@ PPT Master is an AI-driven presentation generation system. Multi-role collaborat
 >
 > Recorded narration / video export: run the standalone [`generate-audio`](skills/ppt-master/workflows/generate-audio.md) workflow after post-processing.
 >
+> Object-level animation tuning: when the user asks to change animation order, effect, timing, or a specific object's reveal behavior, run the standalone [`customize-animations`](skills/ppt-master/workflows/customize-animations.md) workflow. Default export already has global animations; do not create `animations.json` unless customization was requested.
+>
 > Post-export iteration: whenever the user asks to change anything on a generated slide ("改一下", "调字号", "那里看着不对", "把图片换大点"), the [`visual-edit`](skills/ppt-master/workflows/visual-edit.md) workflow is available — surface it as an option. If the user describes the change with enough specificity to apply directly ("第 3 页副标题字号改 32"), edit the SVG directly instead; if they're vaguely pointing at "somewhere" on the deck, run the workflow.
 
 ## Execution Requirements
@@ -57,6 +59,8 @@ python3 skills/ppt-master/scripts/project_manager.py validate <project_path>
 python3 skills/ppt-master/scripts/analyze_images.py <project_path>/images
 python3 skills/ppt-master/scripts/image_gen.py "prompt" --aspect_ratio 16:9 --image_size 1K -o <project_path>/images
 python3 skills/ppt-master/scripts/svg_quality_checker.py <project_path>
+python3 skills/ppt-master/scripts/animation_config.py scaffold <project_path>  # optional, only for custom object-level animation
+python3 skills/ppt-master/scripts/animation_config.py validate <project_path>  # optional, before re-export
 
 # Post-processing pipeline: run sequentially, one command at a time
 python3 skills/ppt-master/scripts/total_md_split.py <project_path>

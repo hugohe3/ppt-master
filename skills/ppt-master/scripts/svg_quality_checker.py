@@ -32,6 +32,15 @@ try:
 except ImportError:
     _parse_spec_lock = None  # spec_lock drift check will be skipped
 
+try:
+    from svg_to_pptx.animation_config import (
+        load_animation_config as _load_animation_config,
+        validate_animation_config as _validate_animation_config,
+    )
+except ImportError:
+    _load_animation_config = None
+    _validate_animation_config = None
+
 
 HEX_VALUE_RE = re.compile(r"#[0-9A-Fa-f]{3,8}")
 
@@ -173,6 +182,7 @@ class SVGQualityChecker:
         # template_mode=True). Each entry is (severity, kind, message) where
         # severity is 'error' or 'warning'. Printed in print_summary.
         self._template_issues: List[Tuple[str, str, str]] = []
+        self._animation_issues: List[Tuple[str, str]] = []
 
     def check_file(self, svg_file: str, expected_format: str = None) -> Dict:
         """
@@ -232,13 +242,16 @@ class SVGQualityChecker:
                 # 6. Check image references (file existence and resolution)
                 self._check_image_references(content, svg_path, result)
 
-                # 7. Check spec_lock drift (colors / font-family / font-size).
+                # 7. Check object-level animation anchor quality.
+                self._check_animation_group_ids(content, result)
+
+                # 8. Check spec_lock drift (colors / font-family / font-size).
                 #    Templates do not ship a spec_lock.md, so skip in template
                 #    mode to avoid noise.
                 if not self.template_mode:
                     self._check_spec_lock_drift(content, svg_path, result)
 
-                # 8. Check web-sourced image attribution. Templates don't carry
+                # 9. Check web-sourced image attribution. Templates don't carry
                 #    image_sources.json; skip in template mode.
                 if not self.template_mode:
                     self._check_sourced_image_attribution(content, svg_path, result)
@@ -559,6 +572,24 @@ class SVGQualityChecker:
             except Exception:
                 pass  # Image unreadable, skip resolution check
 
+    def _check_animation_group_ids(self, content: str, result: Dict):
+        """Warn when visible top-level groups cannot be customized."""
+        try:
+            root = ET.fromstring(content)
+        except ET.ParseError:
+            return
+
+        non_visual = {'defs', 'title', 'desc', 'metadata', 'style'}
+        for index, child in enumerate(list(root), start=1):
+            tag = child.tag.split('}', 1)[-1]
+            if tag in non_visual:
+                continue
+            if tag == 'g' and not child.get('id'):
+                result['warnings'].append(
+                    f"Top-level visible <g> #{index} has no id; "
+                    "object-level animation config cannot reference it"
+                )
+
     def _get_spec_lock(self, svg_path: Path):
         """Locate and parse spec_lock.md near the SVG. Returns dict or None.
 
@@ -817,8 +848,25 @@ class SVGQualityChecker:
 
         if self.template_mode and dir_path.is_dir():
             self._check_template_contract(dir_path, svg_files)
+        elif dir_path.is_dir():
+            self._check_animation_config_contract(dir_path)
 
         return self.results
+
+    def _check_animation_config_contract(self, dir_path: Path) -> None:
+        """Project-level animations.json reference checks."""
+        if _load_animation_config is None or _validate_animation_config is None:
+            return
+        project_path = dir_path if (dir_path / 'svg_output').exists() else dir_path.parent
+        try:
+            config = _load_animation_config(project_path)
+        except Exception as exc:
+            self._animation_issues.append(('error', f"animations.json is invalid: {exc}"))
+            return
+        if not config:
+            return
+        for warning in _validate_animation_config(project_path, config):
+            self._animation_issues.append(('warning', warning))
 
     def _check_template_contract(self, dir_path: Path,
                                  svg_files: List[Path]) -> None:
@@ -1105,6 +1153,9 @@ class SVGQualityChecker:
         # Template-mode aggregation (orphan/missing roster + placeholder hints)
         self._print_template_summary()
 
+        # Animation config aggregation.
+        self._print_animation_summary()
+
         # Fix suggestions
         if self.summary['errors'] > 0 or self.summary['warnings'] > 0:
             print(f"\n[TIP] Common fixes:")
@@ -1112,6 +1163,24 @@ class SVGQualityChecker:
             print(f"  2. viewBox issues: Ensure consistency with canvas format (see references/canvas-formats.md)")
             print(f"  3. foreignObject: Use <text> + <tspan> for manual line breaks")
             print(f"  4. Font issues: end every font-family stack with a PPT-safe family (e.g. Microsoft YaHei / Arial / Consolas)")
+
+    def _print_animation_summary(self):
+        """Print animations.json validation issues if present."""
+        if not self._animation_issues:
+            return
+
+        errors = [item for item in self._animation_issues if item[0] == 'error']
+        warnings = [item for item in self._animation_issues if item[0] == 'warning']
+        self.summary['errors'] += len(errors)
+        self.summary['warnings'] += len(warnings)
+        for severity, _msg in self._animation_issues:
+            self.issue_types[f'animation_config_{severity}'] += 1
+
+        print("\n[ANIMATION] animations.json checks")
+        for _severity, msg in errors:
+            print(f"  [ERROR] {msg}")
+        for _severity, msg in warnings:
+            print(f"  [WARN] {msg}")
 
     def _print_template_summary(self):
         """Aggregate template-mode roster / placeholder issues at the bottom.
