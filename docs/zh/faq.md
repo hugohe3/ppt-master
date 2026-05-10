@@ -88,6 +88,21 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger o
 
 其他模型（Gemini、GLM、MiniMax 等）效果参差不齐。总体来说，前端/视觉能力越强的模型，生成效果越好。
 
+## Q: 有人说 PPT Master "只是个玩具"——这个评价准确吗？
+
+不准确。PPT Master 是一个 **harness**，不是完整的 agent——`harness + model = agent`，输出上限完全由模型决定，而不是由 harness 本身决定。用弱模型或小上下文窗口来评价 PPT Master，就好比挂着一档开跑车然后说它跑不快。
+
+**发挥完整实力的组合：**
+
+- **Claude 大上下文窗口**（推荐 ~100 万 token 级别）：大上下文让 Executor 在同一个会话里看到全部已生成页面，在不拆分运行的前提下保持整份 deck 的视觉一致性。上下文不足时被迫走拆分模式，两段之间会出现明显的风格漂移。
+- **AI 生图，推荐 `gpt-image-2`**（或同等质量）：配图水平是 deck 整体观感的最大变量。用占位级的网络图片和用真正贴合内容的 AI 生成图，视觉效果完全是两个量级。
+
+如果你看到的效果差强人意，先对照以下几点检查你的配置，再下结论：用的什么模型？上下文开了多大？有没有接入图片生成 API？同样的工作流，Claude Opus 配 100 万 token 上下文配 `gpt-image-2` 的结果，和小参数开源模型配零配置的结果，是截然不同的体验。
+
+**harness 决定工作流上限，model 决定质量上限。** 如果 agent 能力不达预期，请先升级模型，再来评价 harness。
+
+> **没有 Claude 渠道？** 本项目赞助商 [PackyCode](https://www.packyapi.com/register?aff=ppt-master) 提供 Claude 及其他主流模型的按量付费接入——无需订阅，无需境外信用卡，支持国内支付，开箱即用。充值时填写优惠码 **`ppt-master`** 享 9 折。
+
 ## Q: 文字超出边框 / 元素错位怎么办？
 
 这几乎都是模型能力问题，不是 PPT Master 的 bug。SVG 排版是纯手动绝对定位——模型必须准确计算坐标、字体度量和容器尺寸。

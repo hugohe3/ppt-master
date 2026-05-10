@@ -38,6 +38,8 @@ English | [中文](./README_CN.md)
 
 Drop in a PDF, DOCX, URL, or Markdown — get back a **natively editable PowerPoint** with real shapes, real text boxes, and real charts. Not images. Click anything and edit it.
 
+> **⚠️ PPT Master is a harness, not a complete agent.** `harness + model = agent` — the tool owns the workflow; the model sets the ceiling. To form a genuinely high-quality agent, use **Claude with a large context window (~1M tokens) + AI image generation (`gpt-image-2`)**. Other models can run the pipeline but cannot reach the same quality ceiling. If results disappoint, upgrade the model — don't blame the harness.
+
 > **Template Replication** — hand the AI any `.pptx` you like and say "replicate it as a template via `/create-template`" — you get a layout set PPT Master can invoke directly. Theme colors, fonts, master/layout structure, reusable images, even sprite-sheet crop relationships are extracted straight from OOXML, so covers, chapter dividers and decoration-heavy pages all reproduce reliably. You're no longer limited to the built-in templates: a company brand deck, a client's winning template, or any high-quality reference can become a private template in your own library. See [Templates Guide →](./docs/templates-guide.md).
 
 > **Animations** — exported decks support **page transitions** and **per-element entrance animations** as real OOXML, not embedded video. By default, elements cascade in automatically on slide entry — no clicking needed. Plays natively in PowerPoint and Keynote, no extra tooling. See [Animations & Transitions →](./skills/ppt-master/references/animations.md).
@@ -155,9 +157,9 @@ PPT Master runs in **any tool with agent capability** — read/write files, exec
 | **IDE plugin / extension** | [GitHub Copilot](https://github.com/features/copilot), [Claude Code](https://claude.ai/code) (VS Code / JetBrains extension), [Cline](https://cline.bot/), [Continue](https://continue.dev/), Roo Code, etc. | Installed inside hosts like VS Code or JetBrains |
 | **CLI agent** | [Claude Code](https://claude.ai/code) CLI, [Codex CLI](https://github.com/openai/codex), [Aider](https://aider.chat/), Gemini CLI, etc. | Runs in the terminal; suits scripting, remote, or server use |
 
-> **Model recommendation**: [Claude](https://claude.ai/) Opus / Sonnet works best and is most tested. Other mainstream models (GPT, Gemini, Kimi, MiniMax, etc.) also work, but SVG absolute-coordinate layout precision varies.
+> **Model recommendation**: prefer **Claude Opus / Sonnet** with a large context window and `gpt-image-2` for images — see the note above for why.
 
-**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsor **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** can help — whether you lack an API key, can't connect directly, have no way to subscribe, or just don't want to pay a full monthly fee for occasional use, PackyCode lets you call Claude, GPT, Gemini and more on a pay-as-you-go basis, no subscription required. Enter promo code **`ppt-master`** when topping up for 10% off.
+**🔑 Want to use Claude / GPT / Gemini but don't have access yet?** Project sponsor **[PackyCode](https://www.packyapi.com/register?aff=ppt-master)** can help — whether you lack an API key, can't connect directly, have no way to subscribe, or just don't want to pay a full monthly fee for occasional use, PackyCode lets you call Claude, GPT, Gemini and more on a pay-as-you-go basis, no subscription required. **PackyCode gives you direct access to Claude models** — the recommended engine for PPT Master. Enter promo code **`ppt-master`** when topping up for 10% off.
 
 ### 3. Set Up
 
