@@ -5,7 +5,7 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 ## 你会得到什么
 
 - 每页一个音频文件，存放于 `<project_path>/audio/`，文件名与 SVG 对齐（`01_cover.mp3`、`02_market_landscape.mp3` …）。
-- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
+- 可选重新导出：在 `exports/` 生成新版 PPTX，每页对应的 `m4a` / `mp3` / `wav` 音频已嵌入到该页，且页面切换时间按音频长度自动设置——无人值守自动播放和视频导出都不用再手动调时间。
 - 演讲者备注原样保留。
 
 ## 它是怎么做到的
@@ -13,9 +13,16 @@ PPT Master 可以把演讲者备注转成逐页音频旁白（默认基于 [`edg
 1. **备注本身就是为 TTS 写的口播稿**。PPT Master 的 notes 规范刻意产出适合朗读的散文——没有 `[过渡]` / `[停顿]` 这种舞台标记，也没有 `要点：` / `时长：` 这种 meta 行——念出来的内容就是页面上的内容。
 2. **AI 替你选音色**。当你提出生成旁白时，AI 根据 deck 的主语言（`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …）和所选 provider 拉取或解释可用音色，挑出候选并给每个写一句中文调性说明（如"稳重男声·适合财报"）。语速/风格也会基于 notes 信息密度给出推荐值。
 3. **一次问完，一次回答**。AI 在一条消息里同时问三件事——生成模式、音色、是否把音频嵌入回 PPTX——每项都标了推荐值。回"好"接受全部默认，或者只说要改的部分（如"音色 2，语速 -5%"）。
-4. **执行**。脚本写出音频到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。
+4. **执行**。脚本写出逐页音频到 `audio/`，再（如果你保留嵌入）重新导出带音频的 PPTX。不支持长音频导入或自动拆分。
 
 完整流程见 [`workflows/generate-audio.md`](../../skills/ppt-master/workflows/generate-audio.md)。
+
+## 两条嵌入路径
+
+| 命令 | 用途 |
+|---|---|
+| `--recorded-narration audio` | 准备 PowerPoint 的"录制的计时和旁白"。要求每页都有音频，并写入页面自动推进时间。用于旁白视频导出。 |
+| `--narration-audio-dir audio` | 底层音频嵌入能力。只嵌入匹配到的文件，允许部分页面有音频。用于测试或后续手工整理。 |
 
 ## 怎么触发
 
@@ -79,6 +86,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 
 edge 模式下 `--voice` 是必填项。云端 provider 使用 `--voice-id` 传入对应平台的系统音色或复刻音色 ID。声音复刻本身先在对应平台控制台/API 中完成，`notes_to_audio.py` 使用得到的 voice ID 生成逐页旁白。
 
+进入 PPTX 的旁白音频必须是 PowerPoint 可靠格式：`m4a`（AAC）、`mp3` 或 `wav`。内置生成路径默认使用 `mp3`；如果 provider 产出 `pcm`、`opus` 或 `flac`，需要先转码再嵌入。
+
 ## 使用复刻音色
 
 四个云端 provider —— **ElevenLabs**、**MiniMax**、**Qwen**、**CosyVoice** —— 都支持用一段较短的音频样本复刻一个新音色，再用这个音色合成新语音。只要你能拿到 `voice_id`，PPT Master 就能用这个音色把整份 deck 念出来。（`edge` 不支持复刻。）
@@ -133,7 +142,7 @@ python3 -m pip install edge-tts
 
 ## 导出为视频
 
-带旁白的 PPTX 在 `exports/` 里就绪后，PowerPoint 自带"创建视频"功能可以直接把它导出成 MP4——不需要任何第三方工具。嵌入的音频会作为每页旁白播放；页间切换时间已经由 PPT Master 在嵌入时按音频长度自动设好（用 `--recorded-narration audio` 重新导出时），所以视频节奏和旁白完全同步。
+带旁白的 PPTX 在 `exports/` 里就绪后，PowerPoint 自带"创建视频"功能可以直接把它导出成 MP4——不需要任何第三方工具。嵌入的音频会作为每页旁白播放；页间切换时间已经由 PPT Master 在嵌入时按音频长度自动设好（用 `--recorded-narration audio` 重新导出时），所以视频节奏和旁白完全同步。`--recorded-narration` 会拒绝 `on-click` 对象动画，因为 PPT Master 不生成对象级点击计时。
 
 **PowerPoint（Windows / Mac，Office 2016+）**：
 
@@ -147,6 +156,6 @@ python3 -m pip install edge-tts
 **经验值**：
 
 - **不需要麦克风、不需要录制环节**——音频是合成的，重跑可重现。
-- **动画保留**：PPT Master 的页间转场和页内元素入场动画是真正的 OOXML 动画，导出视频后正常播放。详见 [转场与动画](./animations.md)。
+- **动画保留**：PPT Master 的页间转场和无点击页内元素入场动画是真正的 OOXML 动画，导出视频后正常播放。详见 [转场与动画](./animations.md)。
 - **单页改音频**：改对应 `notes/<page>.md`，再跑一遍 `notes_to_audio.py` + 嵌入步骤，再重新导出视频——单页迭代通常不到一分钟。
 - **文件大小**：20 页全高清 deck 通常是 30–80 MB，取决于图片量。需要小文件分享时降到高清就行。

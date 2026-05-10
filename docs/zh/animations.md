@@ -81,7 +81,7 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --auto-advance 5
 
 默认开启（`mixed` 效果 + `after-previous` 触发）。共有三种 Start 模式，**与 PowerPoint 动画窗格的 Start 下拉菜单一一对应**：
 
-- **`on-click`**（单击时）—— 进入页面 → 第一次点击显示第一个语义组，后续每次点击按 z-order 显示下一个组。适合现场演讲，演讲者控制节奏。
+- **`on-click`**（单击时）—— 进入页面 → 第一次点击显示第一个语义组，后续每次点击按 z-order 显示下一个组。适合现场演讲，演讲者控制节奏。与 `--recorded-narration` 互斥，因为带旁白的视频导出需要无点击播放。
 - **`with-previous`**（与上一动画同时）—— 所有组在进入页面时一起入场，并行播放各自的入场动画。`--animation-stagger` 不生效。
 - **`after-previous`**（默认，在上一动画之后）—— 第一组进入页面时入场，后续组在前一个结束后接着出现，并按 `--animation-stagger` 增加额外间隔。适合展厅循环、录屏走查，或者只是想看流动效果不想点击。
 
@@ -120,6 +120,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger w
 - `--animation-duration` — 单个元素入场秒数，默认 `0.4`。
 - `--animation-stagger` — `after-previous` 模式下两组之间的额外间隔（秒，默认 `0.5`）。其他模式忽略。
 - `--animation-config` — sidecar 路径。默认自动读取 `<project>/animations.json`（如果存在）。
+
+> Note: `--recorded-narration` 会拒绝 `on-click`；带旁白的视频导出请使用 `after-previous` 或 `with-previous`。
 
 ## 锚点机制 — 顶层 `<g id="...">`
 

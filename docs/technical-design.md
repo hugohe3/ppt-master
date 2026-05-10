@@ -266,6 +266,8 @@ The interesting design choice is the animation **anchor**, not the effect list.
 
 **Why recorded narration drives auto-advance from clip duration.** When narration is embedded, the deck targets video export — and a video has no presenter to click. Setting per-slide auto-advance timings to the audio clip's actual duration produces a deck PowerPoint exports cleanly to MP4 without manual timing work. Picking any other duration source (estimated reading speed, fixed per-slide) breaks the audio-visual sync.
 
+**Why recorded narration rejects on-click object animation.** PowerPoint can record click timings during a real rehearsal, but PPT Master does not synthesize object-level click events. The recorded narration path writes page-level audio and slide auto-advance timings only, so click-driven object reveals would leave the export dependent on extra manual PowerPoint rehearsal. For narrated decks, object entrances must be click-free (`after-previous` or `with-previous`).
+
 ---
 
 ## Standalone Workflows

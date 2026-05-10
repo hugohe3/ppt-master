@@ -78,6 +78,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation fade     
 python3 skills/ppt-master/scripts/svg_to_pptx.py <project> --animation-trigger on-click   # 改为单击触发，演讲者控制节奏
 ```
 
+`on-click` 适合现场演示。通过 `--recorded-narration` 做旁白/视频导出时会拒绝它，因为 PPT Master 只写页面级计时，不生成对象级点击计时；带旁白的 deck 请使用 `after-previous` 或 `with-previous`。
+
 完整效果列表、`<g id="...">` 锚点机制、降级行为、限制：见 [转场与动画](./animations.md)。
 
 ## Q: 推荐用什么 AI 模型？
