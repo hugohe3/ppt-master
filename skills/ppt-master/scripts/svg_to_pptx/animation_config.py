@@ -107,8 +107,11 @@ def default_config_path(project_path: Path) -> Path:
 
 def load_animation_config(project_path: Path, config_path: str | None = None) -> dict[str, Any] | None:
     """Load optional animation config; return ``None`` when absent."""
-    path = Path(config_path) if config_path else default_config_path(project_path)
-    if not path.is_absolute():
+    if config_path:
+        path = Path(config_path)
+    else:
+        path = default_config_path(project_path)
+    if config_path and not path.is_absolute():
         path = project_path / path
     if not path.exists():
         return None
@@ -220,8 +223,11 @@ def write_scaffold(
     force: bool = False,
 ) -> Path:
     """Write ``animations.json`` scaffold and return its path."""
-    path = Path(output_path) if output_path else default_config_path(project_path)
-    if not path.is_absolute():
+    if output_path:
+        path = Path(output_path)
+    else:
+        path = default_config_path(project_path)
+    if output_path and not path.is_absolute():
         path = project_path / path
     if path.exists() and not force:
         raise FileExistsError(f'Animation config already exists: {path}')
