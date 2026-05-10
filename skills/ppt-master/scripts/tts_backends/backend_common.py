@@ -62,7 +62,9 @@ def download_audio(url: str, output_path: Path) -> None:
 
 def extension_from_format(audio_format: str) -> str:
     normalized = audio_format.strip().lower()
-    if normalized in {"mp3", "wav", "flac", "pcm", "opus"}:
+    if normalized in {"mp3", "wav"}:
         return f".{normalized}"
-    raise RuntimeError(f"Unsupported audio format for PPT narration: {audio_format}")
-
+    raise RuntimeError(
+        f"Unsupported audio format for PPT narration: {audio_format}. "
+        "Use mp3 or wav, or transcode provider output before embedding."
+    )

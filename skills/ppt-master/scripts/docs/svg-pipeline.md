@@ -60,12 +60,16 @@ Behavior:
 - Recorded narration is opt-in:
   - `notes_to_audio.py` uses `edge-tts` by default, or a configured cloud TTS provider (`elevenlabs`, `minimax`, `qwen`, `cosyvoice`), and generates one audio file per slide into `audio/`
   - Narration text is read strictly from the matching `notes/*.md` file; the script only skips Markdown heading lines (`# ...`) and does not summarize, rewrite, or filter delivery notes
+  - `--recorded-narration audio` prepares PowerPoint's "recorded timings and narrations": every slide must have matching `m4a` / `mp3` / `wav` audio, `ffprobe` must read every duration, and `--animation-trigger on-click` is rejected
   - `--recorded-narration audio` keeps speaker notes, embeds each matching audio file, and writes slide auto-advance timings from audio duration
-  - This is intended for PowerPoint's video export option "Use recorded timings and narrations"
+  - `--narration-audio-dir audio` is the lower-level embedding path: it embeds whatever files match and allows partial audio coverage
+  - This is intended for direct PowerPoint video export with "Use recorded timings and narrations"
+  - Long-audio import and automatic long-audio splitting are not supported; keep narration assets page-level
   - Voice choices can be listed with `python3 scripts/notes_to_audio.py --list-common-voices`, `python3 scripts/notes_to_audio.py --list-voices --locale zh-CN`, or provider-specific `--provider <name> --list-voices`
 - Page transitions are controlled by `-t/--transition`; per-element entrance animations are controlled by `-a/--animation`
 - Per-element animation applies to top-level SVG `<g id="...">` groups in z-order; aim for 3–8 content groups per slide. Page chrome (background / header / footer / decorations / watermark / page number, by id token) is skipped automatically
 - Start mode is set by `--animation-trigger`, mirroring PowerPoint's Start dropdown: `after-previous` (default, cascade with `--animation-stagger` spacing on slide entry), `on-click` (presenter-paced), `with-previous` (all together on slide entry)
+- `on-click` is for live presentations only; recorded narration rejects it because the tool does not generate object-level click timings
 - Flat SVG roots without top-level groups fall back to at most 8 visible primitives; beyond that, animation is skipped on the slide
 - `mixed` is deterministic: the first animated group on each slide uses `fade`, then later groups cycle through a curated visible-effect pool across the whole deck; `random` samples from that same pool
 - `--animation-duration` controls per-element entrance length (default `0.4`); `--animation-stagger` adds gap between elements in `after-previous` mode (default `0.5`)

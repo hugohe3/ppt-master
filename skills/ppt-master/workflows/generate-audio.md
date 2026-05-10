@@ -4,7 +4,7 @@ description: Generate per-slide narration audio with AI-recommended voice select
 
 # Generate Audio Workflow
 
-> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice, then optionally re-exports the PPTX with the audio embedded and per-slide auto-advance timings.
+> Standalone post-export step. Run when the user asks for "生成音频" / "录制旁白" / "narrated PPT" / "video export with voice", or proactively offer it after a deck is exported. Produces one audio file per slide via `edge-tts` by default, or a cloud TTS provider (`elevenlabs` / `minimax` / `qwen` / `cosyvoice`) when the user chooses high-quality narration or a cloned voice, then optionally re-exports a video-ready PPTX with audio embedded and per-slide auto-advance timings.
 
 This workflow is **independent**: it reads `notes/*.md` and queries the selected TTS voice catalog — no upstream conversation context required. Safe to invoke in a fresh session.
 
@@ -12,6 +12,9 @@ This workflow is **independent**: it reads `notes/*.md` and queries the selected
 
 - `notes/total.md` exists and has been split into per-page files at `notes/*.md` (post-processing Step 7.1 done).
 - Default mode: `edge-tts` is installed (`python3 -m pip install edge-tts`).
+- The workflow is page-level only: one notes file becomes one audio file. Do not use a single long audio track or attempt automatic long-audio splitting.
+- PPT narration assets must be PowerPoint-reliable audio: `m4a` (AAC), `mp3`, or `wav`. The built-in TTS path defaults to `mp3`; provider formats such as `pcm`, `opus`, or `flac` must be transcoded before embedding.
+- PowerPoint recorded narration export requires `ffprobe` so slide timings can be written from actual audio duration.
 - High-quality cloud mode: provider API key is set before use:
   - ElevenLabs: `ELEVENLABS_API_KEY`
   - MiniMax: `MINIMAX_API_KEY`
@@ -145,6 +148,8 @@ python3 skills/ppt-master/scripts/svg_to_pptx.py <project_path> \
 ```
 
 If `notes_to_audio.py` errors with a missing dependency or missing provider API key, fix the prerequisite and re-run — do NOT swallow the error.
+
+`--recorded-narration audio` prepares PowerPoint's recorded timings and narrations: every slide must have a matching supported audio file, every duration must be readable by `ffprobe`, and object animations must not use `--animation-trigger on-click`. Use `after-previous` or `with-previous` for narrated/video export.
 
 ---
 

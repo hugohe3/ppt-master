@@ -149,8 +149,8 @@ def main() -> int:
                         help="MiniMax T2A model ID (default: speech-2.8-hd)")
     parser.add_argument("--minimax-base-url", default=None,
                         help="MiniMax T2A endpoint or base URL")
-    parser.add_argument("--minimax-output-format", default="mp3", choices=["mp3", "wav", "flac", "pcm"],
-                        help="MiniMax audio format (default: mp3)")
+    parser.add_argument("--minimax-output-format", default="mp3", choices=["mp3", "wav"],
+                        help="MiniMax audio format for PPT narration (default: mp3)")
     parser.add_argument("--minimax-sample-rate", type=int, default=32000,
                         help="MiniMax sample rate (default: 32000)")
     parser.add_argument("--minimax-bitrate", type=int, default=128000,
@@ -183,8 +183,8 @@ def main() -> int:
                         help="CosyVoice model ID (default: cosyvoice-v3-flash)")
     parser.add_argument("--cosyvoice-base-url", default=None,
                         help="CosyVoice SpeechSynthesizer endpoint or base URL")
-    parser.add_argument("--cosyvoice-output-format", default="mp3", choices=["mp3", "wav", "pcm", "opus"],
-                        help="CosyVoice audio format (default: mp3)")
+    parser.add_argument("--cosyvoice-output-format", default="mp3", choices=["mp3", "wav"],
+                        help="CosyVoice audio format for PPT narration (default: mp3)")
     parser.add_argument("--cosyvoice-sample-rate", type=int, default=24000,
                         help="CosyVoice sample rate (default: 24000)")
     parser.add_argument("--cosyvoice-volume", type=int, default=None,

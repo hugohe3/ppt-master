@@ -11,7 +11,7 @@ from pathlib import Path
 from .pptx_dimensions import CANVAS_FORMATS, get_project_info
 from .pptx_discovery import find_svg_files, find_notes_files
 from .pptx_builder import create_pptx_with_native_svg
-from .pptx_narration import find_narration_files
+from .pptx_narration import NARRATION_EXTENSIONS, find_narration_files, probe_audio_duration
 from .pptx_slide_xml import TRANSITIONS
 from .animation_config import load_animation_config, validate_animation_config
 
@@ -19,6 +19,39 @@ try:
     from pptx_animations import ANIMATIONS as _ANIMATIONS
 except ImportError:
     _ANIMATIONS = {}
+
+
+def _as_dict(value: object) -> dict:
+    return value if isinstance(value, dict) else {}
+
+
+def _recorded_narration_on_click_slides(
+    ref_files: list[Path],
+    animation_config: dict | None,
+    animation: str | None,
+    animation_trigger: str,
+    animation_cli_overrides: dict[str, bool],
+) -> list[str]:
+    """Return slides whose effective recorded-video animation trigger is on-click."""
+    slides_cfg = _as_dict(_as_dict(animation_config).get('slides'))
+    blocked: list[str] = []
+    for svg_path in ref_files:
+        slide_cfg = _as_dict(slides_cfg.get(svg_path.stem))
+        anim_cfg = _as_dict(slide_cfg.get('animation'))
+
+        slide_animation = animation
+        if not animation_cli_overrides.get('animation') and 'effect' in anim_cfg:
+            cfg_effect = str(anim_cfg.get('effect'))
+            slide_animation = None if cfg_effect == 'none' else cfg_effect
+        if slide_animation is None:
+            continue
+
+        slide_trigger = animation_trigger
+        if not animation_cli_overrides.get('animation_trigger') and anim_cfg.get('trigger'):
+            slide_trigger = str(anim_cfg.get('trigger'))
+        if slide_trigger == 'on-click':
+            blocked.append(svg_path.stem)
+    return blocked
 
 
 def main() -> None:
@@ -85,9 +118,15 @@ Speaker notes (enabled by default):
 Recorded narration:
     %(prog)s examples/ppt169_demo -s final --recorded-narration audio
     - Keeps speaker notes when enabled
+    - Prepares PowerPoint recorded timings and narrations
+    - Requires one m4a/mp3/wav file per slide
     - Embeds per-slide audio matched by SVG filename / slide number
     - Sets slide auto-advance from audio duration so video export can use
       "recorded timings and narrations"
+    - Rejects on-click object animations; use after-previous or with-previous
+    %(prog)s examples/ppt169_demo --narration-audio-dir audio
+    - Lower-level audio embedding: embeds matched files but allows partial matches
+    - Use only when you do not need a complete recorded-timings export
 ''',
     )
 
@@ -153,11 +192,11 @@ Recorded narration:
     parser.add_argument('--no-notes', action='store_true',
                         help='Disable speaker notes embedding (enabled by default)')
     parser.add_argument('--narration-audio-dir', type=str, default=None,
-                        help='Embed per-slide narration audio from this directory')
+                        help='Low-level audio embedding from this directory; allows partial matches')
     parser.add_argument('--use-narration-timings', action='store_true',
                         help='Set slide auto-advance timings from narration audio durations')
     parser.add_argument('--recorded-narration', type=str, default=None,
-                        help='Shortcut: embed narration audio and use its durations as recorded timings')
+                        help='Prepare PowerPoint recorded timings and narrations from a complete audio directory')
     parser.add_argument('--narration-padding', type=float, default=0.5,
                         help='Seconds to add after each narration before auto-advance (default: 0.5)')
 
@@ -251,10 +290,53 @@ Recorded narration:
         narration_audio_dir = Path(narration_audio_dir_arg)
         if not narration_audio_dir.is_absolute():
             narration_audio_dir = project_path / narration_audio_dir
+        if args.recorded_narration and not narration_audio_dir.is_dir():
+            print(
+                f"Error: Recorded narration directory does not exist: {narration_audio_dir}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         narration_audio = find_narration_files(narration_audio_dir, ref_files)
         if verbose:
             print(f"  Narration audio directory: {narration_audio_dir}")
             print(f"  Narration audio matched: {len(narration_audio)}/{len(ref_files)} slide(s)")
+        if args.recorded_narration:
+            missing = [path.stem for path in ref_files if path.stem not in narration_audio]
+            if missing:
+                print(
+                    "Error: Recorded narration requires one supported audio file per slide. "
+                    f"Matched {len(narration_audio)}/{len(ref_files)} slide(s). "
+                    f"Supported extensions: {', '.join(NARRATION_EXTENSIONS)}",
+                    file=sys.stderr,
+                )
+                for stem in missing[:20]:
+                    print(f"  Missing audio for: {stem}", file=sys.stderr)
+                if len(missing) > 20:
+                    print(f"  ... and {len(missing) - 20} more", file=sys.stderr)
+                sys.exit(1)
+            unreadable = [
+                f"{stem}: {audio_path}"
+                for stem, audio_path in sorted(narration_audio.items())
+                if probe_audio_duration(audio_path) is None
+            ]
+            if unreadable:
+                print(
+                    "Error: Recorded narration requires readable audio durations. "
+                    "Install ffprobe/ffmpeg or replace the listed audio files.",
+                    file=sys.stderr,
+                )
+                for item in unreadable[:20]:
+                    print(f"  {item}", file=sys.stderr)
+                if len(unreadable) > 20:
+                    print(f"  ... and {len(unreadable) - 20} more", file=sys.stderr)
+                sys.exit(1)
+        elif narration_audio_dir_arg and verbose:
+            missing = [path.stem for path in ref_files if path.stem not in narration_audio]
+            if missing:
+                print(
+                    f"  [warn] Narration audio matched {len(narration_audio)}/{len(ref_files)} slide(s); "
+                    "unmatched slides will export without audio."
+                )
 
     if args.animation_config:
         config_path = Path(args.animation_config)
@@ -324,6 +406,26 @@ Recorded narration:
         'animation_stagger': args.animation_stagger is not None,
         'animation_trigger': args.animation_trigger is not None,
     }
+
+    if args.recorded_narration and gen_native:
+        on_click_slides = _recorded_narration_on_click_slides(
+            ref_files,
+            animation_config,
+            animation,
+            animation_trigger,
+            animation_cli_overrides,
+        )
+        if on_click_slides:
+            print(
+                "Error: --recorded-narration cannot be used with on-click object animations. "
+                "Use --animation-trigger after-previous or --animation-trigger with-previous.",
+                file=sys.stderr,
+            )
+            for slide in on_click_slides[:20]:
+                print(f"  on-click trigger: {slide}", file=sys.stderr)
+            if len(on_click_slides) > 20:
+                print(f"  ... and {len(on_click_slides) - 20} more", file=sys.stderr)
+            sys.exit(1)
 
     # svg_files is per-product (native vs legacy may now read different
     # directories); everything else is shared.

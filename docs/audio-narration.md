@@ -5,7 +5,7 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 ## What you get
 
 - One audio file per slide under `<project_path>/audio/`, named to match the SVG (`01_cover.mp3`, `02_market_landscape.mp3`, …).
-- Optional re-export: a new PPTX in `exports/` with each MP3 embedded into the matching slide and slide auto-advance timings set to the audio length, so kiosk/auto-play and video export work without manual timing.
+- Optional re-export: a new PPTX in `exports/` with each `m4a` / `mp3` / `wav` file embedded into the matching slide and slide auto-advance timings set to the audio length, so kiosk/auto-play and video export work without manual timing.
 - The original speaker notes are preserved.
 
 ## How it works
@@ -13,9 +13,16 @@ PPT Master can turn the speaker notes into per-slide narration via [`edge-tts`](
 1. **Speaker notes are written as pure spoken narration.** PPT Master's notes spec deliberately produces TTS-friendly prose — no bracketed stage markers, no `Key points:` / `Duration:` meta-lines — so what is read aloud is exactly what's on the page.
 2. **AI picks the voice for you.** When you ask for narration, the AI checks the deck's primary language (`zh-CN` / `en-US` / `ja-JP` / `ko-KR` / …), pulls the selected provider's voice catalog, and recommends 3–6 candidates with a one-line tone description for each (e.g. "稳重男声，适合财报"). It also recommends a speaking rate or provider defaults based on notes density.
 3. **One question, one answer.** You are asked once — voice, rate, and "embed audio back into PPTX (yes/no)" — all with a recommended default. Reply "ok" to accept everything, or just call out the part you want to change.
-4. **Generation runs.** The script writes MP3s to `audio/`, then (if you kept embedding) re-exports the deck with audio attached.
+4. **Generation runs.** The script writes page-level audio to `audio/`, then (if you kept embedding) re-exports the deck with audio attached. Long-audio import and automatic long-audio splitting are not supported.
 
 The full step-by-step is in [`workflows/generate-audio.md`](../skills/ppt-master/workflows/generate-audio.md).
+
+## Two embedding paths
+
+| Command | Purpose |
+|---|---|
+| `--recorded-narration audio` | Prepare PowerPoint's recorded timings and narrations. Requires complete per-slide audio and writes page auto-advance timings. Use this for narrated/video export. |
+| `--narration-audio-dir audio` | Lower-level audio embedding. Embeds matched files and allows partial coverage. Use this for testing or manual PowerPoint finishing. |
 
 ## Triggering it
 
@@ -149,7 +156,7 @@ Cloud TTS providers do not require extra Python packages; they use HTTPS directl
 
 ## Export as video
 
-Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video natively — no third-party tool needed. The embedded audio plays as each slide's narration, and the per-slide auto-advance timings (set from audio length when you let the AI re-export with `--recorded-narration audio`) drive the video's pacing.
+Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video natively — no third-party tool needed. The embedded audio plays as each slide's narration, and the per-slide auto-advance timings (set from audio length when you let the AI re-export with `--recorded-narration audio`) drive the video's pacing. `--recorded-narration` rejects `on-click` object animation because it does not generate object-level click timings.
 
 **PowerPoint (Windows / Mac, Office 2016+)**:
 
@@ -163,6 +170,6 @@ Once the narrated PPTX is in `exports/`, PowerPoint exports it as a video native
 **Tips**:
 
 - **No mic, no recording session needed** — the audio is generated, not recorded, so re-runs are deterministic.
-- **Animations are preserved** — page transitions and per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
+- **Animations are preserved** — page transitions and click-free per-element entrance animations from PPT Master are real OOXML and play correctly in the exported video. See [Animations & Transitions](../skills/ppt-master/references/animations.md).
 - **Want to tweak just one slide's audio?** Edit `notes/<page>.md`, re-run `notes_to_audio.py` and the embedding step, then re-export the video — total turnaround is usually under a minute per slide.
 - **File size**: a 20-page deck at Full HD typically lands at 30–80 MB depending on imagery. Drop to HD if you need a smaller file for sharing.

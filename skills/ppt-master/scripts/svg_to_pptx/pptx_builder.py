@@ -633,13 +633,16 @@ def create_pptx_with_native_svg(
 
                     if use_narration_timings:
                         duration = probe_audio_duration(audio_path)
-                        if duration:
-                            slide_xml = apply_recorded_timing(
-                                slide_xml,
-                                advance_after=duration + narration_padding,
-                                transition_duration=slide_transition_duration,
-                                transition_effect=slide_transition or 'fade',
+                        if duration is None:
+                            raise RuntimeError(
+                                f"Unable to read narration duration with ffprobe: {audio_path}"
                             )
+                        slide_xml = apply_recorded_timing(
+                            slide_xml,
+                            advance_after=duration + narration_padding,
+                            transition_duration=slide_transition_duration,
+                            transition_effect=slide_transition or 'fade',
+                        )
                     slide_xml_path.write_text(slide_xml, encoding='utf-8')
                     narration_slides_created.add(slide_num)
 

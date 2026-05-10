@@ -15,11 +15,8 @@ IMAGE_REL_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relation
 
 AUDIO_CONTENT_TYPES = {
     ".m4a": "audio/mp4",
-    ".mp4": "audio/mp4",
     ".mp3": "audio/mpeg",
     ".wav": "audio/wav",
-    ".aif": "audio/aiff",
-    ".aiff": "audio/aiff",
 }
 
 NARRATION_EXTENSIONS = tuple(AUDIO_CONTENT_TYPES.keys())

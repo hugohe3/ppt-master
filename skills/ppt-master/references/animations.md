@@ -81,7 +81,7 @@ Flags:
 
 Enabled by default (`mixed` effect + `after-previous` trigger). Three Start modes are available — these mirror PowerPoint's animation-pane "Start" dropdown:
 
-- **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals.
+- **`on-click`** — entering a slide → first click reveals the first semantic group; each subsequent click reveals the next group in z-order. Suits live presentations where the speaker paces reveals. Forbidden with `--recorded-narration` because video-ready exports need click-free playback.
 - **`with-previous`** — all groups start together on slide entry, playing their entrance animation in parallel. Stagger ignored.
 - **`after-previous`** (default) — first group fires on slide entry, subsequent groups cascade after the previous one finishes, with `--animation-stagger` extra spacing. Suits kiosk playback, recorded walkthroughs, or anyone who wants visual flow without clicking.
 
@@ -120,6 +120,8 @@ Flags:
 - `--animation-duration` — per-element entrance seconds, default `0.4`.
 - `--animation-stagger` — gap between elements in `after-previous` mode (seconds, default `0.5`). Ignored otherwise.
 - `--animation-config` — sidecar path. Default: `<project>/animations.json` when present.
+
+> Note: `--recorded-narration` rejects `on-click`; use `after-previous` or `with-previous` for video-ready narrated decks.
 
 ## Anchor Logic — Top-Level `<g id="...">`
 
