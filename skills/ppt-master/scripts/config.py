@@ -80,6 +80,31 @@ def strip_env_quotes(value: str) -> str:
     return value
 
 
+def strip_inline_env_comment(value: str) -> str:
+    """Strip an unquoted inline ``#`` comment from a .env value.
+
+    Matches standard dotenv behavior: a ``#`` outside surrounding quotes
+    starts a comment and is dropped along with the rest of the line. To keep
+    a literal ``#`` in the value, wrap it in single or double quotes.
+    """
+    stripped = value.lstrip()
+    if stripped.startswith(('"', "'")):
+        quote = stripped[0]
+        end = stripped.find(quote, 1)
+        if end != -1:
+            head = value[: len(value) - len(stripped) + end + 1]
+            tail = value[len(head):]
+            hash_pos = tail.find('#')
+            if hash_pos == -1:
+                return value
+            return head + tail[:hash_pos]
+        return value
+    hash_pos = value.find('#')
+    if hash_pos == -1:
+        return value
+    return value[:hash_pos]
+
+
 def load_prefixed_env_file(
     prefixes: tuple[str, ...],
     *,
@@ -123,7 +148,8 @@ def load_prefixed_env_file(
                     f"Unsupported key in {env_path}:{lineno}: {key}\n"
                     f"{deprecated_keys[key]}"
                 )
-            os.environ.setdefault(key, strip_env_quotes(value.strip()))
+            cleaned = strip_inline_env_comment(value).strip()
+            os.environ.setdefault(key, strip_env_quotes(cleaned))
 
     return env_path
 
