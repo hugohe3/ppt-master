@@ -914,7 +914,7 @@ def _build_text_fill_xml(
 
     alpha_xml = ''
     if opacity is not None and opacity < 1.0:
-        alpha_xml = f'<a:alpha val="{int(opacity * 100000)}"/>'
+        alpha_xml = f'<a:alphaMod val="{int(opacity * 100000)}"/>'
     return f'<a:solidFill><a:srgbClr val="{fill}">{alpha_xml}</a:srgbClr></a:solidFill>'
 
 
@@ -932,7 +932,7 @@ def _build_text_outline_xml(run: dict[str, Any]) -> str:
     stroke_opacity = run.get('stroke_opacity')
     alpha_xml = ''
     if stroke_opacity is not None and stroke_opacity < 1.0:
-        alpha_xml = f'<a:alpha val="{int(stroke_opacity * 100000)}"/>'
+        alpha_xml = f'<a:alphaMod val="{int(stroke_opacity * 100000)}"/>'
 
     return (
         f'<a:ln w="{px_to_emu(stroke_width)}">'
