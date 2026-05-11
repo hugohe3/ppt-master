@@ -44,11 +44,16 @@ Example `.env`:
 IMAGE_BACKEND=openai
 OPENAI_API_KEY=sk-xxx
 OPENAI_MODEL=gpt-image-2
-# OPENAI_BASE_URL=http://127.0.0.1:3000/v1   # optional proxy
-# OPENAI_OUTPUT_FORMAT=png                   # png / jpeg / webp
-# OPENAI_OUTPUT_COMPRESSION=80               # jpeg/webp only, 0-100
-# OPENAI_BACKGROUND=auto                     # gpt-image-2: auto / opaque
-# OPENAI_MODERATION=auto                     # auto / low
+# Optional proxy
+# OPENAI_BASE_URL=http://127.0.0.1:3000/v1
+# Allowed values: png / jpeg / webp
+# OPENAI_OUTPUT_FORMAT=png
+# jpeg/webp only, 0-100
+# OPENAI_OUTPUT_COMPRESSION=80
+# gpt-image-2: auto / opaque
+# OPENAI_BACKGROUND=auto
+# auto / low
+# OPENAI_MODERATION=auto
 ```
 
 Example process environment:
