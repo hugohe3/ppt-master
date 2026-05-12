@@ -185,9 +185,7 @@ def _normalize_office_media(filename: str, img_bytes: bytes) -> tuple[str, bytes
 
     converted = _convert_office_vector_to_png(filename, img_bytes)
     if converted is None:
-        raise MediaResolutionError(
-            f"Unsupported Office vector media {filename}; convert it to PNG/SVG in PowerPoint first"
-        )
+        return filename, img_bytes
     stem = Path(filename).stem
     return f"{stem}_preview.png", converted
 
