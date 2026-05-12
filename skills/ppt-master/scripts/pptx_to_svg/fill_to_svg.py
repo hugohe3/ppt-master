@@ -179,20 +179,73 @@ def _resolve_blip_fill(_elem, _palette, _prefix, _seq, _placeholder_hex) -> Fill
 
 
 def _resolve_patt_fill(elem: ET.Element, palette: ColorPalette | None,
-                       _prefix, _seq, placeholder_hex: str | None) -> FillResult:
-    """Pattern fills (<a:pattFill prst="..."/> with fg/bg colors). Approximate
-    with the foreground color so the shape isn't transparent. Future work:
-    emit a real <pattern> in defs.
-    """
+                       prefix, seq, placeholder_hex: str | None) -> FillResult:
+    """Pattern fills (<a:pattFill prst="..."/> with fg/bg colors)."""
     fg = elem.find("a:fgClr", NS)
-    color_elem = find_color_elem(fg)
-    hex_, alpha = resolve_color(color_elem, palette, placeholder_hex=placeholder_hex)
-    if hex_ is None:
+    bg = elem.find("a:bgClr", NS)
+    fg_hex, fg_alpha = resolve_color(
+        find_color_elem(fg), palette, placeholder_hex=placeholder_hex,
+    )
+    bg_hex, bg_alpha = resolve_color(
+        find_color_elem(bg), palette, placeholder_hex=placeholder_hex,
+    )
+    if fg_hex is None:
         return FillResult.inherit()
-    attrs: dict[str, str] = {"fill": hex_}
-    if alpha < 1.0:
-        attrs["fill-opacity"] = fmt_num(alpha, 4)
-    return FillResult(attrs=attrs)
+
+    prst = elem.attrib.get("prst", "")
+    if prst in {"ltUpDiag", "ltDnDiag"} and bg_hex is not None:
+        if _hex_distance(fg_hex, bg_hex) < 36:
+            attrs: dict[str, str] = {"fill": bg_hex}
+            if bg_alpha < 1.0:
+                attrs["fill-opacity"] = fmt_num(bg_alpha, 4)
+            return FillResult(attrs=attrs)
+
+    if prst not in {"ltUpDiag", "ltDnDiag"}:
+        attrs: dict[str, str] = {"fill": fg_hex}
+        if fg_alpha < 1.0:
+            attrs["fill-opacity"] = fmt_num(fg_alpha, 4)
+        return FillResult(attrs=attrs)
+
+    if seq is None:
+        seq = [0]
+    seq[0] += 1
+    pattern_id = f"{prefix}patt{seq[0]}"
+    bg_rect = ""
+    if bg_hex is not None:
+        bg_opacity = (
+            f' fill-opacity="{fmt_num(bg_alpha, 4)}"'
+            if bg_alpha < 1.0 else ""
+        )
+        bg_rect = f'<rect width="8" height="8" fill="{bg_hex}"{bg_opacity}/>'
+    fg_opacity = (
+        f' stroke-opacity="{fmt_num(fg_alpha, 4)}"'
+        if fg_alpha < 1.0 else ""
+    )
+    path_d = (
+        "M -2 8 L 8 -2 M 0 10 L 10 0"
+        if prst == "ltUpDiag"
+        else "M -2 0 L 8 10 M 0 -2 L 10 8"
+    )
+    pattern_xml = (
+        f'<pattern id="{pattern_id}" patternUnits="userSpaceOnUse" '
+        f'width="8" height="8">{bg_rect}'
+        f'<path d="{path_d}" stroke="{fg_hex}"{fg_opacity} '
+        f'stroke-width="1" fill="none"/></pattern>'
+    )
+    return FillResult(
+        attrs={"fill": f"url(#{pattern_id})"},
+        defs=[pattern_xml],
+    )
+
+
+def _hex_distance(a: str, b: str) -> float:
+    """Euclidean distance between two #RRGGBB colors."""
+    try:
+        ar, ag, ab = int(a[1:3], 16), int(a[3:5], 16), int(a[5:7], 16)
+        br, bg, bb = int(b[1:3], 16), int(b[3:5], 16), int(b[5:7], 16)
+    except (ValueError, IndexError):
+        return 255.0
+    return math.sqrt((ar - br) ** 2 + (ag - bg) ** 2 + (ab - bb) ** 2)
 
 
 # ---------------------------------------------------------------------------

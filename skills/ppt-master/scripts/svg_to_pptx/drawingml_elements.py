@@ -67,6 +67,30 @@ def _wrap_shape(
 _BEZIER_QUARTER_K = 0.5522847498
 
 
+def _build_preset_geom_from_meta(elem: ET.Element) -> str | None:
+    """Build native DrawingML preset geometry from SVG metadata."""
+    prst = elem.get('data-pptx-prst')
+    if prst != 'round2SameRect':
+        return None
+
+    def _adj_attr(name: str, default: int) -> int:
+        try:
+            return int(float(elem.get(name, str(default))))
+        except ValueError:
+            return default
+
+    adj1 = max(0, min(100000, _adj_attr('data-pptx-adj1', 16667)))
+    adj2 = max(0, min(100000, _adj_attr('data-pptx-adj2', 0)))
+    return (
+        '<a:prstGeom prst="round2SameRect">'
+        '<a:avLst>'
+        f'<a:gd name="adj1" fmla="val {adj1}"/>'
+        f'<a:gd name="adj2" fmla="val {adj2}"/>'
+        '</a:avLst>'
+        '</a:prstGeom>'
+    )
+
+
 def _build_round_rect_custgeom(w: float, h: float, rx: float, ry: float) -> str:
     """Build a DrawingML ``custGeom`` for a rectangle with elliptical corners.
 
@@ -617,7 +641,9 @@ def convert_path(elem: ET.Element, ctx: ConvertContext) -> ShapeResult | None:
     w_emu = px_to_emu(width)
     h_emu = px_to_emu(height)
 
-    geom = f'''<a:custGeom>
+    geom = _build_preset_geom_from_meta(elem)
+    if geom is None:
+        geom = f'''<a:custGeom>
 <a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>
 <a:rect l="l" t="t" r="r" b="b"/>
 <a:pathLst><a:path w="{w_emu}" h="{h_emu}">

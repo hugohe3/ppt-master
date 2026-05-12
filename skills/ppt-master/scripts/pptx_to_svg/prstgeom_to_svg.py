@@ -69,6 +69,25 @@ def _adj_value(sp_pr: ET.Element | None, adj_name: str = "adj",
     return default_pct
 
 
+def _adj_int_value(sp_pr: ET.Element | None, adj_name: str,
+                   default: int) -> int:
+    """Read an adjustment value as the original DrawingML integer."""
+    if sp_pr is None:
+        return default
+    av_lst = sp_pr.find(".//a:avLst", NS)
+    if av_lst is None:
+        return default
+    for gd in av_lst.findall("a:gd", NS):
+        if gd.attrib.get("name") == adj_name:
+            fmla = gd.attrib.get("fmla", "")
+            if fmla.startswith("val "):
+                try:
+                    return int(float(fmla[4:]))
+                except ValueError:
+                    return default
+    return default
+
+
 # ---------------------------------------------------------------------------
 # Dispatch
 # ---------------------------------------------------------------------------
@@ -157,6 +176,62 @@ def _round_2_diag_rect(xfrm: Xfrm, sp_pr) -> GeomResult:
         f"Q {fmt_num(x)} {fmt_num(y)} {fmt_num(x + r)} {fmt_num(y)} Z"
     )
     return GeomResult(tag="path", path_d=d)
+
+
+def _round_2_same_rect(xfrm: Xfrm, sp_pr) -> GeomResult:
+    """Rectangle with top and bottom same-side corner adjustments.
+
+    Mirrors the OOXML preset definition: adj1 controls the top pair of corners,
+    adj2 controls the bottom pair. A common title-tab setting is adj1=0 and
+    adj2=50000, yielding square top corners and a capsule-like bottom edge.
+    """
+    x, y, w, h = xfrm.x, xfrm.y, xfrm.w, xfrm.h
+    ss = min(w, h)
+    adj1 = _adj_int_value(sp_pr, "adj1", 16667)
+    adj2 = _adj_int_value(sp_pr, "adj2", 0)
+    tx = min(adj1 / 100000.0, 0.5) * ss
+    bx = min(adj2 / 100000.0, 0.5) * ss
+    parts = [
+        f"M {fmt_num(x + tx)} {fmt_num(y)}",
+        f"L {fmt_num(x + w - tx)} {fmt_num(y)}",
+    ]
+    if tx > 0:
+        parts.append(
+            f"A {fmt_num(tx)} {fmt_num(tx)} 0 0 1 "
+            f"{fmt_num(x + w)} {fmt_num(y + tx)}"
+        )
+    parts.append(f"L {fmt_num(x + w)} {fmt_num(y + h - bx)}")
+    if bx > 0:
+        parts.append(
+            f"A {fmt_num(bx)} {fmt_num(bx)} 0 0 1 "
+            f"{fmt_num(x + w - bx)} {fmt_num(y + h)}"
+        )
+    else:
+        parts.append(f"L {fmt_num(x + w)} {fmt_num(y + h)}")
+    parts.append(f"L {fmt_num(x + bx)} {fmt_num(y + h)}")
+    if bx > 0:
+        parts.append(
+            f"A {fmt_num(bx)} {fmt_num(bx)} 0 0 1 "
+            f"{fmt_num(x)} {fmt_num(y + h - bx)}"
+        )
+    else:
+        parts.append(f"L {fmt_num(x)} {fmt_num(y + h)}")
+    parts.append(f"L {fmt_num(x)} {fmt_num(y + tx)}")
+    if tx > 0:
+        parts.append(
+            f"A {fmt_num(tx)} {fmt_num(tx)} 0 0 1 "
+            f"{fmt_num(x + tx)} {fmt_num(y)}"
+        )
+    d = " ".join(parts) + " Z"
+    return GeomResult(
+        tag="path",
+        attrs={
+            "data-pptx-prst": "round2SameRect",
+            "data-pptx-adj1": str(adj1),
+            "data-pptx-adj2": str(adj2),
+        },
+        path_d=d,
+    )
 
 
 def _ellipse(xfrm: Xfrm, _sp_pr) -> GeomResult:
@@ -462,6 +537,7 @@ _PRESET_HANDLERS = {
     "rect": _rect,
     "roundRect": _round_rect,
     "round2DiagRect": _round_2_diag_rect,
+    "round2SameRect": _round_2_same_rect,
     "ellipse": _ellipse,
     "line": _line,
 

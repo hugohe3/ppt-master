@@ -101,13 +101,16 @@ def convert_txbody(
     palette: ColorPalette | None,
     *,
     theme_fonts: dict[str, str] | None = None,
+    default_fill: str = DEFAULT_FILL_HEX,
 ) -> TextResult:
     """Convert <p:txBody> under the given shape geometry to SVG <text>(s)."""
     if tx_body is None:
         return TextResult()
 
     body_pr = tx_body.find("a:bodyPr", NS)
-    paragraphs = _parse_paragraphs(tx_body, palette, theme_fonts or {})
+    paragraphs = _parse_paragraphs(
+        tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+    )
     if not paragraphs or not _has_visible_text(paragraphs):
         return TextResult()
 
@@ -159,13 +162,15 @@ def convert_txbody(
     return TextResult(svg="\n".join(text_blocks))
 
 
-def is_vertical_txbody(tx_body: ET.Element | None) -> bool:
+def is_vertical_txbody(tx_body: ET.Element | None, xfrm: Xfrm | None = None) -> bool:
     if tx_body is None:
         return False
     body_pr = tx_body.find("a:bodyPr", NS)
     if body_pr is None:
         return False
-    return body_pr.attrib.get("vert") in VERTICAL_TEXT_MODES
+    if body_pr.attrib.get("vert") in VERTICAL_TEXT_MODES:
+        return True
+    return _looks_like_auto_stacked_cjk(tx_body, body_pr, xfrm)
 
 
 def convert_vertical_txbody(
@@ -174,6 +179,7 @@ def convert_vertical_txbody(
     palette: ColorPalette | None,
     *,
     theme_fonts: dict[str, str] | None = None,
+    default_fill: str = DEFAULT_FILL_HEX,
 ) -> TextResult:
     """Render East Asian vertical text as upright stacked glyphs.
 
@@ -185,7 +191,9 @@ def convert_vertical_txbody(
     if tx_body is None:
         return TextResult()
 
-    paragraphs = _parse_paragraphs(tx_body, palette, theme_fonts or {})
+    paragraphs = _parse_paragraphs(
+        tx_body, palette, theme_fonts or {}, default_fill=default_fill,
+    )
     runs = [
         run
         for para in paragraphs
@@ -254,6 +262,42 @@ def _rotated_bbox(xfrm: Xfrm) -> tuple[float, float, float, float]:
     return xfrm.x, xfrm.y, xfrm.w, xfrm.h
 
 
+def _looks_like_auto_stacked_cjk(
+    tx_body: ET.Element,
+    body_pr: ET.Element,
+    xfrm: Xfrm | None,
+) -> bool:
+    """Detect PowerPoint's narrow-box CJK vertical layout without vert=eaVert."""
+    if xfrm is None or xfrm.w <= 0 or xfrm.h <= 0:
+        return False
+    if body_pr.attrib.get("wrap", "square") != "square":
+        return False
+    if xfrm.w > 64 or xfrm.h < xfrm.w * 2.4:
+        return False
+
+    text = _plain_text(tx_body)
+    chars = [ch for ch in text if not ch.isspace()]
+    if len(chars) < 3 or len(chars) > 16:
+        return False
+    cjk_count = sum(1 for ch in chars if _is_cjk(ch))
+    if cjk_count / len(chars) < 0.8:
+        return False
+
+    lins = _read_emu_attr(body_pr, "lIns", DEFAULT_INSETS_EMU["l"])
+    rins = _read_emu_attr(body_pr, "rIns", DEFAULT_INSETS_EMU["r"])
+    inner_w = max(xfrm.w - lins - rins, 1.0)
+    return inner_w <= DEFAULT_FONT_SIZE_PX
+
+
+def _plain_text(tx_body: ET.Element) -> str:
+    """Return concatenated literal text for layout heuristics."""
+    parts: list[str] = []
+    for text_elem in tx_body.findall(".//a:t", NS):
+        if text_elem.text:
+            parts.append(text_elem.text)
+    return "".join(parts)
+
+
 # ---------------------------------------------------------------------------
 # Parsing helpers
 # ---------------------------------------------------------------------------
@@ -275,13 +319,18 @@ def _parse_paragraphs(
     tx_body: ET.Element,
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
+    *,
+    default_fill: str = DEFAULT_FILL_HEX,
 ) -> list[TextParagraph]:
     """Walk <a:p> children producing TextParagraph objects."""
     paragraphs: list[TextParagraph] = []
     autonum_state: dict[int, int] = {}
 
     for p_elem in tx_body.findall("a:p", NS):
-        para = _parse_paragraph(p_elem, palette, theme_fonts, autonum_state)
+        para = _parse_paragraph(
+            p_elem, palette, theme_fonts, autonum_state,
+            default_fill=default_fill,
+        )
         paragraphs.append(para)
 
     return paragraphs
@@ -292,6 +341,8 @@ def _parse_paragraph(
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
     autonum_state: dict[int, int],
+    *,
+    default_fill: str = DEFAULT_FILL_HEX,
 ) -> TextParagraph:
     para = TextParagraph()
 
@@ -345,12 +396,15 @@ def _parse_paragraph(
             rpr = child.find("a:rPr", NS)
             text_elem = child.find("a:t", NS)
             text = text_elem.text or "" if text_elem is not None else ""
-            run = _build_run(text, rpr, end_rpr, palette, theme_fonts)
+            run = _build_run(
+                text, rpr, end_rpr, palette, theme_fonts,
+                default_fill=default_fill,
+            )
             para.runs.append(run)
         elif local == "br":
             para.runs.append(TextRun(
                 text="", font_size_px=DEFAULT_FONT_SIZE_PX,
-                font_family="sans-serif", fill=DEFAULT_FILL_HEX,
+                font_family="sans-serif", fill=default_fill,
                 is_break=True,
             ))
         elif local == "fld":
@@ -359,7 +413,10 @@ def _parse_paragraph(
             text_elem = child.find("a:t", NS)
             text = text_elem.text or "" if text_elem is not None else ""
             if text:
-                run = _build_run(text, rpr, end_rpr, palette, theme_fonts)
+                run = _build_run(
+                    text, rpr, end_rpr, palette, theme_fonts,
+                    default_fill=default_fill,
+                )
                 para.runs.append(run)
 
     return para
@@ -371,6 +428,8 @@ def _build_run(
     end_rpr: ET.Element | None,
     palette: ColorPalette | None,
     theme_fonts: dict[str, str],
+    *,
+    default_fill: str = DEFAULT_FILL_HEX,
 ) -> TextRun:
     """Resolve a single <a:r> run from its rPr (with endParaRPr as default)."""
     # font-size: rPr@sz; default 1800 (18pt = 24px)
@@ -397,7 +456,7 @@ def _build_run(
             pass
 
     # Color
-    fill = DEFAULT_FILL_HEX
+    fill = default_fill
     fill_opacity = 1.0
     color_source = None
     for src in (rpr, end_rpr):
