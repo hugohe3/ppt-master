@@ -30,6 +30,7 @@ The merged pipeline:
     for image in svg:
         if href starts with data: → skip (already inline)
         if href is unresolvable / external URL → skip
+        if href points to EMF/WMF → skip (native PPTX passthrough only)
         if missing preserveAspectRatio → just embed (do not assume meet)
         if align == none → just embed (no spatial transform)
         if mode == slice → crop in memory, embed cropped bytes
@@ -73,6 +74,7 @@ _PIL_FORMAT_BY_MIME = {
     'image/gif': 'GIF',
     'image/webp': 'WEBP',
 }
+_OFFICE_VECTOR_EXTENSIONS = {'.emf', '.wmf'}
 
 
 def _parse_float(val: str | None, default: float = 0.0) -> float:
@@ -245,6 +247,11 @@ def _process_one_image(
     except OSError as exc:
         return False, f'read failed: {exc}'
 
+    if img_path.suffix.lower() in _OFFICE_VECTOR_EXTENSIONS:
+        if verbose:
+            print(f'   [INFO] {img_path.name}: Office vector left external for native PPTX passthrough')
+        return False, None
+
     img = _load_pil_image(img_path)
     if img is None:
         return False, 'PIL open failed'
@@ -318,6 +325,30 @@ def _process_one_image(
         suffix = ' (cropped)' if transformed else ''
         print(f'   [OK] {img_path.name}{suffix}')
     return True, None
+
+
+def count_office_vector_refs_in_svg(svg_path: str | Path) -> int:
+    """Count local EMF/WMF image refs that the embed pass intentionally skips."""
+    svg_path = Path(svg_path)
+    svg_dir = svg_path.parent.resolve()
+    try:
+        tree = ET.parse(svg_path)
+    except ET.ParseError:
+        return 0
+    count = 0
+    seen: set[int] = set()
+    for image in _iter_image_elements(tree.getroot()):
+        ident = id(image)
+        if ident in seen:
+            continue
+        seen.add(ident)
+        href = _get_href(image)
+        if not href or href.startswith('data:'):
+            continue
+        img_path = _resolve_image_path(href, svg_dir)
+        if img_path and img_path.suffix.lower() in _OFFICE_VECTOR_EXTENSIONS:
+            count += 1
+    return count
 
 
 def align_and_embed_images_in_svg(

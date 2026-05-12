@@ -99,8 +99,10 @@ _IMAGE_CONTENT_TYPES = {
     'webp': 'image/webp',
     'svg': 'image/svg+xml',
     'bmp': 'image/bmp',
+    'emf': 'image/x-emf',
     'tif': 'image/tiff',
     'tiff': 'image/tiff',
+    'wmf': 'image/x-wmf',
 }
 
 

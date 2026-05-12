@@ -22,6 +22,7 @@ Output:
 """
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -61,6 +62,93 @@ MIN_TEXT_HEIGHT = 150
 MIN_TEXT_WIDTH = 280
 
 ImageAnalysis = dict[str, str | float | int]
+
+
+def _load_image_manifest(images_dir: str) -> dict[str, dict]:
+    """Load optional DOCX image metadata keyed by generated filename."""
+    manifest_path = Path(images_dir) / "image_manifest.json"
+    if not manifest_path.is_file():
+        return {}
+    try:
+        data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"[WARN] Cannot read image manifest: {exc}")
+        return {}
+    if not isinstance(data, list):
+        return {}
+
+    manifest: dict[str, dict] = {}
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        filename = item.get("filename")
+        if isinstance(filename, str):
+            manifest[filename] = item
+    return manifest
+
+
+def _manifest_ratio(meta: dict | None) -> float | None:
+    """Return a positive display ratio from manifest metadata."""
+    if not meta:
+        return None
+    value = meta.get("display_ratio")
+    if not isinstance(value, (int, float)):
+        return None
+    ratio = float(value)
+    return ratio if ratio > 0 else None
+
+
+def _manifest_display_size(meta: dict, ratio: float) -> tuple[int, int]:
+    """Return a display-sized stand-in for vector media dimensions."""
+    width_in = meta.get("display_width_in")
+    height_in = meta.get("display_height_in")
+    if isinstance(width_in, (int, float)) and isinstance(height_in, (int, float)):
+        width = max(1, int(round(float(width_in) * 96)))
+        height = max(1, int(round(float(height_in) * 96)))
+        return width, height
+
+    width_emu = meta.get("display_width_emu")
+    height_emu = meta.get("display_height_emu")
+    if isinstance(width_emu, int) and isinstance(height_emu, int):
+        width = max(1, int(round(width_emu / 914400 * 96)))
+        height = max(1, int(round(height_emu / 914400 * 96)))
+        return width, height
+
+    width = 960
+    height = max(1, int(round(width / ratio)))
+    return width, height
+
+
+def _result_from_manifest(
+    filename: str,
+    filepath: str,
+    meta: dict,
+) -> ImageAnalysis | None:
+    """Build an analysis row for vector media Pillow cannot decode."""
+    ratio = _manifest_ratio(meta)
+    if ratio is None:
+        return None
+    width, height = _manifest_display_size(meta, ratio)
+    result: ImageAnalysis = {
+        'filename': filename,
+        'width': width,
+        'height': height,
+        'aspect_ratio': ratio,
+        'pixel_aspect_ratio': meta.get('pixel_ratio') or ratio,
+        'ratio_source': 'manifest',
+        'layout_hint': classify_ratio(ratio),
+        'filesize_kb': os.path.getsize(filepath) / 1024,
+    }
+    source_ext = meta.get("source_ext")
+    original_filename = meta.get("original_filename")
+    if isinstance(source_ext, str):
+        result["source_ext"] = source_ext
+    if isinstance(original_filename, str):
+        result["original_filename"] = original_filename
+    result["asset_kind"] = meta.get("asset_kind", "bitmap")
+    result["svg_renderable"] = meta.get("svg_renderable", True)
+    result["pptx_native_supported"] = meta.get("pptx_native_supported", True)
+    return result
 
 
 def classify_ratio(aspect_ratio: float) -> str:
@@ -164,29 +252,62 @@ def analyze_images(images_dir: str) -> list[ImageAnalysis]:
     """
 
     results: list[ImageAnalysis] = []
+    manifest = _load_image_manifest(images_dir)
+    seen_filenames: set[str] = set()
 
     # Iterate through all files in the directory
     for filename in sorted(os.listdir(images_dir)):
         filepath = os.path.join(images_dir, filename)
+        meta = manifest.get(filename)
 
         # Check if it is an image file
         if os.path.isfile(filepath) and Path(filename).suffix.lower() in IMAGE_EXTENSIONS:
             try:
                 with Image.open(filepath) as img:
                     width, height = img.size
-                    aspect_ratio = width / height
+                    pixel_ratio = width / height
+                    aspect_ratio = _manifest_ratio(meta) or pixel_ratio
                     layout_hint = classify_ratio(aspect_ratio)
 
-                    results.append({
+                    result: ImageAnalysis = {
                         'filename': filename,
                         'width': width,
                         'height': height,
                         'aspect_ratio': aspect_ratio,
+                        'pixel_aspect_ratio': pixel_ratio,
+                        'ratio_source': 'manifest' if meta else 'pixel',
                         'layout_hint': layout_hint,
                         'filesize_kb': os.path.getsize(filepath) / 1024
-                    })
+                    }
+                    if meta:
+                        source_ext = meta.get("source_ext")
+                        original_filename = meta.get("original_filename")
+                        if isinstance(source_ext, str):
+                            result["source_ext"] = source_ext
+                        if isinstance(original_filename, str):
+                            result["original_filename"] = original_filename
+                        result["asset_kind"] = meta.get("asset_kind", "bitmap")
+                        result["svg_renderable"] = meta.get("svg_renderable", True)
+                        result["pptx_native_supported"] = meta.get("pptx_native_supported", True)
+                    results.append(result)
+                    seen_filenames.add(filename)
             except Exception as e:
                 print(f"[WARN] Cannot read {filename}: {e}")
+        elif os.path.isfile(filepath) and meta:
+            result = _result_from_manifest(filename, filepath, meta)
+            if result:
+                results.append(result)
+                seen_filenames.add(filename)
+
+    for filename, meta in sorted(manifest.items()):
+        if filename in seen_filenames:
+            continue
+        filepath = os.path.join(images_dir, filename)
+        if not os.path.isfile(filepath):
+            continue
+        result = _result_from_manifest(filename, filepath, meta)
+        if result:
+            results.append(result)
 
     return results
 
@@ -224,13 +345,14 @@ def print_results(results: list[ImageAnalysis]) -> None:
         print("\nNote: 'Img (SxS)' shows the image area *if* the Strategist chooses the")
         print("side-by-side intent for this image. Decide narrative intent first — see")
         print("references/strategist.md §h. Hero / atmosphere / accent intents ignore it.\n")
-        print(f"{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Category':<20} {'Img (SxS)':<14} {'Filename'}")
+        print(f"{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Size':<10} {'Category':<20} {'Img (SxS)':<14} {'Filename'}")
     else:
-        print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Size':<10} {'Category':<20} {'Filename'}")
+        print(f"\n{'No.':<4} {'Width':<7} {'Height':<7} {'Ratio':<7} {'Source':<8} {'Size':<10} {'Category':<20} {'Filename'}")
     print("-" * REPORT_WIDTH)
 
     for i, img in enumerate(results, 1):
-        base = f"{i:<4} {img['width']:<7} {img['height']:<7} {img['aspect_ratio']:<7.2f} {img['filesize_kb']:<10.1f}KB {img['layout_hint']:<20}"
+        ratio_source = str(img.get('ratio_source', 'pixel'))
+        base = f"{i:<4} {img['width']:<7} {img['height']:<7} {img['aspect_ratio']:<7.2f} {ratio_source:<8} {img['filesize_kb']:<10.1f}KB {img['layout_hint']:<20}"
         if has_layout:
             img_area = f"{img['image_w']}x{img['image_h']}"
             print(f"{base} {img_area:<14} {img['filename'][:35]}")
@@ -273,6 +395,19 @@ def print_results(results: list[ImageAnalysis]) -> None:
             if len(imgs) > 5:
                 print(f"  ... and {len(imgs) - 5} more")
 
+    native_only = [
+        img for img in results
+        if img.get('asset_kind') == 'office_vector'
+        and not img.get('svg_renderable', True)
+    ]
+    if native_only:
+        print("\nOffice vector assets for PPTX native passthrough:")
+        for img in native_only[:10]:
+            original = img.get('original_filename', img['filename'])
+            print(f"  - {original} (display ratio {img['aspect_ratio']:.2f}; SVG preview not supported)")
+        if len(native_only) > 10:
+            print(f"  ... and {len(native_only) - 10} more")
+
 
 def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
     """Print a Markdown-ready image inventory section."""
@@ -299,13 +434,20 @@ def generate_markdown(results: list[ImageAnalysis], canvas_key: str) -> None:
 
     for img in results:
         ratio_str = f"{img['aspect_ratio']:.2f}"
+        asset_kind = str(img.get('asset_kind', 'bitmap'))
+        image_type = "Office Vector" if asset_kind == "office_vector" else ""
+        status = (
+            "PPTX Native Only"
+            if asset_kind == "office_vector" and not img.get('svg_renderable', True)
+            else "Existing"
+        )
 
         if has_layout:
             img_area = f"{img['image_w']}x{img['image_h']}"
             text_area = f"{img['text_w']}x{img['text_h']}"
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | {img_area} | {text_area} | (to be filled) | (to be filled) | | Existing | - |")
+            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | {img_area} | {text_area} | (to be filled) | (to be filled) | {image_type} | {status} | - |")
         else:
-            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | (to be filled) | (to be filled) | | Existing | - |")
+            print(f"| {img['filename']} | {img['width']}x{img['height']} | {ratio_str} | {img['layout_hint']} | (to be filled) | (to be filled) | {image_type} | {status} | - |")
 
     print("\n" + "=" * REPORT_WIDTH + "\n")
 
@@ -319,13 +461,13 @@ def save_csv(results: list[ImageAnalysis], csv_path: str) -> None:
     # does not prescribe a layout.
     with open(csv_path, 'w', encoding='utf-8') as f:
         if has_layout:
-            f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Category,ImageArea_SxS,TextArea_SxS\n")
+            f.write("No,Filename,Width,Height,AspectRatio,PixelAspectRatio,RatioSource,AssetKind,SvgRenderable,PptxNativeSupported,SizeKB,Category,ImageArea_SxS,TextArea_SxS\n")
             for i, img in enumerate(results, 1):
-                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img['filesize_kb']:.1f},{img['layout_hint']},{img['image_w']}x{img['image_h']},{img['text_w']}x{img['text_h']}\n")
+                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img.get('pixel_aspect_ratio', img['aspect_ratio']):.2f},{img.get('ratio_source', 'pixel')},{img.get('asset_kind', 'bitmap')},{img.get('svg_renderable', True)},{img.get('pptx_native_supported', True)},{img['filesize_kb']:.1f},{img['layout_hint']},{img['image_w']}x{img['image_h']},{img['text_w']}x{img['text_h']}\n")
         else:
-            f.write("No,Filename,Width,Height,AspectRatio,SizeKB,Category\n")
+            f.write("No,Filename,Width,Height,AspectRatio,PixelAspectRatio,RatioSource,AssetKind,SvgRenderable,PptxNativeSupported,SizeKB,Category\n")
             for i, img in enumerate(results, 1):
-                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img['filesize_kb']:.1f},{img['layout_hint']}\n")
+                f.write(f"{i},{img['filename']},{img['width']},{img['height']},{img['aspect_ratio']:.2f},{img.get('pixel_aspect_ratio', img['aspect_ratio']):.2f},{img.get('ratio_source', 'pixel')},{img.get('asset_kind', 'bitmap')},{img.get('svg_renderable', True)},{img.get('pptx_native_supported', True)},{img['filesize_kb']:.1f},{img['layout_hint']}\n")
     print(f"\nCSV saved to: {csv_path}")
 
 

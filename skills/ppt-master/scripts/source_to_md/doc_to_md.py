@@ -18,13 +18,18 @@ All paths produce the same output convention:
 
 import argparse
 import base64
+import hashlib
+import json
 import mimetypes
+import posixpath
 import re
 import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 from urllib.parse import unquote, urlparse
+from xml.etree import ElementTree as ET
 
 # ─────────────────────────────────────────────────────────────
 # Format registry
@@ -47,6 +52,19 @@ PANDOC_FORMATS = {
 
 # Formats pandoc should extract embedded media from
 PANDOC_MEDIA_FORMATS = {".odt"}
+OFFICE_VECTOR_EXTENSIONS = {".emf", ".wmf"}
+
+DOCX_NS = {
+    "w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+    "wp": "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing",
+    "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
+    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+    "rel": "http://schemas.openxmlformats.org/package/2006/relationships",
+    "v": "urn:schemas-microsoft-com:vml",
+    "o": "urn:schemas-microsoft-com:office:office",
+    "mc": "http://schemas.openxmlformats.org/markup-compatibility/2006",
+}
+EMU_PER_INCH = 914400
 
 
 # ─────────────────────────────────────────────────────────────
@@ -100,6 +118,265 @@ def _report_result(out_file: Path, media_dir: Path | None) -> None:
             print(f"   Extracted {len(files)} media file(s) → {media_dir}")
 
 
+def _normalize_ext(ext: str | None) -> str:
+    """Return a normalized image extension, including the leading dot."""
+    if not ext:
+        return ".bin"
+    ext = ext.lower()
+    if not ext.startswith("."):
+        ext = f".{ext}"
+    if ext == ".jpe":
+        return ".jpg"
+    return ext
+
+
+def _image_size(path: Path) -> tuple[int | None, int | None]:
+    """Return bitmap dimensions when Pillow can read the file."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return None, None
+    try:
+        with Image.open(path) as img:
+            return img.width, img.height
+    except (OSError, ValueError):
+        return None, None
+
+
+def _is_office_vector(ext: str) -> bool:
+    """Return whether an extension is an Office vector preview format."""
+    return ext.lower() in OFFICE_VECTOR_EXTENSIONS
+
+
+def _local_name(elem: ET.Element) -> str:
+    """Return an XML element local name without its namespace."""
+    return elem.tag.rsplit("}", 1)[-1]
+
+
+def _relationship_target_path(target: str) -> str:
+    """Normalize a Word relationship target to a DOCX zip path."""
+    target = unquote(target)
+    if target.startswith("/"):
+        normalized = posixpath.normpath(target.lstrip("/"))
+    else:
+        normalized = posixpath.normpath(posixpath.join("word", target))
+    return normalized
+
+
+def _zip_sha256_for_target(media_hashes: dict[str, str], target: str) -> str | None:
+    """Return the SHA-256 digest for an embedded DOCX part target."""
+    if not target:
+        return None
+    return media_hashes.get(_relationship_target_path(target))
+
+
+def _length_to_emu(value: str) -> int | None:
+    """Parse a VML CSS length into EMU."""
+    match = re.match(r"^\s*([\d.]+)\s*([a-zA-Z]*)\s*$", value)
+    if not match:
+        return None
+    number = float(match.group(1))
+    unit = (match.group(2) or "pt").lower()
+    factors = {
+        "in": EMU_PER_INCH,
+        "cm": EMU_PER_INCH / 2.54,
+        "mm": EMU_PER_INCH / 25.4,
+        "pt": EMU_PER_INCH / 72,
+        "px": EMU_PER_INCH / 96,
+    }
+    factor = factors.get(unit)
+    if factor is None:
+        return None
+    return int(round(number * factor))
+
+
+def _vml_display_size_emu(shape: ET.Element | None) -> tuple[int, int]:
+    """Read VML shape width/height from its style attribute."""
+    if shape is None:
+        return 0, 0
+    style = shape.attrib.get("style", "")
+    values: dict[str, str] = {}
+    for part in style.split(";"):
+        if ":" not in part:
+            continue
+        key, value = part.split(":", 1)
+        values[key.strip().lower()] = value.strip()
+    width = _length_to_emu(values.get("width", "")) or 0
+    height = _length_to_emu(values.get("height", "")) or 0
+    return width, height
+
+
+def _occurrence_entry(
+    *,
+    rel_id: str | None,
+    target: str,
+    width_emu: int,
+    height_emu: int,
+    source_sha256: str | None,
+    source_kind: str,
+) -> dict[str, object]:
+    """Build one image metadata occurrence row."""
+    display_ratio = (
+        width_emu / height_emu
+        if width_emu > 0 and height_emu > 0
+        else None
+    )
+    return {
+        "relationship_id": rel_id,
+        "source_target": target,
+        "source_path": _relationship_target_path(target) if target else "",
+        "source_ext": _normalize_ext(Path(target).suffix),
+        "source_sha256": source_sha256,
+        "source_kind": source_kind,
+        "display_width_emu": width_emu,
+        "display_height_emu": height_emu,
+        "display_width_in": round(width_emu / EMU_PER_INCH, 4) if width_emu else None,
+        "display_height_in": round(height_emu / EMU_PER_INCH, 4) if height_emu else None,
+        "display_ratio": round(display_ratio, 6) if display_ratio else None,
+    }
+
+
+def _docx_image_occurrences(input_file: Path) -> list[dict[str, object]]:
+    """Read DOCX drawing order and Word display dimensions."""
+    try:
+        with zipfile.ZipFile(input_file) as docx:
+            rels_root = ET.fromstring(docx.read("word/_rels/document.xml.rels"))
+            doc_root = ET.fromstring(docx.read("word/document.xml"))
+            media_hashes = {
+                name: hashlib.sha256(docx.read(name)).hexdigest()
+                for name in docx.namelist()
+                if name.startswith("word/media/")
+            }
+    except (KeyError, ET.ParseError, zipfile.BadZipFile, OSError):
+        return []
+
+    rels: dict[str, str] = {}
+    for rel in rels_root.findall("rel:Relationship", DOCX_NS):
+        rel_id = rel.attrib.get("Id")
+        target = rel.attrib.get("Target")
+        if rel_id and target:
+            rels[rel_id] = target
+
+    parent_map = {child: parent for parent in doc_root.iter() for child in parent}
+
+    def _inside_mc_choice(elem: ET.Element) -> bool:
+        parent = parent_map.get(elem)
+        while parent is not None:
+            if _local_name(parent) == "Choice":
+                return True
+            parent = parent_map.get(parent)
+        return False
+
+    occurrences: list[dict[str, object]] = []
+    for elem in doc_root.iter():
+        if _inside_mc_choice(elem):
+            continue
+        local = _local_name(elem)
+        if local == "drawing":
+            container = elem.find(".//wp:inline", DOCX_NS)
+            if container is None:
+                container = elem.find(".//wp:anchor", DOCX_NS)
+            if container is None:
+                continue
+            extent = container.find("wp:extent", DOCX_NS)
+            blip = container.find(".//a:blip", DOCX_NS)
+            if extent is None or blip is None:
+                continue
+
+            rel_id = blip.attrib.get(f"{{{DOCX_NS['r']}}}embed")
+            if not rel_id:
+                rel_id = blip.attrib.get(f"{{{DOCX_NS['r']}}}link")
+            target = rels.get(rel_id or "", "")
+            if not target:
+                continue
+
+            try:
+                width_emu = int(extent.attrib.get("cx", "0"))
+                height_emu = int(extent.attrib.get("cy", "0"))
+            except ValueError:
+                width_emu = 0
+                height_emu = 0
+
+            occurrences.append(_occurrence_entry(
+                rel_id=rel_id,
+                target=target,
+                width_emu=width_emu,
+                height_emu=height_emu,
+                source_sha256=_zip_sha256_for_target(media_hashes, target),
+                source_kind="drawing",
+            ))
+        elif local == "imagedata":
+            rel_id = elem.attrib.get(f"{{{DOCX_NS['r']}}}id")
+            if not rel_id:
+                rel_id = elem.attrib.get(f"{{{DOCX_NS['r']}}}pict")
+            target = rels.get(rel_id or "", "")
+            if not target:
+                continue
+            width_emu, height_emu = _vml_display_size_emu(parent_map.get(elem))
+            occurrences.append(_occurrence_entry(
+                rel_id=rel_id,
+                target=target,
+                width_emu=width_emu,
+                height_emu=height_emu,
+                source_sha256=_zip_sha256_for_target(media_hashes, target),
+                source_kind="vml",
+            ))
+    return occurrences
+
+
+def _match_occurrence(
+    occurrences: list[dict[str, object]],
+    used_indexes: set[int],
+    index: int,
+    image_bytes: bytes,
+) -> dict[str, object] | None:
+    """Match a Mammoth image callback to DOCX metadata."""
+    image_hash = hashlib.sha256(image_bytes).hexdigest()
+    for occurrence_index, occurrence in enumerate(occurrences):
+        if occurrence_index in used_indexes:
+            continue
+        if occurrence.get("source_sha256") == image_hash:
+            used_indexes.add(occurrence_index)
+            return occurrence
+
+    fallback_index = index - 1
+    if fallback_index < len(occurrences) and fallback_index not in used_indexes:
+        used_indexes.add(fallback_index)
+        return occurrences[fallback_index]
+    return None
+
+
+def _manifest_entry(
+    index: int,
+    filename: str,
+    meta: dict[str, object] | None,
+    file_path: Path,
+    *,
+    original_filename: str | None = None,
+    asset_kind: str = "bitmap",
+    svg_renderable: bool = True,
+    pptx_native_supported: bool = True,
+) -> dict[str, object]:
+    width, height = _image_size(file_path)
+    pixel_ratio = width / height if width and height else None
+    entry: dict[str, object] = {
+        "index": index,
+        "filename": filename,
+        "original_filename": original_filename or filename,
+        "asset_kind": asset_kind,
+        "svg_renderable": svg_renderable,
+        "pptx_native_supported": pptx_native_supported,
+        "pixel_width": width,
+        "pixel_height": height,
+        "pixel_ratio": round(pixel_ratio, 6) if pixel_ratio else None,
+    }
+    if meta:
+        entry.update(meta)
+    if entry.get("display_ratio") is None and pixel_ratio:
+        entry["display_ratio"] = round(pixel_ratio, 6)
+    return entry
+
+
 # ─────────────────────────────────────────────────────────────
 # DOCX → Markdown (mammoth)
 # ─────────────────────────────────────────────────────────────
@@ -113,16 +390,47 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
 
     media_dir, rel_media_dir = _ensure_media_dir(out_file)
     counter = {"n": 0}
+    occurrences = _docx_image_occurrences(input_file)
+    used_occurrence_indexes: set[int] = set()
+    manifest: list[dict[str, object]] = []
 
     def _save_image(image):
         counter["n"] += 1
-        ext = mimetypes.guess_extension(image.content_type) or ".bin"
-        # Normalize common JPEG extension
-        if ext == ".jpe":
-            ext = ".jpg"
-        filename = f"image_{counter['n']:03d}{ext}"
+        index = counter["n"]
         with image.open() as stream:
-            (media_dir / filename).write_bytes(stream.read())
+            image_bytes = stream.read()
+
+        meta = _match_occurrence(
+            occurrences,
+            used_occurrence_indexes,
+            index,
+            image_bytes,
+        )
+        source_ext = meta.get("source_ext") if meta else None
+        ext = _normalize_ext(source_ext if isinstance(source_ext, str) else None)
+        if ext == ".bin":
+            ext = _normalize_ext(mimetypes.guess_extension(image.content_type))
+
+        original_filename = f"image_{index:03d}{ext}"
+        original_path = media_dir / original_filename
+        original_path.write_bytes(image_bytes)
+
+        filename = original_filename
+        output_path = original_path
+        asset_kind = "office_vector" if _is_office_vector(ext) else "bitmap"
+        svg_renderable = asset_kind != "office_vector"
+        pptx_native_supported = True
+
+        manifest.append(_manifest_entry(
+            index,
+            filename,
+            meta,
+            output_path,
+            original_filename=original_filename,
+            asset_kind=asset_kind,
+            svg_renderable=svg_renderable,
+            pptx_native_supported=pptx_native_supported,
+        ))
         return {"src": f"{rel_media_dir}/{filename}"}
 
     with input_file.open("rb") as f:
@@ -133,6 +441,12 @@ def _convert_docx(input_file: Path, out_file: Path) -> str:
 
     markdown = _html_img_to_md(result.value)
     out_file.write_text(markdown, encoding="utf-8")
+
+    if manifest:
+        (media_dir / "image_manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
     if not any(media_dir.iterdir()):
         media_dir.rmdir()

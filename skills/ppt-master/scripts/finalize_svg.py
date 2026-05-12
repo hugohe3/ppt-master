@@ -41,7 +41,10 @@ from pathlib import Path
 
 # Import finalize helpers from the internal package.
 sys.path.insert(0, str(Path(__file__).parent))
-from svg_finalize.align_embed_images import align_and_embed_images_in_svg
+from svg_finalize.align_embed_images import (
+    align_and_embed_images_in_svg,
+    count_office_vector_refs_in_svg,
+)
 from svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
 
 
@@ -182,7 +185,9 @@ def finalize_project(
             safe_print("[2/4] Aligning + embedding images...")
         img_count = 0
         img_errors = 0
+        office_vector_count = 0
         for svg_file in svg_final.glob('*.svg'):
+            office_vector_count += count_office_vector_refs_in_svg(svg_file)
             count, errs = align_and_embed_images_in_svg(
                 svg_file,
                 dry_run=False,
@@ -198,6 +203,16 @@ def finalize_project(
                 if img_errors:
                     msg += f"  ({img_errors} error(s))"
                 safe_print(msg)
+                if office_vector_count:
+                    safe_print(
+                        f"      {office_vector_count} Office vector(s) left external "
+                        "for native PPTX passthrough"
+                    )
+            elif office_vector_count:
+                safe_print(
+                    f"      {office_vector_count} Office vector(s) left external "
+                    "for native PPTX passthrough"
+                )
             else:
                 safe_print("      No images")
 
