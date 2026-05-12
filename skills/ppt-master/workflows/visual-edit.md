@@ -12,13 +12,12 @@ This workflow is **independent**: it operates on `<project_path>/svg_output/` an
 
 - The deck has been exported once (Steps 1–7 of the main workflow are complete).
 - The user wants to change one or more specific visual elements **and either can't pinpoint them in words or would benefit from clicking the slide directly**.
-- A browser is available on the host (Linux headless / containers without a display: skip; apply edits directly via conversation instead).
+- A browser is reachable — either the host has a local desktop, or you can forward the port from a remote Linux server (see "Remote Linux access" below). Truly headless with no forwarding option: skip and apply edits via conversation instead.
 
 ## When NOT to Run
 
 - The user gave a precise edit you can apply right now ("change page 3 title font-size to 32") — just edit the SVG.
 - The user wants a full regeneration ("redo this slide", "换个风格") — use the main workflow.
-- No browser available.
 
 ---
 
@@ -29,6 +28,16 @@ python3 ${SKILL_DIR}/scripts/svg_editor/server.py <project_path> --no-browser
 ```
 
 The server binds to `127.0.0.1:5050` and edits `<project_path>/svg_output/` in place. `svg_to_pptx` already snapshots `svg_output` into `backup/<timestamp>/` on every export, so prior versions are recoverable from there.
+
+### Remote Linux access
+
+If the project lives on a remote Linux server, the editor only listens on `127.0.0.1` for safety. Forward port 5050 from your local machine using one of:
+
+- **VS Code / Cursor Remote-SSH**: open the **PORTS** panel (`Ctrl+Shift+P` → `Ports: Focus on Ports View`), click **Forward a Port**, enter `5050`. The workspace remembers it.
+- **Termius**: open the **Port Forwarding** module from the left sidebar (it's a top-level module, not nested under the host). Add a rule with **Type = Local** (not Remote — Remote forwards the opposite direction), Host = your remote, Binding `127.0.0.1:5050`, Destination `127.0.0.1:5050`. Save, then **start the rule** (▶ button) — saving alone does not activate it.
+- **Plain SSH**: in a local terminal, run `ssh -L 5050:127.0.0.1:5050 <user>@<host>` (or add `LocalForward 5050 127.0.0.1:5050` to `~/.ssh/config` once).
+
+Then open `http://localhost:5050` in your local browser.
 
 After the server prints `SVG Editor running at http://localhost:5050`, tell the user (in their language) in a single message:
 
